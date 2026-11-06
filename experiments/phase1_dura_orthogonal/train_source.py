@@ -21,6 +21,7 @@ from experiments.phase1_dura_orthogonal.moment_relational import moment_relation
 from experiments.phase1_dura_orthogonal.iq_geometry import iq_geometry_loss, GEOMETRY_WEIGHT, GEOMETRY_TEMPERATURE
 from experiments.phase1_dura_orthogonal.joint_ssl_iq import SourceIQEncoder, cross_view_ssl_loss, frozen_feature_loss, SSL_FEATURE_WEIGHT, SSL_OFFDIAGONAL_WEIGHT, SSL_FEATURE_DIM
 from experiments.phase1_dura_orthogonal.multiscale_spectral import DuraMultiscaleSpectral
+from experiments.phase1_dura_orthogonal.direct_spectral_student import DirectSpectralStudent
 from experiments.phase1_dura_orthogonal.source_context_cache import load_cache
 
 FIT_SIZE = 8192
@@ -28,7 +29,7 @@ TRAIN_EPOCHS = 5
 DUAL_DOMAIN_EPOCHS = 20
 SOURCE_EPOCHS = (21, 22, 23)
 SCHEMA = 'phase1_dura_orthogonal_source_v1'
-DIRECT_ARCHITECTURES = ('dual_domain', 'adaptive_inverse', 'timevarying_inverse')
+DIRECT_ARCHITECTURES = ('dual_domain', 'adaptive_inverse', 'timevarying_inverse', 'direct_spectral_student')
 ACTION_OBJECTIVES = ('sim_action_guard', 'sim_action_fixed_prior')
 SSL_TEACHER_SOURCE = '20261106-phase1-dura-joint-iq-ssl-source-s2026092701-r01'
 SSL_TEACHER_COMMIT = '63ab9a08fe9f1fb076168467360e85cbc70ccafe'
@@ -79,12 +80,12 @@ def extract_context(dura, x):
 def source_loss(output, anchor, clean, *, objective='iq'):
     if output.shape != clean.shape or anchor.shape != clean.shape or output.shape[1:] != (2, 256):
         raise ValueError('Matching source IQ windows required')
-    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard'):
+    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'distill_iq'):
         raise ValueError('A registered source-IQ objective is required')
     energy = clean.square().mean((1, 2)).clamp_min(1e-8)
     error = (output-clean).square().mean((1, 2)) / energy
     change = (output-anchor).square().mean((1, 2)) / energy
-    per = error + .02*change
+    per = error + (.5 if objective == 'distill_iq' else .02)*change
     if objective in ('dura_guard', 'band_guard', 'nonlinear_guard'):
         baseline_error = (anchor.detach()-clean).square().mean((1, 2)) / energy
         excess = (error-baseline_error).clamp_min(0)
@@ -233,16 +234,18 @@ def main():
     parser.add_argument('--smoke-fit', type=int, default=64)
     parser.add_argument('--source-context-cache', type=Path)
     parser.add_argument('--deterministic', action='store_true')
-    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard'), default='iq')
-    parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale'), default='orthogonal')
+    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq'), default='iq')
+    parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student'), default='orthogonal')
     args = parser.parse_args()
     if args.deterministic:
         os.environ['CUBLAS_WORKSPACE_CONFIG'] = ':4096:8'
         torch.use_deterministic_algorithms(True)
-    if args.source_context_cache and (args.smoke or args.architecture in DIRECT_ARCHITECTURES or args.objective in ACTION_OBJECTIVES):
+    if args.source_context_cache and (args.smoke or (args.architecture in DIRECT_ARCHITECTURES and args.architecture != 'direct_spectral_student') or args.objective in ACTION_OBJECTIVES):
         raise ValueError('Source context cache applies only to full DURA-context training without action supervision')
-    if args.architecture in DIRECT_ARCHITECTURES and args.objective != 'iq':
+    if args.architecture in DIRECT_ARCHITECTURES and args.architecture != 'direct_spectral_student' and args.objective != 'iq':
         raise ValueError('Direct dual-domain model uses received-IQ regularization only')
+    if (args.architecture == 'direct_spectral_student') != (args.objective == 'distill_iq'):
+        raise ValueError('Direct spectral student requires fixed source-IQ distillation')
     if args.architecture == 'dura_timevarying' and args.objective != 'dura_guard':
         raise ValueError('DURA time-varying correction requires DURA guard')
     if args.architecture == 'dura_multiscale' and args.objective not in ('dura_guard', 'ssl_joint_guard', 'ssl_fixed_guard'):
@@ -277,14 +280,15 @@ def main():
     _, fresh, clean, fit = load_source_training(args.root, ids)
     if args.smoke:
         fit = fit[:args.smoke_fit]
-    dura = frozen_dura(args.root, str(device)) if args.architecture not in DIRECT_ARCHITECTURES else None
+    dura = frozen_dura(args.root, str(device)) if args.architecture not in DIRECT_ARCHITECTURES or args.architecture == 'direct_spectral_student' else None
     preparation_started = time.monotonic()
     if args.source_context_cache:
         data, counts = load_cache(args.source_context_cache, fit, args.prepare_batch, str(device),
                                   deterministic=args.deterministic)
     else:
+        prepare_arch = 'orthogonal' if args.architecture == 'direct_spectral_student' else args.architecture
         data, counts = prepare(args.root, dura, clean, fresh, fit, str(device), args.prepare_batch,
-                               args.architecture, include_action=args.objective in ACTION_OBJECTIVES)
+                               prepare_arch, include_action=args.objective in ACTION_OBJECTIVES)
     preparation_seconds = time.monotonic() - preparation_started
     transfer_started = time.monotonic()
     data = tuple(value.to(device) for value in data)
@@ -310,6 +314,8 @@ def main():
         model = NoiseGatedDuraTimeVarying(width=32, taps=9).to(device)
     elif args.architecture == 'dura_multiscale':
         model = DuraMultiscaleSpectral(width=32, taps=9).to(device)
+    elif args.architecture == 'direct_spectral_student':
+        model = DirectSpectralStudent(width=32, taps=9).to(device)
     else:
         model = InternalDuraRecovery(frozen_dura(args.root, str(device))).to(device)
         configure_internal_trainability(model.dura, args.objective)
@@ -339,7 +345,7 @@ def main():
         initial = model(*(value[:initial_batch] for value in data[:4]))
     if args.architecture == 'dura_internal':
         torch.testing.assert_close(initial, data[1][:initial_batch], rtol=1e-5, atol=1e-6)
-    elif not torch.equal(initial, data[1][:initial_batch]):
+    elif not torch.equal(initial, data[0 if args.architecture == 'direct_spectral_student' else 1][:initial_batch]):
         raise ValueError('New correction must initially reproduce frozen DURA')
     started = time.monotonic()
     epochs = DUAL_DOMAIN_EPOCHS if args.architecture in DIRECT_ARCHITECTURES else TRAIN_EPOCHS
@@ -413,7 +419,7 @@ def main():
                     raise ValueError('Fixed original priors must remain frozen')
             else:
                 second_head = (model.step if args.architecture == 'orthogonal' else
-                               model.filter_head if args.architecture in ('adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale') else model.spectral_head)
+                               model.filter_head if args.architecture in ('adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student') else model.spectral_head)
                 if (model.wave.weight.grad is None or second_head.weight.grad is None or
                         not torch.isfinite(model.wave.weight.grad).all() or not torch.isfinite(second_head.weight.grad).all()):
                     raise ValueError('Both learned correction paths require finite gradients')
@@ -445,12 +451,15 @@ def main():
                             source_ssl_teacher_commit=SSL_TEACHER_COMMIT, source_ssl_aux_trainable=False)
     cache_metadata = dict(source_context_cache=str(args.source_context_cache) if args.source_context_cache else None,
                           deterministic_algorithms=args.deterministic)
+    if args.architecture == 'direct_spectral_student':
+        cache_metadata.update(source_iq_teacher='dura_v1_R65_E20_4940', source_iq_teacher_weight=.5,
+                              inference_received_iq_only=True)
     if args.smoke:
         core.write(args.out/'smoke.json', dict(status='SOURCE_TRAINING_SMOKE_PASS', commit=args.commit,
             fit_ids=len(fit), exposure=len(data[0]), losses=losses, device=str(device),
             objective=args.objective, architecture=args.architecture, prepare_batch=args.prepare_batch,
             candidate_dura_trainable=args.architecture == 'dura_internal',
-            spectral_freq_bins=17 if args.architecture == 'dura_multiscale' else None,
+            spectral_freq_bins=17 if args.architecture in ('dura_multiscale', 'direct_spectral_student') else None,
             source_geometry_weight=GEOMETRY_WEIGHT if args.objective == 'geometry_guard' else None,
             source_geometry_temperature=GEOMETRY_TEMPERATURE if args.objective == 'geometry_guard' else None,
             source_geometry_losses=geometry_losses if args.objective == 'geometry_guard' else None,
@@ -460,7 +469,7 @@ def main():
             noise_gate_low=GATE_LOG10_LOW if args.architecture in ('dura_timevarying_gate', 'dura_multiscale') else None,
             noise_gate_high=GATE_LOG10_HIGH if args.architecture in ('dura_timevarying_gate', 'dura_multiscale') else None,
         adaptive_filter_taps=(33 if args.architecture == 'adaptive_inverse' else
-                                  9 if args.architecture in ('timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale') else None),
+                                  9 if args.architecture in ('timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student') else None),
         candidate_prior_frozen=args.objective == 'sim_action_fixed_prior',
             source_views_per_record=3 if args.objective == 'crossview_guard' else None,
             crossview_weight=.1 if args.objective == 'crossview_guard' else None,
@@ -476,7 +485,7 @@ def main():
     checkpoint = dict(schema=SCHEMA, commit=args.commit, model=model.state_dict(), width=32,
                       epochs=epochs, fit_ids=fit, counts=counts, losses=losses, architecture=args.architecture,
                       candidate_dura_trainable=args.architecture == 'dura_internal',
-            spectral_freq_bins=17 if args.architecture == 'dura_multiscale' else None,
+            spectral_freq_bins=17 if args.architecture in ('dura_multiscale', 'direct_spectral_student') else None,
             source_geometry_weight=GEOMETRY_WEIGHT if args.objective == 'geometry_guard' else None,
             source_geometry_temperature=GEOMETRY_TEMPERATURE if args.objective == 'geometry_guard' else None,
             source_geometry_losses=geometry_losses if args.objective == 'geometry_guard' else None,
@@ -486,7 +495,7 @@ def main():
             noise_gate_low=GATE_LOG10_LOW if args.architecture in ('dura_timevarying_gate', 'dura_multiscale') else None,
             noise_gate_high=GATE_LOG10_HIGH if args.architecture in ('dura_timevarying_gate', 'dura_multiscale') else None,
                       adaptive_filter_taps=(33 if args.architecture == 'adaptive_inverse' else
-                                  9 if args.architecture in ('timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale') else None),
+                                  9 if args.architecture in ('timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student') else None),
                       candidate_prior_frozen=args.objective == 'sim_action_fixed_prior',
                       source_views_per_record=3 if args.objective == 'crossview_guard' else None,
                       crossview_weight=.1 if args.objective == 'crossview_guard' else None,
@@ -509,7 +518,7 @@ def main():
     core.write(args.out/'source_summary.json', dict(status='SOURCE_TRAINED', commit=args.commit,
         fit_ids=len(fit), epochs=epochs, architecture=args.architecture,
         candidate_dura_trainable=args.architecture == 'dura_internal',
-            spectral_freq_bins=17 if args.architecture == 'dura_multiscale' else None,
+            spectral_freq_bins=17 if args.architecture in ('dura_multiscale', 'direct_spectral_student') else None,
             source_geometry_weight=GEOMETRY_WEIGHT if args.objective == 'geometry_guard' else None,
             source_geometry_temperature=GEOMETRY_TEMPERATURE if args.objective == 'geometry_guard' else None,
             source_geometry_losses=geometry_losses if args.objective == 'geometry_guard' else None,
@@ -519,7 +528,7 @@ def main():
             noise_gate_low=GATE_LOG10_LOW if args.architecture in ('dura_timevarying_gate', 'dura_multiscale') else None,
             noise_gate_high=GATE_LOG10_HIGH if args.architecture in ('dura_timevarying_gate', 'dura_multiscale') else None,
             adaptive_filter_taps=(33 if args.architecture == 'adaptive_inverse' else
-                                  9 if args.architecture in ('timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale') else None),
+                                  9 if args.architecture in ('timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student') else None),
             candidate_prior_frozen=args.objective == 'sim_action_fixed_prior',
         source_views_per_record=3 if args.objective == 'crossview_guard' else None,
         crossview_weight=.1 if args.objective == 'crossview_guard' else None,
@@ -527,7 +536,7 @@ def main():
         source_simulator_action_weight=.01 if args.objective in ACTION_OBJECTIVES else None,
         source_probe_seed=2026110614 if args.objective in ACTION_OBJECTIVES else None,
         source_action_response_losses=action_losses if args.objective in ACTION_OBJECTIVES else None,
-        DURA_training_reads=int(args.architecture not in DIRECT_ARCHITECTURES),
+        DURA_training_reads=int(args.architecture not in DIRECT_ARCHITECTURES or args.architecture == 'direct_spectral_student'),
         exposure=len(data[0]), counts=counts, losses=losses,
         device=str(device), objective=args.objective, prepare_batch=args.prepare_batch,
         preparation_seconds=preparation_seconds,

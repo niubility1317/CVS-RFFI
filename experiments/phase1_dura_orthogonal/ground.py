@@ -18,6 +18,7 @@ from experiments.phase1_dura_orthogonal.moment_relational import MOMENT_WEIGHT, 
 from experiments.phase1_dura_orthogonal.iq_geometry import GEOMETRY_WEIGHT, GEOMETRY_TEMPERATURE
 from experiments.phase1_dura_orthogonal.joint_ssl_iq import SSL_FEATURE_WEIGHT, SSL_OFFDIAGONAL_WEIGHT, SSL_FEATURE_DIM
 from experiments.phase1_dura_orthogonal.multiscale_spectral import DuraMultiscaleSpectral
+from experiments.phase1_dura_orthogonal.direct_spectral_student import DirectSpectralStudent
 from experiments.phase1_dura_orthogonal.train_source import SCHEMA, TRAIN_EPOCHS, DUAL_DOMAIN_EPOCHS, FIT_SIZE, SSL_TEACHER_SOURCE, SSL_TEACHER_COMMIT, extract_context
 
 
@@ -25,9 +26,9 @@ def load_fixed(root, source, commit):
     folder = root/'runs'/source
     summary = core.read(folder/'source_summary.json')
     architecture = summary.get('architecture', 'orthogonal')
-    if architecture not in ('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale'):
+    if architecture not in ('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student'):
         raise ValueError('Registered recovery architecture required')
-    epochs = DUAL_DOMAIN_EPOCHS if architecture in ('dual_domain', 'adaptive_inverse', 'timevarying_inverse') else TRAIN_EPOCHS
+    epochs = DUAL_DOMAIN_EPOCHS if architecture in ('dual_domain', 'adaptive_inverse', 'timevarying_inverse', 'direct_spectral_student') else TRAIN_EPOCHS
     expected = dict(status='SOURCE_TRAINED', commit=commit, fit_ids=FIT_SIZE, epochs=epochs,
                     TX_labels_read=0, F_weights_read=0, F_outputs_read=0, V_reads=0,
                     target_reads=0, DURA_frozen=True)
@@ -39,7 +40,7 @@ def load_fixed(root, source, commit):
             any(state.get(k) != v for k, v in expected.items() if k not in ('status', 'fit_ids', 'epochs'))):
         raise ValueError('Fixed correction checkpoint and provenance required')
     objective = state.get('objective', 'iq')
-    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard') or summary.get('objective', 'iq') != objective:
+    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq') or summary.get('objective', 'iq') != objective:
         raise ValueError('Source objective must match the fixed checkpoint')
     if objective == 'crossview_guard' and any(
             obj.get('source_views_per_record') != 3 or obj.get('crossview_weight') != .1
@@ -50,6 +51,13 @@ def load_fixed(root, source, commit):
     if architecture in ('dual_domain', 'adaptive_inverse', 'timevarying_inverse') and (objective != 'iq' or state.get('DURA_training_reads') != 0
                                           or summary.get('DURA_training_reads') != 0):
         raise ValueError('Direct recovery must be trained without DURA')
+    if (architecture == 'direct_spectral_student') != (objective == 'distill_iq'):
+        raise ValueError('Direct spectral student requires source IQ distillation')
+    if architecture == 'direct_spectral_student' and any(
+            obj.get('DURA_training_reads') != 1 or obj.get('source_iq_teacher') != 'dura_v1_R65_E20_4940' or
+            obj.get('source_iq_teacher_weight') != .5 or obj.get('inference_received_iq_only') is not True
+            for obj in (summary, state)):
+        raise ValueError('Matching source-IQ teacher metadata required')
     if architecture in ('dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale') and (
             objective not in (('dura_guard', 'moment_guard', 'geometry_guard') if architecture == 'dura_timevarying_gate' else ('dura_guard', 'ssl_joint_guard', 'ssl_fixed_guard') if architecture == 'dura_multiscale' else ('dura_guard',))
             or any(obj.get('DURA_training_reads') != 1 for obj in (summary, state))):
@@ -62,7 +70,7 @@ def load_fixed(root, source, commit):
             obj.get('source_simulator_action_used') is not True or obj.get('source_simulator_action_weight') != .01
             or obj.get('source_probe_seed') != 2026110614 for obj in (summary, state))):
         raise ValueError('Matching simulator-supervised DURA checkpoint required')
-    if architecture in ('adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale'):
+    if architecture in ('adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student'):
         expected_taps = 33 if architecture == 'adaptive_inverse' else 9
         if any(obj.get('adaptive_filter_taps') != expected_taps for obj in (summary, state)):
             raise ValueError('Matching adaptive inverse filter metadata required')
@@ -90,7 +98,7 @@ def load_fixed(root, source, commit):
             obj.get('source_ssl_teacher_commit') != SSL_TEACHER_COMMIT or
             obj.get('source_ssl_aux_trainable') is not False for obj in (summary, state)):
         raise ValueError('Fixed source-only SSL teacher metadata required')
-    if architecture == 'dura_multiscale' and any(obj.get('spectral_freq_bins') != 17 for obj in (summary, state)):
+    if architecture in ('dura_multiscale', 'direct_spectral_student') and any(obj.get('spectral_freq_bins') != 17 for obj in (summary, state)):
         raise ValueError('Matching spectral bottleneck metadata required')
     if architecture == 'orthogonal':
         model = OrthogonalRecovery(width=state['width'])
@@ -106,6 +114,8 @@ def load_fixed(root, source, commit):
         model = NoiseGatedDuraTimeVarying(width=state['width'], taps=9)
     elif architecture == 'dura_multiscale':
         model = DuraMultiscaleSpectral(width=state['width'], taps=9)
+    elif architecture == 'direct_spectral_student':
+        model = DirectSpectralStudent(width=state['width'], taps=9)
     else:
         model = InternalDuraRecovery(frozen_dura(root, 'cpu'))
     model.load_state_dict(state['model'], strict=True)
