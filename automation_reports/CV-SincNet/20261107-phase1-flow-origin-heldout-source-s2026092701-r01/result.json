@@ -1,0 +1,63 @@
+{
+  "status": "FLOW_ORIGIN_SOURCE_DIAGNOSTIC_COMPLETE",
+  "commit": "5b9470b1724cc27931a3d9bba86cc7a9f9c022ef",
+  "fit_ids": 384,
+  "heldout_ids": 128,
+  "views_per_record": 3,
+  "epochs": 5,
+  "batch_size": 32,
+  "methods": {
+    "uniform": {
+      "losses": [
+        0.013608698215749528,
+        0.013444980813397301,
+        0.013267576694488525,
+        0.013015992939472198,
+        0.012712296512391832
+      ],
+      "origin_count": 0,
+      "optimization_seconds": 3.140000000130385,
+      "heldout": {
+        "anchor_nmse": 0.007390271872282028,
+        "output_nmse": 0.0074206767603755,
+        "velocity_nmse": {
+          "0.0": 0.007405602838844061,
+          "0.01": 0.007395628839731216,
+          "0.25": 0.007154474034905434,
+          "0.5": 0.006899953819811344,
+          "0.75": 0.006642722990363836
+        }
+      }
+    },
+    "origin_half": {
+      "losses": [
+        0.013643428683280945,
+        0.01358966694937812,
+        0.013528324663639069,
+        0.013453110224670835,
+        0.013395930329958597
+      ],
+      "origin_count": 2887,
+      "optimization_seconds": 2.577999999979511,
+      "heldout": {
+        "anchor_nmse": 0.007390271872282028,
+        "output_nmse": 0.007378512993454933,
+        "velocity_nmse": {
+          "0.0": 0.007369046565145254,
+          "0.01": 0.007364550139755011,
+          "0.25": 0.007255831267684698,
+          "0.5": 0.007140998728573322,
+          "0.75": 0.007024637423455715
+        }
+      }
+    }
+  },
+  "source_only": true,
+  "F_weights_read": 0,
+  "F_outputs_read": 0,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "weights_saved": false,
+  "caveat": "Small source-fit subset; held-out only for diagnostic flow training, DURA may have seen related source data. Source waveform and velocity metrics are not identity accuracy."
+}
