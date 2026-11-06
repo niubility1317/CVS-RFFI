@@ -104,4 +104,4 @@ GPU 7 的真实权重小样本验证通过，正式五轮训练完成，优化�
 
 使用 DURA 估计信道与噪声、源 IQ 相关先验和同条源 clean 的非负理想步长，已为 8192 条源记录的三个模拟视图生成 24576 条训练教师波形。源训练样本上的理想教师 NMSE 由 0.023053 到 0.022093；生成耗时 365.3 秒，源数据缓存、先验和 DURA 成本另计，最大 CG 真实相对残差 0.01058。教师及理想步长不可用于目标推理；此训练集上的理想误差不是身份或目标收益。[源教师生成](../automation_reports/CV-SincNet/20261106-phase1-source-posterior-teacher-s2026092701-r01/analysis.md)。
 
-独立初始化的 DURA 多尺度修正学生以源 IQ、DURA guard 和 0.5 权重的源教师波形误差训练；真实 GPU 小样本验证通过，固定五轮训练进行中。冻结后学生只用当前 IQ 和 DURA 上下文，不读取教师、源 clean、理想步长或物理后验；七景预测与独立 truth-last 已登记并将自动执行。
+独立初始化的 DURA 多尺度修正学生以源 IQ、DURA guard 和 0.5 权重的源教师波形误差训练；真实 GPU 小样本验证通过，固定五轮训练已完成，优化 83.2 秒；源 teacher 生成 365.3 秒及源缓存／先验／DURA 训练成本另计。源 pilot 受损 12 组中 11 组平均 NMSE 低于原 DURA，但只有 3 组低于同架构同预算的确定性普通保护源对照。冻结后学生只用当前 IQ 和 DURA 上下文，不读取教师、源 clean、理想步长或物理后验；七景预测已启动，之后独立 truth-last。[源训练结果](../automation_reports/CV-SincNet/20261106-phase1-dura-posterior-teacher-source-s2026092701-r01/analysis.md)。
