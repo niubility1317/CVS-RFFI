@@ -183,3 +183,7 @@ raw clean 为 86.538690%；每版只有高郊区达到下降不超过 3 个百�
 | [源模拟信道监督](../automation_reports/CV-SincNet/20261106-phase1-dura-sim-action-ground-test-s2026092701-r01/analysis.md) | 86.5798 | 84.0399 | 82.5524 | 80.8631 | 82.7345 | 75.1482 | 67.9792 |
 
 两版六个受损场景均低于 DURA。raw clean 为 86.538690%；两版仅高郊区达到 3 个百分点口径，只有源模拟信道监督版的高郊区达到相对下降 3% 口径。各报告含同样本净纠错和 TX、RX、day 边际分组；目标测试已反复观察，不能视为独立盲测。
+
+## 三专家与蒸馏学生 GPU 测速
+
+112 条固定源 IQ 的同输入 GPU 7 配对测速，FP32、eager、输入已在 GPU；B1 的 DURA 上下文＋修正中位数为三专家 102.725 ms、蒸馏单专家 80.993 ms，约 1.27 倍；B8 每批中位数为 110.121 ms 和 77.902 ms，约 1.41 倍。GPU 有其他工作，P95 波动明显；不含 F、输入传输和模型加载，DURA 也不是官方 graph 路径，不能与既有端到端时延直接比较。两个模型输出不相同，七景识别评分尚未完成。[完整测速](../automation_reports/CV-SincNet/20261107-phase1-expert-student-latency-source-s2026092701-r01/analysis.md)。

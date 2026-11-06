@@ -1,0 +1,142 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-expert-student-latency-source-s2026092701-r01",
+  "group_id": "phase1-expert-student-latency-source",
+  "display_name": "三专家与蒸馏单专家 GPU 同输入时延比较",
+  "description": "固定相同来源数据的三专家和蒸馏单专家，在合法源 IQ 上测量 GPU 修正及 DURA 加修正路径的同步时延。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "F-free",
+    "gpu-latency",
+    "expert-distillation"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261106-phase1-dura-expert-mixture-source-s2026092701-r01",
+    "20261107-phase1-dura-expert-distill-source-s2026092701-r01",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User authorizes ongoing Phase1 F-free restoration research, source-only diagnostics and GPU use.",
+  "code": {
+    "commit": "bab096f3693c871203ae5af93b2ee2e2da24d6d6",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 physical GPU7 CUDA_VISIBLE_DEVICES=7, eager FP32 TF32 off, source input already on GPU; shared GPU load",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-expert-student-latency-source-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source pilot",
+    "version": "source cache R07 epoch19",
+    "representation": "fixed source received IQ and DURA context; no labels",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "112 fixed source pilot IDs, eight each for RX4/6 or RX8 x seven views; disjoint from 32768 fit IDs",
+    "label_map_ref": null,
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Source-only technical latency and finite outputs, no target or identity score",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed source epoch19 seven views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Shared-GPU source eager correction-only and DURA-plus-correction synchronized timing, no F or target accuracy"
+  },
+  "checkpoint": {
+    "initialization": "Frozen source-only final epoch5 expert mixture, frozen source-only final epoch5 distilled student and original DURA",
+    "sources": [
+      "20261106-phase1-dura-expert-mixture-source-s2026092701-r01",
+      "20261107-phase1-dura-expert-distill-source-s2026092701-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Frozen models strict source-only ancestry, matching exact 32768 fit IDs and pilot disjointness",
+    "provenance_verdict": "All models have source-only ancestry; F/TX/V/target not used",
+    "selection_rule": "Both fixed final checkpoints, no target selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "Physical GPU7 at most one this-task worker and at most three total compute apps; shared load measured; preserve other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-expert-student-latency-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-expert-student-latency-source-s2026092701-r01-launcher.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261107-phase1-expert-student-latency-source-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.benchmark_expert_student --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-expert-student-latency-source-s2026092701-r01 --commit bab096f3693c871203ae5af93b2ee2e2da24d6d6 --device cuda:0",
+    "stop_rule": "Stop on source or checkpoint mismatch, nonfinite output, target/F/TX access or technical failure"
+  },
+  "expected_artifacts": [
+    "result.json: paired B1/B8 synchronized source wall time and parameter counts"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "B1/B8 correction-only and DURA-plus-correction median/mean/p95 milliseconds"
+    ],
+    "dimensions": [
+      "112 legal source records",
+      "B1 112 paired timings",
+      "B8 28 paired timings"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; no target or TX truth"
+  },
+  "rows": [
+    {
+      "row_id": "source-expert-student-latency",
+      "method": "Frozen same-input paired source GPU latency for three-expert mixture and one distilled correction",
+      "purpose": "Measure computational cost rather than infer speed from parameter count",
+      "config_ref": "experiments/phase1_dura_orthogonal/benchmark_expert_student.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Existing fixed tail-excess source G and Tri-SIG-TIME SSL seed 2026092701; no training or selection.",
+      "k": null,
+      "scenario": "source pilot 112 records across two receiver groups and seven views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "B1 112 pairs, B8 28 pairs, five warmups per model/path, one shared GPU, no training",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-expert-student-latency-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-expert-student-latency-source-s2026092701-r01-launcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.benchmark_expert_student --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-expert-student-latency-source-s2026092701-r01 --commit bab096f3693c871203ae5af93b2ee2e2da24d6d6 --device cuda:0",
+      "expected_artifacts": [
+        "result.json: paired B1/B8 synchronized source wall time and parameter counts"
+      ]
+    }
+  ],
+  "notes": [
+    "Both source-only checkpoints are frozen, use identical source inputs, and alternate measurement order; no F, TX labels, V or target.",
+    "GPU wall time is synchronized, input IQ is already on GPU; includes eager DURA context and correction for full-path rows, excludes model loading, host-to-device input transfer and classifier.",
+    "DURA context uses current eager implementation rather than official optimized graph; results do not claim official end-to-end latency or accuracy equivalence.",
+    "Shared GPU load and limited sample counts affect latency; do not infer unchanged target predictions or recognition performance."
+  ],
+  "registered_at": "2026-11-06T16:46:50+00:00"
+}

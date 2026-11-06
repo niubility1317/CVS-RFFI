@@ -1,0 +1,3 @@
+{"at": "2026-11-06T16:46:50+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-06T16:48:24+00:00", "status": "RUNNING", "note": "Paired source-only eager GPU timing; shared device, no F/TX/V/target", "evidence": ["N607 GPU7 PID 3528945, fixed expert and student source smoke PASS"], "row_id": null}
+{"at": "2026-11-06T16:49:59+00:00", "status": "ANALYZED", "note": "Shared GPU eager FP32 timing; no F/TX/V/target, no official graph latency or output equality claim", "evidence": ["N607 result.json SOURCE_LATENCY_COMPLETE, fixed-checkpoint source smoke PASS, B1 112 and B8 28 paired timings"], "row_id": null}
