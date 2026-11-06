@@ -1,0 +1,206 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01",
+  "group_id": "restoration-c4-operator-posterior-detail",
+  "display_name": "C4 等变 IQ 恢复器，单次后验、从零 30 轮",
+  "description": "共享物理和细节分支覆盖四个直角 I/Q 旋转。合并回原坐标的物理算子，单次 FP64 后验，恢复原坐标 IQ。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "original-ground-TriSIGSSL-Main",
+    "source-F-guided",
+    "scratch-single30",
+    "C4-equivariant",
+    "automatic-Main7"
+  ],
+  "comparison_group_id": "ground-TriSIGSSL-Main-source-only-IQ-restorers",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Latestuser:performanceprimary/efficiencysecondary/groundTriSIGTIME SSL sameFrawclean6eachgap<=3pp+cleanpreserved;majorGarchitecturefreedom/scratchsingle30/sourceFfeatureguidanceallowed/originalLsUs-only/OEonlyfrozendiagnostic. DefaultDURAunchanged.",
+  "code": {
+    "commit": "bc6bcac3bf8463fb3b2770a0ec2a6115ab322ae1",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI/Torch2.1/NumPy2 bridge-safe/FP32G-F0/FP64physicalposterior/TF32off/CPUthreads2",
+    "cwd": "releases/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "R07 original IQ2x256 and Action/noise traces; original source Gaussian transformed by C4 moment matching; frozen source F0 variance.",
+    "contract_ref": "OriginalTriSSLsource_contract/392005/rolecounts6300-56700-27000;R07train63000sameIDset androles/RX/day byID",
+    "physical_ids_ref": "R07train/physical_ids.npy roles.npy;validatedoriginalsourceLUcache IDs foralignment;officialMain source-disjoint viewindexes",
+    "label_map_ref": "Gtrainnone;frozenF0originalsixclassorder,truthonly originalCPUscorerafterallrow42cells fixed",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse original VALIDATED_ONCE R07/capsule/split and a3 source IQ moments/f57 source F0 variance. No target, V, OE or novel training.",
+    "support_query_ref": "No targettraining/support/PCD/unknownrole. OriginalMain two populations168000,all7perrowfixedbefore independenttruth.",
+    "leo_config_ref": "R07sourcecache20trainrealizations/2026101912augmentation;officialMain frozen7observations",
+    "actual_training_labels": "OriginalLs6300Us56700 TXhidden;0TX/CE/logits/prototypes/newidentityhead. Physical .1Action+.001noise;detail IQnmse+.05multiSTFT+.01F0(cos+sourcevarMSE),continuous160 only.",
+    "augmentation": "R07 fixed original draws 1..20 then 1..10 and source order2026110102. C4 branches are internal signed coordinate maps of the same input."
+  },
+  "permissions": {
+    "regime": "source-only-scratch-G-full-feature-guidance-independent-detail-branch",
+    "query_use": "LsUsIQ+simulatorphysicaltargets+source-onlystatistics+frozen3ff8F0continuousfeatures. Defaultheadsmoke/evalonly;0V/OE/novel/target training-selection,0TX/logits/CE/prototypes inG losses. NotF-free.",
+    "external_method_exception": null,
+    "claim_scope": "Composite change to physical operator and detail architecture and prior. Source V motivates the coordinate hypothesis, not a Main or information ceiling result."
+  },
+  "checkpoint": {
+    "initialization": "All 5481223 learned parameters scratch, physical seed2026092701 and detail seed2026092702. Source moment/variance data only.",
+    "sources": [
+      "FROZEN_FEATURE_ONLY originalTriSIGTIME_SSLF0/3ff8f4b7e85b5608f5b45350aa18081499a7ef1d/E50-11100/defaulthead/232993params",
+      "DATA_ONLY R07 originalLs6300Us56700/20draw+repeat10/0TX-V-OE-target",
+      "DATA_ONLY a3a90b55a73702954c453eec9c1ad17fec24d87f/source63000IQmu-fullC/.001shrink/noTXlabels",
+      "DATA_ONLY f57c54cad7491e3e8a36f7ea51a9caa13a3a0ab9/source63000F0variance160/noTXlabels",
+      "EVAL_CONTROL_ONLY 20261102-phase1-Restore-CovarianceDetail-E30-s2026092701-r01/1fcbc3eb3cc16e7577ecc3cbedda99174b4c5cc6 final30; no initialization or distillation.",
+      "SOURCE_MECHANISM_ONLY 20261102-diagnostic-Restore-CovarianceDetail-source-coordinate-s2026092701-r01/c6c1daca7c1ca352e87464402f02002549ea203f; no source V IQ in training."
+    ],
+    "contract_check_ref": "Same frozen F0 and original R07 data contract. Original prior provenance checked, transformed in FP64 then stored in FP32. Strict own config/commit E0/final30 load.",
+    "provenance_verdict": "Gscratch;physical source-statisticbuffers andcontinuoussourceF0guidance explicitlyallowed/notF-free. V mechanismdiagnostic is frozen/historicallyexposed anddoesnot supply training records/checkpoint/weights.",
+    "selection_rule": "One fixed scratch candidate. Final30 after 7410 steps. Every Main scene runs automatically, independent of training quality."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/coordinate-map-detail-scratch30",
+    "gpu_policy": "GPU4/6 healthy pool scopedUUID/free>=12000MiB/existingcompute<=2/addONEtotal<=3;oneownNN sequentialtrain/cross_rx/cross_both,thenCPUscore. AllpreviousownNNended;otherownersuntouched.",
+    "remote_run_root": "runs/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01",
+    "remote_log_root": "runs/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.coordinate_map_detail_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit bc6bcac3bf8463fb3b2770a0ec2a6115ab322ae1 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Invalid source/F0 identity, collision, nonfinite loss, posterior relative residual >1e-8, gradient/smoke/reload or worker failure: preserve. First actual source2 smoke, then E30 and all Main."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/training/config.json",
+    "rows/<arm>/training/smoke.json",
+    "rows/<arm>/training/smoke_E0.pt PRIVATE",
+    "rows/<arm>/training/data_schedule.npz PRIVATE",
+    "rows/<arm>/training/training.jsonl PRIVATE",
+    "rows/<arm>/training/final.pt PRIVATE",
+    "rows/<arm>/training/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE",
+    "rows/TF_CoordinateMAPDetail/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Original Main 126000 cross_rx and 42000 cross_both, all 7. Six individual combined gaps <=3pp below 145385/168000 raw clean; both clean populations preserved.",
+      "All scene, TX/RX/day/RXday groups, macro F1 and paired repair/damage against raw and DURA. Compare previous CovarianceDetail only after predictions fixed.",
+      "All 30 training epochs and fixed 7410 updates; IQ/STFT/F0-feature/action/noise errors and runtime, peak memory, actual branch/posterior exposure.",
+      "5481223 trainable parameters; one FP64 posterior per microbatch (59070 total), shared C4 physical/detail each 7560000 rows, F0 restored 1890000 rows and clean cache 63000."
+    ],
+    "dimensions": [
+      "original Main two populations and seven views",
+      "TX/RX/day/RXday",
+      "single model seed",
+      "matched raw and DURA"
+    ],
+    "prediction_ref": "Fresh fixed candidate Main two populations/all 7; exact r03 raw and DURA reuse; previous detail for post-freeze analysis.",
+    "scorer_ref": "OriginalindependentCUDAemptyCPUscore/sharedscore.lock;whole row/allMainpredictionsbeforetruth. No targetfeedback."
+  },
+  "rows": [
+    {
+      "row_id": "TF_CoordinateMAPDetail",
+      "method": "C4_physical_operator_single_posterior_shared_detail",
+      "purpose": "Test coordinate equivariance at physical and detail stages with one posterior in the received IQ frame.",
+      "config_ref": "experiments/pamf_phase3_restoration/coordinate_map_detail_trial.py::configuration",
+      "resolved_config_ref": "runs/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01/rows/TF_CoordinateMAPDetail/training/config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Physicalscratchmodel2026092701/detail2026092702;R07builder2026101901/receiver2026101911/augmentation2026101912;sourceorder2026110102/draw1..20+1..10. Mainoriginalfixedobservations/no newRNG.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": "AdamW(weight_decay1e-4,clip1)",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "One stage 30 epochs, 7410 steps, 63000 records/epoch, logical256 micro32. 4 physical+4 detail passes per record and one posterior; original loss and independent clipping.",
+      "output_root": "runs/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01/rows/TF_CoordinateMAPDetail",
+      "log_path": "runs/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01/logs/TF_CoordinateMAPDetail-train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.coordinate_map_detail_trial train --root /home/szu2070436088/2510044040/CV-SincNet --commit bc6bcac3bf8463fb3b2770a0ec2a6115ab322ae1 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --arm TF_CoordinateMAPDetail",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/training/config.json",
+        "rows/<arm>/training/smoke.json",
+        "rows/<arm>/training/smoke_E0.pt PRIVATE",
+        "rows/<arm>/training/data_schedule.npz PRIVATE",
+        "rows/<arm>/training/training.jsonl PRIVATE",
+        "rows/<arm>/training/final.pt PRIVATE",
+        "rows/<arm>/training/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE",
+        "rows/TF_CoordinateMAPDetail/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+      ]
+    }
+  ],
+  "notes": [
+    "Performance primary. Main with original ground Tri-SIG-TIME SSL is the acceptance test.",
+    "Source counterfactual diagnostic shows direction dependence of previous CovarianceDetail. This motivates C4; no Main causal attribution.",
+    "Average full conjugated real operators and scalar noise, moment-match C4 prior, solve once, average inverse-rotated detail outputs. Final IQ is in the original input frame.",
+    "Original frozen F0 continuous feature objective on the final IQ only; F0 does not enter G deployment. Independent source feature-guided comparison.",
+    "Single scratch30. Additional shared branch compute, no added learned parameters. Full train wall and memory to be measured.",
+    "Current Main already exposed historically. No target feedback to train, select or reorder. All predictions fixed before CPU truth scoring."
+  ],
+  "record_type": "managed_run",
+  "registered_at": "2026-11-06T23:33:28+00:00"
+}
