@@ -14,6 +14,7 @@ from experiments.phase1_dura_orthogonal.adaptive_inverse import AdaptiveInverseR
 from experiments.phase1_dura_orthogonal.timevarying_inverse import TimeVaryingInverseRecovery
 from experiments.phase1_dura_orthogonal.dura_timevarying import DuraTimeVaryingRecovery
 from experiments.phase1_dura_orthogonal.noise_gated_dura import NoiseGatedDuraTimeVarying, GATE_LOG10_LOW, GATE_LOG10_HIGH
+from experiments.phase1_dura_orthogonal.moment_relational import MOMENT_WEIGHT, LAGS
 from experiments.phase1_dura_orthogonal.train_source import SCHEMA, TRAIN_EPOCHS, DUAL_DOMAIN_EPOCHS, FIT_SIZE, extract_context
 
 
@@ -35,7 +36,7 @@ def load_fixed(root, source, commit):
             any(state.get(k) != v for k, v in expected.items() if k not in ('status', 'fit_ids', 'epochs'))):
         raise ValueError('Fixed correction checkpoint and provenance required')
     objective = state.get('objective', 'iq')
-    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior') or summary.get('objective', 'iq') != objective:
+    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard') or summary.get('objective', 'iq') != objective:
         raise ValueError('Source objective must match the fixed checkpoint')
     if objective == 'crossview_guard' and any(
             obj.get('source_views_per_record') != 3 or obj.get('crossview_weight') != .1
@@ -46,8 +47,9 @@ def load_fixed(root, source, commit):
     if architecture in ('dual_domain', 'adaptive_inverse', 'timevarying_inverse') and (objective != 'iq' or state.get('DURA_training_reads') != 0
                                           or summary.get('DURA_training_reads') != 0):
         raise ValueError('Direct recovery must be trained without DURA')
-    if architecture in ('dura_timevarying', 'dura_timevarying_gate') and (objective != 'dura_guard' or any(
-            obj.get('DURA_training_reads') != 1 for obj in (summary, state))):
+    if architecture in ('dura_timevarying', 'dura_timevarying_gate') and (
+            objective not in (('dura_guard', 'moment_guard') if architecture == 'dura_timevarying_gate' else ('dura_guard',))
+            or any(obj.get('DURA_training_reads') != 1 for obj in (summary, state))):
         raise ValueError('Matching DURA-guarded source checkpoint required')
     if architecture == 'dura_internal' and (objective not in ('dura_guard', 'sim_action_guard', 'sim_action_fixed_prior')
             or state.get('candidate_dura_trainable') is not True
@@ -65,6 +67,10 @@ def load_fixed(root, source, commit):
             obj.get('noise_gate_low') != GATE_LOG10_LOW or obj.get('noise_gate_high') != GATE_LOG10_HIGH
             for obj in (summary, state)):
         raise ValueError('Matching source-calibrated noise gate required')
+    if objective == 'moment_guard' and (architecture != 'dura_timevarying_gate' or any(
+            obj.get('source_moment_weight') != MOMENT_WEIGHT or obj.get('source_moment_lags') != list(LAGS)
+            for obj in (summary, state))):
+        raise ValueError('Matching source moment objective required')
     if architecture == 'orthogonal':
         model = OrthogonalRecovery(width=state['width'])
     elif architecture == 'dual_domain':
