@@ -66,6 +66,22 @@ def wait_ready(ready, processes, timeout=120):
     return [item[1] for item in received]
 
 
+def collect_results(results, processes, timeout=120):
+    deadline = time.monotonic()+timeout
+    received = []
+    while len(received) < len(processes):
+        if any(p.exitcode not in (None, 0) for p in processes):
+            raise RuntimeError('Parallel worker failed during inference')
+        remaining = deadline-time.monotonic()
+        if remaining <= 0:
+            raise TimeoutError('Parallel workers did not return results')
+        try:
+            received.append(results.get(timeout=min(1., remaining)))
+        except queue.Empty:
+            continue
+    return received
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--root', type=Path, required=True)
@@ -97,17 +113,19 @@ def main():
     processes = [ctx.Process(target=worker, args=(str(args.root), run, commit, selected, ready, start, results))
                  for _, run, commit in MODELS]
     loaded_path = sys.path[:]
+    started_processes = []
     try:
-        sys.path[:] = initial_path
-        for p in processes:
-            p.start()
-    finally:
-        sys.path[:] = loaded_path
-    try:
+        try:
+            sys.path[:] = initial_path
+            for p in processes:
+                p.start()
+                started_processes.append(p)
+        finally:
+            sys.path[:] = loaded_path
         worker_pids = wait_ready(ready, processes)
         started = time.perf_counter()
         start.set()
-        parallel_outputs = [results.get(timeout=120) for _ in processes]
+        parallel_outputs = collect_results(results, processes)
         parallel_seconds = time.perf_counter()-started
         if any(item[0] != 'OK' for item in parallel_outputs):
             raise RuntimeError('Parallel worker failed: '+repr([x[:3] for x in parallel_outputs if x[0] != 'OK']))
@@ -132,7 +150,7 @@ def main():
             model_updates=0, caveat='One source CPU timing, excludes model loading and process startup; includes output serialization and parallel result transfer. Not target-wide equivalence.'))
         print('PARALLEL_SOURCE_BENCHMARK_COMPLETE', flush=True)
     finally:
-        for process in processes:
+        for process in started_processes:
             process.join(timeout=5)
             if process.is_alive():
                 process.terminate()
