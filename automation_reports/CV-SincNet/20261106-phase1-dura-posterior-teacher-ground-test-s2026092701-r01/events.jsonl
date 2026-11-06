@@ -1,3 +1,4 @@
 {"at": "2026-11-06T14:10:11+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-06T14:12:50+00:00", "status": "QUEUED", "note": "Seven-view target prediction follows fixed source training and source-only smoke automatically.", "evidence": ["N607:PID3445652"], "row_id": null}
 {"at": "2026-11-06T14:17:25+00:00", "status": "RUNNING", "note": "Phase1 seven-view prediction started after source training and source-only smoke.", "evidence": ["N607:PID3446895"], "row_id": null}
+{"at": "2026-11-06T20:05:52+00:00", "status": "ANALYZED", "note": "Completed seven-view frozen predictions and independent truth-last scoring; paired DURA and all TX/RX/day groups analyzed.", "evidence": ["analysis.md,ground_summary.json,paired_dura.json,prediction_complete.json"], "row_id": null}

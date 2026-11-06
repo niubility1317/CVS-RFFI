@@ -1,0 +1,140 @@
+{
+  "status": "SOURCE_TRAINED",
+  "commit": "1fba7ab93c151d2679a7db11feb3528b78689863",
+  "fit_ids": 32768,
+  "epochs": 5,
+  "architecture": "direct_student_fir",
+  "candidate_dura_trainable": false,
+  "spectral_freq_bins": null,
+  "source_geometry_weight": null,
+  "source_geometry_temperature": null,
+  "source_geometry_losses": null,
+  "source_moment_weight": null,
+  "source_moment_lags": null,
+  "source_moment_losses": null,
+  "noise_gate_low": null,
+  "noise_gate_high": null,
+  "adaptive_filter_taps": null,
+  "candidate_prior_frozen": false,
+  "source_views_per_record": null,
+  "crossview_weight": null,
+  "source_simulator_action_used": false,
+  "source_simulator_action_weight": null,
+  "source_probe_seed": null,
+  "source_action_response_losses": null,
+  "DURA_training_reads": 1,
+  "exposure": 98304,
+  "counts": {
+    "clean": 14854,
+    "practical_high": 13838,
+    "practical_mid": 13881,
+    "practical_low_suburban": 13989,
+    "practical_high_urban": 13869,
+    "practical_mid_urban": 14078,
+    "practical_low_urban": 13795
+  },
+  "losses": [
+    0.2477079431215922,
+    0.2403656244277954,
+    0.2385614514350891,
+    0.23743659257888794,
+    0.2366215387980143
+  ],
+  "device": "cuda:0",
+  "objective": "wide_student_fir_guard",
+  "prepare_batch": 32,
+  "preparation_seconds": 0.7197751310304739,
+  "transfer_seconds": 0.2628292919835076,
+  "source_groups": {
+    "RX4_6/clean": {
+      "count": 48,
+      "anchor_nmse": 4.5519624109147117e-05,
+      "candidate_nmse": 0.02982400357723236
+    },
+    "RX4_6/practical_high": {
+      "count": 48,
+      "anchor_nmse": 0.005420699715614319,
+      "candidate_nmse": 0.13567297160625458
+    },
+    "RX4_6/practical_mid": {
+      "count": 48,
+      "anchor_nmse": 0.008027964271605015,
+      "candidate_nmse": 0.13844752311706543
+    },
+    "RX4_6/practical_low_suburban": {
+      "count": 48,
+      "anchor_nmse": 0.008718644268810749,
+      "candidate_nmse": 0.12350386381149292
+    },
+    "RX4_6/practical_high_urban": {
+      "count": 48,
+      "anchor_nmse": 0.009094362147152424,
+      "candidate_nmse": 0.14160560071468353
+    },
+    "RX4_6/practical_mid_urban": {
+      "count": 48,
+      "anchor_nmse": 0.02324279583990574,
+      "candidate_nmse": 0.21338653564453125
+    },
+    "RX4_6/practical_low_urban": {
+      "count": 48,
+      "anchor_nmse": 0.03740450367331505,
+      "candidate_nmse": 0.3020128309726715
+    },
+    "RX8/clean": {
+      "count": 48,
+      "anchor_nmse": 3.2866624678717926e-05,
+      "candidate_nmse": 0.026174603030085564
+    },
+    "RX8/practical_high": {
+      "count": 48,
+      "anchor_nmse": 0.015450817532837391,
+      "candidate_nmse": 0.24393434822559357
+    },
+    "RX8/practical_mid": {
+      "count": 48,
+      "anchor_nmse": 0.015403659082949162,
+      "candidate_nmse": 0.22535912692546844
+    },
+    "RX8/practical_low_suburban": {
+      "count": 48,
+      "anchor_nmse": 0.0247579887509346,
+      "candidate_nmse": 0.27046847343444824
+    },
+    "RX8/practical_high_urban": {
+      "count": 48,
+      "anchor_nmse": 0.01530390977859497,
+      "candidate_nmse": 0.2662401497364044
+    },
+    "RX8/practical_mid_urban": {
+      "count": 48,
+      "anchor_nmse": 0.05165611580014229,
+      "candidate_nmse": 0.34002527594566345
+    },
+    "RX8/practical_low_urban": {
+      "count": 48,
+      "anchor_nmse": 0.10067829489707947,
+      "candidate_nmse": 0.4193212687969208
+    }
+  },
+  "TX_labels_read": 0,
+  "F_weights_read": 0,
+  "F_outputs_read": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "DURA_frozen": true,
+  "source_IQ_metrics_not_identity_accuracy": true,
+  "source_context_cache": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-wide-source-source-s2026092701-r01/source_context.pt",
+  "deterministic_algorithms": true,
+  "source_fit_size": 32768,
+  "source_context_cache_written": null,
+  "source_base_student": "20261106-phase1-direct-spectral-wide-distill-source-s2026092701-r01",
+  "source_base_student_commit": "18f348500c4db11a7538cb61f6971cf54a41379e",
+  "source_fir_taps": 17,
+  "source_fir_scale": 0.5,
+  "student_frozen": true,
+  "source_iq_teacher": "dura_v1_R65_E20_4940",
+  "source_iq_teacher_weight": 0.5,
+  "inference_received_iq_only": true,
+  "student_precompute_seconds": 33.674068334978074
+}
