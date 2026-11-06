@@ -21,6 +21,7 @@ from experiments.phase1_dura_orthogonal.moment_relational import moment_relation
 from experiments.phase1_dura_orthogonal.iq_geometry import iq_geometry_loss, GEOMETRY_WEIGHT, GEOMETRY_TEMPERATURE
 from experiments.phase1_dura_orthogonal.joint_ssl_iq import SourceIQEncoder, cross_view_ssl_loss, frozen_feature_loss, SSL_FEATURE_WEIGHT, SSL_OFFDIAGONAL_WEIGHT, SSL_FEATURE_DIM
 from experiments.phase1_dura_orthogonal.multiscale_spectral import DuraMultiscaleSpectral
+from experiments.phase1_dura_orthogonal.source_context_cache import load_cache
 
 FIT_SIZE = 8192
 TRAIN_EPOCHS = 5
@@ -203,9 +204,12 @@ def main():
     parser.add_argument('--device', default='cuda:0')
     parser.add_argument('--prepare-batch', type=int, default=32)
     parser.add_argument('--smoke-fit', type=int, default=64)
+    parser.add_argument('--source-context-cache', type=Path)
     parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard'), default='iq')
     parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale'), default='orthogonal')
     args = parser.parse_args()
+    if args.source_context_cache and (args.smoke or args.architecture in DIRECT_ARCHITECTURES or args.objective in ACTION_OBJECTIVES):
+        raise ValueError('Source context cache applies only to full DURA-context training without action supervision')
     if args.architecture in DIRECT_ARCHITECTURES and args.objective != 'iq':
         raise ValueError('Direct dual-domain model uses received-IQ regularization only')
     if args.architecture == 'dura_timevarying' and args.objective != 'dura_guard':
@@ -244,8 +248,11 @@ def main():
         fit = fit[:args.smoke_fit]
     dura = frozen_dura(args.root, str(device)) if args.architecture not in DIRECT_ARCHITECTURES else None
     preparation_started = time.monotonic()
-    data, counts = prepare(args.root, dura, clean, fresh, fit, str(device), args.prepare_batch,
-                           args.architecture, include_action=args.objective in ACTION_OBJECTIVES)
+    if args.source_context_cache:
+        data, counts = load_cache(args.source_context_cache, fit, args.prepare_batch, str(device))
+    else:
+        data, counts = prepare(args.root, dura, clean, fresh, fit, str(device), args.prepare_batch,
+                               args.architecture, include_action=args.objective in ACTION_OBJECTIVES)
     preparation_seconds = time.monotonic() - preparation_started
     transfer_started = time.monotonic()
     data = tuple(value.to(device) for value in data)
@@ -395,6 +402,7 @@ def main():
         source_ssl_offdiagonal_weight=SSL_OFFDIAGONAL_WEIGHT, source_ssl_feature_dim=SSL_FEATURE_DIM,
         source_ssl_seed=2026110615, source_ssl_parameters=sum(p.numel() for p in aux.parameters()),
         source_ssl_crossview_losses=ssl_crossview_losses, source_ssl_feature_losses=ssl_feature_losses) if aux is not None else {}
+    cache_metadata = dict(source_context_cache=str(args.source_context_cache) if args.source_context_cache else None)
     if args.smoke:
         core.write(args.out/'smoke.json', dict(status='SOURCE_TRAINING_SMOKE_PASS', commit=args.commit,
             fit_ids=len(fit), exposure=len(data[0]), losses=losses, device=str(device),
@@ -421,7 +429,7 @@ def main():
             DURA_training_reads=int(dura is not None), preparation_seconds=preparation_seconds,
             transfer_seconds=transfer_seconds, training_seconds=time.monotonic()-started,
             end_to_end_seconds=time.monotonic()-process_started, TX_labels_read=0, F_weights_read=0,
-            F_outputs_read=0, V_reads=0, target_reads=0, DURA_frozen=True, **ssl_metadata))
+            F_outputs_read=0, V_reads=0, target_reads=0, DURA_frozen=True, **ssl_metadata, **cache_metadata))
         return
     checkpoint = dict(schema=SCHEMA, commit=args.commit, model=model.state_dict(), width=32,
                       epochs=epochs, fit_ids=fit, counts=counts, losses=losses, architecture=args.architecture,
@@ -447,7 +455,7 @@ def main():
                       device=str(device), objective=args.objective, prepare_batch=args.prepare_batch,
                       DURA_training_reads=int(dura is not None),
                       TX_labels_read=0, F_weights_read=0, F_outputs_read=0, V_reads=0,
-                      target_reads=0, DURA_frozen=True, **ssl_metadata)
+                      target_reads=0, DURA_frozen=True, **ssl_metadata, **cache_metadata)
     if aux is not None:
         checkpoint['source_ssl_aux_state'] = aux.state_dict()
     with (args.out/'final.pt').open('xb') as f:
@@ -483,7 +491,7 @@ def main():
         preparation_seconds=preparation_seconds,
         transfer_seconds=transfer_seconds,
         source_groups=groups, TX_labels_read=0, F_weights_read=0, F_outputs_read=0,
-        V_reads=0, target_reads=0, DURA_frozen=True, source_IQ_metrics_not_identity_accuracy=True, **ssl_metadata))
+        V_reads=0, target_reads=0, DURA_frozen=True, source_IQ_metrics_not_identity_accuracy=True, **ssl_metadata, **cache_metadata))
     print('ORTHOGONAL_SOURCE_TRAINED', args.commit, flush=True)
 
 
