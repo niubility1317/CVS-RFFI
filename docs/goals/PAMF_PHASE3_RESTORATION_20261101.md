@@ -510,3 +510,13 @@ VERIFIED：实际代码62cf25c161afe1410ad6250249931389d9210a1c，复用冻结�
 [完整Action一致性报告](../../automation_reports/CV-SincNet/20261102-diagnostic-Restore-CovarianceDetail-sourceV-s2026092701-r01/measurement_consistency_analysis.md)包含全部七景与分组、均值/中位数、逐记录条件统计和证据边界。
 
 下一项独立源验证将检验冻结恢复函数对I/Q坐标旋转的响应：旋转输入后把输出映回原坐标，再与同条原clean/原F0参考比较；不假设F0相位不变，不据Main选择角度或输出。当前尚未实现或启动，不是已证明有效的新恢复版本，也不构成额外发布门槛。
+
+## IQ 坐标诊断已完成
+
+480 条固定源 V 记录覆盖七景和四个 I/Q 坐标方向。恢复输出映回原坐标后交给原 Tri-SIG-TIME SSL。零度 3,360 条 G/F0 判决与 480 条 clean F0 参考复用原产物，新增 10,080 条 G/F0 输出，另有 8 条真实源 L_s 冒烟输出。独立复算覆盖 28 单元与 672 分组，指标差与原缓存变化均为 0。
+
+旋转 180° 后，clean 的 IQ NMSE 从 0.000028 增至 0.188923，低档城区从 0.034477 增至 3.715660。低档城区的原 clean 判决一致率从 91.875% 降到 75.000%。这是同一源波形在可逆坐标变换下的实测差异。判决一致率以 F0 在原 clean 上的输出为参照，真实 TX 未读取。Main 差距的成因与理论信息上界仍待独立证据。
+
+下一版将让物理算子和 IQ 细节路径满足四个直角旋转的等变关系。物理分支在同一坐标合并算子，求解一次高斯后验，再用共享细节分支修复 IQ。按原 L_s/U_s 从零单阶段训练 30 轮，并用同一冻结 Tri-SIG-TIME SSL 测 Main 七景。
+
+[完整诊断](../../automation_reports/CV-SincNet/20261102-diagnostic-Restore-CovarianceDetail-source-coordinate-s2026092701-r01/analysis.md)

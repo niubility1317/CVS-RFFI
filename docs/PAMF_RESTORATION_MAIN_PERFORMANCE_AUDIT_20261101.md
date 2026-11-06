@@ -162,3 +162,11 @@ Main六景为80.140476/77.807738/75.495238/78.213690/69.447024/62.401190%，0/6�
 ## 新版的缓存 Action 一致性检验
 
 [冻结源V缓存Action报告](../automation_reports/CV-SincNet/20261102-diagnostic-Restore-CovarianceDetail-sourceV-s2026092701-r01/measurement_consistency_analysis.md)完成840分组/168条件组，复用保存IQ与Action代理，0新NN/TX/目标/训练。低档城区1731/1800条新版IQ更接近clean，其中1247条观测残差反而增加；相对同条clean的残差能量绝对差距均值从0.344762降至0.232462（−32.573363%）。更小观测残差不等于更好去噪，这项源证据不支持直接加强带噪观测拟合。5项针对性检查通过，252个已公开IQ/Fclean分组差0。缓存Action不是完整硬件Jacobian、标量方差不是完整噪声协方差；没有以此解释全部Main差距或估计信息上限。17候选、各Main结果、默认DURA和完整主目标均保持。
+
+## IQ 坐标诊断已完成
+
+480 条固定源 V 记录覆盖七景和四个 I/Q 坐标方向。恢复输出映回原坐标后交给原 Tri-SIG-TIME SSL。零度 3,360 条 G/F0 判决与 480 条 clean F0 参考复用原产物，新增 10,080 条 G/F0 输出，另有 8 条真实源 L_s 冒烟输出。独立复算覆盖 28 单元与 672 分组，指标差与原缓存变化均为 0。
+
+旋转 180° 后，clean 的 IQ NMSE 从 0.000028 增至 0.188923，低档城区从 0.034477 增至 3.715660。低档城区的原 clean 判决一致率从 91.875% 降到 75.000%。这是同一源波形在可逆坐标变换下的实测差异。判决一致率以 F0 在原 clean 上的输出为参照，真实 TX 未读取。Main 差距的成因与理论信息上界仍待独立证据。
+
+此次仅新增源端证据。Main 已完成候选仍为 17 个。 [完整诊断](../automation_reports/CV-SincNet/20261102-diagnostic-Restore-CovarianceDetail-source-coordinate-s2026092701-r01/analysis.md)
