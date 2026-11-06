@@ -1,0 +1,134 @@
+{
+  "status": "SOURCE_TRAINED",
+  "commit": "bf13e08dd7ca796e129b15baf53aad8660eb89f4",
+  "fit_ids": 32768,
+  "epochs": 5,
+  "architecture": "dura_reversible",
+  "candidate_dura_trainable": false,
+  "spectral_freq_bins": null,
+  "source_geometry_weight": null,
+  "source_geometry_temperature": null,
+  "source_geometry_losses": null,
+  "source_moment_weight": null,
+  "source_moment_lags": null,
+  "source_moment_losses": null,
+  "noise_gate_low": null,
+  "noise_gate_high": null,
+  "adaptive_filter_taps": null,
+  "candidate_prior_frozen": false,
+  "source_views_per_record": null,
+  "crossview_weight": null,
+  "source_simulator_action_used": false,
+  "source_simulator_action_weight": null,
+  "source_probe_seed": null,
+  "source_action_response_losses": null,
+  "DURA_training_reads": 1,
+  "exposure": 98304,
+  "counts": {
+    "clean": 14854,
+    "practical_high": 13838,
+    "practical_mid": 13881,
+    "practical_low_suburban": 13989,
+    "practical_high_urban": 13869,
+    "practical_mid_urban": 14078,
+    "practical_low_urban": 13795
+  },
+  "losses": [
+    0.022566077609856922,
+    0.022555967171986897,
+    0.022547279795010883,
+    0.022538902858893078,
+    0.022529862821102142
+  ],
+  "device": "cuda:0",
+  "objective": "wide_reversible_guard",
+  "prepare_batch": 32,
+  "preparation_seconds": 0.6483352660434321,
+  "transfer_seconds": 0.2453850909951143,
+  "source_groups": {
+    "RX4_6/clean": {
+      "count": 48,
+      "anchor_nmse": 4.5519624109147117e-05,
+      "candidate_nmse": 4.973824616172351e-05
+    },
+    "RX4_6/practical_high": {
+      "count": 48,
+      "anchor_nmse": 0.005420699715614319,
+      "candidate_nmse": 0.0053906491957604885
+    },
+    "RX4_6/practical_mid": {
+      "count": 48,
+      "anchor_nmse": 0.008027964271605015,
+      "candidate_nmse": 0.00798849482089281
+    },
+    "RX4_6/practical_low_suburban": {
+      "count": 48,
+      "anchor_nmse": 0.008718644268810749,
+      "candidate_nmse": 0.008683293126523495
+    },
+    "RX4_6/practical_high_urban": {
+      "count": 48,
+      "anchor_nmse": 0.009094362147152424,
+      "candidate_nmse": 0.009069008752703667
+    },
+    "RX4_6/practical_mid_urban": {
+      "count": 48,
+      "anchor_nmse": 0.02324279583990574,
+      "candidate_nmse": 0.023214563727378845
+    },
+    "RX4_6/practical_low_urban": {
+      "count": 48,
+      "anchor_nmse": 0.03740450367331505,
+      "candidate_nmse": 0.0373675711452961
+    },
+    "RX8/clean": {
+      "count": 48,
+      "anchor_nmse": 3.2866624678717926e-05,
+      "candidate_nmse": 4.413815986481495e-05
+    },
+    "RX8/practical_high": {
+      "count": 48,
+      "anchor_nmse": 0.015450817532837391,
+      "candidate_nmse": 0.015373473055660725
+    },
+    "RX8/practical_mid": {
+      "count": 48,
+      "anchor_nmse": 0.015403659082949162,
+      "candidate_nmse": 0.015330218710005283
+    },
+    "RX8/practical_low_suburban": {
+      "count": 48,
+      "anchor_nmse": 0.0247579887509346,
+      "candidate_nmse": 0.02468339540064335
+    },
+    "RX8/practical_high_urban": {
+      "count": 48,
+      "anchor_nmse": 0.01530390977859497,
+      "candidate_nmse": 0.015236844308674335
+    },
+    "RX8/practical_mid_urban": {
+      "count": 48,
+      "anchor_nmse": 0.05165611580014229,
+      "candidate_nmse": 0.05155326798558235
+    },
+    "RX8/practical_low_urban": {
+      "count": 48,
+      "anchor_nmse": 0.10067829489707947,
+      "candidate_nmse": 0.10060954093933105
+    }
+  },
+  "TX_labels_read": 0,
+  "F_weights_read": 0,
+  "F_outputs_read": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "DURA_frozen": true,
+  "source_IQ_metrics_not_identity_accuracy": true,
+  "source_context_cache": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-wide-source-source-s2026092701-r01/source_context.pt",
+  "deterministic_algorithms": true,
+  "source_fit_size": 32768,
+  "source_context_cache_written": null,
+  "reversible_couplings": 4,
+  "reversible_type": "additive_temporal_even_odd",
+  "reversible_inverse_source_smoke": true
+}

@@ -311,3 +311,15 @@ N607 GPU 0 单一 owner 队列已登记并运行，等待满足既定显存和�
 固定同一物理源记录的三个模拟视图，以三个冻结 DURA 源输出的均值作为该记录的训练教师；从头训练 117062 参数独立时频学生，目标为 clean IQ 误差加 0.5 倍教师 IQ 误差。源端逐元素验证三个 clean IQ 的记录顺序，训练不读取 F、TX 标签、V 或目标；部署只使用单条接收 IQ，不运行 DURA 或教师。模型与宽源单视图教师学生使用相同 32768 源 ID、三视图和 20 轮预算，以区分教师设计；不假设三个源视图独立。
 
 本机真实源 IQ 六次更新的 GPU 技术检查通过；N607 GPU 1 单 owner 队列已运行，空位满足后执行真实 checkpoint smoke、固定 20 轮训练及七景 truth-last。[训练登记](../automation_reports/CV-SincNet/20261107-phase1-direct-multiview-distill-source-s2026092701-r01/experiment.json)、[技术检查](../automation_reports/CV-SincNet/20261107-phase1-direct-multiview-distill-source-s2026092701-r01/technical_smoke.md)。可逆耦合候选已在 N607 GPU 0 通过真实 checkpoint 源训练 smoke 并进入正式源训练；两者尚无正式识别结果。
+
+## DURA 可逆耦合源训练完成
+
+N607 GPU 0 对 32768 个合法源 ID × 三视图完成五轮训练，优化日志 384.6 秒；真实 checkpoint smoke 和训练后源样本逆变换检查通过。672 条已探索源 pilot 上，12/12 个受损组平均 IQ NMSE 略低于 DURA，两个 clean 组略高；这些不是身份准确率。冻结后七景预测已开始。[源结果](../automation_reports/CV-SincNet/20261107-phase1-dura-reversible-source-s2026092701-r01/analysis.md)。
+
+## DURA 频域回归源拟合完成
+
+N607 GPU 2 对 32768 源 ID × 三视图完成固定四组复岭解析拟合，拟合计时 4.236 秒；真实 DURA checkpoint 与 112 条源预测 smoke 通过。已探索源 pilot 的 12/12 个受损组平均 IQ NMSE 低于 DURA，两个 clean 组高于 DURA；完整七景预测运行中，波形误差不等于身份准确率。[源结果](../automation_reports/CV-SincNet/20261107-phase1-dura-frequency-source-s2026092701-r01/analysis.md)。
+
+## 源多视图教师目标分析
+
+在当前 clean IQ + 0.5 教师 IQ 二次损失中，无约束最优目标等价于 `(clean+0.5 teacher)/1.5`。由固定源三视图误差交叉项推得，使用另外两个视图的教师 NMSE 均值 0.014773，使用三个视图的均值 0.012170；按目标权重相对 clean 的有效目标 NMSE 分别 0.001641、0.001352。两视图教师与当前 DURA 误差的有效目标归一化平均内积 0.002322，三视图教师为 0.004057。这是源样本代数统计，不能推断目标身份效果；已登记的三视图学生配置不因该分析改变。[详情](../automation_reports/CV-SincNet/20261107-phase1-dura-multiview-consistency-source-s2026092701-r01/analysis.md)。

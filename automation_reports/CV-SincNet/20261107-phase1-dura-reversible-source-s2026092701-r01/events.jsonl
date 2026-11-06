@@ -1,3 +1,4 @@
 {"at": "2026-11-06T20:38:07+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-06T20:40:24+00:00", "status": "QUEUED", "note": "GPU0 capacity queue verified; real-checkpoint smoke and source training follow availability.", "evidence": ["N607:PID3678099,queue.log"], "row_id": null}
 {"at": "2026-11-06T21:05:13+00:00", "status": "RUNNING", "note": "GPU0 real-checkpoint source smoke passed; source training process verified live.", "evidence": ["N607:PID3692564,PID3692718,source_smoke.log"], "row_id": null}
+{"at": "2026-11-06T21:10:42+00:00", "status": "TRAINING_COMPLETE", "note": "Fixed five-epoch GPU source training and source inverse check completed.", "evidence": ["analysis.md,source_summary.json,training_smoke.json"], "row_id": null}

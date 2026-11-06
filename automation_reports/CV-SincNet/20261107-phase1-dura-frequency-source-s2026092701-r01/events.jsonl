@@ -1,3 +1,4 @@
 {"at": "2026-11-06T20:07:41+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-06T20:13:10+00:00", "status": "QUEUED", "note": "GPU2 queue verified; source smoke and fit will start when capacity permits.", "evidence": ["N607:PID3657917,queue.log"], "row_id": null}
 {"at": "2026-11-06T20:23:01+00:00", "status": "QUEUED", "note": "Full-source local GPU fit technical smoke and 192-view CPU/GPU tolerance check passed; formal N607 fit remains queued.", "evidence": ["technical_smoke.md,N607:PID3657917,queue.log"], "row_id": null}
+{"at": "2026-11-06T21:11:01+00:00", "status": "TRAINING_COMPLETE", "note": "Fixed four-bin source-only GPU closed-form fit and real-checkpoint smoke complete.", "evidence": ["analysis.md,source_summary.json,training_smoke.json"], "row_id": null}

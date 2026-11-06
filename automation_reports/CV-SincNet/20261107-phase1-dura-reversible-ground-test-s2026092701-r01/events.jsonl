@@ -1,3 +1,4 @@
 {"at": "2026-11-06T20:38:17+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-06T20:40:34+00:00", "status": "QUEUED", "note": "Automatic seven-view prediction and truth-last scoring follow source training.", "evidence": ["N607:PID3678099,queue.log"], "row_id": null}
 {"at": "2026-11-06T21:05:23+00:00", "status": "QUEUED", "note": "Seven-view ground prediction follows ongoing source training.", "evidence": ["N607:PID3692564,status.json"], "row_id": null}
+{"at": "2026-11-06T21:10:52+00:00", "status": "RUNNING", "note": "Seven-view prediction started after source-only training and frozen checkpoint smoke.", "evidence": ["N607:PID3697853,ground_predict.log"], "row_id": null}

@@ -1,0 +1,109 @@
+{
+  "status": "SOURCE_TRAINED",
+  "fit_ids": 32768,
+  "epochs": 0,
+  "counts": {
+    "clean": 14854,
+    "practical_high": 13838,
+    "practical_mid": 13881,
+    "practical_low_suburban": 13989,
+    "practical_high_urban": 13869,
+    "practical_mid_urban": 14078,
+    "practical_low_urban": 13795
+  },
+  "source_groups": {
+    "RX4_6/clean": {
+      "count": 48,
+      "anchor_nmse": 4.5519624109147117e-05,
+      "candidate_nmse": 4.901151987724006e-05
+    },
+    "RX4_6/practical_high": {
+      "count": 48,
+      "anchor_nmse": 0.005420699715614319,
+      "candidate_nmse": 0.005291020963340998
+    },
+    "RX4_6/practical_mid": {
+      "count": 48,
+      "anchor_nmse": 0.008027964271605015,
+      "candidate_nmse": 0.007836305536329746
+    },
+    "RX4_6/practical_low_suburban": {
+      "count": 48,
+      "anchor_nmse": 0.008718644268810749,
+      "candidate_nmse": 0.008642386645078659
+    },
+    "RX4_6/practical_high_urban": {
+      "count": 48,
+      "anchor_nmse": 0.009094362147152424,
+      "candidate_nmse": 0.009000335820019245
+    },
+    "RX4_6/practical_mid_urban": {
+      "count": 48,
+      "anchor_nmse": 0.02324279583990574,
+      "candidate_nmse": 0.023109814152121544
+    },
+    "RX4_6/practical_low_urban": {
+      "count": 48,
+      "anchor_nmse": 0.03740450367331505,
+      "candidate_nmse": 0.037361953407526016
+    },
+    "RX8/clean": {
+      "count": 48,
+      "anchor_nmse": 3.2866624678717926e-05,
+      "candidate_nmse": 4.571806130115874e-05
+    },
+    "RX8/practical_high": {
+      "count": 48,
+      "anchor_nmse": 0.015450817532837391,
+      "candidate_nmse": 0.01520788948982954
+    },
+    "RX8/practical_mid": {
+      "count": 48,
+      "anchor_nmse": 0.015403659082949162,
+      "candidate_nmse": 0.015243127942085266
+    },
+    "RX8/practical_low_suburban": {
+      "count": 48,
+      "anchor_nmse": 0.0247579887509346,
+      "candidate_nmse": 0.024525290355086327
+    },
+    "RX8/practical_high_urban": {
+      "count": 48,
+      "anchor_nmse": 0.01530390977859497,
+      "candidate_nmse": 0.015141951851546764
+    },
+    "RX8/practical_mid_urban": {
+      "count": 48,
+      "anchor_nmse": 0.05165611580014229,
+      "candidate_nmse": 0.051040202379226685
+    },
+    "RX8/practical_low_urban": {
+      "count": 48,
+      "anchor_nmse": 0.10067829489707947,
+      "candidate_nmse": 0.10001916438341141
+    }
+  },
+  "source_IQ_metrics_not_identity_accuracy": true,
+  "commit": "d15c2dba7ff5a1f4abc79d7b3f2c84d285aa6da8",
+  "objective": "wide_frequency_regression",
+  "architecture": "dura_frequency_regression",
+  "source_fit_size": 32768,
+  "DURA_training_reads": 1,
+  "DURA_frozen": true,
+  "source_frequency_ridge": 0.001,
+  "source_noise_bins": 4,
+  "source_bin_metric": "variance_over_received_power",
+  "source_fit_method": "closed_form_complex_ridge",
+  "source_bin_counts": [
+    24576,
+    24576,
+    24576,
+    24576
+  ],
+  "source_fit_seconds": 4.236327285994776,
+  "TX_labels_read": 0,
+  "F_weights_read": 0,
+  "F_outputs_read": 0,
+  "V_reads": 0,
+  "target_reads": 0
+}

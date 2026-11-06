@@ -1,0 +1,14 @@
+{
+  "source": "result.json",
+  "teacher_weight": 0.5,
+  "per_record_effective_target": "(clean + 0.5*teacher)/1.5",
+  "single_view_teacher_nmse": 0.02258118676642577,
+  "three_view_teacher_nmse": 0.012170068919658661,
+  "leave_one_out_two_view_teacher_nmse": 0.014772848536570867,
+  "single_effective_target_nmse": 0.0025090207518250855,
+  "three_view_effective_target_nmse": 0.0013522298799620734,
+  "leave_one_out_effective_target_nmse": 0.0016414276151745409,
+  "three_view_effective_target_cross_current_dura_error": 0.00405668963988622,
+  "leave_one_out_effective_target_cross_current_dura_error": 0.0023215034355719886,
+  "scope": "Means across fixed source records and view choices; clean normalized signed cross products; no independence or identity claim."
+}
