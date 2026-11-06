@@ -1,0 +1,3 @@
+{"at": "2026-11-06T14:45:36+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-06T14:47:36+00:00", "status": "RUNNING", "note": "GPU7 source training using cached source context", "evidence": ["N607 controller PID 3464190 source PID 3464269; real GPU smoke passed"], "row_id": null}
+{"at": "2026-11-06T14:50:10+00:00", "status": "TRAINING_COMPLETE", "note": "GPU optimization 93.3 seconds; no F/TX/V/target reads; source cache 0.224 seconds", "evidence": ["N607 SOURCE_TRAINED summary; 8192 fit IDs, five epochs; controller PID 3464190"], "row_id": null}
