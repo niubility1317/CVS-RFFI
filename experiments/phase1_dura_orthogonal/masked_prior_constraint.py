@@ -30,11 +30,11 @@ def load_prior(root, fit, device, *, smoke=False):
     return model.eval().requires_grad_(False)
 
 
-def visible_pair(output, clean, starts, *, starts_generated_in_range=False):
+def visible_pair(output, clean, starts):
     from experiments.phase1_dura_orthogonal.source_masked_prior import SPAN
     if output.shape != clean.shape or output.ndim != 3 or output.shape[1:] != (2, 256) or starts.shape != (len(output),):
         raise ValueError('Matching source output and clean IQ required')
-    if not starts_generated_in_range and bool(((starts < 1) | (starts + SPAN >= 256)).any()):
+    if bool(((starts < 1) | (starts + SPAN >= 256)).any()):
         raise ValueError('Mask requires both adjacent samples')
     positions = torch.arange(256, device=output.device)[None, :]
     mask = (positions >= starts[:, None]) & (positions < starts[:, None] + SPAN)
@@ -47,10 +47,9 @@ def visible_pair(output, clean, starts, *, starts_generated_in_range=False):
     return observed, scale, clean_observed, clean_scale, mask
 
 
-def masked_prior_loss(prior, output, clean, starts, *, starts_generated_in_range=False):
+def masked_prior_loss(prior, output, clean, starts):
     from experiments.phase1_dura_orthogonal.source_masked_prior import SPAN
-    observed, scale, clean_observed, clean_scale, mask = visible_pair(
-        output, clean, starts, starts_generated_in_range=starts_generated_in_range)
+    observed, scale, clean_observed, clean_scale, mask = visible_pair(output, clean, starts)
     with torch.no_grad():
         target = prior(clean_observed, mask, clean_scale)
     prediction = prior(observed, mask, scale)
@@ -58,10 +57,9 @@ def masked_prior_loss(prior, output, clean, starts, *, starts_generated_in_range
     return (((prediction-target).square()*mask[:, None]).sum((1, 2))/(2*SPAN*energy)).mean()
 
 
-def temporal_prior_loss(prior, output, clean, starts, *, starts_generated_in_range=False):
+def temporal_prior_loss(prior, output, clean, starts):
     """Compare time-centered prior activations at fixed 8- and 32-bin scales."""
-    observed, scale, clean_observed, clean_scale, mask = visible_pair(
-        output, clean, starts, starts_generated_in_range=starts_generated_in_range)
+    observed, scale, clean_observed, clean_scale, mask = visible_pair(output, clean, starts)
 
     def encode(value, norm):
         h = F.silu(prior.entry(torch.cat((value/norm, mask[:, None].to(value.dtype)), 1)))

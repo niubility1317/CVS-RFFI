@@ -69,20 +69,3 @@ def test_temporal_prior_loss_preserves_teacher_and_backpropagates():
     loss.backward()
     assert torch.isfinite(loss) and loss > 0 and output.grad.abs().sum() > 0
     assert all(p.grad is None and not p.requires_grad for p in prior.parameters())
-
-
-@pytest.mark.parametrize('loss_fn', [masked_prior_loss, temporal_prior_loss])
-def test_generated_mask_fast_path_matches_checked_loss_and_gradient(loss_fn):
-    torch.manual_seed(21)
-    prior = MaskedIQPrior().eval().requires_grad_(False)
-    clean = torch.randn(3, 2, 256)
-    output = (clean + .1 * torch.randn_like(clean)).requires_grad_()
-    starts = torch.tensor([1, 100, 223])
-    checked = loss_fn(prior, output, clean, starts)
-    checked_gradient = torch.autograd.grad(checked, output)[0]
-    fast = loss_fn(prior, output, clean, starts, starts_generated_in_range=True)
-    fast_gradient = torch.autograd.grad(fast, output)[0]
-    assert torch.equal(checked, fast)
-    assert torch.equal(checked_gradient, fast_gradient)
-    with pytest.raises(ValueError, match='Mask requires'):
-        loss_fn(prior, output, clean, torch.tensor([0, 100, 223]))
