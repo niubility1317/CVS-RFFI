@@ -1,0 +1,144 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-dura-multiview-consistency-source-s2026092701-r01",
+  "group_id": "phase1-dura-multiview-consistency-source",
+  "display_name": "同记录三视图源恢复误差一致性",
+  "description": "测量同一源记录三个合法模拟视图的 DURA 误差交叉项及三视图平均源 IQ 误差。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "F-free",
+    "multiview-consistency",
+    "gpu"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261106-phase1-dura-wide-source-source-s2026092701-r01",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User authorizes ongoing Phase1 F-free restoration research, source-only diagnostics and GPU use.",
+  "code": {
+    "commit": "4d4a64eaa48cfed948dfa4da063d2a7c3887203d",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "Local RTX 5070 Ti GPU0 FP32 TF32off, fixed source context",
+    "cwd": "E:/type10-7/github_publish/CVS-RFFI-repo"
+  },
+  "data": {
+    "dataset": "Phase1 Main split permitted source L_s/U_s",
+    "version": "fixed deterministic source context epochs21/22/23",
+    "representation": "32768 source fit IDs x three aligned simulated source received/DURA/clean IQ views",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "One ordered 32768-source-ID cache, corresponding three views verified by identical clean tensors",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ only, TX hidden",
+      "U_s": "source IQ only, TX hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing fixed source fit data, no independent or target sample",
+    "support_query_ref": null,
+    "leo_config_ref": "pre-existing legal source simulation epochs 21/22/23"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source IQ error consistency and a nondeployable three-view reference only; not identity accuracy or a general bound"
+  },
+  "checkpoint": {
+    "initialization": "Fixed source-only DURA context cache; no model updates",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Fixed DURA source-only context, 32768 distinct source IDs, three matching clean IQ views, no F/TX/V/target",
+    "provenance_verdict": "Frozen DURA source context, no target ancestry",
+    "selection_rule": "All fixed source records; no checkpoint selection"
+  },
+  "execution": {
+    "host": "local Windows",
+    "launch_owner": "this conversation",
+    "gpu_policy": "Local GPU0 source-only diagnostic",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:/type10-7/.codex_tmp/20261107-phase1-dura-multiview-consistency-source-s2026092701-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -X utf8 -u -m experiments.phase1_dura_orthogonal.source_multiview_consistency --cache E:/type10-7/.codex_tmp/masked_full_context.pt --out E:/type10-7/.codex_tmp/20261107-phase1-dura-multiview-consistency-source-s2026092701-r01 --commit 4d4a64eaa48cfed948dfa4da063d2a7c3887203d",
+    "stop_rule": "Stop on source contract mismatch, view misalignment or nonfinite calculation"
+  },
+  "expected_artifacts": [
+    "result.json: source view and three-view average IQ errors and signed error cross terms"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "per-view IQ NMSE",
+      "three-view mean IQ NMSE",
+      "mean pairwise signed cross-error",
+      "per-record improvement counts"
+    ],
+    "dimensions": [
+      "32768 source physical records",
+      "all and four source observed-noise quartiles"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "source-multiview-consistency",
+      "method": "Paired fixed DURA source-view error decomposition and three-view average",
+      "purpose": "Assess whether single-view source recovery errors share bias or can be reduced by source-only multiview teacher construction",
+      "config_ref": "experiments/phase1_dura_orthogonal/source_multiview_consistency.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": 2026110711,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Fixed original source fit IDs and three existing views; no new randomness or model training",
+      "k": null,
+      "scenario": "64 fixed source training IDs, three source simulation views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "32768 fixed source records x three views; no target query or model updates",
+      "output_root": "E:/type10-7/.codex_tmp/20261107-phase1-dura-multiview-consistency-source-s2026092701-r01",
+      "log_path": "E:/type10-7/.codex_tmp/20261107-phase1-dura-multiview-consistency-source-s2026092701-r01.log",
+      "command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -X utf8 -u -m experiments.phase1_dura_orthogonal.source_multiview_consistency --cache E:/type10-7/.codex_tmp/masked_full_context.pt --out E:/type10-7/.codex_tmp/20261107-phase1-dura-multiview-consistency-source-s2026092701-r01 --commit 4d4a64eaa48cfed948dfa4da063d2a7c3887203d",
+      "expected_artifacts": [
+        "result.json: source view and three-view average IQ errors and signed error cross terms"
+      ]
+    }
+  ],
+  "notes": [
+    "The three source views are matched by physical ID and verified to have identical clean IQ; no assumed statistical independence.",
+    "Averaging multiple views is diagnostic only; Phase1 target inference has one observation.",
+    "No F, TX labels, V or target data; IQ error does not establish identity recognition performance."
+  ],
+  "registered_at": "2026-11-06T20:57:14+00:00"
+}

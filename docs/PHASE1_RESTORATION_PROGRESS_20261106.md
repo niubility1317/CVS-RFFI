@@ -301,3 +301,13 @@ N607 GPU 0 单一 owner 队列已登记并运行，等待满足既定显存和�
 ## 扩大源数据覆盖七景结果
 
 七景每景 168000 条、冻结 Tri-SIG-TIME SSL、全部预测后独立 truth-last；clean 和六景准确率依次为 86.6155%、82.8935%、81.5214%、79.8381%、81.5673%、74.1815%、67.3500%。六个受损场景相对 DURA 分别为 -1.4500、-1.4946、-1.4839、-1.4821、-1.5244、-1.4512 个百分点，全部下降；分别有 0/6、0/6 景达到 3 个百分点和相对 3% 的两种口径。训练使用源 IQ、不读取 F/TX/V/目标；与 8192 条源记录五轮对照的数据曝光和更新次数不同。[完整逐组与配对](../automation_reports/CV-SincNet/20261106-phase1-dura-wide-source-ground-test-s2026092701-r01/analysis.md)。
+
+## 源三视图恢复误差分解
+
+固定 32768 条合法源记录，每条三个模拟视图的 clean IQ 逐元素对齐；DURA 单视图平均 IQ NMSE 0.022581，三输出平均为 0.012170，相对下降 46.11%。但三输出平均严格优于三个单视图各自输出的仅 5136/32768 条；不同源视图不假设独立。三视图平均只可作为源训练/诊断，目标推理只有单条输入，IQ 误差不是身份成绩。[逐组结果](../automation_reports/CV-SincNet/20261107-phase1-dura-multiview-consistency-source-s2026092701-r01/analysis.md)。
+
+## 独立多视图教师学生候选
+
+固定同一物理源记录的三个模拟视图，以三个冻结 DURA 源输出的均值作为该记录的训练教师；从头训练 117062 参数独立时频学生，目标为 clean IQ 误差加 0.5 倍教师 IQ 误差。源端逐元素验证三个 clean IQ 的记录顺序，训练不读取 F、TX 标签、V 或目标；部署只使用单条接收 IQ，不运行 DURA 或教师。模型与宽源单视图教师学生使用相同 32768 源 ID、三视图和 20 轮预算，以区分教师设计；不假设三个源视图独立。
+
+本机真实源 IQ 六次更新的 GPU 技术检查通过；N607 GPU 1 单 owner 队列已运行，空位满足后执行真实 checkpoint smoke、固定 20 轮训练及七景 truth-last。[训练登记](../automation_reports/CV-SincNet/20261107-phase1-direct-multiview-distill-source-s2026092701-r01/experiment.json)、[技术检查](../automation_reports/CV-SincNet/20261107-phase1-direct-multiview-distill-source-s2026092701-r01/technical_smoke.md)。可逆耦合候选已在 N607 GPU 0 通过真实 checkpoint 源训练 smoke 并进入正式源训练；两者尚无正式识别结果。

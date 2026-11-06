@@ -1,0 +1,110 @@
+{
+  "status": "SOURCE_MULTIVIEW_CONSISTENCY_COMPLETE",
+  "commit": "4d4a64eaa48cfed948dfa4da063d2a7c3887203d",
+  "records": 32768,
+  "views": 3,
+  "metric_order": [
+    "view21_nmse",
+    "view22_nmse",
+    "view23_nmse",
+    "mean_three_nmse",
+    "mean_pair_cross_error"
+  ],
+  "noise_group_metric": "source-record mean of estimated variance / received power",
+  "noise_cutoffs": [
+    0.004269641358405352,
+    0.0082877641543746,
+    0.0164229366928339
+  ],
+  "groups": {
+    "all": {
+      "records": 32768,
+      "mean_metrics": [
+        0.022374358028173447,
+        0.022764902561903,
+        0.02260429970920086,
+        0.012170068919658661,
+        0.006964510306715965
+      ],
+      "ensemble_better_than_each": [
+        19726,
+        19822,
+        19817
+      ],
+      "ensemble_better_than_all": 5136
+    },
+    "observed_noise_q1": {
+      "records": 8192,
+      "mean_metrics": [
+        0.008942268788814545,
+        0.008913309313356876,
+        0.009033279493451118,
+        0.00605566194280982,
+        0.004602017346769571
+      ],
+      "ensemble_better_than_each": [
+        5403,
+        5466,
+        5367
+      ],
+      "ensemble_better_than_all": 1502
+    },
+    "observed_noise_q2": {
+      "records": 8192,
+      "mean_metrics": [
+        0.00838574580848217,
+        0.009349888190627098,
+        0.008382303640246391,
+        0.0058535439893603325,
+        0.004427327308803797
+      ],
+      "ensemble_better_than_each": [
+        6224,
+        6174,
+        6197
+      ],
+      "ensemble_better_than_all": 2956
+    },
+    "observed_noise_q3": {
+      "records": 8192,
+      "mean_metrics": [
+        0.025158148258924484,
+        0.026283029466867447,
+        0.026691030710935593,
+        0.012489594519138336,
+        0.00571235828101635
+      ],
+      "ensemble_better_than_each": [
+        3885,
+        3936,
+        4006
+      ],
+      "ensemble_better_than_all": 460
+    },
+    "observed_noise_q4": {
+      "records": 8192,
+      "mean_metrics": [
+        0.04701126366853714,
+        0.0465133860707283,
+        0.046310584992170334,
+        0.024281471967697144,
+        0.013116338290274143
+      ],
+      "ensemble_better_than_each": [
+        4214,
+        4246,
+        4247
+      ],
+      "ensemble_better_than_all": 218
+    }
+  },
+  "elapsed_seconds": 0.5309999999590218,
+  "device": "NVIDIA GeForce RTX 5070 Ti",
+  "TX_labels_read": 0,
+  "F_weights_read": 0,
+  "F_outputs_read": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "model_updates": 0,
+  "caveat": "Each ensemble uses three simulated source views of the same clean record; Phase1 deployment has one view. IQ NMSE is not identity accuracy or a universal bound."
+}
