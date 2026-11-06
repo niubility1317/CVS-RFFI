@@ -1,0 +1,145 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-dura-deterministic-training-parity-s2026092701-r01",
+  "group_id": "phase1-dura-deterministic-training-parity",
+  "display_name": "确定性 GPU 源域缓存与现算训练对照",
+  "description": "在确定性 CUDA 算法下以匹配模式的源缓存或重新计算输入，比较同模型五轮训练的权重、损失和耗时。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "F-free",
+    "dura",
+    "gpu-training",
+    "cache-parity"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户继续授权研发星地恢复网络；仅源域合法 IQ 诊断，不重启已停止任务。",
+  "code": {
+    "commit": "11badbe21790bc9b8db712287a97c75866e34d9f",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU7, CUDA_VISIBLE_DEVICES=7, FP32 TF32 off, batch 32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261106-phase1-dura-deterministic-training-parity-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 with fixed augmented epochs 21/22/23",
+    "representation": "source received and clean IQ",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "8192 fixed eligible L_s/U_s source fit IDs excluding RX4/6/8 day3 and the 672 source pilot IDs",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "full source input tensor exact equality only; no target or identity metric",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed source epochs21/22/23"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Technical source training parity and timing only; no target predictions and no new recovery variant"
+  },
+  "checkpoint": {
+    "initialization": "Identical DURA v1.0 and same initialized multiscale correction, seed 2026110612, for both technical replicates",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Original DURA source provenance verified by frozen_dura",
+    "provenance_verdict": "Original source-only DURA and same-contract source-only candidate, subject to completion check",
+    "selection_rule": "Fixed final epoch 5 for both; no checkpoint selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "Physical GPU7, one this-run worker, at most three total compute workers; preserve others",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-deterministic-training-parity-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-deterministic-training-parity-s2026092701-r01-launcher.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261106-phase1-dura-deterministic-training-parity-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.benchmark_cache_training --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-deterministic-training-parity-s2026092701-r01 --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-deterministic-cache-s2026092701-r01/source_context.pt --commit 11badbe21790bc9b8db712287a97c75866e34d9f --deterministic",
+    "stop_rule": "Stop on source role mismatch, source smoke failure, nonfinite output or any target/F/TX read; preserve stopped group and other owners."
+  },
+  "expected_artifacts": [
+    "fresh/final.pt and cached/final.pt: private source training checkpoints",
+    "result.json: exact weight, loss and source group comparison plus timings"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "full model parameter bitwise equality",
+      "source loss and source group equality",
+      "full training time"
+    ],
+    "dimensions": [
+      "fresh and cached full five-epoch source training"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; source IQ only"
+  },
+  "rows": [
+    {
+      "row_id": "fixed-model-fresh-versus-cached",
+      "method": "Same DURA multiscale correction trained with deterministic CUDA using freshly computed versus deterministic cached source contexts",
+      "purpose": "Verify exact checkpoint parity under deterministic execution and measure full training speed",
+      "config_ref": "experiments/phase1_dura_orthogonal/benchmark_cache_training.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Fixed model initialization 2026110612, source fit 2026110611, optimizer order 2026110613; DURA seed 2026092701.",
+      "k": null,
+      "scenario": "source simulated views 21, 22, 23",
+      "optimizer": "AdamW weight decay 0.001",
+      "lr": 0.0003,
+      "epochs": 5,
+      "fl_rounds": null,
+      "budget_ref": "Two fixed 5-epoch source training replicates, 8192 source IDs x 3 views, batch 32",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-deterministic-training-parity-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-deterministic-training-parity-s2026092701-r01-launcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.benchmark_cache_training --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-deterministic-training-parity-s2026092701-r01 --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-deterministic-cache-s2026092701-r01/source_context.pt --commit 11badbe21790bc9b8db712287a97c75866e34d9f --deterministic",
+      "expected_artifacts": [
+        "fresh/final.pt and cached/final.pt: private source training checkpoints",
+        "result.json: exact weight, loss and source group comparison plus timings"
+      ]
+    }
+  ],
+  "notes": [
+    "The deterministic cache must be built and fully recomputed under the same deterministic setting before this run.",
+    "First run a real-checkpoint no-query source smoke with deterministic algorithms; fail visibly on unsupported CUDA operations.",
+    "No TX labels, F weights/outputs, V, target IQ or truth.",
+    "Deterministic execution may change numerical behavior and timing relative to prior nondeterministic trained models; no target predictions in this technical comparison."
+  ],
+  "registered_at": "2026-11-06T11:43:11+00:00"
+}

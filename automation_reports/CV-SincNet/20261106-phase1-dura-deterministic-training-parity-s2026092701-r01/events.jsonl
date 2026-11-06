@@ -1,0 +1,3 @@
+{"at": "2026-11-06T11:43:11+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-06T11:45:19+00:00", "status": "RUNNING", "note": "Deterministic GPU real-checkpoint smoke then sequential full training comparison started.", "evidence": ["N607:PID3372025"], "row_id": null}
+{"at": "2026-11-06T11:46:09+00:00", "status": "FAILED", "note": "Real-checkpoint smoke failed: CUDA linear interpolation backward has no deterministic implementation; full training did not start.", "evidence": ["N607:runs/20261106-phase1-dura-deterministic-training-parity-s2026092701-r01/smoke.log"], "row_id": null}
