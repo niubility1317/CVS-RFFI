@@ -67,7 +67,7 @@
     "claim_scope": "Source teacher target parity and local timing only; no model training, target prediction or identity claims"
   },
   "checkpoint": {
-    "initialization": "Existing legal source masked prior and recreated DURA correction initial state",
+    "initialization": "Fixed legal source prior; cached DURA context and source initialization metadata checked by existing loader, but no model optimization",
     "sources": [
       "20261107-phase1-masked-iq-prior-source-s2026092701-r01",
       "20261106-phase1-dura-wide-source-source-s2026092701-r01"
@@ -106,27 +106,27 @@
       "row_id": "teacher-batch-parity",
       "method": "Frozen masked teacher batch 32 versus batch 256",
       "purpose": "Test source-teacher precompute exactness and speed before considering training integration",
-      "config_ref": "experiments/phase1_dura_orthogonal/benchmark_fused_gradient_guard.py",
+      "config_ref": "experiments/phase1_dura_orthogonal/benchmark_teacher_precompute.py",
       "resolved_config_ref": null,
       "data_overrides": {},
       "seeds": {
-        "model": 2026110612,
+        "model": 2026110707,
         "split": 392005,
         "data": 2026110611,
         "augmentation": 2026110711,
         "support": null,
-        "evaluation": 2026092701
+        "evaluation": null
       },
-      "seed_notes": "Model 2026110612, order 2026110613, mask 2026110711, fixed source prior 2026110707",
+      "seed_notes": "Frozen source prior seed 2026110707, order 2026110613, mask 2026110711; no optimizer",
       "k": null,
-      "scenario": "64 fixed source training IDs, three source simulation views",
-      "optimizer": "AdamW weight decay 0.001",
-      "lr": 0.0003,
+      "scenario": "512 fixed source IDs, three source simulation views",
+      "optimizer": null,
+      "lr": null,
       "epochs": 5,
       "fl_rounds": null,
       "budget_ref": "512 source IDs x 3 views x 5 epochs x 4 forward passes",
       "output_root": "E:/type10-7/.codex_tmp/20261107-phase1-masked-teacher-batch-parity-source-s2026092701-r01",
-      "log_path": "E:/type10-7/.codex_tmp/20261107-phase1-masked-teacher-batch-parity-source-s2026092701-r01-launcher.log",
+      "log_path": null,
       "command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -X utf8 -u -m experiments.phase1_dura_orthogonal.benchmark_teacher_precompute --cache E:/type10-7/.codex_tmp/masked_full_context.pt --teacher E:/type10-7/.codex_tmp/masked_source_prior_final.pt --initial-state E:/type10-7/.codex_tmp/masked_full_initial.pt --initial-commit 114a169dd94c358031c0aa9237df884d41f2678e --commit fb6a1930ba42873c7e3430c0cba8812626dc9b51 --out E:/type10-7/.codex_tmp/20261107-phase1-masked-teacher-batch-parity-source-s2026092701-r01",
       "expected_artifacts": [
         "result.json: per-pair exact output comparison and batch 32/256 timing"
@@ -136,7 +136,8 @@
   "notes": [
     "Same seed, clean inputs and masks in both batches; warmup followed by two reversed-order pairs.",
     "Output comparison covers teacher tensors only; no optimizer updates, full training parity or N607 timing claims.",
-    "No F, TX labels, source V or target data; source context, prior and initial provenance checked by existing loader."
+    "No F, TX labels, source V or target data; source context, prior and initial provenance checked by existing loader.",
+    "Execution stdout and completed result.json were observed directly; no separate launcher log was created."
   ],
   "registered_at": "2026-11-06T23:35:03+00:00"
 }
