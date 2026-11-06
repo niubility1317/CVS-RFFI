@@ -70,6 +70,21 @@ class SourceTrainingTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             source_loss(better, anchor, clean, objective='unregistered')
 
+    def test_band_guard_emphasizes_middle_frequency_error(self):
+        clean = torch.ones(1, 2, 256)
+        t = torch.arange(256, dtype=torch.float32)
+        phase = 2*torch.pi*40*t/256
+        delta = torch.stack((phase.cos(), phase.sin()))[None] * .1
+        output = (clean+delta).requires_grad_()
+        base = source_loss(output, clean, clean, objective='dura_guard')
+        weighted = source_loss(output, clean, clean, objective='band_guard')
+        torch.testing.assert_close(weighted-base, torch.tensor(.0025), atol=1e-7, rtol=1e-5)
+        weighted.backward()
+        self.assertTrue(torch.isfinite(output.grad).all())
+        dc = clean+.1
+        torch.testing.assert_close(source_loss(dc, clean, clean, objective='band_guard'),
+                                   source_loss(dc, clean, clean, objective='dura_guard'))
+
     def test_incomplete_prediction_is_rejected_before_truth_read(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

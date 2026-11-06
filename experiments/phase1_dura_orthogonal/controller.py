@@ -33,7 +33,7 @@ def main():
     parser.add_argument('--commit', required=True)
     parser.add_argument('--device', default='cuda:0')
     parser.add_argument('--prepare-batch', type=int, default=32)
-    parser.add_argument('--objective', choices=('iq', 'dura_guard'), default='iq')
+    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard'), default='iq')
     args = parser.parse_args()
     env, cpu_env = training_environments(args.device, os.environ)
     controller = args.root/'runs'/(args.source+'-controller')

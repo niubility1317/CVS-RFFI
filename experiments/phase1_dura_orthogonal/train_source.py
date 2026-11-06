@@ -34,16 +34,23 @@ def extract_context(dura, x):
 def source_loss(output, anchor, clean, *, objective='iq'):
     if output.shape != clean.shape or anchor.shape != clean.shape or output.shape[1:] != (2, 256):
         raise ValueError('Matching source IQ windows required')
-    if objective not in ('iq', 'dura_guard'):
+    if objective not in ('iq', 'dura_guard', 'band_guard'):
         raise ValueError('A registered source-IQ objective is required')
     energy = clean.square().mean((1, 2)).clamp_min(1e-8)
     error = (output-clean).square().mean((1, 2)) / energy
     change = (output-anchor).square().mean((1, 2)) / energy
     per = error + .02*change
-    if objective == 'dura_guard':
+    if objective in ('dura_guard', 'band_guard'):
         baseline_error = (anchor.detach()-clean).square().mean((1, 2)) / energy
         excess = (error-baseline_error).clamp_min(0)
         per = per + .002*excess/(baseline_error+1e-4)
+    if objective == 'band_guard':
+        delta = output-clean
+        complex_delta = torch.complex(delta[:, 0], delta[:, 1])
+        spectrum = torch.fft.fft(complex_delta, dim=-1, norm='ortho')
+        freq = torch.fft.fftfreq(256, device=output.device).abs()
+        band = (freq >= .125) & (freq < .375)
+        per = per + .5*spectrum[:, band].abs().square().sum(-1)/(512*energy)
     return per.mean()
 
 
@@ -129,7 +136,7 @@ def main():
     parser.add_argument('--device', default='cuda:0')
     parser.add_argument('--prepare-batch', type=int, default=32)
     parser.add_argument('--smoke-fit', type=int, default=64)
-    parser.add_argument('--objective', choices=('iq', 'dura_guard'), default='iq')
+    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard'), default='iq')
     args = parser.parse_args()
     process_started = time.monotonic()
     training_environments(args.device, os.environ)
