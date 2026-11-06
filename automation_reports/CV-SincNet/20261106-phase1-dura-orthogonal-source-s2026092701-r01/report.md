@@ -3,7 +3,7 @@
 - run_id：`20261106-phase1-dura-orthogonal-source-s2026092701-r01`
 - group_id：`phase1-dura-orthogonal-recovery`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按 events.jsonl 及独立证据更新）
+- 当前登记状态：TRAINING_COMPLETE（实际状态按 events.jsonl 及独立证据更新）
 
 ## 目的与对照
 
@@ -31,3 +31,5 @@
 ## 目前状态
 
 N607 控制器已启动；真实 DURA checkpoint、64 个源 ID 和 192 个源视图训练 smoke 通过，未读取 F 权重、F 输出、TX 标签、V 或目标数据。正式源训练正在运行。
+
+原 CPU 源训练已完成固定五轮，权重冻结。

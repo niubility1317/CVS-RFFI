@@ -3,7 +3,7 @@
 - run_id：`20261106-phase1-dura-orthogonal-ground-test-s2026092701-r01`
 - group_id：`phase1-dura-orthogonal-recovery`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：QUEUED（实际状态按 events.jsonl 及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按 events.jsonl 及独立证据更新）
 
 ## 目的与对照
 
@@ -31,3 +31,5 @@
 ## 目前状态
 
 等待对应源训练最终权重冻结，控制器将依次运行源预测 smoke、完整七景预测和独立 truth-last／DURA 配对评分。未开始目标预测。
+
+原模型源预测 smoke 通过，七景正式预测在 CPU 上运行，尚未完成评分。
