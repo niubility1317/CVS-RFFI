@@ -36,8 +36,8 @@ def main():
     parser.add_argument('--source-context-cache', type=Path)
     parser.add_argument('--save-source-context-cache', type=Path)
     parser.add_argument('--deterministic', action='store_true')
-    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard'), default='iq')
-    parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir'), default='orthogonal')
+    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression'), default='iq')
+    parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir', 'dura_frequency_regression'), default='orthogonal')
     args = parser.parse_args()
     env, cpu_env = training_environments(args.device, os.environ)
     controller = args.root/'runs'/(args.source+'-controller')
@@ -60,18 +60,22 @@ def main():
             raise RuntimeError(name+' exited '+str(process.returncode))
 
     common = ['--root', str(args.root), '--commit', args.commit]
+    training_module = ('experiments.phase1_dura_orthogonal.train_frequency_source' if args.architecture == 'dura_frequency_regression'
+                       else 'experiments.phase1_dura_orthogonal.train_source')
     try:
         status('RUNNING_SOURCE_TRAINING_SMOKE')
         execute('source_smoke', [sys.executable, '-X', 'utf8', '-u', '-m',
-                'experiments.phase1_dura_orthogonal.train_source', *common, '--out', str(training_smoke), '--smoke',
+                training_module, *common, '--out', str(training_smoke), '--smoke',
                 '--device', args.device, '--prepare-batch', str(args.prepare_batch), '--objective', args.objective,
-                '--architecture', args.architecture, *(['--deterministic'] if args.deterministic else [])])
+                '--architecture', args.architecture, *(['--source-context-cache', str(args.source_context_cache)]
+                    if args.architecture == 'dura_frequency_regression' and args.source_context_cache else []),
+                *(['--deterministic'] if args.deterministic else [])])
         smoke = json.loads((training_smoke/'smoke.json').read_text(encoding='utf8'))
         if smoke.get('status') != 'SOURCE_TRAINING_SMOKE_PASS' or smoke.get('F_weights_read') != 0:
             raise ValueError('Source-only training smoke required')
         status('RUNNING_SOURCE_TRAINING')
         execute('source_train', [sys.executable, '-X', 'utf8', '-u', '-m',
-                'experiments.phase1_dura_orthogonal.train_source', *common, '--out', str(source),
+                training_module, *common, '--out', str(source),
                 '--device', args.device, '--prepare-batch', str(args.prepare_batch), '--objective', args.objective,
                 '--architecture', args.architecture, *(['--source-context-cache', str(args.source_context_cache)]
                                                        if args.source_context_cache else []),
