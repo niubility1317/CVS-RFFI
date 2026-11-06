@@ -19,6 +19,7 @@ from experiments.phase1_dura_orthogonal.iq_geometry import GEOMETRY_WEIGHT, GEOM
 from experiments.phase1_dura_orthogonal.joint_ssl_iq import SSL_FEATURE_WEIGHT, SSL_OFFDIAGONAL_WEIGHT, SSL_FEATURE_DIM
 from experiments.phase1_dura_orthogonal.multiscale_spectral import DuraMultiscaleSpectral
 from experiments.phase1_dura_orthogonal.direct_spectral_student import DirectSpectralStudent
+from experiments.phase1_dura_orthogonal.posterior_teacher_contract import TEACHER_SOURCE, TEACHER_COMMIT
 from experiments.phase1_dura_orthogonal.train_source import SCHEMA, TRAIN_EPOCHS, DUAL_DOMAIN_EPOCHS, FIT_SIZE, SSL_TEACHER_SOURCE, SSL_TEACHER_COMMIT, extract_context
 
 
@@ -40,7 +41,7 @@ def load_fixed(root, source, commit):
             any(state.get(k) != v for k, v in expected.items() if k not in ('status', 'fit_ids', 'epochs'))):
         raise ValueError('Fixed correction checkpoint and provenance required')
     objective = state.get('objective', 'iq')
-    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq') or summary.get('objective', 'iq') != objective:
+    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard') or summary.get('objective', 'iq') != objective:
         raise ValueError('Source objective must match the fixed checkpoint')
     if objective == 'crossview_guard' and any(
             obj.get('source_views_per_record') != 3 or obj.get('crossview_weight') != .1
@@ -59,7 +60,7 @@ def load_fixed(root, source, commit):
             for obj in (summary, state)):
         raise ValueError('Matching source-IQ teacher metadata required')
     if architecture in ('dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale') and (
-            objective not in (('dura_guard', 'moment_guard', 'geometry_guard') if architecture == 'dura_timevarying_gate' else ('dura_guard', 'ssl_joint_guard', 'ssl_fixed_guard') if architecture == 'dura_multiscale' else ('dura_guard',))
+            objective not in (('dura_guard', 'moment_guard', 'geometry_guard') if architecture == 'dura_timevarying_gate' else ('dura_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard') if architecture == 'dura_multiscale' else ('dura_guard',))
             or any(obj.get('DURA_training_reads') != 1 for obj in (summary, state))):
         raise ValueError('Matching DURA-guarded source checkpoint required')
     if architecture == 'dura_internal' and (objective not in ('dura_guard', 'sim_action_guard', 'sim_action_fixed_prior')
@@ -98,6 +99,12 @@ def load_fixed(root, source, commit):
             obj.get('source_ssl_teacher_commit') != SSL_TEACHER_COMMIT or
             obj.get('source_ssl_aux_trainable') is not False for obj in (summary, state)):
         raise ValueError('Fixed source-only SSL teacher metadata required')
+    if objective == 'posterior_teacher_guard' and (architecture != 'dura_multiscale' or any(
+            obj.get('source_posterior_teacher') != TEACHER_SOURCE or
+            obj.get('source_posterior_teacher_commit') != TEACHER_COMMIT or
+            obj.get('source_posterior_teacher_weight') != .5 or
+            obj.get('posterior_teacher_inference_reads') != 0 for obj in (summary, state))):
+        raise ValueError('Fixed source-only posterior teacher metadata required')
     if architecture in ('dura_multiscale', 'direct_spectral_student') and any(obj.get('spectral_freq_bins') != 17 for obj in (summary, state)):
         raise ValueError('Matching spectral bottleneck metadata required')
     if architecture == 'orthogonal':

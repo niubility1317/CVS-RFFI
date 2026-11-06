@@ -23,6 +23,7 @@ from experiments.phase1_dura_orthogonal.joint_ssl_iq import SourceIQEncoder, cro
 from experiments.phase1_dura_orthogonal.multiscale_spectral import DuraMultiscaleSpectral
 from experiments.phase1_dura_orthogonal.direct_spectral_student import DirectSpectralStudent
 from experiments.phase1_dura_orthogonal.source_context_cache import load_cache
+from experiments.phase1_dura_orthogonal.posterior_teacher_contract import load_posterior_teacher, TEACHER_SOURCE, TEACHER_COMMIT
 
 FIT_SIZE = 8192
 TRAIN_EPOCHS = 5
@@ -106,6 +107,13 @@ def source_loss(output, anchor, clean, *, objective='iq'):
             return z * (power/(1+power))
         per = per + .1*(response(restored_normal)-response(clean_normal)).square().mean((1, 2))
     return per.mean()
+
+
+def posterior_teacher_loss(output, teacher, clean):
+    if output.shape != teacher.shape or clean.shape != output.shape or output.shape[1:] != (2, 256):
+        raise ValueError('Matching source posterior teacher IQ required')
+    energy = clean.square().mean((1, 2)).clamp_min(1e-8)
+    return ((output-teacher).square().mean((1, 2))/energy).mean()
 
 
 def grouped_view_indices(base_indices, fit_count):
@@ -234,7 +242,7 @@ def main():
     parser.add_argument('--smoke-fit', type=int, default=64)
     parser.add_argument('--source-context-cache', type=Path)
     parser.add_argument('--deterministic', action='store_true')
-    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq'), default='iq')
+    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard'), default='iq')
     parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student'), default='orthogonal')
     args = parser.parse_args()
     if args.deterministic:
@@ -248,10 +256,12 @@ def main():
         raise ValueError('Direct spectral student requires fixed source-IQ distillation')
     if args.architecture == 'dura_timevarying' and args.objective != 'dura_guard':
         raise ValueError('DURA time-varying correction requires DURA guard')
-    if args.architecture == 'dura_multiscale' and args.objective not in ('dura_guard', 'ssl_joint_guard', 'ssl_fixed_guard'):
+    if args.architecture == 'dura_multiscale' and args.objective not in ('dura_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard'):
         raise ValueError('Multiscale correction requires a registered DURA guard')
     if args.objective in ('ssl_joint_guard', 'ssl_fixed_guard') and args.architecture != 'dura_multiscale':
         raise ValueError('Source IQ SSL is registered only for multiscale correction')
+    if args.objective == 'posterior_teacher_guard' and args.architecture != 'dura_multiscale':
+        raise ValueError('Source posterior teacher applies only to multiscale DURA correction')
     if args.architecture == 'dura_timevarying_gate' and args.objective not in ('dura_guard', 'moment_guard', 'geometry_guard'):
         raise ValueError('Gated correction requires a registered DURA guard')
     if args.objective in ('moment_guard', 'geometry_guard') and args.architecture != 'dura_timevarying_gate':
@@ -289,6 +299,8 @@ def main():
         prepare_arch = 'orthogonal' if args.architecture == 'direct_spectral_student' else args.architecture
         data, counts = prepare(args.root, dura, clean, fresh, fit, str(device), args.prepare_batch,
                                prepare_arch, include_action=args.objective in ACTION_OBJECTIVES)
+    if args.objective == 'posterior_teacher_guard':
+        data = (*data, load_posterior_teacher(args.root, fit, smoke=args.smoke))
     preparation_seconds = time.monotonic() - preparation_started
     transfer_started = time.monotonic()
     data = tuple(value.to(device) for value in data)
@@ -386,8 +398,10 @@ def main():
                 action_loss = action_response_loss(context[1], reference, probe.expand(len(x), -1))
             else:
                 output = model(x, anchor, direction, variance, validate=False)
-            base_objective = 'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard') else args.objective
+            base_objective = 'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard') else args.objective
             loss = source_loss(output, anchor, y, objective=base_objective)
+            if args.objective == 'posterior_teacher_guard':
+                loss = loss + .5*posterior_teacher_loss(output, fields[5], y)
             if aux is not None:
                 ssl_feature = frozen_feature_loss(aux, output, y)
                 loss = loss + SSL_FEATURE_WEIGHT*ssl_feature
@@ -454,6 +468,10 @@ def main():
     if args.architecture == 'direct_spectral_student':
         cache_metadata.update(source_iq_teacher='dura_v1_R65_E20_4940', source_iq_teacher_weight=.5,
                               inference_received_iq_only=True)
+    if args.objective == 'posterior_teacher_guard':
+        cache_metadata.update(source_posterior_teacher=TEACHER_SOURCE,
+                              source_posterior_teacher_commit=TEACHER_COMMIT,
+                              source_posterior_teacher_weight=.5, posterior_teacher_inference_reads=0)
     if args.smoke:
         core.write(args.out/'smoke.json', dict(status='SOURCE_TRAINING_SMOKE_PASS', commit=args.commit,
             fit_ids=len(fit), exposure=len(data[0]), losses=losses, device=str(device),
