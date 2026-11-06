@@ -1,0 +1,3 @@
+{"at": "2026-11-06T19:35:56+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-06T19:36:57+00:00", "status": "RUNNING", "note": "Real source checkpoint smoke passed; full paired source-only training benchmark running on GPU.", "evidence": ["local:PID30092,session22328,GPU0,smoke"], "row_id": null}
+{"at": "2026-11-06T19:43:21+00:00", "status": "ANALYZED", "note": "Full source paired GPU run completed: 15360 step losses, final parameters and 192 source outputs exact; elapsed includes cached precomputation.", "evidence": ["analysis.md,result.json"], "row_id": null}

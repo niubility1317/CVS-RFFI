@@ -1,0 +1,29 @@
+{
+  "status": "FIR_CACHE_FULL_SOURCE_PARITY_COMPLETE",
+  "commit": "ac73885fc5a6c1ea99fa821dbc5b568f7982e889",
+  "source_parent_commit": "18f348500c4db11a7538cb61f6971cf54a41379e",
+  "source_ids": 32768,
+  "source_views": 98304,
+  "epochs": 5,
+  "batch": 32,
+  "steps": 15360,
+  "step_losses_exact": true,
+  "epoch_losses_exact": true,
+  "parameters_exact": true,
+  "different_parameters": [],
+  "max_parameter_abs_difference": 0.0,
+  "source_outputs_exact": true,
+  "source_output_count": 192,
+  "precompute_seconds": 16.781999999890104,
+  "elapsed_seconds": {
+    "uncached": 190.7029999999795,
+    "cached_including_precompute": 133.76599999982864
+  },
+  "device": "NVIDIA GeForce RTX 5070 Ti",
+  "TX_labels_read": 0,
+  "F_weights_read": 0,
+  "F_outputs_read": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "caveat": "Same initial state and full source budget on a local GPU; fixed order, no target predictions, not N607 run parity."
+}
