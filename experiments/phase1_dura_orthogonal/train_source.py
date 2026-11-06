@@ -193,11 +193,12 @@ def main():
         weight_decay=0. if args.architecture == 'dura_internal' else .001)
     generator = torch.Generator().manual_seed(2026110613)
     losses = []
+    initial_batch = min(args.prepare_batch, len(fit)) if args.architecture == 'dura_internal' else 8
     with torch.no_grad():
-        initial = model(*(value[:8] for value in data[:4]))
+        initial = model(*(value[:initial_batch] for value in data[:4]))
     if args.architecture == 'dura_internal':
-        torch.testing.assert_close(initial, data[1][:8], rtol=1e-5, atol=1e-6)
-    elif not torch.equal(initial, data[1][:8]):
+        torch.testing.assert_close(initial, data[1][:initial_batch], rtol=1e-5, atol=1e-6)
+    elif not torch.equal(initial, data[1][:initial_batch]):
         raise ValueError('New correction must initially reproduce frozen DURA')
     started = time.monotonic()
     epochs = DUAL_DOMAIN_EPOCHS if args.architecture == 'dual_domain' else TRAIN_EPOCHS
