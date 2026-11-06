@@ -14,13 +14,14 @@ from experiments.phase1_dura_innovation_probe.source_probe import source_inputs
 from experiments.phase1_dura_orthogonal.controller import training_environments
 from experiments.phase1_dura_orthogonal.model import OrthogonalRecovery, DualDomainRecovery, InternalDuraRecovery
 from experiments.phase1_dura_orthogonal.adaptive_inverse import AdaptiveInverseRecovery
+from experiments.phase1_dura_orthogonal.timevarying_inverse import TimeVaryingInverseRecovery
 
 FIT_SIZE = 8192
 TRAIN_EPOCHS = 5
 DUAL_DOMAIN_EPOCHS = 20
 SOURCE_EPOCHS = (21, 22, 23)
 SCHEMA = 'phase1_dura_orthogonal_source_v1'
-DIRECT_ARCHITECTURES = ('dual_domain', 'adaptive_inverse')
+DIRECT_ARCHITECTURES = ('dual_domain', 'adaptive_inverse', 'timevarying_inverse')
 ACTION_OBJECTIVES = ('sim_action_guard', 'sim_action_fixed_prior')
 
 
@@ -197,7 +198,7 @@ def main():
     parser.add_argument('--prepare-batch', type=int, default=32)
     parser.add_argument('--smoke-fit', type=int, default=64)
     parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior'), default='iq')
-    parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse'), default='orthogonal')
+    parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse'), default='orthogonal')
     args = parser.parse_args()
     if args.architecture in DIRECT_ARCHITECTURES and args.objective != 'iq':
         raise ValueError('Direct dual-domain model uses received-IQ regularization only')
@@ -246,6 +247,8 @@ def main():
         model = DualDomainRecovery(width=32).to(device)
     elif args.architecture == 'adaptive_inverse':
         model = AdaptiveInverseRecovery(width=32, taps=33).to(device)
+    elif args.architecture == 'timevarying_inverse':
+        model = TimeVaryingInverseRecovery(width=32, taps=9).to(device)
     else:
         model = InternalDuraRecovery(frozen_dura(args.root, str(device))).to(device)
         configure_internal_trainability(model.dura, args.objective)
@@ -310,7 +313,7 @@ def main():
                     raise ValueError('Fixed original priors must remain frozen')
             else:
                 second_head = (model.step if args.architecture == 'orthogonal' else
-                               model.filter_head if args.architecture == 'adaptive_inverse' else model.spectral_head)
+                               model.filter_head if args.architecture in ('adaptive_inverse', 'timevarying_inverse') else model.spectral_head)
                 if (model.wave.weight.grad is None or second_head.weight.grad is None or
                         not torch.isfinite(model.wave.weight.grad).all() or not torch.isfinite(second_head.weight.grad).all()):
                     raise ValueError('Both learned correction paths require finite gradients')
@@ -328,7 +331,8 @@ def main():
             fit_ids=len(fit), exposure=len(data[0]), losses=losses, device=str(device),
             objective=args.objective, architecture=args.architecture, prepare_batch=args.prepare_batch,
             candidate_dura_trainable=args.architecture == 'dura_internal',
-        adaptive_filter_taps=33 if args.architecture == 'adaptive_inverse' else None,
+        adaptive_filter_taps=(33 if args.architecture == 'adaptive_inverse' else
+                                  9 if args.architecture == 'timevarying_inverse' else None),
         candidate_prior_frozen=args.objective == 'sim_action_fixed_prior',
             source_views_per_record=3 if args.objective == 'crossview_guard' else None,
             crossview_weight=.1 if args.objective == 'crossview_guard' else None,
@@ -344,7 +348,8 @@ def main():
     checkpoint = dict(schema=SCHEMA, commit=args.commit, model=model.state_dict(), width=32,
                       epochs=epochs, fit_ids=fit, counts=counts, losses=losses, architecture=args.architecture,
                       candidate_dura_trainable=args.architecture == 'dura_internal',
-                      adaptive_filter_taps=33 if args.architecture == 'adaptive_inverse' else None,
+                      adaptive_filter_taps=(33 if args.architecture == 'adaptive_inverse' else
+                                  9 if args.architecture == 'timevarying_inverse' else None),
                       candidate_prior_frozen=args.objective == 'sim_action_fixed_prior',
                       source_views_per_record=3 if args.objective == 'crossview_guard' else None,
                       crossview_weight=.1 if args.objective == 'crossview_guard' else None,
@@ -365,7 +370,8 @@ def main():
     core.write(args.out/'source_summary.json', dict(status='SOURCE_TRAINED', commit=args.commit,
         fit_ids=len(fit), epochs=epochs, architecture=args.architecture,
         candidate_dura_trainable=args.architecture == 'dura_internal',
-            adaptive_filter_taps=33 if args.architecture == 'adaptive_inverse' else None,
+            adaptive_filter_taps=(33 if args.architecture == 'adaptive_inverse' else
+                                  9 if args.architecture == 'timevarying_inverse' else None),
             candidate_prior_frozen=args.objective == 'sim_action_fixed_prior',
         source_views_per_record=3 if args.objective == 'crossview_guard' else None,
         crossview_weight=.1 if args.objective == 'crossview_guard' else None,
