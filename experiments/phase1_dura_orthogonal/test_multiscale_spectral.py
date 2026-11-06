@@ -1,5 +1,19 @@
 import torch
-from experiments.phase1_dura_orthogonal.multiscale_spectral import DuraMultiscaleSpectral
+from experiments.phase1_dura_orthogonal.multiscale_spectral import DuraMultiscaleSpectral, deterministic_linear_2x
+
+
+def test_deterministic_upsample_matches_linear_forward_and_gradient():
+    for length in (1, 2, 17):
+        torch.manual_seed(length)
+        x = torch.randn(2, 3, length, dtype=torch.float64, requires_grad=True)
+        y = x.detach().clone().requires_grad_(True)
+        expected = torch.nn.functional.interpolate(x, scale_factor=2, mode='linear', align_corners=False)
+        actual = deterministic_linear_2x(y)
+        torch.testing.assert_close(actual, expected, rtol=1e-15, atol=1e-15)
+        weight = torch.randn_like(actual)
+        expected_grad, = torch.autograd.grad((expected*weight).sum(), x)
+        actual_grad, = torch.autograd.grad((actual*weight).sum(), y)
+        torch.testing.assert_close(actual_grad, expected_grad, rtol=1e-15, atol=1e-15)
 
 
 def test_zero_heads_preserve_dura_and_backpropagate():

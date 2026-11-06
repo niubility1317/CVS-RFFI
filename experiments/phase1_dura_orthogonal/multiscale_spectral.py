@@ -9,6 +9,19 @@ from experiments.phase1_dura_orthogonal.noise_gated_dura import noise_gate
 from experiments.phase1_dura_orthogonal.timevarying_inverse import timevarying_filter
 
 
+def deterministic_linear_2x(value):
+    """Linear 2x resize, align_corners=False, using deterministic slice gradients."""
+    left = torch.cat((value[..., :1], value[..., :-1]), dim=-1)
+    right = torch.cat((value[..., 1:], value[..., -1:]), dim=-1)
+    return torch.stack((.75*value+.25*left, .75*value+.25*right), dim=-1).flatten(-2)
+
+
+def upsample_2x(value):
+    if torch.are_deterministic_algorithms_enabled():
+        return deterministic_linear_2x(value)
+    return F.interpolate(value, size=2*value.shape[-1], mode='linear', align_corners=False)
+
+
 class DuraMultiscaleSpectral(nn.Module):
     def __init__(self, width=32, taps=9):
         super().__init__()
@@ -51,9 +64,9 @@ class DuraMultiscaleSpectral(nn.Module):
         response = torch.complex(self.spectral_real.tanh(), self.spectral_imag.tanh())
         h3 = torch.fft.irfft(spectrum*(1+.1*response[None]), n=32, dim=-1, norm='ortho')
         h3 = h3 + .2*F.silu(self.bottleneck(h3))
-        u2 = F.silu(self.up2(torch.cat((F.interpolate(h3, size=64, mode='linear', align_corners=False), h2), 1)))
-        u1 = F.silu(self.up1(torch.cat((F.interpolate(u2, size=128, mode='linear', align_corners=False), h1), 1)))
-        u0 = F.silu(self.up0(torch.cat((F.interpolate(u1, size=256, mode='linear', align_corners=False), h0), 1)))
+        u2 = F.silu(self.up2(torch.cat((upsample_2x(h3), h2), 1)))
+        u1 = F.silu(self.up1(torch.cat((upsample_2x(u2), h1), 1)))
+        u0 = F.silu(self.up0(torch.cat((upsample_2x(u1), h0), 1)))
         taps = self.filter_head(u0).tanh().reshape(len(received), 4, self.taps, 256)
         filtered = timevarying_filter(normalized, taps)/math.sqrt(self.taps)
         correction = .2*scale*(filtered+self.wave(u0).tanh())
