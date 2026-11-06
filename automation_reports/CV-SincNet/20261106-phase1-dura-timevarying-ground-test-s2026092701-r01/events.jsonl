@@ -1,3 +1,4 @@
 {"at": "2026-11-06T09:17:15+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-06T09:26:52+00:00", "status": "QUEUED", "note": "Seven-view prediction and truth-last scoring queued after source freeze", "evidence": ["runs/20261106-phase1-dura-timevarying-source-s2026092701-r01-controller/status.json"], "row_id": null}
 {"at": "2026-11-06T09:29:55+00:00", "status": "RUNNING", "note": "Ground smoke passed; PID 3295363 seven-view prediction running", "evidence": ["runs/20261106-phase1-dura-timevarying-ground-test-s2026092701-r01/prediction_smoke.json"], "row_id": null}
+{"at": "2026-11-06T15:40:56+00:00", "status": "ANALYZED", "note": "Full paired and marginal TX/RX/day analysis recorded; no target feedback", "evidence": ["N607 predictions complete, independent truth-last summary and paired DURA verified 168000 x 7; 119 matched groups"], "row_id": null}
