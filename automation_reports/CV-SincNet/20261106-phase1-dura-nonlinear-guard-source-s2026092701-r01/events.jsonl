@@ -1,0 +1,2 @@
+{"at": "2026-11-06T06:32:41+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-06T06:34:22+00:00", "status": "RUNNING", "note": "Source-only nonlinear_guard training started on GPU7, FP32 batch32; frozen DURA, no F/TX/V/target reads.", "evidence": ["N607 controller PID 3199047; GPU7 worker PID 3199139; source smoke PASS"], "row_id": null}
