@@ -187,3 +187,11 @@ raw clean 为 86.538690%；每版只有高郊区达到下降不超过 3 个百�
 ## 三专家与蒸馏学生 GPU 测速
 
 112 条固定源 IQ 的同输入 GPU 7 配对测速，FP32、eager、输入已在 GPU；B1 的 DURA 上下文＋修正中位数为三专家 102.725 ms、蒸馏单专家 80.993 ms，约 1.27 倍；B8 每批中位数为 110.121 ms 和 77.902 ms，约 1.41 倍。GPU 有其他工作，P95 波动明显；不含 F、输入传输和模型加载，DURA 也不是官方 graph 路径，不能与既有端到端时延直接比较。两个模型输出不相同，七景识别评分尚未完成。[完整测速](../automation_reports/CV-SincNet/20261107-phase1-expert-student-latency-source-s2026092701-r01/analysis.md)。
+
+## 联合源 IQ 自监督七景
+
+固定 Tri-SIG-TIME SSL，七景每景 168000 条并独立 truth-last。clean、高郊区、中郊区、低郊区、高城区、中城区、低城区分别为 86.6161%、83.6881%、82.4964%、80.7875%、82.3786%、75.1536%、68.2262%。六个受损场景分别低于 DURA 0.6554、0.5196、0.5345、0.6708、0.5524、0.5750 个百分点；仅高郊区达到 3 个百分点口径，均未达到相对下降 3% 口径。[完整对比与分组](../automation_reports/CV-SincNet/20261106-phase1-dura-joint-iq-ssl-ground-test-s2026092701-r01/analysis.md)。
+
+## 源域重复结构 GPU 诊断
+
+672 条源 pilot 的 clean 信号在 20、40 点时延存在较高复相关，但 DURA 低城区输出相关已接近或高于 clean；使用部署不可得的逐条 clean 理想非负修正，20 点低城区的源 IQ NMSE 平均仅相对下降约 0.46%（RX4/6）和 0.29%（RX8）。这不是身份识别收益，不支持直接使用简单的相位对齐平均。[完整源域结果](../automation_reports/CV-SincNet/20261107-phase1-dura-source-repetition-s2026092701-r01/analysis.md)。
