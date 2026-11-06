@@ -24,6 +24,7 @@ from experiments.phase1_dura_orthogonal.local_ssl_iq import PatchIQEncoder, patc
 from experiments.phase1_dura_orthogonal.multiscale_spectral import DuraMultiscaleSpectral
 from experiments.phase1_dura_orthogonal.direct_spectral_student import DirectSpectralStudent
 from experiments.phase1_dura_orthogonal.direct_student_fir import DirectStudentFIR, SOURCE as FIR_SOURCE, SOURCE_COMMIT as FIR_SOURCE_COMMIT, TAPS as FIR_TAPS, SCALE as FIR_SCALE
+from experiments.phase1_dura_orthogonal.reversible_dura import ReversibleDura
 from experiments.phase1_dura_orthogonal.dura_experts import DuraExperts, EXPERT_COUNT
 from experiments.phase1_dura_orthogonal.expert_teacher_contract import (
     load_teacher_cache, TEACHER_SOURCE as EXPERT_TEACHER_SOURCE, TEACHER_COMMIT as EXPERT_TEACHER_COMMIT)
@@ -281,13 +282,17 @@ def main():
     parser.add_argument('--source-context-cache', type=Path)
     parser.add_argument('--save-source-context-cache', type=Path)
     parser.add_argument('--deterministic', action='store_true')
-    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard'), default='iq')
-    parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir'), default='orthogonal')
+    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard'), default='iq')
+    parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir', 'dura_reversible'), default='orthogonal')
     args = parser.parse_args()
     if (args.architecture == 'direct_student_fir') != (args.objective == 'wide_student_fir_guard'):
         raise ValueError('FIR refinement requires its registered source objective')
     if args.objective == 'wide_student_fir_guard' and not args.smoke and not args.source_context_cache:
         raise ValueError('FIR training requires the fixed source context cache')
+    if (args.architecture == 'dura_reversible') != (args.objective == 'wide_reversible_guard'):
+        raise ValueError('Reversible DURA requires its registered source IQ objective')
+    if args.objective == 'wide_reversible_guard' and not args.smoke and not args.source_context_cache:
+        raise ValueError('Reversible training requires fixed source context')
     if args.deterministic:
         os.environ['CUBLAS_WORKSPACE_CONFIG'] = ':4096:8'
         torch.use_deterministic_algorithms(True)
@@ -343,7 +348,7 @@ def main():
     torch.backends.cudnn.allow_tf32 = False
     torch.manual_seed(2026110612)
     ids, rx, scene, _, source_received, source_clean = source_inputs(args.root)
-    fit_size = WIDE_FIT_SIZE if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard') else FIT_SIZE
+    fit_size = WIDE_FIT_SIZE if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard') else FIT_SIZE
     _, fresh, clean, fit = load_source_training(args.root, ids, fit_size=fit_size)
     if args.smoke:
         fit = fit[:args.smoke_fit]
@@ -404,6 +409,8 @@ def main():
             torch.cuda.synchronize(device)
         precompute_seconds = time.monotonic() - precompute_started
         data = (*data, base)
+    elif args.architecture == 'dura_reversible':
+        model = ReversibleDura(width=32, depth=4).to(device)
     else:
         model = InternalDuraRecovery(frozen_dura(args.root, str(device))).to(device)
         configure_internal_trainability(model.dura, args.objective)
@@ -484,7 +491,7 @@ def main():
             else:
                 output = model(x, anchor, direction, variance, validate=False)
             base_objective = ('distill_iq' if args.objective == 'wide_source_distill' else
-                              'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'wide_source_guard', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard') else args.objective)
+                              'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'wide_source_guard', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_reversible_guard') else args.objective)
             if args.objective == 'wide_student_fir_guard':
                 loss = source_loss(output, fields[5], y, objective='dura_guard') + .5*posterior_teacher_loss(output, anchor, y)
             else:
@@ -533,6 +540,10 @@ def main():
                 if (model.tap_head.weight.grad is None or not torch.isfinite(model.tap_head.weight.grad).all()
                         or any(p.requires_grad or p.grad is not None for p in model.student.parameters())):
                     raise ValueError('Trainable FIR head and frozen source student required')
+            elif args.architecture == 'dura_reversible':
+                if any(layer.head.weight.grad is None or not torch.isfinite(layer.head.weight.grad).all()
+                       for layer in model.layers):
+                    raise ValueError('Each reversible coupling head requires finite gradients')
             elif args.architecture == 'dura_experts':
                 if any(head.weight.grad is None or not torch.isfinite(head.weight.grad).all()
                        for expert in model.experts for head in (expert.wave, expert.filter_head)):
@@ -575,7 +586,7 @@ def main():
                             source_ssl_teacher_commit=SSL_TEACHER_COMMIT, source_ssl_aux_trainable=False)
     cache_metadata = dict(source_context_cache=str(args.source_context_cache) if args.source_context_cache else None,
                           deterministic_algorithms=args.deterministic)
-    if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard'):
+    if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard'):
         cache_metadata.update(source_fit_size=WIDE_FIT_SIZE,
                               source_context_cache_written=str(args.save_source_context_cache) if args.save_source_context_cache else None)
     if args.objective == 'wide_expert_distill':
@@ -604,6 +615,12 @@ def main():
             source_fir_taps=FIR_TAPS, source_fir_scale=FIR_SCALE, student_frozen=True,
             source_iq_teacher='dura_v1_R65_E20_4940', source_iq_teacher_weight=.5,
             inference_received_iq_only=True, student_precompute_seconds=precompute_seconds)
+    if args.architecture == 'dura_reversible':
+        with torch.no_grad():
+            check = model(*(v[:32] for v in data[:4]))
+            torch.testing.assert_close(model.inverse(check), data[1][:32], rtol=1e-5, atol=1e-6)
+        cache_metadata.update(reversible_couplings=4, reversible_type='additive_temporal_even_odd',
+                              reversible_inverse_source_smoke=True)
     if args.objective == 'posterior_teacher_guard':
         cache_metadata.update(source_posterior_teacher=TEACHER_SOURCE,
                               source_posterior_teacher_commit=TEACHER_COMMIT,

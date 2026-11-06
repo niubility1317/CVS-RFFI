@@ -21,6 +21,7 @@ from experiments.phase1_dura_orthogonal.multiscale_spectral import DuraMultiscal
 from experiments.phase1_dura_orthogonal.direct_spectral_student import DirectSpectralStudent
 from experiments.phase1_dura_orthogonal.direct_student_fir import DirectStudentFIR, SOURCE as FIR_SOURCE, SOURCE_COMMIT as FIR_SOURCE_COMMIT, TAPS as FIR_TAPS, SCALE as FIR_SCALE
 from experiments.phase1_dura_orthogonal.dura_frequency_recovery import DuraFrequencyRecovery
+from experiments.phase1_dura_orthogonal.reversible_dura import ReversibleDura
 from experiments.phase1_dura_orthogonal.dura_experts import DuraExperts, EXPERT_COUNT
 from experiments.phase1_dura_orthogonal.expert_teacher_contract import TEACHER_SOURCE as EXPERT_TEACHER_SOURCE, TEACHER_COMMIT as EXPERT_TEACHER_COMMIT
 from experiments.phase1_dura_orthogonal.posterior_teacher_contract import TEACHER_SOURCE, TEACHER_COMMIT
@@ -32,10 +33,10 @@ def load_fixed(root, source, commit):
     folder = root/'runs'/source
     summary = core.read(folder/'source_summary.json')
     architecture = summary.get('architecture', 'orthogonal')
-    if architecture not in ('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir', 'dura_frequency_regression'):
+    if architecture not in ('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir', 'dura_frequency_regression', 'dura_reversible'):
         raise ValueError('Registered recovery architecture required')
     epochs = 0 if architecture == 'dura_frequency_regression' else DUAL_DOMAIN_EPOCHS if architecture in ('dual_domain', 'adaptive_inverse', 'timevarying_inverse', 'direct_spectral_student') else TRAIN_EPOCHS
-    fit_size = WIDE_FIT_SIZE if summary.get('objective') in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression') else FIT_SIZE
+    fit_size = WIDE_FIT_SIZE if summary.get('objective') in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression', 'wide_reversible_guard') else FIT_SIZE
     expected = dict(status='SOURCE_TRAINED', commit=commit, fit_ids=fit_size, epochs=epochs,
                     TX_labels_read=0, F_weights_read=0, F_outputs_read=0, V_reads=0,
                     target_reads=0, DURA_frozen=True)
@@ -47,7 +48,7 @@ def load_fixed(root, source, commit):
             any(state.get(k) != v for k, v in expected.items() if k not in ('status', 'fit_ids', 'epochs'))):
         raise ValueError('Fixed correction checkpoint and provenance required')
     objective = state.get('objective', 'iq')
-    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression') or summary.get('objective', 'iq') != objective:
+    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression', 'wide_reversible_guard') or summary.get('objective', 'iq') != objective:
         raise ValueError('Source objective must match the fixed checkpoint')
     if objective == 'crossview_guard' and any(
             obj.get('source_views_per_record') != 3 or obj.get('crossview_weight') != .1
@@ -55,6 +56,11 @@ def load_fixed(root, source, commit):
         raise ValueError('Matching three-view source training metadata required')
     if state.get('architecture', 'orthogonal') != architecture:
         raise ValueError('Source architecture must match the fixed checkpoint')
+    if (architecture == 'dura_reversible') != (objective == 'wide_reversible_guard') or (architecture == 'dura_reversible' and any(
+            obj.get('source_fit_size') != WIDE_FIT_SIZE or obj.get('DURA_training_reads') != 1
+            or obj.get('reversible_couplings') != 4 or obj.get('reversible_type') != 'additive_temporal_even_odd'
+            or obj.get('reversible_inverse_source_smoke') is not True for obj in (summary, state))):
+        raise ValueError('Matching source-only reversible coupling metadata required')
     if (architecture == 'dura_frequency_regression') != (objective == 'wide_frequency_regression') or (architecture == 'dura_frequency_regression' and any(
             obj.get('source_fit_size') != WIDE_FIT_SIZE or obj.get('source_frequency_ridge') != .001
             or obj.get('source_noise_bins') != 4 or obj.get('DURA_training_reads') != 1
@@ -188,6 +194,8 @@ def load_fixed(root, source, commit):
         model = DirectStudentFIR(width=state['width'])
     elif architecture == 'dura_frequency_regression':
         model = DuraFrequencyRecovery()
+    elif architecture == 'dura_reversible':
+        model = ReversibleDura(width=state['width'], depth=4)
     else:
         model = InternalDuraRecovery(frozen_dura(root, 'cpu'))
     model.load_state_dict(state['model'], strict=True)
