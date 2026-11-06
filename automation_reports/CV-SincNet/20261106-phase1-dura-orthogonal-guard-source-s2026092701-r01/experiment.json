@@ -1,0 +1,140 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-dura-orthogonal-guard-source-s2026092701-r01",
+  "group_id": "phase1-dura-orthogonal-guard-recovery",
+  "display_name": "DURA 物理与正交残差解耦：无 F 源 IQ 训练（源域 DURA 相对退化保护）",
+  "description": "基于固定 DURA 与本条观测创新方向，训练物理方向和正交波形双分支；仅源 L_s/U_s 配对 IQ，无 F 与 TX 标签。 使用源域 DURA 相对退化惩罚训练，训练选用 GPU。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "dura",
+    "F-free-training",
+    "orthogonal"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests continued novel and DURA-combinable Phase1 restoration research, F-free/TX-label-free source training, automatic seven-view test and truth-last score.",
+  "code": {
+    "commit": "49706d9acaa7a4f8085b5b48d3eb65e331a7c373",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 physical GPU7, CUDA_VISIBLE_DEVICES=7, FP32 TF32 off; source prepare batch 32, train batch 32, ground/scoring CPU 2 threads",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261106-phase1-dura-orthogonal-guard-source-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "paired received/clean IQ, per-packet DURA and its estimated physical action",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "8192 source fit IDs exclude RX4/6/8 day3 and 672 source evaluation IDs",
+    "label_map_ref": null,
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "672 fixed previously explored source L_s/U_s IQ, not independent of DURA",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed source epoch21/22/23 views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "F-free and TX-label-free paired source IQ training, source IQ diagnostics; no target score"
+  },
+  "checkpoint": {
+    "initialization": "Original DURA v1.0 stage2 E20/4940; zero-initialized new source-only orthogonal correction",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "frozen_dura verifies original7/63/30, training_F_access false, TX labels 0 and target_training false",
+    "provenance_verdict": "Fixed DURA source-only original contract; no target ancestry",
+    "selection_rule": "Fixed final epoch 5; no source or target performance selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "Physical GPU7, at most one this-run worker and at most 3 total compute workers including others; check capacity; preserve all other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-orthogonal-guard-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-orthogonal-guard-source-s2026092701-r01-controller/source_train.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261106-phase1-dura-orthogonal-guard-source-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.controller --root /home/szu2070436088/2510044040/CV-SincNet --source 20261106-phase1-dura-orthogonal-guard-source-s2026092701-r01 --ground 20261106-phase1-dura-orthogonal-guard-ground-test-s2026092701-r01 --commit 49706d9acaa7a4f8085b5b48d3eb65e331a7c373 --device cuda:0 --prepare-batch 32 --objective dura_guard",
+    "stop_rule": "Stop exact owner only for source contract/role mismatch, nonfinite computation, incorrect checkpoint, target leakage or unrecoverable technical failure. Preserve all artifacts."
+  },
+  "expected_artifacts": [
+    "final.pt: fixed final epoch",
+    "source_summary.json: source IQ only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source paired IQ NMSE",
+      "training IQ loss"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "dura-orthogonal-final",
+      "method": "DURA plus signed innovation and orthogonal IQ correction, source-only DURA-relative degradation protection",
+      "purpose": "Train a distinct F-free recovery network at fixed five-epoch budget",
+      "config_ref": "experiments/phase1_dura_orthogonal/train_source.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "New model initialization 2026110612; source fit 2026110611, fixed input caches and DURA seed 2026092701; optimizer ordering 2026110613.",
+      "k": null,
+      "scenario": "fixed source cache epochs 21, 22, 23",
+      "optimizer": "AdamW",
+      "lr": 0.0003,
+      "epochs": 5,
+      "fl_rounds": null,
+      "budget_ref": "8192 source IDs x three fixed epochs, five training passes",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-orthogonal-guard-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-orthogonal-guard-source-s2026092701-r01-controller/source_train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.controller --root /home/szu2070436088/2510044040/CV-SincNet --source 20261106-phase1-dura-orthogonal-guard-source-s2026092701-r01 --ground 20261106-phase1-dura-orthogonal-guard-ground-test-s2026092701-r01 --commit 49706d9acaa7a4f8085b5b48d3eb65e331a7c373 --device cuda:0 --prepare-batch 32 --objective dura_guard",
+      "expected_artifacts": [
+        "final.pt: fixed final epoch",
+        "source_summary.json: source IQ only"
+      ]
+    }
+  ],
+  "notes": [
+    "One controller first runs real-checkpoint source smoke then source training; all predictions and independent scoring continue automatically.",
+    "No frozen-F weights or outputs enter source training; frozen F only read after model freeze for evaluation.",
+    "Source metrics never cancel any of the seven prespecified ground views.",
+    "Original DURA and previously user-stopped experiments are not changed.",
+    "Source loss: NMSE(output,clean) + .02 normalized change + .002 max(NMSE(output,clean)-NMSE(DURA,clean),0)/(NMSE(DURA,clean)+1e-4). Identical fit seed/IDs and epochs; CPU-vs-GPU differences prevent a strictly isolated loss comparison."
+  ],
+  "registered_at": "2026-11-06T05:21:22+00:00"
+}
