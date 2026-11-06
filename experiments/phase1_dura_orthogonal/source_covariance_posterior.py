@@ -10,9 +10,18 @@ import torch
 from experiments.pamf_phase1_flow import experiment as core
 from experiments.pamf_phase1_flow.anchor_source_smoke import frozen_dura
 from experiments.phase1_dura_innovation_probe.source_probe import source_inputs
+from experiments.phase1_dura_innovation_probe.metrics import oracle_line_probe
 from experiments.phase1_dura_orthogonal.controller import training_environments
 from experiments.phase1_dura_orthogonal.oracle_action_source_probe import iq_nmse, true_action
 from experiments.phase1_dura_orthogonal.train_source import load_source_training
+
+BLEND_VARIANTS = ('true_action_true_noise_covariance', 'estimated_action_true_noise_covariance',
+                  'estimated_action_estimated_noise_covariance')
+
+
+def posterior_blend_oracles(anchor, clean, outputs):
+    """Source-clean privileged per-record line oracles; not a deployable selector."""
+    return {key: oracle_line_probe(anchor, clean, outputs[key]-anchor) for key in BLEND_VARIANTS}
 
 
 def posterior_variants(oracle, actual_noise, estimated, estimated_noise, isotropic, covariance, *, cross=False):
@@ -85,9 +94,12 @@ def main():
     parser.add_argument('--commit', required=True)
     parser.add_argument('--steps', type=int, default=40)
     parser.add_argument('--cross', action='store_true')
+    parser.add_argument('--blend-oracle', action='store_true')
     args = parser.parse_args()
     if not 1 <= args.steps <= 256:
         raise ValueError('CG iteration budget must be between 1 and 256')
+    if args.blend_oracle and not args.cross:
+        raise ValueError('Source blend oracle requires the registered cross variants')
     training_environments('cuda:0', os.environ)
     if args.out.exists():
         raise FileExistsError('Unique source covariance diagnostic output required')
@@ -117,6 +129,7 @@ def main():
         raise ValueError('Complete matching source simulator action required')
     dura = frozen_dura(args.root, 'cuda:0')
     errors, residuals = [], []
+    blends = {key: [] for key in BLEND_VARIANTS} if args.blend_oracle else None
     started = time.monotonic()
     for offset in range(0, len(ids), 16):
         chosen = ids[offset:offset+16]
@@ -140,7 +153,14 @@ def main():
             raise FloatingPointError('Finite source posterior outputs required')
         errors.append(values.cpu())
         residuals.append(norms.cpu())
+        if blends is not None:
+            by_name = {name: value for (name, _, _, _), value in zip(variants, outputs)}
+            for name, item in posterior_blend_oracles(original, y, by_name).items():
+                blends[name].append(torch.stack((item['anchor_error'], item['positive_error'],
+                    item['signed_error'], item['optimal_alpha']), dim=1).cpu())
     errors, residuals = torch.cat(errors), torch.cat(residuals)
+    if blends is not None:
+        blends = {name: torch.cat(values) for name, values in blends.items()}
     groups = {}
     for name, receivers in (('RX4_6', (4, 6)), ('RX8', (8,))):
         for view in core.VIEWS:
@@ -151,13 +171,25 @@ def main():
             groups[name+'/'+view] = dict(count=len(cell), mean_nmse=cell.mean(0).tolist(),
                 better_than_dura=(cell[:, 1:] < cell[:, :1]).sum(0).tolist(),
                 cg_mean_relative_residual=cg.mean(0).tolist(), cg_max_relative_residual=cg.max(0).values.tolist())
+            if blends is not None:
+                groups[name+'/'+view]['source_blend_oracles'] = {}
+                for variant, values in blends.items():
+                    sample = values[selected]
+                    groups[name+'/'+view]['source_blend_oracles'][variant] = dict(
+                        mean_nmse=sample[:, :3].mean(0).tolist(),
+                        positive_improved=int((sample[:, 1] < sample[:, 0]-1e-9).sum()),
+                        signed_improved=int((sample[:, 2] < sample[:, 0]-1e-9).sum()),
+                        negative_optimum=int((sample[:, 3] < -1e-8).sum()),
+                        mean_unclipped_alpha=float(sample[:, 3].mean()))
     torch.save(dict(covariance=covariance.cpu(), fit_ids=fit.tolist(), shrinkage=.1), args.out/'source_covariance.pt')
     core.write(args.out/'result.json', dict(status='SOURCE_COVARIANCE_POSTERIOR_COMPLETE', commit=args.commit,
         records=len(ids), covariance_fit_ids=len(fit), covariance_shrinkage=.1, cg_steps=args.steps, cg_rtol=1e-4,
         order=['dura', *[name for name, _, _, _ in variants]],
-        groups=groups, elapsed_seconds=time.monotonic()-started, TX_labels_read=0, F_weights_read=0,
+        groups=groups, source_blend_oracle=args.blend_oracle,
+        elapsed_seconds=time.monotonic()-started, TX_labels_read=0, F_weights_read=0,
         F_outputs_read=0, V_reads=0, target_IQ_reads=0, target_truth_reads=0, model_updates=0,
-        caveat='True simulator action/noise are privileged source-only diagnostics, not deployable or theoretical upper bounds; IQ NMSE is not TX accuracy. Covariance fit and source pilot share previously explored source domains.'))
+        caveat=('True simulator action/noise are privileged source-only diagnostics, not deployable or theoretical upper bounds; IQ NMSE is not TX accuracy. Covariance fit and source pilot share previously explored source domains.'
+                + (' Every blend step uses the matched source clean waveform, including estimated-action variants, and is not deployable.' if args.blend_oracle else ''))))
     print('SOURCE_COVARIANCE_POSTERIOR_COMPLETE', flush=True)
 
 

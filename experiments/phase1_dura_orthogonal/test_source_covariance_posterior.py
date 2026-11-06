@@ -1,5 +1,5 @@
 import torch
-from experiments.phase1_dura_orthogonal.source_covariance_posterior import posterior_cg, shrunk_second_moment, posterior_variants
+from experiments.phase1_dura_orthogonal.source_covariance_posterior import posterior_cg, shrunk_second_moment, posterior_variants, posterior_blend_oracles, BLEND_VARIANTS
 
 
 class MatrixAction:
@@ -47,3 +47,14 @@ def test_cross_variants_hold_action_and_noise_separate():
     assert len(base) == 4 and crossed[:4] == base
     assert crossed[4] == ('true_action_estimated_noise_covariance', oracle, estimated_noise, covariance)
     assert crossed[5] == ('estimated_action_true_noise_covariance', estimate, actual_noise, covariance)
+
+
+def test_blend_oracle_uses_posterior_minus_anchor():
+    anchor = torch.ones(2, 2, 256)
+    clean = 2*anchor
+    variants = {key: 2*anchor for key in BLEND_VARIANTS}
+    result = posterior_blend_oracles(anchor, clean, variants)
+    for value in result.values():
+        torch.testing.assert_close(value['anchor_error'], torch.full((2,), .25))
+        torch.testing.assert_close(value['positive_error'], torch.full((2,), .0625))
+        torch.testing.assert_close(value['signed_error'], torch.full((2,), .0625))
