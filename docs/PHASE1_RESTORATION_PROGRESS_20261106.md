@@ -251,3 +251,7 @@ N607 GPU 7 真实 checkpoint 的 64 条源训练 smoke 已通过；固定五轮�
 在合法源 IQ 上固定原 DURA 和遮挡先验，独立初始化多尺度修正；训练时用同一随机 32 点遮挡，比较恢复输出与 clean 经先验编码后的时间中心化隐藏特征，在 8 和 32 个时间段上计算归一化差异，以 0.05 权重加入源 IQ 与 DURA guard。先验不参与部署推理；不使用 F、TX 标签、V 或目标数据。源域同记录检索不等于身份准确率，该设计仍需正式验证。
 
 本机真实源样本 GPU 检查通过，固定 32768 源 ID × 三视图、五轮；N607 GPU6 目前达到总计算进程上限，单一 owner 队列已启动，将在至少 4096 MiB 且总进程小于 3 时自动执行真实 checkpoint smoke、训练和七景独立 truth-last。现有 GPU7 训练与其他任务不变；当前尚无本版正式性能。[训练登记](../automation_reports/CV-SincNet/20261107-phase1-dura-temporal-prior-source-s2026092701-r01/report.md)、[七景登记](../automation_reports/CV-SincNet/20261107-phase1-dura-temporal-prior-ground-test-s2026092701-r01/report.md)。
+
+## 独立时频学生的源域相位与增益
+
+固定 8192 和 32768 源 ID 训练的两个学生、DURA，在 672 条已探索源 pilot 上计算不可部署的逐条理想相位／复增益。低城区 RX4/6 中，8192 学生 NMSE 从 0.593585 到 0.574007，32768 学生从 0.366779 到 0.352714；DURA 未对齐为 0.037404。RX8 分别从 0.670919 到 0.640495、从 0.493731 到 0.466691，DURA 未对齐为 0.100678。简单整体相位或增益无法解释大部分源波形差距；不能由此推断 TX 身份性能。两个学生数据曝光和更新次数不同，待测的大样本版本继续原计划七景。[完整源分析](../automation_reports/CV-SincNet/20261107-phase1-direct-students-gain-source-s2026092701-r01/analysis.md)。
