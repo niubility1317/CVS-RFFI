@@ -1,0 +1,146 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-masked-prior-representation-source-s2026092701-r01",
+  "group_id": "phase1-masked-prior-representation-source",
+  "display_name": "遮挡先验源域同记录结构诊断",
+  "description": "固定遮挡先验、随机同架构对照与 DURA，在同 RX 和源场景组内比较 received/DURA 与 clean 的同记录检索。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "F-free",
+    "masked-prior",
+    "record-retrieval"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261107-phase1-masked-iq-prior-source-s2026092701-r01",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User authorizes ongoing Phase1 F-free restoration research, source-only diagnostics and GPU use.",
+  "code": {
+    "commit": "16555cb8792b6c83da7d21ce08136d56dd194374",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CPU, 2 threads, CUDA disabled, nice 10",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-masked-prior-representation-source-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source pilot",
+    "version": "source cache R07 epoch19",
+    "representation": "672 fixed source pilot paired received/clean IQ, frozen DURA output",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "672 previously explored source pilot IDs disjoint from 32768 prior fit IDs",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Previously explored 672 source pilot; not an independent blind test",
+    "support_query_ref": null,
+    "leo_config_ref": "Source fixed epoch19 seven simulated views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Same-record retrieval only; may exploit packet or receiver cues, not TX identity or target accuracy"
+  },
+  "checkpoint": {
+    "initialization": "Fixed source-only masked IQ prior final epoch five and original DURA",
+    "sources": [
+      "20261107-phase1-masked-iq-prior-source-s2026092701-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Prior and DURA source-only provenance verified; 32768 prior fit IDs disjoint from pilot",
+    "provenance_verdict": "Fixed original DURA source-only provenance previously verified",
+    "selection_rule": "Fixed DURA and prior final epoch; no target access"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "CPU only 2 threads, nice 10, preserve all existing owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-masked-prior-representation-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-masked-prior-representation-source-s2026092701-r01-launcher.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261107-phase1-masked-prior-representation-source-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.source_masked_representation_probe --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-masked-prior-representation-source-s2026092701-r01 --commit 16555cb8792b6c83da7d21ce08136d56dd194374",
+    "stop_rule": "Stop on source role mismatch, nonfinite output or loss, target/F/TX access or technical failure; do not change other jobs"
+  },
+  "expected_artifacts": [
+    "result.json: grouped source same-record retrieval and feature statistics"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "same-record top1 within source RX and scene",
+      "matched versus other cosine margin",
+      "clean feature effective rank"
+    ],
+    "dimensions": [
+      "672 source records",
+      "public RX x seven source views",
+      "masked prior, random same architecture, raw IQ"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; no target or TX truth"
+  },
+  "rows": [
+    {
+      "row_id": "masked-source-record-retrieval",
+      "method": "Fixed central 32-point mask; prior hidden mean/std, random network and raw IQ cosine retrieval",
+      "purpose": "Measure source record-level information across received/DURA and clean without transmitter labels",
+      "config_ref": "experiments/phase1_dura_orthogonal/source_masked_representation_probe.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110707,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": 2026110707,
+        "support": null,
+        "evaluation": 2026110708
+      },
+      "seed_notes": "Five epochs, fixed final epoch; source pilot mask seed independent",
+      "k": null,
+      "scenario": "fixed previously explored source pilot grouped by RX and source simulation view",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "8-record real-checkpoint CPU smoke and 672 source records, batch16, no training",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-masked-prior-representation-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-masked-prior-representation-source-s2026092701-r01-launcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.source_masked_representation_probe --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-masked-prior-representation-source-s2026092701-r01 --commit 16555cb8792b6c83da7d21ce08136d56dd194374",
+      "expected_artifacts": [
+        "result.json: grouped source same-record retrieval and feature statistics"
+      ]
+    }
+  ],
+  "notes": [
+    "No F weights/outputs, TX labels, V, target IQ/truth or parameter updates.",
+    "Same-record source matches may exploit packet content or receiver details; they are not transmitter identity accuracy.",
+    "Random comparison uses a fixed independent initialization of the same architecture, not the prior original initialization.",
+    "Prior source fit IDs exclude pilot, but pilot was previously explored and may overlap original DURA source ancestry."
+  ],
+  "registered_at": "2026-11-06T18:21:36+00:00"
+}
