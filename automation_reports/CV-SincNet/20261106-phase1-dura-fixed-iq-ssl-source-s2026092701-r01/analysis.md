@@ -15,6 +15,6 @@ N607 GPU 7、确定性模式、batch 32：加载已核验的源上下文缓存 0
 
 12 个受损分组中 9 组平均波形 NMSE 低于 DURA，另外 3 组较高，包括两类接收机的低城区组。组样本量小，不能从 NMSE 推断 TX 身份识别或统计显著。与联合表征版的训练日程及数值执行路径不同，不能将差异仅归因于冻结。
 
-真实 checkpoint 源预测 smoke 通过，冻结 Tri-SIG-TIME SSL 的七景预测已启动；全部预测完成后独立 truth-last 评分。当前无正式地面识别结果。
+真实 checkpoint 源预测 smoke 通过；冻结 Tri-SIG-TIME SSL 的七景预测与独立 truth-last 评分已完成，详见对应地面测试报告。
 
 远端证据：N607 runs/20261106-phase1-dura-fixed-iq-ssl-source-s2026092701-r01/source_summary.json。

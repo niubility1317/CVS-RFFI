@@ -1,3 +1,4 @@
 {"at": "2026-11-06T12:32:59+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-06T12:36:01+00:00", "status": "QUEUED", "note": "Automatically follows source training and source prediction smoke; seven views before independent truth-last scoring.", "evidence": ["N607:PID3397645"], "row_id": null}
 {"at": "2026-11-06T12:42:03+00:00", "status": "RUNNING", "note": "Seven-view ground prediction started after source training and source-only smoke.", "evidence": ["N607:PID3398812"], "row_id": null}
+{"at": "2026-11-06T18:14:08+00:00", "status": "ANALYZED", "note": "All seven 168000-record predictions fixed then independently scored; all six impaired views below DURA.", "evidence": ["N607:flow/test_summary.json,paired_dura.json"], "row_id": null}
