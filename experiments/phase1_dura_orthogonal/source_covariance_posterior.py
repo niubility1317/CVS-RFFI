@@ -68,7 +68,10 @@ def main():
     parser.add_argument('--root', type=Path, required=True)
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--commit', required=True)
+    parser.add_argument('--steps', type=int, default=40)
     args = parser.parse_args()
+    if not 1 <= args.steps <= 256:
+        raise ValueError('CG iteration budget must be between 1 and 256')
     training_environments('cuda:0', os.environ)
     if args.out.exists():
         raise FileExistsError('Unique source covariance diagnostic output required')
@@ -109,7 +112,7 @@ def main():
         outputs, residual = [], []
         for action, noise in ((oracle, v), (estimated, estimated_v)):
             for prior in (isotropic, covariance):
-                value, rel = posterior_cg(action, x, prior, noise, steps=40, rtol=1e-4)
+                value, rel = posterior_cg(action, x, prior, noise, steps=args.steps, rtol=1e-4)
                 outputs.append(value)
                 residual.append(rel)
         if offset == 0:
@@ -134,7 +137,7 @@ def main():
                 cg_mean_relative_residual=cg.mean(0).tolist(), cg_max_relative_residual=cg.max(0).values.tolist())
     torch.save(dict(covariance=covariance.cpu(), fit_ids=fit.tolist(), shrinkage=.1), args.out/'source_covariance.pt')
     core.write(args.out/'result.json', dict(status='SOURCE_COVARIANCE_POSTERIOR_COMPLETE', commit=args.commit,
-        records=len(ids), covariance_fit_ids=len(fit), covariance_shrinkage=.1, cg_steps=40, cg_rtol=1e-4,
+        records=len(ids), covariance_fit_ids=len(fit), covariance_shrinkage=.1, cg_steps=args.steps, cg_rtol=1e-4,
         order=['dura', 'true_action_true_noise_isotropic', 'true_action_true_noise_covariance',
                'estimated_action_estimated_noise_isotropic', 'estimated_action_estimated_noise_covariance'],
         groups=groups, elapsed_seconds=time.monotonic()-started, TX_labels_read=0, F_weights_read=0,
