@@ -102,3 +102,14 @@ class DualDomainRecovery(nn.Module):
         inverse = torch.fft.ifft(complex_delta, dim=-1, norm='ortho')
         spectral_delta = torch.stack((inverse.real, inverse.imag), dim=1)
         return received + .5*scale*(time_delta + spectral_delta)
+
+
+class InternalDuraRecovery(nn.Module):
+    """A separately owned, trainable DURA copy; external context is ignored."""
+
+    def __init__(self, dura):
+        super().__init__()
+        self.dura = dura
+
+    def forward(self, received, anchor=None, innovation=None, variance=None, *, validate=True):
+        return self.dura(received)

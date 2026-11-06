@@ -12,7 +12,7 @@ from experiments.pamf_phase1_flow import experiment as core
 from experiments.pamf_phase1_flow.anchor_source_smoke import frozen_dura
 from experiments.phase1_dura_innovation_probe.source_probe import source_inputs
 from experiments.phase1_dura_orthogonal.controller import training_environments
-from experiments.phase1_dura_orthogonal.model import OrthogonalRecovery, DualDomainRecovery
+from experiments.phase1_dura_orthogonal.model import OrthogonalRecovery, DualDomainRecovery, InternalDuraRecovery
 
 FIT_SIZE = 8192
 TRAIN_EPOCHS = 5
@@ -149,10 +149,12 @@ def main():
     parser.add_argument('--prepare-batch', type=int, default=32)
     parser.add_argument('--smoke-fit', type=int, default=64)
     parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard'), default='iq')
-    parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain'), default='orthogonal')
+    parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal'), default='orthogonal')
     args = parser.parse_args()
     if args.architecture == 'dual_domain' and args.objective != 'iq':
         raise ValueError('Direct dual-domain model uses received-IQ regularization only')
+    if args.architecture == 'dura_internal' and args.objective != 'dura_guard':
+        raise ValueError('Internal DURA refinement requires fixed DURA guard')
     process_started = time.monotonic()
     training_environments(args.device, os.environ)
     device = torch.device(args.device)
@@ -171,7 +173,7 @@ def main():
     _, fresh, clean, fit = load_source_training(args.root, ids)
     if args.smoke:
         fit = fit[:args.smoke_fit]
-    dura = frozen_dura(args.root, str(device)) if args.architecture == 'orthogonal' else None
+    dura = frozen_dura(args.root, str(device)) if args.architecture != 'dual_domain' else None
     preparation_started = time.monotonic()
     data, counts = prepare(args.root, dura, clean, fresh, fit, str(device), args.prepare_batch, args.architecture)
     preparation_seconds = time.monotonic() - preparation_started
@@ -180,19 +182,29 @@ def main():
     if device.type == 'cuda':
         torch.cuda.synchronize(device)
     transfer_seconds = time.monotonic() - transfer_started
-    model = (OrthogonalRecovery(width=32) if args.architecture == 'orthogonal'
-             else DualDomainRecovery(width=32)).to(device)
-    optimizer = torch.optim.AdamW(model.parameters(), lr=.0003, weight_decay=.001)
+    if args.architecture == 'orthogonal':
+        model = OrthogonalRecovery(width=32).to(device)
+    elif args.architecture == 'dual_domain':
+        model = DualDomainRecovery(width=32).to(device)
+    else:
+        model = InternalDuraRecovery(frozen_dura(args.root, str(device)).requires_grad_(True)).to(device)
+    optimizer = torch.optim.AdamW(model.parameters(),
+        lr=1e-5 if args.architecture == 'dura_internal' else .0003,
+        weight_decay=0. if args.architecture == 'dura_internal' else .001)
     generator = torch.Generator().manual_seed(2026110613)
     losses = []
     with torch.no_grad():
         initial = model(*(value[:8] for value in data[:4]))
-    if not torch.equal(initial, data[1][:8]):
+    if args.architecture == 'dura_internal':
+        torch.testing.assert_close(initial, data[1][:8], rtol=1e-5, atol=1e-6)
+    elif not torch.equal(initial, data[1][:8]):
         raise ValueError('New correction must initially reproduce frozen DURA')
     started = time.monotonic()
-    epochs = TRAIN_EPOCHS if args.architecture == 'orthogonal' else DUAL_DOMAIN_EPOCHS
+    epochs = DUAL_DOMAIN_EPOCHS if args.architecture == 'dual_domain' else TRAIN_EPOCHS
     for epoch in range(1, (1 if args.smoke else epochs)+1):
         model.train()
+        if args.architecture == 'dura_internal':
+            model.dura.eval()
         order = torch.randperm(len(data[0]), generator=generator).to(device)
         total = torch.zeros((), device=device)
         for start in range(0, len(order), 32):
@@ -204,10 +216,15 @@ def main():
                 raise FloatingPointError('Finite IQ-only source loss required')
             optimizer.zero_grad(set_to_none=True)
             loss.backward()
-            second_head = model.step if args.architecture == 'orthogonal' else model.spectral_head
-            if (model.wave.weight.grad is None or second_head.weight.grad is None or
-                    not torch.isfinite(model.wave.weight.grad).all() or not torch.isfinite(second_head.weight.grad).all()):
-                raise ValueError('Both learned correction paths require finite gradients')
+            if args.architecture == 'dura_internal':
+                for part in (model.dura.frozen, model.dura.prior):
+                    if not any(p.grad is not None and torch.count_nonzero(p.grad) for p in part.parameters()):
+                        raise ValueError('Both DURA context and priors require nonzero gradients')
+            else:
+                second_head = model.step if args.architecture == 'orthogonal' else model.spectral_head
+                if (model.wave.weight.grad is None or second_head.weight.grad is None or
+                        not torch.isfinite(model.wave.weight.grad).all() or not torch.isfinite(second_head.weight.grad).all()):
+                    raise ValueError('Both learned correction paths require finite gradients')
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1., error_if_nonfinite=True)
             optimizer.step()
             total += loss.detach() * len(indices)
@@ -219,6 +236,7 @@ def main():
         core.write(args.out/'smoke.json', dict(status='SOURCE_TRAINING_SMOKE_PASS', commit=args.commit,
             fit_ids=len(fit), exposure=len(data[0]), losses=losses, device=str(device),
             objective=args.objective, architecture=args.architecture, prepare_batch=args.prepare_batch,
+            candidate_dura_trainable=args.architecture == 'dura_internal',
             DURA_training_reads=int(dura is not None), preparation_seconds=preparation_seconds,
             transfer_seconds=transfer_seconds, training_seconds=time.monotonic()-started,
             end_to_end_seconds=time.monotonic()-process_started, TX_labels_read=0, F_weights_read=0,
@@ -226,6 +244,7 @@ def main():
         return
     checkpoint = dict(schema=SCHEMA, commit=args.commit, model=model.state_dict(), width=32,
                       epochs=epochs, fit_ids=fit, counts=counts, losses=losses, architecture=args.architecture,
+                      candidate_dura_trainable=args.architecture == 'dura_internal',
                       device=str(device), objective=args.objective, prepare_batch=args.prepare_batch,
                       DURA_training_reads=int(dura is not None),
                       TX_labels_read=0, F_weights_read=0, F_outputs_read=0, V_reads=0,
@@ -238,7 +257,8 @@ def main():
                                 str(device), args.prepare_batch)
     core.write(args.out/'source_summary.json', dict(status='SOURCE_TRAINED', commit=args.commit,
         fit_ids=len(fit), epochs=epochs, architecture=args.architecture,
-        DURA_training_reads=int(args.architecture == 'orthogonal'),
+        candidate_dura_trainable=args.architecture == 'dura_internal',
+        DURA_training_reads=int(args.architecture != 'dual_domain'),
         exposure=len(data[0]), counts=counts, losses=losses,
         device=str(device), objective=args.objective, prepare_batch=args.prepare_batch,
         preparation_seconds=preparation_seconds,

@@ -9,7 +9,7 @@ import torch
 from experiments.pamf_phase1_flow import experiment as core
 from experiments.pamf_phase1_flow.anchor_source_smoke import frozen_dura
 from experiments.phase1_dura_innovation_probe.source_probe import SOURCE_PILOT, source_inputs
-from experiments.phase1_dura_orthogonal.model import OrthogonalRecovery, DualDomainRecovery
+from experiments.phase1_dura_orthogonal.model import OrthogonalRecovery, DualDomainRecovery, InternalDuraRecovery
 from experiments.phase1_dura_orthogonal.train_source import SCHEMA, TRAIN_EPOCHS, DUAL_DOMAIN_EPOCHS, FIT_SIZE, extract_context
 
 
@@ -17,9 +17,9 @@ def load_fixed(root, source, commit):
     folder = root/'runs'/source
     summary = core.read(folder/'source_summary.json')
     architecture = summary.get('architecture', 'orthogonal')
-    if architecture not in ('orthogonal', 'dual_domain'):
+    if architecture not in ('orthogonal', 'dual_domain', 'dura_internal'):
         raise ValueError('Registered recovery architecture required')
-    epochs = TRAIN_EPOCHS if architecture == 'orthogonal' else DUAL_DOMAIN_EPOCHS
+    epochs = DUAL_DOMAIN_EPOCHS if architecture == 'dual_domain' else TRAIN_EPOCHS
     expected = dict(status='SOURCE_TRAINED', commit=commit, fit_ids=FIT_SIZE, epochs=epochs,
                     TX_labels_read=0, F_weights_read=0, F_outputs_read=0, V_reads=0,
                     target_reads=0, DURA_frozen=True)
@@ -38,8 +38,16 @@ def load_fixed(root, source, commit):
     if architecture == 'dual_domain' and (objective != 'iq' or state.get('DURA_training_reads') != 0
                                           or summary.get('DURA_training_reads') != 0):
         raise ValueError('Direct recovery must be trained without DURA')
-    model = (OrthogonalRecovery(width=state['width']) if architecture == 'orthogonal'
-             else DualDomainRecovery(width=state['width']))
+    if architecture == 'dura_internal' and (objective != 'dura_guard'
+            or state.get('candidate_dura_trainable') is not True
+            or summary.get('candidate_dura_trainable') is not True):
+        raise ValueError('Matching internally trained DURA checkpoint required')
+    if architecture == 'orthogonal':
+        model = OrthogonalRecovery(width=state['width'])
+    elif architecture == 'dual_domain':
+        model = DualDomainRecovery(width=state['width'])
+    else:
+        model = InternalDuraRecovery(frozen_dura(root, 'cpu'))
     model.load_state_dict(state['model'], strict=True)
     model.eval().requires_grad_(False)
     dura = frozen_dura(root, 'cpu')
