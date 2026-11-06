@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 from experiments.pamf_phase1_flow import experiment as core
-from experiments.phase1_dura_orthogonal.masked_prior_constraint import masked_prior_loss, load_prior, SOURCE_COMMIT
+from experiments.phase1_dura_orthogonal.masked_prior_constraint import masked_prior_loss, temporal_prior_loss, load_prior, SOURCE_COMMIT
 from experiments.phase1_dura_orthogonal.source_masked_prior import MaskedIQPrior, masked_inputs, SPAN
 
 
@@ -56,3 +56,16 @@ def test_loss_and_output_gradient_match_original_mask_preparation():
     candidate_grad = torch.autograd.grad(candidate, output)[0]
     assert torch.equal(reference, candidate)
     assert torch.equal(reference_grad, candidate_grad)
+
+
+def test_temporal_prior_loss_preserves_teacher_and_backpropagates():
+    torch.manual_seed(13)
+    prior = MaskedIQPrior().eval().requires_grad_(False)
+    clean = torch.randn(3, 2, 256)
+    starts = torch.tensor([1, 90, 223])
+    assert temporal_prior_loss(prior, clean, clean, starts) == 0
+    output = (clean + .1*torch.randn_like(clean)).requires_grad_()
+    loss = temporal_prior_loss(prior, output, clean, starts)
+    loss.backward()
+    assert torch.isfinite(loss) and loss > 0 and output.grad.abs().sum() > 0
+    assert all(p.grad is None and not p.requires_grad for p in prior.parameters())

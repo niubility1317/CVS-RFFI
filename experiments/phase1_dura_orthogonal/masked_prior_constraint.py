@@ -1,11 +1,14 @@
 """Fixed source-only masked-IQ teacher constraint for recovery training."""
 import numpy as np
 import torch
+from torch.nn import functional as F
 
 SOURCE = '20261107-phase1-masked-iq-prior-source-s2026092701-r01'
 SOURCE_COMMIT = 'acdfd17ae205fa5e04b32a5ecdd5eea5d7bb21d4'
 MASK_SEED = 2026110711
 WEIGHT = .05
+TEMPORAL_BINS = (8, 32)
+TEMPORAL_WEIGHT = .05
 
 
 def load_prior(root, fit, device, *, smoke=False):
@@ -27,7 +30,7 @@ def load_prior(root, fit, device, *, smoke=False):
     return model.eval().requires_grad_(False)
 
 
-def masked_prior_loss(prior, output, clean, starts):
+def visible_pair(output, clean, starts):
     from experiments.phase1_dura_orthogonal.source_masked_prior import SPAN
     if output.shape != clean.shape or output.ndim != 3 or output.shape[1:] != (2, 256) or starts.shape != (len(output),):
         raise ValueError('Matching source output and clean IQ required')
@@ -41,8 +44,35 @@ def masked_prior_loss(prior, output, clean, starts):
         return observed, scale
     observed, scale = visible(output)
     clean_observed, clean_scale = visible(clean)
+    return observed, scale, clean_observed, clean_scale, mask
+
+
+def masked_prior_loss(prior, output, clean, starts):
+    from experiments.phase1_dura_orthogonal.source_masked_prior import SPAN
+    observed, scale, clean_observed, clean_scale, mask = visible_pair(output, clean, starts)
     with torch.no_grad():
         target = prior(clean_observed, mask, clean_scale)
     prediction = prior(observed, mask, scale)
     energy = clean.square().mean((1, 2)).clamp_min(1e-8)
     return (((prediction-target).square()*mask[:, None]).sum((1, 2))/(2*SPAN*energy)).mean()
+
+
+def temporal_prior_loss(prior, output, clean, starts):
+    """Compare time-centered prior activations at fixed 8- and 32-bin scales."""
+    observed, scale, clean_observed, clean_scale, mask = visible_pair(output, clean, starts)
+
+    def encode(value, norm):
+        h = F.silu(prior.entry(torch.cat((value/norm, mask[:, None].to(value.dtype)), 1)))
+        for block in prior.blocks:
+            h = h + .2*F.silu(block(h))
+        h = h-h.mean(-1, keepdim=True)
+        return tuple(F.avg_pool1d(h, 256//bins) for bins in TEMPORAL_BINS)
+
+    with torch.no_grad():
+        target = encode(clean_observed, clean_scale)
+    prediction = encode(observed, scale)
+    terms = []
+    for value, reference in zip(prediction, target):
+        energy = reference.square().mean((1, 2)).clamp_min(1e-6)
+        terms.append(((value-reference).square().mean((1, 2))/energy).mean())
+    return torch.stack(terms).mean()
