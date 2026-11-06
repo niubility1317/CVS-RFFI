@@ -23,6 +23,7 @@ from experiments.phase1_dura_orthogonal.joint_ssl_iq import SourceIQEncoder, cro
 from experiments.phase1_dura_orthogonal.local_ssl_iq import PatchIQEncoder, patch_cross_view_loss, frozen_patch_feature_loss
 from experiments.phase1_dura_orthogonal.multiscale_spectral import DuraMultiscaleSpectral
 from experiments.phase1_dura_orthogonal.direct_spectral_student import DirectSpectralStudent
+from experiments.phase1_dura_orthogonal.dura_experts import DuraExperts, EXPERT_COUNT
 from experiments.phase1_dura_orthogonal.source_context_cache import load_cache, save_cache
 from experiments.phase1_dura_orthogonal.posterior_teacher_contract import load_posterior_teacher, TEACHER_SOURCE, TEACHER_COMMIT
 
@@ -255,8 +256,8 @@ def main():
     parser.add_argument('--source-context-cache', type=Path)
     parser.add_argument('--save-source-context-cache', type=Path)
     parser.add_argument('--deterministic', action='store_true')
-    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill'), default='iq')
-    parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student'), default='orthogonal')
+    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard'), default='iq')
+    parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts'), default='orthogonal')
     args = parser.parse_args()
     if args.deterministic:
         os.environ['CUBLAS_WORKSPACE_CONFIG'] = ':4096:8'
@@ -275,6 +276,8 @@ def main():
         raise ValueError('Multiscale correction requires a registered DURA guard')
     if args.objective == 'wide_source_guard' and args.architecture != 'dura_multiscale':
         raise ValueError('Wide source guard requires multiscale DURA correction')
+    if (args.architecture == 'dura_experts') != (args.objective == 'wide_mixture_guard'):
+        raise ValueError('DURA experts require the registered wide mixture guard')
     if args.objective == 'tail_excess_guard' and args.architecture != 'dura_multiscale':
         raise ValueError('Tail excess guard requires multiscale DURA correction')
     if args.objective in ('ssl_joint_guard', 'ssl_fixed_guard', 'ssl_crosshalf_guard') and args.architecture != 'dura_multiscale':
@@ -306,7 +309,7 @@ def main():
     torch.backends.cudnn.allow_tf32 = False
     torch.manual_seed(2026110612)
     ids, rx, scene, _, source_received, source_clean = source_inputs(args.root)
-    fit_size = WIDE_FIT_SIZE if args.objective in ('wide_source_guard', 'wide_source_distill') else FIT_SIZE
+    fit_size = WIDE_FIT_SIZE if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard') else FIT_SIZE
     _, fresh, clean, fit = load_source_training(args.root, ids, fit_size=fit_size)
     if args.smoke:
         fit = fit[:args.smoke_fit]
@@ -349,6 +352,8 @@ def main():
         model = NoiseGatedDuraTimeVarying(width=32, taps=9).to(device)
     elif args.architecture == 'dura_multiscale':
         model = DuraMultiscaleSpectral(width=32, taps=9).to(device)
+    elif args.architecture == 'dura_experts':
+        model = DuraExperts(width=32, taps=9).to(device)
     elif args.architecture == 'direct_spectral_student':
         model = DirectSpectralStudent(width=32, taps=9).to(device)
     else:
@@ -423,7 +428,7 @@ def main():
             else:
                 output = model(x, anchor, direction, variance, validate=False)
             base_objective = ('distill_iq' if args.objective == 'wide_source_distill' else
-                              'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'wide_source_guard') else args.objective)
+                              'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'wide_source_guard', 'wide_mixture_guard') else args.objective)
             loss = source_loss(output, anchor, y, objective=base_objective)
             if args.objective == 'posterior_teacher_guard':
                 loss = loss + .5*posterior_teacher_loss(output, fields[5], y)
@@ -457,6 +462,10 @@ def main():
                 if args.objective == 'sim_action_fixed_prior' and any(
                         p.requires_grad or p.grad is not None for p in model.dura.prior.parameters()):
                     raise ValueError('Fixed original priors must remain frozen')
+            elif args.architecture == 'dura_experts':
+                if any(head.weight.grad is None or not torch.isfinite(head.weight.grad).all()
+                       for expert in model.experts for head in (expert.wave, expert.filter_head)):
+                    raise ValueError('All expert correction paths require finite gradients')
             else:
                 second_head = (model.step if args.architecture == 'orthogonal' else
                                model.filter_head if args.architecture in ('adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student') else model.spectral_head)
@@ -493,9 +502,11 @@ def main():
                             source_ssl_teacher_commit=SSL_TEACHER_COMMIT, source_ssl_aux_trainable=False)
     cache_metadata = dict(source_context_cache=str(args.source_context_cache) if args.source_context_cache else None,
                           deterministic_algorithms=args.deterministic)
-    if args.objective in ('wide_source_guard', 'wide_source_distill'):
+    if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard'):
         cache_metadata.update(source_fit_size=WIDE_FIT_SIZE,
                               source_context_cache_written=str(args.save_source_context_cache) if args.save_source_context_cache else None)
+    if args.architecture == 'dura_experts':
+        cache_metadata.update(source_expert_count=EXPERT_COUNT)
     if args.objective == 'tail_excess_guard':
         cache_metadata.update(source_tail_fraction=.25, source_tail_weight=.5)
     if args.architecture == 'direct_spectral_student':
