@@ -1,0 +1,2 @@
+{"at": "2026-11-06T22:51:05+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-06T22:52:23+00:00", "status": "RUNNING", "note": "Full source paired training started after real source checkpoint smoke; not a target performance test", "evidence": ["local PID 416, CUDA GPU0 process, launcher.log FUSED_GUARD_REAL_SOURCE_SMOKE_PASS"], "row_id": null}
