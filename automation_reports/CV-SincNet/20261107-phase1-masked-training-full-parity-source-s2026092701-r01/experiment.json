@@ -1,0 +1,149 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-masked-training-full-parity-source-s2026092701-r01",
+  "group_id": "phase1-masked-training-full-parity-source",
+  "display_name": "遮挡先验完整源训练预算一致性",
+  "description": "在本机 GPU 比较同一全量源上下文上原版与精简损失的五轮训练轨迹，初始化按 N607 源流程重建。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "F-free",
+    "gpu-latency",
+    "expert-distillation"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261107-phase1-masked-iq-prior-source-s2026092701-r01",
+    "20261106-phase1-dura-wide-source-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User authorizes ongoing Phase1 F-free restoration research, source-only diagnostics and GPU use.",
+  "code": {
+    "commit": "114a169dd94c358031c0aa9237df884d41f2678e",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CPU capture of source-only initialization; local RTX 5070 Ti GPU0 FP32 TF32off deterministic full-budget paired diagnostic",
+    "cwd": "E:/type10-7/github_publish/CVS-RFFI-repo"
+  },
+  "data": {
+    "dataset": "Phase1 Main split permitted source L_s/U_s",
+    "version": "fixed deterministic source context epochs21/22/23",
+    "representation": "32768 source fit IDs x three views, received/anchor/innovation/variance/clean IQ",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "all fixed 32768 eligible source fit IDs, three source views",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ only, TX hidden",
+      "U_s": "source IQ only, TX hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Entire existing source fit set, not independent or target data",
+    "support_query_ref": null,
+    "leo_config_ref": "pre-existing legal source simulation epochs 21/22/23"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Same local GPU and same full source budget parameter parity; not N607 run equivalence or target accuracy"
+  },
+  "checkpoint": {
+    "initialization": "Original DURA construction recreates candidate seed 2026110612 initialization on N607 CPU; fixed source-only masked prior final epoch5",
+    "sources": [
+      "20261107-phase1-masked-iq-prior-source-s2026092701-r01",
+      "20261106-phase1-dura-wide-source-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "Original DURA provenance, prior commit and exact ordered 32768 source IDs; no F/TX/V/target",
+    "provenance_verdict": "Both prior and source context are F/TX/V/target-free source only",
+    "selection_rule": "Fixed prior and same initialized correction, no target selection"
+  },
+  "execution": {
+    "host": "N607 CPU and local Windows GPU",
+    "launch_owner": "this conversation",
+    "gpu_policy": "N607 extraction on CPU, local GPU0 short technical check only; preserve other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-masked-training-full-parity-source-s2026092701-r01-initial",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-masked-training-full-parity-source-s2026092701-r01-capture.log",
+    "local_artifact_root": "E:/type10-7/.codex_tmp/20261107-phase1-masked-training-full-parity-source-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -m experiments.phase1_dura_orthogonal.benchmark_masked_training_full --capture-root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-masked-training-full-parity-source-s2026092701-r01-initial --commit 114a169dd94c358031c0aa9237df884d41f2678e ; copy private initial.pt and validated source context then C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -u -m experiments.phase1_dura_orthogonal.benchmark_masked_training_full --cache E:/type10-7/.codex_tmp/masked_full_context.pt --teacher E:/type10-7/.codex_tmp/masked_source_prior_final.pt --initial-state E:/type10-7/.codex_tmp/masked_full_initial.pt --out E:/type10-7/.codex_tmp/20261107-phase1-masked-training-full-parity-source-s2026092701-r01 --commit 114a169dd94c358031c0aa9237df884d41f2678e",
+    "stop_rule": "Stop on invalid checkpoint, nonfinite computation, or unavailable GPU"
+  },
+  "expected_artifacts": [
+    "original.pt and optimized.pt: private diagnostic model states",
+    "result.json: all 15360 step losses, parameters and 192 source output parity"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "all 15360 step training loss exactness",
+      "final parameter exactness",
+      "192 source output exactness",
+      "per-path full-budget time"
+    ],
+    "dimensions": [
+      "32768 source IDs x three views",
+      "five epochs batch32 each"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; no target or TX truth"
+  },
+  "rows": [
+    {
+      "row_id": "masked-prior-full-source-training-parity",
+      "method": "Original and pruned masked prior loss, equal N607-recreated model initialization, order and mask seeds",
+      "purpose": "Check source training trajectories, not full target predictions",
+      "config_ref": "experiments/phase1_dura_orthogonal/benchmark_masked_training_full.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": 2026110711,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Model 2026110612, order 2026110613, mask 2026110711, fixed source prior 2026110707",
+      "k": null,
+      "scenario": "64 fixed source training IDs, three source simulation views",
+      "optimizer": "AdamW weight decay .001, gradient clip 1",
+      "lr": 0.0003,
+      "epochs": 5,
+      "fl_rounds": null,
+      "budget_ref": "one 192-view warmup per path, then 98304 source views x five epochs batch32 per path",
+      "output_root": "E:/type10-7/.codex_tmp/20261107-phase1-masked-training-full-parity-source-s2026092701-r01",
+      "log_path": "E:/type10-7/.codex_tmp/20261107-phase1-masked-training-full-parity-source-s2026092701-r01-launcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -m experiments.phase1_dura_orthogonal.benchmark_masked_training_full --capture-root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-masked-training-full-parity-source-s2026092701-r01-initial --commit 114a169dd94c358031c0aa9237df884d41f2678e ; copy private initial.pt and validated source context then C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 -u -m experiments.phase1_dura_orthogonal.benchmark_masked_training_full --cache E:/type10-7/.codex_tmp/masked_full_context.pt --teacher E:/type10-7/.codex_tmp/masked_source_prior_final.pt --initial-state E:/type10-7/.codex_tmp/masked_full_initial.pt --out E:/type10-7/.codex_tmp/20261107-phase1-masked-training-full-parity-source-s2026092701-r01 --commit 114a169dd94c358031c0aa9237df884d41f2678e",
+      "expected_artifacts": [
+        "original.pt and optimized.pt: private diagnostic model states",
+        "result.json: all 15360 step losses, parameters and 192 source output parity"
+      ]
+    }
+  ],
+  "notes": [
+    "No F, TX labels, V, target data or target feedback.",
+    "Initialization reconstructed on N607 CPU in source trainer order including frozen DURA model build; not directly captured from running process.",
+    "Both full source trajectories use same initialization, input order and masks; one small warmup per path.",
+    "Timing has fixed path order and shared local GPU load; do not claim controlled N607 speed or target equality.",
+    "Existing N607 training and all prediction processes remain unchanged."
+  ],
+  "registered_at": "2026-11-06T17:53:44+00:00"
+}
