@@ -31,7 +31,7 @@ def load_fixed(root, source, commit):
             any(state.get(k) != v for k, v in expected.items() if k not in ('status', 'fit_ids', 'epochs'))):
         raise ValueError('Fixed correction checkpoint and provenance required')
     objective = state.get('objective', 'iq')
-    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard') or summary.get('objective', 'iq') != objective:
+    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard') or summary.get('objective', 'iq') != objective:
         raise ValueError('Source objective must match the fixed checkpoint')
     if objective == 'crossview_guard' and any(
             obj.get('source_views_per_record') != 3 or obj.get('crossview_weight') != .1
@@ -42,10 +42,14 @@ def load_fixed(root, source, commit):
     if architecture == 'dual_domain' and (objective != 'iq' or state.get('DURA_training_reads') != 0
                                           or summary.get('DURA_training_reads') != 0):
         raise ValueError('Direct recovery must be trained without DURA')
-    if architecture == 'dura_internal' and (objective != 'dura_guard'
+    if architecture == 'dura_internal' and (objective not in ('dura_guard', 'sim_action_guard')
             or state.get('candidate_dura_trainable') is not True
             or summary.get('candidate_dura_trainable') is not True):
         raise ValueError('Matching internally trained DURA checkpoint required')
+    if objective == 'sim_action_guard' and (architecture != 'dura_internal' or any(
+            obj.get('source_simulator_action_used') is not True or obj.get('source_simulator_action_weight') != .01
+            or obj.get('source_probe_seed') != 2026110614 for obj in (summary, state))):
+        raise ValueError('Matching simulator-supervised DURA checkpoint required')
     if architecture == 'orthogonal':
         model = OrthogonalRecovery(width=state['width'])
     elif architecture == 'dual_domain':
