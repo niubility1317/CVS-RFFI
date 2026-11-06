@@ -1,0 +1,146 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-coarse-student-complement-source-s2026092701-r01",
+  "group_id": "phase1-coarse-student-complement-source",
+  "display_name": "粗恢复与独立学生源域互补诊断",
+  "description": "比较 DURA 粗恢复、独立宽源学生和完整 DURA 的源 IQ 误差及不可部署的逐条理想凸组合。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "F-free",
+    "coarse",
+    "direct-student"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261106-phase1-direct-spectral-wide-distill-source-s2026092701-r01",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User authorizes ongoing Phase1 F-free restoration research, source-only diagnostics and GPU use.",
+  "code": {
+    "commit": "4670b58cc9e3a8b8ba610133192b463cb6344bc4",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CPU two threads, CUDA disabled, nice 10",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-coarse-student-complement-source-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source pilot",
+    "version": "source cache R07 epoch19",
+    "representation": "672 fixed source pilot paired received/clean IQ, frozen DURA output",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "672 previously explored source pilot IDs disjoint from 32768 prior fit IDs",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Previously explored 672 source pilot; not an independent blind test",
+    "support_query_ref": null,
+    "leo_config_ref": "Source fixed epoch19 seven simulated views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source IQ complementarity only; per-record clean oracle is nondeployable, not identity accuracy or general bound"
+  },
+  "checkpoint": {
+    "initialization": "Fixed final source-only wide direct student and fixed DURA; no model updates",
+    "sources": [
+      "20261106-phase1-direct-spectral-wide-distill-source-s2026092701-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Wide student fixed commit and 32768 fit IDs, source pilot disjoint; fixed DURA checkpoint and data permissions",
+    "provenance_verdict": "Both checkpoints source-only with no F/TX/V/target ancestry",
+    "selection_rule": "One fixed wide student and original DURA, no target-based selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "CPU only 2 threads, nice 10, preserve all existing owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-coarse-student-complement-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-coarse-student-complement-source-s2026092701-r01-launcher.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261107-phase1-coarse-student-complement-source-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.source_coarse_student_complement --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-coarse-student-complement-source-s2026092701-r01 --commit 4670b58cc9e3a8b8ba610133192b463cb6344bc4",
+    "stop_rule": "Stop on source role mismatch, nonfinite output or loss, target/F/TX access or technical failure; do not change other jobs"
+  },
+  "expected_artifacts": [
+    "result.json: 14 source groups, three pairs and clean-oracle convex mixtures"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source IQ NMSE of fixed endpoints",
+      "source clean oracle convex-mixture IQ NMSE",
+      "count of strict improvements"
+    ],
+    "dimensions": [
+      "672 source records",
+      "RX4/6 and RX8 x seven source views x 48",
+      "coarse/student, coarse/DURA, student/DURA"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; no target or TX truth"
+  },
+  "rows": [
+    {
+      "row_id": "coarse-student-source-complement",
+      "method": "Fixed source DURA coarse, wide student and DURA plus privileged optimal convex mixing",
+      "purpose": "Determine source IQ complementarity before proposing an independent or hybrid recovery architecture",
+      "config_ref": "experiments/phase1_dura_orthogonal/source_coarse_student_complement.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Previously fixed source-only students and DURA; no training or new random selection",
+      "k": null,
+      "scenario": "fixed previously explored source pilot grouped by RX and source simulation view",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "672 source pilot records x three fixed pair comparisons; source clean only as analysis oracle",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-coarse-student-complement-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-coarse-student-complement-source-s2026092701-r01-launcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.source_coarse_student_complement --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-coarse-student-complement-source-s2026092701-r01 --commit 4670b58cc9e3a8b8ba610133192b463cb6344bc4",
+      "expected_artifacts": [
+        "result.json: 14 source groups, three pairs and clean-oracle convex mixtures"
+      ]
+    }
+  ],
+  "notes": [
+    "Source pilot already explored and may have been seen by DURA; student fit excludes pilot.",
+    "Per-record ideal mixture weight depends on source clean and is unavailable for deployment.",
+    "No F weights, TX labels, V or target data; wave NMSE is not TX identity accuracy.",
+    "First batch compares actual two-stage DURA to the real checkpoint forward as a no-query smoke."
+  ],
+  "registered_at": "2026-11-06T20:47:06+00:00"
+}
