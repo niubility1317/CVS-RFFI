@@ -63,6 +63,23 @@ def source_loss(output, anchor, clean, *, objective='iq'):
     return per.mean()
 
 
+def grouped_view_indices(base_indices, fit_count):
+    """Index matching physical records in three view-major source arrays."""
+    return torch.cat(tuple(base_indices + offset*fit_count for offset in range(3)))
+
+
+def crossview_dispersion(output, clean):
+    """Mean within-record three-view variance in units of clean IQ energy."""
+    if (output.ndim != 3 or output.shape[1:] != (2, 256) or clean.shape != output.shape
+            or len(output) == 0 or len(output) % 3):
+        raise ValueError('Three matched view-major IQ batches required')
+    count = len(output)//3
+    views = output.reshape(3, count, 2, 256)
+    center = views.mean(0, keepdim=True)
+    energy = clean[:count].square().mean((1, 2)).clamp_min(1e-8)
+    return ((views-center).square().mean((0, 2, 3))/energy).mean()
+
+
 def load_source_training(root, eval_ids):
     complete = core.read(root/'runs'/core.F_RUN/'F'/core.F_ROW/'source/complete.json')
     contract = core.read(complete['config']['source_contract'])
@@ -148,13 +165,15 @@ def main():
     parser.add_argument('--device', default='cuda:0')
     parser.add_argument('--prepare-batch', type=int, default=32)
     parser.add_argument('--smoke-fit', type=int, default=64)
-    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard'), default='iq')
+    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard'), default='iq')
     parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal'), default='orthogonal')
     args = parser.parse_args()
     if args.architecture == 'dual_domain' and args.objective != 'iq':
         raise ValueError('Direct dual-domain model uses received-IQ regularization only')
     if args.architecture == 'dura_internal' and args.objective != 'dura_guard':
         raise ValueError('Internal DURA refinement requires fixed DURA guard')
+    if args.objective == 'crossview_guard' and args.architecture != 'orthogonal':
+        raise ValueError('Cross-view training is registered only for orthogonal correction')
     process_started = time.monotonic()
     training_environments(args.device, os.environ)
     device = torch.device(args.device)
@@ -182,6 +201,11 @@ def main():
     if device.type == 'cuda':
         torch.cuda.synchronize(device)
     transfer_seconds = time.monotonic() - transfer_started
+    if args.objective == 'crossview_guard':
+        count = len(fit)
+        if (len(data[4]) != 3*count or not torch.equal(data[4][:count], data[4][count:2*count])
+                or not torch.equal(data[4][:count], data[4][2*count:])):
+            raise ValueError('Three source views must share physical clean IQ in matching order')
     if args.architecture == 'orthogonal':
         model = OrthogonalRecovery(width=32).to(device)
     elif args.architecture == 'dual_domain':
@@ -206,13 +230,17 @@ def main():
         model.train()
         if args.architecture == 'dura_internal':
             model.dura.eval()
-        order = torch.randperm(len(data[0]), generator=generator).to(device)
+        crossview = args.objective == 'crossview_guard'
+        order = torch.randperm(len(fit) if crossview else len(data[0]), generator=generator).to(device)
         total = torch.zeros((), device=device)
-        for start in range(0, len(order), 32):
-            indices = order[start:start+32]
+        for start in range(0, len(order), 10 if crossview else 32):
+            base = order[start:start+(10 if crossview else 32)]
+            indices = grouped_view_indices(base, len(fit)) if crossview else base
             x, anchor, direction, variance, y = (v[indices] for v in data)
             output = model(x, anchor, direction, variance, validate=False)
-            loss = source_loss(output, anchor, y, objective=args.objective)
+            loss = source_loss(output, anchor, y, objective='dura_guard' if crossview else args.objective)
+            if crossview:
+                loss = loss + .1*crossview_dispersion(output, y)
             if not torch.isfinite(loss):
                 raise FloatingPointError('Finite IQ-only source loss required')
             optimizer.zero_grad(set_to_none=True)
@@ -229,7 +257,7 @@ def main():
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1., error_if_nonfinite=True)
             optimizer.step()
             total += loss.detach() * len(indices)
-        losses.append(float(total.cpu())/len(order))
+        losses.append(float(total.cpu())/(3*len(order) if crossview else len(order)))
         print('ORTHOGONAL_SOURCE_EPOCH', epoch, 'loss', losses[-1], 'elapsed', round(time.monotonic()-started, 1), flush=True)
     if dura is not None and any(p.requires_grad or p.grad is not None for p in dura.parameters()):
         raise ValueError('DURA must stay frozen')
@@ -238,6 +266,8 @@ def main():
             fit_ids=len(fit), exposure=len(data[0]), losses=losses, device=str(device),
             objective=args.objective, architecture=args.architecture, prepare_batch=args.prepare_batch,
             candidate_dura_trainable=args.architecture == 'dura_internal',
+            source_views_per_record=3 if args.objective == 'crossview_guard' else None,
+            crossview_weight=.1 if args.objective == 'crossview_guard' else None,
             DURA_training_reads=int(dura is not None), preparation_seconds=preparation_seconds,
             transfer_seconds=transfer_seconds, training_seconds=time.monotonic()-started,
             end_to_end_seconds=time.monotonic()-process_started, TX_labels_read=0, F_weights_read=0,
@@ -246,6 +276,8 @@ def main():
     checkpoint = dict(schema=SCHEMA, commit=args.commit, model=model.state_dict(), width=32,
                       epochs=epochs, fit_ids=fit, counts=counts, losses=losses, architecture=args.architecture,
                       candidate_dura_trainable=args.architecture == 'dura_internal',
+                      source_views_per_record=3 if args.objective == 'crossview_guard' else None,
+                      crossview_weight=.1 if args.objective == 'crossview_guard' else None,
                       device=str(device), objective=args.objective, prepare_batch=args.prepare_batch,
                       DURA_training_reads=int(dura is not None),
                       TX_labels_read=0, F_weights_read=0, F_outputs_read=0, V_reads=0,
@@ -259,6 +291,8 @@ def main():
     core.write(args.out/'source_summary.json', dict(status='SOURCE_TRAINED', commit=args.commit,
         fit_ids=len(fit), epochs=epochs, architecture=args.architecture,
         candidate_dura_trainable=args.architecture == 'dura_internal',
+        source_views_per_record=3 if args.objective == 'crossview_guard' else None,
+        crossview_weight=.1 if args.objective == 'crossview_guard' else None,
         DURA_training_reads=int(args.architecture != 'dual_domain'),
         exposure=len(data[0]), counts=counts, losses=losses,
         device=str(device), objective=args.objective, prepare_batch=args.prepare_batch,

@@ -31,8 +31,12 @@ def load_fixed(root, source, commit):
             any(state.get(k) != v for k, v in expected.items() if k not in ('status', 'fit_ids', 'epochs'))):
         raise ValueError('Fixed correction checkpoint and provenance required')
     objective = state.get('objective', 'iq')
-    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard') or summary.get('objective', 'iq') != objective:
+    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard') or summary.get('objective', 'iq') != objective:
         raise ValueError('Source objective must match the fixed checkpoint')
+    if objective == 'crossview_guard' and any(
+            obj.get('source_views_per_record') != 3 or obj.get('crossview_weight') != .1
+            for obj in (summary, state)):
+        raise ValueError('Matching three-view source training metadata required')
     if state.get('architecture', 'orthogonal') != architecture:
         raise ValueError('Source architecture must match the fixed checkpoint')
     if architecture == 'dual_domain' and (objective != 'iq' or state.get('DURA_training_reads') != 0
