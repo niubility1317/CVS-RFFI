@@ -1,0 +1,3 @@
+{"at": "2026-11-06T16:24:20+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-06T16:26:13+00:00", "status": "RUNNING", "note": "Generate fixed source-only 98304-view teacher; no F/TX/V/target", "evidence": ["N607 GPU7 PID 3515839; fixed checkpoint source smoke PASS 192; matching 32768-ID source context cache"], "row_id": null}
+{"at": "2026-11-06T16:29:30+00:00", "status": "ARTIFACTS_COMPLETE", "note": "Source-only deterministic teacher.pt generated, 94.65s; no F/TX/V/target", "evidence": ["N607 result.json SOURCE_EXPERT_TEACHER_COMPLETE 98304 views; fixed checkpoint source smoke PASS 192"], "row_id": null}
