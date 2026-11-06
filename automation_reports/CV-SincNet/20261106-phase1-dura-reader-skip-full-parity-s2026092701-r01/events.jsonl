@@ -1,2 +1,3 @@
 {"at": "2026-11-06T15:22:03+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-06T15:24:05+00:00", "status": "RUNNING", "note": "Seven-view raw/restored decision parity only, no target truth; stop on mismatch", "evidence": ["N607 CPU PID 3482485; source_smoke.json PASS 112; fixed ground replay active"], "row_id": null}
+{"at": "2026-11-06T20:21:02+00:00", "status": "ANALYZED", "note": "All seven full ground views have zero raw and restored decision differences; full logits unavailable; no truth used.", "evidence": ["analysis.md,result.json,source_smoke.json"], "row_id": null}

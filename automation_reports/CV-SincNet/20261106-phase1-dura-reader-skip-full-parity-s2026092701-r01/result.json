@@ -1,0 +1,59 @@
+{
+  "status": "FULL_DECISION_PARITY_PASS",
+  "commit": "4674d4cd6472a46fc0c7f5f8f300754f4e6d50c5",
+  "candidate": "20261106-phase1-dura-crossview-guard-source-s2026092701-r01",
+  "candidate_commit": "8e8522b738baa5d4ab40c3df36d0c0c16e372a69",
+  "ground_reference": "20261106-phase1-dura-crossview-guard-ground-test-s2026092701-r01",
+  "F_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+  "F_row": "main_split-repl-shuffled_time-3view-s2026092701",
+  "batch_size": 8,
+  "threads": 2,
+  "views": {
+    "clean": {
+      "count": 168000,
+      "raw_mismatches": 0,
+      "restored_mismatches": 0,
+      "elapsed_seconds": 2398.9462906970293
+    },
+    "practical_high": {
+      "count": 168000,
+      "raw_mismatches": 0,
+      "restored_mismatches": 0,
+      "elapsed_seconds": 2397.4300754729775
+    },
+    "practical_mid": {
+      "count": 168000,
+      "raw_mismatches": 0,
+      "restored_mismatches": 0,
+      "elapsed_seconds": 2350.243375558988
+    },
+    "practical_low_suburban": {
+      "count": 168000,
+      "raw_mismatches": 0,
+      "restored_mismatches": 0,
+      "elapsed_seconds": 2340.3718687870423
+    },
+    "practical_high_urban": {
+      "count": 168000,
+      "raw_mismatches": 0,
+      "restored_mismatches": 0,
+      "elapsed_seconds": 2329.5037159700296
+    },
+    "practical_mid_urban": {
+      "count": 168000,
+      "raw_mismatches": 0,
+      "restored_mismatches": 0,
+      "elapsed_seconds": 2256.530358390999
+    },
+    "practical_low_urban": {
+      "count": 168000,
+      "raw_mismatches": 0,
+      "restored_mismatches": 0,
+      "elapsed_seconds": 2236.763980110991
+    }
+  },
+  "elapsed_seconds": 16309.790517514979,
+  "TX_truth_reads": 0,
+  "model_updates": 0,
+  "scope": "raw and restored class decisions only; ground logits not stored in reference"
+}

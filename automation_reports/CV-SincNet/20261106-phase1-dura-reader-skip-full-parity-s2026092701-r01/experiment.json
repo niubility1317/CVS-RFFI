@@ -131,7 +131,7 @@
         "support": null,
         "evaluation": 2026092701
       },
-      "seed_notes": "Existing fixed tail-excess source G and Tri-SIG-TIME SSL seed 2026092701; no training or selection.",
+      "seed_notes": "Existing fixed crossview-guard source G and Tri-SIG-TIME SSL seed 2026092701; no training or selection.",
       "k": null,
       "scenario": "Phase1 Main split clean and six practical views",
       "optimizer": null,
@@ -153,7 +153,8 @@
     "First verify 112 source records for equal logits and fixed source pilot decisions; then compare all saved ground class decisions chunk by chunk without reading any ground truth.",
     "One mismatch stops this diagnostic and preserves evidence; output parity covers class decisions only because original ground logits were not stored.",
     "Elapsed replay time includes input reading and prediction comparison but not model loading or source smoke; historical baseline ran at a different time/load, so any duration comparison is not a controlled parallel-speed claim.",
-    "Existing live predictions are not interrupted or changed."
+    "Existing live predictions are not interrupted or changed.",
+    "Corrected the seed_notes method typo from tail-excess to crossview-guard; actual registered parent, executed command and parity artifacts always identify crossview-guard."
   ],
   "registered_at": "2026-11-06T15:22:03+00:00"
 }
