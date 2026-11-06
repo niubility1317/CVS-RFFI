@@ -85,6 +85,17 @@ class SourceTrainingTest(unittest.TestCase):
         torch.testing.assert_close(source_loss(dc, clean, clean, objective='band_guard'),
                                    source_loss(dc, clean, clean, objective='dura_guard'))
 
+    def test_nonlinear_guard_is_zero_at_match_and_has_finite_gradient(self):
+        clean = torch.ones(2, 2, 256)
+        torch.testing.assert_close(source_loss(clean, clean, clean, objective='nonlinear_guard'),
+                                   torch.tensor(0.))
+        output = (clean*.9).requires_grad_()
+        loss = source_loss(output, clean, clean, objective='nonlinear_guard')
+        self.assertGreater(float(loss.detach()), float(source_loss(output, clean, clean, objective='dura_guard').detach()))
+        loss.backward()
+        self.assertTrue(torch.isfinite(output.grad).all())
+        self.assertGreater(float(output.grad.abs().sum()), 0.)
+
     def test_incomplete_prediction_is_rejected_before_truth_read(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
