@@ -1,3 +1,4 @@
 {"at": "2026-11-06T17:26:01+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-06T17:27:08+00:00", "status": "RUNNING", "note": "GPU source smoke in progress; controller PID and child command independently observed.", "evidence": ["N607:pid3553363,child3553373,source_smoke.log"], "row_id": null}
 {"at": "2026-11-06T17:28:05+00:00", "status": "RUNNING", "note": "Real checkpoint source smoke passed; deterministic GPU training is running with source-context cache.", "evidence": ["N607:source_smoke.log,pid3553779,gpu7"], "row_id": null}
+{"at": "2026-11-06T23:21:20+00:00", "status": "RUNNING", "note": "Epoch 1/5 completed, 98304 source views / 3072 batches; actual optimization interval 18234.4s, shared GPU load; no target results", "evidence": ["N607 PID 3553779,source_train.log ORTHOGONAL_SOURCE_EPOCH 1 elapsed 18234.4"], "row_id": null}

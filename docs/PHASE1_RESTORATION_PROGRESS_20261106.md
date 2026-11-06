@@ -214,6 +214,8 @@ raw clean 为 86.538690%；每版只有高郊区达到下降不超过 3 个百�
 
 N607 GPU 7 真实 checkpoint 的 64 条源训练 smoke 已通过；固定五轮训练正在运行，完成后自动冻结、执行七景每景 168000 条预测并独立 truth-last。当前未有正式识别结果；该候选不同于前述不可部署的逐记录理想混合。[训练登记](../automation_reports/CV-SincNet/20261107-phase1-dura-masked-prior-source-s2026092701-r01/report.md)、[七景登记](../automation_reports/CV-SincNet/20261107-phase1-dura-masked-prior-ground-test-s2026092701-r01/report.md)。
 
+2026-11-07 07:21（UTC+8）核实训练已输出第 1/5 轮，98304 条源视图对应 3072 次更新，该轮累计优化计时 18234.4 秒，平均约 5.94 秒／更新。GPU 7 为多进程共享，显存仍有余量；现有观察不足以确定慢速的唯一原因。进程未热改，不能以首轮速率保证后续耗时。[计时口径与对照](../automation_reports/CV-SincNet/20261107-phase1-dura-masked-prior-source-s2026092701-r01/runtime_progress.md)。
+
 ## 遮挡先验训练损失局部加速
 
 对先验损失移除未使用的线性插值，遮挡与两次先验前向保持相同。本机 RTX 5070 Ti，真实源先验权重、固定 batch32 合成输入、20 组交替同步测量：该损失与输出梯度中位耗时 8.0989→6.7980 ms，约 1.19 倍；20 组损失和输出梯度逐值相同。只验证了局部环节，不能外推完整训练耗时或目标预测；既有 N607 任务没有热替换。[配对测速](../automation_reports/CV-SincNet/20261107-phase1-masked-loss-latency-synthetic-s2026092701-r01/analysis.md)。
