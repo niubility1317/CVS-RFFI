@@ -1,0 +1,130 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-masked-loss-latency-synthetic-s2026092701-r01",
+  "group_id": "phase1-masked-loss-latency-synthetic",
+  "display_name": "遮挡先验训练损失精简 GPU 测速",
+  "description": "固定真实源先验权重与同一合成输入，比较原损失及省略未使用插值的损失、梯度和耗时。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "F-free",
+    "gpu-latency",
+    "expert-distillation"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261107-phase1-masked-iq-prior-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User authorizes ongoing Phase1 F-free restoration research, source-only diagnostics and GPU use.",
+  "code": {
+    "commit": "166155c771a73a8a18ced53d2669250c972e2d0b",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "Local RTX 5070 Ti GPU0, FP32 TF32 off, deterministic, shared desktop GPU",
+    "cwd": "E:/type10-7/github_publish/CVS-RFFI-repo"
+  },
+  "data": {
+    "dataset": "synthetic Gaussian IQ, not project data",
+    "version": "fixed seed 2026110712",
+    "representation": "one synthetic batch of 32 IQ windows and masks",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "not applicable: synthetic",
+    "label_map_ref": null,
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "synthetic": "generated input only; no source or target IQ"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "real source-only checkpoint; no project IQ or labels",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Local paired microbenchmark of loss and output gradient, no full model performance or target identity result"
+  },
+  "checkpoint": {
+    "initialization": "Fixed final source-only masked IQ prior, commit acdfd17ae205fa5e04b32a5ecdd5eea5d7bb21d4",
+    "sources": [
+      "20261107-phase1-masked-iq-prior-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "Source-only parent training and exact checkpoint commit",
+    "provenance_verdict": "Source-only prior, synthetic input",
+    "selection_rule": "Fixed existing final source prior"
+  },
+  "execution": {
+    "host": "local Windows",
+    "launch_owner": "this conversation",
+    "gpu_policy": "GPU0 brief technical check, preserve other tasks; inspect free memory and existing processes",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:/type10-7/.codex_tmp/20261107-phase1-masked-loss-latency-synthetic-s2026092701-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -X utf8 -m experiments.phase1_dura_orthogonal.benchmark_masked_prior_loss --checkpoint E:/type10-7/.codex_tmp/masked_source_prior_final.pt --out E:/type10-7/.codex_tmp/20261107-phase1-masked-loss-latency-synthetic-s2026092701-r01 --commit 166155c771a73a8a18ced53d2669250c972e2d0b",
+    "stop_rule": "Stop on invalid checkpoint, nonfinite computation, or unavailable GPU"
+  },
+  "expected_artifacts": [
+    "result.json: 20 paired loss/gradient timings, equality, device"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "median loss-plus-output-gradient time",
+      "loss and output gradient bitwise equality"
+    ],
+    "dimensions": [
+      "batch32 synthetic IQ",
+      "four warmups and 20 alternating paired timings"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; no target or TX truth"
+  },
+  "rows": [
+    {
+      "row_id": "masked-prior-loss-pruned-interpolation",
+      "method": "Original masked prior loss vs identical operations omitting unused linear interpolation",
+      "purpose": "Measure local training component speed and exact loss/output-gradient parity",
+      "config_ref": "experiments/phase1_dura_orthogonal/benchmark_masked_prior_loss.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110707,
+        "split": null,
+        "data": 2026110712,
+        "augmentation": 2026110712,
+        "support": null,
+        "evaluation": 2026110712
+      },
+      "seed_notes": "Fixed real source prior, fixed synthetic input and mask",
+      "k": null,
+      "scenario": "synthetic random inputs only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "4 paired warmups plus 20 paired measurements, batch32; no optimizer updates",
+      "output_root": "E:/type10-7/.codex_tmp/20261107-phase1-masked-loss-latency-synthetic-s2026092701-r01",
+      "log_path": "E:/type10-7/.codex_tmp/20261107-phase1-masked-loss-latency-synthetic-s2026092701-r01/stdout",
+      "command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -X utf8 -m experiments.phase1_dura_orthogonal.benchmark_masked_prior_loss --checkpoint E:/type10-7/.codex_tmp/masked_source_prior_final.pt --out E:/type10-7/.codex_tmp/20261107-phase1-masked-loss-latency-synthetic-s2026092701-r01 --commit 166155c771a73a8a18ced53d2669250c972e2d0b",
+      "expected_artifacts": [
+        "result.json: 20 paired loss/gradient timings, equality, device"
+      ]
+    }
+  ],
+  "notes": [
+    "Actual frozen source-only masked prior checkpoint, generated synthetic input only; no F, TX, V or target.",
+    "Alternate order, synchronize GPU, exclude initialization, loading and transfers.",
+    "No model updates; microbenchmark is neither whole-training timing nor test-output equivalence.",
+    "No changes to currently running remote experiments."
+  ],
+  "registered_at": "2026-11-06T17:37:51+00:00"
+}

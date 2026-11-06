@@ -213,3 +213,7 @@ raw clean 为 86.538690%；每版只有高郊区达到下降不超过 3 个百�
 固定原 DURA 和先前只用合法源 clean IQ 训练的遮挡先验；独立初始化 117062 参数多尺度修正。源训练每条随机遮挡连续 32 点，比较冻结先验对恢复输出与同条 clean IQ 的遮挡区域预测，以 0.05 权重加入原 IQ 与 DURA guard 损失；先验只参与训练，推理不调用。训练不读取 F、TX 标签、V 或目标，训练样本和先验的 32768 个源 fit ID 一致，复用相同确定性源上下文。
 
 N607 GPU 7 真实 checkpoint 的 64 条源训练 smoke 已通过；固定五轮训练正在运行，完成后自动冻结、执行七景每景 168000 条预测并独立 truth-last。当前未有正式识别结果；该候选不同于前述不可部署的逐记录理想混合。[训练登记](../automation_reports/CV-SincNet/20261107-phase1-dura-masked-prior-source-s2026092701-r01/report.md)、[七景登记](../automation_reports/CV-SincNet/20261107-phase1-dura-masked-prior-ground-test-s2026092701-r01/report.md)。
+
+## 遮挡先验训练损失局部加速
+
+对先验损失移除未使用的线性插值，遮挡与两次先验前向保持相同。本机 RTX 5070 Ti，真实源先验权重、固定 batch32 合成输入、20 组交替同步测量：该损失与输出梯度中位耗时 8.0989→6.7980 ms，约 1.19 倍；20 组损失和输出梯度逐值相同。只验证了局部环节，不能外推完整训练耗时或目标预测；既有 N607 任务没有热替换。[配对测速](../automation_reports/CV-SincNet/20261107-phase1-masked-loss-latency-synthetic-s2026092701-r01/analysis.md)。
