@@ -1,0 +1,141 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-joint-iq-ssl-gradient-source-s2026092701-r01",
+  "group_id": "phase1-joint-iq-ssl-gradient-source",
+  "display_name": "源域表示损失与 IQ 梯度方向诊断",
+  "description": "在 672 条合法源配对 IQ 上，固定候选和其源辅助编码器，比较 DURA 与候选输出处逐记录表示损失与归一化 IQ 误差的波形梯度方向及大小。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "F-free",
+    "joint-iq-ssl",
+    "waveform-gradient",
+    "diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261106-phase1-dura-joint-iq-ssl-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户继续授权研发星地恢复网络；仅源域合法 IQ 诊断，不重启已停止任务。",
+  "code": {
+    "commit": "0693a7e492dd49e23b0b971b481fecf7f480e0bb",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU7, CUDA_VISIBLE_DEVICES=7, FP32 TF32 off, batch 32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261106-phase1-joint-iq-ssl-gradient-source-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "source paired clean and simulated received IQ; frozen DURA, trained G and training-only auxiliary encoder",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "672 frozen source pilot physical IDs, RX4/6 and RX8 by seven views; read indices/rx/scene/split only",
+    "label_map_ref": null,
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "672 previously explored source pilot IDs disjoint from this candidate fit IDs, not independent of original DURA",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed simulated source epoch19 views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only per-record waveform-output gradient alignment; not parameter gradient, device identity or target performance"
+  },
+  "checkpoint": {
+    "initialization": "Frozen source-only DURA and fixed final epoch-5 joint-IQ-SSL correction and auxiliary encoder; random encoder reconstructed using its initialization seed",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261106-phase1-dura-joint-iq-ssl-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "frozen_dura source provenance and SSL source summary/checkpoint fields; candidate fit IDs disjoint from 672 source pilot IDs",
+    "provenance_verdict": "Fixed F-free source-only DURA and auxiliary SSL model; target ancestry forbidden",
+    "selection_rule": "Fixed final epoch 5, no metric-based candidate or target selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "Physical GPU7, one this-run worker, at most three total compute workers; preserve others",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-joint-iq-ssl-gradient-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-joint-iq-ssl-gradient-source-s2026092701-r01-launcher.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261106-phase1-joint-iq-ssl-gradient-source-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.source_ssl_gradient_probe --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-joint-iq-ssl-gradient-source-s2026092701-r01 --commit 0693a7e492dd49e23b0b971b481fecf7f480e0bb",
+    "stop_rule": "Stop on source role mismatch, source smoke failure, nonfinite output or any target/F/TX read; preserve stopped group and other owners."
+  },
+  "expected_artifacts": [
+    "result.json: per RX/scene output-gradient alignment and strength"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "per-record waveform gradient cosine",
+      "fraction opposed",
+      "0.05-weighted feature-to-IQ waveform gradient norm ratio"
+    ],
+    "dimensions": [
+      "public RX and source view",
+      "DURA versus candidate output"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; source IQ only"
+  },
+  "rows": [
+    {
+      "row_id": "fixed-ssl-source-gradient",
+      "method": "Frozen source SSL feature and normalized IQ losses differentiated with respect to each recovered waveform",
+      "purpose": "Detect local source waveform objective conflict before planning another candidate",
+      "config_ref": "experiments/phase1_dura_orthogonal/source_ssl_gradient_probe.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110615,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Auxiliary encoder original initialization seed 2026110615; frozen candidate and source pilot; no training or target access.",
+      "k": null,
+      "scenario": "seven fixed Phase1 source views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "672 paired source records, fixed public RX/scene groups, two frozen output positions",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-joint-iq-ssl-gradient-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-joint-iq-ssl-gradient-source-s2026092701-r01-launcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.source_ssl_gradient_probe --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-joint-iq-ssl-gradient-source-s2026092701-r01 --commit 0693a7e492dd49e23b0b971b481fecf7f480e0bb",
+      "expected_artifacts": [
+        "result.json: per RX/scene output-gradient alignment and strength"
+      ]
+    }
+  ],
+  "notes": [
+    "No TX labels, F weights/outputs, V or target IQ/truth are read; no model parameters update.",
+    "Gradients are computed with respect to each output waveform, not model parameters; IQ objective is normalized IQ error, excluding DURA guard terms.",
+    "Previously explored source pilot is disjoint from candidate fitting IDs, not independent of original DURA.",
+    "The diagnostic does not modify existing frozen candidates or their ground tests."
+  ],
+  "registered_at": "2026-11-06T12:21:34+00:00"
+}
