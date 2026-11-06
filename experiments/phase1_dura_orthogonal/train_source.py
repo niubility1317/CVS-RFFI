@@ -18,6 +18,7 @@ from experiments.phase1_dura_orthogonal.timevarying_inverse import TimeVaryingIn
 from experiments.phase1_dura_orthogonal.dura_timevarying import DuraTimeVaryingRecovery
 from experiments.phase1_dura_orthogonal.noise_gated_dura import NoiseGatedDuraTimeVarying, GATE_LOG10_LOW, GATE_LOG10_HIGH
 from experiments.phase1_dura_orthogonal.moment_relational import moment_relational_loss, MOMENT_WEIGHT, LAGS
+from experiments.phase1_dura_orthogonal.iq_geometry import iq_geometry_loss, GEOMETRY_WEIGHT, GEOMETRY_TEMPERATURE
 
 FIT_SIZE = 8192
 TRAIN_EPOCHS = 5
@@ -200,17 +201,17 @@ def main():
     parser.add_argument('--device', default='cuda:0')
     parser.add_argument('--prepare-batch', type=int, default=32)
     parser.add_argument('--smoke-fit', type=int, default=64)
-    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard'), default='iq')
+    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard'), default='iq')
     parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate'), default='orthogonal')
     args = parser.parse_args()
     if args.architecture in DIRECT_ARCHITECTURES and args.objective != 'iq':
         raise ValueError('Direct dual-domain model uses received-IQ regularization only')
     if args.architecture == 'dura_timevarying' and args.objective != 'dura_guard':
         raise ValueError('DURA time-varying correction requires DURA guard')
-    if args.architecture == 'dura_timevarying_gate' and args.objective not in ('dura_guard', 'moment_guard'):
+    if args.architecture == 'dura_timevarying_gate' and args.objective not in ('dura_guard', 'moment_guard', 'geometry_guard'):
         raise ValueError('Gated correction requires a registered DURA guard')
-    if args.objective == 'moment_guard' and args.architecture != 'dura_timevarying_gate':
-        raise ValueError('Source moment relation applies only to gated DURA correction')
+    if args.objective in ('moment_guard', 'geometry_guard') and args.architecture != 'dura_timevarying_gate':
+        raise ValueError('Source relation objectives apply only to gated DURA correction')
     if args.architecture == 'dura_internal' and args.objective not in ('dura_guard', *ACTION_OBJECTIVES):
         raise ValueError('Internal DURA refinement requires fixed DURA guard')
     if args.objective == 'crossview_guard' and args.architecture != 'orthogonal':
@@ -276,6 +277,7 @@ def main():
     losses = []
     action_losses = []
     moment_losses = []
+    geometry_losses = []
     initial_batch = min(args.prepare_batch, len(fit)) if args.architecture == 'dura_internal' else 8
     with torch.no_grad():
         initial = model(*(value[:initial_batch] for value in data[:4]))
@@ -294,6 +296,7 @@ def main():
         total = torch.zeros((), device=device)
         action_total = torch.zeros((), device=device)
         moment_total = torch.zeros((), device=device)
+        geometry_total = torch.zeros((), device=device)
         for start in range(0, len(order), 10 if crossview else 32):
             base = order[start:start+(10 if crossview else 32)]
             indices = grouped_view_indices(base, len(fit)) if crossview else base
@@ -307,10 +310,14 @@ def main():
                 action_loss = action_response_loss(context[1], reference, probe.expand(len(x), -1))
             else:
                 output = model(x, anchor, direction, variance, validate=False)
-            base_objective = 'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective == 'moment_guard' else args.objective
+            base_objective = 'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard') else args.objective
             loss = source_loss(output, anchor, y, objective=base_objective)
             if crossview:
                 loss = loss + .1*crossview_dispersion(output, y)
+            if args.objective == 'geometry_guard':
+                geometry_loss = iq_geometry_loss(output, y)
+                loss = loss + GEOMETRY_WEIGHT*geometry_loss
+                geometry_total += geometry_loss.detach()*len(indices)
             if args.objective == 'moment_guard':
                 moment_loss = moment_relational_loss(output, y)
                 loss = loss + MOMENT_WEIGHT*moment_loss
@@ -344,6 +351,8 @@ def main():
             action_losses.append(float(action_total.cpu())/len(order))
         if args.objective == 'moment_guard':
             moment_losses.append(float(moment_total.cpu())/len(order))
+        if args.objective == 'geometry_guard':
+            geometry_losses.append(float(geometry_total.cpu())/len(order))
         print('ORTHOGONAL_SOURCE_EPOCH', epoch, 'loss', losses[-1], 'elapsed', round(time.monotonic()-started, 1), flush=True)
     if dura is not None and any(p.requires_grad or p.grad is not None for p in dura.parameters()):
         raise ValueError('DURA must stay frozen')
@@ -352,6 +361,9 @@ def main():
             fit_ids=len(fit), exposure=len(data[0]), losses=losses, device=str(device),
             objective=args.objective, architecture=args.architecture, prepare_batch=args.prepare_batch,
             candidate_dura_trainable=args.architecture == 'dura_internal',
+            source_geometry_weight=GEOMETRY_WEIGHT if args.objective == 'geometry_guard' else None,
+            source_geometry_temperature=GEOMETRY_TEMPERATURE if args.objective == 'geometry_guard' else None,
+            source_geometry_losses=geometry_losses if args.objective == 'geometry_guard' else None,
             source_moment_weight=MOMENT_WEIGHT if args.objective == 'moment_guard' else None,
             source_moment_lags=list(LAGS) if args.objective == 'moment_guard' else None,
             source_moment_losses=moment_losses if args.objective == 'moment_guard' else None,
@@ -374,6 +386,9 @@ def main():
     checkpoint = dict(schema=SCHEMA, commit=args.commit, model=model.state_dict(), width=32,
                       epochs=epochs, fit_ids=fit, counts=counts, losses=losses, architecture=args.architecture,
                       candidate_dura_trainable=args.architecture == 'dura_internal',
+            source_geometry_weight=GEOMETRY_WEIGHT if args.objective == 'geometry_guard' else None,
+            source_geometry_temperature=GEOMETRY_TEMPERATURE if args.objective == 'geometry_guard' else None,
+            source_geometry_losses=geometry_losses if args.objective == 'geometry_guard' else None,
             source_moment_weight=MOMENT_WEIGHT if args.objective == 'moment_guard' else None,
             source_moment_lags=list(LAGS) if args.objective == 'moment_guard' else None,
             source_moment_losses=moment_losses if args.objective == 'moment_guard' else None,
@@ -401,6 +416,9 @@ def main():
     core.write(args.out/'source_summary.json', dict(status='SOURCE_TRAINED', commit=args.commit,
         fit_ids=len(fit), epochs=epochs, architecture=args.architecture,
         candidate_dura_trainable=args.architecture == 'dura_internal',
+            source_geometry_weight=GEOMETRY_WEIGHT if args.objective == 'geometry_guard' else None,
+            source_geometry_temperature=GEOMETRY_TEMPERATURE if args.objective == 'geometry_guard' else None,
+            source_geometry_losses=geometry_losses if args.objective == 'geometry_guard' else None,
             source_moment_weight=MOMENT_WEIGHT if args.objective == 'moment_guard' else None,
             source_moment_lags=list(LAGS) if args.objective == 'moment_guard' else None,
             source_moment_losses=moment_losses if args.objective == 'moment_guard' else None,
