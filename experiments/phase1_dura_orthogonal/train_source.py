@@ -255,7 +255,7 @@ def main():
     parser.add_argument('--source-context-cache', type=Path)
     parser.add_argument('--save-source-context-cache', type=Path)
     parser.add_argument('--deterministic', action='store_true')
-    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard'), default='iq')
+    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill'), default='iq')
     parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student'), default='orthogonal')
     args = parser.parse_args()
     if args.deterministic:
@@ -267,7 +267,7 @@ def main():
         raise ValueError('Cache writing requires a fresh deterministic wide-source run')
     if args.architecture in DIRECT_ARCHITECTURES and args.architecture != 'direct_spectral_student' and args.objective != 'iq':
         raise ValueError('Direct dual-domain model uses received-IQ regularization only')
-    if (args.architecture == 'direct_spectral_student') != (args.objective == 'distill_iq'):
+    if (args.architecture == 'direct_spectral_student') != (args.objective in ('distill_iq', 'wide_source_distill')):
         raise ValueError('Direct spectral student requires fixed source-IQ distillation')
     if args.architecture == 'dura_timevarying' and args.objective != 'dura_guard':
         raise ValueError('DURA time-varying correction requires DURA guard')
@@ -306,7 +306,7 @@ def main():
     torch.backends.cudnn.allow_tf32 = False
     torch.manual_seed(2026110612)
     ids, rx, scene, _, source_received, source_clean = source_inputs(args.root)
-    fit_size = WIDE_FIT_SIZE if args.objective == 'wide_source_guard' else FIT_SIZE
+    fit_size = WIDE_FIT_SIZE if args.objective in ('wide_source_guard', 'wide_source_distill') else FIT_SIZE
     _, fresh, clean, fit = load_source_training(args.root, ids, fit_size=fit_size)
     if args.smoke:
         fit = fit[:args.smoke_fit]
@@ -422,7 +422,8 @@ def main():
                 action_loss = action_response_loss(context[1], reference, probe.expand(len(x), -1))
             else:
                 output = model(x, anchor, direction, variance, validate=False)
-            base_objective = 'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'wide_source_guard') else args.objective
+            base_objective = ('distill_iq' if args.objective == 'wide_source_distill' else
+                              'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'wide_source_guard') else args.objective)
             loss = source_loss(output, anchor, y, objective=base_objective)
             if args.objective == 'posterior_teacher_guard':
                 loss = loss + .5*posterior_teacher_loss(output, fields[5], y)
@@ -492,7 +493,7 @@ def main():
                             source_ssl_teacher_commit=SSL_TEACHER_COMMIT, source_ssl_aux_trainable=False)
     cache_metadata = dict(source_context_cache=str(args.source_context_cache) if args.source_context_cache else None,
                           deterministic_algorithms=args.deterministic)
-    if args.objective == 'wide_source_guard':
+    if args.objective in ('wide_source_guard', 'wide_source_distill'):
         cache_metadata.update(source_fit_size=WIDE_FIT_SIZE,
                               source_context_cache_written=str(args.save_source_context_cache) if args.save_source_context_cache else None)
     if args.objective == 'tail_excess_guard':

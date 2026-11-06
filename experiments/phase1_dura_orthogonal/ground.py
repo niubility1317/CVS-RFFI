@@ -30,7 +30,7 @@ def load_fixed(root, source, commit):
     if architecture not in ('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student'):
         raise ValueError('Registered recovery architecture required')
     epochs = DUAL_DOMAIN_EPOCHS if architecture in ('dual_domain', 'adaptive_inverse', 'timevarying_inverse', 'direct_spectral_student') else TRAIN_EPOCHS
-    fit_size = WIDE_FIT_SIZE if summary.get('objective') == 'wide_source_guard' else FIT_SIZE
+    fit_size = WIDE_FIT_SIZE if summary.get('objective') in ('wide_source_guard', 'wide_source_distill') else FIT_SIZE
     expected = dict(status='SOURCE_TRAINED', commit=commit, fit_ids=fit_size, epochs=epochs,
                     TX_labels_read=0, F_weights_read=0, F_outputs_read=0, V_reads=0,
                     target_reads=0, DURA_frozen=True)
@@ -42,7 +42,7 @@ def load_fixed(root, source, commit):
             any(state.get(k) != v for k, v in expected.items() if k not in ('status', 'fit_ids', 'epochs'))):
         raise ValueError('Fixed correction checkpoint and provenance required')
     objective = state.get('objective', 'iq')
-    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard') or summary.get('objective', 'iq') != objective:
+    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill') or summary.get('objective', 'iq') != objective:
         raise ValueError('Source objective must match the fixed checkpoint')
     if objective == 'crossview_guard' and any(
             obj.get('source_views_per_record') != 3 or obj.get('crossview_weight') != .1
@@ -53,7 +53,7 @@ def load_fixed(root, source, commit):
     if architecture in ('dual_domain', 'adaptive_inverse', 'timevarying_inverse') and (objective != 'iq' or state.get('DURA_training_reads') != 0
                                           or summary.get('DURA_training_reads') != 0):
         raise ValueError('Direct recovery must be trained without DURA')
-    if (architecture == 'direct_spectral_student') != (objective == 'distill_iq'):
+    if (architecture == 'direct_spectral_student') != (objective in ('distill_iq', 'wide_source_distill')):
         raise ValueError('Direct spectral student requires source IQ distillation')
     if architecture == 'direct_spectral_student' and any(
             obj.get('DURA_training_reads') != 1 or obj.get('source_iq_teacher') != 'dura_v1_R65_E20_4940' or
@@ -67,6 +67,9 @@ def load_fixed(root, source, commit):
     if objective == 'wide_source_guard' and (architecture != 'dura_multiscale' or any(
             obj.get('source_fit_size') != WIDE_FIT_SIZE for obj in (summary, state))):
         raise ValueError('Matching wide source training metadata required')
+    if objective == 'wide_source_distill' and (architecture != 'direct_spectral_student' or any(
+            obj.get('source_fit_size') != WIDE_FIT_SIZE for obj in (summary, state))):
+        raise ValueError('Matching wide source student metadata required')
     if objective == 'tail_excess_guard' and (architecture != 'dura_multiscale' or any(
             obj.get('source_tail_fraction') != .25 or obj.get('source_tail_weight') != .5
             for obj in (summary, state))):
