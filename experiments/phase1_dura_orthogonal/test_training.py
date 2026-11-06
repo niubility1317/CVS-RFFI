@@ -6,6 +6,7 @@ from unittest.mock import patch
 import torch
 
 from experiments.phase1_dura_orthogonal import ground
+from experiments.phase1_dura_orthogonal.controller import training_environments
 from experiments.phase1_dura_orthogonal.train_source import extract_context, source_loss
 
 
@@ -27,6 +28,18 @@ class FakeDura:
 
 
 class SourceTrainingTest(unittest.TestCase):
+    def test_gpu_requires_one_selected_device_and_scoring_hides_it(self):
+        with self.assertRaises(ValueError):
+            training_environments('cuda:0', {})
+        with self.assertRaises(ValueError):
+            training_environments('cuda:0', {'CUDA_VISIBLE_DEVICES': '1,2'})
+        train, score = training_environments('cuda:0', {'CUDA_VISIBLE_DEVICES': '7'})
+        self.assertEqual(train['CUDA_VISIBLE_DEVICES'], '7')
+        self.assertEqual(score['CUDA_VISIBLE_DEVICES'], '')
+        train, score = training_environments('cpu', {'CUDA_VISIBLE_DEVICES': '7'})
+        self.assertEqual(train['CUDA_VISIBLE_DEVICES'], '')
+        self.assertEqual(score['CUDA_VISIBLE_DEVICES'], '')
+
     def test_identity_action_produces_the_observation_residual(self):
         x = torch.randn(3, 2, 256)
         anchor, direction, noise = extract_context(FakeDura(), x)

@@ -8,15 +8,33 @@ import sys
 import traceback
 
 
+def training_environments(device, inherited):
+    """Require an explicitly selected physical GPU and hide it from scoring."""
+    env = inherited.copy()
+    env.update(OMP_NUM_THREADS='2', MKL_NUM_THREADS='2', OPENBLAS_NUM_THREADS='2')
+    cpu_env = env.copy()
+    cpu_env['CUDA_VISIBLE_DEVICES'] = ''
+    if device == 'cpu':
+        env['CUDA_VISIBLE_DEVICES'] = ''
+    elif device == 'cuda:0':
+        visible = env.get('CUDA_VISIBLE_DEVICES', '').strip()
+        if not visible or visible == '-1' or ',' in visible:
+            raise ValueError('Select exactly one physical GPU via CUDA_VISIBLE_DEVICES')
+    else:
+        raise ValueError('Use cpu or cuda:0 mapped to one explicitly selected GPU')
+    return env, cpu_env
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--root', type=Path, required=True)
     parser.add_argument('--source', required=True)
     parser.add_argument('--ground', required=True)
     parser.add_argument('--commit', required=True)
-    parser.add_argument('--device', default='cpu')
-    parser.add_argument('--prepare-batch', type=int, default=8)
+    parser.add_argument('--device', default='cuda:0')
+    parser.add_argument('--prepare-batch', type=int, default=32)
     args = parser.parse_args()
+    env, cpu_env = training_environments(args.device, os.environ)
     controller = args.root/'runs'/(args.source+'-controller')
     source = args.root/'runs'/args.source
     training_smoke = args.root/'runs'/(args.source+'-training-smoke')
@@ -24,13 +42,6 @@ def main():
     if controller.exists() or source.exists() or training_smoke.exists() or ground.exists():
         raise FileExistsError('Unique controller, training and ground outputs required')
     controller.mkdir(parents=True)
-    env = os.environ.copy()
-    env.update(OMP_NUM_THREADS='2', MKL_NUM_THREADS='2', OPENBLAS_NUM_THREADS='2')
-    cpu_env = env.copy()
-    cpu_env['CUDA_VISIBLE_DEVICES'] = ''
-    if args.device == 'cpu':
-        env['CUDA_VISIBLE_DEVICES'] = ''
-
     def status(state, **extra):
         tmp = controller/'status.tmp'
         tmp.write_text(json.dumps(dict(state=state, **extra)), encoding='utf8')

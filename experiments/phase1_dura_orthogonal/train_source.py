@@ -1,6 +1,7 @@
 """Train a DURA correction using only permitted paired Phase1 source IQ."""
 import argparse
 import json
+import os
 from pathlib import Path
 import time
 
@@ -10,6 +11,7 @@ import torch
 from experiments.pamf_phase1_flow import experiment as core
 from experiments.pamf_phase1_flow.anchor_source_smoke import frozen_dura
 from experiments.phase1_dura_innovation_probe.source_probe import source_inputs
+from experiments.phase1_dura_orthogonal.controller import training_environments
 from experiments.phase1_dura_orthogonal.model import OrthogonalRecovery
 
 FIT_SIZE = 8192
@@ -117,11 +119,12 @@ def main():
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--commit', required=True)
     parser.add_argument('--smoke', action='store_true')
-    parser.add_argument('--device', default='cpu')
-    parser.add_argument('--prepare-batch', type=int, default=8)
+    parser.add_argument('--device', default='cuda:0')
+    parser.add_argument('--prepare-batch', type=int, default=32)
     parser.add_argument('--smoke-fit', type=int, default=64)
     args = parser.parse_args()
     process_started = time.monotonic()
+    training_environments(args.device, os.environ)
     device = torch.device(args.device)
     if device.type not in ('cpu', 'cuda') or (device.type == 'cuda' and not torch.cuda.is_available()):
         raise ValueError('An available CPU or explicitly selected CUDA device is required')
