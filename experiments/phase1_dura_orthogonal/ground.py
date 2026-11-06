@@ -9,27 +9,37 @@ import torch
 from experiments.pamf_phase1_flow import experiment as core
 from experiments.pamf_phase1_flow.anchor_source_smoke import frozen_dura
 from experiments.phase1_dura_innovation_probe.source_probe import SOURCE_PILOT, source_inputs
-from experiments.phase1_dura_orthogonal.model import OrthogonalRecovery
-from experiments.phase1_dura_orthogonal.train_source import SCHEMA, TRAIN_EPOCHS, FIT_SIZE, extract_context
+from experiments.phase1_dura_orthogonal.model import OrthogonalRecovery, DualDomainRecovery
+from experiments.phase1_dura_orthogonal.train_source import SCHEMA, TRAIN_EPOCHS, DUAL_DOMAIN_EPOCHS, FIT_SIZE, extract_context
 
 
 def load_fixed(root, source, commit):
     folder = root/'runs'/source
     summary = core.read(folder/'source_summary.json')
-    expected = dict(status='SOURCE_TRAINED', commit=commit, fit_ids=FIT_SIZE, epochs=TRAIN_EPOCHS,
+    architecture = summary.get('architecture', 'orthogonal')
+    if architecture not in ('orthogonal', 'dual_domain'):
+        raise ValueError('Registered recovery architecture required')
+    epochs = TRAIN_EPOCHS if architecture == 'orthogonal' else DUAL_DOMAIN_EPOCHS
+    expected = dict(status='SOURCE_TRAINED', commit=commit, fit_ids=FIT_SIZE, epochs=epochs,
                     TX_labels_read=0, F_weights_read=0, F_outputs_read=0, V_reads=0,
                     target_reads=0, DURA_frozen=True)
     if any(summary.get(k) != v for k, v in expected.items()):
         raise ValueError('Completed fixed source-only correction required')
     state = torch.load(folder/'final.pt', map_location='cpu', weights_only=False)
     if (state.get('schema') != SCHEMA or state.get('commit') != commit or
-            state.get('epochs') != TRAIN_EPOCHS or len(state.get('fit_ids', [])) != FIT_SIZE or
+            state.get('epochs') != epochs or len(state.get('fit_ids', [])) != FIT_SIZE or
             any(state.get(k) != v for k, v in expected.items() if k not in ('status', 'fit_ids', 'epochs'))):
         raise ValueError('Fixed correction checkpoint and provenance required')
     objective = state.get('objective', 'iq')
     if objective not in ('iq', 'dura_guard', 'band_guard') or summary.get('objective', 'iq') != objective:
         raise ValueError('Source objective must match the fixed checkpoint')
-    model = OrthogonalRecovery(width=state['width'])
+    if state.get('architecture', 'orthogonal') != architecture:
+        raise ValueError('Source architecture must match the fixed checkpoint')
+    if architecture == 'dual_domain' and (objective != 'iq' or state.get('DURA_training_reads') != 0
+                                          or summary.get('DURA_training_reads') != 0):
+        raise ValueError('Direct recovery must be trained without DURA')
+    model = (OrthogonalRecovery(width=state['width']) if architecture == 'orthogonal'
+             else DualDomainRecovery(width=state['width']))
     model.load_state_dict(state['model'], strict=True)
     model.eval().requires_grad_(False)
     dura = frozen_dura(root, 'cpu')
