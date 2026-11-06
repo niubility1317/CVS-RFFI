@@ -19,6 +19,13 @@ TRAIN_EPOCHS = 5
 DUAL_DOMAIN_EPOCHS = 20
 SOURCE_EPOCHS = (21, 22, 23)
 SCHEMA = 'phase1_dura_orthogonal_source_v1'
+ACTION_OBJECTIVES = ('sim_action_guard', 'sim_action_fixed_prior')
+
+
+def configure_internal_trainability(dura, objective):
+    dura.requires_grad_(True)
+    if objective == 'sim_action_fixed_prior':
+        dura.prior.requires_grad_(False)
 
 
 @torch.no_grad()
@@ -187,16 +194,16 @@ def main():
     parser.add_argument('--device', default='cuda:0')
     parser.add_argument('--prepare-batch', type=int, default=32)
     parser.add_argument('--smoke-fit', type=int, default=64)
-    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard'), default='iq')
+    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior'), default='iq')
     parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal'), default='orthogonal')
     args = parser.parse_args()
     if args.architecture == 'dual_domain' and args.objective != 'iq':
         raise ValueError('Direct dual-domain model uses received-IQ regularization only')
-    if args.architecture == 'dura_internal' and args.objective not in ('dura_guard', 'sim_action_guard'):
+    if args.architecture == 'dura_internal' and args.objective not in ('dura_guard', *ACTION_OBJECTIVES):
         raise ValueError('Internal DURA refinement requires fixed DURA guard')
     if args.objective == 'crossview_guard' and args.architecture != 'orthogonal':
         raise ValueError('Cross-view training is registered only for orthogonal correction')
-    if args.objective == 'sim_action_guard' and args.architecture != 'dura_internal':
+    if args.objective in ACTION_OBJECTIVES and args.architecture != 'dura_internal':
         raise ValueError('Simulator action supervision requires internal DURA refinement')
     process_started = time.monotonic()
     training_environments(args.device, os.environ)
@@ -219,7 +226,7 @@ def main():
     dura = frozen_dura(args.root, str(device)) if args.architecture != 'dual_domain' else None
     preparation_started = time.monotonic()
     data, counts = prepare(args.root, dura, clean, fresh, fit, str(device), args.prepare_batch,
-                           args.architecture, include_action=args.objective == 'sim_action_guard')
+                           args.architecture, include_action=args.objective in ACTION_OBJECTIVES)
     preparation_seconds = time.monotonic() - preparation_started
     transfer_started = time.monotonic()
     data = tuple(value.to(device) for value in data)
@@ -236,12 +243,13 @@ def main():
     elif args.architecture == 'dual_domain':
         model = DualDomainRecovery(width=32).to(device)
     else:
-        model = InternalDuraRecovery(frozen_dura(args.root, str(device)).requires_grad_(True)).to(device)
+        model = InternalDuraRecovery(frozen_dura(args.root, str(device))).to(device)
+        configure_internal_trainability(model.dura, args.objective)
     optimizer = torch.optim.AdamW(model.parameters(),
         lr=1e-5 if args.architecture == 'dura_internal' else .0003,
         weight_decay=0. if args.architecture == 'dura_internal' else .001)
     generator = torch.Generator().manual_seed(2026110613)
-    if args.objective == 'sim_action_guard':
+    if args.objective in ACTION_OBJECTIVES:
         probe_generator = torch.Generator().manual_seed(2026110614)
         probe_parts = torch.randn((1, 2, 256), generator=probe_generator).to(device)
         probe = torch.complex(probe_parts[:, 0], probe_parts[:, 1])
@@ -269,7 +277,7 @@ def main():
             indices = grouped_view_indices(base, len(fit)) if crossview else base
             fields = tuple(v[indices] for v in data)
             x, anchor, direction, variance, y = fields[:5]
-            if args.objective == 'sim_action_guard':
+            if args.objective in ACTION_OBJECTIVES:
                 from experiments.phase1_dura_orthogonal.oracle_action_source_probe import true_action
                 context = model.dura.estimate_context(x)
                 output = model.dura.stage_outputs(x, context)[0][-1]
@@ -277,11 +285,11 @@ def main():
                 action_loss = action_response_loss(context[1], reference, probe.expand(len(x), -1))
             else:
                 output = model(x, anchor, direction, variance, validate=False)
-            base_objective = 'dura_guard' if crossview or args.objective == 'sim_action_guard' else args.objective
+            base_objective = 'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES else args.objective
             loss = source_loss(output, anchor, y, objective=base_objective)
             if crossview:
                 loss = loss + .1*crossview_dispersion(output, y)
-            if args.objective == 'sim_action_guard':
+            if args.objective in ACTION_OBJECTIVES:
                 loss = loss + .01*action_loss
                 action_total += action_loss.detach()*len(indices)
             if not torch.isfinite(loss):
@@ -289,9 +297,13 @@ def main():
             optimizer.zero_grad(set_to_none=True)
             loss.backward()
             if args.architecture == 'dura_internal':
-                for part in (model.dura.frozen, model.dura.prior):
+                parts = (model.dura.frozen,) if args.objective == 'sim_action_fixed_prior' else (model.dura.frozen, model.dura.prior)
+                for part in parts:
                     if not any(p.grad is not None and torch.count_nonzero(p.grad) for p in part.parameters()):
-                        raise ValueError('Both DURA context and priors require nonzero gradients')
+                        raise ValueError('Trainable DURA parts require nonzero gradients')
+                if args.objective == 'sim_action_fixed_prior' and any(
+                        p.requires_grad or p.grad is not None for p in model.dura.prior.parameters()):
+                    raise ValueError('Fixed original priors must remain frozen')
             else:
                 second_head = model.step if args.architecture == 'orthogonal' else model.spectral_head
                 if (model.wave.weight.grad is None or second_head.weight.grad is None or
@@ -301,7 +313,7 @@ def main():
             optimizer.step()
             total += loss.detach() * len(indices)
         losses.append(float(total.cpu())/(3*len(order) if crossview else len(order)))
-        if args.objective == 'sim_action_guard':
+        if args.objective in ACTION_OBJECTIVES:
             action_losses.append(float(action_total.cpu())/len(order))
         print('ORTHOGONAL_SOURCE_EPOCH', epoch, 'loss', losses[-1], 'elapsed', round(time.monotonic()-started, 1), flush=True)
     if dura is not None and any(p.requires_grad or p.grad is not None for p in dura.parameters()):
@@ -311,12 +323,13 @@ def main():
             fit_ids=len(fit), exposure=len(data[0]), losses=losses, device=str(device),
             objective=args.objective, architecture=args.architecture, prepare_batch=args.prepare_batch,
             candidate_dura_trainable=args.architecture == 'dura_internal',
+        candidate_prior_frozen=args.objective == 'sim_action_fixed_prior',
             source_views_per_record=3 if args.objective == 'crossview_guard' else None,
             crossview_weight=.1 if args.objective == 'crossview_guard' else None,
-            source_simulator_action_used=args.objective == 'sim_action_guard',
-            source_simulator_action_weight=.01 if args.objective == 'sim_action_guard' else None,
-            source_probe_seed=2026110614 if args.objective == 'sim_action_guard' else None,
-            source_action_response_losses=action_losses if args.objective == 'sim_action_guard' else None,
+            source_simulator_action_used=args.objective in ACTION_OBJECTIVES,
+            source_simulator_action_weight=.01 if args.objective in ACTION_OBJECTIVES else None,
+            source_probe_seed=2026110614 if args.objective in ACTION_OBJECTIVES else None,
+            source_action_response_losses=action_losses if args.objective in ACTION_OBJECTIVES else None,
             DURA_training_reads=int(dura is not None), preparation_seconds=preparation_seconds,
             transfer_seconds=transfer_seconds, training_seconds=time.monotonic()-started,
             end_to_end_seconds=time.monotonic()-process_started, TX_labels_read=0, F_weights_read=0,
@@ -325,12 +338,13 @@ def main():
     checkpoint = dict(schema=SCHEMA, commit=args.commit, model=model.state_dict(), width=32,
                       epochs=epochs, fit_ids=fit, counts=counts, losses=losses, architecture=args.architecture,
                       candidate_dura_trainable=args.architecture == 'dura_internal',
+                      candidate_prior_frozen=args.objective == 'sim_action_fixed_prior',
                       source_views_per_record=3 if args.objective == 'crossview_guard' else None,
                       crossview_weight=.1 if args.objective == 'crossview_guard' else None,
-                      source_simulator_action_used=args.objective == 'sim_action_guard',
-                      source_simulator_action_weight=.01 if args.objective == 'sim_action_guard' else None,
-                      source_probe_seed=2026110614 if args.objective == 'sim_action_guard' else None,
-                      source_action_response_losses=action_losses if args.objective == 'sim_action_guard' else None,
+                      source_simulator_action_used=args.objective in ACTION_OBJECTIVES,
+                      source_simulator_action_weight=.01 if args.objective in ACTION_OBJECTIVES else None,
+                      source_probe_seed=2026110614 if args.objective in ACTION_OBJECTIVES else None,
+                      source_action_response_losses=action_losses if args.objective in ACTION_OBJECTIVES else None,
                       device=str(device), objective=args.objective, prepare_batch=args.prepare_batch,
                       DURA_training_reads=int(dura is not None),
                       TX_labels_read=0, F_weights_read=0, F_outputs_read=0, V_reads=0,
@@ -344,12 +358,13 @@ def main():
     core.write(args.out/'source_summary.json', dict(status='SOURCE_TRAINED', commit=args.commit,
         fit_ids=len(fit), epochs=epochs, architecture=args.architecture,
         candidate_dura_trainable=args.architecture == 'dura_internal',
+            candidate_prior_frozen=args.objective == 'sim_action_fixed_prior',
         source_views_per_record=3 if args.objective == 'crossview_guard' else None,
         crossview_weight=.1 if args.objective == 'crossview_guard' else None,
-        source_simulator_action_used=args.objective == 'sim_action_guard',
-        source_simulator_action_weight=.01 if args.objective == 'sim_action_guard' else None,
-        source_probe_seed=2026110614 if args.objective == 'sim_action_guard' else None,
-        source_action_response_losses=action_losses if args.objective == 'sim_action_guard' else None,
+        source_simulator_action_used=args.objective in ACTION_OBJECTIVES,
+        source_simulator_action_weight=.01 if args.objective in ACTION_OBJECTIVES else None,
+        source_probe_seed=2026110614 if args.objective in ACTION_OBJECTIVES else None,
+        source_action_response_losses=action_losses if args.objective in ACTION_OBJECTIVES else None,
         DURA_training_reads=int(args.architecture != 'dual_domain'),
         exposure=len(data[0]), counts=counts, losses=losses,
         device=str(device), objective=args.objective, prepare_batch=args.prepare_batch,

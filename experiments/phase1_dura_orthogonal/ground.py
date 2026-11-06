@@ -31,7 +31,7 @@ def load_fixed(root, source, commit):
             any(state.get(k) != v for k, v in expected.items() if k not in ('status', 'fit_ids', 'epochs'))):
         raise ValueError('Fixed correction checkpoint and provenance required')
     objective = state.get('objective', 'iq')
-    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard') or summary.get('objective', 'iq') != objective:
+    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior') or summary.get('objective', 'iq') != objective:
         raise ValueError('Source objective must match the fixed checkpoint')
     if objective == 'crossview_guard' and any(
             obj.get('source_views_per_record') != 3 or obj.get('crossview_weight') != .1
@@ -42,11 +42,11 @@ def load_fixed(root, source, commit):
     if architecture == 'dual_domain' and (objective != 'iq' or state.get('DURA_training_reads') != 0
                                           or summary.get('DURA_training_reads') != 0):
         raise ValueError('Direct recovery must be trained without DURA')
-    if architecture == 'dura_internal' and (objective not in ('dura_guard', 'sim_action_guard')
+    if architecture == 'dura_internal' and (objective not in ('dura_guard', 'sim_action_guard', 'sim_action_fixed_prior')
             or state.get('candidate_dura_trainable') is not True
             or summary.get('candidate_dura_trainable') is not True):
         raise ValueError('Matching internally trained DURA checkpoint required')
-    if objective == 'sim_action_guard' and (architecture != 'dura_internal' or any(
+    if objective in ('sim_action_guard', 'sim_action_fixed_prior') and (architecture != 'dura_internal' or any(
             obj.get('source_simulator_action_used') is not True or obj.get('source_simulator_action_weight') != .01
             or obj.get('source_probe_seed') != 2026110614 for obj in (summary, state))):
         raise ValueError('Matching simulator-supervised DURA checkpoint required')
@@ -59,6 +59,12 @@ def load_fixed(root, source, commit):
     model.load_state_dict(state['model'], strict=True)
     model.eval().requires_grad_(False)
     dura = frozen_dura(root, 'cpu')
+    if objective == 'sim_action_fixed_prior':
+        if any(obj.get('candidate_prior_frozen') is not True for obj in (summary, state)):
+            raise ValueError('Fixed-prior source metadata required')
+        current, reference = model.dura.prior.state_dict(), dura.prior.state_dict()
+        if current.keys() != reference.keys() or any(not torch.equal(current[k], reference[k]) for k in current):
+            raise ValueError('Candidate must preserve original DURA priors exactly')
     reader, _ = core.teacher(root, 'cpu')
     return model, dura, reader.eval().requires_grad_(False)
 
