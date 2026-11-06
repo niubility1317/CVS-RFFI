@@ -100,15 +100,16 @@ def main():
         values = measure(core.tensor(received[selected], device), core.tensor(clean[selected], device), dura, models)
         for key, value in values.items():
             chunks.setdefault(key, []).append(value.cpu())
-    arrays = {key: torch.cat(value).numpy() for key, value in chunks.items()}
+    arrays = {key: torch.cat(value) for key, value in chunks.items()}
     groups = {}
     for group, receivers in (('RX4_6', (4, 6)), ('RX8', (8,))):
         for view in core.VIEWS:
             mask = np.isin(rx, receivers) & (scene == view)
             if mask.sum() != 48:
                 raise ValueError('Complete source receiver and view cells required')
+            selection = torch.tensor(mask.tolist(), dtype=torch.bool)
             groups[group+'/'+view] = {'count': int(mask.sum()),
-                **{name: values[mask].mean(0).tolist() for name, values in arrays.items()}}
+                **{name: values[selection].mean(0).tolist() for name, values in arrays.items()}}
     core.write(args.out/'result.json', dict(status='SOURCE_SPECTRAL_DIAGNOSTIC_COMPLETE', commit=args.commit,
         records=len(ids), groups=groups, bands_cycles_per_sample=['0-.125', '.125-.25', '.25-.375', '.375-.5'],
         normalizer='total per-record clean IQ energy; band sums equal NMSE', elapsed_seconds=time.monotonic()-started,
