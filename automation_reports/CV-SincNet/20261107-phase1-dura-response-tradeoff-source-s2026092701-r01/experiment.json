@@ -1,0 +1,145 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-dura-response-tradeoff-source-s2026092701-r01",
+  "group_id": "phase1-dura-response-tradeoff-source",
+  "display_name": "DURA 源扰动响应与波形误差权衡",
+  "description": "在每个源组用 24 条记录拟合固定复频域修正，留出 24 条测量波形与四种合成扰动响应。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "F-free",
+    "response-tradeoff",
+    "dura"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261107-phase1-dura-perturbation-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User authorizes ongoing Phase1 F-free restoration research, source-only diagnostics and GPU use.",
+  "code": {
+    "commit": "18fe7fe288bef331a7d2744b0a5ac58891f86d31",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CPU two threads, CUDA disabled, nice 10",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-dura-response-tradeoff-source-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source pilot",
+    "version": "source cache R07 epoch19",
+    "representation": "672 fixed source pilot paired received/clean IQ, frozen DURA output",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "672 source pilot IDs; each RX/view group alternating 24 fit and 24 held-out distinct physical IDs",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "336 held-out source pilot IDs, not independent of DURA or prior exploration",
+    "support_query_ref": null,
+    "leo_config_ref": "Source fixed epoch19 seven simulated views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Held-out source waveform NMSE and artificial perturbation response tradeoff; fitted coefficients not saved or applied on target"
+  },
+  "checkpoint": {
+    "initialization": "Fixed source-only DURA; diagnostic per-frequency closed-form fit, no network weight updates",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Fixed DURA source-only checkpoint and 672 source L_s/U_s pilot IDs with within-group disjoint fit/holdout",
+    "provenance_verdict": "DURA source-only with no F/TX/V/target ancestry",
+    "selection_rule": "Predefined weights 0, 0.05, 0.5 and ridge 0.001, no target selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "CPU only 2 threads, nice 10, preserve all existing owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-dura-response-tradeoff-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-dura-response-tradeoff-source-s2026092701-r01-launcher.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261107-phase1-dura-response-tradeoff-source-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.source_response_tradeoff --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-dura-response-tradeoff-source-s2026092701-r01 --commit 18fe7fe288bef331a7d2744b0a5ac58891f86d31",
+    "stop_rule": "Stop on source role mismatch, nonfinite output or loss, target/F/TX access or technical failure; do not change other jobs"
+  },
+  "expected_artifacts": [
+    "result.json: 14 held-out source groups, waveform NMSE and four synthetic response metrics"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "waveform NMSE",
+      "relative perturbation response squared error",
+      "real directional gain"
+    ],
+    "dimensions": [
+      "336 held-out source physical records",
+      "RX4/6 and RX8 x seven views x 24",
+      "baseline and three fixed source fit weights"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; no target or TX truth"
+  },
+  "rows": [
+    {
+      "row_id": "response-tradeoff-source",
+      "method": "Complex spectral residual fit with clean waveform plus fixed synthetic response weights",
+      "purpose": "Test whether source perturbation-response improvements come with held-out waveform damage before designing a network",
+      "config_ref": "experiments/phase1_dura_orthogonal/source_response_tradeoff.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Fixed deterministic within-group source split and three preregistered response weights",
+      "k": null,
+      "scenario": "fixed previously explored source pilot grouped by RX and source simulation view",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "336 source physical records fit x four directions; 336 disjoint source physical records evaluated",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-dura-response-tradeoff-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-dura-response-tradeoff-source-s2026092701-r01-launcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.source_response_tradeoff --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-dura-response-tradeoff-source-s2026092701-r01 --commit 18fe7fe288bef331a7d2744b0a5ac58891f86d31",
+      "expected_artifacts": [
+        "result.json: 14 held-out source groups, waveform NMSE and four synthetic response metrics"
+      ]
+    }
+  ],
+  "notes": [
+    "Synthetic 1% RMS directions use source clean IQ and estimated DURA action; source diagnosis only.",
+    "Waveform and four response terms normalized per source record; direction contributions averaged.",
+    "Per-frequency complex coefficients are fit only on half of each source group, evaluated only on held-out records, and never saved.",
+    "No F weights, TX labels, V or target reads; DURA may have seen source domain. Not identity performance or deployment evidence."
+  ],
+  "registered_at": "2026-11-06T21:24:15+00:00"
+}
