@@ -1,3 +1,4 @@
 {"at": "2026-11-06T07:37:37+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-06T07:39:13+00:00", "status": "QUEUED", "note": "Full Phase1 ground evaluation follows candidate freeze regardless of source IQ metrics.", "evidence": ["N607 controller PID 3239066; seven-view prediction and independent truth-last score fixed"], "row_id": null}
 {"at": "2026-11-06T07:58:37+00:00", "status": "RUNNING", "note": "Prediction smoke passed; PID 3247605 running seven-view prediction", "evidence": ["runs/20261106-phase1-dura-sim-action-ground-test-s2026092701-r01/prediction_smoke.json"], "row_id": null}
+{"at": "2026-11-06T16:37:42+00:00", "status": "ANALYZED", "note": "Full paired and marginal TX/RX/day analysis recorded; no target feedback", "evidence": ["N607 predictions complete, independent truth-last summary and paired DURA verified 168000 x 7; 119 matched groups"], "row_id": null}
