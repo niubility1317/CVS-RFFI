@@ -82,16 +82,22 @@ def extract_context(dura, x):
 def source_loss(output, anchor, clean, *, objective='iq'):
     if output.shape != clean.shape or anchor.shape != clean.shape or output.shape[1:] != (2, 256):
         raise ValueError('Matching source IQ windows required')
-    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'distill_iq'):
+    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'distill_iq', 'tail_excess_guard'):
         raise ValueError('A registered source-IQ objective is required')
     energy = clean.square().mean((1, 2)).clamp_min(1e-8)
     error = (output-clean).square().mean((1, 2)) / energy
     change = (output-anchor).square().mean((1, 2)) / energy
     per = error + (.5 if objective == 'distill_iq' else .02)*change
-    if objective in ('dura_guard', 'band_guard', 'nonlinear_guard'):
+    if objective in ('dura_guard', 'band_guard', 'nonlinear_guard', 'tail_excess_guard'):
         baseline_error = (anchor.detach()-clean).square().mean((1, 2)) / energy
         excess = (error-baseline_error).clamp_min(0)
         per = per + .002*excess/(baseline_error+1e-4)
+    if objective == 'tail_excess_guard':
+        # Emphasize the worst quarter of source-relative excess without TX labels.
+        # The anchor is detached above; all coefficients are fixed before testing.
+        positive_excess = torch.where(error > baseline_error, error-baseline_error, torch.zeros_like(error))
+        tail_count = max(1, (len(positive_excess) + 3)//4)
+        return per.mean() + .5*torch.topk(positive_excess, tail_count).values.mean()
     if objective == 'band_guard':
         delta = output-clean
         complex_delta = torch.complex(delta[:, 0], delta[:, 1])
@@ -243,7 +249,7 @@ def main():
     parser.add_argument('--smoke-fit', type=int, default=64)
     parser.add_argument('--source-context-cache', type=Path)
     parser.add_argument('--deterministic', action='store_true')
-    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard'), default='iq')
+    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard'), default='iq')
     parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student'), default='orthogonal')
     args = parser.parse_args()
     if args.deterministic:
@@ -257,8 +263,10 @@ def main():
         raise ValueError('Direct spectral student requires fixed source-IQ distillation')
     if args.architecture == 'dura_timevarying' and args.objective != 'dura_guard':
         raise ValueError('DURA time-varying correction requires DURA guard')
-    if args.architecture == 'dura_multiscale' and args.objective not in ('dura_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard'):
+    if args.architecture == 'dura_multiscale' and args.objective not in ('dura_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard'):
         raise ValueError('Multiscale correction requires a registered DURA guard')
+    if args.objective == 'tail_excess_guard' and args.architecture != 'dura_multiscale':
+        raise ValueError('Tail excess guard requires multiscale DURA correction')
     if args.objective in ('ssl_joint_guard', 'ssl_fixed_guard', 'ssl_crosshalf_guard') and args.architecture != 'dura_multiscale':
         raise ValueError('Source IQ SSL is registered only for multiscale correction')
     if args.objective == 'posterior_teacher_guard' and args.architecture != 'dura_multiscale':
@@ -470,6 +478,8 @@ def main():
                             source_ssl_teacher_commit=SSL_TEACHER_COMMIT, source_ssl_aux_trainable=False)
     cache_metadata = dict(source_context_cache=str(args.source_context_cache) if args.source_context_cache else None,
                           deterministic_algorithms=args.deterministic)
+    if args.objective == 'tail_excess_guard':
+        cache_metadata.update(source_tail_fraction=.25, source_tail_weight=.5)
     if args.architecture == 'direct_spectral_student':
         cache_metadata.update(source_iq_teacher='dura_v1_R65_E20_4940', source_iq_teacher_weight=.5,
                               inference_received_iq_only=True)

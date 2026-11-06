@@ -41,7 +41,7 @@ def load_fixed(root, source, commit):
             any(state.get(k) != v for k, v in expected.items() if k not in ('status', 'fit_ids', 'epochs'))):
         raise ValueError('Fixed correction checkpoint and provenance required')
     objective = state.get('objective', 'iq')
-    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard') or summary.get('objective', 'iq') != objective:
+    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard') or summary.get('objective', 'iq') != objective:
         raise ValueError('Source objective must match the fixed checkpoint')
     if objective == 'crossview_guard' and any(
             obj.get('source_views_per_record') != 3 or obj.get('crossview_weight') != .1
@@ -60,9 +60,13 @@ def load_fixed(root, source, commit):
             for obj in (summary, state)):
         raise ValueError('Matching source-IQ teacher metadata required')
     if architecture in ('dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale') and (
-            objective not in (('dura_guard', 'moment_guard', 'geometry_guard') if architecture == 'dura_timevarying_gate' else ('dura_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard') if architecture == 'dura_multiscale' else ('dura_guard',))
+            objective not in (('dura_guard', 'moment_guard', 'geometry_guard') if architecture == 'dura_timevarying_gate' else ('dura_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard') if architecture == 'dura_multiscale' else ('dura_guard',))
             or any(obj.get('DURA_training_reads') != 1 for obj in (summary, state))):
         raise ValueError('Matching DURA-guarded source checkpoint required')
+    if objective == 'tail_excess_guard' and (architecture != 'dura_multiscale' or any(
+            obj.get('source_tail_fraction') != .25 or obj.get('source_tail_weight') != .5
+            for obj in (summary, state))):
+        raise ValueError('Matching source tail-excess metadata required')
     if architecture == 'dura_internal' and (objective not in ('dura_guard', 'sim_action_guard', 'sim_action_fixed_prior')
             or state.get('candidate_dura_trainable') is not True
             or summary.get('candidate_dura_trainable') is not True):
