@@ -1,0 +1,167 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-diagnostic-Restore-C4-phase-mixture-sourceV-s2026092701-r01",
+  "group_id": "source-phase-anchor-gaussian-prior",
+  "display_name": "源端相干相位先验对照，单次分解的四方向混合",
+  "description": "原高斯、均匀 C4 矩匹配、共享 C4 协方差固定均值、共享 C4 协方差相位混合。使用同批固定源 V 观测和模拟 Action/噪声。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-V-only",
+    "C4",
+    "phase-mixture",
+    "known-simulator-action",
+    "CPU-only",
+    "no-training"
+  ],
+  "comparison_group_id": "same-sourceV-trace-matched-prior-only-comparison",
+  "parent_run_ids": [
+    "20261102-diagnostic-Restore-CovarianceDetail-sourceV-s2026092701-r01",
+    "20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User comprehensive recoverability analysis, frozen original source V validation only. No source V in training, no target/OE/novel/TX.",
+  "code": {
+    "commit": "f89106ee0af91ddae481ed86a56f7e984e745415",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Torch2.1 CPU two threads CUDA-empty, FP64 posterior FP32 F0",
+    "cwd": "releases/20261107-diagnostic-Restore-C4-phase-mixture-sourceV-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 source contract; existing R07 fixed1800 V/7 frozen validation views",
+    "representation": "Fixed R07 source V received IQ/FIR/main-image/scalar noise, original clean F0 cached features/logits.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "First 8 of each original 5 RX x 3 day stratum of 120, 120 fixed V records shared by all seven views, no score-based selection.",
+    "label_map_ref": "No TX truth read. Original F(raw clean) predictions are fixed agreement references.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original six known sourceTX; V trueTX validation only, no train/selection",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Existing VALIDATED_ONCE R07 source V and original L_s/U_s moments; reuse exact source ID order, original frozen F0 and f29 references.",
+    "support_query_ref": "120 original source V only, no target support/query.",
+    "leo_config_ref": "ExistingR07 validation_actions7; receiver2026101902 vs trainingreceiver2026101911; no regenerated views.",
+    "actual_training_labels": "No training, gradients or TX. Source L_s 2 true simulator trace records for first real F0 smoke.",
+    "augmentation": "Reuse all seven original source V observations, no regenerated signals.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "source-only-frozen-Gaussian-prior-comparison",
+    "query_use": "Source V frozen validation only. Simulator A and scalar noise supplied equally to all readouts; no deployment inference or target contact.",
+    "external_method_exception": null,
+    "claim_scope": "Compare source conditional priors with given simulator parameters. IQ and Fclean consistency only, not true TX, transfer or theoretical limit."
+  },
+  "checkpoint": {
+    "initialization": "No G checkpoint or neural training. Frozen original F0 only.",
+    "sources": [
+      "DATA_ONLY 20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01 original 63000 L_s/U_s Gaussian statistics, FP64, shrink .001",
+      "REFERENCE_ONLY 20261102-diagnostic-Restore-CovarianceDetail-sourceV-s2026092701-r01 f29 frozen source V clean IQ/feature/logit reference by original IDs",
+      "FROZEN_F0 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d Tri-SIG-TIME SSL E50/11100/default head",
+      "DATA_ONLY R07 simulator source traces, V 120 x 7 and original L_s2 smoke"
+    ],
+    "contract_check_ref": "Existing original validated R07 handles, exact 63000-statistics provenance and original F0/source V identity.",
+    "provenance_verdict": "Only the authorized original source statistics and frozen validation; F0 frozen diagnostic, no G updates.",
+    "selection_rule": "Four fixed methods on all seven views, use same observations and exact given simulator A/noise. No adaptive route or parameter selection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-phase-mixture-cpu",
+    "gpu_policy": "CUDA-empty, two CPU threads, zero GPU workers.",
+    "remote_run_root": "runs/20261107-diagnostic-Restore-C4-phase-mixture-sourceV-s2026092701-r01",
+    "remote_log_root": "logs/20261107-diagnostic-Restore-C4-phase-mixture-sourceV-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-diagnostic-Restore-C4-phase-mixture-sourceV-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.phase_mixture_source --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-diagnostic-Restore-C4-phase-mixture-sourceV-s2026092701-r01-release/inputs.json --commit f89106ee0af91ddae481ed86a56f7e984e745415",
+    "stop_rule": "Wrong code/F0/source order, nonfinite or failed solves/smoke: preserve outputs, no automatic retry."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "runtime_observation.json",
+    "reference.npz PRIVATE",
+    "7 source scene.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "logs/stdout.log PRIVATE",
+    "terminal.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "IQ NMSE, frozen F0 cosine, F(clean) agreement and repair/damage vs uniform C4",
+      "Nominal orientation and maximum posterior weights; 28 cells, 120 shared physical records, 3360 F0 readouts, 8 additional source smoke readouts"
+    ],
+    "dimensions": [
+      "7 views",
+      "4 frozen priors",
+      "120 paired source V records"
+    ],
+    "prediction_ref": "All scene.npz and reference.npz private, no TX.",
+    "scorer_ref": "Independent NumPy arithmetic over saved source IQ/features/logits after outputs complete; zero true TX."
+  },
+  "rows": [
+    {
+      "row_id": "fixed_source_phase_priors",
+      "method": "source_Gaussian_prior_comparison",
+      "purpose": "Isolate whether coherent phase can be inferred under common known Action/noise.",
+      "config_ref": "experiments.pamf_phase3_restoration.phase_mixture_source.py::posterior_readouts",
+      "resolved_config_ref": "runs/20261107-diagnostic-Restore-C4-phase-mixture-sourceV-s2026092701-r01/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101902
+      },
+      "seed_notes": "Fixed original record order and original F0; no new RNG or phase selection.",
+      "k": null,
+      "scenario": "Original source V 120 x7.",
+      "optimizer": "NONE",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "4 x 120 x7 plus L_s2x4 smoke, CUDA-empty, 0 updates.",
+      "output_root": "runs/20261107-diagnostic-Restore-C4-phase-mixture-sourceV-s2026092701-r01",
+      "log_path": "logs/20261107-diagnostic-Restore-C4-phase-mixture-sourceV-s2026092701-r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.phase_mixture_source --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-diagnostic-Restore-C4-phase-mixture-sourceV-s2026092701-r01-release/inputs.json --commit f89106ee0af91ddae481ed86a56f7e984e745415",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "runtime_observation.json",
+        "reference.npz PRIVATE",
+        "7 source scene.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "logs/stdout.log PRIVATE",
+        "terminal.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No target, OE, novel, TX, fitting, G checkpoint, training or new deployment candidate.",
+    "C4 mixture and uniform Gaussian match prior moments. Mixture updates component weights from current observation with common covariance and one Cholesky, three right hand sides.",
+    "Fixed mean shares the mixture within covariance, isolating the effect of marginalizing over phase directions.",
+    "This source-only CPU run does not change the queued C4 E30 configuration or GPU budget."
+  ],
+  "registered_at": "2026-11-06T23:44:57+00:00"
+}
