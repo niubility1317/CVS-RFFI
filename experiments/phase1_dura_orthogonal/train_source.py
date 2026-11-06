@@ -23,10 +23,11 @@ from experiments.phase1_dura_orthogonal.joint_ssl_iq import SourceIQEncoder, cro
 from experiments.phase1_dura_orthogonal.local_ssl_iq import PatchIQEncoder, patch_cross_view_loss, frozen_patch_feature_loss
 from experiments.phase1_dura_orthogonal.multiscale_spectral import DuraMultiscaleSpectral
 from experiments.phase1_dura_orthogonal.direct_spectral_student import DirectSpectralStudent
-from experiments.phase1_dura_orthogonal.source_context_cache import load_cache
+from experiments.phase1_dura_orthogonal.source_context_cache import load_cache, save_cache
 from experiments.phase1_dura_orthogonal.posterior_teacher_contract import load_posterior_teacher, TEACHER_SOURCE, TEACHER_COMMIT
 
 FIT_SIZE = 8192
+WIDE_FIT_SIZE = 32768
 TRAIN_EPOCHS = 5
 DUAL_DOMAIN_EPOCHS = 20
 SOURCE_EPOCHS = (21, 22, 23)
@@ -153,19 +154,23 @@ def action_response_loss(estimated, reference, probe):
     return torch.stack(losses, dim=1).mean()
 
 
-def load_source_training(root, eval_ids):
+def select_source_fit(rx, day, roles, eval_ids, fit_size):
+    if rx.shape != roles.shape or day.shape != roles.shape:
+        raise ValueError('Matching public source receiver and day IDs required')
+    eligible = np.flatnonzero(~(np.isin(rx, (4, 6, 8)) & (day == 3)))
+    eligible = np.setdiff1d(eligible, eval_ids, assume_unique=False)
+    if fit_size not in (FIT_SIZE, WIDE_FIT_SIZE) or len(eligible) < fit_size or not np.isin(roles[eligible], ('L_s', 'U_s')).all():
+        raise ValueError('Sufficient source training IQ is required')
+    return np.sort(np.random.default_rng(2026110611).choice(eligible, size=fit_size, replace=False))
+
+
+def load_source_training(root, eval_ids, fit_size=FIT_SIZE):
     complete = core.read(root/'runs'/core.F_RUN/'F'/core.F_ROW/'source/complete.json')
     contract = core.read(complete['config']['source_contract'])
     cache, clean, roles = core.data(root, contract)
     rx = np.load(cache/'train/rx.npy', allow_pickle=False)
     day = np.load(cache/'train/day.npy', allow_pickle=False)
-    if rx.shape != roles.shape or day.shape != roles.shape:
-        raise ValueError('Matching public source receiver and day IDs required')
-    eligible = np.flatnonzero(~(np.isin(rx, (4, 6, 8)) & (day == 3)))
-    eligible = np.setdiff1d(eligible, eval_ids, assume_unique=False)
-    if len(eligible) < FIT_SIZE or not np.isin(roles[eligible], ('L_s', 'U_s')).all():
-        raise ValueError('Sufficient source training IQ is required')
-    fit = np.sort(np.random.default_rng(2026110611).choice(eligible, size=FIT_SIZE, replace=False))
+    fit = select_source_fit(rx, day, roles, eval_ids, fit_size)
     fresh = root/'runs/20261031-phase1-DURA-freshViews-E30-s2026092701-r01/source_cache'
     if (fresh/'train/physical_ids.npy').resolve() != (cache/'train/physical_ids.npy').resolve():
         raise ValueError('Source augmentations must share original physical IDs')
@@ -248,8 +253,9 @@ def main():
     parser.add_argument('--prepare-batch', type=int, default=32)
     parser.add_argument('--smoke-fit', type=int, default=64)
     parser.add_argument('--source-context-cache', type=Path)
+    parser.add_argument('--save-source-context-cache', type=Path)
     parser.add_argument('--deterministic', action='store_true')
-    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard'), default='iq')
+    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard'), default='iq')
     parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student'), default='orthogonal')
     args = parser.parse_args()
     if args.deterministic:
@@ -257,14 +263,18 @@ def main():
         torch.use_deterministic_algorithms(True)
     if args.source_context_cache and (args.smoke or (args.architecture in DIRECT_ARCHITECTURES and args.architecture != 'direct_spectral_student') or args.objective in ACTION_OBJECTIVES):
         raise ValueError('Source context cache applies only to full DURA-context training without action supervision')
+    if args.save_source_context_cache and (args.smoke or args.source_context_cache or args.objective != 'wide_source_guard' or not args.deterministic):
+        raise ValueError('Cache writing requires a fresh deterministic wide-source run')
     if args.architecture in DIRECT_ARCHITECTURES and args.architecture != 'direct_spectral_student' and args.objective != 'iq':
         raise ValueError('Direct dual-domain model uses received-IQ regularization only')
     if (args.architecture == 'direct_spectral_student') != (args.objective == 'distill_iq'):
         raise ValueError('Direct spectral student requires fixed source-IQ distillation')
     if args.architecture == 'dura_timevarying' and args.objective != 'dura_guard':
         raise ValueError('DURA time-varying correction requires DURA guard')
-    if args.architecture == 'dura_multiscale' and args.objective not in ('dura_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard'):
+    if args.architecture == 'dura_multiscale' and args.objective not in ('dura_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard'):
         raise ValueError('Multiscale correction requires a registered DURA guard')
+    if args.objective == 'wide_source_guard' and args.architecture != 'dura_multiscale':
+        raise ValueError('Wide source guard requires multiscale DURA correction')
     if args.objective == 'tail_excess_guard' and args.architecture != 'dura_multiscale':
         raise ValueError('Tail excess guard requires multiscale DURA correction')
     if args.objective in ('ssl_joint_guard', 'ssl_fixed_guard', 'ssl_crosshalf_guard') and args.architecture != 'dura_multiscale':
@@ -296,7 +306,8 @@ def main():
     torch.backends.cudnn.allow_tf32 = False
     torch.manual_seed(2026110612)
     ids, rx, scene, _, source_received, source_clean = source_inputs(args.root)
-    _, fresh, clean, fit = load_source_training(args.root, ids)
+    fit_size = WIDE_FIT_SIZE if args.objective == 'wide_source_guard' else FIT_SIZE
+    _, fresh, clean, fit = load_source_training(args.root, ids, fit_size=fit_size)
     if args.smoke:
         fit = fit[:args.smoke_fit]
     dura = frozen_dura(args.root, str(device)) if args.architecture not in DIRECT_ARCHITECTURES or args.architecture == 'direct_spectral_student' else None
@@ -308,6 +319,9 @@ def main():
         prepare_arch = 'orthogonal' if args.architecture == 'direct_spectral_student' else args.architecture
         data, counts = prepare(args.root, dura, clean, fresh, fit, str(device), args.prepare_batch,
                                prepare_arch, include_action=args.objective in ACTION_OBJECTIVES)
+        if args.save_source_context_cache:
+            save_cache(args.save_source_context_cache, data, counts, fit, args.prepare_batch,
+                       str(device), deterministic=True)
     if args.objective == 'posterior_teacher_guard':
         data = (*data, load_posterior_teacher(args.root, fit, smoke=args.smoke))
     preparation_seconds = time.monotonic() - preparation_started
@@ -408,7 +422,7 @@ def main():
                 action_loss = action_response_loss(context[1], reference, probe.expand(len(x), -1))
             else:
                 output = model(x, anchor, direction, variance, validate=False)
-            base_objective = 'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard') else args.objective
+            base_objective = 'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'wide_source_guard') else args.objective
             loss = source_loss(output, anchor, y, objective=base_objective)
             if args.objective == 'posterior_teacher_guard':
                 loss = loss + .5*posterior_teacher_loss(output, fields[5], y)
@@ -478,6 +492,9 @@ def main():
                             source_ssl_teacher_commit=SSL_TEACHER_COMMIT, source_ssl_aux_trainable=False)
     cache_metadata = dict(source_context_cache=str(args.source_context_cache) if args.source_context_cache else None,
                           deterministic_algorithms=args.deterministic)
+    if args.objective == 'wide_source_guard':
+        cache_metadata.update(source_fit_size=WIDE_FIT_SIZE,
+                              source_context_cache_written=str(args.save_source_context_cache) if args.save_source_context_cache else None)
     if args.objective == 'tail_excess_guard':
         cache_metadata.update(source_tail_fraction=.25, source_tail_weight=.5)
     if args.architecture == 'direct_spectral_student':

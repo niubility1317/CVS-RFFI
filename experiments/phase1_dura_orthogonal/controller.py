@@ -34,8 +34,9 @@ def main():
     parser.add_argument('--device', default='cuda:0')
     parser.add_argument('--prepare-batch', type=int, default=32)
     parser.add_argument('--source-context-cache', type=Path)
+    parser.add_argument('--save-source-context-cache', type=Path)
     parser.add_argument('--deterministic', action='store_true')
-    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard'), default='iq')
+    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard'), default='iq')
     parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student'), default='orthogonal')
     args = parser.parse_args()
     env, cpu_env = training_environments(args.device, os.environ)
@@ -74,6 +75,7 @@ def main():
                 '--device', args.device, '--prepare-batch', str(args.prepare_batch), '--objective', args.objective,
                 '--architecture', args.architecture, *(['--source-context-cache', str(args.source_context_cache)]
                                                        if args.source_context_cache else []),
+                *(['--save-source-context-cache', str(args.save_source_context_cache)] if args.save_source_context_cache else []),
                 *(['--deterministic'] if args.deterministic else [])])
         status('RUNNING_SOURCE_PREDICTION_SMOKE')
         fixed = ['--source', args.source, '--out', str(ground), *common]
