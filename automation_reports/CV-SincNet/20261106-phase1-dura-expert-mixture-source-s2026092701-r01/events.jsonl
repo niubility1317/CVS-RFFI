@@ -1,3 +1,4 @@
 {"at": "2026-11-06T15:50:05+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-06T15:53:02+00:00", "status": "QUEUED", "note": "Waits for current owner training to end and GPU7 capacity, then launches source smoke and fixed training", "evidence": ["N607 queue PID 3496888; own student PID 3487392 active on GPU7"], "row_id": null}
 {"at": "2026-11-06T15:59:42+00:00", "status": "RUNNING", "note": "Three experts source training using deterministic source cache; no other owner stopped", "evidence": ["N607 queue transferred to controller PID 3499412 source PID 3499483; GPU source smoke PASS"], "row_id": null}
+{"at": "2026-11-06T16:16:07+00:00", "status": "TRAINING_COMPLETE", "note": "GPU optimization 912.8s; context cache read 0.895s; three experts and gate", "evidence": ["N607 SOURCE_TRAINED 32768 IDs, five epochs, source flags no F/TX/V/target"], "row_id": null}
