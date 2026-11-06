@@ -1,0 +1,55 @@
+{
+  "status": "PAIRED_COMPLETE",
+  "count": 168000,
+  "views": {
+    "clean": {
+      "count": 168000,
+      "candidate_correct": 145514,
+      "baseline_correct": 145514,
+      "repairs": 1,
+      "damages": 1
+    },
+    "practical_high": {
+      "count": 168000,
+      "candidate_correct": 139261,
+      "baseline_correct": 141697,
+      "repairs": 1377,
+      "damages": 3813
+    },
+    "practical_mid": {
+      "count": 168000,
+      "candidate_correct": 136956,
+      "baseline_correct": 139467,
+      "repairs": 1768,
+      "damages": 4279
+    },
+    "practical_low_suburban": {
+      "count": 168000,
+      "candidate_correct": 134128,
+      "baseline_correct": 136621,
+      "repairs": 2275,
+      "damages": 4768
+    },
+    "practical_high_urban": {
+      "count": 168000,
+      "candidate_correct": 137033,
+      "baseline_correct": 139523,
+      "repairs": 1646,
+      "damages": 4136
+    },
+    "practical_mid_urban": {
+      "count": 168000,
+      "candidate_correct": 124625,
+      "baseline_correct": 127186,
+      "repairs": 2721,
+      "damages": 5282
+    },
+    "practical_low_urban": {
+      "count": 168000,
+      "candidate_correct": 113148,
+      "baseline_correct": 115586,
+      "repairs": 3462,
+      "damages": 5900
+    }
+  }
+}

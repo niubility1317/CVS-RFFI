@@ -1,3 +1,4 @@
 {"at": "2026-11-06T14:58:52+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-06T15:00:57+00:00", "status": "QUEUED", "note": "Automatic seven-view prediction and independent truth-last scoring follow fixed training", "evidence": ["N607 controller PID 3471111"], "row_id": null}
 {"at": "2026-11-06T15:14:39+00:00", "status": "RUNNING", "note": "Seven-view prediction precedes independent truth-last scoring", "evidence": ["N607 112 source prediction smoke PASS; controller PID 3471111 prediction PID 3477646"], "row_id": null}
+{"at": "2026-11-06T20:52:35+00:00", "status": "ANALYZED", "note": "Seven full views independently scored after frozen predictions; paired DURA and 119 TX/RX/day groups verified.", "evidence": ["analysis.md,ground_summary.json,paired_dura.json,prediction_complete.json"], "row_id": null}
