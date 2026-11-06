@@ -82,7 +82,7 @@ def main():
     del data
     small = tuple(v[:256] for v in fields)
     for use_cache in (False,True):
-        model, _, _ = train(small, prior, initial, schedule(len(small),1), use_cache)
+        model, _, _ = train(small, prior, initial, schedule(len(small[0]),1), use_cache)
         del model
     batches = schedule(len(fields[0]), 5)
     pairs = []
