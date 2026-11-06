@@ -15,6 +15,6 @@ N607 GPU 7、确定性模式、batch 32：源上下文缓存读取 0.234 秒、�
 
 学生在 14 个源分组中 5 组的平均 NMSE 低于先前独立时变网络，全部 14 组仍高于 DURA。两种独立网络的架构及训练目标不同，不能把差异单独归因于 IQ 蒸馏；源波形 NMSE 不代表 TX 身份识别或统计显著。
 
-源预测 smoke 通过，固定 Tri-SIG-TIME SSL 的七景预测已启动，所有预测完成后独立 truth-last 评分；尚无正式识别成绩。正式比较会另算 DURA，而独立学生自身的部署时延尚未实测。
+源预测 smoke 通过；固定 Tri-SIG-TIME SSL 的七景预测和独立 truth-last 评分已完成，详见对应地面测试报告。独立学生自身部署时延尚未实测。
 
 远端证据：N607 runs/20261106-phase1-direct-spectral-distill-source-s2026092701-r01/source_summary.json。
