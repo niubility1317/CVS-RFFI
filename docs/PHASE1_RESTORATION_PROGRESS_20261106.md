@@ -35,3 +35,7 @@ crossfit、边界保护、复数融合、学习作用、spectral、geometry 和�
 本轮另完成一项无 F、无 TX 标签的源 IQ 物理诊断：在 672 条既有源样本上，即使使用不可部署的逐条理想步长，沿 DURA 的观测残差单方向修正，RX8 低城区平均 IQ NMSE 仅降低约 0.594%，28/48 条样本的最优方向为负。它不构成全方法上界，也不代表身份准确率。[源域诊断](../automation_reports/CV-SincNet/20261106-phase1-dura-innovation-source-oracle-s2026092701-r01/analysis.md)
 
 新路线尝试把物理方向和独立的正交波形修正分开学习，保持 DURA 初始输出，并继续遵守源 L_s/U_s 配对 IQ、无 TX 标签与无 F 训练约束。此处仅为正在开发的架构，不是已经验证的恢复结果；完整 Phase1 七景测试和 3% 目标仍待实现。
+
+## 正交波形修正的七景评分
+
+正交修正版已完成七景预测及独立评分。它相对同一 DURA 在 clean 和六个受损场景均下降：六景分别下降 0.6655、0.5292、0.4893、0.6208、0.5220 和 0.4607 个百分点。低城区准确率为 68.3405%，距 raw clean 低 18.1982 个百分点；六景只有高郊区通过 3 个百分点口径，按相对下降 3% 口径则均未通过。完整配对及逐 TX/RX/day 见 [七景分析](../automation_reports/CV-SincNet/20261106-phase1-dura-orthogonal-ground-test-s2026092701-r01/analysis.md)。

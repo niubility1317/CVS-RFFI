@@ -33,3 +33,7 @@
 等待对应源训练最终权重冻结，控制器将依次运行源预测 smoke、完整七景预测和独立 truth-last／DURA 配对评分。未开始目标预测。
 
 原模型源预测 smoke 通过，七景正式预测在 CPU 上运行，尚未完成评分。
+
+## 正式结果
+
+七景预测与独立 truth-last 评分完成；对 DURA 的配对结果及逐 TX/RX/day 见 [analysis.md](analysis.md)。
