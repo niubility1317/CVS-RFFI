@@ -41,7 +41,7 @@ def load_fixed(root, source, commit):
             any(state.get(k) != v for k, v in expected.items() if k not in ('status', 'fit_ids', 'epochs'))):
         raise ValueError('Fixed correction checkpoint and provenance required')
     objective = state.get('objective', 'iq')
-    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard') or summary.get('objective', 'iq') != objective:
+    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard') or summary.get('objective', 'iq') != objective:
         raise ValueError('Source objective must match the fixed checkpoint')
     if objective == 'crossview_guard' and any(
             obj.get('source_views_per_record') != 3 or obj.get('crossview_weight') != .1
@@ -60,7 +60,7 @@ def load_fixed(root, source, commit):
             for obj in (summary, state)):
         raise ValueError('Matching source-IQ teacher metadata required')
     if architecture in ('dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale') and (
-            objective not in (('dura_guard', 'moment_guard', 'geometry_guard') if architecture == 'dura_timevarying_gate' else ('dura_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard') if architecture == 'dura_multiscale' else ('dura_guard',))
+            objective not in (('dura_guard', 'moment_guard', 'geometry_guard') if architecture == 'dura_timevarying_gate' else ('dura_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard') if architecture == 'dura_multiscale' else ('dura_guard',))
             or any(obj.get('DURA_training_reads') != 1 for obj in (summary, state))):
         raise ValueError('Matching DURA-guarded source checkpoint required')
     if architecture == 'dura_internal' and (objective not in ('dura_guard', 'sim_action_guard', 'sim_action_fixed_prior')
@@ -87,13 +87,17 @@ def load_fixed(root, source, commit):
             obj.get('source_geometry_weight') != GEOMETRY_WEIGHT
             or obj.get('source_geometry_temperature') != GEOMETRY_TEMPERATURE for obj in (summary, state))):
         raise ValueError('Matching source IQ geometry objective required')
-    if objective in ('ssl_joint_guard', 'ssl_fixed_guard') and (architecture != 'dura_multiscale' or
+    if objective in ('ssl_joint_guard', 'ssl_fixed_guard', 'ssl_crosshalf_guard') and (architecture != 'dura_multiscale' or
             not isinstance(state.get('source_ssl_aux_state'), dict) or any(
             obj.get('source_ssl_feature_weight') != SSL_FEATURE_WEIGHT or
             obj.get('source_ssl_offdiagonal_weight') != SSL_OFFDIAGONAL_WEIGHT or
             obj.get('source_ssl_feature_dim') != SSL_FEATURE_DIM or obj.get('source_ssl_seed') != 2026110615
             for obj in (summary, state))):
         raise ValueError('Matching source-only SSL training metadata required')
+    if objective == 'ssl_crosshalf_guard' and any(
+            obj.get('source_ssl_patch_length') != 128 or obj.get('source_ssl_cross_half') is not True
+            for obj in (summary, state)):
+        raise ValueError('Matching cross-half source SSL metadata required')
     if objective == 'ssl_fixed_guard' and any(
             obj.get('source_ssl_teacher') != SSL_TEACHER_SOURCE or
             obj.get('source_ssl_teacher_commit') != SSL_TEACHER_COMMIT or

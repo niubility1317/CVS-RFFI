@@ -20,6 +20,7 @@ from experiments.phase1_dura_orthogonal.noise_gated_dura import NoiseGatedDuraTi
 from experiments.phase1_dura_orthogonal.moment_relational import moment_relational_loss, MOMENT_WEIGHT, LAGS
 from experiments.phase1_dura_orthogonal.iq_geometry import iq_geometry_loss, GEOMETRY_WEIGHT, GEOMETRY_TEMPERATURE
 from experiments.phase1_dura_orthogonal.joint_ssl_iq import SourceIQEncoder, cross_view_ssl_loss, frozen_feature_loss, SSL_FEATURE_WEIGHT, SSL_OFFDIAGONAL_WEIGHT, SSL_FEATURE_DIM
+from experiments.phase1_dura_orthogonal.local_ssl_iq import PatchIQEncoder, patch_cross_view_loss, frozen_patch_feature_loss
 from experiments.phase1_dura_orthogonal.multiscale_spectral import DuraMultiscaleSpectral
 from experiments.phase1_dura_orthogonal.direct_spectral_student import DirectSpectralStudent
 from experiments.phase1_dura_orthogonal.source_context_cache import load_cache
@@ -242,7 +243,7 @@ def main():
     parser.add_argument('--smoke-fit', type=int, default=64)
     parser.add_argument('--source-context-cache', type=Path)
     parser.add_argument('--deterministic', action='store_true')
-    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard'), default='iq')
+    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard'), default='iq')
     parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student'), default='orthogonal')
     args = parser.parse_args()
     if args.deterministic:
@@ -256,9 +257,9 @@ def main():
         raise ValueError('Direct spectral student requires fixed source-IQ distillation')
     if args.architecture == 'dura_timevarying' and args.objective != 'dura_guard':
         raise ValueError('DURA time-varying correction requires DURA guard')
-    if args.architecture == 'dura_multiscale' and args.objective not in ('dura_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard'):
+    if args.architecture == 'dura_multiscale' and args.objective not in ('dura_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard'):
         raise ValueError('Multiscale correction requires a registered DURA guard')
-    if args.objective in ('ssl_joint_guard', 'ssl_fixed_guard') and args.architecture != 'dura_multiscale':
+    if args.objective in ('ssl_joint_guard', 'ssl_fixed_guard', 'ssl_crosshalf_guard') and args.architecture != 'dura_multiscale':
         raise ValueError('Source IQ SSL is registered only for multiscale correction')
     if args.objective == 'posterior_teacher_guard' and args.architecture != 'dura_multiscale':
         raise ValueError('Source posterior teacher applies only to multiscale DURA correction')
@@ -336,9 +337,9 @@ def main():
         weight_decay=0. if args.architecture == 'dura_internal' else .001)
     aux = None
     aux_optimizer = None
-    if args.objective == 'ssl_joint_guard':
+    if args.objective in ('ssl_joint_guard', 'ssl_crosshalf_guard'):
         torch.manual_seed(2026110615)
-        aux = SourceIQEncoder().to(device)
+        aux = (PatchIQEncoder() if args.objective == 'ssl_crosshalf_guard' else SourceIQEncoder()).to(device)
         aux_optimizer = torch.optim.AdamW(aux.parameters(), lr=.0003, weight_decay=.001)
     elif args.objective == 'ssl_fixed_guard':
         aux = load_ssl_teacher(args.root, fit, device, smoke=args.smoke)
@@ -381,7 +382,8 @@ def main():
             if aux_optimizer is not None:
                 aux.train().requires_grad_(True)
                 aux_optimizer.zero_grad(set_to_none=True)
-                ssl_crossview = cross_view_ssl_loss(aux(x), aux(y))
+                ssl_crossview = (patch_cross_view_loss(aux, x, y) if args.objective == 'ssl_crosshalf_guard'
+                                 else cross_view_ssl_loss(aux(x), aux(y)))
                 if not torch.isfinite(ssl_crossview):
                     raise FloatingPointError('Finite source SSL loss required')
                 ssl_crossview.backward()
@@ -398,12 +400,13 @@ def main():
                 action_loss = action_response_loss(context[1], reference, probe.expand(len(x), -1))
             else:
                 output = model(x, anchor, direction, variance, validate=False)
-            base_objective = 'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard') else args.objective
+            base_objective = 'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard') else args.objective
             loss = source_loss(output, anchor, y, objective=base_objective)
             if args.objective == 'posterior_teacher_guard':
                 loss = loss + .5*posterior_teacher_loss(output, fields[5], y)
             if aux is not None:
-                ssl_feature = frozen_feature_loss(aux, output, y)
+                ssl_feature = (frozen_patch_feature_loss(aux, output, y) if args.objective == 'ssl_crosshalf_guard'
+                               else frozen_feature_loss(aux, output, y))
                 loss = loss + SSL_FEATURE_WEIGHT*ssl_feature
                 ssl_feature_total += ssl_feature.detach()*len(indices)
             if crossview:
@@ -458,6 +461,8 @@ def main():
         source_ssl_offdiagonal_weight=SSL_OFFDIAGONAL_WEIGHT, source_ssl_feature_dim=SSL_FEATURE_DIM,
         source_ssl_seed=2026110615, source_ssl_parameters=sum(p.numel() for p in aux.parameters()),
         source_ssl_crossview_losses=ssl_crossview_losses, source_ssl_feature_losses=ssl_feature_losses) if aux is not None else {}
+    if args.objective == 'ssl_crosshalf_guard':
+        ssl_metadata.update(source_ssl_patch_length=128, source_ssl_cross_half=True)
     if args.objective == 'ssl_fixed_guard':
         if any(p.requires_grad or p.grad is not None for p in aux.parameters()):
             raise ValueError('Source SSL teacher must remain frozen')
