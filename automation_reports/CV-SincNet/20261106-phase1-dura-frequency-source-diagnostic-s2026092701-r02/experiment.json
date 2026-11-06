@@ -1,0 +1,140 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-dura-frequency-source-diagnostic-s2026092701-r02",
+  "group_id": "phase1-dura-source-frequency-analysis",
+  "display_name": "DURA 与正交恢复器的源域频段误差诊断",
+  "description": "在 672 个相同源 IQ 样本上按绝对频率比较 DURA 和两个源训练冻结恢复器，不读取 F、TX、V 或目标，不训练模型。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "F-free",
+    "frequency-diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261106-phase1-dura-orthogonal-source-s2026092701-r01",
+    "20261106-phase1-dura-orthogonal-guard-source-s2026092701-r01"
+  ],
+  "replaces_run_id": "20261106-phase1-dura-frequency-source-diagnostic-s2026092701-r01",
+  "authorization": "用户继续授权研发星地恢复网络；仅源域合法 IQ 诊断，不重启已停止任务。",
+  "code": {
+    "commit": "ea7472d6eb9b924bc85812e08bbdbe8f005d57e3",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU7, CUDA_VISIBLE_DEVICES=7, FP32 TF32 off, batch 32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261106-phase1-dura-frequency-source-diagnostic-s2026092701-r02-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "received and clean IQ [2,256]",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "672 frozen source pilot physical IDs, RX4/6 and RX8 by seven views; read indices/rx/scene/split only",
+    "label_map_ref": null,
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Previously explored fixed source pilot; RX8 is source held group, not independent to DURA",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed simulated source epoch19 views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source IQ frequency decomposition, not identity accuracy and not independent evaluation"
+  },
+  "checkpoint": {
+    "initialization": "Frozen DURA and frozen source-only orthogonal IQ / guard models, fixed final epoch",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261106-phase1-dura-orthogonal-source-s2026092701-r01",
+      "20261106-phase1-dura-orthogonal-guard-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "Original DURA source contract plus each fixed source summary and checkpoint commit, objective, F/TX/target permissions",
+    "provenance_verdict": "Frozen source-only Phase1 IQ checkpoints; no F weights or target-derived selection",
+    "selection_rule": "Two already trained source-only candidates, irrespective of future ground results"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "Physical GPU7, one this-run worker, at most three total compute workers; preserve others",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-frequency-source-diagnostic-s2026092701-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-frequency-source-diagnostic-s2026092701-r02-launcher.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261106-phase1-dura-frequency-source-diagnostic-s2026092701-r02",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.spectral_probe --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-frequency-source-diagnostic-s2026092701-r02 --commit ea7472d6eb9b924bc85812e08bbdbe8f005d57e3",
+    "stop_rule": "Stop on source role mismatch, source smoke failure, nonfinite output or any target/F/TX read; preserve stopped group and other owners."
+  },
+  "expected_artifacts": [
+    "result.json with mean four-band errors and correction energies for 14 source groups"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "four-band error energy normalized by clean IQ energy",
+      "four-band correction energy normalized by clean IQ energy"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; no TX truth"
+  },
+  "rows": [
+    {
+      "row_id": "fixed-source-frequency-decomposition",
+      "method": "Orthonormal complex FFT per-window decomposition for frozen DURA and two correction networks",
+      "purpose": "Locate source error and correction energy across frequency bands",
+      "config_ref": "experiments/phase1_dura_orthogonal/spectral_probe.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Existing pretrained source runs and fixed source pilots; no stochastic training, support or augmentation in this benchmark.",
+      "k": null,
+      "scenario": "seven fixed Phase1 source views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "672 source IQ pairs including two-record real-checkpoint smoke, batch 32",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-frequency-source-diagnostic-s2026092701-r02",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-frequency-source-diagnostic-s2026092701-r02-launcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.spectral_probe --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-frequency-source-diagnostic-s2026092701-r02 --commit ea7472d6eb9b924bc85812e08bbdbe8f005d57e3",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source IQ groups previously examined and not independent of DURA.",
+    "No model updates, F model or F output, TX labels, V, target or user-stopped tasks touched.",
+    "Source smoke runs first in same process.",
+    "Technical rerun: r01 failed in remote torch-to-NumPy ndarray.mean; aggregation now stays in torch. No scientific changes."
+  ],
+  "registered_at": "2026-11-06T05:32:59+00:00"
+}

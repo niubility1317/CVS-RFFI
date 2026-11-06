@@ -1,0 +1,2 @@
+{"at": "2026-11-06T05:30:20+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-06T05:31:52+00:00", "status": "FAILED", "note": "Frozen source forward completed; source aggregate failed due to reproducible remote torch-to-numpy mean compatibility; preserved original output, no target or F access.", "evidence": ["N607 launcher log PID 3160123: SOURCE_SMOKE_PASS followed by numpy.core.umath ERR_IGNORE ImportError in ndarray.mean; result.json absent"], "row_id": null}
