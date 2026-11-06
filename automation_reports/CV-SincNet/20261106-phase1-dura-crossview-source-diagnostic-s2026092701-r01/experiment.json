@@ -1,0 +1,137 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-dura-crossview-source-diagnostic-s2026092701-r01",
+  "group_id": "phase1-dura-source-crossview",
+  "display_name": "DURA 对同源 IQ 三种模拟信道的误差分解",
+  "description": "对 672 条合法源 IQ 的三个固定模拟视图计算 DURA 波形误差的有限三视图均值项与离散项，不训练或读取 F、TX、V、目标。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "F-free",
+    "frequency-diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户继续授权研发星地恢复网络；仅源域合法 IQ 诊断，不重启已停止任务。",
+  "code": {
+    "commit": "bab03fa8cf8441c4fe2327950db9ad7728edcbef",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CPU FP32 TF32 off, batch8, 2 threads, CUDA hidden",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261106-phase1-dura-crossview-source-diagnostic-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache fixed simulated epochs 21/22/23",
+    "representation": "received and clean IQ [2,256]",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "672 fixed source pilot physical IDs each with three matching simulated observations",
+    "label_map_ref": null,
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Previously explored fixed source pilot; RX8 is source held group, not independent to DURA",
+    "support_query_ref": null,
+    "leo_config_ref": "fresh source augmentation epochs 21, 22, 23"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Exploratory finite three-view source IQ decomposition; not identity or independent target performance"
+  },
+  "checkpoint": {
+    "initialization": "Frozen original DURA stage2 E20/4940",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "frozen_dura validates original7/63/30 and source-only checkpoint; fresh source cache shared physical IDs",
+    "provenance_verdict": "Fixed source-only DURA, no F or target ancestry",
+    "selection_rule": "Fixed original DURA, no target selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "CPU only, 2 threads, CUDA hidden; preserve all other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-crossview-source-diagnostic-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-crossview-source-diagnostic-s2026092701-r01-launcher.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261106-phase1-dura-crossview-source-diagnostic-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.crossview_source_probe --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-crossview-source-diagnostic-s2026092701-r01 --commit bab03fa8cf8441c4fe2327950db9ad7728edcbef",
+    "stop_rule": "Stop on source role mismatch, source smoke failure, nonfinite output or any target/F/TX read; preserve stopped group and other owners."
+  },
+  "expected_artifacts": [
+    "result.json per-RX and clean-count groups of finite three-view source IQ decomposition"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "mean three-view source IQ NMSE",
+      "squared error of finite three-view mean",
+      "finite three-view error dispersion"
+    ],
+    "dimensions": [
+      "672 physical source records",
+      "three simulated views",
+      "RX4/6 and RX8, clean view count"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; source IQ only"
+  },
+  "rows": [
+    {
+      "row_id": "fixed-dura-source-three-view",
+      "method": "Frozen DURA per physical source IQ across three fixed simulated observations",
+      "purpose": "Assess channel-dependent source error variability for possible cross-view training",
+      "config_ref": "experiments/phase1_dura_orthogonal/crossview_source_probe.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Existing pretrained source runs and fixed source pilots; no stochastic training, support or augmentation in this benchmark.",
+      "k": null,
+      "scenario": "three source simulated views at epochs 21,22,23",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "672 source IQ x 3 views; CPU batch8",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-crossview-source-diagnostic-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-crossview-source-diagnostic-s2026092701-r01-launcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.crossview_source_probe --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-crossview-source-diagnostic-s2026092701-r01 --commit bab03fa8cf8441c4fe2327950db9ad7728edcbef",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Per-record squared mean error plus finite-view dispersion equals average source IQ NMSE; it is not an irreducible bias estimate.",
+    "Averaging three outputs is an unavailable-view oracle, not a deployable proposal or identity metric.",
+    "Source data were explored and DURA may have seen corresponding source domains. No F/TX/V/target reads."
+  ],
+  "registered_at": "2026-11-06T07:07:23+00:00"
+}

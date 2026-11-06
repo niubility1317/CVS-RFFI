@@ -1,0 +1,3 @@
+{"at": "2026-11-06T07:07:23+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-06T07:08:49+00:00", "status": "RUNNING", "note": "CPU source IQ-only three-view decomposition running; no F/TX/V/target reads.", "evidence": ["N607 PID 3220998, matching cwd, source smoke PASS and epoch21 672 records"], "row_id": null}
+{"at": "2026-11-06T07:10:07+00:00", "status": "ANALYZED", "note": "Finite-three-view IQ error decomposition; no F/TX/V/target reads; not independent irreducible bias or identity performance.", "evidence": ["N607 PID 3220998 source smoke PASS; result.json CROSSVIEW_SOURCE_DIAGNOSTIC_COMPLETE, 672 records x3 source views"], "row_id": null}
