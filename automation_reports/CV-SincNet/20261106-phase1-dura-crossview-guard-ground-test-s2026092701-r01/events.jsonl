@@ -1,2 +1,3 @@
 {"at": "2026-11-06T07:17:43+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-06T07:19:20+00:00", "status": "QUEUED", "note": "Automatic full Phase1 ground evaluation follows source freeze irrespective of source IQ results.", "evidence": ["N607 controller PID 3227011; fixed seven-view prediction and independent truth-last scoring configured"], "row_id": null}
+{"at": "2026-11-06T07:22:14+00:00", "status": "RUNNING", "note": "Frozen crossview_guard with single-view input and Tri-SIG-TIME SSL ground prediction running, truth-last after seven views.", "evidence": ["N607 controller RUNNING_SEVEN_VIEW_PREDICTION, source prediction smoke PASS, ground PID 3228910"], "row_id": null}
