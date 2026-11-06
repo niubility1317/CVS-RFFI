@@ -1,0 +1,43 @@
+{
+  "status": "MASK_SYNC_BENCHMARK_COMPLETE",
+  "commit": "b4ede991dd0624d1b07da146c8ffa5c793bc765d",
+  "source_ids": 512,
+  "source_views": 1536,
+  "epochs": 2,
+  "trials": [
+    {
+      "checked_seconds": 3.469000000040978,
+      "fast_seconds": 2.1409999998286366,
+      "steps": 96,
+      "losses_exact": true,
+      "parameters_exact": true
+    },
+    {
+      "checked_seconds": 2.219000000040978,
+      "fast_seconds": 2.2339999999385327,
+      "steps": 96,
+      "losses_exact": true,
+      "parameters_exact": true
+    },
+    {
+      "checked_seconds": 2.2659999998286366,
+      "fast_seconds": 2.1880000000819564,
+      "steps": 96,
+      "losses_exact": true,
+      "parameters_exact": true
+    },
+    {
+      "checked_seconds": 2.1089999999385327,
+      "fast_seconds": 2.172000000020489,
+      "steps": 96,
+      "losses_exact": true,
+      "parameters_exact": true
+    }
+  ],
+  "gpu": "NVIDIA GeForce RTX 5070 Ti",
+  "TX_labels_read": 0,
+  "F_weights_read": 0,
+  "F_outputs_read": 0,
+  "V_reads": 0,
+  "target_reads": 0
+}
