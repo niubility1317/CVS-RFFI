@@ -1,5 +1,5 @@
 import torch
-from experiments.phase1_dura_orthogonal.source_covariance_posterior import posterior_cg, shrunk_second_moment
+from experiments.phase1_dura_orthogonal.source_covariance_posterior import posterior_cg, shrunk_second_moment, posterior_variants
 
 
 class MatrixAction:
@@ -38,3 +38,12 @@ def test_shrinkage_preserves_psd_and_scale():
     torch.testing.assert_close(covariance, covariance.T)
     assert torch.linalg.eigvalsh(covariance).min() > 0
     torch.testing.assert_close(covariance.trace(), torch.tensor(3., dtype=torch.float64))
+
+
+def test_cross_variants_hold_action_and_noise_separate():
+    oracle, actual_noise, estimate, estimated_noise, isotropic, covariance = (object() for _ in range(6))
+    base = posterior_variants(oracle, actual_noise, estimate, estimated_noise, isotropic, covariance)
+    crossed = posterior_variants(oracle, actual_noise, estimate, estimated_noise, isotropic, covariance, cross=True)
+    assert len(base) == 4 and crossed[:4] == base
+    assert crossed[4] == ('true_action_estimated_noise_covariance', oracle, estimated_noise, covariance)
+    assert crossed[5] == ('estimated_action_true_noise_covariance', estimate, actual_noise, covariance)

@@ -15,6 +15,21 @@ from experiments.phase1_dura_orthogonal.oracle_action_source_probe import iq_nms
 from experiments.phase1_dura_orthogonal.train_source import load_source_training
 
 
+def posterior_variants(oracle, actual_noise, estimated, estimated_noise, isotropic, covariance, *, cross=False):
+    variants = [
+        ('true_action_true_noise_isotropic', oracle, actual_noise, isotropic),
+        ('true_action_true_noise_covariance', oracle, actual_noise, covariance),
+        ('estimated_action_estimated_noise_isotropic', estimated, estimated_noise, isotropic),
+        ('estimated_action_estimated_noise_covariance', estimated, estimated_noise, covariance),
+    ]
+    if cross:
+        variants.extend((
+            ('true_action_estimated_noise_covariance', oracle, estimated_noise, covariance),
+            ('estimated_action_true_noise_covariance', estimated, actual_noise, covariance),
+        ))
+    return variants
+
+
 def shrunk_second_moment(moment, *, shrinkage=.1):
     if moment.ndim != 2 or moment.shape[0] != moment.shape[1] or not 0 < shrinkage <= 1:
         raise ValueError('Square second moment and positive shrinkage required')
@@ -69,6 +84,7 @@ def main():
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--commit', required=True)
     parser.add_argument('--steps', type=int, default=40)
+    parser.add_argument('--cross', action='store_true')
     args = parser.parse_args()
     if not 1 <= args.steps <= 256:
         raise ValueError('CG iteration budget must be between 1 and 256')
@@ -110,11 +126,11 @@ def main():
         oracle = true_action(type(estimated), h, c)
         original = dura.stage_outputs(x, (base, estimated, estimated_v))[0][-1]
         outputs, residual = [], []
-        for action, noise in ((oracle, v), (estimated, estimated_v)):
-            for prior in (isotropic, covariance):
-                value, rel = posterior_cg(action, x, prior, noise, steps=args.steps, rtol=1e-4)
-                outputs.append(value)
-                residual.append(rel)
+        variants = posterior_variants(oracle, v, estimated, estimated_v, isotropic, covariance, cross=args.cross)
+        for _, action, noise, prior in variants:
+            value, rel = posterior_cg(action, x, prior, noise, steps=args.steps, rtol=1e-4)
+            outputs.append(value)
+            residual.append(rel)
         if offset == 0:
             torch.testing.assert_close(original, dura(x), rtol=1e-5, atol=3e-6)
             print('SOURCE_COVARIANCE_POSTERIOR_SMOKE_PASS', flush=True)
@@ -138,8 +154,7 @@ def main():
     torch.save(dict(covariance=covariance.cpu(), fit_ids=fit.tolist(), shrinkage=.1), args.out/'source_covariance.pt')
     core.write(args.out/'result.json', dict(status='SOURCE_COVARIANCE_POSTERIOR_COMPLETE', commit=args.commit,
         records=len(ids), covariance_fit_ids=len(fit), covariance_shrinkage=.1, cg_steps=args.steps, cg_rtol=1e-4,
-        order=['dura', 'true_action_true_noise_isotropic', 'true_action_true_noise_covariance',
-               'estimated_action_estimated_noise_isotropic', 'estimated_action_estimated_noise_covariance'],
+        order=['dura', *[name for name, _, _, _ in variants]],
         groups=groups, elapsed_seconds=time.monotonic()-started, TX_labels_read=0, F_weights_read=0,
         F_outputs_read=0, V_reads=0, target_IQ_reads=0, target_truth_reads=0, model_updates=0,
         caveat='True simulator action/noise are privileged source-only diagnostics, not deployable or theoretical upper bounds; IQ NMSE is not TX accuracy. Covariance fit and source pilot share previously explored source domains.'))
