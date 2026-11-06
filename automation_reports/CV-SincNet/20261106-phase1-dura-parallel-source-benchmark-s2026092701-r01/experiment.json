@@ -1,0 +1,142 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-dura-parallel-source-benchmark-s2026092701-r01",
+  "group_id": "phase1-dura-parallel-source-benchmark",
+  "display_name": "三个独立 CPU 进程与共享推理的源域对照",
+  "description": "冻结模型于 112 条源 IQ 上对比三个 CPU 子进程并行与单进程共享推理，逐字节比较结果。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "frozen-F",
+    "inference-benchmark"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261106-phase1-dura-orthogonal-source-s2026092701-r01",
+    "20261106-phase1-dura-orthogonal-guard-source-s2026092701-r01",
+    "20261106-phase1-dura-band-guard-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户继续授权研发星地恢复网络；仅源域合法 IQ 诊断，不重启已停止任务。",
+  "code": {
+    "commit": "706c32095f3be0ebeba2c6df797a6c34b189fea9",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CPU FP32 TF32 off, 3 workers each two threads versus one shared process two threads; batch 8; CUDA hidden",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261106-phase1-dura-parallel-source-benchmark-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "received and clean IQ [2,256]",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "112 fixed source pilot IDs, eight for each receiver group and view, read indices/rx/scene/split only",
+    "label_map_ref": null,
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Previously explored fixed source pilot; RX8 is source held group, not independent to DURA",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed simulated source epoch19 views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only fixed models, one actual CPU parallel timing and bitwise output comparison; not full target equivalence"
+  },
+  "checkpoint": {
+    "initialization": "Original DURA, frozen Tri-SIG-TIME SSL classifier and three separately frozen source-only correction models",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261106-phase1-dura-orthogonal-source-s2026092701-r01",
+      "20261106-phase1-dura-orthogonal-guard-source-s2026092701-r01",
+      "20261106-phase1-dura-band-guard-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "ground.load_fixed verifies each source checkpoint and frozen model; common DURA and F weights are compared byte by byte",
+    "provenance_verdict": "Frozen Phase1 matching F and three matching source-only correction models; target labels absent",
+    "selection_rule": "All three already frozen candidates, no target result selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "CPU only: three bounded short-lived workers, two threads each, one shared parent; preserve live ground tests and other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-parallel-source-benchmark-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-parallel-source-benchmark-s2026092701-r01-launcher.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261106-phase1-dura-parallel-source-benchmark-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.parallel_source_benchmark --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-parallel-source-benchmark-s2026092701-r01 --commit 706c32095f3be0ebeba2c6df797a6c34b189fea9",
+    "stop_rule": "Stop on source role mismatch, non-identical frozen weights or outputs, non-finite outputs, technical failure or any target/TX truth access; preserve all other owners."
+  },
+  "expected_artifacts": [
+    "result.json parallel wall time, shared wall time and exact source comparison"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "three-process independent wall time",
+      "single-process shared wall time",
+      "bitwise source tensor differences"
+    ],
+    "dimensions": [
+      "112 source IQ records: 8 each for two RX groups and seven views",
+      "three frozen correction models"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; no TX truth"
+  },
+  "rows": [
+    {
+      "row_id": "three-parallel-versus-shared-source",
+      "method": "Compare three simultaneous independent source workers with one shared inference process",
+      "purpose": "Measure actual parallel comparison and exact source output equivalence",
+      "config_ref": "experiments/phase1_dura_orthogonal/parallel_source_benchmark.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Existing pretrained source runs and fixed source pilots; no stochastic training, support or augmentation in this benchmark.",
+      "k": null,
+      "scenario": "seven fixed Phase1 source views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "112 source IQ records, batch 8; first batch real-checkpoint smoke",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-parallel-source-benchmark-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-parallel-source-benchmark-s2026092701-r01-launcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.parallel_source_benchmark --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-parallel-source-benchmark-s2026092701-r01 --commit 706c32095f3be0ebeba2c6df797a6c34b189fea9",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "All models frozen before F is used for source prediction; no TX truth, V or target data.",
+    "Model loading and process startup excluded; output serialization included and parallel output transfer included.",
+    "Single timing; does not establish full target output equivalence or alter active tasks."
+  ],
+  "registered_at": "2026-11-06T06:13:11+00:00"
+}
