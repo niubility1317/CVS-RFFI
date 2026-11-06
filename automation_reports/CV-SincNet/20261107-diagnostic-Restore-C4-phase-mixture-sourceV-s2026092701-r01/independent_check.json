@@ -1,0 +1,77 @@
+{
+  "status": "PASS",
+  "code_commit": "f89106ee0af91ddae481ed86a56f7e984e745415",
+  "cells": 28,
+  "source_V_records": 120,
+  "max_abs_error": {
+    "iq_nmse": 4.243169809958758e-08,
+    "feature_cosine_distance": 2.804955294699596e-07,
+    "feature_standardized_error": 1.617839529011178e-07,
+    "agreement": 0.0,
+    "posterior_mass": 2.220446049250313e-16
+  },
+  "paired_nominal_phase_summary": [
+    {
+      "scene": "clean",
+      "nominal_phase_argmax": 119,
+      "max_weight_below_095": 0,
+      "vs_fixed_repairs": 0,
+      "vs_fixed_damage": 0
+    },
+    {
+      "scene": "practical_high",
+      "nominal_phase_argmax": 119,
+      "max_weight_below_095": 1,
+      "vs_fixed_repairs": 0,
+      "vs_fixed_damage": 0
+    },
+    {
+      "scene": "practical_mid",
+      "nominal_phase_argmax": 119,
+      "max_weight_below_095": 0,
+      "vs_fixed_repairs": 0,
+      "vs_fixed_damage": 0
+    },
+    {
+      "scene": "practical_low_suburban",
+      "nominal_phase_argmax": 119,
+      "max_weight_below_095": 1,
+      "vs_fixed_repairs": 0,
+      "vs_fixed_damage": 0
+    },
+    {
+      "scene": "practical_high_urban",
+      "nominal_phase_argmax": 119,
+      "max_weight_below_095": 1,
+      "vs_fixed_repairs": 0,
+      "vs_fixed_damage": 0
+    },
+    {
+      "scene": "practical_mid_urban",
+      "nominal_phase_argmax": 119,
+      "max_weight_below_095": 0,
+      "vs_fixed_repairs": 0,
+      "vs_fixed_damage": 0
+    },
+    {
+      "scene": "practical_low_urban",
+      "nominal_phase_argmax": 119,
+      "max_weight_below_095": 0,
+      "vs_fixed_repairs": 0,
+      "vs_fixed_damage": 0
+    }
+  ],
+  "TX_reads": 0,
+  "target_reads": 0,
+  "new_F0_rows_in_independent_check": 0,
+  "same_one_source_record_prefers_non_nominal_direction_all_views": true,
+  "mixture_vs_fixed_class_decision_changes_per_view": {
+    "clean": 0,
+    "practical_high": 0,
+    "practical_mid": 0,
+    "practical_low_suburban": 0,
+    "practical_high_urban": 0,
+    "practical_mid_urban": 1,
+    "practical_low_urban": 0
+  }
+}
