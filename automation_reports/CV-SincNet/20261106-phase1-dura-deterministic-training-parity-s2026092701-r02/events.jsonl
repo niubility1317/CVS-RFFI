@@ -1,2 +1,3 @@
 {"at": "2026-11-06T11:49:38+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-06T11:50:53+00:00", "status": "RUNNING", "note": "Repaired deterministic GPU smoke and training comparison started.", "evidence": ["N607:PID3375185"], "row_id": null}
+{"at": "2026-11-06T11:56:31+00:00", "status": "ANALYZED", "note": "Deterministic GPU fresh and cached training: parameters, losses, source groups exact; single-run elapsed 176.95 versus 92.56 seconds.", "evidence": ["E:/type10-7/automation_reports/CV-SincNet/20261106-phase1-dura-deterministic-training-parity-s2026092701-r02/analysis.md"], "row_id": null}
