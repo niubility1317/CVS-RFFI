@@ -1,0 +1,144 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-masked-teacher-training-parity-source-s2026092701-r01",
+  "group_id": "phase1-masked-teacher-training-parity-source",
+  "display_name": "遮挡教师预计算训练轨迹对照",
+  "description": "源域小样本配对训练验证预计算与原训练的逐步损失及最终参数。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "GPU",
+    "training-efficiency",
+    "exact-parity"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261107-phase1-masked-teacher-batch-parity-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User authorizes ongoing Phase1 F-free restoration research, source-only diagnostics and GPU use.",
+  "code": {
+    "commit": "6be319bc2f41ac0fc05144fc2780aaf1f75cd424",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "Local RTX 5070 Ti GPU0 deterministic FP32 TF32off",
+    "cwd": "E:/type10-7/github_publish/CVS-RFFI-repo"
+  },
+  "data": {
+    "dataset": "Phase1 Main split permitted source L_s/U_s",
+    "version": "fixed deterministic source context epochs21/22/23",
+    "representation": "512 selected source IDs x 3 views x 5 epochs",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "First 512 ordered IDs from each view of the existing 32768-ID source context",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ only, TX hidden",
+      "U_s": "source IQ only, TX hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Same source records, initialization, shuffle, masks, optimizer and training schedule in both paths",
+    "support_query_ref": null,
+    "leo_config_ref": "pre-existing legal source simulation epochs 21/22/23"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Local source training parity and timing at 512 IDs only; no target predictions or identity claims"
+  },
+  "checkpoint": {
+    "initialization": "Fixed legal source prior and exact correction initial state; no trained weights saved",
+    "sources": [
+      "20261107-phase1-masked-iq-prior-source-s2026092701-r01",
+      "20261106-phase1-dura-wide-source-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "Original DURA provenance, prior commit and exact ordered 32768 source IDs; no F/TX/V/target",
+    "provenance_verdict": "Both prior and source context are F/TX/V/target-free source only",
+    "selection_rule": "Fixed initialization, two reversed-order paired training runs; no target or model selection"
+  },
+  "execution": {
+    "host": "Local Windows GPU",
+    "launch_owner": "this conversation",
+    "gpu_policy": "One local GPU0 diagnostic; preserve other owners",
+    "remote_run_root": "N/A",
+    "remote_log_root": "N/A",
+    "local_artifact_root": "E:/type10-7/.codex_tmp/20261107-phase1-masked-teacher-training-parity-source-s2026092701-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -X utf8 -u -m experiments.phase1_dura_orthogonal.benchmark_teacher_training --cache E:/type10-7/.codex_tmp/masked_full_context.pt --teacher E:/type10-7/.codex_tmp/masked_source_prior_final.pt --initial-state E:/type10-7/.codex_tmp/masked_full_initial.pt --initial-commit 114a169dd94c358031c0aa9237df884d41f2678e --commit 6be319bc2f41ac0fc05144fc2780aaf1f75cd424 --out E:/type10-7/.codex_tmp/20261107-phase1-masked-teacher-training-parity-source-s2026092701-r01",
+    "stop_rule": "Stop on invalid checkpoint, nonfinite computation, or unavailable GPU"
+  },
+  "expected_artifacts": [
+    "result.json: two per-step loss and final parameter parity comparisons and training timings"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "per-step loss parity",
+      "final parameter parity",
+      "training elapsed seconds"
+    ],
+    "dimensions": [
+      "512 source IDs x 3 views x 5 epochs",
+      "two pairs, reversed order"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; no target or TX truth"
+  },
+  "rows": [
+    {
+      "row_id": "teacher-training-parity",
+      "method": "Original versus batch256 cached teacher source training",
+      "purpose": "Measure source training trajectory equality and elapsed time including teacher precomputation",
+      "config_ref": "experiments/phase1_dura_orthogonal/benchmark_teacher_training.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": 2026110711,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model 2026110612, order 2026110613, mask 2026110711; source prior seed 2026110707",
+      "k": null,
+      "scenario": "512 fixed source IDs, three simulation views",
+      "optimizer": "AdamW weight_decay 0.001",
+      "lr": 0.0003,
+      "epochs": 5,
+      "fl_rounds": null,
+      "budget_ref": "512 source IDs x 3 views x 5 epochs x 4 trajectories, plus warmups",
+      "output_root": "E:/type10-7/.codex_tmp/20261107-phase1-masked-teacher-training-parity-source-s2026092701-r01",
+      "log_path": null,
+      "command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -X utf8 -u -m experiments.phase1_dura_orthogonal.benchmark_teacher_training --cache E:/type10-7/.codex_tmp/masked_full_context.pt --teacher E:/type10-7/.codex_tmp/masked_source_prior_final.pt --initial-state E:/type10-7/.codex_tmp/masked_full_initial.pt --initial-commit 114a169dd94c358031c0aa9237df884d41f2678e --commit 6be319bc2f41ac0fc05144fc2780aaf1f75cd424 --out E:/type10-7/.codex_tmp/20261107-phase1-masked-teacher-training-parity-source-s2026092701-r01",
+      "expected_artifacts": [
+        "result.json: two per-step loss and final parameter parity comparisons and training timings"
+      ]
+    }
+  ],
+  "notes": [
+    "Two paths share identical shuffle/mask schedule generated before both timers.",
+    "Each path trains five epochs twice in alternating order; timers include per-epoch target precomputation.",
+    "Local source-only diagnostic; no target, F, TX, V, model selection or saved trained weights.",
+    "An independent P0/P1 review found a warmup batch-size error; it was fixed and targeted re-review passed."
+  ],
+  "registered_at": "2026-11-06T23:41:41+00:00"
+}
