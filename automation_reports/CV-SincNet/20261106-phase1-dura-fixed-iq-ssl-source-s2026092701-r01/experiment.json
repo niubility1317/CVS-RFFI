@@ -1,0 +1,148 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-dura-fixed-iq-ssl-source-s2026092701-r01",
+  "group_id": "phase1-dura-fixed-iq-ssl",
+  "display_name": "固定源 IQ 表征的 DURA 多尺度 GPU 训练",
+  "description": "固定原 DURA 和仅由合法源 IQ 自监督训练的辅助编码器；独立初始化多尺度恢复修正，用源 IQ 与固定表征共同约束训练，七景冻结测试。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "dura",
+    "F-free-training",
+    "fixed-source-iq-ssl",
+    "deterministic-gpu"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261106-phase1-dura-joint-iq-ssl-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests continued novel and DURA-combinable Phase1 restoration research, F-free/TX-label-free source training, automatic seven-view test and truth-last score.",
+  "code": {
+    "commit": "65e6d70b5ba32e2f08fbacc1309367a23ec22fb4",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 physical GPU7, CUDA_VISIBLE_DEVICES=7, FP32 TF32 off; source prepare batch 32, train batch 32, ground/scoring CPU 2 threads",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261106-phase1-dura-fixed-iq-ssl-source-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "paired received/clean IQ, per-packet DURA and its estimated physical action",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "8192 source fit IDs exclude RX4/6/8 day3 and 672 source evaluation IDs",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "672 fixed previously explored source L_s/U_s IQ, not independent of DURA",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed source epoch21/22/23 views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "F-free and TX-label-free paired source IQ training, source IQ diagnostics; no target score"
+  },
+  "checkpoint": {
+    "initialization": "Frozen source-only DURA v1.0 and frozen source-only self-supervised auxiliary encoder from 20261106-phase1-dura-joint-iq-ssl-source-s2026092701-r01; 117062-parameter correction independently zero-head initialized",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261106-phase1-dura-joint-iq-ssl-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "DURA provenance checked by frozen_dura; teacher summary/checkpoint fixed commit and TX/F/V/target-free source access, exact ordered 8192 fit IDs, auxiliary state strict load; no G weights inherited",
+    "provenance_verdict": "Both DURA and auxiliary teacher are source-only with matching training IDs and no target ancestry",
+    "selection_rule": "Fixed final epoch 5; no source or target performance selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "Physical GPU7, at most one this-run worker and at most 3 total compute workers including others; check capacity; preserve all other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-fixed-iq-ssl-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-fixed-iq-ssl-source-s2026092701-r01-controller/source_train.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261106-phase1-dura-fixed-iq-ssl-source-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.controller --root /home/szu2070436088/2510044040/CV-SincNet --source 20261106-phase1-dura-fixed-iq-ssl-source-s2026092701-r01 --ground 20261106-phase1-dura-fixed-iq-ssl-ground-test-s2026092701-r01 --commit 65e6d70b5ba32e2f08fbacc1309367a23ec22fb4 --device cuda:0 --prepare-batch 32 --objective ssl_fixed_guard --deterministic --source-context-cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-deterministic-cache-s2026092701-r01/source_context.pt --architecture dura_multiscale",
+    "stop_rule": "Stop exact owner only for source contract/role mismatch, nonfinite computation, incorrect checkpoint, target leakage or unrecoverable technical failure. Preserve all artifacts."
+  },
+  "expected_artifacts": [
+    "final.pt: fixed final epoch",
+    "source_summary.json: source IQ only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source paired IQ NMSE",
+      "training IQ loss"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "dura-fixed-source-iq-ssl-final",
+      "method": "Fresh multiscale DURA correction trained against source IQ and a frozen source-only IQ representation (feature weight 0.05)",
+      "purpose": "Train a distinct F-free recovery network at fixed five-epoch budget",
+      "config_ref": "experiments/phase1_dura_orthogonal/train_source.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Fresh correction initialization 2026110612, source fit 2026110611, order 2026110613; teacher init 2026110615 and fixed E5 source state; DURA seed 2026092701.",
+      "k": null,
+      "scenario": "fixed source cache epochs 21, 22, 23",
+      "optimizer": "AdamW weight decay 0.001",
+      "lr": 0.0003,
+      "epochs": 5,
+      "fl_rounds": null,
+      "budget_ref": "Frozen DURA 266951 parameters plus fresh correction 117062 parameters; 53424-parameter frozen source encoder only during training; 8192 IDs x 3 views, 5 epochs batch32, deterministic cached context",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-fixed-iq-ssl-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-fixed-iq-ssl-source-s2026092701-r01-controller/source_train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.controller --root /home/szu2070436088/2510044040/CV-SincNet --source 20261106-phase1-dura-fixed-iq-ssl-source-s2026092701-r01 --ground 20261106-phase1-dura-fixed-iq-ssl-ground-test-s2026092701-r01 --commit 65e6d70b5ba32e2f08fbacc1309367a23ec22fb4 --device cuda:0 --prepare-batch 32 --objective ssl_fixed_guard --deterministic --source-context-cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-deterministic-cache-s2026092701-r01/source_context.pt --architecture dura_multiscale",
+      "expected_artifacts": [
+        "final.pt: fixed final epoch",
+        "source_summary.json: source IQ only"
+      ]
+    }
+  ],
+  "notes": [
+    "Candidate trains correction from independently initialized zero output heads using fixed DURA context and fixed source IQ encoder; feature weight 0.05 plus original IQ and DURA guard losses.",
+    "Encoder checkpoint 20261106-phase1-dura-joint-iq-ssl-source-s2026092701-r01 was trained solely on matching source IQ, with no TX labels, F, V or target; its parameters are frozen and never used at ground inference.",
+    "The fixed source context cache was constructed and exactly verified in deterministic GPU mode; it is source-only and matched on fit IDs and data contract.",
+    "Five epochs, model seed 2026110612, fixed data seed 2026110611, order seed 2026110613, CUDA deterministic mode with slice-based linear interpolation; no target-driven selection.",
+    "Freeze final epoch and run all seven Phase1 Main split views with frozen Tri-SIG-TIME SSL, 168000 each, truth-last, regardless of source results.",
+    "Joint SSL version differs in encoder schedule and execution mode; simple outcome differences cannot be attributed solely to freezing."
+  ],
+  "registered_at": "2026-11-06T12:32:34+00:00"
+}
