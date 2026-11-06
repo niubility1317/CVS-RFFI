@@ -26,6 +26,22 @@ def pair_errors(received, restored, anchor, clean):
                         for value in (received, restored, anchor)], dim=1)
 
 
+def load_direct(root, device):
+    folder = root/'runs'/RUN
+    summary = core.read(folder/'source_summary.json')
+    state = torch.load(folder/'final.pt', map_location='cpu', weights_only=False)
+    expected = dict(commit=SOURCE_COMMIT, architecture='dual_domain', objective='iq',
+                    epochs=DUAL_DOMAIN_EPOCHS, DURA_training_reads=0, TX_labels_read=0,
+                    F_weights_read=0, F_outputs_read=0, V_reads=0, target_reads=0, DURA_frozen=True)
+    if (summary.get('status') != 'SOURCE_TRAINED' or summary.get('fit_ids') != FIT_SIZE or
+            state.get('schema') != SCHEMA or len(state.get('fit_ids', [])) != FIT_SIZE or
+            any(summary.get(k) != v or state.get(k) != v for k, v in expected.items())):
+        raise ValueError('The fixed source-only direct checkpoint is required')
+    model = DualDomainRecovery(width=state['width'])
+    model.load_state_dict(state['model'], strict=True)
+    return model.to(device).eval().requires_grad_(False)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--root', type=Path, required=True)
@@ -40,19 +56,7 @@ def main():
     torch.set_num_threads(2)
     torch.backends.cuda.matmul.allow_tf32 = False
     torch.backends.cudnn.allow_tf32 = False
-    folder = args.root/'runs'/RUN
-    summary = core.read(folder/'source_summary.json')
-    state = torch.load(folder/'final.pt', map_location='cpu', weights_only=False)
-    expected = dict(commit=SOURCE_COMMIT, architecture='dual_domain', objective='iq',
-                    epochs=DUAL_DOMAIN_EPOCHS, DURA_training_reads=0, TX_labels_read=0,
-                    F_weights_read=0, F_outputs_read=0, V_reads=0, target_reads=0, DURA_frozen=True)
-    if (summary.get('status') != 'SOURCE_TRAINED' or summary.get('fit_ids') != FIT_SIZE or
-            state.get('schema') != SCHEMA or len(state.get('fit_ids', [])) != FIT_SIZE or
-            any(summary.get(k) != v or state.get(k) != v for k, v in expected.items())):
-        raise ValueError('The fixed source-only direct checkpoint is required')
-    model = DualDomainRecovery(width=state['width'])
-    model.load_state_dict(state['model'], strict=True)
-    model = model.to('cuda:0').eval().requires_grad_(False)
+    model = load_direct(args.root, 'cuda:0')
     dura = frozen_dura(args.root, 'cuda:0')
     ids, rx, scene, _, received, clean = source_inputs(args.root)
     chunks = []
