@@ -59,6 +59,8 @@ def main():
     parser.add_argument('--initial-commit', required=True)
     parser.add_argument('--commit', required=True)
     parser.add_argument('--out', type=Path, required=True)
+    parser.add_argument('--source-count', type=int, choices=(512, 32768), default=512)
+    parser.add_argument('--pairs', type=int, choices=(1, 2), default=2)
     args = parser.parse_args()
     if args.out.exists() or not torch.cuda.is_available():
         raise ValueError('Unique output and GPU required')
@@ -68,7 +70,7 @@ def main():
     torch.use_deterministic_algorithms(True)
     data, prior, initial = load_inputs(args.cache, args.teacher, args.initial_state, args.initial_commit)
     small = tuple(torch.cat([v[i:i+64] for i in (0,32768,65536)]) for v in data)
-    selected = tuple(torch.cat([v[i:i+512] for i in (0,32768,65536)]) for v in data)
+    selected = tuple(torch.cat([v[i:i+args.source_count] for i in (0,32768,65536)]) for v in data)
     smoke = DuraMultiscaleSpectral(width=32, taps=9).to('cuda:0').eval()
     smoke.load_state_dict(initial, strict=True)
     with torch.no_grad():
@@ -79,7 +81,7 @@ def main():
         warm, _, _ = train(small, prior, initial, fused, 1)
         del warm
     results = []
-    for order in ((False, True), (True, False)):
+    for order in ((False, True), (True, False))[:args.pairs]:
         outcomes = {}
         for fused in order:
             outcomes[fused] = train(selected, prior, initial, fused, 5)
@@ -91,7 +93,7 @@ def main():
         del outcomes, a, b
     args.out.mkdir(parents=True)
     result = dict(status='FUSED_GUARD_BENCHMARK_COMPLETE', commit=args.commit,
-                  source_ids=512, views_per_id=3, epochs=5, batch=32, results=results,
+                  source_ids=args.source_count, views_per_id=3, epochs=5, batch=32, results=results,
                   gpu=torch.cuda.get_device_name(), TX_labels_read=0, F_weights_read=0,
                   F_outputs_read=0, V_reads=0, target_reads=0, weights_saved=False)
     (args.out/'result.json').write_text(json.dumps(result, indent=2, allow_nan=False)+'\n', encoding='utf8')
