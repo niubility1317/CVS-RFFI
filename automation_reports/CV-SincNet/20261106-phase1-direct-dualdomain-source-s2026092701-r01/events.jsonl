@@ -1,0 +1,2 @@
+{"at": "2026-11-06T05:54:05+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-06T05:55:48+00:00", "status": "RUNNING", "note": "Direct dual-domain source IQ model training on GPU7, 20 fixed epochs, no DURA/F/TX/target training reads.", "evidence": ["N607 controller PID 3175302; GPU7 worker PID 3175390; source smoke PASS with DURA_training_reads 0"], "row_id": null}
