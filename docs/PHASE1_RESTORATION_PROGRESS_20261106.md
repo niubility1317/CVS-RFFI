@@ -39,3 +39,5 @@ crossfit、边界保护、复数融合、学习作用、spectral、geometry 和�
 ## 正交波形修正的七景评分
 
 正交修正版已完成七景预测及独立评分。它相对同一 DURA 在 clean 和六个受损场景均下降：六景分别下降 0.6655、0.5292、0.4893、0.6208、0.5220 和 0.4607 个百分点。低城区准确率为 68.3405%，距 raw clean 低 18.1982 个百分点；六景只有高郊区通过 3 个百分点口径，按相对下降 3% 口径则均未通过。完整配对及逐 TX/RX/day 见 [七景分析](../automation_reports/CV-SincNet/20261106-phase1-dura-orthogonal-ground-test-s2026092701-r01/analysis.md)。
+
+正交保护版也已完成七景评分。六景相对 DURA 分别下降 0.3940、0.3577、0.3798、0.4065、0.4631 和 0.4524 个百分点；低城区 68.3488%。它七景准确率均高于无保护正交版，但两版训练硬件等执行条件不同，差异不能全部归因于保护项。两种 3% 口径均仅高郊区通过。[保护版七景分析](../automation_reports/CV-SincNet/20261106-phase1-dura-orthogonal-guard-ground-test-s2026092701-r01/analysis.md)

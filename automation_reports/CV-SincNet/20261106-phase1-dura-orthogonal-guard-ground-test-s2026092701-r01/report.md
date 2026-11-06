@@ -27,3 +27,7 @@
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 正式结果
+
+七景预测及独立 truth-last 评分完成；与 DURA 和无保护版对照及逐组指标见 [analysis.md](analysis.md)。
