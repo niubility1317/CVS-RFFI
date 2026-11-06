@@ -1,0 +1,142 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-joint-iq-ssl-representation-source-s2026092701-r01",
+  "group_id": "phase1-joint-iq-ssl-representation-source",
+  "display_name": "联合自监督源 IQ 表征配对诊断",
+  "description": "只在此前探索过且不属于候选拟合 ID 的 672 条源 IQ，比较固定自监督编码器和同初始化随机编码器，在同 RX 和场景内匹配 clean、受损、DURA 与候选恢复视图；不读取身份标签。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "F-free",
+    "joint-iq-ssl",
+    "record-matching",
+    "representation-diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261106-phase1-dura-joint-iq-ssl-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户继续授权研发星地恢复网络；仅源域合法 IQ 诊断，不重启已停止任务。",
+  "code": {
+    "commit": "76209fa1515035da292ec346854bc3964c68481d",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU7, CUDA_VISIBLE_DEVICES=7, FP32 TF32 off, batch 32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261106-phase1-joint-iq-ssl-representation-source-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "source paired clean and simulated received IQ; frozen DURA, trained G and training-only auxiliary encoder",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "672 frozen source pilot physical IDs, RX4/6 and RX8 by seven views; read indices/rx/scene/split only",
+    "label_map_ref": null,
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "672 previously explored source pilot IDs disjoint from this candidate fit IDs, not independent of original DURA",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed simulated source epoch19 views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only record matching and collapse diagnostic; neither TX identification nor ground performance"
+  },
+  "checkpoint": {
+    "initialization": "Frozen source-only DURA and fixed final epoch-5 joint-IQ-SSL correction and auxiliary encoder; random encoder reconstructed using its initialization seed",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261106-phase1-dura-joint-iq-ssl-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "frozen_dura source provenance and SSL source summary/checkpoint fields; candidate fit IDs disjoint from 672 source pilot IDs",
+    "provenance_verdict": "Fixed F-free source-only DURA and auxiliary SSL model; target ancestry forbidden",
+    "selection_rule": "Fixed final epoch 5, no metric-based candidate or target selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "Physical GPU7, one this-run worker, at most three total compute workers; preserve others",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-joint-iq-ssl-representation-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-joint-iq-ssl-representation-source-s2026092701-r01-launcher.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261106-phase1-joint-iq-ssl-representation-source-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.source_ssl_representation_probe --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-joint-iq-ssl-representation-source-s2026092701-r01 --commit 76209fa1515035da292ec346854bc3964c68481d",
+    "stop_rule": "Stop on source role mismatch, source smoke failure, nonfinite output or any target/F/TX read; preserve stopped group and other owners."
+  },
+  "expected_artifacts": [
+    "result.json: source-only same-record matching and embedding statistics"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "same-record cosine margin vs other source records within RX/scene",
+      "same-record top-1 retrieval within RX/scene",
+      "clean embedding effective rank"
+    ],
+    "dimensions": [
+      "random vs trained encoder",
+      "received, DURA, candidate",
+      "public RX and source view"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; source IQ only"
+  },
+  "rows": [
+    {
+      "row_id": "fixed-ssl-source-representation",
+      "method": "Frozen trained versus initially random source IQ encoder, paired clean-to-view matching within public RX and scene",
+      "purpose": "Diagnose whether unlabeled source representation preserves record-level information, not device identity",
+      "config_ref": "experiments/phase1_dura_orthogonal/source_ssl_representation_probe.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110615,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Auxiliary encoder original initialization seed 2026110615; frozen candidate and source pilot; no training or target access.",
+      "k": null,
+      "scenario": "seven fixed Phase1 source views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "672 paired source records, fixed RX/scene groups, random and learned encoder, three view types",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-joint-iq-ssl-representation-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-joint-iq-ssl-representation-source-s2026092701-r01-launcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.source_ssl_representation_probe --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-joint-iq-ssl-representation-source-s2026092701-r01 --commit 76209fa1515035da292ec346854bc3964c68481d",
+      "expected_artifacts": [
+        "result.json: source-only same-record matching and embedding statistics"
+      ]
+    }
+  ],
+  "notes": [
+    "Do not read F, TX labels, V, target IQ or target truth; no model updates.",
+    "Record matching may exploit payload or packet details and cannot be called TX identification accuracy.",
+    "The 672-record source pilot was previously explored and original DURA may have seen this domain; it is not an independent blind benchmark.",
+    "This diagnostic does not modify the already frozen candidate or its ongoing seven-view test."
+  ],
+  "registered_at": "2026-11-06T12:11:13+00:00"
+}
