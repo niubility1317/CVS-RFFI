@@ -508,8 +508,10 @@ def main():
                 loss = loss + .5*posterior_teacher_loss(output, fields[5], y)
             if masked_prior is not None:
                 starts = torch.randint(1, 224, (len(output),), generator=mask_generator).to(device)
-                prior_loss = (temporal_prior_loss(masked_prior, output, y, starts) if args.objective == 'wide_temporal_prior_guard'
-                              else masked_prior_loss(masked_prior, output, y, starts))
+                # randint guarantees 1 <= starts <= 223; avoid checking it on the GPU each step.
+                prior_loss = (temporal_prior_loss(masked_prior, output, y, starts, starts_generated_in_range=True)
+                              if args.objective == 'wide_temporal_prior_guard'
+                              else masked_prior_loss(masked_prior, output, y, starts, starts_generated_in_range=True))
                 loss = loss + (TEMPORAL_WEIGHT if args.objective == 'wide_temporal_prior_guard' else MASKED_PRIOR_WEIGHT)*prior_loss
                 masked_prior_total += prior_loss.detach()*len(indices)
             if aux is not None:
