@@ -13,3 +13,9 @@ DURA 结合路线使用固定 DURA 输出、物理残差和方差；源训练可
 正式候选已登记：固定合法源 32768 个物理 ID、每条三个模拟视图、五轮、batch 32，使用均匀采样路径时间；参数 28162，DURA 保持冻结。N607 GPU 3 单一 owner 容量队列进程已启动，当前等待至少 4096 MiB 且计算进程少于三个；满足条件后依次执行真实 checkpoint 无 query smoke、源训练、源预测 smoke、七景冻结预测及独立评分。发布包传输和远端编译通过；排队不表示 GPU 训练已经开始。[源训练登记](../automation_reports/CV-SincNet/20261107-phase1-dura-iqflow-source-s2026092701-r01/experiment.json)、[七景登记](../automation_reports/CV-SincNet/20261107-phase1-dura-iqflow-ground-test-s2026092701-r01/experiment.json)。
 
 另行登记独立 IQ 流：以单条 received 作为锚点，训练路径连接 received 和同记录源 clean，不把 DURA 输出或教师加入损失；推理仅需 received。为复用数据，训练流程加载包含 DURA 字段的源缓存和固定 DURA 用于 smoke／源对照；七景评测也计算 DURA 作为配对基准，不能称其全流程不读取 DURA。固定 32768 源 ID × 三视图、20 轮、batch 32，与 DURA 条件版五轮预算不同。七项相关单元／合同测试及本机 8 条源 IQ 的六次 GPU 技术更新通过，独立 P0/P1 审查未发现阻止运行的问题。N607 GPU 2 队列等待容量，尚未开始真实训练。[源训练登记](../automation_reports/CV-SincNet/20261107-phase1-direct-iqflow-source-s2026092701-r01/experiment.json)、[七景登记](../automation_reports/CV-SincNet/20261107-phase1-direct-iqflow-ground-test-s2026092701-r01/experiment.json)。
+
+## 起点覆盖对照
+
+对训练路径 `z_t = (1-t)anchor + t clean`，当 `t > 0` 时，训练目标速度可以从 `(z_t-anchor)/t` 代数重构；而部署积分从 `t=0` 开始。这个关系提示中间态训练可能存在依赖路径信息的捷径，但不证明现有网络实际使用了该捷径。为检验起点监督是否改善结果，独立登记同一 DURA 条件架构、相同源 ID、种子、优化器和五轮预算：每个训练样本以 0.5 概率使用 `t=0`，其余均匀采样；均匀版保持原配方。历史 R03 流也使用过起点覆盖，当前是不同父模型和无 F 指导的匹配对照，并非这一思路的首次提出。
+
+九项相关测试及本机八条源 IQ 的六次 GPU 技术更新通过；独立 P0/P1 审查未发现阻止运行的问题。N607 GPU 5 队列等待容量，真实训练尚未开始。冻结后按相同七景和独立 truth-last 比较；训练采样的变化不证明目标性能收益。[源训练登记](../automation_reports/CV-SincNet/20261107-phase1-dura-iqflow-origin-source-s2026092701-r01/experiment.json)、[七景登记](../automation_reports/CV-SincNet/20261107-phase1-dura-iqflow-origin-ground-test-s2026092701-r01/experiment.json)。
