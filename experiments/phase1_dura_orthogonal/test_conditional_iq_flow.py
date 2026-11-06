@@ -1,7 +1,7 @@
 import torch
 import pytest
 
-from experiments.phase1_dura_orthogonal.conditional_iq_flow import ConditionalIQFlow, flow_matching_loss
+from experiments.phase1_dura_orthogonal.conditional_iq_flow import ConditionalIQFlow, DirectIQFlow, flow_matching_loss
 
 
 def inputs(batch=3):
@@ -46,3 +46,13 @@ def test_loss_rejects_invalid_times():
     model = ConditionalIQFlow(width=8, steps=4)
     with pytest.raises(ValueError, match='time'):
         flow_matching_loss(model, x, anchor, innovation, variance, clean, torch.tensor([0., 1.1, .5]))
+
+
+def test_direct_flow_uses_received_iq_only_and_initially_reproduces_it():
+    x, anchor, innovation, _, variance = inputs()
+    model = DirectIQFlow(width=8, steps=4)
+    assert torch.equal(model(x, anchor, innovation, variance), x)
+    with torch.no_grad():
+        model.out.bias.fill_(.1)
+    actual = model(x, anchor, innovation, variance)
+    assert torch.equal(actual, model(x, torch.zeros_like(anchor), torch.zeros_like(innovation), variance * 10))

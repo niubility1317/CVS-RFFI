@@ -45,6 +45,17 @@ class ConditionalIQFlow(nn.Module):
         return state
 
 
+class DirectIQFlow(ConditionalIQFlow):
+    """Single-IQ flow that ignores any externally supplied DURA context."""
+    @staticmethod
+    def direct_context(received):
+        return received, torch.zeros_like(received), received.square().mean((1, 2)).clamp_min(1e-12)
+
+    def forward(self, received, anchor=None, innovation=None, variance=None):
+        anchor, innovation, variance = self.direct_context(received)
+        return super().forward(received, anchor, innovation, variance)
+
+
 def flow_matching_loss(model, received, anchor, innovation, variance, clean, time):
     if clean.shape != anchor.shape or time.shape != (len(anchor),):
         raise ValueError('Matching clean IQ and time batches required')
