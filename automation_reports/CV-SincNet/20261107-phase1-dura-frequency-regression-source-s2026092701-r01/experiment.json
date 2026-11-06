@@ -1,0 +1,143 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-dura-frequency-regression-source-s2026092701-r01",
+  "group_id": "phase1-dura-frequency-regression-source",
+  "display_name": "DURA 源域全局复频域回归诊断",
+  "description": "对固定源 IQ 评估全局及按可观测噪声分组的广义线性频域残差回归，源记录分开拟合与验证。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "F-free",
+    "frequency-regression",
+    "gpu"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261106-phase1-dura-wide-source-source-s2026092701-r01",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User authorizes ongoing Phase1 F-free restoration research, source-only diagnostics and GPU use.",
+  "code": {
+    "commit": "b250860cb16927ca8365d00a9a8cfe0f6651ffab",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "Local RTX 5070 Ti GPU0 FP32 TF32off source IQ diagnostic",
+    "cwd": "E:/type10-7/github_publish/CVS-RFFI-repo"
+  },
+  "data": {
+    "dataset": "Phase1 Main split permitted source L_s/U_s",
+    "version": "fixed deterministic source context epochs21/22/23",
+    "representation": "32768 source physical fit IDs x three paired received/DURA/clean IQ views; 28672 IDs fit, 4096 IDs held out",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "Fixed source fit index modulo 8; all three views of each physical ID kept in one partition",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ only, TX hidden",
+      "U_s": "source IQ only, TX hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "4096 held-out physical source fit IDs x three views; these are not target samples",
+    "support_query_ref": null,
+    "leo_config_ref": "pre-existing legal source simulation epochs 21/22/23"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Held-out source IQ NMSE only; no saved filter, target accuracy, deployment or real satellite claim"
+  },
+  "checkpoint": {
+    "initialization": "Fixed source-only DURA outputs from existing approved IQ context, no learned model checkpoint",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Source context schema, source view order, distinct 32768 source fit IDs and no F/TX/V/target",
+    "provenance_verdict": "Original DURA and source IQ context are F/TX/V/target free",
+    "selection_rule": "Global plus four fixed source-noise quartile regressions; ridge 0.001; no target selection"
+  },
+  "execution": {
+    "host": "local Windows",
+    "launch_owner": "this conversation",
+    "gpu_policy": "Local GPU0 source-only feasibility diagnostic",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:/type10-7/.codex_tmp/20261107-phase1-dura-frequency-regression-source-s2026092701-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -X utf8 -u -m experiments.phase1_dura_orthogonal.source_frequency_regression --cache E:/type10-7/.codex_tmp/masked_full_context.pt --out E:/type10-7/.codex_tmp/20261107-phase1-dura-frequency-regression-source-s2026092701-r01 --commit b250860cb16927ca8365d00a9a8cfe0f6651ffab",
+    "stop_rule": "Stop on data contract mismatch, nonfinite numerical result or unavailable GPU"
+  },
+  "expected_artifacts": [
+    "result.json: held-out source IQ NMSE and count, global and four observable-noise bins"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "mean per-record IQ NMSE",
+      "number of records with lower IQ NMSE than DURA"
+    ],
+    "dimensions": [
+      "three fixed source views",
+      "four training-source variance/received-power quartile bins"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "dura-frequency-source-regression",
+      "method": "Shared widely-linear spectral residual, global and fixed source-noise bins",
+      "purpose": "Evaluate whether population-level spectral correction can reduce held-out source IQ error without per-record clean calibration",
+      "config_ref": "experiments/phase1_dura_orthogonal/source_frequency_regression.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": 2026110711,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Deterministic split by original source index modulo 8; no new randomness",
+      "k": null,
+      "scenario": "64 fixed source training IDs, three source simulation views",
+      "optimizer": "closed-form complex ridge 0.001",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "28672 source IDs x three views to fit and 4096 disjoint source IDs x three views to evaluate",
+      "output_root": "E:/type10-7/.codex_tmp/20261107-phase1-dura-frequency-regression-source-s2026092701-r01",
+      "log_path": "E:/type10-7/.codex_tmp/20261107-phase1-dura-frequency-regression-source-s2026092701-r01.log",
+      "command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -X utf8 -u -m experiments.phase1_dura_orthogonal.source_frequency_regression --cache E:/type10-7/.codex_tmp/masked_full_context.pt --out E:/type10-7/.codex_tmp/20261107-phase1-dura-frequency-regression-source-s2026092701-r01 --commit b250860cb16927ca8365d00a9a8cfe0f6651ffab",
+      "expected_artifacts": [
+        "result.json: held-out source IQ NMSE and count, global and four observable-noise bins"
+      ]
+    }
+  ],
+  "notes": [
+    "Fits frequency-dependent complex residual using DURA output, received IQ and their time-domain conjugates.",
+    "Training only uses clean source IQ; noise quartile boundaries are determined from fitting records only.",
+    "Same physical ID cannot appear in fitting and held-out sets, including across source views.",
+    "This is a source feasibility diagnostic; filters are not saved or evaluated on the target, and IQ NMSE is not identity accuracy."
+  ],
+  "registered_at": "2026-11-06T19:52:09+00:00"
+}

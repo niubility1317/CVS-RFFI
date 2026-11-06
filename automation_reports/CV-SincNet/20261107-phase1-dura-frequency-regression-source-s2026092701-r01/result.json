@@ -1,0 +1,204 @@
+{
+  "train_records": 28672,
+  "heldout_records": 4096,
+  "train_views": 86016,
+  "heldout_views": 12288,
+  "train_counts": [
+    86016,
+    21504,
+    21504,
+    21504,
+    21504
+  ],
+  "noise_cutoffs": [
+    0.0037690973840653896,
+    0.00506046786904335,
+    0.009164220653474331
+  ],
+  "groups": {
+    "view21/all": {
+      "count": 4096,
+      "mean_nmse": [
+        1.7228260040283203,
+        0.02435796521604061,
+        0.024220284074544907,
+        0.024062391370534897
+      ],
+      "global_better_than_dura": 2443,
+      "binned_better_than_dura": 2628
+    },
+    "view21/noise_q1": {
+      "count": 1018,
+      "mean_nmse": [
+        0.8265141248703003,
+        0.0076949456706643105,
+        0.007723634131252766,
+        0.007608877494931221
+      ],
+      "global_better_than_dura": 268,
+      "binned_better_than_dura": 344
+    },
+    "view21/noise_q2": {
+      "count": 1044,
+      "mean_nmse": [
+        2.052165985107422,
+        0.009447957389056683,
+        0.009346465580165386,
+        0.009244856424629688
+      ],
+      "global_better_than_dura": 691,
+      "binned_better_than_dura": 732
+    },
+    "view21/noise_q3": {
+      "count": 998,
+      "mean_nmse": [
+        1.998142957687378,
+        0.006669909227639437,
+        0.006560082081705332,
+        0.00647470960393548
+      ],
+      "global_better_than_dura": 684,
+      "binned_better_than_dura": 805
+    },
+    "view21/noise_q4": {
+      "count": 1036,
+      "mean_nmse": [
+        2.0064637660980225,
+        0.07279587537050247,
+        0.07243141531944275,
+        0.0721045508980751
+      ],
+      "global_better_than_dura": 800,
+      "binned_better_than_dura": 747
+    },
+    "view22/all": {
+      "count": 4096,
+      "mean_nmse": [
+        1.7325752973556519,
+        0.02371087297797203,
+        0.023563608527183533,
+        0.023422306403517723
+      ],
+      "global_better_than_dura": 2472,
+      "binned_better_than_dura": 2627
+    },
+    "view22/noise_q1": {
+      "count": 1001,
+      "mean_nmse": [
+        0.8478692173957825,
+        0.007593678776174784,
+        0.007606109604239464,
+        0.007505330722779036
+      ],
+      "global_better_than_dura": 276,
+      "binned_better_than_dura": 345
+    },
+    "view22/noise_q2": {
+      "count": 1003,
+      "mean_nmse": [
+        2.054424524307251,
+        0.010178067721426487,
+        0.010074218735098839,
+        0.009973677806556225
+      ],
+      "global_better_than_dura": 652,
+      "binned_better_than_dura": 713
+    },
+    "view22/noise_q3": {
+      "count": 1058,
+      "mean_nmse": [
+        1.9982056617736816,
+        0.008750615641474724,
+        0.008647700771689415,
+        0.008574413135647774
+      ],
+      "global_better_than_dura": 737,
+      "binned_better_than_dura": 844
+    },
+    "view22/noise_q4": {
+      "count": 1034,
+      "mean_nmse": [
+        2.0050504207611084,
+        0.06774826347827911,
+        0.06735891848802567,
+        0.06706923991441727
+      ],
+      "global_better_than_dura": 807,
+      "binned_better_than_dura": 725
+    },
+    "view23/all": {
+      "count": 4096,
+      "mean_nmse": [
+        1.7203129529953003,
+        0.023800408467650414,
+        0.023658066987991333,
+        0.02350165881216526
+      ],
+      "global_better_than_dura": 2470,
+      "binned_better_than_dura": 2655
+    },
+    "view23/noise_q1": {
+      "count": 1027,
+      "mean_nmse": [
+        0.8274973034858704,
+        0.007590510882437229,
+        0.007608568295836449,
+        0.007496970240026712
+      ],
+      "global_better_than_dura": 271,
+      "binned_better_than_dura": 360
+    },
+    "view23/noise_q2": {
+      "count": 1014,
+      "mean_nmse": [
+        2.0528981685638428,
+        0.009395018219947815,
+        0.009285696782171726,
+        0.009188693948090076
+      ],
+      "global_better_than_dura": 687,
+      "binned_better_than_dura": 720
+    },
+    "view23/noise_q3": {
+      "count": 1030,
+      "mean_nmse": [
+        1.9986658096313477,
+        0.006188731640577316,
+        0.0060900477692484856,
+        0.006005091592669487
+      ],
+      "global_better_than_dura": 700,
+      "binned_better_than_dura": 833
+    },
+    "view23/noise_q4": {
+      "count": 1025,
+      "mean_nmse": [
+        2.0061440467834473,
+        0.07199031114578247,
+        0.07161072641611099,
+        0.07127885520458221
+      ],
+      "global_better_than_dura": 812,
+      "binned_better_than_dura": 742
+    }
+  },
+  "status": "SOURCE_FREQUENCY_DIAGNOSTIC_COMPLETE",
+  "commit": "b250860cb16927ca8365d00a9a8cfe0f6651ffab",
+  "metric_order": [
+    "received",
+    "dura",
+    "global_regression",
+    "four_noise_bin_regressions"
+  ],
+  "ridge": 0.001,
+  "bins": "training-source observable variance/received-IQ power quartiles",
+  "split": "source physical fit ID index modulo 8; same ID kept together across all three views",
+  "elapsed_seconds": 2.515000000130385,
+  "device": "NVIDIA GeForce RTX 5070 Ti",
+  "TX_labels_read": 0,
+  "F_weights_read": 0,
+  "F_outputs_read": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "caveat": "Source IQ diagnostic only; fitted filters are not saved or used on target. IQ NMSE is not TX identity accuracy."
+}
