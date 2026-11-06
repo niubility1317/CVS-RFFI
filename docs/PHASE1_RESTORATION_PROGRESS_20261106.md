@@ -195,3 +195,7 @@ raw clean 为 86.538690%；每版只有高郊区达到下降不超过 3 个百�
 ## 源域重复结构 GPU 诊断
 
 672 条源 pilot 的 clean 信号在 20、40 点时延存在较高复相关，但 DURA 低城区输出相关已接近或高于 clean；使用部署不可得的逐条 clean 理想非负修正，20 点低城区的源 IQ NMSE 平均仅相对下降约 0.46%（RX4/6）和 0.29%（RX8）。这不是身份识别收益，不支持直接使用简单的相位对齐平均。[完整源域结果](../automation_reports/CV-SincNet/20261107-phase1-dura-source-repetition-s2026092701-r01/analysis.md)。
+
+## 源 clean IQ 遮挡先验
+
+独立训练 70562 参数膨胀卷积网络，使用 32768 条合法源 clean IQ、随机连续遮挡 32 点，GPU 7 五轮训练及 672 条源 pilot 评估内部计时 30.31 秒。模型在 672 条上均低于线性插值的缺口归一化误差；按 14 个等量分组汇总平均值分别为 0.2540 和 1.6793。线性插值较弱，需比较相位对齐重复基线；这不是星地恢复或身份识别结果。[源训练记录](../automation_reports/CV-SincNet/20261107-phase1-masked-iq-prior-source-s2026092701-r01/analysis.md)。

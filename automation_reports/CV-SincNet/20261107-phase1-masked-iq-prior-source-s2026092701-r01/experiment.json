@@ -1,0 +1,145 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-masked-iq-prior-source-s2026092701-r01",
+  "group_id": "phase1-masked-iq-prior-source",
+  "display_name": "连续缺口源 IQ 先验训练",
+  "description": "对 32768 条合法源 clean IQ 随机遮挡连续 32 点训练从零初始化的波形先验，在固定源 pilot 比较插值；不做目标推理。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "F-free",
+    "masked-prior",
+    "gpu-training"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261103-phase1-dura-crossfit-blend-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User authorizes ongoing Phase1 F-free restoration research, source-only diagnostics and GPU use.",
+  "code": {
+    "commit": "acdfd17ae205fa5e04b32a5ecdd5eea5d7bb21d4",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 physical GPU7 CUDA_VISIBLE_DEVICES=7, batch64, FP32 TF32 off",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-masked-iq-prior-source-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source pilot",
+    "version": "source cache R07 epoch19",
+    "representation": "32768 clean source fit records and 672 fixed source pilot clean records",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "32768 fixed sampled eligible source IDs exclude RX4/6/8 day3 and pilot; 672 pilot IDs RX4/6 and RX8 grouped using scene metadata",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Previously explored 672 source pilot; not an independent blind test",
+    "support_query_ref": null,
+    "leo_config_ref": "No simulated channel added to clean IQ for this source-only prior"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source clean masked reconstruction only; no deployable restoration or identity accuracy"
+  },
+  "checkpoint": {
+    "initialization": "Prior initialized from scratch; fixed DURA only for real-checkpoint source smoke",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "DURA original source-only provenance previously verified; no checkpoint used to initialize prior",
+    "provenance_verdict": "Fixed original DURA source-only provenance previously verified",
+    "selection_rule": "Final fifth epoch fixed before pilot readout"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "Physical GPU7, at most one this-task worker, at most three total compute apps, at least 4096 MiB free; preserve other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-masked-iq-prior-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-masked-iq-prior-source-s2026092701-r01-launcher.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261107-phase1-masked-iq-prior-source-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.source_masked_prior --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-masked-iq-prior-source-s2026092701-r01 --commit acdfd17ae205fa5e04b32a5ecdd5eea5d7bb21d4",
+    "stop_rule": "Stop on source role mismatch, nonfinite output or loss, target/F/TX access or technical failure; do not change other jobs"
+  },
+  "expected_artifacts": [
+    "final.pt: source-only learned IQ prior",
+    "result.json: source mask reconstruction metrics"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "masked IQ normalized squared error",
+      "linear interpolation and zero baselines",
+      "per-record fraction beating interpolation"
+    ],
+    "dimensions": [
+      "fixed source pilot RX4/6 and RX8, each seven metadata groups, 48 each"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; no target or TX truth"
+  },
+  "rows": [
+    {
+      "row_id": "masked-clean-iq-prior",
+      "method": "From-scratch dilated convolution, random interior 32-sample masks, mask-only normalized IQ reconstruction",
+      "purpose": "Test whether source-learned structure predicts withheld clean IQ beyond simple interpolation, prior to designing a recovery network",
+      "config_ref": "experiments/phase1_dura_orthogonal/source_masked_prior.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110707,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": 2026110707,
+        "support": null,
+        "evaluation": 2026110708
+      },
+      "seed_notes": "Five epochs, fixed final epoch; source pilot mask seed independent",
+      "k": null,
+      "scenario": "clean source IQ only; scene labels are metadata for grouping, not satellite test",
+      "optimizer": "AdamW weight_decay=0.0001",
+      "lr": 0.0003,
+      "epochs": 5,
+      "fl_rounds": null,
+      "budget_ref": "32768 source records x 5 epochs batch64; fixed 672 source pilot; eight-record original DURA checkpoint smoke",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-masked-iq-prior-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-masked-iq-prior-source-s2026092701-r01-launcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.source_masked_prior --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-masked-iq-prior-source-s2026092701-r01 --commit acdfd17ae205fa5e04b32a5ecdd5eea5d7bb21d4",
+      "expected_artifacts": [
+        "final.pt: source-only learned IQ prior",
+        "result.json: source mask reconstruction metrics"
+      ]
+    }
+  ],
+  "notes": [
+    "No F weights/outputs, TX labels, V, or target IQ/truth.",
+    "No model chosen using pilot performance; final epoch fixed.",
+    "Pilot already explored and only clean IQ; grouped scene metadata do not represent impaired waveforms.",
+    "The model is not a deployed recovery network; any proposed new recovery version must receive the full mandatory seven-view test."
+  ],
+  "registered_at": "2026-11-06T17:09:58+00:00"
+}
