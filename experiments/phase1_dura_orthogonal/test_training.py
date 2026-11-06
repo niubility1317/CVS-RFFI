@@ -58,6 +58,18 @@ class SourceTrainingTest(unittest.TestCase):
         self.assertTrue(torch.isfinite(imperfect.grad).all())
         self.assertGreater(float(imperfect.grad.abs().sum()), 0)
 
+    def test_dura_guard_penalizes_degradation_and_preserves_improvement(self):
+        clean = torch.ones(2, 2, 256)
+        anchor = clean*.95
+        worse = clean*.9
+        better = clean*.99
+        self.assertGreater(float(source_loss(worse, anchor, clean, objective='dura_guard')),
+                           float(source_loss(worse, anchor, clean, objective='iq')))
+        torch.testing.assert_close(source_loss(better, anchor, clean, objective='dura_guard'),
+                                   source_loss(better, anchor, clean, objective='iq'))
+        with self.assertRaises(ValueError):
+            source_loss(better, anchor, clean, objective='unregistered')
+
     def test_incomplete_prediction_is_rejected_before_truth_read(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

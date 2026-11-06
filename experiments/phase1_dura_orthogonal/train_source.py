@@ -31,13 +31,20 @@ def extract_context(dura, x):
     return anchor, torch.stack((residual.real, residual.imag), dim=1), context[2]
 
 
-def source_loss(output, anchor, clean):
+def source_loss(output, anchor, clean, *, objective='iq'):
     if output.shape != clean.shape or anchor.shape != clean.shape or output.shape[1:] != (2, 256):
         raise ValueError('Matching source IQ windows required')
+    if objective not in ('iq', 'dura_guard'):
+        raise ValueError('A registered source-IQ objective is required')
     energy = clean.square().mean((1, 2)).clamp_min(1e-8)
     error = (output-clean).square().mean((1, 2)) / energy
     change = (output-anchor).square().mean((1, 2)) / energy
-    return (error + .02*change).mean()
+    per = error + .02*change
+    if objective == 'dura_guard':
+        baseline_error = (anchor.detach()-clean).square().mean((1, 2)) / energy
+        excess = (error-baseline_error).clamp_min(0)
+        per = per + .002*excess/(baseline_error+1e-4)
+    return per.mean()
 
 
 def load_source_training(root, eval_ids):
@@ -122,6 +129,7 @@ def main():
     parser.add_argument('--device', default='cuda:0')
     parser.add_argument('--prepare-batch', type=int, default=32)
     parser.add_argument('--smoke-fit', type=int, default=64)
+    parser.add_argument('--objective', choices=('iq', 'dura_guard'), default='iq')
     args = parser.parse_args()
     process_started = time.monotonic()
     training_environments(args.device, os.environ)
@@ -167,7 +175,7 @@ def main():
             indices = order[start:start+32]
             x, anchor, direction, variance, y = (v[indices] for v in data)
             output = model(x, anchor, direction, variance, validate=False)
-            loss = source_loss(output, anchor, y)
+            loss = source_loss(output, anchor, y, objective=args.objective)
             if not torch.isfinite(loss):
                 raise FloatingPointError('Finite IQ-only source loss required')
             optimizer.zero_grad(set_to_none=True)
@@ -185,14 +193,14 @@ def main():
     if args.smoke:
         core.write(args.out/'smoke.json', dict(status='SOURCE_TRAINING_SMOKE_PASS', commit=args.commit,
             fit_ids=len(fit), exposure=len(data[0]), losses=losses, device=str(device),
-            prepare_batch=args.prepare_batch, preparation_seconds=preparation_seconds,
+            objective=args.objective, prepare_batch=args.prepare_batch, preparation_seconds=preparation_seconds,
             transfer_seconds=transfer_seconds, training_seconds=time.monotonic()-started,
             end_to_end_seconds=time.monotonic()-process_started, TX_labels_read=0, F_weights_read=0,
             F_outputs_read=0, V_reads=0, target_reads=0, DURA_frozen=True))
         return
     checkpoint = dict(schema=SCHEMA, commit=args.commit, model=model.state_dict(), width=32,
                       epochs=TRAIN_EPOCHS, fit_ids=fit, counts=counts, losses=losses,
-                      device=str(device), prepare_batch=args.prepare_batch,
+                      device=str(device), objective=args.objective, prepare_batch=args.prepare_batch,
                       TX_labels_read=0, F_weights_read=0, F_outputs_read=0, V_reads=0,
                       target_reads=0, DURA_frozen=True)
     with (args.out/'final.pt').open('xb') as f:
@@ -201,7 +209,8 @@ def main():
                                 str(device), args.prepare_batch)
     core.write(args.out/'source_summary.json', dict(status='SOURCE_TRAINED', commit=args.commit,
         fit_ids=len(fit), epochs=TRAIN_EPOCHS, exposure=len(data[0]), counts=counts, losses=losses,
-        device=str(device), prepare_batch=args.prepare_batch, preparation_seconds=preparation_seconds,
+        device=str(device), objective=args.objective, prepare_batch=args.prepare_batch,
+        preparation_seconds=preparation_seconds,
         transfer_seconds=transfer_seconds,
         source_groups=groups, TX_labels_read=0, F_weights_read=0, F_outputs_read=0,
         V_reads=0, target_reads=0, DURA_frozen=True, source_IQ_metrics_not_identity_accuracy=True))

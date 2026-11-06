@@ -33,6 +33,7 @@ def main():
     parser.add_argument('--commit', required=True)
     parser.add_argument('--device', default='cuda:0')
     parser.add_argument('--prepare-batch', type=int, default=32)
+    parser.add_argument('--objective', choices=('iq', 'dura_guard'), default='iq')
     args = parser.parse_args()
     env, cpu_env = training_environments(args.device, os.environ)
     controller = args.root/'runs'/(args.source+'-controller')
@@ -59,14 +60,14 @@ def main():
         status('RUNNING_SOURCE_TRAINING_SMOKE')
         execute('source_smoke', [sys.executable, '-X', 'utf8', '-u', '-m',
                 'experiments.phase1_dura_orthogonal.train_source', *common, '--out', str(training_smoke), '--smoke',
-                '--device', args.device, '--prepare-batch', str(args.prepare_batch)])
+                '--device', args.device, '--prepare-batch', str(args.prepare_batch), '--objective', args.objective])
         smoke = json.loads((training_smoke/'smoke.json').read_text(encoding='utf8'))
         if smoke.get('status') != 'SOURCE_TRAINING_SMOKE_PASS' or smoke.get('F_weights_read') != 0:
             raise ValueError('Source-only training smoke required')
         status('RUNNING_SOURCE_TRAINING')
         execute('source_train', [sys.executable, '-X', 'utf8', '-u', '-m',
                 'experiments.phase1_dura_orthogonal.train_source', *common, '--out', str(source),
-                '--device', args.device, '--prepare-batch', str(args.prepare_batch)])
+                '--device', args.device, '--prepare-batch', str(args.prepare_batch), '--objective', args.objective])
         status('RUNNING_SOURCE_PREDICTION_SMOKE')
         fixed = ['--source', args.source, '--out', str(ground), *common]
         execute('ground_smoke', [sys.executable, '-X', 'utf8', '-u', '-m',
