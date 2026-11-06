@@ -23,6 +23,7 @@ from experiments.phase1_dura_orthogonal.joint_ssl_iq import SourceIQEncoder, cro
 from experiments.phase1_dura_orthogonal.local_ssl_iq import PatchIQEncoder, patch_cross_view_loss, frozen_patch_feature_loss
 from experiments.phase1_dura_orthogonal.multiscale_spectral import DuraMultiscaleSpectral
 from experiments.phase1_dura_orthogonal.direct_spectral_student import DirectSpectralStudent
+from experiments.phase1_dura_orthogonal.direct_student_fir import DirectStudentFIR, SOURCE as FIR_SOURCE, SOURCE_COMMIT as FIR_SOURCE_COMMIT, TAPS as FIR_TAPS, SCALE as FIR_SCALE
 from experiments.phase1_dura_orthogonal.dura_experts import DuraExperts, EXPERT_COUNT
 from experiments.phase1_dura_orthogonal.expert_teacher_contract import (
     load_teacher_cache, TEACHER_SOURCE as EXPERT_TEACHER_SOURCE, TEACHER_COMMIT as EXPERT_TEACHER_COMMIT)
@@ -247,6 +248,27 @@ def evaluate_source(model, dura, ids, rx, scene, received, clean, device, batch_
     return values, results
 
 
+def load_fir_parent(root, fit, pilot_ids, smoke):
+    folder = root/'runs'/FIR_SOURCE
+    summary = core.read(folder/'source_summary.json')
+    state = torch.load(folder/'final.pt', map_location='cpu', weights_only=False)
+    expected = dict(commit=FIR_SOURCE_COMMIT, architecture='direct_spectral_student',
+                    objective='wide_source_distill', epochs=DUAL_DOMAIN_EPOCHS,
+                    DURA_training_reads=1, source_iq_teacher='dura_v1_R65_E20_4940',
+                    source_iq_teacher_weight=.5, inference_received_iq_only=True,
+                    TX_labels_read=0, F_weights_read=0, F_outputs_read=0, V_reads=0,
+                    target_reads=0, DURA_frozen=True, source_fit_size=WIDE_FIT_SIZE)
+    parent_ids = np.asarray(state.get('fit_ids', []))
+    if (summary.get('status') != 'SOURCE_TRAINED' or summary.get('fit_ids') != WIDE_FIT_SIZE
+            or state.get('schema') != SCHEMA or len(parent_ids) != WIDE_FIT_SIZE
+            or not np.array_equal(parent_ids[:len(fit)], fit)
+            or (not smoke and len(fit) != WIDE_FIT_SIZE)
+            or np.intersect1d(parent_ids, pilot_ids).size
+            or any(summary.get(k) != v or state.get(k) != v for k, v in expected.items())):
+        raise ValueError('Fixed source-only parent with matching ordered fit IDs required')
+    return state['model']
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--root', type=Path, required=True)
@@ -259,9 +281,13 @@ def main():
     parser.add_argument('--source-context-cache', type=Path)
     parser.add_argument('--save-source-context-cache', type=Path)
     parser.add_argument('--deterministic', action='store_true')
-    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard'), default='iq')
-    parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts'), default='orthogonal')
+    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard'), default='iq')
+    parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir'), default='orthogonal')
     args = parser.parse_args()
+    if (args.architecture == 'direct_student_fir') != (args.objective == 'wide_student_fir_guard'):
+        raise ValueError('FIR refinement requires its registered source objective')
+    if args.objective == 'wide_student_fir_guard' and not args.smoke and not args.source_context_cache:
+        raise ValueError('FIR training requires the fixed source context cache')
     if args.deterministic:
         os.environ['CUBLAS_WORKSPACE_CONFIG'] = ':4096:8'
         torch.use_deterministic_algorithms(True)
@@ -317,7 +343,7 @@ def main():
     torch.backends.cudnn.allow_tf32 = False
     torch.manual_seed(2026110612)
     ids, rx, scene, _, source_received, source_clean = source_inputs(args.root)
-    fit_size = WIDE_FIT_SIZE if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard') else FIT_SIZE
+    fit_size = WIDE_FIT_SIZE if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard') else FIT_SIZE
     _, fresh, clean, fit = load_source_training(args.root, ids, fit_size=fit_size)
     if args.smoke:
         fit = fit[:args.smoke_fit]
@@ -367,10 +393,21 @@ def main():
         model = DuraExperts(width=32, taps=9).to(device)
     elif args.architecture == 'direct_spectral_student':
         model = DirectSpectralStudent(width=32, taps=9).to(device)
+    elif args.architecture == 'direct_student_fir':
+        model = DirectStudentFIR(width=32).to(device)
+        model.student.load_state_dict(load_fir_parent(args.root, fit, ids, args.smoke), strict=True)
+        precompute_started = time.monotonic()
+        with torch.no_grad():
+            base = torch.cat([model.student(data[0][i:i+args.prepare_batch])
+                              for i in range(0, len(data[0]), args.prepare_batch)])
+        if device.type == 'cuda':
+            torch.cuda.synchronize(device)
+        precompute_seconds = time.monotonic() - precompute_started
+        data = (*data, base)
     else:
         model = InternalDuraRecovery(frozen_dura(args.root, str(device))).to(device)
         configure_internal_trainability(model.dura, args.objective)
-    optimizer = torch.optim.AdamW(model.parameters(),
+    optimizer = torch.optim.AdamW((p for p in model.parameters() if p.requires_grad),
         lr=1e-5 if args.architecture == 'dura_internal' else .0003,
         weight_decay=0. if args.architecture == 'dura_internal' else .001)
     aux = None
@@ -396,10 +433,12 @@ def main():
     masked_prior_losses = []
     initial_batch = min(args.prepare_batch, len(fit)) if args.architecture == 'dura_internal' else 8
     with torch.no_grad():
-        initial = model(*(value[:initial_batch] for value in data[:4]))
+        initial = (model.refine(data[0][:initial_batch], data[5][:initial_batch])
+                   if args.architecture == 'direct_student_fir'
+                   else model(*(value[:initial_batch] for value in data[:4])))
     if args.architecture == 'dura_internal':
         torch.testing.assert_close(initial, data[1][:initial_batch], rtol=1e-5, atol=1e-6)
-    elif not torch.equal(initial, data[0 if args.architecture == 'direct_spectral_student' else 1][:initial_batch]):
+    elif not torch.equal(initial, data[5 if args.architecture == 'direct_student_fir' else 0 if args.architecture == 'direct_spectral_student' else 1][:initial_batch]):
         raise ValueError('New correction must initially reproduce frozen DURA')
     started = time.monotonic()
     epochs = DUAL_DOMAIN_EPOCHS if args.architecture in DIRECT_ARCHITECTURES else TRAIN_EPOCHS
@@ -440,11 +479,16 @@ def main():
                 output = model.dura.stage_outputs(x, context)[0][-1]
                 reference = true_action(type(context[1]), fields[5], fields[6])
                 action_loss = action_response_loss(context[1], reference, probe.expand(len(x), -1))
+            elif args.architecture == 'direct_student_fir':
+                output = model.refine(x, fields[5])
             else:
                 output = model(x, anchor, direction, variance, validate=False)
             base_objective = ('distill_iq' if args.objective == 'wide_source_distill' else
                               'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'wide_source_guard', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard') else args.objective)
-            loss = source_loss(output, anchor, y, objective=base_objective)
+            if args.objective == 'wide_student_fir_guard':
+                loss = source_loss(output, fields[5], y, objective='dura_guard') + .5*posterior_teacher_loss(output, anchor, y)
+            else:
+                loss = source_loss(output, anchor, y, objective=base_objective)
             if args.objective == 'posterior_teacher_guard':
                 loss = loss + .5*posterior_teacher_loss(output, fields[5], y)
             if args.objective == 'wide_expert_distill':
@@ -485,6 +529,10 @@ def main():
                 if args.objective == 'sim_action_fixed_prior' and any(
                         p.requires_grad or p.grad is not None for p in model.dura.prior.parameters()):
                     raise ValueError('Fixed original priors must remain frozen')
+            elif args.architecture == 'direct_student_fir':
+                if (model.tap_head.weight.grad is None or not torch.isfinite(model.tap_head.weight.grad).all()
+                        or any(p.requires_grad or p.grad is not None for p in model.student.parameters())):
+                    raise ValueError('Trainable FIR head and frozen source student required')
             elif args.architecture == 'dura_experts':
                 if any(head.weight.grad is None or not torch.isfinite(head.weight.grad).all()
                        for expert in model.experts for head in (expert.wave, expert.filter_head)):
@@ -527,7 +575,7 @@ def main():
                             source_ssl_teacher_commit=SSL_TEACHER_COMMIT, source_ssl_aux_trainable=False)
     cache_metadata = dict(source_context_cache=str(args.source_context_cache) if args.source_context_cache else None,
                           deterministic_algorithms=args.deterministic)
-    if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard'):
+    if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard'):
         cache_metadata.update(source_fit_size=WIDE_FIT_SIZE,
                               source_context_cache_written=str(args.save_source_context_cache) if args.save_source_context_cache else None)
     if args.objective == 'wide_expert_distill':
@@ -551,6 +599,11 @@ def main():
     if args.architecture == 'direct_spectral_student':
         cache_metadata.update(source_iq_teacher='dura_v1_R65_E20_4940', source_iq_teacher_weight=.5,
                               inference_received_iq_only=True)
+    if args.architecture == 'direct_student_fir':
+        cache_metadata.update(source_base_student=FIR_SOURCE, source_base_student_commit=FIR_SOURCE_COMMIT,
+            source_fir_taps=FIR_TAPS, source_fir_scale=FIR_SCALE, student_frozen=True,
+            source_iq_teacher='dura_v1_R65_E20_4940', source_iq_teacher_weight=.5,
+            inference_received_iq_only=True, student_precompute_seconds=precompute_seconds)
     if args.objective == 'posterior_teacher_guard':
         cache_metadata.update(source_posterior_teacher=TEACHER_SOURCE,
                               source_posterior_teacher_commit=TEACHER_COMMIT,

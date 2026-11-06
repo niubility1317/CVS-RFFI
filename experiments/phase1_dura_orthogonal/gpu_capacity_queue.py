@@ -25,8 +25,11 @@ def main():
     p.add_argument('--commit', required=True)
     p.add_argument('--cache', type=Path, required=True)
     p.add_argument('--gpu', type=int, required=True)
-    p.add_argument('--objective', required=True, choices=('wide_temporal_prior_guard',))
+    p.add_argument('--objective', required=True, choices=('wide_temporal_prior_guard', 'wide_student_fir_guard'))
+    p.add_argument('--architecture', choices=('dura_multiscale', 'direct_student_fir'), default='dura_multiscale')
     args = p.parse_args()
+    if (args.objective, args.architecture) not in (('wide_temporal_prior_guard', 'dura_multiscale'), ('wide_student_fir_guard', 'direct_student_fir')):
+        raise ValueError('Registered objective and architecture pair required')
     runs = args.root/'runs'
     outputs = [runs/args.source, runs/(args.source+'-controller'), runs/(args.source+'-training-smoke'), runs/args.ground]
     if any(path.exists() for path in outputs) or not args.cache.is_file():
@@ -49,7 +52,7 @@ def main():
     cmd = [sys.executable, '-X', 'utf8', '-u', '-m', 'experiments.phase1_dura_orthogonal.controller',
            '--root', str(args.root), '--source', args.source, '--ground', args.ground, '--commit', args.commit,
            '--device', 'cuda:0', '--prepare-batch', '32', '--objective', args.objective, '--deterministic',
-           '--source-context-cache', str(args.cache), '--architecture', 'dura_multiscale']
+           '--source-context-cache', str(args.cache), '--architecture', args.architecture]
     child = subprocess.Popen(cmd, cwd=Path.cwd(), env=env, stdin=subprocess.DEVNULL)
     print('GPU_QUEUE_CONTROLLER_STARTED', child.pid, flush=True)
     code = child.wait()
