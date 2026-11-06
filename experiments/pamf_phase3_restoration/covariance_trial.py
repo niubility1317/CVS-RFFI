@@ -45,7 +45,7 @@ def factory(arm):
     configuration(arm);return scratch_covariance(2026092701)
 
 
-def bind_prior(root,model):
+def load_prior(root):
     folder=root/'runs'/PRIOR_RUN;m=read(folder/'results.json')
     if (read(folder/'complete.json')['status'],m['status'],m['code_commit'],m['source_prior_fit_packets'],m['source_prior_shrinkage'])!=(
             'ARTIFACTS_COMPLETE','SOURCE_COVARIANCE_INVERSE_COMPLETE',PRIOR_COMMIT,63000,.001):
@@ -53,6 +53,11 @@ def bind_prior(root,model):
     if m['source_prior_roles']!={'L_s':6300,'U_s':56700} or any(m[k] for k in ['TX_labels_read','V_reads','OE_reads','novel_reads','target_inputs','optimizer_updates']):
         raise ValueError('Original source-only prior contract required')
     with np.load(folder/'source_prior.npz',allow_pickle=False) as f:mean=f['mean'].copy();cov=f['covariance'].copy()
+    return mean,cov
+
+
+def bind_prior(root,model):
+    mean,cov=load_prior(root)
     model.bind_prior(tensor(mean,'cpu'),tensor(cov,'cpu'))
     return dict(source_run=PRIOR_RUN,source_prior_code=PRIOR_COMMIT,source_fit_packets=63000,
         source_mean_FP32_rounding_max=float(np.max(np.abs(mean.astype(np.float32).astype(np.float64)-mean))),

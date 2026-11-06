@@ -42,16 +42,16 @@ def configuration(arm):
 def factory(arm):configuration(arm);return scratch_covariance_detail(2026092701)
 
 
-def train(args,out):
+def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.bind_prior,smoke_check=None):
     started=time.perf_counter();c=validate_source(read(args.inputs));old,roles=trial.source(args)
-    G=factory(args.arm);prior_identity=control.bind_prior(args.root,G.physical);G=G.to('cuda:0')
+    cfg=config_for(args.arm);G=build(args.arm);prior_identity=bind_prior(args.root,G.physical);G=G.to('cuda:0')
     F,identity=load_F0(c,'cuda:0');trial.main_eval.valid_identity(identity);scale=load_scale(args.root).to('cuda:0')
     frozen={k:v.detach().clone() for k,v in F.state_dict().items()};objective=PairedObjective().to('cuda:0')
     a=np.load(old/'train/clean.npy',mmap_mode='r',allow_pickle=False)
     try:clean=tensor(a,'cuda:0')
     finally:a._mmap.close()
     if clean.shape!=(63000,2,256) or not torch.isfinite(clean).all():raise ValueError('Original finite63000clean required')
-    out.mkdir();write(out/'config.json',dict(configuration(args.arm),code_commit=args.commit,F0_identity=identity,source_prior_identity=prior_identity))
+    out.mkdir();write(out/'config.json',dict(cfg,code_commit=args.commit,F0_identity=identity,source_prior_identity=prior_identity))
     def draw(number):
         folder=old/'epochs'/f'{number:02d}';done=read(folder/'complete.json')
         if (done['count'],done['TX_labels_read'],done['target_reads'])!=(63000,0,0):raise ValueError('Original completed R07 source draw required')
@@ -72,6 +72,7 @@ def train(args,out):
         restored,aux=G(first['received'][take],return_aux=True);logits=F.classify_features(F.features(restored));target2=F.features(clean[take])
         if logits.shape!=(2,6) or not torch.isfinite(logits).all() or not torch.isfinite(restored).all() or aux['relative_solve_residual'].max()>1e-8:raise ValueError('Actual full scratchG/sourceF0 smoke failed')
         torch.testing.assert_close(restored,aux['base_iq'],rtol=0,atol=0)
+        extra_smoke=smoke_check(G,first['received'][take],restored) if smoke_check else {}
     restored,aux=G(first['received'][take],return_aux=True)
     detail,unused=detail_objective(F,restored,clean[take],target2,scale,objective);detail.mean().backward()
     if any(p.grad is not None for p in G.physical.parameters()) or not G.detail.output.weight.grad.abs().sum()>0:raise ValueError('Detail loss must update detail only')
@@ -86,14 +87,14 @@ def train(args,out):
     with torch.no_grad():torch.testing.assert_close(probe(first['received'][take]),restored,rtol=0,atol=0)
     del probe,first,before,restored,aux,detail,physical,target2
     write(out/'smoke.json',dict(status='PASS',source_rows=2,actual_original_F0=True,actual_full_posterior=True,detail_initial_zero=True,
-        detail_and_physical_gradient_isolation=True,strict_E0_reload=True,F0_frozen=True,optimizer_updates=0,TX_labels_read=0,V_reads=0,OE_reads=0,target_inputs=0))
+        detail_and_physical_gradient_isolation=True,strict_E0_reload=True,F0_frozen=True,optimizer_updates=0,TX_labels_read=0,V_reads=0,OE_reads=0,target_inputs=0,**extra_smoke))
     print('COVARIANCE_DETAIL_REAL_SOURCE_SMOKE_PASS',flush=True)
     tick=time.perf_counter()
     with torch.no_grad():targets=torch.cat([F.features(clean[i:i+256]).detach() for i in range(0,63000,256)])
     torch.cuda.synchronize();cache_seconds=time.perf_counter()-tick
     optimizer=torch.optim.AdamW(G.parameters(),lr=.001,weight_decay=1e-4);G.train()
     rng=np.random.default_rng(2026110102);orders=np.stack([rng.permutation(63000) for _ in range(30)]).astype(np.int32)
-    draws=configuration(args.arm)['source_draws']
+    draws=cfg['source_draws']
     with (out/'data_schedule.npz').open('xb') as f:np.savez(f,orders=orders,draws=draws)
     prior={k:G.physical.state_dict()[k].clone() for k in ['prior_mean','prior_covariance']};update=0;train_start=time.perf_counter();torch.cuda.reset_peak_memory_stats()
     with (out/'training.jsonl').open('x',encoding='utf-8',buffering=1) as log:
