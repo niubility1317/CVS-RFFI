@@ -1,2 +1,3 @@
 {"at": "2026-11-06T16:31:18+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-06T16:33:25+00:00", "status": "RUNNING", "note": "Five-epoch single correction uses matching 32768-ID source teacher and context caches", "evidence": ["N607 controller PID 3519929 source PID 3520018; source smoke PASS with fixed expert teacher"], "row_id": null}
+{"at": "2026-11-06T16:40:28+00:00", "status": "TRAINING_COMPLETE", "note": "GPU optimization 320.1s; context and teacher cache read 1.202s, all teacher and ancestor costs separate", "evidence": ["N607 SOURCE_TRAINED 32768 IDs 5 epochs, expert teacher contract matched, no F/TX/V/target"], "row_id": null}
