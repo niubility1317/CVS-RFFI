@@ -1,0 +1,137 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-direct-received-source-diagnostic-s2026092701-r01",
+  "group_id": "phase1-direct-received-source-diagnostic",
+  "display_name": "独立模型与接收 IQ、DURA 的源域配对诊断",
+  "description": "冻结独立恢复器，对同一源 IQ 比较原始接收、直接恢复和 DURA 输出波形误差，不读取 F、TX 标签、V 或目标。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "F-free",
+    "frequency-diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261106-phase1-direct-dualdomain-source-s2026092701-r01",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户继续授权研发星地恢复网络；仅源域合法 IQ 诊断，不重启已停止任务。",
+  "code": {
+    "commit": "f6a077beaa7abfc38cbc5abd50aa7c1df7322d5b",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU7, CUDA_VISIBLE_DEVICES=7, FP32 TF32 off, batch 32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261106-phase1-direct-received-source-diagnostic-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "received and clean IQ [2,256]",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "672 frozen source pilot physical IDs, RX4/6 and RX8 by seven views; read indices/rx/scene/split only",
+    "label_map_ref": null,
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Previously explored fixed source pilot; RX8 is source held group, not independent to DURA",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed simulated source epoch19 views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source IQ reconstruction error only; no identity accuracy or independent generalization"
+  },
+  "checkpoint": {
+    "initialization": "Fixed direct dual-domain checkpoint and frozen original DURA",
+    "sources": [
+      "20261106-phase1-direct-dualdomain-source-s2026092701-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Runtime verifies direct source-only checkpoint commit and permission fields, frozen_dura verifies DURA provenance",
+    "provenance_verdict": "Both fixed Phase1 models, no F or target ancestry",
+    "selection_rule": "Fixed trained direct model and DURA, no target score selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "Physical GPU7, one this-run worker, at most three total compute workers; preserve others",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-direct-received-source-diagnostic-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-direct-received-source-diagnostic-s2026092701-r01-launcher.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261106-phase1-direct-received-source-diagnostic-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.direct_source_probe --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-direct-received-source-diagnostic-s2026092701-r01 --commit f6a077beaa7abfc38cbc5abd50aa7c1df7322d5b",
+    "stop_rule": "Stop on source role mismatch, source smoke failure, nonfinite output or any target/F/TX read; preserve stopped group and other owners."
+  },
+  "expected_artifacts": [
+    "result.json with source group mean NMSE and per-record paired improvement counts"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source IQ NMSE of received, direct, DURA",
+      "paired per-record improvement counts"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; source IQ only"
+  },
+  "rows": [
+    {
+      "row_id": "received-direct-dura-source-pair",
+      "method": "Frozen direct and DURA on the same 672 source IQ pairs",
+      "purpose": "Identify whether the direct model reduces received-source IQ error",
+      "config_ref": "experiments/phase1_dura_orthogonal/direct_source_probe.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Existing pretrained source runs and fixed source pilots; no stochastic training, support or augmentation in this benchmark.",
+      "k": null,
+      "scenario": "seven fixed Phase1 source views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "672 source IQ pairs including two-record real-checkpoint smoke, batch 32",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-direct-received-source-diagnostic-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-direct-received-source-diagnostic-s2026092701-r01-launcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.direct_source_probe --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-direct-received-source-diagnostic-s2026092701-r01 --commit f6a077beaa7abfc38cbc5abd50aa7c1df7322d5b",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source samples previously inspected; DURA may have seen their source domain.",
+    "No F, TX label, V or target read and no model updates.",
+    "Real-checkpoint source smoke runs first; GPU7 batch 32."
+  ],
+  "registered_at": "2026-11-06T06:05:37+00:00"
+}
