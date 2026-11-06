@@ -17,6 +17,7 @@ def main():
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--cache', type=Path, required=True)
     parser.add_argument('--commit', required=True)
+    parser.add_argument('--both-cached', action='store_true')
     args = parser.parse_args()
     if args.out.exists():
         raise FileExistsError('Unique source-only timing output required')
@@ -27,7 +28,7 @@ def main():
                'experiments.phase1_dura_orthogonal.train_source', '--root', str(args.root),
                '--out', str(args.out/name), '--commit', args.commit, '--device', 'cuda:0',
                '--prepare-batch', '32', '--objective', 'dura_guard', '--architecture', 'dura_multiscale']
-        if name == 'cached':
+        if name == 'cached' or args.both_cached:
             cmd += ['--source-context-cache', str(args.cache)]
         print('TRAINING_PARITY_START', name, flush=True)
         start = time.monotonic()
@@ -48,6 +49,7 @@ def main():
                 ('TX_labels_read', 'F_weights_read', 'F_outputs_read', 'V_reads', 'target_reads')):
             raise ValueError('Complete source-only training results required')
     core.write(args.out/'result.json', dict(status='SOURCE_TRAINING_PARITY_COMPLETE', commit=args.commit,
+        comparison='cached_vs_cached' if args.both_cached else 'fresh_vs_cached',
         model_exact=not different, different_parameters=different, max_abs_parameter_difference=maximum,
         fit_ids_equal=fresh['fit_ids'].tolist() == cached['fit_ids'].tolist(),
         training_losses_exact=fresh['losses'] == cached['losses'],
