@@ -1,0 +1,141 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-masked-iq-lag40-source-s2026092701-r01",
+  "group_id": "phase1-masked-iq-lag40-source",
+  "display_name": "源域遮挡 IQ 与相位对齐时延基线",
+  "description": "固定源域学习先验，比较同一 672 条 clean IQ 缺口的 40 点相位对齐复制和线性插值。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "F-free",
+    "masked-prior",
+    "lag40"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261107-phase1-masked-iq-prior-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User authorizes ongoing Phase1 F-free restoration research, source-only diagnostics and GPU use.",
+  "code": {
+    "commit": "c2d905f3df6569dab00c7abb43a3d124bf89be66",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 physical GPU7 CUDA_VISIBLE_DEVICES=7, batch32, FP32 TF32 off",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-masked-iq-lag40-source-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source pilot",
+    "version": "source cache R07 epoch19",
+    "representation": "672 fixed source pilot clean IQ with fixed masks",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "672 previously explored source pilot IDs disjoint from 32768 prior fit IDs",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Previously explored 672 source pilot; not an independent blind test",
+    "support_query_ref": null,
+    "leo_config_ref": "No simulated channel added to clean IQ for this source-only prior"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source clean masked reconstruction only; no deployable restoration or identity accuracy"
+  },
+  "checkpoint": {
+    "initialization": "Fixed source-only masked IQ prior final epoch five",
+    "sources": [
+      "20261107-phase1-masked-iq-prior-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "Parent prior source-only provenance and 32768 fit IDs validated; disjoint pilot",
+    "provenance_verdict": "Fixed original DURA source-only provenance previously verified",
+    "selection_rule": "Previously fixed final epoch prior, fixed source mask seed"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "Physical GPU7, at most one this-task worker, at most three total compute apps, at least 4096 MiB free; preserve other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-masked-iq-lag40-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-masked-iq-lag40-source-s2026092701-r01-launcher.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261107-phase1-masked-iq-lag40-source-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.source_masked_prior_compare --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-masked-iq-lag40-source-s2026092701-r01 --commit c2d905f3df6569dab00c7abb43a3d124bf89be66",
+    "stop_rule": "Stop on source role mismatch, nonfinite output or loss, target/F/TX access or technical failure; do not change other jobs"
+  },
+  "expected_artifacts": [
+    "result.json: fixed source masked IQ prior and lag40 baseline comparison"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "prior, visible-only lag40 and linear masked IQ error",
+      "fraction of records where prior beats lag40"
+    ],
+    "dimensions": [
+      "fixed source pilot RX4/6 and RX8, each seven metadata groups, 48 each"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; no target or TX truth"
+  },
+  "rows": [
+    {
+      "row_id": "fixed-prior-lag40-source-compare",
+      "method": "Fixed source-only prior versus visible-only per-record complex-phase-aligned lag40 and linear baseline",
+      "purpose": "Compare learned masked clean IQ structure against a stronger fixed periodicity baseline",
+      "config_ref": "experiments/phase1_dura_orthogonal/source_masked_prior_compare.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110707,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": 2026110707,
+        "support": null,
+        "evaluation": 2026110708
+      },
+      "seed_notes": "Five epochs, fixed final epoch; source pilot mask seed independent",
+      "k": null,
+      "scenario": "clean source IQ only; scene labels are metadata for grouping, not satellite test",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "32-record real-checkpoint source smoke plus 672 source pilot records, batch32, no model updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-masked-iq-lag40-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-masked-iq-lag40-source-s2026092701-r01-launcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.source_masked_prior_compare --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-masked-iq-lag40-source-s2026092701-r01 --commit c2d905f3df6569dab00c7abb43a3d124bf89be66",
+      "expected_artifacts": [
+        "result.json: fixed source masked IQ prior and lag40 baseline comparison"
+      ]
+    }
+  ],
+  "notes": [
+    "No F weights/outputs, TX labels, V or target IQ/truth; no parameter updates.",
+    "Lag40 phase fitted only from visible sample pairs; withheld IQ only enters independent source error measurement.",
+    "Source clean pilot has previously been explored; scene labels are metadata, not impaired input performance.",
+    "This is not a deployed recovery network or identity accuracy estimate."
+  ],
+  "registered_at": "2026-11-06T17:14:28+00:00"
+}
