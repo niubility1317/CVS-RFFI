@@ -4,7 +4,7 @@ import pytest
 
 from experiments.pamf_phase1_flow import experiment as core
 from experiments.phase1_dura_orthogonal.masked_prior_constraint import masked_prior_loss, load_prior, SOURCE_COMMIT
-from experiments.phase1_dura_orthogonal.source_masked_prior import MaskedIQPrior
+from experiments.phase1_dura_orthogonal.source_masked_prior import MaskedIQPrior, masked_inputs, SPAN
 
 
 def test_frozen_prior_loss_has_output_gradient_but_no_teacher_gradient():
@@ -36,3 +36,23 @@ def test_prior_loader_rejects_target_ancestry_and_mismatched_ids(monkeypatch, tm
     summary['target_reads'] = 0
     with pytest.raises(ValueError, match='fit IDs'):
         load_prior(tmp_path, fit[::-1].copy(), 'cpu')
+
+
+def test_loss_and_output_gradient_match_original_mask_preparation():
+    torch.manual_seed(12)
+    prior = MaskedIQPrior().eval().requires_grad_(False)
+    clean = torch.randn(3, 2, 256)
+    output = (clean + .1*torch.randn_like(clean)).requires_grad_()
+    starts = torch.tensor([1, 100, 223])
+    observed, mask, scale, _ = masked_inputs(output, starts)
+    clean_observed, clean_mask, clean_scale, _ = masked_inputs(clean, starts)
+    with torch.no_grad():
+        target = prior(clean_observed, clean_mask, clean_scale)
+    prediction = prior(observed, mask, scale)
+    energy = clean.square().mean((1, 2)).clamp_min(1e-8)
+    reference = (((prediction-target).square()*mask[:, None]).sum((1, 2))/(2*SPAN*energy)).mean()
+    reference_grad = torch.autograd.grad(reference, output)[0]
+    candidate = masked_prior_loss(prior, output, clean, starts)
+    candidate_grad = torch.autograd.grad(candidate, output)[0]
+    assert torch.equal(reference, candidate)
+    assert torch.equal(reference_grad, candidate_grad)

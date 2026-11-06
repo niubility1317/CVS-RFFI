@@ -28,13 +28,21 @@ def load_prior(root, fit, device, *, smoke=False):
 
 
 def masked_prior_loss(prior, output, clean, starts):
-    from experiments.phase1_dura_orthogonal.source_masked_prior import masked_inputs, SPAN
-    if output.shape != clean.shape:
+    from experiments.phase1_dura_orthogonal.source_masked_prior import SPAN
+    if output.shape != clean.shape or output.ndim != 3 or output.shape[1:] != (2, 256) or starts.shape != (len(output),):
         raise ValueError('Matching source output and clean IQ required')
-    observed, mask, scale, _ = masked_inputs(output, starts)
-    clean_observed, clean_mask, clean_scale, _ = masked_inputs(clean, starts)
+    if bool(((starts < 1) | (starts + SPAN >= 256)).any()):
+        raise ValueError('Mask requires both adjacent samples')
+    positions = torch.arange(256, device=output.device)[None, :]
+    mask = (positions >= starts[:, None]) & (positions < starts[:, None] + SPAN)
+    def visible(value):
+        observed = value.masked_fill(mask[:, None], 0.)
+        scale = (observed.square().sum((1, 2), keepdim=True) / (2*(256-SPAN))).clamp_min(1e-12).sqrt()
+        return observed, scale
+    observed, scale = visible(output)
+    clean_observed, clean_scale = visible(clean)
     with torch.no_grad():
-        target = prior(clean_observed, clean_mask, clean_scale)
+        target = prior(clean_observed, mask, clean_scale)
     prediction = prior(observed, mask, scale)
     energy = clean.square().mean((1, 2)).clamp_min(1e-8)
     return (((prediction-target).square()*mask[:, None]).sum((1, 2))/(2*SPAN*energy)).mean()
