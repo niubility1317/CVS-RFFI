@@ -1,0 +1,135 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-adaptive-inverse-source-s2026092701-r01",
+  "group_id": "phase1-adaptive-inverse",
+  "display_name": "独立自适应复数滤波恢复网络源域 GPU 训练",
+  "description": "逐窗口估计 33 抽头复数和共轭滤波器，结合独立局部波形残差；从随机初始化训练，无 DURA、F、TX 标签、V 或目标。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "independent-restoration",
+    "F-free-training",
+    "adaptive-complex-filter"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "User requests continued novel and DURA-combinable Phase1 restoration research, F-free/TX-label-free source training, automatic seven-view test and truth-last score.",
+  "code": {
+    "commit": "c406307494b30bd5bdcc6d619337a5250c8d46e9",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 physical GPU7, CUDA_VISIBLE_DEVICES=7, FP32 TF32 off; source prepare batch 32, train batch 32, ground/scoring CPU 2 threads",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261106-phase1-adaptive-inverse-source-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "paired received/clean IQ; direct recovery uses only received IQ",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "8192 source fit IDs exclude RX4/6/8 day3 and 672 source evaluation IDs",
+    "label_map_ref": null,
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "672 fixed previously explored source L_s/U_s IQ, not independent of DURA",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed source epoch21/22/23 views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "F-free and TX-label-free paired source IQ training, source IQ diagnostics; no target score"
+  },
+  "checkpoint": {
+    "initialization": "AdaptiveInverseRecovery width32, 33 FIR taps, 31334 parameters, from scratch; zero heads reproduce received IQ",
+    "sources": [],
+    "contract_check_ref": "No upstream G or F initialization or teacher; frozen DURA only after source checkpoint for diagnostics and paired test",
+    "provenance_verdict": "Random initialization; no pretrained G, F or target ancestry",
+    "selection_rule": "Fixed final epoch 20; no source or target score selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "Physical GPU7, at most one this-run worker and at most 3 total compute workers including others; check capacity; preserve all other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-adaptive-inverse-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-adaptive-inverse-source-s2026092701-r01-controller/source_train.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261106-phase1-adaptive-inverse-source-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.controller --root /home/szu2070436088/2510044040/CV-SincNet --source 20261106-phase1-adaptive-inverse-source-s2026092701-r01 --ground 20261106-phase1-adaptive-inverse-ground-test-s2026092701-r01 --commit c406307494b30bd5bdcc6d619337a5250c8d46e9 --device cuda:0 --prepare-batch 32 --objective iq --architecture adaptive_inverse",
+    "stop_rule": "Stop exact owner only for source contract/role mismatch, nonfinite computation, incorrect checkpoint, target leakage or unrecoverable technical failure. Preserve all artifacts."
+  },
+  "expected_artifacts": [
+    "final.pt: fixed final epoch",
+    "source_summary.json: source IQ only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source paired IQ NMSE",
+      "training IQ loss"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "adaptive-inverse-final",
+      "method": "Input-conditioned per-window widely-linear 33-tap FIR plus nonlinear waveform residual; no DURA input",
+      "purpose": "Train independent F-free network for 20 epochs",
+      "config_ref": "experiments/phase1_dura_orthogonal/train_source.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "New model initialization 2026110612; source fit 2026110611, fixed input caches and DURA seed 2026092701; optimizer ordering 2026110613.",
+      "k": null,
+      "scenario": "fixed source cache epochs 21, 22, 23",
+      "optimizer": "AdamW weight decay 0.001",
+      "lr": 0.0003,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "8192 source IDs x three fixed epochs, 20 passes, batch32, 31334 parameters",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-adaptive-inverse-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-adaptive-inverse-source-s2026092701-r01-controller/source_train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.controller --root /home/szu2070436088/2510044040/CV-SincNet --source 20261106-phase1-adaptive-inverse-source-s2026092701-r01 --ground 20261106-phase1-adaptive-inverse-ground-test-s2026092701-r01 --commit c406307494b30bd5bdcc6d619337a5250c8d46e9 --device cuda:0 --prepare-batch 32 --objective iq --architecture adaptive_inverse",
+      "expected_artifacts": [
+        "final.pt: fixed final epoch",
+        "source_summary.json: source IQ only"
+      ]
+    }
+  ],
+  "notes": [
+    "Train from scratch on paired source IQ, no DURA or F weights/outputs, TX labels, V or target; frozen DURA loaded only after candidate freeze for source diagnostic and formal paired comparison.",
+    "Per-window 33-tap complex and conjugate FIR correction plus nonlinear time residual; zero output heads reproduce received IQ at initialization.",
+    "This is an independent recovery route and does not yet show scientific improvement; direct dual-domain source results motivated exploring conditional inversion.",
+    "Twenty fixed training epochs; all seven Phase1 test views and independent truth-last scoring regardless of source metrics."
+  ],
+  "registered_at": "2026-11-06T08:43:32+00:00"
+}
