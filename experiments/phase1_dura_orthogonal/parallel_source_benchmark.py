@@ -3,6 +3,8 @@ import argparse
 import multiprocessing as mp
 import os
 from pathlib import Path
+import queue
+import sys
 import time
 import traceback
 
@@ -39,10 +41,29 @@ def worker(root, run, commit, selected, ready, start, results):
         began = time.perf_counter()
         outputs = [encode(independent(x, [triple])[0]) for x in batches]
         results.put(('OK', run, time.perf_counter()-began, outputs))
-    except Exception:
+    except BaseException:
         if not announced:
             ready.put(('ERROR', os.getpid(), traceback.format_exc()))
         results.put(('ERROR', run, traceback.format_exc()))
+
+
+def wait_ready(ready, processes, timeout=120):
+    deadline = time.monotonic()+timeout
+    received = []
+    while len(received) < len(processes):
+        if any(p.exitcode is not None for p in processes):
+            raise RuntimeError('Parallel worker exited before start')
+        remaining = deadline-time.monotonic()
+        if remaining <= 0:
+            raise TimeoutError('Parallel workers did not become ready')
+        try:
+            item = ready.get(timeout=min(1., remaining))
+        except queue.Empty:
+            continue
+        if item[0] != 'READY':
+            raise RuntimeError('Parallel worker preflight failed: '+repr(item))
+        received.append(item)
+    return [item[1] for item in received]
 
 
 def main():
@@ -51,6 +72,7 @@ def main():
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--commit', required=True)
     args = parser.parse_args()
+    initial_path = sys.path[:]
     if args.out.exists():
         raise FileExistsError('Unique output root required')
     torch.set_num_threads(2)
@@ -74,13 +96,15 @@ def main():
     ready, results, start = ctx.Queue(), ctx.Queue(), ctx.Event()
     processes = [ctx.Process(target=worker, args=(str(args.root), run, commit, selected, ready, start, results))
                  for _, run, commit in MODELS]
-    for p in processes:
-        p.start()
+    loaded_path = sys.path[:]
     try:
-        readiness = [ready.get(timeout=120) for _ in processes]
-        if any(item[0] != 'READY' for item in readiness):
-            raise RuntimeError('Parallel worker preflight failed: '+repr(readiness))
-        worker_pids = [item[1] for item in readiness]
+        sys.path[:] = initial_path
+        for p in processes:
+            p.start()
+    finally:
+        sys.path[:] = loaded_path
+    try:
+        worker_pids = wait_ready(ready, processes)
         started = time.perf_counter()
         start.set()
         parallel_outputs = [results.get(timeout=120) for _ in processes]
