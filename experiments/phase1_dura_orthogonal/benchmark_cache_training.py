@@ -18,10 +18,23 @@ def main():
     parser.add_argument('--cache', type=Path, required=True)
     parser.add_argument('--commit', required=True)
     parser.add_argument('--both-cached', action='store_true')
+    parser.add_argument('--deterministic', action='store_true')
     args = parser.parse_args()
     if args.out.exists():
         raise FileExistsError('Unique source-only timing output required')
     args.out.mkdir(parents=True)
+    if args.deterministic:
+        smoke = [sys.executable, '-X', 'utf8', '-u', '-m',
+                 'experiments.phase1_dura_orthogonal.train_source', '--root', str(args.root),
+                 '--out', str(args.out/'smoke'), '--commit', args.commit, '--device', 'cuda:0',
+                 '--prepare-batch', '32', '--objective', 'dura_guard', '--architecture', 'dura_multiscale',
+                 '--deterministic', '--smoke']
+        with (args.out/'smoke.log').open('x', encoding='utf8') as log:
+            subprocess.run(smoke, stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT, check=True)
+        smoke_result = core.read(args.out/'smoke/smoke.json')
+        if smoke_result.get('status') != 'SOURCE_TRAINING_SMOKE_PASS' or not smoke_result.get('deterministic_algorithms'):
+            raise ValueError('Deterministic real-checkpoint source smoke required')
+        print('DETERMINISTIC_SOURCE_SMOKE_PASS', flush=True)
     times = {}
     for name in ('fresh', 'cached'):
         cmd = [sys.executable, '-X', 'utf8', '-u', '-m',
@@ -30,6 +43,8 @@ def main():
                '--prepare-batch', '32', '--objective', 'dura_guard', '--architecture', 'dura_multiscale']
         if name == 'cached' or args.both_cached:
             cmd += ['--source-context-cache', str(args.cache)]
+        if args.deterministic:
+            cmd += ['--deterministic']
         print('TRAINING_PARITY_START', name, flush=True)
         start = time.monotonic()
         with (args.out/(name+'.log')).open('x', encoding='utf8') as log:
@@ -50,6 +65,7 @@ def main():
             raise ValueError('Complete source-only training results required')
     core.write(args.out/'result.json', dict(status='SOURCE_TRAINING_PARITY_COMPLETE', commit=args.commit,
         comparison='cached_vs_cached' if args.both_cached else 'fresh_vs_cached',
+        deterministic_algorithms=args.deterministic,
         model_exact=not different, different_parameters=different, max_abs_parameter_difference=maximum,
         fit_ids_equal=fresh['fit_ids'].tolist() == cached['fit_ids'].tolist(),
         training_losses_exact=fresh['losses'] == cached['losses'],

@@ -18,8 +18,12 @@ def main():
     parser.add_argument('--root', type=Path, required=True)
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--commit', required=True)
+    parser.add_argument('--deterministic', action='store_true')
     args = parser.parse_args()
     import os
+    if args.deterministic:
+        os.environ['CUBLAS_WORKSPACE_CONFIG'] = ':4096:8'
+        torch.use_deterministic_algorithms(True)
     training_environments('cuda:0', os.environ)
     if args.out.exists():
         raise FileExistsError('Unique source cache benchmark output required')
@@ -36,10 +40,10 @@ def main():
     fresh_seconds = time.monotonic()-start
     print('SOURCE_CONTEXT_FRESH_COMPLETE', round(fresh_seconds, 3), flush=True)
     start = time.monotonic()
-    save_cache(args.out/'source_context.pt', first, counts, fit, 32, 'cuda:0')
+    save_cache(args.out/'source_context.pt', first, counts, fit, 32, 'cuda:0', deterministic=args.deterministic)
     write_seconds = time.monotonic()-start
     start = time.monotonic()
-    cached, cached_counts = load_cache(args.out/'source_context.pt', fit, 32, 'cuda:0')
+    cached, cached_counts = load_cache(args.out/'source_context.pt', fit, 32, 'cuda:0', deterministic=args.deterministic)
     load_seconds = time.monotonic()-start
     if cached_counts != counts or not all(torch.equal(x, y) for x, y in zip(first, cached)):
         raise ValueError('Cached source tensors must equal the saved fresh tensors exactly')
@@ -55,7 +59,8 @@ def main():
         fresh_prepare_seconds=fresh_seconds, repeat_prepare_seconds=repeat_seconds,
         cache_write_seconds=write_seconds, cache_load_seconds=load_seconds,
         cache_bytes=(args.out/'source_context.pt').stat().st_size,
-        device='cuda:0', batch_size=32, source_only=True, TX_labels_read=0, F_weights_read=0,
+        device='cuda:0', batch_size=32, deterministic_algorithms=args.deterministic,
+        source_only=True, TX_labels_read=0, F_weights_read=0,
         F_outputs_read=0, V_reads=0, target_reads=0))
     print('SOURCE_CONTEXT_BENCHMARK_COMPLETE', flush=True)
 

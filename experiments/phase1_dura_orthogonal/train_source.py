@@ -205,9 +205,13 @@ def main():
     parser.add_argument('--prepare-batch', type=int, default=32)
     parser.add_argument('--smoke-fit', type=int, default=64)
     parser.add_argument('--source-context-cache', type=Path)
+    parser.add_argument('--deterministic', action='store_true')
     parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard'), default='iq')
     parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale'), default='orthogonal')
     args = parser.parse_args()
+    if args.deterministic:
+        os.environ['CUBLAS_WORKSPACE_CONFIG'] = ':4096:8'
+        torch.use_deterministic_algorithms(True)
     if args.source_context_cache and (args.smoke or args.architecture in DIRECT_ARCHITECTURES or args.objective in ACTION_OBJECTIVES):
         raise ValueError('Source context cache applies only to full DURA-context training without action supervision')
     if args.architecture in DIRECT_ARCHITECTURES and args.objective != 'iq':
@@ -249,7 +253,8 @@ def main():
     dura = frozen_dura(args.root, str(device)) if args.architecture not in DIRECT_ARCHITECTURES else None
     preparation_started = time.monotonic()
     if args.source_context_cache:
-        data, counts = load_cache(args.source_context_cache, fit, args.prepare_batch, str(device))
+        data, counts = load_cache(args.source_context_cache, fit, args.prepare_batch, str(device),
+                                  deterministic=args.deterministic)
     else:
         data, counts = prepare(args.root, dura, clean, fresh, fit, str(device), args.prepare_batch,
                                args.architecture, include_action=args.objective in ACTION_OBJECTIVES)
@@ -402,7 +407,8 @@ def main():
         source_ssl_offdiagonal_weight=SSL_OFFDIAGONAL_WEIGHT, source_ssl_feature_dim=SSL_FEATURE_DIM,
         source_ssl_seed=2026110615, source_ssl_parameters=sum(p.numel() for p in aux.parameters()),
         source_ssl_crossview_losses=ssl_crossview_losses, source_ssl_feature_losses=ssl_feature_losses) if aux is not None else {}
-    cache_metadata = dict(source_context_cache=str(args.source_context_cache) if args.source_context_cache else None)
+    cache_metadata = dict(source_context_cache=str(args.source_context_cache) if args.source_context_cache else None,
+                          deterministic_algorithms=args.deterministic)
     if args.smoke:
         core.write(args.out/'smoke.json', dict(status='SOURCE_TRAINING_SMOKE_PASS', commit=args.commit,
             fit_ids=len(fit), exposure=len(data[0]), losses=losses, device=str(device),

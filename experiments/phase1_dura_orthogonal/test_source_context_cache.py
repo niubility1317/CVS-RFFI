@@ -17,5 +17,13 @@ def test_cache_exact_and_rejects_mismatched_source(tmp_path):
         load_cache(path, [10, 21], 32, 'cuda:0')
     with pytest.raises(ValueError):
         load_cache(path, fit, 64, 'cuda:0')
+    with pytest.raises(ValueError):
+        load_cache(path, fit, 32, 'cuda:0', deterministic=True)
     with pytest.raises(FileExistsError):
         save_cache(path, data, counts, fit, 32, 'cuda:0')
+    deterministic_path = tmp_path/'deterministic.pt'
+    save_cache(deterministic_path, data, counts, fit, 32, 'cuda:0', deterministic=True)
+    deterministic_data, _ = load_cache(deterministic_path, fit, 32, 'cuda:0', deterministic=True)
+    assert all(torch.equal(x, y) for x, y in zip(data, deterministic_data))
+    with pytest.raises(ValueError):
+        load_cache(deterministic_path, fit, 32, 'cuda:0')
