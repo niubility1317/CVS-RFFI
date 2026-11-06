@@ -1,0 +1,138 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-dura-gradient-alignment-source-s2026092701-r01",
+  "group_id": "phase1-dura-gradient-alignment-source",
+  "display_name": "源域波形与物理监督梯度冲突诊断",
+  "description": "比较原 DURA 与固定候选在相同源 IQ 上波形损失和模拟动作损失的共享参数梯度方向与相对幅度，不更新模型。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "F-free",
+    "frequency-diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261106-phase1-dura-sim-action-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户继续授权研发星地恢复网络；仅源域合法 IQ 诊断，不重启已停止任务。",
+  "code": {
+    "commit": "28085868f12adfa727b66dbae06e3229bf9b858a",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU7, CUDA_VISIBLE_DEVICES=7, FP32 TF32 off, 16 per group",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261106-phase1-dura-gradient-alignment-source-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "source received/clean IQ and simulator kernel, widely-linear coefficients, variance",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "14 source pilot groups, first 16 of 48 each, RX4/6 and RX8 by seven views",
+    "label_map_ref": null,
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Previously explored fixed source pilot; RX8 is source held group, not independent to DURA",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed simulated source epoch19 views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source batch-level gradient direction; no identity accuracy or proof of future training benefit"
+  },
+  "checkpoint": {
+    "initialization": "Original DURA and fixed final epoch5 source simulator action-guided candidate",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261106-phase1-dura-sim-action-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "Require candidate source summary and checkpoint complete with expected commit, objective, seed, weight, and F/TX/target exclusions",
+    "provenance_verdict": "Original source-only DURA and same-contract source-only candidate, subject to completion check",
+    "selection_rule": "Prespecified candidate final epoch5; no target score selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "Physical GPU7, one this-run worker, at most three total compute workers; preserve others",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-gradient-alignment-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-gradient-alignment-source-s2026092701-r01-launcher.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261106-phase1-dura-gradient-alignment-source-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.gradient_alignment_source_probe --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-gradient-alignment-source-s2026092701-r01 --commit 28085868f12adfa727b66dbae06e3229bf9b858a",
+    "stop_rule": "Stop on source role mismatch, source smoke failure, nonfinite output or any target/F/TX read; preserve stopped group and other owners."
+  },
+  "expected_artifacts": [
+    "result.json source IQ and physics shared gradient alignment by RX/view"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "shared parameter gradient cosine",
+      "shared gradient norms",
+      "weighted physics to IQ gradient norm"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; source IQ only"
+  },
+  "rows": [
+    {
+      "row_id": "original-vs-candidate-source-gradients",
+      "method": "Training IQ guard loss versus fixed-probe simulator action loss; matching shared parameters",
+      "purpose": "Test whether source waveform and physical objectives locally conflict",
+      "config_ref": "experiments/phase1_dura_orthogonal/gradient_alignment_source_probe.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Existing pretrained source runs and fixed source pilots; no stochastic training, support or augmentation in this benchmark.",
+      "k": null,
+      "scenario": "seven fixed Phase1 source views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "224 source records, 14 batches of 16, two frozen checkpoint states, no updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-gradient-alignment-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-gradient-alignment-source-s2026092701-r01-launcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.gradient_alignment_source_probe --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-gradient-alignment-source-s2026092701-r01 --commit 28085868f12adfa727b66dbae06e3229bf9b858a",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source pilot excluded from candidate fit, but original DURA may have seen this domain.",
+    "Only shared gradient parameters; cosine is local and batch-level, not proof of actual optimizer behavior.",
+    "No TX, F, V, target, optimizer step or model updates."
+  ],
+  "registered_at": "2026-11-06T08:10:46+00:00"
+}
