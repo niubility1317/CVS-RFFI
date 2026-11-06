@@ -245,3 +245,9 @@ N607 GPU 7 真实 checkpoint 的 64 条源训练 smoke 已通过；固定五轮�
 ## 独立时频学生七景
 
 固定 Tri-SIG-TIME SSL，七景各 168000 条并独立 truth-last。clean、高郊区、中郊区、低郊区、高城区、中城区、低城区分别为 80.8500%、59.7214%、57.1738%、54.7881%、56.6696%、44.8708%、36.6994%。六个受损场景均低于对应 raw 输入和 DURA；低城区较 DURA 低 32.1018 个百分点，clean 也低于 raw clean 5.6887 个百分点。所有受损场景均未达到两种 3% 口径。该学生推理无需 DURA，但实际时延未测；扩大源数据的另一个独立学生仍按原计划完成正式测试。[完整结果](../automation_reports/CV-SincNet/20261106-phase1-direct-spectral-distill-ground-test-s2026092701-r01/analysis.md)。
+
+## 多尺度时间先验约束恢复器
+
+在合法源 IQ 上固定原 DURA 和遮挡先验，独立初始化多尺度修正；训练时用同一随机 32 点遮挡，比较恢复输出与 clean 经先验编码后的时间中心化隐藏特征，在 8 和 32 个时间段上计算归一化差异，以 0.05 权重加入源 IQ 与 DURA guard。先验不参与部署推理；不使用 F、TX 标签、V 或目标数据。源域同记录检索不等于身份准确率，该设计仍需正式验证。
+
+本机真实源样本 GPU 检查通过，固定 32768 源 ID × 三视图、五轮；N607 GPU6 目前达到总计算进程上限，单一 owner 队列已启动，将在至少 4096 MiB 且总进程小于 3 时自动执行真实 checkpoint smoke、训练和七景独立 truth-last。现有 GPU7 训练与其他任务不变；当前尚无本版正式性能。[训练登记](../automation_reports/CV-SincNet/20261107-phase1-dura-temporal-prior-source-s2026092701-r01/report.md)、[七景登记](../automation_reports/CV-SincNet/20261107-phase1-dura-temporal-prior-ground-test-s2026092701-r01/report.md)。
