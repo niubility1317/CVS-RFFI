@@ -1,0 +1,146 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-dura-iqflow-source-s2026092701-r01",
+  "group_id": "phase1-dura-conditional-iqflow",
+  "display_name": "DURA 条件 IQ 流 GPU 训练",
+  "description": "固定 DURA 上下文，源 IQ 路径速度匹配训练，四步确定性积分。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "dura",
+    "F-free-training",
+    "conditional-flow",
+    "deterministic-gpu"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests continued novel and DURA-combinable Phase1 restoration research, F-free/TX-label-free source training, automatic seven-view test and truth-last score.",
+  "code": {
+    "commit": "8ac105153dc9ec337e82346ee0f72b97b93d8bf7",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU3 FP32 TF32off deterministic source training; CPU ground",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-dura-iqflow-source-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "Paired source received/clean and frozen DURA output/physical variance",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "32768 source fit IDs randomly sampled without replacement after excluding RX4/6/8 day3 and the 672 fixed source pilot IDs",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "672 fixed previously explored source L_s/U_s IQ, not independent of DURA",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed source epoch21/22/23 views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "F-free and TX-label-free paired source IQ training, source IQ diagnostics; no target score"
+  },
+  "checkpoint": {
+    "initialization": "Frozen DURA and newly initialized 28162-parameter velocity network, zero output head",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "DURA source-only; source context exact ordered 32768 fit IDs and no F/TX/V/target",
+    "provenance_verdict": "DURA and fixed source IQ context have no target ancestry",
+    "selection_rule": "Fixed final epoch five, no target or pilot-based selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "GPU3 only; wait for >=4096 MiB free and fewer than three total compute apps; preserve other jobs",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-dura-iqflow-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-dura-iqflow-source-s2026092701-r01-queue.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261107-phase1-dura-iqflow-source-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.gpu_capacity_queue --root /home/szu2070436088/2510044040/CV-SincNet --source 20261107-phase1-dura-iqflow-source-s2026092701-r01 --ground 20261107-phase1-dura-iqflow-ground-test-s2026092701-r01 --commit 8ac105153dc9ec337e82346ee0f72b97b93d8bf7 --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-wide-source-source-s2026092701-r01/source_context.pt --gpu 3 --objective wide_conditional_flow --architecture conditional_iq_flow",
+    "stop_rule": "Stop exact owner only for source contract/role mismatch, nonfinite computation, incorrect checkpoint, target leakage or unrecoverable technical failure. Preserve all artifacts."
+  },
+  "expected_artifacts": [
+    "final.pt: fixed final epoch",
+    "source_summary.json: source IQ only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source paired IQ NMSE",
+      "training IQ loss"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "dura-iqflow-final",
+      "method": "Conditional deterministic IQ path velocity after frozen DURA",
+      "purpose": "Train a fixed conditional IQ flow velocity on source clean and frozen DURA context",
+      "config_ref": "experiments/phase1_dura_orthogonal/train_source.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Initialization 2026110612; source fit 2026110611; order 2026110613; flow time 2026110713; evaluation 2026092701",
+      "k": null,
+      "scenario": "fixed source cache epochs 21, 22, 23",
+      "optimizer": "AdamW weight decay 0.001",
+      "lr": 0.0003,
+      "epochs": 5,
+      "fl_rounds": null,
+      "budget_ref": "28162 trainable parameters plus frozen DURA; 32768 source IDs x three views x five epochs, batch32",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-dura-iqflow-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-dura-iqflow-source-s2026092701-r01-queue.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.gpu_capacity_queue --root /home/szu2070436088/2510044040/CV-SincNet --source 20261107-phase1-dura-iqflow-source-s2026092701-r01 --ground 20261107-phase1-dura-iqflow-ground-test-s2026092701-r01 --commit 8ac105153dc9ec337e82346ee0f72b97b93d8bf7 --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-wide-source-source-s2026092701-r01/source_context.pt --gpu 3 --objective wide_conditional_flow --architecture conditional_iq_flow",
+      "expected_artifacts": [
+        "final.pt: fixed final epoch",
+        "source_summary.json: source IQ only"
+      ]
+    }
+  ],
+  "notes": [
+    "Uniform source t and linear DURA-anchor to clean interpolation; velocity target clean-anchor; four fixed Euler inference steps.",
+    "No F/TX/V/target in training; fixed last checkpoint; target feedback does not select or tune this candidate.",
+    "Historical R03 deterministic flow used F guidance and a different classifier; 64.8327% low urban is not this candidate or this baseline.",
+    "All seven 168000-record Phase1 predictions must finish before independent truth-last; compare frozen Tri-SIG-TIME SSL DURA.",
+    "GPU3 queue waits for fewer than three total compute apps and at least 4096 MiB free; preserve other owners.",
+    "Technical stop on invalid input, provenance failure, non-finite/OOM, output conflict, smoke, prediction or scoring failure; no automatic retry."
+  ],
+  "registered_at": "2026-11-06T22:10:00+00:00"
+}
