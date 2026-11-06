@@ -1,3 +1,4 @@
 {"at": "2026-11-06T15:50:14+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-06T15:53:11+00:00", "status": "QUEUED", "note": "Seven-view prediction and truth-last scoring follow fixed final epoch", "evidence": ["N607 queue PID 3496888; source training not yet launched"], "row_id": null}
 {"at": "2026-11-06T16:16:17+00:00", "status": "RUNNING", "note": "Seven-view predictions complete before independent truth-last scoring", "evidence": ["N607 source prediction smoke PASS 112; controller PID 3499412 ground prediction PID 3508140"], "row_id": null}
+{"at": "2026-11-06T21:57:54+00:00", "status": "ANALYZED", "note": "All seven views 168000 each fixed before independent truth-last; paired Tri-SIG-TIME SSL versus DURA", "evidence": ["analysis.md,ground_summary.json,paired_dura.json,prediction_complete.json,N607 controller"], "row_id": null}
