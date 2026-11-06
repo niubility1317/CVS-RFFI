@@ -93,3 +93,15 @@ GPU 7 的真实权重小样本验证通过，正式五轮训练完成，优化�
 ## 独立时频学生
 
 基于源域 DURA IQ 教师与 clean IQ，另训练独立时频学生，网络 117062 参数，接收 IQ 直接输入；冻结后学生前向不调用 DURA。训练使用合法源域配对，不读取 F/TX/V/目标，源 IQ 目标与 DURA 源波形教师误差权重分别为 1、0.5，固定 20 轮，GPU 7、确定性源缓存。真实 checkpoint smoke 通过，20 轮优化完成（324.5 秒，缓存读取 0.234 秒；原 DURA 训练和缓存首次构建成本另计），七景预测已启动，之后独立 truth-last。源 pilot 的 14 个分组中 5 组波形误差低于先前独立时变网络，但全部高于 DURA；两种学生的架构和目标不同，不能把差异单独归因于教师。七景实际表现与独立部署时延尚未测得。[源训练记录](../automation_reports/CV-SincNet/20261106-phase1-direct-spectral-distill-source-s2026092701-r01/analysis.md)。
+
+## 源 IQ 相关先验物理后验
+
+用与 pilot 互斥的 8192 条合法源 clean IQ 拟合 512 维二阶矩，并以 0.1 各向同性收缩。160 步物理后验在 12 个受损源分组中均优于同信道和噪声条件下的各向同性先验，但均高于原 DURA。RX8 低城区：真实模拟信道与噪声下，相关先验 NMSE 为 0.101106、各向同性为 0.301102，DURA 为 0.100678；真实模拟量只可用于源诊断，不是部署输入或理论上界。估计信道＋相关先验的个别记录最大真实相对残差仍为 0.006734。[160 步结果](../automation_reports/CV-SincNet/20261106-phase1-source-covariance-posterior-s2026092701-r02/analysis.md)。
+
+对该固定源后验交叉替换信道和噪声，两种低城区源组的均值均显示替换噪声的变化大于替换信道；部分交叉组合尚未充分收敛，不能推广成 DURA 因果结论或身份收益。[交叉结果](../automation_reports/CV-SincNet/20261106-phase1-source-covariance-posterior-s2026092701-r03/analysis.md)。同条源 clean IQ 的理想互补诊断已完成：估计信道＋估计噪声方向在 RX8 低城区以非负理想步长可使源 NMSE 从 0.100678 到 0.099174，35/48 条有理想改善，但 13/48 条理想步长为负；所有此类步长均不可部署。[互补诊断](../automation_reports/CV-SincNet/20261106-phase1-source-covariance-posterior-s2026092701-r04/analysis.md)。
+
+## 源物理后验教师学生
+
+使用 DURA 估计信道与噪声、源 IQ 相关先验和同条源 clean 的非负理想步长，已为 8192 条源记录的三个模拟视图生成 24576 条训练教师波形。源训练样本上的理想教师 NMSE 由 0.023053 到 0.022093；生成耗时 365.3 秒，源数据缓存、先验和 DURA 成本另计，最大 CG 真实相对残差 0.01058。教师及理想步长不可用于目标推理；此训练集上的理想误差不是身份或目标收益。[源教师生成](../automation_reports/CV-SincNet/20261106-phase1-source-posterior-teacher-s2026092701-r01/analysis.md)。
+
+独立初始化的 DURA 多尺度修正学生以源 IQ、DURA guard 和 0.5 权重的源教师波形误差训练；真实 GPU 小样本验证通过，固定五轮训练进行中。冻结后学生只用当前 IQ 和 DURA 上下文，不读取教师、源 clean、理想步长或物理后验；七景预测与独立 truth-last 已登记并将自动执行。

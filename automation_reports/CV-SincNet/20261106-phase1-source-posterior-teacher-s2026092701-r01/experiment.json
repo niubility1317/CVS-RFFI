@@ -1,0 +1,148 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-source-posterior-teacher-s2026092701-r01",
+  "group_id": "phase1-source-posterior-teacher",
+  "display_name": "源域物理后验修正教师生成",
+  "description": "仅对 8192 条合法源 IQ 的三个模拟视图，基于 DURA 估计信道与噪声、源相关先验，以及同记录源 clean IQ 的非负限幅理想步长，生成供后续训练使用的波形教师；教师步长不可部署。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "F-free",
+    "posterior",
+    "source-iq-teacher"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261106-phase1-source-covariance-posterior-s2026092701-r04",
+    "20261106-phase1-dura-deterministic-cache-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户继续授权研发星地恢复网络；仅源域合法 IQ 诊断，不重启已停止任务。",
+  "code": {
+    "commit": "934112e2bfaea29f0437e8853c203c0dd25c8c37",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU7, CUDA_VISIBLE_DEVICES=7, FP32 TF32 off, batch 32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261106-phase1-source-posterior-teacher-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "source paired received/clean IQ, source clean second moment, simulated source action/variance",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "8192 fixed eligible L_s/U_s fit IDs x source simulated epochs21/22/23; 672 source pilot IDs excluded",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Source teacher generation only; not a target test or identification metric",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed source simulated epochs21/22/23"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only nondeployable teacher construction; clean-supervised coefficients not usable on target"
+  },
+  "checkpoint": {
+    "initialization": "Frozen source-only DURA v1.0, matching source-only 512x512 IQ second moment and deterministic source context cache",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261106-phase1-source-covariance-posterior-s2026092701-r04",
+      "20261106-phase1-dura-deterministic-cache-s2026092701-r01"
+    ],
+    "contract_check_ref": "frozen_dura source provenance; covariance and source context fit IDs exactly match, source summaries show F/TX/V/target reads zero",
+    "provenance_verdict": "All inputs source-only with matching source physical IDs; source clean is used only to build training teacher",
+    "selection_rule": "Fixed source covariance, estimated action/variance, 160 CG and positive step [0,0.5]; no target selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "Physical GPU7, one this-run worker, at most three total compute workers; preserve others",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-source-posterior-teacher-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-source-posterior-teacher-s2026092701-r01-launcher.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261106-phase1-source-posterior-teacher-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.source_posterior_teacher --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-source-posterior-teacher-s2026092701-r01 --commit 934112e2bfaea29f0437e8853c203c0dd25c8c37",
+    "stop_rule": "Stop on source role mismatch, source smoke failure, nonfinite output or any target/F/TX read; preserve stopped group and other owners."
+  },
+  "expected_artifacts": [
+    "teacher.pt: private source-only 24576 IQ targets, retained on N607",
+    "result.json: source construction status, accuracy and CG residual"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source IQ baseline and ideal teacher NMSE",
+      "positive and negative optimum fractions",
+      "actual CG residual"
+    ],
+    "dimensions": [
+      "all fixed source fit views"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; source IQ only"
+  },
+  "rows": [
+    {
+      "row_id": "estimated-posterior-source-teacher",
+      "method": "Estimated DURA action and noise with frozen source covariance posterior; per-record positive ideal DURA-to-posterior line step uses matched source clean only",
+      "purpose": "Build immutable source-only training teacher for a separately registered recovery student",
+      "config_ref": "experiments/phase1_dura_orthogonal/source_posterior_teacher.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Fixed source fit selection 2026110611, original DURA seed 2026092701, fixed source pilot; no target access or parameter optimizer.",
+      "k": null,
+      "scenario": "source fit simulated epochs21/22/23",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "8192 source IQ IDs x 3 views, one estimated-action covariance posterior per view, 160 CG iterations, batch16",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-source-posterior-teacher-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-source-posterior-teacher-s2026092701-r01-launcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.source_posterior_teacher --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-source-posterior-teacher-s2026092701-r01 --commit 934112e2bfaea29f0437e8853c203c0dd25c8c37",
+      "expected_artifacts": [
+        "teacher.pt: private source-only 24576 IQ targets, retained on N607",
+        "result.json: source construction status, accuracy and CG residual"
+      ]
+    }
+  ],
+  "notes": [
+    "Teacher target generation reads only legal paired source IQ, frozen source DURA and source-only covariance; no TX labels, F weights/outputs, V, target IQ or target truth.",
+    "The source clean ideal step and its generated target are privileged training-only information; no student may use them at inference.",
+    "Per-record posterior uses DURA-estimated action and noise, never simulator true action/noise; posterior CG residuals are recorded.",
+    "Immutable teacher cache is a data-preparation run, not a separately evaluated recovery network; any derived student will be independently registered and run all seven Phase1 views."
+  ],
+  "registered_at": "2026-11-06T13:53:40+00:00"
+}
