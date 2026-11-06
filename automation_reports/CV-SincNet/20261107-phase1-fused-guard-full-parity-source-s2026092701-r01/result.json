@@ -1,0 +1,24 @@
+{
+  "status": "FUSED_GUARD_BENCHMARK_COMPLETE",
+  "commit": "9ff49b5c181d7ba673d10b7d2fd9eefaa80358b4",
+  "source_ids": 32768,
+  "views_per_id": 3,
+  "epochs": 5,
+  "batch": 32,
+  "results": [
+    {
+      "original_seconds": 361.23399999993853,
+      "fused_seconds": 343.61000000010245,
+      "steps": 15360,
+      "step_losses_exact": true,
+      "parameters_exact": true
+    }
+  ],
+  "gpu": "NVIDIA GeForce RTX 5070 Ti",
+  "TX_labels_read": 0,
+  "F_weights_read": 0,
+  "F_outputs_read": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "weights_saved": false
+}

@@ -26,6 +26,7 @@ from experiments.phase1_dura_orthogonal.direct_spectral_student import DirectSpe
 from experiments.phase1_dura_orthogonal.direct_student_fir import DirectStudentFIR, SOURCE as FIR_SOURCE, SOURCE_COMMIT as FIR_SOURCE_COMMIT, TAPS as FIR_TAPS, SCALE as FIR_SCALE
 from experiments.phase1_dura_orthogonal.reversible_dura import ReversibleDura
 from experiments.phase1_dura_orthogonal.conditional_iq_flow import ConditionalIQFlow, DirectIQFlow, flow_matching_loss, sample_flow_times
+from experiments.phase1_dura_orthogonal.fused_gradient_guard import checked_backward_and_clip
 from experiments.phase1_dura_orthogonal.source_multiview_teacher import build_teacher
 from experiments.phase1_dura_orthogonal.dura_experts import DuraExperts, EXPERT_COUNT
 from experiments.phase1_dura_orthogonal.expert_teacher_contract import (
@@ -551,10 +552,14 @@ def main():
             if args.objective in ACTION_OBJECTIVES:
                 loss = loss + .01*action_loss
                 action_total += action_loss.detach()*len(indices)
-            if not torch.isfinite(loss):
+            fused_guard = args.architecture == 'dura_multiscale' and args.objective == 'wide_masked_prior_guard'
+            if not fused_guard and not torch.isfinite(loss):
                 raise FloatingPointError('Finite IQ-only source loss required')
             optimizer.zero_grad(set_to_none=True)
-            loss.backward()
+            if fused_guard:
+                checked_backward_and_clip(loss, model, (model.wave.weight, model.filter_head.weight))
+            else:
+                loss.backward()
             if args.architecture == 'dura_internal':
                 parts = (model.dura.frozen,) if args.objective == 'sim_action_fixed_prior' else (model.dura.frozen, model.dura.prior)
                 for part in parts:
@@ -578,13 +583,14 @@ def main():
                 if any(head.weight.grad is None or not torch.isfinite(head.weight.grad).all()
                        for expert in model.experts for head in (expert.wave, expert.filter_head)):
                     raise ValueError('All expert correction paths require finite gradients')
-            else:
+            elif not fused_guard:
                 second_head = (model.step if args.architecture == 'orthogonal' else
                                model.filter_head if args.architecture in ('adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student') else model.spectral_head)
                 if (model.wave.weight.grad is None or second_head.weight.grad is None or
                         not torch.isfinite(model.wave.weight.grad).all() or not torch.isfinite(second_head.weight.grad).all()):
                     raise ValueError('Both learned correction paths require finite gradients')
-            torch.nn.utils.clip_grad_norm_(model.parameters(), 1., error_if_nonfinite=True)
+            if not fused_guard:
+                torch.nn.utils.clip_grad_norm_(model.parameters(), 1., error_if_nonfinite=True)
             optimizer.step()
             total += loss.detach() * len(indices)
         losses.append(float(total.cpu())/(3*len(order) if crossview else len(order)))
