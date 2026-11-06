@@ -1,0 +1,2 @@
+{"at": "2026-11-06T06:53:57+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-06T06:55:43+00:00", "status": "FAILED", "note": "No formal training or model checkpoint produced; output preserved. Preflight batch-dependent floating-point comparison will be fixed with matching batch size.", "evidence": ["N607 controller PID 3211987 FAILED source_smoke: 2 of 4096 values differ at batch8 vs batch32; max absolute 1.4305115e-6"], "row_id": null}

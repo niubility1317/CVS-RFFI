@@ -1,0 +1,2 @@
+{"at": "2026-11-06T06:57:41+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-06T06:59:28+00:00", "status": "RUNNING", "note": "Batch-matched real checkpoint smoke passed; separate DURA candidate trains against frozen source anchor, no F/TX/V/target reads.", "evidence": ["N607 controller PID 3214365; GPU7 worker PID 3214460; source smoke PASS and candidate_dura_trainable true"], "row_id": null}
