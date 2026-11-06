@@ -34,9 +34,33 @@ class OrthogonalRecoveryTest(unittest.TestCase):
             model.wave.bias.fill_(.1)
             model.step.bias.fill_(-.2)
             whole = model(x, anchor, direction, noise)
+            trusted = model(x, anchor, direction, noise, validate=False)
             single = torch.cat([model(x[i:i+1], anchor[i:i+1], direction[i:i+1], noise[i:i+1])
                                 for i in range(len(x))])
+            torch.testing.assert_close(whole, trusted, atol=0, rtol=0)
             torch.testing.assert_close(whole, single, atol=2e-6, rtol=2e-6)
+
+    @unittest.skipUnless(torch.cuda.is_available(), 'CUDA device required')
+    def test_cuda_fp32_forward_and_gradient_match_cpu(self):
+        torch.manual_seed(9)
+        cpu = OrthogonalRecovery(width=8)
+        with torch.no_grad():
+            cpu.wave.weight.normal_(std=.01)
+            cpu.step.weight.normal_(std=.01)
+        gpu = OrthogonalRecovery(width=8).cuda()
+        gpu.load_state_dict(cpu.state_dict())
+        x = torch.randn(3, 2, 256)
+        a = torch.randn_like(x)
+        d = torch.randn_like(x)
+        n = torch.tensor([.01, .1, .2])
+        torch.backends.cuda.matmul.allow_tf32 = False
+        torch.backends.cudnn.allow_tf32 = False
+        out_cpu = cpu(x, a, d, n)
+        out_gpu = gpu(x.cuda(), a.cuda(), d.cuda(), n.cuda())
+        torch.testing.assert_close(out_cpu, out_gpu.cpu(), atol=5e-6, rtol=5e-6)
+        out_cpu.square().mean().backward()
+        out_gpu.square().mean().backward()
+        torch.testing.assert_close(cpu.wave.weight.grad, gpu.wave.weight.grad.cpu(), atol=5e-6, rtol=5e-5)
 
     def test_invalid_noise_and_shape_rejected(self):
         model = OrthogonalRecovery(width=8)

@@ -37,13 +37,13 @@ class OrthogonalRecovery(nn.Module):
         nn.init.zeros_(self.step.weight)
         nn.init.zeros_(self.step.bias)
 
-    def forward(self, received, anchor, innovation, variance):
+    def forward(self, received, anchor, innovation, variance, *, validate=True):
         if (received.ndim != 3 or received.shape[1:] != (2, 256)
                 or anchor.shape != received.shape or innovation.shape != received.shape
                 or variance.shape != (len(received),)):
             raise ValueError('Matching current IQ windows and one noise variance required')
-        if (not all(torch.isfinite(x).all() for x in (received, anchor, innovation, variance))
-                or (variance <= 0).any()):
+        if validate and (not all(torch.isfinite(x).all() for x in (received, anchor, innovation, variance))
+                         or (variance <= 0).any()):
             raise ValueError('Finite IQ and positive noise variance required')
         scale = anchor.square().mean((1, 2), keepdim=True).clamp_min(1e-12).sqrt()
         direction_rms = innovation.square().mean((1, 2), keepdim=True).sqrt()

@@ -58,7 +58,7 @@ def load_source_training(root, eval_ids):
 
 
 @torch.no_grad()
-def prepare(root, dura, clean, fresh, fit):
+def prepare(root, dura, clean, fresh, fit, device, batch_size):
     chunks = []
     scene_counts = {}
     for epoch in SOURCE_EPOCHS:
@@ -73,13 +73,14 @@ def prepare(root, dura, clean, fresh, fit):
             scene = group['scene'].copy()
         if received.shape != clean.shape or scene.shape != (core.COUNT,):
             raise ValueError('Complete source IQ cache required')
-        for start in range(0, len(fit), 8):
-            ids = fit[start:start+8]
-            x, y = core.tensor(received[ids], 'cpu'), core.tensor(clean[ids], 'cpu')
+        for start in range(0, len(fit), batch_size):
+            ids = fit[start:start+batch_size]
+            x, y = core.tensor(received[ids], device), core.tensor(clean[ids], device)
             anchor, direction, variance = extract_context(dura, x)
-            if not all(torch.isfinite(v).all() for v in (x, y, anchor, direction, variance)):
+            values = tuple(t.detach().cpu() for t in (x, anchor, direction, variance, y))
+            if not all(torch.isfinite(v).all() for v in values) or (values[3] <= 0).any():
                 raise FloatingPointError('Finite source IQ and context required')
-            chunks.append(tuple(t.cpu() for t in (x, anchor, direction, variance, y)))
+            chunks.append(values)
         for view in core.VIEWS:
             scene_counts[view] = scene_counts.get(view, 0) + int(np.count_nonzero(scene[fit] == view))
         print('ORTHOGONAL_SOURCE_PREP', epoch, len(fit), flush=True)
@@ -87,17 +88,17 @@ def prepare(root, dura, clean, fresh, fit):
 
 
 @torch.no_grad()
-def evaluate_source(model, dura, ids, rx, scene, received, clean):
+def evaluate_source(model, dura, ids, rx, scene, received, clean, device, batch_size):
     model.eval()
     chunks = []
-    for start in range(0, len(ids), 8):
-        index = ids[start:start+8]
-        x, y = core.tensor(received[index], 'cpu'), core.tensor(clean[index], 'cpu')
+    for start in range(0, len(ids), batch_size):
+        index = ids[start:start+batch_size]
+        x, y = core.tensor(received[index], device), core.tensor(clean[index], device)
         anchor, direction, variance = extract_context(dura, x)
         output = model(x, anchor, direction, variance)
         energy = y.square().mean((1, 2)).clamp_min(1e-8)
         chunks.append(torch.stack(((anchor-y).square().mean((1, 2))/energy,
-                                   (output-y).square().mean((1, 2))/energy), dim=1))
+                                   (output-y).square().mean((1, 2))/energy), dim=1).cpu())
     values = np.from_dlpack(torch.cat(chunks).contiguous()).copy()
     results = {}
     for name, receivers in (('RX4_6', (4, 6)), ('RX8', (8,))):
@@ -116,7 +117,16 @@ def main():
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--commit', required=True)
     parser.add_argument('--smoke', action='store_true')
+    parser.add_argument('--device', default='cpu')
+    parser.add_argument('--prepare-batch', type=int, default=8)
+    parser.add_argument('--smoke-fit', type=int, default=64)
     args = parser.parse_args()
+    process_started = time.monotonic()
+    device = torch.device(args.device)
+    if device.type not in ('cpu', 'cuda') or (device.type == 'cuda' and not torch.cuda.is_available()):
+        raise ValueError('An available CPU or explicitly selected CUDA device is required')
+    if not 1 <= args.prepare_batch <= 128 or not 1 <= args.smoke_fit <= FIT_SIZE:
+        raise ValueError('Bounded source preparation and smoke sizes required')
     if args.out.exists():
         raise FileExistsError('Unique source output required')
     args.out.mkdir(parents=True)
@@ -127,10 +137,17 @@ def main():
     ids, rx, scene, _, source_received, source_clean = source_inputs(args.root)
     _, fresh, clean, fit = load_source_training(args.root, ids)
     if args.smoke:
-        fit = fit[:64]
-    dura = frozen_dura(args.root, 'cpu')
-    data, counts = prepare(args.root, dura, clean, fresh, fit)
-    model = OrthogonalRecovery(width=32)
+        fit = fit[:args.smoke_fit]
+    dura = frozen_dura(args.root, str(device))
+    preparation_started = time.monotonic()
+    data, counts = prepare(args.root, dura, clean, fresh, fit, str(device), args.prepare_batch)
+    preparation_seconds = time.monotonic() - preparation_started
+    transfer_started = time.monotonic()
+    data = tuple(value.to(device) for value in data)
+    if device.type == 'cuda':
+        torch.cuda.synchronize(device)
+    transfer_seconds = time.monotonic() - transfer_started
+    model = OrthogonalRecovery(width=32).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=.0003, weight_decay=.001)
     generator = torch.Generator().manual_seed(2026110613)
     losses = []
@@ -141,12 +158,12 @@ def main():
     started = time.monotonic()
     for epoch in range(1, (1 if args.smoke else TRAIN_EPOCHS)+1):
         model.train()
-        order = torch.randperm(len(data[0]), generator=generator)
-        total = 0.
+        order = torch.randperm(len(data[0]), generator=generator).to(device)
+        total = torch.zeros((), device=device)
         for start in range(0, len(order), 32):
             indices = order[start:start+32]
             x, anchor, direction, variance, y = (v[indices] for v in data)
-            output = model(x, anchor, direction, variance)
+            output = model(x, anchor, direction, variance, validate=False)
             loss = source_loss(output, anchor, y)
             if not torch.isfinite(loss):
                 raise FloatingPointError('Finite IQ-only source loss required')
@@ -157,25 +174,32 @@ def main():
                 raise ValueError('Both learned correction paths require finite gradients')
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1., error_if_nonfinite=True)
             optimizer.step()
-            total += float(loss.detach()) * len(indices)
-        losses.append(total/len(order))
+            total += loss.detach() * len(indices)
+        losses.append(float(total.cpu())/len(order))
         print('ORTHOGONAL_SOURCE_EPOCH', epoch, 'loss', losses[-1], 'elapsed', round(time.monotonic()-started, 1), flush=True)
     if any(p.requires_grad or p.grad is not None for p in dura.parameters()):
         raise ValueError('DURA must stay frozen')
     if args.smoke:
         core.write(args.out/'smoke.json', dict(status='SOURCE_TRAINING_SMOKE_PASS', commit=args.commit,
-            fit_ids=len(fit), exposure=len(data[0]), losses=losses, TX_labels_read=0, F_weights_read=0,
+            fit_ids=len(fit), exposure=len(data[0]), losses=losses, device=str(device),
+            prepare_batch=args.prepare_batch, preparation_seconds=preparation_seconds,
+            transfer_seconds=transfer_seconds, training_seconds=time.monotonic()-started,
+            end_to_end_seconds=time.monotonic()-process_started, TX_labels_read=0, F_weights_read=0,
             F_outputs_read=0, V_reads=0, target_reads=0, DURA_frozen=True))
         return
     checkpoint = dict(schema=SCHEMA, commit=args.commit, model=model.state_dict(), width=32,
                       epochs=TRAIN_EPOCHS, fit_ids=fit, counts=counts, losses=losses,
+                      device=str(device), prepare_batch=args.prepare_batch,
                       TX_labels_read=0, F_weights_read=0, F_outputs_read=0, V_reads=0,
                       target_reads=0, DURA_frozen=True)
     with (args.out/'final.pt').open('xb') as f:
         torch.save(checkpoint, f)
-    _, groups = evaluate_source(model, dura, ids, rx, scene, source_received, source_clean)
+    _, groups = evaluate_source(model, dura, ids, rx, scene, source_received, source_clean,
+                                str(device), args.prepare_batch)
     core.write(args.out/'source_summary.json', dict(status='SOURCE_TRAINED', commit=args.commit,
         fit_ids=len(fit), epochs=TRAIN_EPOCHS, exposure=len(data[0]), counts=counts, losses=losses,
+        device=str(device), prepare_batch=args.prepare_batch, preparation_seconds=preparation_seconds,
+        transfer_seconds=transfer_seconds,
         source_groups=groups, TX_labels_read=0, F_weights_read=0, F_outputs_read=0,
         V_reads=0, target_reads=0, DURA_frozen=True, source_IQ_metrics_not_identity_accuracy=True))
     print('ORTHOGONAL_SOURCE_TRAINED', args.commit, flush=True)

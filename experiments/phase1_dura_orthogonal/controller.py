@@ -14,6 +14,8 @@ def main():
     parser.add_argument('--source', required=True)
     parser.add_argument('--ground', required=True)
     parser.add_argument('--commit', required=True)
+    parser.add_argument('--device', default='cpu')
+    parser.add_argument('--prepare-batch', type=int, default=8)
     args = parser.parse_args()
     controller = args.root/'runs'/(args.source+'-controller')
     source = args.root/'runs'/args.source
@@ -23,16 +25,20 @@ def main():
         raise FileExistsError('Unique controller, training and ground outputs required')
     controller.mkdir(parents=True)
     env = os.environ.copy()
-    env.update(CUDA_VISIBLE_DEVICES='', OMP_NUM_THREADS='2', MKL_NUM_THREADS='2', OPENBLAS_NUM_THREADS='2')
+    env.update(OMP_NUM_THREADS='2', MKL_NUM_THREADS='2', OPENBLAS_NUM_THREADS='2')
+    cpu_env = env.copy()
+    cpu_env['CUDA_VISIBLE_DEVICES'] = ''
+    if args.device == 'cpu':
+        env['CUDA_VISIBLE_DEVICES'] = ''
 
     def status(state, **extra):
         tmp = controller/'status.tmp'
         tmp.write_text(json.dumps(dict(state=state, **extra)), encoding='utf8')
         os.replace(tmp, controller/'status.json')
 
-    def execute(name, command):
+    def execute(name, command, *, cpu=False):
         with (controller/(name+'.log')).open('x', encoding='utf8') as log:
-            process = subprocess.run(command, cwd=Path.cwd(), env=env, stdin=subprocess.DEVNULL,
+            process = subprocess.run(command, cwd=Path.cwd(), env=cpu_env if cpu else env, stdin=subprocess.DEVNULL,
                                      stdout=log, stderr=subprocess.STDOUT)
         if process.returncode:
             raise RuntimeError(name+' exited '+str(process.returncode))
@@ -41,27 +47,29 @@ def main():
     try:
         status('RUNNING_SOURCE_TRAINING_SMOKE')
         execute('source_smoke', [sys.executable, '-X', 'utf8', '-u', '-m',
-                'experiments.phase1_dura_orthogonal.train_source', *common, '--out', str(training_smoke), '--smoke'])
+                'experiments.phase1_dura_orthogonal.train_source', *common, '--out', str(training_smoke), '--smoke',
+                '--device', args.device, '--prepare-batch', str(args.prepare_batch)])
         smoke = json.loads((training_smoke/'smoke.json').read_text(encoding='utf8'))
         if smoke.get('status') != 'SOURCE_TRAINING_SMOKE_PASS' or smoke.get('F_weights_read') != 0:
             raise ValueError('Source-only training smoke required')
         status('RUNNING_SOURCE_TRAINING')
         execute('source_train', [sys.executable, '-X', 'utf8', '-u', '-m',
-                'experiments.phase1_dura_orthogonal.train_source', *common, '--out', str(source)])
+                'experiments.phase1_dura_orthogonal.train_source', *common, '--out', str(source),
+                '--device', args.device, '--prepare-batch', str(args.prepare_batch)])
         status('RUNNING_SOURCE_PREDICTION_SMOKE')
         fixed = ['--source', args.source, '--out', str(ground), *common]
         execute('ground_smoke', [sys.executable, '-X', 'utf8', '-u', '-m',
-                'experiments.phase1_dura_orthogonal.ground', 'smoke', *fixed])
+                'experiments.phase1_dura_orthogonal.ground', 'smoke', *fixed], cpu=True)
         status('RUNNING_SEVEN_VIEW_PREDICTION')
         execute('ground_predict', [sys.executable, '-X', 'utf8', '-u', '-m',
-                'experiments.phase1_dura_orthogonal.ground', 'predict', *fixed])
+                'experiments.phase1_dura_orthogonal.ground', 'predict', *fixed], cpu=True)
         prediction = json.loads((ground/'flow/test_prediction/complete.json').read_text(encoding='utf8'))
         if (prediction.get('status') != 'PREDICTIONS_COMPLETE' or prediction.get('count') != 168000
                 or prediction.get('TX_truth_reads') != 0 or prediction.get('model_updates') != 0):
             raise ValueError('All seven predictions must be fixed before scoring')
         status('RUNNING_INDEPENDENT_TRUTH_LAST_SCORE')
         execute('ground_score', [sys.executable, '-X', 'utf8', '-u', '-m',
-                'experiments.phase1_dura_orthogonal.ground', 'score', *fixed])
+                'experiments.phase1_dura_orthogonal.ground', 'score', *fixed], cpu=True)
         summary = json.loads((ground/'flow/test_summary.json').read_text(encoding='utf8'))
         pair = json.loads((ground/'flow/paired_dura.json').read_text(encoding='utf8'))
         if (summary.get('status') != 'ANALYZED' or summary.get('all_predictions_before_truth') is not True
