@@ -1,0 +1,3 @@
+{"at": "2026-11-06T14:29:35+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-06T14:31:41+00:00", "status": "QUEUED", "note": "Automatic seven-view prediction and truth-last scoring follow fixed training", "evidence": ["N607 controller PID 3455879"], "row_id": null}
+{"at": "2026-11-06T14:35:52+00:00", "status": "RUNNING", "note": "All seven predictions precede independent truth-last scoring", "evidence": ["N607 prediction smoke passed; controller PID 3455879, prediction PID 3458246"], "row_id": null}
