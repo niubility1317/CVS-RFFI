@@ -170,3 +170,32 @@ Main六景为80.140476/77.807738/75.495238/78.213690/69.447024/62.401190%，0/6�
 旋转 180° 后，clean 的 IQ NMSE 从 0.000028 增至 0.188923，低档城区从 0.034477 增至 3.715660。低档城区的原 clean 判决一致率从 91.875% 降到 75.000%。这是同一源波形在可逆坐标变换下的实测差异。判决一致率以 F0 在原 clean 上的输出为参照，真实 TX 未读取。Main 差距的成因与理论信息上界仍待独立证据。
 
 此次仅新增源端证据。Main 已完成候选仍为 17 个。 [完整诊断](../automation_reports/CV-SincNet/20261102-diagnostic-Restore-CovarianceDetail-source-coordinate-s2026092701-r01/analysis.md)
+
+## 2026-11-06 至 11-07 同期独立 Main 报告核对
+
+复核 22 个已有完整分析及 ANALYZED 记录的独立地面测试报告。每份低档城区均为同一冻结 Tri-SIG-TIME SSL 和 168,000 条 Main 记录，全部预测后独立评分。用 DURA 的 115,586 条正确预测加同样本修复、减损伤，逐项重算候选正确数并核对报告准确率。22 个候选均未达到 140,345 条门槛。该组最好的一版准确率 68.442262%，比 DURA 少对 603 条，距门槛仍少 25,362 条。这些是同期独立研究，源训练权限和训练预算各有差异，单列于本表 17 个候选之外。
+
+| 独立测试 | 低档城区准确率 | 相对 DURA 修复／损伤 | 距验收少对条数 |
+|---|---:|---:|---:|
+| [direct-dualdomain](../automation_reports/CV-SincNet/20261106-phase1-direct-dualdomain-ground-test-s2026092701-r01/analysis.md) | 38.016071% | 14,970／66,689 | 76,478 |
+| [direct-spectral-distill](../automation_reports/CV-SincNet/20261106-phase1-direct-spectral-distill-ground-test-s2026092701-r01/analysis.md) | 36.699405% | 13,624／67,555 | 78,690 |
+| [dura-band-guard](../automation_reports/CV-SincNet/20261106-phase1-dura-band-guard-ground-test-s2026092701-r01/analysis.md) | 68.378571% | 1,126／1,836 | 25,469 |
+| [dura-crosshalf-iq-ssl](../automation_reports/CV-SincNet/20261106-phase1-dura-crosshalf-iq-ssl-ground-test-s2026092701-r01/analysis.md) | 68.413095% | 1,761／2,413 | 25,411 |
+| [dura-crossview-guard](../automation_reports/CV-SincNet/20261106-phase1-dura-crossview-guard-ground-test-s2026092701-r01/analysis.md) | 68.360714% | 1,287／2,027 | 25,499 |
+| [dura-expert-mixture](../automation_reports/CV-SincNet/20261106-phase1-dura-expert-mixture-ground-test-s2026092701-r01/analysis.md) | 67.224405% | 3,702／6,351 | 27,408 |
+| [dura-fixed-iq-ssl](../automation_reports/CV-SincNet/20261106-phase1-dura-fixed-iq-ssl-ground-test-s2026092701-r01/analysis.md) | 68.278571% | 1,761／2,639 | 25,637 |
+| [dura-internal-guard](../automation_reports/CV-SincNet/20261106-phase1-dura-internal-guard-ground-test-s2026092701-r02/analysis.md) | 67.867857% | 5,824／7,392 | 26,327 |
+| [dura-iq-geometry](../automation_reports/CV-SincNet/20261106-phase1-dura-iq-geometry-ground-test-s2026092701-r01/analysis.md) | 68.343452% | 1,977／2,746 | 25,528 |
+| [dura-joint-iq-ssl](../automation_reports/CV-SincNet/20261106-phase1-dura-joint-iq-ssl-ground-test-s2026092701-r01/analysis.md) | 68.226190% | 2,077／3,043 | 25,725 |
+| [dura-moment-relation](../automation_reports/CV-SincNet/20261106-phase1-dura-moment-relation-ground-test-s2026092701-r01/analysis.md) | 68.341071% | 1,984／2,757 | 25,532 |
+| [dura-multiscale-spectral](../automation_reports/CV-SincNet/20261106-phase1-dura-multiscale-spectral-ground-test-s2026092701-r01/analysis.md) | 68.307143% | 1,827／2,657 | 25,589 |
+| [dura-noise-gated](../automation_reports/CV-SincNet/20261106-phase1-dura-noise-gated-ground-test-s2026092701-r01/analysis.md) | 68.363690% | 1,957／2,692 | 25,494 |
+| [dura-nonlinear-guard](../automation_reports/CV-SincNet/20261106-phase1-dura-nonlinear-guard-ground-test-s2026092701-r01/analysis.md) | 68.346429% | 1,146／1,910 | 25,523 |
+| [dura-orthogonal](../automation_reports/CV-SincNet/20261106-phase1-dura-orthogonal-ground-test-s2026092701-r01/analysis.md) | 68.340476% | 1,335／2,109 | 25,533 |
+| [dura-orthogonal-guard](../automation_reports/CV-SincNet/20261106-phase1-dura-orthogonal-guard-ground-test-s2026092701-r01/analysis.md) | 68.348810% | 1,140／1,900 | 25,519 |
+| [dura-posterior-teacher](../automation_reports/CV-SincNet/20261106-phase1-dura-posterior-teacher-ground-test-s2026092701-r01/analysis.md) | 68.400595% | 1,344／2,017 | 25,432 |
+| [dura-sim-action](../automation_reports/CV-SincNet/20261106-phase1-dura-sim-action-ground-test-s2026092701-r01/analysis.md) | 67.979167% | 5,895／7,276 | 26,140 |
+| [dura-tail-excess](../automation_reports/CV-SincNet/20261106-phase1-dura-tail-excess-ground-test-s2026092701-r01/analysis.md) | 68.438690% | 1,390／1,999 | 25,368 |
+| [dura-timevarying](../automation_reports/CV-SincNet/20261106-phase1-dura-timevarying-ground-test-s2026092701-r01/analysis.md) | 68.442262% | 1,577／2,180 | 25,362 |
+| [dura-wide-source](../automation_reports/CV-SincNet/20261106-phase1-dura-wide-source-ground-test-s2026092701-r01/analysis.md) | 67.350000% | 3,462／5,900 | 27,197 |
+| [dura-expert-distill](../automation_reports/CV-SincNet/20261107-phase1-dura-expert-distill-ground-test-s2026092701-r01/analysis.md) | 67.501190% | 3,310／5,494 | 26,943 |

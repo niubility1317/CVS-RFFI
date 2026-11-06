@@ -520,3 +520,7 @@ VERIFIED：实际代码62cf25c161afe1410ad6250249931389d9210a1c，复用冻结�
 下一版将让物理算子和 IQ 细节路径满足四个直角旋转的等变关系。物理分支在同一坐标合并算子，求解一次高斯后验，再用共享细节分支修复 IQ。按原 L_s/U_s 从零单阶段训练 30 轮，并用同一冻结 Tri-SIG-TIME SSL 测 Main 七景。
 
 [完整诊断](../../automation_reports/CV-SincNet/20261102-diagnostic-Restore-CovarianceDetail-source-coordinate-s2026092701-r01/analysis.md)
+
+## 2026-11-07 C4 等变恢复器已提交 N607
+
+候选 `20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01`，实际发布代码 `bc6bcac3bf8463fb3b2770a0ec2a6115ab322ae1`。10 项本地检查及一次独立 P0/P1 审查通过。四个物理估计映回原坐标后合并，仅求解一次后验，再以共享细节路径修复 IQ。原 L_s/U_s、冻结 F0 连续特征、从零单阶段 30 轮，最终自动原 Main 双总体七景和独立 truth-last。已核实控制器在线，实际训练仍排队。 [实验登记与源先验分析](../../automation_reports/CV-SincNet/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01/report.md)
