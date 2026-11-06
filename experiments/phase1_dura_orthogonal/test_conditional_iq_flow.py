@@ -1,7 +1,7 @@
 import torch
 import pytest
 
-from experiments.phase1_dura_orthogonal.conditional_iq_flow import ConditionalIQFlow, DirectIQFlow, flow_matching_loss
+from experiments.phase1_dura_orthogonal.conditional_iq_flow import ConditionalIQFlow, DirectIQFlow, flow_matching_loss, sample_flow_times
 
 
 def inputs(batch=3):
@@ -56,3 +56,11 @@ def test_direct_flow_uses_received_iq_only_and_initially_reproduces_it():
         model.out.bias.fill_(.1)
     actual = model(x, anchor, innovation, variance)
     assert torch.equal(actual, model(x, torch.zeros_like(anchor), torch.zeros_like(innovation), variance * 10))
+
+
+def test_mixed_time_sampling_includes_actual_inference_origin_and_is_reproducible():
+    first = sample_flow_times(4096, torch.Generator().manual_seed(71), origin_fraction=.5)
+    second = sample_flow_times(4096, torch.Generator().manual_seed(71), origin_fraction=.5)
+    assert torch.equal(first, second) and ((first >= 0) & (first < 1)).all()
+    assert .45 < (first == 0).float().mean() < .55
+    assert (first > 0).any()

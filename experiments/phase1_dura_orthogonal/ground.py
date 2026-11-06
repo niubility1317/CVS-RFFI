@@ -37,7 +37,7 @@ def load_fixed(root, source, commit):
     if architecture not in ('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir', 'dura_frequency_regression', 'dura_reversible', 'conditional_iq_flow', 'direct_iq_flow'):
         raise ValueError('Registered recovery architecture required')
     epochs = 0 if architecture == 'dura_frequency_regression' else DUAL_DOMAIN_EPOCHS if architecture in ('dual_domain', 'adaptive_inverse', 'timevarying_inverse', 'direct_spectral_student', 'direct_iq_flow') else TRAIN_EPOCHS
-    fit_size = WIDE_FIT_SIZE if summary.get('objective') in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression', 'wide_reversible_guard', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow') else FIT_SIZE
+    fit_size = WIDE_FIT_SIZE if summary.get('objective') in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression', 'wide_reversible_guard', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0') else FIT_SIZE
     expected = dict(status='SOURCE_TRAINED', commit=commit, fit_ids=fit_size, epochs=epochs,
                     TX_labels_read=0, F_weights_read=0, F_outputs_read=0, V_reads=0,
                     target_reads=0, DURA_frozen=True)
@@ -49,7 +49,7 @@ def load_fixed(root, source, commit):
             any(state.get(k) != v for k, v in expected.items() if k not in ('status', 'fit_ids', 'epochs'))):
         raise ValueError('Fixed correction checkpoint and provenance required')
     objective = state.get('objective', 'iq')
-    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression', 'wide_reversible_guard', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow') or summary.get('objective', 'iq') != objective:
+    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression', 'wide_reversible_guard', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0') or summary.get('objective', 'iq') != objective:
         raise ValueError('Source objective must match the fixed checkpoint')
     if objective == 'crossview_guard' and any(
             obj.get('source_views_per_record') != 3 or obj.get('crossview_weight') != .1
@@ -57,11 +57,13 @@ def load_fixed(root, source, commit):
         raise ValueError('Matching three-view source training metadata required')
     if state.get('architecture', 'orthogonal') != architecture:
         raise ValueError('Source architecture must match the fixed checkpoint')
-    if (architecture == 'conditional_iq_flow') != (objective == 'wide_conditional_flow') or (architecture == 'conditional_iq_flow' and any(
+    if (architecture == 'conditional_iq_flow') != (objective in ('wide_conditional_flow', 'wide_conditional_flow_t0')) or (architecture == 'conditional_iq_flow' and any(
             obj.get('source_fit_size') != WIDE_FIT_SIZE or obj.get('DURA_training_reads') != 1
             or obj.get('flow_steps') != 4 or obj.get('flow_time_seed') != 2026110713
             or obj.get('flow_path') != 'anchor_to_clean_linear' for obj in (summary, state))):
         raise ValueError('Matching source-only conditional flow metadata required')
+    if objective == 'wide_conditional_flow_t0' and any(obj.get('flow_origin_fraction') != .5 for obj in (summary, state)):
+        raise ValueError('Matching conditional flow origin fraction required')
     if (architecture == 'direct_iq_flow') != (objective == 'wide_direct_flow') or (architecture == 'direct_iq_flow' and any(
             obj.get('source_fit_size') != WIDE_FIT_SIZE or obj.get('DURA_training_reads') != 1
             or obj.get('flow_steps') != 4 or obj.get('flow_time_seed') != 2026110713

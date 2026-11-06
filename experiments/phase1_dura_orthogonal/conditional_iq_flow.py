@@ -56,6 +56,16 @@ class DirectIQFlow(ConditionalIQFlow):
         return super().forward(received, anchor, innovation, variance)
 
 
+def sample_flow_times(count, generator, *, origin_fraction):
+    """Mix the inference origin with uniformly sampled path positions on CPU."""
+    if count < 1 or not 0. <= origin_fraction <= 1.:
+        raise ValueError('Positive count and valid origin fraction required')
+    times = torch.rand((count,), generator=generator)
+    if origin_fraction:
+        times.masked_fill_(torch.rand((count,), generator=generator) < origin_fraction, 0.)
+    return times
+
+
 def flow_matching_loss(model, received, anchor, innovation, variance, clean, time):
     if clean.shape != anchor.shape or time.shape != (len(anchor),):
         raise ValueError('Matching clean IQ and time batches required')
