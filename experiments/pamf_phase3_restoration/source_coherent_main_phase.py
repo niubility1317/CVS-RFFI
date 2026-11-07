@@ -9,14 +9,14 @@ import numpy as np
 import torch
 
 from .cache import check_F0_state, load_F0, tensor
-from .coherent_main_phase import coherent_phase
+from .coherent_main_phase import coherent_phase, restore_main_direction
 from .cost_probe import write
 from .covariance_guidance_source import source_metrics
-from .covariance_inverse import dense_action, gaussian_posterior
+from .covariance_inverse import dense_action
 from .covariance_parameter_source import G_COMMIT, load_model
 from .main_split_eval import valid_identity
 from .phase_mixture_source import REFERENCE_COMMIT
-from .phase_ramp_posterior import calibrated_action, fixed_grid, ramp_posteriors
+from .phase_ramp_posterior import fixed_grid, ramp_posteriors
 from .source_action_factor_probe import references
 from .source_inverse import R07, SCENES
 from .source_modulation_probe import RUN as CONTROL_RUN
@@ -69,12 +69,7 @@ def readouts(G,received,grid):
     original,gamma = ramp_posteriors(action,observed,mean,covariance,variance,*grid)
     values = {'whole_action_phase':dict(iq=original[:,1].float().reshape_as(received),phase=gamma[:,0,0].angle())}
     for name,direction in [('main_mean_scalar',scalar),('main_mean_full',full)]:
-        theta = direction.angle()
-        rotation = torch.polar(torch.ones_like(theta),theta)
-        calibrated = calibrated_action(main_action,rotation[:,None].expand_as(main))+image_action
-        restored,residual = gaussian_posterior(calibrated,observed,mean,covariance,variance)
-        if residual.max() > 1e-8:
-            raise ValueError('Main-only posterior residual exceeds 1e-8')
+        restored,theta = restore_main_direction(main_action,image_action,observed,mean,covariance,variance,direction)
         values[name] = dict(iq=restored.float().reshape_as(received),phase=theta)
     if not all(torch.isfinite(v).all() for fields in values.values() for v in fields.values()):
         raise ValueError('Nonfinite blind main-phase readout')
