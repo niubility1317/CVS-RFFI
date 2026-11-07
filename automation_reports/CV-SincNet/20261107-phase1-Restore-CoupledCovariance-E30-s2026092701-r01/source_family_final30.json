@@ -1,0 +1,384 @@
+{
+  "status": "VERIFIED_COMPLETE_SOURCE_TRAINING_COMPARISON",
+  "runs": {
+    "nonnegative": "20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r02",
+    "signed": "20261107-phase1-Restore-SignedCovariance-E30-s2026092701-r02",
+    "coupled": "20261107-phase1-Restore-CoupledCovariance-E30-s2026092701-r01"
+  },
+  "epochs_per_model": 30,
+  "updates_per_model": 7410,
+  "source_exposures_per_model": 1890000,
+  "all90_source_epochs_checked": true,
+  "same_all30_source_orders_and_draws": true,
+  "same_LR": true,
+  "same_common_physical_E0": true,
+  "initial_equality_evidence": "source_family_progress_E20.json",
+  "conditioned_prior_context_evidence": "Fixed ebb279ff shared training loads priors and calls noisy_readout/choose_prior: odd global, even source other-RX. No prior-fraction scalar was logged by that version.",
+  "comparison_scope": "Complete online training trajectories, not isolated heads with a fixed physical estimator or independent validation samples.",
+  "summaries": {
+    "nonnegative": {
+      "all": {
+        "epochs": 30,
+        "source_exposures": 1890000,
+        "iq_nmse": 0.07142107271083761,
+        "spectral_error": 0.08021433552544585,
+        "feature_error": 0.0176822936210052,
+        "feature_standardized_error": 0.16436098654279635,
+        "action_matrix_relative_mse": 0.03065696276570793,
+        "noise_log_mse": 0.41439236673149793
+      },
+      "global": {
+        "epochs": 15,
+        "source_exposures": 945000,
+        "iq_nmse": 0.09031072760773083,
+        "spectral_error": 0.08196278355216222,
+        "feature_error": 0.01581016368184771,
+        "feature_standardized_error": 0.1428659542036435,
+        "action_matrix_relative_mse": 0.0410278492318141,
+        "noise_log_mse": 0.6735470408319165
+      },
+      "other_RX": {
+        "epochs": 15,
+        "source_exposures": 945000,
+        "iq_nmse": 0.05253141781394444,
+        "spectral_error": 0.07846588749872943,
+        "feature_error": 0.019554423560162695,
+        "feature_standardized_error": 0.1858560188819492,
+        "action_matrix_relative_mse": 0.020286076299601764,
+        "noise_log_mse": 0.1552376926310794
+      },
+      "final30": {
+        "epoch": 30,
+        "draw": 10,
+        "updates": 7410,
+        "steps": 247,
+        "count": 63000,
+        "L_s": 6300,
+        "U_s": 56700,
+        "seconds": 864.4422793270787,
+        "last_learning_rate": 2e-05,
+        "microbatch": 32,
+        "training_posterior_calls": 1969,
+        "training_posterior_rows": 63000,
+        "F0_training_forward_rows": 63000,
+        "metrics": {
+          "loss": 0.045074735057732414,
+          "physical_loss": 0.001023911607074773,
+          "detail_loss": 0.044050823553214,
+          "action_matrix_relative_mse": 0.009762753942064823,
+          "noise_log_mse": 0.04763619545102119,
+          "iq_nmse": 0.03882019715223994,
+          "spectral_error": 0.06854181413612669,
+          "feature_error": 0.01650066994106959,
+          "feature_standardized_error": 0.1638528940005908,
+          "added_prior_variance": 4.4450172021455393e-10,
+          "added_variance_relative_to_prior": 2.4114415743108496e-09,
+          "base_iq_nmse": 0.03882019715223994,
+          "predicted_noise": 0.028786736151824394,
+          "relative_solve_residual": 2.7334975184469524e-14
+        },
+        "step_objective": 0.04499641460129003,
+        "preclip_branch_norms": {
+          "physical": 0.010697634070583804,
+          "detail": 2.1590626959692023e-08
+        }
+      }
+    },
+    "signed": {
+      "all": {
+        "epochs": 30,
+        "source_exposures": 1890000,
+        "iq_nmse": 0.06424255245872748,
+        "spectral_error": 0.07815394055064394,
+        "feature_error": 0.018090009547699067,
+        "feature_standardized_error": 0.16663141580542565,
+        "action_matrix_relative_mse": 0.03098428516574007,
+        "noise_log_mse": 0.41700168614396976
+      },
+      "global": {
+        "epochs": 15,
+        "source_exposures": 945000,
+        "iq_nmse": 0.08081428373249436,
+        "spectral_error": 0.07973104340557069,
+        "feature_error": 0.01624638011575376,
+        "feature_standardized_error": 0.14616280987344724,
+        "action_matrix_relative_mse": 0.04133940975422425,
+        "noise_log_mse": 0.6740879741875582
+      },
+      "other_RX": {
+        "epochs": 15,
+        "source_exposures": 945000,
+        "iq_nmse": 0.04767082118496062,
+        "spectral_error": 0.0765768376957172,
+        "feature_error": 0.019933638979644373,
+        "feature_standardized_error": 0.18710002173740398,
+        "action_matrix_relative_mse": 0.020629160577255893,
+        "noise_log_mse": 0.15991539810038116
+      },
+      "final30": {
+        "epoch": 30,
+        "draw": 10,
+        "updates": 7410,
+        "steps": 247,
+        "count": 63000,
+        "L_s": 6300,
+        "U_s": 56700,
+        "seconds": 622.8768557559233,
+        "last_learning_rate": 2e-05,
+        "microbatch": 32,
+        "training_posterior_calls": 1969,
+        "training_posterior_rows": 63000,
+        "F0_training_forward_rows": 63000,
+        "metrics": {
+          "loss": 0.042514493331076604,
+          "physical_loss": 0.001014979369864459,
+          "detail_loss": 0.0414995138276191,
+          "action_matrix_relative_mse": 0.009681616798102383,
+          "noise_log_mse": 0.04681766985900818,
+          "iq_nmse": 0.03640304246734059,
+          "spectral_error": 0.0662730634401715,
+          "feature_error": 0.016436421569377656,
+          "feature_standardized_error": 0.16184540726457322,
+          "signed_mode_absolute_change": 0.6024870441073463,
+          "signed_mode_mean_change": -0.25080978188202496,
+          "signed_mode_negative_fraction": 0.6414709821428571,
+          "signed_map_slope": 0.15769148315323725,
+          "receiver_mismatch_prior_fraction": 1.0,
+          "base_iq_nmse": 0.03640304246734059,
+          "predicted_noise": 0.028645981916182096,
+          "relative_solve_residual": 1.502821970626793e-14
+        },
+        "step_objective": 0.04243440592759534,
+        "preclip_branch_norms": {
+          "physical": 0.00995249835103147,
+          "detail": 0.011888302855103122
+        }
+      }
+    },
+    "coupled": {
+      "all": {
+        "epochs": 30,
+        "source_exposures": 1890000,
+        "iq_nmse": 0.06116331676176931,
+        "spectral_error": 0.0769368973923423,
+        "feature_error": 0.01695537488258705,
+        "feature_standardized_error": 0.15800670750886991,
+        "action_matrix_relative_mse": 0.031016583640335334,
+        "noise_log_mse": 0.41671510092874686
+      },
+      "global": {
+        "epochs": 15,
+        "source_exposures": 945000,
+        "iq_nmse": 0.07778587061195147,
+        "spectral_error": 0.07891279285622656,
+        "feature_error": 0.015495426851164095,
+        "feature_standardized_error": 0.1405902922921395,
+        "action_matrix_relative_mse": 0.04156060042111646,
+        "noise_log_mse": 0.6771366159377273
+      },
+      "other_RX": {
+        "epochs": 15,
+        "source_exposures": 945000,
+        "iq_nmse": 0.044540762911587164,
+        "spectral_error": 0.07496100192845816,
+        "feature_error": 0.01841532291401,
+        "feature_standardized_error": 0.17542312272560026,
+        "action_matrix_relative_mse": 0.020472566859554207,
+        "noise_log_mse": 0.15629358591976622
+      },
+      "final30": {
+        "epoch": 30,
+        "draw": 10,
+        "updates": 7410,
+        "steps": 247,
+        "count": 63000,
+        "L_s": 6300,
+        "U_s": 56700,
+        "seconds": 634.8749428449664,
+        "last_learning_rate": 2e-05,
+        "microbatch": 32,
+        "training_posterior_calls": 1969,
+        "training_posterior_rows": 63000,
+        "F0_training_forward_rows": 63000,
+        "metrics": {
+          "loss": 0.03934477323293686,
+          "physical_loss": 0.001034755347680951,
+          "detail_loss": 0.03831001789938836,
+          "action_matrix_relative_mse": 0.009864951869325032,
+          "noise_log_mse": 0.04826014185614056,
+          "iq_nmse": 0.03343647101048439,
+          "spectral_error": 0.0646794227342757,
+          "feature_error": 0.014999787393070403,
+          "feature_standardized_error": 0.1489577869753989,
+          "coupled_change_Frobenius_RMS": 1.3850277625109821,
+          "coupled_off_diagonal_RMS": 0.9684616875838423,
+          "factor_diagonal_mean": 0.5475260371253604,
+          "factor_diagonal_min": 0.27643640449311996,
+          "factor_diagonal_max": 1.139902665849716,
+          "factor_diagonal_map_slope": 0.4603406856779068,
+          "receiver_mismatch_prior_fraction": 1.0,
+          "base_iq_nmse": 0.03343647101048439,
+          "predicted_noise": 0.02849583622044514,
+          "relative_solve_residual": 1.2847127160546417e-11
+        },
+        "step_objective": 0.03927557889291044,
+        "preclip_branch_norms": {
+          "physical": 0.010261845788145476,
+          "detail": 0.012359671784858955
+        }
+      }
+    }
+  },
+  "paired_to_nonnegative": {
+    "signed": {
+      "iq_nmse": {
+        "lower_epochs": 24,
+        "mean_change": -0.007178520252110152
+      },
+      "spectral_error": {
+        "lower_epochs": 23,
+        "mean_change": -0.002060394974801908
+      },
+      "feature_error": {
+        "lower_epochs": 3,
+        "mean_change": 0.00040771592669386114
+      },
+      "feature_standardized_error": {
+        "lower_epochs": 8,
+        "mean_change": 0.002270429262629262
+      },
+      "action_matrix_relative_mse": {
+        "lower_epochs": 14,
+        "mean_change": 0.0003273224000321327
+      },
+      "noise_log_mse": {
+        "lower_epochs": 19,
+        "mean_change": 0.0026093194124717834
+      }
+    },
+    "coupled": {
+      "iq_nmse": {
+        "lower_epochs": 29,
+        "mean_change": -0.010257755949068324
+      },
+      "spectral_error": {
+        "lower_epochs": 27,
+        "mean_change": -0.0032774381331035097
+      },
+      "feature_error": {
+        "lower_epochs": 27,
+        "mean_change": -0.0007269187384181552
+      },
+      "feature_standardized_error": {
+        "lower_epochs": 27,
+        "mean_change": -0.00635427903392643
+      },
+      "action_matrix_relative_mse": {
+        "lower_epochs": 8,
+        "mean_change": 0.00035962087462740046
+      },
+      "noise_log_mse": {
+        "lower_epochs": 13,
+        "mean_change": 0.002322734197248839
+      }
+    }
+  },
+  "new_IQ_reads": 0,
+  "new_neural_forwards": 0,
+  "new_truth_reads": 0,
+  "Main_results_used_for_training": false,
+  "checkpoint_selection": false,
+  "goal_complete": false,
+  "final_audit_evidence": {
+    "nonnegative": {
+      "run_id": "20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r02",
+      "scientific_commit": "ebb279ff3ad430e6a8242686d816976339444588",
+      "status": "PASS",
+      "epochs": 30,
+      "updates": 7410,
+      "all30_logs_and_full_source_permutations_checked": true,
+      "final_matches_E30": true,
+      "prior_buffers_unchanged": true,
+      "model_and_optimizer_finite": true,
+      "source_objective_max_error": 1.5867248626122432e-09,
+      "actual_head_updates": {
+        "physical.kernel_head.": {
+          "compared": 2,
+          "changed": 2
+        },
+        "physical.coefficient_head.": {
+          "compared": 2,
+          "changed": 2
+        },
+        "physical.noise_head.": {
+          "compared": 2,
+          "changed": 2
+        },
+        "detail.": {
+          "compared": 53,
+          "changed": 52
+        }
+      }
+    },
+    "signed": {
+      "run_id": "20261107-phase1-Restore-SignedCovariance-E30-s2026092701-r02",
+      "scientific_commit": "96143e689001ad94c6885bc2d032a1c897a097a6",
+      "status": "PASS",
+      "epochs": 30,
+      "updates": 7410,
+      "all30_logs_and_full_source_permutations_checked": true,
+      "final_matches_E30": true,
+      "prior_buffers_unchanged": true,
+      "model_and_optimizer_finite": true,
+      "source_objective_max_error": 3.5146739962854667e-09,
+      "actual_head_updates": {
+        "physical.kernel_head.": {
+          "compared": 2,
+          "changed": 2
+        },
+        "physical.coefficient_head.": {
+          "compared": 2,
+          "changed": 2
+        },
+        "physical.noise_head.": {
+          "compared": 2,
+          "changed": 2
+        },
+        "detail.": {
+          "compared": 53,
+          "changed": 52
+        }
+      }
+    },
+    "coupled": {
+      "run_id": "20261107-phase1-Restore-CoupledCovariance-E30-s2026092701-r01",
+      "scientific_commit": "6d3dda3c88765c38e1813ecb733948234bb63190",
+      "status": "PASS",
+      "epochs": 30,
+      "updates": 7410,
+      "all30_logs_and_full_source_permutations_checked": true,
+      "final_matches_E30": true,
+      "prior_buffers_unchanged": true,
+      "model_and_optimizer_finite": true,
+      "source_objective_max_error": 1.9665293837789477e-09,
+      "actual_head_updates": {
+        "physical.kernel_head.": {
+          "compared": 2,
+          "changed": 2
+        },
+        "physical.coefficient_head.": {
+          "compared": 2,
+          "changed": 2
+        },
+        "physical.noise_head.": {
+          "compared": 2,
+          "changed": 2
+        },
+        "detail.": {
+          "compared": 53,
+          "changed": 52
+        }
+      }
+    }
+  }
+}
