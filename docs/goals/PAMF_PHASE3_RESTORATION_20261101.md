@@ -756,3 +756,7 @@ VERIFIED / RUNNING。先验失配版已按预登记的纯资源顺序在GPU5实�
 ## 2026-11-07 三类协方差的共同前20轮源证据
 
 VERIFIED：三版物理E0、完整源顺序/draw一致；观察时全部27/22/20轮日志和对应状态已核实。共同20轮的耦合版源IQ与连续F0特征误差较低，分支梯度与非对角变化非零。尚无正式Main收益结论，全部模型继续固定final30和完整七景。 [源训练比较](../../automation_reports/CV-SincNet/20261107-phase1-Restore-CoupledCovariance-E30-s2026092701-r01/source_family_progress_E20.md)
+
+## 2026-11-07 条件均值与耦合协方差联合对照
+
+VERIFIED / QUEUED。联合均值/协方差版已发布，独立读回实际控制器PID/CWD/命令、CUDA为空、无子进程、等待日志增长及零GPU占用。代码4bba9df3、发布包SHA对比与远端编译通过，11项针对性检查及一次P0/P1审查通过。固定等待Coupled版最后GPU终态，再按GPU1正常总数最多3个、已有最多2个且剩余至少12000 MiB准入；不读取其分数，不影响其他owner。新增130参数的先验均值头与原耦合协方差共用上下文，初始输出一致，均值按原先验每坐标1个标准差限幅。原L_s/U_s、实际带噪IQ/STFT/连续冻结F0损失、15global+15otherRX、从零单阶段30/7410保持。真实source2/F0/均值及协方差梯度/E0检查仍待GPU训练首步，PASS后直接继续完整训练与Main七景；尚无本版性能结果。 [完整预登记](../../automation_reports/CV-SincNet/20261107-phase1-Restore-JointPrior-E30-s2026092701-r01/report.md)
