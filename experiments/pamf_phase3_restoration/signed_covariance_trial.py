@@ -68,12 +68,12 @@ def initial_smoke(model,received,restored):
     return dict(signed_covariance_initial_identity=True,signed_zero_point_slope=.9,source_mode_rank=RANK)
 
 
-def train(args,out):
+def train(args,out,*,config_for=configuration):
     pair,assignment = load_training_priors(args.root,'cpu')
     modes = torch.stack([source_modes(covariance) for covariance in pair[1]])
     priors = tuple(value.to('cuda:0') for value in (*pair,modes))
     readout = partial(signed_readout,priors=priors,assignment=assignment.to('cuda:0'))
-    training.train(args,out,build=factory,config_for=configuration,training_readout=readout,smoke_check=initial_smoke)
+    training.train(args,out,build=factory,config_for=config_for,training_readout=readout,smoke_check=initial_smoke)
 
 
 def previous_gpu_finished(root):
