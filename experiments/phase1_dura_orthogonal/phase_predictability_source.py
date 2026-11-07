@@ -11,6 +11,11 @@ SOURCE_COMMIT = 'afac42e77542d0f035996d1a2e8dde7decbd4ac5'
 RIDGE = .01
 
 
+def holdout_mask(fit, device):
+    import torch
+    return torch.tensor((fit % 4 == 0).tolist(), dtype=torch.bool, device=device).repeat(3)
+
+
 def oracle_angle(anchor, clean):
     import torch
     ar, ai, cr, ci = anchor[:, 0], anchor[:, 1], clean[:, 0], clean[:, 1]
@@ -130,7 +135,7 @@ def main():
     held_np=(fit%4==0)
     if not 0<held_np.sum()<n:
         raise ValueError('A record-disjoint modulo-four split is required')
-    held=torch.as_tensor(np.tile(held_np,3),device=anchor.device)
+    held=holdout_mask(fit,anchor.device)
     target_fit=target[~held]; target_held=target[held]
     results={}
     models={'zero':torch.zeros_like(target_held),

@@ -30,3 +30,13 @@ def test_feature_shapes_and_zero_innovation_remain_finite():
     base,moments,cross=phase_features(x,x,torch.zeros_like(x),torch.full((8,),.1))
     assert base.shape==(8,7) and moments.shape==(8,19) and cross.shape==(8,25)
     assert torch.isfinite(cross).all()
+
+
+def test_holdout_split_is_boolean_and_keeps_all_views_together():
+    import numpy as np
+    from experiments.phase1_dura_orthogonal.phase_predictability_source import holdout_mask
+    indices=np.asarray([0,1,4,9,12],dtype=np.int64)
+    held=holdout_mask(indices,device='cpu')
+    expected=torch.tensor([True,False,True,False,True],dtype=torch.bool)
+    assert held.dtype==torch.bool and held.shape==(15,)
+    assert torch.equal(held,expected.repeat(3))
