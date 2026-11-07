@@ -1,0 +1,171 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-diagnostic-Restore-joint-phase-waveform-sourceV-s2026092701-r01",
+  "group_id": "joint-phase-moment-matched-waveform-source",
+  "display_name": "同批源端整体相位和波形先验四格对照",
+  "description": "同一盲估算子和噪声，固定四组波形先验及 256 个全局相位。复用三个冻结源对照，仅新增精确联合边缘化。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-V-only",
+    "fixed-TriSIGTIME-SSL",
+    "phase-waveform-factorial",
+    "CPU-only",
+    "no-refit"
+  ],
+  "comparison_group_id": "same-source-blind-phase-waveform-factorial",
+  "parent_run_ids": [
+    "20261107-diagnostic-Restore-waveform-mixture-sourceV-s2026092701-r01",
+    "20261107-diagnostic-Restore-observed-phase-ramp-sourceV-s2026092701-r01",
+    "20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User authorizes independent restoration designs and comprehensive source diagnostics, fit only original L_s/U_s IQ, V frozen diagnostic.",
+  "code": {
+    "commit": "245795c245c69eb62ece92a0578c6aec75ba4da6",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 original CVS-RFFI Torch CPU2 CUDA-empty, FP64 fit/posterior and FP32 F0.",
+    "cwd": "releases/20261107-diagnostic-Restore-joint-phase-waveform-sourceV-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 source contract; existing R07 fixed1800 V/7 frozen validation views",
+    "representation": "Exact original R07 source V120 x7 received IQ; prior derived from original L_s6300/U_s56700 clean IQ.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "Original L_s6300/U_s56700. Fixed first 8 per source RX/day stratum for independent source V predictions.",
+    "label_map_ref": "Only independent source truth-last scorer after all 28 predictions, original source V metadata.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original six known sourceTX; V trueTX validation only, no train/selection",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse VALIDATED_ONCE R07 handles; fixed original f29 V reference and BF E30/F0 E50 provenance.",
+    "support_query_ref": "120 original source V only, no target support/query.",
+    "leo_config_ref": "ExistingR07 validation_actions7; receiver2026101902 vs trainingreceiver2026101911; no regenerated views.",
+    "actual_training_labels": "None. No fit or training. Original L_s2 smoke then V frozen diagnostic.",
+    "augmentation": "Reuse all seven original source V observations, no regenerated signals.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "source-only-frozen-phase-waveform-factorial",
+    "query_use": "F0/BF frozen. No source V fit/selection, TX at prediction, target/OE/novel reads or training.",
+    "external_method_exception": null,
+    "claim_scope": "Within this fixed source panel, compare paired empirical restoration and real TX. No Main or limit claim."
+  },
+  "checkpoint": {
+    "initialization": "Original frozen BF/F0. Exact waveform prior from parent, no fitting.",
+    "sources": [
+      "FROZEN_BF 20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01/bf29554a03e28a012eaaa134f5c7b3f7856f2268 original BF final30 estimator",
+      "FIXED_SOURCE_PRIOR_AND_CONTROLS 20261107-diagnostic-Restore-waveform-mixture-sourceV-s2026092701-r01/f4dab0140b598bbc3cd212ab4259138e468e1a20",
+      "FIXED_SOURCE_PHASE_ONLY_CONTROL 20261107-diagnostic-Restore-observed-phase-ramp-sourceV-s2026092701-r01/e97058e837ea494b2efeb2fd0da5a237032e7736",
+      "FROZEN_F0 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d original E50/11100 default head",
+      "DATA_ONLY R07 original source V120 x7 and L_s2 smoke"
+    ],
+    "contract_check_ref": "Exact prior source lineage and moment equality, V IQ/ID/RX/day/clean outputs align with both parents.",
+    "provenance_verdict": "Frozen same-source BF and F0. No G training, target or OE/novel/TX access.",
+    "selection_rule": "All four factorial cells and seven views fixed. Grid 256, 15-degree phase prior, no drift. No parameter choice on V."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-phase-waveform-factorial",
+    "gpu_policy": "CUDA-empty, two CPU threads, zero GPU workers.",
+    "remote_run_root": "runs/20261107-diagnostic-Restore-joint-phase-waveform-sourceV-s2026092701-r01",
+    "remote_log_root": "logs/20261107-diagnostic-Restore-joint-phase-waveform-sourceV-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-diagnostic-Restore-joint-phase-waveform-sourceV-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.joint_phase_source --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-diagnostic-Restore-joint-phase-waveform-sourceV-s2026092701-r01-release/inputs.json --commit 245795c245c69eb62ece92a0578c6aec75ba4da6",
+    "stop_rule": "Source or parent mismatch, nonfinite/wrong posterior or real smoke failure: preserve outputs."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "runtime_observation.json",
+    "reference.npz PRIVATE",
+    "7 source scene.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "logs/stdout.log PRIVATE",
+    "terminal.json",
+    "independent_check.json",
+    "source_truth.json aggregate only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Paired true TX repair/damage versus all three controls, IQ NMSE, F(clean) decision and F0 cosine",
+      "Actual factorial interaction and mode/phase posterior summary. 840 fresh joint predictions and 2520 exact cached controls."
+    ],
+    "dimensions": [
+      "same source V120",
+      "seven fixed source views",
+      "four fixed factorial cells"
+    ],
+    "prediction_ref": "Private source reference, new joint IQ/logits, cached original controls.",
+    "scorer_ref": "Independent verification of 28 cells, then original source V truth by physical ID/RX/day under existing CPU score.lock."
+  },
+  "rows": [
+    {
+      "row_id": "fixed_source_phase_waveform_factorial",
+      "method": "exact_phase_waveform_posterior_mean",
+      "purpose": "Measure whether two source corrections are complementary when estimated jointly.",
+      "config_ref": "experiments.pamf_phase3_restoration.joint_phase_source.py::readout",
+      "resolved_config_ref": "runs/20261107-diagnostic-Restore-joint-phase-waveform-sourceV-s2026092701-r01/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101902
+      },
+      "seed_notes": "Fixed original record order and original F0; no new RNG or phase selection.",
+      "k": null,
+      "scenario": "Original source V120 in seven views.",
+      "optimizer": "NONE",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "CPU2. No refit or training. 840 new joint F0 rows, 2520 exact reused controls, 2 real smoke F0 rows.",
+      "output_root": "runs/20261107-diagnostic-Restore-joint-phase-waveform-sourceV-s2026092701-r01",
+      "log_path": "logs/20261107-diagnostic-Restore-joint-phase-waveform-sourceV-s2026092701-r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.joint_phase_source --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-diagnostic-Restore-joint-phase-waveform-sourceV-s2026092701-r01-release/inputs.json --commit 245795c245c69eb62ece92a0578c6aec75ba4da6",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "runtime_observation.json",
+        "reference.npz PRIVATE",
+        "7 source scene.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "logs/stdout.log PRIVATE",
+        "terminal.json",
+        "independent_check.json",
+        "source_truth.json aggregate only"
+      ]
+    }
+  ],
+  "notes": [
+    "Source only, no deployment change or new GPU job.",
+    "Four waveform modes and 256 phase points share one factorization and six forward triangular RHS.",
+    "True source V labels enter only after all outputs and independent comparison."
+  ],
+  "registered_at": "2026-11-07T01:31:11+00:00"
+}
