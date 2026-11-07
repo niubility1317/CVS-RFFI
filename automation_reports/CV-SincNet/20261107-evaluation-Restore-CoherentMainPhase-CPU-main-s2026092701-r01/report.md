@@ -37,3 +37,7 @@ VERIFIED / RUNNING。CPU 预测进程 3944144 已通过真实 L_s 两条检查�
 VERIFIED：独立读取clean.npy与practical_high.npy，每份126000条int64类别预测且范围0至5，累计固定252000条，完成2/14个原Main“人群×场景”单元。实际进程已进入practical_mid，尚未提交truth评分；新IQ/模型/truth读取均为0。其余场景继续，预测固定不等于已取得识别成绩。
 
 [两份固定预测文件证据](first_practical_progress.json)
+
+## 完整 Main 独立评分与复核
+
+VERIFIED / ANALYZED。原 Main 两总体七景、四条决策流 56 单元全部固定后独立 truth-last；1736 组、1302 raw 配对复核 PASS。六景 1/6 达标；两个 clean 总体相对 raw 净 +300/+145。相对原 CovarianceMAP 合并六景上升，但跨日期总体三景下降；相对 DURA 五景下降。无新训练或目标拟合，默认 DURA 不变。 [完整分析](analysis.md)
