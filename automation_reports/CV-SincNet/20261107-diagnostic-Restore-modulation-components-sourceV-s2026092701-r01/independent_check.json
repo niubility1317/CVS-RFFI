@@ -1,0 +1,69 @@
+{
+  "status": "PASS",
+  "code_commit": "53901dd11e69bf90041f67bf5a6668ee89963d55",
+  "cells": 42,
+  "same_source_records": 480,
+  "original_controls_exact": true,
+  "exact_original_control_rows": 6720,
+  "modulation_statistics": [
+    {
+      "scene": "clean",
+      "main_abs_phase_median_degrees": 0.0591989223796462,
+      "main_abs_phase_p95_degrees": 0.20456091009977279,
+      "main_gain_abs_deviation_median": 0.0015392036572523526,
+      "main_relative_fit_residual_mean": 1.372057091345177e-06,
+      "true_image_relative_energy_mean": 0.0
+    },
+    {
+      "scene": "practical_high",
+      "main_abs_phase_median_degrees": 1.4620844891609908,
+      "main_abs_phase_p95_degrees": 4.292699164186758,
+      "main_gain_abs_deviation_median": 0.005953253349443188,
+      "main_relative_fit_residual_mean": 2.2510853657051514e-05,
+      "true_image_relative_energy_mean": 1.1777917009496145e-05
+    },
+    {
+      "scene": "practical_mid",
+      "main_abs_phase_median_degrees": 1.5240133519149635,
+      "main_abs_phase_p95_degrees": 5.254473511742063,
+      "main_gain_abs_deviation_median": 0.007075224077899067,
+      "main_relative_fit_residual_mean": 3.3855524113360364e-05,
+      "true_image_relative_energy_mean": 1.1777917010164024e-05
+    },
+    {
+      "scene": "practical_low_suburban",
+      "main_abs_phase_median_degrees": 1.520520879490597,
+      "main_abs_phase_p95_degrees": 5.574979653104478,
+      "main_gain_abs_deviation_median": 0.007302172189227241,
+      "main_relative_fit_residual_mean": 4.3824762653626123e-05,
+      "true_image_relative_energy_mean": 1.1777917006721187e-05
+    },
+    {
+      "scene": "practical_high_urban",
+      "main_abs_phase_median_degrees": 1.5197777258999245,
+      "main_abs_phase_p95_degrees": 5.466359304606713,
+      "main_gain_abs_deviation_median": 0.005644231501908847,
+      "main_relative_fit_residual_mean": 4.052863556140626e-05,
+      "true_image_relative_energy_mean": 1.177791701136504e-05
+    },
+    {
+      "scene": "practical_mid_urban",
+      "main_abs_phase_median_degrees": 1.8920227699632077,
+      "main_abs_phase_p95_degrees": 10.338390948958887,
+      "main_gain_abs_deviation_median": 0.010529479979358602,
+      "main_relative_fit_residual_mean": 0.0002499653543933413,
+      "true_image_relative_energy_mean": 1.1777917009116684e-05
+    },
+    {
+      "scene": "practical_low_urban",
+      "main_abs_phase_median_degrees": 2.697807834768645,
+      "main_abs_phase_p95_degrees": 13.395990449138745,
+      "main_gain_abs_deviation_median": 0.016324600369837294,
+      "main_relative_fit_residual_mean": 0.00020190024661197398,
+      "true_image_relative_energy_mean": 1.1777917002524212e-05
+    }
+  ],
+  "TX_reads": 0,
+  "target_reads": 0,
+  "new_NN_calls": 0
+}

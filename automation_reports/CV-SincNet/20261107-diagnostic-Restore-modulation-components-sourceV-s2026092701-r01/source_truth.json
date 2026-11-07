@@ -1,0 +1,1080 @@
+{
+  "status": "VERIFIED_SOURCE_TRUTH_LAST",
+  "code_commit": "53901dd11e69bf90041f67bf5a6668ee89963d55",
+  "source_TX_scored": 480,
+  "prior_prediction_cells": 42,
+  "source_label_file_rows": 27000,
+  "records": [
+    {
+      "scene": "clean",
+      "method": "blind",
+      "count": 480,
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 474,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "clean",
+      "method": "main_phase",
+      "count": 480,
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 474,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "clean",
+      "method": "main_complex_gain",
+      "count": 480,
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 474,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "clean",
+      "method": "true_main",
+      "count": 480,
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 474,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "clean",
+      "method": "true_image",
+      "count": 480,
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 474,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "clean",
+      "method": "true_modulation",
+      "count": 480,
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 474,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "practical_high",
+      "method": "blind",
+      "count": 480,
+      "correct": 473,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 473,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "practical_high",
+      "method": "main_phase",
+      "count": 480,
+      "correct": 473,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 473,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 1,
+      "damage": 1,
+      "net": 0,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "practical_high",
+      "method": "main_complex_gain",
+      "count": 480,
+      "correct": 473,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 473,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 1,
+      "damage": 1,
+      "net": 0,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "practical_high",
+      "method": "true_main",
+      "count": 480,
+      "correct": 473,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 473,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 1,
+      "damage": 1,
+      "net": 0,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "practical_high",
+      "method": "true_image",
+      "count": 480,
+      "correct": 473,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 473,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "practical_high",
+      "method": "true_modulation",
+      "count": 480,
+      "correct": 473,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 473,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 1,
+      "damage": 1,
+      "net": 0,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "practical_mid",
+      "method": "blind",
+      "count": 480,
+      "correct": 470,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 470,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "practical_mid",
+      "method": "main_phase",
+      "count": 480,
+      "correct": 471,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 471,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 2,
+      "damage": 1,
+      "net": 1,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "practical_mid",
+      "method": "main_complex_gain",
+      "count": 480,
+      "correct": 471,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 471,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 2,
+      "damage": 1,
+      "net": 1,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "practical_mid",
+      "method": "true_main",
+      "count": 480,
+      "correct": 472,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 472,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 2,
+      "damage": 0,
+      "net": 2,
+      "paired_exact_p_descriptive": 0.5
+    },
+    {
+      "scene": "practical_mid",
+      "method": "true_image",
+      "count": 480,
+      "correct": 470,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 470,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "practical_mid",
+      "method": "true_modulation",
+      "count": 480,
+      "correct": 472,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 472,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 2,
+      "damage": 0,
+      "net": 2,
+      "paired_exact_p_descriptive": 0.5
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "blind",
+      "count": 480,
+      "correct": 464,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 463,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "main_phase",
+      "count": 480,
+      "correct": 467,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 465,
+      "clean_wrong_newly_correct": 2,
+      "repairs": 5,
+      "damage": 2,
+      "net": 3,
+      "paired_exact_p_descriptive": 0.453125
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "main_complex_gain",
+      "count": 480,
+      "correct": 468,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 466,
+      "clean_wrong_newly_correct": 2,
+      "repairs": 5,
+      "damage": 1,
+      "net": 4,
+      "paired_exact_p_descriptive": 0.21875
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "true_main",
+      "count": 480,
+      "correct": 468,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 466,
+      "clean_wrong_newly_correct": 2,
+      "repairs": 5,
+      "damage": 1,
+      "net": 4,
+      "paired_exact_p_descriptive": 0.21875
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "true_image",
+      "count": 480,
+      "correct": 464,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 463,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "true_modulation",
+      "count": 480,
+      "correct": 468,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 466,
+      "clean_wrong_newly_correct": 2,
+      "repairs": 5,
+      "damage": 1,
+      "net": 4,
+      "paired_exact_p_descriptive": 0.21875
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "blind",
+      "count": 480,
+      "correct": 469,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 468,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "main_phase",
+      "count": 480,
+      "correct": 468,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 467,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 1,
+      "damage": 2,
+      "net": -1,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "main_complex_gain",
+      "count": 480,
+      "correct": 467,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 466,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 1,
+      "damage": 3,
+      "net": -2,
+      "paired_exact_p_descriptive": 0.625
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "true_main",
+      "count": 480,
+      "correct": 468,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 467,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 2,
+      "damage": 3,
+      "net": -1,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "true_image",
+      "count": 480,
+      "correct": 470,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 469,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 1,
+      "damage": 0,
+      "net": 1,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "true_modulation",
+      "count": 480,
+      "correct": 468,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 467,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 2,
+      "damage": 3,
+      "net": -1,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "blind",
+      "count": 480,
+      "correct": 436,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 435,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "main_phase",
+      "count": 480,
+      "correct": 450,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 450,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 17,
+      "damage": 3,
+      "net": 14,
+      "paired_exact_p_descriptive": 0.0025768280029296875
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "main_complex_gain",
+      "count": 480,
+      "correct": 453,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 452,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 20,
+      "damage": 3,
+      "net": 17,
+      "paired_exact_p_descriptive": 0.00048828125
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "true_main",
+      "count": 480,
+      "correct": 452,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 451,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 20,
+      "damage": 4,
+      "net": 16,
+      "paired_exact_p_descriptive": 0.001543879508972168
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "true_image",
+      "count": 480,
+      "correct": 436,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 435,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "true_modulation",
+      "count": 480,
+      "correct": 452,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 451,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 20,
+      "damage": 4,
+      "net": 16,
+      "paired_exact_p_descriptive": 0.001543879508972168
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "blind",
+      "count": 480,
+      "correct": 401,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 400,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "main_phase",
+      "count": 480,
+      "correct": 422,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 421,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 29,
+      "damage": 8,
+      "net": 21,
+      "paired_exact_p_descriptive": 0.0007528970600105822
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "main_complex_gain",
+      "count": 480,
+      "correct": 423,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 422,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 30,
+      "damage": 8,
+      "net": 22,
+      "paired_exact_p_descriptive": 0.0004719867429230362
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "true_main",
+      "count": 480,
+      "correct": 424,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 423,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 31,
+      "damage": 8,
+      "net": 23,
+      "paired_exact_p_descriptive": 0.0002940768754342571
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "true_image",
+      "count": 480,
+      "correct": 401,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 400,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0,
+      "paired_exact_p_descriptive": 1.0
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "true_modulation",
+      "count": 480,
+      "correct": 424,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 423,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 31,
+      "damage": 8,
+      "net": 23,
+      "paired_exact_p_descriptive": 0.0002940768754342571
+    }
+  ],
+  "pairs": [
+    {
+      "scene": "clean",
+      "comparisons": [
+        {
+          "before": "blind",
+          "after": "main_phase",
+          "repairs": 0,
+          "damage": 0,
+          "net": 0,
+          "paired_exact_p_descriptive": 1.0
+        },
+        {
+          "before": "main_phase",
+          "after": "main_complex_gain",
+          "repairs": 0,
+          "damage": 0,
+          "net": 0,
+          "paired_exact_p_descriptive": 1.0
+        },
+        {
+          "before": "main_complex_gain",
+          "after": "true_main",
+          "repairs": 0,
+          "damage": 0,
+          "net": 0,
+          "paired_exact_p_descriptive": 1.0
+        },
+        {
+          "before": "blind",
+          "after": "true_image",
+          "repairs": 0,
+          "damage": 0,
+          "net": 0,
+          "paired_exact_p_descriptive": 1.0
+        },
+        {
+          "before": "true_main",
+          "after": "true_modulation",
+          "repairs": 0,
+          "damage": 0,
+          "net": 0,
+          "paired_exact_p_descriptive": 1.0
+        }
+      ],
+      "main_image_interaction": 0
+    },
+    {
+      "scene": "practical_high",
+      "comparisons": [
+        {
+          "before": "blind",
+          "after": "main_phase",
+          "repairs": 1,
+          "damage": 1,
+          "net": 0,
+          "paired_exact_p_descriptive": 1.0
+        },
+        {
+          "before": "main_phase",
+          "after": "main_complex_gain",
+          "repairs": 0,
+          "damage": 0,
+          "net": 0,
+          "paired_exact_p_descriptive": 1.0
+        },
+        {
+          "before": "main_complex_gain",
+          "after": "true_main",
+          "repairs": 0,
+          "damage": 0,
+          "net": 0,
+          "paired_exact_p_descriptive": 1.0
+        },
+        {
+          "before": "blind",
+          "after": "true_image",
+          "repairs": 0,
+          "damage": 0,
+          "net": 0,
+          "paired_exact_p_descriptive": 1.0
+        },
+        {
+          "before": "true_main",
+          "after": "true_modulation",
+          "repairs": 0,
+          "damage": 0,
+          "net": 0,
+          "paired_exact_p_descriptive": 1.0
+        }
+      ],
+      "main_image_interaction": 0
+    },
+    {
+      "scene": "practical_mid",
+      "comparisons": [
+        {
+          "before": "blind",
+          "after": "main_phase",
+          "repairs": 2,
+          "damage": 1,
+          "net": 1,
+          "paired_exact_p_descriptive": 1.0
+        },
+        {
+          "before": "main_phase",
+          "after": "main_complex_gain",
+          "repairs": 0,
+          "damage": 0,
+          "net": 0,
+          "paired_exact_p_descriptive": 1.0
+        },
+        {
+          "before": "main_complex_gain",
+          "after": "true_main",
+          "repairs": 1,
+          "damage": 0,
+          "net": 1,
+          "paired_exact_p_descriptive": 1.0
+        },
+        {
+          "before": "blind",
+          "after": "true_image",
+          "repairs": 0,
+          "damage": 0,
+          "net": 0,
+          "paired_exact_p_descriptive": 1.0
+        },
+        {
+          "before": "true_main",
+          "after": "true_modulation",
+          "repairs": 0,
+          "damage": 0,
+          "net": 0,
+          "paired_exact_p_descriptive": 1.0
+        }
+      ],
+      "main_image_interaction": 0
+    },
+    {
+      "scene": "practical_low_suburban",
+      "comparisons": [
+        {
+          "before": "blind",
+          "after": "main_phase",
+          "repairs": 5,
+          "damage": 2,
+          "net": 3,
+          "paired_exact_p_descriptive": 0.453125
+        },
+        {
+          "before": "main_phase",
+          "after": "main_complex_gain",
+          "repairs": 1,
+          "damage": 0,
+          "net": 1,
+          "paired_exact_p_descriptive": 1.0
+        },
+        {
+          "before": "main_complex_gain",
+          "after": "true_main",
+          "repairs": 0,
+          "damage": 0,
+          "net": 0,
+          "paired_exact_p_descriptive": 1.0
+        },
+        {
+          "before": "blind",
+          "after": "true_image",
+          "repairs": 0,
+          "damage": 0,
+          "net": 0,
+          "paired_exact_p_descriptive": 1.0
+        },
+        {
+          "before": "true_main",
+          "after": "true_modulation",
+          "repairs": 0,
+          "damage": 0,
+          "net": 0,
+          "paired_exact_p_descriptive": 1.0
+        }
+      ],
+      "main_image_interaction": 0
+    },
+    {
+      "scene": "practical_high_urban",
+      "comparisons": [
+        {
+          "before": "blind",
+          "after": "main_phase",
+          "repairs": 1,
+          "damage": 2,
+          "net": -1,
+          "paired_exact_p_descriptive": 1.0
+        },
+        {
+          "before": "main_phase",
+          "after": "main_complex_gain",
+          "repairs": 0,
+          "damage": 1,
+          "net": -1,
+          "paired_exact_p_descriptive": 1.0
+        },
+        {
+          "before": "main_complex_gain",
+          "after": "true_main",
+          "repairs": 1,
+          "damage": 0,
+          "net": 1,
+          "paired_exact_p_descriptive": 1.0
+        },
+        {
+          "before": "blind",
+          "after": "true_image",
+          "repairs": 1,
+          "damage": 0,
+          "net": 1,
+          "paired_exact_p_descriptive": 1.0
+        },
+        {
+          "before": "true_main",
+          "after": "true_modulation",
+          "repairs": 0,
+          "damage": 0,
+          "net": 0,
+          "paired_exact_p_descriptive": 1.0
+        }
+      ],
+      "main_image_interaction": -1
+    },
+    {
+      "scene": "practical_mid_urban",
+      "comparisons": [
+        {
+          "before": "blind",
+          "after": "main_phase",
+          "repairs": 17,
+          "damage": 3,
+          "net": 14,
+          "paired_exact_p_descriptive": 0.0025768280029296875
+        },
+        {
+          "before": "main_phase",
+          "after": "main_complex_gain",
+          "repairs": 3,
+          "damage": 0,
+          "net": 3,
+          "paired_exact_p_descriptive": 0.25
+        },
+        {
+          "before": "main_complex_gain",
+          "after": "true_main",
+          "repairs": 0,
+          "damage": 1,
+          "net": -1,
+          "paired_exact_p_descriptive": 1.0
+        },
+        {
+          "before": "blind",
+          "after": "true_image",
+          "repairs": 0,
+          "damage": 0,
+          "net": 0,
+          "paired_exact_p_descriptive": 1.0
+        },
+        {
+          "before": "true_main",
+          "after": "true_modulation",
+          "repairs": 0,
+          "damage": 0,
+          "net": 0,
+          "paired_exact_p_descriptive": 1.0
+        }
+      ],
+      "main_image_interaction": 0
+    },
+    {
+      "scene": "practical_low_urban",
+      "comparisons": [
+        {
+          "before": "blind",
+          "after": "main_phase",
+          "repairs": 29,
+          "damage": 8,
+          "net": 21,
+          "paired_exact_p_descriptive": 0.0007528970600105822
+        },
+        {
+          "before": "main_phase",
+          "after": "main_complex_gain",
+          "repairs": 2,
+          "damage": 1,
+          "net": 1,
+          "paired_exact_p_descriptive": 1.0
+        },
+        {
+          "before": "main_complex_gain",
+          "after": "true_main",
+          "repairs": 1,
+          "damage": 0,
+          "net": 1,
+          "paired_exact_p_descriptive": 1.0
+        },
+        {
+          "before": "blind",
+          "after": "true_image",
+          "repairs": 0,
+          "damage": 0,
+          "net": 0,
+          "paired_exact_p_descriptive": 1.0
+        },
+        {
+          "before": "true_main",
+          "after": "true_modulation",
+          "repairs": 0,
+          "damage": 0,
+          "net": 0,
+          "paired_exact_p_descriptive": 1.0
+        }
+      ],
+      "main_image_interaction": 0
+    }
+  ],
+  "low_urban_groups": [
+    {
+      "dimension": "RX",
+      "group": 1,
+      "count": 96,
+      "clean_correct": 96,
+      "correct": {
+        "blind": 78,
+        "main_phase": 82,
+        "main_complex_gain": 82,
+        "true_main": 82,
+        "true_image": 78,
+        "true_modulation": 82
+      }
+    },
+    {
+      "dimension": "RX",
+      "group": 3,
+      "count": 96,
+      "clean_correct": 92,
+      "correct": {
+        "blind": 78,
+        "main_phase": 84,
+        "main_complex_gain": 84,
+        "true_main": 85,
+        "true_image": 78,
+        "true_modulation": 85
+      }
+    },
+    {
+      "dimension": "RX",
+      "group": 4,
+      "count": 96,
+      "clean_correct": 94,
+      "correct": {
+        "blind": 77,
+        "main_phase": 81,
+        "main_complex_gain": 82,
+        "true_main": 82,
+        "true_image": 77,
+        "true_modulation": 82
+      }
+    },
+    {
+      "dimension": "RX",
+      "group": 6,
+      "count": 96,
+      "clean_correct": 96,
+      "correct": {
+        "blind": 81,
+        "main_phase": 87,
+        "main_complex_gain": 86,
+        "true_main": 86,
+        "true_image": 81,
+        "true_modulation": 86
+      }
+    },
+    {
+      "dimension": "RX",
+      "group": 8,
+      "count": 96,
+      "clean_correct": 96,
+      "correct": {
+        "blind": 87,
+        "main_phase": 88,
+        "main_complex_gain": 89,
+        "true_main": 89,
+        "true_image": 87,
+        "true_modulation": 89
+      }
+    },
+    {
+      "dimension": "day",
+      "group": 1,
+      "count": 160,
+      "clean_correct": 160,
+      "correct": {
+        "blind": 136,
+        "main_phase": 142,
+        "main_complex_gain": 141,
+        "true_main": 141,
+        "true_image": 136,
+        "true_modulation": 141
+      }
+    },
+    {
+      "dimension": "day",
+      "group": 2,
+      "count": 160,
+      "clean_correct": 158,
+      "correct": {
+        "blind": 133,
+        "main_phase": 140,
+        "main_complex_gain": 141,
+        "true_main": 141,
+        "true_image": 133,
+        "true_modulation": 141
+      }
+    },
+    {
+      "dimension": "day",
+      "group": 3,
+      "count": 160,
+      "clean_correct": 156,
+      "correct": {
+        "blind": 132,
+        "main_phase": 140,
+        "main_complex_gain": 141,
+        "true_main": 142,
+        "true_image": 132,
+        "true_modulation": 142
+      }
+    },
+    {
+      "dimension": "TX",
+      "group": 0,
+      "count": 79,
+      "clean_correct": 78,
+      "correct": {
+        "blind": 60,
+        "main_phase": 70,
+        "main_complex_gain": 71,
+        "true_main": 72,
+        "true_image": 60,
+        "true_modulation": 72
+      }
+    },
+    {
+      "dimension": "TX",
+      "group": 1,
+      "count": 83,
+      "clean_correct": 83,
+      "correct": {
+        "blind": 64,
+        "main_phase": 64,
+        "main_complex_gain": 64,
+        "true_main": 64,
+        "true_image": 64,
+        "true_modulation": 64
+      }
+    },
+    {
+      "dimension": "TX",
+      "group": 2,
+      "count": 74,
+      "clean_correct": 72,
+      "correct": {
+        "blind": 70,
+        "main_phase": 70,
+        "main_complex_gain": 71,
+        "true_main": 71,
+        "true_image": 70,
+        "true_modulation": 71
+      }
+    },
+    {
+      "dimension": "TX",
+      "group": 3,
+      "count": 86,
+      "clean_correct": 85,
+      "correct": {
+        "blind": 63,
+        "main_phase": 63,
+        "main_complex_gain": 63,
+        "true_main": 63,
+        "true_image": 63,
+        "true_modulation": 63
+      }
+    },
+    {
+      "dimension": "TX",
+      "group": 4,
+      "count": 84,
+      "clean_correct": 83,
+      "correct": {
+        "blind": 72,
+        "main_phase": 82,
+        "main_complex_gain": 81,
+        "true_main": 81,
+        "true_image": 72,
+        "true_modulation": 81
+      }
+    },
+    {
+      "dimension": "TX",
+      "group": 5,
+      "count": 74,
+      "clean_correct": 73,
+      "correct": {
+        "blind": 72,
+        "main_phase": 73,
+        "main_complex_gain": 73,
+        "true_main": 73,
+        "true_image": 72,
+        "true_modulation": 73
+      }
+    }
+  ],
+  "new_prediction_rows": 0,
+  "optimizer_updates": 0,
+  "target_reads": 0
+}

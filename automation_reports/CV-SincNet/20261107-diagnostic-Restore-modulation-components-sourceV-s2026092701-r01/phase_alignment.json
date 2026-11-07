@@ -1,0 +1,71 @@
+{
+  "status": "VERIFIED_PREDICTION_ONLY",
+  "comparison": "Frozen overall phase posterior angle against known main-only phase, same V120 overlap.",
+  "zero_new_model_calls": true,
+  "no_TX_or_target": true,
+  "rows": [
+    {
+      "scene": "clean",
+      "records": 120,
+      "zero_offset_mae_deg": 0.07459623679253218,
+      "blind_phase_estimate_mae_deg": 2.232926863089191,
+      "blind_estimate_mean_abs_deg": 2.224743817133373,
+      "closer_to_known_main_phase": 0,
+      "signed_phase_correlation": -0.07226108573703198
+    },
+    {
+      "scene": "practical_high",
+      "records": 120,
+      "zero_offset_mae_deg": 1.824525853681751,
+      "blind_phase_estimate_mae_deg": 2.308574128081745,
+      "blind_estimate_mean_abs_deg": 1.7486977690218697,
+      "closer_to_known_main_phase": 48,
+      "signed_phase_correlation": 0.09823524605869634
+    },
+    {
+      "scene": "practical_mid",
+      "records": 120,
+      "zero_offset_mae_deg": 2.24712904364426,
+      "blind_phase_estimate_mae_deg": 2.7855153936996464,
+      "blind_estimate_mean_abs_deg": 1.9490445832511467,
+      "closer_to_known_main_phase": 45,
+      "signed_phase_correlation": 0.21737546424655804
+    },
+    {
+      "scene": "practical_low_suburban",
+      "records": 120,
+      "zero_offset_mae_deg": 2.232455908924352,
+      "blind_phase_estimate_mae_deg": 2.6541573909782423,
+      "blind_estimate_mean_abs_deg": 2.0069087264390375,
+      "closer_to_known_main_phase": 46,
+      "signed_phase_correlation": 0.2660615756852736
+    },
+    {
+      "scene": "practical_high_urban",
+      "records": 120,
+      "zero_offset_mae_deg": 2.335348424855979,
+      "blind_phase_estimate_mae_deg": 2.474427462443819,
+      "blind_estimate_mean_abs_deg": 2.1653124470652805,
+      "closer_to_known_main_phase": 52,
+      "signed_phase_correlation": 0.4738457266651706
+    },
+    {
+      "scene": "practical_mid_urban",
+      "records": 120,
+      "zero_offset_mae_deg": 4.01194996408391,
+      "blind_phase_estimate_mae_deg": 4.3579018050547464,
+      "blind_estimate_mean_abs_deg": 2.6056362038013345,
+      "closer_to_known_main_phase": 51,
+      "signed_phase_correlation": -0.6067106108410967
+    },
+    {
+      "scene": "practical_low_urban",
+      "records": 120,
+      "zero_offset_mae_deg": 3.967605118727327,
+      "blind_phase_estimate_mae_deg": 3.6268155772073847,
+      "blind_estimate_mean_abs_deg": 2.6751698817762093,
+      "closer_to_known_main_phase": 60,
+      "signed_phase_correlation": 0.5207715924921582
+    }
+  ]
+}
