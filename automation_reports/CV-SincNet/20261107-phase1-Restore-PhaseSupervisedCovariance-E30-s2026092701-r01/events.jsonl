@@ -1,3 +1,4 @@
 {"at": "2026-11-07T02:10:58+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-07T02:14:45+00:00", "status": "QUEUED", "note": "VERIFIED controller waits original Modulation last GPU stage, original source smoke and scratch30/Main pending.", "evidence": ["queue_evidence.json"], "row_id": "TF_PhaseSupervisedCovariance"}
 {"at": "2026-11-07T02:14:54+00:00", "status": "QUEUED", "note": "VERIFIED controller waits original Modulation last GPU stage, original source smoke and scratch30/Main pending.", "evidence": ["queue_evidence.json"], "row_id": null}
+{"at": "2026-11-07T16:25:08+00:00", "status": "QUEUED", "note": "复用已完成原30轮/7410步及原权重，剩余cross_rx、cross_both七景和独立评分使用原科学release。仅在旧控制器CPU空CUDA、无子进程、两个预测均未开始时交接；GPU3总数最多3，准入前至少12000 MiB。不重训、不读取目标成绩作调度依据，保留原输出和日志。", "evidence": ["experiment.json"], "row_id": null}

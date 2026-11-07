@@ -20,10 +20,12 @@
   "replaces_run_id": null,
   "authorization": "Latestuser:performanceprimary/efficiencysecondary/groundTriSIGTIME SSL sameFrawclean6eachgap<=3pp+cleanpreserved;majorGarchitecturefreedom/scratchsingle30/sourceFfeatureguidanceallowed/originalLsUs-only/OEonlyfrozendiagnostic. DefaultDURAunchanged.",
   "code": {
-    "commit": "36b13adad5b091bf1f8f4aa7934c403e3b50d8eb",
+    "commit": "6e6be6f3db354e7809ed186d490c634ed4add999",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607existingCVS-RFFI Torch2.1/NumPy2/FP32TFencoder/FP64posterior/TF32off/CPUthreads2;actualoriginalF0 3ff8/defaulthead",
-    "cwd": "releases/20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01-release"
+    "cwd": "releases/20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01-GPU3-remaining-release",
+    "scientific_code_commit": "36b13adad5b091bf1f8f4aa7934c403e3b50d8eb",
+    "identity_note": "Resource-only remaining-stage owner; all scientific work uses original release and commit."
   },
   "data": {
     "dataset": "ManySig",
@@ -96,13 +98,15 @@
   },
   "execution": {
     "host": "N607",
-    "launch_owner": "codex/root/coherent-main-phase-scratch30",
-    "gpu_policy": "CUDA-empty controller waits for 20261107-phase1-Restore-ModulationCovariance-E30-s2026092701-r01 final GPU prediction or recorded GPU-stage failure. Then GPU4/6 only, at least 12000MiB free and at most two existing compute processes, add one GPU worker. Shared CPU truth score.lock.",
+    "launch_owner": "codex/root/phase-supervised-remaining-GPU3",
+    "gpu_policy": "Normal GPU3, total cap3; before each own worker existing<=2 and free>=12000MiB.",
     "remote_run_root": "runs/20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01",
     "remote_log_root": "runs/20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01/logs",
     "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01",
-    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.phase_supervised_covariance_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 36b13adad5b091bf1f8f4aa7934c403e3b50d8eb --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
-    "stop_rule": "Wrong legal source, prior, F0, model identity, E0 reload, missing/nonfinite gradients, posterior or child failure: preserve without automatic retry."
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.phase_supervised_remaining_dispatch --root /home/szu2070436088/2510044040/CV-SincNet --legacy-release /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01-release --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --commit 6e6be6f3db354e7809ed186d490c634ed4add999",
+    "stop_rule": "Only exact childless CUDA-empty old controller after final30/training exit0 and unstarted predictions are verified. Preserve weights/logs. Original source smoke first. All predictions before truth scoring; technical failures preserve outputs, no automatic retry.",
+    "original_controller_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.phase_supervised_covariance_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 36b13adad5b091bf1f8f4aa7934c403e3b50d8eb --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "original_scientific_CWD": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01-release"
   },
   "expected_artifacts": [
     "launch.json",
@@ -124,7 +128,9 @@
     "rows/<arm>/results.json",
     "complete.json",
     "logs/*.log PRIVATE",
-    "rows/TF_PhaseSupervisedCovariance/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+    "rows/TF_PhaseSupervisedCovariance/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only",
+    "resource_controller.json remaining-stage ownership",
+    "resource_handover_GPU3.json preserving trained checkpoint"
   ],
   "metrics_plan": {
     "metric_names": [
@@ -199,7 +205,9 @@
     "Loss .1 complete Action relative MSE + .05 canonical modulation relative MSE + .02 canonical FIR shape + .1 circular phase + .001 log noise.",
     "No full-covariance solve in updates; final deployment applies learned phase to the physical main action and solves the original Gaussian posterior.",
     "Original Main clean and six practical, original cross_rx and cross_both, frozen Tri-SIG-TIME SSL default head, independent truth-last.",
-    "One candidate, no learned G ancestry, no target feedback, no default change. Source simulator anchor inspection is descriptive, not a release gate."
+    "One candidate, no learned G ancestry, no target feedback, no default change. Source simulator anchor inspection is descriptive, not a release gate.",
+    "Resource-only handover; original trained final30 and all scientific data/method/budget unchanged.",
+    "Four focused preservation and duplicate-prevention tests pass. No repeated model/runner review gate."
   ],
   "record_type": "managed_run",
   "registered_at": "2026-11-07T02:10:58+00:00"

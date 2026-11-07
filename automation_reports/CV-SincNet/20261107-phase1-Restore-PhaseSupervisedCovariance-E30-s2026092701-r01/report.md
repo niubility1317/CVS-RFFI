@@ -38,3 +38,9 @@ VERIFIED / QUEUED。实际代码 36b13adad5b091bf1f8f4aa7934c403e3b50d8eb，控�
 ## 30 轮源训练完成，等待正式预测
 
 VERIFIED / SOURCE_TRAINED。已完成固定30轮、7410步，189000次L_s和1701000次U_s曝光；30轮顺序、draw、计数、有限损失和目标组成复核通过，最大组成差2.87e-9。训练终态退出码0，最终权重文件存在，源TX和目标训练读取均为0。观察时尚未提交任何Main预测，原控制器在线且没有训练子进程；正式七景及独立评分未完成，不能据源训练指标判断目标识别性能。下方早期“训练待执行”为历史排队记录。 [源训练审计](source_training_audit.json)
+
+## 已训练模型的剩余预测转常规 GPU3
+
+复用已完成原30轮/7410步及原权重，剩余cross_rx、cross_both七景和独立评分使用原科学release。仅在旧控制器CPU空CUDA、无子进程、两个预测均未开始时交接；GPU3总数最多3，准入前至少12000 MiB。不重训、不读取目标成绩作调度依据，保留原输出和日志。
+
+控制代码：`6e6be6f3db354e7809ed186d490c634ed4add999`；科学代码：`36b13adad5b091bf1f8f4aa7934c403e3b50d8eb`。命令：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.phase_supervised_remaining_dispatch --root /home/szu2070436088/2510044040/CV-SincNet --legacy-release /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01-release --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --commit 6e6be6f3db354e7809ed186d490c634ed4add999`。
