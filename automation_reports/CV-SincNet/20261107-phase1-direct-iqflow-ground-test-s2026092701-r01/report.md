@@ -3,7 +3,7 @@
 - run_id：`20261107-phase1-direct-iqflow-ground-test-s2026092701-r01`
 - group_id：`phase1-direct-iqflow`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING；固定第 20 轮模型已开始七景预测。
 
 ## 目的与对照
 
@@ -21,8 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
-源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+源训练和源预测检查完成，七景预测 PID 524635 已核实。全部七景预测固定后独立 truth-last 评分；目前没有正式身份识别结果。
 
 ## 交接
 

@@ -3,7 +3,7 @@
 - run_id：`20261107-phase1-direct-iqflow-source-s2026092701-r01`
 - group_id：`phase1-direct-iqflow`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING；N607 GPU 2 控制器 PID 3992852、训练 PID 3993062 已核实。
+- 当前登记状态：TRAINING_COMPLETE；N607 GPU 2 已完成固定 20 轮，七景预测已启动。
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-N607 真实源 checkpoint smoke 使用 64 个源 ID × 三视图，通过；固定 20 轮 GPU 训练进行中。2026-11-07 23:28 香港时间核实训练日志已完成 18 轮，末轮损失 0.00400094，训练 PID 3993062 仍在运行。训练不读取 F、TX 标签、V 或目标，七景预测和独立 truth-last 尚未开始，暂无识别结果。损失不是身份识别准确率。
+N607 真实源 checkpoint smoke 使用 64 个源 ID × 三视图，通过；固定 20 轮训练已完成，末轮损失 0.00399045，累计训练 46420.0 秒。训练不读取 F、TX 标签、V 或目标。源 pilot 的 14 个 RX／场景分组中，波形 NMSE 低于 DURA 的组数为 0；DURA 可能见过对应源域。该损失和源波形指标不是身份准确率，不用于取消或改变测试。冻结 checkpoint 的源预测 smoke 通过，七景预测 PID 524635 已启动；暂无正式识别结果。
 
 ## 交接
 
