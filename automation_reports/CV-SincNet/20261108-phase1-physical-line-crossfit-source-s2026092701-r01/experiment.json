@@ -1,0 +1,148 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-physical-line-crossfit-source-s2026092701-r01",
+  "group_id": "phase1-physical-line-crossfit-source",
+  "display_name": "物理步长源域交叉拟合诊断",
+  "description": "在两个互不相交源记录折上交叉拟合单一校正系数，测量源 IQ 波形误差；不产生部署模型或目标预测。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "f-free",
+    "crossfit",
+    "diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261108-phase1-physical-line-source-s2026092701-r01",
+    "20261108-phase1-dura-large-context-stable-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests continued novel and DURA-combinable Phase1 restoration research, F-free/TX-label-free source training, automatic seven-view test and truth-last score.",
+  "code": {
+    "commit": "8aeae433a5da8697159958cc97d226b5cc47be27",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CPU, two threads, CUDA hidden; source-only fixed evaluation",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-physical-line-crossfit-source-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "672 previously explored source pilot records, epoch19 paired IQ",
+    "representation": "source L_s/U_s received and clean IQ; no transmitter truth",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "672 source pilot records disjoint from candidate fit IDs",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ only, transmitter truth not read",
+      "U_s": "source IQ only, transmitter truth hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Equal group stratified disjoint 288/288 source records; source replay matches prior diagnostic",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed source epoch19 seven simulated views"
+  },
+  "permissions": {
+    "regime": "source_only_frozen_evaluation",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Cross-fitted source waveform analysis, not target TX accuracy or deployable model"
+  },
+  "checkpoint": {
+    "initialization": "Fixed final20 source-only StableLargeContextDura and frozen DURA v1",
+    "sources": [
+      "20261108-phase1-dura-large-context-stable-source-s2026092701-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261108-phase1-physical-line-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "Exact source checkpoint provenance; 32768 fit IDs and pilot disjoint; no F, TX truth, V or target",
+    "provenance_verdict": "source-only frozen checkpoints",
+    "selection_rule": "Fixed frozen final20 and prior source line diagnostic; no recovery model selection; foldwise source-only least-squares diagnostic"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "CPU only, two threads, CUDA hidden; preserve all existing jobs",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-physical-line-crossfit-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-physical-line-crossfit-source-s2026092701-r01-launch.log",
+    "local_artifact_root": "E:\\type10-7\\github_publish\\CVS-RFFI-repo\\automation_reports\\CV-SincNet\\20261108-phase1-physical-line-crossfit-source-s2026092701-r01",
+    "launch_command": "nice -n 15 env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-physical-line-crossfit-source-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.physical_line_calibration_probe --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-physical-line-crossfit-source-s2026092701-r01 --commit 8aeae433a5da8697159958cc97d226b5cc47be27",
+    "stop_rule": "Stop on provenance mismatch, nonfinite values, real-source smoke mismatch, output collision or technical failure"
+  },
+  "expected_artifacts": [
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "heldout waveform NMSE",
+      "calibrated vs physical paired counts",
+      "foldwise source-only beta"
+    ],
+    "dimensions": [
+      "576 damaged source records",
+      "two disjoint folds 288 each",
+      "RX4/6 and RX8 x six views"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "source clean paired IQ only, no TX truth"
+  },
+  "rows": [
+    {
+      "row_id": "source-crossfit-calibration",
+      "method": "Two-fold source waveform line calibration diagnostic",
+      "purpose": "Assess conservative physical residual calibration out-of-fold",
+      "config_ref": "experiments/phase1_dura_orthogonal/physical_line_calibration_probe.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "No stochastic model, augmentation, or selection; fixed source pilot and DURA.",
+      "k": null,
+      "scenario": "672 fixed source pilot IDs x their preexisting views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "672 source records; fit and evaluate 576 damaged records, two 288-record folds; CPU two threads",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-physical-line-crossfit-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-physical-line-crossfit-source-s2026092701-r01-launch.log",
+      "command": "nice -n 15 env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-physical-line-crossfit-source-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.physical_line_calibration_probe --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-physical-line-crossfit-source-s2026092701-r01 --commit 8aeae433a5da8697159958cc97d226b5cc47be27",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source IQ only; no F, TX truth, U_s truth, V or target reads, no model updates or deployment artifacts.",
+    "Fixed 672 explored source records; six damaged scenarios stratified into disjoint 288/288 folds with 24 per cell.",
+    "Each fold is evaluated using a single coefficient fitted from the other fold using clean source IQ only.",
+    "Two focused tests and one independent P0/P1 review passed; first batch runs real-checkpoint source-only smoke.",
+    "Results cannot establish TX accuracy and will not change ongoing tests."
+  ],
+  "registered_at": "2026-11-07T23:09:33+00:00"
+}
