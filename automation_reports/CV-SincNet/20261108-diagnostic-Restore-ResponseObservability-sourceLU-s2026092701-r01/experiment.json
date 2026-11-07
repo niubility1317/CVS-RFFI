@@ -1,0 +1,169 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-diagnostic-Restore-ResponseObservability-sourceLU-s2026092701-r01",
+  "group_id": "source-directional-observability-and-response",
+  "display_name": "源域微弱变化的可观察性与恢复响应",
+  "description": "复用 224 条源 IQ 的已冻结响应，按同条模拟 Action 和标量噪声强度预设分箱，检查响应偏差与可观察性代理。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "no-target",
+    "no-fit",
+    "no-neural-forwards",
+    "directional-response"
+  ],
+  "comparison_group_id": "fixed-source-directions-by-action-noise-proxy",
+  "parent_run_ids": [
+    "20261107-diagnostic-Restore-CovarianceResponse-sourceLU-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Existing L_s/U_s source-only diagnostic permission; no OE, V, TX truth or target input.",
+  "code": {
+    "commit": "95b934ef6345f30255db2c70a2726bc04a2d256d",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CPU only, CPU threads2, CUDA disabled, original FP64 action and scalar noise proxy.",
+    "cwd": "releases/20261108-diagnostic-Restore-ResponseObservability-sourceLU-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original R07 draw01 224 fixed source records:35 L_s,189 U_s; seven scenes,32 records each.",
+    "representation": "Original source simulated Action/noise and already frozen four-direction IQ/F0 response statistics.",
+    "contract_ref": "OriginalTriSSLsource_contract/392005/rolecounts6300-56700-27000;R07train63000sameIDset androles/RX/day byID",
+    "physical_ids_ref": "Existing response reference.npz source indices and physical IDs checked against every saved scene.",
+    "label_map_ref": "Unused for scoring. Original F0 default head used only in no-query smoke; continuous source features in numerical objectives.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Original R07 source cache and source response diagnostic fixed before this calculation.",
+    "support_query_ref": "No V/OE/novel/target inputs, no source TX labels.",
+    "leo_config_ref": "Original source R07 draw01.",
+    "actual_training_labels": "No optimization or TX labels. CPU calculation reuses source simulation Action/noise and saved model response statistics.",
+    "augmentation": "Existing fixed 1%-RMS perturbations; no new synthesis.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "read-only-source-simulator-and-saved-responses",
+    "query_use": "224 pre-existing L_s/U_s source rows and their saved IQ/F0 response statistics only. No target, V/OE/novel, TX truth or model forward.",
+    "external_method_exception": null,
+    "claim_scope": "Synthetic-direction scalar-white-noise proxy and observed fixed G/F0 response association, not identity preservation, deployable source-action access, causal gain or theory bound."
+  },
+  "checkpoint": {
+    "initialization": "None: no models loaded, no forward or optimizer.",
+    "sources": [
+      "20261107-diagnostic-Restore-CovarianceResponse-sourceLU-s2026092701-r01/4f1551ce4d81f4f3d1cade52bebaaeabe1b7316e fixed source responses and original R07 source draw01 simulator trace."
+    ],
+    "contract_check_ref": "Original source diagnostic status/source-only fields, ID/scene alignment, original cache contract and actual two-row matrix smoke.",
+    "provenance_verdict": "Source L_s/U_s only; saved fixed responses are derived from previously frozen source-only models. No target or V/OE reads.",
+    "selection_rule": "All fixed 7 scenes × 4 directions × 3 models, predefined proxy bins [0,1),[1,9),[9,25),[25,∞); no model selection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-response-observability",
+    "gpu_policy": "CPU only, CUDA_VISIBLE_DEVICES empty, two CPU threads; no GPU process.",
+    "remote_run_root": "runs/20261108-diagnostic-Restore-ResponseObservability-sourceLU-s2026092701-r01",
+    "remote_log_root": "logs/20261108-diagnostic-Restore-ResponseObservability-sourceLU-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261108-diagnostic-Restore-ResponseObservability-sourceLU-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.source_response_observability --root /home/szu2070436088/2510044040/CV-SincNet --commit 95b934ef6345f30255db2c70a2726bc04a2d256d",
+    "stop_rule": "Source provenance or ID/scene alignment mismatch, nonfinite Action/variance/statistics, failed two-row analytic smoke or process error: preserve and stop; no target or model fallback."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "results.json",
+    "complete.json",
+    "stdout.log PRIVATE"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Proxy ||A_true delta||² / scalar noise variance; fixed bins 0,1,9,25; sample counts and energy-weighted IQ/F0 projection and response error.",
+      "Seven scenes and all-source pooled, four synthetic directions and three previously frozen models. Scenes have distinct records."
+    ],
+    "dimensions": [
+      "source scene",
+      "synthetic direction",
+      "frozen model",
+      "predefined action/noise proxy interval"
+    ],
+    "prediction_ref": "No new predictions.",
+    "scorer_ref": "No TX truth or independent identity scoring; separate arithmetic check against archived response vectors."
+  },
+  "rows": [
+    {
+      "row_id": "source_response_noise_proxy",
+      "method": "source_action_noise_proxy_association",
+      "purpose": "Test whether weak source perturbations fall in low action-to-noise regimes and whether fixed response errors vary across those bins.",
+      "config_ref": "experiments.pamf_phase3_restoration.source_response_observability.py",
+      "resolved_config_ref": "runs/20261108-diagnostic-Restore-ResponseObservability-sourceLU-s2026092701-r01/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110707,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026110707
+      },
+      "seed_notes": "Exact previously fixed original draw01,224 source records and four 1% directions.",
+      "k": null,
+      "scenario": "Source L_s/U_s seven simulation scenes only, no target.",
+      "optimizer": "NONE",
+      "lr": 0.001,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "224 source rows × four fixed directions; source simulator traces and prior response statistics only; zero neural/optimizer calls.",
+      "output_root": "runs/20261108-diagnostic-Restore-ResponseObservability-sourceLU-s2026092701-r01",
+      "log_path": "logs/20261108-diagnostic-Restore-ResponseObservability-sourceLU-s2026092701-r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.source_response_observability --root /home/szu2070436088/2510044040/CV-SincNet --commit 95b934ef6345f30255db2c70a2726bc04a2d256d",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "results.json",
+        "complete.json",
+        "stdout.log PRIVATE"
+      ]
+    }
+  ],
+  "notes": [
+    "All bin thresholds fixed before this calculation; the threshold9 follows the earlier source scalar-noise Fisher proxy, not target tuning.",
+    "Recorded true simulator Action and scalar variance are used only for source diagnosis; variance is a model proxy and source counterfactuals reuse the same noise.",
+    "Small fixed source samples and distinct source records per scene do not establish a causal effect, TX authenticity or information limit.",
+    "Two focused tests passed; independent P0/P1 identified Torch/NumPy bridge incompatibility, fixed and targeted re-review passed. First two source rows are an actual matrix smoke."
+  ],
+  "record_type": "managed_run",
+  "registered_at": "2026-11-07T18:06:59+00:00"
+}
