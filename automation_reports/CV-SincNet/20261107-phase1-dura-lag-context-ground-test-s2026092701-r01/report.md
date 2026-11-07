@@ -3,7 +3,7 @@
 - run_id：`20261107-phase1-dura-lag-context-ground-test-s2026092701-r01`
 - group_id：`phase1-dura-lag-context`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：QUEUED；源训练固定最终轮后自动预测。
+- 当前登记状态：RUNNING；源训练最终轮已冻结，七景预测 PID 512659 已启动。
 
 ## 目的与对照
 

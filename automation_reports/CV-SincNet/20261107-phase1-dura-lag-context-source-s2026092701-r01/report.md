@@ -3,7 +3,7 @@
 - run_id：`20261107-phase1-dura-lag-context-source-s2026092701-r01`
 - group_id：`phase1-dura-lag-context`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING；N607 GPU 0 源训练运行中。
+- 当前登记状态：TRAINING_COMPLETE；五轮完成，七景预测运行中。
 
 ## 目的与对照
 
@@ -26,6 +26,8 @@
 GPU 0 预检空闲 18501 MiB，已有两个其他计算进程；队列须继续核查容量，保留其他 owner。训练结束后自动进行 Tri-SIG-TIME SSL Main split 固定默认头的七景预测，每景 168000 条，全部预测固定后独立 truth-last；与固定 DURA 逐记录配对，并记录 TX/RX/day。预测或评分不得反馈到训练和选模。训练或预测发生系统性错误、非有限值、协议错误或输出冲突时立即停止本 run 并保留证据；不因模型分数选择性停止。
 
 11 项聚焦检查、真实源 IQ 与 DURA checkpoint 的 6 步 GPU 检查通过；一次独立 P0/P1 审查无阻断问题。N607 真实 checkpoint 与源 IQ 的 64 ID × 三视图 smoke 已通过，记录 TX/F/V/目标读取均为 0 且 DURA 冻结；controller PID 494858、trainer PID 495033 已核实。源相关和波形误差不是身份识别结果，尚无正式性能结论。
+
+五轮已完成，最终训练损失 0.0224979。固定源 pilot 的 14 个 RX／场景组合中，相对 DURA 的波形误差有 12 组下降、1 组相同、1 组上升；DURA 可能见过对应源域，波形误差不能推定身份识别收益。七景预测 PID 512659 已启动，待全部预测固定后独立评分。
 
 ## 交接
 
