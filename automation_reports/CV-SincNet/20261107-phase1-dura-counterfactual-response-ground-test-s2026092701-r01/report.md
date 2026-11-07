@@ -3,7 +3,7 @@
 - run_id：`20261107-phase1-dura-counterfactual-response-ground-test-s2026092701-r01`
 - group_id：`phase1-dura-counterfactual-response`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：QUEUED；需先完成源训练，尚无本版本目标预测或识别分数。
+- 当前登记状态：ANALYZED；完整七景预测和独立评分完成。
 
 ## 目的与对照
 
@@ -21,8 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
-源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+低郊区、中城区和低城区相对 DURA 分别提高 0.0530、0.1065、0.1583 个百分点，净多对 89、179、266 条；其他三个受损场景分别下降 0.2786、0.1274、0.2399 个百分点。clean 净多对 1 条。两种 3% 口径均仅 1/6 达标，是局部正收益，不是整体替代或目标达成。详见 [完整七景及分组分析](analysis.md)。
 
 ## 交接
 
