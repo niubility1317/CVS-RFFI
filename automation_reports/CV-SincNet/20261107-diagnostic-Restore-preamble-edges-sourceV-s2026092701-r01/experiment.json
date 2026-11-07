@@ -1,0 +1,163 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-diagnostic-Restore-preamble-edges-sourceV-s2026092701-r01",
+  "group_id": "source-frozen-preamble-edge-attribution",
+  "display_name": "包首与后段 IQ 对源端识别的分开影响",
+  "description": "相同源 V480 七景，分开替换采样点 0–79 和 160–255 的误差，复用已有冻结矩阵的 8 个端点。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-V-only",
+    "fixed-TriSIGTIME-SSL",
+    "preamble",
+    "CPU-only",
+    "no-training"
+  ],
+  "comparison_group_id": "source-V480-repeat-contrast-front-tail",
+  "parent_run_ids": [
+    "20261107-diagnostic-Restore-preamble-component-sourceV-s2026092701-r01",
+    "20261102-diagnostic-Restore-CovarianceDetail-sourceV-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User comprehensive recoverability analysis, frozen original source V validation only. No source V in training, no target/OE/novel/TX.",
+  "code": {
+    "commit": "096bee5a981303c69063813c60ae3935e6395df7",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI, CPU two threads nice10 CUDA empty, FP64 projection and FP32 frozen F0.",
+    "cwd": "releases/20261107-diagnostic-Restore-preamble-edges-sourceV-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 source contract; existing R07 fixed1800 V/7 frozen validation views",
+    "representation": "Same R07 V480 ×7 cached BF IQ and source clean IQ. Repeat/contrast fixed [80:160]; front [0:80]; tail [160:256].",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "Original five RX x three day strata, first 32 per 120 from original order, same 480 original physical IDs all seven views.",
+    "label_map_ref": "Independent source V scorer after all 112 cells. Exact same source physical IDs, RX and day.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original six known sourceTX; V trueTX validation only, no train/selection",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse VALIDATED_ONCE R07 handles; fixed original f29 V reference and BF E30/F0 E50 provenance.",
+    "support_query_ref": "Fixed 480 original V, no target/support/query.",
+    "leo_config_ref": "ExistingR07 validation_actions7; receiver2026101902 vs trainingreceiver2026101911; no regenerated views.",
+    "actual_training_labels": "No training. Two real L_s clean/received pairs for smoke. V frozen diagnosis only.",
+    "augmentation": "Reuse all seven original source V observations, no regenerated signals.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "frozen-source-V-oracle-IQ-attribution",
+    "query_use": "Source clean IQ used only to construct the counterfactual. No target, OE, novel, fit, or selection.",
+    "external_method_exception": null,
+    "claim_scope": "Conditional true TX contributions with fixed baseline, fixed basis and oracle IQ. No deployable arm or theoretical limit."
+  },
+  "checkpoint": {
+    "initialization": "Frozen original F0, cached original blind BF IQ. No G load or update.",
+    "sources": [
+      "EXACT_FROZEN_SOURCE_IQ 20261102-diagnostic-Restore-CovarianceDetail-sourceV-s2026092701-r01/f29b31417ce98a280eac25ea2fa78e0c49a5f0ff",
+      "FROZEN_F0 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d original E50/11100/default head",
+      "EXACT_REUSED_SOURCE_CONTROLS 20261107-diagnostic-Restore-preamble-component-sourceV-s2026092701-r01/7bb818da2e7a6084368e18693bfc4b102f58a780"
+    ],
+    "contract_check_ref": "Original validated R07 source handles and exact cached reference/scene physical IDs.",
+    "provenance_verdict": "Frozen same-source BF and F0. No G training, target or OE/novel/TX access.",
+    "selection_rule": "All 16 masks for every one of the seven source scenes. No fit or model selection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-preamble-edges",
+    "gpu_policy": "CPU2 nice10, CUDA empty. No additional GPU process.",
+    "remote_run_root": "runs/20261107-diagnostic-Restore-preamble-edges-sourceV-s2026092701-r01",
+    "remote_log_root": "logs/20261107-diagnostic-Restore-preamble-edges-sourceV-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-diagnostic-Restore-preamble-edges-sourceV-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.preamble_edges_source --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-diagnostic-Restore-preamble-edges-sourceV-s2026092701-r01-release/inputs.json --commit 096bee5a981303c69063813c60ae3935e6395df7",
+    "stop_rule": "Wrong source, failed real smoke, wrong F0, nonfinite or non-orthogonal correction: preserve all output, no automatic retry."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "runtime_observation.json",
+    "smoke.json",
+    "reference.npz PRIVATE",
+    "7 scene.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "terminal.json",
+    "source_truth.json aggregate only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "TX accuracy, repairs/damage and original clean-correct retention",
+      "Relative IQ correction energy for each orthogonal component"
+    ],
+    "dimensions": [
+      "V480, same 32 per RX/day",
+      "seven views",
+      "all sixteen masks"
+    ],
+    "prediction_ref": "26880 new rows; 26880 original three-component predictions retained verbatim (counting raw clean in each scene).",
+    "scorer_ref": "Independent source truth-last under shared CPU lock, after full matrix, original 56 decisions and energy split verification."
+  },
+  "rows": [
+    {
+      "row_id": "preamble_front_tail_factorial",
+      "method": "frozen_oracle_front_tail_attribution",
+      "purpose": "Distinguish clean corrections to the packet front and tail, preserving earlier repeat/contrast factors.",
+      "config_ref": "experiments.pamf_phase3_restoration.preamble_edges_source.py",
+      "resolved_config_ref": "runs/20261107-diagnostic-Restore-preamble-edges-sourceV-s2026092701-r01/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101902
+      },
+      "seed_notes": "Fixed original record order and original F0; no new RNG or phase selection.",
+      "k": null,
+      "scenario": "Original source V480 x7, five inference-only readouts.",
+      "optimizer": "NONE",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "CPU2, fixed 480 × 7 × 8 new hybrid rows.",
+      "output_root": "runs/20261107-diagnostic-Restore-preamble-edges-sourceV-s2026092701-r01",
+      "log_path": "logs/20261107-diagnostic-Restore-preamble-edges-sourceV-s2026092701-r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.preamble_edges_source --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-diagnostic-Restore-preamble-edges-sourceV-s2026092701-r01-release/inputs.json --commit 096bee5a981303c69063813c60ae3935e6395df7",
+      "expected_artifacts": [
+        "launch.json",
+        "runtime_observation.json",
+        "smoke.json",
+        "reference.npz PRIVATE",
+        "7 scene.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "terminal.json",
+        "source_truth.json aggregate only"
+      ]
+    }
+  ],
+  "notes": [
+    "Old outside-only mask splits into two disjoint intervals. Original decisions and energy are matched per physical record.",
+    "Clean-dependent source oracle. No deployment candidate, target access or automatic follow-on training."
+  ],
+  "registered_at": "2026-11-07T03:18:57+00:00"
+}
