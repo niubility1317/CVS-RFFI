@@ -43,7 +43,7 @@ def factory(arm):configuration(arm);return scratch_covariance_detail(2026092701)
 
 
 def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.bind_prior,smoke_check=None,
-          training_readout=None):
+          training_readout=None,smoke_gradient_check=None):
     started=time.perf_counter();c=validate_source(read(args.inputs));old,roles=trial.source(args)
     cfg=config_for(args.arm);G=build(args.arm);prior_identity=bind_prior(args.root,G.physical);G=G.to('cuda:0')
     F,identity=load_F0(c,'cuda:0');trial.main_eval.valid_identity(identity);scale=load_scale(args.root).to('cuda:0')
@@ -83,6 +83,7 @@ def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.b
         extra_smoke=smoke_check(G,first['received'][take],restored) if smoke_check else {}
     restored,aux,detail,unused=detail_pass(first['received'][take],clean[take],target2,take,0);detail.mean().backward()
     if any(p.grad is not None for p in G.physical.parameters()) or not G.detail.output.weight.grad.abs().sum()>0:raise ValueError('Detail loss must update detail only')
+    if smoke_gradient_check is not None:extra_smoke.update(smoke_gradient_check(G))
     G.zero_grad(set_to_none=True)
     physical,unused=source_action_loss(aux,first['kernel'][take],first['coefficients'][take],first['variance'][take]);physical.mean().backward()
     if any(p.grad is not None for p in G.detail.parameters()):raise ValueError('Physical loss reached detail branch')
