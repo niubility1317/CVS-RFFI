@@ -1,3 +1,4 @@
 {"at": "2026-11-07T00:23:51+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-07T00:28:41+00:00", "status": "ANALYZED", "note": "VERIFIED CPU phase/ramp diagnostic, 28 paired cells, zero TX/target/training, exact previous control decisions and worker exit 0.", "evidence": ["analysis.md"], "row_id": "fixed_source_observation_phase_ramp"}
 {"at": "2026-11-07T00:28:41+00:00", "status": "ANALYZED", "note": "VERIFIED CPU phase/ramp diagnostic, 28 paired cells, zero TX/target/training, exact previous control decisions and worker exit 0.", "evidence": ["analysis.md"], "row_id": null}
+{"at": "2026-11-07T00:38:10+00:00", "status": "ANALYZED", "note": "VERIFIED source V120 true-TX reanalysis after all 28 saved prediction cells; no new models, predictions, IQ, training or target access.", "evidence": ["source_truth_reanalysis.json"], "row_id": "fixed_source_observation_phase_ramp"}
