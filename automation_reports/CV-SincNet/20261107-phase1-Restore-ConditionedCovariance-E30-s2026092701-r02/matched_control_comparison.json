@@ -1,7 +1,5 @@
 {
-  "status": "PENDING_FIXED_COMPARISON",
-  "role_not_complete": "reference",
-  "reason": "fixed final30 training absent",
+  "status": "VERIFIED_MATCHED_FIXED_PREDICTIONS",
   "spec": {
     "candidate": [
       "20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r02",
@@ -14,7 +12,100 @@
       "14e7315d6da5d6fe242e7568f20c97ade064e8d9"
     ]
   },
-  "new_truth_reads": 0,
+  "combined": [
+    {
+      "count": 168000,
+      "reference_correct": 145302,
+      "candidate_correct": 145527,
+      "repairs": 429,
+      "damage": 204,
+      "net": 225,
+      "view": "clean",
+      "reference_accuracy": 86.48928571428571,
+      "candidate_accuracy": 86.62321428571428,
+      "delta_pp": 0.13392857142857142
+    },
+    {
+      "count": 168000,
+      "reference_correct": 140663,
+      "candidate_correct": 140425,
+      "repairs": 3203,
+      "damage": 3441,
+      "net": -238,
+      "view": "practical_high",
+      "reference_accuracy": 83.72797619047618,
+      "candidate_accuracy": 83.58630952380952,
+      "delta_pp": -0.14166666666666666
+    },
+    {
+      "count": 168000,
+      "reference_correct": 138444,
+      "candidate_correct": 138160,
+      "repairs": 3732,
+      "damage": 4016,
+      "net": -284,
+      "view": "practical_mid",
+      "reference_accuracy": 82.40714285714286,
+      "candidate_accuracy": 82.23809523809524,
+      "delta_pp": -0.16904761904761906
+    },
+    {
+      "count": 168000,
+      "reference_correct": 135791,
+      "candidate_correct": 135363,
+      "repairs": 4226,
+      "damage": 4654,
+      "net": -428,
+      "view": "practical_low_suburban",
+      "reference_accuracy": 80.82797619047619,
+      "candidate_accuracy": 80.57321428571429,
+      "delta_pp": -0.25476190476190474
+    },
+    {
+      "count": 168000,
+      "reference_correct": 138799,
+      "candidate_correct": 138322,
+      "repairs": 3693,
+      "damage": 4170,
+      "net": -477,
+      "view": "practical_high_urban",
+      "reference_accuracy": 82.61845238095238,
+      "candidate_accuracy": 82.33452380952382,
+      "delta_pp": -0.2839285714285714
+    },
+    {
+      "count": 168000,
+      "reference_correct": 128153,
+      "candidate_correct": 126010,
+      "repairs": 5367,
+      "damage": 7510,
+      "net": -2143,
+      "view": "practical_mid_urban",
+      "reference_accuracy": 76.28154761904761,
+      "candidate_accuracy": 75.00595238095238,
+      "delta_pp": -1.275595238095238
+    },
+    {
+      "count": 168000,
+      "reference_correct": 116744,
+      "candidate_correct": 112707,
+      "repairs": 6805,
+      "damage": 10842,
+      "net": -4037,
+      "view": "practical_low_urban",
+      "reference_accuracy": 69.49047619047619,
+      "candidate_accuracy": 67.0875,
+      "delta_pp": -2.4029761904761906
+    }
+  ],
+  "candidate_cells_checked": 42,
+  "reference_cells_checked": 42,
+  "all_predictions_checked_before_truth": true,
+  "raw_DURA_decision_differences": 0,
+  "F0_source_commit": "3ff8f4b7e85b5608f5b45350aa18081499a7ef1d",
   "new_neural_forwards": 0,
-  "reference_display_name": "先验失配均值恢复版"
+  "optimizer_updates": 0,
+  "source_or_target_fitting": false,
+  "reference_display_name": "先验失配均值恢复版",
+  "independent_published_group_accuracy_max_error": 0.0
 }
