@@ -604,3 +604,7 @@ VERIFIED / RUNNING。CPU 预测进程 3944144 已通过真实 L_s 两条检查�
 ## 2026-11-07 已知模拟信道后的身份信息损失
 
 给定完整模拟信道和真实噪声，固定高斯恢复在低档城区保住 425/474 条 raw clean 正确记录。丢失 49 条，其中 45 条来自实测信噪比较低的一半（不超过 8.50 dB）。 丢失组与保留组 clean 分数差中位数接近。 [信噪比、频响及 clean 分数分层](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-action-factor-sourceV-s2026092701-r01/known_operator_error_breakdown.md)
+
+## 2026-11-07 已知信道高斯恢复的收缩与噪声
+
+固定源 V480 的低档城区，已知模拟信道和噪声时原高斯恢复识别对 426 条。只移除实际噪声对输出的贡献后对 452 条，只移除高斯收缩后对 458 条。raw clean 为 474 条。 低档城区原先丢失的 clean 正确中，两种单项去除各自共同修复 21 条。 [七景与信噪比分层](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-posterior-bias-noise-sourceV-s2026092701-r01/analysis.md)

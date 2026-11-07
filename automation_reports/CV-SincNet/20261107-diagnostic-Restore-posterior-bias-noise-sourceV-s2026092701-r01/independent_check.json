@@ -1,0 +1,65 @@
+{
+  "status": "PASS",
+  "code_commit": "d10d70012b2a2fc8a5b7f58b46d2d5b642243717",
+  "cells": 21,
+  "same_source_records": 480,
+  "original_controls_exact_ids": true,
+  "known_control_max_IQ_NMSE_difference": 0.0,
+  "known_control_decision_changes": 0,
+  "NMSE_decomposition_max_error": 3.54706043426134e-08,
+  "linear_decomposition_max_error": 8.881784197001252e-16,
+  "energies": [
+    {
+      "scene": "clean",
+      "shrinkage_nmse": 1.1760552710789623e-14,
+      "noise_leakage_nmse": 0.0,
+      "twice_inner": 0.0,
+      "noise_to_shrinkage_energy_ratio": 0.0
+    },
+    {
+      "scene": "practical_high",
+      "shrinkage_nmse": 0.0038279111618971223,
+      "noise_leakage_nmse": 0.0011363607213041268,
+      "twice_inner": -6.870801452954509e-06,
+      "noise_to_shrinkage_energy_ratio": 0.2968618322743268
+    },
+    {
+      "scene": "practical_mid",
+      "shrinkage_nmse": 0.005976133621153701,
+      "noise_leakage_nmse": 0.00384070360212839,
+      "twice_inner": 6.535128730628433e-05,
+      "noise_to_shrinkage_energy_ratio": 0.6426736491522652
+    },
+    {
+      "scene": "practical_low_suburban",
+      "shrinkage_nmse": 0.007583362300762874,
+      "noise_leakage_nmse": 0.006307253971920212,
+      "twice_inner": 0.00013762119139359866,
+      "noise_to_shrinkage_energy_ratio": 0.8317226214136851
+    },
+    {
+      "scene": "practical_high_urban",
+      "shrinkage_nmse": 0.005979758871185825,
+      "noise_leakage_nmse": 0.003091193253907361,
+      "twice_inner": 1.2864331514638624e-05,
+      "noise_to_shrinkage_energy_ratio": 0.516942793262558
+    },
+    {
+      "scene": "practical_mid_urban",
+      "shrinkage_nmse": 0.018517775673166023,
+      "noise_leakage_nmse": 0.01320368708313887,
+      "twice_inner": 0.00021561840755787,
+      "noise_to_shrinkage_energy_ratio": 0.7130277046325947
+    },
+    {
+      "scene": "practical_low_urban",
+      "shrinkage_nmse": 0.02913062120590736,
+      "noise_leakage_nmse": 0.020861811725714694,
+      "twice_inner": 9.695820747791187e-05,
+      "noise_to_shrinkage_energy_ratio": 0.7161471627485979
+    }
+  ],
+  "TX_reads": 0,
+  "target_reads": 0,
+  "new_NN_calls": 0
+}

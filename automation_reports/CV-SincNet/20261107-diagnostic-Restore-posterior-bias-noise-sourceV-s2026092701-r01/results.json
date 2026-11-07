@@ -1,0 +1,264 @@
+{
+  "status": "SOURCE_POSTERIOR_BIAS_NOISE_COMPLETE",
+  "run_id": "20261107-diagnostic-Restore-posterior-bias-noise-sourceV-s2026092701-r01",
+  "code_commit": "d10d70012b2a2fc8a5b7f58b46d2d5b642243717",
+  "F0_identity": {
+    "model": "original_F0_E50",
+    "parameters": 232993,
+    "epoch": 50,
+    "updates": 11100,
+    "model_seed": 2026092701,
+    "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "base_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release",
+    "source_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "source_row": "main_split-repl-shuffled_time-3view-s2026092701",
+    "source_code_commit": "3ff8f4b7e85b5608f5b45350aa18081499a7ef1d"
+  },
+  "frozen_BF_code": "bf29554a03e28a012eaaa134f5c7b3f7856f2268",
+  "reference_code": "f29b31417ce98a280eac25ea2fa78e0c49a5f0ff",
+  "control_code": "1065b7fd515402862a8b47bca8bddf597d823b54",
+  "methods": [
+    "known_gaussian",
+    "noise_removed",
+    "shrinkage_removed"
+  ],
+  "views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "source_V_records": 480,
+  "source_V_views": 3360,
+  "F0_new_rows": 10080,
+  "F0_smoke_rows": 6,
+  "F0_clean_rows_reused": 480,
+  "records": [
+    {
+      "scene": "clean",
+      "method": "known_gaussian",
+      "count": 480,
+      "Fclean_correct": 480,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 1.2163537217103588e-14,
+      "feature_cosine_distance": 3.104408582051595e-09
+    },
+    {
+      "scene": "clean",
+      "method": "noise_removed",
+      "count": 480,
+      "Fclean_correct": 480,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 1.2163537217103588e-14,
+      "feature_cosine_distance": 3.104408582051595e-09
+    },
+    {
+      "scene": "clean",
+      "method": "shrinkage_removed",
+      "count": 480,
+      "Fclean_correct": 480,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.0,
+      "feature_cosine_distance": 3.973642985026042e-09
+    },
+    {
+      "scene": "practical_high",
+      "method": "known_gaussian",
+      "count": 480,
+      "Fclean_correct": 479,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.004971142683643848,
+      "feature_cosine_distance": 0.0012271678696076074
+    },
+    {
+      "scene": "practical_high",
+      "method": "noise_removed",
+      "count": 480,
+      "Fclean_correct": 478,
+      "repairs": 0,
+      "damage": 1,
+      "iq_nmse": 0.0038279111639212713,
+      "feature_cosine_distance": 0.0006511037548383077
+    },
+    {
+      "scene": "practical_high",
+      "method": "shrinkage_removed",
+      "count": 480,
+      "Fclean_correct": 480,
+      "repairs": 1,
+      "damage": 0,
+      "iq_nmse": 0.0011363607248010036,
+      "feature_cosine_distance": 0.0006218353907267252
+    },
+    {
+      "scene": "practical_mid",
+      "method": "known_gaussian",
+      "count": 480,
+      "Fclean_correct": 476,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.009751485926487172,
+      "feature_cosine_distance": 0.003247366224726041
+    },
+    {
+      "scene": "practical_mid",
+      "method": "noise_removed",
+      "count": 480,
+      "Fclean_correct": 479,
+      "repairs": 3,
+      "damage": 0,
+      "iq_nmse": 0.0059761336081313255,
+      "feature_cosine_distance": 0.001196374868353208
+    },
+    {
+      "scene": "practical_mid",
+      "method": "shrinkage_removed",
+      "count": 480,
+      "Fclean_correct": 479,
+      "repairs": 3,
+      "damage": 0,
+      "iq_nmse": 0.003840703602084735,
+      "feature_cosine_distance": 0.001842978224158287
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "known_gaussian",
+      "count": 480,
+      "Fclean_correct": 468,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.013752995055983774,
+      "feature_cosine_distance": 0.004435720418890317
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "noise_removed",
+      "count": 480,
+      "Fclean_correct": 472,
+      "repairs": 7,
+      "damage": 3,
+      "iq_nmse": 0.007583362300344258,
+      "feature_cosine_distance": 0.0016275619467099507
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "shrinkage_removed",
+      "count": 480,
+      "Fclean_correct": 477,
+      "repairs": 9,
+      "damage": 0,
+      "iq_nmse": 0.006307253995085678,
+      "feature_cosine_distance": 0.0026008124152819318
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "known_gaussian",
+      "count": 480,
+      "Fclean_correct": 472,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.009058087755935655,
+      "feature_cosine_distance": 0.002604080115755399
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "noise_removed",
+      "count": 480,
+      "Fclean_correct": 477,
+      "repairs": 5,
+      "damage": 0,
+      "iq_nmse": 0.0059797588591285,
+      "feature_cosine_distance": 0.0011256178220113119
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "shrinkage_removed",
+      "count": 480,
+      "Fclean_correct": 475,
+      "repairs": 4,
+      "damage": 1,
+      "iq_nmse": 0.003091193283883816,
+      "feature_cosine_distance": 0.0013651277869939805
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "known_gaussian",
+      "count": 480,
+      "Fclean_correct": 455,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.031505844552157214,
+      "feature_cosine_distance": 0.010490572452545166
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "noise_removed",
+      "count": 480,
+      "Fclean_correct": 466,
+      "repairs": 18,
+      "damage": 7,
+      "iq_nmse": 0.018517775851432817,
+      "feature_cosine_distance": 0.005075801412264506
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "shrinkage_removed",
+      "count": 480,
+      "Fclean_correct": 467,
+      "repairs": 14,
+      "damage": 2,
+      "iq_nmse": 0.013203687190131557,
+      "feature_cosine_distance": 0.005104796836773554
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "known_gaussian",
+      "count": 480,
+      "Fclean_correct": 429,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.04989547501172638,
+      "feature_cosine_distance": 0.019877317051092785
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "noise_removed",
+      "count": 480,
+      "Fclean_correct": 455,
+      "repairs": 32,
+      "damage": 6,
+      "iq_nmse": 0.02913062144880314,
+      "feature_cosine_distance": 0.00928203264872233
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "shrinkage_removed",
+      "count": 480,
+      "Fclean_correct": 462,
+      "repairs": 34,
+      "damage": 1,
+      "iq_nmse": 0.020861812012299197,
+      "feature_cosine_distance": 0.009133665884534518
+    }
+  ],
+  "known_simulator_and_clean_IQ_diagnostic": true,
+  "TX_labels_read": 0,
+  "OE_reads": 0,
+  "novel_reads": 0,
+  "target_inputs": 0,
+  "optimizer_updates": 0,
+  "model_state_updates": 0,
+  "G_estimator_rows": 0,
+  "CPU_threads": 2,
+  "new_deployment_candidate": false,
+  "theoretical_ceiling": false,
+  "seconds": 91.28056379704503
+}
