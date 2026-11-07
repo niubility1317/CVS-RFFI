@@ -1,0 +1,208 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-Restore-SignedCovariance-E30-s2026092701-r01",
+  "group_id": "source-signed-spectral-covariance-single30",
+  "display_name": "双向源协方差谱适配恢复器，从零单阶段30轮",
+  "description": "固定源协方差top64方向，观测条件化预测有正有负的softsign系数，初始保持原C。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "original-ground-TriSIGTIME-SSL-Main",
+    "signed-covariance",
+    "source-F-guided",
+    "scratch-single30",
+    "automatic-Main7"
+  ],
+  "comparison_group_id": "source-single30-positive-diagonal-vs-signed-spectral-covariance",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "User permits large new recovery architectures, source-only L_s/U_s scratch single30 and separate frozen continuous-F0 guidance. GPU6 chosen under persistent authorization: at most one task GPU process, total<=5. Wait current predecessor last GPU stage; no task stopped.",
+  "code": {
+    "commit": "8e85df52cd0cab3f997ceb30fafefa81258e408b",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI/Torch2.1/NumPy2 bridge-safe; FP32 physical/confidence/F0, differentiable FP64 posterior, TF32 off.",
+    "cwd": "releases/20261107-phase1-Restore-SignedCovariance-E30-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "Original R07 L_s6300/U_s56700 IQ and simulated Action/noise; original global and existing other-RX source moments. Top64 mode factor is algebra from those covariance matrices, no new IQ fit.",
+    "contract_ref": "OriginalTriSSLsource_contract/392005/rolecounts6300-56700-27000;R07train63000sameIDset androles/RX/day byID",
+    "physical_ids_ref": "R07train/physical_ids.npy roles.npy;validatedoriginalsourceLUcache IDs foralignment;officialMain source-disjoint viewindexes",
+    "label_map_ref": "Gtrainnone;frozenF0originalsixclassorder,truthonly originalCPUscorerafterallrow42cells fixed",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Original VALIDATED_ONCE source capsule/split and physical binding, original full IQ moments. Reuse pre-V fixed ten source-only receiver-prior statistics from r02.",
+    "support_query_ref": "No targettraining/support/PCD/unknownrole. OriginalMain two populations168000,all7perrowfixedbefore independenttruth.",
+    "leo_config_ref": "R07sourcecache20trainrealizations/2026101912augmentation;officialMain frozen7observations",
+    "actual_training_labels": "Zero TX labels. Physical uses source simulator Action/noise; signed-mode CNN uses actual noisy paired IQ/STFT/original frozen F0 continuous features.",
+    "augmentation": "Original R07 draws/order. Fifteen odd epochs full prior and fifteen even epochs excluded-RX prior, with unchanged source exposure."
+  },
+  "permissions": {
+    "regime": "source-only-scratch-signed-spectral-covariance-F0-guidance",
+    "query_use": "Source RX selects training prior/mode factor only. Deployed G consumes current IQ and its fixed source buffers. No V/OE/target fit or TX truth.",
+    "external_method_exception": null,
+    "claim_scope": "Composite low-rank signed covariance/global-head/softsign architecture with full matched single30 source exposure. No isolated activation claim or Main benefit before full frozen testing."
+  },
+  "checkpoint": {
+    "initialization": "All 1340293 learned G parameters scratch: 1230341 physical seed2026092701 and 109952 confidence seed2026092702. Exact zero initial covariance update; no old G weights.",
+    "sources": [
+      "FROZEN_FEATURE_ONLY original Tri-SIG-TIME SSL 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d E50/11100 default head",
+      "DATA_ONLY R07 original L_s6300/U_s56700 IQ and simulator Action/noise",
+      "DATA_ONLY original source63000 mean/full C a3a90b55a73702954c453eec9c1ad17fec24d87f",
+      "DATA_ONLY source fused160 variance f57c54cad7491e3e8a36f7ea51a9caa13a3a0ab9",
+      "DERIVED_SOURCE_STATS_ONLY 20261107-diagnostic-Restore-receiver-prior-sourceV-s2026092701-r02/1a9aafda7cf9cf5ee1d293a5e782ef57e27eb5ad existing five other-RX L_s/U_s moments.",
+      "SOURCE_MECHANISM_ONLY 20261107-diagnostic-Restore-conditional-variance-E02-sourceLU-s2026092701-r01/055f41652902c577bc848a4a8364f4aa7a487b6c; no E02 weights inherited."
+    ],
+    "contract_check_ref": "Same original source data/capsule/split, source-statistic origin and frozen original F0 as current approved source-only recovery. New G entirely scratch.",
+    "provenance_verdict": "No ancestor G checkpoint. Only source statistics and approved original F0 feature loss. Source diagnostic motivates architecture without target results.",
+    "selection_rule": "Final30/7410 only; all original Main cross_rx126000/cross_both42000 × seven views before independent truth-side scoring. No source or target checkpoint selection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/signed-covariance-scratch30",
+    "gpu_policy": "CUDA-empty queue waits 20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r02 last GPU stage. GPU6 only, one task GPU child at a time, free>=12000MiB and existing compute<=4 before adding one; total<=5. Shared CPU truth lock.",
+    "remote_run_root": "runs/20261107-phase1-Restore-SignedCovariance-E30-s2026092701-r01",
+    "remote_log_root": "runs/20261107-phase1-Restore-SignedCovariance-E30-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-phase1-Restore-SignedCovariance-E30-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.signed_covariance_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 8e85df52cd0cab3f997ceb30fafefa81258e408b --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-SignedCovariance-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Invalid source/F0/prior/mode factor or release, collision, actual source2 smoke/gradient/reload, nonfinite objective/state, posterior residual>1e-8 or child failure: preserve; no automatic retry or unrelated process changes."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/training/config.json",
+    "rows/<arm>/training/smoke.json",
+    "rows/<arm>/training/smoke_E0.pt PRIVATE",
+    "rows/<arm>/training/data_schedule.npz PRIVATE",
+    "rows/<arm>/training/training.jsonl PRIVATE",
+    "rows/<arm>/training/final.pt PRIVATE",
+    "rows/<arm>/training/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE",
+    "rows/TF_SignedCovariance/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Original frozen TriSIGTIME SSL Main six scene gaps<=3pp, both clean populations individually preserved.",
+      "Paired raw/DURA comparisons and same-record true TX repairs/damage, RX/day/TX and clean agreement.",
+      "All-source noisy IQ/STFT/F0 losses and Action/noise errors; signed-mode absolute/signed change, negative fraction and map slope.",
+      "Actual shared training/inference time and memory; 1340293 parameters, one FP64 posterior plus rank64 update. No assumed speedup."
+    ],
+    "dimensions": [
+      "original Main two populations and seven views",
+      "TX/RX/day/RXday",
+      "single model seed",
+      "matched raw and DURA"
+    ],
+    "prediction_ref": "Original Main cross_rx126000 + cross_both42000, all seven views, original raw/DURA exact-ID reuse.",
+    "scorer_ref": "OriginalindependentCUDAemptyCPUscore/sharedscore.lock;whole row/allMainpredictionsbeforetruth. No targetfeedback."
+  },
+  "rows": [
+    {
+      "row_id": "TF_SignedCovariance",
+      "method": "observation_conditioned_signed_source_covariance",
+      "purpose": "Allow non-diagonal covariance increase/decrease while preserving an identity starting prior and non-exponential tail derivatives.",
+      "config_ref": "experiments.pamf_phase3_restoration.signed_covariance_trial.py::configuration",
+      "resolved_config_ref": "runs/20261107-phase1-Restore-SignedCovariance-E30-s2026092701-r01/rows/TF_SignedCovariance/training/config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Physical2026092701/confidence2026092702, original source order2026110102 and R07 draws. Existing source subset2026110707. No new stochastic prior fit.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": "AdamW(weight_decay1e-4,clip1)",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Scratch single30/7410;63000record/epoch, batch256 micro32;15global+15other-RX source priors. Every record actual noisy IQ and frozen F0 continuous feature loss.",
+      "output_root": "runs/20261107-phase1-Restore-SignedCovariance-E30-s2026092701-r01/rows/TF_SignedCovariance",
+      "log_path": "runs/20261107-phase1-Restore-SignedCovariance-E30-s2026092701-r01/logs/TF_SignedCovariance-train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.signed_covariance_trial train --root /home/szu2070436088/2510044040/CV-SincNet --commit 8e85df52cd0cab3f997ceb30fafefa81258e408b --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-SignedCovariance-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --arm TF_SignedCovariance",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/training/config.json",
+        "rows/<arm>/training/smoke.json",
+        "rows/<arm>/training/smoke_E0.pt PRIVATE",
+        "rows/<arm>/training/data_schedule.npz PRIVATE",
+        "rows/<arm>/training/training.jsonl PRIVATE",
+        "rows/<arm>/training/final.pt PRIVATE",
+        "rows/<arm>/training/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE",
+        "rows/TF_SignedCovariance/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+      ]
+    }
+  ],
+  "notes": [
+    "C_new=C+B diag(.9softsign(raw64)) B^T. Source B=top64 eigenvectors times sqrt(eigenvalues), fixed FP32 buffer from existing source C.",
+    "Stored B is checked in original FP64 Cholesky frame: maxeig((L^-1 B)^T(L^-1 B))<=1.01, so signed coefficient range[-.9,.9] preserves SPD.",
+    "Zero head starts with exactly original covariance. Global head64 and both signed spectral directions change the architecture; not isolated softplus replacement.",
+    "Original E02 diagnostic70 records (allL_s) shows near-zero learned addition and weak raw gradients; uniform extra variance often harms. This is source mechanism evidence only.",
+    "Odd/even same single30 source prior exposure preserved. Factorization is algebra on existing moments, zero V/OE/target fit.",
+    "All physical and confidence weights scratch. Action/noise detached in the actual noisy IQ/STFT/continuous-F0 branch; separate norm1 branch clipping.",
+    "Current healthy positive-covariance and CPU Main tasks remain active. New queue waits current last GPU stage and uses the same single-card resource authorization.",
+    "Launcher actual source2 G/F0/gradient/strict E0 smoke runs immediately before its training and continues on PASS. Main target results cannot change other rows."
+  ],
+  "record_type": "managed_run",
+  "registered_at": "2026-11-07T05:36:46+00:00"
+}
