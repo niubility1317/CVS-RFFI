@@ -600,3 +600,7 @@ VERIFIED / QUEUED。实际代码 36b13adad5b091bf1f8f4aa7934c403e3b50d8eb，控�
 ## 2026-11-07 主路全协方差版开始正式 CPU 推理
 
 VERIFIED / RUNNING。CPU 预测进程 3944144 已通过真实 L_s 两条检查，并已处理原 Main 首批。128 条源样本实测 19.20 条/秒，折算全部 117.6 万条模型调用约 17.01 小时。这是源端吞吐外推，实际进度由预测日志和各景产物确认。独立评分在两类总体全部七景固定后才开始。 复用原 BF E30 权重和原 Tri-SIG-TIME SSL，保持原 Main 双总体七景。其余 GPU 任务按既定计划。 [实验登记和启动证据](../../automation_reports/CV-SincNet/20261107-evaluation-Restore-CoherentMainPhase-CPU-main-s2026092701-r01/report.md)
+
+## 2026-11-07 已知模拟信道后的身份信息损失
+
+给定完整模拟信道和真实噪声，固定高斯恢复在低档城区保住 425/474 条 raw clean 正确记录。丢失 49 条，其中 45 条来自实测信噪比较低的一半（不超过 8.50 dB）。 丢失组与保留组 clean 分数差中位数接近。 [信噪比、频响及 clean 分数分层](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-action-factor-sourceV-s2026092701-r01/known_operator_error_breakdown.md)
