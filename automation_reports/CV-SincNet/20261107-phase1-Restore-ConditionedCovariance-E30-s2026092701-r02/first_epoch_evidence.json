@@ -1,0 +1,42 @@
+{
+  "status": "VERIFIED_FIRST_COMPLETED_EPOCH",
+  "run_id": "20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r02",
+  "code_commit": "ebb279ff3ad430e6a8242686d816976339444588",
+  "epoch": 1,
+  "planned_epochs": 30,
+  "updates": 247,
+  "planned_updates": 7410,
+  "source_rows": 63000,
+  "L_s_rows": 6300,
+  "U_s_rows": 56700,
+  "source_order_is_full_permutation": true,
+  "actual_physical_and_conditional_variance_branch_updates": {
+    "physical.": {
+      "tensors": 87,
+      "changed_tensors": 85,
+      "largest_absolute_update": 0.08764184266328812
+    },
+    "detail.": {
+      "tensors": 53,
+      "changed_tensors": 52,
+      "largest_absolute_update": 0.08208305388689041
+    }
+  },
+  "optimizer_step": 247,
+  "all_optimizer_state_finite": true,
+  "original_source_prior_unchanged": true,
+  "training_F0_unchanged_checked_at_epoch_boundary": true,
+  "first_epoch_seconds": 771.4141214170377,
+  "first_epoch_rows_per_second": 81.66819643419683,
+  "single30_training_hours_if_first_epoch_rate_persists": 6.428451011808647,
+  "timing_scope": "Actual shared GPU6 load. First epoch includes draw load and recovery save; no isolated speedup claim. Excludes final prediction/scoring.",
+  "source_mean_IQ_NMSE": 0.8219224831698433,
+  "source_mean_relative_solve_residual": 4.1527792433889484e-14,
+  "checkpoint_selection": "Fixed final30 only; E01 is immutable technical recovery, not model selection.",
+  "target_training_reads": 0,
+  "TX_training_labels_read": 0,
+  "V_training_reads": 0,
+  "OE_training_reads": 0,
+  "Main_new_model_results_available": false,
+  "goal_complete": false
+}
