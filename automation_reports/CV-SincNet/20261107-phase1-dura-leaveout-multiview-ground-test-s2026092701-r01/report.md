@@ -3,7 +3,7 @@
 - run_id：`20261107-phase1-dura-leaveout-multiview-ground-test-s2026092701-r01`
 - group_id：`phase1-dura-leaveout-multiview`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED；完整七景预测和独立评分完成。
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-源训练队列等待 GPU，尚无冻结候选或预测。固定七景全部完成后执行独立 truth-last 评分，与同输入 DURA 和 raw clean 对照。
+六个受损场景均低于 DURA，低城区 67.2149%，下降 1.5863 个百分点，修复 3146 条、损伤 5811 条。两种 3% 口径均 0/6 达标。clean 得分相同，但一条错变对、一条对变错，预测并非完全相同。六景 × 四个日期的 24 个日期边际分组均低于 DURA。完整配对与逐组数据见 [正式分析](analysis.md)。
 
 ## 交接
 
