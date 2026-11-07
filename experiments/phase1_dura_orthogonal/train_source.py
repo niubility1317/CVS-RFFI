@@ -26,6 +26,9 @@ from experiments.phase1_dura_orthogonal.direct_spectral_student import DirectSpe
 from experiments.phase1_dura_orthogonal.direct_student_fir import DirectStudentFIR, SOURCE as FIR_SOURCE, SOURCE_COMMIT as FIR_SOURCE_COMMIT, TAPS as FIR_TAPS, SCALE as FIR_SCALE
 from experiments.phase1_dura_orthogonal.reversible_dura import ReversibleDura
 from experiments.phase1_dura_orthogonal.conditional_iq_flow import ConditionalIQFlow, DirectIQFlow, flow_matching_loss, sample_flow_times
+from experiments.phase1_dura_orthogonal.monotone_envelope import (
+    DuraMonotoneEnvelope, envelope_loss, ENVELOPE_WEIGHT, QUANTILES as ENVELOPE_QUANTILES,
+    SEGMENTS as ENVELOPE_SEGMENTS, SEGMENT_WIDTH as ENVELOPE_SEGMENT_WIDTH)
 from experiments.phase1_dura_orthogonal.fused_gradient_guard import checked_backward_and_clip
 from experiments.phase1_dura_orthogonal.balanced_spectral_loss import balanced_spectral_loss, WEIGHT as BALANCED_SPECTRAL_WEIGHT, ENERGY_FLOOR_FRACTION, BANDS
 from experiments.phase1_dura_orthogonal.source_multiview_teacher import build_teacher, build_leave_one_view_teacher
@@ -290,9 +293,13 @@ def main():
     parser.add_argument('--source-context-cache', type=Path)
     parser.add_argument('--save-source-context-cache', type=Path)
     parser.add_argument('--deterministic', action='store_true')
-    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0'), default='iq')
-    parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir', 'dura_reversible', 'conditional_iq_flow', 'direct_iq_flow'), default='orthogonal')
+    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0', 'wide_envelope_guard'), default='iq')
+    parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir', 'dura_reversible', 'conditional_iq_flow', 'direct_iq_flow', 'dura_envelope'), default='orthogonal')
     args = parser.parse_args()
+    if (args.architecture == 'dura_envelope') != (args.objective == 'wide_envelope_guard'):
+        raise ValueError('Monotone envelope requires its matching source objective')
+    if args.objective == 'wide_envelope_guard' and not args.smoke and not args.source_context_cache:
+        raise ValueError('Monotone envelope training requires fixed source context')
     if args.fast_flow_guards and args.objective != 'wide_conditional_flow':
         raise ValueError('The fast flow guards are validated only for wide_conditional_flow')
     if (args.architecture == 'direct_student_fir') != (args.objective == 'wide_student_fir_guard'):
@@ -376,7 +383,7 @@ def main():
     torch.backends.cudnn.allow_tf32 = False
     torch.manual_seed(2026110612)
     ids, rx, scene, _, source_received, source_clean = source_inputs(args.root)
-    fit_size = WIDE_FIT_SIZE if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0') else FIT_SIZE
+    fit_size = WIDE_FIT_SIZE if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0', 'wide_envelope_guard') else FIT_SIZE
     _, fresh, clean, fit = load_source_training(args.root, ids, fit_size=fit_size)
     if args.smoke:
         fit = fit[:args.smoke_fit]
@@ -445,6 +452,8 @@ def main():
         data = (*data, base)
     elif args.architecture == 'dura_reversible':
         model = ReversibleDura(width=32, depth=4).to(device)
+    elif args.architecture == 'dura_envelope':
+        model = DuraMonotoneEnvelope(width=32).to(device)
     elif args.architecture == 'conditional_iq_flow':
         model = ConditionalIQFlow(width=32, steps=4).to(device)
     elif args.architecture == 'direct_iq_flow':
@@ -533,7 +542,7 @@ def main():
             else:
                 output = model(x, anchor, direction, variance, validate=False)
             base_objective = ('distill_iq' if args.objective in ('wide_source_distill', 'wide_multiview_distill') else
-                              'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'wide_source_guard', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast') else args.objective)
+                              'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'wide_source_guard', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_envelope_guard') else args.objective)
             if args.objective in ('wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0'):
                 times = (sample_flow_times(len(x), flow_generator, origin_fraction=.5)
                          if args.objective == 'wide_conditional_flow_t0'
@@ -553,6 +562,8 @@ def main():
                 loss = loss + .5*posterior_teacher_loss(output, fields[5], y)
             if args.objective == 'wide_balanced_spectral_guard':
                 loss = loss + BALANCED_SPECTRAL_WEIGHT*balanced_spectral_loss(output, y)
+            if args.objective == 'wide_envelope_guard':
+                loss = loss + ENVELOPE_WEIGHT*envelope_loss(output, y)
             if args.objective == 'wide_multiview_dura_guard':
                 loss = loss + .5*posterior_teacher_loss(output, fields[5], y)
             if args.objective == 'wide_counterfactual_guard':
@@ -609,6 +620,10 @@ def main():
                 if any(layer.head.weight.grad is None or not torch.isfinite(layer.head.weight.grad).all()
                        for layer in model.layers):
                     raise ValueError('Each reversible coupling head requires finite gradients')
+            elif args.architecture == 'dura_envelope':
+                required = (model.base.wave.weight, model.base.filter_head.weight, model.envelope_head.weight)
+                if any(p.grad is None or not torch.isfinite(p.grad).all() for p in required):
+                    raise ValueError('DURA and monotone envelope heads require finite gradients')
             elif args.architecture in ('conditional_iq_flow', 'direct_iq_flow'):
                 if not args.fast_flow_guards and (model.out.weight.grad is None or not torch.isfinite(model.out.weight.grad).all()):
                     raise ValueError('Conditional flow output requires finite gradients')
@@ -667,9 +682,12 @@ def main():
     if args.objective == 'wide_instance_contrast':
         cache_metadata.update(source_instance_temperature=INSTANCE_TEMPERATURE,
                               source_instance_positives='same_physical_record', instance_encoder_inference_reads=0)
-    if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0'):
+    if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0', 'wide_envelope_guard'):
         cache_metadata.update(source_fit_size=WIDE_FIT_SIZE,
                               source_context_cache_written=str(args.save_source_context_cache) if args.save_source_context_cache else None)
+    if args.objective == 'wide_envelope_guard':
+        cache_metadata.update(source_envelope_weight=ENVELOPE_WEIGHT, source_envelope_quantiles=ENVELOPE_QUANTILES,
+                              envelope_segments=ENVELOPE_SEGMENTS, envelope_segment_width=ENVELOPE_SEGMENT_WIDTH)
     if args.objective == 'wide_conditional_flow':
         cache_metadata.update(flow_steps=4, flow_time_seed=2026110713, flow_path='anchor_to_clean_linear',
                               fast_flow_guards=args.fast_flow_guards)

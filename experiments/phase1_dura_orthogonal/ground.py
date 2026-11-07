@@ -23,6 +23,9 @@ from experiments.phase1_dura_orthogonal.direct_student_fir import DirectStudentF
 from experiments.phase1_dura_orthogonal.dura_frequency_recovery import DuraFrequencyRecovery
 from experiments.phase1_dura_orthogonal.reversible_dura import ReversibleDura
 from experiments.phase1_dura_orthogonal.conditional_iq_flow import ConditionalIQFlow, DirectIQFlow
+from experiments.phase1_dura_orthogonal.monotone_envelope import (
+    DuraMonotoneEnvelope, ENVELOPE_WEIGHT, QUANTILES as ENVELOPE_QUANTILES,
+    SEGMENTS as ENVELOPE_SEGMENTS, SEGMENT_WIDTH as ENVELOPE_SEGMENT_WIDTH)
 from experiments.phase1_dura_orthogonal.balanced_spectral_loss import WEIGHT as BALANCED_SPECTRAL_WEIGHT, ENERGY_FLOOR_FRACTION, BANDS
 from experiments.phase1_dura_orthogonal.counterfactual_response import WEIGHT as RESPONSE_WEIGHT, DIRECTIONS as RESPONSE_DIRECTIONS, EPSILON as RESPONSE_EPSILON
 from experiments.phase1_dura_orthogonal.source_instance_contrast import TEMPERATURE as INSTANCE_TEMPERATURE
@@ -37,10 +40,10 @@ def load_fixed(root, source, commit):
     folder = root/'runs'/source
     summary = core.read(folder/'source_summary.json')
     architecture = summary.get('architecture', 'orthogonal')
-    if architecture not in ('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir', 'dura_frequency_regression', 'dura_reversible', 'conditional_iq_flow', 'direct_iq_flow'):
+    if architecture not in ('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir', 'dura_frequency_regression', 'dura_reversible', 'conditional_iq_flow', 'direct_iq_flow', 'dura_envelope'):
         raise ValueError('Registered recovery architecture required')
     epochs = 0 if architecture == 'dura_frequency_regression' else DUAL_DOMAIN_EPOCHS if architecture in ('dual_domain', 'adaptive_inverse', 'timevarying_inverse', 'direct_spectral_student', 'direct_iq_flow') else TRAIN_EPOCHS
-    fit_size = WIDE_FIT_SIZE if summary.get('objective') in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0') else FIT_SIZE
+    fit_size = WIDE_FIT_SIZE if summary.get('objective') in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0', 'wide_envelope_guard') else FIT_SIZE
     expected = dict(status='SOURCE_TRAINED', commit=commit, fit_ids=fit_size, epochs=epochs,
                     TX_labels_read=0, F_weights_read=0, F_outputs_read=0, V_reads=0,
                     target_reads=0, DURA_frozen=True)
@@ -52,7 +55,7 @@ def load_fixed(root, source, commit):
             any(state.get(k) != v for k, v in expected.items() if k not in ('status', 'fit_ids', 'epochs'))):
         raise ValueError('Fixed correction checkpoint and provenance required')
     objective = state.get('objective', 'iq')
-    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0') or summary.get('objective', 'iq') != objective:
+    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0', 'wide_envelope_guard') or summary.get('objective', 'iq') != objective:
         raise ValueError('Source objective must match the fixed checkpoint')
     if objective == 'crossview_guard' and any(
             obj.get('source_views_per_record') != 3 or obj.get('crossview_weight') != .1
@@ -73,6 +76,12 @@ def load_fixed(root, source, commit):
             or obj.get('flow_path') != 'received_to_clean_linear' or obj.get('inference_received_iq_only') is not True
             for obj in (summary, state))):
         raise ValueError('Matching source-only direct flow metadata required')
+    if (architecture == 'dura_envelope') != (objective == 'wide_envelope_guard') or (architecture == 'dura_envelope' and any(
+            obj.get('source_fit_size') != WIDE_FIT_SIZE or obj.get('DURA_training_reads') != 1
+            or obj.get('source_envelope_weight') != ENVELOPE_WEIGHT or obj.get('source_envelope_quantiles') != ENVELOPE_QUANTILES
+            or obj.get('envelope_segments') != ENVELOPE_SEGMENTS or obj.get('envelope_segment_width') != ENVELOPE_SEGMENT_WIDTH
+            for obj in (summary, state))):
+        raise ValueError('Matching source-only monotone envelope metadata required')
     if (architecture == 'dura_reversible') != (objective == 'wide_reversible_guard') or (architecture == 'dura_reversible' and any(
             obj.get('source_fit_size') != WIDE_FIT_SIZE or obj.get('DURA_training_reads') != 1
             or obj.get('reversible_couplings') != 4 or obj.get('reversible_type') != 'additive_temporal_even_odd'
@@ -244,6 +253,8 @@ def load_fixed(root, source, commit):
         model = DuraFrequencyRecovery()
     elif architecture == 'dura_reversible':
         model = ReversibleDura(width=state['width'], depth=4)
+    elif architecture == 'dura_envelope':
+        model = DuraMonotoneEnvelope(width=state['width'])
     elif architecture == 'conditional_iq_flow':
         model = ConditionalIQFlow(width=state['width'], steps=4)
     elif architecture == 'direct_iq_flow':
