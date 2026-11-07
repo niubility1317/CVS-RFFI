@@ -1,0 +1,20 @@
+{
+  "status": "FAILED",
+  "failure_layer": "per-cell progress persistence",
+  "source_checkpoint_smoke": "PASS",
+  "completed_saved_cells": 1,
+  "planned_cells": 14,
+  "worker_exit_code": 1,
+  "controller_and_worker_live": false,
+  "cause": "Immutable exclusive-create writer reused for progress.json at the second cell.",
+  "original_outputs_preserved": true,
+  "original_run_restarted": false,
+  "independent_live_worker_observation": "MISSING",
+  "numerical_matrix_complete": false,
+  "training_speedup_claim": false,
+  "Main_performance_claim": false,
+  "repaired_run": "20261107-diagnostic-Restore-CoupledLowRank-sourceLU-s2026092701-r02",
+  "repair": "One immutable cell file per cell. Algorithm/data/checkpoint/RNG/thresholds/resource policy unchanged.",
+  "focused_tests_passed": 8,
+  "targeted_P1_re_review": "PASS"
+}
