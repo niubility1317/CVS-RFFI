@@ -31,3 +31,7 @@
 ## 发布与实际GPU3等待状态
 
 VERIFIED / QUEUED。等价低秩后验的源端诊断已发布，归档SHA对比与远端编译通过；实际CPU控制器PID/CWD/命令、CUDA为空、无子进程、无GPU占用及等待日志增长已核实。GPU3的进程数已达到原正常上限，故按原总数最多3、已有最多2且剩余至少12000 MiB等待；没有增加并发上限或重启任何任务。8项针对性检查、原独立P0/P1及一次P1修复复核通过；r01原输出保留，r02仅修复进度文件冲突。真实原G/F0源检查与14格GPU数值/耗时实测尚待启动，不能据单元检查宣布训练提速。该诊断不更新权重、不访问target/TX/V/OE，不改变任何已发布训练或部署版本。 [发布后证据](publication_and_queue.json)
+
+## 未启动队列的资源接替
+
+VERIFIED / REPLACED：r02在GPU3正常容量下始终未启动probe；核对完整命令、CWD、零子进程及零submitted后仅退休本排队控制器。原输出保留。相同科学矩阵由已授权GPU6容量的r03完成全部14格，数值/梯度核验通过，其他owner未被停止或修改。 [接替结果](../20261107-diagnostic-Restore-CoupledLowRank-sourceLU-s2026092701-r03/analysis.md)
