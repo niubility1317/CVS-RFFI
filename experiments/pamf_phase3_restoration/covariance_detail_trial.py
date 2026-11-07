@@ -42,11 +42,18 @@ def configuration(arm):
 def factory(arm):configuration(arm);return scratch_covariance_detail(2026092701)
 
 
-def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.bind_prior,smoke_check=None):
+def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.bind_prior,smoke_check=None,
+          training_readout=None):
     started=time.perf_counter();c=validate_source(read(args.inputs));old,roles=trial.source(args)
     cfg=config_for(args.arm);G=build(args.arm);prior_identity=bind_prior(args.root,G.physical);G=G.to('cuda:0')
     F,identity=load_F0(c,'cuda:0');trial.main_eval.valid_identity(identity);scale=load_scale(args.root).to('cuda:0')
     frozen={k:v.detach().clone() for k,v in F.state_dict().items()};objective=PairedObjective().to('cuda:0')
+    def detail_pass(received,clean,target):
+        if training_readout is not None:
+            return training_readout(G,F,received,clean,target,scale,objective)
+        restored,aux=G(received,return_aux=True)
+        loss,terms=detail_objective(F,restored,clean,target,scale,objective)
+        return restored,aux,loss,terms
     a=np.load(old/'train/clean.npy',mmap_mode='r',allow_pickle=False)
     try:clean=tensor(a,'cuda:0')
     finally:a._mmap.close()
@@ -73,8 +80,7 @@ def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.b
         if logits.shape!=(2,6) or not torch.isfinite(logits).all() or not torch.isfinite(restored).all() or aux['relative_solve_residual'].max()>1e-8:raise ValueError('Actual full scratchG/sourceF0 smoke failed')
         torch.testing.assert_close(restored,aux['base_iq'],rtol=0,atol=0)
         extra_smoke=smoke_check(G,first['received'][take],restored) if smoke_check else {}
-    restored,aux=G(first['received'][take],return_aux=True)
-    detail,unused=detail_objective(F,restored,clean[take],target2,scale,objective);detail.mean().backward()
+    restored,aux,detail,unused=detail_pass(first['received'][take],clean[take],target2);detail.mean().backward()
     if any(p.grad is not None for p in G.physical.parameters()) or not G.detail.output.weight.grad.abs().sum()>0:raise ValueError('Detail loss must update detail only')
     G.zero_grad(set_to_none=True)
     physical,unused=source_action_loss(aux,first['kernel'][take],first['coefficients'][take],first['variance'][take]);physical.mean().backward()
@@ -106,9 +112,8 @@ def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.b
                 step=0.
                 for start in range(0,len(take),32):
                     indices=torch.tensor(take[start:start+32].tolist(),device='cuda:0',dtype=torch.long)
-                    restored,aux=G(v['received'][indices],return_aux=True)
+                    restored,aux,detail,detail_terms=detail_pass(v['received'][indices],clean[indices],targets[indices])
                     physical,physical_terms=source_action_loss(aux,v['kernel'][indices],v['coefficients'][indices],v['variance'][indices])
-                    detail,detail_terms=detail_objective(F,restored,clean[indices],targets[indices],scale,objective)
                     scalar=(physical+detail).sum()/len(take)
                     if not torch.isfinite(scalar) or aux['relative_solve_residual'].max()>1e-8:raise ValueError('Nonfinite source objective or posterior failure;preserve')
                     scalar.backward();step+=float(scalar.detach())
@@ -134,7 +139,7 @@ def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.b
         training_seconds=time.perf_counter()-train_start,worker_seconds=time.perf_counter()-started,peak_allocated_bytes=torch.cuda.max_memory_allocated(),
         G_initialization_checkpoint_loads=0,TX_labels_read=0,V_reads=0,OE_reads=0,target_training_reads=0,
         checkpoint_selection='final30_only',model_state_F0_updates=0,training_stages=1,training_posterior_calls=59070,training_posterior_rows=1890000,
-        source_operator_full_matrix_supervision=True,source_prior_buffers_unchanged=True,source_actual_IQ_F0_guidance=True,feature_weight=.01,
+        source_operator_full_matrix_supervision=True,source_prior_buffers_unchanged=True,source_actual_IQ_F0_guidance=cfg.get('source_actual_IQ_F0_guidance',True),feature_weight=.01,
         physical_detail_gradient_isolation=True,independent_branch_clipping=True))
 
 
