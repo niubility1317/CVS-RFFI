@@ -98,3 +98,16 @@ def test_stable_checkpoint_requires_legal_source_and_normalization(tmp_path, mon
     (folder / 'source_summary.json').write_text(json.dumps(summary), encoding='utf8')
     with pytest.raises(ValueError, match='cross-view'):
         ground.load_fixed(tmp_path, 'source', 'test')
+    from experiments.phase1_dura_orthogonal.source_receiver_balance import EXPECTED_COUNTS
+    for obj in (summary, state):
+        obj.update(objective='wide_large_context_stable_receiver',
+                   source_receiver_weighting='inverse_frequency_equal_rx',
+                   source_receiver_counts=EXPECTED_COUNTS,
+                   source_receiver_inference_reads=0)
+    (folder / 'source_summary.json').write_text(json.dumps(summary), encoding='utf8')
+    torch.save(state, folder / 'final.pt')
+    assert isinstance(ground.load_fixed(tmp_path, 'source', 'test')[0], StableLargeContextDura)
+    summary['source_receiver_inference_reads'] = 1
+    (folder / 'source_summary.json').write_text(json.dumps(summary), encoding='utf8')
+    with pytest.raises(ValueError, match='source receiver'):
+        ground.load_fixed(tmp_path, 'source', 'test')
