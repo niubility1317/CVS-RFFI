@@ -93,7 +93,7 @@ def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.b
     trial.save(out/'smoke_E0.pt',G,args.arm,args.commit,0);probe=trial.load(out/'smoke_E0.pt',args.arm,args.commit,'cuda:0',epoch=0)
     with torch.no_grad():torch.testing.assert_close(probe(first['received'][take]),deployed_smoke,rtol=0,atol=0)
     del probe,first,before,restored,aux,detail,physical,target2,deployed_smoke
-    write(out/'smoke.json',dict(status='PASS',source_rows=2,actual_original_F0=True,actual_full_posterior=True,detail_initial_zero=True,
+    write(out/'smoke.json',dict(status='PASS',source_rows=2,actual_original_F0=True,actual_full_posterior=True,detail_initial_zero=cfg.get('detail_initial_zero',True),
         detail_and_physical_gradient_isolation=True,strict_E0_reload=True,F0_frozen=True,optimizer_updates=0,TX_labels_read=0,V_reads=0,OE_reads=0,target_inputs=0,**extra_smoke))
     print('COVARIANCE_DETAIL_REAL_SOURCE_SMOKE_PASS',flush=True)
     tick=time.perf_counter()
