@@ -1,4 +1,4 @@
-"""After fixed predictions, replay direct FIR decisions without DURA or truth."""
+"""After fixed predictions, replay direct-model decisions without DURA or truth."""
 import argparse
 import time
 from pathlib import Path
@@ -22,6 +22,13 @@ def wait_for_fixed(root, source, ground):
     return reference
 
 
+def validate_reference_identity(inference, source, candidate_commit, ground_commit):
+    expected = dict(source=source, source_commit=candidate_commit,
+                    commit=ground_commit, inference_mode='single')
+    if any(inference.get(key) != value for key, value in expected.items()):
+        raise ValueError('Original prediction and checkpoint identity mismatch')
+
+
 def main():
     p=argparse.ArgumentParser()
     p.add_argument('--root',type=Path,required=True)
@@ -29,6 +36,7 @@ def main():
     p.add_argument('--source',required=True)
     p.add_argument('--ground',required=True)
     p.add_argument('--candidate-commit',required=True)
+    p.add_argument('--ground-commit',required=True)
     p.add_argument('--commit',required=True)
     args=p.parse_args()
     if args.out.exists():
@@ -65,7 +73,9 @@ def main():
     reference=wait_for_fixed(args.root,args.source,args.ground)
     folder,ids=core.reference(args.root)
     manifest=core.read(reference/'complete.json')
-    core.validate_prediction_manifest(manifest,count=len(ids),commit=args.candidate_commit)
+    inference=core.read(reference.parent/'inference.json')
+    validate_reference_identity(inference,args.source,args.candidate_commit,args.ground_commit)
+    core.validate_prediction_manifest(manifest,count=len(ids),commit=args.ground_commit)
     if not np.array_equal(ids,np.load(reference/'physical_ids.npy',allow_pickle=False)):
         raise ValueError('Fixed prediction physical IDs must match')
     started=time.monotonic()
@@ -92,6 +102,7 @@ def main():
         print('DIRECT_SKIP_VIEW_COMPLETE',view,len(ids),flush=True)
     core.write(args.out/'result.json',dict(status='FULL_DECISION_PARITY_PASS',commit=args.commit,
         candidate=args.source,candidate_commit=args.candidate_commit,ground_reference=args.ground,
+        ground_commit=args.ground_commit,
         F_run=core.F_RUN,F_row=core.F_ROW,batch_size=8,threads=2,views=results,
         elapsed_seconds=time.monotonic()-started,TX_truth_reads=0,model_updates=0,
         scope='Raw and restored class decisions only; ground logits and waveforms not stored in reference'))

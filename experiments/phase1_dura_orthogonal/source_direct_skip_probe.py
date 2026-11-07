@@ -1,4 +1,4 @@
-"""Source-only direct-student prediction parity and CPU timing probe."""
+"""Source-only direct-model prediction parity and CPU timing probe."""
 import argparse
 from pathlib import Path
 import time
@@ -9,14 +9,16 @@ import torch
 from experiments.pamf_phase1_flow import experiment as core
 from experiments.phase1_dura_innovation_probe.source_probe import SOURCE_PILOT, source_inputs
 from experiments.phase1_dura_orthogonal.direct_student_fir import DirectStudentFIR
+from experiments.phase1_dura_orthogonal.large_direct_timefreq import LargeDirectTimeFreq
+from experiments.phase1_dura_orthogonal.large_direct_timefreq_stable import StableLargeDirectTimeFreq
 from experiments.phase1_dura_orthogonal.ground import load_fixed
 from experiments.phase1_dura_orthogonal.train_source import extract_context
 
 
 @torch.no_grad()
 def run_batch(x, model, dura, reader, original):
-    if not isinstance(model, DirectStudentFIR):
-        raise ValueError('This probe is limited to the fixed direct FIR student')
+    if type(model) not in (DirectStudentFIR, LargeDirectTimeFreq, StableLargeDirectTimeFreq):
+        raise ValueError('This probe is limited to known direct received-only models')
     if original:
         anchor, direction, variance = extract_context(dura, x)
         restored = model(x, anchor, direction, variance)
