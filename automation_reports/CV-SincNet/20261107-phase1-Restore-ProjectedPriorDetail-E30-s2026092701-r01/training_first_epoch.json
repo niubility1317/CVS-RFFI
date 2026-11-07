@@ -1,0 +1,32 @@
+{
+  "status": "VERIFIED_FIRST_EPOCH",
+  "epoch": 1,
+  "draw": 1,
+  "updates": 247,
+  "source_L_s": 6300,
+  "source_U_s": 56700,
+  "posterior_calls": 1969,
+  "posterior_rows": 63000,
+  "F0_online_rows": 63000,
+  "loss_composition_error": 8.021971836802422e-10,
+  "epoch_seconds": 519.832989659044,
+  "metrics": {
+    "loss": 0.12417053779675848,
+    "physical_loss": 0.04496267250357639,
+    "detail_loss": 0.07920786605083147,
+    "action_matrix_relative_mse": 0.36826190482623994,
+    "noise_log_mse": 8.136480916023254,
+    "noiseless_iq_nmse": 0.07541674370630848,
+    "noiseless_spectral_error": 0.03580519669337405,
+    "noiseless_feature_error": 0.025636190979253678,
+    "noiseless_feature_standardized_error": 0.17445001451443282,
+    "source_shrinkage_target_nmse": 0.009561174755598168,
+    "projected_prior_update_nmse": 0.06605661656862928,
+    "deployed_iq_nmse": 0.8834367663283197,
+    "base_iq_nmse": 0.8156506071336685,
+    "predicted_noise": 0.009761702371022057,
+    "relative_solve_residual": 4.6441456681877904e-14
+  },
+  "main_results_available": false,
+  "goal_complete": false
+}
