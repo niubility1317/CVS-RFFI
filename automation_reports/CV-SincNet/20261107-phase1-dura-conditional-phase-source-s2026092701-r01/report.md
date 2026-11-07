@@ -3,7 +3,7 @@
 - run_id：`20261107-phase1-dura-conditional-phase-source-s2026092701-r01`
 - group_id：`phase1-dura-conditional-phase`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前状态：N607 GPU 0 正式源训练运行中。真实 DURA checkpoint 和 64 条源记录 × 三视图的远端训练 smoke 已通过；训练 worker PID 387065。实时状态以进程、日志和产物为准。
+- 当前状态：固定 5 轮源训练已完成，最终权重已保存，七景预测运行中。真实 DURA checkpoint 和 64 条源记录 × 三视图的远端训练 smoke 已通过。实时状态以进程、日志和产物为准。
 
 ## 目的与对照
 
@@ -25,7 +25,7 @@
 
 源训练固定 32768 个合法源 ID × 三视图、5 轮、AdamW 学习率 0.0003，末轮冻结；不读取 F 权重和输出、TX 标签、V 或目标。真实 DURA 源样本六步 GPU 检查、七项聚焦测试及独立 P0/P1 审查通过；远端 smoke 证实冻结 DURA 和权限计数。源训练完成后自动对同一冻结 Tri-SIG-TIME SSL 默认头完成七景预测，全部固定后独立 truth-last 和 DURA 逐记录配对。
 
-本候选依据原 DURA 的源相位旋转诊断设计；该合成诊断不证明真实信道分布或身份性能。正式结果尚缺，不能宣称提升。
+N607 GPU 训练日志已记录 5/5 轮；远端 `source_summary.json` 和 `final.pt` 已生成，正式七景预测运行中。本候选依据原 DURA 的源相位旋转诊断设计；该合成诊断不证明真实信道分布或身份性能。正式结果尚缺，不能宣称提升。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
