@@ -1,2 +1,3 @@
 {"at": "2026-11-06T22:19:20+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-06T22:21:01+00:00", "status": "QUEUED", "note": "GPU 2 capacity queue is live; source training has not started", "evidence": ["N607 PID 3746444,CWD,cmdline,queue.log GPU_QUEUE_WAITING 2"], "row_id": null}
+{"at": "2026-11-07T03:24:09+00:00", "status": "RUNNING", "note": "GPU2 real-source smoke passed; direct received-to-clean flow training verified live; no complete epoch yet.", "evidence": ["N607:PID3992852,PID3993062,source_smoke.json,source_train.log"], "row_id": null}
