@@ -1,0 +1,5639 @@
+{
+  "status": "VERIFIED_SOURCE_TRUTH_LAST",
+  "code_commit": "1a9aafda7cf9cf5ee1d293a5e782ef57e27eb5ad",
+  "pid": 4020909,
+  "source_V_records": 480,
+  "prediction_cells": 42,
+  "source_TX_scored": 480,
+  "target_reads": 0,
+  "results": [
+    {
+      "scene": "clean",
+      "method": "full_blind",
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_clean_correct": 474,
+      "repairs_vs_full": 0,
+      "damage_vs_full": 0,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 1.7895651381157526e-05,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "clean",
+      "method": "same_blind",
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_clean_correct": 474,
+      "repairs_vs_full": 0,
+      "damage_vs_full": 0,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 1.7945691361849943e-05,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "clean",
+      "method": "other_blind",
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_clean_correct": 474,
+      "repairs_vs_full": 0,
+      "damage_vs_full": 0,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 1.794356909764853e-05,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "clean",
+      "method": "full_known",
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_clean_correct": 474,
+      "repairs_vs_full": 0,
+      "damage_vs_full": 0,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 1.2163537217103588e-14,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "clean",
+      "method": "same_known",
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_clean_correct": 474,
+      "repairs_vs_full": 0,
+      "damage_vs_full": 0,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 8.634417826535835e-14,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "clean",
+      "method": "other_known",
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_clean_correct": 474,
+      "repairs_vs_full": 0,
+      "damage_vs_full": 0,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 2.2020180251240946e-13,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_high",
+      "method": "full_blind",
+      "correct": 473,
+      "clean_correct": 474,
+      "retained_clean_correct": 473,
+      "repairs_vs_full": 0,
+      "damage_vs_full": 0,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 1,
+      "mean_nmse": 0.007403741464925891,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_high",
+      "method": "same_blind",
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_clean_correct": 473,
+      "repairs_vs_full": 1,
+      "damage_vs_full": 0,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 0.006060270818973853,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_high",
+      "method": "other_blind",
+      "correct": 471,
+      "clean_correct": 474,
+      "retained_clean_correct": 470,
+      "repairs_vs_full": 1,
+      "damage_vs_full": 3,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 3,
+      "mean_nmse": 0.01408655833923452,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_high",
+      "method": "full_known",
+      "correct": 473,
+      "clean_correct": 474,
+      "retained_clean_correct": 473,
+      "repairs_vs_full": 0,
+      "damage_vs_full": 0,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 1,
+      "mean_nmse": 0.004971142683643848,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_high",
+      "method": "same_known",
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_clean_correct": 474,
+      "repairs_vs_full": 1,
+      "damage_vs_full": 0,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 0.0036958116159136506,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 29,
+          "same_correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_high",
+      "method": "other_known",
+      "correct": 471,
+      "clean_correct": 474,
+      "retained_clean_correct": 471,
+      "repairs_vs_full": 0,
+      "damage_vs_full": 2,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 3,
+      "mean_nmse": 0.0116259882972372,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 29,
+          "same_correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid",
+      "method": "full_blind",
+      "correct": 470,
+      "clean_correct": 474,
+      "retained_clean_correct": 470,
+      "repairs_vs_full": 0,
+      "damage_vs_full": 0,
+      "repairs_vs_same": 4,
+      "damage_vs_same": 3,
+      "mean_nmse": 0.013251819775662928,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid",
+      "method": "same_blind",
+      "correct": 469,
+      "clean_correct": 474,
+      "retained_clean_correct": 469,
+      "repairs_vs_full": 3,
+      "damage_vs_full": 4,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 0.010130314807611285,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 31,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 29,
+          "same_correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 32,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid",
+      "method": "other_blind",
+      "correct": 466,
+      "clean_correct": 474,
+      "retained_clean_correct": 466,
+      "repairs_vs_full": 0,
+      "damage_vs_full": 4,
+      "repairs_vs_same": 3,
+      "damage_vs_same": 6,
+      "mean_nmse": 0.022750747503111294,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 32,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid",
+      "method": "full_known",
+      "correct": 471,
+      "clean_correct": 474,
+      "retained_clean_correct": 471,
+      "repairs_vs_full": 0,
+      "damage_vs_full": 0,
+      "repairs_vs_same": 2,
+      "damage_vs_same": 1,
+      "mean_nmse": 0.009751485926487172,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid",
+      "method": "same_known",
+      "correct": 470,
+      "clean_correct": 474,
+      "retained_clean_correct": 470,
+      "repairs_vs_full": 1,
+      "damage_vs_full": 2,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 0.006833294275141574,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 32,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 29,
+          "same_correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 29,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid",
+      "method": "other_known",
+      "correct": 466,
+      "clean_correct": 474,
+      "retained_clean_correct": 466,
+      "repairs_vs_full": 0,
+      "damage_vs_full": 5,
+      "repairs_vs_same": 1,
+      "damage_vs_same": 5,
+      "mean_nmse": 0.019255975423826992,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 32,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "full_blind",
+      "correct": 464,
+      "clean_correct": 474,
+      "retained_clean_correct": 463,
+      "repairs_vs_full": 0,
+      "damage_vs_full": 0,
+      "repairs_vs_same": 1,
+      "damage_vs_same": 6,
+      "mean_nmse": 0.0170439166991855,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 28,
+          "same_correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 31
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "same_blind",
+      "correct": 469,
+      "clean_correct": 474,
+      "retained_clean_correct": 468,
+      "repairs_vs_full": 6,
+      "damage_vs_full": 1,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 0.012789044422000491,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 30,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 29,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 28,
+          "same_correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 31,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 31,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 32,
+          "same_correct": 31
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "other_blind",
+      "correct": 457,
+      "clean_correct": 474,
+      "retained_clean_correct": 456,
+      "repairs_vs_full": 1,
+      "damage_vs_full": 8,
+      "repairs_vs_same": 1,
+      "damage_vs_same": 13,
+      "mean_nmse": 0.028698804792171965,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 28,
+          "same_correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 31,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 32,
+          "same_correct": 31
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "full_known",
+      "correct": 465,
+      "clean_correct": 474,
+      "retained_clean_correct": 464,
+      "repairs_vs_full": 0,
+      "damage_vs_full": 0,
+      "repairs_vs_same": 1,
+      "damage_vs_same": 4,
+      "mean_nmse": 0.013752995055983774,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 28,
+          "same_correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 28,
+          "same_correct": 27
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "same_known",
+      "correct": 468,
+      "clean_correct": 474,
+      "retained_clean_correct": 467,
+      "repairs_vs_full": 4,
+      "damage_vs_full": 1,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 0.00968623226423612,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 31,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 28,
+          "same_correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 28,
+          "same_correct": 27
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 31,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "other_known",
+      "correct": 458,
+      "clean_correct": 474,
+      "retained_clean_correct": 457,
+      "repairs_vs_full": 0,
+      "damage_vs_full": 7,
+      "repairs_vs_same": 1,
+      "damage_vs_same": 11,
+      "mean_nmse": 0.02550882223683099,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 31,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 28,
+          "same_correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 28,
+          "same_correct": 27
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 31,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        }
+      ]
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "full_blind",
+      "correct": 469,
+      "clean_correct": 474,
+      "retained_clean_correct": 468,
+      "repairs_vs_full": 0,
+      "damage_vs_full": 0,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 2,
+      "mean_nmse": 0.012685015241489357,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "same_blind",
+      "correct": 471,
+      "clean_correct": 474,
+      "retained_clean_correct": 470,
+      "repairs_vs_full": 2,
+      "damage_vs_full": 0,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 0.010002246528226047,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 31,
+          "same_correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "other_blind",
+      "correct": 460,
+      "clean_correct": 474,
+      "retained_clean_correct": 459,
+      "repairs_vs_full": 1,
+      "damage_vs_full": 10,
+      "repairs_vs_same": 1,
+      "damage_vs_same": 12,
+      "mean_nmse": 0.020706619303746267,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "full_known",
+      "correct": 468,
+      "clean_correct": 474,
+      "retained_clean_correct": 467,
+      "repairs_vs_full": 0,
+      "damage_vs_full": 0,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 4,
+      "mean_nmse": 0.009058087755935655,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "same_known",
+      "correct": 472,
+      "clean_correct": 474,
+      "retained_clean_correct": 471,
+      "repairs_vs_full": 4,
+      "damage_vs_full": 0,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 0.006516496311754357,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 31,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 30,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 31,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "other_known",
+      "correct": 461,
+      "clean_correct": 474,
+      "retained_clean_correct": 460,
+      "repairs_vs_full": 1,
+      "damage_vs_full": 8,
+      "repairs_vs_same": 1,
+      "damage_vs_same": 12,
+      "mean_nmse": 0.017069014190686477,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 31,
+          "same_correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 29,
+          "same_correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "full_blind",
+      "correct": 436,
+      "clean_correct": 474,
+      "retained_clean_correct": 435,
+      "repairs_vs_full": 0,
+      "damage_vs_full": 0,
+      "repairs_vs_same": 3,
+      "damage_vs_same": 17,
+      "mean_nmse": 0.044714336954105725,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 28,
+          "same_correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 31
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 28,
+          "same_correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 26,
+          "full_correct": 26,
+          "same_correct": 27
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 27,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 30
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "same_blind",
+      "correct": 450,
+      "clean_correct": 474,
+      "retained_clean_correct": 449,
+      "repairs_vs_full": 17,
+      "damage_vs_full": 3,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 0.036359239153171075,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 29,
+          "same_correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 28,
+          "same_correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 29,
+          "same_correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 29,
+          "same_correct": 31
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 28,
+          "same_correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 26,
+          "same_correct": 27
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 27,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 29,
+          "same_correct": 30
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "other_blind",
+      "correct": 398,
+      "clean_correct": 474,
+      "retained_clean_correct": 397,
+      "repairs_vs_full": 4,
+      "damage_vs_full": 42,
+      "repairs_vs_same": 6,
+      "damage_vs_same": 58,
+      "mean_nmse": 0.06303688651241827,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 25,
+          "full_correct": 29,
+          "same_correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 22,
+          "full_correct": 28,
+          "same_correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 29,
+          "same_correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 29,
+          "same_correct": 31
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 25,
+          "full_correct": 28,
+          "same_correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 24,
+          "full_correct": 26,
+          "same_correct": 27
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 27,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 29,
+          "same_correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 26,
+          "full_correct": 29,
+          "same_correct": 30
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "full_known",
+      "correct": 453,
+      "clean_correct": 474,
+      "retained_clean_correct": 452,
+      "repairs_vs_full": 0,
+      "damage_vs_full": 0,
+      "repairs_vs_same": 3,
+      "damage_vs_same": 11,
+      "mean_nmse": 0.031505844552157214,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 31
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 31
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "same_known",
+      "correct": 461,
+      "clean_correct": 474,
+      "retained_clean_correct": 460,
+      "repairs_vs_full": 11,
+      "damage_vs_full": 3,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 0.02090113811094246,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 30,
+          "same_correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 29,
+          "same_correct": 31
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 31,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 30,
+          "same_correct": 31
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "other_known",
+      "correct": 419,
+      "clean_correct": 474,
+      "retained_clean_correct": 417,
+      "repairs_vs_full": 2,
+      "damage_vs_full": 36,
+      "repairs_vs_same": 4,
+      "damage_vs_same": 46,
+      "mean_nmse": 0.05103212672887215,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 26,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 26,
+          "full_correct": 30,
+          "same_correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 29,
+          "same_correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 26,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 29,
+          "same_correct": 31
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 31,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 30,
+          "same_correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 32,
+          "same_correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 30,
+          "same_correct": 31
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "full_blind",
+      "correct": 401,
+      "clean_correct": 474,
+      "retained_clean_correct": 400,
+      "repairs_vs_full": 0,
+      "damage_vs_full": 0,
+      "repairs_vs_same": 10,
+      "damage_vs_same": 21,
+      "mean_nmse": 0.05872602737460208,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 28,
+          "same_correct": 30
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 23,
+          "full_correct": 23,
+          "same_correct": 25
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 27,
+          "same_correct": 27
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 26,
+          "full_correct": 26,
+          "same_correct": 27
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 27
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 23,
+          "full_correct": 23,
+          "same_correct": 24
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 24,
+          "full_correct": 24,
+          "same_correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 26,
+          "full_correct": 26,
+          "same_correct": 27
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 27,
+          "same_correct": 26
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 27,
+          "same_correct": 28
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 27,
+          "same_correct": 27
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 27,
+          "same_correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 28,
+          "same_correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 28,
+          "same_correct": 28
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "same_blind",
+      "correct": 412,
+      "clean_correct": 474,
+      "retained_clean_correct": 412,
+      "repairs_vs_full": 21,
+      "damage_vs_full": 10,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 0.04199045115650127,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 28,
+          "same_correct": 30
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 25,
+          "full_correct": 23,
+          "same_correct": 25
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 27,
+          "same_correct": 27
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 26,
+          "same_correct": 27
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 29,
+          "same_correct": 27
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 24,
+          "full_correct": 23,
+          "same_correct": 24
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 24,
+          "same_correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 26,
+          "same_correct": 27
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 26,
+          "full_correct": 27,
+          "same_correct": 26
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 27,
+          "same_correct": 28
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 27,
+          "same_correct": 27
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 27,
+          "same_correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 31,
+          "same_correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 28,
+          "same_correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 28,
+          "same_correct": 28
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "other_blind",
+      "correct": 341,
+      "clean_correct": 474,
+      "retained_clean_correct": 340,
+      "repairs_vs_full": 7,
+      "damage_vs_full": 67,
+      "repairs_vs_same": 13,
+      "damage_vs_same": 84,
+      "mean_nmse": 0.08512740270380163,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 22,
+          "full_correct": 28,
+          "same_correct": 30
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 20,
+          "full_correct": 23,
+          "same_correct": 25
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 27,
+          "same_correct": 27
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 23,
+          "full_correct": 26,
+          "same_correct": 27
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 26,
+          "full_correct": 29,
+          "same_correct": 27
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 18,
+          "full_correct": 23,
+          "same_correct": 24
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 23,
+          "full_correct": 24,
+          "same_correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 25,
+          "full_correct": 26,
+          "same_correct": 27
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 25,
+          "full_correct": 27,
+          "same_correct": 26
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 21,
+          "full_correct": 27,
+          "same_correct": 28
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 22,
+          "full_correct": 27,
+          "same_correct": 27
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 22,
+          "full_correct": 27,
+          "same_correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 20,
+          "full_correct": 31,
+          "same_correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 23,
+          "full_correct": 28,
+          "same_correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 24,
+          "full_correct": 28,
+          "same_correct": 28
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "full_known",
+      "correct": 426,
+      "clean_correct": 474,
+      "retained_clean_correct": 425,
+      "repairs_vs_full": 0,
+      "damage_vs_full": 0,
+      "repairs_vs_same": 11,
+      "damage_vs_same": 19,
+      "mean_nmse": 0.04989547501172638,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 26,
+          "full_correct": 26,
+          "same_correct": 30
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 28
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 28
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 25,
+          "full_correct": 25,
+          "same_correct": 23
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 26,
+          "full_correct": 26,
+          "same_correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 28,
+          "same_correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 28,
+          "same_correct": 28
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 27,
+          "same_correct": 28
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 28,
+          "same_correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 30
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "same_known",
+      "correct": 434,
+      "clean_correct": 474,
+      "retained_clean_correct": 434,
+      "repairs_vs_full": 19,
+      "damage_vs_full": 11,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 0.034104709123979164,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 29,
+          "same_correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 26,
+          "same_correct": 30
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 29,
+          "same_correct": 28
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 30,
+          "same_correct": 28
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 23,
+          "full_correct": 25,
+          "same_correct": 23
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 26,
+          "same_correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 28,
+          "same_correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 28,
+          "same_correct": 28
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 29,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 27,
+          "same_correct": 28
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 31,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 28,
+          "same_correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 30,
+          "full_correct": 31,
+          "same_correct": 30
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "other_known",
+      "correct": 379,
+      "clean_correct": 474,
+      "retained_clean_correct": 378,
+      "repairs_vs_full": 6,
+      "damage_vs_full": 53,
+      "repairs_vs_same": 15,
+      "damage_vs_same": 70,
+      "mean_nmse": 0.07639614736350873,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 25,
+          "full_correct": 29,
+          "same_correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 24,
+          "full_correct": 26,
+          "same_correct": 30
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 29,
+          "full_correct": 29,
+          "same_correct": 28
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 25,
+          "full_correct": 29,
+          "same_correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 30,
+          "same_correct": 28
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 21,
+          "full_correct": 25,
+          "same_correct": 23
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 25,
+          "full_correct": 26,
+          "same_correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 28,
+          "full_correct": 28,
+          "same_correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 28,
+          "same_correct": 28
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 25,
+          "full_correct": 29,
+          "same_correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 24,
+          "full_correct": 27,
+          "same_correct": 28
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 24,
+          "full_correct": 30,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 23,
+          "full_correct": 31,
+          "same_correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 25,
+          "full_correct": 28,
+          "same_correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 27,
+          "full_correct": 31,
+          "same_correct": 30
+        }
+      ]
+    }
+  ]
+}

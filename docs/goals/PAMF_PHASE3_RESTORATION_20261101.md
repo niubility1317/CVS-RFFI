@@ -642,3 +642,7 @@ VERIFIED / QUEUED。实际代码 92d0dcbe0f25927d5a1cf4d98669ded45a410a5b，控�
 ## 2026-11-07 原源模拟接收机配对归因
 
 固定源 V480 的低档城区，原验证会话、训练会话、验证会话轮换的恢复正确数分别为 401、399、400。raw clean 为 474。 [固定传播和噪声的对照](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-receiver-session-sourceV-s2026092701-r01/analysis.md)
+
+## 2026-11-07 源接收机先验的配额匹配对照
+
+固定源 V480 的低档城区，盲估信道下全源、同 RX、其他 RX 先验的正确数为 401、412、341；已知模拟信道和噪声下为 426、434、379。raw clean 为 474。 [原源 RX 配对先验分析](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-receiver-prior-sourceV-s2026092701-r02/analysis.md)
