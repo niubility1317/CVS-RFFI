@@ -1,0 +1,169 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-diagnostic-Restore-posterior-bias-noise-sourceV-s2026092701-r01",
+  "group_id": "source-known-operator-noise-vs-shrinkage",
+  "display_name": "已知信道后的高斯收缩与噪声残留对照",
+  "description": "保持真实模拟算子、真实噪声标量和原先验，用同一增益分别消除实际噪声项和高斯收缩项。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-V-only",
+    "fixed-TriSIGTIME-SSL",
+    "posterior-noise-shrinkage",
+    "CPU-only",
+    "no-training"
+  ],
+  "comparison_group_id": "same-source-V480-fixed-Kalman-gain-factorial",
+  "parent_run_ids": [
+    "20261107-diagnostic-Restore-action-factor-sourceV-s2026092701-r01",
+    "20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User comprehensive recoverability analysis, frozen original source V validation only. No source V in training, no target/OE/novel/TX.",
+  "code": {
+    "commit": "d10d70012b2a2fc8a5b7f58b46d2d5b642243717",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Torch2.1 CPU threads2 CUDA-empty, FP64 solve FP32 models",
+    "cwd": "releases/20261107-diagnostic-Restore-posterior-bias-noise-sourceV-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 source contract; existing R07 fixed1800 V/7 frozen validation views",
+    "representation": "Original source V480 ×7 clean/observed R07 IQ, known simulator h/m/i and scalar noise. No regenerated inputs.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "Original five RX x three day strata, first 32 per 120 from original order, same 480 original physical IDs all seven views.",
+    "label_map_ref": "Only independent original source V truth after all 21 prediction cells are saved and checked.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original six known sourceTX; V trueTX validation only, no train/selection",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse VALIDATED_ONCE R07 handles; fixed original f29 V reference and BF E30/F0 E50 provenance.",
+    "support_query_ref": "Fixed 480 original V, no target/support/query.",
+    "leo_config_ref": "ExistingR07 validation_actions7; receiver2026101902 vs trainingreceiver2026101911; no regenerated views.",
+    "actual_training_labels": "None. Original L_s2 real model smoke, then V frozen diagnostic only.",
+    "augmentation": "Reuse all seven original source V observations, no regenerated signals.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "source-only-oracle-posteriors-with-fixed-gain",
+    "query_use": "Known simulator factors and source clean IQ used only for source diagnostic counterfactual. No target/OE/novel/train.",
+    "external_method_exception": null,
+    "claim_scope": "Conditional on one fixed linear inverse. Measures additive IQ effects and nonlinear frozen TX responses. No theoretical bound or deployment claim."
+  },
+  "checkpoint": {
+    "initialization": "Original BF frozen prior buffers and original F0 default head. No G estimator or new checkpoint.",
+    "sources": [
+      "FROZEN_BUFFERS 20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01/bf29554a03e28a012eaaa134f5c7b3f7856f2268 original 63000 L_s/U_s prior",
+      "FIXED_SOURCE_CONTROL 20261107-diagnostic-Restore-action-factor-sourceV-s2026092701-r01/1065b7fd515402862a8b47bca8bddf597d823b54 known A+noise source decisions",
+      "FROZEN_F0 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d original E50/11100/default head",
+      "DATA_ONLY original R07 source V480×7 and original L_s2 smoke"
+    ],
+    "contract_check_ref": "Original validated source handles, exact V IDs and clean F0 references.",
+    "provenance_verdict": "Frozen same-source BF and F0. No G training, target or OE/novel/TX access.",
+    "selection_rule": "Same 3 interventions ×7 fixed. No source or target fit or selection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-posterior-bias-noise",
+    "gpu_policy": "N607 CPU2 nice10, CUDA empty; no GPU. Existing official Main CPU and all GPU work continue.",
+    "remote_run_root": "runs/20261107-diagnostic-Restore-posterior-bias-noise-sourceV-s2026092701-r01",
+    "remote_log_root": "logs/20261107-diagnostic-Restore-posterior-bias-noise-sourceV-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-diagnostic-Restore-posterior-bias-noise-sourceV-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.posterior_bias_noise_source --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-diagnostic-Restore-posterior-bias-noise-sourceV-s2026092701-r01-release/inputs.json --commit d10d70012b2a2fc8a5b7f58b46d2d5b642243717",
+    "stop_rule": "Invalid source, wrong control, smoke, nonfinite or failed solve: preserve outputs, no automatic retry."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "runtime_observation.json",
+    "reference.npz PRIVATE",
+    "7 source scene.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "logs/stdout.log PRIVATE",
+    "terminal.json",
+    "independent_check.json",
+    "source_truth.json aggregate only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Paired true TX repairs/damage and clean-correct retention for each counterfactual, same seven scenes",
+      "Exact relative noise leakage, shrinkage NMSE and cross term with identity check; original known-output consistency."
+    ],
+    "dimensions": [
+      "source V480",
+      "seven scenes",
+      "three fresh frozen readouts plus reused raw clean"
+    ],
+    "prediction_ref": "10080 new frozen F0 readouts, 480 reused raw clean logits; no G estimator forwards.",
+    "scorer_ref": "Independent IQ and decision consistency, then separate source V truth join by exact IDs/RX/day under score.lock."
+  },
+  "rows": [
+    {
+      "row_id": "fixed_source_known_operator_noise_shrinkage",
+      "method": "fixed_gain_known_noise_and_shrinkage_counterfactual",
+      "purpose": "Distinguish actual noise leakage from prior shrinkage under the same true channel.",
+      "config_ref": "experiments.pamf_phase3_restoration.posterior_bias_noise_source.py::readouts",
+      "resolved_config_ref": "runs/20261107-diagnostic-Restore-posterior-bias-noise-sourceV-s2026092701-r01/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101902
+      },
+      "seed_notes": "Fixed original record order and original F0; no new RNG or phase selection.",
+      "k": null,
+      "scenario": "Original source V480 x7, five inference-only readouts.",
+      "optimizer": "NONE",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "CPU2 nice10. 480 ×7 ×3 F0 plus 6 source L_s smoke rows. Same factorization and two RHS per source observation.",
+      "output_root": "runs/20261107-diagnostic-Restore-posterior-bias-noise-sourceV-s2026092701-r01",
+      "log_path": "logs/20261107-diagnostic-Restore-posterior-bias-noise-sourceV-s2026092701-r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.posterior_bias_noise_source --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-diagnostic-Restore-posterior-bias-noise-sourceV-s2026092701-r01-release/inputs.json --commit d10d70012b2a2fc8a5b7f58b46d2d5b642243717",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "runtime_observation.json",
+        "reference.npz PRIVATE",
+        "7 source scene.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "logs/stdout.log PRIVATE",
+        "terminal.json",
+        "independent_check.json",
+        "source_truth.json aggregate only"
+      ]
+    }
+  ],
+  "notes": [
+    "Original observed posterior = raw clean - shrinkage + filtered realized noise. True variance stays fixed in the gain.",
+    "Noise removed substitutes noiseless received IQ without lowering regularization. Shrinkage removed uses true clean + original filtered noise.",
+    "Both need exact clean and simulator factors and are source-only counterfactuals. No new deployment candidate, no effect on Main scheduling."
+  ],
+  "registered_at": "2026-11-07T02:36:25+00:00"
+}
