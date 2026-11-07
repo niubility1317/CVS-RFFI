@@ -64,3 +64,14 @@ def test_prediction_requires_fixed_large_model_and_legal_source(tmp_path, monkey
     (folder/'source_summary.json').write_text(json.dumps(summary), encoding='utf8')
     with pytest.raises(ValueError, match='source-only'):
         ground.load_fixed(tmp_path, 'source', 'test')
+    summary['target_reads'] = 0
+    for obj in (summary, state):
+        obj.update(objective='wide_large_context_tail', source_tail_weight=.5, source_tail_fraction=.25,
+                   source_tail_score='normalized_iq_error', source_tail_losses=[.1]*20)
+    (folder/'source_summary.json').write_text(json.dumps(summary), encoding='utf8')
+    torch.save(state, folder/'final.pt')
+    assert isinstance(ground.load_fixed(tmp_path, 'source', 'test')[0], LargeContextDura)
+    summary['source_tail_fraction'] = .5
+    (folder/'source_summary.json').write_text(json.dumps(summary), encoding='utf8')
+    with pytest.raises(ValueError, match='tail-risk'):
+        ground.load_fixed(tmp_path, 'source', 'test')
