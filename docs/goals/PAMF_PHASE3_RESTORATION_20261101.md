@@ -654,3 +654,7 @@ VERIFIED / QUEUED。实际代码 14e7315d6da5d6fe242e7568f20c97ade064e8d9，控�
 ## 2026-11-07 源先验均值与协方差分量
 
 固定源 V480 的低档城区，盲估条件下同 RX、仅换均值、仅换协方差、两者都换的正确数为 412、408、364、341；已知模拟信道和噪声时为 434、425、394、379。 [同观测的交叉先验对照](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-prior-factor-sourceV-s2026092701-r01/analysis.md)
+
+## 2026-11-07 观测条件化的先验方差网络
+
+VERIFIED / QUEUED。实际代码 2f77f8cec389f7ff74a94a8200dd219c1b5e084f，控制器 PID 4049016 在线，实际工作目录、命令、CUDA 空环境和日志已核对。发布包 SHA 一致，远端编译通过。等待先验失配训练版最后一项 GPU 阶段终止，再按 GPU4/6 原准入条件启动。真实源检查、训练和 Main 均待执行。 1336263 个参数，当前观测生成非负逐点方差，完整后验可微。 原 L_s/U_s 从零单阶段 30 轮、7410 步，使用实际带噪 IQ/STFT 和批准的源连续 F0 特征约束，物理梯度隔离。冻结后自动用原 Tri-SIG-TIME SSL 做 Main 两总体七景并独立评分。 [实验登记和排队核实](../../automation_reports/CV-SincNet/20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r01/report.md)
