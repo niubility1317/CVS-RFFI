@@ -3,7 +3,7 @@
 - run_id：`20261107-phase1-dura-iqflow-origin-source-s2026092701-r01`
 - group_id：`phase1-dura-iqflow-origin`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING；N607 GPU 5 上控制器 PID 3955844、训练 PID 3956029 已核实。
 
 ## 目的与对照
 
@@ -21,9 +21,8 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
-源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+N607 真实 DURA 源 smoke 使用 64 个源 ID × 三视图，通过；固定源训练进行中，尚无完整轮次。训练不读 F、TX 标签、V 或目标。正式七景预测和独立 truth-last 尚未开始，暂无识别结果。
 
 ## 交接
 
-记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+固定五轮训练完成后自动执行七景预测和独立评分；恢复时核实唯一 owner，不重复启动。
