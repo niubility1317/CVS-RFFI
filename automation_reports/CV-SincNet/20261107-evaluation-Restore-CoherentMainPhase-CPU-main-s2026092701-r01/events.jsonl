@@ -1,3 +1,5 @@
 {"at": "2026-11-07T02:22:53+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-07T02:24:30+00:00", "status": "RUNNING", "note": "VERIFIED actual CPU2 prediction worker, source smoke and first original Main batch, truth scorer has not started.", "evidence": ["launch_evidence.json"], "row_id": "TF_CovarianceCoherentMainFull"}
 {"at": "2026-11-07T02:24:40+00:00", "status": "RUNNING", "note": "VERIFIED actual CPU2 prediction worker, source smoke and first original Main batch, truth scorer has not started.", "evidence": ["launch_evidence.json"], "row_id": null}
+{"at": "2026-11-07T05:52:46+00:00", "status": "RUNNING", "note": "VERIFIED two fixed126000-record view files;2of14 cells, no truth scorer submitted. Prediction continues.", "evidence": ["first_practical_progress.json"], "row_id": "TF_CovarianceCoherentMainFull"}
+{"at": "2026-11-07T05:52:55+00:00", "status": "RUNNING", "note": "VERIFIED two fixed126000-record view files;2of14 cells, no truth scorer submitted. Prediction continues.", "evidence": ["first_practical_progress.json"], "row_id": null}

@@ -1,0 +1,26 @@
+{
+  "status": "VERIFIED_TWO_FIXED_VIEW_PREDICTION_FILES",
+  "run_id": "20261107-evaluation-Restore-CoherentMainPhase-CPU-main-s2026092701-r01",
+  "fixed_cells": [
+    {
+      "population": "cross_rx",
+      "view": "clean",
+      "count": 126000,
+      "dtype": "int64",
+      "bytes": 1008128
+    },
+    {
+      "population": "cross_rx",
+      "view": "practical_high",
+      "count": 126000,
+      "dtype": "int64",
+      "bytes": 1008128
+    }
+  ],
+  "total_fixed_predictions": 252000,
+  "total_population_view_cells": 14,
+  "score_started": false,
+  "new_model_calls": 0,
+  "new_IQ_reads": 0,
+  "truth_reads": 0
+}
