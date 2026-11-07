@@ -10,7 +10,8 @@ from experiments.pamf_phase1_flow import experiment as core
 from experiments.pamf_phase1_flow.anchor_source_smoke import frozen_dura
 from experiments.phase1_dura_innovation_probe.source_probe import source_inputs
 from experiments.phase1_dura_orthogonal.envelope_source_structure import physical_ranks, summarize_ranks
-from experiments.phase1_dura_orthogonal.quartic_recovery import DuraQuarticRecovery, OFFSETS, QUARTIC_WEIGHT, BRANCH_SCALE
+from experiments.phase1_dura_orthogonal.quartic_recovery import (
+    DuraQuarticRecovery, OFFSETS, QUARTIC_WEIGHT, BRANCH_SCALE, closure, normalized_spectrum)
 from experiments.phase1_dura_orthogonal.source_quartic_equal_dim import features
 from experiments.phase1_dura_orthogonal.source_retrieval_geometry import descriptors
 from experiments.phase1_dura_orthogonal.train_source import SCHEMA, WIDE_FIT_SIZE, extract_context
@@ -44,6 +45,14 @@ def structure(iq):
     power, coupling = features(iq)
     _, amplitude = descriptors(iq)
     return power, amplitude, coupling
+
+
+def per_record_quartic_error(output, clean):
+    """Per-record form of the candidate's unweighted training quartic loss."""
+    if output.shape != clean.shape or len(output) == 0:
+        raise ValueError('Matching nonempty source IQ pairs required')
+    diff = closure(normalized_spectrum(output)[0]) - closure(normalized_spectrum(clean)[0])
+    return torch.cat((diff.real.flatten(1), diff.imag.flatten(1)), dim=1).square().mean(1)
 
 
 def main():
@@ -80,7 +89,11 @@ def main():
                 print('QUARTIC_STRUCTURE_PROGRESS', start+8, len(ids), flush=True)
         if any(p.requires_grad or p.grad is not None for model in (dura, candidate) for p in model.parameters()):
             raise ValueError('DURA and candidate must remain frozen')
-        anchor, output = structure(torch.cat(anchor_parts)), structure(torch.cat(candidate_parts))
+        anchor_iq, output_iq = torch.cat(anchor_parts), torch.cat(candidate_parts)
+        clean_iq = core.tensor(clean[ids], 'cpu')
+        objective_anchor = per_record_quartic_error(anchor_iq, clean_iq)
+        objective_output = per_record_quartic_error(output_iq, clean_iq)
+        anchor, output = structure(anchor_iq), structure(output_iq)
         ranks = {name: (physical_ranks(a, ref, *stat), physical_ranks(b, ref, *stat))
                  for name, a, b, ref, stat in zip(('power', 'amplitude', 'quartic'), anchor, output, reference, stats)}
         groups = {'all': np.ones(len(ids), dtype=bool)}
@@ -98,6 +111,10 @@ def main():
                 results[group][feature] = dict(dura=summarize_ranks(a, mask), candidate=summarize_ranks(b, mask),
                     paired_top1_repairs=int(((a != 1) & (b == 1) & mask).sum()),
                     paired_top1_damages=int(((a == 1) & (b != 1) & mask).sum()))
+            a, b = objective_anchor[mask], objective_output[mask]
+            results[group]['quartic_objective'] = dict(
+                count=len(a), dura_mean=float(a.mean()), candidate_mean=float(b.mean()),
+                improved=int((b < a).sum()), worsened=int((b > a).sum()), tied=int((b == a).sum()))
     args.out.mkdir(parents=True)
     result = dict(status='QUARTIC_SOURCE_STRUCTURE_COMPLETE', commit=args.commit,
                   candidate=CANDIDATE, candidate_commit=CANDIDATE_COMMIT, source_records=len(ids),

@@ -3,7 +3,7 @@ import pytest
 import torch
 
 from experiments.phase1_dura_orthogonal import quartic_source_structure as diagnostic
-from experiments.phase1_dura_orthogonal.quartic_recovery import DuraQuarticRecovery
+from experiments.phase1_dura_orthogonal.quartic_recovery import DuraQuarticRecovery, quartic_loss
 from experiments.phase1_dura_orthogonal.train_source import SCHEMA, WIDE_FIT_SIZE
 
 
@@ -34,3 +34,11 @@ def test_feature_shapes_and_finiteness():
     power, amplitude, quartic = diagnostic.structure(torch.randn(8, 2, 256))
     assert (power.shape, amplitude.shape, quartic.shape) == ((8, 256), (8, 16), (8, 256))
     assert all(torch.isfinite(value).all() for value in (power, amplitude, quartic))
+
+
+def test_per_record_objective_matches_training_loss_and_identical_input():
+    output, clean = torch.randn(8, 2, 256), torch.randn(8, 2, 256)
+    values = diagnostic.per_record_quartic_error(output, clean)
+    assert values.shape == (8,)
+    assert torch.allclose(values.mean(), quartic_loss(output, clean), rtol=1e-6, atol=1e-8)
+    assert torch.equal(diagnostic.per_record_quartic_error(clean, clean), torch.zeros(8))
