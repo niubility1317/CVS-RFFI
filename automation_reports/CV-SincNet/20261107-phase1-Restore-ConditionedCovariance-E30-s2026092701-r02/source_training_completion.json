@@ -1,0 +1,106 @@
+{
+  "status": "PASS",
+  "run_id": "20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r02",
+  "scientific_commit": "ebb279ff3ad430e6a8242686d816976339444588",
+  "epochs": 30,
+  "updates": 7410,
+  "all30_logs_and_full_source_permutations_checked": true,
+  "final_matches_E30": true,
+  "prior_buffers_unchanged": true,
+  "model_and_optimizer_finite": true,
+  "actual_head_updates": {
+    "physical.kernel_head.": {
+      "compared": 2,
+      "changed": 2
+    },
+    "physical.coefficient_head.": {
+      "compared": 2,
+      "changed": 2
+    },
+    "physical.noise_head.": {
+      "compared": 2,
+      "changed": 2
+    },
+    "detail.": {
+      "compared": 53,
+      "changed": 52
+    }
+  },
+  "source_objective_max_error": 1.5867248626122432e-09,
+  "complete": {
+    "status": "SOURCE_TRAINED",
+    "code_commit": "ebb279ff3ad430e6a8242686d816976339444588",
+    "arm": "TF_ConditionedCovariance",
+    "epoch": 30,
+    "updates": 7410,
+    "source_Ls_exposures": 189000,
+    "source_Us_exposures": 1701000,
+    "online_F0_feature_rows": 1890000,
+    "F0_clean_target_rows": 63000,
+    "F0_feature_L_s_exposures": 189000,
+    "F0_feature_U_s_exposures": 1701000,
+    "source_F0_feature_cache_seconds": 2.8927002209820785,
+    "F0_identity": {
+      "model": "original_F0_E50",
+      "parameters": 232993,
+      "epoch": 50,
+      "updates": 11100,
+      "model_seed": 2026092701,
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+      "base_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release",
+      "source_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+      "source_row": "main_split-repl-shuffled_time-3view-s2026092701",
+      "source_code_commit": "3ff8f4b7e85b5608f5b45350aa18081499a7ef1d"
+    },
+    "source_prior_identity": {
+      "source_run": "20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01",
+      "source_prior_code": "a3a90b55a73702954c453eec9c1ad17fec24d87f",
+      "source_fit_packets": 63000,
+      "source_mean_FP32_rounding_max": 5.807088498954727e-08,
+      "source_covariance_FP32_rounding_max": 2.3745440835831744e-08
+    },
+    "G_parameters": 1336263,
+    "physical_parameters": 1230341,
+    "detail_parameters": 105922,
+    "training_seconds": 24894.359606433078,
+    "worker_seconds": 24903.599059498985,
+    "peak_allocated_bytes": 1759697408,
+    "G_initialization_checkpoint_loads": 0,
+    "TX_labels_read": 0,
+    "V_reads": 0,
+    "OE_reads": 0,
+    "target_training_reads": 0,
+    "checkpoint_selection": "final30_only",
+    "model_state_F0_updates": 0,
+    "training_stages": 1,
+    "training_posterior_calls": 59070,
+    "training_posterior_rows": 1890000,
+    "source_operator_full_matrix_supervision": true,
+    "source_prior_buffers_unchanged": true,
+    "source_actual_IQ_F0_guidance": true,
+    "feature_weight": 0.01,
+    "physical_detail_gradient_isolation": true,
+    "independent_branch_clipping": true
+  },
+  "original_physical_training_comparison": null,
+  "epoch_seconds_sum": 24894.323650060163,
+  "mean_epoch_seconds": 829.8107883353388,
+  "new_IQ_reads": 0,
+  "new_neural_forwards": 0,
+  "new_truth_reads": 0,
+  "actual_training_stage_seconds": 24908.217199087143,
+  "actual_Main_predictor_PID_CWD_command_CUDA_GPU_log_growth_verified": true,
+  "prediction_GPU": 6,
+  "prediction_admission_existing_compute_processes": 4,
+  "prediction_admission_free_MiB": 13860,
+  "actual_prediction_smoke": {
+    "status": "PASS",
+    "source_rows": 2,
+    "TX_labels_read": 0,
+    "target_inputs": 0,
+    "model_updates": 0
+  },
+  "Main_complete": false,
+  "goal_complete": false
+}
