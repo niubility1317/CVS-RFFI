@@ -1,0 +1,164 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-diagnostic-Restore-prior-factor-sourceV-s2026092701-r01",
+  "group_id": "source-prior-mean-covariance-factorial",
+  "display_name": "源接收机先验均值与协方差的分量归因",
+  "description": "完整交叉同 RX/其他 RX 的均值与协方差，同一源 V480 七景、同一盲估和已知信道。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-V-only",
+    "source-LU-statistics",
+    "held-receiver",
+    "frozen-TriSIGTIME-SSL",
+    "CPU-only"
+  ],
+  "comparison_group_id": "matched-source-priors-mean-vs-covariance",
+  "parent_run_ids": [
+    "20261107-diagnostic-Restore-receiver-prior-sourceV-s2026092701-r02",
+    "20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User comprehensive recoverability analysis, frozen original source V validation only. No source V in training, no target/OE/novel/TX.",
+  "code": {
+    "commit": "e2fcce191514f0b00aead4214781428fe415c1ac",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI, CPU2 nice10 CUDA empty. FP64 source population covariance, FP32 buffers, FP64 Cholesky and FP32 F0.",
+    "cwd": "releases/20261107-diagnostic-Restore-prior-factor-sourceV-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 source contract; existing R07 fixed1800 V/7 frozen validation views",
+    "representation": "Exact prior diagnostic r02 V480×7 inputs, five same/other fitted moments, blind and known source Action/noise.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "Original five RX x three day strata, first 32 per 120 from original order, same 480 original physical IDs all seven views.",
+    "label_map_ref": "Source V independent truth after all 42 method/view cells. No L/U TX truth used.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original six known sourceTX; V trueTX validation only, no train/selection",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse VALIDATED_ONCE R07 handles; fixed original f29 V reference and BF E30/F0 E50 provenance.",
+    "support_query_ref": "Fixed 480 original V, no target/support/query.",
+    "leo_config_ref": "ExistingR07 validation_actions7; receiver2026101902 vs trainingreceiver2026101911; no regenerated views.",
+    "actual_training_labels": "No new fit or training. Moment sets originally used only legal L_s/U_s before V. Source RX chooses diagnostic prior.",
+    "augmentation": "Reuse all seven original source V observations, no regenerated signals.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "source-frozen-mean-covariance-factorial",
+    "query_use": "Source V diagnostic only, no truth in worker, no target/OE/novel/updates.",
+    "external_method_exception": null,
+    "claim_scope": "Attribution to selected source IQ moment components under identical observations. Requires known source RX for diagnostic prior."
+  },
+  "checkpoint": {
+    "initialization": "Exact original BF and original F0; all moment sets and endpoint outputs reused.",
+    "sources": [
+      "FROZEN_G 20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01/bf29554a03e28a012eaaa134f5c7b3f7856f2268 E30/7410",
+      "FROZEN_F0 original Tri-SIG-TIME SSL 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d E50/11100",
+      "EXACT_SOURCE_MOMENTS_AND_CONTROLS 20261107-diagnostic-Restore-receiver-prior-sourceV-s2026092701-r02/1a9aafda7cf9cf5ee1d293a5e782ef57e27eb5ad; L_s/U_s only for fit"
+    ],
+    "contract_check_ref": "Original complete r02 prior metadata and exact V480 source IDs/RX/day plus all same/other endpoint values.",
+    "provenance_verdict": "Frozen same-source BF and F0. No G training, target or OE/novel/TX access.",
+    "selection_rule": "Fixed all four mean/cov combinations × two Action conditions × seven views. No moment or candidate selection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-prior-factor",
+    "gpu_policy": "One CPU2 nice10 worker, CUDA empty; shared CPU truth lock after full matrix.",
+    "remote_run_root": "runs/20261107-diagnostic-Restore-prior-factor-sourceV-s2026092701-r01",
+    "remote_log_root": "logs/20261107-diagnostic-Restore-prior-factor-sourceV-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-diagnostic-Restore-prior-factor-sourceV-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.prior_factor_source --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-diagnostic-Restore-prior-factor-sourceV-s2026092701-r01-release/inputs.json --commit e2fcce191514f0b00aead4214781428fe415c1ac",
+    "stop_rule": "Invalid parent/identity/fit metadata, collision, source smoke, nonfinite or solve failure: preserve, no automatic retry."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "runtime_observation.json",
+    "reference.npz PRIVATE",
+    "seven scene.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "terminal.json",
+    "source_truth.json aggregate only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "True TX correct, repairs/damage vs same prior, clean-correct retention and RX/day.",
+      "IQ NMSE for each crossed source mean/covariance, both fixed blind and known Action/noise."
+    ],
+    "dimensions": [
+      "V480,32 per RX/day",
+      "seven views",
+      "four source moment combinations × two Action conditions"
+    ],
+    "prediction_ref": "13440 fresh mixed-prior F0 rows;13440 old endpoint decisions reused exactly,56 cells.",
+    "scorer_ref": "Independent CPU truth after all56 cells and exact old endpoints, ID/RX/day join under shared score lock."
+  },
+  "rows": [
+    {
+      "row_id": "source_prior_mean_covariance_factorial",
+      "method": "source_IQ_moment_component_factorial",
+      "purpose": "Determine whether source prior mismatch harms recognition through mean, covariance, or their interaction.",
+      "config_ref": "experiments.pamf_phase3_restoration.prior_factor_source.py",
+      "resolved_config_ref": "runs/20261107-diagnostic-Restore-prior-factor-sourceV-s2026092701-r01/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101902
+      },
+      "seed_notes": "Fixed original record order and original F0; no new RNG or phase selection.",
+      "k": null,
+      "scenario": "Original source V480 x7, five inference-only readouts.",
+      "optimizer": "NONE",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Zero refitting. Four new readouts×V480×7 posterior/F0 rows. CPU2.",
+      "output_root": "runs/20261107-diagnostic-Restore-prior-factor-sourceV-s2026092701-r01",
+      "log_path": "logs/20261107-diagnostic-Restore-prior-factor-sourceV-s2026092701-r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.prior_factor_source --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-diagnostic-Restore-prior-factor-sourceV-s2026092701-r01-release/inputs.json --commit e2fcce191514f0b00aead4214781428fe415c1ac",
+      "expected_artifacts": [
+        "launch.json",
+        "runtime_observation.json",
+        "smoke.json",
+        "reference.npz PRIVATE",
+        "7 scene.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "terminal.json",
+        "source_truth.json aggregate only"
+      ]
+    }
+  ],
+  "notes": [
+    "Same-source and other-source priors are the exact fixed12600-record fits from r02.",
+    "Recombine only mean and covariance, holding each source observation and fixed physical Action/noise pair constant.",
+    "Original same/other predictions reused for both blind and known conditions. No new deployment candidate."
+  ],
+  "registered_at": "2026-11-07T04:14:03+00:00"
+}
