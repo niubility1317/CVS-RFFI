@@ -1,0 +1,1708 @@
+{
+  "status": "VERIFIED_SOURCE_TRUTH_LAST",
+  "code_commit": "91f46b7d944de93ed69981864047e01c06b93ebb",
+  "pid": 4008606,
+  "source_V_records": 480,
+  "prediction_cells": 36,
+  "source_TX_scored": 480,
+  "target_reads": 0,
+  "native_metric_order": [
+    "measured_pre_agc_snr_db",
+    "AGC_db",
+    "output_frequency_hz"
+  ],
+  "results": [
+    {
+      "scene": "practical_high",
+      "arm": "original",
+      "BF_correct": 473,
+      "received_correct": 466,
+      "retained_clean_correct": 473,
+      "clean_correct": 474,
+      "repairs": 0,
+      "damage": 0,
+      "mean_nmse": 0.007403741464925891,
+      "median_snr_db": 29.884315362052778,
+      "mean_absolute_native_delta_by_metric": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "paired_BF_net_by_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "net": 0
+        }
+      ]
+    },
+    {
+      "scene": "practical_high",
+      "arm": "train_profiles",
+      "BF_correct": 473,
+      "received_correct": 466,
+      "retained_clean_correct": 473,
+      "clean_correct": 474,
+      "repairs": 0,
+      "damage": 0,
+      "mean_nmse": 0.007405449968306736,
+      "median_snr_db": 29.883711232775852,
+      "mean_absolute_native_delta_by_metric": [
+        0.002512525138502186,
+        0.0017445172152699658,
+        2.2737367544323207e-14
+      ],
+      "paired_BF_net_by_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "net": 0
+        }
+      ]
+    },
+    {
+      "scene": "practical_high",
+      "arm": "rotated_val_profiles",
+      "BF_correct": 473,
+      "received_correct": 466,
+      "retained_clean_correct": 473,
+      "clean_correct": 474,
+      "repairs": 0,
+      "damage": 0,
+      "mean_nmse": 0.0074095322771124,
+      "median_snr_db": 29.88562795393787,
+      "mean_absolute_native_delta_by_metric": [
+        0.002022743858380521,
+        0.0013212558767865304,
+        7.579122514774402e-15
+      ],
+      "paired_BF_net_by_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "net": 0
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid",
+      "arm": "original",
+      "BF_correct": 470,
+      "received_correct": 442,
+      "retained_clean_correct": 470,
+      "clean_correct": 474,
+      "repairs": 0,
+      "damage": 0,
+      "mean_nmse": 0.013251819775662928,
+      "median_snr_db": 25.707669303192553,
+      "mean_absolute_native_delta_by_metric": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "paired_BF_net_by_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "net": 0
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid",
+      "arm": "train_profiles",
+      "BF_correct": 470,
+      "received_correct": 442,
+      "retained_clean_correct": 470,
+      "clean_correct": 474,
+      "repairs": 0,
+      "damage": 0,
+      "mean_nmse": 0.013248709716572193,
+      "median_snr_db": 25.710054040011475,
+      "mean_absolute_native_delta_by_metric": [
+        0.002325736937247803,
+        0.0014956378546382321,
+        2.8273231357627386
+      ],
+      "paired_BF_net_by_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "net": 0
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid",
+      "arm": "rotated_val_profiles",
+      "BF_correct": 470,
+      "received_correct": 442,
+      "retained_clean_correct": 470,
+      "clean_correct": 474,
+      "repairs": 0,
+      "damage": 0,
+      "mean_nmse": 0.01324147560117126,
+      "median_snr_db": 25.709280319497406,
+      "mean_absolute_native_delta_by_metric": [
+        0.0018542738566044794,
+        0.0011196668120095953,
+        4.69287588918775
+      ],
+      "paired_BF_net_by_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "net": 0
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_suburban",
+      "arm": "original",
+      "BF_correct": 464,
+      "received_correct": 445,
+      "retained_clean_correct": 463,
+      "clean_correct": 474,
+      "repairs": 0,
+      "damage": 0,
+      "mean_nmse": 0.0170439166991855,
+      "median_snr_db": 22.16325197412029,
+      "mean_absolute_native_delta_by_metric": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "paired_BF_net_by_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "net": 0
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_suburban",
+      "arm": "train_profiles",
+      "BF_correct": 463,
+      "received_correct": 445,
+      "retained_clean_correct": 462,
+      "clean_correct": 474,
+      "repairs": 0,
+      "damage": 1,
+      "mean_nmse": 0.017047437374518873,
+      "median_snr_db": 22.164713043657777,
+      "mean_absolute_native_delta_by_metric": [
+        0.0022658695451396446,
+        0.0014406587115498696,
+        5.926616577500151
+      ],
+      "paired_BF_net_by_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "net": -1
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_suburban",
+      "arm": "rotated_val_profiles",
+      "BF_correct": 463,
+      "received_correct": 445,
+      "retained_clean_correct": 462,
+      "clean_correct": 474,
+      "repairs": 0,
+      "damage": 1,
+      "mean_nmse": 0.017042737058363854,
+      "median_snr_db": 22.16440267416531,
+      "mean_absolute_native_delta_by_metric": [
+        0.0018471014771173765,
+        0.0010674058444469956,
+        10.555220519249936
+      ],
+      "paired_BF_net_by_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "net": -1
+        }
+      ]
+    },
+    {
+      "scene": "practical_high_urban",
+      "arm": "original",
+      "BF_correct": 469,
+      "received_correct": 442,
+      "retained_clean_correct": 468,
+      "clean_correct": 474,
+      "repairs": 0,
+      "damage": 0,
+      "mean_nmse": 0.012685015241489357,
+      "median_snr_db": 29.810882737180506,
+      "mean_absolute_native_delta_by_metric": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "paired_BF_net_by_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "net": 0
+        }
+      ]
+    },
+    {
+      "scene": "practical_high_urban",
+      "arm": "train_profiles",
+      "BF_correct": 470,
+      "received_correct": 442,
+      "retained_clean_correct": 469,
+      "clean_correct": 474,
+      "repairs": 1,
+      "damage": 0,
+      "mean_nmse": 0.012672919391479808,
+      "median_snr_db": 29.811849742467288,
+      "mean_absolute_native_delta_by_metric": [
+        0.002510584549157862,
+        0.001673120716339577,
+        1.6238483005289293
+      ],
+      "paired_BF_net_by_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "net": 1
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "net": 0
+        }
+      ]
+    },
+    {
+      "scene": "practical_high_urban",
+      "arm": "rotated_val_profiles",
+      "BF_correct": 471,
+      "received_correct": 442,
+      "retained_clean_correct": 470,
+      "clean_correct": 474,
+      "repairs": 2,
+      "damage": 0,
+      "mean_nmse": 0.012669450921869914,
+      "median_snr_db": 29.811729903958334,
+      "mean_absolute_native_delta_by_metric": [
+        0.001988587214906769,
+        0.0013034572538755719,
+        3.411050953435832
+      ],
+      "paired_BF_net_by_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "net": 1
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "net": 1
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid_urban",
+      "arm": "original",
+      "BF_correct": 436,
+      "received_correct": 356,
+      "retained_clean_correct": 435,
+      "clean_correct": 474,
+      "repairs": 0,
+      "damage": 0,
+      "mean_nmse": 0.044714336954105725,
+      "median_snr_db": 23.034265182416824,
+      "mean_absolute_native_delta_by_metric": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "paired_BF_net_by_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "net": 0
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid_urban",
+      "arm": "train_profiles",
+      "BF_correct": 436,
+      "received_correct": 354,
+      "retained_clean_correct": 435,
+      "clean_correct": 474,
+      "repairs": 0,
+      "damage": 0,
+      "mean_nmse": 0.044705836950985636,
+      "median_snr_db": 23.033283992469425,
+      "mean_absolute_native_delta_by_metric": [
+        0.0024028868926097165,
+        0.001557855464718284,
+        22.53761124504005
+      ],
+      "paired_BF_net_by_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "net": 0
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid_urban",
+      "arm": "rotated_val_profiles",
+      "BF_correct": 437,
+      "received_correct": 355,
+      "retained_clean_correct": 436,
+      "clean_correct": 474,
+      "repairs": 1,
+      "damage": 0,
+      "mean_nmse": 0.044724187303412086,
+      "median_snr_db": 23.03419375042995,
+      "mean_absolute_native_delta_by_metric": [
+        0.0020086005331173143,
+        0.001278082074261816,
+        43.82094518082002
+      ],
+      "paired_BF_net_by_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "net": 1
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "net": 0
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_urban",
+      "arm": "original",
+      "BF_correct": 401,
+      "received_correct": 302,
+      "retained_clean_correct": 400,
+      "clean_correct": 474,
+      "repairs": 0,
+      "damage": 0,
+      "mean_nmse": 0.05872602737460208,
+      "median_snr_db": 8.507266848753986,
+      "mean_absolute_native_delta_by_metric": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "paired_BF_net_by_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "net": 0
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_urban",
+      "arm": "train_profiles",
+      "BF_correct": 399,
+      "received_correct": 304,
+      "retained_clean_correct": 398,
+      "clean_correct": 474,
+      "repairs": 1,
+      "damage": 3,
+      "mean_nmse": 0.05875469811774868,
+      "median_snr_db": 8.50967720265433,
+      "mean_absolute_native_delta_by_metric": [
+        0.002300605326324539,
+        0.001632004036453132,
+        51.585615901766566
+      ],
+      "paired_BF_net_by_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "net": 1
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "net": -1
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "net": -1
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "net": -1
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "net": 0
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_urban",
+      "arm": "rotated_val_profiles",
+      "BF_correct": 400,
+      "received_correct": 303,
+      "retained_clean_correct": 399,
+      "clean_correct": 474,
+      "repairs": 2,
+      "damage": 3,
+      "mean_nmse": 0.05875538579469624,
+      "median_snr_db": 8.511142144966986,
+      "mean_absolute_native_delta_by_metric": [
+        0.0019356705360726323,
+        0.0013967681657742028,
+        100.5596043804456
+      ],
+      "paired_BF_net_by_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "net": 1
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "net": -1
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "net": -1
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "net": 0
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "net": 0
+        }
+      ]
+    }
+  ]
+}

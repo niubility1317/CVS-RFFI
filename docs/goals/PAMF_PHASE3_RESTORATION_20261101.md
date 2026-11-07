@@ -638,3 +638,7 @@ VERIFIED / QUEUED。实际代码 8cf3669c4a5d98f6c4930117952203afd56f2f6e，控�
 ## 2026-11-07 独立整包时变复数逆滤波恢复器
 
 VERIFIED / QUEUED。实际代码 92d0dcbe0f25927d5a1cf4d98669ded45a410a5b，控制器 PID 4001257 在线，实际工作目录、命令、CUDA 空环境和日志已核对。发布包 SHA 一致，远端编译通过。等待后验约束条件先验版最后一项 GPU 阶段终止，再按 GPU4/6 原准入条件启动。真实源检查、训练和 Main 均待执行。 490866 个参数，包首、中段、后段独立复数滤波，后段更深。 原 L_s/U_s 从零单阶段 30 轮、7410 步，使用批准的原冻结 F0 源连续特征约束，独立于 F-free 对照。冻结后自动用原 Tri-SIG-TIME SSL 做 Main 两总体七景并独立评分。 [实验登记和排队核实](../../automation_reports/CV-SincNet/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01/report.md)
+
+## 2026-11-07 原源模拟接收机配对归因
+
+固定源 V480 的低档城区，原验证会话、训练会话、验证会话轮换的恢复正确数分别为 401、399、400。raw clean 为 474。 [固定传播和噪声的对照](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-receiver-session-sourceV-s2026092701-r01/analysis.md)
