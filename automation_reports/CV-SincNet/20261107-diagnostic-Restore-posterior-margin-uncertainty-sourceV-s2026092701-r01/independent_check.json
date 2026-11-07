@@ -1,0 +1,49 @@
+{
+  "status": "PASS",
+  "code_commit": "a18a3562d44e61cd5c9baf823eb0d5d1aa0bd40c",
+  "cells": 7,
+  "same_source_records": 120,
+  "projected_directions_per_record": 5,
+  "exact_cached_IQ_risk_and_measured_margin_shifts": true,
+  "summary_max_abs_diff": 0.0,
+  "checks": [
+    {
+      "scene": "clean",
+      "linear_false_positives": 0,
+      "linear_false_negatives": 0
+    },
+    {
+      "scene": "practical_high",
+      "linear_false_positives": 0,
+      "linear_false_negatives": 0
+    },
+    {
+      "scene": "practical_mid",
+      "linear_false_positives": 0,
+      "linear_false_negatives": 0
+    },
+    {
+      "scene": "practical_low_suburban",
+      "linear_false_positives": 0,
+      "linear_false_negatives": 2
+    },
+    {
+      "scene": "practical_high_urban",
+      "linear_false_positives": 0,
+      "linear_false_negatives": 1
+    },
+    {
+      "scene": "practical_mid_urban",
+      "linear_false_positives": 0,
+      "linear_false_negatives": 2
+    },
+    {
+      "scene": "practical_low_urban",
+      "linear_false_positives": 1,
+      "linear_false_negatives": 9
+    }
+  ],
+  "TX_reads": 0,
+  "target_reads": 0,
+  "new_NN_calls": 0
+}

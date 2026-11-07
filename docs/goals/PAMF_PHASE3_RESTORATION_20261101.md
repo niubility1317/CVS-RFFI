@@ -568,3 +568,9 @@ VERIFIED / QUEUED。控制器 PID 3845271 在线，实际工作目录、命令�
 ## 2026-11-07 接收调制版从零训练已提交
 
 VERIFIED / QUEUED。实际代码 3fc9201628e7602ea58c6a5fb13d6ec934513e99，控制器 PID 3869088 在线，实际工作目录、命令与 CUDA 空环境已核对。发布包 SHA 一致，远端编译通过。等待整体相位版最后一个 GPU 阶段终止，然后按原 GPU4/6 准入条件开始。当前真实源两条检查、训练和 Main 均待执行。 1229833 个学习参数，原 L_s/U_s 单阶段 30 轮、7410 步。包级复增益、独立斜率与局部相位，新增对齐后的分量监督。 完整算子使用精确因式计算，更新不调用 F0 或后验。冻结后自动原 Main 双总体七景和独立评分。 [实验登记与源系数摘要](../../automation_reports/CV-SincNet/20261107-phase1-Restore-ModulationCovariance-E30-s2026092701-r01/report.md)
+
+## 2026-11-07 分类边界方向的源端条件误差
+
+低档城区在已知模拟算子和标量噪声的同一高斯模型下，剩余 IQ 方差占源先验 17.42%。投影到原 F0 clean 第一与第二名的分数差，剩余方差比例为 20.49%，汇总所有五个竞争类别为 19.90%。
+
+同已知模拟算子和原冻结 F0，固定源输入导数诊断，无训练或目标访问。 [结果和非线性核对](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-posterior-margin-uncertainty-sourceV-s2026092701-r01/analysis.md)
