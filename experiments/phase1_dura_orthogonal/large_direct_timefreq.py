@@ -18,6 +18,7 @@ class LargeDirectTimeFreq(nn.Module):
         def stem():
             return nn.Sequential(nn.Conv1d(2, 96, 5, padding=2), nn.GELU(),
                                  nn.Conv1d(96, 96, 5, padding=2), nn.GELU())
+        self.residual_scale = SCALE
         self.time_stem = stem()
         self.freq_stem = stem()
         self.time_down = nn.Conv1d(96, width, 9, stride=4, padding=4)
@@ -49,5 +50,5 @@ class LargeDirectTimeFreq(nn.Module):
         tokens = torch.cat((time_tokens, freq_tokens), 1) + self.position
         context = self.transformer(tokens)[:, :TOKENS].transpose(1, 2).repeat_interleave(4, dim=-1)
         correction = self.out(self.decode(torch.cat((local, context), 1)))
-        correction = correction*torch.rsqrt(1+correction.square().sum(1, keepdim=True))*scale*SCALE
+        correction = correction*torch.rsqrt(1+correction.square().sum(1, keepdim=True))*scale*self.residual_scale
         return received + correction
