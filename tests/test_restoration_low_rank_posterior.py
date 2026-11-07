@@ -99,3 +99,15 @@ def test_probe_rejects_wrong_checkpoint_or_non_source_provenance():
     validate_reference(checkpoint,smoke)
     with pytest.raises(ValueError,match='E20'):validate_reference(dict(checkpoint,epoch=30),smoke)
     with pytest.raises(ValueError,match='provenance'):validate_reference(checkpoint,dict(smoke,target_inputs=1))
+
+
+def test_second_probe_cell_is_saved_without_overwriting_the_first(tmp_path):
+    import json
+    from experiments.pamf_phase3_restoration.low_rank_source_probe import save_cell
+    records=[]
+    for scene in ('clean','practical_high'):
+        records.append(dict(scene=scene,count=32))
+        save_cell(tmp_path,records)
+    saved=[json.loads(p.read_text()) for p in sorted(tmp_path.glob('cell-*.json'))]
+    assert saved==records
+    with pytest.raises(FileExistsError):save_cell(tmp_path,records)

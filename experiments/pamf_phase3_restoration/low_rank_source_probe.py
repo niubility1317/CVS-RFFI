@@ -24,7 +24,7 @@ from .source_inverse import R07
 from .source_pair import read,validate_source
 from .variance_trial import load_scale,recovery_gpu_choice
 
-RUN='20261107-diagnostic-Restore-CoupledLowRank-sourceLU-s2026092701-r01'
+RUN='20261107-diagnostic-Restore-CoupledLowRank-sourceLU-s2026092701-r02'
 MODULE='experiments.pamf_phase3_restoration.low_rank_source_probe'
 REFERENCE_COMMIT='6d3dda3c88765c38e1813ecb733948234bb63190'
 SCENES=('clean','practical_high','practical_mid','practical_low_suburban','practical_high_urban','practical_mid_urban','practical_low_urban')
@@ -79,6 +79,11 @@ def posterior_forward(model,received,prior,solver,mean_shift):
 def relative_error(actual,reference_value):
     difference=(actual-reference_value).double()
     return dict(max_abs=float(difference.abs().max()),relative_l2=float(difference.norm()/reference_value.double().norm().clamp_min(1e-12)))
+
+
+def save_cell(out,records):
+    # Each scientific cell is immutable; the shared writer intentionally uses x.
+    write(out/f'cell-{len(records):02d}.json',records[-1])
 
 
 def probe(args,out):
@@ -182,7 +187,7 @@ def probe(args,out):
                 for solver in order:timing[solver].append(step(batch,prior,solver,seed+repeat+1))
             record=dict(prior=prior_name,scene=scene,count=32,IQ_error=iq,G_gradient_error=gradients,
                 mean_gradient_error=mean_gradient,relative_loss_error=loss_relative,dense_numerics=dense,low_rank_numerics=low,timing=timing)
-            records.append(record);write(out/'progress.json',dict(completed_cells=len(records),planned_cells=14,records=records))
+            records.append(record);save_cell(out,records)
             print('LOW_RANK_SOURCE_CELL_COMPLETE',prior_name,scene,len(records),flush=True)
     check_F0_state(reader,reader_state)
     if any(not torch.equal(value,model.state_dict()[key]) for key,value in original_state.items()):raise ValueError('Read-only source probe changed G state')
