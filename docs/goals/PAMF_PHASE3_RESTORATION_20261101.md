@@ -736,3 +736,11 @@ VERIFIED / RUNNING。已完成6/30轮、1482/7410次更新；原63000条源记�
 ## 2026-11-07 整包逆滤波从零30轮的完整Main结果
 
 VERIFIED / ANALYZED。整包时变逆滤波恢复器490866参数从零单阶段30轮/7410完整结束，全部30轮日志/源顺序/预算、E0/E30有限状态、三组区域head实际更新、final逐值等于E30技术状态已核实。原Main两总体168000条x七景，三流42单元全部预测后独立truth-last；4阶段exit0、控制器及子进程均已退出。独立复算1302组/868raw配对及DURA/clean配对通过，最大差1.2e-14、raw/DURA复用判决差0。六景依次82.230357/80.775000/78.887500/80.596429/72.464286/63.987500%，0/6；clean两总体净+500/-92，联合验收未通过。实际训练阶段1161.801秒，完整两阶段预测246.631秒，均为共享负载整阶段计时，不代替B1时延或主性能。原source-only数据、连续F0指导和科学代码保持，资源调度未改变模型或测试范围；其他已登记候选继续，不按本项结果取消、组合或重排。默认DURA保持。 [完整结果与全部分组](../../automation_reports/CV-SincNet/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01/analysis.md)
+
+## 2026-11-07 调制与先验失配两版的GPU5串行执行
+
+VERIFIED / RUNNING。调制参数估计版已在GPU5实际训练，准入已有2个进程、剩余19829 MiB，符合原总数最多3个。实际GPU子进程继续执行原科学release/commit，父控制器CUDA为空；真实source2、原F0、完整FP64后验、各物理输出头梯度、严格E0重载及源先验绑定通过，日志已增长。G更新仍只使用原源模拟物理量，F0不提供训练梯度；本轮仅资源安排变化，原source-only单阶段30轮/7410和完整Main测试保持。 [实验状态](../../automation_reports/CV-SincNet/20261107-phase1-Restore-ModulationCovariance-E30-s2026092701-r01/report.md)。
+
+VERIFIED / QUEUED。先验失配版的新控制器在线，CWD/命令/科学与调度代码/CUDA空环境/无子进程及等待日志已核实。它当前没有GPU训练或真实源模型检查，固定等待调制版真实最后GPU终态，再重新核实GPU5正常总数最多3个和至少12000 MiB。不读取调制版分数作为排队条件；原L_s/U_s、连续源F0指导、先验切换、从零单阶段30轮及完整Main矩阵保持。 [实验状态](../../automation_reports/CV-SincNet/20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01/report.md)。
+
+旧等待owner均经无GPU阶段核实后精确交接，原launch、输出骨架和日志保留。其他四路健康训练不变，完整六景3pp与两个clean保护目标仍未达成，默认DURA保持。

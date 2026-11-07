@@ -37,3 +37,9 @@ VERIFIED / QUEUED。实际代码 14e7315d6da5d6fe242e7568f20c97ade064e8d9，控�
 资源控制器 `bf6ab827408f1d20f4e8bbcfcf511d1a118cbc41`，全部科学阶段仍为原 `14e7315d6da5d6fe242e7568f20c97ade064e8d9` 与原release。GPU5正常总数最多3个、已有最多2个且剩余至少12000 MiB；两版按modulation、mismatched顺序，每阶段一个本run GPU子进程。mismatched只等待modulation真实最后GPU终态，不读取成绩作排队条件。源L_s/U_s、架构/损失/seed/原顺序及draw、从零30轮/7410、原Tri-SIG-TIME SSL Main双总体七景和独立truth-last保持。只交接经完整身份、CUDA为空、无子进程、无提交阶段和训练产物核实的旧等待控制器，独立确认退出后才发新owner。原输出骨架、launch.json、release及日志保留；新resource_controller.json独占创建。真实源模型检查仍为原训练器首步，PASS后直接继续；技术失败保留，不重启其他健康任务。9项针对性检查与一次资源范围P0/P1通过。
 
 命令：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.registered_restoration_dispatch --candidate mismatched --root /home/szu2070436088/2510044040/CV-SincNet --legacy-release /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01-release --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --commit bf6ab827408f1d20f4e8bbcfcf511d1a118cbc41`。CWD：`/home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01-GPU5-registered-dispatch-release`。
+
+## GPU5 调度实际状态核实
+
+VERIFIED / QUEUED。先验失配版的新控制器在线，CWD/命令/科学与调度代码/CUDA空环境/无子进程及等待日志已核实。它当前没有GPU训练或真实源模型检查，固定等待调制版真实最后GPU终态，再重新核实GPU5正常总数最多3个和至少12000 MiB。不读取调制版分数作为排队条件；原L_s/U_s、连续源F0指导、先验切换、从零单阶段30轮及完整Main矩阵保持。
+
+[实际执行与资源证据](resource_launch_evidence.json)
