@@ -608,3 +608,7 @@ VERIFIED / RUNNING。CPU 预测进程 3944144 已通过真实 L_s 两条检查�
 ## 2026-11-07 已知信道高斯恢复的收缩与噪声
 
 固定源 V480 的低档城区，已知模拟信道和噪声时原高斯恢复识别对 426 条。只移除实际噪声对输出的贡献后对 452 条，只移除高斯收缩后对 458 条。raw clean 为 474 条。 低档城区原先丢失的 clean 正确中，两种单项去除各自共同修复 21 条。 [七景与信噪比分层](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-posterior-bias-noise-sourceV-s2026092701-r01/analysis.md)
+
+## 2026-11-07 后验约束的条件 IQ 先验模型
+
+VERIFIED / QUEUED。实际代码 8cf3669c4a5d98f6c4930117952203afd56f2f6e，控制器 PID 3965491 在线，实际工作目录、命令、CUDA 空环境和日志已核对。发布包 SHA 一致，远端编译通过。等待主路相位监督版最后一项 GPU 阶段终止，再按 GPU4/6 原准入条件启动。真实源检查、训练和 Main 均待执行。 5481223 个参数，条件均值修正经同一后验投影后才输出。 原 L_s/U_s 从零单阶段 30 轮、7410 步，使用原冻结 F0 的源端连续特征和精确无噪收缩监督。冻结后自动用原 Tri-SIG-TIME SSL 做 Main 两总体七景并独立评分。 [实验登记和排队核实](../../automation_reports/CV-SincNet/20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01/report.md)
