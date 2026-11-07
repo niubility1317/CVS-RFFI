@@ -46,3 +46,7 @@ VERIFIED / QUEUED。实际代码 3fc9201628e7602ea58c6a5fb13d6ec934513e99，控�
 VERIFIED / RUNNING。调制参数估计版已在GPU5实际训练，准入已有2个进程、剩余19829 MiB，符合原总数最多3个。实际GPU子进程继续执行原科学release/commit，父控制器CUDA为空；真实source2、原F0、完整FP64后验、各物理输出头梯度、严格E0重载及源先验绑定通过，日志已增长。G更新仍只使用原源模拟物理量，F0不提供训练梯度；本轮仅资源安排变化，原source-only单阶段30轮/7410和完整Main测试保持。
 
 [实际执行与资源证据](resource_launch_evidence.json)
+
+## 完整30轮与原Main七景独立复算完成
+
+VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30核实；原Main42单元全部预测后独立truth-last，4阶段exit0且进程均已退出。1302组/868raw配对及DURA/clean配对复算PASS，最大差1.24e-14，baseline判决差0。六景83.657143/82.395238/80.766071/82.386310/75.182738/67.238095%，1/6；clean两个总体净-66/-29，联合验收False。原科学代码/模型/数据/预算保持，默认DURA不变，其他已登记候选继续。 [完整结果](analysis.md)

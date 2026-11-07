@@ -253,3 +253,7 @@ VERIFIED / ANALYZED。原Main两总体168000条x七景、四流56单元全预测
 ## 2026-11-07 整包逆滤波从零30轮的完整Main结果
 
 VERIFIED / ANALYZED。整包时变逆滤波恢复器490866参数从零单阶段30轮/7410完整结束，全部30轮日志/源顺序/预算、E0/E30有限状态、三组区域head实际更新、final逐值等于E30技术状态已核实。原Main两总体168000条x七景，三流42单元全部预测后独立truth-last；4阶段exit0、控制器及子进程均已退出。独立复算1302组/868raw配对及DURA/clean配对通过，最大差1.2e-14、raw/DURA复用判决差0。六景依次82.230357/80.775000/78.887500/80.596429/72.464286/63.987500%，0/6；clean两总体净+500/-92，联合验收未通过。实际训练阶段1161.801秒，完整两阶段预测246.631秒，均为共享负载整阶段计时，不代替B1时延或主性能。原source-only数据、连续F0指导和科学代码保持，资源调度未改变模型或测试范围；其他已登记候选继续，不按本项结果取消、组合或重排。默认DURA保持。 [完整结果与全部分组](../automation_reports/CV-SincNet/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01/analysis.md)
+
+## 2026-11-07 TF_ModulationCovariance 完整Main结果
+
+VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30核实；原Main42单元全部预测后独立truth-last，4阶段exit0且进程均已退出。1302组/868raw配对及DURA/clean配对复算PASS，最大差1.24e-14，baseline判决差0。六景83.657143/82.395238/80.766071/82.386310/75.182738/67.238095%，1/6；clean两个总体净-66/-29，联合验收False。原科学代码/模型/数据/预算保持，默认DURA不变，其他已登记候选继续。 [完整分析](../automation_reports/CV-SincNet/20261107-phase1-Restore-ModulationCovariance-E30-s2026092701-r01/analysis.md)

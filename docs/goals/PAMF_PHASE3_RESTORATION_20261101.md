@@ -744,3 +744,7 @@ VERIFIED / RUNNING。调制参数估计版已在GPU5实际训练，准入已有2
 VERIFIED / QUEUED。先验失配版的新控制器在线，CWD/命令/科学与调度代码/CUDA空环境/无子进程及等待日志已核实。它当前没有GPU训练或真实源模型检查，固定等待调制版真实最后GPU终态，再重新核实GPU5正常总数最多3个和至少12000 MiB。不读取调制版分数作为排队条件；原L_s/U_s、连续源F0指导、先验切换、从零单阶段30轮及完整Main矩阵保持。 [实验状态](../../automation_reports/CV-SincNet/20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01/report.md)。
 
 旧等待owner均经无GPU阶段核实后精确交接，原launch、输出骨架和日志保留。其他四路健康训练不变，完整六景3pp与两个clean保护目标仍未达成，默认DURA保持。
+
+## 2026-11-07 TF_ModulationCovariance 完整Main结果
+
+VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30核实；原Main42单元全部预测后独立truth-last，4阶段exit0且进程均已退出。1302组/868raw配对及DURA/clean配对复算PASS，最大差1.24e-14，baseline判决差0。六景83.657143/82.395238/80.766071/82.386310/75.182738/67.238095%，1/6；clean两个总体净-66/-29，联合验收False。原科学代码/模型/数据/预算保持，默认DURA不变，其他已登记候选继续。 [完整分析](../../automation_reports/CV-SincNet/20261107-phase1-Restore-ModulationCovariance-E30-s2026092701-r01/analysis.md)
