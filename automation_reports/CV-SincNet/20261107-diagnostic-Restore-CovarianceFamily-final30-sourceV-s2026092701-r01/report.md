@@ -31,3 +31,7 @@
 ## 真实三模型源检查与CPU预测启动
 
 VERIFIED / RUNNING。三版final30与原F0的真实L_s两条检查通过，实际CPU2/nice10/CUDA为空、无GPU进程、PID/CWD/命令与日志增长已核实，首景三版预测已固定。按原V480七景全部21格预测后独立评分，CPU clean参考与候选使用相同后端；零拟合、选模、OE或目标输入。5项负检查及一次独立P0/P1通过。 [发布后证据](launch_evidence.json)
+
+## 完整冻结源V验证完成
+
+VERIFIED / ANALYZED：三版最终30轮在固定源V480七景的21格预测与独立truth-last全部完成，实际CPU过程和终止产物核实；315指标组和315配对组复核通过。零模型更新、V拟合、OE或目标输入，完整结果不替代Main验收。 [完整结果](analysis.md)
