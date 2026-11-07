@@ -1519,5 +1519,114 @@
   "new_truth_reads": 0,
   "candidate_selection": false,
   "default_DURA_changed": false,
-  "theoretical_limit_estimated": false
+  "theoretical_limit_estimated": false,
+  "fixed_pair_correctness_coverage": {
+    "as_of": "2026-11-07",
+    "status": "VERIFIED_PUBLISHED_PAIRED_COUNTS_ONLY",
+    "formula": "DURA_correct + repairs",
+    "threshold_correct": 140345,
+    "table": "PAMF_RESTORATION_PAIRED_BUDGET_20261107.csv",
+    "paired_cells": 141,
+    "scene_summary": [
+      {
+        "scene": "practical_high",
+        "name": "高档郊区",
+        "pairs": 17,
+        "pairs_where_union_reaches_threshold": 17,
+        "DURA_correct": 141697,
+        "max_at_least_one_correct": 147597,
+        "max_at_least_one_accuracy": 87.85535714285714,
+        "min_shortfall_even_if_no_damage": 0
+      },
+      {
+        "scene": "practical_mid",
+        "name": "中档郊区",
+        "pairs": 17,
+        "pairs_where_union_reaches_threshold": 17,
+        "DURA_correct": 139467,
+        "max_at_least_one_correct": 146568,
+        "max_at_least_one_accuracy": 87.24285714285715,
+        "min_shortfall_even_if_no_damage": 0
+      },
+      {
+        "scene": "practical_low_suburban",
+        "name": "低档郊区",
+        "pairs": 17,
+        "pairs_where_union_reaches_threshold": 17,
+        "DURA_correct": 136621,
+        "max_at_least_one_correct": 145130,
+        "max_at_least_one_accuracy": 86.38690476190476,
+        "min_shortfall_even_if_no_damage": 0
+      },
+      {
+        "scene": "practical_high_urban",
+        "name": "高档城区",
+        "pairs": 17,
+        "pairs_where_union_reaches_threshold": 17,
+        "DURA_correct": 139523,
+        "max_at_least_one_correct": 146518,
+        "max_at_least_one_accuracy": 87.21309523809524,
+        "min_shortfall_even_if_no_damage": 0
+      },
+      {
+        "scene": "practical_mid_urban",
+        "name": "中档城区",
+        "pairs": 17,
+        "pairs_where_union_reaches_threshold": 0,
+        "DURA_correct": 127186,
+        "max_at_least_one_correct": 139818,
+        "max_at_least_one_accuracy": 83.225,
+        "min_shortfall_even_if_no_damage": 527
+      },
+      {
+        "scene": "practical_low_urban",
+        "name": "低档城区",
+        "pairs": 39,
+        "pairs_where_union_reaches_threshold": 0,
+        "DURA_correct": 115586,
+        "max_at_least_one_correct": 132258,
+        "max_at_least_one_accuracy": 78.725,
+        "min_shortfall_even_if_no_damage": 8087
+      }
+    ],
+    "low_urban": {
+      "scope": "original_17",
+      "run": "20261102-phase1-Restore-CovarianceFeature-E30-s2026092701-r01",
+      "name": "CovarianceFeature",
+      "scene": "practical_low_urban",
+      "count": 168000,
+      "DURA_correct": 115586,
+      "candidate_correct": 112497,
+      "repairs": 16672,
+      "damage": 19761,
+      "both_wrong": 35742,
+      "at_least_one_correct": 132258,
+      "at_least_one_accuracy_percent": 78.725,
+      "shortfall_even_if_no_damage": 8087,
+      "cross_rx": {
+        "count": 126000,
+        "DURA_correct": 87172,
+        "candidate_correct": 84817,
+        "repairs": 12473,
+        "damage": 14828,
+        "both_wrong": 26355,
+        "at_least_one_correct": 99645,
+        "at_least_one_accuracy_percent": 79.08333333333333,
+        "shortfall_even_if_no_damage": 0
+      },
+      "cross_both": {
+        "count": 42000,
+        "DURA_correct": 28414,
+        "candidate_correct": 27680,
+        "repairs": 4199,
+        "damage": 4933,
+        "both_wrong": 9387,
+        "at_least_one_correct": 32613,
+        "at_least_one_accuracy_percent": 77.65,
+        "shortfall_even_if_no_damage": 0
+      }
+    },
+    "no_new_target_truth": true,
+    "no_output_selection": true
+  }
 }
