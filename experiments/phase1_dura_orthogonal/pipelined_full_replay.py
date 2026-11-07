@@ -14,6 +14,7 @@ import torch
 from experiments.pamf_phase1_flow import experiment as core
 from experiments.phase1_dura_innovation_probe.source_probe import source_inputs
 from experiments.phase1_dura_orthogonal.benchmark_pipelined_shared import collect_pipeline, consumer, decode_tensor
+from experiments.phase1_dura_orthogonal.benchmark_pipelined_balanced import GROUPS, pooled_consumer, validate_groups
 from experiments.phase1_dura_orthogonal.benchmark_shared_differences import FIELDS, compare_details, decode
 from experiments.phase1_dura_orthogonal.ground import load_fixed
 from experiments.phase1_dura_orthogonal.parallel_source_benchmark import encode, wait_ready
@@ -81,6 +82,7 @@ def main():
     p.add_argument('--root', type=Path, required=True)
     p.add_argument('--out', type=Path, required=True)
     p.add_argument('--commit', required=True)
+    p.add_argument('--pooled-two', action='store_true')
     args = p.parse_args()
     if args.out.exists():
         raise FileExistsError('Unique replay output required')
@@ -101,16 +103,24 @@ def main():
     ctx = mp.get_context('spawn')
     bready, pready, boutput, poutput = (ctx.Queue() for _ in range(4))
     bstart, pstart = ctx.Event(), ctx.Event()
-    btasks, ptasks = ([ctx.Queue() for _ in MODELS] for _ in range(2))
+    btasks = [ctx.Queue() for _ in MODELS]
+    if args.pooled_two:
+        validate_groups(GROUPS, MODELS)
+    ptasks = [ctx.Queue() for _ in (GROUPS if args.pooled_two else MODELS)]
     baseline = [ctx.Process(target=baseline_consumer, args=(str(args.root), run, commit, source_ids,
                           btasks[i], bready, bstart, boutput)) for i, (_, run, commit) in enumerate(MODELS)]
-    pipeline = [ctx.Process(target=consumer, args=(str(args.root), run, commit, source_ids,
-                          ptasks[i], pready, pstart, poutput)) for i, (_, run, commit) in enumerate(MODELS)]
+    if args.pooled_two:
+        pipeline = [ctx.Process(target=pooled_consumer, args=(str(args.root), tuple(MODELS[i] for i in indices),
+                              source_ids, ptasks[index], pready, pstart, poutput)) for index, indices in enumerate(GROUPS)]
+    else:
+        pipeline = [ctx.Process(target=consumer, args=(str(args.root), run, commit, source_ids,
+                              ptasks[i], pready, pstart, poutput)) for i, (_, run, commit) in enumerate(MODELS)]
     started = []
     loaded_path = sys.path[:]
     args.out.mkdir(parents=True)
     state = dict(status='RUNNING', commit=args.commit, views={}, TX_truth_reads=0, model_updates=0,
-                 models=[run for _, run, _ in MODELS], independent_threads=6, pipeline_threads=8)
+                 models=[run for _, run, _ in MODELS], independent_threads=6,
+                 pipeline_threads=2+2*len(pipeline), pooled_two=args.pooled_two)
     def save():
         temp = args.out/'progress.tmp'
         temp.write_text(json.dumps(state, indent=2, allow_nan=False)+'\n', encoding='utf8')
