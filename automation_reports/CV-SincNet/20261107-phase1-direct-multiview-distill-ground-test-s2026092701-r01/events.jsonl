@@ -1,2 +1,3 @@
 {"at": "2026-11-06T21:03:06+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-06T21:05:03+00:00", "status": "QUEUED", "note": "Seven-view prediction and truth-last scoring follow source training.", "evidence": ["N607:PID3695560,queue.log"], "row_id": null}
+{"at": "2026-11-07T03:21:51+00:00", "status": "RUNNING", "note": "Fixed source checkpoint and 112-record source prediction smoke passed; seven-view prediction active, truth remains closed.", "evidence": ["N607:PID3972911,PID3992504,ground_predict.log"], "row_id": null}
