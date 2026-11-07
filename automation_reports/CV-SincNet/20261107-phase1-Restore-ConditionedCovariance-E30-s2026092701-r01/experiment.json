@@ -1,0 +1,207 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r01",
+  "group_id": "source-observation-conditioned-covariance-single30",
+  "display_name": "观测条件化的先验协方差恢复网络，从零单阶段 30 轮",
+  "description": "从 received、先验和观测创新量预测非负逐点方差，经过可微完整后验学习实际带噪 IQ 恢复。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "original-ground-TriSIGSSL-Main",
+    "conditioned-covariance",
+    "actual-noisy-IQ-loss",
+    "source-prior-mismatch",
+    "scratch-single30",
+    "automatic-Main7"
+  ],
+  "comparison_group_id": "same-source-single30-conditional-mean-vs-variance",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Latestuser:performanceprimary/efficiencysecondary/groundTriSIGTIME SSL sameFrawclean6eachgap<=3pp+cleanpreserved;majorGarchitecturefreedom/scratchsingle30/sourceFfeatureguidanceallowed/originalLsUs-only/OEonlyfrozendiagnostic. DefaultDURAunchanged.",
+  "code": {
+    "commit": "2f77f8cec389f7ff74a94a8200dd219c1b5e084f",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI/Torch2.1/NumPy2 bridge-safe; FP32 physical/confidence/F0, differentiable FP64 posterior, TF32 off.",
+    "cwd": "releases/20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "Original R07 L_s/U_s clean/received/Action/noise, original source moments and other-RX matched-count moments.",
+    "contract_ref": "OriginalTriSSLsource_contract/392005/rolecounts6300-56700-27000;R07train63000sameIDset androles/RX/day byID",
+    "physical_ids_ref": "R07train/physical_ids.npy roles.npy;validatedoriginalsourceLUcache IDs foralignment;officialMain source-disjoint viewindexes",
+    "label_map_ref": "Gtrainnone;frozenF0originalsixclassorder,truthonly originalCPUscorerafterallrow42cells fixed",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Original VALIDATED_ONCE source capsule/split and physical binding, original full IQ moments. Reuse pre-V fixed ten source-only receiver-prior statistics from r02.",
+    "support_query_ref": "No targettraining/support/PCD/unknownrole. OriginalMain two populations168000,all7perrowfixedbefore independenttruth.",
+    "leo_config_ref": "R07sourcecache20trainrealizations/2026101912augmentation;officialMain frozen7observations",
+    "actual_training_labels": "No TX. Original source physical trace to physical head, actual noisy restored IQ/STFT/frozen F0 continuous features to confidence head.",
+    "augmentation": "Original R07 draws/order. Fifteen odd epochs full prior and fifteen even epochs excluded-RX prior, with unchanged source exposure."
+  },
+  "permissions": {
+    "regime": "source-only-scratch-conditional-covariance-F0-guidance",
+    "query_use": "Source RX selects training prior only. G learns variance from current received IQ and source moments. Deployed G receives current IQ; original F0 default head predicts.",
+    "external_method_exception": null,
+    "claim_scope": "Composite covariance network with actual noisy loss and original single30 prior mismatch exposure. Positive diagonal addition to source covariance."
+  },
+  "checkpoint": {
+    "initialization": "All 1336263 G parameters scratch, physical seed2026092701/confidence2026092702. Initial extra covariance .0069314718 times current prior diagonal.",
+    "sources": [
+      "FROZEN_FEATURE_ONLY original Tri-SIG-TIME SSL 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d E50/11100 default head",
+      "DATA_ONLY R07 original L_s6300/U_s56700 clean/received and simulated Action/noise",
+      "DATA_ONLY original source63000 IQ mean/full covariance a3a90b55a73702954c453eec9c1ad17fec24d87f",
+      "DATA_ONLY source fused160 variance f57c54cad7491e3e8a36f7ea51a9caa13a3a0ab9",
+      "DERIVED_SOURCE_STATISTICS_ONLY 20261107-diagnostic-Restore-receiver-prior-sourceV-s2026092701-r02/1a9aafda7cf9cf5ee1d293a5e782ef57e27eb5ad, five other-RX 12600 L/U-only moment fits before V",
+      "SOURCE_MECHANISM_ONLY prior-factor e2fcce191514f0b00aead4214781428fe415c1ac, no V state or labels for G"
+    ],
+    "contract_check_ref": "Original roles, RX and physical order. Source-fitted statistics metadata and exact dimensions. Own E0/final30 strict checkpoint loading.",
+    "provenance_verdict": "G entirely scratch. Fixed source-only statistics. Separate approved continuous-F0 guidance, no V/OE/target fit.",
+    "selection_rule": "Fixed final30/7410 only, automatically complete both original Main populations/all seven views before independent scoring."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/conditioned-covariance-scratch30",
+    "gpu_policy": "CUDA-empty controller waits 20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01 last GPU stage. GPU4/6 only, free>=12000MiB and existing compute<=2 before adding one.",
+    "remote_run_root": "runs/20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r01",
+    "remote_log_root": "runs/20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.conditioned_covariance_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 2f77f8cec389f7ff74a94a8200dd219c1b5e084f --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Invalid source/F0/prior, collision, real source smoke/gradient/reload, solve/nonfinite or worker failure: preserve."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/training/config.json",
+    "rows/<arm>/training/smoke.json",
+    "rows/<arm>/training/smoke_E0.pt PRIVATE",
+    "rows/<arm>/training/data_schedule.npz PRIVATE",
+    "rows/<arm>/training/training.jsonl PRIVATE",
+    "rows/<arm>/training/final.pt PRIVATE",
+    "rows/<arm>/training/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE",
+    "rows/TF_ConditionedCovariance/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Original Main six gaps≤3pp and both clean populations independently kept.",
+      "Same-record true TX repairs/damage vs raw/DURA, TX/RX/day/RXday and clean-reference agreement.",
+      "Full source noisy-IQ/STFT/continuous-F0 losses, extra variance and ratio, physical Action/noise.",
+      "Actual training time and peak memory. 1336263 parameters:1230341 physical +105922 confidence. Differentiable posterior cost."
+    ],
+    "dimensions": [
+      "original Main two populations and seven views",
+      "TX/RX/day/RXday",
+      "single model seed",
+      "matched raw and DURA"
+    ],
+    "prediction_ref": "Original Main cross_rx126000 + cross_both42000, all seven views, original raw/DURA exact-ID reuse.",
+    "scorer_ref": "OriginalindependentCUDAemptyCPUscore/sharedscore.lock;whole row/allMainpredictionsbeforetruth. No targetfeedback."
+  },
+  "rows": [
+    {
+      "row_id": "TF_ConditionedCovariance",
+      "method": "observation_conditioned_prior_variance",
+      "purpose": "Learn to balance prior shrinkage against actual noise amplification under source prior mismatch.",
+      "config_ref": "experiments.pamf_phase3_restoration.conditioned_covariance_trial.py::configuration",
+      "resolved_config_ref": "runs/20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r01/rows/TF_ConditionedCovariance/training/config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Physical2026092701/confidence2026092702; source-only moment subset2026110707; original order2026110102 and R07 draws.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": "AdamW(weight_decay1e-4,clip1)",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Scratch single30/7410, batch256 micro32, full63000 per epoch. One differentiable Cholesky posterior per record. 945000 global-prior and945000 other-RX-prior records; actual noisy loss for all.",
+      "output_root": "runs/20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r01/rows/TF_ConditionedCovariance",
+      "log_path": "runs/20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r01/logs/TF_ConditionedCovariance-train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.conditioned_covariance_trial train --root /home/szu2070436088/2510044040/CV-SincNet --commit 2f77f8cec389f7ff74a94a8200dd219c1b5e084f --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --arm TF_ConditionedCovariance",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/training/config.json",
+        "rows/<arm>/training/smoke.json",
+        "rows/<arm>/training/smoke_E0.pt PRIVATE",
+        "rows/<arm>/training/data_schedule.npz PRIVATE",
+        "rows/<arm>/training/training.jsonl PRIVATE",
+        "rows/<arm>/training/final.pt PRIVATE",
+        "rows/<arm>/training/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE",
+        "rows/TF_ConditionedCovariance/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+      ]
+    }
+  ],
+  "notes": [
+    "Source prior factor study: low urban covariance-only mismatch loses48 blind and40 known; mean-only loses4/9. Mechanism evidence, no target.",
+    "The covariance network observes current received, source mean and log diagonal, estimated observation innovation, lognoise and coordinates.",
+    "Adapt C by a learned nonnegative diagonal. Both physical Action and noise are detached for confidence loss. Separate physical simulator supervision.",
+    "Actual noisy IQ/STFT/frozen F0 continuous loss differentiates through the posterior to confidence weights. No noiseless-only objective.",
+    "Odd/even source prior exposure is kept. Inference uses fixed full-source moments plus its observation-dependent diagonal variance.",
+    "Initial extra variance is positive. Default deployed G is evaluated by full original Main seven views and independent truth-last."
+  ],
+  "record_type": "managed_run",
+  "registered_at": "2026-11-07T04:27:45+00:00"
+}
