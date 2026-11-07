@@ -1,0 +1,20 @@
+{
+  "status": "PENDING_FIXED_COMPARISON",
+  "role_not_complete": "reference",
+  "reason": "both populations and all seven predictions not fixed",
+  "spec": {
+    "candidate": [
+      "20261107-phase1-Restore-CoupledCovariance-E30-s2026092701-r01",
+      "TF_CoupledCovariance",
+      "6d3dda3c88765c38e1813ecb733948234bb63190"
+    ],
+    "reference": [
+      "20261107-phase1-Restore-SignedCovariance-E30-s2026092701-r02",
+      "TF_SignedCovariance",
+      "96143e689001ad94c6885bc2d032a1c897a097a6"
+    ]
+  },
+  "new_truth_reads": 0,
+  "new_neural_forwards": 0,
+  "reference_display_name": "独立有符号协方差版"
+}
