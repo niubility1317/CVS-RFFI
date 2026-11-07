@@ -410,9 +410,7 @@
   },
   "original_bf_tables": null,
   "matched_control_comparison": {
-    "status": "PENDING_FIXED_COMPARISON",
-    "role_not_complete": "reference",
-    "reason": "fixed final30 training absent",
+    "status": "VERIFIED_MATCHED_FIXED_PREDICTIONS",
     "spec": {
       "candidate": [
         "20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01",
@@ -425,9 +423,102 @@
         "8cf3669c4a5d98f6c4930117952203afd56f2f6e"
       ]
     },
-    "new_truth_reads": 0,
+    "combined": [
+      {
+        "count": 168000,
+        "reference_correct": 145589,
+        "candidate_correct": 145302,
+        "repairs": 122,
+        "damage": 409,
+        "net": -287,
+        "view": "clean",
+        "reference_accuracy": 86.66011904761905,
+        "candidate_accuracy": 86.48928571428571,
+        "delta_pp": -0.17083333333333334
+      },
+      {
+        "count": 168000,
+        "reference_correct": 140813,
+        "candidate_correct": 140663,
+        "repairs": 2115,
+        "damage": 2265,
+        "net": -150,
+        "view": "practical_high",
+        "reference_accuracy": 83.8172619047619,
+        "candidate_accuracy": 83.72797619047618,
+        "delta_pp": -0.08928571428571429
+      },
+      {
+        "count": 168000,
+        "reference_correct": 138626,
+        "candidate_correct": 138444,
+        "repairs": 2612,
+        "damage": 2794,
+        "net": -182,
+        "view": "practical_mid",
+        "reference_accuracy": 82.51547619047619,
+        "candidate_accuracy": 82.40714285714286,
+        "delta_pp": -0.10833333333333334
+      },
+      {
+        "count": 168000,
+        "reference_correct": 135851,
+        "candidate_correct": 135791,
+        "repairs": 3136,
+        "damage": 3196,
+        "net": -60,
+        "view": "practical_low_suburban",
+        "reference_accuracy": 80.86369047619047,
+        "candidate_accuracy": 80.82797619047619,
+        "delta_pp": -0.03571428571428571
+      },
+      {
+        "count": 168000,
+        "reference_correct": 138840,
+        "candidate_correct": 138799,
+        "repairs": 2692,
+        "damage": 2733,
+        "net": -41,
+        "view": "practical_high_urban",
+        "reference_accuracy": 82.64285714285714,
+        "candidate_accuracy": 82.61845238095238,
+        "delta_pp": -0.024404761904761905
+      },
+      {
+        "count": 168000,
+        "reference_correct": 127620,
+        "candidate_correct": 128153,
+        "repairs": 5057,
+        "damage": 4524,
+        "net": 533,
+        "view": "practical_mid_urban",
+        "reference_accuracy": 75.96428571428571,
+        "candidate_accuracy": 76.28154761904761,
+        "delta_pp": 0.31726190476190474
+      },
+      {
+        "count": 168000,
+        "reference_correct": 115480,
+        "candidate_correct": 116744,
+        "repairs": 7402,
+        "damage": 6138,
+        "net": 1264,
+        "view": "practical_low_urban",
+        "reference_accuracy": 68.73809523809524,
+        "candidate_accuracy": 69.49047619047619,
+        "delta_pp": 0.7523809523809524
+      }
+    ],
+    "candidate_cells_checked": 42,
+    "reference_cells_checked": 42,
+    "all_predictions_checked_before_truth": true,
+    "raw_DURA_decision_differences": 0,
+    "F0_source_commit": "3ff8f4b7e85b5608f5b45350aa18081499a7ef1d",
     "new_neural_forwards": 0,
-    "reference_display_name": "原条件均值恢复版"
+    "optimizer_updates": 0,
+    "source_or_target_fitting": false,
+    "reference_display_name": "原条件均值恢复版",
+    "independent_published_group_accuracy_max_error": 0.0
   },
   "goal": {
     "six_passing": 1,
