@@ -10,15 +10,15 @@ import time
 from experiments.phase1_dura_orthogonal.gpu_capacity_queue import capacity
 
 
-def idle_uuid(rows, apps, gpu):
+def idle_uuid(rows, apps, gpu, *, allow_shared=False):
     ready, _, count = capacity(rows, apps, gpu)
-    if not ready or count:
+    if not ready or (count and not allow_shared):
         return None
     return next(row.split(',')[1].strip() for row in rows.splitlines()
                 if row.split(',')[0].strip() == str(gpu))
 
 
-def wait_for_idle(out, gpu):
+def wait_for_idle(out, gpu, *, allow_shared=False):
     print('N607_FLOW_SYNC_WAITING', gpu, flush=True)
     while True:
         if out.exists():
@@ -27,9 +27,9 @@ def wait_for_idle(out, gpu):
                                         '--format=csv,noheader,nounits'], text=True)
         apps = subprocess.check_output(['nvidia-smi', '--query-compute-apps=gpu_uuid,pid',
                                         '--format=csv,noheader,nounits'], text=True)
-        uuid = idle_uuid(rows, apps, gpu)
+        uuid = idle_uuid(rows, apps, gpu, allow_shared=allow_shared)
         if uuid:
-            print('N607_FLOW_SYNC_IDLE_SLOT', gpu, uuid, flush=True)
+            print('N607_FLOW_SYNC_SHARED_SLOT' if allow_shared else 'N607_FLOW_SYNC_IDLE_SLOT', gpu, uuid, flush=True)
             return uuid
         time.sleep(20)
 
@@ -41,10 +41,11 @@ def main():
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--commit', required=True)
     parser.add_argument('--gpu', type=int, required=True)
+    parser.add_argument('--allow-shared-gpu', action='store_true')
     args = parser.parse_args()
     if not args.cache.is_file():
         raise FileNotFoundError('Fixed source context cache required')
-    uuid = wait_for_idle(args.out, args.gpu)
+    uuid = wait_for_idle(args.out, args.gpu, allow_shared=args.allow_shared_gpu)
     if 'torch' in sys.modules:
         raise RuntimeError('GPU selection must occur before torch import')
     os.environ.update(CUDA_VISIBLE_DEVICES=uuid, OMP_NUM_THREADS='2', MKL_NUM_THREADS='2',
@@ -75,6 +76,11 @@ def main():
             raise ValueError('Real frozen DURA source smoke required')
     del dura
     print('N607_FLOW_SYNC_REAL_DURA_SMOKE_PASS', flush=True)
+    def resources():
+        return dict(gpu=subprocess.check_output(['nvidia-smi', '--query-gpu=index,uuid,memory.free,utilization.gpu',
+            '--format=csv,noheader,nounits'], text=True).splitlines(),
+            apps=subprocess.check_output(['nvidia-smi', '--query-compute-apps=gpu_uuid,pid',
+            '--format=csv,noheader,nounits'], text=True).splitlines())
     results = {}
     for mode in ('conditional', 'mixed', 'direct'):
         for fast in (False, True):
@@ -82,12 +88,16 @@ def main():
             del warm
         pairs = []
         for order in ((False, True), (True, False)):
+            before = resources()
             outcomes = {fast: train(selected, mode, fast, 5) for fast in order}
             original, fast = outcomes[False], outcomes[True]
             match = exact(original, fast)
             pairs.append(dict(original_seconds=original[5], fast_seconds=fast[5], steps=len(original[2]),
                               losses_parameters_optimizer_rng_exact=match,
-                              max_loss_absolute_difference=float((original[2]-fast[2]).abs().max())))
+                              max_loss_absolute_difference=float((original[2]-fast[2]).abs().max()),
+                              fast_first=order[0], resources_before=before, resources_after=resources()))
+            print('N607_FLOW_SYNC_PAIR', mode, len(pairs), 'exact', match,
+                  'original_seconds', original[5], 'fast_seconds', fast[5], flush=True)
             if not match:
                 break
             del outcomes, original, fast
@@ -101,7 +111,8 @@ def main():
                   commit=args.commit, source_ids=512, views_per_id=3, epochs=5, batch=32,
                   results=results, torch_version=torch.__version__, gpu=torch.cuda.get_device_name(),
                   physical_gpu=args.gpu, physical_gpu_uuid=uuid, TX_labels_read=0, F_weights_read=0,
-                  F_outputs_read=0, V_reads=0, target_reads=0, weights_saved=False)
+                  F_outputs_read=0, V_reads=0, target_reads=0, weights_saved=False,
+                  shared_gpu_allowed=args.allow_shared_gpu)
     (args.out/'result.json').write_text(json.dumps(result, indent=2, allow_nan=False)+'\n', encoding='utf8')
     print(result['status'], flush=True)
 
