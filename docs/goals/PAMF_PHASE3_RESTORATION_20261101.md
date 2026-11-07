@@ -616,3 +616,7 @@ VERIFIED / QUEUED。实际代码 8cf3669c4a5d98f6c4930117952203afd56f2f6e，控�
 ## 2026-11-07 原 Main 的 clean 保留与恢复独有纠错
 
 低档城区，DURA v1.0 的总正确数是 raw clean 的 79.50%，而原 clean 正确样本的逐条保留率为 73.78%。另有 5,744 条 raw clean 和受损直接识别都错、经恢复后识别对。 [原冻结三路配对](../../automation_reports/CV-SincNet/20261101-evaluation-P3Restore-TF-TriSIGSSL-main-s2026092701-r03/clean_received_three_way.md)
+
+## 2026-11-07 源 IQ 实际绑定与 Main 来源
+
+原 F0 三个训练段均按底层存储物理 ID 绑定。将原 63,000 条 L_s/U_s 与 R07、G10 按同条物理 ID 对齐，原 F0 与 R07 的最大逐点差为 2.3842×10⁻⁷。确认正式 Main 两类总体全部复用原 168,000 条六景观测，实际原载频均 2.450 GHz。R07 源训练使用 15 个按 RX×day 的虚拟接收会话，原 Main 使用同一个虚拟会话。未测定会话与载频差异的性能效应。 [源 IQ 与历史 Main 溯源](../PAMF_RESTORATION_SOURCE_MAIN_CONFIG_20261102.md)
