@@ -48,9 +48,9 @@ def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.b
     cfg=config_for(args.arm);G=build(args.arm);prior_identity=bind_prior(args.root,G.physical);G=G.to('cuda:0')
     F,identity=load_F0(c,'cuda:0');trial.main_eval.valid_identity(identity);scale=load_scale(args.root).to('cuda:0')
     frozen={k:v.detach().clone() for k,v in F.state_dict().items()};objective=PairedObjective().to('cuda:0')
-    def detail_pass(received,clean,target):
+    def detail_pass(received,clean,target,source_indices,epoch):
         if training_readout is not None:
-            return training_readout(G,F,received,clean,target,scale,objective)
+            return training_readout(G,F,received,clean,target,scale,objective,source_indices=source_indices,epoch=epoch)
         restored,aux=G(received,return_aux=True)
         loss,terms=detail_objective(F,restored,clean,target,scale,objective)
         return restored,aux,loss,terms
@@ -79,8 +79,9 @@ def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.b
         restored,aux=G(first['received'][take],return_aux=True);logits=F.classify_features(F.features(restored));target2=F.features(clean[take])
         if logits.shape!=(2,6) or not torch.isfinite(logits).all() or not torch.isfinite(restored).all() or aux['relative_solve_residual'].max()>1e-8:raise ValueError('Actual full scratchG/sourceF0 smoke failed')
         torch.testing.assert_close(restored,aux['base_iq'],rtol=0,atol=0)
+        deployed_smoke=restored
         extra_smoke=smoke_check(G,first['received'][take],restored) if smoke_check else {}
-    restored,aux,detail,unused=detail_pass(first['received'][take],clean[take],target2);detail.mean().backward()
+    restored,aux,detail,unused=detail_pass(first['received'][take],clean[take],target2,take,0);detail.mean().backward()
     if any(p.grad is not None for p in G.physical.parameters()) or not G.detail.output.weight.grad.abs().sum()>0:raise ValueError('Detail loss must update detail only')
     G.zero_grad(set_to_none=True)
     physical,unused=source_action_loss(aux,first['kernel'][take],first['coefficients'][take],first['variance'][take]);physical.mean().backward()
@@ -90,8 +91,8 @@ def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.b
     G.zero_grad(set_to_none=True);check_F0_state(F,frozen)
     if any(not torch.equal(v,G.state_dict()[k]) for k,v in before.items()):raise ValueError('No-update source smoke changedG')
     trial.save(out/'smoke_E0.pt',G,args.arm,args.commit,0);probe=trial.load(out/'smoke_E0.pt',args.arm,args.commit,'cuda:0',epoch=0)
-    with torch.no_grad():torch.testing.assert_close(probe(first['received'][take]),restored,rtol=0,atol=0)
-    del probe,first,before,restored,aux,detail,physical,target2
+    with torch.no_grad():torch.testing.assert_close(probe(first['received'][take]),deployed_smoke,rtol=0,atol=0)
+    del probe,first,before,restored,aux,detail,physical,target2,deployed_smoke
     write(out/'smoke.json',dict(status='PASS',source_rows=2,actual_original_F0=True,actual_full_posterior=True,detail_initial_zero=True,
         detail_and_physical_gradient_isolation=True,strict_E0_reload=True,F0_frozen=True,optimizer_updates=0,TX_labels_read=0,V_reads=0,OE_reads=0,target_inputs=0,**extra_smoke))
     print('COVARIANCE_DETAIL_REAL_SOURCE_SMOKE_PASS',flush=True)
@@ -112,7 +113,7 @@ def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.b
                 step=0.
                 for start in range(0,len(take),32):
                     indices=torch.tensor(take[start:start+32].tolist(),device='cuda:0',dtype=torch.long)
-                    restored,aux,detail,detail_terms=detail_pass(v['received'][indices],clean[indices],targets[indices])
+                    restored,aux,detail,detail_terms=detail_pass(v['received'][indices],clean[indices],targets[indices],indices,epoch)
                     physical,physical_terms=source_action_loss(aux,v['kernel'][indices],v['coefficients'][indices],v['variance'][indices])
                     scalar=(physical+detail).sum()/len(take)
                     if not torch.isfinite(scalar) or aux['relative_solve_residual'].max()>1e-8:raise ValueError('Nonfinite source objective or posterior failure;preserve')

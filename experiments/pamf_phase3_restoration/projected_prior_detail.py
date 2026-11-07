@@ -10,7 +10,7 @@ def fixed_posterior_frame(action, observed, mean, covariance, variance):
     normal = ac @ action.transpose(-1,-2)
     normal.diagonal(dim1=-2,dim2=-1).add_(variance[:,None])
     factor = torch.linalg.cholesky(normal)
-    innovation = (observed-action@mean)[:,:,None]
+    innovation = (observed-(action@mean.unsqueeze(-1)).squeeze(-1))[:,:,None]
     solved = torch.cholesky_solve(innovation,factor)
     error = (normal@solved-innovation).squeeze(2).norm(dim=1)/innovation.squeeze(2).norm(dim=1).clamp_min(1e-30)
     base = mean+(ac.transpose(-1,-2)@solved).squeeze(2)
@@ -26,14 +26,15 @@ def prior_update(action, ac, factor, delta):
 
 
 class ProjectedPriorDetail(CovarianceDetail):
-    def _readout(self,received,source_clean):
+    def _readout(self,received,source_clean,*,prior=None):
         aux = self.physical.estimate(received)
         with torch.no_grad():
             action = aux['action_matrix'].detach()
             variance = aux['variance'].detach()
-            mean = self.physical.prior_mean.double()
+            mean,covariance = ((self.physical.prior_mean,self.physical.prior_covariance) if prior is None else prior)
+            mean,covariance = mean.double(),covariance.double()
             base,ac,factor,residual = fixed_posterior_frame(action,received.flatten(1).double(),
-                mean,self.physical.prior_covariance.double(),variance.double())
+                mean,covariance,variance.double())
             base_iq = base.float().reshape_as(received)
             context = torch.cat((received.detach(),variance.log()[:,None,None].expand(-1,1,256)),dim=1)
         proposal = (self.detail(base_iq,context)-base_iq).flatten(1).double()
@@ -57,12 +58,12 @@ class ProjectedPriorDetail(CovarianceDetail):
         restored,aux = self._readout(received,None)
         return (restored,aux) if return_aux else restored
 
-    def source_readout(self,received,clean):
-        return self._readout(received,clean)
+    def source_readout(self,received,clean,*,prior=None):
+        return self._readout(received,clean,prior=prior)
 
 
-def shrinkage_training_readout(model,reader,received,clean,features,scale,paired_objective):
-    restored,aux = model.source_readout(received,clean)
+def shrinkage_training_readout(model,reader,received,clean,features,scale,paired_objective,*,source_indices=None,epoch=0,prior=None):
+    restored,aux = model.source_readout(received,clean,prior=prior)
     loss,values = detail_objective(reader,aux['source_noiseless_corrected_iq'],clean,features,scale,paired_objective)
     energy = clean.square().mean((1,2)).clamp_min(1e-4)
     metrics = {f'noiseless_{key}':value for key,value in values.items()}
