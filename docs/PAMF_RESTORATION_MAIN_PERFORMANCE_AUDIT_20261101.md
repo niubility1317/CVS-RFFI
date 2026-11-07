@@ -237,3 +237,7 @@ Main六景为80.140476/77.807738/75.495238/78.213690/69.447024/62.401190%，0/6�
 [整包网络](../automation_reports/CV-SincNet/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01/report.md) · [失配曝光](../automation_reports/CV-SincNet/20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01/report.md) · [条件方差网络](../automation_reports/CV-SincNet/20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r01/report.md)
 
 三版均按从零单阶段 30 轮登记，沿原 L_s/U_s 范围，固定最终轮次后自动完成 Main 两总体七景与独立评分。性能验收仍由每景至少 140345 条正确及两个 clean 总体分别保持证明。源端诊断支持方法选择，实际性能以各版完整 Main 配对结果为准。
+
+## 2026-11-07 E02 条件方差分支的源端诊断
+
+VERIFIED / ANALYZED。固定E02源训练70条（实际全部L_s，五RX×七scene×2），两种源先验×四种固定方差，共56单元完成且独立重算。当前分支与零附加方差的损失差仅约1e-8量级，当前softplus平均斜率约2.2e-7；统一增大方差在global55/70、other-RX44/70条上局部不利，但约43%/46%的坐标仍有负梯度方向。结果支持表达限制与梯度衰减并存，尚不证明永久失效或Main识别收益。源2检查、3项针对性测试、一次独立P0/P1和实际CPU执行通过，零模型更新、零TX/V/OE/target读取。GPU6当前已完成3/30轮，原final30和Main七景矩阵保持。 [源训练配对机制分析](../automation_reports/CV-SincNet/20261107-diagnostic-Restore-conditional-variance-E02-sourceLU-s2026092701-r01/analysis.md)

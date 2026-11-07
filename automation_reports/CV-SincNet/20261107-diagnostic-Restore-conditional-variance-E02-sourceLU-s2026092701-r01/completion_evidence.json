@@ -1,0 +1,23 @@
+{
+  "status": "VERIFIED_SOURCE_DIAGNOSTIC_ANALYZED",
+  "code_commit": "055f41652902c577bc848a4a8364f4aa7a487b6c",
+  "archive_SHA_match": true,
+  "remote_compile": true,
+  "actual_PID_CWD_command_CUDA_and_log_verified": true,
+  "source2_smoke": "PASS",
+  "exit_code": 0,
+  "complete": true,
+  "source_records": 70,
+  "verified_fixed_cells": 56,
+  "focused_tests": 3,
+  "independent_P0_P1_review": "PASS",
+  "all_cell_aggregates_independently_recomputed": true,
+  "G_and_F0_unchanged": true,
+  "parameter_updates": 0,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "OE_reads": 0,
+  "target_reads": 0,
+  "Main_results": false,
+  "goal_complete": false
+}

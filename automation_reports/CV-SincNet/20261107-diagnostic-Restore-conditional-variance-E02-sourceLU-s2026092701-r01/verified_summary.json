@@ -1,0 +1,456 @@
+{
+  "status": "VERIFIED_ALL56_SOURCE_DIAGNOSTIC_CELLS",
+  "run_id": "20261107-diagnostic-Restore-conditional-variance-E02-sourceLU-s2026092701-r01",
+  "model_epoch": 2,
+  "source_records": 70,
+  "selected_role_counts": {
+    "L_s": 70
+  },
+  "source_RX_scene_strata": 35,
+  "records_per_stratum": 2,
+  "all_cell_aggregates_independently_recomputed": true,
+  "G_and_F0_unchanged": true,
+  "optimizer_updates": 0,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "OE_reads": 0,
+  "target_reads": 0,
+  "summary": {
+    "global": {
+      "ALL": {
+        "count": 70,
+        "loss": {
+          "learned": 0.05842102708827172,
+          "zero": 0.05842102579772472,
+          "initial_fraction": 0.058826312316315514,
+          "moderate_fraction": 0.06169101877936295
+        },
+        "IQ_NMSE": {
+          "learned": 0.05137753950298897,
+          "zero": 0.051377538591623306,
+          "initial_fraction": 0.05155132395614471,
+          "moderate_fraction": 0.05377131017989346
+        },
+        "learned_zero_loss_max_abs_difference": 2.9802322387695312e-08,
+        "increasing_uniform_fraction_locally_helps": 15,
+        "increasing_uniform_fraction_locally_hurts": 55,
+        "initial_fraction_better_than_zero": 7,
+        "moderate_fraction_better_than_zero": 3,
+        "mean_zero_gradient_negative_coordinate_fraction": 0.42684151785714286,
+        "current_mean_fraction": 2.2563621262631045e-09,
+        "current_mean_raw_logit": -18.92033086504255,
+        "current_raw_logit_min": -23.351572036743164,
+        "current_raw_logit_max": -8.973952293395996,
+        "current_mean_sigmoid": 2.2563334743454432e-07,
+        "current_mean_raw_gradient": 1.804431597002892e-12
+      },
+      "clean": {
+        "count": 10,
+        "loss": {
+          "learned": 0.009021545667201281,
+          "zero": 0.009021545667201281,
+          "initial_fraction": 0.00902161756530404,
+          "moderate_fraction": 0.009021657798439265
+        },
+        "IQ_NMSE": {
+          "learned": 0.0067056273110210896,
+          "zero": 0.0067056273110210896,
+          "initial_fraction": 0.00670565445907414,
+          "moderate_fraction": 0.0067056802101433275
+        },
+        "learned_zero_loss_max_abs_difference": 0.0,
+        "increasing_uniform_fraction_locally_helps": 0,
+        "increasing_uniform_fraction_locally_hurts": 10,
+        "initial_fraction_better_than_zero": 0,
+        "moderate_fraction_better_than_zero": 0,
+        "mean_zero_gradient_negative_coordinate_fraction": 0.2498046875,
+        "current_mean_fraction": 3.660673268477788e-10,
+        "current_mean_raw_logit": -21.03976650238037,
+        "current_raw_logit_min": -23.351572036743164,
+        "current_raw_logit_max": -11.789942741394043,
+        "current_mean_sigmoid": 3.6606660458460284e-08,
+        "current_mean_raw_gradient": 4.378786012505757e-17
+      },
+      "practical_high": {
+        "count": 10,
+        "loss": {
+          "learned": 0.025579840783029793,
+          "zero": 0.025579840876162052,
+          "initial_fraction": 0.026173869520425795,
+          "moderate_fraction": 0.027696252055466174
+        },
+        "IQ_NMSE": {
+          "learned": 0.02121630860492587,
+          "zero": 0.021216308465227485,
+          "initial_fraction": 0.021488866582512856,
+          "moderate_fraction": 0.022667636768892406
+        },
+        "learned_zero_loss_max_abs_difference": 3.725290298461914e-09,
+        "increasing_uniform_fraction_locally_helps": 3,
+        "increasing_uniform_fraction_locally_hurts": 7,
+        "initial_fraction_better_than_zero": 1,
+        "moderate_fraction_better_than_zero": 0,
+        "mean_zero_gradient_negative_coordinate_fraction": 0.4642578125,
+        "current_mean_fraction": 1.5337307851438417e-09,
+        "current_mean_raw_logit": -18.957658767700195,
+        "current_raw_logit_min": -21.475255966186523,
+        "current_raw_logit_max": -10.41666316986084,
+        "current_mean_sigmoid": 1.5337207486254557e-07,
+        "current_mean_raw_gradient": 1.840611379884729e-12
+      },
+      "practical_mid": {
+        "count": 10,
+        "loss": {
+          "learned": 0.032318944949656724,
+          "zero": 0.03231894476339221,
+          "initial_fraction": 0.03290725983679295,
+          "moderate_fraction": 0.0358466112986207
+        },
+        "IQ_NMSE": {
+          "learned": 0.026788441650569438,
+          "zero": 0.026788441371172665,
+          "initial_fraction": 0.02694335039705038,
+          "moderate_fraction": 0.02882858971133828
+        },
+        "learned_zero_loss_max_abs_difference": 1.862645149230957e-09,
+        "increasing_uniform_fraction_locally_helps": 3,
+        "increasing_uniform_fraction_locally_hurts": 7,
+        "initial_fraction_better_than_zero": 1,
+        "moderate_fraction_better_than_zero": 2,
+        "mean_zero_gradient_negative_coordinate_fraction": 0.4603515625,
+        "current_mean_fraction": 1.7549201915407688e-09,
+        "current_mean_raw_logit": -18.79975242614746,
+        "current_raw_logit_min": -21.377958297729492,
+        "current_raw_logit_max": -10.225240707397461,
+        "current_mean_sigmoid": 1.7549072879319282e-07,
+        "current_mean_raw_gradient": 2.1477566025740667e-12
+      },
+      "practical_low_suburban": {
+        "count": 10,
+        "loss": {
+          "learned": 0.10110989920794963,
+          "zero": 0.10110989892855286,
+          "initial_fraction": 0.10145759880542755,
+          "moderate_fraction": 0.10345773808658124
+        },
+        "IQ_NMSE": {
+          "learned": 0.09452975951135159,
+          "zero": 0.09452975932508707,
+          "initial_fraction": 0.09459083369001746,
+          "moderate_fraction": 0.0959443380124867
+        },
+        "learned_zero_loss_max_abs_difference": 1.862645149230957e-09,
+        "increasing_uniform_fraction_locally_helps": 3,
+        "increasing_uniform_fraction_locally_hurts": 7,
+        "initial_fraction_better_than_zero": 1,
+        "moderate_fraction_better_than_zero": 1,
+        "mean_zero_gradient_negative_coordinate_fraction": 0.4546875,
+        "current_mean_fraction": 2.7194354314512065e-09,
+        "current_mean_raw_logit": -18.513004302978516,
+        "current_raw_logit_min": -21.43436050415039,
+        "current_raw_logit_max": -9.311470985412598,
+        "current_mean_sigmoid": 2.7194043639156007e-07,
+        "current_mean_raw_gradient": 2.9894444900778017e-12
+      },
+      "practical_high_urban": {
+        "count": 10,
+        "loss": {
+          "learned": 0.019210640247911213,
+          "zero": 0.019210640247911213,
+          "initial_fraction": 0.01973074208945036,
+          "moderate_fraction": 0.021337734907865523
+        },
+        "IQ_NMSE": {
+          "learned": 0.015461877174675464,
+          "zero": 0.015461877454072237,
+          "initial_fraction": 0.015752427279949188,
+          "moderate_fraction": 0.016848082561045884
+        },
+        "learned_zero_loss_max_abs_difference": 3.725290298461914e-09,
+        "increasing_uniform_fraction_locally_helps": 2,
+        "increasing_uniform_fraction_locally_hurts": 8,
+        "initial_fraction_better_than_zero": 1,
+        "moderate_fraction_better_than_zero": 0,
+        "mean_zero_gradient_negative_coordinate_fraction": 0.4625,
+        "current_mean_fraction": 1.5441770771446612e-09,
+        "current_mean_raw_logit": -18.959842872619628,
+        "current_raw_logit_min": -21.452457427978516,
+        "current_raw_logit_max": -10.464098930358887,
+        "current_mean_sigmoid": 1.544166977396344e-07,
+        "current_mean_raw_gradient": 1.2904968619794599e-12
+      },
+      "practical_mid_urban": {
+        "count": 10,
+        "loss": {
+          "learned": 0.08835959844291211,
+          "zero": 0.08835959583520889,
+          "initial_fraction": 0.088727942481637,
+          "moderate_fraction": 0.09390972778201104
+        },
+        "IQ_NMSE": {
+          "learned": 0.07745371414348483,
+          "zero": 0.07745371097698808,
+          "initial_fraction": 0.07762338509783148,
+          "moderate_fraction": 0.08180748475715519
+        },
+        "learned_zero_loss_max_abs_difference": 1.4901161193847656e-08,
+        "increasing_uniform_fraction_locally_helps": 2,
+        "increasing_uniform_fraction_locally_hurts": 8,
+        "initial_fraction_better_than_zero": 2,
+        "moderate_fraction_better_than_zero": 0,
+        "mean_zero_gradient_negative_coordinate_fraction": 0.459375,
+        "current_mean_fraction": 3.3883404895843064e-09,
+        "current_mean_raw_logit": -18.231718826293946,
+        "current_raw_logit_min": -21.335927963256836,
+        "current_raw_logit_max": -9.067541122436523,
+        "current_mean_sigmoid": 3.388289442796122e-07,
+        "current_mean_raw_gradient": 2.1722162608596884e-12
+      },
+      "practical_low_urban": {
+        "count": 10,
+        "loss": {
+          "learned": 0.13334672031924127,
+          "zero": 0.13334671426564454,
+          "initial_fraction": 0.1337651559151709,
+          "moderate_fraction": 0.14056740952655672
+        },
+        "IQ_NMSE": {
+          "learned": 0.1174870481248945,
+          "zero": 0.11748704523779452,
+          "initial_fraction": 0.11775475018657744,
+          "moderate_fraction": 0.12359735923819244
+        },
+        "learned_zero_loss_max_abs_difference": 2.9802322387695312e-08,
+        "increasing_uniform_fraction_locally_helps": 2,
+        "increasing_uniform_fraction_locally_hurts": 8,
+        "initial_fraction_better_than_zero": 1,
+        "moderate_fraction_better_than_zero": 0,
+        "mean_zero_gradient_negative_coordinate_fraction": 0.4369140625,
+        "current_mean_fraction": 4.487863582129166e-09,
+        "current_mean_raw_logit": -17.940572357177736,
+        "current_raw_logit_min": -21.266279220581055,
+        "current_raw_logit_max": -8.973952293395996,
+        "current_mean_sigmoid": 4.4877788951680486e-07,
+        "current_mean_raw_gradient": 2.190451795784372e-12
+      }
+    },
+    "other_receiver": {
+      "ALL": {
+        "count": 70,
+        "loss": {
+          "learned": 0.0697455529522683,
+          "zero": 0.06974555333810194,
+          "initial_fraction": 0.06987619120627642,
+          "moderate_fraction": 0.07144568196630903
+        },
+        "IQ_NMSE": {
+          "learned": 0.0619294089797352,
+          "zero": 0.06192940931900271,
+          "initial_fraction": 0.06187156770112259,
+          "moderate_fraction": 0.06293491036631167
+        },
+        "learned_zero_loss_max_abs_difference": 1.4901161193847656e-08,
+        "increasing_uniform_fraction_locally_helps": 26,
+        "increasing_uniform_fraction_locally_hurts": 44,
+        "initial_fraction_better_than_zero": 20,
+        "moderate_fraction_better_than_zero": 12,
+        "mean_zero_gradient_negative_coordinate_fraction": 0.4619140625,
+        "current_mean_fraction": 2.2272815326522675e-09,
+        "current_mean_raw_logit": -18.924786867414202,
+        "current_raw_logit_min": -23.487607955932617,
+        "current_raw_logit_max": -9.044422149658203,
+        "current_mean_sigmoid": 2.2272540393584807e-07,
+        "current_mean_raw_gradient": 3.1171628194888357e-12
+      },
+      "clean": {
+        "count": 10,
+        "loss": {
+          "learned": 0.009021523129194974,
+          "zero": 0.009021523129194974,
+          "initial_fraction": 0.009021606855094432,
+          "moderate_fraction": 0.00902165360748768
+        },
+        "IQ_NMSE": {
+          "learned": 0.006705606216564774,
+          "zero": 0.006705606216564774,
+          "initial_fraction": 0.006705642072483897,
+          "moderate_fraction": 0.006705676391720772
+        },
+        "learned_zero_loss_max_abs_difference": 0.0,
+        "increasing_uniform_fraction_locally_helps": 0,
+        "increasing_uniform_fraction_locally_hurts": 10,
+        "initial_fraction_better_than_zero": 0,
+        "moderate_fraction_better_than_zero": 0,
+        "mean_zero_gradient_negative_coordinate_fraction": 0.3294921875,
+        "current_mean_fraction": 3.652054706063196e-10,
+        "current_mean_raw_logit": -21.044919395446776,
+        "current_raw_logit_min": -23.487607955932617,
+        "current_raw_logit_max": -11.77687931060791,
+        "current_mean_sigmoid": 3.6520474111512157e-08,
+        "current_mean_raw_gradient": 5.083128229513039e-17
+      },
+      "practical_high": {
+        "count": 10,
+        "loss": {
+          "learned": 0.030885407328605653,
+          "zero": 0.030885407328605653,
+          "initial_fraction": 0.03149908939376474,
+          "moderate_fraction": 0.03362830253317952
+        },
+        "IQ_NMSE": {
+          "learned": 0.025906990608200432,
+          "zero": 0.025906990701332688,
+          "initial_fraction": 0.026290103374049068,
+          "moderate_fraction": 0.02830077870748937
+        },
+        "learned_zero_loss_max_abs_difference": 3.725290298461914e-09,
+        "increasing_uniform_fraction_locally_helps": 3,
+        "increasing_uniform_fraction_locally_hurts": 7,
+        "initial_fraction_better_than_zero": 2,
+        "moderate_fraction_better_than_zero": 2,
+        "mean_zero_gradient_negative_coordinate_fraction": 0.4892578125,
+        "current_mean_fraction": 1.5282204415820419e-09,
+        "current_mean_raw_logit": -18.961953926086426,
+        "current_raw_logit_min": -21.65187644958496,
+        "current_raw_logit_max": -10.450414657592773,
+        "current_mean_sigmoid": 1.5282105181313455e-07,
+        "current_mean_raw_gradient": 2.455931162527769e-12
+      },
+      "practical_mid": {
+        "count": 10,
+        "loss": {
+          "learned": 0.04586410280317068,
+          "zero": 0.0458641029894352,
+          "initial_fraction": 0.045234291721135376,
+          "moderate_fraction": 0.043995372392237185
+        },
+        "IQ_NMSE": {
+          "learned": 0.039381989184767006,
+          "zero": 0.03938199067488313,
+          "initial_fraction": 0.03843127302825451,
+          "moderate_fraction": 0.03670497536659241
+        },
+        "learned_zero_loss_max_abs_difference": 1.4901161193847656e-08,
+        "increasing_uniform_fraction_locally_helps": 7,
+        "increasing_uniform_fraction_locally_hurts": 3,
+        "initial_fraction_better_than_zero": 6,
+        "moderate_fraction_better_than_zero": 5,
+        "mean_zero_gradient_negative_coordinate_fraction": 0.5015625,
+        "current_mean_fraction": 1.7517376697939205e-09,
+        "current_mean_raw_logit": -18.80357494354248,
+        "current_raw_logit_min": -21.553110122680664,
+        "current_raw_logit_max": -10.193853378295898,
+        "current_mean_sigmoid": 1.7517248664944419e-07,
+        "current_mean_raw_gradient": 5.075551524470754e-12
+      },
+      "practical_low_suburban": {
+        "count": 10,
+        "loss": {
+          "learned": 0.10895594228059054,
+          "zero": 0.10895594339817763,
+          "initial_fraction": 0.10929327895864845,
+          "moderate_fraction": 0.11223829369992018
+        },
+        "IQ_NMSE": {
+          "learned": 0.10200247671455145,
+          "zero": 0.10200247773900628,
+          "initial_fraction": 0.10208530239760875,
+          "moderate_fraction": 0.10428678626194596
+        },
+        "learned_zero_loss_max_abs_difference": 7.450580596923828e-09,
+        "increasing_uniform_fraction_locally_helps": 4,
+        "increasing_uniform_fraction_locally_hurts": 6,
+        "initial_fraction_better_than_zero": 2,
+        "moderate_fraction_better_than_zero": 2,
+        "mean_zero_gradient_negative_coordinate_fraction": 0.475,
+        "current_mean_fraction": 2.6193216856349905e-09,
+        "current_mean_raw_logit": -18.517885208129883,
+        "current_raw_logit_min": -21.5461368560791,
+        "current_raw_logit_max": -9.419464111328125,
+        "current_mean_sigmoid": 2.619293866246153e-07,
+        "current_mean_raw_gradient": 4.668529098383506e-12
+      },
+      "practical_high_urban": {
+        "count": 10,
+        "loss": {
+          "learned": 0.023810425028204917,
+          "zero": 0.023810424096882343,
+          "initial_fraction": 0.024373194295912982,
+          "moderate_fraction": 0.025674131605774163
+        },
+        "IQ_NMSE": {
+          "learned": 0.019871146790683268,
+          "zero": 0.019871146231889725,
+          "initial_fraction": 0.02017996311187744,
+          "moderate_fraction": 0.020863347966223956
+        },
+        "learned_zero_loss_max_abs_difference": 3.725290298461914e-09,
+        "increasing_uniform_fraction_locally_helps": 3,
+        "increasing_uniform_fraction_locally_hurts": 7,
+        "initial_fraction_better_than_zero": 2,
+        "moderate_fraction_better_than_zero": 1,
+        "mean_zero_gradient_negative_coordinate_fraction": 0.4703125,
+        "current_mean_fraction": 1.5412378060395832e-09,
+        "current_mean_raw_logit": -18.964054679870607,
+        "current_raw_logit_min": -21.514127731323242,
+        "current_raw_logit_max": -10.466167449951172,
+        "current_mean_sigmoid": 1.541227788948163e-07,
+        "current_mean_raw_gradient": 2.617833684605696e-12
+      },
+      "practical_mid_urban": {
+        "count": 10,
+        "loss": {
+          "learned": 0.1138807637616992,
+          "zero": 0.11388076487928629,
+          "initial_fraction": 0.1137979794293642,
+          "moderate_fraction": 0.11533297337591648
+        },
+        "IQ_NMSE": {
+          "learned": 0.10117102321237326,
+          "zero": 0.10117102283984422,
+          "initial_fraction": 0.10096636433154345,
+          "moderate_fraction": 0.10184835530817508
+        },
+        "learned_zero_loss_max_abs_difference": 1.4901161193847656e-08,
+        "increasing_uniform_fraction_locally_helps": 5,
+        "increasing_uniform_fraction_locally_hurts": 5,
+        "initial_fraction_better_than_zero": 5,
+        "moderate_fraction_better_than_zero": 1,
+        "mean_zero_gradient_negative_coordinate_fraction": 0.49609375,
+        "current_mean_fraction": 3.3732013063678753e-09,
+        "current_mean_raw_logit": -18.23626708984375,
+        "current_raw_logit_min": -21.53156852722168,
+        "current_raw_logit_max": -9.044422149658203,
+        "current_mean_sigmoid": 3.373150448737761e-07,
+        "current_mean_raw_gradient": 3.7089431336144996e-12
+      },
+      "practical_low_urban": {
+        "count": 10,
+        "loss": {
+          "learned": 0.1558007063344121,
+          "zero": 0.15580070754513145,
+          "initial_fraction": 0.15591389779001474,
+          "moderate_fraction": 0.16022904654964804
+        },
+        "IQ_NMSE": {
+          "learned": 0.13846663013100624,
+          "zero": 0.13846663082949817,
+          "initial_fraction": 0.138442325592041,
+          "moderate_fraction": 0.14183445256203414
+        },
+        "learned_zero_loss_max_abs_difference": 1.4901161193847656e-08,
+        "increasing_uniform_fraction_locally_helps": 4,
+        "increasing_uniform_fraction_locally_hurts": 6,
+        "initial_fraction_better_than_zero": 3,
+        "moderate_fraction_better_than_zero": 1,
+        "mean_zero_gradient_negative_coordinate_fraction": 0.4716796875,
+        "current_mean_fraction": 4.412046348541142e-09,
+        "current_mean_raw_logit": -17.944852828979492,
+        "current_raw_logit_min": -21.44321060180664,
+        "current_raw_logit_max": -9.059800148010254,
+        "current_mean_sigmoid": 4.4119660458363796e-07,
+        "current_mean_raw_gradient": 3.293300301537326e-12
+      }
+    }
+  }
+}
