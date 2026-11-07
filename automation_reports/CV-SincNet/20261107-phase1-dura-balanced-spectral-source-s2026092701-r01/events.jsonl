@@ -1,3 +1,4 @@
 {"at": "2026-11-07T00:11:05+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-07T00:15:08+00:00", "status": "QUEUED", "note": "VERIFIED queue PID 3828578 and expected release CWD on N607; GPU_QUEUE_WAITING 0; no formal training yet.", "evidence": ["/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-dura-balanced-spectral-source-s2026092701-r01-queue.log"], "row_id": null}
 {"at": "2026-11-07T02:42:07+00:00", "status": "RUNNING", "note": "GPU0 real-DURA source smoke passed for 64 source IDs x three views; source training live and two of five epochs completed.", "evidence": ["N607:PID3953857,PID3954047,source_smoke.json,source_train.log"], "row_id": null}
+{"at": "2026-11-07T02:48:06+00:00", "status": "TRAINING_COMPLETE", "note": "Five fixed GPU0 epochs completed; source and frozen-prediction smokes passed; source metrics are IQ diagnostics only.", "evidence": ["analysis.md"], "row_id": null}

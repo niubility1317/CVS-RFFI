@@ -3,7 +3,7 @@
 - run_id：`20261107-phase1-dura-balanced-spectral-source-s2026092701-r01`
 - group_id：`phase1-dura-balanced-spectral`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING；N607 GPU 0 上控制器 PID 3953857、训练 PID 3954047 已核实。
+- 当前登记状态：TRAINING_COMPLETE；[源训练分析](analysis.md)。冻结后已进入七景正式预测。
 
 ## 目的与对照
 
@@ -21,8 +21,8 @@
 
 ## 结果与覆盖
 
-本机[真实 DURA GPU 技术检查](technical_smoke.md)通过。N607 真实 DURA 源 smoke 使用 64 个源 ID × 三视图，通过；正式训练已完成第 3/5 轮，累计训练日志计时 439.4 秒，第 3 轮源损失 0.0268752。该源损失不是识别准确率。七景预测和独立 truth-last 尚未开始，暂无识别结果。
+本机[真实 DURA GPU 技术检查](technical_smoke.md)及 N607 源 smoke 通过；固定五轮源训练和冻结后的源预测 smoke 已完成。源 pilot 的 12 个受损分组中 9 个波形 NMSE 低于 DURA；该指标不是识别准确率，详见[源分析](analysis.md)。七景预测正在运行，暂无正式识别结果。
 
 ## 交接
 
-固定五轮训练完成后自动执行七景预测和独立评分；恢复时核实唯一 owner，不重复启动。
+七景全部预测固定后自动独立评分；恢复时核实唯一 owner，不重复启动。

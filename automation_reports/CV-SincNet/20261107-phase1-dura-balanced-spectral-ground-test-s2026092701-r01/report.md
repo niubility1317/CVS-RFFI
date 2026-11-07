@@ -3,7 +3,7 @@
 - run_id：`20261107-phase1-dura-balanced-spectral-ground-test-s2026092701-r01`
 - group_id：`phase1-dura-balanced-spectral`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING；源训练和源预测 smoke 完成，N607 预测 PID 3965001 已核实。
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-源训练队列等待 GPU，尚无冻结候选或预测。固定七景全部完成后执行独立 truth-last 评分，与同输入 DURA 和 raw clean 对照。
+源训练已完成并冻结，七景预测正在运行。固定七景全部完成后执行独立 truth-last 评分，与同输入 DURA 和 raw clean 对照；当前暂无正式识别结果。
 
 ## 交接
 
