@@ -29,6 +29,7 @@ from experiments.phase1_dura_orthogonal.conditional_iq_flow import ConditionalIQ
 from experiments.phase1_dura_orthogonal.fused_gradient_guard import checked_backward_and_clip
 from experiments.phase1_dura_orthogonal.balanced_spectral_loss import balanced_spectral_loss, WEIGHT as BALANCED_SPECTRAL_WEIGHT, ENERGY_FLOOR_FRACTION, BANDS
 from experiments.phase1_dura_orthogonal.source_multiview_teacher import build_teacher, build_leave_one_view_teacher
+from experiments.phase1_dura_orthogonal.source_instance_contrast import instance_contrast_loss, TEMPERATURE as INSTANCE_TEMPERATURE
 from experiments.phase1_dura_orthogonal.counterfactual_response import (
     prepare_counterfactual, response_loss, WEIGHT as RESPONSE_WEIGHT, DIRECTIONS as RESPONSE_DIRECTIONS, EPSILON as RESPONSE_EPSILON)
 from experiments.phase1_dura_orthogonal.dura_experts import DuraExperts, EXPERT_COUNT
@@ -288,7 +289,7 @@ def main():
     parser.add_argument('--source-context-cache', type=Path)
     parser.add_argument('--save-source-context-cache', type=Path)
     parser.add_argument('--deterministic', action='store_true')
-    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0'), default='iq')
+    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0'), default='iq')
     parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir', 'dura_reversible', 'conditional_iq_flow', 'direct_iq_flow'), default='orthogonal')
     args = parser.parse_args()
     if (args.architecture == 'direct_student_fir') != (args.objective == 'wide_student_fir_guard'):
@@ -311,6 +312,8 @@ def main():
         raise ValueError('Multi-view DURA guard requires fixed source context')
     if args.objective == 'wide_counterfactual_guard' and (args.architecture != 'dura_multiscale' or (not args.smoke and not args.source_context_cache)):
         raise ValueError('Counterfactual response requires multiscale DURA and fixed source context')
+    if args.objective == 'wide_instance_contrast' and (args.architecture != 'dura_multiscale' or (not args.smoke and not args.source_context_cache)):
+        raise ValueError('Source instance contrast requires multiscale DURA and fixed source context')
     if args.deterministic:
         os.environ['CUBLAS_WORKSPACE_CONFIG'] = ':4096:8'
         torch.use_deterministic_algorithms(True)
@@ -324,7 +327,7 @@ def main():
         raise ValueError('Direct spectral student requires fixed source-IQ distillation')
     if args.architecture == 'dura_timevarying' and args.objective != 'dura_guard':
         raise ValueError('DURA time-varying correction requires DURA guard')
-    if args.architecture == 'dura_multiscale' and args.objective not in ('dura_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard'):
+    if args.architecture == 'dura_multiscale' and args.objective not in ('dura_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast'):
         raise ValueError('Multiscale correction requires a registered DURA guard')
     if args.objective == 'wide_expert_distill' and (args.architecture != 'dura_multiscale' or
             (not args.smoke and not args.source_context_cache)):
@@ -370,7 +373,7 @@ def main():
     torch.backends.cudnn.allow_tf32 = False
     torch.manual_seed(2026110612)
     ids, rx, scene, _, source_received, source_clean = source_inputs(args.root)
-    fit_size = WIDE_FIT_SIZE if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0') else FIT_SIZE
+    fit_size = WIDE_FIT_SIZE if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0') else FIT_SIZE
     _, fresh, clean, fit = load_source_training(args.root, ids, fit_size=fit_size)
     if args.smoke:
         fit = fit[:args.smoke_fit]
@@ -403,7 +406,7 @@ def main():
     if device.type == 'cuda':
         torch.cuda.synchronize(device)
     transfer_seconds = time.monotonic() - transfer_started
-    if args.objective == 'crossview_guard':
+    if args.objective in ('crossview_guard', 'wide_instance_contrast'):
         count = len(fit)
         if (len(data[4]) != 3*count or not torch.equal(data[4][:count], data[4][count:2*count])
                 or not torch.equal(data[4][:count], data[4][2*count:])):
@@ -451,7 +454,7 @@ def main():
         weight_decay=0. if args.architecture == 'dura_internal' else .001)
     aux = None
     aux_optimizer = None
-    if args.objective in ('ssl_joint_guard', 'ssl_crosshalf_guard'):
+    if args.objective in ('ssl_joint_guard', 'ssl_crosshalf_guard', 'wide_instance_contrast'):
         torch.manual_seed(2026110615)
         aux = (PatchIQEncoder() if args.objective == 'ssl_crosshalf_guard' else SourceIQEncoder()).to(device)
         aux_optimizer = torch.optim.AdamW(aux.parameters(), lr=.0003, weight_decay=.001)
@@ -504,7 +507,8 @@ def main():
                 aux.train().requires_grad_(True)
                 aux_optimizer.zero_grad(set_to_none=True)
                 ssl_crossview = (patch_cross_view_loss(aux, x, y) if args.objective == 'ssl_crosshalf_guard'
-                                 else cross_view_ssl_loss(aux(x), aux(y)))
+                                 else instance_contrast_loss(aux(x), aux(y), indices.remainder(len(fit)))
+                                 if args.objective == 'wide_instance_contrast' else cross_view_ssl_loss(aux(x), aux(y)))
                 if not torch.isfinite(ssl_crossview):
                     raise FloatingPointError('Finite source SSL loss required')
                 ssl_crossview.backward()
@@ -526,7 +530,7 @@ def main():
             else:
                 output = model(x, anchor, direction, variance, validate=False)
             base_objective = ('distill_iq' if args.objective in ('wide_source_distill', 'wide_multiview_distill') else
-                              'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'wide_source_guard', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard') else args.objective)
+                              'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'wide_source_guard', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast') else args.objective)
             if args.objective in ('wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0'):
                 times = (sample_flow_times(len(x), flow_generator, origin_fraction=.5)
                          if args.objective == 'wide_conditional_flow_t0'
@@ -632,7 +636,7 @@ def main():
     if dura is not None and any(p.requires_grad or p.grad is not None for p in dura.parameters()):
         raise ValueError('DURA must stay frozen')
     ssl_metadata = dict(source_ssl_feature_weight=SSL_FEATURE_WEIGHT,
-        source_ssl_offdiagonal_weight=SSL_OFFDIAGONAL_WEIGHT, source_ssl_feature_dim=SSL_FEATURE_DIM,
+        source_ssl_offdiagonal_weight=(None if args.objective == 'wide_instance_contrast' else SSL_OFFDIAGONAL_WEIGHT), source_ssl_feature_dim=SSL_FEATURE_DIM,
         source_ssl_seed=2026110615, source_ssl_parameters=sum(p.numel() for p in aux.parameters()),
         source_ssl_crossview_losses=ssl_crossview_losses, source_ssl_feature_losses=ssl_feature_losses) if aux is not None else {}
     if args.objective == 'ssl_crosshalf_guard':
@@ -653,7 +657,10 @@ def main():
     if args.objective == 'wide_counterfactual_guard':
         cache_metadata.update(source_response_weight=RESPONSE_WEIGHT, source_response_epsilon=RESPONSE_EPSILON,
                               source_response_directions=list(RESPONSE_DIRECTIONS), response_inference_reads=0)
-    if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0'):
+    if args.objective == 'wide_instance_contrast':
+        cache_metadata.update(source_instance_temperature=INSTANCE_TEMPERATURE,
+                              source_instance_positives='same_physical_record', instance_encoder_inference_reads=0)
+    if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0'):
         cache_metadata.update(source_fit_size=WIDE_FIT_SIZE,
                               source_context_cache_written=str(args.save_source_context_cache) if args.save_source_context_cache else None)
     if args.objective == 'wide_conditional_flow':
@@ -720,7 +727,7 @@ def main():
         adaptive_filter_taps=(33 if args.architecture == 'adaptive_inverse' else
                                   9 if args.architecture in ('timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student') else None),
         candidate_prior_frozen=args.objective == 'sim_action_fixed_prior',
-            source_views_per_record=3 if args.objective == 'crossview_guard' else None,
+            source_views_per_record=3 if args.objective in ('crossview_guard', 'wide_instance_contrast') else None,
             crossview_weight=.1 if args.objective == 'crossview_guard' else None,
             source_simulator_action_used=args.objective in ACTION_OBJECTIVES,
             source_simulator_action_weight=.01 if args.objective in ACTION_OBJECTIVES else None,
@@ -746,7 +753,7 @@ def main():
                       adaptive_filter_taps=(33 if args.architecture == 'adaptive_inverse' else
                                   9 if args.architecture in ('timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student') else None),
                       candidate_prior_frozen=args.objective == 'sim_action_fixed_prior',
-                      source_views_per_record=3 if args.objective == 'crossview_guard' else None,
+                      source_views_per_record=3 if args.objective in ('crossview_guard', 'wide_instance_contrast') else None,
                       crossview_weight=.1 if args.objective == 'crossview_guard' else None,
                       source_simulator_action_used=args.objective in ACTION_OBJECTIVES,
                       source_simulator_action_weight=.01 if args.objective in ACTION_OBJECTIVES else None,
@@ -779,7 +786,7 @@ def main():
             adaptive_filter_taps=(33 if args.architecture == 'adaptive_inverse' else
                                   9 if args.architecture in ('timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student') else None),
             candidate_prior_frozen=args.objective == 'sim_action_fixed_prior',
-        source_views_per_record=3 if args.objective == 'crossview_guard' else None,
+        source_views_per_record=3 if args.objective in ('crossview_guard', 'wide_instance_contrast') else None,
         crossview_weight=.1 if args.objective == 'crossview_guard' else None,
         source_simulator_action_used=args.objective in ACTION_OBJECTIVES,
         source_simulator_action_weight=.01 if args.objective in ACTION_OBJECTIVES else None,
