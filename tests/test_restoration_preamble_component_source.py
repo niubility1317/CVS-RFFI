@@ -1,6 +1,11 @@
 import torch
 
-from experiments.pamf_phase3_restoration.preamble_component_source import components, counterfactuals
+from experiments.pamf_phase3_restoration.preamble_component_source import (
+    EDGE_HYBRIDS,
+    EDGE_REUSED,
+    components,
+    counterfactuals,
+)
 
 
 def test_exact_component_support_and_orthogonality():
@@ -38,3 +43,18 @@ def test_each_subset_has_expected_residual_energy():
     for mask, output in outputs.items():
         omitted = [bit for bit in range(3) if not mask & (1 << bit)]
         torch.testing.assert_close((clean - output).square().sum((1, 2)), energies[:, omitted].sum(1))
+
+
+def test_front_tail_split_preserves_original_energy_and_mask_meaning():
+    gen = torch.Generator().manual_seed(19)
+    base, clean = torch.randn(2, 3, 2, 256, generator=gen, dtype=torch.float64)
+    _, old_energy = counterfactuals(base, clean)
+    hybrid, energy = counterfactuals(base, clean, edge_split=True)
+    assert set(hybrid) == set(EDGE_HYBRIDS)
+    assert sorted(EDGE_HYBRIDS + EDGE_REUSED) == list(range(16))
+    torch.testing.assert_close(energy[:, :2], old_energy[:, :2])
+    torch.testing.assert_close(energy[:, 2:].sum(1), old_energy[:, 2])
+    torch.testing.assert_close(hybrid[4][:, :, :80], clean[:, :, :80])
+    torch.testing.assert_close(hybrid[4][:, :, 80:], base[:, :, 80:])
+    torch.testing.assert_close(hybrid[8][:, :, :160], base[:, :, :160])
+    torch.testing.assert_close(hybrid[8][:, :, 160:], clean[:, :, 160:])
