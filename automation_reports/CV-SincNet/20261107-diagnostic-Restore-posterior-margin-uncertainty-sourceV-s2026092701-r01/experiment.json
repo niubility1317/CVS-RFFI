@@ -1,0 +1,167 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-diagnostic-Restore-posterior-margin-uncertainty-sourceV-s2026092701-r01",
+  "group_id": "source-Gaussian-posterior-identity-margin-geometry",
+  "display_name": "冻结识别边界方向上的源端后验不确定性",
+  "description": "固定源 V120×7，复用已知模拟算子标量噪声的实际恢复 IQ 和分数。只求原冻结 F0 的 clean 输入导数与高斯协方差投影。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-V-only",
+    "fixed-TriSIGTIME-SSL",
+    "local-margin-uncertainty",
+    "CPU-only",
+    "no-training"
+  ],
+  "comparison_group_id": "same-source-known-action-IQ-trace-vs-margin-variance",
+  "parent_run_ids": [
+    "20261107-diagnostic-Restore-structured-IQ-noise-sourceV-s2026092701-r01",
+    "20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User comprehensive recoverability analysis, frozen original source V validation only. No source V in training, no target/OE/novel/TX.",
+  "code": {
+    "commit": "a18a3562d44e61cd5c9baf823eb0d5d1aa0bd40c",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Torch2.1 CPU threads2 CUDA-empty, FP64 solve FP32 models",
+    "cwd": "releases/20261107-diagnostic-Restore-posterior-margin-uncertainty-sourceV-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 source contract; existing R07 fixed1800 V/7 frozen validation views",
+    "representation": "Same original source V120 and seven cached R07 simulator traces; known scalar IQ/logits and IQ risk reused.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "First 8 of each original 5 RX x 3 day stratum of 120, 120 fixed V records shared by all seven views, no score-based selection.",
+    "label_map_ref": "No TX truth read. Original F(raw clean) predictions are fixed agreement references.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original six known sourceTX; V trueTX validation only, no train/selection",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse VALIDATED_ONCE R07 handles; fixed original f29 V reference and BF E30/F0 E50 provenance.",
+    "support_query_ref": "120 original source V only, no target support/query.",
+    "leo_config_ref": "ExistingR07 validation_actions7; receiver2026101902 vs trainingreceiver2026101911; no regenerated views.",
+    "actual_training_labels": "No training or TX. Original L_s2 smoke; source V only frozen diagnostic.",
+    "augmentation": "Reuse all seven original source V observations, no regenerated signals.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "source-only-frozen-margin-Jacobian-diagnostic",
+    "query_use": "Only input derivative of frozen original default head margins. No loss updates, fit, new identity head, TX, or target.",
+    "external_method_exception": null,
+    "claim_scope": "Exact projected variance under fixed Gaussian source proxy and local linearized score direction. Not a real TX or theoretical classification bound."
+  },
+  "checkpoint": {
+    "initialization": "No new learned model. Original BF strict loaded only to read fixed covariance buffer. Original frozen F0.",
+    "sources": [
+      "REFERENCE_ONLY 20261107-diagnostic-Restore-structured-IQ-noise-sourceV-s2026092701-r01/d46cffe092dd667dab9df04c69c0f31a7aec5326/known-scalar IQ, logits and IQ-risk",
+      "DATA_ONLY 20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01/bf29554a03e28a012eaaa134f5c7b3f7856f2268 original legal source prior buffer, zero G forwards",
+      "FROZEN_F0 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d original default head, input-only derivatives",
+      "DATA_ONLY R07 fixed source V120 simulator Action and scalar noise, original L_s2 clean smoke"
+    ],
+    "contract_check_ref": "Same source V IDs, actual frozen F0 and BF covariance, original known scalar parent metadata.",
+    "provenance_verdict": "Frozen same-source BF and F0. No G training, target or OE/novel/TX access.",
+    "selection_rule": "All five rivals of F0 clean winner, all seven existing views. No selection or fit."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-frozen-margin-geometry",
+    "gpu_policy": "CUDA-empty, two CPU threads, zero GPU workers.",
+    "remote_run_root": "runs/20261107-diagnostic-Restore-posterior-margin-uncertainty-sourceV-s2026092701-r01",
+    "remote_log_root": "logs/20261107-diagnostic-Restore-posterior-margin-uncertainty-sourceV-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-diagnostic-Restore-posterior-margin-uncertainty-sourceV-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.margin_uncertainty_source --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-diagnostic-Restore-posterior-margin-uncertainty-sourceV-s2026092701-r01-release/inputs.json --commit a18a3562d44e61cd5c9baf823eb0d5d1aa0bd40c",
+    "stop_rule": "Invalid source or identity, nonfinite or state change, wrong solve/gradient smoke: preserve outputs."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "runtime_observation.json",
+    "reference.npz PRIVATE",
+    "7 source scene.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "logs/stdout.log PRIVATE",
+    "terminal.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Prior and posterior variance for top2 and all clean class margins, exact known-IQ trace ratio reference",
+      "Clean margin against projected posterior SD, actual score displacement vs first-order approximation, empirical overlap",
+      "120 clean F0 forward rows/600 source input VJP rows; 840 existing recovered IQ/F0 predictions reused; no G forwards or updates"
+    ],
+    "dimensions": [
+      "same source V120",
+      "seven fixed source views",
+      "five clean competitors"
+    ],
+    "prediction_ref": "Private original source IDs, fresh frozen CPU clean logits, seven saved variance/actual and linearized margin arrays.",
+    "scorer_ref": "Independent NumPy reductions of private saved scalars and original known-scalar controls, no truth."
+  },
+  "rows": [
+    {
+      "row_id": "fixed_source_posterior_margin_geometry",
+      "method": "known_action_posterior_variance_along_frozen_margins",
+      "purpose": "Separate signal-wide IQ variance from classifier-relevant local directions and check linearization on actual scores.",
+      "config_ref": "experiments.pamf_phase3_restoration.margin_uncertainty_source.py::projected_variances",
+      "resolved_config_ref": "runs/20261107-diagnostic-Restore-posterior-margin-uncertainty-sourceV-s2026092701-r01/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101902
+      },
+      "seed_notes": "Fixed original record order and original F0; no new RNG or phase selection.",
+      "k": null,
+      "scenario": "Original source V 120 x7.",
+      "optimizer": "NONE",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "CPU2. Original source V120 x7, five clean margin directions, 600 input VJPs. No model updates or new recovered predictions.",
+      "output_root": "runs/20261107-diagnostic-Restore-posterior-margin-uncertainty-sourceV-s2026092701-r01",
+      "log_path": "logs/20261107-diagnostic-Restore-posterior-margin-uncertainty-sourceV-s2026092701-r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.margin_uncertainty_source --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-diagnostic-Restore-posterior-margin-uncertainty-sourceV-s2026092701-r01-release/inputs.json --commit a18a3562d44e61cd5c9baf823eb0d5d1aa0bd40c",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "runtime_observation.json",
+        "reference.npz PRIVATE",
+        "7 source scene.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "logs/stdout.log PRIVATE",
+        "terminal.json"
+      ]
+    }
+  ],
+  "notes": [
+    "All source results are frozen diagnostic, not a release condition or benchmark feedback.",
+    "Known A and scalar source noise held fixed; same C as original BF. Derivative at source clean only.",
+    "Linearity tested against actual frozen score shifts and F(clean) disagreements, not treated as true classification risk.",
+    "All five competitors fixed from the original clean outputs. Original default head and model states unchanged."
+  ],
+  "registered_at": "2026-11-07T01:08:50+00:00"
+}
