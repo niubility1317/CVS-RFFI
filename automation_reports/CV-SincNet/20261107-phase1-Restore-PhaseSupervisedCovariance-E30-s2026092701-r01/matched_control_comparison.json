@@ -1,0 +1,110 @@
+{
+  "status": "VERIFIED_MATCHED_FIXED_PREDICTIONS",
+  "spec": {
+    "candidate": [
+      "20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01",
+      "TF_PhaseSupervisedCovariance",
+      "36b13adad5b091bf1f8f4aa7934c403e3b50d8eb"
+    ],
+    "reference": [
+      "20261107-phase1-Restore-ModulationCovariance-E30-s2026092701-r01",
+      "TF_ModulationCovariance",
+      "3fc9201628e7602ea58c6a5fb13d6ec934513e99"
+    ]
+  },
+  "combined": [
+    {
+      "count": 168000,
+      "reference_correct": 145290,
+      "candidate_correct": 145255,
+      "repairs": 2901,
+      "damage": 2936,
+      "net": -35,
+      "view": "clean",
+      "reference_accuracy": 86.48214285714286,
+      "candidate_accuracy": 86.46130952380952,
+      "delta_pp": -0.020833333333333332
+    },
+    {
+      "count": 168000,
+      "reference_correct": 140544,
+      "candidate_correct": 135687,
+      "repairs": 6233,
+      "damage": 11090,
+      "net": -4857,
+      "view": "practical_high",
+      "reference_accuracy": 83.65714285714286,
+      "candidate_accuracy": 80.76607142857142,
+      "delta_pp": -2.8910714285714287
+    },
+    {
+      "count": 168000,
+      "reference_correct": 138424,
+      "candidate_correct": 131347,
+      "repairs": 6207,
+      "damage": 13284,
+      "net": -7077,
+      "view": "practical_mid",
+      "reference_accuracy": 82.3952380952381,
+      "candidate_accuracy": 78.1827380952381,
+      "delta_pp": -4.2125
+    },
+    {
+      "count": 168000,
+      "reference_correct": 135687,
+      "candidate_correct": 127587,
+      "repairs": 6440,
+      "damage": 14540,
+      "net": -8100,
+      "view": "practical_low_suburban",
+      "reference_accuracy": 80.76607142857142,
+      "candidate_accuracy": 75.94464285714285,
+      "delta_pp": -4.821428571428571
+    },
+    {
+      "count": 168000,
+      "reference_correct": 138409,
+      "candidate_correct": 130750,
+      "repairs": 6722,
+      "damage": 14381,
+      "net": -7659,
+      "view": "practical_high_urban",
+      "reference_accuracy": 82.38630952380953,
+      "candidate_accuracy": 77.82738095238095,
+      "delta_pp": -4.558928571428571
+    },
+    {
+      "count": 168000,
+      "reference_correct": 126307,
+      "candidate_correct": 110466,
+      "repairs": 9058,
+      "damage": 24899,
+      "net": -15841,
+      "view": "practical_mid_urban",
+      "reference_accuracy": 75.1827380952381,
+      "candidate_accuracy": 65.75357142857143,
+      "delta_pp": -9.429166666666667
+    },
+    {
+      "count": 168000,
+      "reference_correct": 112960,
+      "candidate_correct": 94548,
+      "repairs": 11379,
+      "damage": 29791,
+      "net": -18412,
+      "view": "practical_low_urban",
+      "reference_accuracy": 67.23809523809524,
+      "candidate_accuracy": 56.27857142857143,
+      "delta_pp": -10.959523809523809
+    }
+  ],
+  "candidate_cells_checked": 42,
+  "reference_cells_checked": 42,
+  "all_predictions_checked_before_truth": true,
+  "raw_DURA_decision_differences": 0,
+  "F0_source_commit": "3ff8f4b7e85b5608f5b45350aa18081499a7ef1d",
+  "new_neural_forwards": 0,
+  "optimizer_updates": 0,
+  "source_or_target_fitting": false,
+  "reference_display_name": "接收调制物理版"
+}
