@@ -37,3 +37,7 @@ VERIFIED / QUEUED。实际代码 8cf3669c4a5d98f6c4930117952203afd56f2f6e，控�
 原科学代码、数据、网络和从零30轮/7410步保持，独立正常GPU5容量允许与相位版并行；总进程最多3，启动前已有最多2且剩余显存至少12000 MiB。只在核实原队列无子进程、未提交任何训练或预测时交接；不读取其他候选得分来调度。原真实源检查、完整七景和独立truth-last照常执行。
 
 控制代码：`d38f2dfc0378ae269f733b6f9a3ea039ddf11163`；科学代码：`8cf3669c4a5d98f6c4930117952203afd56f2f6e`。命令：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.projected_prior_gpu5_dispatch --root /home/szu2070436088/2510044040/CV-SincNet --legacy-release /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01-release --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --commit d38f2dfc0378ae269f733b6f9a3ea039ddf11163`。
+
+## 原匹配对照已实际训练
+
+VERIFIED / RUNNING。原匹配对照已在正常GPU5从零启动，准入时已有2个计算进程、20381 MiB可用，总数上限3。真实原F0/完整后验、梯度隔离、严格E0重载和源2检查通过；原科学进程/CWD/GPU及日志增长已独立核实。只接替无子进程且未提交训练的旧队列，30轮与自动完整七景保持，尚无识别成绩。 [运行核验](resource_started_GPU5.json)
