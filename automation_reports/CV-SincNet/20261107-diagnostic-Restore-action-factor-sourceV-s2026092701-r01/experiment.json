@@ -1,0 +1,167 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-diagnostic-Restore-action-factor-sourceV-s2026092701-r01",
+  "group_id": "gauge-aligned-source-Action-attribution",
+  "display_name": "源端 Action 归因：FIR 形状与接收机调制",
+  "description": "固定源 V480 七景，冻 BF/F0，对齐 FIR 尺度与相位后分别替换 FIR、主/镜像调制及二者。原标量噪声保持到单独对照。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-V-only",
+    "fixed-frozen-BF",
+    "gauge-alignment",
+    "FIR-modulation",
+    "CPU-only",
+    "no-training"
+  ],
+  "comparison_group_id": "same-frozen-BF-gauge-aligned-source-factor-swaps",
+  "parent_run_ids": [
+    "20261102-diagnostic-Restore-CovarianceDetail-sourceV-s2026092701-r01",
+    "20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User comprehensive recoverability analysis, frozen original source V validation only. No source V in training, no target/OE/novel/TX.",
+  "code": {
+    "commit": "1065b7fd515402862a8b47bca8bddf597d823b54",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Torch2.1 CPU threads2 CUDA-empty, FP64 solve FP32 models",
+    "cwd": "releases/20261107-diagnostic-Restore-action-factor-sourceV-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 source contract; existing R07 fixed1800 V/7 frozen validation views",
+    "representation": "R07 fixed source V480 IQ/action traces; matched original clean/F0 references; true simulator trace used only for explicit source controls.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "Original five RX x three day strata, first 32 per 120 from original order, same 480 original physical IDs all seven views.",
+    "label_map_ref": "No TX truth read. Original F(raw clean) predictions are fixed agreement references.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original six known sourceTX; V trueTX validation only, no train/selection",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse VALIDATED_ONCE R07 handles; fixed original f29 V reference and BF E30/F0 E50 provenance.",
+    "support_query_ref": "Fixed 480 original V, no target/support/query.",
+    "leo_config_ref": "ExistingR07 validation_actions7; receiver2026101902 vs trainingreceiver2026101911; no regenerated views.",
+    "actual_training_labels": "Zero training and zero labels. Original L_s source2 smoke then source V frozen validation.",
+    "augmentation": "Reuse all seven original source V observations, no regenerated signals.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "frozen-source-gauge-aligned-action-factor-attribution",
+    "query_use": "No target, TX or model updates. Known source simulator only in diagnostic factor substitutions, never deployed.",
+    "external_method_exception": null,
+    "claim_scope": "Paired factor attribution within original simulator proxy under fixed gauge. Hybrid factors need not represent a realizable receiver. No true TX or theoretical limit."
+  },
+  "checkpoint": {
+    "initialization": "Frozen original BF scratch E30 and original F0 E50; no model updates.",
+    "sources": [
+      "FROZEN_BF 20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01/bf29554a03e28a012eaaa134f5c7b3f7856f2268/source-only E30/7410",
+      "REFERENCE_ONLY 20261102-diagnostic-Restore-CovarianceDetail-sourceV-s2026092701-r01/f29 original V clean IQ/features/logits and physical IDs",
+      "FROZEN_F0 original3ff8 Tri-SIG-TIME SSL E50/defaulthead",
+      "DATA_ONLY R07 source V480x7 plus original L_s2 smoke"
+    ],
+    "contract_check_ref": "Same original R07 source roles/VALIDATED_ONCE handles, exact original BF final30 and original F0; unchanged prior buffers.",
+    "provenance_verdict": "Frozen same-source BF and F0. No G training, target or OE/novel/TX access.",
+    "selection_rule": "Fixed five readouts, all seven views, no optimization, source selection or deployment."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-Action-factor-cpu",
+    "gpu_policy": "CUDA-empty, two CPU threads, zero GPU workers.",
+    "remote_run_root": "runs/20261107-diagnostic-Restore-action-factor-sourceV-s2026092701-r01",
+    "remote_log_root": "logs/20261107-diagnostic-Restore-action-factor-sourceV-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-diagnostic-Restore-action-factor-sourceV-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.source_action_factor_probe --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-diagnostic-Restore-action-factor-sourceV-s2026092701-r01-release/inputs.json --commit 1065b7fd515402862a8b47bca8bddf597d823b54",
+    "stop_rule": "Wrong source/F0/BF identity, nonfinite, zero FIR norm, failure of native operator invariance or Gaussian solve: preserve without retry."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "runtime_observation.json",
+    "reference.npz PRIVATE",
+    "7 source scene.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "logs/stdout.log PRIVATE",
+    "terminal.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Fclean consistency and paired repairs/damage, IQ NMSE, feature cosine, full Action relative MSE",
+      "FIR gauge correlation and matched-noise contrasts; 35 fixed cells, 16800 F0 rows, 10 smoke F0 rows, no labels."
+    ],
+    "dimensions": [
+      "source V480",
+      "7 views",
+      "5 frozen factors"
+    ],
+    "prediction_ref": "Private source logits and scalars only, same IDs; no TX.",
+    "scorer_ref": "Independent NumPy logits/decision and scalar summary verification; no ground truth."
+  },
+  "rows": [
+    {
+      "row_id": "fixed_source_action_factors",
+      "method": "matched_noise_source_FIR_and_receiver_modulation_swaps",
+      "purpose": "Determine whether FIR shape or timewise main/image modulation has more leverage in the frozen source posterior.",
+      "config_ref": "experiments.pamf_phase3_restoration.source_action_factor_probe.py::readouts",
+      "resolved_config_ref": "runs/20261107-diagnostic-Restore-action-factor-sourceV-s2026092701-r01/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101902
+      },
+      "seed_notes": "Fixed original record order and original F0; no new RNG or phase selection.",
+      "k": null,
+      "scenario": "Original source V480 x7, five inference-only readouts.",
+      "optimizer": "NONE",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "CPU two threads, 480 x7 cases, 5 posterior/F0 readouts per case. No state updates.",
+      "output_root": "runs/20261107-diagnostic-Restore-action-factor-sourceV-s2026092701-r01",
+      "log_path": "logs/20261107-diagnostic-Restore-action-factor-sourceV-s2026092701-r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.source_action_factor_probe --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-diagnostic-Restore-action-factor-sourceV-s2026092701-r01-release/inputs.json --commit 1065b7fd515402862a8b47bca8bddf597d823b54",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "runtime_observation.json",
+        "reference.npz PRIVATE",
+        "7 source scene.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "logs/stdout.log PRIVATE",
+        "terminal.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Fixed true FIR and modulation substitutions in a common unit norm and phase aligned coordinate.",
+    "Predicted scalar noise fixed in blind/true FIR/true modulation/true Action; fifth path alone also uses simulator scalar noise.",
+    "No G/F updates, true TX, target, OE or novel. Source V only frozen diagnosis. All results reported.",
+    "No GPU contention with C4 or phase-only Main; their pinned code/configuration remain."
+  ],
+  "registered_at": "2026-11-07T00:42:08+00:00"
+}
