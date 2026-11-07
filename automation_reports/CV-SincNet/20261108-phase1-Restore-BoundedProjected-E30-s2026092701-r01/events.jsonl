@@ -1,1 +1,3 @@
 {"at": "2026-11-07T19:07:00+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-07T19:15:59+00:00", "status": "STOPPED", "note": "VERIFIED / STOPPED。GPU4入场时已有2个计算PID，其他任务近同时建立GPU上下文后总数变4超过上限3；仅停止本run的控制器和训练子进程，独立确认GPU剩余3个其他进程；完成0轮、未开始预测，原产物保留。", "evidence": ["report.md"], "row_id": "TF_BoundedProjected"}
+{"at": "2026-11-07T19:16:10+00:00", "status": "STOPPED", "note": "VERIFIED / STOPPED。GPU4入场时已有2个计算PID，其他任务近同时建立GPU上下文后总数变4超过上限3；仅停止本run的控制器和训练子进程，独立确认GPU剩余3个其他进程；完成0轮、未开始预测，原产物保留。", "evidence": ["report.md"], "row_id": null}
