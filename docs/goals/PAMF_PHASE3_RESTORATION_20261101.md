@@ -674,3 +674,7 @@ VERIFIED：2/30 轮、494/7410 次更新，累计126000条源记录曝光；E02�
 ## 2026-11-07 E02 条件方差分支的源端诊断
 
 VERIFIED / ANALYZED。固定E02源训练70条（实际全部L_s，五RX×七scene×2），两种源先验×四种固定方差，共56单元完成且独立重算。当前分支与零附加方差的损失差仅约1e-8量级，当前softplus平均斜率约2.2e-7；统一增大方差在global55/70、other-RX44/70条上局部不利，但约43%/46%的坐标仍有负梯度方向。结果支持表达限制与梯度衰减并存，尚不证明永久失效或Main识别收益。源2检查、3项针对性测试、一次独立P0/P1和实际CPU执行通过，零模型更新、零TX/V/OE/target读取。GPU6当前已完成3/30轮，原final30和Main七景矩阵保持。 [源训练配对机制分析](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-conditional-variance-E02-sourceLU-s2026092701-r01/analysis.md)
+
+## 2026-11-07 双向协方差谱适配版已实现并排队
+
+VERIFIED / QUEUED。双向协方差版已发布N607；实际控制器PID/CWD/命令/CUDA空/等待日志已核实，子进程0、新增GPU训练进程0。等待当前ConditionedCovariance r02最后GPU阶段后再按GPU6容量准入。代码4项针对性测试、一次独立P0/P1、归档SHA一致与远端编译通过；真实源2检查仍待其训练阶段执行，不将排队或单元测试写成真实模型已通过。模型1340293参数，固定源top64方向，C+Bdiag(0.9softsign(raw))B^T允许增减且初始严格为原C；实际FP32模式因子的白化谱界保证正定余量。从零单阶段30轮/7410更新、原L_s/U_s与源F0连续特征权限保持，final30后自动同一原TriSIGTIME SSL基座Main两人群七景及独立评分。现有健康训练和CPU Main继续，新版尚无识别成绩。 [实现、矩阵与实际队列](../../automation_reports/CV-SincNet/20261107-phase1-Restore-SignedCovariance-E30-s2026092701-r01/report.md)

@@ -27,3 +27,9 @@
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## N607 实际队列已核实
+
+VERIFIED / QUEUED。双向协方差版已发布N607；实际控制器PID/CWD/命令/CUDA空/等待日志已核实，子进程0、新增GPU训练进程0。等待当前ConditionedCovariance r02最后GPU阶段后再按GPU6容量准入。代码4项针对性测试、一次独立P0/P1、归档SHA一致与远端编译通过；真实源2检查仍待其训练阶段执行，不将排队或单元测试写成真实模型已通过。模型1340293参数，固定源top64方向，C+Bdiag(0.9softsign(raw))B^T允许增减且初始严格为原C；实际FP32模式因子的白化谱界保证正定余量。从零单阶段30轮/7410更新、原L_s/U_s与源F0连续特征权限保持，final30后自动同一原TriSIGTIME SSL基座Main两人群七景及独立评分。现有健康训练和CPU Main继续，新版尚无识别成绩。
+
+[队列和验证摘要](queue_evidence.json)
