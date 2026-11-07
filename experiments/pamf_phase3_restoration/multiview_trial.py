@@ -91,7 +91,7 @@ def source(args):
     return old,roles
 
 
-def train(args,out):
+def train(args,out,*,smoke_weights=None):
     start=time.perf_counter();c=validate_source(read(args.inputs));old,roles=source(args)
     F,identity=load_F0(c,'cuda:0');main_eval.valid_identity(identity)
     frozen={k:v.detach().clone() for k,v in F.state_dict().items()}
@@ -111,7 +111,9 @@ def train(args,out):
     restored=G(smoke_x);torch.testing.assert_close(restored,smoke_x,atol=0,rtol=0)
     physical,_=objective(restored,y[:2]);guide,_=feature_guide(F,restored,y[:2],target)
     (physical+guide).mean().backward()
-    if not G.output.weight.grad.abs().sum()>0:raise ValueError('Actual source objective G output gradient missing')
+    weights = (G.output.weight,) if smoke_weights is None else smoke_weights(G)
+    if any(p.grad is None or not torch.isfinite(p.grad).all() or not p.grad.abs().sum()>0 for p in weights):
+        raise ValueError('Actual source objective G output gradient missing or invalid')
     G.zero_grad(set_to_none=True)
     if any(not torch.equal(v,G.state_dict()[k]) for k,v in before.items()):raise ValueError('Source smoke changed G')
     check_F0_state(F,frozen);save(out/'smoke_E0.pt',G,args.arm,args.commit,0)

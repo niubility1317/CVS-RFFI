@@ -67,3 +67,22 @@ def test_active_filter_trains_all_paths_and_is_record_local():
     assert not torch.equal(restored, iq)
     with torch.inference_mode():
         torch.testing.assert_close(model(iq[1:]), restored[1:], atol=2e-6, rtol=2e-6)
+
+
+def test_paired_trial_keeps_budget_and_all_region_smoke_gradients():
+    from experiments.pamf_phase3_restoration import packet_inverse_filter_trial as trial
+    from experiments.pamf_phase3_restoration.objective import PairedObjective
+
+    config = trial.configuration(trial.ARM)
+    assert (config['epochs'], config['updates'], config['batch']) == (30, 7410, 256)
+    assert config['source_roles'] == {'L_s': 6300, 'U_s': 56700}
+    assert config['ancestor_checkpoints'] == [] and config['checkpoint_selection'] == 'final30_only'
+    assert config['training_uses_frozen_F0']
+    model = trial.factory(trial.ARM)
+    gen = torch.Generator().manual_seed(39)
+    observed, clean = torch.randn(2, 2, 2, 256, generator=gen)
+    loss, _ = PairedObjective()(model(observed), clean)
+    loss.mean().backward()
+    assert len(trial.smoke_weights(model)) == 3
+    assert all(p.grad is not None and torch.isfinite(p.grad).all() and p.grad.abs().sum() > 0
+               for p in trial.smoke_weights(model))
