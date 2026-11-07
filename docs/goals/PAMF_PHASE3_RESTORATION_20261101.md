@@ -696,3 +696,7 @@ VERIFIED / QUEUED。只替换尚未训练的Signed r01队列，旧PID/CWD/完整
 ## 2026-11-07 源协方差固定基的表达限制
 
 VERIFIED / ANALYZED。只读既有源矩完成10单元，零新IQ/标签/V/OE/target/拟合/模型读取。global本底五RX等权：独立64约75.70%，独立512约75.91%，耦合64理想空间约98.35%的协方差差异Frobenius能量；不是识别率或IQ恢复比例。10个矩阵直接重建独立复算通过且耦合替换均正定。源端相对方差谱也超出当前0.1至1.9范围。支持后续研究方向间耦合与更充分的正定伸缩，不以该上限代替网络学习或正式Main收益。 [源统计分析](../../automation_reports/CV-SincNet/20261107-analysis-Restore-source-covariance-capacity-s2026110707-r01/analysis.md)
+
+## 2026-11-07 双向协方差版在GPU4开始实际训练
+
+VERIFIED / RUNNING。双向协方差版已按新增的GPU4正常空位路径实际训练，当前前序ConditionedCovariance尚未结束，因此提前进入训练。准入快照为已有2个计算进程、剩余17032 MiB，符合该路径原总数3上限；随后独立读回总数4，其中本run仅1个，其他进程3个。该变化如实记录；未修改并发上限或停止其他健康任务，后续阶段仍重新核实原准入条件。实际PID/CWD/命令/父子/CUDA UUID/计算GPU/日志已核对。真实源2、原F0、完整后验、初始C不变、双向映射零点、梯度隔离、F0冻结和严格E0重载通过。当前尚未写出首个完整epoch；检查时smoke本身更新为0，不将此等同于训练阶段尚未发生任何更新。模型、数据、seed和单阶段30轮/7410更新不变，final30后自动原TriSIGTIME SSL Main双总体七景与独立truth-last。当前三路恢复器均在实际训练，暂无本版正式识别结果。 [实际训练与真实源检查](../../automation_reports/CV-SincNet/20261107-phase1-Restore-SignedCovariance-E30-s2026092701-r02/report.md)
