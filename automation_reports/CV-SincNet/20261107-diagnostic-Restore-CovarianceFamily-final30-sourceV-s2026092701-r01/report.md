@@ -27,3 +27,7 @@
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 真实三模型源检查与CPU预测启动
+
+VERIFIED / RUNNING。三版final30与原F0的真实L_s两条检查通过，实际CPU2/nice10/CUDA为空、无GPU进程、PID/CWD/命令与日志增长已核实，首景三版预测已固定。按原V480七景全部21格预测后独立评分，CPU clean参考与候选使用相同后端；零拟合、选模、OE或目标输入。5项负检查及一次独立P0/P1通过。 [发布后证据](launch_evidence.json)

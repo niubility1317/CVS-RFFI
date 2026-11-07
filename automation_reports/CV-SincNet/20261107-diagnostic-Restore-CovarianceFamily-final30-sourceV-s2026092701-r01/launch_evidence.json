@@ -1,0 +1,30 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "observed_at_unix": 1794060291.9575822,
+  "code_commit": "802b7fc9bfefa12d56ef724c7a283942260cbf57",
+  "archive_SHA_match": true,
+  "remote_compile": true,
+  "actual_PID_CWD_command_CPU2_nice10_CUDA_empty_no_GPU_and_log_growth_verified": true,
+  "actual_original_checkpoint_source_smoke": {
+    "status": "PASS",
+    "actual_L_s_rows": 2,
+    "all_three_actual_final30_G": true,
+    "actual_original_F0": true,
+    "TX_labels_read": 0,
+    "V_rows": 0,
+    "target_inputs": 0,
+    "optimizer_updates": 0
+  },
+  "fixed_scene_files_at_observation": 1,
+  "planned_methods": 3,
+  "planned_views": 7,
+  "planned_cells": 21,
+  "source_V_physical_records": 480,
+  "no_V_truth_before_all_predictions": true,
+  "model_state_updates": 0,
+  "target_inputs": 0,
+  "local_negative_tests_passed": 5,
+  "independent_P0_P1_review": "PASS",
+  "Main_performance_claim": false,
+  "goal_complete": false
+}
