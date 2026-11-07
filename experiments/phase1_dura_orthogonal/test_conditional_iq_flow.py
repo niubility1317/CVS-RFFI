@@ -48,6 +48,20 @@ def test_loss_rejects_invalid_times():
         flow_matching_loss(model, x, anchor, innovation, variance, clean, torch.tensor([0., 1.1, .5]))
 
 
+def test_trusted_generated_times_preserve_loss_and_gradients():
+    x, anchor, innovation, clean, variance = inputs()
+    reference = ConditionalIQFlow(width=8, steps=4)
+    fast = ConditionalIQFlow(width=8, steps=4)
+    fast.load_state_dict(reference.state_dict())
+    times = sample_flow_times(len(x), torch.Generator().manual_seed(71), origin_fraction=.5)
+    baseline_loss = flow_matching_loss(reference, x, anchor, innovation, variance, clean, times)
+    fast_loss = flow_matching_loss(fast, x, anchor, innovation, variance, clean, times, validate_time=False)
+    baseline_loss.backward()
+    fast_loss.backward()
+    assert torch.equal(baseline_loss, fast_loss)
+    assert all(torch.equal(a.grad, b.grad) for a, b in zip(reference.parameters(), fast.parameters()))
+
+
 def test_direct_flow_uses_received_iq_only_and_initially_reproduces_it():
     x, anchor, innovation, _, variance = inputs()
     model = DirectIQFlow(width=8, steps=4)

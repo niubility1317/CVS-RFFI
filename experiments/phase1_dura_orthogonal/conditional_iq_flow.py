@@ -66,10 +66,11 @@ def sample_flow_times(count, generator, *, origin_fraction):
     return times
 
 
-def flow_matching_loss(model, received, anchor, innovation, variance, clean, time):
+def flow_matching_loss(model, received, anchor, innovation, variance, clean, time, *, validate_time=True):
+    """Match the flow; skip time checks only for internally generated valid samples."""
     if clean.shape != anchor.shape or time.shape != (len(anchor),):
         raise ValueError('Matching clean IQ and time batches required')
-    if not torch.isfinite(time).all() or ((time < 0) | (time > 1)).any():
+    if validate_time and (not torch.isfinite(time).all() or ((time < 0) | (time > 1)).any()):
         raise ValueError('Finite flow time in [0, 1] required')
     alpha = time[:, None, None]
     state = (1-alpha)*anchor + alpha*clean
