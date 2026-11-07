@@ -1,0 +1,188 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01",
+  "group_id": "frozen-CovarianceMAP-phase-only-main",
+  "display_name": "冻结 CovarianceMAP 的整体相位校正，原 Main 七景",
+  "description": "沿用源域从零单阶段 E30 权重，新增零参数相位边缘化推理。完整原 Main 双总体七景，独立 truth-last。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "original-ground-TriSIGSSL-Main",
+    "frozen-inference-only",
+    "phase-only",
+    "automatic-Main7"
+  ],
+  "comparison_group_id": "same-frozen-BF-before-and-after-observable-phase-correction",
+  "parent_run_ids": [
+    "20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01",
+    "20261107-diagnostic-Restore-observed-phase-ramp-sourceV-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Latestuser:performanceprimary/efficiencysecondary/groundTriSIGTIME SSL sameFrawclean6eachgap<=3pp+cleanpreserved;majorGarchitecturefreedom/scratchsingle30/sourceFfeatureguidanceallowed/originalLsUs-only/OEonlyfrozendiagnostic. DefaultDURAunchanged.",
+  "code": {
+    "commit": "d17c50dceaba5aed58c9eeaafc433b0a5fda5a20",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607existingCVS-RFFI Torch2.1/NumPy2/FP32 TF32off/CPUthreads2;actualoriginalTriSSL F0 3ff8 defaulthead",
+    "cwd": "releases/20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "Original FP32 IQ2x256. Per record only same received IQ, frozen BF and source prior. No observed simulator parameters, reference IQ or F0 inside G.",
+    "contract_ref": "OriginalTriSSLsource_contract/392005/rolecounts6300-56700-27000;R07train63000sameIDset androles/RX/day byID",
+    "physical_ids_ref": "R07train/physical_ids.npy roles.npy;validatedoriginalsourceLUcache IDs foralignment;officialMain source-disjoint viewindexes",
+    "label_map_ref": "Gtrainnone;frozenF0originalsixclassorder,truthonly originalCPUscorerafterallrow42cells fixed",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse existing VALIDATED_ONCE R07/G10 minimal handles; exact original BF source data and original Main paired IDs.",
+    "support_query_ref": "No targettraining/support/PCD/unknownrole. OriginalMain two populations168000,all7perrowfixedbefore independenttruth.",
+    "leo_config_ref": "R07sourcecache20trainrealizations/2026101912augmentation;officialMain frozen7observations",
+    "actual_training_labels": "No new training. Frozen BF trained source original L_s6300/U_s56700 with simulator Action/noise regression, TX hidden.",
+    "augmentation": "No new observations. All original Main views and original ground reader fixed."
+  },
+  "permissions": {
+    "regime": "frozen-source-trained-G-inference-only",
+    "query_use": "Only frozen per-record original Main inference. Source2 smoke first. No adaptation, selection, target fitting or TX reads in predictor.",
+    "external_method_exception": null,
+    "claim_scope": "Source-motivated inference-only comparison. Same original BF E30 state, no new weights. Full Main true TX plus separate clean preservation."
+  },
+  "checkpoint": {
+    "initialization": "Exact frozen original source-only CovarianceMAP final30/7410, 1230341 weights. Added fixed phase constants only.",
+    "sources": [
+      "FROZEN_BF 20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01/bf29554a03e28a012eaaa134f5c7b3f7856f2268/scratch30/7410/source-only",
+      "FROZEN_F0 original3ff8f4b7e85b5608f5b45350aa18081499a7ef1d/E50/11100/defaulthead",
+      "SOURCE_MECHANISM_ONLY 20261107-diagnostic-Restore-observed-phase-ramp-sourceV-s2026092701-r01/e97058e837ea494b2efeb2fd0da5a237032e7736/V120 x7 frozen pilot",
+      "DATA_ONLY original R07 source prior and L_s smoke; exact BF Main controls reused"
+    ],
+    "contract_check_ref": "Strict parent BF contract, actual commit/final30/config/state; original F0 identity and original Main prediction order.",
+    "provenance_verdict": "Original source-only E30 BF/F0 and fixed source moments; no new training or derived target state.",
+    "selection_rule": "Use source-pilot phase-only globally. 256 angles, prior15°, fixed drift zero. No scene- or target-dependent decisions. Complete all Main."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/frozen-phase-only-main",
+    "gpu_policy": "CUDA-empty controller waits for 20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01 last GPU stage terminal or recorded failure. GPU4/6 UUID free>=12000MiB, existing compute<=2, add one. No other owner changes.",
+    "remote_run_root": "runs/20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01",
+    "remote_log_root": "runs/20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.phase_only_eval run --root /home/szu2070436088/2510044040/CV-SincNet --commit d17c50dceaba5aed58c9eeaafc433b0a5fda5a20 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Missing or wrong BF/F0/data/order, nonfinite, smoke or worker failure: preserve. Actual L_s source2 and pilot equality first. No quality gate."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Original Main two populations and combined. Six each within 3pp of same raw clean and both clean preserved.",
+      "Paired true TX repairs/damage vs BF and DURA, Macro-F1, TX/RX/day, seven scene metrics.",
+      "0 new training. 1230341 frozen parameters, one FP64 posterior factor per record, 256 phase hypotheses.",
+      "56 cells, BF/raw/DURA decisions reused exactly, candidate fresh 168000 x7. Independent truth-last."
+    ],
+    "dimensions": [
+      "original Main cross_rx 126000 and cross_both 42000",
+      "seven views",
+      "TX/RX/day/RXday"
+    ],
+    "prediction_ref": "Fresh phase-only and exact BF/raw/DURA archived predictions on same IDs. Both populations fixed before truth.",
+    "scorer_ref": "Originalpamf_repl_view_shuffle.evaluation.score independentCUDAemptyCPU/allreadoutsalltasks preflightbeforetruth;sharedoriginalTFscore.lock;no sourcecandidatefeedback"
+  },
+  "rows": [
+    {
+      "row_id": "TF_CovariancePhaseOnly",
+      "method": "frozen_BF_global_phase_marginalization",
+      "purpose": "Test same frozen BF with analytic phase-only marginalization on full original Main.",
+      "config_ref": "experiments.pamf_phase3_restoration.phase_only_eval.py::FrozenPhaseOnly",
+      "resolved_config_ref": "runs/20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01/rows/TF_CovariancePhaseOnly/prediction/cross_rx/complete.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "No new RNG. Original BF/F0 and original Main observations.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 new updates, inherited BF30/7410. One Cholesky, three RHS for phase-only, drift fixed zero. Full original Main 2 populations x7.",
+      "output_root": "runs/20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01/rows/TF_CovariancePhaseOnly",
+      "log_path": "runs/20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01/logs/TF_CovariancePhaseOnly-train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.phase_only_eval predict --root /home/szu2070436088/2510044040/CV-SincNet --commit d17c50dceaba5aed58c9eeaafc433b0a5fda5a20 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --arm TF_CovariancePhaseOnly --task cross_rx",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE"
+      ]
+    }
+  ],
+  "notes": [
+    "Main performance is primary. All 7 views and both populations scored.",
+    "No new scratch G training or changed weights. This is an inference-only comparison with original source BF E30.",
+    "Source pilot low urban 98->104/120 Fclean, 7 repairs/1 damage. All seven Fclean nondegrade in pilot, clean IQ NMSE increases; Main clean checked separately.",
+    "Fixed 256 angles and 15-degree prior, drift zero, no phase mode choosing, source/target fitting, ground-truth channel or new F head.",
+    "Scheduling waits C4 last GPU stage only; no C4 score read or scientific selection. Same GPU and truth scorer capacity rules."
+  ],
+  "record_type": "diagnostic",
+  "registered_at": "2026-11-07T00:32:55+00:00"
+}
