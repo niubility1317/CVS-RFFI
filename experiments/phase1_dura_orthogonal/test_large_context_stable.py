@@ -61,3 +61,15 @@ def test_stable_checkpoint_requires_legal_source_and_normalization(tmp_path, mon
     (folder / 'source_summary.json').write_text(json.dumps(summary), encoding='utf8')
     with pytest.raises(ValueError, match='normalized large-context'):
         ground.load_fixed(tmp_path, 'source', 'test')
+    summary['large_context_normalization'] = 'token_layernorm_groupnorm'
+    for obj in (summary, state):
+        obj.update(objective='wide_large_context_stable_tail', source_tail_weight=.5,
+                   source_tail_fraction=.25, source_tail_score='normalized_iq_error',
+                   source_tail_losses=[.1] * 20)
+    (folder / 'source_summary.json').write_text(json.dumps(summary), encoding='utf8')
+    torch.save(state, folder / 'final.pt')
+    assert isinstance(ground.load_fixed(tmp_path, 'source', 'test')[0], StableLargeContextDura)
+    summary['source_tail_fraction'] = .5
+    (folder / 'source_summary.json').write_text(json.dumps(summary), encoding='utf8')
+    with pytest.raises(ValueError, match='tail-risk'):
+        ground.load_fixed(tmp_path, 'source', 'test')
