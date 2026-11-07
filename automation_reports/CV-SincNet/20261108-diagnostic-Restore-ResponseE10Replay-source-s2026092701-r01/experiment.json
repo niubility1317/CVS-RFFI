@@ -1,0 +1,170 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-diagnostic-Restore-ResponseE10Replay-source-s2026092701-r01",
+  "group_id": "response-interrupted-epoch-source-reproduction",
+  "display_name": "响应保持恢复器第10轮源域技术复现",
+  "description": "仅在原始源IQ上临时重放失败运行的第10轮，区分非有限损失和后验残差保护；不产生训练候选。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "technical-replay",
+    "no-target",
+    "no-checkpoint"
+  ],
+  "comparison_group_id": "original-response-E09-technical-failure",
+  "parent_run_ids": [
+    "20261107-phase1-Restore-ResponseJointPrior-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Previously authorized source-only technical failure diagnosis; GPU6 one added own process, total at most five.",
+  "code": {
+    "commit": "6d00bd14ae550f079a2dbb090b6e1835c40c22fc",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI, CPU threads 2, FP32/FP64, TF32 off; GPU6 existing<=4 and free>=12000MiB.",
+    "cwd": "releases/20261108-diagnostic-Restore-ResponseE10Replay-source-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original R07 epoch10 draw: up to 63000 source rows, L_s6300/U_s56700.",
+    "representation": "Existing paired clean/received IQ2x256 and simulator Action/noise, source receiver metadata and existing global/other-RX priors.",
+    "contract_ref": "OriginalTriSSLsource_contract/392005/rolecounts6300-56700-27000;R07train63000sameIDset androles/RX/day byID",
+    "physical_ids_ref": "Existing source capsule and R07 cache aligned by physical ID and source role.",
+    "label_map_ref": "Unused for scoring. Original F0 default head used only in no-query smoke; continuous source features in numerical objectives.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Original source contract and original ResponseJointPrior failed-run E09.",
+    "support_query_ref": "No target U/Q, no V/OE, no TX truth, no target predictions.",
+    "leo_config_ref": "Existing R07 source draw10 only.",
+    "actual_training_labels": "No TX labels; original simulated source physical action/noise and frozen F0 continuous feature losses.",
+    "augmentation": "Original saved epoch10 source draw and permutation; no new source synthesis.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "source-only-bounded-technical-replay",
+    "query_use": "Up to 63000 L_s/U_s source rows only; no TX truth, V/OE/target inputs or target predictions.",
+    "external_method_exception": null,
+    "claim_scope": "Technical replay only; original run remains failed. Temporary replay updates are discarded, no candidate checkpoint or classification claim."
+  },
+  "checkpoint": {
+    "initialization": "Original source-only ResponseJointPrior E09/2223 model, optimizer and RNG loaded only to reproduce epoch10 failure; no new candidate is saved.",
+    "sources": [
+      "20261107-phase1-Restore-ResponseJointPrior-E30-s2026092701-r01/ee7f69470c15bd053777cd6b6115c46b39737b9c/rows/TF_ResponseJointPrior/training/recovery/E09.pt",
+      "Original frozen source Tri-SIG-TIME SSL F0 checkpoint and original source global/other-RX moments."
+    ],
+    "contract_check_ref": "Original E09 metadata, configuration, E09/2223, original source-only smoke and saved epoch10 order; original matching F0 and source handles.",
+    "provenance_verdict": "Original training used only legal source L_s/U_s, simulated action/noise and frozen original F0 continuous features; TX/V/OE/target excluded.",
+    "selection_rule": "Fixed E09 as last complete technical checkpoint, not source/target model selection; stop on first guard or exception, otherwise one bounded epoch."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/response-E10-source-diagnostic",
+    "gpu_policy": "Only GPU6, existing<=4 and free>=12000MiB before one own child, total<=5. Never alter other owners.",
+    "remote_run_root": "runs/20261108-diagnostic-Restore-ResponseE10Replay-source-s2026092701-r01",
+    "remote_log_root": "logs/20261108-diagnostic-Restore-ResponseE10Replay-source-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261108-diagnostic-Restore-ResponseE10Replay-source-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.response_epoch10_diagnostic run --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-ResponseJointPrior-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --commit 6d00bd14ae550f079a2dbb090b6e1835c40c22fc",
+    "stop_rule": "Source/checkpoint mismatch, smoke failure, first nonfinite loss or posterior residual>1e-8, or any exception: preserve diagnostic and original outputs. Otherwise stop after at most 247 temporary updates; never save the model."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted.json",
+    "smoke.json",
+    "replay.log PRIVATE",
+    "results.json",
+    "terminal.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Original scalar nonfinite versus maximum posterior solve residual>1e-8, epoch/batch/microbatch and observed exception.",
+      "Temporary optimizer updates and elapsed time; interpret no reproduction and numerical divergence cautiously."
+    ],
+    "dimensions": [
+      "original epoch10 source rows"
+    ],
+    "prediction_ref": "None",
+    "scorer_ref": "None; no TX truth or target inputs."
+  },
+  "rows": [
+    {
+      "row_id": "epoch10_source_technical_replay",
+      "method": "original_failed_epoch_temporary_replay",
+      "purpose": "Locate which original numerical guard or exception is observed.",
+      "config_ref": "experiments.pamf_phase3_restoration.response_epoch10_diagnostic.py",
+      "resolved_config_ref": "runs/20261108-diagnostic-Restore-ResponseE10Replay-source-s2026092701-r01/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110707,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026110707
+      },
+      "seed_notes": "Restores original E09 saved torch RNG, original saved epoch10 permutation and draw10.",
+      "k": null,
+      "scenario": "Source L_s/U_s only; no target.",
+      "optimizer": "Original AdamW state restored temporarily, branch clipping unchanged.",
+      "lr": 0.001,
+      "epochs": 1,
+      "fl_rounds": null,
+      "budget_ref": "At most 247 temporary epoch10 steps, logical256 micro32; stop at first guard or exception. No model checkpoint output.",
+      "output_root": "runs/20261108-diagnostic-Restore-ResponseE10Replay-source-s2026092701-r01",
+      "log_path": "runs/20261108-diagnostic-Restore-ResponseE10Replay-source-s2026092701-r01/replay.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.response_epoch10_diagnostic run --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-ResponseJointPrior-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --commit 6d00bd14ae550f079a2dbb090b6e1835c40c22fc",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted.json",
+        "smoke.json",
+        "replay.log PRIVATE",
+        "results.json",
+        "terminal.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "The original run exited in epoch10 after completing E09; its generic guard combined nonfinite objective and posterior residual>1e-8.",
+    "Replay restores E09 optimizer and RNG and uses the original source draw and schedule; shared-GPU numerical trajectories may diverge.",
+    "The original run and all other owners remain unchanged; temporary replay model never becomes an evaluation candidate.",
+    "Focused guard tests and one independent P0/P1 review passed. The real source E09/F0 no-query smoke is first, followed immediately by bounded replay."
+  ],
+  "record_type": "managed_run",
+  "registered_at": "2026-11-07T17:33:44+00:00"
+}
