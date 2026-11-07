@@ -383,3 +383,7 @@ N607 GPU 2 对 32768 源 ID × 三视图完成固定四组复岭解析拟合，�
 ## 独立学生预测省略 DURA 的核验
 
 固定独立 FIR 学生，N607 CPU 在 112 条合法源 IQ 上对比原 DURA 上下文路径和仅使用 received 的路径；恢复波形以及 raw／恢复 logits 逐值一致，原路径 1.7113 秒、简化路径 0.5427 秒。计时是一次短样本对照，不能推断整组提速或其他模型一致性。七景只读重放已启动并通过源检查，等待该学生原七景预测全部固定后，逐条比较 raw／恢复决策，不读真值、不接管原任务；完整一致性尚未证明。[源检查](../automation_reports/CV-SincNet/20261107-phase1-direct-fir-skip-source-s2026092701-r01/analysis.md)、[全量登记](../automation_reports/CV-SincNet/20261107-phase1-direct-fir-skip-full-parity-s2026092701-r01/experiment.json)。
+
+## 源频段平衡同记录检索
+
+4096 条源记录及三个模拟视图，使用各自源 clean IQ 作为非部署参考库；DURA 查询的同记录 top-1 普通 IQ 表示为 9770/12288（79.5085%），四频段归一为 9667/12288（78.6702%）。精确平局采用乐观排名并另计；该代理可能利用报文内容或接收机线索，不是 TX 身份准确率，DURA 也可能见过源记录。代理与频段训练损失不同，已登记频段候选继续正式七景测试。[完整结果](../automation_reports/CV-SincNet/20261107-phase1-band-record-retrieval-source-s2026092701-r01/analysis.md)。
