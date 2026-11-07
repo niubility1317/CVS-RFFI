@@ -17,11 +17,11 @@ GEOMETRY_COMMIT='f57c54cad7491e3e8a36f7ea51a9caa13a3a0ab9'
 TEMPLATE=trial.configuration('MSAT_M20')
 
 
-def recovery_gpu_choice(runner=None):
+def recovery_gpu_choice(runner=None,*,allowed_gpus=(4,6),maximum_processes=3):
     """Query admitted healthy cards separately; GPU7 is unavailable after r01."""
     if runner is None:runner=subprocess.run
     result=[]
-    for gpu in (4,6):
+    for gpu in allowed_gpus:
         p=runner(['nvidia-smi','-i',str(gpu),'--query-gpu=index,uuid,memory.free','--format=csv,noheader,nounits'],capture_output=True,text=True)
         q=runner(['nvidia-smi','-i',str(gpu),'--query-compute-apps=gpu_uuid,pid','--format=csv,noheader,nounits'],capture_output=True,text=True)
         if p.returncode or q.returncode:
@@ -38,7 +38,7 @@ def recovery_gpu_choice(runner=None):
             if identity!=uuid:raise ValueError('Scoped compute query returned another GPU')
             pids.add(int(pid))
         free=int(fields[2])
-        if free>=12000 and len(pids)<=2:
+        if free>=12000 and len(pids)<maximum_processes:
             result.append(dict(GPU=gpu,CUDA_ID=uuid,free_memory_MB=free,existing_compute_PIDs=len(pids)))
     return sorted(result,key=lambda x:(x['existing_compute_PIDs'],-x['free_memory_MB'],x['GPU']))
 
