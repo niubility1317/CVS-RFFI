@@ -1,0 +1,172 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-diagnostic-Restore-CovarianceFamily-final30-sourceV-s2026092701-r01",
+  "group_id": "source-frozen-covariance-family-final30",
+  "display_name": "三类条件协方差最终30轮：同源V身份与重建验证",
+  "description": "固定三版final30，在原V480七景核对IQ/特征误差与真实TX修复损伤。零拟合、零目标输入。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-V-only",
+    "source-LU-statistics",
+    "held-receiver",
+    "frozen-TriSIGTIME-SSL",
+    "CPU-only"
+  ],
+  "comparison_group_id": "same-source-V-final30-covariance-family",
+  "parent_run_ids": [
+    "20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r02",
+    "20261107-phase1-Restore-SignedCovariance-E30-s2026092701-r02",
+    "20261107-phase1-Restore-CoupledCovariance-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Existing restoration mechanism analysis and frozen source V validation. Original L_s/U_s training scope unchanged; no V fitting, selection, target, OE or novel input.",
+  "code": {
+    "commit": "802b7fc9bfefa12d56ef724c7a283942260cbf57",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI CPU2 nice10 CUDA empty; FP32 networks, original FP64 posterior.",
+    "cwd": "releases/20261107-diagnostic-Restore-CovarianceFamily-final30-sourceV-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 source contract; existing R07 fixed1800 V/7 frozen validation views",
+    "representation": "Original R07 frozen V480x7 received/clean, exact same480 physical IDs as prior source diagnostics; CPU clean F0 reference.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "Original five RX x three day strata, first 32 per 120 from original order, same 480 original physical IDs all seven views.",
+    "label_map_ref": "Source V independent truth after all 42 method/view cells. No L/U TX truth used.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original six known sourceTX; V trueTX validation only, no train/selection",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse VALIDATED_ONCE R07 handles; fixed original f29 V reference and BF E30/F0 E50 provenance.",
+    "support_query_ref": "Fixed 480 original V, no target/support/query.",
+    "leo_config_ref": "ExistingR07 validation_actions7; receiver2026101902 vs trainingreceiver2026101911; no regenerated views.",
+    "actual_training_labels": "No fitting or training. Independent original V TX truth only after all21 method/scene cells are frozen.",
+    "augmentation": "None; reuse original R07 validation actions7.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "frozen-source-V-family-validation",
+    "query_use": "V480 only for frozen diagnosis; zero V/target/OE fitting, optimizer updates or checkpoint selection.",
+    "external_method_exception": null,
+    "claim_scope": "Held-out source sample IQ/feature/true-TX relation for fixed final30 models. Source V is historically exposed; not Main performance or an information ceiling."
+  },
+  "checkpoint": {
+    "initialization": "All three original source-only final30 G loaded frozen; original F0 frozen. No new G training.",
+    "sources": [
+      "FROZEN_G 20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r02/ebb279ff3ad430e6a8242686d816976339444588 E30/7410",
+      "FROZEN_G 20261107-phase1-Restore-SignedCovariance-E30-s2026092701-r02/96143e689001ad94c6885bc2d032a1c897a097a6 E30/7410",
+      "FROZEN_G 20261107-phase1-Restore-CoupledCovariance-E30-s2026092701-r01/6d3dda3c88765c38e1813ecb733948234bb63190 E30/7410",
+      "FROZEN_F0 original Tri-SIG-TIME SSL 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d E50/11100",
+      "SOURCE_REFERENCE original f29 source V1800 and fixed first32 per RX/day (480), R07 original received and clean."
+    ],
+    "contract_check_ref": "Each exact parent configuration/commit/final30, original189000L_s/1701000U_s exposure, zero initialization/V/OE/target training; original F0 identity and V physical IDs.",
+    "provenance_verdict": "Original source-only final30 family, no target-selected checkpoint. Same family as pre-Main E20 and full30 source comparison.",
+    "selection_rule": "All three fixed final30 versions, all seven scenes; no selection, fitting, rollout, routing or new deployment output."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-covariance-family-final30",
+    "gpu_policy": "CPU-only2 threads/nice10, CUDA empty. One prediction child, then independent source truth scorer under original shared lock.",
+    "remote_run_root": "runs/20261107-diagnostic-Restore-CovarianceFamily-final30-sourceV-s2026092701-r01",
+    "remote_log_root": "logs/20261107-diagnostic-Restore-CovarianceFamily-final30-sourceV-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-diagnostic-Restore-CovarianceFamily-final30-sourceV-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.covariance_family_source_validation run --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-diagnostic-Restore-CovarianceFamily-final30-sourceV-s2026092701-r01-release/inputs.json --commit 802b7fc9bfefa12d56ef724c7a283942260cbf57",
+    "stop_rule": "Wrong original parent/F0/source contract, output collision, actual-source smoke failure, nonfinite output, posterior residual>1e-8 or incomplete/mismatched predictions: preserve and stop, no automatic retry."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "runtime_observation.json",
+    "reference.npz PRIVATE",
+    "seven scene.npz PRIVATE",
+    "predictions_complete.json all21 cells",
+    "submitted/terminal-predict.json",
+    "submitted/terminal-score.json",
+    "results.json aggregate source truth",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "All21 fixed cells IQ NMSE, continuousF0 cosine/standardized errors, Fclean agreement and trueTX correct.",
+      "Same-record repairs/damage for signed vs nonnegative, coupled vs signed, coupled vs nonnegative; feature-error direction x TX repair/damage.",
+      "Overall and sourceRX/day/TX groups, rawclean correct count, independent numerical metric recomputation before V truth."
+    ],
+    "dimensions": [
+      "480 sourceV,32 per fiveRX x three days",
+      "seven source scenes",
+      "three fixed final30 models"
+    ],
+    "prediction_ref": "10080 new frozen G/F0 sourceV rows,480 CPU clean F0 rows plus6 actual L_s smoke rows; all21 cells before truth.",
+    "scorer_ref": "Independent CPU child validates all21 cells/recomputes IQ+feature metrics first, then original V metadata truth under shared lock."
+  },
+  "rows": [
+    {
+      "row_id": "fixed_final30_covariance_family_source_V",
+      "method": "frozen_final30_covariance_family_source_validation",
+      "purpose": "Determine how source held-out identity behavior relates to complete training IQ and feature improvements.",
+      "config_ref": "experiments.pamf_phase3_restoration.covariance_family_source_validation.py",
+      "resolved_config_ref": "runs/20261107-diagnostic-Restore-CovarianceFamily-final30-sourceV-s2026092701-r01/predictions_complete.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101902
+      },
+      "seed_notes": "Fixed original record order and original F0; no new RNG or phase selection.",
+      "k": null,
+      "scenario": "Original source V480 x7, five inference-only readouts.",
+      "optimizer": "NONE",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Fixed V480x7x3=10080 G/F0 rows,480 clean F0,6 L_s smoke; CPU2, zero training or model updates.",
+      "output_root": "runs/20261107-diagnostic-Restore-CovarianceFamily-final30-sourceV-s2026092701-r01",
+      "log_path": "runs/20261107-diagnostic-Restore-CovarianceFamily-final30-sourceV-s2026092701-r01/logs/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.covariance_family_source_validation run --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-diagnostic-Restore-CovarianceFamily-final30-sourceV-s2026092701-r01-release/inputs.json --commit 802b7fc9bfefa12d56ef724c7a283942260cbf57",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "runtime_observation.json",
+        "reference.npz PRIVATE",
+        "seven scene.npz PRIVATE",
+        "predictions_complete.json all21 cells",
+        "submitted/terminal-predict.json",
+        "submitted/terminal-score.json",
+        "results.json aggregate source truth",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Complete previously compared covariance family; final30 only, same480 sourceV and original seven views.",
+    "Five focused protocol-negative tests PASS, one independent P0/P1 review PASS. Actual three-G/original-F0 L_s2 smoke is the first prediction step and continues immediately on PASS.",
+    "CPU clean features/logits are computed once for the same backend as all candidates; source feature scale is the existing source-only one.",
+    "All source predictions are fixed and numerical metrics independently recalculated before any V TX truth is loaded.",
+    "No current training/deployment or future candidate settings are altered by this diagnostic. No Main reruns or target fitting."
+  ],
+  "registered_at": "2026-11-07T14:03:30+00:00"
+}
