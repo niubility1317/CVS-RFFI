@@ -22,10 +22,12 @@
   "replaces_run_id": null,
   "authorization": "Latestuser:performanceprimary/efficiencysecondary/groundTriSIGTIME SSL sameFrawclean6eachgap<=3pp+cleanpreserved;majorGarchitecturefreedom/scratchsingle30/sourceFfeatureguidanceallowed/originalLsUs-only/OEonlyfrozendiagnostic. DefaultDURAunchanged.",
   "code": {
-    "commit": "d17c50dceaba5aed58c9eeaafc433b0a5fda5a20",
+    "commit": "5ba8f9b2649e81efd58d5fd8597dbb97f09c4dea",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607existingCVS-RFFI Torch2.1/NumPy2/FP32 TF32off/CPUthreads2;actualoriginalTriSSL F0 3ff8 defaulthead",
-    "cwd": "releases/20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01-release"
+    "cwd": "releases\\20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01-GPU3-dispatch-release",
+    "prediction_code_commit": "d17c50dceaba5aed58c9eeaafc433b0a5fda5a20",
+    "identity_note": "New resource dispatcher only; both predictors and CPU scorer execute the unchanged original release and original commit. Model/input/matrix unchanged."
   },
   "data": {
     "dataset": "ManySig",
@@ -96,13 +98,15 @@
   },
   "execution": {
     "host": "N607",
-    "launch_owner": "codex/root/frozen-phase-only-main",
-    "gpu_policy": "CUDA-empty controller waits for 20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01 last GPU stage terminal or recorded failure. GPU4/6 UUID free>=12000MiB, existing compute<=2, add one. No other owner changes.",
+    "launch_owner": "codex/root/phase-only-resource-GPU3-handover",
+    "gpu_policy": "GPU3 only: normal total cap3, existing<=2/free>=12000MiB before one GPU prediction worker. CPU truth scorer after both original populations x7 fixed. Retire only exact CUDA-empty unstarted old controller; preserve all old outputs and downstream original run stage names.",
     "remote_run_root": "runs/20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01",
     "remote_log_root": "runs/20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01/logs",
     "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01",
-    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.phase_only_eval run --root /home/szu2070436088/2510044040/CV-SincNet --commit d17c50dceaba5aed58c9eeaafc433b0a5fda5a20 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
-    "stop_rule": "Missing or wrong BF/F0/data/order, nonfinite, smoke or worker failure: preserve. Actual L_s source2 and pilot equality first. No quality gate."
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.phase_only_resource_dispatch --root /home/szu2070436088/2510044040/CV-SincNet --legacy-release /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01-release --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --commit 5ba8f9b2649e81efd58d5fd8597dbb97f09c4dea",
+    "stop_rule": "Only unstarted childless original controller may be replaced after exact PID/CWD/cmdline/CUDA/no-stage check. Actual original-source smoke first in unchanged predictor. Missing/mismatched identity/output, nonfinite, smoke or child failure preserves artifacts; no retries or other-process actions.",
+    "original_controller_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.phase_only_eval run --root /home/szu2070436088/2510044040/CV-SincNet --commit d17c50dceaba5aed58c9eeaafc433b0a5fda5a20 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "original_prediction_CWD": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01-release"
   },
   "expected_artifacts": [
     "launch.json",
@@ -116,7 +120,10 @@
     "rows/<arm>/score/complete.json",
     "rows/<arm>/results.json",
     "complete.json",
-    "logs/*.log PRIVATE"
+    "logs/*.log PRIVATE",
+    "resource_controller.json",
+    "logs/<arm>-cross_rx.log",
+    "logs/<arm>-cross_both.log"
   ],
   "metrics_plan": {
     "metric_names": [
@@ -181,7 +188,11 @@
     "No new scratch G training or changed weights. This is an inference-only comparison with original source BF E30.",
     "Source pilot low urban 98->104/120 Fclean, 7 repairs/1 damage. All seven Fclean nondegrade in pilot, clean IQ NMSE increases; Main clean checked separately.",
     "Fixed 256 angles and 15-degree prior, drift zero, no phase mode choosing, source/target fitting, ground-truth channel or new F head.",
-    "Scheduling waits C4 last GPU stage only; no C4 score read or scientific selection. Same GPU and truth scorer capacity rules."
+    "Scheduling waits C4 last GPU stage only; no C4 score read or scientific selection. Same GPU and truth scorer capacity rules.",
+    "Resource-only handover. Remove C4 scheduling dependency; no source/target result-based choice, method/weights/F0/data/seeds/Main two populations-seven scenes unchanged.",
+    "Original run/output root and original launch.json retained. New resource_controller.json declares current owner and both code identities; true stage terminal files at original run unblock existing downstream queues.",
+    "No prediction copied, relabeled or selected. Original predictor/scorer run from original legacy release/commit; final predictions fixed before one independent CPU truth scorer.",
+    "Five focused resource/protocol tests and one resource-only independent P0/P1 review PASS. No repeated model review or extra smoke. Actual original G/F0 source2 smoke runs as prediction first step."
   ],
   "record_type": "diagnostic",
   "registered_at": "2026-11-07T00:32:55+00:00"
