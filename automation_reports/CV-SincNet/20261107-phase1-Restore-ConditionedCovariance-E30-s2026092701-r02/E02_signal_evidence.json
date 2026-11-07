@@ -1,0 +1,57 @@
+{
+  "status": "VERIFIED_E02_STATE_AND_EARLY_BRANCH_ATTENUATION_SIGNAL",
+  "run_id": "20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r02",
+  "code_commit": "ebb279ff3ad430e6a8242686d816976339444588",
+  "epochs": 2,
+  "updates": 494,
+  "source_rows_per_epoch": 63000,
+  "cumulative_source_rows": 126000,
+  "cumulative_L_s": 12600,
+  "cumulative_U_s": 113400,
+  "epoch_summary": [
+    {
+      "epoch": 1,
+      "draw": 1,
+      "updates": 247,
+      "seconds": 771.4141214170377,
+      "source_prior_mode": "global",
+      "source_mean_added_variance_relative_to_prior": 0.0014987066060868587,
+      "source_mean_confidence_preclip_gradient_norm": 0.0522769986583379,
+      "source_mean_IQ_NMSE": 0.8219224831698433
+    },
+    {
+      "epoch": 2,
+      "draw": 2,
+      "updates": 494,
+      "seconds": 769.6320384789724,
+      "source_prior_mode": "other_ground_receiver",
+      "source_mean_added_variance_relative_to_prior": 1.6872834894937364e-08,
+      "source_mean_confidence_preclip_gradient_norm": 2.1048191942293936e-06,
+      "source_mean_IQ_NMSE": 0.08468169635155845
+    }
+  ],
+  "E01_to_E02_updates": {
+    "physical.": {
+      "changed_tensors": 85,
+      "compared_tensors": 87,
+      "largest_absolute_delta": 0.10864762216806412
+    },
+    "detail.": {
+      "changed_tensors": 52,
+      "compared_tensors": 53,
+      "largest_absolute_delta": 0.008321352303028107
+    }
+  },
+  "source_prior_unchanged": true,
+  "E02_optimizer_step": 494,
+  "E02_optimizer_state_finite": true,
+  "average_epoch_seconds": 770.523079948005,
+  "confidence_gradient_E02_over_E01": 4.026281631020311e-05,
+  "added_variance_fraction_E02_over_E01": 1.1258264176864171e-05,
+  "new_neural_forwards": 0,
+  "new_IQ_reads": 0,
+  "new_truth_reads": 0,
+  "target_reads": 0,
+  "interpretation": "Mean added variance and confidence gradient attenuated sharply. Epoch draws and prior mode differ; loss change is not an isolated architectural effect. Not evidence of a dead branch, optimality, or Main accuracy.",
+  "next_action": "Keep healthy single30 unchanged. Track branch activity at later completed epochs and report all fixed Main scenes after final30; no early selection or target feedback."
+}
