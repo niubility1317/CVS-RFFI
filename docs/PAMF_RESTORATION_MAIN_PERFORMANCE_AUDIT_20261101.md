@@ -273,3 +273,7 @@ VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30�
 ## 2026-11-07 TF_CoupledCovariance 完整Main结果
 
 VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30核实；原Main42单元全部预测后独立truth-last，4阶段exit0且进程均已退出。1302组/868raw配对及DURA/clean配对复算PASS，最大差1.24e-14，baseline判决差0。六景84.041071/82.468452/80.612500/82.552381/74.165476/65.292857%，1/6；clean两个总体净+165/-30，联合验收False。原科学代码/模型/数据/预算保持，默认DURA不变，其他已登记候选继续。 [完整分析](../automation_reports/CV-SincNet/20261107-phase1-Restore-CoupledCovariance-E30-s2026092701-r01/analysis.md)
+
+## 2026-11-07 TF_SignedCovariance 完整Main结果
+
+VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30核实；原Main42单元全部预测后独立truth-last，4阶段exit0且进程均已退出。1302组/868raw配对及DURA/clean配对复算PASS，最大差1.2e-14，baseline判决差0。六景83.489286/82.073810/80.443452/82.207738/74.348214/65.957143%，0/6；clean两个总体净+266/-35，联合验收False。原科学代码/模型/数据/预算保持，默认DURA不变，其他已登记候选继续。 [完整分析](../automation_reports/CV-SincNet/20261107-phase1-Restore-SignedCovariance-E30-s2026092701-r02/analysis.md)

@@ -776,3 +776,7 @@ VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30�
 ## 2026-11-07 等价低秩源端诊断的技术 r02
 
 VERIFIED / QUEUED。等价低秩后验的源端诊断已发布，归档SHA对比与远端编译通过；实际CPU控制器PID/CWD/命令、CUDA为空、无子进程、无GPU占用及等待日志增长已核实。GPU3的进程数已达到原正常上限，故按原总数最多3、已有最多2且剩余至少12000 MiB等待；没有增加并发上限或重启任何任务。8项针对性检查、原独立P0/P1及一次P1修复复核通过；r01原输出保留，r02仅修复进度文件冲突。真实原G/F0源检查与14格GPU数值/耗时实测尚待启动，不能据单元检查宣布训练提速。该诊断不更新权重、不访问target/TX/V/OE，不改变任何已发布训练或部署版本。 [固定诊断矩阵](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-CoupledLowRank-sourceLU-s2026092701-r02/report.md)
+
+## 2026-11-07 TF_SignedCovariance 完整Main结果
+
+VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30核实；原Main42单元全部预测后独立truth-last，4阶段exit0且进程均已退出。1302组/868raw配对及DURA/clean配对复算PASS，最大差1.2e-14，baseline判决差0。六景83.489286/82.073810/80.443452/82.207738/74.348214/65.957143%，0/6；clean两个总体净+266/-35，联合验收False。原科学代码/模型/数据/预算保持，默认DURA不变，其他已登记候选继续。 [完整分析](../../automation_reports/CV-SincNet/20261107-phase1-Restore-SignedCovariance-E30-s2026092701-r02/analysis.md)
