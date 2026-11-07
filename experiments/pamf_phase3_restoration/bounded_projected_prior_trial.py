@@ -20,6 +20,7 @@ def configuration(arm):
         learned_detail='Original conditional prior detail and posterior projection; limit correction L2 to twice current received IQ L2.',
         scientific_change='Add fixed input-relative L2 limit after prior projection during both source training and deployment; all G weights initialized from scratch.',
         max_relative_correction=MAX_RELATIVE_CORRECTION,matched_control=original.RUN+'/'+original.ARM,
+        control_arithmetic='Current projected implementation uses batched matrix-vector innovation; original matched control used matrix-vector matmul. Algebraically equivalent, not bitwise-identical.',
         evidence='20261108-diagnostic-Restore-ProjectedSpikeTrace-sourceLU-s2026092701-r01; source-only internal activation spike.',
         original_parent_weights_loaded=False)
     return cfg
