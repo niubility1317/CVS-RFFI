@@ -106,7 +106,7 @@ def main():
                 groups[name+'/'+view] = mask
         results = {}
         for group, values in groups.items():
-            mask = torch.as_tensor(values)
+            mask = torch.tensor(values.tolist(), dtype=torch.bool)
             results[group] = {}
             for feature, (a, b) in ranks.items():
                 results[group][feature] = dict(dura=summarize_ranks(a, mask), candidate=summarize_ranks(b, mask),
