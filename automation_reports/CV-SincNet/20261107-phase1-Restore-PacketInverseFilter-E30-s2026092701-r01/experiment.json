@@ -1,0 +1,201 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01",
+  "group_id": "source-scratch-packet-position-wise-inverse",
+  "display_name": "整包时变复数逆滤波恢复器，从零单阶段 30 轮",
+  "description": "前导重复参考条件化。包首、中段、后段独立产生复数主路、共轭路及 IQ 残差。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "original-ground-TriSIGSSL-Main",
+    "packet-inverse-filter",
+    "continuous-source-F0",
+    "scratch-single30",
+    "automatic-Main7"
+  ],
+  "comparison_group_id": "original-Main-R07-matched-MSAT-M20-and-packet-filter",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Latestuser:performanceprimary/efficiencysecondary/groundTriSIGTIME SSL sameFrawclean6eachgap<=3pp+cleanpreserved;majorGarchitecturefreedom/scratchsingle30/sourceFfeatureguidanceallowed/originalLsUs-only/OEonlyfrozendiagnostic. DefaultDURAunchanged.",
+  "code": {
+    "commit": "92d0dcbe0f25927d5a1cf4d98669ded45a410a5b",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI/Torch2.1/NumPy2 bridge-safe, FP32 G/F0, TF32 off, CPU threads2.",
+    "cwd": "releases/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "Original R07 L_s/U_s clean+received IQ, fixed 20 draws plus first ten. No source simulator factors as model input.",
+    "contract_ref": "OriginalTriSSLsource_contract/392005/rolecounts6300-56700-27000;R07train63000sameIDset androles/RX/day byID",
+    "physical_ids_ref": "R07train/physical_ids.npy roles.npy;validatedoriginalsourceLUcache IDs foralignment;officialMain source-disjoint viewindexes",
+    "label_map_ref": "Gtrainnone;frozenF0originalsixclassorder,truthonly originalCPUscorerafterallrow42cells fixed",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Original VALIDATED_ONCE R07 and same capsule/split source ID binding.",
+    "support_query_ref": "No targettraining/support/PCD/unknownrole. OriginalMain two populations168000,all7perrowfixedbefore independenttruth.",
+    "leo_config_ref": "R07sourcecache20trainrealizations/2026101912augmentation;officialMain frozen7observations",
+    "actual_training_labels": "No TX. Original 63000 paired source IQ and frozen F0 clean continuous features only.",
+    "augmentation": "Original R07 draws 1..20 then 1..10, source order2026110102, no new augmentation."
+  },
+  "permissions": {
+    "regime": "source-only-scratch-packet-filter-F0-continuous-guidance",
+    "query_use": "Train G only with original source IQ and approved frozen continuous F0 features. Main F0 default head is read-only inference.",
+    "external_method_exception": null,
+    "claim_scope": "Standalone IQ-to-IQ candidate; matched training recipe to frozen MSAT_M20 historical control. Single model seed."
+  },
+  "checkpoint": {
+    "initialization": "All 490866 G parameters scratch, seed2026092701. Identity at E0.",
+    "sources": [
+      "FROZEN_FEATURE_ONLY original Tri-SIG-TIME SSL 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d E50/11100/default head",
+      "DATA_ONLY R07 source L_s6300/U_s56700, fixed original draws, same physical ID binding",
+      "MATCHED_RECIPE_ONLY 20261101-phase1-Restore-MSAT-M20-F0-E30-s2026092701-r01/MSAT_M20, no model weights inherited",
+      "SOURCE_MECHANISM_ONLY 20261107-diagnostic-Restore-preamble-edges-sourceV-s2026092701-r01/096bee5a981303c69063813c60ae3935e6395df7, no V data or fitted state"
+    ],
+    "contract_check_ref": "Original source roles and physical IDs; original F0 contract; own strict E0 and final30.",
+    "provenance_verdict": "G scratch. Explicitly a separate continuous source F0-guided arm. V/OE only frozen diagnosis.",
+    "selection_rule": "Final30 only, 7410 updates, full pre-registered original Main matrix and independent scoring."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/packet-inverse-filter-scratch30",
+    "gpu_policy": "Wait CUDA-empty for 20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01 last GPU stage. GPU4/6 only, free >=12000MiB, existing compute <=2; add one. Shared CPU score lock.",
+    "remote_run_root": "runs/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01",
+    "remote_log_root": "runs/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.packet_inverse_filter_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 92d0dcbe0f25927d5a1cf4d98669ded45a410a5b --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Invalid source/F0, collision, smoke/gradient/reload, nonfinite or failed worker: preserve. Exact source2 smoke before actual training."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/training/config.json",
+    "rows/<arm>/training/smoke.json",
+    "rows/<arm>/training/smoke_E0.pt PRIVATE",
+    "rows/<arm>/training/data_schedule.npz PRIVATE",
+    "rows/<arm>/training/training.jsonl PRIVATE",
+    "rows/<arm>/training/final.pt PRIVATE",
+    "rows/<arm>/training/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE",
+    "rows/TF_PacketInverseFilter/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Original Main all six gaps ≤3pp and both clean populations independently kept.",
+      "Same-record TX repairs and damage versus raw and DURA, TX/RX/day/RXday.",
+      "Original source IQ/STFT/continuous-F0 metrics; actual wall time and peak memory separately from performance."
+    ],
+    "dimensions": [
+      "original Main two populations and seven views",
+      "TX/RX/day/RXday",
+      "single model seed",
+      "matched raw and DURA"
+    ],
+    "prediction_ref": "Original Main cross_rx126000 + cross_both42000, seven fixed views, raw and DURA reused by exact physical order.",
+    "scorer_ref": "OriginalindependentCUDAemptyCPUscore/sharedscore.lock;whole row/allMainpredictionsbeforetruth. No targetfeedback."
+  },
+  "rows": [
+    {
+      "row_id": "TF_PacketInverseFilter",
+      "method": "position_wise_widely_linear_iq_inverse",
+      "purpose": "Evaluate independent full-packet architecture with distinct front, center and tail operators.",
+      "config_ref": "experiments.pamf_phase3_restoration.packet_inverse_filter_trial.py::configuration",
+      "resolved_config_ref": "runs/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01/rows/TF_PacketInverseFilter/training/config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Scratch model2026092701. R07 source builder2026101901, receiver2026101911, augmentation2026101912. Original source order2026110102.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": "AdamW(weight_decay1e-4,clip1)",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "One AdamW stage, 30 epochs, 7410 updates, batch256, full 63000 per epoch. Original PairedObjective and continuous F0 capped cosine.",
+      "output_root": "runs/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01/rows/TF_PacketInverseFilter",
+      "log_path": "runs/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01/logs/TF_PacketInverseFilter-train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.packet_inverse_filter_trial train --root /home/szu2070436088/2510044040/CV-SincNet --commit 92d0dcbe0f25927d5a1cf4d98669ded45a410a5b --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --arm TF_PacketInverseFilter",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/training/config.json",
+        "rows/<arm>/training/smoke.json",
+        "rows/<arm>/training/smoke_E0.pt PRIVATE",
+        "rows/<arm>/training/data_schedule.npz PRIVATE",
+        "rows/<arm>/training/training.jsonl PRIVATE",
+        "rows/<arm>/training/final.pt PRIVATE",
+        "rows/<arm>/training/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE",
+        "rows/TF_PacketInverseFilter/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+      ]
+    }
+  ],
+  "notes": [
+    "V480 frozen attribution suggests tail sensitivity in urban and front contribution in low suburban. No V training, fitting or checkpoint selection.",
+    "Fixed region overlap and separate heads; conjugate taps and residual computed from each current received IQ.",
+    "No DURA or previous learned G initialization. Original raw and DURA comparisons remain exactly bound to original Tri-SIG-TIME SSL.",
+    "Real source smoke is first training action after GPU admission. Automatic full prediction and independent scoring; no target feedback."
+  ],
+  "record_type": "managed_run",
+  "registered_at": "2026-11-07T03:30:07+00:00"
+}
