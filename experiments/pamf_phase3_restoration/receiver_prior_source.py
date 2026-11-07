@@ -23,7 +23,7 @@ from .source_receiver_priors import fit_prior, select_receivers
 from .structured_noise_source import known_parameters
 
 
-RUN = '20261107-diagnostic-Restore-receiver-prior-sourceV-s2026092701-r01'
+RUN = '20261107-diagnostic-Restore-receiver-prior-sourceV-s2026092701-r02'
 METHODS = ('full_blind', 'same_blind', 'other_blind', 'full_known', 'same_known', 'other_known')
 
 
@@ -85,7 +85,7 @@ def worker(args, out):
                 result[method+'__prediction'] = np.empty(len(take),np.int64)
                 result[method+'__nmse'] = np.empty(len(take),np.float64)
             for rx in sorted(priors):
-                indices = np.flatnonzero(ref['rx']==rx)
+                indices = np.flatnonzero(ref['rx']==rx).tolist()
                 for start in range(0,len(indices),32):
                     index = indices[start:start+32]
                     v = {key:value[index] for key,value in trace.items()}
