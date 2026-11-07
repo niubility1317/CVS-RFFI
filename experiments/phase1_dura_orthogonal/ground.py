@@ -31,6 +31,7 @@ from experiments.phase1_dura_orthogonal.direct_circular_recovery import DirectCi
 from experiments.phase1_dura_orthogonal.dura_circular_recovery import DuraCircularRecovery
 from experiments.phase1_dura_orthogonal.lag_context_dura import LagContextDura, LAGS as LAG_CONTEXT_LAGS
 from experiments.phase1_dura_orthogonal.large_context_dura import LargeContextDura, WIDTH as LARGE_WIDTH, LAYERS as LARGE_LAYERS, HEADS as LARGE_HEADS, TOKENS as LARGE_TOKENS, SCALE as LARGE_SCALE
+from experiments.phase1_dura_orthogonal.large_direct_timefreq import LargeDirectTimeFreq, WIDTH as DIRECT_TF_WIDTH, LAYERS as DIRECT_TF_LAYERS, HEADS as DIRECT_TF_HEADS, TOKENS as DIRECT_TF_TOKENS, SCALE as DIRECT_TF_SCALE
 from experiments.phase1_dura_orthogonal.conditional_phase_dura import ConditionalPhaseDura
 from experiments.phase1_dura_orthogonal.conditional_phase_moments import ConditionalPhaseMomentsDura
 from experiments.phase1_dura_orthogonal.phase_supervised_dura import PhaseSupervisedDura, PHASE_WEIGHT
@@ -55,10 +56,10 @@ def load_fixed(root, source, commit):
     folder = root/'runs'/source
     summary = core.read(folder/'source_summary.json')
     architecture = summary.get('architecture', 'orthogonal')
-    if architecture not in ('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir', 'dura_frequency_regression', 'dura_reversible', 'conditional_iq_flow', 'direct_iq_flow', 'direct_phase_recovery', 'direct_circular_recovery', 'dura_envelope', 'dura_quartic', 'antithetic_iq_flow', 'phase_equivariant_dura', 'dura_circular_recovery', 'conditional_phase_dura', 'conditional_phase_moments', 'phase_supervised_dura', 'lag_context_dura', 'large_context_dura'):
+    if architecture not in ('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir', 'dura_frequency_regression', 'dura_reversible', 'conditional_iq_flow', 'direct_iq_flow', 'direct_phase_recovery', 'direct_circular_recovery', 'dura_envelope', 'dura_quartic', 'antithetic_iq_flow', 'phase_equivariant_dura', 'dura_circular_recovery', 'conditional_phase_dura', 'conditional_phase_moments', 'phase_supervised_dura', 'lag_context_dura', 'large_context_dura', 'large_direct_timefreq'):
         raise ValueError('Registered recovery architecture required')
-    epochs = 0 if architecture == 'dura_frequency_regression' else DUAL_DOMAIN_EPOCHS if architecture in ('dual_domain', 'adaptive_inverse', 'timevarying_inverse', 'direct_spectral_student', 'direct_iq_flow', 'direct_phase_recovery', 'direct_circular_recovery', 'large_context_dura') else TRAIN_EPOCHS
-    fit_size = WIDE_FIT_SIZE if summary.get('objective') in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_direct_phase', 'wide_direct_circular', 'wide_conditional_flow_t0', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_antithetic_flow', 'wide_phase_equivariant_guard', 'wide_dura_circular', 'wide_conditional_phase', 'wide_conditional_phase_moments', 'wide_supervised_phase', 'wide_lag_context', 'wide_large_context', 'wide_conditional_adversary') else FIT_SIZE
+    epochs = 0 if architecture == 'dura_frequency_regression' else DUAL_DOMAIN_EPOCHS if architecture in ('dual_domain', 'adaptive_inverse', 'timevarying_inverse', 'direct_spectral_student', 'direct_iq_flow', 'direct_phase_recovery', 'direct_circular_recovery', 'large_context_dura', 'large_direct_timefreq') else TRAIN_EPOCHS
+    fit_size = WIDE_FIT_SIZE if summary.get('objective') in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_direct_phase', 'wide_direct_circular', 'wide_conditional_flow_t0', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_antithetic_flow', 'wide_phase_equivariant_guard', 'wide_dura_circular', 'wide_conditional_phase', 'wide_conditional_phase_moments', 'wide_supervised_phase', 'wide_lag_context', 'wide_large_context', 'wide_large_direct_timefreq', 'wide_conditional_adversary') else FIT_SIZE
     expected = dict(status='SOURCE_TRAINED', commit=commit, fit_ids=fit_size, epochs=epochs,
                     TX_labels_read=0, F_weights_read=0, F_outputs_read=0, V_reads=0,
                     target_reads=0, DURA_frozen=True)
@@ -70,6 +71,13 @@ def load_fixed(root, source, commit):
             any(state.get(k) != v for k, v in expected.items() if k not in ('status', 'fit_ids', 'epochs'))):
         raise ValueError('Fixed correction checkpoint and provenance required')
     objective = state.get('objective', 'iq')
+    if (architecture == 'large_direct_timefreq') != (objective == 'wide_large_direct_timefreq') or (architecture == 'large_direct_timefreq' and any(
+            obj.get('source_fit_size') != WIDE_FIT_SIZE or obj.get('DURA_training_reads') != 0
+            or obj.get('inference_received_iq_only') is not True or obj.get('direct_timefreq_width') != DIRECT_TF_WIDTH
+            or obj.get('direct_timefreq_layers') != DIRECT_TF_LAYERS or obj.get('direct_timefreq_heads') != DIRECT_TF_HEADS
+            or obj.get('direct_timefreq_tokens_per_domain') != DIRECT_TF_TOKENS
+            or obj.get('direct_timefreq_scale') != DIRECT_TF_SCALE for obj in (summary, state))):
+        raise ValueError('Matching source-only direct time-frequency recovery required')
     if (architecture == 'direct_phase_recovery') != (objective == 'wide_direct_phase') or (architecture == 'direct_phase_recovery' and any(
             obj.get('source_fit_size') != WIDE_FIT_SIZE or obj.get('DURA_training_reads') != 0
             or obj.get('inference_received_iq_only') is not True
@@ -142,7 +150,7 @@ def load_fixed(root, source, commit):
             or obj.get('source_critic_updates_per_generator') != 1 or obj.get('critic_inference_reads') != 0
             for obj in (summary, state))):
         raise ValueError('Matching source-only conditional adversary training required')
-    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_direct_phase', 'wide_direct_circular', 'wide_conditional_flow_t0', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_antithetic_flow', 'wide_phase_equivariant_guard', 'wide_dura_circular', 'wide_conditional_phase', 'wide_conditional_phase_moments', 'wide_supervised_phase', 'wide_lag_context', 'wide_large_context', 'wide_conditional_adversary') or summary.get('objective', 'iq') != objective:
+    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_direct_phase', 'wide_direct_circular', 'wide_conditional_flow_t0', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_antithetic_flow', 'wide_phase_equivariant_guard', 'wide_dura_circular', 'wide_conditional_phase', 'wide_conditional_phase_moments', 'wide_supervised_phase', 'wide_lag_context', 'wide_large_context', 'wide_large_direct_timefreq', 'wide_conditional_adversary') or summary.get('objective', 'iq') != objective:
         raise ValueError('Source objective must match the fixed checkpoint')
     if objective == 'crossview_guard' and any(
             obj.get('source_views_per_record') != 3 or obj.get('crossview_weight') != .1
@@ -345,6 +353,8 @@ def load_fixed(root, source, commit):
         model = DirectPhaseRecovery(width=state['width'])
     elif architecture == 'direct_circular_recovery':
         model = DirectCircularRecovery(width=state['width'])
+    elif architecture == 'large_direct_timefreq':
+        model = LargeDirectTimeFreq(width=state['width'])
     elif architecture == 'adaptive_inverse':
         model = AdaptiveInverseRecovery(width=state['width'], taps=33)
     elif architecture == 'timevarying_inverse':
