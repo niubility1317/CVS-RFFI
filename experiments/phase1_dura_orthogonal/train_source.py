@@ -27,6 +27,7 @@ from experiments.phase1_dura_orthogonal.direct_student_fir import DirectStudentF
 from experiments.phase1_dura_orthogonal.reversible_dura import ReversibleDura
 from experiments.phase1_dura_orthogonal.conditional_iq_flow import ConditionalIQFlow, DirectIQFlow, flow_matching_loss, sample_flow_times
 from experiments.phase1_dura_orthogonal.fused_gradient_guard import checked_backward_and_clip
+from experiments.phase1_dura_orthogonal.balanced_spectral_loss import balanced_spectral_loss, WEIGHT as BALANCED_SPECTRAL_WEIGHT, ENERGY_FLOOR_FRACTION, BANDS
 from experiments.phase1_dura_orthogonal.source_multiview_teacher import build_teacher
 from experiments.phase1_dura_orthogonal.dura_experts import DuraExperts, EXPERT_COUNT
 from experiments.phase1_dura_orthogonal.expert_teacher_contract import (
@@ -285,7 +286,7 @@ def main():
     parser.add_argument('--source-context-cache', type=Path)
     parser.add_argument('--save-source-context-cache', type=Path)
     parser.add_argument('--deterministic', action='store_true')
-    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0'), default='iq')
+    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0'), default='iq')
     parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir', 'dura_reversible', 'conditional_iq_flow', 'direct_iq_flow'), default='orthogonal')
     args = parser.parse_args()
     if (args.architecture == 'direct_student_fir') != (args.objective == 'wide_student_fir_guard'):
@@ -317,13 +318,15 @@ def main():
         raise ValueError('Direct spectral student requires fixed source-IQ distillation')
     if args.architecture == 'dura_timevarying' and args.objective != 'dura_guard':
         raise ValueError('DURA time-varying correction requires DURA guard')
-    if args.architecture == 'dura_multiscale' and args.objective not in ('dura_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard'):
+    if args.architecture == 'dura_multiscale' and args.objective not in ('dura_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_balanced_spectral_guard'):
         raise ValueError('Multiscale correction requires a registered DURA guard')
     if args.objective == 'wide_expert_distill' and (args.architecture != 'dura_multiscale' or
             (not args.smoke and not args.source_context_cache)):
         raise ValueError('Expert distillation requires a multiscale student and fixed source context')
     if args.objective == 'wide_source_guard' and args.architecture != 'dura_multiscale':
         raise ValueError('Wide source guard requires multiscale DURA correction')
+    if args.objective == 'wide_balanced_spectral_guard' and args.architecture != 'dura_multiscale':
+        raise ValueError('Balanced spectral guard requires multiscale DURA correction')
     if args.objective in ('wide_masked_prior_guard', 'wide_temporal_prior_guard') and args.architecture != 'dura_multiscale':
         raise ValueError('Masked prior guard requires multiscale DURA correction')
     if (args.architecture == 'dura_experts') != (args.objective == 'wide_mixture_guard'):
@@ -359,7 +362,7 @@ def main():
     torch.backends.cudnn.allow_tf32 = False
     torch.manual_seed(2026110612)
     ids, rx, scene, _, source_received, source_clean = source_inputs(args.root)
-    fit_size = WIDE_FIT_SIZE if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0') else FIT_SIZE
+    fit_size = WIDE_FIT_SIZE if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0') else FIT_SIZE
     _, fresh, clean, fit = load_source_training(args.root, ids, fit_size=fit_size)
     if args.smoke:
         fit = fit[:args.smoke_fit]
@@ -511,7 +514,7 @@ def main():
             else:
                 output = model(x, anchor, direction, variance, validate=False)
             base_objective = ('distill_iq' if args.objective in ('wide_source_distill', 'wide_multiview_distill') else
-                              'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'wide_source_guard', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_reversible_guard') else args.objective)
+                              'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'wide_source_guard', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard') else args.objective)
             if args.objective in ('wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0'):
                 times = (sample_flow_times(len(x), flow_generator, origin_fraction=.5)
                          if args.objective == 'wide_conditional_flow_t0'
@@ -528,6 +531,8 @@ def main():
                 loss = loss + .5*posterior_teacher_loss(output, fields[5], y)
             if args.objective == 'wide_expert_distill':
                 loss = loss + .5*posterior_teacher_loss(output, fields[5], y)
+            if args.objective == 'wide_balanced_spectral_guard':
+                loss = loss + BALANCED_SPECTRAL_WEIGHT*balanced_spectral_loss(output, y)
             if masked_prior is not None:
                 starts = torch.randint(1, 224, (len(output),), generator=mask_generator).to(device)
                 prior_loss = (temporal_prior_loss(masked_prior, output, y, starts) if args.objective == 'wide_temporal_prior_guard'
@@ -622,7 +627,10 @@ def main():
                             source_ssl_teacher_commit=SSL_TEACHER_COMMIT, source_ssl_aux_trainable=False)
     cache_metadata = dict(source_context_cache=str(args.source_context_cache) if args.source_context_cache else None,
                           deterministic_algorithms=args.deterministic)
-    if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0'):
+    if args.objective == 'wide_balanced_spectral_guard':
+        cache_metadata.update(source_spectral_weight=BALANCED_SPECTRAL_WEIGHT,
+            source_spectral_floor_fraction=ENERGY_FLOOR_FRACTION, source_spectral_bands=[list(b) for b in BANDS])
+    if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0'):
         cache_metadata.update(source_fit_size=WIDE_FIT_SIZE,
                               source_context_cache_written=str(args.save_source_context_cache) if args.save_source_context_cache else None)
     if args.objective == 'wide_conditional_flow':
