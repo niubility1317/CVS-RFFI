@@ -1,0 +1,5865 @@
+{
+  "status": "VERIFIED_SOURCE_TRUTH_LAST",
+  "code_commit": "e2fcce191514f0b00aead4214781428fe415c1ac",
+  "pid": 4037029,
+  "source_V_records": 480,
+  "prediction_cells": 56,
+  "source_TX_scored": 480,
+  "target_reads": 0,
+  "results": [
+    {
+      "scene": "clean",
+      "method": "same_blind",
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_clean_correct": 474,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 1.7945691361849943e-05,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "clean",
+      "method": "mean_other_blind",
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_clean_correct": 474,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 1.7945840757723392e-05,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "clean",
+      "method": "covariance_other_blind",
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_clean_correct": 474,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 1.794389568203769e-05,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "clean",
+      "method": "other_blind",
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_clean_correct": 474,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 1.794356909764853e-05,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "clean",
+      "method": "same_known",
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_clean_correct": 474,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 8.634417826535835e-14,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "clean",
+      "method": "mean_other_known",
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_clean_correct": 474,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 1.0668251741817569e-12,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "clean",
+      "method": "covariance_other_known",
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_clean_correct": 474,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 2.0883795702023586e-13,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "clean",
+      "method": "other_known",
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_clean_correct": 474,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 2.2020180251240946e-13,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_high",
+      "method": "same_blind",
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_clean_correct": 473,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 0.006060270818973853,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_high",
+      "method": "mean_other_blind",
+      "correct": 473,
+      "clean_correct": 474,
+      "retained_clean_correct": 472,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 1,
+      "mean_nmse": 0.010824064853174302,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_high",
+      "method": "covariance_other_blind",
+      "correct": 470,
+      "clean_correct": 474,
+      "retained_clean_correct": 470,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 4,
+      "mean_nmse": 0.013491035873691241,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_high",
+      "method": "other_blind",
+      "correct": 471,
+      "clean_correct": 474,
+      "retained_clean_correct": 470,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 3,
+      "mean_nmse": 0.01408655833923452,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_high",
+      "method": "same_known",
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_clean_correct": 474,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 0.0036958116159136506,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_high",
+      "method": "mean_other_known",
+      "correct": 473,
+      "clean_correct": 474,
+      "retained_clean_correct": 472,
+      "repairs_vs_same": 1,
+      "damage_vs_same": 2,
+      "mean_nmse": 0.008407266657256211,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_high",
+      "method": "covariance_other_known",
+      "correct": 470,
+      "clean_correct": 474,
+      "retained_clean_correct": 470,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 4,
+      "mean_nmse": 0.011038473121637556,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_high",
+      "method": "other_known",
+      "correct": 471,
+      "clean_correct": 474,
+      "retained_clean_correct": 471,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 3,
+      "mean_nmse": 0.0116259882972372,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid",
+      "method": "same_blind",
+      "correct": 469,
+      "clean_correct": 474,
+      "retained_clean_correct": 469,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 0.010130314807611285,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid",
+      "method": "mean_other_blind",
+      "correct": 468,
+      "clean_correct": 474,
+      "retained_clean_correct": 468,
+      "repairs_vs_same": 2,
+      "damage_vs_same": 3,
+      "mean_nmse": 0.018380960891469535,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid",
+      "method": "covariance_other_blind",
+      "correct": 462,
+      "clean_correct": 474,
+      "retained_clean_correct": 462,
+      "repairs_vs_same": 2,
+      "damage_vs_same": 9,
+      "mean_nmse": 0.021750032885271744,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid",
+      "method": "other_blind",
+      "correct": 466,
+      "clean_correct": 474,
+      "retained_clean_correct": 466,
+      "repairs_vs_same": 3,
+      "damage_vs_same": 6,
+      "mean_nmse": 0.022750747503111294,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid",
+      "method": "same_known",
+      "correct": 470,
+      "clean_correct": 474,
+      "retained_clean_correct": 470,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 0.006833294275141574,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid",
+      "method": "mean_other_known",
+      "correct": 468,
+      "clean_correct": 474,
+      "retained_clean_correct": 468,
+      "repairs_vs_same": 1,
+      "damage_vs_same": 3,
+      "mean_nmse": 0.01499842909591583,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid",
+      "method": "covariance_other_known",
+      "correct": 464,
+      "clean_correct": 474,
+      "retained_clean_correct": 464,
+      "repairs_vs_same": 1,
+      "damage_vs_same": 7,
+      "mean_nmse": 0.018274658632435603,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid",
+      "method": "other_known",
+      "correct": 466,
+      "clean_correct": 474,
+      "retained_clean_correct": 466,
+      "repairs_vs_same": 1,
+      "damage_vs_same": 5,
+      "mean_nmse": 0.019255975423826992,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "same_blind",
+      "correct": 469,
+      "clean_correct": 474,
+      "retained_clean_correct": 468,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 0.012789044422000491,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "mean_other_blind",
+      "correct": 468,
+      "clean_correct": 474,
+      "retained_clean_correct": 467,
+      "repairs_vs_same": 1,
+      "damage_vs_same": 2,
+      "mean_nmse": 0.023706480810748568,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "covariance_other_blind",
+      "correct": 458,
+      "clean_correct": 474,
+      "retained_clean_correct": 457,
+      "repairs_vs_same": 1,
+      "damage_vs_same": 12,
+      "mean_nmse": 0.027483813559714083,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "other_blind",
+      "correct": 457,
+      "clean_correct": 474,
+      "retained_clean_correct": 456,
+      "repairs_vs_same": 1,
+      "damage_vs_same": 13,
+      "mean_nmse": 0.028698804792171965,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "same_known",
+      "correct": 468,
+      "clean_correct": 474,
+      "retained_clean_correct": 467,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 0.00968623226423612,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "mean_other_known",
+      "correct": 467,
+      "clean_correct": 474,
+      "retained_clean_correct": 467,
+      "repairs_vs_same": 2,
+      "damage_vs_same": 3,
+      "mean_nmse": 0.020785931725792278,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "covariance_other_known",
+      "correct": 457,
+      "clean_correct": 474,
+      "retained_clean_correct": 456,
+      "repairs_vs_same": 1,
+      "damage_vs_same": 12,
+      "mean_nmse": 0.024294027825817466,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "other_known",
+      "correct": 458,
+      "clean_correct": 474,
+      "retained_clean_correct": 457,
+      "repairs_vs_same": 1,
+      "damage_vs_same": 11,
+      "mean_nmse": 0.02550882223683099,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        }
+      ]
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "same_blind",
+      "correct": 471,
+      "clean_correct": 474,
+      "retained_clean_correct": 470,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 0.010002246528226047,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "mean_other_blind",
+      "correct": 470,
+      "clean_correct": 474,
+      "retained_clean_correct": 469,
+      "repairs_vs_same": 1,
+      "damage_vs_same": 2,
+      "mean_nmse": 0.017311601408194596,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "covariance_other_blind",
+      "correct": 463,
+      "clean_correct": 474,
+      "retained_clean_correct": 462,
+      "repairs_vs_same": 1,
+      "damage_vs_same": 9,
+      "mean_nmse": 0.020056562277507812,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        }
+      ]
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "other_blind",
+      "correct": 460,
+      "clean_correct": 474,
+      "retained_clean_correct": 459,
+      "repairs_vs_same": 1,
+      "damage_vs_same": 12,
+      "mean_nmse": 0.020706619303746267,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        }
+      ]
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "same_known",
+      "correct": 472,
+      "clean_correct": 474,
+      "retained_clean_correct": 471,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 0.006516496311754357,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "mean_other_known",
+      "correct": 472,
+      "clean_correct": 474,
+      "retained_clean_correct": 471,
+      "repairs_vs_same": 1,
+      "damage_vs_same": 1,
+      "mean_nmse": 0.013819732160967154,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "covariance_other_known",
+      "correct": 464,
+      "clean_correct": 474,
+      "retained_clean_correct": 463,
+      "repairs_vs_same": 1,
+      "damage_vs_same": 9,
+      "mean_nmse": 0.016437236518928935,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "other_known",
+      "correct": 461,
+      "clean_correct": 474,
+      "retained_clean_correct": 460,
+      "repairs_vs_same": 1,
+      "damage_vs_same": 12,
+      "mean_nmse": 0.017069014190686477,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "same_blind",
+      "correct": 450,
+      "clean_correct": 474,
+      "retained_clean_correct": 449,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 0.036359239153171075,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "mean_other_blind",
+      "correct": 452,
+      "clean_correct": 474,
+      "retained_clean_correct": 451,
+      "repairs_vs_same": 6,
+      "damage_vs_same": 4,
+      "mean_nmse": 0.05806040950022483,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "covariance_other_blind",
+      "correct": 414,
+      "clean_correct": 474,
+      "retained_clean_correct": 413,
+      "repairs_vs_same": 8,
+      "damage_vs_same": 44,
+      "mean_nmse": 0.06037235049152514,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 26
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 26
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 26
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 26
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 26
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 26
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "other_blind",
+      "correct": 398,
+      "clean_correct": 474,
+      "retained_clean_correct": 397,
+      "repairs_vs_same": 6,
+      "damage_vs_same": 58,
+      "mean_nmse": 0.06303688651241827,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 25
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 22
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 25
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 24
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 26
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "same_known",
+      "correct": 461,
+      "clean_correct": 474,
+      "retained_clean_correct": 460,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 0.02090113811094246,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "mean_other_known",
+      "correct": 454,
+      "clean_correct": 474,
+      "retained_clean_correct": 453,
+      "repairs_vs_same": 4,
+      "damage_vs_same": 11,
+      "mean_nmse": 0.04220540081538881,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 26
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 32
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "covariance_other_known",
+      "correct": 434,
+      "clean_correct": 474,
+      "retained_clean_correct": 431,
+      "repairs_vs_same": 8,
+      "damage_vs_same": 35,
+      "mean_nmse": 0.048655725853071395,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 26
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 25
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 27
+        }
+      ]
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "other_known",
+      "correct": 419,
+      "clean_correct": 474,
+      "retained_clean_correct": 417,
+      "repairs_vs_same": 4,
+      "damage_vs_same": 46,
+      "mean_nmse": 0.05103212672887215,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 26
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 26
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 26
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 27
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "same_blind",
+      "correct": 412,
+      "clean_correct": 474,
+      "retained_clean_correct": 412,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 0.04199045115650127,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 25
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 24
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 26
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "mean_other_blind",
+      "correct": 408,
+      "clean_correct": 474,
+      "retained_clean_correct": 408,
+      "repairs_vs_same": 13,
+      "damage_vs_same": 17,
+      "mean_nmse": 0.07465052631353804,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 26
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 25
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 25
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 26
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 25
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 27
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "covariance_other_blind",
+      "correct": 364,
+      "clean_correct": 474,
+      "retained_clean_correct": 363,
+      "repairs_vs_same": 16,
+      "damage_vs_same": 64,
+      "mean_nmse": 0.08095624082488939,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 23
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 25
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 21
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 24
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 26
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 23
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 21
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 25
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 23
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 21
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 26
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 25
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "other_blind",
+      "correct": 341,
+      "clean_correct": 474,
+      "retained_clean_correct": 340,
+      "repairs_vs_same": 13,
+      "damage_vs_same": 84,
+      "mean_nmse": 0.08512740270380163,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 22
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 20
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 23
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 26
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 18
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 23
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 25
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 25
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 21
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 22
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 22
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 20
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 23
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 24
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "same_known",
+      "correct": 434,
+      "clean_correct": 474,
+      "retained_clean_correct": 434,
+      "repairs_vs_same": 0,
+      "damage_vs_same": 0,
+      "mean_nmse": 0.034104709123979164,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 23
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 31
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "mean_other_known",
+      "correct": 425,
+      "clean_correct": 474,
+      "retained_clean_correct": 425,
+      "repairs_vs_same": 6,
+      "damage_vs_same": 15,
+      "mean_nmse": 0.06690728692968453,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 23
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 26
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 30
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "covariance_other_known",
+      "correct": 394,
+      "clean_correct": 474,
+      "retained_clean_correct": 393,
+      "repairs_vs_same": 13,
+      "damage_vs_same": 53,
+      "mean_nmse": 0.07239699492056388,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 26
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 21
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 25
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 25
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 25
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 26
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 25
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 25
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 28
+        }
+      ]
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "other_known",
+      "correct": 379,
+      "clean_correct": 474,
+      "retained_clean_correct": 378,
+      "repairs_vs_same": 15,
+      "damage_vs_same": 70,
+      "mean_nmse": 0.07639614736350873,
+      "source_RX_day": [
+        {
+          "rx": 1,
+          "day": 1,
+          "count": 32,
+          "correct": 25
+        },
+        {
+          "rx": 1,
+          "day": 2,
+          "count": 32,
+          "correct": 24
+        },
+        {
+          "rx": 1,
+          "day": 3,
+          "count": 32,
+          "correct": 29
+        },
+        {
+          "rx": 3,
+          "day": 1,
+          "count": 32,
+          "correct": 25
+        },
+        {
+          "rx": 3,
+          "day": 2,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 3,
+          "day": 3,
+          "count": 32,
+          "correct": 21
+        },
+        {
+          "rx": 4,
+          "day": 1,
+          "count": 32,
+          "correct": 25
+        },
+        {
+          "rx": 4,
+          "day": 2,
+          "count": 32,
+          "correct": 28
+        },
+        {
+          "rx": 4,
+          "day": 3,
+          "count": 32,
+          "correct": 27
+        },
+        {
+          "rx": 6,
+          "day": 1,
+          "count": 32,
+          "correct": 25
+        },
+        {
+          "rx": 6,
+          "day": 2,
+          "count": 32,
+          "correct": 24
+        },
+        {
+          "rx": 6,
+          "day": 3,
+          "count": 32,
+          "correct": 24
+        },
+        {
+          "rx": 8,
+          "day": 1,
+          "count": 32,
+          "correct": 23
+        },
+        {
+          "rx": 8,
+          "day": 2,
+          "count": 32,
+          "correct": 25
+        },
+        {
+          "rx": 8,
+          "day": 3,
+          "count": 32,
+          "correct": 27
+        }
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "scene": "clean",
+      "condition": "blind",
+      "mean_only_net": 0,
+      "covariance_only_net": 0,
+      "both_net": 0,
+      "interaction": 0,
+      "average_mean_net": 0.0,
+      "average_covariance_net": 0.0
+    },
+    {
+      "scene": "clean",
+      "condition": "known",
+      "mean_only_net": 0,
+      "covariance_only_net": 0,
+      "both_net": 0,
+      "interaction": 0,
+      "average_mean_net": 0.0,
+      "average_covariance_net": 0.0
+    },
+    {
+      "scene": "practical_high",
+      "condition": "blind",
+      "mean_only_net": -1,
+      "covariance_only_net": -4,
+      "both_net": -3,
+      "interaction": 2,
+      "average_mean_net": 0.0,
+      "average_covariance_net": -3.0
+    },
+    {
+      "scene": "practical_high",
+      "condition": "known",
+      "mean_only_net": -1,
+      "covariance_only_net": -4,
+      "both_net": -3,
+      "interaction": 2,
+      "average_mean_net": 0.0,
+      "average_covariance_net": -3.0
+    },
+    {
+      "scene": "practical_mid",
+      "condition": "blind",
+      "mean_only_net": -1,
+      "covariance_only_net": -7,
+      "both_net": -3,
+      "interaction": 5,
+      "average_mean_net": 1.5,
+      "average_covariance_net": -4.5
+    },
+    {
+      "scene": "practical_mid",
+      "condition": "known",
+      "mean_only_net": -2,
+      "covariance_only_net": -6,
+      "both_net": -4,
+      "interaction": 4,
+      "average_mean_net": 0.0,
+      "average_covariance_net": -4.0
+    },
+    {
+      "scene": "practical_low_suburban",
+      "condition": "blind",
+      "mean_only_net": -1,
+      "covariance_only_net": -11,
+      "both_net": -12,
+      "interaction": 0,
+      "average_mean_net": -1.0,
+      "average_covariance_net": -11.0
+    },
+    {
+      "scene": "practical_low_suburban",
+      "condition": "known",
+      "mean_only_net": -1,
+      "covariance_only_net": -11,
+      "both_net": -10,
+      "interaction": 2,
+      "average_mean_net": 0.0,
+      "average_covariance_net": -10.0
+    },
+    {
+      "scene": "practical_high_urban",
+      "condition": "blind",
+      "mean_only_net": -1,
+      "covariance_only_net": -8,
+      "both_net": -11,
+      "interaction": -2,
+      "average_mean_net": -2.0,
+      "average_covariance_net": -9.0
+    },
+    {
+      "scene": "practical_high_urban",
+      "condition": "known",
+      "mean_only_net": 0,
+      "covariance_only_net": -8,
+      "both_net": -11,
+      "interaction": -3,
+      "average_mean_net": -1.5,
+      "average_covariance_net": -9.5
+    },
+    {
+      "scene": "practical_mid_urban",
+      "condition": "blind",
+      "mean_only_net": 2,
+      "covariance_only_net": -36,
+      "both_net": -52,
+      "interaction": -18,
+      "average_mean_net": -7.0,
+      "average_covariance_net": -45.0
+    },
+    {
+      "scene": "practical_mid_urban",
+      "condition": "known",
+      "mean_only_net": -7,
+      "covariance_only_net": -27,
+      "both_net": -42,
+      "interaction": -8,
+      "average_mean_net": -11.0,
+      "average_covariance_net": -31.0
+    },
+    {
+      "scene": "practical_low_urban",
+      "condition": "blind",
+      "mean_only_net": -4,
+      "covariance_only_net": -48,
+      "both_net": -71,
+      "interaction": -19,
+      "average_mean_net": -13.5,
+      "average_covariance_net": -57.5
+    },
+    {
+      "scene": "practical_low_urban",
+      "condition": "known",
+      "mean_only_net": -9,
+      "covariance_only_net": -40,
+      "both_net": -55,
+      "interaction": -6,
+      "average_mean_net": -12.0,
+      "average_covariance_net": -43.0
+    }
+  ]
+}
