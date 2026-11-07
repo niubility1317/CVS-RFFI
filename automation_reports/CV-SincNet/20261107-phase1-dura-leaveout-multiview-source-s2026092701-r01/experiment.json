@@ -1,0 +1,146 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-dura-leaveout-multiview-source-s2026092701-r01",
+  "group_id": "phase1-dura-leaveout-multiview",
+  "display_name": "DURA 留一视图教师 GPU 训练",
+  "description": "冻结 DURA，多尺度修正训练时使用同一源记录另外两视图的 DURA 输出均值作为教师。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "dura",
+    "F-free-training",
+    "leaveout-multiview",
+    "deterministic-gpu"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests continued novel and DURA-combinable Phase1 restoration research, F-free/TX-label-free source training, automatic seven-view test and truth-last score.",
+  "code": {
+    "commit": "5216721044462a50482982fe1e10f73f1eb4a15f",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU4 deterministic FP32 TF32off source training; CPU ground",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-dura-leaveout-multiview-source-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "Paired source received/clean and frozen DURA output/physical variance",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "32768 source fit IDs randomly sampled without replacement after excluding RX4/6/8 day3 and the 672 fixed source pilot IDs",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "672 fixed previously explored source L_s/U_s IQ, not independent of DURA",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed source epoch21/22/23 views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "F-free and TX-label-free paired source IQ training, source IQ diagnostics; no target score"
+  },
+  "checkpoint": {
+    "initialization": "Frozen DURA and newly initialized 117062-parameter zero-head multiscale correction",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "DURA source-only; source context exact ordered 32768 fit IDs and no F/TX/V/target",
+    "provenance_verdict": "DURA and fixed source IQ context have no target ancestry",
+    "selection_rule": "Final epoch five fixed in advance; no target or pilot-based selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "GPU4; wait for >=4096 MiB free and fewer than 3 total compute apps; preserve other jobs",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-dura-leaveout-multiview-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-dura-leaveout-multiview-source-s2026092701-r01-queue.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261107-phase1-dura-leaveout-multiview-source-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.gpu_capacity_queue --root /home/szu2070436088/2510044040/CV-SincNet --source 20261107-phase1-dura-leaveout-multiview-source-s2026092701-r01 --ground 20261107-phase1-dura-leaveout-multiview-ground-test-s2026092701-r01 --commit 5216721044462a50482982fe1e10f73f1eb4a15f --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-wide-source-source-s2026092701-r01/source_context.pt --gpu 4 --objective wide_multiview_dura_guard --architecture dura_multiscale",
+    "stop_rule": "Stop exact owner only for source contract/role mismatch, nonfinite computation, incorrect checkpoint, target leakage or unrecoverable technical failure. Preserve all artifacts."
+  },
+  "expected_artifacts": [
+    "final.pt: fixed final epoch",
+    "source_summary.json: source IQ only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source paired IQ NMSE",
+      "training IQ loss"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "dura-leaveout-multiview-final",
+      "method": "DURA correction with the other two source-view DURA outputs as teacher",
+      "purpose": "Source IQ guard plus cross-view teacher consistency",
+      "config_ref": "experiments/phase1_dura_orthogonal/train_source.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Correction initialization 2026110612; source fit ID selection 2026110611; training order 2026110613; evaluation 2026092701",
+      "k": null,
+      "scenario": "fixed source cache epochs 21, 22, 23",
+      "optimizer": "AdamW weight decay 0.001",
+      "lr": 0.0003,
+      "epochs": 5,
+      "fl_rounds": null,
+      "budget_ref": "117062 trainable correction parameters plus frozen DURA; 32768 source IDs x 3 views x 5 epochs, batch32",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-dura-leaveout-multiview-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-dura-leaveout-multiview-source-s2026092701-r01-queue.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.gpu_capacity_queue --root /home/szu2070436088/2510044040/CV-SincNet --source 20261107-phase1-dura-leaveout-multiview-source-s2026092701-r01 --ground 20261107-phase1-dura-leaveout-multiview-ground-test-s2026092701-r01 --commit 5216721044462a50482982fe1e10f73f1eb4a15f --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-wide-source-source-s2026092701-r01/source_context.pt --gpu 4 --objective wide_multiview_dura_guard --architecture dura_multiscale",
+      "expected_artifacts": [
+        "final.pt: fixed final epoch",
+        "source_summary.json: source IQ only"
+      ]
+    }
+  ],
+  "notes": [
+    "Frozen DURA plus multiscale correction; source loss = original DURA guard + 0.5 teacher IQ error.",
+    "For each source view the teacher averages DURA outputs of the other two aligned views of the same source record; no independence assumed.",
+    "Fit 32768 permitted source IDs with three simulated views and fixed five epochs; no F/TX/V/target reads.",
+    "Inference uses only current IQ and DURA, never other views or the training teacher.",
+    "Frozen candidate must complete 168000 x seven Phase1 Main split views with fixed Tri-SIG-TIME SSL and independent truth-last scoring.",
+    "GPU4 capacity queue preserves all other owners; source IQ teacher gains do not imply identity improvement."
+  ],
+  "registered_at": "2026-11-07T00:24:03+00:00"
+}

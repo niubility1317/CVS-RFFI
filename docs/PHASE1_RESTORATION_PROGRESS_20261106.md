@@ -375,3 +375,7 @@ N607 GPU 2 对 32768 源 ID × 三视图完成固定四组复岭解析拟合，�
 ## DURA 四频段平衡候选
 
 冻结 DURA，训练 117062 参数多尺度修正，在源 IQ 与原保护损失上增加权重 0.25 的四频段归一化误差；每频段分母不低于源 clean 总能量的 1%。动机是检验低能量频段可能被普通 IQ 误差弱化，而非假设该频段必然携带身份。固定 32768 合法源 ID × 三视图、五轮，不读 F/TX/V/目标；真实 DURA 的本机 GPU 六步检查与针对性测试通过。N607 GPU 0 唯一 owner 队列已启动，正在等待容量；正式训练未开始，七景预测和独立 truth-last 随训练完成自动执行，目前没有识别效果。[实验登记](../automation_reports/CV-SincNet/20261107-phase1-dura-balanced-spectral-source-s2026092701-r01/experiment.json)。
+
+## DURA 留一视图教师候选
+
+冻结 DURA 和训练样本的三个模拟视图，以同一物理源记录的另外两个 DURA 输出均值，约束当前视图的多尺度修正；源损失为原 IQ 保护加 0.5 倍教师 IQ 误差。推理仅使用当前 received 和 DURA，不读取其他视图。固定 32768 源 ID × 三视图、五轮，不读 F/TX/V/目标；真实 DURA 本机 GPU 六步检查和视图对齐等八项测试通过。N607 GPU 4 队列已启动等待容量，训练尚未开始；固定七景、Tri-SIG-TIME SSL 和独立 truth-last 已登记，没有正式识别结果。[实验登记](../automation_reports/CV-SincNet/20261107-phase1-dura-leaveout-multiview-source-s2026092701-r01/experiment.json)。
