@@ -25,9 +25,12 @@ def main():
     p.add_argument('--commit', required=True)
     p.add_argument('--cache', type=Path, required=True)
     p.add_argument('--gpu', type=int, required=True)
+    p.add_argument('--fast-flow-guards', action='store_true')
     p.add_argument('--objective', required=True, choices=('wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0'))
     p.add_argument('--architecture', choices=('dura_multiscale', 'direct_student_fir', 'dura_frequency_regression', 'dura_reversible', 'direct_spectral_student', 'conditional_iq_flow', 'direct_iq_flow'), default='dura_multiscale')
     args = p.parse_args()
+    if args.fast_flow_guards and (args.objective, args.architecture) != ('wide_conditional_flow', 'conditional_iq_flow'):
+        raise ValueError('Fast flow guards require the validated conditional flow')
     if (args.objective, args.architecture) not in (('wide_temporal_prior_guard', 'dura_multiscale'), ('wide_student_fir_guard', 'direct_student_fir'), ('wide_frequency_regression', 'dura_frequency_regression'), ('wide_reversible_guard', 'dura_reversible'), ('wide_balanced_spectral_guard', 'dura_multiscale'), ('wide_multiview_dura_guard', 'dura_multiscale'), ('wide_counterfactual_guard', 'dura_multiscale'), ('wide_instance_contrast', 'dura_multiscale'), ('wide_multiview_distill', 'direct_spectral_student'), ('wide_conditional_flow', 'conditional_iq_flow'), ('wide_direct_flow', 'direct_iq_flow'), ('wide_conditional_flow_t0', 'conditional_iq_flow')):
         raise ValueError('Registered objective and architecture pair required')
     runs = args.root/'runs'
@@ -53,6 +56,8 @@ def main():
            '--root', str(args.root), '--source', args.source, '--ground', args.ground, '--commit', args.commit,
            '--device', 'cuda:0', '--prepare-batch', '32', '--objective', args.objective, '--deterministic',
            '--source-context-cache', str(args.cache), '--architecture', args.architecture]
+    if args.fast_flow_guards:
+        cmd.append('--fast-flow-guards')
     child = subprocess.Popen(cmd, cwd=Path.cwd(), env=env, stdin=subprocess.DEVNULL)
     print('GPU_QUEUE_CONTROLLER_STARTED', child.pid, flush=True)
     code = child.wait()
