@@ -1,0 +1,21 @@
+{
+  "status": "VERIFIED_TECHNICAL_FAILURE",
+  "code_commit": "0fe090fe3dcf8175f377f6d10eb928b2da21efeb",
+  "pid": 4017714,
+  "worker_exit": 1,
+  "process_terminal": true,
+  "smoke": {
+    "status": "PASS",
+    "real_L_s": 2,
+    "all_ten_fitted_priors": true,
+    "actual_BF": true,
+    "actual_F0": true,
+    "target_inputs": 0
+  },
+  "failure": "Torch2.1 NumPy2 direct numpy.int64 advanced index",
+  "bounded_reproduction": true,
+  "list_index_PASS": true,
+  "predicted_scene_files": 0,
+  "source_truth_read": false,
+  "target_reads": 0
+}
