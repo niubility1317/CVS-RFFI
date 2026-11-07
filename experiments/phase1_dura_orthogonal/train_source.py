@@ -286,12 +286,15 @@ def main():
     parser.add_argument('--device', default='cuda:0')
     parser.add_argument('--prepare-batch', type=int, default=32)
     parser.add_argument('--smoke-fit', type=int, default=64)
+    parser.add_argument('--fast-flow-guards', action='store_true')
     parser.add_argument('--source-context-cache', type=Path)
     parser.add_argument('--save-source-context-cache', type=Path)
     parser.add_argument('--deterministic', action='store_true')
     parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0'), default='iq')
     parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir', 'dura_reversible', 'conditional_iq_flow', 'direct_iq_flow'), default='orthogonal')
     args = parser.parse_args()
+    if args.fast_flow_guards and args.objective != 'wide_conditional_flow':
+        raise ValueError('The fast flow guards are validated only for wide_conditional_flow')
     if (args.architecture == 'direct_student_fir') != (args.objective == 'wide_student_fir_guard'):
         raise ValueError('FIR refinement requires its registered source objective')
     if args.objective == 'wide_student_fir_guard' and not args.smoke and not args.source_context_cache:
@@ -537,7 +540,8 @@ def main():
                          else torch.rand((len(x),), generator=flow_generator)).to(device)
                 flow_anchor, flow_direction, flow_variance = (model.direct_context(x)
                     if args.objective == 'wide_direct_flow' else (anchor, direction, variance))
-                loss = flow_matching_loss(model, x, flow_anchor, flow_direction, flow_variance, y, times)
+                loss = flow_matching_loss(model, x, flow_anchor, flow_direction, flow_variance, y, times,
+                                          validate_time=not args.fast_flow_guards)
             elif args.objective == 'wide_student_fir_guard':
                 loss = source_loss(output, fields[5], y, objective='dura_guard') + .5*posterior_teacher_loss(output, anchor, y)
             else:
@@ -578,12 +582,15 @@ def main():
             if args.objective in ACTION_OBJECTIVES:
                 loss = loss + .01*action_loss
                 action_total += action_loss.detach()*len(indices)
-            fused_guard = args.architecture == 'dura_multiscale' and args.objective == 'wide_masked_prior_guard'
+            fused_guard = ((args.architecture == 'dura_multiscale' and args.objective == 'wide_masked_prior_guard')
+                           or args.fast_flow_guards)
             if not fused_guard and not torch.isfinite(loss):
                 raise FloatingPointError('Finite IQ-only source loss required')
             optimizer.zero_grad(set_to_none=True)
             if fused_guard:
-                checked_backward_and_clip(loss, model, (model.wave.weight, model.filter_head.weight))
+                required = ((model.out.weight,) if args.fast_flow_guards
+                            else (model.wave.weight, model.filter_head.weight))
+                checked_backward_and_clip(loss, model, required)
             else:
                 loss.backward()
             if args.architecture == 'dura_internal':
@@ -603,7 +610,7 @@ def main():
                        for layer in model.layers):
                     raise ValueError('Each reversible coupling head requires finite gradients')
             elif args.architecture in ('conditional_iq_flow', 'direct_iq_flow'):
-                if model.out.weight.grad is None or not torch.isfinite(model.out.weight.grad).all():
+                if not args.fast_flow_guards and (model.out.weight.grad is None or not torch.isfinite(model.out.weight.grad).all()):
                     raise ValueError('Conditional flow output requires finite gradients')
             elif args.architecture == 'dura_experts':
                 if any(head.weight.grad is None or not torch.isfinite(head.weight.grad).all()
@@ -664,7 +671,8 @@ def main():
         cache_metadata.update(source_fit_size=WIDE_FIT_SIZE,
                               source_context_cache_written=str(args.save_source_context_cache) if args.save_source_context_cache else None)
     if args.objective == 'wide_conditional_flow':
-        cache_metadata.update(flow_steps=4, flow_time_seed=2026110713, flow_path='anchor_to_clean_linear')
+        cache_metadata.update(flow_steps=4, flow_time_seed=2026110713, flow_path='anchor_to_clean_linear',
+                              fast_flow_guards=args.fast_flow_guards)
     if args.objective == 'wide_conditional_flow_t0':
         cache_metadata.update(flow_steps=4, flow_time_seed=2026110713, flow_path='anchor_to_clean_linear',
                               flow_origin_fraction=.5)
