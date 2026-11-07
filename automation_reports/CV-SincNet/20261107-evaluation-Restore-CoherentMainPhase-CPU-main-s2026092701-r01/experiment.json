@@ -1,0 +1,197 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-evaluation-Restore-CoherentMainPhase-CPU-main-s2026092701-r01",
+  "group_id": "original-Main-frozen-coherent-main-phase-cpu",
+  "display_name": "主路相位全协方差加权，冻结 CPU 推理 Main 七景",
+  "description": "原 BF E30，只新增源诊断中固定全协方差均值估相路径。N607 两线程 CPU 独立推理，原 Main 双总体七景和冻结 F0。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "original-ground-TriSIGSSL-Main",
+    "frozen-inference-only",
+    "CPU2",
+    "automatic-Main7"
+  ],
+  "comparison_group_id": "original-Main-fixed-BF-main-only-coherent-phase",
+  "parent_run_ids": [
+    "20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01",
+    "20261107-diagnostic-Restore-coherent-main-phase-sourceV-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Latestuser:performanceprimary/efficiencysecondary/groundTriSIGTIME SSL sameFrawclean6eachgap<=3pp+cleanpreserved;majorGarchitecturefreedom/scratchsingle30/sourceFfeatureguidanceallowed/originalLsUs-only/OEonlyfrozendiagnostic. DefaultDURAunchanged.",
+  "code": {
+    "commit": "831cef3e9947f8f85b70902cb95c2d67feef5ad9",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Torch2.1/NumPy2 CPU2 nice10, FP32 IQ/F0 and FP64 observation factors/Cholesky.",
+    "cwd": "releases/20261107-evaluation-Restore-CoherentMainPhase-CPU-main-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "Original cached Main received IQ, two populations and seven views. Original BF E30 and source mean/covariance buffers.",
+    "contract_ref": "OriginalTriSSLsource_contract/392005/rolecounts6300-56700-27000;R07train63000sameIDset androles/RX/day byID",
+    "physical_ids_ref": "R07train/physical_ids.npy roles.npy;validatedoriginalsourceLUcache IDs foralignment;officialMain source-disjoint viewindexes",
+    "label_map_ref": "Gtrainnone;frozenF0originalsixclassorder,truthonly originalCPUscorerafterallrow42cells fixed",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse existing VALIDATED_ONCE R07/G10 minimal handles; exact original BF source data and original Main paired IDs.",
+    "support_query_ref": "No targettraining/support/PCD/unknownrole. OriginalMain two populations168000,all7perrowfixedbefore independenttruth.",
+    "leo_config_ref": "R07sourcecache20trainrealizations/2026101912augmentation;officialMain frozen7observations",
+    "actual_training_labels": "No training. Original L_s2 no-query smoke and L_s128 throughput check before any Main observation handle.",
+    "augmentation": "No new observations. All original Main views and original ground reader fixed."
+  },
+  "permissions": {
+    "regime": "original-Main-frozen-inference-no-query-fit",
+    "query_use": "Prediction-only on original Main; no target fit/state changes, no simulator truth, F0 original default head. Independent scorer only after both tasks.",
+    "external_method_exception": null,
+    "claim_scope": "Separate frozen main-only full-covariance variant, CPU numerical runtime. Same locked benchmark, original raw/DURA/BF decisions from GPU caches."
+  },
+  "checkpoint": {
+    "initialization": "Strict original frozen BF final30 and original original-F0 default head. No weight or fitted state changes.",
+    "sources": [
+      "FROZEN_BF 20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01/bf29554a03e28a012eaaa134f5c7b3f7856f2268 E30/7410 original L_s/U_s only",
+      "FROZEN_F0 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d original Tri-SIG-TIME SSL E50/11100",
+      "METHOD_ONLY 20261107-diagnostic-Restore-coherent-main-phase-sourceV-s2026092701-r01/4d8e67aac5534649646d1b5954bdebfa0de7b9bd main_mean_full exact source implementation",
+      "FIXED_BASELINES 20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01/original Main raw, DURA v1.0 and BF decisions exact aligned"
+    ],
+    "contract_check_ref": "Strict parent BF contract, actual commit/final30/config/state; original F0 identity and original Main prediction order.",
+    "provenance_verdict": "Original source-only E30 BF/F0 and fixed source moments; no new training or derived target state.",
+    "selection_rule": "One fixed full-covariance mean phase arm and seven views, both original populations. Source timings do not choose models. No target-driven reranking."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/coherent-main-phase-CPU-Main",
+    "gpu_policy": "Zero GPU processes. One N607 CPU predictor with two threads at nice10; separate CPU truth scorer under shared score.lock.",
+    "remote_run_root": "runs/20261107-evaluation-Restore-CoherentMainPhase-CPU-main-s2026092701-r01",
+    "remote_log_root": "runs/20261107-evaluation-Restore-CoherentMainPhase-CPU-main-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-evaluation-Restore-CoherentMainPhase-CPU-main-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.coherent_main_eval run --root /home/szu2070436088/2510044040/CV-SincNet --commit 831cef3e9947f8f85b70902cb95c2d67feef5ad9 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-evaluation-Restore-CoherentMainPhase-CPU-main-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Wrong source/target identity, nonfinite, failed source smoke, model change or failed child: preserve complete views and diagnostics without retry."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-predict.json",
+    "terminal-predict.json",
+    "submitted-score.json",
+    "terminal-score.json",
+    "rows/<arm>/prediction/smoke.json",
+    "rows/<arm>/prediction/source_throughput.json",
+    "rows/<arm>/prediction/<task>/<view>.npy PRIVATE",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/predict.log PRIVATE",
+    "logs/score.log PRIVATE"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Original Main combined and separate cross_rx126000/cross_both42000, six practical gaps <=3pp and separate clean preservation.",
+      "Original F0 true TX accuracy, macro F1, TX/RX/day and same-record repairs/damage vs raw, DURA and original BF.",
+      "CPU source throughput and measured Main scene/total wall time. No new optimization or learned weights."
+    ],
+    "dimensions": [
+      "original Main cross_rx 126000 and cross_both 42000",
+      "seven views",
+      "TX/RX/day/RXday"
+    ],
+    "prediction_ref": "Exactly 168000 × 7 fresh CPU candidate predictions, three aligned immutable GPU baseline caches reused.",
+    "scorer_ref": "Originalpamf_repl_view_shuffle.evaluation.score independentCUDAemptyCPU/allreadoutsalltasks preflightbeforetruth;sharedoriginalTFscore.lock;no sourcecandidatefeedback"
+  },
+  "rows": [
+    {
+      "row_id": "TF_CovarianceCoherentMainFull",
+      "method": "frozen_BF_full_coherent_main_phase_CPU",
+      "purpose": "Obtain full Main evidence for fixed main-only full-covariance readout while existing GPU work waits.",
+      "config_ref": "experiments.pamf_phase3_restoration.coherent_main_eval.py::FrozenCoherentMain",
+      "resolved_config_ref": "runs/20261107-evaluation-Restore-CoherentMainPhase-CPU-main-s2026092701-r01/rows/TF_CovarianceCoherentMainFull/prediction/cross_rx/complete.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "No new RNG. Original BF/F0 and original Main observations.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "No new training; frozen BF30/7410. CPU2 B32; two FP64 Cholesky per record, 256 fixed angle hypotheses and 15° prior.",
+      "output_root": "runs/20261107-evaluation-Restore-CoherentMainPhase-CPU-main-s2026092701-r01/rows/TF_CovarianceCoherentMainFull",
+      "log_path": "runs/20261107-evaluation-Restore-CoherentMainPhase-CPU-main-s2026092701-r01/logs/TF_CovarianceCoherentMainFull-train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.coherent_main_eval predict --root /home/szu2070436088/2510044040/CV-SincNet --commit 831cef3e9947f8f85b70902cb95c2d67feef5ad9 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-evaluation-Restore-CoherentMainPhase-CPU-main-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --arm TF_CovarianceCoherentMainFull --task cross_rx",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-predict.json",
+        "terminal-predict.json",
+        "submitted-score.json",
+        "terminal-score.json",
+        "rows/<arm>/prediction/smoke.json",
+        "rows/<arm>/prediction/source_throughput.json",
+        "rows/<arm>/prediction/<task>/<view>.npy PRIVATE",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/predict.log PRIVATE",
+        "logs/score.log PRIVATE"
+      ]
+    }
+  ],
+  "notes": [
+    "Independent variant from whole-action phase marginalization already queued. No changes to existing runs or GPU allocation.",
+    "Main-only rotates estimated main, keeps estimated image, then applies original covariance posterior. Exact same source-validated mathematics.",
+    "CPU result compared with exact frozen GPU baseline decisions; CPU/GPU numeric identity is not assumed.",
+    "F0 and BF state snapshots remain unchanged. Truth scorer is a distinct process after all 14 view/task cells.",
+    "Source diagnostic lower urban 414/480 with the same model, versus original BF 401, known main phase 422 and raw clean 474. Not Main proof."
+  ],
+  "record_type": "diagnostic",
+  "registered_at": "2026-11-07T02:22:53+00:00"
+}
