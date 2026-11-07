@@ -43,14 +43,16 @@ def factory(arm):configuration(arm);return scratch_covariance_detail(2026092701)
 
 
 def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.bind_prior,smoke_check=None,
-          training_readout=None,smoke_gradient_check=None):
+          training_readout=None,smoke_gradient_check=None,training_trace=False,training_posterior_multiplier=1):
     started=time.perf_counter();c=validate_source(read(args.inputs));old,roles=trial.source(args)
     cfg=config_for(args.arm);G=build(args.arm);prior_identity=bind_prior(args.root,G.physical);G=G.to('cuda:0')
     F,identity=load_F0(c,'cuda:0');trial.main_eval.valid_identity(identity);scale=load_scale(args.root).to('cuda:0')
     frozen={k:v.detach().clone() for k,v in F.state_dict().items()};objective=PairedObjective().to('cuda:0')
-    def detail_pass(received,clean,target,source_indices,epoch):
+    def detail_pass(received,clean,target,source_indices,epoch,source_trace=None):
         if training_readout is not None:
-            return training_readout(G,F,received,clean,target,scale,objective,source_indices=source_indices,epoch=epoch)
+            kwargs=dict(source_indices=source_indices,epoch=epoch)
+            if training_trace:kwargs['source_trace']=source_trace
+            return training_readout(G,F,received,clean,target,scale,objective,**kwargs)
         restored,aux=G(received,return_aux=True)
         loss,terms=detail_objective(F,restored,clean,target,scale,objective)
         return restored,aux,loss,terms
@@ -81,7 +83,8 @@ def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.b
         torch.testing.assert_close(restored,aux['base_iq'],rtol=0,atol=0)
         deployed_smoke=restored
         extra_smoke=smoke_check(G,first['received'][take],restored) if smoke_check else {}
-    restored,aux,detail,unused=detail_pass(first['received'][take],clean[take],target2,take,0);detail.mean().backward()
+    smoke_trace={k:v[take] for k,v in first.items()} if training_trace else None
+    restored,aux,detail,unused=detail_pass(first['received'][take],clean[take],target2,take,0,smoke_trace);detail.mean().backward()
     if any(p.grad is not None for p in G.physical.parameters()) or not G.detail.output.weight.grad.abs().sum()>0:raise ValueError('Detail loss must update detail only')
     if smoke_gradient_check is not None:extra_smoke.update(smoke_gradient_check(G))
     G.zero_grad(set_to_none=True)
@@ -93,7 +96,7 @@ def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.b
     if any(not torch.equal(v,G.state_dict()[k]) for k,v in before.items()):raise ValueError('No-update source smoke changedG')
     trial.save(out/'smoke_E0.pt',G,args.arm,args.commit,0);probe=trial.load(out/'smoke_E0.pt',args.arm,args.commit,'cuda:0',epoch=0)
     with torch.no_grad():torch.testing.assert_close(probe(first['received'][take]),deployed_smoke,rtol=0,atol=0)
-    del probe,first,before,restored,aux,detail,physical,target2,deployed_smoke
+    del probe,first,before,restored,aux,detail,physical,target2,deployed_smoke,smoke_trace
     write(out/'smoke.json',dict(status='PASS',source_rows=2,actual_original_F0=True,actual_full_posterior=True,detail_initial_zero=cfg.get('detail_initial_zero',True),
         detail_and_physical_gradient_isolation=True,strict_E0_reload=True,F0_frozen=True,optimizer_updates=0,TX_labels_read=0,V_reads=0,OE_reads=0,target_inputs=0,**extra_smoke))
     print('COVARIANCE_DETAIL_REAL_SOURCE_SMOKE_PASS',flush=True)
@@ -114,7 +117,8 @@ def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.b
                 step=0.
                 for start in range(0,len(take),32):
                     indices=torch.tensor(take[start:start+32].tolist(),device='cuda:0',dtype=torch.long)
-                    restored,aux,detail,detail_terms=detail_pass(v['received'][indices],clean[indices],targets[indices],indices,epoch)
+                    trace={k:value[indices] for k,value in v.items()} if training_trace else None
+                    restored,aux,detail,detail_terms=detail_pass(v['received'][indices],clean[indices],targets[indices],indices,epoch,trace)
                     physical,physical_terms=source_action_loss(aux,v['kernel'][indices],v['coefficients'][indices],v['variance'][indices])
                     scalar=(physical+detail).sum()/len(take)
                     if not torch.isfinite(scalar) or aux['relative_solve_residual'].max()>1e-8:raise ValueError('Nonfinite source objective or posterior failure;preserve')
@@ -128,7 +132,8 @@ def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.b
             if any(not torch.equal(value,G.physical.state_dict()[key]) for key,value in prior.items()):raise ValueError('Fixed source prior changed')
             check_F0_state(F,frozen);torch.cuda.synchronize();trial.save_recovery(out/'recovery',G,optimizer,args.arm,args.commit,epoch,update)
             row=dict(epoch=epoch,draw=number,updates=update,steps=247,count=63000,L_s=6300,U_s=56700,seconds=time.perf_counter()-begin,
-                last_learning_rate=learning_rate(update),microbatch=32,training_posterior_calls=1969,training_posterior_rows=63000,F0_training_forward_rows=63000,
+                last_learning_rate=learning_rate(update),microbatch=32,training_posterior_calls=1969*training_posterior_multiplier,training_posterior_rows=63000*training_posterior_multiplier,F0_training_forward_rows=63000,
+                source_counterfactual_rows=63000*(training_posterior_multiplier-1),
                 metrics={key:value/63000 for key,value in sums.items()},step_objective=step_sum/247,preclip_branch_norms={k:x/247 for k,x in norm_sums.items()})
             log.write(json.dumps(row,allow_nan=False)+'\n');print('COVARIANCE_DETAIL_EPOCH',args.arm,json.dumps(row),flush=True);del v
     if update!=7410:raise ValueError('Full single30 update budget required')
@@ -140,7 +145,8 @@ def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.b
         physical_parameters=sum(p.numel() for p in G.physical.parameters()),detail_parameters=sum(p.numel() for p in G.detail.parameters()),
         training_seconds=time.perf_counter()-train_start,worker_seconds=time.perf_counter()-started,peak_allocated_bytes=torch.cuda.max_memory_allocated(),
         G_initialization_checkpoint_loads=0,TX_labels_read=0,V_reads=0,OE_reads=0,target_training_reads=0,
-        checkpoint_selection='final30_only',model_state_F0_updates=0,training_stages=1,training_posterior_calls=59070,training_posterior_rows=1890000,
+        checkpoint_selection='final30_only',model_state_F0_updates=0,training_stages=1,training_posterior_calls=59070*training_posterior_multiplier,training_posterior_rows=1890000*training_posterior_multiplier,
+        source_counterfactual_rows=1890000*(training_posterior_multiplier-1),
         source_operator_full_matrix_supervision=True,source_prior_buffers_unchanged=True,source_actual_IQ_F0_guidance=cfg.get('source_actual_IQ_F0_guidance',True),feature_weight=.01,
         physical_detail_gradient_isolation=True,independent_branch_clipping=True))
 
