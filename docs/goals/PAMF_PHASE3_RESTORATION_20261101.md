@@ -684,3 +684,7 @@ VERIFIED / QUEUED。双向协方差版已发布N607；实际控制器PID/CWD/命
 VERIFIED：5/30轮、1235次更新、63000条唯一源记录完整曝光5次；累计315000次，其中L_s31500、U_s283500。E05与优化器有限、源先验不变、全部5轮源顺序为完整排列。物理估计误差下降，新增方差与梯度在E03至E05持续很小。实际平均739.993秒/轮；若均值保持，30轮训练约6.17小时，尚余约5.14小时，不含测试且共享负载可变。正式冻结仍为final30，尚无本版Main识别成绩。
 
 VERIFIED：独立读取clean.npy与practical_high.npy，每份126000条int64类别预测且范围0至5，累计固定252000条，完成2/14个原Main“人群×场景”单元。实际进程已进入practical_mid，尚未提交truth评分；新IQ/模型/truth读取均为0。其余场景继续，预测固定不等于已取得识别成绩。 [训练分析](../../automation_reports/CV-SincNet/20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r02/training_progress_E05.md)；[完整测试进度](../../automation_reports/CV-SincNet/20261107-evaluation-Restore-CoherentMainPhase-CPU-main-s2026092701-r01/report.md)。
+
+## 2026-11-07 C4 对照按原容量规则开始实际训练
+
+VERIFIED / RUNNING。原C4控制器已按原容量规则自动启动实际训练，未切换或重启。GPU6准入前已有2个计算进程、剩余20474 MiB，启动后总数3，符合其原上限。读回时该卡总数5，其中本目标两路恢复器均有实际GPU进程；当前ConditionedCovariance保持健康运行。PID/CWD/命令/CUDA UUID/实际GPU PID/日志增长已核实。真实源2、物理/细节梯度隔离、C4坐标检查、初始零细节、冻结F0和严格E0重载通过。E01独立状态检查确认全部63000源记录曝光（L_s6300/U_s56700）、247次AdamW更新、两个分支实际权重变化、模型/优化器有限和先验不变。首轮942.405秒，属于该时共享负载下的实际整轮耗时。30轮/7410总预算和final30后的原TriSIGTIME SSL Main双总体七景/独立truth-last保持。尚无本版正式识别成绩。 [运行与首轮证据](../../automation_reports/CV-SincNet/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01/report.md)
