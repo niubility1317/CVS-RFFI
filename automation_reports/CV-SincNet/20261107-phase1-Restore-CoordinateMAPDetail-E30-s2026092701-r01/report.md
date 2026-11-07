@@ -60,3 +60,7 @@ CoordinateMAPDetail：已核实 6/30轮、1482/7410次更新，累计378000次�
 已完成原30轮训练与cross_rx126000条×七景；剩余cross_both42000条×七景及独立score使用原科学release/commit，正常GPU3总数最多3个。仅在确认旧控制器CPU空CUDA、无子进程、剩余阶段从未启动时交接。原权重/完整预测/日志保留，不重新训练或预测已完成总体，不读取目标分数排队。
 
 控制器代码：`2d295adde7ef655368545d650551243a5430797b`；科学代码：`bc6bcac3bf8463fb3b2770a0ec2a6115ab322ae1`。命令：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.coordinate_remaining_dispatch --root /home/szu2070436088/2510044040/CV-SincNet --legacy-release /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01-release --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --commit 2d295adde7ef655368545d650551243a5430797b`。
+
+## 剩余预测已在 GPU3 实际运行
+
+VERIFIED / RUNNING。剩余 cross_both 预测已在正常 GPU3 实际运行，准入时已有 2 个进程、17128 MiB 可用显存，总上限 3 个。原科学代码、工作目录、模型与源检查保持，实际进程/GPU及42000条clean预测完成已独立核实。已完成的30轮训练和126000条×七景预测原样复用；仅退下本任务原排队空闲控制器，0重训、0重复预测。剩余全部预测固定后仍由原评分入口独立truth-last，尚无完整Main成绩。 [独立启动核验](resource_started_GPU3.json)

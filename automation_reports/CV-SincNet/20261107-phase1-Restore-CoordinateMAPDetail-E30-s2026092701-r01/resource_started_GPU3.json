@@ -1,0 +1,34 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "observed_at_unix": 1794067051.1864448,
+  "scientific_commit": "bc6bcac3bf8463fb3b2770a0ec2a6115ab322ae1",
+  "dispatch_commit": "2d295adde7ef655368545d650551243a5430797b",
+  "archive_SHA_match": true,
+  "remote_compile": true,
+  "old_queued_controller_retired": true,
+  "original_completed_stages_preserved": [
+    "train",
+    "cross_rx"
+  ],
+  "source_or_prediction_restarts": 0,
+  "actual_PID_CWD_command_GPU_and_prediction_progress_verified": true,
+  "GPU": 3,
+  "total_process_cap": 3,
+  "admission_existing_processes": 2,
+  "admission_free_MiB": 17128,
+  "original_source_smoke": {
+    "status": "PASS",
+    "source_rows": 2,
+    "TX_labels_read": 0,
+    "target_inputs": 0,
+    "model_updates": 0
+  },
+  "completed_source_epochs": 30,
+  "completed_source_updates": 7410,
+  "completed_original_cross_rx_records_per_view": 126000,
+  "completed_original_cross_rx_views": 7,
+  "observed_cross_both_clean_records": 42000,
+  "remaining_matrix": "Original cross_both 42000 x seven views, then independent full-Main truth-last scoring.",
+  "Main_results_available": false,
+  "goal_complete": false
+}
