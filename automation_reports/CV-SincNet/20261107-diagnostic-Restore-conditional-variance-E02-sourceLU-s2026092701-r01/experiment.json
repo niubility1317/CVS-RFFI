@@ -1,0 +1,161 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-diagnostic-Restore-conditional-variance-E02-sourceLU-s2026092701-r01",
+  "group_id": "frozen-source-training-variance-sensitivity",
+  "display_name": "第二轮条件方差分支源训练样本敏感度诊断",
+  "description": "固定E02、原训练draw02、5源RX×7scene各前2条，比较当前/零/初始/0.1方差比例，检查损失和局部梯度。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-LU-only",
+    "frozen-E02",
+    "no-training",
+    "no-selection",
+    "CPU-only",
+    "continuous-F0-loss"
+  ],
+  "comparison_group_id": "E02-fixed-source-variance-probes",
+  "parent_run_ids": [
+    "20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User comprehensive source-only recovery research. Legal original L_s/U_s paired IQ, frozen original F0 continuous features allowed. No TX/V/OE/target, no parameter update or checkpoint selection.",
+  "code": {
+    "commit": "055f41652902c577bc848a4a8364f4aa7a487b6c",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Torch2.1 CPU2 nice10 CUDA empty, FP64 posterior and FP32 F0.",
+    "cwd": "releases/20261107-diagnostic-Restore-conditional-variance-E02-sourceLU-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original R07 legal63000 L_s/U_s source training records, fixed draw02.",
+    "representation": "Paired source clean/received2x256. Frozen E02 estimates Action/noise; exact global and existing other-RX source moments.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "First2 original indices per five source RX and seven draw02 scenes,70 unique training records. Actual indices/RX/role/scene saved privately.",
+    "label_map_ref": "No labels read or scored.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original six sourceTX; no trueTX read.",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse VALIDATED_ONCE original source handles/capsule/split and exact original F0. No data rehash.",
+    "support_query_ref": "No support, query, V, OE or target. Post-fit training-pair diagnostic only.",
+    "leo_config_ref": "Original R07 draw02 unchanged; no new simulator draws.",
+    "actual_training_labels": "No model training; no trueTX read even in L_s. Source RX selects fixed diagnostic moment bank.",
+    "augmentation": "None regenerated; reuse exact draw02 IQ.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "frozen-post-fit-source-training-mechanism",
+    "query_use": "Only original legal source L_s/U_s paired IQ, known source RX/scene metadata and frozen F0 continuous feature loss. No class head or TX/V/OE/target.",
+    "external_method_exception": null,
+    "claim_scope": "Local derivative and fixed objective response on70 post-fit training examples. No held-out accuracy, optimality, dead-branch proof, Main ceiling or checkpoint selection."
+  },
+  "checkpoint": {
+    "initialization": "Exact own source-only E02/494 frozen diagnostic state, no optimizer load or model updates.",
+    "sources": [
+      "FROZEN_DIAGNOSTIC_G 20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r02/ebb279ff3ad430e6a8242686d816976339444588 E02/494, unchanged source contract.",
+      "FROZEN_F0 original Tri-SIG-TIME SSL 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d E50/11100.",
+      "SOURCE_STATS_ONLY 20261107-diagnostic-Restore-receiver-prior-sourceV-s2026092701-r02/1a9aafda7cf9cf5ee1d293a5e782ef57e27eb5ad existing L_s/U_s moments; zero V/OE/target fit."
+    ],
+    "contract_check_ref": "Exact E02 run/config/code/epoch/updates checked; same R07/capsule/split and original F0 as active training.",
+    "provenance_verdict": "Own immutable E02 from original-source-only scratch training. This diagnostic does not select or publish a checkpoint.",
+    "selection_rule": "Current active training keeps final30 only. Diagnostic four variance choices×two prior modes×seven source scenes all fixed and all reported."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/E02-source-variance-diagnostic",
+    "gpu_policy": "One CPU2 nice10 worker, CUDA empty. No truth scorer or GPU process.",
+    "remote_run_root": "runs/20261107-diagnostic-Restore-conditional-variance-E02-sourceLU-s2026092701-r01",
+    "remote_log_root": "logs/20261107-diagnostic-Restore-conditional-variance-E02-sourceLU-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-diagnostic-Restore-conditional-variance-E02-sourceLU-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.conditioned_variance_source --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-diagnostic-Restore-conditional-variance-E02-sourceLU-s2026092701-r01-release/inputs.json --commit 055f41652902c577bc848a4a8364f4aa7a487b6c",
+    "stop_rule": "Wrong source/model/release identity, collision, missing RX/scene, nonfinite objective/derivative, residual>1e-8, source smoke/state mutation or worker failure: preserve, inspect; no automatic retry."
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "runtime_observation.json",
+    "reference.npz PRIVATE",
+    "records.json PRIVATE",
+    "results.json",
+    "complete.json",
+    "logs/terminal.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Actual source IQNMSE+.05STFT+.01F0 feature objective in all four fixed conditions.",
+      "At zero added variance: coordinate and uniform direction derivatives; at current logits: local raw derivatives, sigmoid slope and logit range."
+    ],
+    "dimensions": [
+      "70 post-fit training examples:5RX×7scenes×2",
+      "global/other-RX source prior",
+      "learned/zero/initial0.00693147/moderate0.1 fixed fractions"
+    ],
+    "prediction_ref": "560 diagnostic posterior/F0 rows plus source2 smoke; no default head or classification predictions.",
+    "scorer_ref": "No TX truth. Independently inspect all56 aggregate cells and recorded per-example objectives/derivatives after completion."
+  },
+  "rows": [
+    {
+      "row_id": "fixed_E02_source_variance_sensitivity",
+      "method": "fixed_source_variance_direction_probe",
+      "purpose": "Distinguish loss response near zero variance from softplus local-gradient attenuation without changing healthy training.",
+      "config_ref": "experiments.pamf_phase3_restoration.conditioned_variance_source.py::CASES",
+      "resolved_config_ref": "runs/20261107-diagnostic-Restore-conditional-variance-E02-sourceLU-s2026092701-r01/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No new stochastic draws. Deterministic first2 per RX/scene. Existing source model and prior-statistic seeds unchanged.",
+      "k": null,
+      "scenario": "Original source training draw02,70 fixed examples.",
+      "optimizer": "NONE",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "70 fixed source records×2prior modes×4conditions, zero parameter updates, CPU2.",
+      "output_root": "runs/20261107-diagnostic-Restore-conditional-variance-E02-sourceLU-s2026092701-r01",
+      "log_path": "logs/20261107-diagnostic-Restore-conditional-variance-E02-sourceLU-s2026092701-r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.conditioned_variance_source --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-diagnostic-Restore-conditional-variance-E02-sourceLU-s2026092701-r01-release/inputs.json --commit 055f41652902c577bc848a4a8364f4aa7a487b6c",
+      "expected_artifacts": [
+        "smoke.json",
+        "runtime_observation.json",
+        "reference.npz PRIVATE",
+        "records.json PRIVATE",
+        "results.json",
+        "complete.json",
+        "logs/terminal.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Active GPU6 single30 is not changed, interrupted or selected by this diagnostic.",
+    "E02 is read as a fixed diagnostic state only, not an initialization, selected deployment checkpoint or early stop.",
+    "The four fixed fractions are mechanism probes, not a sweep used to tune or select a candidate.",
+    "70 post-fit source records do not measure generalization, TX identification or Main recoverability."
+  ],
+  "registered_at": "2026-11-07T05:23:13+00:00"
+}
