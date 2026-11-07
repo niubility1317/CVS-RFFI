@@ -37,3 +37,9 @@ VERIFIED / QUEUED。控制器 PID 3845271 在线，实际工作目录、命令�
 资源控制器代码 `5ba8f9b2649e81efd58d5fd8597dbb97f09c4dea`，预测与评分仍执行原 `d17c50dceaba5aed58c9eeaafc433b0a5fda5a20`。已冻结的相位对照没有新训练，取消其等待C4最后GPU阶段的资源依赖，改用GPU3原总数最多3个、剩余至少12000 MiB的准入。保留原run/root/launch及所有产物，仅在独立核对原控制器完整身份、CUDA为空、无子进程、无已提交GPU阶段后交接该控制器。原模型/输入/参数/两总体七景/控制组/先预测后独立truth评分完全保持。新控制器一个GPU预测子进程逐阶段运行，评分独立CPU且使用原共享锁。原run里真实cross_both终态继续服务已有后继任务，不伪造阶段完成或复制其他run的预测。
 
 命令：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.phase_only_resource_dispatch --root /home/szu2070436088/2510044040/CV-SincNet --legacy-release /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01-release --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --commit 5ba8f9b2649e81efd58d5fd8597dbb97f09c4dea`。CWD：`/home/szu2070436088/2510044040/CV-SincNet/releases/20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01-GPU3-dispatch-release`。预期新增resource_controller.json，原stage submitted/terminal、原row完整预测与结果。实际source2模型检查仍在每个总体预测首步；5项针对性测试和一次资源范围P0/P1通过。技术失败保留，不自动重跑或改动其他健康任务。
+
+## GPU3 实际预测和原路径检查通过
+
+VERIFIED / RUNNING。GPU3原准入已有2个计算进程、剩余19873 MiB，符合总数最多3个和至少12000 MiB条件。精确核实后仅交接旧CUDA空、无GPU阶段的本run控制器，旧控制器已终止；原launch.json和输出保持。新调度器 `5ba8f9b2649e81efd58d5fd8597dbb97f09c4dea` 已启动一个实际GPU预测进程，预测和后续评分从原release执行 `d17c50dceaba5aed58c9eeaafc433b0a5fda5a20`，真实原BF/F0/两条L_s和相位路径等价检查通过，日志已增长。固定的原Main双总体七景继续，全部预测后才独立truth-last；当前尚无正式成绩。既有后继队列仍读取本run真实GPU阶段终态，不伪造完成。
+
+[资源交接与真实模型证据](resource_launch_evidence.json)

@@ -712,3 +712,11 @@ CoordinateMAPDetail：已核实 6/30轮、1482/7410次更新，累计378000次�
 SignedCovariance：已核实 1/30轮、247/7410次更新，累计63000次源曝光（L_s 6300、U_s 56700），在线冻结F0连续特征前向63000条。全部已完成轮次的源顺序均为63000条完整排列，保存模型/优化器有限、两分支和输出头实际更新，源先验固定。 首轮负系数比例0.995937，平均绝对变化0.692812，softsign映射平均斜率0.143544。这是源训练记录，不能据此确定Main收益。
 
 [新候选与实际源检查](../../automation_reports/CV-SincNet/20261107-phase1-Restore-CoupledCovariance-E30-s2026092701-r01/report.md)。性能仍以原Tri-SIG-TIME SSL Main六景各距raw clean不超过3个百分点为准，尚未达成，默认DURA保持。
+
+## 2026-11-07 冻结相位对照提前实际预测，耦合版已完整训练3轮
+
+VERIFIED / RUNNING。GPU3原准入已有2个计算进程、剩余19873 MiB，符合总数最多3个和至少12000 MiB条件。精确核实后仅交接旧CUDA空、无GPU阶段的本run控制器，旧控制器已终止；原launch.json和输出保持。新调度器 `5ba8f9b2649e81efd58d5fd8597dbb97f09c4dea` 已启动一个实际GPU预测进程，预测和后续评分从原release执行 `d17c50dceaba5aed58c9eeaafc433b0a5fda5a20`，真实原BF/F0/两条L_s和相位路径等价检查通过，日志已增长。固定的原Main双总体七景继续，全部预测后才独立truth-last；当前尚无正式成绩。既有后继队列仍读取本run真实GPU阶段终态，不伪造完成。
+
+VERIFIED：耦合协方差版已完成3/30轮、741/7410次更新，原63000条源记录完整曝光3次，累计189000次，其中L_s18900、U_s170100；冻结F0连续特征在线前向189000条。逐一核实全部3轮日志/源顺序排列，E03保存模型与优化器有限、AdamW步数741，两个分支和输出头确实更新，原mean/C/modes缓冲不变。方向耦合RMS在三轮均非零，正对角映射平均斜率约0.35至0.71，未出现正方差版那种近零增量/梯度现象。以上仅说明该分支已参与学习，不能当作Main识别收益。
+
+[正式对照和交接证据](../../automation_reports/CV-SincNet/20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01/report.md)；[耦合版完整训练分析](../../automation_reports/CV-SincNet/20261107-phase1-Restore-CoupledCovariance-E30-s2026092701-r01/training_progress_E03.md)。六景距raw clean不超过3个百分点的主目标仍未达成，默认DURA保持。
