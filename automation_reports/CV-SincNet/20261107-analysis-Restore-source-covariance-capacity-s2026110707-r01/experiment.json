@@ -1,0 +1,159 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-analysis-Restore-source-covariance-capacity-s2026110707-r01",
+  "group_id": "source-covariance-representation-capacity",
+  "display_name": "源接收机协方差差异的固定基表达能力",
+  "description": "只读取既有源矩，分析top64独立缩放、全512独立缩放、top64耦合和当前有界signed64的Frobenius表达能力。",
+  "kind": "analysis",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-statistics-only",
+    "no-IQ",
+    "no-labels",
+    "no-model-checkpoints",
+    "CPU-only",
+    "representation-capacity"
+  ],
+  "comparison_group_id": "same-source-moments-diagonal-vs-coupled-r64",
+  "parent_run_ids": [
+    "20261107-diagnostic-Restore-receiver-prior-sourceV-s2026092701-r02",
+    "20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User comprehensive recovery analysis and source-only architecture research. Read only existing legal L_s/U_s moment statistics, no new IQ fitting, model loading, TX/V/OE/target or training.",
+  "code": {
+    "commit": "63afe5cb59da641d5bee751a182facaa9aad498d",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI CPU2 nice10 CUDA empty; NumPy FP64 geometry on actual FP32 source covariance storage.",
+    "cwd": "releases/20261107-analysis-Restore-source-covariance-capacity-s2026110707-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing original-source global63000 and five same/other12600 L_s/U_s covariance statistics.",
+    "representation": "Real512 covariance matrices only. No packet IQ or clean/received pairs read.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "Reuse existing fit metadata and VALIDATED_ONCE source capsule/split. No physical ID re-read or reselection.",
+    "label_map_ref": "Unused: no labels, classifier outputs or truth scoring.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source population statistics; no TX labels read.",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Existing global a3 moments and fixed1a9 receiver moments fitted on L_s/U_s before V; V_fit_rows0.",
+    "support_query_ref": "No support/query/V/OE/target. Ten deterministic source-matrix comparisons only.",
+    "leo_config_ref": "Not consumed; no observations or simulated channel draws.",
+    "actual_training_labels": "No training, no labels, no new IQ or statistic fit.",
+    "augmentation": "None",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "source-statistics-algebra-only",
+    "query_use": "Only existing source population covariance artifacts. No IQ/model checkpoint/neural forward/labels/V/OE/target.",
+    "external_method_exception": null,
+    "claim_scope": "Ideal squared-Frobenius covariance-difference capacity on post-fit source receiver references. Not recoverable IQ fraction, TX accuracy or Main ceiling."
+  },
+  "checkpoint": {
+    "initialization": "No model checkpoints loaded or initialized. Existing source covariance statistics only.",
+    "sources": [
+      "SOURCE_STATISTICS_ONLY 20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01/a3a90b55a73702954c453eec9c1ad17fec24d87f; L_s6300/U_s56700 global moments.",
+      "SOURCE_STATISTICS_ONLY 20261107-diagnostic-Restore-receiver-prior-sourceV-s2026092701-r02/1a9aafda7cf9cf5ee1d293a5e782ef57e27eb5ad; same/other RX12600 matched counts, pre-V fits."
+    ],
+    "contract_check_ref": "Original source capsule/split reuse, source fit metadata/code/roles/count/seed and zero V/TX/target fit. Current model FP32 covariance storage matched before FP64 algebra.",
+    "provenance_verdict": "Only original L_s/U_s-derived statistics; no inherited model state or new fit.",
+    "selection_rule": "Fixed rank64, five RX×global/other base→same-RX reference, all10 cells reported. No model or checkpoint selection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-covariance-capacity",
+    "gpu_policy": "One CPU2 nice10 worker, CUDA empty. No GPU or truth scorer.",
+    "remote_run_root": "runs/20261107-analysis-Restore-source-covariance-capacity-s2026110707-r01",
+    "remote_log_root": "logs/20261107-analysis-Restore-source-covariance-capacity-s2026110707-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-analysis-Restore-source-covariance-capacity-s2026110707-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.covariance_capacity_source --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-analysis-Restore-source-covariance-capacity-s2026110707-r01-release/inputs.json --commit 63afe5cb59da641d5bee751a182facaa9aad498d",
+    "stop_rule": "Wrong source fit metadata/code, collision, invalid shape/symmetry/non-SPD, invalid projection identity or worker failure: preserve, no automatic retry."
+  },
+  "expected_artifacts": [
+    "smoke.json actual source512 matrix check",
+    "runtime_observation.json",
+    "results.json aggregates",
+    "complete.json",
+    "logs/terminal.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Covariance-difference squared-Frobenius energy explained by diagonal64, coupled64, diagonal512 and bounded±.9 signed64.",
+      "Remaining matrix energy, base top64 variance fraction, same-RX projected block SPD, required diagonal variance ratios and bound saturation."
+    ],
+    "dimensions": [
+      "five original source RX",
+      "global or other-RX base covariance",
+      "same-RX existing source reference",
+      "fixed rank64"
+    ],
+    "prediction_ref": "No predictions; all10 covariance cells saved as aggregate scalar metrics.",
+    "scorer_ref": "No truth-side scoring. Independently verify all10 finite cells and projection-space ordering after completion."
+  },
+  "rows": [
+    {
+      "row_id": "source_covariance_mode_capacity",
+      "method": "fixed_source_covariance_mode_projection",
+      "purpose": "Measure whether variance scaling alone can express source receiver covariance differences or misses inter-mode coupling.",
+      "config_ref": "experiments.pamf_phase3_restoration.covariance_capacity_source.py::capacity",
+      "resolved_config_ref": "runs/20261107-analysis-Restore-source-covariance-capacity-s2026110707-r01/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": 2026110707,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Existing source moment subset seed2026110707 only. No new randomness, neural seed or channel draw.",
+      "k": null,
+      "scenario": "Post-fit source moment geometry only; no packet scenes or held-out performance.",
+      "optimizer": "NONE",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "10 source covariance comparisons of512x512, fixed rank64; no IQ, model calls or fits, CPU2.",
+      "output_root": "runs/20261107-analysis-Restore-source-covariance-capacity-s2026110707-r01",
+      "log_path": "logs/20261107-analysis-Restore-source-covariance-capacity-s2026110707-r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.covariance_capacity_source --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-analysis-Restore-source-covariance-capacity-s2026110707-r01-release/inputs.json --commit 63afe5cb59da641d5bee751a182facaa9aad498d",
+      "expected_artifacts": [
+        "smoke.json actual source512 matrix check",
+        "runtime_observation.json",
+        "results.json aggregates",
+        "complete.json",
+        "logs/terminal.json"
+      ]
+    }
+  ],
+  "notes": [
+    "This stage consumes no neural checkpoint. Its first relevant smoke uses an actual source512 covariance matrix, then continues all remaining cells immediately.",
+    "Reference same-RX moments are post-fit source statistics, not target population covariance or held-out accuracy.",
+    "Current signed model adjusts only eigenvalues in a fixed rank64 basis; coupled64 tests the larger mathematical block, not a trained candidate.",
+    "Bounded signed projection uses exactly the current±.9 coefficient range. Other ideal spaces are unbounded representational ceilings, not deployed procedures.",
+    "No healthy process or scientific recipe is changed by this analysis."
+  ],
+  "registered_at": "2026-11-07T06:54:41+00:00"
+}
