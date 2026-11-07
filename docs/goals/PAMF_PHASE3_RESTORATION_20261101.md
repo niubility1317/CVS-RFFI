@@ -658,3 +658,7 @@ VERIFIED / QUEUED。实际代码 14e7315d6da5d6fe242e7568f20c97ade064e8d9，控�
 ## 2026-11-07 观测条件化的先验方差网络
 
 VERIFIED / QUEUED。实际代码 2f77f8cec389f7ff74a94a8200dd219c1b5e084f，控制器 PID 4049016 在线，实际工作目录、命令、CUDA 空环境和日志已核对。发布包 SHA 一致，远端编译通过。等待先验失配训练版最后一项 GPU 阶段终止，再按 GPU4/6 原准入条件启动。真实源检查、训练和 Main 均待执行。 1336263 个参数，当前观测生成非负逐点方差，完整后验可微。 原 L_s/U_s 从零单阶段 30 轮、7410 步，使用实际带噪 IQ/STFT 和批准的源连续 F0 特征约束，物理梯度隔离。冻结后自动用原 Tri-SIG-TIME SSL 做 Main 两总体七景并独立评分。 [实验登记和排队核实](../../automation_reports/CV-SincNet/20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r01/report.md)
+
+## 2026-11-07 用户批准单卡最多五进程后实际训练
+
+VERIFIED / RUNNING。控制器 4063502 与实际训练进程 4063584 的 PID、工作目录、命令、CUDA UUID、GPU6 计算 PID 和源日志已核实。启动前已有 4 个进程、剩余 17938 MiB，读回总数 5。原 r01 未开始任何 GPU 阶段，其唯一控制器按用户授权精确停止，其余七个旧控制器在线。真实源两条检查、物理/置信度梯度隔离及 E0 严格重载通过。当前首轮仍在运行，尚无新 Main 成绩。 [正式运行与源检查](../../automation_reports/CV-SincNet/20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r02/report.md)
