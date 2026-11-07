@@ -68,3 +68,22 @@ def test_ground_requires_source_only_physical_loss(tmp_path, monkeypatch):
     (folder / 'source_summary.json').write_text(json.dumps(summary), encoding='utf8')
     with pytest.raises(ValueError, match='forward-physics'):
         ground.load_fixed(tmp_path, 'source', 'test')
+
+    from experiments.phase1_dura_orthogonal.large_direct_wide_residual import WideResidualDirectTimeFreq, RESIDUAL_SCALE
+    summary['simulator_action_inference_reads'] = 0
+    for obj in (summary, state):
+        obj.update(objective='wide_large_direct_timefreq_stable_wide_physics',
+                   direct_timefreq_scale=RESIDUAL_SCALE)
+    state['model'] = WideResidualDirectTimeFreq().state_dict()
+    (folder / 'source_summary.json').write_text(json.dumps(summary), encoding='utf8')
+    torch.save(state, folder / 'final.pt')
+    assert isinstance(ground.load_fixed(tmp_path, 'source', 'test')[0], WideResidualDirectTimeFreq)
+    summary['simulator_action_inference_reads'] = 1
+    (folder / 'source_summary.json').write_text(json.dumps(summary), encoding='utf8')
+    with pytest.raises(ValueError, match='forward-physics'):
+        ground.load_fixed(tmp_path, 'source', 'test')
+    summary['simulator_action_inference_reads'] = 0
+    summary['direct_timefreq_scale'] = SCALE
+    (folder / 'source_summary.json').write_text(json.dumps(summary), encoding='utf8')
+    with pytest.raises(ValueError, match='normalized direct time-frequency'):
+        ground.load_fixed(tmp_path, 'source', 'test')
