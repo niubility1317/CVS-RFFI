@@ -19,8 +19,8 @@ def test_old_owner_or_missing_retirement_rejected(tmp_path,monkeypatch):
     args=SimpleNamespace(root=tmp_path,legacy_release=tmp_path/'releases'/(m.RUN+'-release'),cache=tmp_path/'cache')
     args.legacy_release.mkdir(parents=True)
     (args.legacy_release/'release_commit.txt').write_text(m.SCIENCE_COMMIT)
-    out=tmp_path/'runs'/m.RUN;out.mkdir(parents=True)
-    (out/'launch.json').write_text(json.dumps({'pid':123}))
+    logs=tmp_path/'logs'/m.RUN;logs.mkdir(parents=True)
+    (logs/'resource_handover_GPU5.json').write_text(json.dumps({'old_PID':123,'status':'VERIFIED_UNSTARTED_OWNER_RETIRED','scientific_commit':m.SCIENCE_COMMIT}))
     monkeypatch.setenv('CUDA_VISIBLE_DEVICES','')
     real_read=Path.read_bytes
     def fake_read(path):

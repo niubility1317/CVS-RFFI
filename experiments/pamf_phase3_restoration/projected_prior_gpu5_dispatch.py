@@ -16,8 +16,10 @@ def controller(args):
         raise ValueError('CUDA-empty owner and exact original release required')
     if (args.legacy_release/'release_commit.txt').read_text().strip()!=SCIENCE_COMMIT:
         raise ValueError('Original scientific commit required')
-    out=args.root/'runs'/RUN
-    old=dispatch.read(out/'launch.json');proc=Path('/proc')/str(old['pid'])/'cmdline'
+    handoff=dispatch.read(args.root/'logs'/RUN/'resource_handover_GPU5.json')
+    if handoff['status']!='VERIFIED_UNSTARTED_OWNER_RETIRED' or handoff['scientific_commit']!=SCIENCE_COMMIT:
+        raise ValueError('Exact unstarted original queue handover required')
+    proc=Path('/proc')/str(handoff['old_PID'])/'cmdline'
     try:command=proc.read_bytes().replace(bytes([0]),b' ').decode()
     except FileNotFoundError:command=''
     if SCIENCE_MODULE+' run ' in command and SCIENCE_COMMIT in command:
