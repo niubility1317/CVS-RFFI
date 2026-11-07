@@ -1,3 +1,4 @@
 {"at": "2026-11-06T20:07:50+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-06T20:13:19+00:00", "status": "QUEUED", "note": "Seven-view ground prediction and truth-last scoring follow the source fit.", "evidence": ["N607:PID3657917,queue.log"], "row_id": null}
 {"at": "2026-11-06T21:11:11+00:00", "status": "RUNNING", "note": "Seven-view prediction started after source fit and frozen checkpoint smoke.", "evidence": ["N607:PID3699162,ground_predict.log"], "row_id": null}
+{"at": "2026-11-07T02:11:22+00:00", "status": "ANALYZED", "note": "All seven fixed predictions and independent truth-last paired scores verified; seven views below DURA; no target feedback.", "evidence": ["analysis.md"], "row_id": null}
