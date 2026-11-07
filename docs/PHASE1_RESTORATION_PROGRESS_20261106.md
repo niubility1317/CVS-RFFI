@@ -396,7 +396,7 @@ FIR 修正版的六个受损场景也均低于同输入 raw 10.5375 至 12.5792 
 
 ## DURA 条件 IQ 流训练启动
 
-固定 DURA 与源 IQ，在 DURA anchor 到 clean 的路径上训练条件流速度场；推理按固定四步积分。N607 GPU 3 容量队列已接续，64 个源 ID × 三视图的真实 checkpoint smoke 通过，正式源训练 PID 3823069 正在运行，当前尚无完整训练 epoch。固定五轮、七景和独立 truth-last 由原控制器接续；无正式识别成绩，不与历史 F-guided 流方法混同。[实验登记](../automation_reports/CV-SincNet/20261107-phase1-dura-iqflow-source-s2026092701-r01/experiment.json)。
+固定 DURA 与源 IQ，在 DURA anchor 到 clean 的路径上训练条件流速度场；推理按固定四步积分。N607 GPU 3 容量队列已接续，64 个源 ID × 三视图的真实 checkpoint smoke 通过；正式源训练 PID 3823069 已完成第 1/5 轮，训练累计计时 3836.3 秒、流损失 0.0076553。训练损失不是识别准确率；固定五轮、七景和独立 truth-last 由原控制器接续，无正式识别成绩，不与历史 F-guided 流方法混同。[实验登记](../automation_reports/CV-SincNet/20261107-phase1-dura-iqflow-source-s2026092701-r01/experiment.json)。
 
 ## 源合成微扰的参数梯度关系
 
