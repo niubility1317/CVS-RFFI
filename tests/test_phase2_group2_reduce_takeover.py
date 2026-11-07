@@ -90,3 +90,4 @@ def test_conflicting_successor_still_pauses_parent_first(tmp_path, monkeypatch):
     with pytest.raises(ValueError):
         reduce.dispatch(rt)
     assert signals == [(9, reduce.signal.SIGSTOP)]
+    assert not list(successor.iterdir())

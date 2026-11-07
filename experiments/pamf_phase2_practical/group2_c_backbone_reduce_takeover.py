@@ -71,6 +71,7 @@ def dispatch(rt):
     require(owner_matches(_proc(pid), old, pid, ticks), 'Parent identity differs')
     require(owner_matches(_proc(pid), old, pid, ticks), 'Parent changed before pause')
     os.kill(pid, signal.SIGSTOP)
+    owns_root = False
     try:
         for _ in range(100):
             info = _proc(pid)
@@ -88,6 +89,7 @@ def dispatch(rt):
         write(claim, dict(parent_root=str(oldroot), successor_root=str(root),
                           successor_runtime=rt['runtime_file']))
         root.mkdir(parents=True, exist_ok=False)
+        owns_root = True
         for name in ('logs', 'launches', 'jobs'):
             (root/name).mkdir()
         write(root/'owner.json', dict(pid=os.getpid(), cwd=str(Path.cwd()), argv=sys.argv))
@@ -130,7 +132,7 @@ def dispatch(rt):
               completed=len(jobs)-len(rt['excluded_failed_indices']), total=len(jobs),
               excluded=rt['excluded_failed_indices'], truth_read=False, scoring_started=False))
     except BaseException as exc:
-        if root.is_dir():
+        if owns_root:
             write(root/'takeover_error.json', dict(error=repr(exc), parent_pid=pid,
                   parent_start_ticks=ticks, parent=_proc(pid), note='Do not resume the former three-per-GPU dispatcher.'), exclusive=False)
         raise
