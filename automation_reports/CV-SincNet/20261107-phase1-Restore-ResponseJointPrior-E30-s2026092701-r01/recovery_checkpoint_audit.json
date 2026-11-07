@@ -1,0 +1,19 @@
+{
+  "status": "VERIFIED_E09_RECOVERY_STATE",
+  "epoch": 9,
+  "updates": 2223,
+  "model_tensors": 145,
+  "optimizer_entries": 139,
+  "optimizer_steps": [
+    2223
+  ],
+  "rng_cpu_bytes": 5056,
+  "rng_cuda_bytes": 16,
+  "epoch10_draw": 10,
+  "epoch10_order_count": 63000,
+  "checkpoint_matches_original_config": true,
+  "all_model_optimizer_tensors_finite": true,
+  "new_training_updates": 0,
+  "new_IQ_reads": 0,
+  "target_reads": 0
+}
