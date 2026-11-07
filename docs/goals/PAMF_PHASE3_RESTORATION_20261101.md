@@ -764,3 +764,7 @@ VERIFIED / QUEUED。联合均值/协方差版已发布，独立读回实际控�
 ## 2026-11-07 等价低秩后验的源端技术验证
 
 VERIFIED / QUEUED。等价低秩后验的源端诊断已发布，归档SHA对比与远端编译通过；实际CPU控制器PID/CWD/命令、CUDA为空、无子进程、无GPU占用及等待日志增长已核实。GPU3的进程数已达到原正常上限，故按原总数最多3、已有最多2且剩余至少12000 MiB等待；没有增加并发上限或重启任何任务。7项数值/梯度/低噪声/协议负检查与一次独立P0/P1审查通过。真实原G/F0源检查与14格GPU数值/耗时实测尚待启动，不能据单元检查宣布训练提速。该诊断不更新权重、不访问target/TX/V/OE，不改变任何已发布训练或部署版本。 [固定诊断矩阵](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-CoupledLowRank-sourceLU-s2026092701-r01/report.md)
+
+## 2026-11-07 TF_ConditionedCovariance 完整Main结果
+
+VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30核实；原Main42单元全部预测后独立truth-last，4阶段exit0且进程均已退出。1302组/868raw配对及DURA/clean配对复算PASS，最大差1.2e-14，baseline判决差0。六景83.586310/82.238095/80.573214/82.334524/75.005952/67.087500%，1/6；clean两个总体净+154/-12，联合验收False。原科学代码/模型/数据/预算保持，默认DURA不变，其他已登记候选继续。 [完整分析](../../automation_reports/CV-SincNet/20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r02/analysis.md)

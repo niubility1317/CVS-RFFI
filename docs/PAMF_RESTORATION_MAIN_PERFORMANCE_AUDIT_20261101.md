@@ -261,3 +261,7 @@ VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30�
 ## 2026-11-07 调制参数化的已验证收益范围
 
 同一固定Main测试中，调制参数化与分量监督版相对原CovarianceMAP六景均净增加正确预测，增幅0.039881至0.255952个百分点；clean净少152条。它仍低于DURA、六景1/6且两个raw clean总体净−66/−29，不能认定整个恢复目标已完成或该组合已具备跨seed稳定性。全部源顺序、draw、曝光与学习率相同；末轮Action相对MSE从0.00972509到0.00901296，噪声log MSE从0.04974598到0.04541007。物理源拟合改善确有本次正式识别小幅收益，但单次组合对照不能将收益单独分配给参数化或分量监督。其他预登记候选保持原科学计划。
+
+## 2026-11-07 TF_ConditionedCovariance 完整Main结果
+
+VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30核实；原Main42单元全部预测后独立truth-last，4阶段exit0且进程均已退出。1302组/868raw配对及DURA/clean配对复算PASS，最大差1.2e-14，baseline判决差0。六景83.586310/82.238095/80.573214/82.334524/75.005952/67.087500%，1/6；clean两个总体净+154/-12，联合验收False。原科学代码/模型/数据/预算保持，默认DURA不变，其他已登记候选继续。 [完整分析](../automation_reports/CV-SincNet/20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r02/analysis.md)
