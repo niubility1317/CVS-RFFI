@@ -73,3 +73,16 @@ def test_stable_checkpoint_requires_legal_source_and_normalization(tmp_path, mon
     (folder / 'source_summary.json').write_text(json.dumps(summary), encoding='utf8')
     with pytest.raises(ValueError, match='tail-risk'):
         ground.load_fixed(tmp_path, 'source', 'test')
+    from experiments.phase1_dura_orthogonal.observable_source_risk import THRESHOLD
+    for obj in (summary, state):
+        obj.update(objective='wide_large_context_stable_observable',
+                   source_observable_weight=.5, source_observable_threshold=THRESHOLD,
+                   source_observable_score='innovation_energy_over_anchor_energy',
+                   source_observable_losses=[.1] * 20, source_observable_rates=[.25] * 20)
+    (folder / 'source_summary.json').write_text(json.dumps(summary), encoding='utf8')
+    torch.save(state, folder / 'final.pt')
+    assert isinstance(ground.load_fixed(tmp_path, 'source', 'test')[0], StableLargeContextDura)
+    summary['source_observable_threshold'] = THRESHOLD * 2
+    (folder / 'source_summary.json').write_text(json.dumps(summary), encoding='utf8')
+    with pytest.raises(ValueError, match='observable-risk'):
+        ground.load_fixed(tmp_path, 'source', 'test')
