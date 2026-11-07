@@ -32,6 +32,10 @@ class CovarianceMAP(nn.Module):
         torch.linalg.cholesky(covariance.double())
         self.prior_mean.copy_(mean.to(self.prior_mean));self.prior_covariance.copy_(covariance)
 
+    def estimate_modulation(self,time_tokens,pooled):
+        c=self.coefficient_head(time_tokens.transpose(1,2))
+        return 1+torch.complex(c[:,0],c[:,1]),torch.complex(c[:,2],c[:,3])
+
     def estimate(self,received,*,dense=True):
         if received.ndim!=3 or received.shape[1:]!=(2,256) or received.dtype!=torch.float32:
             raise ValueError('Current per-record FP32 received IQ2x256 required')
@@ -43,8 +47,7 @@ class CovarianceMAP(nn.Module):
         tokens=self.norm(self.encoder(torch.cat((time,frequency),1)+self.position));pooled=tokens.mean(1)
         h=self.kernel_head(pooled);kernel=torch.complex(self.impulse+h[:,:64],h[:,64:])
         kernel=kernel/kernel.abs().square().sum(1,keepdim=True).sqrt().clamp_min(1e-6)
-        c=self.coefficient_head(tokens[:,:64].transpose(1,2))
-        main=1+torch.complex(c[:,0],c[:,1]);image=torch.complex(c[:,2],c[:,3])
+        main,image=self.estimate_modulation(tokens[:,:64],pooled)
         log_variance=(math.log(.0005)+self.noise_head(pooled).squeeze(1)).clamp(math.log(1e-7),0.)
         variance=log_variance.exp()
         if not dense:

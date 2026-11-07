@@ -64,12 +64,13 @@ def bind_prior(root,model):
         source_covariance_FP32_rounding_max=float(np.max(np.abs(cov.astype(np.float32).astype(np.float64)-cov))))
 
 
-def train(args,out):
+def train(args,out,*,build=factory,configure=configuration,objective=source_action_loss,
+          dense_supervision=True,smoke_weights=None):
     start=time.perf_counter();c=validate_source(read(args.inputs));old,roles=trial.source(args)
-    G=factory(args.arm);prior_identity=bind_prior(args.root,G);G=G.to('cuda:0')
+    cfg=configure(args.arm);G=build(args.arm);prior_identity=bind_prior(args.root,G);G=G.to('cuda:0')
     F,identity=load_F0(c,'cuda:0');trial.main_eval.valid_identity(identity)
     frozen={k:v.detach().clone() for k,v in F.state_dict().items()}
-    out.mkdir();write(out/'config.json',dict(configuration(args.arm),code_commit=args.commit,F0_identity=identity,source_prior_identity=prior_identity))
+    out.mkdir();write(out/'config.json',dict(cfg,code_commit=args.commit,F0_identity=identity,source_prior_identity=prior_identity))
     def source_draw(draw):
         folder=old/'epochs'/f'{draw:02d}';done=read(folder/'complete.json')
         if (done.get('count'),done.get('TX_labels_read'),done.get('target_reads'))!=(63000,0,0):raise ValueError('Original source simulator traces required')
@@ -94,9 +95,11 @@ def train(args,out):
         actual=F.classify_features(F.features(restored))
         if actual.shape!=(2,6) or not torch.isfinite(actual).all() or aux['relative_solve_residual'].max()>1e-8:
             raise ValueError('Actual covariance deployment/source2 F0 smoke failed')
-    aux=G.estimate(first['received'][take]);loss,_=source_action_loss(aux,first['kernel'][take],first['coefficients'][take],first['variance'][take]);loss.mean().backward()
-    for head in (G.kernel_head,G.coefficient_head,G.noise_head):
-        if head.weight.grad is None or not torch.isfinite(head.weight.grad).all() or not head.weight.grad.abs().sum()>0:
+    aux=G.estimate(first['received'][take],dense=dense_supervision)
+    loss,_=objective(aux,first['kernel'][take],first['coefficients'][take],first['variance'][take]);loss.mean().backward()
+    weights=smoke_weights(G) if smoke_weights else (G.kernel_head.weight,G.coefficient_head.weight,G.noise_head.weight)
+    for weight in weights:
+        if weight.grad is None or not torch.isfinite(weight.grad).all() or not weight.grad.abs().sum()>0:
             raise ValueError('All action/noise heads require actual source trace gradients')
     G.zero_grad(set_to_none=True)
     if any(not torch.equal(v,G.state_dict()[k]) for k,v in before.items()):raise ValueError('No-update source smoke changed G')
@@ -110,18 +113,19 @@ def train(args,out):
     print('COVARIANCE_MAP_REAL_SOURCE_SMOKE_PASS',flush=True)
     G.train();optimizer=torch.optim.AdamW(G.parameters(),lr=.001,weight_decay=1e-4)
     rng=np.random.default_rng(2026110102);orders=np.stack([rng.permutation(63000) for _ in range(30)]).astype(np.int32)
-    with (out/'data_schedule.npz').open('xb') as f:np.savez(f,orders=orders,draws=configuration(args.arm)['source_draws'])
+    with (out/'data_schedule.npz').open('xb') as f:np.savez(f,orders=orders,draws=cfg['source_draws'])
     update=0;train_start=time.perf_counter();torch.cuda.reset_peak_memory_stats()
     fixed_prior={k:G.state_dict()[k].detach().clone() for k in ['prior_mean','prior_covariance']}
     with (out/'training.jsonl').open('x',encoding='utf-8',buffering=1) as log:
-        for epoch,draw in enumerate(configuration(args.arm)['source_draws'],1):
+        for epoch,draw in enumerate(cfg['source_draws'],1):
             begin=time.perf_counter();v=source_draw(draw);sums={}
             for offset in range(0,63000,256):
                 take=orders[epoch-1,offset:offset+256];optimizer.zero_grad(set_to_none=True)
                 for group in optimizer.param_groups:group['lr']=learning_rate(update+1)
                 for begin_micro in range(0,len(take),32):
                     indices=torch.tensor(take[begin_micro:begin_micro+32].tolist(),device='cuda:0',dtype=torch.long)
-                    aux=G.estimate(v['received'][indices]);loss,terms=source_action_loss(aux,v['kernel'][indices],v['coefficients'][indices],v['variance'][indices])
+                    aux=G.estimate(v['received'][indices],dense=dense_supervision)
+                    loss,terms=objective(aux,v['kernel'][indices],v['coefficients'][indices],v['variance'][indices])
                     if not torch.isfinite(loss).all():raise ValueError('Nonfinite operator loss;preserve run')
                     (loss.sum()/len(take)).backward()
                     metrics=dict(loss=loss,**terms,predicted_noise=aux['variance'])

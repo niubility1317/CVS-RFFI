@@ -2,6 +2,24 @@
 import torch
 
 
+def aligned_factors(estimated,true):
+    """Put both operators in a common unit-norm FIR gauge before mixing factors."""
+    def normalize(parts):
+        h,main,image=parts
+        gain=h.norm(dim=1,keepdim=True)
+        if (gain<=0).any() or not torch.isfinite(gain).all():
+            raise ValueError('Nonzero finite FIR required for gauge alignment')
+        return h/gain,main*gain,image*gain
+
+    estimate=normalize(estimated)
+    h,main,image=normalize(true)
+    overlap=(estimate[0].conj()*h).sum(1,keepdim=True)
+    magnitude=overlap.abs()
+    # At zero overlap the angle is undetermined; use the identity convention.
+    angle=torch.where(magnitude>0,overlap.conj()/magnitude.clamp_min(1e-300),torch.ones_like(overlap))
+    return estimate,(h*angle,main*angle.conj(),image*angle),magnitude[:,0]
+
+
 def relative_action_mse(kernel,main,image,target_kernel,target_main,target_image):
     """Match dense_action error/norm without constructing a [B,2N,2N] matrix.
 

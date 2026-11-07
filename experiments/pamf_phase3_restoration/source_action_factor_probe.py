@@ -12,6 +12,7 @@ from .cost_probe import write
 from .covariance_guidance_source import source_metrics
 from .covariance_inverse import dense_action, gaussian_posterior
 from .covariance_parameter_source import G_COMMIT, load_model
+from .factorized_action_loss import aligned_factors
 from .main_split_eval import valid_identity
 from .phase_mixture_source import REFERENCE_COMMIT, REFERENCE_RUN, read_trace
 from .source_coordinate_probe import select_indices
@@ -22,24 +23,6 @@ from .structured_noise_source import known_parameters
 RUN = '20261107-diagnostic-Restore-action-factor-sourceV-s2026092701-r01'
 MODULE = 'experiments.pamf_phase3_restoration.source_action_factor_probe'
 METHODS = ('blind','true_fir','true_modulation','true_action','true_action_noise')
-
-
-def aligned_factors(estimated,true):
-    """Put both operators in a common unit-norm FIR gauge before mixing factors."""
-    def normalize(parts):
-        h,m,i=parts
-        gain=h.norm(dim=1,keepdim=True)
-        if (gain<=0).any() or not torch.isfinite(gain).all():
-            raise ValueError('Nonzero finite FIR required for gauge alignment')
-        return h/gain,m*gain,i*gain
-
-    estimate=normalize(estimated)
-    h,m,i=normalize(true)
-    overlap=(estimate[0].conj()*h).sum(1,keepdim=True)
-    magnitude=overlap.abs()
-    # At zero overlap the angle is undetermined; use the identity convention.
-    angle=torch.where(magnitude>0,overlap.conj()/magnitude.clamp_min(1e-300),torch.ones_like(overlap))
-    return estimate,(h*angle,m*angle.conj(),i*angle),magnitude[:,0]
 
 
 def readouts(G,trace,*,verify_gauge=False):
