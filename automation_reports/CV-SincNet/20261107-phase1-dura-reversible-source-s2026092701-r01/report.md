@@ -3,7 +3,7 @@
 - run_id：`20261107-phase1-dura-reversible-source-s2026092701-r01`
 - group_id：`phase1-dura-reversible`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：TRAINING_COMPLETE；[源训练分析](analysis.md)，[七景正式结果](../20261107-phase1-dura-reversible-ground-test-s2026092701-r01/analysis.md)。
 
 ## 目的与对照
 
@@ -21,8 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
-源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+固定五轮源训练完成。源 pilot 的受损分组波形误差略低于 DURA，但该指标不是身份准确率；正式七景结果均低于 DURA。
 
 ## 交接
 
