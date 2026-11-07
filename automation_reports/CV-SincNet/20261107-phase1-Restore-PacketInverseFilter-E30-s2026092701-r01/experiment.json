@@ -20,10 +20,12 @@
   "replaces_run_id": null,
   "authorization": "Latestuser:performanceprimary/efficiencysecondary/groundTriSIGTIME SSL sameFrawclean6eachgap<=3pp+cleanpreserved;majorGarchitecturefreedom/scratchsingle30/sourceFfeatureguidanceallowed/originalLsUs-only/OEonlyfrozendiagnostic. DefaultDURAunchanged.",
   "code": {
-    "commit": "92d0dcbe0f25927d5a1cf4d98669ded45a410a5b",
+    "commit": "42e22b1f7f8667a3f4b11b87a4fe6e6cf20b164e",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 CVS-RFFI/Torch2.1/NumPy2 bridge-safe, FP32 G/F0, TF32 off, CPU threads2.",
-    "cwd": "releases/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01-release"
+    "cwd": "releases/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01-GPU5-dispatch-release",
+    "scientific_code_commit": "92d0dcbe0f25927d5a1cf4d98669ded45a410a5b",
+    "identity_note": "Resource dispatcher only. All actual scratch training, freeze, prediction and CPU truth scoring execute unchanged original release/commit."
   },
   "data": {
     "dataset": "ManySig",
@@ -94,13 +96,15 @@
   },
   "execution": {
     "host": "N607",
-    "launch_owner": "codex/root/packet-inverse-filter-scratch30",
-    "gpu_policy": "Wait CUDA-empty for 20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01 last GPU stage. GPU4/6 only, free >=12000MiB, existing compute <=2; add one. Shared CPU score lock.",
+    "launch_owner": "codex/root/packet-filter-GPU5-resource-handover",
+    "gpu_policy": "GPU5 only, original normal total cap3: existing<=2/free>=12000MiB before one own training or prediction worker. CPU score uses original shared lock. Remove ProjectedPrior resource wait only; no model/data/budget/seed changes.",
     "remote_run_root": "runs/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01",
     "remote_log_root": "runs/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01/logs",
     "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01",
-    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.packet_inverse_filter_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 92d0dcbe0f25927d5a1cf4d98669ded45a410a5b --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
-    "stop_rule": "Invalid source/F0, collision, smoke/gradient/reload, nonfinite or failed worker: preserve. Exact source2 smoke before actual training."
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.packet_filter_resource_dispatch --root /home/szu2070436088/2510044040/CV-SincNet --legacy-release /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01-release --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --commit 42e22b1f7f8667a3f4b11b87a4fe6e6cf20b164e",
+    "stop_rule": "Retire only exact CUDA-empty/childless old packet controller with no run root or submitted GPU stage, after complete identity and actual death checks. Original real G/F0/source2/gradient/E0 smoke first, immediate scratch30 on PASS. Stage failure/nonfinite/mismatch preserves all outputs, no automatic retry or unrelated process actions.",
+    "original_controller_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.packet_inverse_filter_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 92d0dcbe0f25927d5a1cf4d98669ded45a410a5b --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "original_scientific_CWD": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01-release"
   },
   "expected_artifacts": [
     "launch.json",
@@ -122,7 +126,9 @@
     "rows/<arm>/results.json",
     "complete.json",
     "logs/*.log PRIVATE",
-    "rows/TF_PacketInverseFilter/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+    "rows/TF_PacketInverseFilter/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only",
+    "launch.json: dispatcher and scientific commit identities",
+    "logs/<arm>-train.log: unchanged original source training"
   ],
   "metrics_plan": {
     "metric_names": [
@@ -194,7 +200,11 @@
     "V480 frozen attribution suggests tail sensitivity in urban and front contribution in low suburban. No V training, fitting or checkpoint selection.",
     "Fixed region overlap and separate heads; conjugate taps and residual computed from each current received IQ.",
     "No DURA or previous learned G initialization. Original raw and DURA comparisons remain exactly bound to original Tri-SIG-TIME SSL.",
-    "Real source smoke is first training action after GPU admission. Automatic full prediction and independent scoring; no target feedback."
+    "Real source smoke is first training action after GPU admission. Automatic full prediction and independent scoring; no target feedback.",
+    "Resource-only handover of already registered packet candidate, not a new model/matrix or result-based candidate selection. Original L_s/U_s, F0 continuous guidance, architecture, scratch30/7410 and all Main views unchanged.",
+    "Original wait controller has no GPU stage and has not created its immutable run root. Only it is retired; original logs/release/local submission remain. New owner exclusively creates original run root, writes real original stage terminals used by the existing MismatchedPrior successor.",
+    "Four focused resource/controller/protocol tests and one resource-only independent P0/P1 review PASS. Original scientific-model review is not repeated. Real source smoke remains the first original training action.",
+    "GPU5 uses only original normal cap3, not GPU6 extra cap5. Actual capacity rechecked before every GPU stage; all healthy jobs preserved."
   ],
   "record_type": "managed_run",
   "registered_at": "2026-11-07T03:30:07+00:00"
