@@ -78,17 +78,28 @@ def main():
     env = os.environ.copy()
     env.update(CUDA_VISIBLE_DEVICES=uuid, CUBLAS_WORKSPACE_CONFIG=':4096:8',
                OMP_NUM_THREADS='2', MKL_NUM_THREADS='2', OPENBLAS_NUM_THREADS='2')
-    results = {}
-    for case in ('baseline', 'same_stream'):
+    args.out.mkdir(parents=True)
+    result = dict(status='CAPTURE_PROBE_RUNNING', commit=args.commit, physical_gpu=args.gpu, physical_gpu_uuid=uuid,
+                  synthetic_only=True, user_data_reads=0, weights_saved=False, results={})
+    def save():
+        (args.out/'result.json').write_text(json.dumps(result, indent=2, allow_nan=False)+'\n', encoding='utf8')
+    save()
+    for index, case in enumerate(('baseline', 'same_stream')):
+        if index and wait_for_slot(args.out/'next-worker', args.gpu) != uuid:
+            raise ValueError('GPU UUID changed between diagnostic cases')
         cmd = [sys.executable, '-X', 'utf8', '-u', '-m',
                'experiments.phase1_dura_orthogonal.flow_graph_capture_probe', '--worker', case]
-        completed = subprocess.run(cmd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=120)
-        results[case] = dict(exit_code=completed.returncode, output=completed.stdout)
-        print('CAPTURE_PROBE_CASE', case, 'exit', completed.returncode, flush=True)
-    args.out.mkdir(parents=True)
-    result = dict(status='CAPTURE_PROBE_COMPLETE', commit=args.commit, physical_gpu=args.gpu, physical_gpu_uuid=uuid,
-                  synthetic_only=True, user_data_reads=0, weights_saved=False, results=results)
-    (args.out/'result.json').write_text(json.dumps(result, indent=2, allow_nan=False)+'\n', encoding='utf8')
+        try:
+            completed = subprocess.run(cmd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=120)
+            result['results'][case] = dict(status='exited', exit_code=completed.returncode, output=completed.stdout)
+        except subprocess.TimeoutExpired as exc:
+            output = exc.stdout.decode('utf8', errors='replace') if isinstance(exc.stdout, bytes) else (exc.stdout or '')
+            result['results'][case] = dict(status='timeout', exit_code=None, output=output)
+        save()
+        print('CAPTURE_PROBE_CASE', case, result['results'][case]['status'],
+              'exit', result['results'][case]['exit_code'], flush=True)
+    result['status'] = 'CAPTURE_PROBE_COMPLETE'
+    save()
     print('CAPTURE_PROBE_COMPLETE', flush=True)
 
 
