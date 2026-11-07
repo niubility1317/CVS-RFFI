@@ -1,0 +1,210 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-Restore-ResponseReliability-E30-s2026092701-r02",
+  "group_id": "source-reliability-weighted-response-single30",
+  "display_name": "可靠度加权响应恢复器：资源中断后 E07 技术续训",
+  "description": "沿用原从零训练的 E07 模型、AdamW 与随机状态，按原源日程继续 E08–E30，累计 30 轮/7410 步；独立输出并自动完成原 Main 七景。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "original-ground-TriSIGTIME-SSL-Main",
+    "source-response-preservation",
+    "source-F-guided",
+    "scratch-single30",
+    "automatic-Main7"
+  ],
+  "comparison_group_id": "fixed-response-loss-vs-source-reliability-weighting",
+  "parent_run_ids": [
+    "20261108-phase1-Restore-ResponseReliability-E30-s2026092701-r01",
+    "20261108-phase1-Restore-ResponseDense-E30-s2026092701-r01",
+    "20261108-diagnostic-Restore-ResponseObservability-sourceLU-s2026092701-r01"
+  ],
+  "replaces_run_id": "20261108-phase1-Restore-ResponseReliability-E30-s2026092701-r01",
+  "authorization": "Existing user authorization: original L_s/U_s only, source F continuous-feature guidance, same F0 and six-scene Main7, 30 epochs; resource cap3, one own worker, no other-owner changes.",
+  "code": {
+    "commit": "3ed244205a97722678d64b76712a559858c30536",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Torch; two CPU threads, FP32 network/FP64 posterior, TF32 off; GPUs 0/1 total cap3 with one reserved slot.",
+    "cwd": "releases/20261108-phase1-Restore-ResponseReliability-E30-s2026092701-r02-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "Original R07 L_s6300/U_s56700 clean/received and recorded source simulator Action/noise; original global/other-RX priors and fixed1%-RMS four source directions.",
+    "contract_ref": "OriginalTriSSLsource_contract/392005/rolecounts6300-56700-27000;R07train63000sameIDset androles/RX/day byID",
+    "physical_ids_ref": "R07train/physical_ids.npy roles.npy;validatedoriginalsourceLUcache IDs foralignment;officialMain source-disjoint viewindexes",
+    "label_map_ref": "Gtrainnone;frozenF0originalsixclassorder,truthonly originalCPUscorerafterallrow42cells fixed",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Original VALIDATED_ONCE source capsule/split and physical binding, original full IQ moments. Reuse pre-V fixed ten source-only receiver-prior statistics from r02.",
+    "support_query_ref": "No targettraining/support/PCD/unknownrole. OriginalMain two populations168000,all7perrowfixedbefore independenttruth.",
+    "leo_config_ref": "R07sourcecache20trainrealizations/2026101912augmentation;officialMain frozen7observations",
+    "actual_training_labels": "Zero TX labels. Physical Action/noise source supervision, IQ/STFT and original frozen F0 continuous features; weighted source response uses source simulator Action and scalar variance only.",
+    "augmentation": "Original one of four fixed source IQ directions per record/epoch; recorded simulator Action creates paired received perturbation with same noise."
+  },
+  "permissions": {
+    "regime": "source-only-technical-recovery-F0-guided",
+    "query_use": "Source RX selects training prior/mode factor only. Deployed G consumes current IQ and its fixed source buffers. No V/OE/target fit or TX truth.",
+    "external_method_exception": null,
+    "claim_scope": "E07 is the sole pre-existing technical recovery boundary, not selected by target or source score; no TX/V/OE/target training. Physical simulator Action/noise source-only; fixed F0 continuous features, no classifier loss."
+  },
+  "checkpoint": {
+    "initialization": "Original scratch E0; restore own interrupted E07 model, AdamW and CPU/CUDA RNG for E08–E30; no other G weights or optimizer.",
+    "sources": [
+      "TECHNICAL_RECOVERY 20261108-phase1-Restore-ResponseReliability-E30-s2026092701-r01/936a15eebe15eb039c9aff635941f35389ea5d16/TF_ResponseReliability/training/recovery/E07.pt: epoch7/1729, own source-only interrupted run, fixed by technical stop, not scientific selection.",
+      "FROZEN_F0 original Tri-SIG-TIME SSL source checkpoint and legal original source moments.",
+      "MATCHED_CONTROL_ONLY 20261108-phase1-Restore-ResponseDense-E30-s2026092701-r01/6b3f8e478ae70f1a59a3f21db86f6655890fa04e; no weights loaded."
+    ],
+    "contract_check_ref": "Original parent source L_s/U_s roles, source F0 and prior identity, original E07 exact config/commit, full original order and optimizer/RNG restored. Parent stopped at cap; no target predictions.",
+    "provenance_verdict": "One same-run technical boundary, source-only, no target or labels, no score-based model selection.",
+    "selection_rule": "Fixed final E30/7410 only; complete both Main populations × seven views before independent truth-last."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/response-reliability-E07-resume-headroom-cap3",
+    "gpu_policy": "GPU0/1 only; before admission at most one existing compute PID and free>=12288 MiB. Monitor every2s and stop only own child if total>3 or count unavailable3 times. Disjoint from bounded-projection GPU2/3/4 queue.",
+    "remote_run_root": "runs/20261108-phase1-Restore-ResponseReliability-E30-s2026092701-r02",
+    "remote_log_root": "logs/20261108-phase1-Restore-ResponseReliability-E30-s2026092701-r02",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261108-phase1-Restore-ResponseReliability-E30-s2026092701-r02",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.response_reliability_resume_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 3ed244205a97722678d64b76712a559858c30536 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-Restore-ResponseReliability-E30-s2026092701-r02-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Parent not exactly stopped E07, F0/prior/config/source/schedule mismatch, duplicate parent, source2 E07 smoke or E0 failure, nonfinite model/loss/residual, residual>1e-8, total GPU processes>3, 3 failed GPU observations or child error: preserve and stop; no automatic retry. Otherwise fixed E30/full Main7/truth-last."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/training/config.json",
+    "rows/<arm>/training/smoke.json",
+    "rows/<arm>/training/smoke_E0.pt PRIVATE",
+    "rows/<arm>/training/data_schedule.npz PRIVATE",
+    "rows/<arm>/training/training.jsonl PRIVATE",
+    "rows/<arm>/training/final.pt PRIVATE",
+    "rows/<arm>/training/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE",
+    "rows/<arm>/training/technical_resume_smoke.json",
+    "rows/<arm>/training/technical_resume.json",
+    "rows/<arm>/training/recovery/E08..E30.pt PRIVATE; parent E01..E07 retained in original run"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Original ground Tri-SIG-TIME SSL fixed default head: raw clean145385/168000; each practical >=140345/168000 and both raw clean populations preserved.",
+      "Per TX/RX/day and paired raw/DURA repair/damage; matched original ResponseDense only after both matrices fully fixed.",
+      "All30 source logs and original schedule; 7 inherited plus23 resumed, 7410 total updates, parent checkpoint and source/F0/prior identity, source-response statistics and CPU/CUDA RNG restored.",
+      "Report parent and resumed time separately, new 63000-source clean feature recache and shared-resource elapsed time."
+    ],
+    "dimensions": [
+      "original Main two populations and seven views",
+      "TX/RX/day/RXday",
+      "single model seed",
+      "matched raw and DURA"
+    ],
+    "prediction_ref": "Original Main cross_rx126000 + cross_both42000, all seven views, original raw/DURA exact-ID reuse.",
+    "scorer_ref": "OriginalindependentCUDAemptyCPUscore/sharedscore.lock;whole row/allMainpredictionsbeforetruth. No targetfeedback."
+  },
+  "rows": [
+    {
+      "row_id": "TF_ResponseReliability",
+      "method": "reliability_weighted_source_response_dense",
+      "purpose": "Test whether a source noise/action reliability proxy improves response-preserving training without amplifying every weak synthetic direction.",
+      "config_ref": "experiments.pamf_phase3_restoration.response_reliability_resume_trial.py",
+      "resolved_config_ref": "runs/20261108-phase1-Restore-ResponseReliability-E30-s2026092701-r02/rows/TF_ResponseReliability/training/config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Physical2026092701/confidence2026092702, original source order2026110102 and R07 draws. Existing source subset2026110707. No new stochastic prior fit.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": "AdamW(weight_decay1e-4,clip1)",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Original scratch single30/7410, E01–E07 inherited technical boundary/1729 optimizer updates; resume E08–E30 with original AdamW/RNG/order/draw/LR, logical256/micro32, unchanged weighted response objective. No extra training epoch.",
+      "output_root": "runs/20261108-phase1-Restore-ResponseReliability-E30-s2026092701-r02/rows/TF_ResponseReliability",
+      "log_path": "runs/20261108-phase1-Restore-ResponseReliability-E30-s2026092701-r02/logs/TF_ResponseReliability-train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.response_reliability_resume_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 3ed244205a97722678d64b76712a559858c30536 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-Restore-ResponseReliability-E30-s2026092701-r02-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/training/config.json",
+        "rows/<arm>/training/smoke.json",
+        "rows/<arm>/training/smoke_E0.pt PRIVATE",
+        "rows/<arm>/training/data_schedule.npz PRIVATE",
+        "rows/<arm>/training/training.jsonl PRIVATE",
+        "rows/<arm>/training/final.pt PRIVATE",
+        "rows/<arm>/training/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE",
+        "rows/<arm>/training/technical_resume_smoke.json",
+        "rows/<arm>/training/technical_resume.json",
+        "rows/<arm>/training/recovery/E08..E30.pt PRIVATE; parent E01..E07 retained in original run"
+      ]
+    }
+  ],
+  "notes": [
+    "Parent r01 had GPU0 total 4 against cap3; only own controller/worker stopped; E07 and original output preserved, no target predictions.",
+    "Single deterministic technical boundary E07: full model/AdamW/CPU and CUDA RNG state restored; no selection by any metric. Previous E01–E07 logs inherited, original schedule checked, continue E08–E30 and final30 only. Shared-GPU numeric trajectory not guaranteed bitwise identical.",
+    "Original L_s/U_s simulator pairs and frozen original F0 continuous features only; no TX, V, OE or target training. 63000 source clean features re-computed after resume and cost disclosed.",
+    "GPUs 0/1 at most1 existing compute process at admission and free>=12288 MiB; monitor total<=3; bounded projected queue uses GPUs2/3/4. Other owners are never signaled.",
+    "27 focused tests and one independent P0/P1 review pass. Actual E0 and E07/next-draw F0/no-query smoke are first steps after admission; full Main test follows automatically."
+  ],
+  "record_type": "managed_run",
+  "registered_at": "2026-11-07T20:49:56+00:00"
+}
