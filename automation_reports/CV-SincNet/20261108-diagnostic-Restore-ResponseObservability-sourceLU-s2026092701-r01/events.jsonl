@@ -1,1 +1,3 @@
 {"at": "2026-11-07T18:06:59+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-07T18:11:18+00:00", "status": "ANALYZED", "note": "VERIFIED / ANALYZED。复用224条源L_s/U_s、原模拟Action/标量方差和三版冻结响应；七场景×四方向×三模型×四预定区间及all汇总共384行，以独立复数FIR公式复算一致。低档城区32条中各方向20条的作用能量/标量噪声代理小于1；不把该比例解释为真实身份可恢复上限。无新神经前向、TX标签、V/OE或目标读取。", "evidence": ["analysis.md"], "row_id": "source_response_noise_proxy"}
+{"at": "2026-11-07T18:11:30+00:00", "status": "ANALYZED", "note": "VERIFIED / ANALYZED。复用224条源L_s/U_s、原模拟Action/标量方差和三版冻结响应；七场景×四方向×三模型×四预定区间及all汇总共384行，以独立复数FIR公式复算一致。低档城区32条中各方向20条的作用能量/标量噪声代理小于1；不把该比例解释为真实身份可恢复上限。无新神经前向、TX标签、V/OE或目标读取。", "evidence": ["analysis.md"], "row_id": null}
