@@ -13,7 +13,8 @@ def test_wait_for_slot_respects_other_users_and_rechecks(monkeypatch, tmp_path):
     sleeps = []
     monkeypatch.setattr(diagnostic.subprocess, 'check_output', output)
     monkeypatch.setattr(diagnostic.time, 'sleep', lambda seconds: sleeps.append(seconds))
-    diagnostic.wait_for_slot(tmp_path/'unique', 1)
+    selected_uuid = diagnostic.wait_for_slot(tmp_path/'unique', 1)
+    assert selected_uuid == 'GPU-A'
     assert len(calls) == 4 and sleeps == [20]
 
 

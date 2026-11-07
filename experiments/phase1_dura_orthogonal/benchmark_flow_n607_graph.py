@@ -21,8 +21,10 @@ def wait_for_slot(out, gpu):
                                         '--format=csv,noheader,nounits'], text=True)
         ready, free, count = capacity(rows, apps, gpu)
         if ready:
-            print('N607_FLOW_GRAPH_QUEUE_SLOT', gpu, 'free_mib', free, 'other_apps', count, flush=True)
-            return
+            selected = next(row.split(',')[1].strip() for row in rows.splitlines()
+                            if row.split(',')[0].strip() == str(gpu))
+            print('N607_FLOW_GRAPH_QUEUE_SLOT', gpu, selected, 'free_mib', free, 'other_apps', count, flush=True)
+            return selected
         time.sleep(20)
 
 
@@ -36,10 +38,10 @@ def main():
     args = parser.parse_args()
     if not args.cache.is_file():
         raise FileNotFoundError('Fixed source context cache required')
-    wait_for_slot(args.out, args.gpu)
+    selected_uuid = wait_for_slot(args.out, args.gpu)
     if 'torch' in sys.modules:
         raise RuntimeError('GPU selection must occur before torch import')
-    os.environ.update(CUDA_VISIBLE_DEVICES=str(args.gpu), OMP_NUM_THREADS='2',
+    os.environ.update(CUDA_VISIBLE_DEVICES=selected_uuid, OMP_NUM_THREADS='2',
                       MKL_NUM_THREADS='2', OPENBLAS_NUM_THREADS='2', CUBLAS_WORKSPACE_CONFIG=':4096:8')
     import torch
     from experiments.pamf_phase1_flow.anchor_source_smoke import frozen_dura
@@ -88,6 +90,7 @@ def main():
                   else 'N607_FLOW_GRAPH_PARITY_FAILED', commit=args.commit, source_ids=512,
                   views_per_id=3, epochs=5, batch=32, pairs=pairs, graph_capture_included_in_timing=True,
                   torch_version=torch.__version__, gpu=torch.cuda.get_device_name(), physical_gpu=args.gpu,
+                  physical_gpu_uuid=selected_uuid,
                   TX_labels_read=0, F_weights_read=0, F_outputs_read=0, V_reads=0, target_reads=0, weights_saved=False)
     (args.out/'result.json').write_text(json.dumps(result, indent=2, allow_nan=False)+'\n', encoding='utf8')
     print(result['status'], flush=True)
