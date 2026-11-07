@@ -1,0 +1,264 @@
+{
+  "status": "VERIFIED_SOURCE_TRUTH_LAST",
+  "code_commit": "f4dab0140b598bbc3cd212ab4259138e468e1a20",
+  "source_TX_scored": 120,
+  "prior_prediction_cells": 28,
+  "source_label_file_rows": 27000,
+  "records": [
+    {
+      "scene": "clean",
+      "method": "blind_gaussian",
+      "count": 120,
+      "correct": 118,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "clean",
+      "method": "blind_mixture",
+      "count": 120,
+      "correct": 118,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "clean",
+      "method": "known_gaussian",
+      "count": 120,
+      "correct": 118,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "clean",
+      "method": "known_mixture",
+      "count": 120,
+      "correct": 118,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_high",
+      "method": "blind_gaussian",
+      "count": 120,
+      "correct": 118,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_high",
+      "method": "blind_mixture",
+      "count": 120,
+      "correct": 118,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_high",
+      "method": "known_gaussian",
+      "count": 120,
+      "correct": 118,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_high",
+      "method": "known_mixture",
+      "count": 120,
+      "correct": 118,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_mid",
+      "method": "blind_gaussian",
+      "count": 120,
+      "correct": 116,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_mid",
+      "method": "blind_mixture",
+      "count": 120,
+      "correct": 116,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_mid",
+      "method": "known_gaussian",
+      "count": 120,
+      "correct": 117,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_mid",
+      "method": "known_mixture",
+      "count": 120,
+      "correct": 117,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "blind_gaussian",
+      "count": 120,
+      "correct": 116,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "blind_mixture",
+      "count": 120,
+      "correct": 116,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "known_gaussian",
+      "count": 120,
+      "correct": 116,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "known_mixture",
+      "count": 120,
+      "correct": 116,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "blind_gaussian",
+      "count": 120,
+      "correct": 117,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "blind_mixture",
+      "count": 120,
+      "correct": 116,
+      "repairs": 0,
+      "damage": 1,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "known_gaussian",
+      "count": 120,
+      "correct": 117,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "known_mixture",
+      "count": 120,
+      "correct": 117,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "blind_gaussian",
+      "count": 120,
+      "correct": 110,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "blind_mixture",
+      "count": 120,
+      "correct": 109,
+      "repairs": 0,
+      "damage": 1,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "known_gaussian",
+      "count": 120,
+      "correct": 114,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "known_mixture",
+      "count": 120,
+      "correct": 114,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "blind_gaussian",
+      "count": 120,
+      "correct": 98,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "blind_mixture",
+      "count": 120,
+      "correct": 102,
+      "repairs": 4,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "known_gaussian",
+      "count": 120,
+      "correct": 107,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "known_mixture",
+      "count": 120,
+      "correct": 107,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    }
+  ],
+  "new_prediction_rows": 0,
+  "optimizer_updates": 0,
+  "target_reads": 0
+}

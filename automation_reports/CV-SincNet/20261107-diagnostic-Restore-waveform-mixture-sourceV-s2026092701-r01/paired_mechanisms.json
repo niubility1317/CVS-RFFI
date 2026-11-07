@@ -1,0 +1,101 @@
+{
+  "status": "VERIFIED_PREDICTION_ONLY",
+  "rows": [
+    {
+      "scene": "clean",
+      "blind_mode_vs_clean": 120,
+      "known_mode_vs_clean": 120,
+      "blind_mode_vs_known": 120,
+      "blind_high_confidence_mode_change": 0,
+      "blind_prior_repair_overlap_known_action": 0,
+      "blind_prior_repair_only": 0,
+      "known_action_repair_only": 0,
+      "blind_prior_repair_overlap_phase": 0,
+      "phase_only_repair": 0,
+      "prior_only_repair_vs_phase": 0
+    },
+    {
+      "scene": "practical_high",
+      "blind_mode_vs_clean": 118,
+      "known_mode_vs_clean": 119,
+      "blind_mode_vs_known": 119,
+      "blind_high_confidence_mode_change": 0,
+      "blind_prior_repair_overlap_known_action": 0,
+      "blind_prior_repair_only": 0,
+      "known_action_repair_only": 0,
+      "blind_prior_repair_overlap_phase": 0,
+      "phase_only_repair": 0,
+      "prior_only_repair_vs_phase": 0
+    },
+    {
+      "scene": "practical_mid",
+      "blind_mode_vs_clean": 119,
+      "known_mode_vs_clean": 119,
+      "blind_mode_vs_known": 120,
+      "blind_high_confidence_mode_change": 1,
+      "blind_prior_repair_overlap_known_action": 0,
+      "blind_prior_repair_only": 0,
+      "known_action_repair_only": 1,
+      "blind_prior_repair_overlap_phase": 0,
+      "phase_only_repair": 1,
+      "prior_only_repair_vs_phase": 0
+    },
+    {
+      "scene": "practical_low_suburban",
+      "blind_mode_vs_clean": 118,
+      "known_mode_vs_clean": 119,
+      "blind_mode_vs_known": 119,
+      "blind_high_confidence_mode_change": 0,
+      "blind_prior_repair_overlap_known_action": 0,
+      "blind_prior_repair_only": 0,
+      "known_action_repair_only": 1,
+      "blind_prior_repair_overlap_phase": 0,
+      "phase_only_repair": 1,
+      "prior_only_repair_vs_phase": 0
+    },
+    {
+      "scene": "practical_high_urban",
+      "blind_mode_vs_clean": 118,
+      "known_mode_vs_clean": 119,
+      "blind_mode_vs_known": 117,
+      "blind_high_confidence_mode_change": 0,
+      "blind_prior_repair_overlap_known_action": 0,
+      "blind_prior_repair_only": 0,
+      "known_action_repair_only": 0,
+      "blind_prior_repair_overlap_phase": 0,
+      "phase_only_repair": 0,
+      "prior_only_repair_vs_phase": 0
+    },
+    {
+      "scene": "practical_mid_urban",
+      "blind_mode_vs_clean": 115,
+      "known_mode_vs_clean": 119,
+      "blind_mode_vs_known": 116,
+      "blind_high_confidence_mode_change": 2,
+      "blind_prior_repair_overlap_known_action": 0,
+      "blind_prior_repair_only": 0,
+      "known_action_repair_only": 4,
+      "blind_prior_repair_overlap_phase": 0,
+      "phase_only_repair": 2,
+      "prior_only_repair_vs_phase": 0
+    },
+    {
+      "scene": "practical_low_urban",
+      "blind_mode_vs_clean": 115,
+      "known_mode_vs_clean": 119,
+      "blind_mode_vs_known": 116,
+      "blind_high_confidence_mode_change": 1,
+      "blind_prior_repair_overlap_known_action": 3,
+      "blind_prior_repair_only": 1,
+      "known_action_repair_only": 9,
+      "blind_prior_repair_overlap_phase": 1,
+      "phase_only_repair": 6,
+      "prior_only_repair_vs_phase": 3
+    }
+  ],
+  "records_per_scene": 120,
+  "comparison": "Source F(raw clean) agreement and posterior mode stability, existing predictions only",
+  "source_TX_reads": 0,
+  "target_reads": 0,
+  "new_prediction_rows": 0
+}

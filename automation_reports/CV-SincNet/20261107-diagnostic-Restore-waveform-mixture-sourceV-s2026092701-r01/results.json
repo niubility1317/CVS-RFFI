@@ -1,0 +1,362 @@
+{
+  "status": "SOURCE_WAVEFORM_MIXTURE_COMPLETE",
+  "run_id": "20261107-diagnostic-Restore-waveform-mixture-sourceV-s2026092701-r01",
+  "code_commit": "f4dab0140b598bbc3cd212ab4259138e468e1a20",
+  "F0_identity": {
+    "model": "original_F0_E50",
+    "parameters": 232993,
+    "epoch": 50,
+    "updates": 11100,
+    "model_seed": 2026092701,
+    "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "base_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release",
+    "source_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "source_row": "main_split-repl-shuffled_time-3view-s2026092701",
+    "source_code_commit": "3ff8f4b7e85b5608f5b45350aa18081499a7ef1d"
+  },
+  "frozen_BF_code": "bf29554a03e28a012eaaa134f5c7b3f7856f2268",
+  "reference_code": "f29b31417ce98a280eac25ea2fa78e0c49a5f0ff",
+  "methods": [
+    "blind_gaussian",
+    "blind_mixture",
+    "known_gaussian",
+    "known_mixture"
+  ],
+  "views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "source_prior": {
+    "source_Ls": 6300,
+    "source_Us": 56700,
+    "whitened_PCs": 16,
+    "lloyd_steps": 8,
+    "occupancy": [
+      18094,
+      7218,
+      24462,
+      13226
+    ],
+    "mean_max_error": 2.1562682168775974e-16,
+    "covariance_max_error": 2.7755575615628914e-17,
+    "between_trace_fraction": 0.2972251557120037,
+    "within_min_eigenvalue": 0.00015738702534777048
+  },
+  "records": [
+    {
+      "scene": "clean",
+      "method": "blind_gaussian",
+      "count": 120,
+      "Fclean_correct": 120,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 1.8473278798107153e-05,
+      "feature_cosine_distance": 1.227507988611857e-05
+    },
+    {
+      "scene": "clean",
+      "method": "blind_mixture",
+      "count": 120,
+      "Fclean_correct": 120,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 1.8473275993831824e-05,
+      "feature_cosine_distance": 1.2282530466715495e-05,
+      "mean_max_mode_probability": 0.9974548511990357
+    },
+    {
+      "scene": "clean",
+      "method": "known_gaussian",
+      "count": 120,
+      "Fclean_correct": 120,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 1.551400499073796e-14,
+      "feature_cosine_distance": -3.4769376118977865e-09
+    },
+    {
+      "scene": "clean",
+      "method": "known_mixture",
+      "count": 120,
+      "Fclean_correct": 120,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 1.5487542766052522e-14,
+      "feature_cosine_distance": -9.934107462565104e-10,
+      "mean_max_mode_probability": 0.9977452936210415
+    },
+    {
+      "scene": "practical_high",
+      "method": "blind_gaussian",
+      "count": 120,
+      "Fclean_correct": 120,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.007529935603573298,
+      "feature_cosine_distance": 0.002117873231569926
+    },
+    {
+      "scene": "practical_high",
+      "method": "blind_mixture",
+      "count": 120,
+      "Fclean_correct": 120,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.007506184988111879,
+      "feature_cosine_distance": 0.0021239990989367166,
+      "mean_max_mode_probability": 0.9938464487663553
+    },
+    {
+      "scene": "practical_high",
+      "method": "known_gaussian",
+      "count": 120,
+      "Fclean_correct": 120,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.005228726160324489,
+      "feature_cosine_distance": 0.0011301517486572265
+    },
+    {
+      "scene": "practical_high",
+      "method": "known_mixture",
+      "count": 120,
+      "Fclean_correct": 120,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.005211158880168417,
+      "feature_cosine_distance": 0.001139324406782786,
+      "mean_max_mode_probability": 0.9950933738949284
+    },
+    {
+      "scene": "practical_mid",
+      "method": "blind_gaussian",
+      "count": 120,
+      "Fclean_correct": 117,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.018565526197198777,
+      "feature_cosine_distance": 0.00883054385582606
+    },
+    {
+      "scene": "practical_mid",
+      "method": "blind_mixture",
+      "count": 120,
+      "Fclean_correct": 117,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.018238175590522588,
+      "feature_cosine_distance": 0.007837380468845367,
+      "mean_max_mode_probability": 0.9998512468501877
+    },
+    {
+      "scene": "practical_mid",
+      "method": "known_gaussian",
+      "count": 120,
+      "Fclean_correct": 118,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.01351213360321708,
+      "feature_cosine_distance": 0.004523397982120514
+    },
+    {
+      "scene": "practical_mid",
+      "method": "known_mixture",
+      "count": 120,
+      "Fclean_correct": 118,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.013422221936828767,
+      "feature_cosine_distance": 0.004700841506322225,
+      "mean_max_mode_probability": 0.9961986154985799
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "blind_gaussian",
+      "count": 120,
+      "Fclean_correct": 117,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.01780351431031401,
+      "feature_cosine_distance": 0.009736361106236775
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "blind_mixture",
+      "count": 120,
+      "Fclean_correct": 117,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.017458400225344426,
+      "feature_cosine_distance": 0.008221285541852315,
+      "mean_max_mode_probability": 0.9973166858072975
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "known_gaussian",
+      "count": 120,
+      "Fclean_correct": 117,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.013888734628562816,
+      "feature_cosine_distance": 0.00431401530901591
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "known_mixture",
+      "count": 120,
+      "Fclean_correct": 117,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.013681918624206446,
+      "feature_cosine_distance": 0.00443200021982193,
+      "mean_max_mode_probability": 0.9985290687882933
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "blind_gaussian",
+      "count": 120,
+      "Fclean_correct": 119,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.014137891066396454,
+      "feature_cosine_distance": 0.007299470404783885
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "blind_mixture",
+      "count": 120,
+      "Fclean_correct": 118,
+      "repairs": 0,
+      "damage": 1,
+      "iq_nmse": 0.014077958843942421,
+      "feature_cosine_distance": 0.007356228431065878,
+      "mean_max_mode_probability": 0.9952018306438826
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "known_gaussian",
+      "count": 120,
+      "Fclean_correct": 119,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.010084523330442607,
+      "feature_cosine_distance": 0.0020686551928520204
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "known_mixture",
+      "count": 120,
+      "Fclean_correct": 119,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.009975815143358583,
+      "feature_cosine_distance": 0.0020653640230496725,
+      "mean_max_mode_probability": 0.9937514582108162
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "blind_gaussian",
+      "count": 120,
+      "Fclean_correct": 110,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.053536270499656285,
+      "feature_cosine_distance": 0.01903970738252004
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "blind_mixture",
+      "count": 120,
+      "Fclean_correct": 109,
+      "repairs": 0,
+      "damage": 1,
+      "iq_nmse": 0.053594493080163376,
+      "feature_cosine_distance": 0.01784723550081253,
+      "mean_max_mode_probability": 0.9905666074621032
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "known_gaussian",
+      "count": 120,
+      "Fclean_correct": 114,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.03349305468339783,
+      "feature_cosine_distance": 0.011361798644065857
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "known_mixture",
+      "count": 120,
+      "Fclean_correct": 114,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.03283787593051481,
+      "feature_cosine_distance": 0.011687208712100983,
+      "mean_max_mode_probability": 0.9938629603978488
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "blind_gaussian",
+      "count": 120,
+      "Fclean_correct": 98,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.058702684775926176,
+      "feature_cosine_distance": 0.04279407858848572
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "blind_mixture",
+      "count": 120,
+      "Fclean_correct": 102,
+      "repairs": 4,
+      "damage": 0,
+      "iq_nmse": 0.056605070020304994,
+      "feature_cosine_distance": 0.03920008589824041,
+      "mean_max_mode_probability": 0.9850611798528217
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "known_gaussian",
+      "count": 120,
+      "Fclean_correct": 108,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.0485677093345051,
+      "feature_cosine_distance": 0.018138315280278525
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "known_mixture",
+      "count": 120,
+      "Fclean_correct": 108,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.047303902524678657,
+      "feature_cosine_distance": 0.01705903708934784,
+      "mean_max_mode_probability": 0.9937037993783926
+    }
+  ],
+  "source_V_records": 120,
+  "source_V_views": 840,
+  "F0_new_rows": 3360,
+  "F0_smoke_rows": 8,
+  "F0_clean_rows_reused": 120,
+  "TX_labels_read": 0,
+  "OE_reads": 0,
+  "novel_reads": 0,
+  "target_inputs": 0,
+  "optimizer_updates": 0,
+  "model_state_updates": 0,
+  "CPU_threads": 2,
+  "new_deployment_candidate": false,
+  "theoretical_ceiling": false,
+  "seconds": 78.81121327000437
+}

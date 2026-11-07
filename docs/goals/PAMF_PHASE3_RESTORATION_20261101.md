@@ -574,3 +574,9 @@ VERIFIED / QUEUED。实际代码 3fc9201628e7602ea58c6a5fb13d6ec934513e99，控�
 低档城区在已知模拟算子和标量噪声的同一高斯模型下，剩余 IQ 方差占源先验 17.42%。投影到原 F0 clean 第一与第二名的分数差，剩余方差比例为 20.49%，汇总所有五个竞争类别为 19.90%。
 
 同已知模拟算子和原冻结 F0，固定源输入导数诊断，无训练或目标访问。 [结果和非线性核对](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-posterior-margin-uncertainty-sourceV-s2026092701-r01/analysis.md)
+
+## 2026-11-07 矩匹配波形先验的源端对照
+
+固定源 V120 的低档城区，盲估信道下真实 TX 正确数由 98 升至 102，4 条修复、0 条损伤。已知模拟信道和噪声时，两种先验均为 107/120。同批 raw clean 为 118/120。
+
+低档城区有局部收益，高档和中档城区各多错 1 条。两种先验在已知模拟信道下的七景真实 TX 正确数一致。这项结果不更新正式 Main 的达标状态。 [源端分析](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-waveform-mixture-sourceV-s2026092701-r01/analysis.md)

@@ -1,0 +1,46 @@
+{
+  "status": "VERIFIED",
+  "actual_code_commit": "f4dab0140b598bbc3cd212ab4259138e468e1a20",
+  "worker_PID": 3889796,
+  "worker_exit": 0,
+  "actual_PID_CWD_command_CUDA_empty_verified": true,
+  "archive_SHA_match": true,
+  "remote_compile": true,
+  "log_growth_from_zero": true,
+  "smoke": {
+    "status": "PASS",
+    "actual_Ls": 2,
+    "actual_F0": true,
+    "actual_original_BF": true,
+    "gaussian_exactly_matches_original_BF": true,
+    "methods": [
+      "blind_gaussian",
+      "blind_mixture",
+      "known_gaussian",
+      "known_mixture"
+    ],
+    "F0_rows": 8,
+    "CPU_only": true,
+    "TX_labels_read": 0,
+    "target_inputs": 0,
+    "source_prior": {
+      "source_Ls": 6300,
+      "source_Us": 56700,
+      "whitened_PCs": 16,
+      "lloyd_steps": 8,
+      "occupancy": [
+        18094,
+        7218,
+        24462,
+        13226
+      ],
+      "mean_max_error": 2.1562682168775974e-16,
+      "covariance_max_error": 2.7755575615628914e-17,
+      "between_trace_fraction": 0.2972251557120037,
+      "within_min_eigenvalue": 0.00015738702534777048
+    }
+  },
+  "worker_seconds": 78.81121327000437,
+  "CPU_threads": 2,
+  "GPU_workers": 0
+}
