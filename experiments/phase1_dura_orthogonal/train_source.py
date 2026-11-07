@@ -38,6 +38,7 @@ from experiments.phase1_dura_orthogonal.large_context_stable import StableLargeC
 from experiments.phase1_dura_orthogonal.large_context_adaptive import AdaptiveLargeContextDura, GAIN_KIND
 from experiments.phase1_dura_orthogonal.large_direct_timefreq import LargeDirectTimeFreq, WIDTH as DIRECT_TF_WIDTH, LAYERS as DIRECT_TF_LAYERS, HEADS as DIRECT_TF_HEADS, TOKENS as DIRECT_TF_TOKENS, SCALE as DIRECT_TF_SCALE
 from experiments.phase1_dura_orthogonal.large_direct_timefreq_stable import StableLargeDirectTimeFreq
+from experiments.phase1_dura_orthogonal.source_forward_physics import source_channel_error, WEIGHT as SOURCE_PHYSICS_WEIGHT
 from experiments.phase1_dura_orthogonal.source_receiver_balance import receiver_weights, receiver_weighted_guard, EXPECTED_COUNTS as SOURCE_RECEIVER_COUNTS
 from experiments.phase1_dura_orthogonal.observable_source_risk import observable_risk_penalty, THRESHOLD as OBSERVABLE_THRESHOLD, WEIGHT as OBSERVABLE_WEIGHT
 from experiments.phase1_dura_orthogonal.large_source_tail import tail_iq_penalty, WEIGHT as SOURCE_TAIL_WEIGHT, FRACTION as SOURCE_TAIL_FRACTION
@@ -316,7 +317,7 @@ def main():
     parser.add_argument('--source-context-cache', type=Path)
     parser.add_argument('--save-source-context-cache', type=Path)
     parser.add_argument('--deterministic', action='store_true')
-    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_direct_phase', 'wide_direct_circular', 'wide_conditional_flow_t0', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_antithetic_flow', 'wide_phase_equivariant_guard', 'wide_dura_circular', 'wide_conditional_phase', 'wide_conditional_phase_moments', 'wide_supervised_phase', 'wide_lag_context', 'wide_large_context', 'wide_large_context_tail', 'wide_large_context_stable', 'wide_large_context_stable_tail', 'wide_large_context_stable_observable', 'wide_large_context_stable_crossview', 'wide_large_context_stable_receiver', 'wide_large_context_stable_adaptive', 'wide_large_direct_timefreq', 'wide_large_direct_timefreq_stable'), default='iq')
+    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_direct_phase', 'wide_direct_circular', 'wide_conditional_flow_t0', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_antithetic_flow', 'wide_phase_equivariant_guard', 'wide_dura_circular', 'wide_conditional_phase', 'wide_conditional_phase_moments', 'wide_supervised_phase', 'wide_lag_context', 'wide_large_context', 'wide_large_context_tail', 'wide_large_context_stable', 'wide_large_context_stable_tail', 'wide_large_context_stable_observable', 'wide_large_context_stable_crossview', 'wide_large_context_stable_receiver', 'wide_large_context_stable_adaptive', 'wide_large_direct_timefreq', 'wide_large_direct_timefreq_stable', 'wide_large_direct_timefreq_stable_physics'), default='iq')
     parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir', 'dura_reversible', 'conditional_iq_flow', 'direct_iq_flow', 'direct_phase_recovery', 'direct_circular_recovery', 'dura_envelope', 'dura_quartic', 'antithetic_iq_flow', 'phase_equivariant_dura', 'dura_circular_recovery', 'conditional_phase_dura', 'conditional_phase_moments', 'phase_supervised_dura', 'lag_context_dura', 'large_context_dura', 'large_context_stable', 'large_direct_timefreq', 'large_direct_timefreq_stable'), default='orthogonal')
     args = parser.parse_args()
     if (args.architecture == 'phase_equivariant_dura') != (args.objective == 'wide_phase_equivariant_guard'):
@@ -377,7 +378,7 @@ def main():
         raise ValueError('Direct dual-domain model uses received-IQ regularization only')
     if (args.architecture == 'large_direct_timefreq') != (args.objective == 'wide_large_direct_timefreq'):
         raise ValueError('Direct time-frequency architecture requires matching objective')
-    if (args.architecture == 'large_direct_timefreq_stable') != (args.objective == 'wide_large_direct_timefreq_stable'):
+    if (args.architecture == 'large_direct_timefreq_stable') != (args.objective in ('wide_large_direct_timefreq_stable', 'wide_large_direct_timefreq_stable_physics')):
         raise ValueError('Normalized direct time-frequency architecture requires matching objective')
     if (args.architecture == 'direct_phase_recovery') != (args.objective == 'wide_direct_phase'):
         raise ValueError('Direct phase recovery requires its registered source-only IQ objective')
@@ -459,7 +460,7 @@ def main():
     torch.backends.cudnn.allow_tf32 = False
     torch.manual_seed(2026110612)
     ids, rx, scene, _, source_received, source_clean = source_inputs(args.root)
-    fit_size = WIDE_FIT_SIZE if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_direct_phase', 'wide_direct_circular', 'wide_conditional_flow_t0', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_antithetic_flow', 'wide_phase_equivariant_guard', 'wide_dura_circular', 'wide_conditional_phase', 'wide_conditional_phase_moments', 'wide_supervised_phase', 'wide_lag_context', 'wide_large_context', 'wide_large_context_tail', 'wide_large_context_stable', 'wide_large_context_stable_tail', 'wide_large_context_stable_observable', 'wide_large_context_stable_crossview', 'wide_large_context_stable_receiver', 'wide_large_context_stable_adaptive', 'wide_large_direct_timefreq', 'wide_large_direct_timefreq_stable') else FIT_SIZE
+    fit_size = WIDE_FIT_SIZE if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_direct_phase', 'wide_direct_circular', 'wide_conditional_flow_t0', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_antithetic_flow', 'wide_phase_equivariant_guard', 'wide_dura_circular', 'wide_conditional_phase', 'wide_conditional_phase_moments', 'wide_supervised_phase', 'wide_lag_context', 'wide_large_context', 'wide_large_context_tail', 'wide_large_context_stable', 'wide_large_context_stable_tail', 'wide_large_context_stable_observable', 'wide_large_context_stable_crossview', 'wide_large_context_stable_receiver', 'wide_large_context_stable_adaptive', 'wide_large_direct_timefreq', 'wide_large_direct_timefreq_stable', 'wide_large_direct_timefreq_stable_physics') else FIT_SIZE
     source_cache, fresh, clean, fit = load_source_training(args.root, ids, fit_size=fit_size)
     source_receiver_weights, source_receiver_counts = None, None
     if args.objective == 'wide_large_context_stable_receiver':
@@ -479,7 +480,7 @@ def main():
     else:
         prepare_arch = 'orthogonal' if args.architecture == 'direct_spectral_student' else args.architecture
         data, counts = prepare(args.root, dura, clean, fresh, fit, str(device), args.prepare_batch,
-                               prepare_arch, include_action=args.objective in ACTION_OBJECTIVES)
+                               prepare_arch, include_action=args.objective in ACTION_OBJECTIVES or args.objective == 'wide_large_direct_timefreq_stable_physics')
         if args.save_source_context_cache:
             save_cache(args.save_source_context_cache, data, counts, fit, args.prepare_batch,
                        str(device), deterministic=True)
@@ -677,7 +678,7 @@ def main():
                 output = None
             else:
                 output = model(x, anchor, direction, variance, validate=False)
-            base_objective = ('iq' if args.objective in ('wide_direct_phase', 'wide_direct_circular', 'wide_large_direct_timefreq', 'wide_large_direct_timefreq_stable') else
+            base_objective = ('iq' if args.objective in ('wide_direct_phase', 'wide_direct_circular', 'wide_large_direct_timefreq', 'wide_large_direct_timefreq_stable', 'wide_large_direct_timefreq_stable_physics') else
                               'distill_iq' if args.objective in ('wide_source_distill', 'wide_multiview_distill') else
                               'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'wide_source_guard', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_phase_equivariant_guard', 'wide_dura_circular', 'wide_conditional_phase', 'wide_conditional_phase_moments', 'wide_supervised_phase', 'wide_lag_context', 'wide_large_context', 'wide_large_context_tail', 'wide_large_context_stable', 'wide_large_context_stable_tail', 'wide_large_context_stable_observable', 'wide_large_context_stable_crossview', 'wide_large_context_stable_receiver', 'wide_large_context_stable_adaptive', 'wide_large_direct_timefreq') else args.objective)
             if args.objective == 'wide_antithetic_flow':
@@ -704,6 +705,10 @@ def main():
             else:
                 loss = source_loss(output, fields[5] if args.objective == 'wide_multiview_distill' else anchor,
                                    y, objective=base_objective)
+            if args.objective == 'wide_large_direct_timefreq_stable_physics':
+                physical_loss = source_channel_error(output, y, fields[5], fields[6])
+                loss = loss + SOURCE_PHYSICS_WEIGHT*physical_loss
+                action_total += physical_loss.detach()*len(indices)
             if args.objective in ('wide_large_context_tail', 'wide_large_context_stable_tail'):
                 tail = tail_iq_penalty(output, y)
                 loss = loss + tail
@@ -823,7 +828,7 @@ def main():
             optimizer.step()
             total += loss.detach() * len(indices)
         losses.append(float(total.cpu())/(3*len(order) if crossview else len(order)))
-        if args.objective in ACTION_OBJECTIVES:
+        if args.objective in ACTION_OBJECTIVES or args.objective == 'wide_large_direct_timefreq_stable_physics':
             action_losses.append(float(action_total.cpu())/len(order))
         if args.objective == 'moment_guard':
             moment_losses.append(float(moment_total.cpu())/len(order))
@@ -889,6 +894,10 @@ def main():
         cache_metadata.update(source_observable_weight=OBSERVABLE_WEIGHT, source_observable_threshold=OBSERVABLE_THRESHOLD,
                               source_observable_score='innovation_energy_over_anchor_energy',
                               source_observable_losses=source_observable_losses, source_observable_rates=source_observable_rates)
+    if args.objective == 'wide_large_direct_timefreq_stable_physics':
+        cache_metadata.update(source_forward_physics_weight=SOURCE_PHYSICS_WEIGHT,
+                              source_forward_physics_losses=action_losses,
+                              simulator_action_inference_reads=0)
     if args.objective == 'wide_large_context_stable_adaptive':
         cache_metadata.update(large_context_gain=GAIN_KIND, gain_target_reads=0)
     if args.objective == 'wide_large_context_stable_receiver':
@@ -923,7 +932,7 @@ def main():
     if args.objective == 'wide_instance_contrast':
         cache_metadata.update(source_instance_temperature=INSTANCE_TEMPERATURE,
                               source_instance_positives='same_physical_record', instance_encoder_inference_reads=0)
-    if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_direct_phase', 'wide_direct_circular', 'wide_conditional_flow_t0', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_antithetic_flow', 'wide_phase_equivariant_guard', 'wide_dura_circular', 'wide_conditional_phase', 'wide_conditional_phase_moments', 'wide_supervised_phase', 'wide_lag_context', 'wide_large_context', 'wide_large_context_tail', 'wide_large_context_stable', 'wide_large_context_stable_tail', 'wide_large_context_stable_observable', 'wide_large_context_stable_crossview', 'wide_large_context_stable_receiver', 'wide_large_context_stable_adaptive', 'wide_large_direct_timefreq', 'wide_large_direct_timefreq_stable'):
+    if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_direct_phase', 'wide_direct_circular', 'wide_conditional_flow_t0', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_antithetic_flow', 'wide_phase_equivariant_guard', 'wide_dura_circular', 'wide_conditional_phase', 'wide_conditional_phase_moments', 'wide_supervised_phase', 'wide_lag_context', 'wide_large_context', 'wide_large_context_tail', 'wide_large_context_stable', 'wide_large_context_stable_tail', 'wide_large_context_stable_observable', 'wide_large_context_stable_crossview', 'wide_large_context_stable_receiver', 'wide_large_context_stable_adaptive', 'wide_large_direct_timefreq', 'wide_large_direct_timefreq_stable', 'wide_large_direct_timefreq_stable_physics'):
         cache_metadata.update(source_fit_size=WIDE_FIT_SIZE,
                               source_context_cache_written=str(args.save_source_context_cache) if args.save_source_context_cache else None)
     if args.objective == 'wide_envelope_guard':
@@ -1011,7 +1020,7 @@ def main():
         candidate_prior_frozen=args.objective == 'sim_action_fixed_prior',
             source_views_per_record=3 if args.objective in ('crossview_guard', 'wide_instance_contrast', 'wide_large_context_stable_crossview') else None,
             crossview_weight=.1 if args.objective in ('crossview_guard', 'wide_large_context_stable_crossview') else None,
-            source_simulator_action_used=args.objective in ACTION_OBJECTIVES,
+            source_simulator_action_used=(args.objective in ACTION_OBJECTIVES or args.objective == 'wide_large_direct_timefreq_stable_physics'),
             source_simulator_action_weight=.01 if args.objective in ACTION_OBJECTIVES else None,
             source_probe_seed=2026110614 if args.objective in ACTION_OBJECTIVES else None,
             source_action_response_losses=action_losses if args.objective in ACTION_OBJECTIVES else None,
@@ -1037,7 +1046,7 @@ def main():
                       candidate_prior_frozen=args.objective == 'sim_action_fixed_prior',
                       source_views_per_record=3 if args.objective in ('crossview_guard', 'wide_instance_contrast', 'wide_large_context_stable_crossview') else None,
                       crossview_weight=.1 if args.objective in ('crossview_guard', 'wide_large_context_stable_crossview') else None,
-                      source_simulator_action_used=args.objective in ACTION_OBJECTIVES,
+                      source_simulator_action_used=(args.objective in ACTION_OBJECTIVES or args.objective == 'wide_large_direct_timefreq_stable_physics'),
                       source_simulator_action_weight=.01 if args.objective in ACTION_OBJECTIVES else None,
                       source_probe_seed=2026110614 if args.objective in ACTION_OBJECTIVES else None,
                       source_action_response_losses=action_losses if args.objective in ACTION_OBJECTIVES else None,
@@ -1070,7 +1079,7 @@ def main():
             candidate_prior_frozen=args.objective == 'sim_action_fixed_prior',
         source_views_per_record=3 if args.objective in ('crossview_guard', 'wide_instance_contrast', 'wide_large_context_stable_crossview') else None,
         crossview_weight=.1 if args.objective in ('crossview_guard', 'wide_large_context_stable_crossview') else None,
-        source_simulator_action_used=args.objective in ACTION_OBJECTIVES,
+        source_simulator_action_used=(args.objective in ACTION_OBJECTIVES or args.objective == 'wide_large_direct_timefreq_stable_physics'),
         source_simulator_action_weight=.01 if args.objective in ACTION_OBJECTIVES else None,
         source_probe_seed=2026110614 if args.objective in ACTION_OBJECTIVES else None,
         source_action_response_losses=action_losses if args.objective in ACTION_OBJECTIVES else None,
