@@ -1,0 +1,64 @@
+{
+  "read_at": 1790764650.7380774,
+  "rows": {
+    "asknet": {
+      "log_bytes": 387779,
+      "resolved_configs": [
+        "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/logs/20260930-phase1-three-original-manysig-m3-r01/asknet/ManySig_CRD_date1_2_round0_seed2023_ps64_d128_mlp2.0/resolved_config.json"
+      ],
+      "last_completed_epoch": {
+        "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/logs/20260930-phase1-three-original-manysig-m3-r01/asknet/ManySig_CRD_date1_2_round0_seed2023_ps64_d128_mlp2.0/epochs.jsonl": {
+          "epoch": 41,
+          "ce": 0.045055917950554025,
+          "source_val_loss": 0.12726012880419507,
+          "train_accuracy": 99.16666666666667,
+          "source_val_accuracy": 97.5,
+          "lr": 1e-05,
+          "gradient_norm": 0.1256155136851413,
+          "selected_k": 24,
+          "seconds": 0.7252824009992764
+        }
+      }
+    },
+    "wavemlp": {
+      "log_bytes": 339525,
+      "resolved_configs": [
+        "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/logs/20260930-phase1-three-original-manysig-m3-r01/wavemlp/ManySig_CRD_noeq_tx6_wave1_lvl4_learn1_randn_k16_wlrm1.0_date1_2_round0_seed2023/resolved_config.json"
+      ],
+      "last_completed_epoch": {
+        "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/logs/20260930-phase1-three-original-manysig-m3-r01/wavemlp/ManySig_CRD_noeq_tx6_wave1_lvl4_learn1_randn_k16_wlrm1.0_date1_2_round0_seed2023/epochs.jsonl": {
+          "epoch": 36,
+          "ce": 0.02792974865561716,
+          "train_accuracy": 99.24603174603175,
+          "source_val_loss": 0.07677961055097389,
+          "source_val_accuracy": 98.54938271604938,
+          "lr": 1e-05,
+          "gradient_norm": 0.199547064558007,
+          "wavelet_active": true,
+          "seconds": 1.2301550679985667
+        }
+      }
+    },
+    "difl": {
+      "log_bytes": 1582698,
+      "resolved_configs": [
+        "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/logs/20260930-phase1-three-original-manysig-m3-r01/difl/teacher/resolved_config.json"
+      ],
+      "last_completed_epoch": {
+        "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/logs/20260930-phase1-three-original-manysig-m3-r01/difl/teacher/epochs.jsonl": {
+          "epoch": 38,
+          "nll": 8.200572991606197e-07,
+          "lr": 0.001,
+          "gradient_norm": 3.9496912648405053e-05,
+          "train_seconds": 1.7007872430003772,
+          "train_accuracy": 100.0,
+          "source_val_loss": 0.16230617623603708,
+          "source_val_accuracy": 98.88888888888889
+        }
+      }
+    }
+  },
+  "status": "VERIFIED",
+  "PID_CWD_argv_GPU_ref": "launch_readback.json",
+  "all_logs_grew": true
+}
