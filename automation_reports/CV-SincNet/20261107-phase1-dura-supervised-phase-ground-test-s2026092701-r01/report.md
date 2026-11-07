@@ -3,7 +3,7 @@
 - run_id：`20261107-phase1-dura-supervised-phase-ground-test-s2026092701-r01`
 - group_id：`phase1-dura-supervised-phase`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前状态：等待已启动的源训练按固定第 5 轮完成后自动开始七景预测。
+- 当前状态：RUNNING；源训练末轮已冻结，预测前源样本检查通过，七景预测 PID 479108 运行中。
 
 ## 目的与对照
 
