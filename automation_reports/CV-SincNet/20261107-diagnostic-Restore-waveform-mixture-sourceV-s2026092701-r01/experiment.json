@@ -1,0 +1,171 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-diagnostic-Restore-waveform-mixture-sourceV-s2026092701-r01",
+  "group_id": "source-moment-matched-waveform-prior",
+  "display_name": "源端波形混合先验与原高斯配对比较",
+  "description": "仅使用原 63000 条 L_s/U_s clean IQ 拟合四组。先验总体均值与协方差固定，分别在相同盲估和已知模拟 Action/噪声下对照。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-V-only",
+    "fixed-TriSIGTIME-SSL",
+    "waveform-mixture",
+    "CPU-only",
+    "F-free-fit"
+  ],
+  "comparison_group_id": "same-source-waveform-moments-four-modes-vs-gaussian",
+  "parent_run_ids": [
+    "20261107-diagnostic-Restore-structured-IQ-noise-sourceV-s2026092701-r01",
+    "20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User authorizes independent restoration designs and comprehensive source diagnostics, fit only original L_s/U_s IQ, V frozen diagnostic.",
+  "code": {
+    "commit": "f4dab0140b598bbc3cd212ab4259138e468e1a20",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 original CVS-RFFI Torch CPU2 CUDA-empty, FP64 fit/posterior and FP32 F0.",
+    "cwd": "releases/20261107-diagnostic-Restore-waveform-mixture-sourceV-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 source contract; existing R07 fixed1800 V/7 frozen validation views",
+    "representation": "Original R07 clean 63000 x 2 x 256 for fit and same V120 x 7 source IQ/FIR/modulation/scalar noise.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "Original L_s6300/U_s56700. Fixed first 8 per source RX/day stratum for independent source V predictions.",
+    "label_map_ref": "Only independent source truth-last scorer after all 28 predictions, original source V metadata.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original six known sourceTX; V trueTX validation only, no train/selection",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse VALIDATED_ONCE R07 handles; fixed original f29 V reference and BF E30/F0 E50 provenance.",
+    "support_query_ref": "120 original source V only, no target support/query.",
+    "leo_config_ref": "ExistingR07 validation_actions7; receiver2026101902 vs trainingreceiver2026101911; no regenerated views.",
+    "actual_training_labels": "None. Fits four source IQ mode means/weights, no neural updates or TX read. Original source L_s2 smoke.",
+    "augmentation": "Reuse all seven original source V observations, no regenerated signals.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "source-only-unsupervised-prior-fit-frozen-source-V-validation",
+    "query_use": "F0 and BF frozen. No F0 in prior fit, no TX in fit/predict, no target/OE/novel, no V fit/selection.",
+    "external_method_exception": null,
+    "claim_scope": "Same-moment source prior effect on paired source true TX and IQ at given A/noise. No Main performance or theoretical ceiling claim."
+  },
+  "checkpoint": {
+    "initialization": "Frozen original BF and F0 for controls and readouts only. Four mode prior from L_s/U_s clean IQ.",
+    "sources": [
+      "FROZEN_BF 20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01/bf29554a03e28a012eaaa134f5c7b3f7856f2268 source-only E30/7410 prior buffers and blind Action/noise",
+      "FROZEN_F0 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d original E50/11100 default head",
+      "DATA_ONLY R07 source clean L_s/U_s and same V120 x7 simulator traces, original L_s2 smoke"
+    ],
+    "contract_check_ref": "Original validated R07 source handles, role counts and f29 V identities.",
+    "provenance_verdict": "Frozen same-source BF and F0. No G training, target or OE/novel/TX access.",
+    "selection_rule": "Pre-fixed 16 whitened PCs, quadrant initialization, four modes, eight Lloyd steps. All four methods and seven source views."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-waveform-mixture",
+    "gpu_policy": "CUDA-empty, two CPU threads, zero GPU workers.",
+    "remote_run_root": "runs/20261107-diagnostic-Restore-waveform-mixture-sourceV-s2026092701-r01",
+    "remote_log_root": "logs/20261107-diagnostic-Restore-waveform-mixture-sourceV-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-diagnostic-Restore-waveform-mixture-sourceV-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.waveform_mixture_source --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-diagnostic-Restore-waveform-mixture-sourceV-s2026092701-r01-release/inputs.json --commit f4dab0140b598bbc3cd212ab4259138e468e1a20",
+    "stop_rule": "Wrong source/identity, unmatched moments, nonpositive covariance, nonfinite/failed posterior or smoke: preserve outputs."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "runtime_observation.json",
+    "waveform_prior.npz PRIVATE",
+    "reference.npz PRIVATE",
+    "7 source scene.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "logs/stdout.log PRIVATE",
+    "terminal.json",
+    "independent_check.json",
+    "source_truth.json aggregate only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Source mode occupancy, between-mode variance, moment error, posterior mixture probability",
+      "Per scene IQ NMSE, frozen F0 cosine, F(clean) agreement and paired true TX repair/damage"
+    ],
+    "dimensions": [
+      "same source V120",
+      "seven source views",
+      "four fixed readouts"
+    ],
+    "prediction_ref": "Private original V reference and 28 cells of frozen IQ and original head logits.",
+    "scorer_ref": "Independent recomputation from saved outputs, then separate original source V TX join by physical ID/RX/day under score.lock."
+  },
+  "rows": [
+    {
+      "row_id": "fixed_source_waveform_mixture",
+      "method": "same_moment_clean_IQ_mixture",
+      "purpose": "Isolate higher moments of clean source IQ at identical signal covariance and observation model.",
+      "config_ref": "experiments.pamf_phase3_restoration.waveform_mixture_source.py::fit_prior",
+      "resolved_config_ref": "runs/20261107-diagnostic-Restore-waveform-mixture-sourceV-s2026092701-r01/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101902
+      },
+      "seed_notes": "Fixed original record order and original F0; no new RNG or phase selection.",
+      "k": null,
+      "scenario": "Original source V120 in seven views.",
+      "optimizer": "NONE",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "CPU2; original 63000 IQ fit, V120 x7x4 plus original L_s2 x4 smoke; zero optimizer updates.",
+      "output_root": "runs/20261107-diagnostic-Restore-waveform-mixture-sourceV-s2026092701-r01",
+      "log_path": "logs/20261107-diagnostic-Restore-waveform-mixture-sourceV-s2026092701-r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.waveform_mixture_source --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-diagnostic-Restore-waveform-mixture-sourceV-s2026092701-r01-release/inputs.json --commit f4dab0140b598bbc3cd212ab4259138e468e1a20",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "runtime_observation.json",
+        "waveform_prior.npz PRIVATE",
+        "reference.npz PRIVATE",
+        "7 source scene.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "logs/stdout.log PRIVATE",
+        "terminal.json",
+        "independent_check.json",
+        "source_truth.json aggregate only"
+      ]
+    }
+  ],
+  "notes": [
+    "No target or deployment variant. Same prior overall mean/covariance exactly in both paths.",
+    "All four methods use posterior means. Shared mixture covariance uses a single Cholesky factorization with five RHS per observation.",
+    "Frozen V labels opened only after all predictions and independent verification. Source panel size is diagnostic.",
+    "Continues existing formal GPU queues without changes."
+  ],
+  "registered_at": "2026-11-07T01:21:58+00:00"
+}
