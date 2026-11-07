@@ -30,6 +30,7 @@
 - DURA 源配对相位监督：`20261107-phase1-dura-supervised-phase-source-s2026092701-r01` 使用与复矩版匹配的结构、源数据和 5 轮预算，另加合法源 clean 派生的受限相位目标，监督完整组合输出的相对相位；无 F/TX/V/目标训练，部署不读取 clean。该候选已完成 GPU 源训练，固定末轮后七景预测运行中；源理想角不可部署、不能预示身份收益。[训练记录](../../automation_reports/CV-SincNet/20261107-phase1-dura-supervised-phase-source-s2026092701-r01/report.md)。
 - DURA 长距离相关修正：`20261107-phase1-dura-lag-context-source-s2026092701-r01` 根据合法源域重复相关诊断，构造 20／40 采样点的非循环双向相位对齐差异；原 DURA 冻结，33408 参数修正器从零训练，部署只使用单记录可观测输入。固定 32768 个源 ID × 三视图、五轮，最终轮自动接入七景评分；源理想系数不可用于部署或替代身份性能。[训练记录](../../automation_reports/CV-SincNet/20261107-phase1-dura-lag-context-source-s2026092701-r01/report.md)。
 - DURA 大容量全局上下文：`20261108-phase1-dura-large-context-source-s2026092701-r01` 使用 14792706 参数的全采样局部卷积和 8 层、64 token 全窗口注意力，对冻结 DURA 作噪声门控修正。固定源数据和 20 轮预算，GPU 源训练已启动，末轮后自动七景评分。规模由方法和资源决定，不代表参数上限或性能结论。[训练记录](../../automation_reports/CV-SincNet/20261108-phase1-dura-large-context-source-s2026092701-r01/report.md)。
+- 独立大容量时频恢复：`20261108-phase1-direct-large-timefreq-source-s2026092701-r01` 以 15557090 参数网络从单条 received IQ 直接恢复，联合时间与 FFT 频率 token 的全窗口注意力；训练从零开始、不加载 DURA 或 F，固定 20 轮后自动七景评分。DURA 仅作为冻结后的源域和地面配对对照。[训练记录](../../automation_reports/CV-SincNet/20261108-phase1-direct-large-timefreq-source-s2026092701-r01/report.md)。
 
 独立源域假设检查发现，固定 DURA 对合成输入相位旋转的响应在 clean 和低城区源组之间不同：90° 旋转后，clean 两组均更接近同步旋转的 clean，而低城区两组多数记录更接近原相位。可研究基于输入条件的相位处理；合成旋转不证明实际信道分布或身份性能，不据此更改当前模型、训练或测试。[源诊断](../../automation_reports/CV-SincNet/20261107-phase1-dura-phase-nuisance-source-s2026092701-r01/analysis.md)。
 
