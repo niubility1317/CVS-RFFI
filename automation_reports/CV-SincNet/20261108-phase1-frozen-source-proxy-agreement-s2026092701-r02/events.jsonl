@@ -1,0 +1,3 @@
+{"at": "2026-11-07T22:35:38+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-07T22:36:14+00:00", "status": "RUNNING", "note": "CPU-only source diagnostic running; real-source first-batch frozen-reference smoke passed; no target queries or labels.", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-11-07T22:38:35+00:00", "status": "ANALYZED", "note": "Completed all 672 source-only frozen proxy predictions; no target reads or labels.", "evidence": ["analysis.md"], "row_id": null}
