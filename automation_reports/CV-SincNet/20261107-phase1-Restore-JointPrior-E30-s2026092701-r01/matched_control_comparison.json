@@ -1,0 +1,110 @@
+{
+  "status": "VERIFIED_MATCHED_FIXED_PREDICTIONS",
+  "spec": {
+    "candidate": [
+      "20261107-phase1-Restore-JointPrior-E30-s2026092701-r01",
+      "TF_JointPrior",
+      "4bba9df3bb2c909dc333dce0cf0102cb641b1682"
+    ],
+    "reference": [
+      "20261107-phase1-Restore-CoupledCovariance-E30-s2026092701-r01",
+      "TF_CoupledCovariance",
+      "6d3dda3c88765c38e1813ecb733948234bb63190"
+    ]
+  },
+  "combined": [
+    {
+      "count": 168000,
+      "reference_correct": 145520,
+      "candidate_correct": 145585,
+      "repairs": 243,
+      "damage": 178,
+      "net": 65,
+      "view": "clean",
+      "reference_accuracy": 86.61904761904762,
+      "candidate_accuracy": 86.6577380952381,
+      "delta_pp": 0.03869047619047619
+    },
+    {
+      "count": 168000,
+      "reference_correct": 141189,
+      "candidate_correct": 142326,
+      "repairs": 2808,
+      "damage": 1671,
+      "net": 1137,
+      "view": "practical_high",
+      "reference_accuracy": 84.04107142857143,
+      "candidate_accuracy": 84.71785714285714,
+      "delta_pp": 0.6767857142857143
+    },
+    {
+      "count": 168000,
+      "reference_correct": 138547,
+      "candidate_correct": 139628,
+      "repairs": 3141,
+      "damage": 2060,
+      "net": 1081,
+      "view": "practical_mid",
+      "reference_accuracy": 82.46845238095239,
+      "candidate_accuracy": 83.11190476190477,
+      "delta_pp": 0.643452380952381
+    },
+    {
+      "count": 168000,
+      "reference_correct": 135429,
+      "candidate_correct": 136715,
+      "repairs": 3714,
+      "damage": 2428,
+      "net": 1286,
+      "view": "practical_low_suburban",
+      "reference_accuracy": 80.6125,
+      "candidate_accuracy": 81.37797619047619,
+      "delta_pp": 0.7654761904761904
+    },
+    {
+      "count": 168000,
+      "reference_correct": 138688,
+      "candidate_correct": 139818,
+      "repairs": 3379,
+      "damage": 2249,
+      "net": 1130,
+      "view": "practical_high_urban",
+      "reference_accuracy": 82.55238095238096,
+      "candidate_accuracy": 83.225,
+      "delta_pp": 0.6726190476190477
+    },
+    {
+      "count": 168000,
+      "reference_correct": 124598,
+      "candidate_correct": 126195,
+      "repairs": 5889,
+      "damage": 4292,
+      "net": 1597,
+      "view": "practical_mid_urban",
+      "reference_accuracy": 74.16547619047618,
+      "candidate_accuracy": 75.11607142857143,
+      "delta_pp": 0.950595238095238
+    },
+    {
+      "count": 168000,
+      "reference_correct": 109692,
+      "candidate_correct": 112072,
+      "repairs": 8242,
+      "damage": 5862,
+      "net": 2380,
+      "view": "practical_low_urban",
+      "reference_accuracy": 65.29285714285714,
+      "candidate_accuracy": 66.70952380952382,
+      "delta_pp": 1.4166666666666667
+    }
+  ],
+  "candidate_cells_checked": 42,
+  "reference_cells_checked": 42,
+  "all_predictions_checked_before_truth": true,
+  "raw_DURA_decision_differences": 0,
+  "F0_source_commit": "3ff8f4b7e85b5608f5b45350aa18081499a7ef1d",
+  "new_neural_forwards": 0,
+  "optimizer_updates": 0,
+  "source_or_target_fitting": false,
+  "reference_display_name": "固定均值的耦合协方差版"
+}
