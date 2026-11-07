@@ -1,0 +1,49 @@
+{
+  "status": "VERIFIED_ORIGINAL_TRAINING_TRACE_CHECK",
+  "source_Ls": 128,
+  "source_Us": 384,
+  "fixed_draws": 20,
+  "visits": 10240,
+  "normalized_reference_overlap": {
+    "min": 0.0009143654987163028,
+    "p01": 0.013700751616010481,
+    "median": 0.044097844484840804,
+    "p95": 0.9999999999999996,
+    "max": 0.9999999999999996
+  },
+  "overlaps_below_candidate_floor": 0,
+  "canonical_main_phase_abs_degrees": {
+    "min": 9.703161363019372e-17,
+    "p01": 9.703161363019372e-17,
+    "median": 141.86949391101038,
+    "p95": 166.584691685557,
+    "max": 179.86603022800534
+  },
+  "canonical_main_amplitude": {
+    "min": 0.20216708392269517,
+    "p01": 0.569322474783982,
+    "median": 1.0,
+    "p95": 1.01830946473208,
+    "max": 1.1241205746926048
+  },
+  "first_tap_relative_to_fir_norm": {
+    "min": 2.179591312815445e-21,
+    "p01": 1.730326226161004e-20,
+    "median": 5.181458090116881e-20,
+    "p95": 1.0,
+    "max": 1.0
+  },
+  "first_tap_is_largest_rows": 1526,
+  "first_tap_canonical_phase_abs_degrees": {
+    "min": 0.0,
+    "p01": 0.0,
+    "median": 174.5678643683364,
+    "p95": 179.57495302009707,
+    "max": 179.99982972710208
+  },
+  "source_IQ_reads": 0,
+  "model_calls": 0,
+  "TX_reads": 0,
+  "V_reads": 0,
+  "target_reads": 0
+}

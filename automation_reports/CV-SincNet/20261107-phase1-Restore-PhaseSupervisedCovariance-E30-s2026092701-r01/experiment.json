@@ -1,0 +1,206 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01",
+  "group_id": "explicit-source-canonical-main-phase-recovery",
+  "display_name": "主路相位独立监督的恢复器，从零单阶段 30 轮",
+  "description": "在源均值定义的 FIR 相位坐标中，独立预测包级主路相位，用原源模拟真值监督圆周角差。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "original-ground-TriSIGSSL-Main",
+    "coherent-reference",
+    "circular-main-phase",
+    "scratch-single30",
+    "automatic-Main7"
+  ],
+  "comparison_group_id": "same-source-operator-explicit-main-phase-scratch30",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Latestuser:performanceprimary/efficiencysecondary/groundTriSIGTIME SSL sameFrawclean6eachgap<=3pp+cleanpreserved;majorGarchitecturefreedom/scratchsingle30/sourceFfeatureguidanceallowed/originalLsUs-only/OEonlyfrozendiagnostic. DefaultDURAunchanged.",
+  "code": {
+    "commit": "36b13adad5b091bf1f8f4aa7934c403e3b50d8eb",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607existingCVS-RFFI Torch2.1/NumPy2/FP32TFencoder/FP64posterior/TF32off/CPUthreads2;actualoriginalF0 3ff8/defaulthead",
+    "cwd": "releases/20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "Original R07 IQ, FIR64, main/image coefficients and noise. Original L_s/U_s mean sets the phase frame.",
+    "contract_ref": "OriginalTriSSLsource_contract/392005/rolecounts6300-56700-27000;R07train63000sameIDset androles/RX/day byID",
+    "physical_ids_ref": "R07train/physical_ids.npy roles.npy;validatedoriginalsourceLUcache IDs foralignment;officialMain source-disjoint viewindexes",
+    "label_map_ref": "Gtrainnone;frozenF0originalsixclassorder,truthonly originalCPUscorerafterallrow42cells fixed",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse VALIDATED_ONCE original R07 and G10 compatible source ID handles, no new draw, target or validation fit.",
+    "support_query_ref": "No targettraining/support/PCD/unknownrole. OriginalMain two populations168000,all7perrowfixedbefore independenttruth.",
+    "leo_config_ref": "R07sourcecache20trainrealizations/2026101912augmentation;officialMain frozen7observations",
+    "actual_training_labels": "Original L_s6300/U_s56700 simulator factors only. No TX, F0 gradients, V/OE/novel or target training.",
+    "augmentation": "OriginalR07fs25MHz/fc2.462GHz/post_sync/noEQ/reflect/refSNR30/15percentclean+sixuniform;draw1..20+1..10;sourceorder2026110102. Mainall7unchanged;no target normalization orsampling."
+  },
+  "permissions": {
+    "regime": "source-only-scratch-explicit-main-phase",
+    "query_use": "G training only original L_s/U_s cached IQ and simulator traces. Same original F0 only at source smoke and frozen Main inference.",
+    "external_method_exception": null,
+    "claim_scope": "Composite physical phase frame, learned observation angle and direct phase supervision at identical source budget. Main evaluation only after freeze."
+  },
+  "checkpoint": {
+    "initialization": "All G parameters scratch seed2026092701 and identity physical heads. No learned model ancestry. Original source-only Gaussian statistics.",
+    "sources": [
+      "DATA_ONLY original R07 L_s6300/U_s56700 source IQ and simulator factors, draw1..20+1..10",
+      "DATA_ONLY 20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01/a3a90b55a73702954c453eec9c1ad17fec24d87f original 63000 source statistics",
+      "FROZEN_F0 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d original default head, source2 smoke and frozen Main only",
+      "COMPARISON_ONLY 20261107-phase1-Restore-ModulationCovariance-E30-s2026092701-r01/3fc9201628e7602ea58c6a5fb13d6ec934513e99 scratch E30, no weights inherited",
+      "COMPARISON_ONLY 20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01/bf29554a03e28a012eaaa134f5c7b3f7856f2268 original frozen reference, no weights inherited",
+      "SOURCE_MECHANISM_ONLY 20261107-diagnostic-Restore-modulation-components-sourceV-s2026092701-r01/53901dd11e69bf90041f67bf5a6668ee89963d55 source V evaluated only"
+    ],
+    "contract_check_ref": "Original source L_s/U_s IDs, legal cached source moments and exact frozen F0. Strict new E0 and final30 state.",
+    "provenance_verdict": "Scratch original source G; no checkpoint initialization, target or source V fitting.",
+    "selection_rule": "One fixed final30/7410 candidate. Full Main before truth. No source quality gate, target feedback or reranking."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/coherent-main-phase-scratch30",
+    "gpu_policy": "CUDA-empty controller waits for 20261107-phase1-Restore-ModulationCovariance-E30-s2026092701-r01 final GPU prediction or recorded GPU-stage failure. Then GPU4/6 only, at least 12000MiB free and at most two existing compute processes, add one GPU worker. Shared CPU truth score.lock.",
+    "remote_run_root": "runs/20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01",
+    "remote_log_root": "runs/20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.phase_supervised_covariance_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 36b13adad5b091bf1f8f4aa7934c403e3b50d8eb --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Wrong legal source, prior, F0, model identity, E0 reload, missing/nonfinite gradients, posterior or child failure: preserve without automatic retry."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/training/config.json",
+    "rows/<arm>/training/smoke.json",
+    "rows/<arm>/training/smoke_E0.pt PRIVATE",
+    "rows/<arm>/training/data_schedule.npz PRIVATE",
+    "rows/<arm>/training/training.jsonl PRIVATE",
+    "rows/<arm>/training/final.pt PRIVATE",
+    "rows/<arm>/training/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE",
+    "rows/TF_PhaseSupervisedCovariance/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Original Main two populations and combined 168000×7. Six gaps <=3pp and both clean populations preserved.",
+      "Same-record true TX repairs/damage vs raw and DURA, independent comparisons to original BF and matched modulation when available.",
+      "30 epochs/7410 steps, full Action, canonical modulation and FIR, main circular loss and degrees, noise, wall time and peak memory.",
+      "1,241,898 parameters, zero F0 forwards and zero posterior solves during training updates, one FP64 IQ posterior per packet in inference."
+    ],
+    "dimensions": [
+      "original cross_rx126000 and cross_both42000 x seven",
+      "TX/RX/day/RXday",
+      "fixed seed2026092701"
+    ],
+    "prediction_ref": "Fresh G x F0 predictions for original Main all seven; frozen raw and DURA exact reused. BF paired after fixed predictions.",
+    "scorer_ref": "OriginalindependentCUDAemptyCPUscore/alltasks7fixedbeforetruth/sharedscore.lock;no trainingfeedback."
+  },
+  "rows": [
+    {
+      "row_id": "TF_PhaseSupervisedCovariance",
+      "method": "coherent-reference-explicit-main-phase-training",
+      "purpose": "Learn the global main phase directly after disentangling it from FIR rotation and local phase trajectory.",
+      "config_ref": "experiments.pamf_phase3_restoration.phase_supervised_covariance_trial.py::configuration",
+      "resolved_config_ref": "runs/20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01/rows/TF_PhaseSupervisedCovariance/training/config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Scratchmodel2026092701/sourceorder2026110102/R07builder2026101901-receiver2026101911-aug2026101912/Mainreceived2027. No trainingGaussiannoise/latent/RNGselection. Priorfullsourcepopulationfixed.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": "AdamW(weight_decay1e-4,clip1)",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Scratch30/7410; 63000 visits per epoch. Logical256/micro32, original AdamW and draw schedule, no F0 or posterior in updates.",
+      "output_root": "runs/20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01/rows/TF_PhaseSupervisedCovariance",
+      "log_path": "runs/20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01/logs/TF_PhaseSupervisedCovariance-train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.phase_supervised_covariance_trial train --root /home/szu2070436088/2510044040/CV-SincNet --commit 36b13adad5b091bf1f8f4aa7934c403e3b50d8eb --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --arm TF_PhaseSupervisedCovariance",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/training/config.json",
+        "rows/<arm>/training/smoke.json",
+        "rows/<arm>/training/smoke_E0.pt PRIVATE",
+        "rows/<arm>/training/data_schedule.npz PRIVATE",
+        "rows/<arm>/training/training.jsonl PRIVATE",
+        "rows/<arm>/training/final.pt PRIVATE",
+        "rows/<arm>/training/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE",
+        "rows/TF_PhaseSupervisedCovariance/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+      ]
+    }
+  ],
+  "notes": [
+    "Fixed source V480 mechanism: low urban blind 401, known main global phase 422, known all modulation 424. Evidence only, no V fit.",
+    "Anchor unit FIR phase by the original source mean against its own reflected FIR response. Source truth canonicalized in the same frame.",
+    "Positive packet main amplitude, zero-intercept main phase trajectory, separate image. Trainable convolutional phase head from current IQ, coherent main/image and local matched products.",
+    "Loss .1 complete Action relative MSE + .05 canonical modulation relative MSE + .02 canonical FIR shape + .1 circular phase + .001 log noise.",
+    "No full-covariance solve in updates; final deployment applies learned phase to the physical main action and solves the original Gaussian posterior.",
+    "Original Main clean and six practical, original cross_rx and cross_both, frozen Tri-SIG-TIME SSL default head, independent truth-last.",
+    "One candidate, no learned G ancestry, no target feedback, no default change. Source simulator anchor inspection is descriptive, not a release gate."
+  ],
+  "record_type": "managed_run",
+  "registered_at": "2026-11-07T02:10:58+00:00"
+}
