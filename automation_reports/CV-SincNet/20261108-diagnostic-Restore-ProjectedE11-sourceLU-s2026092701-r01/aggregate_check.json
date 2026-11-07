@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "scope": "Aggregate completeness, source flags, monotone quantiles and sample counts; no independent recomputation of neural outputs.",
+  "rows": 12,
+  "metric_rows": 72,
+  "unique_source_rows": 149,
+  "epochs": [
+    10,
+    11
+  ],
+  "source_flags": {
+    "TX_labels_read": 0,
+    "V_reads": 0,
+    "OE_reads": 0,
+    "target_inputs": 0,
+    "optimizer_updates": 0,
+    "model_state_updates": 0
+  }
+}
