@@ -25,6 +25,8 @@
 - 独立共轭相位等变恢复：`20261107-phase1-direct-circular-source-s2026092701-r01` 与上一行各自从零训练，增加局部共轭特征、保持整体相位等变；63456 参数，源数据、20 轮、冻结及七景测试预算相同。它不加载上一行权重或依据目标结果选择，DURA 不参与拟合。[训练记录](../../automation_reports/CV-SincNet/20261107-phase1-direct-circular-source-s2026092701-r01/report.md)。
 - DURA 共轭修正：`20261107-phase1-dura-circular-source-s2026092701-r01` 冻结原 DURA，并为 received、恢复输出和物理残差各自构造局部共轭特征；新修正分支 35008 参数、从零训练，固定源数据和 5 轮后自动七景评分。相位等变仅针对三个上下文共同旋转的分支，不能外推为完整 DURA 链路等变。它不继承其他候选权重，且不依据目标结果选模。[训练记录](../../automation_reports/CV-SincNet/20261107-phase1-dura-circular-source-s2026092701-r01/report.md)。
 
+独立源域假设检查发现，固定 DURA 对合成输入相位旋转的响应在 clean 和低城区源组之间不同：90° 旋转后，clean 两组均更接近同步旋转的 clean，而低城区两组多数记录更接近原相位。可研究基于输入条件的相位处理；合成旋转不证明实际信道分布或身份性能，不据此更改当前模型、训练或测试。[源诊断](../../automation_reports/CV-SincNet/20261107-phase1-dura-phase-nuisance-source-s2026092701-r01/analysis.md)。
+
 训练损失、波形 NMSE、源表示相似度和判别器损失都不是 TX 识别准确率。局部正收益不等于目标完成，任何新默认版本仍需用户指定。
 
 ## 防止间接使用地面成绩
