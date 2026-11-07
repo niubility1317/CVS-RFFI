@@ -67,8 +67,9 @@ def consumer(root, run, commit, selected, tasks, ready, start, results):
         results.put(('ERROR', run, traceback.format_exc()))
 
 
-def collect_pipeline(results, processes, batches, timeout=120):
-    expected = {(run, batch) for _, run, _ in MODELS for batch in range(batches)}
+def collect_pipeline(results, processes, batches, timeout=120, models=None):
+    models = MODELS if models is None else models
+    expected = {(run, batch) for _, run, _ in models for batch in range(batches)}
     found = {}
     deadline = time.monotonic()+timeout
     while len(found) < len(expected):
@@ -87,7 +88,7 @@ def collect_pipeline(results, processes, batches, timeout=120):
         if key not in expected or key in found:
             raise ValueError('Each expected model/batch must appear exactly once')
         found[key] = item[3]
-    return [[found[(run, batch)] for _, run, _ in MODELS] for batch in range(batches)]
+    return [[found[(run, batch)] for _, run, _ in models] for batch in range(batches)]
 
 
 def main():

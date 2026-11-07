@@ -29,11 +29,12 @@ def decode(encoded):
     return array
 
 
-def compare_details(common, by_run):
+def compare_details(common, by_run, models=None):
     """Aggregate bitwise, absolute and decision differences per tensor field."""
+    models = MODELS if models is None else models
     stats = {key: dict(compared=0, mismatched=0, max_abs=0., class_changes=0) for key in FIELDS}
     for batch, items in enumerate(common):
-        for index, (_, run, _) in enumerate(MODELS):
+        for index, (_, run, _) in enumerate(models):
             reference = by_run[run][batch]
             current = items[index]
             if len(current) != len(FIELDS) or len(reference) != len(FIELDS):
