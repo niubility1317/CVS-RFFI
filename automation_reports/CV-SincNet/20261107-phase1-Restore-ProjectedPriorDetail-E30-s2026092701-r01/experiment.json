@@ -20,10 +20,12 @@
   "replaces_run_id": null,
   "authorization": "Latestuser:performanceprimary/efficiencysecondary/groundTriSIGTIME SSL sameFrawclean6eachgap<=3pp+cleanpreserved;majorGarchitecturefreedom/scratchsingle30/sourceFfeatureguidanceallowed/originalLsUs-only/OEonlyfrozendiagnostic. DefaultDURAunchanged.",
   "code": {
-    "commit": "8cf3669c4a5d98f6c4930117952203afd56f2f6e",
+    "commit": "d38f2dfc0378ae269f733b6f9a3ea039ddf11163",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI/Torch2.1/NumPy2 bridge-safe/FP32G-F0/FP64physicalposterior/TF32off/CPUthreads2",
-    "cwd": "releases/20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01-release"
+    "cwd": "releases/20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01-GPU5-dispatch-release",
+    "scientific_code_commit": "8cf3669c4a5d98f6c4930117952203afd56f2f6e",
+    "identity_note": "Resource-only owner; all scientific stages execute original release and commit."
   },
   "data": {
     "dataset": "ManySig",
@@ -96,13 +98,15 @@
   },
   "execution": {
     "host": "N607",
-    "launch_owner": "codex/root/projected-prior-detail-scratch30",
-    "gpu_policy": "CUDA-empty controller waits 20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01 last GPU stage terminal or recorded GPU stage failure. GPU4/6 only, >=12000MiB free, existing compute <=2, add one. Single independent CPU score.lock.",
+    "launch_owner": "codex/root/projected-prior-GPU5",
+    "gpu_policy": "Normal GPU5 total cap3; prior to each own GPU worker existing<=2 and free>=12000MiB.",
     "remote_run_root": "runs/20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01",
     "remote_log_root": "runs/20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01/logs",
     "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01",
-    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.projected_prior_detail_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 8cf3669c4a5d98f6c4930117952203afd56f2f6e --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
-    "stop_rule": "Invalid source/F0 identity, collision, nonfinite loss, posterior relative residual >1e-8, gradient/smoke/reload or worker failure: preserve. First actual source2 smoke, then E30 and all Main."
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.projected_prior_gpu5_dispatch --root /home/szu2070436088/2510044040/CV-SincNet --legacy-release /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01-release --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --commit d38f2dfc0378ae269f733b6f9a3ea039ddf11163",
+    "stop_rule": "Only exact CUDA-empty childless queued owner with no submitted stages or training may retire. Original source smoke then scratch30 and full Main7. Failures preserve artifacts and do not restart.",
+    "original_controller_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.projected_prior_detail_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 8cf3669c4a5d98f6c4930117952203afd56f2f6e --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "original_scientific_CWD": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01-release"
   },
   "expected_artifacts": [
     "launch.json",
@@ -124,7 +128,9 @@
     "rows/<arm>/results.json",
     "complete.json",
     "logs/*.log PRIVATE",
-    "rows/TF_ProjectedPriorDetail/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+    "rows/TF_ProjectedPriorDetail/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only",
+    "launch.json actual owner",
+    "logs/run/resource_handover_GPU5.json original queue retirement"
   ],
   "metrics_plan": {
     "metric_names": [
@@ -199,7 +205,10 @@
     "Proposal comes from current IQ and detached original posterior only. Deployment adds (I-KA) to the proposed mean shift; source clean never enters inference.",
     "Train prior using the counterfactual source IQ with exact predicted-operator shrinkage removed by the proposal. F0 guidance uses continuous fused160.",
     "One single-stage optimizer, independent gradients and clipping, no old G weights, no F head replacement.",
-    "Original same F0, raw and DURA, complete Main two populations x7, independent CPU truth-last, no default change."
+    "Original same F0, raw and DURA, complete Main two populations x7, independent CPU truth-last, no default change.",
+    "Resource-only schedule change; original L_s/U_s, F guidance, architecture, seed, 30 epochs, Main7 and truth-last remain fixed.",
+    "Original serial GPU4/6 queue changes to independent normal GPU5 capacity. No other candidate score or target value used for scheduling.",
+    "Eleven focused existing/new dispatcher tests pass; original model review and smoke remain in force."
   ],
   "record_type": "managed_run",
   "registered_at": "2026-11-07T02:46:12+00:00"

@@ -1,3 +1,4 @@
 {"at": "2026-11-07T02:46:12+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-07T02:47:10+00:00", "status": "QUEUED", "note": "VERIFIED controller waits PhaseSupervisedCovariance last GPU stage, original source smoke and scratch30/Main pending.", "evidence": ["queue_evidence.json"], "row_id": "TF_ProjectedPriorDetail"}
 {"at": "2026-11-07T02:47:20+00:00", "status": "QUEUED", "note": "VERIFIED controller waits PhaseSupervisedCovariance last GPU stage, original source smoke and scratch30/Main pending.", "evidence": ["queue_evidence.json"], "row_id": null}
+{"at": "2026-11-07T16:38:44+00:00", "status": "QUEUED", "note": "原科学代码、数据、网络和从零30轮/7410步保持，独立正常GPU5容量允许与相位版并行；总进程最多3，启动前已有最多2且剩余显存至少12000 MiB。只在核实原队列无子进程、未提交任何训练或预测时交接；不读取其他候选得分来调度。原真实源检查、完整七景和独立truth-last照常执行。", "evidence": ["experiment.json"], "row_id": null}

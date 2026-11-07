@@ -31,3 +31,9 @@
 ## N607 后验约束条件先验版排队已核实
 
 VERIFIED / QUEUED。实际代码 8cf3669c4a5d98f6c4930117952203afd56f2f6e，控制器 PID 3965491 在线，实际工作目录、命令、CUDA 空环境和日志已核对。发布包 SHA 一致，远端编译通过。等待主路相位监督版最后一项 GPU 阶段终止，再按 GPU4/6 原准入条件启动。真实源检查、训练和 Main 均待执行。
+
+## 使用常规 GPU5 的原方案资源交接
+
+原科学代码、数据、网络和从零30轮/7410步保持，独立正常GPU5容量允许与相位版并行；总进程最多3，启动前已有最多2且剩余显存至少12000 MiB。只在核实原队列无子进程、未提交任何训练或预测时交接；不读取其他候选得分来调度。原真实源检查、完整七景和独立truth-last照常执行。
+
+控制代码：`d38f2dfc0378ae269f733b6f9a3ea039ddf11163`；科学代码：`8cf3669c4a5d98f6c4930117952203afd56f2f6e`。命令：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.projected_prior_gpu5_dispatch --root /home/szu2070436088/2510044040/CV-SincNet --legacy-release /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01-release --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --commit d38f2dfc0378ae269f733b6f9a3ea039ddf11163`。
