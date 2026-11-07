@@ -45,7 +45,7 @@ def factory(arm):configuration(arm);return scratch_covariance_detail(2026092701)
 
 def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.bind_prior,smoke_check=None,
           training_readout=None,smoke_gradient_check=None,training_trace=False,training_posterior_multiplier=1,
-          technical_resume=None,training_F0_multiplier=1,source_perturbed_F0_multiplier=0):
+          technical_resume=None,training_F0_multiplier=1,source_perturbed_F0_multiplier=0,additional_prior_keys=()):
     started=time.perf_counter();c=validate_source(read(args.inputs));old,roles=trial.source(args)
     cfg=config_for(args.arm);G=build(args.arm);prior_identity=bind_prior(args.root,G.physical);G=G.to('cuda:0')
     F,identity=load_F0(c,'cuda:0');trial.main_eval.valid_identity(identity);scale=load_scale(args.root).to('cuda:0')
@@ -109,7 +109,7 @@ def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.b
     rng=np.random.default_rng(2026110102);orders=np.stack([rng.permutation(63000) for _ in range(30)]).astype(np.int32)
     draws=cfg['source_draws']
     with (out/'data_schedule.npz').open('xb') as f:np.savez(f,orders=orders,draws=draws)
-    prior={k:G.physical.state_dict()[k].clone() for k in ['prior_mean','prior_covariance']};update=0;resume_epoch=0;parent_rows=[]
+    prior={k:G.physical.state_dict()[k].clone() for k in ('prior_mean','prior_covariance',*additional_prior_keys)};update=0;resume_epoch=0;parent_rows=[]
     if technical_resume is not None:
         parent=technical_resume['training'];resume_epoch=technical_resume['epoch']
         expected_parent=dict(technical_resume['config'],code_commit=technical_resume['commit'],
