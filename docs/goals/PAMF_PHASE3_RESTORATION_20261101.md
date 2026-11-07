@@ -784,3 +784,7 @@ VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30�
 ## 2026-11-07 三类最终协方差源V与Main对照
 
 VERIFIED：三版final30的固定源V480×7诊断完整完成，315指标组/315配对组通过，raw clean474/480。耦合版相对非负方差版中/低档城区源V净+14/+4，同一科学权重的Main却净−1412/−3015。源端真实TX局部收益不保证跨RX测试收益；源低城区85.0%本身也距源raw clean98.75%有13.75pp差距。零新训练、V拟合或目标预测，不把差异单独归因于某一种RX机制，其他已登记候选保持。 [完整源验证及Main对照](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-CovarianceFamily-final30-sourceV-s2026092701-r01/analysis.md)
+
+## 2026-11-07 源方向响应保持版单阶段30轮
+
+VERIFIED / RUNNING。新响应保持版已在GPU6按原授权准入，实际PID/CWD/科学命令/GPU与源检查日志增长核实。真实原F0/source2、响应项单独到均值/协方差两头的梯度、物理隔离、低秩训练/原dense部署一致性及严格E0重载均通过。1471463参数与原JointPrior E0保持，增加.01响应损失，固定1%源RMS四方向逐记录/逐轮轮换；原L_s/U_s、从零单阶段30/7410和自动Main七景不变。训练后验实际调用翻倍并明确计数，F0在线行数不增加；微批实测提速不冒充完整训练提速。尚无本版Main成绩。 [预登记与真实启动](../../automation_reports/CV-SincNet/20261107-phase1-Restore-ResponseJointPrior-E30-s2026092701-r01/report.md)
