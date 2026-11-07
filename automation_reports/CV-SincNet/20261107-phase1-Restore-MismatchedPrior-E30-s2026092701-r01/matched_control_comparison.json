@@ -1,0 +1,20 @@
+{
+  "status": "PENDING_FIXED_COMPARISON",
+  "role_not_complete": "reference",
+  "reason": "fixed final30 training absent",
+  "spec": {
+    "candidate": [
+      "20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01",
+      "TF_MismatchedPrior",
+      "14e7315d6da5d6fe242e7568f20c97ade064e8d9"
+    ],
+    "reference": [
+      "20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01",
+      "TF_ProjectedPriorDetail",
+      "8cf3669c4a5d98f6c4930117952203afd56f2f6e"
+    ]
+  },
+  "new_truth_reads": 0,
+  "new_neural_forwards": 0,
+  "reference_display_name": "原条件均值恢复版"
+}

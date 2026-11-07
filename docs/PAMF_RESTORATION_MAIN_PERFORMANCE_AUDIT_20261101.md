@@ -285,3 +285,7 @@ VERIFIED：三版final30的固定源V480×7诊断完整完成，315指标组/315
 ## 2026-11-07 TF_CoordinateMAPDetail 完整Main结果
 
 VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30核实；原Main42单元全部预测后独立truth-last，4阶段exit0且进程均已退出。1302组/868raw配对及DURA/clean配对复算PASS，最大差1.22e-14，baseline判决差0。六景83.677976/81.066667/78.604762/78.305952/59.244048/46.719643%，1/6；clean两个总体净-100/-30，联合验收False。原科学代码/模型/数据/预算保持，默认DURA不变，其他已登记候选继续。 [完整分析](../automation_reports/CV-SincNet/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01/analysis.md)
+
+## 2026-11-07 TF_MismatchedPrior 完整Main结果
+
+VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30核实；原Main42单元全部预测后独立truth-last，4阶段exit0且进程均已退出。1302组/868raw配对及DURA/clean配对复算PASS，最大差1.2e-14，baseline判决差0。六景83.727976/82.407143/80.827976/82.618452/76.281548/69.490476%，1/6；clean两个总体净-37/-46，联合验收False。原科学代码/模型/数据/预算保持，默认DURA不变，其他已登记候选继续。 [完整分析](../automation_reports/CV-SincNet/20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01/analysis.md)
