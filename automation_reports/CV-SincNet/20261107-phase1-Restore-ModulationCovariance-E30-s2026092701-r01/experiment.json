@@ -20,10 +20,12 @@
   "replaces_run_id": null,
   "authorization": "Latestuser:performanceprimary/efficiencysecondary/groundTriSIGTIME SSL sameFrawclean6eachgap<=3pp+cleanpreserved;majorGarchitecturefreedom/scratchsingle30/sourceFfeatureguidanceallowed/originalLsUs-only/OEonlyfrozendiagnostic. DefaultDURAunchanged.",
   "code": {
-    "commit": "3fc9201628e7602ea58c6a5fb13d6ec934513e99",
+    "commit": "bf6ab827408f1d20f4e8bbcfcf511d1a118cbc41",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607existingCVS-RFFI Torch2.1/NumPy2/FP32TFencoder/FP64posterior/TF32off/CPUthreads2;actualoriginalF0 3ff8/defaulthead",
-    "cwd": "releases/20261107-phase1-Restore-ModulationCovariance-E30-s2026092701-r01-release"
+    "cwd": "releases/20261107-phase1-Restore-ModulationCovariance-E30-s2026092701-r01-GPU5-registered-dispatch-release",
+    "scientific_code_commit": "3fc9201628e7602ea58c6a5fb13d6ec934513e99",
+    "identity_note": "Resource-only dispatcher. All actual scratch training, freeze, prediction and CPU truth scoring run unchanged original release/commit."
   },
   "data": {
     "dataset": "ManySig",
@@ -95,13 +97,15 @@
   },
   "execution": {
     "host": "N607",
-    "launch_owner": "codex/root/receiver-modulation-scratch30",
-    "gpu_policy": "CUDA-empty controller waits for 20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01 last GPU stage terminal or recorded GPU-stage failure; then GPU4/6 free>=12000MiB, existing compute<=2, add one worker. Shared CPU score lock.",
+    "launch_owner": "codex/root/registered-modulation-GPU5-handover",
+    "gpu_policy": "GPU5 normal total cap3, existing<=2/free>=12000MiB before one own GPU worker. Modulation first; Mismatched waits actual Modulation last GPU terminal, not its score. No cap5 outside GPU6; healthy jobs preserved.",
     "remote_run_root": "runs/20261107-phase1-Restore-ModulationCovariance-E30-s2026092701-r01",
     "remote_log_root": "runs/20261107-phase1-Restore-ModulationCovariance-E30-s2026092701-r01/logs",
     "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-phase1-Restore-ModulationCovariance-E30-s2026092701-r01",
-    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.modulation_covariance_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 3fc9201628e7602ea58c6a5fb13d6ec934513e99 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-ModulationCovariance-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
-    "stop_rule": "Wrong legal source, prior, F0, model identity, E0 reload, missing/nonfinite gradients, posterior or child failure: preserve without automatic retry."
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.registered_restoration_dispatch --candidate modulation --root /home/szu2070436088/2510044040/CV-SincNet --legacy-release /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-ModulationCovariance-E30-s2026092701-r01-release --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --commit bf6ab827408f1d20f4e8bbcfcf511d1a118cbc41",
+    "stop_rule": "Only exact CUDA-empty childless old owner with no submitted stages/training/output predictions may be retired. Verify actual death first. Preserve old skeleton/launch/logs. Original source2 actual G/F0/gradient/reload smoke runs first, then original scratch30/7410/Main7/truth-last. Technical failure preserves, no automatic restart or unrelated actions.",
+    "original_controller_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.modulation_covariance_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 3fc9201628e7602ea58c6a5fb13d6ec934513e99 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-ModulationCovariance-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "original_scientific_CWD": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-ModulationCovariance-E30-s2026092701-r01-release"
   },
   "expected_artifacts": [
     "launch.json",
@@ -123,7 +127,8 @@
     "rows/<arm>/results.json",
     "complete.json",
     "logs/*.log PRIVATE",
-    "rows/TF_ModulationCovariance/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+    "rows/TF_ModulationCovariance/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only",
+    "resource_controller.json: actual owner and both code identities"
   ],
   "metrics_plan": {
     "metric_names": [
@@ -199,7 +204,11 @@
     "One single-stage source run, no learned G ancestor, no F0 guidance, no analytic phase grid in deployment.",
     "Full original Main with frozen F0, original source-only checkpoint final30, no target-dependent choices.",
     "Independent physical/operational review P0/P1 only, 12 focused tests. Real L_s/U_s no-query source2 smoke first.",
-    "Third queued controller uses no GPU until the earlier C4 and phase-only GPU stages are over."
+    "Third queued controller uses no GPU until the earlier C4 and phase-only GPU stages are over.",
+    "Resource-only update, no new scientific candidate, source/target score-based selection, architecture/data/loss/seed/budget change, or new checkpoint ancestor.",
+    "Normal GPU5 serial schedule: modulation first and mismatched after its final GPU stage, independent of score. Both keep original run roots and real terminal names for existing successors.",
+    "Old unstarted output skeleton and launch.json retained. New resource_controller.json is exclusive; any submitted work or training output blocks handover.",
+    "Nine focused tests PASS (five registered-resource and four existing packet-resource checks) plus one resource-only independent P0/P1 review PASS. Original model reviews not repeated."
   ],
   "record_type": "managed_run",
   "registered_at": "2026-11-07T01:00:14+00:00"

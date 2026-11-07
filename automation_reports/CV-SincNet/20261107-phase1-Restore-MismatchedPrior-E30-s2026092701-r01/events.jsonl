@@ -1,3 +1,4 @@
 {"at": "2026-11-07T04:08:54+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-07T04:09:35+00:00", "status": "QUEUED", "note": "VERIFIED controller waits PacketInverseFilter last GPU stage, original source smoke and scratch30/Main pending.", "evidence": ["queue_evidence.json"], "row_id": "TF_MismatchedPrior"}
 {"at": "2026-11-07T04:09:44+00:00", "status": "QUEUED", "note": "VERIFIED controller waits PacketInverseFilter last GPU stage, original source smoke and scratch30/Main pending.", "evidence": ["queue_evidence.json"], "row_id": null}
+{"at": "2026-11-07T09:24:28+00:00", "status": "QUEUED", "note": "Resource-only normal GPU5 serial route, unchanged scratch30/Main7 science; exact unstarted owner handover, no score-based dependency.", "evidence": ["experiment.json"], "row_id": null}
