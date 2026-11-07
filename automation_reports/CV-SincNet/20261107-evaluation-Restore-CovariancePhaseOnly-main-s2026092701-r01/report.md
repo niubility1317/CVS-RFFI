@@ -1,5 +1,7 @@
 # 冻结 CovarianceMAP 的整体相位校正，原 Main 七景
 
+**六景0/6；clean两总体净-1900/-133。** [完整性能与净纠错](analysis.md)。
+
 - run_id：`20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01`
 - group_id：`frozen-CovarianceMAP-phase-only-main`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
@@ -21,7 +23,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+原Main双总体七景与独立复算已完成，完整性能、逐组和修复/损伤见analysis.md。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -43,3 +45,7 @@ VERIFIED / QUEUED。控制器 PID 3845271 在线，实际工作目录、命令�
 VERIFIED / RUNNING。GPU3原准入已有2个计算进程、剩余19873 MiB，符合总数最多3个和至少12000 MiB条件。精确核实后仅交接旧CUDA空、无GPU阶段的本run控制器，旧控制器已终止；原launch.json和输出保持。新调度器 `5ba8f9b2649e81efd58d5fd8597dbb97f09c4dea` 已启动一个实际GPU预测进程，预测和后续评分从原release执行 `d17c50dceaba5aed58c9eeaafc433b0a5fda5a20`，真实原BF/F0/两条L_s和相位路径等价检查通过，日志已增长。固定的原Main双总体七景继续，全部预测后才独立truth-last；当前尚无正式成绩。既有后继队列仍读取本run真实GPU阶段终态，不伪造完成。
 
 [资源交接与真实模型证据](resource_launch_evidence.json)
+
+## 原 Main 七景完成并独立复算
+
+VERIFIED / ANALYZED。原Main两总体168000条x七景、四流56单元全预测后独立truth-last，三阶段真实exit0且当前控制器/子进程均已退出。全部1736组、1302raw配对及BF/DURA/clean额外配对独立复算通过，最大指标差1.24e-14，三条控制流复用判决差0。六景依次83.427976/81.999405/80.531548/82.244048/75.323214/67.878571%，0/6；clean跨接收机净-1900、跨接收机且跨日期净-133。本对照六景与两个clean联合验收未通过。低档城区67.878571%，距140345条门槛少26309条正确。这是同一冻结原BF权重的整体相位推理对照，0新训练；实际预测/评分仍原代码，资源调度变化没有改变模型、数据或矩阵。后续在训候选保持原计划，默认DURA保持。

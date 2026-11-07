@@ -720,3 +720,7 @@ VERIFIED / RUNNING。GPU3原准入已有2个计算进程、剩余19873 MiB，符
 VERIFIED：耦合协方差版已完成3/30轮、741/7410次更新，原63000条源记录完整曝光3次，累计189000次，其中L_s18900、U_s170100；冻结F0连续特征在线前向189000条。逐一核实全部3轮日志/源顺序排列，E03保存模型与优化器有限、AdamW步数741，两个分支和输出头确实更新，原mean/C/modes缓冲不变。方向耦合RMS在三轮均非零，正对角映射平均斜率约0.35至0.71，未出现正方差版那种近零增量/梯度现象。以上仅说明该分支已参与学习，不能当作Main识别收益。
 
 [正式对照和交接证据](../../automation_reports/CV-SincNet/20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01/report.md)；[耦合版完整训练分析](../../automation_reports/CV-SincNet/20261107-phase1-Restore-CoupledCovariance-E30-s2026092701-r01/training_progress_E03.md)。六景距raw clean不超过3个百分点的主目标仍未达成，默认DURA保持。
+
+## 2026-11-07 冻结整体相位对照的完整 Main 结果
+
+VERIFIED / ANALYZED。原Main两总体168000条x七景、四流56单元全预测后独立truth-last，三阶段真实exit0且当前控制器/子进程均已退出。全部1736组、1302raw配对及BF/DURA/clean额外配对独立复算通过，最大指标差1.24e-14，三条控制流复用判决差0。六景依次83.427976/81.999405/80.531548/82.244048/75.323214/67.878571%，0/6；clean跨接收机净-1900、跨接收机且跨日期净-133。本对照六景与两个clean联合验收未通过。低档城区67.878571%，距140345条门槛少26309条正确。这是同一冻结原BF权重的整体相位推理对照，0新训练；实际预测/评分仍原代码，资源调度变化没有改变模型、数据或矩阵。后续在训候选保持原计划，默认DURA保持。 [完整结果和全部分组](../../automation_reports/CV-SincNet/20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01/analysis.md)

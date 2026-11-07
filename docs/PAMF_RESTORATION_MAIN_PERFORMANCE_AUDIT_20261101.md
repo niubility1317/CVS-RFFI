@@ -245,3 +245,7 @@ VERIFIED / ANALYZED。固定E02源训练70条（实际全部L_s，五RX×七scen
 ## 2026-11-07 源协方差固定基的表达限制
 
 VERIFIED / ANALYZED。只读既有源矩完成10单元，零新IQ/标签/V/OE/target/拟合/模型读取。global本底五RX等权：独立64约75.70%，独立512约75.91%，耦合64理想空间约98.35%的协方差差异Frobenius能量；不是识别率或IQ恢复比例。10个矩阵直接重建独立复算通过且耦合替换均正定。源端相对方差谱也超出当前0.1至1.9范围。支持后续研究方向间耦合与更充分的正定伸缩，不以该上限代替网络学习或正式Main收益。 [源统计分析](../automation_reports/CV-SincNet/20261107-analysis-Restore-source-covariance-capacity-s2026110707-r01/analysis.md)
+
+## 2026-11-07 冻结整体相位对照的完整 Main 结果
+
+VERIFIED / ANALYZED。原Main两总体168000条x七景、四流56单元全预测后独立truth-last，三阶段真实exit0且当前控制器/子进程均已退出。全部1736组、1302raw配对及BF/DURA/clean额外配对独立复算通过，最大指标差1.24e-14，三条控制流复用判决差0。六景依次83.427976/81.999405/80.531548/82.244048/75.323214/67.878571%，0/6；clean跨接收机净-1900、跨接收机且跨日期净-133。本对照六景与两个clean联合验收未通过。低档城区67.878571%，距140345条门槛少26309条正确。这是同一冻结原BF权重的整体相位推理对照，0新训练；实际预测/评分仍原代码，资源调度变化没有改变模型、数据或矩阵。后续在训候选保持原计划，默认DURA保持。 [完整结果和全部分组](../automation_reports/CV-SincNet/20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01/analysis.md)

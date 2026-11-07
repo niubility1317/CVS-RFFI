@@ -1,0 +1,36 @@
+{
+  "status": "VERIFIED_FULL_MAIN_AND_INDEPENDENT_RECOMPUTATION",
+  "prediction_and_score_commit": "d17c50dceaba5aed58c9eeaafc433b0a5fda5a20",
+  "dispatch_commit": "5ba8f9b2649e81efd58d5fd8597dbb97f09c4dea",
+  "new_G_training_updates": 0,
+  "all_two_populations_seven_views_complete": true,
+  "all_56_prediction_cells_checked_before_truth": true,
+  "no_live_controller_or_child": true,
+  "all_three_stages_exit_zero": true,
+  "all_source_smokes_pass": true,
+  "original_BF_and_F0_identity_verified": true,
+  "baseline_decision_differences": 0,
+  "all_score_groups_checked": 1736,
+  "all_raw_pair_groups_checked": 1302,
+  "max_abs_metric_error": 1.2434497875801753e-14,
+  "goal_acceptance": {
+    "six_passing": 0,
+    "six_view_pass": {
+      "practical_high": false,
+      "practical_mid": false,
+      "practical_low_suburban": false,
+      "practical_high_urban": false,
+      "practical_mid_urban": false,
+      "practical_low_urban": false
+    },
+    "scene_threshold_count": 140345,
+    "scene_threshold_accuracy": 83.53869047619048,
+    "clean_net_by_population": {
+      "cross_rx": -1900,
+      "cross_both": -133
+    },
+    "exact_joint_acceptance": false
+  },
+  "default_DURA_changed": false,
+  "whole_research_goal_complete": false
+}
