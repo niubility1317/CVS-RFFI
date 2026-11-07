@@ -1,0 +1,3 @@
+{"at": "2026-11-07T22:55:08+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-07T22:55:49+00:00", "status": "RUNNING", "note": "CPU source physical line diagnostic started; eight real source records passed smoke; no F or target.", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-11-07T22:56:43+00:00", "status": "ANALYZED", "note": "All 672 source-only records completed and grouped; no F, TX truth, V or target.", "evidence": ["analysis.md"], "row_id": null}
