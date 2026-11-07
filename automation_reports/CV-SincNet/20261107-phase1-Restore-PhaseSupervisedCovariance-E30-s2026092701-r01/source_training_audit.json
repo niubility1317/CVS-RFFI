@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "epochs": 30,
+  "updates": 7410,
+  "source_Ls": 189000,
+  "source_Us": 1701000,
+  "max_loss_composition_error": 2.861579251334234e-09,
+  "last_metrics": {
+    "loss": 0.012898540574525084,
+    "action_matrix_relative_mse": 0.044091096085688425,
+    "noise_log_mse": 0.3908255301657177,
+    "modulation_relative_mse": 0.06273590536368272,
+    "fir_shape_squared_error": 0.08186895639366573,
+    "main_phase_circular_loss": 0.03324430873942753,
+    "main_phase_absolute_degrees": 7.389629197862413,
+    "predicted_noise": 0.029460803490841674
+  },
+  "elapsed_seconds": 3957.3790232818574,
+  "scientific_commit": "36b13adad5b091bf1f8f4aa7934c403e3b50d8eb",
+  "source_truth_reads": 0,
+  "target_reads": 0,
+  "prediction_submitted": false
+}
