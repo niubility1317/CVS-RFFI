@@ -1,0 +1,55 @@
+{
+  "status": "VERIFIED_ORIGINAL_SOURCE_TRACE_ONLY",
+  "physical_records": 512,
+  "draws": 20,
+  "visits": 10240,
+  "original_IQ_reads": 0,
+  "TX_reads": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "NN_calls": 0,
+  "source_roles": {
+    "L_s": 128,
+    "U_s": 384
+  },
+  "summary": {
+    "main": {
+      "identically_zero_rows": 0,
+      "nonzero_rows": 10240,
+      "relative_amplitude_range": {
+        "median": 7.64193902393779e-08,
+        "p95": 1.1381140316863767e-07,
+        "maximum": 1.1889768199211216e-07
+      },
+      "linear_residual_deg_rms": {
+        "median": 0.03538514554740981,
+        "p95": 0.14549804454315227,
+        "maximum": 0.43853103192423665
+      },
+      "patch_residual_deg_rms": {
+        "median": 0.006553929486749131,
+        "p95": 0.02337520614166946,
+        "maximum": 0.04070129402369515
+      }
+    },
+    "image": {
+      "identically_zero_rows": 1579,
+      "nonzero_rows": 8661,
+      "relative_amplitude_range": {
+        "median": 8.963240052472035e-08,
+        "p95": 1.1121791889270552e-07,
+        "maximum": 1.1784861705506618e-07
+      },
+      "linear_residual_deg_rms": {
+        "median": 0.21153845576493854,
+        "p95": 0.3593408027770412,
+        "maximum": 0.7909628389578839
+      },
+      "patch_residual_deg_rms": {
+        "median": 0.04205064541545806,
+        "p95": 0.049165660778762985,
+        "maximum": 0.0627463558022926
+      }
+    }
+  }
+}
