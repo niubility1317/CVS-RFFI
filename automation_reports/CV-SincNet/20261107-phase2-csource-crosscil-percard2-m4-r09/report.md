@@ -35,3 +35,7 @@ Drain the quarantined C dispatcher and resume unchanged work with a maximum of t
 ## 2026-11-07 安全降额接管已完成
 
 原控制器已退出，23 个旧 worker 自然排空。真实源 checkpoint 的 21 组 source-only/no-query smoke 通过；独立核实复用 35,687 个完整任务、222,137 份硬链接预测及 19 条 pilot 评分引用。两项祖先隔离各保留 10 份 partial。新控制器 PID 4078896，16 个真实 worker，GPU 0–7 各 2 个；B 组控制器和 watcher 已退出。本轮未启用完整预测屏障或评分。新 worker 已派发，首次读取尚无新增预测，继续观察实际产物增长。预登记的科学配置、训练预算和两组限制保持；不与未计入上限的 B 队列并行。
+
+## 接管后预测增长
+
+独立读回已闭合 35723 项，比接管时复用的 35,687 项增加 36 项；每卡至多两个本任务 worker，failed=[]，两项祖先隔离未解除。完整预测屏障和评分未启动。
