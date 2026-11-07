@@ -548,3 +548,7 @@ VERIFIED：实际代码62cf25c161afe1410ad6250249931389d9210a1c，复用冻结�
 低档城区的 120 条源记录中，原盲估、相位校正、相位加漂移和已知模拟路径的 F(clean) 判决一致率依次为 81.67%、86.67%、76.67% 和 90.00%。两条校正的配对修复／损伤分别为 7／1 和 4／10。
 
 源端只作冻结验证，主验收仍为固定原 Main 七景和真实 TX。 [源端诊断](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-observed-phase-ramp-sourceV-s2026092701-r01/analysis.md)
+
+## 2026-11-07 整体相位的 Main 冻结推理对照
+
+VERIFIED / QUEUED。控制器 PID 3845271 在线，实际工作目录、命令、代码和 CUDA 空环境已核对。发布包 SHA 一致，远端编译通过。固定等待 C4 最后一个 GPU 阶段终止，再按原许可 GPU4/6 条件开始。快照时尚无本版 GPU 预测或真实源检查。完全复用原 E30 权重，只新增整体相位的冻结推理。 原 Main 双总体七景对照原 BF、DURA、raw；全部预测固定后由独立 CPU 评分。 [正式实验](../../automation_reports/CV-SincNet/20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01/report.md)
