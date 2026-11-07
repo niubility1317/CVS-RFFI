@@ -34,6 +34,7 @@ from experiments.phase1_dura_orthogonal.direct_circular_recovery import DirectCi
 from experiments.phase1_dura_orthogonal.dura_circular_recovery import DuraCircularRecovery
 from experiments.phase1_dura_orthogonal.lag_context_dura import LagContextDura, LAGS as LAG_CONTEXT_LAGS
 from experiments.phase1_dura_orthogonal.large_context_dura import LargeContextDura, WIDTH as LARGE_WIDTH, LAYERS as LARGE_LAYERS, HEADS as LARGE_HEADS, TOKENS as LARGE_TOKENS, SCALE as LARGE_SCALE
+from experiments.phase1_dura_orthogonal.large_context_stable import StableLargeContextDura
 from experiments.phase1_dura_orthogonal.large_direct_timefreq import LargeDirectTimeFreq, WIDTH as DIRECT_TF_WIDTH, LAYERS as DIRECT_TF_LAYERS, HEADS as DIRECT_TF_HEADS, TOKENS as DIRECT_TF_TOKENS, SCALE as DIRECT_TF_SCALE
 from experiments.phase1_dura_orthogonal.large_source_tail import tail_iq_penalty, WEIGHT as SOURCE_TAIL_WEIGHT, FRACTION as SOURCE_TAIL_FRACTION
 from experiments.phase1_dura_orthogonal.conditional_phase_dura import ConditionalPhaseDura
@@ -311,8 +312,8 @@ def main():
     parser.add_argument('--source-context-cache', type=Path)
     parser.add_argument('--save-source-context-cache', type=Path)
     parser.add_argument('--deterministic', action='store_true')
-    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_direct_phase', 'wide_direct_circular', 'wide_conditional_flow_t0', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_antithetic_flow', 'wide_phase_equivariant_guard', 'wide_dura_circular', 'wide_conditional_phase', 'wide_conditional_phase_moments', 'wide_supervised_phase', 'wide_lag_context', 'wide_large_context', 'wide_large_context_tail', 'wide_large_direct_timefreq'), default='iq')
-    parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir', 'dura_reversible', 'conditional_iq_flow', 'direct_iq_flow', 'direct_phase_recovery', 'direct_circular_recovery', 'dura_envelope', 'dura_quartic', 'antithetic_iq_flow', 'phase_equivariant_dura', 'dura_circular_recovery', 'conditional_phase_dura', 'conditional_phase_moments', 'phase_supervised_dura', 'lag_context_dura', 'large_context_dura', 'large_direct_timefreq'), default='orthogonal')
+    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_direct_phase', 'wide_direct_circular', 'wide_conditional_flow_t0', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_antithetic_flow', 'wide_phase_equivariant_guard', 'wide_dura_circular', 'wide_conditional_phase', 'wide_conditional_phase_moments', 'wide_supervised_phase', 'wide_lag_context', 'wide_large_context', 'wide_large_context_tail', 'wide_large_context_stable', 'wide_large_direct_timefreq'), default='iq')
+    parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir', 'dura_reversible', 'conditional_iq_flow', 'direct_iq_flow', 'direct_phase_recovery', 'direct_circular_recovery', 'dura_envelope', 'dura_quartic', 'antithetic_iq_flow', 'phase_equivariant_dura', 'dura_circular_recovery', 'conditional_phase_dura', 'conditional_phase_moments', 'phase_supervised_dura', 'lag_context_dura', 'large_context_dura', 'large_context_stable', 'large_direct_timefreq'), default='orthogonal')
     args = parser.parse_args()
     if (args.architecture == 'phase_equivariant_dura') != (args.objective == 'wide_phase_equivariant_guard'):
         raise ValueError('Phase-equivariant recovery requires its matching source objective')
@@ -390,7 +391,9 @@ def main():
         raise ValueError('Phase moment training requires fixed source context')
     if (args.architecture == 'large_context_dura') != (args.objective in ('wide_large_context', 'wide_large_context_tail')):
         raise ValueError('Large-context architecture requires matching objective')
-    if args.objective in ('wide_large_context', 'wide_large_context_tail') and not args.smoke and not args.source_context_cache:
+    if (args.architecture == 'large_context_stable') != (args.objective == 'wide_large_context_stable'):
+        raise ValueError('Stable large-context architecture requires matching objective')
+    if args.objective in ('wide_large_context', 'wide_large_context_tail', 'wide_large_context_stable') and not args.smoke and not args.source_context_cache:
         raise ValueError('Large-context training requires fixed source context')
     if (args.architecture == 'lag_context_dura') != (args.objective == 'wide_lag_context'):
         raise ValueError('Lag-context architecture requires matching objective')
@@ -450,7 +453,7 @@ def main():
     torch.backends.cudnn.allow_tf32 = False
     torch.manual_seed(2026110612)
     ids, rx, scene, _, source_received, source_clean = source_inputs(args.root)
-    fit_size = WIDE_FIT_SIZE if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_direct_phase', 'wide_direct_circular', 'wide_conditional_flow_t0', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_antithetic_flow', 'wide_phase_equivariant_guard', 'wide_dura_circular', 'wide_conditional_phase', 'wide_conditional_phase_moments', 'wide_supervised_phase', 'wide_lag_context', 'wide_large_context', 'wide_large_context_tail', 'wide_large_direct_timefreq') else FIT_SIZE
+    fit_size = WIDE_FIT_SIZE if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_direct_phase', 'wide_direct_circular', 'wide_conditional_flow_t0', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_antithetic_flow', 'wide_phase_equivariant_guard', 'wide_dura_circular', 'wide_conditional_phase', 'wide_conditional_phase_moments', 'wide_supervised_phase', 'wide_lag_context', 'wide_large_context', 'wide_large_context_tail', 'wide_large_context_stable', 'wide_large_direct_timefreq') else FIT_SIZE
     _, fresh, clean, fit = load_source_training(args.root, ids, fit_size=fit_size)
     if args.smoke:
         fit = fit[:args.smoke_fit]
@@ -537,6 +540,8 @@ def main():
         model = LagContextDura(width=32).to(device)
     elif args.architecture == 'large_context_dura':
         model = LargeContextDura().to(device)
+    elif args.architecture == 'large_context_stable':
+        model = StableLargeContextDura().to(device)
     elif args.architecture == 'conditional_phase_dura':
         model = ConditionalPhaseDura(width=32).to(device)
     elif args.architecture == 'conditional_phase_moments':
@@ -597,7 +602,7 @@ def main():
         if len(data[0]) < 32 or len(data[0]) % 32:
             raise ValueError('CUDA graph flow requires complete fixed-size batches')
         graph_runner = FlowGraphStep(model, optimizer, [*(v[:32] for v in data[:5]), torch.zeros(32, device=device)])
-    epochs = DUAL_DOMAIN_EPOCHS if args.architecture in (*DIRECT_ARCHITECTURES, 'direct_iq_flow', 'large_context_dura') else TRAIN_EPOCHS
+    epochs = DUAL_DOMAIN_EPOCHS if args.architecture in (*DIRECT_ARCHITECTURES, 'direct_iq_flow', 'large_context_dura', 'large_context_stable') else TRAIN_EPOCHS
     for epoch in range(1, (1 if args.smoke else epochs)+1):
         model.train()
         if args.architecture == 'dura_internal':
@@ -650,7 +655,7 @@ def main():
                 output = model(x, anchor, direction, variance, validate=False)
             base_objective = ('iq' if args.objective in ('wide_direct_phase', 'wide_direct_circular', 'wide_large_direct_timefreq') else
                               'distill_iq' if args.objective in ('wide_source_distill', 'wide_multiview_distill') else
-                              'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'wide_source_guard', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_phase_equivariant_guard', 'wide_dura_circular', 'wide_conditional_phase', 'wide_conditional_phase_moments', 'wide_supervised_phase', 'wide_lag_context', 'wide_large_context', 'wide_large_context_tail', 'wide_large_direct_timefreq') else args.objective)
+                              'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'wide_source_guard', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_phase_equivariant_guard', 'wide_dura_circular', 'wide_conditional_phase', 'wide_conditional_phase_moments', 'wide_supervised_phase', 'wide_lag_context', 'wide_large_context', 'wide_large_context_tail', 'wide_large_context_stable', 'wide_large_direct_timefreq') else args.objective)
             if args.objective == 'wide_antithetic_flow':
                 loss = stochastic_flow_loss(model, x, anchor, direction, variance, y,
                     epoch_times[start:start+len(x)], epoch_latent[start:start+len(x)],
@@ -763,7 +768,7 @@ def main():
                 if any(param.grad is None or not torch.isfinite(param.grad).all()
                        for param in (model.head.real, model.head.imag)):
                     raise ValueError('Both complex correction head components require finite gradients')
-            elif args.architecture in ('large_context_dura', 'large_direct_timefreq'):
+            elif args.architecture in ('large_context_dura', 'large_context_stable', 'large_direct_timefreq'):
                 if model.out.weight.grad is None or not torch.isfinite(model.out.weight.grad).all():
                     raise ValueError('Large context output requires finite gradients')
             elif args.architecture in ('conditional_iq_flow', 'direct_iq_flow', 'antithetic_iq_flow'):
@@ -839,10 +844,12 @@ def main():
     if args.objective == 'wide_large_context_tail':
         cache_metadata.update(source_tail_weight=SOURCE_TAIL_WEIGHT, source_tail_fraction=SOURCE_TAIL_FRACTION,
                               source_tail_score='normalized_iq_error', source_tail_losses=source_tail_losses)
-    if args.architecture == 'large_context_dura':
+    if args.architecture in ('large_context_dura', 'large_context_stable'):
         cache_metadata.update(large_context_width=LARGE_WIDTH, large_context_layers=LARGE_LAYERS,
                               large_context_heads=LARGE_HEADS, large_context_tokens=LARGE_TOKENS,
                               large_context_scale=LARGE_SCALE)
+    if args.architecture == 'large_context_stable':
+        cache_metadata.update(large_context_normalization='token_layernorm_groupnorm')
     if args.architecture == 'lag_context_dura':
         cache_metadata.update(lag_context_lags=list(LAG_CONTEXT_LAGS), lag_context_direction='noncircular_phase_aligned_difference',
                               lag_context_inputs='received_anchor_innovation', lag_context_residual_scale=RESIDUAL_SCALE)
@@ -863,7 +870,7 @@ def main():
     if args.objective == 'wide_instance_contrast':
         cache_metadata.update(source_instance_temperature=INSTANCE_TEMPERATURE,
                               source_instance_positives='same_physical_record', instance_encoder_inference_reads=0)
-    if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_direct_phase', 'wide_direct_circular', 'wide_conditional_flow_t0', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_antithetic_flow', 'wide_phase_equivariant_guard', 'wide_dura_circular', 'wide_conditional_phase', 'wide_conditional_phase_moments', 'wide_supervised_phase', 'wide_lag_context', 'wide_large_context', 'wide_large_context_tail', 'wide_large_direct_timefreq'):
+    if args.objective in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_direct_phase', 'wide_direct_circular', 'wide_conditional_flow_t0', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_antithetic_flow', 'wide_phase_equivariant_guard', 'wide_dura_circular', 'wide_conditional_phase', 'wide_conditional_phase_moments', 'wide_supervised_phase', 'wide_lag_context', 'wide_large_context', 'wide_large_context_tail', 'wide_large_context_stable', 'wide_large_direct_timefreq'):
         cache_metadata.update(source_fit_size=WIDE_FIT_SIZE,
                               source_context_cache_written=str(args.save_source_context_cache) if args.save_source_context_cache else None)
     if args.objective == 'wide_envelope_guard':
@@ -960,7 +967,7 @@ def main():
             end_to_end_seconds=time.monotonic()-process_started, TX_labels_read=0, F_weights_read=0,
             F_outputs_read=0, V_reads=0, target_reads=0, DURA_frozen=True, **ssl_metadata, **cache_metadata))
         return
-    checkpoint = dict(schema=SCHEMA, commit=args.commit, model=model.state_dict(), width=LARGE_WIDTH if args.architecture == 'large_context_dura' else DIRECT_TF_WIDTH if args.architecture == 'large_direct_timefreq' else 32,
+    checkpoint = dict(schema=SCHEMA, commit=args.commit, model=model.state_dict(), width=LARGE_WIDTH if args.architecture in ('large_context_dura', 'large_context_stable') else DIRECT_TF_WIDTH if args.architecture == 'large_direct_timefreq' else 32,
                       epochs=epochs, fit_ids=fit, counts=counts, losses=losses, architecture=args.architecture,
                       candidate_dura_trainable=args.architecture == 'dura_internal',
             spectral_freq_bins=17 if args.architecture in ('dura_multiscale', 'direct_spectral_student') else None,
