@@ -47,6 +47,18 @@ def test_zero_reference_response_remains_finite():
     assert torch.isfinite(loss).all() and (loss > 0).all()
 
 
+@pytest.mark.parametrize('missing_trace', [True, False])
+def test_response_training_rejects_missing_or_mismatched_source_trace(missing_trace):
+    from experiments.pamf_phase3_restoration import feature_response_trial as subject
+
+    received = torch.zeros(2, 2, 256)
+    trace = None if missing_trace else {'received': torch.ones_like(received)}
+    with pytest.raises(ValueError, match='source simulator trace'):
+        subject.response_readout(None, None, received, None, None, None, None,
+                                 source_indices=torch.arange(2), epoch=1,
+                                 priors=None, assignment=None, source_trace=trace)
+
+
 def test_training_path_uses_paired_feature_differences_without_classifier(monkeypatch):
     from experiments.pamf_phase3_restoration import feature_response_trial as subject
 
