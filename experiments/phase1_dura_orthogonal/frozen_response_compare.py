@@ -76,6 +76,15 @@ def evaluate_batch(dura, models, x, clean):
         return metrics, nmse
 
 
+def summarize_group(values, errors, mask):
+    import torch
+    selected = torch.as_tensor(mask.tolist(), dtype=torch.bool)
+    if int(selected.sum()) != 48:
+        raise ValueError('48 records per source receiver/view group required')
+    return dict(count=48, mean_metrics=values[selected].mean(0).tolist(),
+                mean_nmse=errors[selected].mean(0).tolist())
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--root', type=Path, required=True)
@@ -120,16 +129,13 @@ def main():
         metric, nmse = evaluate_batch(dura, models, x, y)
         values.append(metric.cpu())
         errors.append(nmse.cpu())
-    values = torch.cat(values).numpy()
-    errors = torch.cat(errors).numpy()
+    values = torch.cat(values)
+    errors = torch.cat(errors)
     groups = {}
     for name, receivers in (('RX4_6', (4, 6)), ('RX8', (8,))):
         for view in core.VIEWS:
             mask = np.isin(rx, receivers) & (scene == view)
-            if mask.sum() != 48:
-                raise ValueError('48 records per source receiver/view group required')
-            groups[name+'/'+view] = dict(count=int(mask.sum()), mean_metrics=values[mask].mean(0).tolist(),
-                                          mean_nmse=errors[mask].mean(0).tolist())
+            groups[name+'/'+view] = summarize_group(values, errors, mask)
     args.out.mkdir(parents=True)
     core.write(args.out/'result.json', dict(status='FROZEN_RESPONSE_SOURCE_COMPLETE', commit=args.commit,
         records=len(ids), directions=list(DIRECTIONS), epsilon_relative_rms=EPSILON,

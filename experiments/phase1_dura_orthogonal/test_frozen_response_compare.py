@@ -46,3 +46,13 @@ def test_fixed_models_rejects_source_that_read_classifier(tmp_path, monkeypatch)
     monkeypatch.setattr(torch, 'load', lambda *a, **k: state)
     with pytest.raises(ValueError, match='provenance'):
         probe.fixed_models(tmp_path, np.array([40000]), 'cpu')
+
+
+def test_group_summary_uses_exactly_the_selected_source_records():
+    values = torch.arange(50.).reshape(50, 1)
+    errors = values * 2
+    mask = np.arange(50) < 48
+    result = probe.summarize_group(values, errors, mask)
+    assert result == dict(count=48, mean_metrics=[23.5], mean_nmse=[47.])
+    with pytest.raises(ValueError, match='48 records'):
+        probe.summarize_group(values, errors, np.arange(50) < 47)
