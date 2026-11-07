@@ -1,0 +1,17 @@
+{
+  "status": "VERIFIED_QUEUED_CONTROLLER_LIVE",
+  "actual_code_commit": "14e7315d6da5d6fe242e7568f20c97ade064e8d9",
+  "controller_PID": 4033035,
+  "observed_at_unix": 1794024505.1902602,
+  "PID_CWD_command_CUDA_empty_verified": true,
+  "wait_for_last_gpu_stage_of": "20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01",
+  "archive_SHA_match": true,
+  "remote_compile": true,
+  "focused_tests_passed": 8,
+  "independent_P0_P1_review": "PASS",
+  "GPU_worker_observed": false,
+  "source_smoke": "PENDING",
+  "completed_training_epochs": 0,
+  "Main_results_available": false,
+  "goal_complete": false
+}

@@ -646,3 +646,7 @@ VERIFIED / QUEUED。实际代码 92d0dcbe0f25927d5a1cf4d98669ded45a410a5b，控�
 ## 2026-11-07 源接收机先验的配额匹配对照
 
 固定源 V480 的低档城区，盲估信道下全源、同 RX、其他 RX 先验的正确数为 401、412、341；已知模拟信道和噪声下为 426、434、379。raw clean 为 474。 [原源 RX 配对先验分析](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-receiver-prior-sourceV-s2026092701-r02/analysis.md)
+
+## 2026-11-07 源接收机先验失配训练
+
+VERIFIED / QUEUED。实际代码 14e7315d6da5d6fe242e7568f20c97ade064e8d9，控制器 PID 4033035 在线，实际工作目录、命令、CUDA 空环境和日志已核对。发布包 SHA 一致，远端编译通过。等待整包逆滤波版最后一项 GPU 阶段终止，再按 GPU4/6 原准入条件启动。真实源检查、训练和 Main 均待执行。 5481223 个参数，原条件先验网络，训练时交替使用全源和排除当前 RX 的源先验。 原 L_s/U_s 从零单阶段 30 轮、7410 步，使用原源连续 F0 特征与无噪收缩约束，部署只输入 received IQ。冻结后自动用原 Tri-SIG-TIME SSL 做 Main 两总体七景并独立评分。 [实验登记和排队核实](../../automation_reports/CV-SincNet/20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01/report.md)
