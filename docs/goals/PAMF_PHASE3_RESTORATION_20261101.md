@@ -580,3 +580,7 @@ VERIFIED / QUEUED。实际代码 3fc9201628e7602ea58c6a5fb13d6ec934513e99，控�
 固定源 V120 的低档城区，盲估信道下真实 TX 正确数由 98 升至 102，4 条修复、0 条损伤。已知模拟信道和噪声时，两种先验均为 107/120。同批 raw clean 为 118/120。
 
 低档城区有局部收益，高档和中档城区各多错 1 条。两种先验在已知模拟信道下的七景真实 TX 正确数一致。这项结果不更新正式 Main 的达标状态。 [源端分析](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-waveform-mixture-sourceV-s2026092701-r01/analysis.md)
+
+## 2026-11-07 相位与波形先验联合恢复
+
+同批源 V120 低档城区，原高斯、仅四组先验、仅相位修正、两者联合的真实 TX 正确数依次为 98、102、104、102，raw clean 为 118。联合比仅相位修复 0 条、损伤 2 条。 [七景配对和交互统计](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-joint-phase-waveform-sourceV-s2026092701-r01/analysis.md)

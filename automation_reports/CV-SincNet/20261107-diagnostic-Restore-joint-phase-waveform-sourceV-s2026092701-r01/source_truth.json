@@ -1,0 +1,413 @@
+{
+  "status": "VERIFIED_SOURCE_TRUTH_LAST",
+  "code_commit": "245795c245c69eb62ece92a0578c6aec75ba4da6",
+  "source_TX_scored": 120,
+  "prior_prediction_cells": 28,
+  "source_label_file_rows": 27000,
+  "records": [
+    {
+      "scene": "clean",
+      "method": "blind_gaussian",
+      "count": 120,
+      "correct": 118,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "clean",
+      "method": "blind_mixture",
+      "count": 120,
+      "correct": 118,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "clean",
+      "method": "phase_only",
+      "count": 120,
+      "correct": 118,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "clean",
+      "method": "joint_phase_mixture",
+      "count": 120,
+      "correct": 118,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_high",
+      "method": "blind_gaussian",
+      "count": 120,
+      "correct": 118,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_high",
+      "method": "blind_mixture",
+      "count": 120,
+      "correct": 118,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_high",
+      "method": "phase_only",
+      "count": 120,
+      "correct": 118,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_high",
+      "method": "joint_phase_mixture",
+      "count": 120,
+      "correct": 118,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_mid",
+      "method": "blind_gaussian",
+      "count": 120,
+      "correct": 116,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_mid",
+      "method": "blind_mixture",
+      "count": 120,
+      "correct": 116,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_mid",
+      "method": "phase_only",
+      "count": 120,
+      "correct": 117,
+      "repairs": 1,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_mid",
+      "method": "joint_phase_mixture",
+      "count": 120,
+      "correct": 117,
+      "repairs": 1,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "blind_gaussian",
+      "count": 120,
+      "correct": 116,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "blind_mixture",
+      "count": 120,
+      "correct": 116,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "phase_only",
+      "count": 120,
+      "correct": 117,
+      "repairs": 1,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "joint_phase_mixture",
+      "count": 120,
+      "correct": 117,
+      "repairs": 1,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "blind_gaussian",
+      "count": 120,
+      "correct": 117,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "blind_mixture",
+      "count": 120,
+      "correct": 116,
+      "repairs": 0,
+      "damage": 1,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "phase_only",
+      "count": 120,
+      "correct": 117,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "joint_phase_mixture",
+      "count": 120,
+      "correct": 117,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "blind_gaussian",
+      "count": 120,
+      "correct": 110,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "blind_mixture",
+      "count": 120,
+      "correct": 109,
+      "repairs": 0,
+      "damage": 1,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "phase_only",
+      "count": 120,
+      "correct": 112,
+      "repairs": 2,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "joint_phase_mixture",
+      "count": 120,
+      "correct": 111,
+      "repairs": 2,
+      "damage": 1,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "blind_gaussian",
+      "count": 120,
+      "correct": 98,
+      "repairs": 0,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "blind_mixture",
+      "count": 120,
+      "correct": 102,
+      "repairs": 4,
+      "damage": 0,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "phase_only",
+      "count": 120,
+      "correct": 104,
+      "repairs": 7,
+      "damage": 1,
+      "clean_correct": 118
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "joint_phase_mixture",
+      "count": 120,
+      "correct": 102,
+      "repairs": 7,
+      "damage": 3,
+      "clean_correct": 118
+    }
+  ],
+  "interactions": [
+    {
+      "scene": "clean",
+      "joint_vs_controls": {
+        "blind_gaussian": {
+          "repairs": 0,
+          "damage": 0
+        },
+        "blind_mixture": {
+          "repairs": 0,
+          "damage": 0
+        },
+        "phase_only": {
+          "repairs": 0,
+          "damage": 0
+        }
+      },
+      "interaction_count": 0,
+      "joint_repairs_missed_by_both_singles": 0,
+      "any_single_repairs_lost_by_joint": 0,
+      "single_repair_union": 0
+    },
+    {
+      "scene": "practical_high",
+      "joint_vs_controls": {
+        "blind_gaussian": {
+          "repairs": 0,
+          "damage": 0
+        },
+        "blind_mixture": {
+          "repairs": 0,
+          "damage": 0
+        },
+        "phase_only": {
+          "repairs": 0,
+          "damage": 0
+        }
+      },
+      "interaction_count": 0,
+      "joint_repairs_missed_by_both_singles": 0,
+      "any_single_repairs_lost_by_joint": 0,
+      "single_repair_union": 0
+    },
+    {
+      "scene": "practical_mid",
+      "joint_vs_controls": {
+        "blind_gaussian": {
+          "repairs": 1,
+          "damage": 0
+        },
+        "blind_mixture": {
+          "repairs": 1,
+          "damage": 0
+        },
+        "phase_only": {
+          "repairs": 0,
+          "damage": 0
+        }
+      },
+      "interaction_count": 0,
+      "joint_repairs_missed_by_both_singles": 0,
+      "any_single_repairs_lost_by_joint": 0,
+      "single_repair_union": 1
+    },
+    {
+      "scene": "practical_low_suburban",
+      "joint_vs_controls": {
+        "blind_gaussian": {
+          "repairs": 1,
+          "damage": 0
+        },
+        "blind_mixture": {
+          "repairs": 1,
+          "damage": 0
+        },
+        "phase_only": {
+          "repairs": 0,
+          "damage": 0
+        }
+      },
+      "interaction_count": 0,
+      "joint_repairs_missed_by_both_singles": 0,
+      "any_single_repairs_lost_by_joint": 0,
+      "single_repair_union": 1
+    },
+    {
+      "scene": "practical_high_urban",
+      "joint_vs_controls": {
+        "blind_gaussian": {
+          "repairs": 0,
+          "damage": 0
+        },
+        "blind_mixture": {
+          "repairs": 1,
+          "damage": 0
+        },
+        "phase_only": {
+          "repairs": 0,
+          "damage": 0
+        }
+      },
+      "interaction_count": 1,
+      "joint_repairs_missed_by_both_singles": 0,
+      "any_single_repairs_lost_by_joint": 0,
+      "single_repair_union": 0
+    },
+    {
+      "scene": "practical_mid_urban",
+      "joint_vs_controls": {
+        "blind_gaussian": {
+          "repairs": 2,
+          "damage": 1
+        },
+        "blind_mixture": {
+          "repairs": 2,
+          "damage": 0
+        },
+        "phase_only": {
+          "repairs": 1,
+          "damage": 2
+        }
+      },
+      "interaction_count": 0,
+      "joint_repairs_missed_by_both_singles": 1,
+      "any_single_repairs_lost_by_joint": 1,
+      "single_repair_union": 2
+    },
+    {
+      "scene": "practical_low_urban",
+      "joint_vs_controls": {
+        "blind_gaussian": {
+          "repairs": 7,
+          "damage": 3
+        },
+        "blind_mixture": {
+          "repairs": 6,
+          "damage": 6
+        },
+        "phase_only": {
+          "repairs": 0,
+          "damage": 2
+        }
+      },
+      "interaction_count": -6,
+      "joint_repairs_missed_by_both_singles": 0,
+      "any_single_repairs_lost_by_joint": 3,
+      "single_repair_union": 10
+    }
+  ],
+  "new_prediction_rows": 0,
+  "optimizer_updates": 0,
+  "target_reads": 0
+}

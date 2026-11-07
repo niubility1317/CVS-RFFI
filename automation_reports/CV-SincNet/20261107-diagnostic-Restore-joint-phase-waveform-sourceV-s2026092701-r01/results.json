@@ -1,0 +1,338 @@
+{
+  "status": "SOURCE_JOINT_PHASE_COMPLETE",
+  "run_id": "20261107-diagnostic-Restore-joint-phase-waveform-sourceV-s2026092701-r01",
+  "code_commit": "245795c245c69eb62ece92a0578c6aec75ba4da6",
+  "F0_identity": {
+    "model": "original_F0_E50",
+    "parameters": 232993,
+    "epoch": 50,
+    "updates": 11100,
+    "model_seed": 2026092701,
+    "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "base_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release",
+    "source_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "source_row": "main_split-repl-shuffled_time-3view-s2026092701",
+    "source_code_commit": "3ff8f4b7e85b5608f5b45350aa18081499a7ef1d"
+  },
+  "frozen_BF_code": "bf29554a03e28a012eaaa134f5c7b3f7856f2268",
+  "reference_code": "f29b31417ce98a280eac25ea2fa78e0c49a5f0ff",
+  "waveform_code": "f4dab0140b598bbc3cd212ab4259138e468e1a20",
+  "phase_code": "e97058e837ea494b2efeb2fd0da5a237032e7736",
+  "methods": [
+    "blind_gaussian",
+    "blind_mixture",
+    "phase_only",
+    "joint_phase_mixture"
+  ],
+  "views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "phase_points": 256,
+  "prior_phase_std_degrees": 15,
+  "waveform_modes": 4,
+  "records": [
+    {
+      "scene": "clean",
+      "method": "blind_gaussian",
+      "count": 120,
+      "Fclean_correct": 120,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 1.8473278798107153e-05,
+      "feature_cosine_distance": 1.227507988611857e-05
+    },
+    {
+      "scene": "clean",
+      "method": "blind_mixture",
+      "count": 120,
+      "Fclean_correct": 120,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 1.8473275993831824e-05,
+      "feature_cosine_distance": 1.2282530466715495e-05
+    },
+    {
+      "scene": "clean",
+      "method": "phase_only",
+      "count": 120,
+      "Fclean_correct": 120,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.002699267256313457,
+      "feature_cosine_distance": 0.0006962989767392477
+    },
+    {
+      "scene": "clean",
+      "method": "joint_phase_mixture",
+      "count": 120,
+      "Fclean_correct": 120,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.0027890611859447746,
+      "feature_cosine_distance": 0.0006747737526893616
+    },
+    {
+      "scene": "practical_high",
+      "method": "blind_gaussian",
+      "count": 120,
+      "Fclean_correct": 120,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.007529935603573298,
+      "feature_cosine_distance": 0.002117873231569926
+    },
+    {
+      "scene": "practical_high",
+      "method": "blind_mixture",
+      "count": 120,
+      "Fclean_correct": 120,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.007506184988111879,
+      "feature_cosine_distance": 0.0021239990989367166
+    },
+    {
+      "scene": "practical_high",
+      "method": "phase_only",
+      "count": 120,
+      "Fclean_correct": 120,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.00887937007258491,
+      "feature_cosine_distance": 0.002404239277044932
+    },
+    {
+      "scene": "practical_high",
+      "method": "joint_phase_mixture",
+      "count": 120,
+      "Fclean_correct": 120,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.0088072154627298,
+      "feature_cosine_distance": 0.002356201410293579
+    },
+    {
+      "scene": "practical_mid",
+      "method": "blind_gaussian",
+      "count": 120,
+      "Fclean_correct": 117,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.018565526197198777,
+      "feature_cosine_distance": 0.00883054385582606
+    },
+    {
+      "scene": "practical_mid",
+      "method": "blind_mixture",
+      "count": 120,
+      "Fclean_correct": 117,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.018238175590522588,
+      "feature_cosine_distance": 0.007837380468845367
+    },
+    {
+      "scene": "practical_mid",
+      "method": "phase_only",
+      "count": 120,
+      "Fclean_correct": 118,
+      "repairs": 1,
+      "damage": 0,
+      "iq_nmse": 0.01958512202060471,
+      "feature_cosine_distance": 0.007077130675315857
+    },
+    {
+      "scene": "practical_mid",
+      "method": "joint_phase_mixture",
+      "count": 120,
+      "Fclean_correct": 118,
+      "repairs": 1,
+      "damage": 0,
+      "iq_nmse": 0.019363760574681994,
+      "feature_cosine_distance": 0.006861652930577596
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "blind_gaussian",
+      "count": 120,
+      "Fclean_correct": 117,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.01780351431031401,
+      "feature_cosine_distance": 0.009736361106236775
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "blind_mixture",
+      "count": 120,
+      "Fclean_correct": 117,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.017458400225344426,
+      "feature_cosine_distance": 0.008221285541852315
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "phase_only",
+      "count": 120,
+      "Fclean_correct": 118,
+      "repairs": 1,
+      "damage": 0,
+      "iq_nmse": 0.01853944666412038,
+      "feature_cosine_distance": 0.007607453068097432
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "joint_phase_mixture",
+      "count": 120,
+      "Fclean_correct": 118,
+      "repairs": 1,
+      "damage": 0,
+      "iq_nmse": 0.018057828336410845,
+      "feature_cosine_distance": 0.00616100678841273
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "blind_gaussian",
+      "count": 120,
+      "Fclean_correct": 119,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.014137891066396454,
+      "feature_cosine_distance": 0.007299470404783885
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "blind_mixture",
+      "count": 120,
+      "Fclean_correct": 118,
+      "repairs": 0,
+      "damage": 1,
+      "iq_nmse": 0.014077958843942421,
+      "feature_cosine_distance": 0.007356228431065878
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "phase_only",
+      "count": 120,
+      "Fclean_correct": 119,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.014451666117141333,
+      "feature_cosine_distance": 0.0033873761693636577
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "joint_phase_mixture",
+      "count": 120,
+      "Fclean_correct": 119,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.014274445113066274,
+      "feature_cosine_distance": 0.003409893314043681
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "blind_gaussian",
+      "count": 120,
+      "Fclean_correct": 110,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.053536270499656285,
+      "feature_cosine_distance": 0.01903970738252004
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "blind_mixture",
+      "count": 120,
+      "Fclean_correct": 109,
+      "repairs": 0,
+      "damage": 1,
+      "iq_nmse": 0.053594493080163376,
+      "feature_cosine_distance": 0.01784723550081253
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "phase_only",
+      "count": 120,
+      "Fclean_correct": 112,
+      "repairs": 2,
+      "damage": 0,
+      "iq_nmse": 0.06438469397738421,
+      "feature_cosine_distance": 0.014789276818434397
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "joint_phase_mixture",
+      "count": 120,
+      "Fclean_correct": 111,
+      "repairs": 2,
+      "damage": 1,
+      "iq_nmse": 0.05532191025267821,
+      "feature_cosine_distance": 0.01233904759089152
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "blind_gaussian",
+      "count": 120,
+      "Fclean_correct": 98,
+      "repairs": 0,
+      "damage": 0,
+      "iq_nmse": 0.058702684775926176,
+      "feature_cosine_distance": 0.04279407858848572
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "blind_mixture",
+      "count": 120,
+      "Fclean_correct": 102,
+      "repairs": 4,
+      "damage": 0,
+      "iq_nmse": 0.056605070020304994,
+      "feature_cosine_distance": 0.03920008589824041
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "phase_only",
+      "count": 120,
+      "Fclean_correct": 104,
+      "repairs": 7,
+      "damage": 1,
+      "iq_nmse": 0.05758186800521799,
+      "feature_cosine_distance": 0.036992648243904115
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "joint_phase_mixture",
+      "count": 120,
+      "Fclean_correct": 102,
+      "repairs": 7,
+      "damage": 3,
+      "iq_nmse": 0.05507214587996714,
+      "feature_cosine_distance": 0.031070817013581595
+    }
+  ],
+  "source_V_records": 120,
+  "source_V_views": 840,
+  "F0_new_rows": 840,
+  "F0_smoke_rows": 2,
+  "F0_control_rows_reused": 2520,
+  "source_prior_refit": false,
+  "TX_labels_read": 0,
+  "OE_reads": 0,
+  "novel_reads": 0,
+  "target_inputs": 0,
+  "optimizer_updates": 0,
+  "model_state_updates": 0,
+  "CPU_threads": 2,
+  "new_deployment_candidate": false,
+  "theoretical_ceiling": false,
+  "seconds": 22.350569211004768
+}

@@ -1,0 +1,57 @@
+{
+  "status": "PASS",
+  "code_commit": "245795c245c69eb62ece92a0578c6aec75ba4da6",
+  "cells": 28,
+  "same_source_records": 120,
+  "original120_references_exact": true,
+  "IQ_NMSE_reduction_max_abs_diff": 2.3113390579254656e-07,
+  "posterior_probability_sum_max_error": 4.440892098500626e-16,
+  "exact_original_control_rows": 2520,
+  "mode_and_phase": [
+    {
+      "scene": "clean",
+      "joint_mean_max_mode_probability": 0.9994672744325412,
+      "joint_mean_abs_phase_degrees": 2.243963198503737,
+      "joint_mode_changes_vs_prior_only": 1
+    },
+    {
+      "scene": "practical_high",
+      "joint_mean_max_mode_probability": 0.9952887078285483,
+      "joint_mean_abs_phase_degrees": 1.7631876240754567,
+      "joint_mode_changes_vs_prior_only": 1
+    },
+    {
+      "scene": "practical_mid",
+      "joint_mean_max_mode_probability": 0.9988577174888872,
+      "joint_mean_abs_phase_degrees": 2.0567052350694484,
+      "joint_mode_changes_vs_prior_only": 0
+    },
+    {
+      "scene": "practical_low_suburban",
+      "joint_mean_max_mode_probability": 0.9936033308015408,
+      "joint_mean_abs_phase_degrees": 2.0727015771196275,
+      "joint_mode_changes_vs_prior_only": 2
+    },
+    {
+      "scene": "practical_high_urban",
+      "joint_mean_max_mode_probability": 0.9972748493292023,
+      "joint_mean_abs_phase_degrees": 2.1744034901766858,
+      "joint_mode_changes_vs_prior_only": 2
+    },
+    {
+      "scene": "practical_mid_urban",
+      "joint_mean_max_mode_probability": 0.9890228463839319,
+      "joint_mean_abs_phase_degrees": 2.587220354271282,
+      "joint_mode_changes_vs_prior_only": 0
+    },
+    {
+      "scene": "practical_low_urban",
+      "joint_mean_max_mode_probability": 0.9818466073231353,
+      "joint_mean_abs_phase_degrees": 2.9378259155840896,
+      "joint_mode_changes_vs_prior_only": 3
+    }
+  ],
+  "TX_reads": 0,
+  "target_reads": 0,
+  "new_NN_calls": 0
+}

@@ -1,0 +1,24 @@
+{
+  "status": "VERIFIED",
+  "actual_code_commit": "245795c245c69eb62ece92a0578c6aec75ba4da6",
+  "worker_PID": 3899040,
+  "worker_exit": 0,
+  "actual_PID_CWD_command_CUDA_empty_verified": true,
+  "archive_SHA_match": true,
+  "remote_compile": true,
+  "log_growth_from_zero": true,
+  "smoke": {
+    "status": "PASS",
+    "actual_Ls": 2,
+    "actual_F0": true,
+    "actual_original_BF": true,
+    "zero_phase_equals_original_mixture": true,
+    "source_F0_rows": 2,
+    "CPU_only": true,
+    "TX_labels_read": 0,
+    "target_inputs": 0
+  },
+  "worker_seconds": 22.350569211004768,
+  "CPU_threads": 2,
+  "GPU_workers": 0
+}
