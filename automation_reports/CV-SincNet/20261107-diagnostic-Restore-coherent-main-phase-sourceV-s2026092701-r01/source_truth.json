@@ -1,0 +1,814 @@
+{
+  "status": "VERIFIED_SOURCE_TRUTH_LAST",
+  "code_commit": "4d8e67aac5534649646d1b5954bdebfa0de7b9bd",
+  "source_TX_scored": 480,
+  "prior_prediction_cells": 35,
+  "source_label_file_rows": 27000,
+  "records": [
+    {
+      "scene": "clean",
+      "method": "blind",
+      "count": 480,
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 474,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0
+    },
+    {
+      "scene": "clean",
+      "method": "whole_action_phase",
+      "count": 480,
+      "correct": 475,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 474,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 1,
+      "damage": 0,
+      "net": 1
+    },
+    {
+      "scene": "clean",
+      "method": "main_mean_scalar",
+      "count": 480,
+      "correct": 446,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 445,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 1,
+      "damage": 29,
+      "net": -28
+    },
+    {
+      "scene": "clean",
+      "method": "main_mean_full",
+      "count": 480,
+      "correct": 475,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 474,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 1,
+      "damage": 0,
+      "net": 1
+    },
+    {
+      "scene": "clean",
+      "method": "main_phase",
+      "count": 480,
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 474,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0
+    },
+    {
+      "scene": "practical_high",
+      "method": "blind",
+      "count": 480,
+      "correct": 473,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 473,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0
+    },
+    {
+      "scene": "practical_high",
+      "method": "whole_action_phase",
+      "count": 480,
+      "correct": 473,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 473,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0
+    },
+    {
+      "scene": "practical_high",
+      "method": "main_mean_scalar",
+      "count": 480,
+      "correct": 461,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 460,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 2,
+      "damage": 14,
+      "net": -12
+    },
+    {
+      "scene": "practical_high",
+      "method": "main_mean_full",
+      "count": 480,
+      "correct": 473,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 473,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0
+    },
+    {
+      "scene": "practical_high",
+      "method": "main_phase",
+      "count": 480,
+      "correct": 473,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 473,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 1,
+      "damage": 1,
+      "net": 0
+    },
+    {
+      "scene": "practical_mid",
+      "method": "blind",
+      "count": 480,
+      "correct": 470,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 470,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0
+    },
+    {
+      "scene": "practical_mid",
+      "method": "whole_action_phase",
+      "count": 480,
+      "correct": 473,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 473,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 3,
+      "damage": 0,
+      "net": 3
+    },
+    {
+      "scene": "practical_mid",
+      "method": "main_mean_scalar",
+      "count": 480,
+      "correct": 448,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 448,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 1,
+      "damage": 23,
+      "net": -22
+    },
+    {
+      "scene": "practical_mid",
+      "method": "main_mean_full",
+      "count": 480,
+      "correct": 471,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 471,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 1,
+      "damage": 0,
+      "net": 1
+    },
+    {
+      "scene": "practical_mid",
+      "method": "main_phase",
+      "count": 480,
+      "correct": 471,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 471,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 2,
+      "damage": 1,
+      "net": 1
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "blind",
+      "count": 480,
+      "correct": 464,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 463,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "whole_action_phase",
+      "count": 480,
+      "correct": 465,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 464,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 3,
+      "damage": 2,
+      "net": 1
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "main_mean_scalar",
+      "count": 480,
+      "correct": 447,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 446,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 1,
+      "damage": 18,
+      "net": -17
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "main_mean_full",
+      "count": 480,
+      "correct": 467,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 465,
+      "clean_wrong_newly_correct": 2,
+      "repairs": 3,
+      "damage": 0,
+      "net": 3
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "main_phase",
+      "count": 480,
+      "correct": 467,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 465,
+      "clean_wrong_newly_correct": 2,
+      "repairs": 5,
+      "damage": 2,
+      "net": 3
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "blind",
+      "count": 480,
+      "correct": 469,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 468,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "whole_action_phase",
+      "count": 480,
+      "correct": 467,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 466,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 1,
+      "damage": 3,
+      "net": -2
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "main_mean_scalar",
+      "count": 480,
+      "correct": 448,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 447,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 2,
+      "damage": 23,
+      "net": -21
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "main_mean_full",
+      "count": 480,
+      "correct": 466,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 465,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 0,
+      "damage": 3,
+      "net": -3
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "main_phase",
+      "count": 480,
+      "correct": 468,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 467,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 1,
+      "damage": 2,
+      "net": -1
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "blind",
+      "count": 480,
+      "correct": 436,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 435,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "whole_action_phase",
+      "count": 480,
+      "correct": 436,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 436,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 8,
+      "damage": 8,
+      "net": 0
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "main_mean_scalar",
+      "count": 480,
+      "correct": 413,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 413,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 7,
+      "damage": 30,
+      "net": -23
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "main_mean_full",
+      "count": 480,
+      "correct": 439,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 438,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 7,
+      "damage": 4,
+      "net": 3
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "main_phase",
+      "count": 480,
+      "correct": 450,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 450,
+      "clean_wrong_newly_correct": 0,
+      "repairs": 17,
+      "damage": 3,
+      "net": 14
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "blind",
+      "count": 480,
+      "correct": 401,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 400,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 0,
+      "damage": 0,
+      "net": 0
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "whole_action_phase",
+      "count": 480,
+      "correct": 414,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 413,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 20,
+      "damage": 7,
+      "net": 13
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "main_mean_scalar",
+      "count": 480,
+      "correct": 378,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 377,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 9,
+      "damage": 32,
+      "net": -23
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "main_mean_full",
+      "count": 480,
+      "correct": 414,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 413,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 18,
+      "damage": 5,
+      "net": 13
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "main_phase",
+      "count": 480,
+      "correct": 422,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 421,
+      "clean_wrong_newly_correct": 1,
+      "repairs": 29,
+      "damage": 8,
+      "net": 21
+    }
+  ],
+  "pairs": [
+    {
+      "scene": "clean",
+      "method": "whole_action_phase",
+      "vs_whole_action_phase": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "both_blind_and_known_phase_repair": 0,
+      "blind_only_repair": 1,
+      "known_phase_only_repair": 0
+    },
+    {
+      "scene": "clean",
+      "method": "main_mean_scalar",
+      "vs_whole_action_phase": {
+        "repairs": 0,
+        "damage": 29,
+        "net": -29
+      },
+      "both_blind_and_known_phase_repair": 0,
+      "blind_only_repair": 1,
+      "known_phase_only_repair": 0
+    },
+    {
+      "scene": "clean",
+      "method": "main_mean_full",
+      "vs_whole_action_phase": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "both_blind_and_known_phase_repair": 0,
+      "blind_only_repair": 1,
+      "known_phase_only_repair": 0
+    },
+    {
+      "scene": "practical_high",
+      "method": "whole_action_phase",
+      "vs_whole_action_phase": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "both_blind_and_known_phase_repair": 0,
+      "blind_only_repair": 0,
+      "known_phase_only_repair": 1
+    },
+    {
+      "scene": "practical_high",
+      "method": "main_mean_scalar",
+      "vs_whole_action_phase": {
+        "repairs": 2,
+        "damage": 14,
+        "net": -12
+      },
+      "both_blind_and_known_phase_repair": 1,
+      "blind_only_repair": 1,
+      "known_phase_only_repair": 0
+    },
+    {
+      "scene": "practical_high",
+      "method": "main_mean_full",
+      "vs_whole_action_phase": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "both_blind_and_known_phase_repair": 0,
+      "blind_only_repair": 0,
+      "known_phase_only_repair": 1
+    },
+    {
+      "scene": "practical_mid",
+      "method": "whole_action_phase",
+      "vs_whole_action_phase": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "both_blind_and_known_phase_repair": 2,
+      "blind_only_repair": 1,
+      "known_phase_only_repair": 0
+    },
+    {
+      "scene": "practical_mid",
+      "method": "main_mean_scalar",
+      "vs_whole_action_phase": {
+        "repairs": 0,
+        "damage": 25,
+        "net": -25
+      },
+      "both_blind_and_known_phase_repair": 1,
+      "blind_only_repair": 0,
+      "known_phase_only_repair": 1
+    },
+    {
+      "scene": "practical_mid",
+      "method": "main_mean_full",
+      "vs_whole_action_phase": {
+        "repairs": 0,
+        "damage": 2,
+        "net": -2
+      },
+      "both_blind_and_known_phase_repair": 1,
+      "blind_only_repair": 0,
+      "known_phase_only_repair": 1
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "whole_action_phase",
+      "vs_whole_action_phase": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "both_blind_and_known_phase_repair": 2,
+      "blind_only_repair": 1,
+      "known_phase_only_repair": 3
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "main_mean_scalar",
+      "vs_whole_action_phase": {
+        "repairs": 1,
+        "damage": 19,
+        "net": -18
+      },
+      "both_blind_and_known_phase_repair": 0,
+      "blind_only_repair": 1,
+      "known_phase_only_repair": 5
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "main_mean_full",
+      "vs_whole_action_phase": {
+        "repairs": 3,
+        "damage": 1,
+        "net": 2
+      },
+      "both_blind_and_known_phase_repair": 2,
+      "blind_only_repair": 1,
+      "known_phase_only_repair": 3
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "whole_action_phase",
+      "vs_whole_action_phase": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "both_blind_and_known_phase_repair": 1,
+      "blind_only_repair": 0,
+      "known_phase_only_repair": 0
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "main_mean_scalar",
+      "vs_whole_action_phase": {
+        "repairs": 3,
+        "damage": 22,
+        "net": -19
+      },
+      "both_blind_and_known_phase_repair": 1,
+      "blind_only_repair": 1,
+      "known_phase_only_repair": 0
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "main_mean_full",
+      "vs_whole_action_phase": {
+        "repairs": 1,
+        "damage": 2,
+        "net": -1
+      },
+      "both_blind_and_known_phase_repair": 0,
+      "blind_only_repair": 0,
+      "known_phase_only_repair": 1
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "whole_action_phase",
+      "vs_whole_action_phase": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "both_blind_and_known_phase_repair": 7,
+      "blind_only_repair": 1,
+      "known_phase_only_repair": 10
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "main_mean_scalar",
+      "vs_whole_action_phase": {
+        "repairs": 7,
+        "damage": 30,
+        "net": -23
+      },
+      "both_blind_and_known_phase_repair": 6,
+      "blind_only_repair": 1,
+      "known_phase_only_repair": 11
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "main_mean_full",
+      "vs_whole_action_phase": {
+        "repairs": 7,
+        "damage": 4,
+        "net": 3
+      },
+      "both_blind_and_known_phase_repair": 6,
+      "blind_only_repair": 1,
+      "known_phase_only_repair": 11
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "whole_action_phase",
+      "vs_whole_action_phase": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "both_blind_and_known_phase_repair": 16,
+      "blind_only_repair": 4,
+      "known_phase_only_repair": 13
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "main_mean_scalar",
+      "vs_whole_action_phase": {
+        "repairs": 7,
+        "damage": 43,
+        "net": -36
+      },
+      "both_blind_and_known_phase_repair": 7,
+      "blind_only_repair": 2,
+      "known_phase_only_repair": 22
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "main_mean_full",
+      "vs_whole_action_phase": {
+        "repairs": 10,
+        "damage": 10,
+        "net": 0
+      },
+      "both_blind_and_known_phase_repair": 16,
+      "blind_only_repair": 2,
+      "known_phase_only_repair": 13
+    }
+  ],
+  "known_operator_retention": [
+    {
+      "scene": "clean",
+      "method": "true_action",
+      "count": 480,
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 474,
+      "clean_wrong_newly_correct": 0
+    },
+    {
+      "scene": "clean",
+      "method": "true_action_noise",
+      "count": 480,
+      "correct": 474,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 474,
+      "clean_wrong_newly_correct": 0
+    },
+    {
+      "scene": "practical_high",
+      "method": "true_action",
+      "count": 480,
+      "correct": 473,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 473,
+      "clean_wrong_newly_correct": 0
+    },
+    {
+      "scene": "practical_high",
+      "method": "true_action_noise",
+      "count": 480,
+      "correct": 473,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 473,
+      "clean_wrong_newly_correct": 0
+    },
+    {
+      "scene": "practical_mid",
+      "method": "true_action",
+      "count": 480,
+      "correct": 471,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 471,
+      "clean_wrong_newly_correct": 0
+    },
+    {
+      "scene": "practical_mid",
+      "method": "true_action_noise",
+      "count": 480,
+      "correct": 471,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 471,
+      "clean_wrong_newly_correct": 0
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "true_action",
+      "count": 480,
+      "correct": 465,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 464,
+      "clean_wrong_newly_correct": 1
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "true_action_noise",
+      "count": 480,
+      "correct": 465,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 464,
+      "clean_wrong_newly_correct": 1
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "true_action",
+      "count": 480,
+      "correct": 469,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 468,
+      "clean_wrong_newly_correct": 1
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "true_action_noise",
+      "count": 480,
+      "correct": 468,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 467,
+      "clean_wrong_newly_correct": 1
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "true_action",
+      "count": 480,
+      "correct": 454,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 453,
+      "clean_wrong_newly_correct": 1
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "true_action_noise",
+      "count": 480,
+      "correct": 453,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 452,
+      "clean_wrong_newly_correct": 1
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "true_action",
+      "count": 480,
+      "correct": 430,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 429,
+      "clean_wrong_newly_correct": 1
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "true_action_noise",
+      "count": 480,
+      "correct": 426,
+      "clean_correct": 474,
+      "retained_among_clean_correct": 425,
+      "clean_wrong_newly_correct": 1
+    }
+  ],
+  "new_prediction_rows": 0,
+  "optimizer_updates": 0,
+  "target_reads": 0
+}

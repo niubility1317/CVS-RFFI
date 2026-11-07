@@ -1,0 +1,211 @@
+{
+  "status": "PASS",
+  "code_commit": "4d8e67aac5534649646d1b5954bdebfa0de7b9bd",
+  "cells": 35,
+  "same_source_records": 480,
+  "original_controls_exact": true,
+  "exact_original_control_rows": 6720,
+  "earlier_exact_phase_angle_max_abs_delta": 1.3877787807814457e-17,
+  "earlier_exact_phase_decision_changes": 0,
+  "phase_accuracy": [
+    {
+      "scene": "clean",
+      "method": "blind",
+      "mean_absolute_error_deg": 0.07955646583022571,
+      "p95_absolute_error_deg": 0.20456091009977279,
+      "closer_than_zero": 0
+    },
+    {
+      "scene": "clean",
+      "method": "whole_action_phase",
+      "mean_absolute_error_deg": 2.3497361284432103,
+      "p95_absolute_error_deg": 6.114548457786466,
+      "closer_than_zero": 8
+    },
+    {
+      "scene": "clean",
+      "method": "main_mean_scalar",
+      "mean_absolute_error_deg": 7.837208757273894,
+      "p95_absolute_error_deg": 21.041894859007815,
+      "closer_than_zero": 3
+    },
+    {
+      "scene": "clean",
+      "method": "main_mean_full",
+      "mean_absolute_error_deg": 1.8304535215521378,
+      "p95_absolute_error_deg": 5.127143512239009,
+      "closer_than_zero": 15
+    },
+    {
+      "scene": "practical_high",
+      "method": "blind",
+      "mean_absolute_error_deg": 1.7987640046636457,
+      "p95_absolute_error_deg": 4.292699164186759,
+      "closer_than_zero": 0
+    },
+    {
+      "scene": "practical_high",
+      "method": "whole_action_phase",
+      "mean_absolute_error_deg": 2.5227117318023726,
+      "p95_absolute_error_deg": 6.676316077522283,
+      "closer_than_zero": 188
+    },
+    {
+      "scene": "practical_high",
+      "method": "main_mean_scalar",
+      "mean_absolute_error_deg": 6.794594737491307,
+      "p95_absolute_error_deg": 19.16009917470286,
+      "closer_than_zero": 91
+    },
+    {
+      "scene": "practical_high",
+      "method": "main_mean_full",
+      "mean_absolute_error_deg": 2.05494172554073,
+      "p95_absolute_error_deg": 5.273381166565707,
+      "closer_than_zero": 224
+    },
+    {
+      "scene": "practical_mid",
+      "method": "blind",
+      "mean_absolute_error_deg": 1.9822421423993097,
+      "p95_absolute_error_deg": 5.254473511742063,
+      "closer_than_zero": 0
+    },
+    {
+      "scene": "practical_mid",
+      "method": "whole_action_phase",
+      "mean_absolute_error_deg": 2.597890331112463,
+      "p95_absolute_error_deg": 6.77608588991435,
+      "closer_than_zero": 191
+    },
+    {
+      "scene": "practical_mid",
+      "method": "main_mean_scalar",
+      "mean_absolute_error_deg": 6.7664535795290455,
+      "p95_absolute_error_deg": 19.033956826742184,
+      "closer_than_zero": 101
+    },
+    {
+      "scene": "practical_mid",
+      "method": "main_mean_full",
+      "mean_absolute_error_deg": 2.1671354164612353,
+      "p95_absolute_error_deg": 5.409230433762159,
+      "closer_than_zero": 221
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "blind",
+      "mean_absolute_error_deg": 2.0584502331238665,
+      "p95_absolute_error_deg": 5.574979653104479,
+      "closer_than_zero": 0
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "whole_action_phase",
+      "mean_absolute_error_deg": 2.722516760197696,
+      "p95_absolute_error_deg": 7.0464107368379905,
+      "closer_than_zero": 194
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "main_mean_scalar",
+      "mean_absolute_error_deg": 6.832475266645091,
+      "p95_absolute_error_deg": 19.13366834333187,
+      "closer_than_zero": 99
+    },
+    {
+      "scene": "practical_low_suburban",
+      "method": "main_mean_full",
+      "mean_absolute_error_deg": 2.253985145786463,
+      "p95_absolute_error_deg": 6.039257864611321,
+      "closer_than_zero": 215
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "blind",
+      "mean_absolute_error_deg": 2.0852264081908336,
+      "p95_absolute_error_deg": 5.466359304606713,
+      "closer_than_zero": 0
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "whole_action_phase",
+      "mean_absolute_error_deg": 2.6199444232457707,
+      "p95_absolute_error_deg": 6.509547719909297,
+      "closer_than_zero": 188
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "main_mean_scalar",
+      "mean_absolute_error_deg": 6.81716264519352,
+      "p95_absolute_error_deg": 18.9468971226749,
+      "closer_than_zero": 91
+    },
+    {
+      "scene": "practical_high_urban",
+      "method": "main_mean_full",
+      "mean_absolute_error_deg": 2.1248347528758527,
+      "p95_absolute_error_deg": 5.82063941671204,
+      "closer_than_zero": 234
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "blind",
+      "mean_absolute_error_deg": 3.385029560869899,
+      "p95_absolute_error_deg": 10.338390948958887,
+      "closer_than_zero": 0
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "whole_action_phase",
+      "mean_absolute_error_deg": 3.361013410331387,
+      "p95_absolute_error_deg": 9.105098933201136,
+      "closer_than_zero": 230
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "main_mean_scalar",
+      "mean_absolute_error_deg": 6.8603276235668975,
+      "p95_absolute_error_deg": 18.876700685799726,
+      "closer_than_zero": 127
+    },
+    {
+      "scene": "practical_mid_urban",
+      "method": "main_mean_full",
+      "mean_absolute_error_deg": 3.0014085800570767,
+      "p95_absolute_error_deg": 8.016008354392207,
+      "closer_than_zero": 237
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "blind",
+      "mean_absolute_error_deg": 3.9710339898386815,
+      "p95_absolute_error_deg": 13.395990449138745,
+      "closer_than_zero": 0
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "whole_action_phase",
+      "mean_absolute_error_deg": 3.822216649014223,
+      "p95_absolute_error_deg": 10.738121918182188,
+      "closer_than_zero": 240
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "main_mean_scalar",
+      "mean_absolute_error_deg": 7.182998478744086,
+      "p95_absolute_error_deg": 19.015397652247724,
+      "closer_than_zero": 140
+    },
+    {
+      "scene": "practical_low_urban",
+      "method": "main_mean_full",
+      "mean_absolute_error_deg": 3.6426726327651107,
+      "p95_absolute_error_deg": 10.777677714347417,
+      "closer_than_zero": 256
+    }
+  ],
+  "TX_reads": 0,
+  "target_reads": 0,
+  "new_NN_calls": 0
+}

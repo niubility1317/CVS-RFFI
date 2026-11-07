@@ -588,3 +588,7 @@ VERIFIED / QUEUED。实际代码 3fc9201628e7602ea58c6a5fb13d6ec934513e99，控�
 ## 2026-11-07 接收调制分量归因
 
 固定 480 条源 V 的低档城区，原盲估、主路相位、主路复增益、完整主路、完整镜像、双路都已知的 TX 正确数依次为 401／422／423／424／401／424。raw clean 为 474/480。 [七景配对、clean 逐条保留和分组统计](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-modulation-components-sourceV-s2026092701-r01/analysis.md)
+
+## 2026-11-07 相干参考盲估主路相位
+
+同批 480 条低档城区源样本，原盲估、整算子相位、主路等权、主路协方差加权、已知主路相位的 真实 TX 正确数依次为 401、414、378、414、422。raw clean 为 474。 [七景真实 TX 与主路角误差](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-coherent-main-phase-sourceV-s2026092701-r01/analysis.md)
