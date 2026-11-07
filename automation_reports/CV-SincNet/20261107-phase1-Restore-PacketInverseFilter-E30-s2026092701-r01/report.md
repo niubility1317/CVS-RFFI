@@ -37,3 +37,9 @@ VERIFIED / QUEUED。实际代码 92d0dcbe0f25927d5a1cf4d98669ded45a410a5b，控�
 新资源控制器 `42e22b1f7f8667a3f4b11b87a4fe6e6cf20b164e`，所有训练/预测/评分仍执行原 `92d0dcbe0f25927d5a1cf4d98669ded45a410a5b` 和原release。GPU5正常总数最多3个（已有最多2个、剩余至少12000 MiB），每阶段一个本run GPU子进程；取消等待ProjectedPrior最后GPU阶段的纯资源依赖。架构490866参数、原L_s/U_s、连续F0指导、数据顺序/draw/seed、从零单阶段30轮/7410和原Main双总体七景均不变。真实源2/实际G与F0/梯度及严格E0重载由原训练器首步执行，PASS后连续训练；final30后原预测、独立truth-last和报告继续。交接只涉及经完整PID/CWD/cmdline/CUDA空/无子进程/无run root核实的旧等待控制器，确认它退出后才启动新owner。保留旧release/logs/提交记录；原run输出root独占创建，不覆盖任何产物。原run真实stage终态继续驱动原MismatchedPrior后继队列，不能伪造完成。4项针对性检查和一次资源范围P0/P1通过，技术失败保留、不自动重启。
 
 命令：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.packet_filter_resource_dispatch --root /home/szu2070436088/2510044040/CV-SincNet --legacy-release /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01-release --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --commit 42e22b1f7f8667a3f4b11b87a4fe6e6cf20b164e`。CWD：`/home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01-GPU5-dispatch-release`。
+
+## GPU5 实际训练与真实模型检查通过
+
+VERIFIED / RUNNING。整包逆滤波恢复器已在GPU5实际训练，准入已有2个进程、剩余18501 MiB，独立读回总数3、本run仅一个GPU子进程，使用原总数最多3个限制。旧CUDA空且尚无GPU阶段/输出root的本run等待控制器已精确交接，其他健康任务与旧release/logs保持。调度代码 `42e22b1f7f8667a3f4b11b87a4fe6e6cf20b164e`，实际训练/预测/评分仍原 `92d0dcbe0f25927d5a1cf4d98669ded45a410a5b` 和原release。真实两条源、实际F0输入梯度、G初始恒等及严格检查点重载通过，训练日志已增长。490866个参数从零，原L_s6300/U_s56700、连续源F0指导、seed/顺序/draw/单阶段30轮7410更新及原Main双总体七景保持。这次只改变纯资源等待，不依据任何源/目标分数选择、取消或重排科学候选；默认DURA和其他已登记训练不变。当前无本版完整轮次和正式成绩。
+
+[资源准入、执行代码与实际源检查](resource_launch_evidence.json)
