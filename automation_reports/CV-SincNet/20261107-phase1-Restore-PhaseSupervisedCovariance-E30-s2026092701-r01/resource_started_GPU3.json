@@ -1,0 +1,30 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "observed_at_unix": 1794069089.043395,
+  "scientific_commit": "36b13adad5b091bf1f8f4aa7934c403e3b50d8eb",
+  "dispatch_commit": "6e6be6f3db354e7809ed186d490c634ed4add999",
+  "archive_SHA_match": true,
+  "remote_compile": true,
+  "old_queued_controller_retired": true,
+  "completed_source_preserved": true,
+  "source_or_prediction_restarts": 0,
+  "actual_PID_CWD_command_GPU_verified": true,
+  "GPU": 3,
+  "total_process_cap": 3,
+  "admission_existing_processes": 2,
+  "admission_free_MiB": 17128,
+  "actual_original_source_smoke": {
+    "status": "PASS",
+    "source_rows": 2,
+    "TX_labels_read": 0,
+    "target_inputs": 0,
+    "model_updates": 0
+  },
+  "completed_source_epochs": 30,
+  "completed_source_updates": 7410,
+  "prediction_log_bytes": 79,
+  "first_completed_view_observed": true,
+  "log_growth_status": "OBSERVED",
+  "Main_results_available": false,
+  "goal_complete": false
+}

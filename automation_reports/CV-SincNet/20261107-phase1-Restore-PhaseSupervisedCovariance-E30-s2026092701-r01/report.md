@@ -44,3 +44,7 @@ VERIFIED / SOURCE_TRAINED。已完成固定30轮、7410步，189000次L_s和1701
 复用已完成原30轮/7410步及原权重，剩余cross_rx、cross_both七景和独立评分使用原科学release。仅在旧控制器CPU空CUDA、无子进程、两个预测均未开始时交接；GPU3总数最多3，准入前至少12000 MiB。不重训、不读取目标成绩作调度依据，保留原输出和日志。
 
 控制代码：`6e6be6f3db354e7809ed186d490c634ed4add999`；科学代码：`36b13adad5b091bf1f8f4aa7934c403e3b50d8eb`。命令：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.phase_supervised_remaining_dispatch --root /home/szu2070436088/2510044040/CV-SincNet --legacy-release /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01-release --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --commit 6e6be6f3db354e7809ed186d490c634ed4add999`。
+
+## 剩余正式预测已实际启动
+
+VERIFIED / RUNNING。复用原30轮训练和最终权重，剩余跨接收机预测已在常规GPU3实际启动；启动时已有2个计算进程、17128 MiB可用，总数上限3。原科学代码/CWD、实际进程/GPU及原源样本检查已独立核实。旧队列控制器仅在无子进程、无预测产物时交接；没有重训或重复预测。首景日志增长仍待观察，尚无Main结果。 [运行核验](resource_started_GPU3.json)
