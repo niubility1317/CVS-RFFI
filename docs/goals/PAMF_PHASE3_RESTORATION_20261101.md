@@ -760,3 +760,7 @@ VERIFIED：三版物理E0、完整源顺序/draw一致；观察时全部27/22/20
 ## 2026-11-07 条件均值与耦合协方差联合对照
 
 VERIFIED / QUEUED。联合均值/协方差版已发布，独立读回实际控制器PID/CWD/命令、CUDA为空、无子进程、等待日志增长及零GPU占用。代码4bba9df3、发布包SHA对比与远端编译通过，11项针对性检查及一次P0/P1审查通过。固定等待Coupled版最后GPU终态，再按GPU1正常总数最多3个、已有最多2个且剩余至少12000 MiB准入；不读取其分数，不影响其他owner。新增130参数的先验均值头与原耦合协方差共用上下文，初始输出一致，均值按原先验每坐标1个标准差限幅。原L_s/U_s、实际带噪IQ/STFT/连续冻结F0损失、15global+15otherRX、从零单阶段30/7410保持。真实source2/F0/均值及协方差梯度/E0检查仍待GPU训练首步，PASS后直接继续完整训练与Main七景；尚无本版性能结果。 [完整预登记](../../automation_reports/CV-SincNet/20261107-phase1-Restore-JointPrior-E30-s2026092701-r01/report.md)
+
+## 2026-11-07 等价低秩后验的源端技术验证
+
+VERIFIED / QUEUED。等价低秩后验的源端诊断已发布，归档SHA对比与远端编译通过；实际CPU控制器PID/CWD/命令、CUDA为空、无子进程、无GPU占用及等待日志增长已核实。GPU3的进程数已达到原正常上限，故按原总数最多3、已有最多2且剩余至少12000 MiB等待；没有增加并发上限或重启任何任务。7项数值/梯度/低噪声/协议负检查与一次独立P0/P1审查通过。真实原G/F0源检查与14格GPU数值/耗时实测尚待启动，不能据单元检查宣布训练提速。该诊断不更新权重、不访问target/TX/V/OE，不改变任何已发布训练或部署版本。 [固定诊断矩阵](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-CoupledLowRank-sourceLU-s2026092701-r01/report.md)
