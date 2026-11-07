@@ -1,0 +1,54 @@
+{
+  "status": "PASS",
+  "code_commit": "d46cffe092dd667dab9df04c69c0f31a7aec5326",
+  "cells": 28,
+  "same_source_records": 120,
+  "decision_changes": [
+    {
+      "scene": "clean",
+      "blind_changes": 0,
+      "known_changes": 0
+    },
+    {
+      "scene": "practical_high",
+      "blind_changes": 0,
+      "known_changes": 0
+    },
+    {
+      "scene": "practical_mid",
+      "blind_changes": 0,
+      "known_changes": 0
+    },
+    {
+      "scene": "practical_low_suburban",
+      "blind_changes": 0,
+      "known_changes": 0
+    },
+    {
+      "scene": "practical_high_urban",
+      "blind_changes": 0,
+      "known_changes": 0
+    },
+    {
+      "scene": "practical_mid_urban",
+      "blind_changes": 0,
+      "known_changes": 0
+    },
+    {
+      "scene": "practical_low_urban",
+      "blind_changes": 1,
+      "known_changes": 0
+    }
+  ],
+  "iq_nmse_max_abs_difference": 4.261386199466699e-08,
+  "feature_cosine_max_abs_difference": 2.6650990003762587e-07,
+  "summary_max_abs_difference": 0.0,
+  "stored_risk_and_residual_metrics_reduced_independently": true,
+  "TX_reads": 0,
+  "target_reads": 0,
+  "new_F0_rows": 0,
+  "low_urban_known_vs_blind_with_scalar": {
+    "repair": 12,
+    "damage": 2
+  }
+}
