@@ -1,0 +1,165 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-diagnostic-Restore-receiver-session-sourceV-s2026092701-r01",
+  "group_id": "source-paired-virtual-receiver-attribution",
+  "display_name": "固定源传播条件的模拟接收机会话对照",
+  "description": "原接收机、训练接收机参数、原验证参数轮换。使用同一源包、传播与底层噪声抽样。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-V-only",
+    "frozen-TriSIGTIME-SSL",
+    "virtual-receiver",
+    "CPU-only",
+    "no-training"
+  ],
+  "comparison_group_id": "fixed-source-V480-crossed-virtual-hardware",
+  "parent_run_ids": [
+    "20261102-diagnostic-Restore-CovarianceDetail-sourceV-s2026092701-r01",
+    "20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User comprehensive recoverability analysis, frozen original source V validation only. No source V in training, no target/OE/novel/TX.",
+  "code": {
+    "commit": "91f46b7d944de93ed69981864047e01c06b93ebb",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI CPU2 nice10 CUDA empty, existing FP64 BF posterior and FP32 frozen F0.",
+    "cwd": "releases/20261107-diagnostic-Restore-receiver-session-sourceV-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 source contract; existing R07 fixed1800 V/7 frozen validation views",
+    "representation": "Source V480 fixed R07 25MHz 2462MHz residual, six practical scenes. Same propagation, noise seed, clean and physical IDs; original validation hardware, training hardware at same RX/day, or one-step circular reassignment of validation hardware across ordered RX/day. Clean decision reference reused.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "Original five RX x three day strata, first 32 per 120 from original order, same 480 original physical IDs all seven views.",
+    "label_map_ref": "Independent source V truth only after all six paired scene files and original clean reference are fixed.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original six known sourceTX; V trueTX validation only, no train/selection",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse VALIDATED_ONCE R07 handles; fixed original f29 V reference and BF E30/F0 E50 provenance.",
+    "support_query_ref": "Fixed 480 original V, no target/support/query.",
+    "leo_config_ref": "ExistingR07 validation_actions7; receiver2026101902 vs trainingreceiver2026101911; no regenerated views.",
+    "actual_training_labels": "None. Frozen diagnostic only, real L_s two-record no-query smoke.",
+    "augmentation": "Reuse all seven original source V observations, no regenerated signals.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "source-frozen-paired-virtual-receiver",
+    "query_use": "No target, OE or novel data; no adaptation or fitting. No Main hardware, profile or seed used.",
+    "external_method_exception": null,
+    "claim_scope": "Only sensitivity to selected source synthetic hardware in the same fixed simulated propagation. No hardware receiver shift, new deployment candidate or Main performance claim."
+  },
+  "checkpoint": {
+    "initialization": "Original frozen BF E30 and original frozen ground F0 default head.",
+    "sources": [
+      "FROZEN_G 20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01/bf29554a03e28a012eaaa134f5c7b3f7856f2268 E30/7410",
+      "FROZEN_F0 original Tri-SIG-TIME SSL 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d E50/11100",
+      "EXACT_ORIGINAL_CONTROLS 20261102-diagnostic-Restore-CovarianceDetail-sourceV-s2026092701-r01/f29b31417ce98a280eac25ea2fa78e0c49a5f0ff source V original received/BF F0 outputs",
+      "Original R07 source V and validated L_s smoke handles"
+    ],
+    "contract_check_ref": "Original source V IDs/RX/day. Original IQ replays bit-for-bit, propagation kernel and noise RNG fixed.",
+    "provenance_verdict": "Frozen same-source BF and F0. No G training, target or OE/novel/TX access.",
+    "selection_rule": "Fixed original 2026101902, training hardware 2026101911, or original hardware reassigned to adjacent group. All six scenarios."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-virtual-receiver",
+    "gpu_policy": "One CPU worker, 2 threads, nice10, CUDA empty; CPU truth lock shared.",
+    "remote_run_root": "runs/20261107-diagnostic-Restore-receiver-session-sourceV-s2026092701-r01",
+    "remote_log_root": "logs/20261107-diagnostic-Restore-receiver-session-sourceV-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-diagnostic-Restore-receiver-session-sourceV-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.receiver_session_source --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-diagnostic-Restore-receiver-session-sourceV-s2026092701-r01-release/inputs.json --commit 91f46b7d944de93ed69981864047e01c06b93ebb",
+    "stop_rule": "Original replay, paired physical/noise provenance, exact F0/G, finite output and no-query smoke required. Preserve on failure."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "runtime_observation.json",
+    "reference.npz PRIVATE",
+    "six scene.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "terminal.json",
+    "source_truth.json aggregate only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Paired TX repairs/damage, IQ NMSE, and received vs restoration.",
+      "Differences in measured pre-AGC SNR, output frequency and AGC. Shared kernel and pre-hardware noise draw check."
+    ],
+    "dimensions": [
+      "V480, 32 per each of 15 RX/day",
+      "six practical views plus clean reference",
+      "three RX assignments and two paths"
+    ],
+    "prediction_ref": "5760 new frozen BF recoveries and 11520 new F0 classifications; exact cached original F0 controls.",
+    "scorer_ref": "Separate CPU source V truth join by exact physical ID/RX/day under shared score lock after all outputs."
+  },
+  "rows": [
+    {
+      "row_id": "fixed_source_virtual_receiver_profiles",
+      "method": "source_virtual_receiver_paired_intervention",
+      "purpose": "Test sensitivity to source RX profiles independently of packet and propagation.",
+      "config_ref": "experiments.pamf_phase3_restoration.receiver_session_source.py",
+      "resolved_config_ref": "runs/20261107-diagnostic-Restore-receiver-session-sourceV-s2026092701-r01/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101902
+      },
+      "seed_notes": "Fixed original record order and original F0; no new RNG or phase selection.",
+      "k": null,
+      "scenario": "Original source V480 x7, five inference-only readouts.",
+      "optimizer": "NONE",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "CPU2, six scenes, two alternative hardware assignments.",
+      "output_root": "runs/20261107-diagnostic-Restore-receiver-session-sourceV-s2026092701-r01",
+      "log_path": "logs/20261107-diagnostic-Restore-receiver-session-sourceV-s2026092701-r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.receiver_session_source --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-diagnostic-Restore-receiver-session-sourceV-s2026092701-r01-release/inputs.json --commit 91f46b7d944de93ed69981864047e01c06b93ebb",
+      "expected_artifacts": [
+        "launch.json",
+        "runtime_observation.json",
+        "smoke.json",
+        "reference.npz PRIVATE",
+        "7 scene.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "terminal.json",
+        "source_truth.json aggregate only"
+      ]
+    }
+  ],
+  "notes": [
+    "Profiles assigned without TX or label use. The rotation preserves the profile multiset with 32 records per group.",
+    "Known simulator knobs are interventions only. Both BF and F0 use received IQ alone at inference.",
+    "Latent base noise held fixed; its transformed realization and AGC may change with the hardware."
+  ],
+  "registered_at": "2026-11-07T03:39:28+00:00"
+}
