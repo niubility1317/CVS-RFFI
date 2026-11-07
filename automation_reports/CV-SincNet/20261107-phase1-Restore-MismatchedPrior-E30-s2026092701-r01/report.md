@@ -43,3 +43,9 @@ VERIFIED / QUEUED。实际代码 14e7315d6da5d6fe242e7568f20c97ade064e8d9，控�
 VERIFIED / QUEUED。先验失配版的新控制器在线，CWD/命令/科学与调度代码/CUDA空环境/无子进程及等待日志已核实。它当前没有GPU训练或真实源模型检查，固定等待调制版真实最后GPU终态，再重新核实GPU5正常总数最多3个和至少12000 MiB。不读取调制版分数作为排队条件；原L_s/U_s、连续源F0指导、先验切换、从零单阶段30轮及完整Main矩阵保持。
 
 [实际执行与资源证据](resource_launch_evidence.json)
+
+## GPU5 原先验失配训练实际开始
+
+VERIFIED / RUNNING。先验失配版已按预登记的纯资源顺序在GPU5实际开始训练，准入已有2个进程、剩余19187 MiB，正常总数上限3个。一个本run训练子进程的PID/CWD/命令/父子关系/CUDA/GPU占用与日志增长已核实，父控制器CUDA为空。真实source2、原F0、完整后验、物理与细节梯度隔离、F0冻结及严格E0重载通过。实际训练继续使用原14e7315d科学代码、原L_s/U_s和连续源F0指导，从零单阶段30轮/7410，15轮全源先验与15轮排除当前源RX先验。目标、V、OE和TX标签不参与G训练；final30后原Main双总体七景与独立truth-last保持。调度不读取前一模型分数。
+
+[实际训练证据](resource_training_started.json)

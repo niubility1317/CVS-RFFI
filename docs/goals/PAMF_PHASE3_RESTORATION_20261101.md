@@ -748,3 +748,7 @@ VERIFIED / QUEUED。先验失配版的新控制器在线，CWD/命令/科学与�
 ## 2026-11-07 TF_ModulationCovariance 完整Main结果
 
 VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30核实；原Main42单元全部预测后独立truth-last，4阶段exit0且进程均已退出。1302组/868raw配对及DURA/clean配对复算PASS，最大差1.24e-14，baseline判决差0。六景83.657143/82.395238/80.766071/82.386310/75.182738/67.238095%，1/6；clean两个总体净-66/-29，联合验收False。原科学代码/模型/数据/预算保持，默认DURA不变，其他已登记候选继续。 [完整分析](../../automation_reports/CV-SincNet/20261107-phase1-Restore-ModulationCovariance-E30-s2026092701-r01/analysis.md)
+
+## 2026-11-07 源先验失配版实际开始训练
+
+VERIFIED / RUNNING。先验失配版已按预登记的纯资源顺序在GPU5实际开始训练，准入已有2个进程、剩余19187 MiB，正常总数上限3个。一个本run训练子进程的PID/CWD/命令/父子关系/CUDA/GPU占用与日志增长已核实，父控制器CUDA为空。真实source2、原F0、完整后验、物理与细节梯度隔离、F0冻结及严格E0重载通过。实际训练继续使用原14e7315d科学代码、原L_s/U_s和连续源F0指导，从零单阶段30轮/7410，15轮全源先验与15轮排除当前源RX先验。目标、V、OE和TX标签不参与G训练；final30后原Main双总体七景与独立truth-last保持。调度不读取前一模型分数。 [实验记录](../../automation_reports/CV-SincNet/20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01/report.md)
