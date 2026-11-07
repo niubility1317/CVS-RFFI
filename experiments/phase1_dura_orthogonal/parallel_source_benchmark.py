@@ -23,7 +23,7 @@ def encode(outputs):
                  for t in outputs)
 
 
-def worker(root, run, commit, selected, ready, start, results):
+def worker(root, run, commit, selected, ready, start, results, wait_timeout=120):
     announced = False
     try:
         torch.set_num_threads(2)
@@ -36,7 +36,7 @@ def worker(root, run, commit, selected, ready, start, results):
         independent(batches[0], [triple])
         ready.put(('READY', os.getpid()))
         announced = True
-        if not start.wait(120):
+        if not start.wait(wait_timeout):
             raise TimeoutError('Shared start was not signalled')
         began = time.perf_counter()
         outputs = [encode(independent(x, [triple])[0]) for x in batches]
