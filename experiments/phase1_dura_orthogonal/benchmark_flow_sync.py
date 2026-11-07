@@ -79,6 +79,10 @@ def main():
     parser.add_argument('--initial-commit', required=True)
     parser.add_argument('--commit', required=True)
     parser.add_argument('--out', type=Path, required=True)
+    parser.add_argument('--source-count', type=int, choices=(512, 32768), default=512)
+    parser.add_argument('--pairs', type=int, choices=(1, 2), default=2)
+    parser.add_argument('--modes', nargs='+', choices=('conditional', 'mixed', 'direct'),
+                        default=('conditional', 'mixed', 'direct'))
     args = parser.parse_args()
     if args.out.exists() or not torch.cuda.is_available():
         raise ValueError('Unique output and CUDA GPU required')
@@ -90,7 +94,7 @@ def main():
     from experiments.pamf_phase1_flow.anchor_source_smoke import frozen_dura
     data, prior, initial = load_inputs(args.cache, args.teacher, args.initial_state, args.initial_commit)
     del prior, initial
-    selected = tuple(torch.cat([v[i:i+512] for i in (0, 32768, 65536)]) for v in data)
+    selected = tuple(torch.cat([v[i:i+args.source_count] for i in (0, 32768, 65536)]) for v in data)
     small = tuple(torch.cat([v[i:i+64] for i in (0, 32768, 65536)]) for v in data)
     dura = frozen_dura(args.root, 'cuda:0')
     with torch.no_grad():
@@ -104,12 +108,12 @@ def main():
     del dura, model, data
     print('FLOW_SYNC_REAL_DURA_SMOKE_PASS', flush=True)
     results = {}
-    for mode in ('conditional', 'mixed', 'direct'):
+    for mode in args.modes:
         for fast in (False, True):
             del_result = train(small, mode, fast, 1)
             del del_result
         results[mode] = []
-        for order in ((False, True), (True, False)):
+        for order in ((False, True), (True, False))[:args.pairs]:
             outcomes = {fast: train(selected, mode, fast, 5) for fast in order}
             a, b = outcomes[False], outcomes[True]
             if not exact(a, b):
@@ -118,7 +122,7 @@ def main():
                                       losses_parameters_optimizer_rng_exact=True))
             del outcomes, a, b
     args.out.mkdir(parents=True)
-    result = dict(status='FLOW_SYNC_BENCHMARK_COMPLETE', commit=args.commit, source_ids=512,
+    result = dict(status='FLOW_SYNC_BENCHMARK_COMPLETE', commit=args.commit, source_ids=args.source_count,
                   views_per_id=3, epochs=5, batch=32, results=results,
                   gpu=torch.cuda.get_device_name(), TX_labels_read=0, F_weights_read=0,
                   F_outputs_read=0, V_reads=0, target_reads=0, weights_saved=False)
