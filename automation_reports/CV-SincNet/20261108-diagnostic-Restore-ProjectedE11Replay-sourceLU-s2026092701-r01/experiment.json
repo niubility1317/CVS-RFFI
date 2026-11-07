@@ -1,0 +1,175 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-diagnostic-Restore-ProjectedE11Replay-sourceLU-s2026092701-r01",
+  "group_id": "source-projected-detail-batch-spike-reproduction",
+  "display_name": "投影修正第11轮源域批次级技术复现",
+  "description": "从原 E10 技术状态按原训练轨迹临时重放 E11，遇投影修正 NMSE 大于 100 时定位源批次并测量提案和投影算子。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "no-target",
+    "technical-replay",
+    "no-deployment-checkpoint"
+  ],
+  "comparison_group_id": "original-projected-E11-source-spike",
+  "parent_run_ids": [
+    "20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01",
+    "20261108-diagnostic-Restore-ProjectedE11-sourceLU-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Existing source-only technical diagnosis; original healthy training and fixed final30/Main testing unchanged. GPU2/3/4 normal total<=3.",
+  "code": {
+    "commit": "0f13d6346ba7439d31f92f7e5ec0453831a5223f",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 Torch FP32/FP64, TF32off, two CPU threads; original8cf release, GPU2/3/4 normal cap3.",
+    "cwd": "releases/20261108-diagnostic-Restore-ProjectedE11Replay-sourceLU-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original R07 draw11 63000 source rows, L_s6300/U_s56700, original saved E11 order.",
+    "representation": "Original source clean/received IQ, simulator Action/noise and frozen original F0 continuous features.",
+    "contract_ref": "OriginalTriSSLsource_contract/392005/rolecounts6300-56700-27000;R07train63000sameIDset androles/RX/day byID",
+    "physical_ids_ref": "Existing source capsule and R07 cache aligned by physical ID and source role.",
+    "label_map_ref": "Unused for scoring. Original F0 default head used only in no-query smoke; continuous source features in numerical objectives.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Original source cache, parent source-only smoke, fixed original E10 optimizer/RNG and E11 schedule.",
+    "support_query_ref": "No target U/Q, no V/OE/novel, no TX truth or target predictions.",
+    "leo_config_ref": "Original R07 source draw11 only.",
+    "actual_training_labels": "No TX labels; original simulated source physical action/noise and frozen original F0 continuous features.",
+    "augmentation": "Original saved draw11 and epoch11 permutation, no new source synthesis.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "source-only-bounded-technical-replay",
+    "query_use": "Original L_s/U_s source rows only; no TX truth, V/OE/target inputs or target predictions.",
+    "external_method_exception": null,
+    "claim_scope": "Technical replay to localize finite source update spike. No saved G candidate or target accuracy; shared-GPU numerical trajectory may diverge."
+  },
+  "checkpoint": {
+    "initialization": "Original source-only ProjectedPriorDetail E10/2470 model, AdamW and RNG loaded only for disposable E11 replay; no candidate is saved.",
+    "sources": [
+      "20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01/8cf3669c4a5d98f6c4930117952203afd56f2f6e/rows/TF_ProjectedPriorDetail/training/recovery/E10.pt",
+      "Original frozen source Tri-SIG-TIME SSL F0 and original source mean/covariance."
+    ],
+    "contract_check_ref": "Original E10 code/config/epoch/steps and technical-only metadata, source-only smoke and saved E11 order/draw; exact original source release imported.",
+    "provenance_verdict": "Original E10 source L_s/U_s only, F0 continuous guidance, no TX/V/OE/target. Temporary optimizer steps cannot initialize deployment.",
+    "selection_rule": "E10 fixed as epoch boundary before observed spike, not model selection; stop at first projected update NMSE>100 or original numerical guard, otherwise stop after E11."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/projected-E11-source-replay",
+    "gpu_policy": "GPU2,3 or4 only; existing compute processes<=2, free>=12000MiB; one own child,total<=3. Never alter others.",
+    "remote_run_root": "runs/20261108-diagnostic-Restore-ProjectedE11Replay-sourceLU-s2026092701-r01",
+    "remote_log_root": "logs/20261108-diagnostic-Restore-ProjectedE11Replay-sourceLU-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261108-diagnostic-Restore-ProjectedE11Replay-sourceLU-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.projected_epoch11_replay run --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --commit 0f13d6346ba7439d31f92f7e5ec0453831a5223f",
+    "stop_rule": "Source/checkpoint mismatch, source2 smoke failure, nonfinite original objective or original posterior residual>1e-8, first per-record projected update NMSE>100, or exception: preserve and stop. Otherwise at most247 temporary updates and stop; no model save."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted.json",
+    "smoke.json",
+    "replay.log PRIVATE",
+    "results.json",
+    "terminal.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Per-record projected update NMSE>100, source scene, original output/error and preceding temporary update count.",
+      "At spike, recorded raw prior proposal and projected correction norms, detail gradient norm, predicted noise, original residual and Euclidean spectral norm of actual projected operator. P@proposal is checked against actual correction.",
+      "All values are source training diagnostics; no deployment model, target accuracy, identity inference or general information upper bound."
+    ],
+    "dimensions": [
+      "one original E11 source epoch",
+      "logical/microbatch",
+      "first flagged source record"
+    ],
+    "prediction_ref": "None",
+    "scorer_ref": "None; no target or TX truth."
+  },
+  "rows": [
+    {
+      "row_id": "projected_E11_batch_replay",
+      "method": "original_projected_source_epoch11_temporary_replay",
+      "purpose": "Locate the first large source projected correction and distinguish proposal and operator amplification.",
+      "config_ref": "experiments.pamf_phase3_restoration.projected_epoch11_replay.py",
+      "resolved_config_ref": "runs/20261108-diagnostic-Restore-ProjectedE11Replay-sourceLU-s2026092701-r01/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110707,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026110707
+      },
+      "seed_notes": "Original E10 saved RNG, E11 order and draw11.",
+      "k": null,
+      "scenario": "Original L_s/U_s source only, no target.",
+      "optimizer": "Original AdamW state temporarily restored; original LR/branch clipping unchanged.",
+      "lr": 0.001,
+      "epochs": 1,
+      "fl_rounds": null,
+      "budget_ref": "At most247 original epoch11 temporary updates, logical256/micro32; stop at first prespecified spike/guard. No saved model.",
+      "output_root": "runs/20261108-diagnostic-Restore-ProjectedE11Replay-sourceLU-s2026092701-r01",
+      "log_path": "runs/20261108-diagnostic-Restore-ProjectedE11Replay-sourceLU-s2026092701-r01/replay.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.projected_epoch11_replay run --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --commit 0f13d6346ba7439d31f92f7e5ec0453831a5223f",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted.json",
+        "smoke.json",
+        "replay.log PRIVATE",
+        "results.json",
+        "terminal.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Original E11 mean projected update NMSE was1843.75 with large preclip gradient, while original E10 and E12/E13 were near0.001–0.003. All saved states finite.",
+    "Fixed E10/E11 source stress test on149 deliberately extreme rows did not reproduce the spike. A full bounded trajectory may expose the responsible intermediate state or unsampled row.",
+    "Source flags and loss threshold fixed before execution; do not relax the original posterior guard. Replaying on another shared GPU can produce a different trajectory.",
+    "Three focused tests and one independent P0/P1 review PASS; actual E10/F0 source2 no-query smoke precedes replay.",
+    "No original experiment model, data, schedule, budget, other owner or default DURA is modified."
+  ],
+  "record_type": "managed_run",
+  "registered_at": "2026-11-07T18:41:59+00:00"
+}
