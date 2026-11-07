@@ -688,3 +688,7 @@ VERIFIED：独立读取clean.npy与practical_high.npy，每份126000条int64类�
 ## 2026-11-07 C4 对照按原容量规则开始实际训练
 
 VERIFIED / RUNNING。原C4控制器已按原容量规则自动启动实际训练，未切换或重启。GPU6准入前已有2个计算进程、剩余20474 MiB，启动后总数3，符合其原上限。读回时该卡总数5，其中本目标两路恢复器均有实际GPU进程；当前ConditionedCovariance保持健康运行。PID/CWD/命令/CUDA UUID/实际GPU PID/日志增长已核实。真实源2、物理/细节梯度隔离、C4坐标检查、初始零细节、冻结F0和严格E0重载通过。E01独立状态检查确认全部63000源记录曝光（L_s6300/U_s56700）、247次AdamW更新、两个分支实际权重变化、模型/优化器有限和先验不变。首轮942.405秒，属于该时共享负载下的实际整轮耗时。30轮/7410总预算和final30后的原TriSIGTIME SSL Main双总体七景/独立truth-last保持。尚无本版正式识别成绩。 [运行与首轮证据](../../automation_reports/CV-SincNet/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01/report.md)
+
+## 2026-11-07 双向协方差版保留原容量上限并增加GPU4正常空位路径
+
+VERIFIED / QUEUED。只替换尚未训练的Signed r01队列，旧PID/CWD/完整命令/commit/CUDA空/无孩子/无GPU阶段均核实后，在新归档校验和编译完成后精确停止旧控制器，再启动新控制器。独立读回旧控制器退出、新控制器在线、CUDA空、孩子0、GPU阶段0。5项资源测试和一次资源审查通过；模型配置除run_id外一致、每个scratch张量相等，原模型审查复用，数据/源权限/seed/30轮预算及Main矩阵不变。GPU4按原总数3上限、剩余显存至少12000MiB准入；GPU4不可用时，GPU6仍须等当前ConditionedCovariance最后GPU阶段并按总数5上限准入。读回GPU4总数3、GPU6总数5，因此当前仍在等待，新增GPU训练进程0。源2真实检查仍待首个GPU训练阶段执行。两路健康训练和其他队列均在线，旧产物保留。新路径可利用未来GPU4正常空位，实际提前量未作承诺。 [资源与方法一致性记录](../../automation_reports/CV-SincNet/20261107-phase1-Restore-SignedCovariance-E30-s2026092701-r02/report.md)
