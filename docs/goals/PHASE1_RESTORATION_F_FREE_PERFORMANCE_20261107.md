@@ -23,6 +23,7 @@
 - 相位等变、混合时间采样条件流、四阶约束、掩码／时间先验和独立直接流等已登记任务按原矩阵完成；运行状态以各 run 的进程、日志和完整产物核实。
 - 独立相位等变恢复：`20261107-phase1-direct-phase-source-s2026092701-r01` 从零训练 62496 参数的复数网络，仅接收单条 IQ，DURA 不参与拟合。训练使用 32768 个合法源 ID、三视图、20 轮，最终 checkpoint 固定后自动进行全部七景预测与独立 truth-last。设计依据是固定原 DURA 的源域相位一致性诊断，而非事后按地面成绩选择的候选；源波形检查不代表身份性能。[训练记录](../../automation_reports/CV-SincNet/20261107-phase1-direct-phase-source-s2026092701-r01/report.md)。
 - 独立共轭相位等变恢复：`20261107-phase1-direct-circular-source-s2026092701-r01` 与上一行各自从零训练，增加局部共轭特征、保持整体相位等变；63456 参数，源数据、20 轮、冻结及七景测试预算相同。它不加载上一行权重或依据目标结果选择，DURA 不参与拟合。[训练记录](../../automation_reports/CV-SincNet/20261107-phase1-direct-circular-source-s2026092701-r01/report.md)。
+- DURA 共轭修正：`20261107-phase1-dura-circular-source-s2026092701-r01` 冻结原 DURA，并为 received、恢复输出和物理残差各自构造局部共轭特征；新修正分支 35008 参数、从零训练，固定源数据和 5 轮后自动七景评分。相位等变仅针对三个上下文共同旋转的分支，不能外推为完整 DURA 链路等变。它不继承其他候选权重，且不依据目标结果选模。[训练记录](../../automation_reports/CV-SincNet/20261107-phase1-dura-circular-source-s2026092701-r01/report.md)。
 
 训练损失、波形 NMSE、源表示相似度和判别器损失都不是 TX 识别准确率。局部正收益不等于目标完成，任何新默认版本仍需用户指定。
 
