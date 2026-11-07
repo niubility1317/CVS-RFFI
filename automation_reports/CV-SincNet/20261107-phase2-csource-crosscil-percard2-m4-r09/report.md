@@ -27,3 +27,7 @@ Drain the quarantined C dispatcher and resume unchanged work with a maximum of t
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 2026-11-07 接管启动与自然排空
+
+用户要求 Phase 2 每张 GPU 最多两个本任务进程，B、C 合计。新控制器 PID 4078896，start_ticks 51885803；原 r08 PID 1364637、start_ticks 31022133 已核实暂停新增派发。23 个旧 worker 自然完成，当前 DRAINING_PARENT；GPU 0–6 上仍有各 3 个旧 worker，GPU 7 有 2 个，尚不能声称每卡两进程已生效。全排空后执行 source-only smoke、复用完整结果并继承两个祖先隔离项，再以每卡 2 个上限派发。旧控制器不得 SIGCONT，异常保留产物和唯一后继声明。B 不得并行启动，除非共享限额覆盖两组。源代码提交 f50c42e3c33b6fbf7cbc6cff7e24d01d16223742；定向测试 27 项通过，独立 P0/P1 与针对性修正复核通过；发布包传输 SHA 与远端 compile 已核实。当前预测屏障和评分关闭。
