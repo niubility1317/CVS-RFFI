@@ -371,3 +371,7 @@ N607 GPU 2 对 32768 源 ID × 三视图完成固定四组复岭解析拟合，�
 ## 源非线性残差可预测性
 
 固定源物理 ID 模 8 划分拟合与留出，比较接收和 DURA IQ 的线性、三次复残差特征及源噪声四分位分组。12288 条留出视图平均 IQ NMSE：DURA 0.02395641、线性分组 0.02394142、三次分组 0.02394383；三次分组比 DURA 相对低约 0.053%，5901 条低于 DURA。三次特征的整体收益很小，平均略差于线性分组；源数据已探索，DURA 可能见过这些 ID，波形 NMSE 不等于身份成绩。拟合系数未保存，未形成新版网络或访问目标。[完整对照](../automation_reports/CV-SincNet/20261107-phase1-dura-nonlinear-residual-source-s2026092701-r01/analysis.md)。
+
+## DURA 四频段平衡候选
+
+冻结 DURA，训练 117062 参数多尺度修正，在源 IQ 与原保护损失上增加权重 0.25 的四频段归一化误差；每频段分母不低于源 clean 总能量的 1%。动机是检验低能量频段可能被普通 IQ 误差弱化，而非假设该频段必然携带身份。固定 32768 合法源 ID × 三视图、五轮，不读 F/TX/V/目标；真实 DURA 的本机 GPU 六步检查与针对性测试通过。N607 GPU 0 唯一 owner 队列已启动，正在等待容量；正式训练未开始，七景预测和独立 truth-last 随训练完成自动执行，目前没有识别效果。[实验登记](../automation_reports/CV-SincNet/20261107-phase1-dura-balanced-spectral-source-s2026092701-r01/experiment.json)。
