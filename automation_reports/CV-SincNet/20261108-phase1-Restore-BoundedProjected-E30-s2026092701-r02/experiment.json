@@ -1,0 +1,212 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r02",
+  "group_id": "source-input-bounded-projected-prior-single30",
+  "display_name": "输入相关投影修正上限恢复器：保留并发余量版本",
+  "description": "与被资源停止的 r01 相同的从零单阶段30轮有界投影网络；仅调整队列准入和本任务进程数保护。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "source-only",
+    "original-ground-TriSIGTIME-SSL-Main",
+    "F-guided",
+    "scratch-single30",
+    "bounded-projected-correction"
+  ],
+  "comparison_group_id": "original-vs-bounded-projected-source-prior",
+  "parent_run_ids": [
+    "20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r01",
+    "20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01",
+    "20261108-diagnostic-Restore-ProjectedSpikeTrace-sourceLU-s2026092701-r01"
+  ],
+  "replaces_run_id": "20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r01",
+  "authorization": "Existing source-only F-guided scratch30 and full Main7; user total GPU cap3 protected. r01 own processes stopped after external worker joined; zero completed epochs or predictions.",
+  "code": {
+    "commit": "f4e0527b6053584c59a70e16bd938ac7a95499e4",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Torch CPUthreads2, FP32 network/FP64 posterior, TF32off; GPU2/3/4 max3 with one spare admission slot.",
+    "cwd": "releases/20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r02-release",
+    "scientific_code_commit": "8cf3669c4a5d98f6c4930117952203afd56f2f6e",
+    "identity_note": "Resource-only owner; all scientific stages execute original release and commit."
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "Original R07 L_s6300/U_s56700 paired clean/received IQ and simulated Action/noise; original source mean/covariance.",
+    "contract_ref": "OriginalTriSSLsource_contract/392005/rolecounts6300-56700-27000;R07train63000sameIDset androles/RX/day byID",
+    "physical_ids_ref": "R07train/physical_ids.npy roles.npy;validatedoriginalsourceLUcache IDs foralignment;officialMain source-disjoint viewindexes",
+    "label_map_ref": "Gtrainnone;frozenF0originalsixclassorder,truthonly originalCPUscorerafterallrow42cells fixed",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse original VALIDATED_ONCE R07/capsule/split and a3 source IQ moments/f57 source F0 variance. No target, V, OE or novel training.",
+    "support_query_ref": "No targettraining/support/PCD/unknownrole. OriginalMain two populations168000,all7perrowfixedbefore independenttruth.",
+    "leo_config_ref": "R07sourcecache20trainrealizations/2026101912augmentation;officialMain frozen7observations",
+    "actual_training_labels": "No TX labels. Original physical Action/noise supervision and corrected source noiseless IQ/STFT/.01 continuous frozen F0 features.",
+    "augmentation": "Original R07 clean+six source scenes and original 30-draw order; no new source or target data."
+  },
+  "permissions": {
+    "regime": "source-only-scratch-F0-guided-input-bounded-projected-prior",
+    "query_use": "Physical branch uses original source simulator factors only. Detail branch uses source clean and continuous frozen F0 on the corrected source noiseless inverse. Main uses only received IQ and a frozen original F0 head.",
+    "external_method_exception": null,
+    "claim_scope": "Fixed per-record correction cap uses only received IQ at deployment; no true Action, noise, clean, TX, F0 logits/CE, V/OE or target training."
+  },
+  "checkpoint": {
+    "initialization": "All5481223 G parameters from scratch, identical r01 initialization; no r01 or other G weights or optimizer states loaded.",
+    "sources": [
+      "FROZEN_F0 original source Tri-SIG-TIME SSL and legal source mean/covariance.",
+      "IMPLEMENTATION_CONTROL_ONLY 20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01/8cf3669c4a5d98f6c4930117952203afd56f2f6e; no learned weights loaded.",
+      "SOURCE_DIAGNOSTIC_ONLY 20261108-diagnostic-Restore-ProjectedSpikeTrace-sourceLU-s2026092701-r01/7b4a0290ddcd524c631e9c6c365ecaa01133b457; no target or TX."
+    ],
+    "contract_check_ref": "Same original R07 source L_s/U_s and frozen original F0/moments. Original r01 stopped at0 epochs and no target; actual model math unchanged from f817.",
+    "provenance_verdict": "Scratch G with source physical and F0 continuous guidance only. No TX/V/OE/target training or parent learned state.",
+    "selection_rule": "Fixed final30/7410 only, all Main seven-view predictions of both populations before independent truth-last."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/bounded-projected-r02-headroom-cap3",
+    "gpu_policy": "GPU2/3/4 only; before admission at most1 existing GPU compute PID and free>=12000MiB, leaving one slot for another worker. Monitor every2s; if total>3 or count unavailable3 times, terminate only own child and preserve run.",
+    "remote_run_root": "runs/20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r02",
+    "remote_log_root": "logs/20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r02",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r02",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.bounded_projected_resource_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit f4e0527b6053584c59a70e16bd938ac7a95499e4 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r02-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Source/F0/prior mismatch, output collision, actual source2/E0/gradient smoke failure, nonfinite loss/state, posterior residual>1e-8, GPU total>3 or GPU count unavailable3 checks, or child error: preserve and stop without automatic retry. Otherwise fixed30/full Main7/truth-last.",
+    "original_controller_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.projected_prior_detail_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 8cf3669c4a5d98f6c4930117952203afd56f2f6e --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r02-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "original_scientific_CWD": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r02-release"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/training/config.json",
+    "rows/<arm>/training/smoke.json",
+    "rows/<arm>/training/smoke_E0.pt PRIVATE",
+    "rows/<arm>/training/data_schedule.npz PRIVATE",
+    "rows/<arm>/training/training.jsonl PRIVATE",
+    "rows/<arm>/training/final.pt PRIVATE",
+    "rows/<arm>/training/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE",
+    "rows/TF_BoundedProjected/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only",
+    "launch.json actual owner",
+    "logs/run/resource_handover_GPU5.json original queue retirement"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Original frozen ground Tri-SIG-TIME SSL Main168000: raw clean145385; each practical>=140345 and both raw clean populations separately maintained.",
+      "Original clean and six practical, per TX/RX/day groups, paired raw/DURA repairs and damage. Original ProjectedPriorDetail matched control only after all predictions fixed.",
+      "Every source epoch: unbounded and bounded projected correction NMSE, actual clipping fraction/scale, source losses, optimizer norms, posterior residual, wall time and memory.",
+      "5481223 learned parameters unchanged; bound is on per-record correction L2, not parameter count. Track source and actual deployed effect, not inferred speed."
+    ],
+    "dimensions": [
+      "original Main two populations and seven views",
+      "TX/RX/day/RXday",
+      "single model seed",
+      "matched raw and DURA"
+    ],
+    "prediction_ref": "Fresh fixed candidate Main two populations/all 7; exact r03 raw and DURA reuse; previous detail for post-freeze analysis.",
+    "scorer_ref": "OriginalindependentCUDAemptyCPUscore/sharedscore.lock;whole row/allMainpredictionsbeforetruth. No targetfeedback."
+  },
+  "rows": [
+    {
+      "row_id": "TF_BoundedProjected",
+      "method": "input_relative_bounded_projected_prior",
+      "purpose": "Test whether controlling rare extreme learned posterior corrections improves source stability and frozen-F0 Main identification.",
+      "config_ref": "experiments.pamf_phase3_restoration.bounded_projected_resource_trial.py",
+      "resolved_config_ref": "runs/20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r02/rows/TF_BoundedProjected/training/config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Physicalscratchmodel2026092701/detail2026092702;R07builder2026101901/receiver2026101911/augmentation2026101912;sourceorder2026110102/draw1..20+1..10. Mainoriginalfixedobservations/no newRNG.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": "AdamW(weight_decay1e-4,clip1)",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Same r01 scratch single30/7410, physical/detail initialization, data/order, original F0, projected correction cap and objective. No r01 weights loaded; only resource admission/monitor changes.",
+      "output_root": "runs/20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r02/rows/TF_BoundedProjected",
+      "log_path": "runs/20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r02/logs/TF_BoundedProjected-train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.bounded_projected_resource_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit f4e0527b6053584c59a70e16bd938ac7a95499e4 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r02-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/training/config.json",
+        "rows/<arm>/training/smoke.json",
+        "rows/<arm>/training/smoke_E0.pt PRIVATE",
+        "rows/<arm>/training/data_schedule.npz PRIVATE",
+        "rows/<arm>/training/training.jsonl PRIVATE",
+        "rows/<arm>/training/final.pt PRIVATE",
+        "rows/<arm>/training/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE",
+        "rows/TF_BoundedProjected/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+      ]
+    }
+  ],
+  "notes": [
+    "R01 source2 passed but before any completed epoch another worker registered a GPU context, raising GPU4 total from3 to4. Only r01 owner and child were stopped; other tasks and all outputs preserved, zero target predictions.",
+    "R02 keeps exactly the same model, source losses, input-relative cap, seed, data, 30 epochs, final30 and full Main7. Admission leaves one spare GPU process slot and monitors actual count to enforce total<=3.",
+    "Source evidence and non-bitwise original-control matmul caveat from r01 remain. The cap is a hypothesis, not a proven performance increase.",
+    "Eleven targeted tests passed, including source initialization and GPU PID parsing; one independent P0/P1 review PASS. Actual source2/F0/E0 smoke remains the first step.",
+    "No TX labels, V/OE/target in G training; same original Tri-SIG-TIME SSL Main and truth-last scoring, default DURA unchanged."
+  ],
+  "record_type": "managed_run",
+  "registered_at": "2026-11-07T19:17:19+00:00"
+}
