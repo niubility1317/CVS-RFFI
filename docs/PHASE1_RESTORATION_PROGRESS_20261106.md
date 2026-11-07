@@ -397,3 +397,7 @@ FIR 修正版的六个受损场景也均低于同输入 raw 10.5375 至 12.5792 
 ## DURA 条件 IQ 流训练启动
 
 固定 DURA 与源 IQ，在 DURA anchor 到 clean 的路径上训练条件流速度场；推理按固定四步积分。N607 GPU 3 容量队列已接续，64 个源 ID × 三视图的真实 checkpoint smoke 通过，正式源训练 PID 3823069 正在运行，当前尚无完整训练 epoch。固定五轮、七景和独立 truth-last 由原控制器接续；无正式识别成绩，不与历史 F-guided 流方法混同。[实验登记](../automation_reports/CV-SincNet/20261107-phase1-dura-iqflow-source-s2026092701-r01/experiment.json)。
+
+## 源合成微扰的参数梯度关系
+
+固定 DURA 与一个未训练修正初始化，在 32 条合法源记录 × 三视图上将四种相对 RMS 1% 的源 clean 合成变化，经 DURA 估计物理作用注入观测后重算 DURA；比较响应约束与原波形保护的全部修正参数梯度。共轭、幅度三次、相位斜率和局部差分方向的梯度余弦依次为 -0.1083、-0.1365、0.2474、0.2810；响应梯度以 0.01 加权后相对原梯度的范数分别为 0.1962、0.1089、0.4666、0.1710。仅为小源样本和单初始化代理，不代表真实身份特征或目标收益；未训练或保存模型。[诊断](../automation_reports/CV-SincNet/20261107-phase1-dura-response-parameter-source-s2026092701-r01/analysis.md)。
