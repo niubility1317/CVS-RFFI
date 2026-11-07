@@ -86,7 +86,7 @@ def main():
             columns = [classes(reader, y), classes(reader, x), classes(reader, anchor)]
             for model in models.values():
                 columns.append(classes(reader, model(x, validate=False)))
-            block = torch.stack(columns, 1).cpu().numpy()
+            block = np.from_dlpack(torch.stack(columns, 1).cpu().contiguous()).copy()
             if not np.array_equal(block[:, :3], saved[start:start+len(x)]):
                 raise ValueError('Frozen clean, raw or DURA source proxy mismatch')
             batches.append(block)
