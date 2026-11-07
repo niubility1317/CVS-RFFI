@@ -1,0 +1,23 @@
+{
+  "kind": "PROJECTED_UPDATE_SPIKE",
+  "epoch": 11,
+  "steps": 25,
+  "micro_flagged": 14,
+  "ratio": 0.9034332338289794,
+  "expected_nmse_if_clean_energy_half": 140.1606487721539,
+  "measured_nmse": 140.16062927246094,
+  "operator_norm": 7.54300222619157,
+  "source_scene": "practical_high",
+  "detail_gradient_norm": 821.5740971073965,
+  "posterior_residual": 6.650889840235022e-14,
+  "flags": {
+    "TX_labels_read": 0,
+    "V_reads": 0,
+    "OE_reads": 0,
+    "target_inputs": 0,
+    "original_run_modified": false,
+    "diagnostic_checkpoint_written": false
+  },
+  "status": "PASS",
+  "scope": "Independent arithmetic and source flags only; no independent rerun of neural outputs or SVD."
+}
