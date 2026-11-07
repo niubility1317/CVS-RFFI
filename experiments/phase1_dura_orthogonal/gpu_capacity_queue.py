@@ -27,9 +27,12 @@ def main():
     p.add_argument('--gpu', type=int, required=True)
     p.add_argument('--fast-flow-guards', action='store_true')
     p.add_argument('--cuda-graph-flow', action='store_true')
+    p.add_argument('--epoch-flow-times', action='store_true')
     p.add_argument('--objective', required=True, choices=('wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0', 'wide_envelope_guard'))
     p.add_argument('--architecture', choices=('dura_multiscale', 'direct_student_fir', 'dura_frequency_regression', 'dura_reversible', 'direct_spectral_student', 'conditional_iq_flow', 'direct_iq_flow', 'dura_envelope'), default='dura_multiscale')
     args = p.parse_args()
+    if args.epoch_flow_times and (args.objective, args.architecture) != ('wide_conditional_flow', 'conditional_iq_flow'):
+        raise ValueError('Epoch flow times require conditional flow')
     if args.cuda_graph_flow and ((args.objective, args.architecture) != ('wide_conditional_flow', 'conditional_iq_flow')
                                  or args.fast_flow_guards):
         raise ValueError('CUDA graph requires conditional flow without fast-flow-guards')
@@ -64,6 +67,8 @@ def main():
         cmd.append('--fast-flow-guards')
     if args.cuda_graph_flow:
         cmd.append('--cuda-graph-flow')
+    if args.epoch_flow_times:
+        cmd.append('--epoch-flow-times')
     child = subprocess.Popen(cmd, cwd=Path.cwd(), env=env, stdin=subprocess.DEVNULL)
     print('GPU_QUEUE_CONTROLLER_STARTED', child.pid, flush=True)
     code = child.wait()

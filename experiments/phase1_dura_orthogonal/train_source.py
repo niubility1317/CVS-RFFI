@@ -25,7 +25,7 @@ from experiments.phase1_dura_orthogonal.multiscale_spectral import DuraMultiscal
 from experiments.phase1_dura_orthogonal.direct_spectral_student import DirectSpectralStudent
 from experiments.phase1_dura_orthogonal.direct_student_fir import DirectStudentFIR, SOURCE as FIR_SOURCE, SOURCE_COMMIT as FIR_SOURCE_COMMIT, TAPS as FIR_TAPS, SCALE as FIR_SCALE
 from experiments.phase1_dura_orthogonal.reversible_dura import ReversibleDura
-from experiments.phase1_dura_orthogonal.conditional_iq_flow import ConditionalIQFlow, DirectIQFlow, flow_matching_loss, sample_flow_times
+from experiments.phase1_dura_orthogonal.conditional_iq_flow import ConditionalIQFlow, DirectIQFlow, flow_matching_loss, sample_flow_times, sample_epoch_flow_times
 from experiments.phase1_dura_orthogonal.flow_cuda_graph import FlowGraphStep
 from experiments.phase1_dura_orthogonal.monotone_envelope import (
     DuraMonotoneEnvelope, envelope_loss, ENVELOPE_WEIGHT, QUANTILES as ENVELOPE_QUANTILES,
@@ -292,12 +292,16 @@ def main():
     parser.add_argument('--smoke-fit', type=int, default=64)
     parser.add_argument('--fast-flow-guards', action='store_true')
     parser.add_argument('--cuda-graph-flow', action='store_true')
+    parser.add_argument('--epoch-flow-times', action='store_true')
     parser.add_argument('--source-context-cache', type=Path)
     parser.add_argument('--save-source-context-cache', type=Path)
     parser.add_argument('--deterministic', action='store_true')
     parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0', 'wide_envelope_guard'), default='iq')
     parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir', 'dura_reversible', 'conditional_iq_flow', 'direct_iq_flow', 'dura_envelope'), default='orthogonal')
     args = parser.parse_args()
+    if args.epoch_flow_times and (args.objective != 'wide_conditional_flow' or args.architecture != 'conditional_iq_flow'
+                                  or not args.deterministic or torch.device(args.device).type != 'cuda'):
+        raise ValueError('Epoch flow times require deterministic conditional flow on CUDA')
     if args.cuda_graph_flow and (args.objective != 'wide_conditional_flow' or args.architecture != 'conditional_iq_flow'
                                  or not args.deterministic or torch.device(args.device).type != 'cuda' or args.fast_flow_guards):
         raise ValueError('CUDA graph flow requires deterministic conditional flow on CUDA without fast-flow-guards')
@@ -501,6 +505,8 @@ def main():
     elif not torch.equal(initial, data[5 if args.architecture == 'direct_student_fir' else 0 if args.architecture in ('direct_spectral_student', 'direct_iq_flow') else 1][:initial_batch]):
         raise ValueError('New correction must initially reproduce frozen DURA')
     started = time.monotonic()
+    if args.epoch_flow_times and (len(data[0]) < 32 or len(data[0]) % 32):
+        raise ValueError('Epoch flow times require complete fixed-size batches')
     graph_runner = None
     if args.cuda_graph_flow:
         if len(data[0]) < 32 or len(data[0]) % 32:
@@ -513,6 +519,8 @@ def main():
             model.dura.eval()
         crossview = args.objective == 'crossview_guard'
         order = torch.randperm(len(fit) if crossview else len(data[0]), generator=generator).to(device)
+        epoch_times = (sample_epoch_flow_times(len(order), flow_generator, origin_fraction=0.).to(device)
+                       if args.epoch_flow_times else None)
         total = torch.zeros((), device=device)
         action_total = torch.zeros((), device=device)
         moment_total = torch.zeros((), device=device)
@@ -554,9 +562,10 @@ def main():
             base_objective = ('distill_iq' if args.objective in ('wide_source_distill', 'wide_multiview_distill') else
                               'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'wide_source_guard', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_envelope_guard') else args.objective)
             if args.objective in ('wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0'):
-                times = (sample_flow_times(len(x), flow_generator, origin_fraction=.5)
-                         if args.objective == 'wide_conditional_flow_t0'
-                         else torch.rand((len(x),), generator=flow_generator)).to(device)
+                times = (epoch_times[start:start+len(x)] if epoch_times is not None else
+                         (sample_flow_times(len(x), flow_generator, origin_fraction=.5)
+                          if args.objective == 'wide_conditional_flow_t0'
+                          else torch.rand((len(x),), generator=flow_generator)).to(device))
                 flow_anchor, flow_direction, flow_variance = (model.direct_context(x)
                     if args.objective == 'wide_direct_flow' else (anchor, direction, variance))
                 if graph_runner is not None:
@@ -705,7 +714,8 @@ def main():
     if args.objective == 'wide_conditional_flow':
         cache_metadata.update(flow_steps=4, flow_time_seed=2026110713, flow_path='anchor_to_clean_linear',
                               fast_flow_guards=args.fast_flow_guards,
-                              source_flow_execution='cuda_graph' if args.cuda_graph_flow else 'eager')
+                              source_flow_execution='cuda_graph' if args.cuda_graph_flow else 'eager',
+                              source_flow_time_transfer='epoch' if args.epoch_flow_times else 'batch')
     if args.objective == 'wide_conditional_flow_t0':
         cache_metadata.update(flow_steps=4, flow_time_seed=2026110713, flow_path='anchor_to_clean_linear',
                               flow_origin_fraction=.5)
