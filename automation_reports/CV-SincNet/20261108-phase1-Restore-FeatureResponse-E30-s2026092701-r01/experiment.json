@@ -1,0 +1,205 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-Restore-FeatureResponse-E30-s2026092701-r01",
+  "group_id": "source-continuous-feature-response-single30",
+  "display_name": "源连续特征响应保持恢复器，从零单阶段 30 轮",
+  "description": "原 dense 响应恢复器增加源端 F0 连续特征差分响应损失，训练部署仍使用相同后验。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "original-ground-TriSIGTIME-SSL-Main",
+    "source-feature-response",
+    "source-F-guided",
+    "scratch-single30",
+    "automatic-Main7"
+  ],
+  "comparison_group_id": "source-iq-response-vs-additional-feature-response",
+  "parent_run_ids": [
+    "20261108-phase1-Restore-ResponseDense-E30-s2026092701-r01",
+    "20261107-diagnostic-Restore-CovarianceResponse-sourceLU-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Existing authorized original L_s/U_s simulated pairs, independent F-guided scratch single30 and complete Main seven-view evaluation; no parameter limit.",
+  "code": {
+    "commit": "6a54c65a2b54886191f44b6a4d6d94530fcb217d",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Torch, CPU threads2, FP32 network/FP64 dense posterior, TF32 off; GPU5 total<=3 and one spare admission slot.",
+    "cwd": "releases/20261108-phase1-Restore-FeatureResponse-E30-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "Original R07 L_s6300/U_s56700 clean/received plus simulator Action/noise; original global/other-RX source moments. One fixed1% source-RMS perturbation per row/epoch.",
+    "contract_ref": "OriginalTriSSLsource_contract/392005/rolecounts6300-56700-27000;R07train63000sameIDset androles/RX/day byID",
+    "physical_ids_ref": "R07train/physical_ids.npy roles.npy;validatedoriginalsourceLUcache IDs foralignment;officialMain source-disjoint viewindexes",
+    "label_map_ref": "Gtrainnone;frozenF0originalsixclassorder,truthonly originalCPUscorerafterallrow42cells fixed",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Original VALIDATED_ONCE source capsule/split and physical binding, original full IQ moments. Reuse pre-V fixed ten source-only receiver-prior statistics from r02.",
+    "support_query_ref": "No targettraining/support/PCD/unknownrole. OriginalMain two populations168000,all7perrowfixedbefore independenttruth.",
+    "leo_config_ref": "R07sourcecache20trainrealizations/2026101912augmentation;officialMain frozen7observations",
+    "actual_training_labels": "Zero TX labels. Original physical Action/noise source supervision, paired IQ/STFT, continuous frozen F0, source IQ response and source continuous feature response.",
+    "augmentation": "Original fixed1%-RMS source IQ perturbation in one of four directions; source Action maps delta into received with the same realized noise."
+  },
+  "permissions": {
+    "regime": "source-only-scratch-continuous-F0-response-guidance",
+    "query_use": "Source RX selects training prior/mode factor only. Deployed G consumes current IQ and its fixed source buffers. No V/OE/target fit or TX truth.",
+    "external_method_exception": null,
+    "claim_scope": "No target training, source TX labels, V/OE fitting, F0 logits/CE, new identity head, or prior G weights. Deployed G consumes only received IQ and fixed source buffers."
+  },
+  "checkpoint": {
+    "initialization": "All 1471463 G parameters from scratch with original physical and prior seeds; no control G weights or optimizer state loaded.",
+    "sources": [
+      "FROZEN_F0 original Tri-SIG-TIME SSL and legal original source moments.",
+      "IMPLEMENTATION_CONTROL_ONLY 20261108-phase1-Restore-ResponseDense-E30-s2026092701-r01/6b3f8e478ae70f1a59a3f21db86f6655890fa04e; no learned G weights loaded.",
+      "SOURCE_EVIDENCE_ONLY 20261107-diagnostic-Restore-CovarianceResponse-sourceLU-s2026092701-r01/4f1551ce4d81f4f3d1cade52bebaaeabe1b7316e; no TX or target reads."
+    ],
+    "contract_check_ref": "Original VALIDATED_ONCE R07 source L_s/U_s and original F0/source moments. No control learned state loaded.",
+    "provenance_verdict": "Scratch G; source simulator and frozen source F0 continuous features only, no TX/V/OE/target training.",
+    "selection_rule": "Fixed final30/7410 only; both complete Main seven-view prediction matrices fixed before independent truth-last. Compare matched control only after its whole matrix is also fixed."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/feature-response-scratch30-GPU5",
+    "gpu_policy": "GPU5 only; admission at most one existing GPU compute PID and free>=12288MiB. Monitor every 2s; stop only own child if total>3 or GPU count unavailable three times.",
+    "remote_run_root": "runs/20261108-phase1-Restore-FeatureResponse-E30-s2026092701-r01",
+    "remote_log_root": "logs/20261108-phase1-Restore-FeatureResponse-E30-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261108-phase1-Restore-FeatureResponse-E30-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.feature_response_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 6a54c65a2b54886191f44b6a4d6d94530fcb217d --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-Restore-FeatureResponse-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Source/F0/prior mismatch, output collision, real source2/E0/feature-gradient smoke failure, nonfinite loss/state, posterior residual>1e-8, GPU cap violation, unknown GPU count three checks, or worker error: preserve and stop; no automatic retry. Otherwise final30 and complete Main7/truth-last."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/training/config.json",
+    "rows/<arm>/training/smoke.json",
+    "rows/<arm>/training/smoke_E0.pt PRIVATE",
+    "rows/<arm>/training/data_schedule.npz PRIVATE",
+    "rows/<arm>/training/training.jsonl PRIVATE",
+    "rows/<arm>/training/final.pt PRIVATE",
+    "rows/<arm>/training/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE",
+    "rows/TF_FeatureResponse/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Original ground Tri-SIG-TIME SSL frozen default head Main168000: raw clean145385; each practical>=140345 and both raw clean populations 111019/34366 preserved.",
+      "Every TX/RX/day group and paired raw/DURA repairs/damage; same-input ResponseDense comparison only after both complete matrices are fixed.",
+      "All30 source logs and source permutations; separate IQ and feature response error, posterior residual, finite state, wall time and peak memory.",
+      "1,471,463 G parameters, two dense posterior calls and four F0 feature passes per source row during training; one dense posterior and no F0 in deployed G."
+    ],
+    "dimensions": [
+      "original Main two populations and seven views",
+      "TX/RX/day/RXday",
+      "single model seed",
+      "matched raw and DURA"
+    ],
+    "prediction_ref": "Original Main cross_rx126000 + cross_both42000, all seven views, original raw/DURA exact-ID reuse.",
+    "scorer_ref": "OriginalindependentCUDAemptyCPUscore/sharedscore.lock;whole row/allMainpredictionsbeforetruth. No targetfeedback."
+  },
+  "rows": [
+    {
+      "row_id": "TF_FeatureResponse",
+      "method": "source_continuous_feature_response_dense",
+      "purpose": "Test whether preserving original F0 continuous feature differences of source perturbations improves task-relevant restoration beyond IQ response alone.",
+      "config_ref": "experiments.pamf_phase3_restoration.feature_response_trial.py",
+      "resolved_config_ref": "runs/20261108-phase1-Restore-FeatureResponse-E30-s2026092701-r01/rows/TF_FeatureResponse/training/config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Physical2026092701/confidence2026092702, original source order2026110102 and R07 draws. Existing source subset2026110707. No new stochastic prior fit.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": "AdamW(weight_decay1e-4,clip1)",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Scratch single30/7410, same ResponseDense initialization, source order, prior, IQ response and objective; adds .01 feature response with source-variance scale and a fixed reference-energy denominator floor.",
+      "output_root": "runs/20261108-phase1-Restore-FeatureResponse-E30-s2026092701-r01/rows/TF_FeatureResponse",
+      "log_path": "runs/20261108-phase1-Restore-FeatureResponse-E30-s2026092701-r01/logs/TF_FeatureResponse-train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.feature_response_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 6a54c65a2b54886191f44b6a4d6d94530fcb217d --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-Restore-FeatureResponse-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/training/config.json",
+        "rows/<arm>/training/smoke.json",
+        "rows/<arm>/training/smoke_E0.pt PRIVATE",
+        "rows/<arm>/training/data_schedule.npz PRIVATE",
+        "rows/<arm>/training/training.jsonl PRIVATE",
+        "rows/<arm>/training/final.pt PRIVATE",
+        "rows/<arm>/training/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE",
+        "rows/TF_FeatureResponse/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+      ]
+    }
+  ],
+  "notes": [
+    "Fixed source-only 224-row study found F0 response errors in synthetic directions, including high and broadly distributed phase-slope errors. Synthetic directions do not establish actual TX hardware derivatives or an information limit.",
+    "Feature response equals F0(G(y+Aδ))-F0(G(y)) minus [F0(x+δ)-F0(x)], variance-normalized; denominator uses reference response energy plus 1e-4 source feature energy and minimum 1e-12. The added term has weight .01.",
+    "Same original ResponseDense E0, priors, optimizer, schedule, data and IQ response; no control weights loaded. The extra two differentiable F0 passes and one detached clean-perturbed F0 pass per source row are explicitly counted.",
+    "Eleven focused local tests PASS, including actual objective gradients in a synthetic model and technical recovery regression. One independent P0/P1 review PASS. Real F0/source2/E0/feature-response-gradient smoke is the first remote step and is not yet passed.",
+    "Both Main populations and all seven views are predicted before independent truth-last. No target result is used to adjust this or another candidate. Default DURA unchanged."
+  ],
+  "record_type": "managed_run",
+  "registered_at": "2026-11-07T22:10:37+00:00"
+}
