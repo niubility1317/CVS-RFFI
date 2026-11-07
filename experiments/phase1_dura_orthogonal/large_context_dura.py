@@ -17,6 +17,7 @@ class LargeContextDura(nn.Module):
         super().__init__()
         if width < HEADS or width % HEADS or layers < 1:
             raise ValueError('Width must be a positive multiple of attention heads')
+        self.residual_scale = SCALE
         self.local = nn.Sequential(nn.Conv1d(7, 64, 5, padding=2), nn.GELU(),
                                    nn.Conv1d(64, 64, 5, padding=2), nn.GELU())
         self.down = nn.Conv1d(64, width, 9, stride=4, padding=4)
@@ -48,5 +49,5 @@ class LargeContextDura(nn.Module):
         # Repetition is deterministic in CUDA backward; convolution below learns interpolation.
         context = context.repeat_interleave(4, dim=-1)
         delta = self.out(self.decode(torch.cat((local, context), 1)))
-        delta = delta*torch.rsqrt(1+delta.square().sum(1, keepdim=True))*scale*SCALE
+        delta = delta*torch.rsqrt(1+delta.square().sum(1, keepdim=True))*scale*self.residual_scale
         return anchor + noise_gate(anchor, variance)*delta
