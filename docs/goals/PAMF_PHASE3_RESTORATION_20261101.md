@@ -797,3 +797,7 @@ VERIFIED / RUNNING。新响应保持版已在GPU6按原授权准入，实际PID/
 主评价继续固定原地面 Tri-SIG-TIME SSL 及默认头、Main 168000 条、clean 与六种 practical。每个受损场景需达到 140345/168000，即距 raw clean 145385/168000 不超过 3 个百分点；两个 clean 总体分别保持。增加容量不改变原 L_s/U_s、TX 隐藏、源连续 F 指导独立声明、OE 只作冻结诊断、目标不训练/选模，以及从零单阶段 30 轮的授权。目标测试结果不回流到在训配方或逐条路由。
 
 已登记、正在训练或测试的候选保持原冻结配置完成。本次取消参数约束面向后续独立版本，不热改现有模型、预算、预测或默认 DURA。容量扩大是否有效，仍由新版本完整七景和同条净纠错验证；不能由参数更多或源误差更低直接推断。
+
+## 2026-11-07 TF_CoordinateMAPDetail 完整Main结果
+
+VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30核实；原Main42单元全部预测后独立truth-last，4阶段exit0且进程均已退出。1302组/868raw配对及DURA/clean配对复算PASS，最大差1.22e-14，baseline判决差0。六景83.677976/81.066667/78.604762/78.305952/59.244048/46.719643%，1/6；clean两个总体净-100/-30，联合验收False。原科学代码/模型/数据/预算保持，默认DURA不变，其他已登记候选继续。 [完整分析](../../automation_reports/CV-SincNet/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01/analysis.md)

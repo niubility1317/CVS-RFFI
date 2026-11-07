@@ -281,3 +281,7 @@ VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30�
 ## 2026-11-07 三类最终协方差源V与Main对照
 
 VERIFIED：三版final30的固定源V480×7诊断完整完成，315指标组/315配对组通过，raw clean474/480。耦合版相对非负方差版中/低档城区源V净+14/+4，同一科学权重的Main却净−1412/−3015。源端真实TX局部收益不保证跨RX测试收益；源低城区85.0%本身也距源raw clean98.75%有13.75pp差距。零新训练、V拟合或目标预测，不把差异单独归因于某一种RX机制，其他已登记候选保持。 [完整源验证及Main对照](../automation_reports/CV-SincNet/20261107-diagnostic-Restore-CovarianceFamily-final30-sourceV-s2026092701-r01/analysis.md)
+
+## 2026-11-07 TF_CoordinateMAPDetail 完整Main结果
+
+VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30核实；原Main42单元全部预测后独立truth-last，4阶段exit0且进程均已退出。1302组/868raw配对及DURA/clean配对复算PASS，最大差1.22e-14，baseline判决差0。六景83.677976/81.066667/78.604762/78.305952/59.244048/46.719643%，1/6；clean两个总体净-100/-30，联合验收False。原科学代码/模型/数据/预算保持，默认DURA不变，其他已登记候选继续。 [完整分析](../automation_reports/CV-SincNet/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01/analysis.md)

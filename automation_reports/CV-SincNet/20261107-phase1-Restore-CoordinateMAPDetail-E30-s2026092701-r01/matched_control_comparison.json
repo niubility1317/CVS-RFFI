@@ -1,0 +1,110 @@
+{
+  "status": "VERIFIED_MATCHED_FIXED_PREDICTIONS",
+  "spec": {
+    "candidate": [
+      "20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01",
+      "TF_CoordinateMAPDetail",
+      "bc6bcac3bf8463fb3b2770a0ec2a6115ab322ae1"
+    ],
+    "reference": [
+      "20261102-phase1-Restore-CovarianceDetail-E30-s2026092701-r01",
+      "TF_CovarianceDetail",
+      "1fcbc3eb3cc16e7577ecc3cbedda99174b4c5cc6"
+    ]
+  },
+  "combined": [
+    {
+      "count": 168000,
+      "reference_correct": 145548,
+      "candidate_correct": 145255,
+      "repairs": 221,
+      "damage": 514,
+      "net": -293,
+      "view": "clean",
+      "reference_accuracy": 86.63571428571429,
+      "candidate_accuracy": 86.46130952380952,
+      "delta_pp": -0.1744047619047619
+    },
+    {
+      "count": 168000,
+      "reference_correct": 134636,
+      "candidate_correct": 140579,
+      "repairs": 11790,
+      "damage": 5847,
+      "net": 5943,
+      "view": "practical_high",
+      "reference_accuracy": 80.14047619047619,
+      "candidate_accuracy": 83.67797619047619,
+      "delta_pp": 3.5375
+    },
+    {
+      "count": 168000,
+      "reference_correct": 130717,
+      "candidate_correct": 136192,
+      "repairs": 14001,
+      "damage": 8526,
+      "net": 5475,
+      "view": "practical_mid",
+      "reference_accuracy": 77.8077380952381,
+      "candidate_accuracy": 81.06666666666666,
+      "delta_pp": 3.2589285714285716
+    },
+    {
+      "count": 168000,
+      "reference_correct": 126832,
+      "candidate_correct": 132056,
+      "repairs": 15994,
+      "damage": 10770,
+      "net": 5224,
+      "view": "practical_low_suburban",
+      "reference_accuracy": 75.4952380952381,
+      "candidate_accuracy": 78.6047619047619,
+      "delta_pp": 3.1095238095238096
+    },
+    {
+      "count": 168000,
+      "reference_correct": 131399,
+      "candidate_correct": 131554,
+      "repairs": 12332,
+      "damage": 12177,
+      "net": 155,
+      "view": "practical_high_urban",
+      "reference_accuracy": 78.21369047619048,
+      "candidate_accuracy": 78.30595238095238,
+      "delta_pp": 0.09226190476190477
+    },
+    {
+      "count": 168000,
+      "reference_correct": 116671,
+      "candidate_correct": 99530,
+      "repairs": 15265,
+      "damage": 32406,
+      "net": -17141,
+      "view": "practical_mid_urban",
+      "reference_accuracy": 69.44702380952381,
+      "candidate_accuracy": 59.24404761904762,
+      "delta_pp": -10.20297619047619
+    },
+    {
+      "count": 168000,
+      "reference_correct": 104834,
+      "candidate_correct": 78489,
+      "repairs": 17148,
+      "damage": 43493,
+      "net": -26345,
+      "view": "practical_low_urban",
+      "reference_accuracy": 62.40119047619048,
+      "candidate_accuracy": 46.71964285714286,
+      "delta_pp": -15.681547619047619
+    }
+  ],
+  "candidate_cells_checked": 42,
+  "reference_cells_checked": 42,
+  "all_predictions_checked_before_truth": true,
+  "raw_DURA_decision_differences": 0,
+  "F0_source_commit": "3ff8f4b7e85b5608f5b45350aa18081499a7ef1d",
+  "new_neural_forwards": 0,
+  "optimizer_updates": 0,
+  "source_or_target_fitting": false,
+  "reference_display_name": "原物理与IQ细节恢复版"
+}
