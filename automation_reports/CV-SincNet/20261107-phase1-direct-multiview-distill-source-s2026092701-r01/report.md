@@ -3,7 +3,7 @@
 - run_id：`20261107-phase1-direct-multiview-distill-source-s2026092701-r01`
 - group_id：`phase1-direct-multiview-distill`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING；N607 GPU 1 控制器 PID 3972911、训练 PID 3973073 已核实。
 
 ## 目的与对照
 
@@ -21,9 +21,8 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
-源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+真实源 checkpoint smoke 使用 64 个源 ID × 三视图，通过；正式 GPU 训练已完成第 8/20 轮，训练累计日志计时 567.4 秒，第 8 轮源损失 0.420796。训练未读取 F、TX 标签、V 或目标；DURA 三视图均值只在源训练时充当波形教师，推理只使用单条 received IQ。源损失不是识别准确率，尚无七景识别结果。
 
 ## 交接
 
-记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+固定 20 轮完成后自动执行源预测 smoke、七景预测及独立评分；恢复时核实唯一 owner，不重复启动。
