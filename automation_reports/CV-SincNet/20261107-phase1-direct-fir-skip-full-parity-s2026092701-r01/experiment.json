@@ -1,0 +1,160 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-direct-fir-skip-full-parity-s2026092701-r01",
+  "group_id": "phase1-direct-fir-skip-full-parity",
+  "display_name": "独立 FIR 学生省略 DURA 的完整七景决策核验",
+  "description": "等待既有七景预测全部固定后，省略 DURA 上下文逐条核对原始和恢复决策，不读取真值。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "frozen-ground",
+    "prediction-parity",
+    "inference-timing",
+    "cpu"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261107-phase1-direct-student-fir-source-s2026092701-r01",
+    "20261107-phase1-direct-student-fir-ground-test-s2026092701-r01",
+    "20261107-phase1-direct-fir-skip-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests inference acceleration and validation of complete outputs without changing test results; fixed completed Phase1 candidate replay, no truth.",
+  "code": {
+    "commit": "17b4efa1f982b3ba2a808abf72a3822fb2f5a516",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CPU two threads, batch8, FP32; frozen networks; no GPU",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-direct-fir-skip-full-parity-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split fixed ground inputs",
+    "version": "fixed Phase1 Main split, original7/63/30",
+    "representation": "source-only smoke then fixed received ground IQ and previously completed raw/restored class predictions",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "168000 fixed ground IDs x seven views; plus 112 legal source smoke records",
+    "label_map_ref": null,
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source smoke IQ only",
+      "U_s": "source smoke IQ with TX hidden",
+      "V": "not read",
+      "test": "fixed ground received IQ and existing predictions; no truth or fitting"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "112 source waveform/logits equality smoke; wait for all fixed ground predictions; compare every saved decision",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed Phase1 clean and six practical views"
+  },
+  "permissions": {
+    "regime": "Phase1 frozen ground prediction parity",
+    "query_use": "Read fixed per-record test IQ and existing prediction arrays only; no truth, fitting, or model selection",
+    "external_method_exception": null,
+    "claim_scope": "Complete prediction decision parity and replay time for one fixed candidate; no new performance score or independent blind-test claim"
+  },
+  "checkpoint": {
+    "initialization": "Fixed source-only direct FIR student, original DURA v1.0 and frozen Tri-SIG-TIME SSL",
+    "sources": [
+      "20261107-phase1-direct-student-fir-source-s2026092701-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+    ],
+    "contract_check_ref": "ground.load_fixed verifies matching source-only G checkpoint and frozen Tri-SIG-TIME SSL",
+    "provenance_verdict": "Fixed source-only checkpoints, no target ancestry; F read only for frozen prediction diagnostic",
+    "selection_rule": "Fixed existing candidate chosen for technical parity before complete results; no target-driven selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "CPU only, two threads; preserve all running experiments",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-direct-fir-skip-full-parity-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-direct-fir-skip-full-parity-s2026092701-r01-launcher.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261107-phase1-direct-fir-skip-full-parity-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.direct_skip_full_parity --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-direct-fir-skip-full-parity-s2026092701-r01 --source 20261107-phase1-direct-student-fir-source-s2026092701-r01 --ground 20261107-phase1-direct-student-fir-ground-test-s2026092701-r01 --candidate-commit 1fba7ab93c151d2679a7db11feb3528b78689863 --commit 17b4efa1f982b3ba2a808abf72a3822fb2f5a516",
+    "stop_rule": "Stop exact parity run on any prediction mismatch, source smoke failure, nonfinite output or technical failure; preserve other owners and all existing predictions"
+  },
+  "expected_artifacts": [
+    "source_smoke.json: source waveform/logit equality and fixed pilot decisions",
+    "result.json: all seven view decision parity and elapsed time"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "raw decision mismatch count",
+      "restored decision mismatch count",
+      "full replay elapsed seconds"
+    ],
+    "dimensions": [
+      "168000 fixed ground records x seven views"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-direct-student-fir-ground-test-s2026092701-r01/flow/test_prediction",
+    "scorer_ref": "none; no target truth"
+  },
+  "rows": [
+    {
+      "row_id": "full-direct-fir-skip-parity",
+      "method": "Direct IQ-only FIR student replay versus existing fixed raw/restored decisions",
+      "purpose": "Determine complete output parity for one fixed G and measure replay time",
+      "config_ref": "experiments/phase1_dura_orthogonal/direct_skip_full_parity.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Existing fixed FIR student and Tri-SIG-TIME SSL seed 2026092701; no training or selection.",
+      "k": null,
+      "scenario": "Phase1 Main split clean and six practical views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "168000 records x seven views, batch8, two CPU threads, plus 112 source smoke records; one optimized replay, no truth",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-direct-fir-skip-full-parity-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-direct-fir-skip-full-parity-s2026092701-r01-launcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.direct_skip_full_parity --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-direct-fir-skip-full-parity-s2026092701-r01 --source 20261107-phase1-direct-student-fir-source-s2026092701-r01 --ground 20261107-phase1-direct-student-fir-ground-test-s2026092701-r01 --candidate-commit 1fba7ab93c151d2679a7db11feb3528b78689863 --commit 17b4efa1f982b3ba2a808abf72a3822fb2f5a516",
+      "expected_artifacts": [
+        "source_smoke.json: source waveform/logit equality and fixed pilot decisions",
+        "result.json: all seven view decision parity and elapsed time"
+      ]
+    }
+  ],
+  "notes": [
+    "Start with 112 source records exact waveform/logit smoke, no target reads.",
+    "Wait for all original seven-view predictions fixed and matching manifest/IDs; stop if original controller fails before completion.",
+    "Then compare raw/restored decisions for all 168000 x 7 views with fixed existing arrays; no truth, fitting or output modification.",
+    "Only saved class decisions can be compared on full test; original ground waveform/logits were not stored.",
+    "Replay time is not a controlled full-test speed comparison with historical execution.",
+    "Existing live predictor and all other owner tasks remain unchanged."
+  ],
+  "registered_at": "2026-11-07T00:38:12+00:00"
+}
