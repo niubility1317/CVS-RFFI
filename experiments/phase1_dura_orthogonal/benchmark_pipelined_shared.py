@@ -20,14 +20,14 @@ from experiments.phase1_dura_orthogonal.parallel_source_benchmark import collect
 from experiments.phase1_dura_orthogonal.shared_source_benchmark import classify, same_bits
 from experiments.phase1_dura_orthogonal.train_source import extract_context
 
-DTYPES = {'torch.float32': np.float32, 'torch.float64': np.float64}
+DTYPES = {'torch.float32': torch.float32, 'torch.float64': torch.float64}
 
 
 def decode_tensor(item):
     dtype, shape, data = item
     if dtype not in DTYPES:
         raise ValueError('Unsupported source IQ dtype')
-    return torch.from_numpy(np.frombuffer(data, dtype=DTYPES[dtype]).reshape(shape).copy())
+    return torch.frombuffer(bytearray(data), dtype=DTYPES[dtype]).reshape(shape)
 
 
 def consumer(root, run, commit, selected, tasks, ready, start, results):
@@ -187,6 +187,8 @@ def main():
                 if process.is_alive():
                     process.terminate()
                     process.join()
+            for task in tasks:
+                task.cancel_join_thread()
             for q in (bready, presults, pready, output, *tasks):
                 q.close()
     core.write(args.out/'result.json', dict(status='PIPELINED_SHARED_COMPLETE', commit=args.commit,
