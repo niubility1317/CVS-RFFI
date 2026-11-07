@@ -1,2 +1,3 @@
 {"at": "2026-11-07T03:00:49+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-07T03:03:14+00:00", "status": "QUEUED", "note": "Verified queue PID and release CWD; GPU0 capacity waiting; source training has not begun.", "evidence": ["N607:PID3978827,PID3978828,queue.log"], "row_id": null}
+{"at": "2026-11-07T03:14:23+00:00", "status": "QUEUED", "note": "Public six-class count and exact sampler imply at least 14.1035 percent same-device record negatives; no labels read, unchanged candidate remains queued.", "evidence": ["sampling_audit.md"], "row_id": null}
