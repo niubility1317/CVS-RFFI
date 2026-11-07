@@ -1,0 +1,165 @@
+{
+  "status": "VERIFIED_ALL_AVAILABLE_PACKET_EPOCHS_AND_LATEST_STATE",
+  "run_id": "20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01",
+  "scientific_commit": "92d0dcbe0f25927d5a1cf4d98669ded45a410a5b",
+  "epochs_completed": 6,
+  "epochs_planned": 30,
+  "updates": 1482,
+  "updates_planned": 7410,
+  "cumulative_source_exposures": 378000,
+  "L_s_exposures": 37800,
+  "U_s_exposures": 340200,
+  "source_records_per_epoch": 63000,
+  "all_available_completed_epochs_analyzed": true,
+  "completed_orders_are_full_source_permutations": true,
+  "model_and_optimizer_finite": true,
+  "actual_region_head_updates": {
+    "0": {
+      "compared_tensors": 18,
+      "changed_tensors": 18,
+      "maximum_absolute_change": 0.24513289332389832
+    },
+    "1": {
+      "compared_tensors": 10,
+      "changed_tensors": 10,
+      "maximum_absolute_change": 0.3866061568260193
+    },
+    "2": {
+      "compared_tensors": 26,
+      "changed_tensors": 26,
+      "maximum_absolute_change": 0.2545679211616516
+    }
+  },
+  "source_smoke": {
+    "status": "PASS",
+    "original_source_rows": 2,
+    "actual_F0_input_gradient": true,
+    "random_G_identity": true,
+    "strict_checkpoint_reload": true,
+    "optimizer_updates": 0,
+    "TX_labels_read": 0,
+    "target_inputs": 0
+  },
+  "epoch_rows": [
+    {
+      "epoch": 1,
+      "draw": 1,
+      "updates": 247,
+      "steps": 247,
+      "count": 63000,
+      "L_s": 6300,
+      "U_s": 56700,
+      "seconds": 39.5577313300455,
+      "last_learning_rate": 0.001,
+      "metrics": {
+        "loss": 0.41281309476352873,
+        "iq_nmse": 0.3917720067841666,
+        "spectral_error": 0.28570644779053944,
+        "feature_error": 0.08287498590302846,
+        "guide_weight": 0.8859236083863273
+      }
+    },
+    {
+      "epoch": 2,
+      "draw": 2,
+      "updates": 494,
+      "steps": 247,
+      "count": 63000,
+      "L_s": 6300,
+      "U_s": 56700,
+      "seconds": 38.653589111054316,
+      "last_learning_rate": 0.0009971275990056363,
+      "metrics": {
+        "loss": 0.10161340381417956,
+        "iq_nmse": 0.09116039541411021,
+        "spectral_error": 0.1441535245691027,
+        "feature_error": 0.0398901340043734,
+        "guide_weight": 0.8725098506382534
+      }
+    },
+    {
+      "epoch": 3,
+      "draw": 3,
+      "updates": 741,
+      "steps": 247,
+      "count": 63000,
+      "L_s": 6300,
+      "U_s": 56700,
+      "seconds": 38.098324109916575,
+      "last_learning_rate": 0.0009885440722979424,
+      "metrics": {
+        "loss": 0.08009337594774034,
+        "iq_nmse": 0.07106788724566263,
+        "spectral_error": 0.12277861100151426,
+        "feature_error": 0.03596965023827931,
+        "guide_weight": 0.8718640668354337
+      }
+    },
+    {
+      "epoch": 4,
+      "draw": 4,
+      "updates": 988,
+      "steps": 247,
+      "count": 63000,
+      "L_s": 6300,
+      "U_s": 56700,
+      "seconds": 38.323961599962786,
+      "last_learning_rate": 0.0009743500538795732,
+      "metrics": {
+        "loss": 0.07020314278678288,
+        "iq_nmse": 0.06195661867989434,
+        "spectral_error": 0.1124082586197626,
+        "feature_error": 0.03376311521870749,
+        "guide_weight": 0.869604379351177
+      }
+    },
+    {
+      "epoch": 5,
+      "draw": 5,
+      "updates": 1235,
+      "steps": 247,
+      "count": 63000,
+      "L_s": 6300,
+      "U_s": 56700,
+      "seconds": 38.435733932070434,
+      "last_learning_rate": 0.000954711955638769,
+      "metrics": {
+        "loss": 0.06388360779626029,
+        "iq_nmse": 0.056234241504517814,
+        "spectral_error": 0.10516704871162535,
+        "feature_error": 0.03192167283239819,
+        "guide_weight": 0.8641497314998082
+      }
+    },
+    {
+      "epoch": 6,
+      "draw": 6,
+      "updates": 1482,
+      "steps": 247,
+      "count": 63000,
+      "L_s": 6300,
+      "U_s": 56700,
+      "seconds": 37.97745908005163,
+      "last_learning_rate": 0.0009298600163221187,
+      "metrics": {
+        "loss": 0.05950400153417436,
+        "iq_nmse": 0.052327805239056786,
+        "spectral_error": 0.09959100158630856,
+        "feature_error": 0.03046917751194939,
+        "guide_weight": 0.8611259257604206
+      }
+    }
+  ],
+  "completed_epoch_seconds": 231.04679916310124,
+  "mean_epoch_seconds": 38.507799860516876,
+  "minimum_epoch_seconds": 37.97745908005163,
+  "maximum_epoch_seconds": 39.5577313300455,
+  "remaining_training_minutes_if_current_mean_persists": 15.403119944206749,
+  "new_IQ_reads": 0,
+  "new_neural_forwards": 0,
+  "new_truth_reads": 0,
+  "target_reads": 0,
+  "Main_results_available": false,
+  "goal_complete": false,
+  "limitation": "All current source epochs only, fixed final30 retained. Changing shared load and original draws; no isolated speedup or performance claim. Epoch timers differ from total worker cost."
+}

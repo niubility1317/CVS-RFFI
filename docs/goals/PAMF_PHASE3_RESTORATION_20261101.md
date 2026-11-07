@@ -728,3 +728,7 @@ VERIFIED / ANALYZED。原Main两总体168000条x七景、四流56单元全预测
 ## 2026-11-07 整包逆滤波恢复器开始实际训练
 
 VERIFIED / RUNNING。整包逆滤波恢复器已在GPU5实际训练，准入已有2个进程、剩余18501 MiB，独立读回总数3、本run仅一个GPU子进程，使用原总数最多3个限制。旧CUDA空且尚无GPU阶段/输出root的本run等待控制器已精确交接，其他健康任务与旧release/logs保持。调度代码 `42e22b1f7f8667a3f4b11b87a4fe6e6cf20b164e`，实际训练/预测/评分仍原 `92d0dcbe0f25927d5a1cf4d98669ded45a410a5b` 和原release。真实两条源、实际F0输入梯度、G初始恒等及严格检查点重载通过，训练日志已增长。490866个参数从零，原L_s6300/U_s56700、连续源F0指导、seed/顺序/draw/单阶段30轮7410更新及原Main双总体七景保持。这次只改变纯资源等待，不依据任何源/目标分数选择、取消或重排科学候选；默认DURA和其他已登记训练不变。当前无本版完整轮次和正式成绩。 [实验和实际检查](../../automation_reports/CV-SincNet/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01/report.md)。原Tri-SIG-TIME SSL六景距raw clean不超过3个百分点的目标仍未达成，最终性能等待本版固定final30后的完整七景独立评分。
+
+## 2026-11-07 整包恢复器完成6轮完整源曝光
+
+VERIFIED / RUNNING。已完成6/30轮、1482/7410次更新；原63000条源记录每轮均为完整排列，累计378000次曝光，其中L_s37800、U_s340200。已逐一分析全部6轮记录，并核实E0/E06科学代码和配置一致、模型与优化器有限、AdamW步数1482，包首/中段/后段三组head权重均实际更新。技术状态用于运行核实，冻结点保持final30，不使用中间checkpoint选模。 原epoch计时平均38.508秒/轮，实际迭代效率已记录，性能仍等待final30之后的完整原Main评分。 [训练与状态核实](../../automation_reports/CV-SincNet/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01/training_progress_E06.md)。
