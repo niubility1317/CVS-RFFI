@@ -1,0 +1,168 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-diagnostic-Restore-observed-phase-ramp-sourceV-s2026092701-r01",
+  "group_id": "frozen-received-only-phase-ramp-calibration",
+  "display_name": "逐包相位与漂移的源端接收观测校正",
+  "description": "固定源 V120 七景。冻结 BF 盲估、相位边缘化、相位加漂移、已知模拟对照。盲估三路共用一次 Cholesky。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-V-only",
+    "fixed-frozen-BF",
+    "phase-ramp",
+    "single-factorization",
+    "CPU-only",
+    "no-training"
+  ],
+  "comparison_group_id": "frozen-operator-observation-phase-correction",
+  "parent_run_ids": [
+    "20261102-diagnostic-Restore-CovarianceDetail-sourceV-s2026092701-r01",
+    "20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01",
+    "20261107-diagnostic-Restore-structured-IQ-noise-sourceV-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User comprehensive recoverability analysis, frozen original source V validation only. No source V in training, no target/OE/novel/TX.",
+  "code": {
+    "commit": "e97058e837ea494b2efeb2fd0da5a237032e7736",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Torch2.1 CPU threads2 CUDA-empty, FP64 solve FP32 models",
+    "cwd": "releases/20261107-diagnostic-Restore-observed-phase-ramp-sourceV-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 source contract; existing R07 fixed1800 V/7 frozen validation views",
+    "representation": "Original source V same observations and F0 references; blind hypotheses read only received, BF estimated A/noise and frozen source prior.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "First 8 of each original 5 RX x 3 day stratum of 120, 120 fixed V records shared by all seven views, no score-based selection.",
+    "label_map_ref": "No TX truth read. Original F(raw clean) predictions are fixed agreement references.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original six known sourceTX; V trueTX validation only, no train/selection",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse VALIDATED_ONCE R07 handles; fixed original f29 V reference and BF E30/F0 E50 provenance.",
+    "support_query_ref": "120 original source V only, no target support/query.",
+    "leo_config_ref": "ExistingR07 validation_actions7; receiver2026101902 vs trainingreceiver2026101911; no regenerated views.",
+    "actual_training_labels": "No training or labels. Source L_s2 smoke; all V inputs are frozen diagnostic. No OE, novel, target.",
+    "augmentation": "Reuse all seven original source V observations, no regenerated signals.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "source-frozen-observation-phase-calibration",
+    "query_use": "Per-record received-only blind posterior; simulator A/noise only a separate source diagnostic control and error metric.",
+    "external_method_exception": null,
+    "claim_scope": "Evaluate fixed phase/ramp family using source IQ/F(clean) and full simulator operator error; no target, real TX or information upper bound."
+  },
+  "checkpoint": {
+    "initialization": "Frozen original BF scratch E30 and original F0 E50; no model updates.",
+    "sources": [
+      "FROZEN_BF 20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01/bf29554a03e28a012eaaa134f5c7b3f7856f2268/source-only final30/7410",
+      "REFERENCE_ONLY 20261102-diagnostic-Restore-CovarianceDetail-sourceV-s2026092701-r01/f29 saved source V clean IQ/feature/logits and physical ID order",
+      "FROZEN_F0 original3ff8f4b7e85b5608f5b45350aa18081499a7ef1d Tri-SIG-TIME SSL/E50/defaulthead",
+      "DATA_ONLY R07 fixed source V traces 120x7 plus original L_s2 smoke"
+    ],
+    "contract_check_ref": "Same original R07 source roles/VALIDATED_ONCE handles, exact original BF final30 and original F0; unchanged prior buffers.",
+    "provenance_verdict": "Frozen same-source BF and F0. No G training, target or OE/novel/TX access.",
+    "selection_rule": "Fixed grid and priors, all seven views/four readouts, no fits, mode picking, tuning or target decisions."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-observation-phase-ramp-cpu",
+    "gpu_policy": "CUDA-empty, two CPU threads, zero GPU workers.",
+    "remote_run_root": "runs/20261107-diagnostic-Restore-observed-phase-ramp-sourceV-s2026092701-r01",
+    "remote_log_root": "logs/20261107-diagnostic-Restore-observed-phase-ramp-sourceV-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-diagnostic-Restore-observed-phase-ramp-sourceV-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.phase_ramp_source --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-diagnostic-Restore-observed-phase-ramp-sourceV-s2026092701-r01-release/inputs.json --commit e97058e837ea494b2efeb2fd0da5a237032e7736",
+    "stop_rule": "Wrong source/checkpoint/run identity, nonfinite, solve failure or failed source smoke: preserve without automatic retry."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "runtime_observation.json",
+    "reference.npz PRIVATE",
+    "7 source scene.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "logs/stdout.log PRIVATE",
+    "terminal.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "IQ NMSE, Fclean agreement/cosine, repairs/damage vs blind, full Action relative MSE",
+      "28 cells and 3360 F0 outputs, 8 actual source smoke F0 outputs and 120 cached clean references"
+    ],
+    "dimensions": [
+      "7 source V scenes",
+      "4 fixed readouts",
+      "same 120 source V records"
+    ],
+    "prediction_ref": "Seven source array artifacts and references, private. No target or TX.",
+    "scorer_ref": "Independent NumPy metric and paired count reductions, no TX or model updates."
+  },
+  "rows": [
+    {
+      "row_id": "fixed_source_observation_phase_ramp",
+      "method": "fixed_scalar_vs_observed_phase_and_ramp_marginalization",
+      "purpose": "Test whether observable output rotation or drift can account for the frozen physical estimator error.",
+      "config_ref": "experiments.pamf_phase3_restoration.phase_ramp_source.py::readouts",
+      "resolved_config_ref": "runs/20261107-diagnostic-Restore-observed-phase-ramp-sourceV-s2026092701-r01/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101902
+      },
+      "seed_notes": "Fixed original record order and original F0; no new RNG or phase selection.",
+      "k": null,
+      "scenario": "Original source V 120 x7.",
+      "optimizer": "NONE",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "120x7 original source V. 3 blind views share one factor per microbatch, one known control.",
+      "output_root": "runs/20261107-diagnostic-Restore-observed-phase-ramp-sourceV-s2026092701-r01",
+      "log_path": "logs/20261107-diagnostic-Restore-observed-phase-ramp-sourceV-s2026092701-r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.phase_ramp_source --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-diagnostic-Restore-observed-phase-ramp-sourceV-s2026092701-r01-release/inputs.json --commit e97058e837ea494b2efeb2fd0da5a237032e7736",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "runtime_observation.json",
+        "reference.npz PRIVATE",
+        "7 source scene.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "logs/stdout.log PRIVATE",
+        "terminal.json"
+      ]
+    }
+  ],
+  "notes": [
+    "256 global angles at 360/256 degrees spacing; 9 total drift angles from -45 to +45 degrees, centered time axis.",
+    "Discrete Gaussian log prior centered at zero, 15-degree scales for both angles. Fixed by design, no source or target score tuning.",
+    "The Gaussian likelihood treats frozen BF A and scalar variance as fixed plug-in quantities. All rotations preserve observation determinant.",
+    "Simulator-known A/noise only in separate control and frozen action error metrics. No deployment candidate or change to queued C4."
+  ],
+  "registered_at": "2026-11-07T00:23:51+00:00"
+}
