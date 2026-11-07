@@ -1,0 +1,204 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-Restore-ResponseDense-E30-s2026092701-r01",
+  "group_id": "source-response-dense-posterior-single30",
+  "display_name": "源响应保持恢复器：原 dense 后验从零单阶段 30 轮",
+  "description": "保留响应保持版架构、源损失与训练预算；源训练后验从低秩改为原 dense FP64，以修复源微批残差超阈的技术故障。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "original-ground-TriSIGTIME-SSL-Main",
+    "source-response-preservation",
+    "source-F-guided",
+    "scratch-single30",
+    "automatic-Main7"
+  ],
+  "comparison_group_id": "same-joint-prior-with-or-without-source-response",
+  "parent_run_ids": [
+    "20261107-phase1-Restore-ResponseJointPrior-E30-s2026092701-r01",
+    "20261108-diagnostic-Restore-ResponseE10Dense-source-s2026092701-r01"
+  ],
+  "replaces_run_id": "20261107-phase1-Restore-ResponseJointPrior-E30-s2026092701-r01",
+  "authorization": "Previously authorized source-F-guided scratch single-stage30 candidate and its technical failure repair; GPU6 one added own process with total<=5.",
+  "code": {
+    "commit": "6b3f8e478ae70f1a59a3f21db86f6655890fa04e",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Torch, CPU threads2; FP32 networks/FP64 original dense posterior, TF32 off; GPU6 total<=5.",
+    "cwd": "releases/20261108-phase1-Restore-ResponseDense-E30-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "Original R07 L_s6300/U_s56700 clean/received plus simulator Action/noise; original global/other-RX source moments. One fixed1% source-RMS perturbation per row/epoch.",
+    "contract_ref": "OriginalTriSSLsource_contract/392005/rolecounts6300-56700-27000;R07train63000sameIDset androles/RX/day byID",
+    "physical_ids_ref": "R07train/physical_ids.npy roles.npy;validatedoriginalsourceLUcache IDs foralignment;officialMain source-disjoint viewindexes",
+    "label_map_ref": "Gtrainnone;frozenF0originalsixclassorder,truthonly originalCPUscorerafterallrow42cells fixed",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Original VALIDATED_ONCE source capsule/split and physical binding, original full IQ moments. Reuse pre-V fixed ten source-only receiver-prior statistics from r02.",
+    "support_query_ref": "No targettraining/support/PCD/unknownrole. OriginalMain two populations168000,all7perrowfixedbefore independenttruth.",
+    "leo_config_ref": "R07sourcecache20trainrealizations/2026101912augmentation;officialMain frozen7observations",
+    "actual_training_labels": "Zero TX labels. Physical original simulator Action/noise loss; prior original noisy IQ/STFT/F0 loss plus.01 normalized paired IQ response error.",
+    "augmentation": "(source index+epoch)%4 cycles conjugate/amplitude-cubic/phase-slope/local-difference; known source Action propagates delta into received, same realized noise, no second RMS."
+  },
+  "permissions": {
+    "regime": "source-only-scratch-response-preserving-F0-guided-dense-posterior",
+    "query_use": "Source RX selects training prior/mode factor only. Deployed G consumes current IQ and its fixed source buffers. No V/OE/target fit or TX truth.",
+    "external_method_exception": null,
+    "claim_scope": "Original response loss with original dense posterior; no target training, V/OE fitting, TX labels, classifier loss or prior G weights. Formal Main seven views after final30."
+  },
+  "checkpoint": {
+    "initialization": "All 1471463 G parameters from scratch, same original response seed and E0; no weights, optimizer or training state loaded from failed run.",
+    "sources": [
+      "FROZEN_F0 original Tri-SIG-TIME SSL source checkpoint and existing legal source moments.",
+      "TECHNICAL_EVIDENCE_ONLY 20261108-diagnostic-Restore-ResponseE10Dense-source-s2026092701-r01; same source batch numerical comparison, no G weights loaded."
+    ],
+    "contract_check_ref": "Original R07 source L_s/U_s, original F0 and source-only moments. Failed run is not loaded.",
+    "provenance_verdict": "Scratch G; frozen original source F0 and legal source simulation only; zero TX/V/OE/target training.",
+    "selection_rule": "Fixed final30/7410 only; both Main populations and seven views automatically predicted before independent truth-last scoring."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/response-dense-scratch30-GPU6",
+    "gpu_policy": "Only GPU6, existing<=4 and free>=12000MiB before one own child,total<=5. No other owner changes.",
+    "remote_run_root": "runs/20261108-phase1-Restore-ResponseDense-E30-s2026092701-r01",
+    "remote_log_root": "logs/20261108-phase1-Restore-ResponseDense-E30-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261108-phase1-Restore-ResponseDense-E30-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.response_joint_prior_dense_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 6b3f8e478ae70f1a59a3f21db86f6655890fa04e --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-Restore-ResponseDense-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Source/F0/prior mismatch, output collision, source2/response gradient/E0 reload failure, nonfinite loss/state, posterior residual>1e-8 or worker error: preserve and stop, no automatic restart or threshold relaxation. Otherwise final30 then all Main7/truth-last."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/training/config.json",
+    "rows/<arm>/training/smoke.json",
+    "rows/<arm>/training/smoke_E0.pt PRIVATE",
+    "rows/<arm>/training/data_schedule.npz PRIVATE",
+    "rows/<arm>/training/training.jsonl PRIVATE",
+    "rows/<arm>/training/final.pt PRIVATE",
+    "rows/<arm>/training/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE",
+    "rows/TF_ResponseDense/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Original ground Tri-SIG-TIME SSL frozen default head, Main168000: raw clean145385; each practical>=140345 and both clean populations111019/34366 preserved.",
+      "Every original Main TX/RX/day subgroup, paired raw/DURA repairs/damage; no target feedback or selective model choice.",
+      "All30 source logs, fixed permutations, final30, source response and dense posterior residual; full training time and peak memory.",
+      "1,471,463 G parameters, source perturbation response .01, two dense posterior calls per source row, deployment uses one dense posterior."
+    ],
+    "dimensions": [
+      "original Main two populations and seven views",
+      "TX/RX/day/RXday",
+      "single model seed",
+      "matched raw and DURA"
+    ],
+    "prediction_ref": "Original Main cross_rx126000 + cross_both42000, all seven views, original raw/DURA exact-ID reuse.",
+    "scorer_ref": "OriginalindependentCUDAemptyCPUscore/sharedscore.lock;whole row/allMainpredictionsbeforetruth. No targetfeedback."
+  },
+  "rows": [
+    {
+      "row_id": "TF_ResponseDense",
+      "method": "source_response_preservation_original_dense_posterior",
+      "purpose": "Run the authorized source response candidate without the reproduced low-rank posterior residual failure.",
+      "config_ref": "experiments.pamf_phase3_restoration.response_joint_prior_dense_trial.py",
+      "resolved_config_ref": "runs/20261108-phase1-Restore-ResponseDense-E30-s2026092701-r01/rows/TF_ResponseDense/training/config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Physical2026092701/confidence2026092702, original source order2026110102 and R07 draws. Existing source subset2026110707. No new stochastic prior fit.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": "AdamW(weight_decay1e-4,clip1)",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Scratch single30/7410 logical256 micro32; original 63000 source rows/epoch, 15 global+15 other-RX priors, original source response and all losses. No failed checkpoint loaded.",
+      "output_root": "runs/20261108-phase1-Restore-ResponseDense-E30-s2026092701-r01/rows/TF_ResponseDense",
+      "log_path": "runs/20261108-phase1-Restore-ResponseDense-E30-s2026092701-r01/logs/TF_ResponseDense-train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.response_joint_prior_dense_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 6b3f8e478ae70f1a59a3f21db86f6655890fa04e --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-Restore-ResponseDense-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/training/config.json",
+        "rows/<arm>/training/smoke.json",
+        "rows/<arm>/training/smoke_E0.pt PRIVATE",
+        "rows/<arm>/training/data_schedule.npz PRIVATE",
+        "rows/<arm>/training/training.jsonl PRIVATE",
+        "rows/<arm>/training/final.pt PRIVATE",
+        "rows/<arm>/training/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE",
+        "rows/TF_ResponseDense/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+      ]
+    }
+  ],
+  "notes": [
+    "Failed original candidate E09 preserved. Two independent source replays reproduced original residual guard; second compared same source batch, low-rank perturbed 1.2168e-8 versus dense 2.2350e-10.",
+    "Fresh scratch single-stage 30, not an E09 continuation. Original architectures, source response perturbations, losses, data, batch, optimizer, schedule and no-target rules retained; dense replaces low-rank source posterior.",
+    "Original dense posterior already used in deployment. Source E20 Coupled 14-cell study recorded dense versus low-rank output and gradient agreement, but runtime and numerical behavior of this full response run must be measured.",
+    "16 focused tests and one independent P0/P1 review passed. Actual source2 and original F0 gradient/E0 smoke is first and immediately continues on PASS.",
+    "Original Main cross_rx126000 plus cross_both42000, clean and six practical, all predictions fixed before truth. Clean populations separately protected. No default DURA change."
+  ],
+  "record_type": "managed_run",
+  "registered_at": "2026-11-07T17:51:29+00:00"
+}
