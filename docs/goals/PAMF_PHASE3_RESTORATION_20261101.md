@@ -612,3 +612,7 @@ VERIFIED / RUNNING。CPU 预测进程 3944144 已通过真实 L_s 两条检查�
 ## 2026-11-07 后验约束的条件 IQ 先验模型
 
 VERIFIED / QUEUED。实际代码 8cf3669c4a5d98f6c4930117952203afd56f2f6e，控制器 PID 3965491 在线，实际工作目录、命令、CUDA 空环境和日志已核对。发布包 SHA 一致，远端编译通过。等待主路相位监督版最后一项 GPU 阶段终止，再按 GPU4/6 原准入条件启动。真实源检查、训练和 Main 均待执行。 5481223 个参数，条件均值修正经同一后验投影后才输出。 原 L_s/U_s 从零单阶段 30 轮、7410 步，使用原冻结 F0 的源端连续特征和精确无噪收缩监督。冻结后自动用原 Tri-SIG-TIME SSL 做 Main 两总体七景并独立评分。 [实验登记和排队核实](../../automation_reports/CV-SincNet/20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01/report.md)
+
+## 2026-11-07 原 Main 的 clean 保留与恢复独有纠错
+
+低档城区，DURA v1.0 的总正确数是 raw clean 的 79.50%，而原 clean 正确样本的逐条保留率为 73.78%。另有 5,744 条 raw clean 和受损直接识别都错、经恢复后识别对。 [原冻结三路配对](../../automation_reports/CV-SincNet/20261101-evaluation-P3Restore-TF-TriSIGSSL-main-s2026092701-r03/clean_received_three_way.md)
