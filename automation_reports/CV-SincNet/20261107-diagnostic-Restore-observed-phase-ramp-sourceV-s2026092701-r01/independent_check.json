@@ -1,0 +1,121 @@
+{
+  "status": "PASS",
+  "code_commit": "e97058e837ea494b2efeb2fd0da5a237032e7736",
+  "cells": 28,
+  "same_source_records": 120,
+  "old_control_decision_changes": 0,
+  "old_control_IQ_max_abs_diff": 0.0,
+  "iq_nmse_max_abs_diff": 2.6177553680284404e-07,
+  "feature_cosine_max_abs_diff": 2.636960940716193e-07,
+  "summary_max_abs_diff": 0.0,
+  "calibration": [
+    {
+      "scene": "clean",
+      "mean_absolute_center_phase_deg": [
+        2.224743817133373,
+        3.968354821253258
+      ],
+      "mean_absolute_first_to_last_phase_drift_deg": [
+        8.84893222509665e-17,
+        7.5079079531371855
+      ],
+      "same_source_decision_changes": [
+        0,
+        10
+      ]
+    },
+    {
+      "scene": "practical_high",
+      "mean_absolute_center_phase_deg": [
+        1.7486977690218684,
+        2.047400792427152
+      ],
+      "mean_absolute_first_to_last_phase_drift_deg": [
+        7.414322717554542e-17,
+        2.045439969717761
+      ],
+      "same_source_decision_changes": [
+        0,
+        2
+      ]
+    },
+    {
+      "scene": "practical_mid",
+      "mean_absolute_center_phase_deg": [
+        1.9490445832511476,
+        2.264685864779901
+      ],
+      "mean_absolute_first_to_last_phase_drift_deg": [
+        7.709241091622617e-17,
+        4.764442895401658
+      ],
+      "same_source_decision_changes": [
+        1,
+        6
+      ]
+    },
+    {
+      "scene": "practical_low_suburban",
+      "mean_absolute_center_phase_deg": [
+        2.0069087264390366,
+        2.80110394559617
+      ],
+      "mean_absolute_first_to_last_phase_drift_deg": [
+        8.353463007440298e-17,
+        5.754660828734813
+      ],
+      "same_source_decision_changes": [
+        1,
+        4
+      ]
+    },
+    {
+      "scene": "practical_high_urban",
+      "mean_absolute_center_phase_deg": [
+        2.1653124470652805,
+        2.364094684374736
+      ],
+      "mean_absolute_first_to_last_phase_drift_deg": [
+        8.455905781636858e-17,
+        2.7134286484383106
+      ],
+      "same_source_decision_changes": [
+        0,
+        3
+      ]
+    },
+    {
+      "scene": "practical_mid_urban",
+      "mean_absolute_center_phase_deg": [
+        2.6056362038013345,
+        2.883310900229072
+      ],
+      "mean_absolute_first_to_last_phase_drift_deg": [
+        8.802920039973921e-17,
+        5.017455909997556
+      ],
+      "same_source_decision_changes": [
+        3,
+        8
+      ]
+    },
+    {
+      "scene": "practical_low_urban",
+      "mean_absolute_center_phase_deg": [
+        2.6751698817762097,
+        3.0176038156895406
+      ],
+      "mean_absolute_first_to_last_phase_drift_deg": [
+        1.0658120221223349e-16,
+        7.236427369785705
+      ],
+      "same_source_decision_changes": [
+        9,
+        17
+      ]
+    }
+  ],
+  "TX_reads": 0,
+  "target_reads": 0,
+  "new_NN_calls": 0
+}
