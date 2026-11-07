@@ -1,0 +1,17 @@
+{
+  "status": "VERIFIED_QUEUED_CONTROLLER_LIVE",
+  "actual_code_commit": "3fc9201628e7602ea58c6a5fb13d6ec934513e99",
+  "controller_PID": 3869088,
+  "observed_at_unix": 1794013252.490207,
+  "PID_CWD_command_CUDA_empty_verified": true,
+  "wait_for_last_gpu_stage_of": "20261107-evaluation-Restore-CovariancePhaseOnly-main-s2026092701-r01",
+  "archive_SHA_match": true,
+  "remote_compile": true,
+  "focused_tests_passed": 12,
+  "independent_P0_P1_review": "PASS",
+  "GPU_worker_observed": false,
+  "source_smoke": "PENDING",
+  "completed_training_epochs": 0,
+  "Main_results_available": false,
+  "goal_complete": false
+}
