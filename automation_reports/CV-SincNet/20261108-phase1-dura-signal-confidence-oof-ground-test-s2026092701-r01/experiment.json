@@ -1,0 +1,174 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-dura-signal-confidence-oof-ground-test-s2026092701-r01",
+  "group_id": "phase1-dura-signal-confidence-oof-ground",
+  "display_name": "未见源记录门控七景测试",
+  "description": "冻结 source-only 门控 final20 并连接 Tri-SIG-TIME SSL；全部七景预测固定后独立评分。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "dura",
+    "F-free-training",
+    "large-context",
+    "deterministic-gpu",
+    "normalized-decoder"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261108-phase1-dura-signal-confidence-oof-source-s2026092701-r01",
+    "20261108-phase1-dura-large-context-stable-source-s2026092701-r01",
+    "20261108-phase1-signal-gate-source-probe-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests continued novel and DURA-combinable Phase1 restoration research, F-free/TX-label-free source training, automatic seven-view test and truth-last score.",
+  "code": {
+    "commit": "7840d7592bf68f9b975e2f5e44a479dcdc1688fd",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 physical GPU5 FP32 TF32 off deterministic source training; CPU ground two threads",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-dura-signal-confidence-oof-source-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "frozen DURA, source-only confidence gate and frozen Tri-SIG-TIME SSL",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "168000 fixed Phase1 Main split ground physical records in each of seven views",
+    "label_map_ref": "Six Phase1 transmitter classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "No target labels, clean pair, or target fitting during inference; labels only after all seven predictions",
+    "roles": {
+      "L_s": "source IQ training only, TX hidden",
+      "U_s": "source IQ training only, TX hidden",
+      "V": "not used for G training",
+      "test": "fixed Phase1 ground IQ, truth last"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Seven fixed predictions precede independent truth-last scoring",
+    "support_query_ref": "Phase1 original fixed cross_rx126000 and cross_both42000; no support",
+    "leo_config_ref": "R07 2.462 GHz source views and Phase1 six fixed practical test views",
+    "target_panel": "168000 Phase1 physical records x seven views",
+    "actual_training_labels": "Recovery training uses paired source IQ only; no F outputs, F weights, TX labels, V or target. Frozen Tri-SIG-TIME SSL only after recovery checkpoint frozen.",
+    "augmentation": "Fixed pre-existing Phase1 ground test simulated seven views"
+  },
+  "permissions": {
+    "regime": "Phase1 frozen ground evaluation",
+    "query_use": "Fixed per-record Phase1 IQ only after source training; no target fit, truth only after seven-view predictions",
+    "external_method_exception": null,
+    "claim_scope": "Single-seed repeatedly observed Phase1 simulated ground test; not independent blind or real satellite"
+  },
+  "checkpoint": {
+    "initialization": "Frozen DURA v1 and fixed source-only parent final20; new 354785-parameter signal gate, fit records disjoint from parent",
+    "sources": [
+      "20261108-phase1-dura-signal-confidence-oof-source-s2026092701-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261108-phase1-dura-large-context-stable-source-s2026092701-r01",
+      "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+    ],
+    "contract_check_ref": "Same Phase1 source roles and physical split, parent source provenance verified; gate 17632 fit IDs disjoint from parent 32768 and fixed 672 pilot",
+    "provenance_verdict": "Same legal L_s/U_s role contract; frozen parent was not fit on the gate training records",
+    "selection_rule": "Fixed gate final epoch 20 regardless of source and target results"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "GPU5: >=4096 MiB free and fewer than 3 total compute apps; wait for previous this-conversation GPU5 workers to finish; protect other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-signal-confidence-oof-ground-test-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-signal-confidence-oof-source-s2026092701-r01-queue.log",
+    "local_artifact_root": "E:\\type10-7\\github_publish\\CVS-RFFI-repo\\automation_reports\\CV-SincNet\\20261108-phase1-dura-signal-confidence-oof-ground-test-s2026092701-r01",
+    "launch_command": "nice -n 10 env PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-dura-signal-confidence-oof-source-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.signal_gate_oof_queue --root /home/szu2070436088/2510044040/CV-SincNet --source 20261108-phase1-dura-signal-confidence-oof-source-s2026092701-r01 --ground 20261108-phase1-dura-signal-confidence-oof-ground-test-s2026092701-r01 --gpu 5 --commit 7840d7592bf68f9b975e2f5e44a479dcdc1688fd",
+    "stop_rule": "Stop exact owner only for source contract/role mismatch, nonfinite computation, incorrect checkpoint, target leakage or unrecoverable technical failure. Preserve all artifacts."
+  },
+  "expected_artifacts": [
+    "flow/test_prediction/complete.json",
+    "flow/test_summary.json",
+    "flow/paired_dura.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "ground accuracy",
+      "raw clean gap in pp and relative percent",
+      "macro F1",
+      "DURA paired repairs and damages",
+      "TX/RX/day groups"
+    ],
+    "dimensions": [
+      "168000 physical records",
+      "clean and six practical views"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-signal-confidence-oof-ground-test-s2026092701-r01/flow/test_prediction",
+    "scorer_ref": "independent CPU subprocess ground score after seven complete predictions"
+  },
+  "rows": [
+    {
+      "row_id": "parent-holdout-signal-gate-final20",
+      "method": "DURA confidence gate trained on parent-unseen source",
+      "purpose": "Test whether disjoint source examples prevent learned gate saturation",
+      "config_ref": "experiments/phase1_dura_orthogonal/signal_gate_oof_ground.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110826,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "New gate model 2026110826; source fit 2026110611 inherited parent; order 2026110827; fixed evaluation 2026092701.",
+      "k": null,
+      "scenario": "clean and six practical Phase1 Main split views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "fixed final20 parent-holdout source gate; 168000 records x seven views; truth after predictions",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-signal-confidence-oof-ground-test-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-signal-confidence-oof-source-s2026092701-r01-queue.log",
+      "command": "nice -n 10 env PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-dura-signal-confidence-oof-source-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.signal_gate_oof_queue --root /home/szu2070436088/2510044040/CV-SincNet --source 20261108-phase1-dura-signal-confidence-oof-source-s2026092701-r01 --ground 20261108-phase1-dura-signal-confidence-oof-ground-test-s2026092701-r01 --gpu 5 --commit 7840d7592bf68f9b975e2f5e44a479dcdc1688fd",
+      "expected_artifacts": [
+        "flow/test_prediction/complete.json",
+        "flow/test_summary.json",
+        "flow/paired_dura.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Gate fit uses 17632 legal L_s/U_s source IDs disjoint from parent fit and fixed 672 pilot, excludes RX4/6/8 day3; no TX labels, F weights/outputs, V or target in training.",
+    "Three fixed source views epochs21/22/23 per ID, 20 epochs, batch128 AdamW 0.0003; source exposure differs from earlier 32768-ID gate.",
+    "Parent and DURA frozen; same 354785-parameter gate, sigmoid alpha in [0,1], source normalized IQ loss plus 0.02 change penalty.",
+    "Six focused tests and independent P0/P1 review passed; first real 32-record source checkpoint smoke continues automatically.",
+    "Final20 fixed regardless of source result; automatic 168000×7 ground predictions and independent truth-last scoring with Tri-SIG-TIME SSL.",
+    "Prior source and Phase1 ground test exploration was observed; no fresh blind or real satellite claim."
+  ],
+  "registered_at": "2026-11-07T23:45:28+00:00"
+}
