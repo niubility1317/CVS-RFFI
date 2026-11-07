@@ -14,6 +14,7 @@ from .source_pair import read,validate_source
 from .cache import tensor,load_F0,check_F0_state
 from .train import learning_rate
 from .cost_probe import write
+from .technical_resume import restore_training_state,validate_history
 
 RUN='20261102-phase1-Restore-CovarianceDetail-E30-s2026092701-r01'
 MODULE='experiments.pamf_phase3_restoration.covariance_detail_trial'
@@ -43,7 +44,8 @@ def factory(arm):configuration(arm);return scratch_covariance_detail(2026092701)
 
 
 def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.bind_prior,smoke_check=None,
-          training_readout=None,smoke_gradient_check=None,training_trace=False,training_posterior_multiplier=1):
+          training_readout=None,smoke_gradient_check=None,training_trace=False,training_posterior_multiplier=1,
+          technical_resume=None):
     started=time.perf_counter();c=validate_source(read(args.inputs));old,roles=trial.source(args)
     cfg=config_for(args.arm);G=build(args.arm);prior_identity=bind_prior(args.root,G.physical);G=G.to('cuda:0')
     F,identity=load_F0(c,'cuda:0');trial.main_eval.valid_identity(identity);scale=load_scale(args.root).to('cuda:0')
@@ -107,9 +109,47 @@ def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.b
     rng=np.random.default_rng(2026110102);orders=np.stack([rng.permutation(63000) for _ in range(30)]).astype(np.int32)
     draws=cfg['source_draws']
     with (out/'data_schedule.npz').open('xb') as f:np.savez(f,orders=orders,draws=draws)
-    prior={k:G.physical.state_dict()[k].clone() for k in ['prior_mean','prior_covariance']};update=0;train_start=time.perf_counter();torch.cuda.reset_peak_memory_stats()
+    prior={k:G.physical.state_dict()[k].clone() for k in ['prior_mean','prior_covariance']};update=0;resume_epoch=0;parent_rows=[]
+    if technical_resume is not None:
+        parent=technical_resume['training'];resume_epoch=technical_resume['epoch']
+        expected_parent=dict(technical_resume['config'],code_commit=technical_resume['commit'],
+            F0_identity=identity,source_prior_identity=prior_identity)
+        if read(parent/'config.json')!=expected_parent:raise ValueError('Technical recovery F0 or source prior identity mismatch')
+        parent_rows=[json.loads(line) for line in (parent/'training.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
+        with np.load(parent/'data_schedule.npz',allow_pickle=False) as schedule:
+            parent_orders=schedule['orders'].copy();parent_draws=schedule['draws'].copy()
+        validate_history(parent_rows,parent_orders,parent_draws,resume_epoch,draws)
+        if not np.array_equal(orders,parent_orders):raise ValueError('Original technical recovery order mismatch')
+        checkpoint=torch.load(parent/'recovery'/f'E{resume_epoch:02d}.pt',map_location='cpu',weights_only=False)
+        restore_training_state(checkpoint,G,optimizer,technical_resume['config'],technical_resume['commit'],resume_epoch)
+        if any(not torch.equal(value,G.physical.state_dict()[key]) for key,value in prior.items()):
+            raise ValueError('Technical recovery source prior mismatch')
+        update=247*resume_epoch
+        current=draw(int(draws[resume_epoch]));indices=torch.tensor(orders[resume_epoch,:2].tolist(),device='cuda:0',dtype=torch.long)
+        before_resume_smoke={k:v.detach().clone() for k,v in G.state_dict().items()};G.eval()
+        trace={k:value[indices] for k,value in current.items()} if training_trace else None
+        with torch.no_grad():
+            restored,aux,detail,_=detail_pass(current['received'][indices],clean[indices],targets[indices],indices,resume_epoch+1,trace)
+            physical,_=source_action_loss(aux,current['kernel'][indices],current['coefficients'][indices],current['variance'][indices])
+            if (not torch.isfinite(physical+detail).all() or not torch.isfinite(aux['relative_solve_residual']).all()
+                    or aux['relative_solve_residual'].max()>1e-8):
+                raise ValueError('Actual technical recovery source smoke failed')
+        if any(not torch.equal(value,G.state_dict()[key]) for key,value in before_resume_smoke.items()):
+            raise ValueError('Technical recovery smoke changed model state')
+        check_F0_state(F,frozen);G.train()
+        torch.set_rng_state(checkpoint['torch_rng_cpu']);torch.cuda.set_rng_state(checkpoint['torch_rng_cuda'])
+        del current,indices,before_resume_smoke,trace,restored,aux,detail,physical
+        write(out/'technical_resume_smoke.json',dict(status='PASS',source_rows=2,actual_parent_checkpoint=True,
+            actual_original_F0=True,optimizer_updates=0,TX_labels_read=0,V_reads=0,OE_reads=0,target_inputs=0))
+        print('TECHNICAL_RECOVERY_REAL_SOURCE_SMOKE_PASS',flush=True)
+        write(out/'technical_resume.json',dict(parent_run=technical_resume['run'],parent_commit=technical_resume['commit'],
+            parent_epoch=resume_epoch,parent_updates=update,model_optimizer_rng_restored=True,
+            parent_selection='technical_recovery_only/not_source_or_target_model_selection'))
+    train_start=time.perf_counter();torch.cuda.reset_peak_memory_stats()
     with (out/'training.jsonl').open('x',encoding='utf-8',buffering=1) as log:
+        for row in parent_rows:log.write(json.dumps(row,allow_nan=False)+'\n')
         for epoch,number in enumerate(draws,1):
+            if epoch<=resume_epoch:continue
             begin=time.perf_counter();v=draw(number);sums={};step_sum=0.;norm_sums={'physical':0.,'detail':0.}
             for offset in range(0,63000,256):
                 take=orders[epoch-1,offset:offset+256];optimizer.zero_grad(set_to_none=True)
@@ -139,7 +179,8 @@ def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.b
     if update!=7410:raise ValueError('Full single30 update budget required')
     trial.save(out/'final.pt',G,args.arm,args.commit,30)
     write(out/'complete.json',dict(status='SOURCE_TRAINED',code_commit=args.commit,arm=args.arm,epoch=30,updates=7410,
-        source_Ls_exposures=189000,source_Us_exposures=1701000,online_F0_feature_rows=1890000,F0_clean_target_rows=63000,
+        source_Ls_exposures=189000,source_Us_exposures=1701000,online_F0_feature_rows=1890000,
+        F0_clean_target_rows=63000*(1+int(technical_resume is not None)),
         F0_feature_L_s_exposures=189000,F0_feature_U_s_exposures=1701000,source_F0_feature_cache_seconds=cache_seconds,
         F0_identity=identity,source_prior_identity=prior_identity,G_parameters=sum(p.numel() for p in G.parameters()),
         physical_parameters=sum(p.numel() for p in G.physical.parameters()),detail_parameters=sum(p.numel() for p in G.detail.parameters()),
@@ -148,7 +189,10 @@ def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.b
         checkpoint_selection='final30_only',model_state_F0_updates=0,training_stages=1,training_posterior_calls=59070*training_posterior_multiplier,training_posterior_rows=1890000*training_posterior_multiplier,
         source_counterfactual_rows=1890000*(training_posterior_multiplier-1),
         source_operator_full_matrix_supervision=True,source_prior_buffers_unchanged=True,source_actual_IQ_F0_guidance=cfg.get('source_actual_IQ_F0_guidance',True),feature_weight=.01,
-        physical_detail_gradient_isolation=True,independent_branch_clipping=True))
+        physical_detail_gradient_isolation=True,independent_branch_clipping=True,
+        technical_recovery_loads=int(technical_resume is not None),technical_recovery_epoch=resume_epoch,
+        training_seconds_scope='resumed_segment_only' if technical_resume is not None else 'complete_training',
+        inherited_epoch_seconds=sum(row['seconds'] for row in parent_rows)))
 
 
 def install():
