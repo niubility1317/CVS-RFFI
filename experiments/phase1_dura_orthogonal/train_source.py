@@ -26,6 +26,7 @@ from experiments.phase1_dura_orthogonal.direct_spectral_student import DirectSpe
 from experiments.phase1_dura_orthogonal.direct_student_fir import DirectStudentFIR, SOURCE as FIR_SOURCE, SOURCE_COMMIT as FIR_SOURCE_COMMIT, TAPS as FIR_TAPS, SCALE as FIR_SCALE
 from experiments.phase1_dura_orthogonal.reversible_dura import ReversibleDura
 from experiments.phase1_dura_orthogonal.conditional_iq_flow import ConditionalIQFlow, DirectIQFlow, flow_matching_loss, sample_flow_times
+from experiments.phase1_dura_orthogonal.flow_cuda_graph import FlowGraphStep
 from experiments.phase1_dura_orthogonal.monotone_envelope import (
     DuraMonotoneEnvelope, envelope_loss, ENVELOPE_WEIGHT, QUANTILES as ENVELOPE_QUANTILES,
     SEGMENTS as ENVELOPE_SEGMENTS, SEGMENT_WIDTH as ENVELOPE_SEGMENT_WIDTH)
@@ -290,12 +291,16 @@ def main():
     parser.add_argument('--prepare-batch', type=int, default=32)
     parser.add_argument('--smoke-fit', type=int, default=64)
     parser.add_argument('--fast-flow-guards', action='store_true')
+    parser.add_argument('--cuda-graph-flow', action='store_true')
     parser.add_argument('--source-context-cache', type=Path)
     parser.add_argument('--save-source-context-cache', type=Path)
     parser.add_argument('--deterministic', action='store_true')
     parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0', 'wide_envelope_guard'), default='iq')
     parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir', 'dura_reversible', 'conditional_iq_flow', 'direct_iq_flow', 'dura_envelope'), default='orthogonal')
     args = parser.parse_args()
+    if args.cuda_graph_flow and (args.objective != 'wide_conditional_flow' or args.architecture != 'conditional_iq_flow'
+                                 or not args.deterministic or torch.device(args.device).type != 'cuda' or args.fast_flow_guards):
+        raise ValueError('CUDA graph flow requires deterministic conditional flow on CUDA without fast-flow-guards')
     if (args.architecture == 'dura_envelope') != (args.objective == 'wide_envelope_guard'):
         raise ValueError('Monotone envelope requires its matching source objective')
     if args.objective == 'wide_envelope_guard' and not args.smoke and not args.source_context_cache:
@@ -496,6 +501,11 @@ def main():
     elif not torch.equal(initial, data[5 if args.architecture == 'direct_student_fir' else 0 if args.architecture in ('direct_spectral_student', 'direct_iq_flow') else 1][:initial_batch]):
         raise ValueError('New correction must initially reproduce frozen DURA')
     started = time.monotonic()
+    graph_runner = None
+    if args.cuda_graph_flow:
+        if len(data[0]) < 32 or len(data[0]) % 32:
+            raise ValueError('CUDA graph flow requires complete fixed-size batches')
+        graph_runner = FlowGraphStep(model, optimizer, [*(v[:32] for v in data[:5]), torch.zeros(32, device=device)])
     epochs = DUAL_DOMAIN_EPOCHS if args.architecture in (*DIRECT_ARCHITECTURES, 'direct_iq_flow') else TRAIN_EPOCHS
     for epoch in range(1, (1 if args.smoke else epochs)+1):
         model.train()
@@ -549,6 +559,10 @@ def main():
                          else torch.rand((len(x),), generator=flow_generator)).to(device)
                 flow_anchor, flow_direction, flow_variance = (model.direct_context(x)
                     if args.objective == 'wide_direct_flow' else (anchor, direction, variance))
+                if graph_runner is not None:
+                    loss = graph_runner.step([x, flow_anchor, flow_direction, flow_variance, y, times])
+                    total += loss * len(indices)
+                    continue
                 loss = flow_matching_loss(model, x, flow_anchor, flow_direction, flow_variance, y, times,
                                           validate_time=not args.fast_flow_guards)
             elif args.objective == 'wide_student_fir_guard':
@@ -690,7 +704,8 @@ def main():
                               envelope_segments=ENVELOPE_SEGMENTS, envelope_segment_width=ENVELOPE_SEGMENT_WIDTH)
     if args.objective == 'wide_conditional_flow':
         cache_metadata.update(flow_steps=4, flow_time_seed=2026110713, flow_path='anchor_to_clean_linear',
-                              fast_flow_guards=args.fast_flow_guards)
+                              fast_flow_guards=args.fast_flow_guards,
+                              source_flow_execution='cuda_graph' if args.cuda_graph_flow else 'eager')
     if args.objective == 'wide_conditional_flow_t0':
         cache_metadata.update(flow_steps=4, flow_time_seed=2026110713, flow_path='anchor_to_clean_linear',
                               flow_origin_fraction=.5)

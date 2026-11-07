@@ -37,9 +37,13 @@ def main():
     parser.add_argument('--save-source-context-cache', type=Path)
     parser.add_argument('--deterministic', action='store_true')
     parser.add_argument('--fast-flow-guards', action='store_true')
+    parser.add_argument('--cuda-graph-flow', action='store_true')
     parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0', 'wide_envelope_guard'), default='iq')
     parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir', 'dura_frequency_regression', 'dura_reversible', 'conditional_iq_flow', 'direct_iq_flow', 'dura_envelope'), default='orthogonal')
     args = parser.parse_args()
+    if args.cuda_graph_flow and ((args.objective, args.architecture) != ('wide_conditional_flow', 'conditional_iq_flow')
+                                 or not args.deterministic or args.device != 'cuda:0' or args.fast_flow_guards):
+        raise ValueError('CUDA graph requires deterministic conditional flow on cuda:0 without fast-flow-guards')
     if args.fast_flow_guards and (args.objective, args.architecture) != ('wide_conditional_flow', 'conditional_iq_flow'):
         raise ValueError('Fast flow guards require the validated conditional flow')
     env, cpu_env = training_environments(args.device, os.environ)
@@ -73,7 +77,8 @@ def main():
                 '--architecture', args.architecture, *(['--source-context-cache', str(args.source_context_cache)]
                     if args.architecture == 'dura_frequency_regression' and args.source_context_cache else []),
                 *(['--deterministic'] if args.deterministic else []),
-                *(['--fast-flow-guards'] if args.fast_flow_guards else [])])
+                *(['--fast-flow-guards'] if args.fast_flow_guards else []),
+                *(['--cuda-graph-flow'] if args.cuda_graph_flow else [])])
         smoke = json.loads((training_smoke/'smoke.json').read_text(encoding='utf8'))
         if smoke.get('status') != 'SOURCE_TRAINING_SMOKE_PASS' or smoke.get('F_weights_read') != 0:
             raise ValueError('Source-only training smoke required')
@@ -85,7 +90,8 @@ def main():
                                                        if args.source_context_cache else []),
                 *(['--save-source-context-cache', str(args.save_source_context_cache)] if args.save_source_context_cache else []),
                 *(['--deterministic'] if args.deterministic else []),
-                *(['--fast-flow-guards'] if args.fast_flow_guards else [])])
+                *(['--fast-flow-guards'] if args.fast_flow_guards else []),
+                *(['--cuda-graph-flow'] if args.cuda_graph_flow else [])])
         status('RUNNING_SOURCE_PREDICTION_SMOKE')
         fixed = ['--source', args.source, '--out', str(ground), *common]
         execute('ground_smoke', [sys.executable, '-X', 'utf8', '-u', '-m',
