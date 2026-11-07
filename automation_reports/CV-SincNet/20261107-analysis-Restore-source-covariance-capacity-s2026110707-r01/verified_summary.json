@@ -1,0 +1,356 @@
+{
+  "status": "VERIFIED_ALL10_EXPLICIT_SOURCE_MATRIX_RECONSTRUCTIONS",
+  "run_id": "20261107-analysis-Restore-source-covariance-capacity-s2026110707-r01",
+  "cells": {
+    "1": {
+      "global": {
+        "rank": 64,
+        "dimension": 512,
+        "difference_squared_Frobenius": 443.54899478914,
+        "difference_Frobenius_over_base": 0.9913665489431651,
+        "source_top_rank_variance_fraction": 0.846115988763009,
+        "explained_difference_energy": {
+          "diagonal_rank": 0.7822773911548356,
+          "coupled_rank": 0.9879825497375885,
+          "diagonal_all": 0.7842620620613221,
+          "bounded_signed_rank": 0.7788529649896985
+        },
+        "residual_squared_Frobenius": {
+          "diagonal_rank": 96.57064429614178,
+          "coupled_rank": 5.330327983821121,
+          "diagonal_all": 95.69034551058246,
+          "bounded_signed_rank": 98.08954507941797
+        },
+        "coupled_target_block_min_eigenvalue": 0.0006285029264011779,
+        "ideal_diagonal_variance_ratio_min": 0.04474605434433625,
+        "ideal_diagonal_variance_ratio_max": 2.3164634903908086,
+        "bounded_signed_coefficients_at_limit": 12,
+        "zero_difference": false,
+        "explicit_reconstruction_checked": true,
+        "coupled_replacement_SPD": true,
+        "ideal_coupled_relative_variance_eigenvalue_min": 0.0006126329360642422,
+        "ideal_coupled_relative_variance_eigenvalue_max": 4.522853853523967
+      },
+      "other_receiver": {
+        "rank": 64,
+        "dimension": 512,
+        "difference_squared_Frobenius": 535.412912961404,
+        "difference_Frobenius_over_base": 1.0400728484748603,
+        "source_top_rank_variance_fraction": 0.8434595497886168,
+        "explained_difference_energy": {
+          "diagonal_rank": 0.7185857875309423,
+          "coupled_rank": 0.810057913304312,
+          "diagonal_all": 0.7209271493166927,
+          "bounded_signed_rank": 0.7164796483498166
+        },
+        "residual_squared_Frobenius": {
+          "diagonal_rank": 150.67280324679768,
+          "coupled_rank": 101.69744593170583,
+          "diagonal_all": 149.41920791279256,
+          "bounded_signed_rank": 151.8004573608663
+        },
+        "coupled_target_block_min_eigenvalue": 0.0006191768620575361,
+        "ideal_diagonal_variance_ratio_min": 0.045312334841206454,
+        "ideal_diagonal_variance_ratio_max": 0.8895512725510148,
+        "bounded_signed_coefficients_at_limit": 11,
+        "zero_difference": false,
+        "explicit_reconstruction_checked": true,
+        "coupled_replacement_SPD": true,
+        "ideal_coupled_relative_variance_eigenvalue_min": 0.0005923540348840582,
+        "ideal_coupled_relative_variance_eigenvalue_max": 5.409669907524
+      }
+    },
+    "3": {
+      "global": {
+        "rank": 64,
+        "dimension": 512,
+        "difference_squared_Frobenius": 414.0823853152023,
+        "difference_Frobenius_over_base": 0.957870590281933,
+        "source_top_rank_variance_fraction": 0.846115988763009,
+        "explained_difference_energy": {
+          "diagonal_rank": 0.8036129443770197,
+          "coupled_rank": 0.9783659256165732,
+          "diagonal_all": 0.8076468213785464,
+          "bounded_signed_rank": 0.8015413182431493
+        },
+        "residual_squared_Frobenius": {
+          "diagonal_rank": 81.32042043739301,
+          "coupled_rank": 8.958289124775888,
+          "diagonal_all": 79.65006302653268,
+          "bounded_signed_rank": 82.17824432838734
+        },
+        "coupled_target_block_min_eigenvalue": 0.04319037291976683,
+        "ideal_diagonal_variance_ratio_min": 0.05231359282585459,
+        "ideal_diagonal_variance_ratio_max": 2.366532101406246,
+        "bounded_signed_coefficients_at_limit": 15,
+        "zero_difference": false,
+        "explicit_reconstruction_checked": true,
+        "coupled_replacement_SPD": true,
+        "ideal_coupled_relative_variance_eigenvalue_min": 0.01896716740712673,
+        "ideal_coupled_relative_variance_eigenvalue_max": 4.410636284953721
+      },
+      "other_receiver": {
+        "rank": 64,
+        "dimension": 512,
+        "difference_squared_Frobenius": 374.9593912863456,
+        "difference_Frobenius_over_base": 1.0181515164391868,
+        "source_top_rank_variance_fraction": 0.8855081006236484,
+        "explained_difference_energy": {
+          "diagonal_rank": 0.6715220480166646,
+          "coupled_rank": 0.8482064518348011,
+          "diagonal_all": 0.6857291601433224,
+          "bounded_signed_rank": 0.6688367745243211
+        },
+        "residual_squared_Frobenius": {
+          "diagonal_rank": 123.16589292665691,
+          "coupled_rank": 56.91641642121755,
+          "diagonal_all": 117.83880281170843,
+          "bounded_signed_rank": 124.17276144078338
+        },
+        "coupled_target_block_min_eigenvalue": 0.03538433002921725,
+        "ideal_diagonal_variance_ratio_min": 0.08376065998790155,
+        "ideal_diagonal_variance_ratio_max": 2.946502528362809,
+        "bounded_signed_coefficients_at_limit": 36,
+        "zero_difference": false,
+        "explicit_reconstruction_checked": true,
+        "coupled_replacement_SPD": true,
+        "ideal_coupled_relative_variance_eigenvalue_min": 0.020498637064609596,
+        "ideal_coupled_relative_variance_eigenvalue_max": 7.2335358283857865
+      }
+    },
+    "4": {
+      "global": {
+        "rank": 64,
+        "dimension": 512,
+        "difference_squared_Frobenius": 392.2544776770346,
+        "difference_Frobenius_over_base": 0.9322822506690536,
+        "source_top_rank_variance_fraction": 0.846115988763009,
+        "explained_difference_energy": {
+          "diagonal_rank": 0.8157117556734578,
+          "coupled_rank": 0.9841817008316759,
+          "diagonal_all": 0.8170191301002605,
+          "bounded_signed_rank": 0.814593505881507
+        },
+        "residual_squared_Frobenius": {
+          "diagonal_rank": 72.28788902032557,
+          "coupled_rank": 6.204798678010036,
+          "diagonal_all": 71.77506554741171,
+          "bounded_signed_rank": 72.72652750837966
+        },
+        "coupled_target_block_min_eigenvalue": 0.0029549537837174223,
+        "ideal_diagonal_variance_ratio_min": 0.06452827669847065,
+        "ideal_diagonal_variance_ratio_max": 1.3424394112830726,
+        "bounded_signed_coefficients_at_limit": 1,
+        "zero_difference": false,
+        "explicit_reconstruction_checked": true,
+        "coupled_replacement_SPD": true,
+        "ideal_coupled_relative_variance_eigenvalue_min": 0.0017477677710232365,
+        "ideal_coupled_relative_variance_eigenvalue_max": 4.552326191716271
+      },
+      "other_receiver": {
+        "rank": 64,
+        "dimension": 512,
+        "difference_squared_Frobenius": 455.56311782260354,
+        "difference_Frobenius_over_base": 0.9675025801387487,
+        "source_top_rank_variance_fraction": 0.8542630551996926,
+        "explained_difference_energy": {
+          "diagonal_rank": 0.7928517883478907,
+          "coupled_rank": 0.8836410909505891,
+          "diagonal_all": 0.7947476046169449,
+          "bounded_signed_rank": 0.7915459450627436
+        },
+        "residual_squared_Frobenius": {
+          "diagonal_rank": 94.3690851516115,
+          "coupled_rank": 53.008827392986404,
+          "diagonal_all": 93.5054211812623,
+          "bounded_signed_rank": 94.96397918998082
+        },
+        "coupled_target_block_min_eigenvalue": 0.0028518406555679172,
+        "ideal_diagonal_variance_ratio_min": 0.055786796574265635,
+        "ideal_diagonal_variance_ratio_max": 0.7414246195014232,
+        "bounded_signed_coefficients_at_limit": 5,
+        "zero_difference": false,
+        "explicit_reconstruction_checked": true,
+        "coupled_replacement_SPD": true,
+        "ideal_coupled_relative_variance_eigenvalue_min": 0.0016292914335334086,
+        "ideal_coupled_relative_variance_eigenvalue_max": 4.834486571552787
+      }
+    },
+    "6": {
+      "global": {
+        "rank": 64,
+        "dimension": 512,
+        "difference_squared_Frobenius": 437.84704332086466,
+        "difference_Frobenius_over_base": 0.9849737844618728,
+        "source_top_rank_variance_fraction": 0.846115988763009,
+        "explained_difference_energy": {
+          "diagonal_rank": 0.6702164945953232,
+          "coupled_rank": 0.984571216801449,
+          "diagonal_all": 0.6712504007199078,
+          "bounded_signed_rank": 0.6702160223010393
+        },
+        "residual_squared_Frobenius": {
+          "diagonal_rank": 144.39473277742815,
+          "coupled_rank": 6.755447105524183,
+          "diagonal_all": 143.94204003770744,
+          "bounded_signed_rank": 144.39493957008392
+        },
+        "coupled_target_block_min_eigenvalue": 0.002804578565935389,
+        "ideal_diagonal_variance_ratio_min": 0.09097554572071069,
+        "ideal_diagonal_variance_ratio_max": 1.8873868035195491,
+        "bounded_signed_coefficients_at_limit": 1,
+        "zero_difference": false,
+        "explicit_reconstruction_checked": true,
+        "coupled_replacement_SPD": true,
+        "ideal_coupled_relative_variance_eigenvalue_min": 0.0021991866581480136,
+        "ideal_coupled_relative_variance_eigenvalue_max": 4.294431854172023
+      },
+      "other_receiver": {
+        "rank": 64,
+        "dimension": 512,
+        "difference_squared_Frobenius": 554.9158238097118,
+        "difference_Frobenius_over_base": 1.0596113641216882,
+        "source_top_rank_variance_fraction": 0.8456531036421364,
+        "explained_difference_energy": {
+          "diagonal_rank": 0.5937009602310988,
+          "coupled_rank": 0.8217796034659364,
+          "diagonal_all": 0.5947604048923757,
+          "bounded_signed_rank": 0.5936973389300138
+        },
+        "residual_squared_Frobenius": {
+          "diagonal_rank": 225.4617663664547,
+          "coupled_rank": 98.89731816239345,
+          "diagonal_all": 224.87386375946141,
+          "bounded_signed_rank": 225.46377588372957
+        },
+        "coupled_target_block_min_eigenvalue": 0.0027890343260844152,
+        "ideal_diagonal_variance_ratio_min": 0.07668486718824562,
+        "ideal_diagonal_variance_ratio_max": 1.911031825142617,
+        "bounded_signed_coefficients_at_limit": 3,
+        "zero_difference": false,
+        "explicit_reconstruction_checked": true,
+        "coupled_replacement_SPD": true,
+        "ideal_coupled_relative_variance_eigenvalue_min": 0.002295351594642152,
+        "ideal_coupled_relative_variance_eigenvalue_max": 12.460374013423515
+      }
+    },
+    "8": {
+      "global": {
+        "rank": 64,
+        "dimension": 512,
+        "difference_squared_Frobenius": 477.47636612662143,
+        "difference_Frobenius_over_base": 1.028583139267517,
+        "source_top_rank_variance_fraction": 0.846115988763009,
+        "explained_difference_energy": {
+          "diagonal_rank": 0.71299031503405,
+          "coupled_rank": 0.9824227827337466,
+          "diagonal_all": 0.7151504827175361,
+          "bounded_signed_rank": 0.7078564975580243
+        },
+        "residual_squared_Frobenius": {
+          "diagonal_rank": 137.04034142068826,
+          "coupled_rank": 8.392705826908752,
+          "diagonal_all": 136.0089124049531,
+          "bounded_signed_rank": 139.49161793349833
+        },
+        "coupled_target_block_min_eigenvalue": 0.023495041131448093,
+        "ideal_diagonal_variance_ratio_min": 0.05586318875769138,
+        "ideal_diagonal_variance_ratio_max": 2.673050391085613,
+        "bounded_signed_coefficients_at_limit": 49,
+        "zero_difference": false,
+        "explicit_reconstruction_checked": true,
+        "coupled_replacement_SPD": true,
+        "ideal_coupled_relative_variance_eigenvalue_min": 0.0185726461182912,
+        "ideal_coupled_relative_variance_eigenvalue_max": 4.69665863329756
+      },
+      "other_receiver": {
+        "rank": 64,
+        "dimension": 512,
+        "difference_squared_Frobenius": 447.0074414799388,
+        "difference_Frobenius_over_base": 1.201556642786988,
+        "source_top_rank_variance_fraction": 0.8567176016757065,
+        "explained_difference_energy": {
+          "diagonal_rank": 0.49893323375159404,
+          "coupled_rank": 0.6690249331524187,
+          "diagonal_all": 0.515704638242559,
+          "bounded_signed_rank": 0.4805099128480319
+        },
+        "residual_squared_Frobenius": {
+          "diagonal_rank": 223.9805731913265,
+          "coupled_rank": 147.948317825189,
+          "diagonal_all": 216.48363057979512,
+          "bounded_signed_rank": 232.2159347319917
+        },
+        "coupled_target_block_min_eigenvalue": 0.018474564736982585,
+        "ideal_diagonal_variance_ratio_min": 0.04933659157117818,
+        "ideal_diagonal_variance_ratio_max": 5.939671426938361,
+        "bounded_signed_coefficients_at_limit": 47,
+        "zero_difference": false,
+        "explicit_reconstruction_checked": true,
+        "coupled_replacement_SPD": true,
+        "ideal_coupled_relative_variance_eigenvalue_min": 0.011233743462327713,
+        "ideal_coupled_relative_variance_eigenvalue_max": 10.397749565457488
+      }
+    }
+  },
+  "summary": {
+    "global": {
+      "diagonal_rank": {
+        "min": 0.6702164945953232,
+        "max": 0.8157117556734578,
+        "equal_RX_mean": 0.7569617801669373,
+        "difference_energy_weighted": 0.7544745277058779
+      },
+      "coupled_rank": {
+        "min": 0.9783659256165732,
+        "max": 0.9879825497375885,
+        "equal_RX_mean": 0.9835048351442067,
+        "difference_energy_weighted": 0.9835389727642095
+      },
+      "diagonal_all": {
+        "min": 0.6712504007199078,
+        "max": 0.8170191301002605,
+        "equal_RX_mean": 0.7590657793955147,
+        "difference_energy_weighted": 0.7565748334331895
+      },
+      "bounded_signed_rank": {
+        "min": 0.6702160223010393,
+        "max": 0.814593505881507,
+        "equal_RX_mean": 0.7546120617946837,
+        "difference_energy_weighted": 0.7520420392866263
+      }
+    },
+    "other_receiver": {
+      "diagonal_rank": {
+        "min": 0.49893323375159404,
+        "max": 0.7928517883478907,
+        "equal_RX_mean": 0.655118763575638,
+        "difference_energy_weighted": 0.6546879569935529
+      },
+      "coupled_rank": {
+        "min": 0.6690249331524187,
+        "max": 0.8836410909505891,
+        "equal_RX_mean": 0.8065419985416116,
+        "difference_energy_weighted": 0.8063785106007942
+      },
+      "diagonal_all": {
+        "min": 0.515704638242559,
+        "max": 0.7947476046169449,
+        "equal_RX_mean": 0.6623737914423788,
+        "difference_energy_weighted": 0.6612462852927561
+      },
+      "bounded_signed_rank": {
+        "min": 0.4805099128480319,
+        "max": 0.7915459450627436,
+        "equal_RX_mean": 0.6502139239429854,
+        "difference_energy_weighted": 0.6500564357870522
+      }
+    }
+  },
+  "maximum_relative_residual_recomputation_error": 2.787390738672113e-15,
+  "all10_coupled_replacements_SPD": true,
+  "new_IQ_reads": 0,
+  "new_neural_forwards": 0,
+  "new_truth_reads": 0,
+  "target_reads": 0
+}

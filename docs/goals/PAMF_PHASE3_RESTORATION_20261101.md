@@ -692,3 +692,7 @@ VERIFIED / RUNNING。原C4控制器已按原容量规则自动启动实际训练
 ## 2026-11-07 双向协方差版保留原容量上限并增加GPU4正常空位路径
 
 VERIFIED / QUEUED。只替换尚未训练的Signed r01队列，旧PID/CWD/完整命令/commit/CUDA空/无孩子/无GPU阶段均核实后，在新归档校验和编译完成后精确停止旧控制器，再启动新控制器。独立读回旧控制器退出、新控制器在线、CUDA空、孩子0、GPU阶段0。5项资源测试和一次资源审查通过；模型配置除run_id外一致、每个scratch张量相等，原模型审查复用，数据/源权限/seed/30轮预算及Main矩阵不变。GPU4按原总数3上限、剩余显存至少12000MiB准入；GPU4不可用时，GPU6仍须等当前ConditionedCovariance最后GPU阶段并按总数5上限准入。读回GPU4总数3、GPU6总数5，因此当前仍在等待，新增GPU训练进程0。源2真实检查仍待首个GPU训练阶段执行。两路健康训练和其他队列均在线，旧产物保留。新路径可利用未来GPU4正常空位，实际提前量未作承诺。 [资源与方法一致性记录](../../automation_reports/CV-SincNet/20261107-phase1-Restore-SignedCovariance-E30-s2026092701-r02/report.md)
+
+## 2026-11-07 源协方差固定基的表达限制
+
+VERIFIED / ANALYZED。只读既有源矩完成10单元，零新IQ/标签/V/OE/target/拟合/模型读取。global本底五RX等权：独立64约75.70%，独立512约75.91%，耦合64理想空间约98.35%的协方差差异Frobenius能量；不是识别率或IQ恢复比例。10个矩阵直接重建独立复算通过且耦合替换均正定。源端相对方差谱也超出当前0.1至1.9范围。支持后续研究方向间耦合与更充分的正定伸缩，不以该上限代替网络学习或正式Main收益。 [源统计分析](../../automation_reports/CV-SincNet/20261107-analysis-Restore-source-covariance-capacity-s2026110707-r01/analysis.md)

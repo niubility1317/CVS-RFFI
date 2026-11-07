@@ -241,3 +241,7 @@ Main六景为80.140476/77.807738/75.495238/78.213690/69.447024/62.401190%，0/6�
 ## 2026-11-07 E02 条件方差分支的源端诊断
 
 VERIFIED / ANALYZED。固定E02源训练70条（实际全部L_s，五RX×七scene×2），两种源先验×四种固定方差，共56单元完成且独立重算。当前分支与零附加方差的损失差仅约1e-8量级，当前softplus平均斜率约2.2e-7；统一增大方差在global55/70、other-RX44/70条上局部不利，但约43%/46%的坐标仍有负梯度方向。结果支持表达限制与梯度衰减并存，尚不证明永久失效或Main识别收益。源2检查、3项针对性测试、一次独立P0/P1和实际CPU执行通过，零模型更新、零TX/V/OE/target读取。GPU6当前已完成3/30轮，原final30和Main七景矩阵保持。 [源训练配对机制分析](../automation_reports/CV-SincNet/20261107-diagnostic-Restore-conditional-variance-E02-sourceLU-s2026092701-r01/analysis.md)
+
+## 2026-11-07 源协方差固定基的表达限制
+
+VERIFIED / ANALYZED。只读既有源矩完成10单元，零新IQ/标签/V/OE/target/拟合/模型读取。global本底五RX等权：独立64约75.70%，独立512约75.91%，耦合64理想空间约98.35%的协方差差异Frobenius能量；不是识别率或IQ恢复比例。10个矩阵直接重建独立复算通过且耦合替换均正定。源端相对方差谱也超出当前0.1至1.9范围。支持后续研究方向间耦合与更充分的正定伸缩，不以该上限代替网络学习或正式Main收益。 [源统计分析](../automation_reports/CV-SincNet/20261107-analysis-Restore-source-covariance-capacity-s2026110707-r01/analysis.md)
