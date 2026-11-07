@@ -45,7 +45,7 @@ def factory(arm):configuration(arm);return scratch_covariance_detail(2026092701)
 
 def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.bind_prior,smoke_check=None,
           training_readout=None,smoke_gradient_check=None,training_trace=False,training_posterior_multiplier=1,
-          technical_resume=None):
+          technical_resume=None,training_F0_multiplier=1,source_perturbed_F0_multiplier=0):
     started=time.perf_counter();c=validate_source(read(args.inputs));old,roles=trial.source(args)
     cfg=config_for(args.arm);G=build(args.arm);prior_identity=bind_prior(args.root,G.physical);G=G.to('cuda:0')
     F,identity=load_F0(c,'cuda:0');trial.main_eval.valid_identity(identity);scale=load_scale(args.root).to('cuda:0')
@@ -172,16 +172,18 @@ def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.b
             if any(not torch.equal(value,G.physical.state_dict()[key]) for key,value in prior.items()):raise ValueError('Fixed source prior changed')
             check_F0_state(F,frozen);torch.cuda.synchronize();trial.save_recovery(out/'recovery',G,optimizer,args.arm,args.commit,epoch,update)
             row=dict(epoch=epoch,draw=number,updates=update,steps=247,count=63000,L_s=6300,U_s=56700,seconds=time.perf_counter()-begin,
-                last_learning_rate=learning_rate(update),microbatch=32,training_posterior_calls=1969*training_posterior_multiplier,training_posterior_rows=63000*training_posterior_multiplier,F0_training_forward_rows=63000,
+                last_learning_rate=learning_rate(update),microbatch=32,training_posterior_calls=1969*training_posterior_multiplier,training_posterior_rows=63000*training_posterior_multiplier,F0_training_forward_rows=63000*training_F0_multiplier,
+                source_perturbed_F0_forward_rows=63000*source_perturbed_F0_multiplier,
                 source_counterfactual_rows=63000*(training_posterior_multiplier-1),
                 metrics={key:value/63000 for key,value in sums.items()},step_objective=step_sum/247,preclip_branch_norms={k:x/247 for k,x in norm_sums.items()})
             log.write(json.dumps(row,allow_nan=False)+'\n');print('COVARIANCE_DETAIL_EPOCH',args.arm,json.dumps(row),flush=True);del v
     if update!=7410:raise ValueError('Full single30 update budget required')
     trial.save(out/'final.pt',G,args.arm,args.commit,30)
     write(out/'complete.json',dict(status='SOURCE_TRAINED',code_commit=args.commit,arm=args.arm,epoch=30,updates=7410,
-        source_Ls_exposures=189000,source_Us_exposures=1701000,online_F0_feature_rows=1890000,
+        source_Ls_exposures=189000,source_Us_exposures=1701000,online_F0_feature_rows=1890000*training_F0_multiplier,
         F0_clean_target_rows=63000*(1+int(technical_resume is not None)),
-        F0_feature_L_s_exposures=189000,F0_feature_U_s_exposures=1701000,source_F0_feature_cache_seconds=cache_seconds,
+        source_perturbed_F0_forward_rows=1890000*source_perturbed_F0_multiplier,
+        F0_feature_L_s_exposures=189000*training_F0_multiplier,F0_feature_U_s_exposures=1701000*training_F0_multiplier,source_F0_feature_cache_seconds=cache_seconds,
         F0_identity=identity,source_prior_identity=prior_identity,G_parameters=sum(p.numel() for p in G.parameters()),
         physical_parameters=sum(p.numel() for p in G.physical.parameters()),detail_parameters=sum(p.numel() for p in G.detail.parameters()),
         training_seconds=time.perf_counter()-train_start,worker_seconds=time.perf_counter()-started,peak_allocated_bytes=torch.cuda.max_memory_allocated(),
