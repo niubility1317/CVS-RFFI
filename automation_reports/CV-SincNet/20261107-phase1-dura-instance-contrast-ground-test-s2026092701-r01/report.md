@@ -3,7 +3,7 @@
 - run_id：`20261107-phase1-dura-instance-contrast-ground-test-s2026092701-r01`
 - group_id：`phase1-dura-source-instance-contrast`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：QUEUED；须先完成源训练，尚无本版本目标预测或识别分数。
+- 当前登记状态：ANALYZED；七景预测和独立评分均已完成。
 
 ## 目的与对照
 
@@ -21,8 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
-源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+六个受损场景均低于 DURA，低城区为 68.1292%，相对 DURA 低 0.6720 个百分点；修复 3640 条、损伤 4769 条。两种 3% 口径均 0/6 达标。clean 得分与 DURA 相同，但有 2 条错变对和 2 条对变错，不是预测逐条一致。详见 [完整分析](analysis.md)，不据此修改其他已登记训练和测试。
 
 ## 交接
 

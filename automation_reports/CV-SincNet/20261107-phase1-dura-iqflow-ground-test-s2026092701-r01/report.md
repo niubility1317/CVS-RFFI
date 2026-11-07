@@ -3,7 +3,7 @@
 - run_id：`20261107-phase1-dura-iqflow-ground-test-s2026092701-r01`
 - group_id：`phase1-dura-conditional-iqflow`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED；七景预测与独立评分完成。
 
 ## 目的与对照
 
@@ -21,8 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
-源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+七景均低于 DURA；低城区 68.4554%，相对 DURA 低 0.3458 个百分点，修复 3104 条而损伤 3685 条。clean 相对 DURA 低 0.2458 个百分点。六景按绝对降幅不超过 3 个百分点计 1/6 达标，按相对下降不超过 3% 计 0/6。详见 [完整分析](analysis.md)，不据此改变其他已登记训练或测试。
 
 ## 交接
 
