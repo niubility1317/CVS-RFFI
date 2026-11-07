@@ -1,1 +1,3 @@
 {"at": "2026-11-07T14:28:21+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-07T14:39:45+00:00", "status": "ANALYZED", "note": "VERIFIED / ANALYZED：84格/2688配对响应完成且向量独立复算通过。三原final30、224条合法L_s/U_s、四种固定1%变化、真实源Action注入与同一次噪声；零TX/V/OE/target、分类头或优化更新。投影增益只衡量合成响应，不是身份恢复率。", "evidence": ["verified_results.json"], "row_id": "source_LU_known_action_directional_response"}
+{"at": "2026-11-07T14:39:55+00:00", "status": "ANALYZED", "note": "VERIFIED / ANALYZED：84格/2688配对响应完成且向量独立复算通过。三原final30、224条合法L_s/U_s、四种固定1%变化、真实源Action注入与同一次噪声；零TX/V/OE/target、分类头或优化更新。投影增益只衡量合成响应，不是身份恢复率。", "evidence": ["verified_results.json"], "row_id": null}
