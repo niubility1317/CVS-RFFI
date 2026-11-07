@@ -1,0 +1,20 @@
+{
+  "status": "FAILED_TECHNICAL_PRESERVED",
+  "scientific_commit": "ee7f69470c15bd053777cd6b6115c46b39737b9c",
+  "completed_epochs": 9,
+  "completed_updates": 2223,
+  "interrupted_epoch": 10,
+  "failed_step_unknown": true,
+  "exit_code": 1,
+  "failure_check": "nonfinite source scalar OR maximum relative posterior solve residual greater than 1e-8",
+  "actual_trigger": "UNKNOWN: the original exception does not distinguish the two conditions",
+  "last_completed_epoch_loss": 0.08959857270121574,
+  "last_completed_epoch_mean_solve_residual": 1.3520769522923091e-10,
+  "last_completed_epoch_mean_response_error": 3.9958965441310217,
+  "E09_checkpoint_observed": true,
+  "final30_checkpoint": false,
+  "main_prediction_submitted": false,
+  "target_truth_read": false,
+  "automatic_restart": false,
+  "whole_research_goal_complete": false
+}
