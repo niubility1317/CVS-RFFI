@@ -3,7 +3,7 @@
 - run_id：`20261107-phase1-direct-fir-skip-full-parity-s2026092701-r01`
 - group_id：`phase1-direct-fir-skip-full-parity`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING；N607 PID 3850886 已通过源检查，等待原七景预测固定。
+- 当前登记状态：ANALYZED；七景类别重放已完成，[完整一致性结果](analysis.md)。
 
 ## 目的与对照
 
@@ -21,8 +21,8 @@
 
 ## 结果与覆盖
 
-112 条源波形和 logits 的逐值检查已通过；完整七景决策尚未重放，无完整一致性结论。
+112 条源波形和 logits 的逐值检查已通过。七景各 168000 条原始输入和恢复类别均与原预测一致，完整范围与耗时限制见[分析](analysis.md)；全量波形和 logits 未在原预测中保存，无法完成逐值比较。
 
 ## 交接
 
-待原七景 manifest 固定，核验物理 ID 和候选版本后逐条对照 raw／恢复决策，不连接真值，不修改原预测。
+完整无真值重放完成；原预测和模型保留，不因技术加速将该学生识别表现宣称为达标。
