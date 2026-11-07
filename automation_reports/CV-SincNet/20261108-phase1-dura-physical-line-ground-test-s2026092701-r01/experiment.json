@@ -1,0 +1,171 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-dura-physical-line-ground-test-s2026092701-r01",
+  "group_id": "phase1-dura-physical-line-ground-test",
+  "display_name": "DURA 物理步长组合：Phase1 七景测试",
+  "description": "固定源训练第20轮大容量修正器，利用接收信号与估计信道选择修正幅度，连接冻结 Tri-SIG-TIME SSL 完整七景评分。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "ground",
+    "dura",
+    "physical-line",
+    "truth-last",
+    "frozen"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261108-phase1-dura-large-context-stable-source-s2026092701-r01",
+    "20261108-phase1-physical-line-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests continued novel and DURA-combinable Phase1 restoration research, F-free/TX-label-free source training, automatic seven-view test and truth-last score.",
+  "code": {
+    "commit": "2cc7be9a201692268b93d799bfacba0643f51141",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CPU two threads; CUDA hidden; model frozen",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-dura-physical-line-ground-test-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "fixed DURA plus final20 source-only correction and observable physical step; frozen Tri-SIG-TIME SSL",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "168000 fixed Phase1 Main split ground physical records in each of seven views",
+    "label_map_ref": "Six Phase1 transmitter classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "No target labels, clean pair, or target fitting during inference; labels only after all seven predictions",
+    "roles": {
+      "L_s": "source IQ training only, TX hidden",
+      "U_s": "source IQ training only, TX hidden",
+      "V": "not used for G training",
+      "test": "fixed Phase1 ground IQ, truth last"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Seven fixed predictions precede independent truth-last scoring",
+    "support_query_ref": "Phase1 original fixed cross_rx126000 and cross_both42000; no support",
+    "leo_config_ref": "R07 2.462 GHz source views and Phase1 six fixed practical test views",
+    "target_panel": "168000 Phase1 physical records x seven views",
+    "actual_training_labels": "Recovery training uses paired source IQ only; no F outputs, F weights, TX labels, V or target. Frozen Tri-SIG-TIME SSL only after recovery checkpoint frozen.",
+    "augmentation": "Fixed pre-existing Phase1 ground test simulated seven views"
+  },
+  "permissions": {
+    "regime": "Phase1 frozen ground evaluation",
+    "query_use": "Fixed per-record Phase1 IQ only after source training; no target fit, truth only after seven-view predictions",
+    "external_method_exception": null,
+    "claim_scope": "Single-seed repeatedly observed Phase1 simulated ground test; not independent blind or real satellite"
+  },
+  "checkpoint": {
+    "initialization": "Frozen DURA v1.0 and source-only StableLargeContextDura final20; deterministic physical line alpha",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261108-phase1-dura-large-context-stable-source-s2026092701-r01",
+      "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+    ],
+    "contract_check_ref": "Fixed original DURA source provenance and exact source context fit IDs; no F/TX/V/target in training",
+    "provenance_verdict": "Existing source-only final20 checkpoint and original fixed DURA; frozen Tri-SIG-TIME SSL for prediction only",
+    "selection_rule": "Final epoch 20 fixed; source-only pilot motivates new deterministic inference rule; no target selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "CPU only, 2 threads, CUDA hidden; nice15; preserve other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-physical-line-ground-test-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-physical-line-ground-test-s2026092701-r01-launch.log",
+    "local_artifact_root": "E:\\type10-7\\github_publish\\CVS-RFFI-repo\\automation_reports\\CV-SincNet\\20261108-phase1-dura-physical-line-ground-test-s2026092701-r01",
+    "launch_command": "nice -n 15 env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-dura-physical-line-ground-test-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.physical_line_controller --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-physical-line-ground-test-s2026092701-r01 --commit 2cc7be9a201692268b93d799bfacba0643f51141",
+    "stop_rule": "Stop only on provenance mismatch, model/input mismatch, nonfinite output, illegal query/truth access, output collision or unrecoverable technical failure; preserve all artifacts."
+  },
+  "expected_artifacts": [
+    "flow/test_prediction/complete.json",
+    "flow/test_summary.json",
+    "flow/paired_dura.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "ground accuracy",
+      "raw clean gap in pp and relative percent",
+      "macro F1",
+      "DURA paired repairs and damages",
+      "TX/RX/day groups"
+    ],
+    "dimensions": [
+      "168000 physical records",
+      "clean and six practical views"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-physical-line-ground-test-s2026092701-r01/flow/test_prediction",
+    "scorer_ref": "independent CPU subprocess ground score after seven complete predictions"
+  },
+  "rows": [
+    {
+      "row_id": "physical-line-final20",
+      "method": "DURA stable correction with estimated-channel bounded physical line",
+      "purpose": "Test whether received-only physical line step preserves source improvements in fixed Phase1 ground evaluation",
+      "config_ref": "experiments/phase1_dura_orthogonal/physical_line_ground.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Model 2026110612; source fit 2026110611; order 2026110613; fixed evaluation 2026092701.",
+      "k": null,
+      "scenario": "clean and six practical Phase1 Main split views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Parent trained 20 epochs; this inference-only version: 168000 physical records x seven views; all predictions before truth",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-physical-line-ground-test-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-physical-line-ground-test-s2026092701-r01-launch.log",
+      "command": "nice -n 15 env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-dura-physical-line-ground-test-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.physical_line_controller --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-physical-line-ground-test-s2026092701-r01 --commit 2cc7be9a201692268b93d799bfacba0643f51141",
+      "expected_artifacts": [
+        "flow/test_prediction/complete.json",
+        "flow/test_summary.json",
+        "flow/paired_dura.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Fixed source-only pilot motivates deterministic inference rule; no F, TX truth, V or target was used to train parent or select the line step.",
+    "New independent version uses same frozen DURA and final20 source correction; no further training or parameter selection.",
+    "112 real source records smoke with frozen reader; all seven ground predictions must be fixed before independent truth-last score.",
+    "Historic Phase1 target results were previously observed: single seed development test, not a new blind test or a real satellite validation.",
+    "Four focused checks and one independent P0/P1 review, plus targeted review of scoring environment fix passed."
+  ],
+  "registered_at": "2026-11-07T23:00:37+00:00"
+}
