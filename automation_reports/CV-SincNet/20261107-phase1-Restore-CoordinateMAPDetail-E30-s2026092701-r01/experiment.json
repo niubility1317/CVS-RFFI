@@ -20,10 +20,12 @@
   "replaces_run_id": null,
   "authorization": "Latestuser:performanceprimary/efficiencysecondary/groundTriSIGTIME SSL sameFrawclean6eachgap<=3pp+cleanpreserved;majorGarchitecturefreedom/scratchsingle30/sourceFfeatureguidanceallowed/originalLsUs-only/OEonlyfrozendiagnostic. DefaultDURAunchanged.",
   "code": {
-    "commit": "bc6bcac3bf8463fb3b2770a0ec2a6115ab322ae1",
+    "commit": "2d295adde7ef655368545d650551243a5430797b",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI/Torch2.1/NumPy2 bridge-safe/FP32G-F0/FP64physicalposterior/TF32off/CPUthreads2",
-    "cwd": "releases/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01-release"
+    "cwd": "releases/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01-GPU3-remaining-release",
+    "scientific_code_commit": "bc6bcac3bf8463fb3b2770a0ec2a6115ab322ae1",
+    "identity_note": "Resource-only remaining-stage owner. Completed train/cross_rx preserved; cross_both and score execute original release/commit."
   },
   "data": {
     "dataset": "ManySig",
@@ -96,13 +98,15 @@
   },
   "execution": {
     "host": "N607",
-    "launch_owner": "codex/root/coordinate-map-detail-scratch30",
-    "gpu_policy": "GPU4/6 healthy pool scopedUUID/free>=12000MiB/existingcompute<=2/addONEtotal<=3;oneownNN sequentialtrain/cross_rx/cross_both,thenCPUscore. AllpreviousownNNended;otherownersuntouched.",
+    "launch_owner": "codex/root/C4-remaining-GPU3",
+    "gpu_policy": "Remaining cross_both only on normal GPU3: existing<=2/free>=12000MiB before one own worker,total<=3. No extra-cap transfer or GPU7.",
     "remote_run_root": "runs/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01",
     "remote_log_root": "runs/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01/logs",
     "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01",
-    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.coordinate_map_detail_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit bc6bcac3bf8463fb3b2770a0ec2a6115ab322ae1 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
-    "stop_rule": "Invalid source/F0 identity, collision, nonfinite loss, posterior relative residual >1e-8, gradient/smoke/reload or worker failure: preserve. First actual source2 smoke, then E30 and all Main."
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.coordinate_remaining_dispatch --root /home/szu2070436088/2510044040/CV-SincNet --legacy-release /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01-release --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --commit 2d295adde7ef655368545d650551243a5430797b",
+    "stop_rule": "Only exact childless CUDA-empty old controller may be retired after final30/train0 and full126000x7 cross_rx terminal0 are verified and cross_both/score are untouched. Preserve original weights, outputs, launch and logs. Original cross_both source smoke runs first; score only after both populations/all7. Failures preserve, no restart.",
+    "original_controller_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.coordinate_map_detail_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit bc6bcac3bf8463fb3b2770a0ec2a6115ab322ae1 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "original_scientific_CWD": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01-release"
   },
   "expected_artifacts": [
     "launch.json",
@@ -124,7 +128,9 @@
     "rows/<arm>/results.json",
     "complete.json",
     "logs/*.log PRIVATE",
-    "rows/TF_CoordinateMAPDetail/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+    "rows/TF_CoordinateMAPDetail/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only",
+    "resource_controller.json remaining-stage ownership",
+    "resource_handover_GPU3.json preserving train/cross_rx"
   ],
   "metrics_plan": {
     "metric_names": [
@@ -199,7 +205,10 @@
     "Average full conjugated real operators and scalar noise, moment-match C4 prior, solve once, average inverse-rotated detail outputs. Final IQ is in the original input frame.",
     "Original frozen F0 continuous feature objective on the final IQ only; F0 does not enter G deployment. Independent source feature-guided comparison.",
     "Single scratch30. Additional shared branch compute, no added learned parameters. Full train wall and memory to be measured.",
-    "Current Main already exposed historically. No target feedback to train, select or reorder. All predictions fixed before CPU truth scoring."
+    "Current Main already exposed historically. No target feedback to train, select or reorder. All predictions fixed before CPU truth scoring.",
+    "No new scientific version: all source training, originalG/F0, model/data/seed/loss/30 budget and test matrix unchanged. Only unstarted remaining prediction is moved.",
+    "Actual original train and cross_rx terminal0/complete outputs remain untouched. The new controller cannot issue train or cross_rx commands; existing cross_both or score blocks it.",
+    "Three focused completed-prefix/duplicate/scientific-identity tests PASS. Original candidate review and source smoke remain valid; no duplicate model/runner review gate."
   ],
   "record_type": "managed_run",
   "registered_at": "2026-11-06T23:33:28+00:00"

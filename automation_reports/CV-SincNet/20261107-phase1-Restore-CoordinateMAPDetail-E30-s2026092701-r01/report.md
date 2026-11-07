@@ -54,3 +54,9 @@ VERIFIED / RUNNING。原C4控制器已按原容量规则自动启动实际训练
 CoordinateMAPDetail：已核实 6/30轮、1482/7410次更新，累计378000次源曝光（L_s 37800、U_s 340200），在线冻结F0连续特征前向378000条。全部已完成轮次的源顺序均为63000条完整排列，保存模型/优化器有限、两分支和输出头实际更新，源先验固定。
 
 [完整源训练分析](training_progress_E06.md)
+
+## 剩余跨接收机且跨日期测试转正常GPU3
+
+已完成原30轮训练与cross_rx126000条×七景；剩余cross_both42000条×七景及独立score使用原科学release/commit，正常GPU3总数最多3个。仅在确认旧控制器CPU空CUDA、无子进程、剩余阶段从未启动时交接。原权重/完整预测/日志保留，不重新训练或预测已完成总体，不读取目标分数排队。
+
+控制器代码：`2d295adde7ef655368545d650551243a5430797b`；科学代码：`bc6bcac3bf8463fb3b2770a0ec2a6115ab322ae1`。命令：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.coordinate_remaining_dispatch --root /home/szu2070436088/2510044040/CV-SincNet --legacy-release /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-CoordinateMAPDetail-E30-s2026092701-r01-release --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --commit 2d295adde7ef655368545d650551243a5430797b`。
