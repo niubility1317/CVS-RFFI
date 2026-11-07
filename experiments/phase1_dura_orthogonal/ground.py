@@ -26,6 +26,7 @@ from experiments.phase1_dura_orthogonal.conditional_iq_flow import ConditionalIQ
 from experiments.phase1_dura_orthogonal.antithetic_iq_flow import (
     AntitheticIQFlow, LATENT_SEED, TRAIN_LATENT_SEED, LATENT_SCALE, MAX_RELATIVE_STD, FLOW_STEPS)
 from experiments.phase1_dura_orthogonal.phase_equivariant_dura import PhaseEquivariantDura, RESIDUAL_SCALE
+from experiments.phase1_dura_orthogonal.antithetic_readout import MODE as ANTITHETIC_READOUT, path_probabilities
 from experiments.phase1_dura_orthogonal.monotone_envelope import (
     DuraMonotoneEnvelope, ENVELOPE_WEIGHT, QUANTILES as ENVELOPE_QUANTILES,
     SEGMENTS as ENVELOPE_SEGMENTS, SEGMENT_WIDTH as ENVELOPE_SEGMENT_WIDTH)
@@ -307,19 +308,23 @@ def load_fixed(root, source, commit):
 
 
 @torch.no_grad()
-def decisions(x, model, dura, reader):
+def decisions(x, model, dura, reader, *, inference_mode='single'):
+    if inference_mode not in ('single', ANTITHETIC_READOUT):
+        raise ValueError('Registered frozen inference mode required')
     anchor, direction, variance = extract_context(dura, x)
-    restored = model(x, anchor, direction, variance)
+    restored = model(x, anchor, direction, variance) if inference_mode == 'single' else None
     outputs = []
-    for signal in (x, anchor, restored):
+    for signal in ((x, anchor, restored) if inference_mode == 'single' else (x, anchor)):
         logits = reader.classify_features(reader.features(signal))
         if logits.shape != (len(x), 6) or not torch.isfinite(logits).all():
             raise ValueError('Finite frozen reader outputs required')
         outputs.append(logits.argmax(1))
+    if inference_mode == ANTITHETIC_READOUT:
+        outputs.append(path_probabilities(model, reader, x, anchor, direction, variance).argmax(1))
     return outputs
 
 
-def smoke(root, out, source, commit):
+def smoke(root, out, source, commit, *, source_commit=None, inference_mode='single'):
     if out.exists():
         raise FileExistsError('A new ground output root is required')
     ids, rx, scene, _, received, _ = source_inputs(root)
@@ -333,11 +338,11 @@ def smoke(root, out, source, commit):
     positions = np.asarray(positions, dtype=np.int64)
     with np.load(root/'runs'/SOURCE_PILOT/'source_predictions.npz', allow_pickle=False) as z:
         expected = z['values'][positions][:, [3, 5]].astype(np.int64)
-    model, dura, reader = load_fixed(root, source, commit)
+    model, dura, reader = load_fixed(root, source, source_commit or commit)
     actual = []
     for start in range(0, len(positions), 8):
         x = core.tensor(received[ids[positions[start:start+8]]], 'cpu')
-        raw, anchor, restored = decisions(x, model, dura, reader)
+        raw, anchor, restored = decisions(x, model, dura, reader, inference_mode=inference_mode)
         actual.append(torch.stack((raw, anchor), 1).cpu())
         if not torch.isfinite(restored).all():
             raise ValueError('Finite source-only restored decisions required')
@@ -347,15 +352,19 @@ def smoke(root, out, source, commit):
     out.mkdir(parents=True)
     core.write(out/'prediction_smoke.json', dict(status='PASS', commit=commit, source_only=True,
         records=len(positions), raw_and_dura_mismatches=0, TX_truth_reads=0,
-        U_s_truth_reads=0, V_reads=0, test_IQ_reads=0))
+        U_s_truth_reads=0, V_reads=0, test_IQ_reads=0,
+        source=source, source_commit=source_commit or commit, inference_mode=inference_mode))
     print('ORTHOGONAL_SOURCE_PREDICTION_SMOKE_PASS', len(positions), flush=True)
 
 
-def predict(root, out, source, commit):
+def predict(root, out, source, commit, *, source_commit=None, inference_mode='single'):
     check = core.read(out/'prediction_smoke.json')
     if check.get('status') != 'PASS' or check.get('commit') != commit or check.get('test_IQ_reads') != 0:
         raise ValueError('Matching source-only prediction smoke required')
-    model, dura, reader = load_fixed(root, source, commit)
+    if (check.get('source', source) != source or check.get('source_commit', commit) != (source_commit or commit)
+            or check.get('inference_mode', 'single') != inference_mode):
+        raise ValueError('Smoke source and inference mode must match prediction')
+    model, dura, reader = load_fixed(root, source, source_commit or commit)
     folder, ids = core.reference(root)
     reference = root/'runs/20261101-phase1-dura-trisigtime-baseline-s2026092701-r01/flow/test_prediction'
     if not np.array_equal(ids, np.load(reference/'physical_ids.npy', allow_pickle=False)):
@@ -373,7 +382,7 @@ def predict(root, out, source, commit):
         restored = np.lib.format.open_memmap(destination/(view+'.restored.npy'), mode='w+', dtype=np.int64, shape=(len(ids),))
         for start in range(0, len(ids), 8):
             x = core.tensor(values[start:start+8], 'cpu')
-            a, _, b = decisions(x, model, dura, reader)
+            a, _, b = decisions(x, model, dura, reader, inference_mode=inference_mode)
             a = np.from_dlpack(a.cpu().contiguous())
             b = np.from_dlpack(b.cpu().contiguous())
             end = start+len(x)
@@ -385,6 +394,8 @@ def predict(root, out, source, commit):
         raw.flush()
         restored.flush()
         print('ORTHOGONAL_GROUND_VIEW_COMPLETE', view, len(ids), flush=True)
+    core.write(out/'flow/inference.json', dict(source=source,
+        source_commit=source_commit or commit, inference_mode=inference_mode, commit=commit))
     core.write(destination/'complete.json', dict(status='PREDICTIONS_COMPLETE', count=len(ids),
         views=list(core.VIEWS), F_run=core.F_RUN, F_row=core.F_ROW, commit=commit,
         TX_truth_reads=0, model_updates=0))
@@ -431,14 +442,16 @@ def main():
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--source', required=True)
     parser.add_argument('--commit', required=True)
+    parser.add_argument('--source-commit')
+    parser.add_argument('--inference-mode', choices=('single', ANTITHETIC_READOUT), default='single')
     args = parser.parse_args()
     torch.set_num_threads(2)
     torch.backends.cuda.matmul.allow_tf32 = False
     torch.backends.cudnn.allow_tf32 = False
     if args.mode == 'smoke':
-        smoke(args.root, args.out, args.source, args.commit)
+        smoke(args.root, args.out, args.source, args.commit, source_commit=args.source_commit, inference_mode=args.inference_mode)
     elif args.mode == 'predict':
-        predict(args.root, args.out, args.source, args.commit)
+        predict(args.root, args.out, args.source, args.commit, source_commit=args.source_commit, inference_mode=args.inference_mode)
     else:
         core.score(args.root, args.out, args.commit)
         paired_score(args.root, args.out, args.commit)
