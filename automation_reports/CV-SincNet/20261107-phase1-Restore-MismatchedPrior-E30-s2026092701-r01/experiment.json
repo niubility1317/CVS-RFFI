@@ -1,0 +1,204 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01",
+  "group_id": "source-prior-mismatch-exposure-single30",
+  "display_name": "源接收机先验失配训练，从零单阶段 30 轮",
+  "description": "同一条件先验网络，奇数轮原全源先验，偶数轮用排除当前源接收机的配额匹配先验。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "original-ground-TriSIGSSL-Main",
+    "source-prior-mismatch",
+    "continuous-source-F0",
+    "scratch-single30",
+    "automatic-Main7"
+  ],
+  "comparison_group_id": "same-projected-architecture-global-vs-source-mismatch-prior-training",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Latestuser:performanceprimary/efficiencysecondary/groundTriSIGTIME SSL sameFrawclean6eachgap<=3pp+cleanpreserved;majorGarchitecturefreedom/scratchsingle30/sourceFfeatureguidanceallowed/originalLsUs-only/OEonlyfrozendiagnostic. DefaultDURAunchanged.",
+  "code": {
+    "commit": "14e7315d6da5d6fe242e7568f20c97ade064e8d9",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI/Torch2.1/NumPy2 bridge-safe/FP32G-F0/FP64physicalposterior/TF32off/CPUthreads2",
+    "cwd": "releases/20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "Original R07 L_s/U_s clean+received IQ and simulation trace. Prior statistics use only legal L_s/U_s, with current source ground-RX excluded for mismatch exposure.",
+    "contract_ref": "OriginalTriSSLsource_contract/392005/rolecounts6300-56700-27000;R07train63000sameIDset androles/RX/day byID",
+    "physical_ids_ref": "R07train/physical_ids.npy roles.npy;validatedoriginalsourceLUcache IDs foralignment;officialMain source-disjoint viewindexes",
+    "label_map_ref": "Gtrainnone;frozenF0originalsixclassorder,truthonly originalCPUscorerafterallrow42cells fixed",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Original VALIDATED_ONCE source capsule/split and physical binding, original full IQ moments. Reuse pre-V fixed ten source-only receiver-prior statistics from r02.",
+    "support_query_ref": "No targettraining/support/PCD/unknownrole. OriginalMain two populations168000,all7perrowfixedbefore independenttruth.",
+    "leo_config_ref": "R07sourcecache20trainrealizations/2026101912augmentation;officialMain frozen7observations",
+    "actual_training_labels": "No TX labels. Source RX metadata selects training prior only. Frozen F0 source continuous feature targets.",
+    "augmentation": "Original R07 draws/order. Fifteen odd epochs full prior and fifteen even epochs excluded-RX prior, with unchanged source exposure."
+  },
+  "permissions": {
+    "regime": "source-only-scratch-mismatch-prior-continuous-F0",
+    "query_use": "Source prior selection uses source RX only in training loss. Deployed G and original frozen F0 consume received IQ.",
+    "external_method_exception": null,
+    "claim_scope": "Fixed original projected architecture and budget, source-only prior mismatch training. Original Main full matrix."
+  },
+  "checkpoint": {
+    "initialization": "All 5481223 G parameters scratch, original physical seed2026092701/detail2026092702.",
+    "sources": [
+      "FROZEN_FEATURE_ONLY original Tri-SIG-TIME SSL 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d E50/11100 default head",
+      "DATA_ONLY R07 original L_s6300/U_s56700 and original simulated clean/received/Action/noise",
+      "DATA_ONLY original source63000 mean and full IQ covariance a3a90b55a73702954c453eec9c1ad17fec24d87f",
+      "DATA_ONLY source fused160 variance f57c54cad7491e3e8a36f7ea51a9caa13a3a0ab9",
+      "DERIVED_SOURCE_STATISTICS_ONLY 20261107-diagnostic-Restore-receiver-prior-sourceV-s2026092701-r02/1a9aafda7cf9cf5ee1d293a5e782ef57e27eb5ad/fitted_priors.npz other-RX entries. Five12600 fits, 1260L+11340U each, created before source V predictions, no V/TX-fit or target.",
+      "MATCHED_RECIPE_ONLY 20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01/8cf3669c4a5d98f6c4930117952203afd56f2f6e, no learned G weights inherited"
+    ],
+    "contract_check_ref": "Original roles, RX and physical order. Source-fitted statistics metadata and exact dimensions. Own E0/final30 strict checkpoint loading.",
+    "provenance_verdict": "G scratch, original full-source statistics and five legal L/U-only moment sets. Source V diagnosis supported mechanism design, does not fit or select checkpoint.",
+    "selection_rule": "Fixed final30/7410 only. Same original Main all views after freeze."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/mismatched-prior-scratch30",
+    "gpu_policy": "CUDA-empty controller waits 20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01 last GPU stage. GPU4/6 only, free>=12000MiB and existing compute<=2 before adding one.",
+    "remote_run_root": "runs/20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01",
+    "remote_log_root": "runs/20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.mismatched_prior_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 14e7315d6da5d6fe242e7568f20c97ade064e8d9 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Wrong source/F0/statistics, collision, smoke/gradient/reload, solve or nonfinite failure: preserve. First real source2 smoke then full30/Main."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/training/config.json",
+    "rows/<arm>/training/smoke.json",
+    "rows/<arm>/training/smoke_E0.pt PRIVATE",
+    "rows/<arm>/training/data_schedule.npz PRIVATE",
+    "rows/<arm>/training/training.jsonl PRIVATE",
+    "rows/<arm>/training/final.pt PRIVATE",
+    "rows/<arm>/training/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE",
+    "rows/TF_MismatchedPrior/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Original Main six gaps≤3pp, separate clean cross_rx/cross_both kept.",
+      "Same-record TX repairs/damage vs original raw and DURA, full TX/RX/day/RXday.",
+      "Source losses and mismatch exposure fraction, actual training time/peak memory. Original full source prior buffers stay fixed."
+    ],
+    "dimensions": [
+      "original Main two populations and seven views",
+      "TX/RX/day/RXday",
+      "single model seed",
+      "matched raw and DURA"
+    ],
+    "prediction_ref": "Original Main cross_rx126000 + cross_both42000, all seven views, original raw/DURA exact-ID reuse.",
+    "scorer_ref": "OriginalindependentCUDAemptyCPUscore/sharedscore.lock;whole row/allMainpredictionsbeforetruth. No targetfeedback."
+  },
+  "rows": [
+    {
+      "row_id": "TF_MismatchedPrior",
+      "method": "source_other_receiver_prior_exposure",
+      "purpose": "Learn a conditional mean correction under source receiver prior mismatch, with identical scratch network and budget.",
+      "config_ref": "experiments.pamf_phase3_restoration.mismatched_prior_trial.py::configuration",
+      "resolved_config_ref": "runs/20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01/rows/TF_MismatchedPrior/training/config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Model2026092701/detail2026092702. Prior subset2026110707 source roles only. Original order2026110102 and R07 draw seeds.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": "AdamW(weight_decay1e-4,clip1)",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Scratch single30/7410, batch256 micro32, full63000/epoch. One posterior factor per source record. 945000 global-prior and945000 other-RX-prior loss records.",
+      "output_root": "runs/20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01/rows/TF_MismatchedPrior",
+      "log_path": "runs/20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01/logs/TF_MismatchedPrior-train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.mismatched_prior_trial train --root /home/szu2070436088/2510044040/CV-SincNet --commit 14e7315d6da5d6fe242e7568f20c97ade064e8d9 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --arm TF_MismatchedPrior",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/training/config.json",
+        "rows/<arm>/training/smoke.json",
+        "rows/<arm>/training/smoke_E0.pt PRIVATE",
+        "rows/<arm>/training/data_schedule.npz PRIVATE",
+        "rows/<arm>/training/training.jsonl PRIVATE",
+        "rows/<arm>/training/final.pt PRIVATE",
+        "rows/<arm>/training/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE",
+        "rows/TF_MismatchedPrior/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+      ]
+    }
+  ],
+  "notes": [
+    "Fixed V480 same vs other matched-count prior: low urban blind412/341 and known434/379; all five sourceRX show known-condition harm.",
+    "Odd training epochs use original full-source prior. Even epochs use the matched-count prior excluding current sourceRX. Epoch0 smoke exercises mismatch.",
+    "Source RX has no G input channel. Deployment forward uses the original fixed full-source prior and conditional IQ network.",
+    "Same physical-only simulator loss, detached posterior, corrected source noiseless IQ/STFT/continuousF0 loss. Detail and physical gradients isolated.",
+    "Original input-only inference, all Main predictions before independent truth scoring."
+  ],
+  "record_type": "managed_run",
+  "registered_at": "2026-11-07T04:08:54+00:00"
+}
