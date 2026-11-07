@@ -592,3 +592,7 @@ VERIFIED / QUEUED。实际代码 3fc9201628e7602ea58c6a5fb13d6ec934513e99，控�
 ## 2026-11-07 相干参考盲估主路相位
 
 同批 480 条低档城区源样本，原盲估、整算子相位、主路等权、主路协方差加权、已知主路相位的 真实 TX 正确数依次为 401、414、378、414、422。raw clean 为 474。 [七景真实 TX 与主路角误差](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-coherent-main-phase-sourceV-s2026092701-r01/analysis.md)
+
+## 2026-11-07 独立主路相位监督模型
+
+VERIFIED / QUEUED。实际代码 36b13adad5b091bf1f8f4aa7934c403e3b50d8eb，控制器 PID 3933764 在线，实际工作目录、命令、CUDA 空环境和日志已核对。发布包 SHA 一致，远端编译通过。等待接收调制版最后一项 GPU 阶段终止，再按 GPU4/6 原准入条件启动。真实源检查、训练和 Main 均待执行。 1241898 个参数，固定相干 FIR 相位坐标，显式主路角度、独立局部轨迹。 原 L_s/U_s 从零单阶段 30 轮、7410 步，使用模拟圆周相位监督。冻结后自动用原 Tri-SIG-TIME SSL 做 Main 两总体七景并独立评分。 [实验登记和排队核实](../../automation_reports/CV-SincNet/20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01/report.md)
