@@ -29,6 +29,15 @@ def test_stochastic_loss_trains_and_rejects_invalid_time():
         stochastic_flow_loss(model, x, anchor, innovation, variance, clean, torch.tensor([0., 2., 1.]), latent)
 
 
+def test_time_check_omission_preserves_valid_loss():
+    model = AntitheticIQFlow(width=4)
+    x, anchor, innovation, clean, latent = (torch.randn(3, 2, 256) for _ in range(5))
+    variance, t = torch.full((3,), .02), torch.tensor([0., .5, 1.])
+    full = stochastic_flow_loss(model, x, anchor, innovation, variance, clean, t, latent)
+    omitted = stochastic_flow_loss(model, x, anchor, innovation, variance, clean, t, latent, validate_time=False)
+    assert torch.equal(full, omitted)
+
+
 def test_antithetic_output_is_batch_order_invariant_and_clean_gated():
     model = AntitheticIQFlow(width=4)
     with torch.no_grad():

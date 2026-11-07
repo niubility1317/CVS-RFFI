@@ -39,11 +39,11 @@ class AntitheticIQFlow(ConditionalIQFlow):
         return anchor + noise_gate(anchor, variance)*delta
 
 
-def stochastic_flow_loss(model, received, anchor, innovation, variance, clean, time, latent):
-    """Match linear transport from a perturbed anchor to its paired clean IQ."""
+def stochastic_flow_loss(model, received, anchor, innovation, variance, clean, time, latent, *, validate_time=True):
+    """Match transport; skip time checks only for internally generated valid times."""
     if clean.shape != anchor.shape or latent.shape != anchor.shape or time.shape != (len(anchor),):
         raise ValueError('Matching source IQ, time and latent samples required')
-    if not torch.isfinite(time).all() or ((time < 0) | (time > 1)).any():
+    if validate_time and (not torch.isfinite(time).all() or ((time < 0) | (time > 1)).any()):
         raise ValueError('Finite flow time in [0, 1] required')
     start = anchor + perturbation_scale(anchor, variance)*latent
     alpha = time[:, None, None]
