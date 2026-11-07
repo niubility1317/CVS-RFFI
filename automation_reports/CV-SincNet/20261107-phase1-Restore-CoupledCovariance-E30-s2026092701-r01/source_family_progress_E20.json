@@ -1,0 +1,359 @@
+{
+  "status": "VERIFIED_SOURCE_PROGRESS_ONLY",
+  "common_epochs": 20,
+  "common_updates": 4940,
+  "common_source_exposures_per_model": 1260000,
+  "all_available_epochs_checked": {
+    "nonnegative": 27,
+    "signed": 22,
+    "coupled": 20
+  },
+  "source_schedules_and_physical_E0_match": true,
+  "summary": {
+    "nonnegative": {
+      "all": {
+        "epochs": 20,
+        "source_exposures": 1260000,
+        "iq_nmse": 0.09037951204562708,
+        "spectral_error": 0.08828147398006349,
+        "feature_error": 0.019618904871741928,
+        "feature_standardized_error": 0.17923219095988882,
+        "action_matrix_relative_mse": 0.040624959861132355,
+        "noise_log_mse": 0.5931675858426189,
+        "adaptation_gradient": 0.0026140001605604703
+      },
+      "global": {
+        "epochs": 10,
+        "source_exposures": 630000,
+        "iq_nmse": 0.1219195461524621,
+        "spectral_error": 0.09355930016097568,
+        "feature_error": 0.018187455828416917,
+        "feature_standardized_error": 0.16143870644455866,
+        "action_matrix_relative_mse": 0.05610975505542896,
+        "noise_log_mse": 0.9810849216739335,
+        "adaptation_gradient": 0.005227722197454874
+      },
+      "other_RX": {
+        "epochs": 10,
+        "source_exposures": 630000,
+        "iq_nmse": 0.05883947793879206,
+        "spectral_error": 0.08300364779915129,
+        "feature_error": 0.021050353915066943,
+        "feature_standardized_error": 0.19702567547521893,
+        "action_matrix_relative_mse": 0.025140164666835753,
+        "noise_log_mse": 0.2052502500113041,
+        "adaptation_gradient": 2.7812366606576164e-07
+      },
+      "epoch20": {
+        "epoch": 20,
+        "draw": 20,
+        "prior": "other_RX",
+        "updates": 4940,
+        "seconds": 851.6914521900471,
+        "metrics": {
+          "loss": 0.048199397243677625,
+          "physical_loss": 0.0012529035301819917,
+          "detail_loss": 0.046946493752419,
+          "action_matrix_relative_mse": 0.011801949860439413,
+          "noise_log_mse": 0.07270851897720307,
+          "iq_nmse": 0.04150555500908504,
+          "spectral_error": 0.07173749120840951,
+          "feature_error": 0.017122960344193475,
+          "feature_standardized_error": 0.16828346586416637,
+          "added_prior_variance": 4.428899083101503e-10,
+          "added_variance_relative_to_prior": 2.4032813316000195e-09,
+          "base_iq_nmse": 0.04150555500908504,
+          "predicted_noise": 0.028865456367295886,
+          "relative_solve_residual": 2.7999336661445695e-14
+        },
+        "branch_gradient_norms": {
+          "physical": 0.016866980045128932,
+          "detail": 2.516600613415368e-08
+        }
+      }
+    },
+    "signed": {
+      "all": {
+        "epochs": 20,
+        "source_exposures": 1260000,
+        "iq_nmse": 0.08063707163067799,
+        "spectral_error": 0.08613705119277751,
+        "feature_error": 0.020138479352281212,
+        "feature_standardized_error": 0.18248524416264086,
+        "action_matrix_relative_mse": 0.041143233878854366,
+        "noise_log_mse": 0.5994725917038463,
+        "adaptation_gradient": 0.011265515780742358
+      },
+      "global": {
+        "epochs": 10,
+        "source_exposures": 630000,
+        "iq_nmse": 0.1083402900091949,
+        "spectral_error": 0.09096440065768029,
+        "feature_error": 0.01872198664763617,
+        "feature_standardized_error": 0.16563870690654192,
+        "action_matrix_relative_mse": 0.05659984201476688,
+        "noise_log_mse": 0.9848243361004763,
+        "adaptation_gradient": 0.011015016724768394
+      },
+      "other_RX": {
+        "epochs": 10,
+        "source_exposures": 630000,
+        "iq_nmse": 0.05293385325216112,
+        "spectral_error": 0.08130970172787469,
+        "feature_error": 0.021554972056926247,
+        "feature_standardized_error": 0.1993317814187398,
+        "action_matrix_relative_mse": 0.02568662574294186,
+        "noise_log_mse": 0.21412084730721656,
+        "adaptation_gradient": 0.011516014836716318
+      },
+      "epoch20": {
+        "epoch": 20,
+        "draw": 20,
+        "prior": "other_RX",
+        "updates": 4940,
+        "seconds": 680.5524190689903,
+        "metrics": {
+          "loss": 0.044993089582238875,
+          "physical_loss": 0.0012731374455911535,
+          "detail_loss": 0.04371995214242784,
+          "action_matrix_relative_mse": 0.01205233502482611,
+          "noise_log_mse": 0.06790391897019886,
+          "iq_nmse": 0.03837325020394628,
+          "spectral_error": 0.0695617064634959,
+          "feature_error": 0.017566329593696292,
+          "feature_standardized_error": 0.16929533437036332,
+          "signed_mode_absolute_change": 0.6007563664875333,
+          "signed_mode_mean_change": -0.25887424515589835,
+          "signed_mode_negative_fraction": 0.6484583333333334,
+          "signed_map_slope": 0.15777157104204573,
+          "receiver_mismatch_prior_fraction": 1.0,
+          "base_iq_nmse": 0.03837325020394628,
+          "predicted_noise": 0.028478236521520314,
+          "relative_solve_residual": 1.513201544781006e-14
+        },
+        "branch_gradient_norms": {
+          "physical": 0.017679945531825305,
+          "detail": 0.011911857228910906
+        }
+      }
+    },
+    "coupled": {
+      "all": {
+        "epochs": 20,
+        "source_exposures": 1260000,
+        "iq_nmse": 0.07678979041899245,
+        "spectral_error": 0.0847254396711077,
+        "feature_error": 0.018914791006417506,
+        "feature_standardized_error": 0.1736107359836972,
+        "action_matrix_relative_mse": 0.04107165196756167,
+        "noise_log_mse": 0.5971615086976497,
+        "adaptation_gradient": 0.06297476580041284
+      },
+      "global": {
+        "epochs": 10,
+        "source_exposures": 630000,
+        "iq_nmse": 0.10390445343646264,
+        "spectral_error": 0.08976908413152847,
+        "feature_error": 0.0178570339321144,
+        "feature_standardized_error": 0.15932788929125616,
+        "action_matrix_relative_mse": 0.056808102970452065,
+        "noise_log_mse": 0.987013826918791,
+        "adaptation_gradient": 0.08369557745632177
+      },
+      "other_RX": {
+        "epochs": 10,
+        "source_exposures": 630000,
+        "iq_nmse": 0.049675127401522225,
+        "spectral_error": 0.07968179521068694,
+        "feature_error": 0.0199725480807206,
+        "feature_standardized_error": 0.1878935826761382,
+        "action_matrix_relative_mse": 0.025335200964671283,
+        "noise_log_mse": 0.2073091904765084,
+        "adaptation_gradient": 0.042253954144503905
+      },
+      "epoch20": {
+        "epoch": 20,
+        "draw": 20,
+        "prior": "other_RX",
+        "updates": 4940,
+        "seconds": 731.7219690750353,
+        "metrics": {
+          "loss": 0.04314252865692926,
+          "physical_loss": 0.0013400122621170585,
+          "detail_loss": 0.0418025164594726,
+          "action_matrix_relative_mse": 0.012549326073082666,
+          "noise_log_mse": 0.0850796343078689,
+          "iq_nmse": 0.036658634235461555,
+          "spectral_error": 0.0683285752137502,
+          "feature_error": 0.016097290282211605,
+          "feature_standardized_error": 0.15664805065166382,
+          "coupled_change_Frobenius_RMS": 1.355084599191489,
+          "coupled_off_diagonal_RMS": 0.9524558931809557,
+          "factor_diagonal_mean": 0.562348154461573,
+          "factor_diagonal_min": 0.24845395986617558,
+          "factor_diagonal_max": 1.2954243089282322,
+          "factor_diagonal_map_slope": 0.475568030735803,
+          "receiver_mismatch_prior_fraction": 1.0,
+          "base_iq_nmse": 0.036658634235461555,
+          "predicted_noise": 0.02833522472365035,
+          "relative_solve_residual": 1.2220817772181728e-11
+        },
+        "branch_gradient_norms": {
+          "physical": 0.0193234146780029,
+          "detail": 0.01340102101204849
+        }
+      }
+    }
+  },
+  "paired_epoch_comparison": {
+    "signed": {
+      "epochs_with_lower_IQ_NMSE": 14,
+      "matched_epoch_mean_IQ_change": -0.00974244041494907
+    },
+    "coupled": {
+      "epochs_with_lower_IQ_NMSE": 19,
+      "matched_epoch_mean_IQ_change": -0.013589721626634636
+    }
+  },
+  "new_IQ_reads": 0,
+  "new_neural_forwards": 0,
+  "new_truth_reads": 0,
+  "Main_performance_conclusion": false,
+  "checkpoint_selection": false,
+  "goal_complete": false,
+  "audit_evidence": {
+    "nonnegative": {
+      "run_id": "20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r02",
+      "code_commit": "ebb279ff3ad430e6a8242686d816976339444588",
+      "epochs_completed": 27,
+      "updates": 6669,
+      "cumulative_source_exposures": 1701000,
+      "physical_E0_matches_family": true,
+      "all30_orders_and_draws_match_family": true,
+      "completed_source_orders_are_full_permutations": true,
+      "latest_state_finite": true,
+      "latest_optimizer_state_finite": true,
+      "original_source_prior_unchanged": true,
+      "actual_branch_updates": {
+        "physical.": {
+          "compared_tensors": 87,
+          "changed_tensors": 85,
+          "max_absolute_change": 0.5254610180854797
+        },
+        "detail.": {
+          "compared_tensors": 53,
+          "changed_tensors": 52,
+          "max_absolute_change": 0.09025172889232635
+        }
+      },
+      "source_smoke": {
+        "status": "PASS",
+        "source_rows": 2,
+        "actual_original_F0": true,
+        "actual_full_posterior": true,
+        "detail_initial_zero": false,
+        "detail_and_physical_gradient_isolation": true,
+        "strict_E0_reload": true,
+        "F0_frozen": true,
+        "optimizer_updates": 0,
+        "TX_labels_read": 0,
+        "V_reads": 0,
+        "OE_reads": 0,
+        "target_inputs": 0
+      },
+      "completed_epoch_seconds": 22291.070977504074,
+      "mean_epoch_seconds": 825.5952213890398
+    },
+    "signed": {
+      "run_id": "20261107-phase1-Restore-SignedCovariance-E30-s2026092701-r02",
+      "code_commit": "96143e689001ad94c6885bc2d032a1c897a097a6",
+      "epochs_completed": 22,
+      "updates": 5434,
+      "cumulative_source_exposures": 1386000,
+      "physical_E0_matches_family": true,
+      "all30_orders_and_draws_match_family": true,
+      "completed_source_orders_are_full_permutations": true,
+      "latest_state_finite": true,
+      "latest_optimizer_state_finite": true,
+      "original_source_prior_unchanged": true,
+      "actual_branch_updates": {
+        "physical.": {
+          "compared_tensors": 87,
+          "changed_tensors": 85,
+          "max_absolute_change": 0.5085622668266296
+        },
+        "detail.": {
+          "compared_tensors": 53,
+          "changed_tensors": 52,
+          "max_absolute_change": 0.6306718587875366
+        }
+      },
+      "source_smoke": {
+        "status": "PASS",
+        "source_rows": 2,
+        "actual_original_F0": true,
+        "actual_full_posterior": true,
+        "detail_initial_zero": true,
+        "detail_and_physical_gradient_isolation": true,
+        "strict_E0_reload": true,
+        "F0_frozen": true,
+        "optimizer_updates": 0,
+        "TX_labels_read": 0,
+        "V_reads": 0,
+        "OE_reads": 0,
+        "target_inputs": 0,
+        "signed_covariance_initial_identity": true,
+        "signed_zero_point_slope": 0.9,
+        "source_mode_rank": 64
+      },
+      "completed_epoch_seconds": 14373.960265701055,
+      "mean_epoch_seconds": 653.3618302591389
+    },
+    "coupled": {
+      "run_id": "20261107-phase1-Restore-CoupledCovariance-E30-s2026092701-r01",
+      "code_commit": "6d3dda3c88765c38e1813ecb733948234bb63190",
+      "epochs_completed": 20,
+      "updates": 4940,
+      "cumulative_source_exposures": 1260000,
+      "physical_E0_matches_family": true,
+      "all30_orders_and_draws_match_family": true,
+      "completed_source_orders_are_full_permutations": true,
+      "latest_state_finite": true,
+      "latest_optimizer_state_finite": true,
+      "original_source_prior_unchanged": true,
+      "actual_branch_updates": {
+        "physical.": {
+          "compared_tensors": 87,
+          "changed_tensors": 85,
+          "max_absolute_change": 0.5941782593727112
+        },
+        "detail.": {
+          "compared_tensors": 53,
+          "changed_tensors": 52,
+          "max_absolute_change": 0.5504283905029297
+        }
+      },
+      "source_smoke": {
+        "status": "PASS",
+        "source_rows": 2,
+        "actual_original_F0": true,
+        "actual_full_posterior": true,
+        "detail_initial_zero": true,
+        "detail_and_physical_gradient_isolation": true,
+        "strict_E0_reload": true,
+        "F0_frozen": true,
+        "optimizer_updates": 0,
+        "TX_labels_read": 0,
+        "V_reads": 0,
+        "OE_reads": 0,
+        "target_inputs": 0,
+        "coupled_covariance_initial_identity": true,
+        "source_mode_rank": 64,
+        "factor_diagonal_zero_point_slope": 1.0,
+        "stored_mode_whitened_margin_verified": true
+      },
+      "completed_epoch_seconds": 13056.000737236114,
+      "mean_epoch_seconds": 652.8000368618057
+    }
+  }
+}

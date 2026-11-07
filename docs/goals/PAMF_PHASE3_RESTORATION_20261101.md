@@ -752,3 +752,7 @@ VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30�
 ## 2026-11-07 源先验失配版实际开始训练
 
 VERIFIED / RUNNING。先验失配版已按预登记的纯资源顺序在GPU5实际开始训练，准入已有2个进程、剩余19187 MiB，正常总数上限3个。一个本run训练子进程的PID/CWD/命令/父子关系/CUDA/GPU占用与日志增长已核实，父控制器CUDA为空。真实source2、原F0、完整后验、物理与细节梯度隔离、F0冻结及严格E0重载通过。实际训练继续使用原14e7315d科学代码、原L_s/U_s和连续源F0指导，从零单阶段30轮/7410，15轮全源先验与15轮排除当前源RX先验。目标、V、OE和TX标签不参与G训练；final30后原Main双总体七景与独立truth-last保持。调度不读取前一模型分数。 [实验记录](../../automation_reports/CV-SincNet/20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01/report.md)
+
+## 2026-11-07 三类协方差的共同前20轮源证据
+
+VERIFIED：三版物理E0、完整源顺序/draw一致；观察时全部27/22/20轮日志和对应状态已核实。共同20轮的耦合版源IQ与连续F0特征误差较低，分支梯度与非对角变化非零。尚无正式Main收益结论，全部模型继续固定final30和完整七景。 [源训练比较](../../automation_reports/CV-SincNet/20261107-phase1-Restore-CoupledCovariance-E30-s2026092701-r01/source_family_progress_E20.md)
