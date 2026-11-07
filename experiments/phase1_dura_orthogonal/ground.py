@@ -27,6 +27,7 @@ from experiments.phase1_dura_orthogonal.antithetic_iq_flow import (
     AntitheticIQFlow, LATENT_SEED, TRAIN_LATENT_SEED, LATENT_SCALE, MAX_RELATIVE_STD, FLOW_STEPS)
 from experiments.phase1_dura_orthogonal.phase_equivariant_dura import PhaseEquivariantDura, RESIDUAL_SCALE
 from experiments.phase1_dura_orthogonal.antithetic_readout import MODE as ANTITHETIC_READOUT, path_probabilities
+from experiments.phase1_dura_orthogonal.conditional_iq_critic import WEIGHT as ADV_WEIGHT, SEED as CRITIC_SEED, CRITIC_KIND
 from experiments.phase1_dura_orthogonal.monotone_envelope import (
     DuraMonotoneEnvelope, ENVELOPE_WEIGHT, QUANTILES as ENVELOPE_QUANTILES,
     SEGMENTS as ENVELOPE_SEGMENTS, SEGMENT_WIDTH as ENVELOPE_SEGMENT_WIDTH)
@@ -49,7 +50,7 @@ def load_fixed(root, source, commit):
     if architecture not in ('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir', 'dura_frequency_regression', 'dura_reversible', 'conditional_iq_flow', 'direct_iq_flow', 'dura_envelope', 'dura_quartic', 'antithetic_iq_flow', 'phase_equivariant_dura'):
         raise ValueError('Registered recovery architecture required')
     epochs = 0 if architecture == 'dura_frequency_regression' else DUAL_DOMAIN_EPOCHS if architecture in ('dual_domain', 'adaptive_inverse', 'timevarying_inverse', 'direct_spectral_student', 'direct_iq_flow') else TRAIN_EPOCHS
-    fit_size = WIDE_FIT_SIZE if summary.get('objective') in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_antithetic_flow', 'wide_phase_equivariant_guard') else FIT_SIZE
+    fit_size = WIDE_FIT_SIZE if summary.get('objective') in ('wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_antithetic_flow', 'wide_phase_equivariant_guard', 'wide_conditional_adversary') else FIT_SIZE
     expected = dict(status='SOURCE_TRAINED', commit=commit, fit_ids=fit_size, epochs=epochs,
                     TX_labels_read=0, F_weights_read=0, F_outputs_read=0, V_reads=0,
                     target_reads=0, DURA_frozen=True)
@@ -61,7 +62,13 @@ def load_fixed(root, source, commit):
             any(state.get(k) != v for k, v in expected.items() if k not in ('status', 'fit_ids', 'epochs'))):
         raise ValueError('Fixed correction checkpoint and provenance required')
     objective = state.get('objective', 'iq')
-    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_antithetic_flow', 'wide_phase_equivariant_guard') or summary.get('objective', 'iq') != objective:
+    if objective == 'wide_conditional_adversary' and (architecture != 'dura_multiscale' or any(
+            obj.get('source_fit_size') != WIDE_FIT_SIZE or obj.get('source_adversarial_weight') != ADV_WEIGHT
+            or obj.get('source_critic_seed') != CRITIC_SEED or obj.get('source_critic_kind') != CRITIC_KIND
+            or obj.get('source_critic_updates_per_generator') != 1 or obj.get('critic_inference_reads') != 0
+            for obj in (summary, state))):
+        raise ValueError('Matching source-only conditional adversary training required')
+    if objective not in ('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_antithetic_flow', 'wide_phase_equivariant_guard', 'wide_conditional_adversary') or summary.get('objective', 'iq') != objective:
         raise ValueError('Source objective must match the fixed checkpoint')
     if objective == 'crossview_guard' and any(
             obj.get('source_views_per_record') != 3 or obj.get('crossview_weight') != .1
@@ -139,7 +146,7 @@ def load_fixed(root, source, commit):
             for obj in (summary, state)):
         raise ValueError('Matching source-IQ teacher metadata required')
     if architecture in ('dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale') and (
-            objective not in (('dura_guard', 'moment_guard', 'geometry_guard') if architecture == 'dura_timevarying_gate' else ('dura_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast') if architecture == 'dura_multiscale' else ('dura_guard',))
+            objective not in (('dura_guard', 'moment_guard', 'geometry_guard') if architecture == 'dura_timevarying_gate' else ('dura_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_conditional_adversary') if architecture == 'dura_multiscale' else ('dura_guard',))
             or any(obj.get('DURA_training_reads') != 1 for obj in (summary, state))):
         raise ValueError('Matching DURA-guarded source checkpoint required')
     if objective == 'wide_source_guard' and (architecture != 'dura_multiscale' or any(
