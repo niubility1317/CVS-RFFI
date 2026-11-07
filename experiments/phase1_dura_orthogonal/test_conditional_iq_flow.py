@@ -1,7 +1,7 @@
 import torch
 import pytest
 
-from experiments.phase1_dura_orthogonal.conditional_iq_flow import ConditionalIQFlow, DirectIQFlow, flow_matching_loss, sample_flow_times
+from experiments.phase1_dura_orthogonal.conditional_iq_flow import ConditionalIQFlow, DirectIQFlow, flow_matching_loss, sample_flow_times, sample_epoch_flow_times
 
 
 def inputs(batch=3):
@@ -78,3 +78,19 @@ def test_mixed_time_sampling_includes_actual_inference_origin_and_is_reproducibl
     assert torch.equal(first, second) and ((first >= 0) & (first < 1)).all()
     assert .45 < (first == 0).float().mean() < .55
     assert (first > 0).any()
+
+
+@pytest.mark.parametrize('origin_fraction', [0., .5])
+def test_epoch_sampling_matches_each_batch_and_generator_state(origin_fraction):
+    per_batch = torch.Generator().manual_seed(2026110713)
+    per_epoch = torch.Generator().manual_seed(2026110713)
+    for _ in range(5):
+        original = torch.cat([sample_flow_times(32, per_batch, origin_fraction=origin_fraction) for _ in range(3072)])
+        combined = sample_epoch_flow_times(98304, per_epoch, origin_fraction=origin_fraction)
+        assert torch.equal(original, combined)
+        assert torch.equal(per_batch.get_state(), per_epoch.get_state())
+
+
+def test_epoch_sampling_rejects_partial_batch():
+    with pytest.raises(ValueError, match='batch'):
+        sample_epoch_flow_times(33, torch.Generator().manual_seed(1), origin_fraction=0.)

@@ -66,6 +66,18 @@ def sample_flow_times(count, generator, *, origin_fraction):
     return times
 
 
+def sample_epoch_flow_times(count, generator, *, origin_fraction):
+    """Draw the same CPU generator sequence as fixed 32-record minibatches."""
+    if count < 32 or count % 32 or not 0. <= origin_fraction <= 1.:
+        raise ValueError('Complete 32-record batches and a valid origin fraction required')
+    if not origin_fraction:
+        return torch.rand((count,), generator=generator)
+    pairs = torch.rand((count//32, 2, 32), generator=generator)
+    times = pairs[:, 0].clone()
+    times.masked_fill_(pairs[:, 1] < origin_fraction, 0.)
+    return times.reshape(count)
+
+
 def flow_matching_loss(model, received, anchor, innovation, variance, clean, time, *, validate_time=True):
     """Match the flow; skip time checks only for internally generated valid samples."""
     if clean.shape != anchor.shape or time.shape != (len(anchor),):
