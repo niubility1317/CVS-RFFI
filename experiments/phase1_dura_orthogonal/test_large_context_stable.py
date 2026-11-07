@@ -86,3 +86,15 @@ def test_stable_checkpoint_requires_legal_source_and_normalization(tmp_path, mon
     (folder / 'source_summary.json').write_text(json.dumps(summary), encoding='utf8')
     with pytest.raises(ValueError, match='observable-risk'):
         ground.load_fixed(tmp_path, 'source', 'test')
+    for obj in (summary, state):
+        obj.update(objective='wide_large_context_stable_crossview',
+                   source_crossview_weight=.1, source_crossview_views=3,
+                   source_crossview_batch_ids=10, source_crossview_losses=[.1] * 20,
+                   source_views_per_record=3, crossview_weight=.1)
+    (folder / 'source_summary.json').write_text(json.dumps(summary), encoding='utf8')
+    torch.save(state, folder / 'final.pt')
+    assert isinstance(ground.load_fixed(tmp_path, 'source', 'test')[0], StableLargeContextDura)
+    summary['source_crossview_views'] = 2
+    (folder / 'source_summary.json').write_text(json.dumps(summary), encoding='utf8')
+    with pytest.raises(ValueError, match='cross-view'):
+        ground.load_fixed(tmp_path, 'source', 'test')
