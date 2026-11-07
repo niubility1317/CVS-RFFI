@@ -26,28 +26,35 @@ def stage_command(args,stage):
     return command+(['--task',stage] if stage in ('cross_rx','cross_both') else [])
 
 
-def controller(args):
+def controller(args,*,allowed_gpu=5,reuse_unstarted_root=False,resource_dependency='ProjectedPrior last GPU stage'):
     if os.environ.get('CUDA_VISIBLE_DEVICES')!='':
         raise ValueError('CUDA-empty resource controller required')
     if (args.legacy_release/'release_commit.txt').read_text().strip()!=LEGACY_COMMIT:
         raise ValueError('Original registered scientific code required')
     out=args.root/'runs'/RUN
     # Publication retires only the exact unstarted owner before this exclusive claim.
-    out.mkdir()
-    (out/'logs').mkdir()
+    existing=out.exists()
+    if existing and reuse_unstarted_root:
+        if (list(out.glob('submitted-*.json')) or (out/'rows'/ARM/'training').exists()
+                or list((out/'rows'/ARM/'prediction').glob('*/complete.json'))):
+            raise ValueError('Only an unstarted original output skeleton can be reused')
+    else:
+        out.mkdir()
+    (out/'logs').mkdir(exist_ok=existing and reuse_unstarted_root)
     row=out/'rows'/ARM
-    (row/'prediction').mkdir(parents=True)
-    write_new(out/'launch.json',dict(pid=os.getpid(),command=sys.argv,CWD=os.getcwd(),code_commit=args.commit,
+    (row/'prediction').mkdir(parents=True,exist_ok=existing and reuse_unstarted_root)
+    owner_path=out/'resource_controller.json' if existing else out/'launch.json'
+    write_new(owner_path,dict(pid=os.getpid(),command=sys.argv,CWD=os.getcwd(),code_commit=args.commit,
         scientific_code_commit=LEGACY_COMMIT,legacy_release=str(args.legacy_release),
-        GPU=5,admission_total_process_cap=3,removed_resource_dependency='ProjectedPrior last GPU stage',
+        GPU=allowed_gpu,admission_total_process_cap=3,resource_dependency=resource_dependency,original_launch_preserved=existing,
         fixed_scratch_epochs=30,fixed_scratch_updates=7410))
     for stage in STAGES:
         admission=None
         if stage!='score':
-            choices=recovery_gpu_choice(allowed_gpus=(5,),maximum_processes=3)
+            choices=recovery_gpu_choice(allowed_gpus=(allowed_gpu,),maximum_processes=3)
             while not choices:
                 time.sleep(5)
-                choices=recovery_gpu_choice(allowed_gpus=(5,),maximum_processes=3)
+                choices=recovery_gpu_choice(allowed_gpus=(allowed_gpu,),maximum_processes=3)
             admission=choices[0]
         command=stage_command(args,stage)
         with (out/'logs'/(ARM+'-'+stage+'.log')).open('xb') as log:
