@@ -36,8 +36,9 @@ def main():
     if args.cuda_graph_flow and ((args.objective, args.architecture) != ('wide_conditional_flow', 'conditional_iq_flow')
                                  or args.fast_flow_guards):
         raise ValueError('CUDA graph requires conditional flow without fast-flow-guards')
-    if args.fast_flow_guards and (args.objective, args.architecture) != ('wide_conditional_flow', 'conditional_iq_flow'):
-        raise ValueError('Fast flow guards require the validated conditional flow')
+    if args.fast_flow_guards and (args.objective, args.architecture) not in (
+            ('wide_conditional_flow', 'conditional_iq_flow'), ('wide_antithetic_flow', 'antithetic_iq_flow')):
+        raise ValueError('Fast flow guards require conditional or antithetic flow')
     if (args.objective, args.architecture) not in (('wide_temporal_prior_guard', 'dura_multiscale'), ('wide_student_fir_guard', 'direct_student_fir'), ('wide_frequency_regression', 'dura_frequency_regression'), ('wide_reversible_guard', 'dura_reversible'), ('wide_balanced_spectral_guard', 'dura_multiscale'), ('wide_multiview_dura_guard', 'dura_multiscale'), ('wide_counterfactual_guard', 'dura_multiscale'), ('wide_instance_contrast', 'dura_multiscale'), ('wide_multiview_distill', 'direct_spectral_student'), ('wide_conditional_flow', 'conditional_iq_flow'), ('wide_direct_flow', 'direct_iq_flow'), ('wide_conditional_flow_t0', 'conditional_iq_flow'), ('wide_envelope_guard', 'dura_envelope'), ('wide_quartic_guard', 'dura_quartic'), ('wide_antithetic_flow', 'antithetic_iq_flow'), ('wide_phase_equivariant_guard', 'phase_equivariant_dura')):
         raise ValueError('Registered objective and architecture pair required')
     runs = args.root/'runs'

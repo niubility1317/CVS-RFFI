@@ -326,8 +326,9 @@ def main():
         raise ValueError('Quartic recovery requires its matching source objective')
     if args.objective == 'wide_quartic_guard' and not args.smoke and not args.source_context_cache:
         raise ValueError('Quartic recovery training requires fixed source context')
-    if args.fast_flow_guards and args.objective != 'wide_conditional_flow':
-        raise ValueError('The fast flow guards are validated only for wide_conditional_flow')
+    if args.fast_flow_guards and (args.objective, args.architecture) not in (
+            ('wide_conditional_flow', 'conditional_iq_flow'), ('wide_antithetic_flow', 'antithetic_iq_flow')):
+        raise ValueError('The fast flow guards require conditional or antithetic flow')
     if (args.architecture == 'direct_student_fir') != (args.objective == 'wide_student_fir_guard'):
         raise ValueError('FIR refinement requires its registered source objective')
     if args.objective == 'wide_student_fir_guard' and not args.smoke and not args.source_context_cache:
@@ -589,7 +590,8 @@ def main():
                               'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'wide_source_guard', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_phase_equivariant_guard') else args.objective)
             if args.objective == 'wide_antithetic_flow':
                 loss = stochastic_flow_loss(model, x, anchor, direction, variance, y,
-                    epoch_times[start:start+len(x)], epoch_latent[start:start+len(x)])
+                    epoch_times[start:start+len(x)], epoch_latent[start:start+len(x)],
+                    validate_time=not args.fast_flow_guards)
             elif args.objective in ('wide_conditional_flow', 'wide_direct_flow', 'wide_conditional_flow_t0'):
                 times = (epoch_times[start:start+len(x)] if epoch_times is not None else
                          (sample_flow_times(len(x), flow_generator, origin_fraction=.5)
@@ -769,7 +771,8 @@ def main():
             flow_path='noisy_anchor_to_clean_linear', flow_latent_seed=LATENT_SEED,
             flow_train_latent_seed=TRAIN_LATENT_SEED, flow_latent_scale=LATENT_SCALE,
             flow_max_relative_std=MAX_RELATIVE_STD, flow_antithetic_paths=2,
-            flow_inference_gate='dura_noise_gate', source_random_transfer='epoch')
+            flow_inference_gate='dura_noise_gate', source_random_transfer='epoch',
+            fast_flow_guards=args.fast_flow_guards)
     if args.objective == 'wide_direct_flow':
         cache_metadata.update(flow_steps=4, flow_time_seed=2026110713, flow_path='received_to_clean_linear',
                               inference_received_iq_only=True)

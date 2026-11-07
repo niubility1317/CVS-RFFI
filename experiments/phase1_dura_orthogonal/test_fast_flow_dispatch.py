@@ -7,12 +7,13 @@ from experiments.phase1_dura_orthogonal import controller, gpu_capacity_queue
 
 
 @pytest.mark.parametrize('enabled', [False, True])
-def test_queue_passes_opt_in_to_controller(monkeypatch, tmp_path, enabled):
+@pytest.mark.parametrize('family', ['conditional', 'antithetic'])
+def test_queue_passes_opt_in_to_controller(monkeypatch, tmp_path, enabled, family):
     cache = tmp_path/'cache.pt'
     cache.touch()
     argv = ['queue', '--root', str(tmp_path), '--source', 'source', '--ground', 'ground',
             '--commit', 'test', '--cache', str(cache), '--gpu', '0',
-            '--objective', 'wide_conditional_flow', '--architecture', 'conditional_iq_flow']
+            '--objective', f'wide_{family}_flow', '--architecture', f'{family}_iq_flow']
     if enabled:
         argv.append('--fast-flow-guards')
     monkeypatch.setattr(sys, 'argv', argv)
@@ -29,10 +30,11 @@ def test_queue_passes_opt_in_to_controller(monkeypatch, tmp_path, enabled):
 
 
 @pytest.mark.parametrize('enabled', [False, True])
-def test_controller_passes_opt_in_to_smoke_and_training(monkeypatch, tmp_path, enabled):
+@pytest.mark.parametrize('family', ['conditional', 'antithetic'])
+def test_controller_passes_opt_in_to_smoke_and_training(monkeypatch, tmp_path, enabled, family):
     argv = ['controller', '--root', str(tmp_path), '--source', 'source', '--ground', 'ground',
-            '--commit', 'test', '--device', 'cpu', '--objective', 'wide_conditional_flow',
-            '--architecture', 'conditional_iq_flow']
+            '--commit', 'test', '--device', 'cpu', '--objective', f'wide_{family}_flow',
+            '--architecture', f'{family}_iq_flow']
     if enabled:
         argv.append('--fast-flow-guards')
     monkeypatch.setattr(sys, 'argv', argv)

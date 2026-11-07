@@ -7,20 +7,22 @@ import torch
 
 from experiments.phase1_dura_orthogonal import train_source
 from experiments.phase1_dura_orthogonal.conditional_iq_flow import ConditionalIQFlow
+from experiments.phase1_dura_orthogonal.antithetic_iq_flow import AntitheticIQFlow
 
 
-def test_fast_flow_option_preserves_actual_trainer_smoke(monkeypatch, tmp_path):
+@pytest.mark.parametrize('family,model_type', [('conditional', ConditionalIQFlow), ('antithetic', AntitheticIQFlow)])
+def test_fast_flow_option_preserves_actual_trainer_smoke(monkeypatch, tmp_path, family, model_type):
     generator = torch.Generator().manual_seed(42)
     data = tuple(torch.randn(96, 2, 256, generator=generator) for _ in range(3))
     data = (*data, torch.full((96,), .1), torch.randn(96, 2, 256, generator=generator))
     models = []
 
-    class CapturedFlow(ConditionalIQFlow):
+    class CapturedFlow(model_type):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             models.append(self)
 
-    monkeypatch.setattr(train_source, 'ConditionalIQFlow', CapturedFlow)
+    monkeypatch.setattr(train_source, model_type.__name__, CapturedFlow)
     monkeypatch.setattr(train_source, 'training_environments', lambda *a: None)
     monkeypatch.setattr(train_source, 'source_inputs', lambda root: (np.arange(32), None, None, None, None, None))
     monkeypatch.setattr(train_source, 'load_source_training', lambda *a, **k: (None, None, None, np.arange(32)))
@@ -30,8 +32,8 @@ def test_fast_flow_option_preserves_actual_trainer_smoke(monkeypatch, tmp_path):
     for fast in (False, True):
         out = tmp_path / ('fast' if fast else 'original')
         argv = ['train_source', '--root', str(tmp_path), '--out', str(out), '--commit', 'test',
-                '--smoke', '--smoke-fit', '32', '--device', 'cpu', '--architecture', 'conditional_iq_flow',
-                '--objective', 'wide_conditional_flow']
+                '--smoke', '--smoke-fit', '32', '--device', 'cpu', '--architecture', f'{family}_iq_flow',
+                '--objective', f'wide_{family}_flow']
         if fast:
             argv.append('--fast-flow-guards')
         monkeypatch.setattr(sys, 'argv', argv)

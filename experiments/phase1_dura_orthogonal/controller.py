@@ -48,8 +48,9 @@ def main():
     if args.cuda_graph_flow and ((args.objective, args.architecture) != ('wide_conditional_flow', 'conditional_iq_flow')
                                  or not args.deterministic or args.device != 'cuda:0' or args.fast_flow_guards):
         raise ValueError('CUDA graph requires deterministic conditional flow on cuda:0 without fast-flow-guards')
-    if args.fast_flow_guards and (args.objective, args.architecture) != ('wide_conditional_flow', 'conditional_iq_flow'):
-        raise ValueError('Fast flow guards require the validated conditional flow')
+    if args.fast_flow_guards and (args.objective, args.architecture) not in (
+            ('wide_conditional_flow', 'conditional_iq_flow'), ('wide_antithetic_flow', 'antithetic_iq_flow')):
+        raise ValueError('Fast flow guards require conditional or antithetic flow')
     env, cpu_env = training_environments(args.device, os.environ)
     controller = args.root/'runs'/(args.source+'-controller')
     source = args.root/'runs'/args.source
