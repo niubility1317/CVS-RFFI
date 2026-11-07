@@ -1,2 +1,3 @@
 {"at": "2026-11-06T22:10:00+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-06T22:12:02+00:00", "status": "QUEUED", "note": "GPU 3 capacity queue is live; source training has not started", "evidence": ["N607 PID 3741033,CWD,cmdline,queue.log GPU_QUEUE_WAITING 3"], "row_id": null}
+{"at": "2026-11-07T01:08:16+00:00", "status": "RUNNING", "note": "VERIFIED N607 GPU3 source smoke passed (64 source IDs x 3 views); source training PID 3823069 active; no complete epoch yet.", "evidence": ["/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-dura-iqflow-source-s2026092701-r01-controller/source_smoke.log"], "row_id": null}

@@ -393,3 +393,7 @@ N607 GPU 2 对 32768 源 ID × 三视图完成固定四组复岭解析拟合，�
 固定 Tri-SIG-TIME SSL、每景 168000 条并在七景预测固定后独立 truth-last。按 clean、高郊区、中郊区、低郊区、高城区、中城区、低城区，扩大源数据的独立时频父学生准确率为 86.8756%、68.4446%、65.7333%、63.2387%、64.6714%、50.3149%、40.7637%；其额外训练五轮的复数 FIR 修正版为 86.1792%、68.1982%、65.6363%、63.3054%、64.4708%、50.4488%、41.0673%。两版六景均低于同记录 DURA（84.3435%、83.0161%、81.3220%、83.0494%、75.7060%、68.8012%），两种 3% 口径均 0/6 达标。FIR 相对父学生在低郊区、中城区、低城区分别高 0.0667、0.1339、0.3036 个百分点，但 clean 低 0.6964 个百分点，其余三景下降；额外训练成本不同。训练不使用 F/TX/V/目标，F 仅在冻结后评测。测试已反复观察，不是独立盲测或真实卫星结果。[父学生详细分组](../automation_reports/CV-SincNet/20261106-phase1-direct-spectral-wide-distill-ground-test-s2026092701-r01/analysis.md)、[FIR 详细分组](../automation_reports/CV-SincNet/20261107-phase1-direct-student-fir-ground-test-s2026092701-r01/analysis.md)。
 
 FIR 修正版的六个受损场景也均低于同输入 raw 10.5375 至 12.5792 个百分点；按场景的 24 个 day 边际组均低于 raw，36 个 TX 边际组中有 10 组高于 raw。该描述是冻结预测后的分组诊断，不用于目标反馈选模。
+
+## DURA 条件 IQ 流训练启动
+
+固定 DURA 与源 IQ，在 DURA anchor 到 clean 的路径上训练条件流速度场；推理按固定四步积分。N607 GPU 3 容量队列已接续，64 个源 ID × 三视图的真实 checkpoint smoke 通过，正式源训练 PID 3823069 正在运行，当前尚无完整训练 epoch。固定五轮、七景和独立 truth-last 由原控制器接续；无正式识别成绩，不与历史 F-guided 流方法混同。[实验登记](../automation_reports/CV-SincNet/20261107-phase1-dura-iqflow-source-s2026092701-r01/experiment.json)。
