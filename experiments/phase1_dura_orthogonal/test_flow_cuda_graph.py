@@ -6,6 +6,8 @@ import torch
 
 from experiments.phase1_dura_orthogonal.conditional_iq_flow import ConditionalIQFlow, flow_matching_loss
 from experiments.phase1_dura_orthogonal.flow_cuda_graph import FlowGraphStep
+from experiments.phase1_dura_orthogonal.benchmark_flow_cuda_graph import graph_train
+from experiments.phase1_dura_orthogonal.benchmark_flow_sync import exact, train
 
 
 @pytest.mark.skipif(not torch.cuda.is_available(), reason='CUDA graph requires GPU')
@@ -39,3 +41,16 @@ def test_graph_replays_exact_training_and_blocks_nonfinite():
     with pytest.raises(FloatingPointError):
         runner.step(broken)
     assert all(torch.equal(a, b) for a, b in zip(before, graph.parameters()))
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(), reason='CUDA graph requires GPU')
+def test_graph_epoch_prefetch_matches_eager_training():
+    torch.backends.cuda.matmul.allow_tf32 = False
+    torch.backends.cudnn.allow_tf32 = False
+    torch.use_deterministic_algorithms(True)
+    generator = torch.Generator().manual_seed(51)
+    iq = tuple(torch.randn((64, 2, 256), generator=generator).cuda() for _ in range(3))
+    fields = (*iq, torch.full((64,), .1, device='cuda'), torch.randn((64, 2, 256), generator=generator).cuda())
+    eager = train(fields, 'conditional', True, 1)
+    graph = graph_train(fields, 1, epoch_times=True)
+    assert exact(eager, graph)

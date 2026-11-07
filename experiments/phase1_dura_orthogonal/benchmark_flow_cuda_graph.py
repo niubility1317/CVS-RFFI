@@ -11,12 +11,12 @@ import torch
 
 from experiments.phase1_dura_orthogonal.benchmark_flow_sync import exact, train
 from experiments.phase1_dura_orthogonal.benchmark_masked_training_full import load_inputs
-from experiments.phase1_dura_orthogonal.conditional_iq_flow import ConditionalIQFlow
+from experiments.phase1_dura_orthogonal.conditional_iq_flow import ConditionalIQFlow, sample_epoch_flow_times
 from experiments.phase1_dura_orthogonal.flow_cuda_graph import FlowGraphStep
 from experiments.phase1_dura_orthogonal.train_source import extract_context
 
 
-def graph_train(fields, epochs):
+def graph_train(fields, epochs, *, epoch_times=False):
     torch.manual_seed(2026110612)
     model = ConditionalIQFlow(width=32, steps=4).cuda()
     optimizer = torch.optim.AdamW(model.parameters(), lr=.0003, weight_decay=.001)
@@ -30,10 +30,13 @@ def graph_train(fields, epochs):
     step = 0
     for epoch in range(epochs):
         order = torch.randperm(len(fields[0]), generator=order_gen).cuda()
+        all_times = (sample_epoch_flow_times(len(order), time_gen, origin_fraction=0.).cuda()
+                     if epoch_times else None)
         for start in range(0, len(order), 32):
             index = order[start:start+32]
             batch = [v[index] for v in fields]
-            times = torch.rand((len(index),), generator=time_gen).cuda()
+            times = (all_times[start:start+len(index)] if all_times is not None
+                     else torch.rand((len(index),), generator=time_gen).cuda())
             history[step].copy_(runner.step([*batch, times]))
             step += 1
         print('FLOW_GRAPH_EPOCH', epoch+1, flush=True)
@@ -52,6 +55,7 @@ def main():
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--source-count', type=int, choices=(512, 32768), default=512)
     parser.add_argument('--pairs', type=int, choices=(1, 2), default=2)
+    parser.add_argument('--epoch-times', action='store_true')
     args = parser.parse_args()
     if args.out.exists() or not torch.cuda.is_available():
         raise ValueError('Unique output and CUDA GPU required')
@@ -73,11 +77,11 @@ def main():
     del dura, data
     print('FLOW_GRAPH_REAL_DURA_SMOKE_PASS', flush=True)
     for graph in (False, True):
-        warm = graph_train(small, 1) if graph else train(small, 'conditional', True, 1)
+        warm = graph_train(small, 1, epoch_times=args.epoch_times) if graph else train(small, 'conditional', True, 1)
         del warm
     pairs = []
     for order in ((False, True), (True, False))[:args.pairs]:
-        outcomes = {graph: graph_train(selected, 5) if graph else train(selected, 'conditional', True, 5) for graph in order}
+        outcomes = {graph: graph_train(selected, 5, epoch_times=args.epoch_times) if graph else train(selected, 'conditional', True, 5) for graph in order}
         eager, captured = outcomes[False], outcomes[True]
         match = exact(eager, captured)
         pairs.append(dict(eager_seconds=eager[5], graph_seconds=captured[5], steps=len(eager[2]),
@@ -90,6 +94,7 @@ def main():
     result = dict(status='FLOW_GRAPH_BENCHMARK_COMPLETE' if all(p['losses_parameters_optimizer_rng_exact'] for p in pairs)
                   else 'FLOW_GRAPH_PARITY_FAILED', commit=args.commit, source_ids=args.source_count,
                   views_per_id=3, epochs=5, batch=32, pairs=pairs, graph_capture_included_in_timing=True,
+                  graph_time_transfer='epoch' if args.epoch_times else 'batch',
                   gpu=torch.cuda.get_device_name(), TX_labels_read=0, F_weights_read=0,
                   F_outputs_read=0, V_reads=0, target_reads=0, weights_saved=False)
     (args.out/'result.json').write_text(json.dumps(result, indent=2, allow_nan=False)+'\n', encoding='utf8')
