@@ -216,3 +216,24 @@ Main六景为80.140476/77.807738/75.495238/78.213690/69.447024/62.401190%，0/6�
 低档城区 DURA 判对 115,586 条。39 组配对中最大的额外修复量为 16,672 条，仍有 35,742 条两条路径均误判。即使保住全部 DURA 正确判决，最高也只有 78.725%，距 140,345 条门槛仍少 8,087 条。中档城区的现有固定配对也都达不到门槛。因此，强退化场景除了减少损伤，还需要产生能修复更多共同错误的新 IQ 输出。该数值仅约束已发布的固定两路判决，任意新恢复器和单次观测的信息上界仍待测定。
 
 141 个候选和场景组合只复算公开的 truth-last 汇总，原 17 个候选另逐个核对了两个总体的计数恒等式。无新增目标真值、目标预测或训练。 [全部配对计数](PAMF_RESTORATION_PAIRED_BUDGET_20261107.csv)
+
+## 2026-11-07 源端机制与下一版验证
+
+以下结果全部使用原 480 条源 V、原冻结 Tri-SIG-TIME SSL 及完整预登记矩阵。先验统计只从原 L_s/U_s 拟合，源 V 的真实 TX 在全部预测固定后独立评分。每条源记录的重复干预共享物理身份，按配对计数报告。此处的源 raw clean 为 474/480，Main raw clean 为 145385/168000，两者属于不同总体。
+
+| 源端干预 | 低档城区真实 TX 正确数 | 对下一步的作用 |
+| --- | --- | --- |
+| 仅改变模拟接收机参数或其 RX×day 分配 | 原验证 401，训练参数 399，验证参数轮换 400 | 六景最大净变化 2/480，量化该固定模拟参数范围的敏感性 |
+| 同条 clean 分段替换 | 原输出 401，只替换包首 431，只替换后段 463，两段一起 473，raw clean 474 | 为独立整包网络分配包首与后段处理能力 |
+| 等量先验是否包含当前源 RX | 盲估同 RX 412、其他 RX 341；已知信道和噪声时为 434、379 | 在固定信道以外检验先验失配，引入训练期源先验切换 |
+| 单独替换均值或协方差 | 盲估同 RX 412，换均值 408，换协方差 364；已知条件为 434、425、394 | 检验从当前观测调整先验置信度的网络 |
+
+模拟接收机干预固定传播、几何和底层噪声抽样。分段替换直接借用同条 clean 的真实误差。RX 先验干预按已知源 RX 选择统计，两个先验各用 12600 条训练记录且 L/U 配额相同。各项干预的额外信息和恢复函数不同，计数增益不能逐项累加。先验分量的低档城区交互为盲估 −19、已知条件 −6 条，完整因素表保留了这项交互。
+
+[模拟接收机](../automation_reports/CV-SincNet/20261107-diagnostic-Restore-receiver-session-sourceV-s2026092701-r01/analysis.md) · [分段 IQ](../automation_reports/CV-SincNet/20261107-diagnostic-Restore-preamble-edges-sourceV-s2026092701-r01/analysis.md) · [接收机先验](../automation_reports/CV-SincNet/20261107-diagnostic-Restore-receiver-prior-sourceV-s2026092701-r02/analysis.md) · [均值与协方差](../automation_reports/CV-SincNet/20261107-diagnostic-Restore-prior-factor-sourceV-s2026092701-r01/analysis.md)
+
+三条可执行方案已登记并发布，当前等待 GPU。整包时变复数逆滤波器直接从 received 预测三个区域的复数主路、共轭路和 IQ 残差。先验失配训练版在 30 轮内交替使用全源及排除当前源 RX 的先验，训练条件均值补偿。观测条件化协方差版从当前 received、先验和观测创新量预测非负逐点方差增量，梯度经过完整后验，并用实际带噪恢复 IQ、STFT 和批准的源连续 F0 特征学习。后者先检验 C_source 加对角非负增量这一具体表达。
+
+[整包网络](../automation_reports/CV-SincNet/20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01/report.md) · [失配曝光](../automation_reports/CV-SincNet/20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01/report.md) · [条件方差网络](../automation_reports/CV-SincNet/20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r01/report.md)
+
+三版均按从零单阶段 30 轮登记，沿原 L_s/U_s 范围，固定最终轮次后自动完成 Main 两总体七景与独立评分。性能验收仍由每景至少 140345 条正确及两个 clean 总体分别保持证明。源端诊断支持方法选择，实际性能以各版完整 Main 配对结果为准。
