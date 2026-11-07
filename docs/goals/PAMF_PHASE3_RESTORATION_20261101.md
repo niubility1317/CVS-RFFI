@@ -624,3 +624,7 @@ VERIFIED / QUEUED。实际代码 8cf3669c4a5d98f6c4930117952203afd56f2f6e，控�
 ## 2026-11-07 重复段与整包 IQ 的源端识别归因
 
 固定源 V480 的低档城区，原 BF 判对 401 条。只替换 80–159 采样点内的周期一致误差后判对 418 条，只替换窗口外误差后判对 473 条，raw clean 判对 474 条。窗口外两段合计占 IQ 误差能量的 84.84%。 下一步区分首段和后段，再决定独立整包架构的容量分配。 [七景反事实与真实 TX](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-preamble-component-sourceV-s2026092701-r01/analysis.md)
+
+## 2026-11-07 前后段源端识别归因
+
+固定源 V480 的低档城区，原 BF 判对 401 条。只替换包首 0–79 后判对 431 条，只替换后段 160–255 后判对 463 条，两段一起替换后判对 473 条，raw clean 判对 474 条。 低档郊区仅包首 474、仅后段 470，支持整包覆盖和独立分段能力。 [原冻结 F0 的四分量全组合](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-preamble-edges-sourceV-s2026092701-r01/analysis.md)
