@@ -1,0 +1,36 @@
+{
+  "status": "VERIFIED_MAIN_CPU_PREDICTION_RUNNING",
+  "actual_commit": "831cef3e9947f8f85b70902cb95c2d67feef5ad9",
+  "controller_PID": 3944054,
+  "predictor_PID": 3944144,
+  "observed_at_unix": 1794018188.4755652,
+  "runtime_PID_CWD_command_parent_CPU_scope_verified": true,
+  "remote_compile": true,
+  "archive_SHA_match": true,
+  "actual_source_smoke": {
+    "status": "PASS",
+    "actual_Ls": 2,
+    "actual_original_BF": true,
+    "actual_original_F0": true,
+    "equals_source_full_covariance": true,
+    "TX_labels_read": 0,
+    "target_inputs": 0,
+    "new_G_training_updates": 0
+  },
+  "source_throughput": {
+    "records": 128,
+    "batch": 32,
+    "CPU_threads": 2,
+    "seconds": 6.6668202329892665,
+    "records_per_second": 19.199557739178367,
+    "projected_Main_compute_seconds": 61251.410890588886,
+    "target_inputs": 0,
+    "TX_labels_read": 0,
+    "excludes_disk_IO_and_score": true
+  },
+  "observed_first_Main_batch": true,
+  "completed_views": 0,
+  "total_views": 14,
+  "score_started": false,
+  "new_training_updates": 0
+}

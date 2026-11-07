@@ -596,3 +596,7 @@ VERIFIED / QUEUED。实际代码 3fc9201628e7602ea58c6a5fb13d6ec934513e99，控�
 ## 2026-11-07 独立主路相位监督模型
 
 VERIFIED / QUEUED。实际代码 36b13adad5b091bf1f8f4aa7934c403e3b50d8eb，控制器 PID 3933764 在线，实际工作目录、命令、CUDA 空环境和日志已核对。发布包 SHA 一致，远端编译通过。等待接收调制版最后一项 GPU 阶段终止，再按 GPU4/6 原准入条件启动。真实源检查、训练和 Main 均待执行。 1241898 个参数，固定相干 FIR 相位坐标，显式主路角度、独立局部轨迹。 原 L_s/U_s 从零单阶段 30 轮、7410 步，使用模拟圆周相位监督。冻结后自动用原 Tri-SIG-TIME SSL 做 Main 两总体七景并独立评分。 [实验登记和排队核实](../../automation_reports/CV-SincNet/20261107-phase1-Restore-PhaseSupervisedCovariance-E30-s2026092701-r01/report.md)
+
+## 2026-11-07 主路全协方差版开始正式 CPU 推理
+
+VERIFIED / RUNNING。CPU 预测进程 3944144 已通过真实 L_s 两条检查，并已处理原 Main 首批。128 条源样本实测 19.20 条/秒，折算全部 117.6 万条模型调用约 17.01 小时。这是源端吞吐外推，实际进度由预测日志和各景产物确认。独立评分在两类总体全部七景固定后才开始。 复用原 BF E30 权重和原 Tri-SIG-TIME SSL，保持原 Main 双总体七景。其余 GPU 任务按既定计划。 [实验登记和启动证据](../../automation_reports/CV-SincNet/20261107-evaluation-Restore-CoherentMainPhase-CPU-main-s2026092701-r01/report.md)
