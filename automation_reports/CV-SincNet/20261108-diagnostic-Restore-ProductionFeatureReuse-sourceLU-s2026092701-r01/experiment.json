@@ -1,0 +1,154 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-diagnostic-Restore-ProductionFeatureReuse-sourceLU-s2026092701-r01",
+  "group_id": "source-production-G-F0-feature-reuse-exactness",
+  "display_name": "生产恢复器与冻结识别器特征复用：源样本梯度检查",
+  "description": "原JointPrior固定E30权重载入相同FeatureResponse G结构；合法源L/U各一条、四方向，CPU比较原训练图和共享F0特征图的损失、真实G梯度和一次局部AdamW。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-LU-only",
+    "frozen-TriSIGTIME-SSL",
+    "CPU-only",
+    "efficiency-diagnostic"
+  ],
+  "comparison_group_id": "source-production-G-feature-reuse-exactness",
+  "parent_run_ids": [
+    "20261107-phase1-Restore-JointPrior-E30-s2026092701-r01",
+    "20261108-phase1-Restore-FeatureResponse-E30-s2026092701-r01",
+    "20261108-diagnostic-Restore-FeatureReuse-sourceLU-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户授权源L_s/U_s和冻结F0性能/效率诊断；无TX/V/OE/target。只在独立进程的G副本执行比较性一步AdamW，不覆盖已存或在训模型。",
+  "code": {
+    "commit": "86f0de0a9a26f535a55a6654666bd02008644305",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI CPU2 nice10, CUDA empty; original F0 and source-only trained G.",
+    "cwd": "releases/20261108-diagnostic-Restore-ProductionFeatureReuse-sourceLU-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original R07 draw1 source training cache, fixed indices0 and6301: one L_s, one U_s.",
+    "representation": "Original source clean/received IQ and saved simulator kernel, coefficients and variance; four existing deterministic 1% directions.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "Fixed source positions0 and6301; roles checked before reading IQ; indices modulo4 are 0 and1.",
+    "label_map_ref": "No TX truth, logits or classifier head calls; original F0 continuous features only.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "TX labels not read or used.",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Existing VALIDATED_ONCE original R07 source cache / capsule / split, fixed original source-only Tri-SIG-TIME SSL F0.",
+    "support_query_ref": "No target/query, source V/OE/novel inputs or fitted state.",
+    "leo_config_ref": "Existing R07 draw1, source recorded simulator Action and noise; no new channel draws.",
+    "actual_training_labels": "No TX labels; local real-G copy AdamW comparison only.",
+    "augmentation": "Existing deterministic source perturbation directions at1% RMS; odd source epoch1/3 covers all four.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "source-only-production-G-F0-feature-reuse-CPU-diagnostic",
+    "query_use": "Fixed source L_s/U_s two IQ and source simulator traces; no TX/V/OE/target or target-derived checkpoint.",
+    "external_method_exception": null,
+    "claim_scope": "Two-record CPU comparison on same-architecture original fixed JointPrior E30 weights; no GPU parity, full30 trajectory, speed or Main score claim."
+  },
+  "checkpoint": {
+    "initialization": "Original JointPrior E30/7410 from scratch source-only; state strict-loaded into matching FeatureResponse G architecture; fresh local AdamW only.",
+    "sources": [
+      "FROZEN_G 20261107-phase1-Restore-JointPrior-E30-s2026092701-r01/4bba9df3bb2c909dc333dce0cf0102cb641b1682 fixed final30 source-only; never select by target outcome.",
+      "FROZEN_F0 original Tri-SIG-TIME SSL 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d E50/11100",
+      "SOURCE_INPUTS original R07 source L_s/U_s draw1 and recorded simulator Action/noise."
+    ],
+    "contract_check_ref": "Original fixed final30 source-only training: zero TX/V/OE/target training and G parent loads, original source F0 and same R07 L/U contract; strict state names/shapes and provenance verified.",
+    "provenance_verdict": "Fixed source-only E30 architecture-compatible parent, not selected from target results; source raw IQ and frozen original F0 only.",
+    "selection_rule": "Pre-fixed original final30, not technical-recovery or target-selected checkpoint; source records0/6301 and odd epochs1/3 fixed before launch."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-production-feature-reuse-check",
+    "gpu_policy": "CPU2 nice10, CUDA empty; no GPU worker.",
+    "remote_run_root": "runs/20261108-diagnostic-Restore-ProductionFeatureReuse-sourceLU-s2026092701-r01",
+    "remote_log_root": "logs/20261108-diagnostic-Restore-ProductionFeatureReuse-sourceLU-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261108-diagnostic-Restore-ProductionFeatureReuse-sourceLU-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.feature_response_production_reuse_probe --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261108-diagnostic-Restore-ProductionFeatureReuse-sourceLU-s2026092701-r01-release/inputs.json --commit 86f0de0a9a26f535a55a6654666bd02008644305",
+    "stop_rule": "Wrong source/F0/parent identity or source role, any nonfinite value/posterior residual>1e-8, or output/loss/real-G gradients/AdamW differ beyond rtol1e-5 atol1e-6: preserve log and stop, no automatic retry."
+  },
+  "expected_artifacts": [
+    "logs/20261108-diagnostic-Restore-ProductionFeatureReuse-sourceLU-s2026092701-r01/submitted.json",
+    "logs/20261108-diagnostic-Restore-ProductionFeatureReuse-sourceLU-s2026092701-r01/stdout.log",
+    "runs/20261108-diagnostic-Restore-ProductionFeatureReuse-sourceLU-s2026092701-r01/results.json",
+    "runs/20261108-diagnostic-Restore-ProductionFeatureReuse-sourceLU-s2026092701-r01/complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Actual original-F0 reference feature, full physical+detail+IQ/F0 response loss, restored/altered IQ and production G parameter gradients, local AdamW step maximum differences.",
+      "Verify F0 state unchanged, source-only G provenance and no source TX/V/OE/target; fixed global prior, CPU only."
+    ],
+    "dimensions": [
+      "one fixed source L_s + one source U_s",
+      "two odd epochs covering four deterministic source perturbation directions",
+      "original FeatureResponse readout vs equivalent cached/shared readout"
+    ],
+    "prediction_ref": "No target or truth predictions. Fixed source records, F0 continuous features and source simulator trace.",
+    "scorer_ref": "Numerical tolerance assertions inside independent CPU process; no truth scoring."
+  },
+  "rows": [
+    {
+      "row_id": "source_LU_production_G_feature_reuse",
+      "method": "actual_G_F0_cache_and_shared_graph_equivalence",
+      "purpose": "Compare complete FeatureResponse source loss, actual production-G gradients and local AdamW step under exact same frozen source F0 and fixed original G state.",
+      "config_ref": "experiments.pamf_phase3_restoration.feature_response_production_reuse_probe.py",
+      "resolved_config_ref": "runs/20261108-diagnostic-Restore-ProductionFeatureReuse-sourceLU-s2026092701-r01/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed source-only JointPrior E30 seed2026092701; source indices0 and6301 and odd source epochs1/3; no target-based selection.",
+      "k": null,
+      "scenario": "Original R07 draw1 source2 IQ/simulator traces; fixed global prior and four perturbation directions.",
+      "optimizer": "Fresh local AdamW lr.001 weight_decay1e-4, one comparison step for each path and epoch; no saved or active G training update.",
+      "lr": 0.001,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "CPU2; 2 cases, 2 independent original/shared real-G copies per case, total4 temporary local AdamW steps, no production state write.",
+      "output_root": "runs/20261108-diagnostic-Restore-ProductionFeatureReuse-sourceLU-s2026092701-r01",
+      "log_path": "logs/20261108-diagnostic-Restore-ProductionFeatureReuse-sourceLU-s2026092701-r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.feature_response_production_reuse_probe --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261108-diagnostic-Restore-ProductionFeatureReuse-sourceLU-s2026092701-r01-release/inputs.json --commit 86f0de0a9a26f535a55a6654666bd02008644305",
+      "expected_artifacts": [
+        "logs/20261108-diagnostic-Restore-ProductionFeatureReuse-sourceLU-s2026092701-r01/submitted.json",
+        "logs/20261108-diagnostic-Restore-ProductionFeatureReuse-sourceLU-s2026092701-r01/stdout.log",
+        "runs/20261108-diagnostic-Restore-ProductionFeatureReuse-sourceLU-s2026092701-r01/results.json",
+        "runs/20261108-diagnostic-Restore-ProductionFeatureReuse-sourceLU-s2026092701-r01/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "CPU only and fixed global prior: does not establish numerical parity on GPU, other-RX prior, full training trajectory, speed or target accuracy.",
+    "Fixed source-only final E30 chosen from architectural parent, not technical-recovery E03 and not target outcome.",
+    "The production model copy is updated only in memory for one-step equivalence; original checkpoint and ongoing training remain unchanged."
+  ],
+  "registered_at": "2026-11-08T01:59:33+00:00"
+}
