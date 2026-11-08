@@ -817,3 +817,7 @@ VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30�
 ## 2026-11-07 TF_ProjectedPriorDetail 完整Main结果
 
 VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30核实；原Main42单元全部预测后独立truth-last，4阶段exit0且进程均已退出。1302组/868raw配对及DURA/clean配对复算PASS，最大差1.2e-14，baseline判决差0。六景83.817262/82.515476/80.863690/82.642857/75.964286/68.738095%，1/6；clean两个总体净+175/+29，联合验收False。原科学代码/模型/数据/预算保持，默认DURA不变，其他已登记候选继续。 [完整分析](../../automation_reports/CV-SincNet/20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01/analysis.md)
+
+## 2026-11-08 TF_ResponseDense 完整Main结果
+
+VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30核实；原Main42单元全部预测后独立truth-last，4阶段exit0且进程均已退出。1302组/868raw配对及DURA/clean配对复算PASS，最大差1.29e-14，baseline判决差0。六景83.902976/82.429762/80.725000/82.444048/74.413095/65.862500%，1/6；clean两个总体净+149/-5，联合验收False。原科学代码/模型/数据/预算保持，默认DURA不变，其他已登记候选继续。 [完整分析](../../automation_reports/CV-SincNet/20261108-phase1-Restore-ResponseDense-E30-s2026092701-r01/analysis.md)
