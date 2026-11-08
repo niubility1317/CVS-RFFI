@@ -33,3 +33,7 @@
 基于同一原 source-only JointPrior fixed E30 与冻结地面 Tri-SIG-TIME SSL F0，固定原 source L_s/U_s 索引 0/6301、odd 轮次 1/3、真实模拟器 trace 和全源先验。原恢复 IQ 的两次 F0 前向及原先后顺序均保留，只用预先计算的 no-grad 源扰动特征替换在线源参考。逐项记录原 rtol 1e-5 / atol 1e-6 的损失、两路 IQ 梯度、真实 G 参数梯度和新建 AdamW 单步结果，并报告最大绝对差；不修改失败标准。
 
 CPU2 nice10/CUDA empty，代码 f1382427f84a1e61f553518fa46f8b0405b2900c；其他命令、路径、输出见 experiment.json。数据/模型来源或源角色错误、非有限值或后验残差 >1e-8 则停止；原容差有差异要如实报告。4 项本地针对性检查和一次独立 P0/P1 审查 PASS，远端首步加载真实源 F0/固定 G。完成只覆盖源两样本、CPU、全源先验及新建优化器，不声称 GPU、完整训练、速度或正式识别质量。
+
+## 保守缓存 CPU 对照完成
+
+VERIFIED / MEASURED：固定真实 G、F0 和源 L_s/U_s 两条，odd 轮 1/3 的四方向检查中，缓存源参考且保留两次恢复 F0 前向的特征、损失、输入梯度、139 个 G 参数梯度以及一次新建 AdamW 更新最大绝对差均为 0。仅覆盖 CPU、小样本、全源先验和无历史优化器状态；GPU、完整训练、实测加速及正式质量尚未验证。详见 [analysis.md](analysis.md)。
