@@ -1,0 +1,173 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-dura-direct-cross-expert-ground-test-s2026092701-r01",
+  "group_id": "phase1-dura-direct-cross-expert-ground",
+  "display_name": "时频跨恢复器七景测试",
+  "description": "冻结 DURA 与独立直接恢复器，使用源域配对 IQ 训练 3576004 参数时频联合残差网络，自动七景测试。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "dura",
+    "F-free-training",
+    "large-context",
+    "deterministic-gpu",
+    "normalized-decoder"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261108-phase1-dura-direct-cross-expert-source-s2026092701-r01",
+    "20261108-phase1-direct-wide-physics-source-s2026092701-r01",
+    "20261108-phase1-dura-direct-mix-source-proxy-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests continued novel and DURA-combinable Phase1 restoration research, F-free/TX-label-free source training, automatic seven-view test and truth-last score.",
+  "code": {
+    "commit": "f89c6c645d3ff0423be20b584e8bfa7c85dc3531",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 physical GPU7 FP32 TF32 off deterministic source training; CPU ground two threads",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-dura-direct-cross-expert-source-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "Frozen DURA/direct and time-frequency source-trained refiner with frozen Tri-SIG-TIME SSL",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "168000 fixed Phase1 Main split ground physical records in each of seven views",
+    "label_map_ref": "Six Phase1 transmitter classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "No target labels, clean pair, or target fitting during inference; labels only after all seven predictions",
+    "roles": {
+      "L_s": "source IQ training only, TX hidden",
+      "U_s": "source IQ training only, TX hidden",
+      "V": "not used for G training",
+      "test": "fixed Phase1 ground IQ, truth last"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Seven fixed predictions precede independent truth-last scoring",
+    "support_query_ref": "Phase1 original fixed cross_rx126000 and cross_both42000; no support",
+    "leo_config_ref": "R07 2.462 GHz source views and Phase1 six fixed practical test views",
+    "target_panel": "168000 Phase1 physical records x seven views",
+    "actual_training_labels": "Recovery training uses paired source IQ only; no F outputs, F weights, TX labels, V or target. Frozen Tri-SIG-TIME SSL only after recovery checkpoint frozen.",
+    "augmentation": "Fixed pre-existing Phase1 ground test simulated seven views"
+  },
+  "permissions": {
+    "regime": "Phase1 frozen ground evaluation",
+    "query_use": "Fixed per-record Phase1 IQ only after source training; no target fit, truth only after seven-view predictions",
+    "external_method_exception": null,
+    "claim_scope": "Single-seed repeatedly observed Phase1 simulated ground test; not independent blind or real satellite"
+  },
+  "checkpoint": {
+    "initialization": "Frozen DURA v1 and F-free direct final20; fresh 3576004-parameter time-frequency residual refiner initialized to half mix",
+    "sources": [
+      "20261108-phase1-dura-direct-cross-expert-source-s2026092701-r01",
+      "20261108-phase1-direct-wide-physics-source-s2026092701-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+    ],
+    "contract_check_ref": "Same legal Phase1 source role/physical split; source direct parent F-free and final20; 17632 gate fit IDs disjoint from parent 32768 and 672 pilot",
+    "provenance_verdict": "Frozen source-only direct checkpoint with exact verified source fit; gate learns from legal parent-unseen L_s/U_s IQ",
+    "selection_rule": "Fixed final epoch 20 regardless of source or target result"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "GPU7: >=4096 MiB free and fewer than 3 total compute apps; at most one this-task worker; preserve other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-direct-cross-expert-ground-test-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-direct-cross-expert-source-s2026092701-r01-queue.log",
+    "local_artifact_root": "E:\\type10-7\\github_publish\\CVS-RFFI-repo\\automation_reports\\CV-SincNet\\20261108-phase1-dura-direct-cross-expert-ground-test-s2026092701-r01",
+    "launch_command": "nice -n 10 env PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-dura-direct-cross-expert-source-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.cross_expert_queue --root /home/szu2070436088/2510044040/CV-SincNet --source 20261108-phase1-dura-direct-cross-expert-source-s2026092701-r01 --ground 20261108-phase1-dura-direct-cross-expert-ground-test-s2026092701-r01 --gpu 7 --commit f89c6c645d3ff0423be20b584e8bfa7c85dc3531",
+    "stop_rule": "Stop exact owner only for source contract/role mismatch, nonfinite computation, incorrect checkpoint, target leakage or unrecoverable technical failure. Preserve all artifacts."
+  },
+  "expected_artifacts": [
+    "flow/test_prediction/complete.json",
+    "flow/test_summary.json",
+    "flow/paired_dura.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "ground accuracy",
+      "raw clean gap in pp and relative percent",
+      "macro F1",
+      "DURA paired repairs and damages",
+      "TX/RX/day groups"
+    ],
+    "dimensions": [
+      "168000 physical records",
+      "clean and six practical views"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-direct-cross-expert-ground-test-s2026092701-r01/flow/test_prediction",
+    "scorer_ref": "independent CPU subprocess ground score after seven complete predictions"
+  },
+  "rows": [
+    {
+      "row_id": "dura-direct-cross-expert-final20",
+      "method": "Joint time-frequency cross-expert source refiner",
+      "purpose": "Train unconstrained IQ corrections from source signals and two frozen experts",
+      "config_ref": "experiments/phase1_dura_orthogonal/cross_expert_ground.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110830,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Refiner model 2026110830; source fit 2026110611 inherited parent; order 2026110831; fixed evaluation 2026092701.",
+      "k": null,
+      "scenario": "clean and six practical Phase1 Main split views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "fixed final20 source refiner; 168000 Phase1 records x seven views; predictions before truth",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-direct-cross-expert-ground-test-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-direct-cross-expert-source-s2026092701-r01-queue.log",
+      "command": "nice -n 10 env PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-dura-direct-cross-expert-source-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.cross_expert_queue --root /home/szu2070436088/2510044040/CV-SincNet --source 20261108-phase1-dura-direct-cross-expert-source-s2026092701-r01 --ground 20261108-phase1-dura-direct-cross-expert-ground-test-s2026092701-r01 --gpu 7 --commit f89c6c645d3ff0423be20b584e8bfa7c85dc3531",
+      "expected_artifacts": [
+        "flow/test_prediction/complete.json",
+        "flow/test_summary.json",
+        "flow/paired_dura.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source L_s/U_s IQ only: no TX labels, F weights/outputs, V or target used for G training.",
+    "Time/frequency residual branches start at zero so initial output is fixed half mixture; learned IQ correction is unrestricted, not a scalar blend.",
+    "17632 direct-parent-unseen source IDs, fixed source epochs 21/22/23, normalized waveform MSE + 0.02 DURA change penalty; AdamW lr .0003, batch128, 20 epochs fixed final.",
+    "Five focused tests and independent P0/P1 review passed; first real-source no-query smoke checks both branches and gradients; all seven Phase1 predictions precede independent scoring.",
+    "Motivation includes previously explored source pilot; target history has been observed, resulting test is not a new independent blind study."
+  ],
+  "registered_at": "2026-11-08T01:10:45+00:00"
+}
