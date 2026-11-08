@@ -49,3 +49,9 @@ VERIFIED：远端控制器 PID 999379 已按登记命令启动，CUDA 为空，G
 命令：在远端 capacity3-dispatch 发布目录执行 Python 模块 experiments.pamf_phase3_restoration.mixture_capacity_dispatch，传入原根目录、原科学 release、原缓存及上述接管 commit；CUDA_VISIBLE_DEVICES 为空，训练／预测子进程按 GPU UUID 指定。独立提交和逐阶段状态、训练日志、七视图预测、truth-last 评分及分析为预期产物。接管前状态为待执行，不能视为训练已经启动。
 
 实际接管命令：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.mixture_capacity_dispatch --root /home/szu2070436088/2510044040/CV-SincNet --legacy-release /home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-Restore-MixtureFusion-E30-s2026092701-r01-release --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --commit c498f710e6040b36121760e89ffdbf8df01a3603`
+
+## 安全接管与真实源检查（2026-11-08）
+
+VERIFIED：核实旧 owner PID 999379 在暂停前未提交训练或产生训练目录，暂停后确认无子进程，再结束该 owner；新 owner PID 1035527 使用接管 commit c498f710e6040b36121760e89ffdbf8df01a3603，训练子进程 PID 1035553 使用原科学 commit fa22a4663b3fe6c5b7ff8b756ea151faab19e2a3 及原 release。GPU 3 入场时其他进程 2 条、空闲显存 18501 MiB；实际确认本进程在该卡，总数 3。没有对其他 owner 发信号。
+
+原 F0／两条源 IQ／完整后验首步检查 PASS：F0 冻结、物理与细节梯度隔离、严格 E0 重载，细节输出头梯度绝对值之和 42.57695；零 TX/V/OE/目标读取及零优化器更新。检查通过后训练继续；尚无完整训练或正式测试结果。原模型配置中的资源文字描述旧等待条件，实际接管策略以本记录及远端 resource_controller 为准；科学配方、预算和输出根均未改变。

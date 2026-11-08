@@ -98,7 +98,7 @@
   "execution": {
     "host": "N607",
     "launch_owner": "codex/root/mixture-fusion-scratch30-GPU3",
-    "gpu_policy": "GPU3 only; admit when at most one existing compute PID and >=12288 MiB free, then monitor total<=3 every 2s; only own child may be stopped.",
+    "gpu_policy": "GPU3 only; admit at most two existing GPU compute PIDs and free>=12288MiB, total cap3. Monitor every 2s; stop only own child on cap violation or three unverified counts. Unstarted original owner retired; original science release/commit unchanged.",
     "remote_run_root": "runs/20261108-phase1-Restore-MixtureFusion-E30-s2026092701-r01",
     "remote_log_root": "runs/20261108-phase1-Restore-MixtureFusion-E30-s2026092701-r01/logs",
     "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261108-phase1-Restore-MixtureFusion-E30-s2026092701-r01",
@@ -198,7 +198,8 @@
     "Four hypotheses and their source-evidence weights enter an observation-only gate; a multiscale nonlinear IQ residual has no magnitude cap. Gate and residual start zero so initial IQ equals the source mixture posterior.",
     "Independent P0/P1 review identified one NumPy bridge issue; fixed via float64 frombuffer and targeted re-review PASS. Six new and five resume tests PASS locally.",
     "Actual source2 original F0, gate/refiner gradients, source-action gradient isolation and strict E0 reload are the first remote training step, pending GPU admission.",
-    "Fixed final30, complete both population seven-view predictions before truth-last; no target-score driven tuning or routing."
+    "Fixed final30, complete both population seven-view predictions before truth-last; no target-score driven tuning or routing.",
+    "Resource handover only: dispatch commit c498f710e6040b36121760e89ffdbf8df01a3603, original scientific commit fa22a4663b3fe6c5b7ff8b756ea151faab19e2a3; the original model config resource_policy records the initial queue and does not describe actual capacity3 admission."
   ],
   "record_type": "managed_run",
   "registered_at": "2026-11-07T23:43:14+00:00"
