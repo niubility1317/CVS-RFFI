@@ -35,3 +35,7 @@ Reuse 9364 completed ancestor tasks; preserve 7 quarantined failures and all exi
 ## 实际派发与预测增长
 
 控制器 PID 1736557、start_ticks 63104720 已核实；六个非 RadioNet 源 checkpoint 的 source-only/no-query smoke PASS。manifest 记录复用 9,364 个完整任务、保留七处隔离、取消 1,932 个 RadioNet；16 个真实 ProtoNet-CDA worker 在 GPU 0–7 各 2 个运行，failed=[]。两次独立读取活跃任务预测文件由 250 增至 521，这仅证明在途预测增长，并不表示对应任务已闭合。完整预测屏障与评分仍关闭。
+
+## 新故障及产物保留
+
+新增闭合 30 个任务后，任务 22（ProtoNet-CDA→MoPC，P03/MIX07/20-1，seed 2026092701，K10/N20）在 C 阶段 3 的第 2 轮第 7 步报告 gradient_norm 非有限；异常梯度张量列表为空，根因未确定。此任务 33 份部分预测及日志保留；控制器已退出，worker 已排空，停止后续派发。此前完整预测、隔离产物、RadioNet 取消范围及父后继 claim 均保留。完整预测屏障和评分关闭，不盲目重发失败项。
