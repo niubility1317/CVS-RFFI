@@ -1,0 +1,152 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-cross-expert-forward-timing-s2026092701-r01",
+  "group_id": "phase1-cross-expert-forward-timing",
+  "display_name": "大型时频网络源域 GPU 前向分段计时",
+  "description": "以非零输出头检查完整模型前向字节一致性，定位输入处理、FFT、时域与频域网络和 IFFT 的 GPU 同步耗时。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "GPU",
+    "training-efficiency",
+    "exact-parity"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261108-phase1-cross-expert-step-breakdown-s2026092701-r01",
+    "20261108-phase1-dura-direct-cross-expert-source-s2026092701-r01",
+    "20261108-phase1-direct-wide-physics-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User authorizes ongoing Phase1 F-free restoration research, source-only diagnostics and GPU use.",
+  "code": {
+    "commit": "873023c03f780f5afcc2360a9c35ad3a25ccadf5",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU2, FP32 TF32off, deterministic; same CPU-staged legal source inputs",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-cross-expert-forward-timing-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split permitted source L_s/U_s",
+    "version": "fixed deterministic source context epochs21/22/23",
+    "representation": "128 fixed legal source fit IDs x one source simulation view; received/anchor/innovation/variance/clean IQ and frozen direct proposal",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "First 128 IDs of existing ordered 32768 legal source fit IDs, one source simulation view",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ only, TX hidden",
+      "U_s": "source IQ only, TX hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Identical source IDs, initial model, ordering and flow-time seeds per paired path",
+    "support_query_ref": null,
+    "leo_config_ref": "pre-existing legal source simulation epoch 21"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only synchronized GPU forward phase timings; no target, identity, full-training parity or trained model claim"
+  },
+  "checkpoint": {
+    "initialization": "Fresh seed 2026110830 CrossExpertRefiner with fixed Gaussian nonzero output heads (std .001); frozen legal DURA/direct for source smoke",
+    "sources": [
+      "20261106-phase1-dura-wide-source-source-s2026092701-r01",
+      "20261108-phase1-direct-wide-physics-source-s2026092701-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Fixed DURA source provenance and exact ordered 32768 source IDs; no F/TX/V/target",
+    "provenance_verdict": "Source-only DURA and source context verified",
+    "selection_rule": "One warmup, one reference and two timed bytewise-compared forwards on identical source inputs; no trained checkpoint"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "GPU2 at least 8192 MiB free and fewer than 3 total compute apps; at most one this-task GPU worker; preserve other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-cross-expert-forward-timing-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-cross-expert-forward-timing-s2026092701-r01-queue.log",
+    "local_artifact_root": "E:\\type10-7\\github_publish\\CVS-RFFI-repo\\automation_reports\\CV-SincNet\\20261108-phase1-cross-expert-forward-timing-s2026092701-r01",
+    "launch_command": "nice -n 10 env PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-cross-expert-forward-timing-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.benchmark_cross_expert_forward_queue --root /home/szu2070436088/2510044040/CV-SincNet --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-wide-source-source-s2026092701-r01/source_context.pt --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-cross-expert-forward-timing-s2026092701-r01 --commit 873023c03f780f5afcc2360a9c35ad3a25ccadf5 --gpu 2",
+    "stop_rule": "Stop on incorrect source contract/GPU, nonfinite computation or trajectory mismatch; preserve artifacts"
+  },
+  "expected_artifacts": [
+    "result.json: exact loss/model/optimizer/RNG comparisons and paired N607 timings"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "input preparation seconds",
+      "FFT seconds",
+      "time branch seconds",
+      "frequency branch seconds",
+      "IFFT and output seconds",
+      "full output bytewise equality"
+    ],
+    "dimensions": [
+      "128 fixed source IQ records",
+      "two timed forward passes",
+      "one shared GPU timing run"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; no target or TX truth"
+  },
+  "rows": [
+    {
+      "row_id": "cross-expert-forward-timing",
+      "method": "bytewise-checked synchronized forward phase timing",
+      "purpose": "Locate forward stage associated with measured prolonged training steps",
+      "config_ref": "experiments/phase1_dura_orthogonal/benchmark_cross_expert_forward.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110830,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": 2026110711,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Same model seed 2026110830 and order seed 2026110831 for each path.",
+      "k": null,
+      "scenario": "128 fixed source records, one simulation view",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "128 source IDs, one warmup, one reference and two instrumented forwards; no backward, update or checkpoint",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-cross-expert-forward-timing-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-cross-expert-forward-timing-s2026092701-r01-queue.log",
+      "command": "nice -n 10 env PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-cross-expert-forward-timing-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.benchmark_cross_expert_forward_queue --root /home/szu2070436088/2510044040/CV-SincNet --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-wide-source-source-s2026092701-r01/source_context.pt --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-cross-expert-forward-timing-s2026092701-r01 --commit 873023c03f780f5afcc2360a9c35ad3a25ccadf5 --gpu 2",
+      "expected_artifacts": [
+        "result.json: exact loss/model/optimizer/RNG comparisons and paired N607 timings"
+      ]
+    }
+  ],
+  "notes": [
+    "Only legal source cache and frozen source DURA/direct; no F/TX/V/target reads, model updates or saved weights.",
+    "Two timed forwards use fixed nonzero head weights to exercise branches and compare complete output bytewise to original forward.",
+    "Synchronization overhead and shared GPU competition make timings non-equivalent to uninstrumented full training; no speedup claim.",
+    "Prior GPU2 benchmark completed; same-task old controllers in CPU prediction; slot capacity checked at launch.",
+    "Four related focused tests and one independent P0/P1 review plus targeted fix review passed; real checkpoint source smoke first."
+  ],
+  "registered_at": "2026-11-08T03:20:42+00:00"
+}
