@@ -1,0 +1,148 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-cross-expert-source-response-gradient-s2026092701-r01",
+  "group_id": "phase1-cross-expert-source-response-gradient",
+  "display_name": "时频跨恢复网络源域响应梯度",
+  "description": "使用与在训模型相同种子的全新初始化，比较源波形误差与四类合成微扰响应的输出头梯度，不加载在训状态。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "f-free",
+    "frozen-gate",
+    "no-update"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261108-phase1-dura-direct-cross-expert-source-s2026092701-r01",
+    "20261108-phase1-direct-wide-physics-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests continued novel and DURA-combinable Phase1 restoration research, F-free/TX-label-free source training, automatic seven-view test and truth-last score.",
+  "code": {
+    "commit": "2ccd4044ca5212b03e2f946baedf9eb5931e24fc",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CPU, two threads, CUDA hidden; source-only fixed evaluation",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-cross-expert-source-response-gradient-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "32 previously explored source pilot records, 8 per each of four fixed RX/view groups",
+    "representation": "paired source IQ and synthetic 1% RMS clean perturbations through DURA estimated action",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "First eight records in RX4/6 and RX8, practical_high and practical_low_urban; pilot disjoint from direct fit",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ only, transmitter truth not read",
+      "U_s": "source IQ only, transmitter truth hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Frozen DURA real-source smoke and finite source waveform metrics",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed source epoch19 seven simulated views"
+  },
+  "permissions": {
+    "regime": "source_only_frozen_evaluation",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source output-head gradients at fresh initialization only; no trained-checkpoint, identity or target claim"
+  },
+  "checkpoint": {
+    "initialization": "Fresh CrossExpertRefiner initialized with 2026110830; frozen DURA and direct source final20",
+    "sources": [
+      "20261108-phase1-direct-wide-physics-source-s2026092701-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Direct source final20 fit disjoint from fixed source pilot; no in-flight training state loaded",
+    "provenance_verdict": "source-only frozen checkpoints",
+    "selection_rule": "One fixed initialization and 32 source records; no updates or checkpoint saved"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "CPU only, two threads, CUDA hidden; preserve all existing jobs",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-cross-expert-source-response-gradient-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-cross-expert-source-response-gradient-s2026092701-r01-launch.log",
+    "local_artifact_root": "E:\\type10-7\\github_publish\\CVS-RFFI-repo\\automation_reports\\CV-SincNet\\20261108-phase1-cross-expert-source-response-gradient-s2026092701-r01",
+    "launch_command": "nice -n 15 env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-cross-expert-source-response-gradient-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.source_cross_expert_response_gradient --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-cross-expert-source-response-gradient-s2026092701-r01 --commit 2ccd4044ca5212b03e2f946baedf9eb5931e24fc",
+    "stop_rule": "Stop on provenance mismatch, nonfinite values, real-source smoke mismatch, output collision or technical failure"
+  },
+  "expected_artifacts": [
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "output-head gradient cosine",
+      "0.01-weighted gradient norm ratio",
+      "synthetic response error"
+    ],
+    "dimensions": [
+      "32 source records",
+      "RX4/6 and RX8",
+      "practical_high and practical_low_urban",
+      "four synthetic directions"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "source clean IQ only, no TX truth"
+  },
+  "rows": [
+    {
+      "row_id": "cross-expert-source-gradient",
+      "method": "Frozen-expert source wave versus synthetic response gradient",
+      "purpose": "Assess initial head gradient geometry without F or target labels",
+      "config_ref": "experiments/phase1_dura_orthogonal/source_cross_expert_response_gradient.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110830,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Fresh model initialization uses in-flight model seed 2026110830; no in-flight checkpoint is read.",
+      "k": null,
+      "scenario": "32 fixed source records from four RX/view groups",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "32 source records x four perturbations; head-only gradients, CPU two threads, no optimizer",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-cross-expert-source-response-gradient-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-cross-expert-source-response-gradient-s2026092701-r01-launch.log",
+      "command": "nice -n 15 env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-cross-expert-source-response-gradient-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.source_cross_expert_response_gradient --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-cross-expert-source-response-gradient-s2026092701-r01 --commit 2ccd4044ca5212b03e2f946baedf9eb5931e24fc",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source-only fresh initialization, frozen DURA/direct; no F/TX/V/target or model updates.",
+    "Four 1% RMS clean perturbations injected through original estimated DURA action; re-estimate on perturbed IQ.",
+    "Gradient geometry is calculated for the time and frequency output heads only, averaged equally across four groups; alpha .01 is a reference, not a chosen training coefficient.",
+    "Nine focused tests and one independent P0/P1 review passed; real-source checkpoint and initial-output smoke first.",
+    "Synthetic source response and initial gradients do not establish target identity performance or trained-model behavior."
+  ],
+  "registered_at": "2026-11-08T01:56:57+00:00"
+}
