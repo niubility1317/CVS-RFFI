@@ -1,0 +1,169 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-dura-spectral-mixture-ground-test-s2026092701-r01",
+  "group_id": "phase1-dura-spectral-mixture",
+  "display_name": "DURA 联合与扩散频率融合七场景测试",
+  "description": "冻结 DURA、联合粒子与残差扩散，学习逐频三专家混合，输出单条 IQ；不使用 F 或 TX 真值训练。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "dura",
+    "spectral-mixture",
+    "source-only",
+    "F-free-training"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261108-phase1-dura-joint-particle-source-s2026092701-r01",
+    "20261108-phase1-dura-residual-diffusion-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests continued novel and DURA-combinable Phase1 restoration research, F-free/TX-label-free source training, automatic seven-view test and truth-last score.",
+  "code": {
+    "commit": "44c051a2490f874499ef7a845efbd446e41ac1f4",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU2 FP32 TF32 off deterministic; frozen source experts and GPU spectral gate; CPU frozen classifier; CPU truth scorer",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-mixture-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "fixed candidate on GPU plus frozen Tri-SIG-TIME SSL CPU default head on identical fixed Phase1 input",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "168000 fixed Phase1 Main split ground physical records in each of seven views",
+    "label_map_ref": "Six Phase1 transmitter classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "No target labels, clean pair, or target fitting during inference; labels only after all seven predictions",
+    "roles": {
+      "L_s": "source IQ training only, TX hidden",
+      "U_s": "source IQ training only, TX hidden",
+      "V": "not used for G training",
+      "test": "fixed Phase1 ground IQ, truth last"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Seven fixed predictions precede independent truth-last scoring",
+    "support_query_ref": "Phase1 original fixed cross_rx126000 and cross_both42000; no support",
+    "leo_config_ref": "R07 2.462 GHz source views and Phase1 six fixed practical test views",
+    "target_panel": "168000 Phase1 physical records x seven views",
+    "actual_training_labels": "G training uses paired L_s/U_s IQ only with TX hidden; F weights and outputs only in separate source no-query smoke and after G freezes for evaluation.",
+    "augmentation": "Fixed pre-existing Phase1 ground test simulated seven views"
+  },
+  "permissions": {
+    "regime": "Phase1 frozen ground evaluation",
+    "query_use": "Fixed per-record Phase1 IQ only after source training; no target fit, truth only after seven-view predictions",
+    "external_method_exception": null,
+    "claim_scope": "Single-seed repeatedly observed Phase1 simulated ground test; not independent blind or real satellite"
+  },
+  "checkpoint": {
+    "initialization": "Frozen DURA and fixed source-only joint particle and residual diffusion, fresh spectral mixture initialized toward DURA",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261108-phase1-dura-joint-particle-source-s2026092701-r01",
+      "20261108-phase1-dura-residual-diffusion-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "Two source-only fixed 32768-ID parent fits use matching source roles and IDs; 17632 gate records exclude both parent fit and 672 pilot IDs",
+    "provenance_verdict": "Fixed expert checkpoints and matching source L_s/U_s contract; no F/TX/V/target in gate training; classifier only separate smoke and frozen evaluation",
+    "selection_rule": "Fixed final epoch20, no target/source-score checkpoint selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "GPU2: one this-task GPU worker, >=8192 MiB free and fewer than 3 total compute apps per GPU stage; preserve all other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-spectral-mixture-ground-test-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-spectral-mixture-source-s2026092701-r01-queue.log",
+    "local_artifact_root": "E:/type10-7/github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/20261108-phase1-dura-spectral-mixture-ground-test-s2026092701-r01",
+    "launch_command": "PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-mixture-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-diffusion-source-pilot-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release nice -n 10 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_spectral_moe.runner --root /home/szu2070436088/2510044040/CV-SincNet --source 20261108-phase1-dura-spectral-mixture-source-s2026092701-r01 --ground 20261108-phase1-dura-spectral-mixture-ground-test-s2026092701-r01 --commit 44c051a2490f874499ef7a845efbd446e41ac1f4 --gpu 2",
+    "stop_rule": "Stop exact owner only on source contract or role mismatch, nonfinite computation, wrong checkpoint, target leakage, output collision, failed no-query smoke, or unrecoverable technical failure; preserve artifacts and other owners."
+  },
+  "expected_artifacts": [
+    "flow/test_prediction/complete.json",
+    "flow/test_summary.json",
+    "flow/paired_dura.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "ground accuracy",
+      "raw clean gap in pp and relative percent",
+      "macro F1",
+      "DURA paired repairs and damages",
+      "TX/RX/day groups"
+    ],
+    "dimensions": [
+      "168000 physical records",
+      "clean and six practical views"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-spectral-mixture-ground-test-s2026092701-r01/flow/test_prediction",
+    "scorer_ref": "independent CPU subprocess ground score after seven complete predictions"
+  },
+  "rows": [
+    {
+      "row_id": "dura-joint-diffusion-spectral-mixture-final20",
+      "method": "Per-frequency softmax of DURA, fixed joint-particle and fixed residual-diffusion IQ spectra; fixed source-calibrated low-noise gate",
+      "purpose": "Frozen mixture and Tri-SIG-TIME SSL default head on complete Phase1 Main split ground matrix",
+      "config_ref": "experiments/phase1_spectral_moe/ground.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110823,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Mixture model 2026110823; fixed source selection 2026110611; order 2026110824; parent fixed seeds retained; evaluation 2026092701",
+      "k": null,
+      "scenario": "clean and six practical Phase1 Main split views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "168000 Phase1 physical IDs x seven views; fixed three-expert single IQ; independent truth-last",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-spectral-mixture-ground-test-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-spectral-mixture-source-s2026092701-r01-queue.log",
+      "command": "PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-mixture-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-diffusion-source-pilot-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release nice -n 10 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_spectral_moe.runner --root /home/szu2070436088/2510044040/CV-SincNet --source 20261108-phase1-dura-spectral-mixture-source-s2026092701-r01 --ground 20261108-phase1-dura-spectral-mixture-ground-test-s2026092701-r01 --commit 44c051a2490f874499ef7a845efbd446e41ac1f4 --gpu 2",
+      "expected_artifacts": [
+        "flow/test_prediction/complete.json",
+        "flow/test_summary.json",
+        "flow/paired_dura.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Train only on parent-held-out L_s/U_s paired IQ, no F, TX identity, V or target; fixed original source noise gate.",
+    "Three frequency-wise expert weights are computed from the current IQ only; model is not claimed to preserve identity.",
+    "Final epoch20 followed by all seven fixed Phase1 ground predictions and independent truth-last; historical test is exposed, not an independent blind or real-satellite test."
+  ],
+  "registered_at": "2026-11-08T12:40:55+00:00"
+}

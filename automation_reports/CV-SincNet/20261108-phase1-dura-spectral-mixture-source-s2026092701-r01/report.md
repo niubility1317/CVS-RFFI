@@ -1,0 +1,41 @@
+# DURA 联合与扩散频率融合源训练
+
+- run_id：`20261108-phase1-dura-spectral-mixture-source-s2026092701-r01`
+- group_id：`phase1-dura-spectral-mixture`；类别：`cvs`；阶段：`Phase1-restoration`
+- 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
+- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+
+## 目的与对照
+
+冻结 DURA、联合粒子与残差扩散，学习逐频三专家混合，输出单条 IQ；不使用 F 或 TX 真值训练。
+
+## 数据、seed与模型来源
+
+实际数据契约、权限例外、完整seed角色、checkpoint来源和选择规则见experiment.json。
+逐行配置通过config_ref/resolved_config_ref定位；待补项必须在对应生命周期补齐。
+
+## 执行与存储
+
+命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
+实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
+
+## 结果与覆盖
+
+尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+
+## 交接
+
+记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 固定方案与执行边界
+
+冻结 DURA v1.0、源域训练的联合粒子和残差扩散三个专家。模型根据当前 IQ、三个专家输出与噪声方差，在 256 个复数频点逐点输出三路 softmax 权重，再逆变换成单条 IQ；沿用源域确定的低噪声 DURA 保持门，不宣称身份保真。源训练使用排除两个专家 32768 条训练记录及 672 条源诊断记录后的 17632 个合法 L_s/U_s 物理记录，每条三个固定模拟视图，固定 20 轮、batch128、AdamW 学习率 0.0003、权重衰减 0.001；归一化 IQ 重构误差加 0.02 倍 DURA 改变量，最后一轮冻结。训练不读取 TX 标签、F 权重或输出、V、目标 IQ 或真值。
+
+运行在 N607 GPU2；每阶段检查不少于 8192 MiB 空闲及少于 3 个 GPU 进程，本任务同卡最多一个 worker。真实源记录和权重的训练 smoke 及 112 条源记录冻结识别器无查询 smoke 通过后，自动完成训练、七场景逐条预测，再由独立进程 truth-last 评分。识别器为冻结 Tri-SIG-TIME SSL Main split 默认头，每景 168000 条；报告每景与 DURA 配对纠错、TX/RX/day 分组及相对 raw clean 3% 和绝对 3 个百分点门槛。既有目标测试已曝光，不能称为全新盲测或真实卫星数据。
+
+源码 commit 44c051a2490f874499ef7a845efbd446e41ac1f4；固定命令、输入、输出、资源和失败停止规则见 experiment.json。本地模型三项检查通过；独立 P0/P1 审查发现的启动参数与 GPU 索引兼容问题已修复并定点复核。服务器预检、训练和正式识别结果尚待执行。
+
+## 服务器预检与启动（2026-11-08）
+
+发布包本地和 N607 SHA-256 均为 b7c9ca08691c2dd2ccdcea363ad7f33abdf7e7cb960767ac0d706db7fcda5225；远端编译、导入通过。GPU2 启动前空闲 24110 MiB，无计算进程。真实源域 64 个物理记录 × 3 视图的 GPU 训练预检通过，源记录默认头无查询检查 112/112，raw 与 DURA 基线无不一致。控制器 PID 1755465，训练 PID 1755767，工作目录、命令及 GPU2 实际占用已核实；当前训练阶段刚开始，尚无正式性能结果。
