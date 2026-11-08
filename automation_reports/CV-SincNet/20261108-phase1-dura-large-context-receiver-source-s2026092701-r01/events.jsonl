@@ -1,0 +1,4 @@
+{"at": "2026-11-07T19:18:17+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-07T19:22:03+00:00", "status": "QUEUED", "note": "Hidden background queue verified; GPU2 capacity gate waiting, no training yet.", "evidence": ["N607 PID 722107 and source queue log GPU_QUEUE_WAITING 2"], "row_id": null}
+{"at": "2026-11-07T19:28:54+00:00", "status": "RUNNING", "note": "Queue acquired GPU2 and real-checkpoint source smoke passed; full 20-epoch training started.", "evidence": ["N607 controller PID 730927, training PID 731113 on GPU2, source_smoke.log and source_train.log"], "row_id": null}
+{"at": "2026-11-08T09:25:35+00:00", "status": "TRAINING_COMPLETE", "note": "Fixed source training completed and final checkpoint frozen; no TX/F/V/target reads.", "evidence": ["N607 source_summary.json SOURCE_TRAINED, 20 epochs and final.pt"], "row_id": null}
