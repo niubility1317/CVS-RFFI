@@ -14,6 +14,7 @@ from experiments.phase1_dura_innovation_probe.source_probe import source_inputs
 from experiments.phase1_dura_orthogonal.controller import training_environments
 from experiments.phase1_dura_orthogonal.signal_confidence_gate import source_gate_loss
 from experiments.phase1_dura_orthogonal.cross_expert_refiner import CrossExpertRefiner
+from experiments.phase1_dura_orthogonal.polyphase_cross_expert import PolyphaseCrossExpertRefiner
 from experiments.phase1_dura_orthogonal.signal_gate_train import BATCH, EPOCHS, MODEL_SEED, ORDER_SEED
 from experiments.phase1_dura_orthogonal.source_direct_dura_mix import SOURCE as PARENT, SOURCE_COMMIT as PARENT_COMMIT, load_direct
 from experiments.phase1_dura_orthogonal.train_source import load_source_training, prepare, extract_context
@@ -40,6 +41,7 @@ def main():
     p.add_argument('--root',type=Path,required=True)
     p.add_argument('--out',type=Path,required=True)
     p.add_argument('--commit',required=True)
+    p.add_argument('--implementation',choices=('native','polyphase'),default='native')
     args=p.parse_args()
     training_environments('cuda:0',os.environ)
     if args.out.exists() or not torch.cuda.is_available():
@@ -70,7 +72,8 @@ def main():
         first=parent(x,validate=False)
     if not torch.isfinite(first).all():raise FloatingPointError('Finite frozen source parent output required')
     torch.manual_seed(MODEL_SEED)
-    smoke=CrossExpertRefiner().to('cuda:0').train()
+    model_class=PolyphaseCrossExpertRefiner if args.implementation=='polyphase' else CrossExpertRefiner
+    smoke=model_class().to('cuda:0').train()
     smoke_output=smoke(x,*actual[:2],first,actual[2])
     torch.testing.assert_close(smoke_output,(actual[0]+first)*.5,rtol=1e-5,atol=3e-6)
     smoke_loss=source_gate_loss(smoke_output,actual[0],probe[4].to('cuda:0'))
@@ -95,7 +98,7 @@ def main():
     del parent,prepared
     torch.cuda.empty_cache()
     torch.manual_seed(MODEL_SEED)
-    gate=CrossExpertRefiner().to('cuda:0').train()
+    gate=model_class().to('cuda:0').train()
     optimizer=torch.optim.AdamW(gate.parameters(),lr=.0003,weight_decay=.001)
     generator=torch.Generator().manual_seed(ORDER_SEED)
     losses=[]
@@ -117,7 +120,7 @@ def main():
         torch.cuda.synchronize()
         losses.append(float(total.cpu())/len(order))
         print('CROSS_EXPERT_SOURCE_EPOCH',epoch+1,'loss',losses[-1],'elapsed',round(time.monotonic()-started,1),flush=True)
-    result=dict(schema=SCHEMA,commit=args.commit,parent=PARENT,parent_commit=PARENT_COMMIT,
+    result=dict(schema=SCHEMA,commit=args.commit,implementation=args.implementation,parent=PARENT,parent_commit=PARENT_COMMIT,
         fit_ids=fit.tolist(),epochs=EPOCHS,model_seed=MODEL_SEED,order_seed=ORDER_SEED,batch=BATCH,
         parent_fit_disjoint=True,TX_labels_read=0,F_weights_read=0,F_outputs_read=0,V_reads=0,target_reads=0,DURA_frozen=True,
         source_epochs=[21,22,23],model=gate.eval().cpu().state_dict())

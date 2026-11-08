@@ -16,6 +16,7 @@ def main():
     p.add_argument('--source',required=True)
     p.add_argument('--ground',required=True)
     p.add_argument('--commit',required=True)
+    p.add_argument('--implementation',choices=('native','polyphase'),default='native')
     args=p.parse_args()
     train_env,cpu_env=training_environments('cuda:0',os.environ)
     source=args.root/'runs'/args.source
@@ -33,10 +34,10 @@ def main():
         status('RUNNING_SOURCE_TRAINING')
         execute('source_train',[sys.executable,'-X','utf8','-u','-m',
             'experiments.phase1_dura_orthogonal.cross_expert_train','--root',str(args.root),
-            '--out',str(source),'--commit',args.commit],train_env)
+            '--out',str(source),'--commit',args.commit,'--implementation',args.implementation],train_env)
         summary=json.loads((source/'source_summary.json').read_text(encoding='utf8'))
         if (summary.get('status')!='SOURCE_TRAINED' or summary.get('commit')!=args.commit
-                or summary.get('epochs')!=20 or any(summary.get(k)!=0 for k in ('TX_labels_read','F_weights_read','F_outputs_read','V_reads','target_reads'))):
+                or summary.get('implementation')!=args.implementation or summary.get('epochs')!=20 or any(summary.get(k)!=0 for k in ('TX_labels_read','F_weights_read','F_outputs_read','V_reads','target_reads'))):
             raise ValueError('Fixed source-only final epoch required')
         fixed=['--root',str(args.root),'--out',str(output),'--source',args.source,'--commit',args.commit]
         for stage in ('smoke','predict','score'):

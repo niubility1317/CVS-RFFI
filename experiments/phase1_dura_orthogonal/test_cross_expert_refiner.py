@@ -37,3 +37,14 @@ def test_unrestricted_correction_and_both_branches_receive_gradient():
         corrected=model(x,a,d,p,v)
     assert torch.isfinite(corrected).all()
     assert ((corrected-(a+p)*.5).abs()>1.).any()
+
+
+def test_checkpoint_implementation_matches_evaluation():
+    from experiments.phase1_dura_orthogonal.cross_expert_ground import model_class_for_checkpoint
+    from experiments.phase1_dura_orthogonal.polyphase_cross_expert import PolyphaseCrossExpertRefiner
+    assert model_class_for_checkpoint({}, {}) is CrossExpertRefiner
+    assert model_class_for_checkpoint({'implementation':'polyphase'}, {'implementation':'polyphase'}) is PolyphaseCrossExpertRefiner
+    with pytest.raises(ValueError):
+        model_class_for_checkpoint({'implementation':'native'}, {'implementation':'polyphase'})
+    with pytest.raises(ValueError):
+        model_class_for_checkpoint({'implementation':'other'}, {'implementation':'other'})

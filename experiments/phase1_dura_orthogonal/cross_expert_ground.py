@@ -9,6 +9,7 @@ import torch
 from experiments.pamf_phase1_flow import experiment as core
 from experiments.phase1_dura_orthogonal import ground
 from experiments.phase1_dura_orthogonal.cross_expert_refiner import CrossExpertRefiner
+from experiments.phase1_dura_orthogonal.polyphase_cross_expert import PolyphaseCrossExpertRefiner
 from experiments.phase1_dura_orthogonal.cross_expert_train import PARENT, PARENT_COMMIT, EPOCHS, SCHEMA, OOF_SIZE
 from experiments.phase1_dura_orthogonal.train_source import extract_context
 
@@ -17,6 +18,14 @@ def validate_gate_fit(fit, parent_fit):
     fit=np.asarray(fit)
     if len(fit)!=OOF_SIZE or len(np.unique(fit))!=len(fit) or np.intersect1d(fit,np.asarray(parent_fit)).size:
         raise ValueError('Confidence gate fit must be disjoint from fixed parent fit')
+
+
+def model_class_for_checkpoint(summary, state):
+    # Checkpoints created before implementation selection used native convolutions.
+    implementation=state.get('implementation','native')
+    if implementation not in ('native','polyphase') or summary.get('implementation','native')!=implementation:
+        raise ValueError('Matching known training and inference implementation required')
+    return PolyphaseCrossExpertRefiner if implementation=='polyphase' else CrossExpertRefiner
 
 
 def load_gate(root, source, commit):
@@ -29,7 +38,7 @@ def load_gate(root, source, commit):
         raise ValueError('Matching frozen source-only confidence gate required')
     parent=torch.load(root/'runs'/PARENT/'final.pt',map_location='cpu',weights_only=False)
     validate_gate_fit(state['fit_ids'],parent['fit_ids'])
-    gate=CrossExpertRefiner()
+    gate=model_class_for_checkpoint(summary,state)()
     gate.load_state_dict(state['model'],strict=True)
     return gate.eval().requires_grad_(False)
 

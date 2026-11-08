@@ -24,7 +24,7 @@ def owned_gpu_conflict(gpu_csv, app_csv, gpu_index):
             command=cmd.read_bytes()
         except (FileNotFoundError, ProcessLookupError):
             continue
-        if any(name in command for name in (b'20261108-phase1-dura-direct-balanced-mix-source-s2026092701-r02', b'20261108-phase1-dura-direct-adaptive-mix-source-s2026092701-r01', b'20261108-phase1-dura-context-wide-residual-source-s2026092701-r01', b'20261108-phase1-dura-signal-confidence-source-s2026092701-r01', b'20261108-phase1-dura-signal-confidence-oof-source-s2026092701-r01')):
+        if any(name in command for name in (b'20261108-phase1-dura-direct-cross-expert-source-', b'20261108-phase1-dura-cross-expert-polyphase-source-', b'20261108-phase1-dura-direct-balanced-mix-source-s2026092701-r02', b'20261108-phase1-dura-direct-adaptive-mix-source-s2026092701-r01', b'20261108-phase1-dura-context-wide-residual-source-s2026092701-r01', b'20261108-phase1-dura-signal-confidence-source-s2026092701-r01', b'20261108-phase1-dura-signal-confidence-oof-source-s2026092701-r01')):
             return True
     return False
 
@@ -36,6 +36,7 @@ def main():
     p.add_argument('--ground',required=True)
     p.add_argument('--gpu',type=int,required=True)
     p.add_argument('--commit',required=True)
+    p.add_argument('--implementation',choices=('native','polyphase'),default='native')
     args=p.parse_args()
     runs=args.root/'runs'
     paths=[runs/args.source,runs/(args.source+'-controller'),runs/args.ground]
@@ -47,7 +48,7 @@ def main():
             raise FileExistsError('Another owner created an output while queued')
         g=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,memory.free','--format=csv,noheader,nounits'],text=True)
         a=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid','--format=csv,noheader,nounits'],text=True)
-        ready,free,count=capacity(g,a,args.gpu)
+        ready,free,count=capacity(g,a,args.gpu,minimum_mib=8192)
         if ready and not owned_gpu_conflict(g,a,args.gpu):
             print('SIGNAL_GATE_GPU_SLOT',args.gpu,'free_mib',free,'other_apps',count,flush=True)
             break
@@ -55,7 +56,8 @@ def main():
     env=os.environ.copy()
     env.update(CUDA_VISIBLE_DEVICES=str(args.gpu),OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2')
     cmd=[sys.executable,'-X','utf8','-u','-m','experiments.phase1_dura_orthogonal.cross_expert_controller',
-         '--root',str(args.root),'--source',args.source,'--ground',args.ground,'--commit',args.commit]
+         '--root',str(args.root),'--source',args.source,'--ground',args.ground,'--commit',args.commit,
+         '--implementation',args.implementation]
     child=subprocess.Popen(cmd,cwd=Path.cwd(),env=env,stdin=subprocess.DEVNULL)
     print('SIGNAL_GATE_CONTROLLER_STARTED',child.pid,flush=True)
     code=child.wait()
