@@ -1,0 +1,148 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-direct-dura-mix-source-s2026092701-r01",
+  "group_id": "phase1-direct-dura-source-complement",
+  "display_name": "独立恢复器与 DURA 的源域波形互补",
+  "description": "冻结宽范围物理损失独立恢复器和 DURA，比较源域固定混合、物理步长与不可部署 clean oracle。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "f-free",
+    "direct-dura",
+    "diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261108-phase1-direct-wide-physics-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests continued novel and DURA-combinable Phase1 restoration research, F-free/TX-label-free source training, automatic seven-view test and truth-last score.",
+  "code": {
+    "commit": "2a1ae2b54357e8acce4ee58daf92ff7b8cb909ec",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CPU, two threads, CUDA hidden; source-only fixed evaluation",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-direct-dura-mix-source-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "672 previously explored source pilot records, epoch19 paired IQ",
+    "representation": "source L_s/U_s received and clean IQ; no transmitter truth",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "672 source pilot records disjoint from candidate fit IDs",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ only, transmitter truth not read",
+      "U_s": "source IQ only, transmitter truth hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Frozen DURA real-source smoke and finite source waveform metrics",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed source epoch19 seven simulated views"
+  },
+  "permissions": {
+    "regime": "source_only_frozen_evaluation",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source waveform diagnostic only; no TX accuracy, target evaluation, selection or deployment claim"
+  },
+  "checkpoint": {
+    "initialization": "Frozen F-free source final20 direct wide physics model and frozen DURA v1",
+    "sources": [
+      "20261108-phase1-direct-wide-physics-source-s2026092701-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Fixed source-only provenance and pilot disjoint from 32768 direct fit IDs",
+    "provenance_verdict": "source-only frozen checkpoints",
+    "selection_rule": "Fixed final20 source checkpoint; no fit, model update or target selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "CPU only, two threads, CUDA hidden; preserve all existing jobs",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-direct-dura-mix-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-direct-dura-mix-source-s2026092701-r01-launch.log",
+    "local_artifact_root": "E:\\type10-7\\github_publish\\CVS-RFFI-repo\\automation_reports\\CV-SincNet\\20261108-phase1-direct-dura-mix-source-s2026092701-r01",
+    "launch_command": "nice -n 15 env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-direct-dura-mix-source-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.source_direct_dura_mix --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-direct-dura-mix-source-s2026092701-r01 --commit 2a1ae2b54357e8acce4ee58daf92ff7b8cb909ec",
+    "stop_rule": "Stop on provenance mismatch, nonfinite values, real-source smoke mismatch, output collision or technical failure"
+  },
+  "expected_artifacts": [
+    "values.npz",
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source waveform NMSE",
+      "physical line step",
+      "privileged clean oracle line step"
+    ],
+    "dimensions": [
+      "672 fixed source records",
+      "RX4/6 and RX8",
+      "clean and six source views"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-direct-dura-mix-source-s2026092701-r01/values.npz",
+    "scorer_ref": "source clean waveform only; no TX truth"
+  },
+  "rows": [
+    {
+      "row_id": "direct-dura-source-complement",
+      "method": "Frozen direct and DURA waveform mixtures",
+      "purpose": "Measure source waveform complement and estimated-channel line search",
+      "config_ref": "experiments/phase1_dura_orthogonal/source_direct_dura_mix.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "No stochastic model, augmentation, or selection; fixed source pilot and DURA.",
+      "k": null,
+      "scenario": "672 fixed source pilot IDs x their preexisting views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "672 source records, CPU two threads; no training",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-direct-dura-mix-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-direct-dura-mix-source-s2026092701-r01-launch.log",
+      "command": "nice -n 15 env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-direct-dura-mix-source-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.source_direct_dura_mix --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-direct-dura-mix-source-s2026092701-r01 --commit 2a1ae2b54357e8acce4ee58daf92ff7b8cb909ec",
+      "expected_artifacts": [
+        "values.npz",
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No F weights/outputs, TX labels, U_s truth, V or target reads; both networks frozen.",
+    "Physical step uses received and estimated DURA action; per-record source-clean oracle is diagnostic only and cannot be deployed.",
+    "672 previously explored source pilot records disjoint from direct model fit; DURA overlap unknown.",
+    "Three focused tests and independent P0/P1 review passed; first real source checkpoint smoke continues automatically.",
+    "Source waveform NMSE is not identity accuracy; no existing formal tests altered."
+  ],
+  "registered_at": "2026-11-08T00:11:40+00:00"
+}
