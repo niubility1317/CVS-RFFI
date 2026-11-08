@@ -1,0 +1,4 @@
+{"at": "2026-11-07T19:38:30+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-07T19:39:31+00:00", "status": "QUEUED", "note": "Background queue verified; GPU7 capacity gate waiting, no source training yet.", "evidence": ["N607 queue PID 747670 and queue log GPU_QUEUE_WAITING 7"], "row_id": null}
+{"at": "2026-11-07T20:03:30+00:00", "status": "RUNNING", "note": "GPU7 queue started, source smoke passed, full training running.", "evidence": ["N607 controller PID 775125, source training PID 775887 and source_smoke.log"], "row_id": null}
+{"at": "2026-11-08T11:35:13+00:00", "status": "TRAINING_COMPLETE", "note": "Final epoch 20 and source-only provenance verified; frozen seven-view score complete.", "evidence": ["N607:runs/20261108-phase1-dura-large-context-adaptive-source-s2026092701-r01/source_summary.json"], "row_id": null}
