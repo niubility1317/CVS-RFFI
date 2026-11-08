@@ -1,0 +1,136 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-spectral-crossview-source-diagnostic-s2026092701-r01",
+  "group_id": "phase1-source-spectral-crossview-diagnostic",
+  "display_name": "源域双受损视图的频谱比值匹配诊断",
+  "description": "对 672 条合法源记录的三个受损视图，比较频谱与相邻频谱比值的跨视图同记录检索；不读取源 clean IQ 数值或目标。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "F-free",
+    "no-TX",
+    "spectral-quotient",
+    "crossview-diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "用户继续授权研发星地恢复网络；仅源域合法 IQ 诊断，不重启已停止任务。",
+  "code": {
+    "commit": "a3f68690c45a56f7251f688f4bf24002f20e8317",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CPU, one BLAS thread, nice 19; no GPU or training",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-crossview-source-diagnostic-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "Source augmentation cache epochs 21, 22, 23",
+    "representation": "Three aligned source received IQ [2,256]; no clean IQ values used",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "672 frozen source pilot physical IDs, RX4/6 and RX8 by seven views; read indices/rx/scene/split only",
+    "label_map_ref": null,
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Fixed 672 previously explored source pilot IDs; no TX labels, not independent generalization evidence",
+    "support_query_ref": null,
+    "leo_config_ref": "Three fixed source augmentation epochs, scored separately by query scene"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source crossview same-record retrieval diagnostic only; not transmitter identity or target performance"
+  },
+  "checkpoint": {
+    "initialization": "None; deterministic NumPy descriptors only",
+    "sources": [],
+    "contract_check_ref": "source_inputs validates fixed source L_s/U_s pilot; source cache physical IDs resolve to same original array",
+    "provenance_verdict": "No learned checkpoint or F weights or outputs",
+    "selection_rule": "Fixed 0.01 regularization and all three view pairs before result"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "CPU only, one BLAS thread, nice 19; preserve other processes",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-spectral-crossview-source-diagnostic-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-spectral-crossview-source-diagnostic-s2026092701-r01-launcher.log",
+    "local_artifact_root": "E:/type10-7/github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/20261108-phase1-spectral-crossview-source-diagnostic-s2026092701-r01",
+    "launch_command": "nice -n 19 env OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.spectral_crossview_probe --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-spectral-crossview-source-diagnostic-s2026092701-r01 --commit a3f68690c45a56f7251f688f4bf24002f20e8317",
+    "stop_rule": "Stop own process on source contract mismatch, source smoke failure, nonfinite data, output collision, or unauthorized data access; preserve artifacts."
+  },
+  "expected_artifacts": [
+    "result.json with 6 groups, both-damaged and query-scene summaries"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "both-damaged same-record top-1 retrieval",
+      "mean reciprocal rank",
+      "median rank"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "source epoch pairs 21-22,21-23,22-23",
+      "query scene"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "source record correspondence only; no target truth or TX label"
+  },
+  "rows": [
+    {
+      "row_id": "fixed-crossview-spectrum-vs-quotient",
+      "method": "Normalized complex FFT versus regularized adjacent complex FFT ratio; same 336-candidate set per receiver group",
+      "purpose": "Source-only robustness across two impaired views, no target performance claim",
+      "config_ref": "experiments/phase1_dura_orthogonal/spectral_crossview_probe.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Existing fixed source IDs and precomputed source augmentations; no model or new randomness.",
+      "k": null,
+      "scenario": "three fixed source view pairs with both-damaged subset",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "672 source IQ IDs x 3 cached epochs; 336 candidates per receiver group; eight-record source smoke",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-spectral-crossview-source-diagnostic-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-spectral-crossview-source-diagnostic-s2026092701-r01-launcher.log",
+      "command": "nice -n 19 env OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.spectral_crossview_probe --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-spectral-crossview-source-diagnostic-s2026092701-r01 --commit a3f68690c45a56f7251f688f4bf24002f20e8317",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Prerecorded exploratory criterion: quotient both-damaged top-1 exceeds spectrum by at least 5 percentage points in at least 5 of 6 receiver/view-pair groups; source diagnostic only.",
+    "Clean IQ values, TX labels, F weights/output, V and any target data are not read; scene metadata is used only to report the both-damaged subset.",
+    "No learned checkpoint is used, so checkpoint smoke is not applicable; real source eight-record no-query smoke runs first.",
+    "Same-record correspondence is an evaluation oracle, not device identity, deployment evidence or an identity accuracy metric."
+  ],
+  "registered_at": "2026-11-08T08:16:18+00:00"
+}
