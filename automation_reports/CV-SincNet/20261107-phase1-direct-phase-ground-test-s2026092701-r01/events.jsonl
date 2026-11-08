@@ -1,0 +1,4 @@
+{"at": "2026-11-07T12:52:05+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-07T12:53:24+00:00", "status": "QUEUED", "note": "Automatic seven-view frozen Tri-SIG-TIME SSL evaluation and independent score after registered source training.", "evidence": ["E:/type10-7/.codex_tmp/direct_phase_launch.json"], "row_id": null}
+{"at": "2026-11-07T15:01:25+00:00", "status": "RUNNING", "note": "Seven-view prediction worker 446084 started from fixed final source checkpoint.", "evidence": ["runs/20261107-phase1-direct-phase-source-s2026092701-r01-controller/status.json"], "row_id": null}
+{"at": "2026-11-08T07:07:32+00:00", "status": "ANALYZED", "note": "All seven predictions completed before independent scoring; paired comparison verified.", "evidence": ["analysis.md", "N607 flow/test_summary.json and paired_dura.json"], "row_id": null}

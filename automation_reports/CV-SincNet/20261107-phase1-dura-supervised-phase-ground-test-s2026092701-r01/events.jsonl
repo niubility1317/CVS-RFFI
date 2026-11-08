@@ -1,0 +1,4 @@
+{"at": "2026-11-07T15:13:30+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-07T15:16:37+00:00", "status": "QUEUED", "note": "Automatic seven-view prediction and truth-last score follow fixed final source epoch.", "evidence": ["E:/type10-7/.codex_tmp/supervised_phase_launch.json"], "row_id": null}
+{"at": "2026-11-07T15:35:09+00:00", "status": "RUNNING", "note": "Source prediction smoke passed; seven-view prediction process verified.", "evidence": ["N607:PID479108,ground_smoke.log,ground_predict.log"], "row_id": null}
+{"at": "2026-11-08T07:07:32+00:00", "status": "ANALYZED", "note": "All seven predictions completed before independent scoring; paired comparison verified.", "evidence": ["analysis.md", "N607 flow/test_summary.json and paired_dura.json"], "row_id": null}

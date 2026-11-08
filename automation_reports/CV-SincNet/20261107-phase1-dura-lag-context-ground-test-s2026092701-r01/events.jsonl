@@ -1,0 +1,4 @@
+{"at": "2026-11-07T15:46:49+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-07T15:50:09+00:00", "status": "QUEUED", "note": "Automatic seven-view prediction follows fixed fifth epoch and source-only prediction smoke.", "evidence": ["N607:PID494858,controller"], "row_id": null}
+{"at": "2026-11-07T16:11:55+00:00", "status": "RUNNING", "note": "Fixed final checkpoint source prediction smoke passed; seven-view prediction verified live.", "evidence": ["N607:PID512659,ground_smoke.log,ground_predict.log"], "row_id": null}
+{"at": "2026-11-08T07:07:32+00:00", "status": "ANALYZED", "note": "All seven predictions completed before independent scoring; paired comparison verified.", "evidence": ["analysis.md", "N607 flow/test_summary.json and paired_dura.json"], "row_id": null}

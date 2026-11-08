@@ -1,5 +1,8 @@
 # DURA 长距离相关恢复七景测试
 
+**2026-11-08 状态更新：七景预测、独立评分和 DURA 配对均已完成。完整结果见[七场景分析](analysis.md)。下方“运行中”文字保留为历史记录。**
+
+
 - run_id：`20261107-phase1-dura-lag-context-ground-test-s2026092701-r01`
 - group_id：`phase1-dura-lag-context`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
