@@ -21,7 +21,7 @@ from .objective import PairedObjective
 from .source_pair import read, validate_source
 from .variance_trial import load_scale, recovery_gpu_choice
 
-RUN = '20261108-diagnostic-Restore-PhysicalFeatureGradient-sourceLU-s2026092701-r01'
+RUN = '20261108-diagnostic-Restore-PhysicalFeatureGradient-sourceLU-s2026092701-r02'
 MODULE = 'experiments.pamf_phase3_restoration.physical_feature_gradient_probe'
 PARENT_RUN = '20261102-phase1-Restore-CovarianceDetail-E30-s2026092701-r01'
 PARENT_COMMIT = '1fcbc3eb3cc16e7577ecc3cbedda99174b4c5cc6'
@@ -113,7 +113,9 @@ def worker(args):
             v={k:tensor(np.asarray(a[index:index+1]).copy(),device) for k,a in arrays.items()}
             with torch.no_grad(): target=reader.features(v['clean'])
             for name,model in models.items():
-                with torch.no_grad(): reference=model(v['received'])
+                # Preserve autograd mode for the estimator: eval/no_grad can select a
+                # different fused Transformer kernel before the detached posterior.
+                reference=model(v['received']).detach()
                 restored,aux,residual=connected_forward(model,v['received'])
                 torch.testing.assert_close(restored,reference,rtol=2e-5,atol=2e-6)
                 if not torch.isfinite(restored).all() or residual.max()>1e-8: raise ValueError('Invalid source posterior')

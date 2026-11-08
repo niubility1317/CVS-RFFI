@@ -49,3 +49,15 @@ def test_gradient_statistics_preserve_direction_and_report_zero():
     assert s['ratio']==pytest.approx(2.) and s['cosine']==pytest.approx(-1.)
     zero=probe.pair_statistics(a,torch.zeros_like(a))
     assert zero['cosine'] is None and zero['ratio']==0 and zero['second_zero']
+
+
+def test_original_estimator_uses_same_autograd_mode_as_connected_path():
+    from experiments.pamf_phase3_restoration.covariance_detail import scratch_covariance_detail
+    torch.set_num_threads(2)
+    model=scratch_covariance_detail(2026092701).eval()
+    x=torch.randn(1,2,256)
+    reference=model(x).detach()
+    output,_,residual=probe.connected_forward(model,x)
+    torch.testing.assert_close(output,reference,rtol=2e-5,atol=2e-6)
+    gradient=torch.autograd.grad(output.square().mean(),model.physical.coefficient_head.weight)[0]
+    assert torch.isfinite(gradient).all() and gradient.norm()>0 and residual.max()<1e-8
