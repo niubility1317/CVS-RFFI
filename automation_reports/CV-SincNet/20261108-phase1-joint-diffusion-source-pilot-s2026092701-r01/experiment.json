@@ -1,0 +1,140 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-joint-diffusion-source-pilot-s2026092701-r01",
+  "group_id": "phase1-joint-diffusion-source-pilot",
+  "display_name": "联合恢复与条件扩散的同源波形诊断",
+  "description": "比较两条固定源训练模型与同一冻结 DURA 在合法源 pilot 的波形误差；无 F 或目标读取，不影响既定七景测试。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "F-free",
+    "oracle-diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261108-phase1-dura-joint-particle-source-s2026092701-r01",
+    "20261108-phase1-dura-residual-diffusion-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户继续授权研发星地恢复网络；仅源域合法 IQ 诊断，不重启已停止任务。",
+  "code": {
+    "commit": "ab70a7122815ca33faff3cce2ddd37126bc84623",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU2 deterministic FP32 TF32 off, two CPU threads, batch 8",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-diffusion-source-pilot-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "received and clean IQ [2,256]",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "672 frozen source pilot physical IDs, RX4/6 and RX8 by seven views; read indices/rx/scene/split only",
+    "label_map_ref": null,
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Previously explored fixed source pilot; RX8 is source held group, not independent to DURA",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed simulated source epoch19 views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source paired IQ diagnostic only; no F or target and no identity-accuracy claim"
+  },
+  "checkpoint": {
+    "initialization": "Load fixed joint and conditional-diffusion source final20 and original frozen DURA; no training",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261108-phase1-dura-joint-particle-source-s2026092701-r01",
+      "20261108-phase1-dura-residual-diffusion-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "Source metadata and checkpoint require legal matching 32768 fit IDs, no F/TX/V/target reads, frozen DURA; pilot excluded from both candidate fits",
+    "provenance_verdict": "Matching source-only contracts; two final checkpoints frozen without target selection; DURA may have seen pilot",
+    "selection_rule": "Both final20 checkpoints were fixed in their own preregistered runs before target scoring; analyze both, no candidate selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "GPU2: at least 8192 MiB free, fewer than 3 total GPU apps and no other this-task GPU worker; preserve other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-joint-diffusion-source-pilot-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-joint-diffusion-source-pilot-s2026092701-r01-launcher.log",
+    "local_artifact_root": "E:/type10-7/github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/20261108-phase1-joint-diffusion-source-pilot-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-diffusion-source-pilot-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release nice -n 10 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_residual_diffusion.source_probe --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-joint-diffusion-source-pilot-s2026092701-r01 --commit ab70a7122815ca33faff3cce2ddd37126bc84623",
+    "stop_rule": "Stop on source role mismatch, source smoke failure, nonfinite output or any target/F/TX read; preserve stopped group and other owners."
+  },
+  "expected_artifacts": [
+    "result.json with source per-view IQ NMSE and per-record better/worse counts; no trained model"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source normalized IQ error",
+      "per-record better/worse counts against DURA"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; source paired IQ geometry only"
+  },
+  "rows": [
+    {
+      "row_id": "joint-diffusion-paired-source-pilot",
+      "method": "Fixed DURA, frozen joint proposal and frozen conditional residual diffusion; shared received IQ and DURA physical context",
+      "purpose": "Determine whether source error has useful projected direction; no deployment or selection",
+      "config_ref": "experiments/phase1_residual_diffusion/source_probe.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Two fixed models use model seeds 2026110812 (joint) and 2026110817 (diffusion); no new training, support or stochastic target choices.",
+      "k": null,
+      "scenario": "seven fixed Phase1 source views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "672 source IQ pairs in 14 cells, batch 8; same-record DURA and two frozen candidate outputs; two-record real-checkpoint smoke",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-joint-diffusion-source-pilot-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-joint-diffusion-source-pilot-s2026092701-r01-launcher.log",
+      "command": "CUDA_VISIBLE_DEVICES=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-diffusion-source-pilot-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release nice -n 10 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_residual_diffusion.source_probe --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-joint-diffusion-source-pilot-s2026092701-r01 --commit ab70a7122815ca33faff3cce2ddd37126bc84623",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Both 32768-record source fits exclude the 672 pilot IDs; DURA may have seen source pilot and pilot has been explored before.",
+    "Three fixed model outputs use identical source observations and DURA contexts; no model updates, target data, F weights or outputs or TX labels.",
+    "Two-record real-checkpoint GPU smoke precedes source-only diagnostic; does not change the two already running formal evaluations.",
+    "Source waveform NMSE and per-record gains cannot substitute for Tri-SIG-TIME SSL seven-view identity scores."
+  ],
+  "registered_at": "2026-11-08T12:27:17+00:00"
+}
