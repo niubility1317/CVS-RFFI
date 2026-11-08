@@ -25,3 +25,17 @@ def test_stage_command_and_gpu_cap():
     assert not d.cap_exceeded(5,{1,2,5})
     assert d.cap_exceeded(5,{1,2,3,5})
     assert not d.cap_exceeded(5,{1,2,3,4})
+
+
+def test_feature_wrapper_uses_its_original_science(monkeypatch):
+    from experiments.pamf_phase3_restoration import feature_response_capacity_dispatch as f
+    old = (d.RUN, d.ARM, d.SCIENCE_MODULE, d.SCIENCE_COMMIT)
+    try:
+        f.install()
+        assert (d.RUN, d.ARM, d.SCIENCE_MODULE, d.SCIENCE_COMMIT) == (f.RUN, f.ARM, f.SCIENCE_MODULE, f.SCIENCE_COMMIT)
+        args = SimpleNamespace(root=Path('/root'), legacy_release=Path('/release'), cache=Path('/cache'))
+        for stage in d.STAGES:
+            cmd = d.stage_command(args, stage)
+            assert f.SCIENCE_MODULE in cmd and f.SCIENCE_COMMIT in cmd and f.ARM in cmd
+    finally:
+        d.RUN, d.ARM, d.SCIENCE_MODULE, d.SCIENCE_COMMIT = old

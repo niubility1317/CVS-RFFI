@@ -47,26 +47,26 @@ def cap_exceeded(child_pid, observed):
     return child_pid in observed and len(observed) > 3
 
 
-def controller(args):
+def controller(args, *, gpu=3):
     if os.environ.get('CUDA_VISIBLE_DEVICES') != '' or args.legacy_release != args.root/'releases'/(RUN+'-release'):
         raise ValueError('CUDA-empty controller and original release required')
     out = args.root/'runs'/RUN
     verify_unstarted_retired(out, args.legacy_release)
     write_new(out/'resource_controller.json', dict(pid=os.getpid(), command=sys.argv, CWD=os.getcwd(),
         dispatch_code_commit=args.commit, scientific_code_commit=SCIENCE_COMMIT,
-        GPU=3, admission_total_process_cap=3, original_launch_preserved=True,
+        GPU=gpu, admission_total_process_cap=3, original_launch_preserved=True,
         resource_change='admit at most two existing processes, minimum 12288 MiB; monitor total cap3',
         source_epochs=30, source_updates=7410))
     for stage in STAGES:
         admission = None
         if stage != 'score':
             while not admission:
-                choices = [g for g in recovery_gpu_choice(allowed_gpus=(3,), maximum_processes=3)
+                choices = [g for g in recovery_gpu_choice(allowed_gpus=(gpu,), maximum_processes=3)
                            if g['free_memory_MB'] >= 12288]
                 if choices:
                     admission = choices[0]
                 else:
-                    print('WAITING_FOR_GPU3_AUTHORIZED_CAP', stage, flush=True)
+                    print('WAITING_FOR_AUTHORIZED_GPU_CAP', gpu, stage, flush=True)
                     time.sleep(30)
         cmd = stage_command(args, stage)
         with (out/'logs'/(ARM+'-'+stage+'.log')).open('xb') as log:
@@ -98,13 +98,13 @@ def controller(args):
                     except subprocess.TimeoutExpired:
                         child.kill()
                         child.wait()
-                    write_new(out/'resource_stop.json', dict(stage=stage, pid=child.pid, GPU=3,
+                    write_new(out/'resource_stop.json', dict(stage=stage, pid=child.pid, GPU=gpu,
                         reason=reason, observed_compute_PIDs=sorted(observed) if observed is not None else None,
                         cap=3, only_own_child_signaled=True, other_owner_processes_signaled=False))
                     break
             time.sleep(2)
         code = child.wait()
-        write_new(out/('terminal-'+ARM+'-'+stage+'.json'), dict(pid=child.pid, GPU=3 if admission else None,
+        write_new(out/('terminal-'+ARM+'-'+stage+'.json'), dict(pid=child.pid, GPU=gpu if admission else None,
             exit_code=code, dispatch_code_commit=args.commit, scientific_code_commit=SCIENCE_COMMIT))
         if code or reason:
             raise RuntimeError('Own stage failed or stopped: '+stage+' '+str(reason))
