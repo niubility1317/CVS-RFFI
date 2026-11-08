@@ -35,3 +35,7 @@ Reuse 9677 complete ancestor tasks, retain 9 quarantines with 201 partials; run 
 ## Running observation
 
 Real source-only smoke passed for six checkpoints; saved-B round trips passed for ProtoNet-CDA and DADDA. The two-core run dispatched, and 9 subset tasks were fixed at the observed checkpoint. The live process check found 9 workers, at most 2 per GPU, and no failed tasks. Saved B states and in-flight predictions were observed. MoPC remains pending; the full prediction and scoring barriers remain closed. Previous completed, quarantined, partial, and canceled RadioNet outputs remain preserved. Evidence: local_artifacts/phase2_group2_bnoradio_20261108/r11_running_verified.json.
+
+## Two-core subset fixed; MoPC pending
+
+All 1,906 previously unstarted tasks (1,272 ProtoNet-CDA and 634 DADDA) have fixed Orthogonal and LoRa predictions. Independent inventory verified 23,192 prediction files and 3,844 per-K saved B states, with the original 9,677 complete tasks, nine quarantines, and 1,932 canceled RadioNet tasks retained. The controller and workers exited without recorded failures. This is a partial result: MoPC is pending, previous failures remain unresolved, and neither the full prediction barrier nor scoring was opened. Evidence: local_artifacts/phase2_group2_bnoradio_20261108/r11_completion_inventory_verified.json and r11_2111_verified.json.
