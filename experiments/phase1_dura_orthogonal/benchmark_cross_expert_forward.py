@@ -9,6 +9,7 @@ import torch
 from experiments.pamf_phase1_flow.anchor_source_smoke import frozen_dura
 from experiments.phase1_dura_innovation_probe.source_probe import source_inputs
 from experiments.phase1_dura_orthogonal.cross_expert_refiner import CrossExpertRefiner
+from experiments.phase1_dura_orthogonal.shared_source_benchmark import same_bits
 from experiments.phase1_dura_orthogonal.source_context_cache import load_cache
 from experiments.phase1_dura_orthogonal.source_direct_dura_mix import load_direct
 from experiments.phase1_dura_orthogonal.train_source import extract_context, load_source_training
@@ -59,6 +60,10 @@ def main():
         proposal=torch.cat([direct(received[i:i+32],validate=False) for i in range(0,128,32)])
     del direct,dura,clean
     torch.manual_seed(2026110830);model=CrossExpertRefiner().cuda().train()
+    with torch.no_grad():
+        for head in (model.time_out,model.freq_out):
+            torch.nn.init.normal_(head.weight,mean=0.,std=.001)
+            torch.nn.init.normal_(head.bias,mean=0.,std=.001)
     for p in model.parameters():p.requires_grad_(True)
     args_i=(received,anchor,innovation,proposal,variance)
     print('CROSS_FORWARD_REAL_SOURCE_SMOKE_PASS',8,flush=True)
@@ -67,14 +72,14 @@ def main():
     rows=[]
     for i in range(2):
         out,timing=forward_timed(model,*args_i)
-        equal=torch.equal(out.detach(),reference)
+        equal=torch.isfinite(out).all().item() and same_bits(out.detach(),reference)
         if not equal:raise ValueError('Timed forward must match original bitwise')
         rows.append(dict(**timing,output_bitwise_equal=equal));del out
         print('CROSS_FORWARD_TIMING',i+1,flush=True)
     result=dict(status='CROSS_FORWARD_TIMING_COMPLETE',commit=args.commit,batch=128,measured_forwards=2,
-        mode='train_autograd_enabled',rows=rows,gpu=torch.cuda.get_device_name(),TX_labels_read=0,
+        mode='train_autograd_enabled',nonzero_head_std=.001,rows=rows,gpu=torch.cuda.get_device_name(),TX_labels_read=0,
         F_weights_read=0,F_outputs_read=0,V_reads=0,target_reads=0,model_updates=0,weights_saved=False,
-        caveat='Each phase synchronizes CUDA; shared GPU affects timing. Reimplemented forward is checked bitwise on this batch, not a claim for all inputs or full training.')
+        caveat='Each phase synchronizes CUDA; shared GPU affects timing. Reimplemented forward is checked bitwise on this batch, fixed nonzero output heads are used to exercise both branches; not a claim for all inputs or full training.')
     args.out.mkdir(parents=True)
     (args.out/'result.json').write_text(json.dumps(result,indent=2,allow_nan=False)+'\n',encoding='utf8')
     print(result['status'],flush=True)
