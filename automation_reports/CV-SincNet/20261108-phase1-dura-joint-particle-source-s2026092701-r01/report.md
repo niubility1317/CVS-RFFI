@@ -55,3 +55,7 @@ N607 输入句柄和原 DURA、Tri-SIG-TIME SSL 来源路径存在；四个 run 
 ## 实际训练吞吐
 
 第 2/20 轮训练目标均值为 0.02023928，累计计时 672.8 秒。与第 1 轮累计 378.1 秒相减，第 2 轮 3,072 步、98,304 个源视图耗时约 294.7 秒，约 333.6 视图/秒；该轮时间不含前置算子准备。三个视图对应同一物理记录，不能计为 98,304 个独立记录。共享 GPU 负载可能变化；源损失和吞吐都不能替代七景身份识别结果。
+
+## 源场景覆盖核实
+
+真实源训练 smoke 的缓存元数据记录完整 32768 条源物理记录、三个固定视图的场景计数：clean 14854、practical_high 13838、practical_mid 13881、practical_low_suburban 13989、practical_high_urban 13869、practical_mid_urban 14078、practical_low_urban 13795，合计 98304 个视图。七种源模拟类别均有覆盖，不代表不同物理记录数为 98304，也不保证训练分布与目标真实信道一致。smoke 自身仅使用其中 64 条源输入；计数适用范围是完整源缓存，非 smoke 输入计数。证据：N607 runs/20261108-phase1-dura-joint-particle-source-s2026092701-r01-training-smoke/smoke.json。
