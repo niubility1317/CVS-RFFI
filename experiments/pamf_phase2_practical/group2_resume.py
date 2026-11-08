@@ -47,6 +47,17 @@ def separate_cancelled(rt, pending):
             [job for job in pending if job['profile'] in cancelled])
 
 
+def method_subset_jobs(pending):
+    """Save the actual B state and run only non-MoPC cores for unstarted jobs."""
+    result = []
+    for job in pending:
+        require(job['profile'] in ('protonet_cda', 'dadda_sda') and
+                job['methods'] == ['mopc_hr', 'orthogonal', 'lora'] and
+                not job.get('save_B_for_mopc'), 'Invalid method-subset job')
+        result.append(dict(job, methods=['orthogonal', 'lora'], save_B_for_mopc=True))
+    return result
+
+
 def verify_reuse_binding(rt, job):
     cap=Path(rt['data_root'])/job['capsule']
     manifest=read(cap/'manifest.json')
@@ -132,7 +143,22 @@ def previous_process_is_live(pid, ancestor, proc_root=Path('/proc')):
     return cwd == ancestor['release_root']
 
 
-def dispatch(rt):
+def reserve_owner(previous, rt, method_subset):
+    """One atomic owner for either normal or split-core continuation."""
+    previous = Path(previous)
+    old_claim = previous.parent/'.resume_successors'/(previous.name+'.json')
+    require(not old_claim.exists(), 'Parent already has a successor')
+    reservation = previous.parent/'.method_owner_reservations'/(previous.name+'.json')
+    claim = dict(successor_runtime=rt['runtime_file'], successor_root=rt['run_root'],
+                 scope='ORTHOGONAL_LORA_ONLY_MOPC_PENDING' if method_subset else 'FULL_METHODS')
+    # Both current entrypoints use the same exclusive path; only one can
+    # proceed. Existing historical successor claims are never modified.
+    write(reservation, claim)
+    if not method_subset:
+        write(old_claim, dict(successor_runtime=rt['runtime_file'], successor_root=rt['run_root']))
+
+
+def dispatch(rt, *, method_subset=False):
     validate_runtime(rt)
     if rt.get('cancelled_profiles'):
         require(all(int(limit) <= 2 for limit in rt['gpu_limits'].values()),
@@ -178,16 +204,23 @@ def dispatch(rt):
     reused,deferred,pending=classify_chain(rt,[root for root,_,_ in chain],deferred_keys)
     pending, cancelled = separate_cancelled(rt, pending)
     pending = prioritize_pending(rt, pending)
+    if method_subset:
+        pending = method_subset_jobs(pending)
     root=Path(rt['run_root']);root.mkdir(parents=True,exist_ok=False)
     for name in ('logs','launches','jobs'): (root/name).mkdir()
     for index,job in enumerate(pending): write(root/'jobs'/f'{index:05d}.json',job)
-    write(root/'resume_manifest.json',dict(reused=reused,deferred=deferred,cancelled=cancelled,pending_count=len(pending),
-        previous_run_root=str(previous),truth_read=False,query_fit=False))
+    manifest = dict(reused=reused,deferred=deferred,cancelled=cancelled,pending_count=len(pending),
+                    previous_run_root=str(previous),truth_read=False,query_fit=False)
+    if method_subset:
+        manifest['scope'] = 'ORTHOGONAL_LORA_ONLY_MOPC_PENDING'
+    write(root/'resume_manifest.json',manifest)
     write(root/'owner.json',dict(pid=os.getpid(),cwd=str(Path.cwd()),argv=sys.argv))
     gpu=_smoke_gpu(rt)
     while gpu is None:
         time.sleep(rt['poll_seconds']);gpu=_smoke_gpu(rt)
-    command=[sys.executable,'-u','-m',__package__+'.group2_schedule','smoke','--runtime',rt['runtime_file']]
+    command=([sys.executable,'-u','-m',__package__+'.group2_method_subset','--smoke','--runtime',rt['runtime_file']]
+             if method_subset else
+             [sys.executable,'-u','-m',__package__+'.group2_schedule','smoke','--runtime',rt['runtime_file']])
     env=dict(os.environ,CUDA_VISIBLE_DEVICES=str(gpu),OMP_NUM_THREADS='1',MKL_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1')
     with (root/'logs'/'smoke.log').open('x',encoding='utf-8') as log:
         proc=subprocess.Popen(command,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT)
@@ -195,14 +228,14 @@ def dispatch(rt):
         require(proc.wait()==0, 'Real-source no-query smoke failed')
     # The smoke opens no prediction output. Claim after it succeeds but before
     # any worker can start, so a preparation failure remains recoverable.
-    write(previous.parent/'.resume_successors'/(previous.name+'.json'),
-          dict(successor_runtime=rt['runtime_file'],successor_root=str(root)))
+    reserve_owner(previous, rt, method_subset)
     _queue(rt,pending,'worker')
     for job in pending: closed_prediction(job,len(job['points'])*len(job['methods']))
-    write(root/'pending_predictions_complete.json',dict(status='INCOMPLETE_DEFERRED_FAILURES',
+    completion = dict(status='SUBSET_FIXED_MOPC_PENDING' if method_subset else 'INCOMPLETE_DEFERRED_FAILURES',
         completed_pending=len(pending),reused=len(reused),deferred=[j['key'] for j in deferred],
         cancelled_profiles=rt.get('cancelled_profiles', []),cancelled_tasks=len(cancelled),
-        truth_read=False,query_fit=False))
+        truth_read=False,query_fit=False)
+    write(root/('subset_predictions_complete.json' if method_subset else 'pending_predictions_complete.json'), completion)
 
 
 if __name__=='__main__':

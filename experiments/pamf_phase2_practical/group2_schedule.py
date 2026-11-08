@@ -53,9 +53,14 @@ def closed_prediction(job, expected):
     output = Path(job['output'])
     done, index = read(output/'complete.json'), read(output/'predictions.json')
     subset = job.get('save_B_for_mopc', False)
+    mopc_only = bool(job.get('load_B_for_mopc'))
+    require(not (subset and mopc_only), 'Conflicting split-method modes')
     if subset:
         require(job['methods'] == ['orthogonal', 'lora'], 'Invalid saved-B method subset')
-    status = 'SUBSET_PREDICTIONS_FIXED' if subset else 'PREDICTIONS_COMPLETE'
+    if mopc_only:
+        require(job['methods'] == ['mopc_hr'], 'Invalid saved-B MoPC job')
+    status = ('SUBSET_PREDICTIONS_FIXED' if subset else
+              'MOPC_ONLY_PREDICTIONS_FIXED' if mopc_only else 'PREDICTIONS_COMPLETE')
     require(done['status']==status and done['truth_read'] is False and done['query_fit'] is False, 'Prediction not frozen')
     require(done['rows']==expected==len(index['rows']), 'Incomplete prediction row count')
     require(index['capsule']==job['capsule'] and index['model_seed']==job['seed'] and index['profile']==job['profile'], 'Wrong job binding')
@@ -124,6 +129,7 @@ def _queue(rt, jobs, action):
 
 
 def _score(rt, job):
+    require(not job.get('save_B_for_mopc') and not job.get('load_B_for_mopc'), 'A method subset cannot be scored')
     from .episodic_score import run
     from .milkr_r42_suite import common_query_score
     root=Path(rt['run_root'])
@@ -213,6 +219,9 @@ if __name__=='__main__':
         require(args.index is not None and args.index >= 0, 'Invalid task index')
         job=read(Path(runtime['run_root'])/'jobs'/f'{args.index:05d}.json')
         if args.action=='worker':
-            from .group2_worker import predict
+            if job.get('load_B_for_mopc'):
+                from .group2_mopc_from_b import predict
+            else:
+                from .group2_worker import predict
             predict(runtime,job)
         else: _score(runtime,job)
