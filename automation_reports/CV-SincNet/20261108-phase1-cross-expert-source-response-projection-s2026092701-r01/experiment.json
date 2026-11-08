@@ -1,0 +1,150 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-cross-expert-source-response-projection-s2026092701-r01",
+  "group_id": "phase1-cross-expert-source-response-projection",
+  "display_name": "时频恢复器源域响应梯度投影单步诊断",
+  "description": "同一源波形批次上比较波形目标、固定响应联合目标与梯度冲突投影，检查实际 AdamW 更新及独立源样本损失。",
+  "kind": "diagnostic",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "f-free",
+    "frozen-gate",
+    "no-update"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261108-phase1-cross-expert-source-response-stepsize-s2026092701-r01",
+    "20261108-phase1-cross-expert-source-response-step-s2026092701-r01",
+    "20261108-phase1-direct-wide-physics-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests continued novel and DURA-combinable Phase1 restoration research, F-free/TX-label-free source training, automatic seven-view test and truth-last score.",
+  "code": {
+    "commit": "d452377d30b04fd938ef7a38645a492d0a01e237",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CPU, two threads, CUDA hidden; source-only fixed evaluation",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-cross-expert-source-response-projection-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "64 previously explored source pilot records, 16 per each of four fixed RX/view groups",
+    "representation": "paired source IQ and one synthetic 1% RMS amplitude-cubic perturbation through DURA estimated action",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "Each of four groups first 8 fit and next 8 heldout; 64 unique records, disjoint from direct fit",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ only, transmitter truth not read",
+      "U_s": "source IQ only, transmitter truth hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Frozen DURA real-source smoke and finite source waveform metrics",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed source epoch19 seven simulated views"
+  },
+  "permissions": {
+    "regime": "source_only_frozen_evaluation",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Single in-memory CPU AdamW step on output heads only; no trained model, identity or target performance claim"
+  },
+  "checkpoint": {
+    "initialization": "Fresh CrossExpertRefiner initialized with 2026110830; frozen DURA and direct source final20",
+    "sources": [
+      "20261108-phase1-direct-wide-physics-source-s2026092701-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Direct source final20 fit disjoint from fixed source pilot; no in-flight training state loaded",
+    "provenance_verdict": "source-only frozen checkpoints",
+    "selection_rule": "Two fixed rates and three modes (wave-only, unprojected joint, projected joint), independent identical initializations, one step each; no checkpoint saved"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "CPU only, two threads, CUDA hidden; preserve all existing jobs",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-cross-expert-source-response-projection-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-cross-expert-source-response-projection-s2026092701-r01-launch.log",
+    "local_artifact_root": "E:\\type10-7\\github_publish\\CVS-RFFI-repo\\automation_reports\\CV-SincNet\\20261108-phase1-cross-expert-source-response-projection-s2026092701-r01",
+    "launch_command": "nice -n 15 env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-cross-expert-source-response-projection-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.source_cross_expert_response_projection --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-cross-expert-source-response-projection-s2026092701-r01 --commit d452377d30b04fd938ef7a38645a492d0a01e237",
+    "stop_rule": "Stop on provenance mismatch, nonfinite values, real-source smoke mismatch, output collision or technical failure"
+  },
+  "expected_artifacts": [
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "wave and response before/after",
+      "wave/response and projected gradient dot",
+      "wave gradient dot actual AdamW parameter update"
+    ],
+    "dimensions": [
+      "32 source fit records",
+      "32 disjoint source heldout records",
+      "two rates x three objectives",
+      "four source receiver/view groups"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "source clean IQ only, no TX truth"
+  },
+  "rows": [
+    {
+      "row_id": "cross-expert-source-response-projection",
+      "method": "wave versus unprojected and projected response gradient",
+      "purpose": "Check source waveform/response tradeoff after actual one-step AdamW updates",
+      "config_ref": "experiments/phase1_dura_orthogonal/source_cross_expert_response_projection.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110830,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Fresh model initialization uses in-flight model seed 2026110830; no in-flight checkpoint is read.",
+      "k": null,
+      "scenario": "64 source records, amplitude-cubic perturbation",
+      "optimizer": "AdamW, head parameters only, weight decay .001",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "32 fit plus 32 disjoint heldout records, six independent one-step conditions, CPU 2 threads, no saved weights",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-cross-expert-source-response-projection-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-cross-expert-source-response-projection-s2026092701-r01-launch.log",
+      "command": "nice -n 15 env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-cross-expert-source-response-projection-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.source_cross_expert_response_projection --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-cross-expert-source-response-projection-s2026092701-r01 --commit d452377d30b04fd938ef7a38645a492d0a01e237",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Exploratory source-only gradient-conflict follow-up, never target-tuned.",
+    "Fixed 32 fit plus 32 heldout explored source records; direct parent fit disjoint; DURA overlap unknown.",
+    "Two rates, three independently initialized modes and one head-only AdamW step each; no trained weights saved.",
+    "Finite AdamW updates need not preserve the first-order projected-gradient guarantee.",
+    "Two focused tests and one independent P0/P1 review passed; real-source checkpoint smoke runs before trials.",
+    "No TX labels, F, V or target access; not identity accuracy, full training or formal seven-view evidence."
+  ],
+  "registered_at": "2026-11-08T02:28:41+00:00"
+}
