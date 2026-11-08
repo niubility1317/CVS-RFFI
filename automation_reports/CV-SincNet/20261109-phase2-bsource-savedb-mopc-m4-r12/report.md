@@ -27,3 +27,7 @@ Run MoPC for the 1906 previously unstarted jobs from their exact r11 B anchors; 
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## Failed; outputs retained
+
+The controller stopped admission and drained after eight workers raised the old-support identity guard before any MoPC predictions. Each failed output directory and log is preserved, with zero prediction files; r11 saved B states and prior results remain untouched. Source inspection indicates the diagnostic helper returns support bank indices while the C loader returns physical sample IDs; this mismatch requires validation and a targeted repair. This failure does not establish the cause of earlier MoPC nonfinite gradients. Full prediction and scoring barriers remain closed. Evidence: local_artifacts/phase2_group2_bnoradio_20261108/r12_running_verified.json and r12_failure_detail_verified.json.
