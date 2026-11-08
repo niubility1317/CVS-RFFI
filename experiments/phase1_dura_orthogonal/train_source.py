@@ -44,6 +44,7 @@ from experiments.phase1_dura_orthogonal.large_direct_timefreq_stable import Stab
 from experiments.phase1_dura_orthogonal.large_direct_wide_residual import WideResidualDirectTimeFreq, RESIDUAL_SCALE as DIRECT_WIDE_SCALE
 from experiments.phase1_dura_orthogonal.source_forward_physics import source_channel_error, WEIGHT as SOURCE_PHYSICS_WEIGHT
 from experiments.phase1_dura_orthogonal.source_diverse_views import diverse_epochs
+from experiments.phase1_dura_orthogonal.spectral_quotient_loss import spectral_quotient_loss, WEIGHT as QUOTIENT_WEIGHT, REGULARIZATION as QUOTIENT_REGULARIZATION
 from experiments.phase1_dura_orthogonal.source_receiver_balance import receiver_weights, receiver_weighted_guard, EXPECTED_COUNTS as SOURCE_RECEIVER_COUNTS
 from experiments.phase1_dura_orthogonal.observable_source_risk import observable_risk_penalty, THRESHOLD as OBSERVABLE_THRESHOLD, WEIGHT as OBSERVABLE_WEIGHT
 from experiments.phase1_dura_orthogonal.large_source_tail import tail_iq_penalty, WEIGHT as SOURCE_TAIL_WEIGHT, FRACTION as SOURCE_TAIL_FRACTION
@@ -322,9 +323,14 @@ def main():
     parser.add_argument('--source-context-cache', type=Path)
     parser.add_argument('--save-source-context-cache', type=Path)
     parser.add_argument('--deterministic', action='store_true')
+    parser.add_argument('--spectral-quotient', action='store_true')
     parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard', 'ssl_fixed_guard', 'distill_iq', 'posterior_teacher_guard', 'ssl_crosshalf_guard', 'tail_excess_guard', 'wide_source_guard', 'wide_source_distill', 'wide_mixture_guard', 'wide_expert_distill', 'wide_masked_prior_guard', 'wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_direct_phase', 'wide_direct_circular', 'wide_conditional_flow_t0', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_antithetic_flow', 'wide_phase_equivariant_guard', 'wide_dura_circular', 'wide_conditional_phase', 'wide_conditional_phase_moments', 'wide_supervised_phase', 'wide_lag_context', 'wide_large_context', 'wide_large_context_tail', 'wide_large_context_stable', 'wide_large_context_stable_tail', 'wide_large_context_stable_observable', 'wide_large_context_stable_crossview', 'wide_large_context_stable_receiver', 'wide_large_context_stable_adaptive', 'wide_large_context_stable_timefreq', 'wide_large_context_stable_arctan', 'wide_large_context_stable_wide', 'wide_large_direct_timefreq', 'wide_large_direct_timefreq_stable', 'wide_large_direct_timefreq_stable_physics', 'wide_large_direct_timefreq_stable_diverse', 'wide_large_direct_timefreq_stable_wide', 'wide_large_direct_timefreq_stable_wide_physics'), default='iq')
     parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale', 'direct_spectral_student', 'dura_experts', 'direct_student_fir', 'dura_reversible', 'conditional_iq_flow', 'direct_iq_flow', 'direct_phase_recovery', 'direct_circular_recovery', 'dura_envelope', 'dura_quartic', 'antithetic_iq_flow', 'phase_equivariant_dura', 'dura_circular_recovery', 'conditional_phase_dura', 'conditional_phase_moments', 'phase_supervised_dura', 'lag_context_dura', 'large_context_dura', 'large_context_stable', 'large_direct_timefreq', 'large_direct_timefreq_stable'), default='orthogonal')
     args = parser.parse_args()
+    if args.spectral_quotient and (args.objective, args.architecture) not in (
+            ('wide_large_context_stable', 'large_context_stable'),
+            ('wide_large_direct_timefreq_stable', 'large_direct_timefreq_stable')):
+        raise ValueError('Spectral quotient requires a registered large stable source objective')
     if (args.architecture == 'phase_equivariant_dura') != (args.objective == 'wide_phase_equivariant_guard'):
         raise ValueError('Phase-equivariant recovery requires its matching source objective')
     if args.objective == 'wide_phase_equivariant_guard' and not args.smoke and not args.source_context_cache:
@@ -617,6 +623,7 @@ def main():
     masked_prior_losses = []
     phase_supervision_losses = []
     source_tail_losses = []
+    source_quotient_losses = []
     source_observable_losses, source_observable_rates = [], []
     source_crossview_losses = []
     initial_batch = min(args.prepare_batch, len(fit)) if args.architecture == 'dura_internal' else 8
@@ -666,6 +673,8 @@ def main():
         masked_prior_total = torch.zeros((), device=device)
         phase_supervision_total = torch.zeros((), device=device)
         source_tail_total = torch.zeros((), device=device)
+        if args.spectral_quotient:
+            source_quotient_total = torch.zeros((), device=device)
         source_observable_total = torch.zeros((), device=device)
         source_observable_selected = torch.zeros((), device=device)
         source_crossview_total = torch.zeros((), device=device)
@@ -727,6 +736,10 @@ def main():
             else:
                 loss = source_loss(output, fields[5] if args.objective == 'wide_multiview_distill' else anchor,
                                    y, objective=base_objective)
+            if args.spectral_quotient:
+                quotient_loss = spectral_quotient_loss(output, y)
+                loss = loss + QUOTIENT_WEIGHT * quotient_loss
+                source_quotient_total += quotient_loss.detach() * len(indices)
             if args.objective in ('wide_large_direct_timefreq_stable_physics', 'wide_large_direct_timefreq_stable_wide_physics'):
                 physical_loss = source_channel_error(output, y, fields[5], fields[6])
                 loss = loss + SOURCE_PHYSICS_WEIGHT*physical_loss
@@ -862,6 +875,8 @@ def main():
             ssl_feature_losses.append(float(ssl_feature_total.cpu())/len(order))
         if masked_prior is not None:
             masked_prior_losses.append(float(masked_prior_total.cpu())/len(order))
+        if args.spectral_quotient:
+            source_quotient_losses.append(float(source_quotient_total.cpu())/len(order))
         if args.objective in ('wide_large_context_tail', 'wide_large_context_stable_tail'):
             source_tail_losses.append(float(source_tail_total.cpu())/len(order))
         if args.objective == 'wide_large_context_stable_observable':
@@ -887,6 +902,10 @@ def main():
                             source_ssl_teacher_commit=SSL_TEACHER_COMMIT, source_ssl_aux_trainable=False)
     cache_metadata = dict(source_context_cache=str(args.source_context_cache) if args.source_context_cache else None,
                           deterministic_algorithms=args.deterministic)
+    if args.spectral_quotient:
+        cache_metadata.update(source_spectral_quotient_weight=QUOTIENT_WEIGHT,
+                              source_spectral_quotient_regularization=QUOTIENT_REGULARIZATION,
+                              source_spectral_quotient_losses=source_quotient_losses)
     if args.architecture in ('direct_phase_recovery', 'direct_circular_recovery'):
         cache_metadata.update(inference_received_iq_only=True, direct_phase_dilations=list(DIRECT_PHASE_DILATIONS),
                               direct_phase_residual_scale=DIRECT_PHASE_SCALE)

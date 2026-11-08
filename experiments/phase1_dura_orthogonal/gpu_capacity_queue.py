@@ -25,12 +25,17 @@ def main():
     p.add_argument('--commit', required=True)
     p.add_argument('--cache', type=Path)
     p.add_argument('--gpu', type=int, required=True)
+    p.add_argument('--spectral-quotient', action='store_true')
     p.add_argument('--fast-flow-guards', action='store_true')
     p.add_argument('--cuda-graph-flow', action='store_true')
     p.add_argument('--epoch-flow-times', action='store_true')
     p.add_argument('--objective', required=True, choices=('wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression', 'wide_reversible_guard', 'wide_balanced_spectral_guard', 'wide_multiview_dura_guard', 'wide_counterfactual_guard', 'wide_instance_contrast', 'wide_multiview_distill', 'wide_conditional_flow', 'wide_direct_flow', 'wide_direct_phase', 'wide_direct_circular', 'wide_conditional_flow_t0', 'wide_envelope_guard', 'wide_quartic_guard', 'wide_antithetic_flow', 'wide_phase_equivariant_guard', 'wide_dura_circular', 'wide_conditional_phase', 'wide_conditional_phase_moments', 'wide_supervised_phase', 'wide_lag_context', 'wide_large_context', 'wide_large_context_tail', 'wide_large_context_stable', 'wide_large_context_stable_tail', 'wide_large_context_stable_observable', 'wide_large_context_stable_crossview', 'wide_large_context_stable_receiver', 'wide_large_context_stable_adaptive', 'wide_large_context_stable_timefreq', 'wide_large_context_stable_arctan', 'wide_large_context_stable_wide', 'wide_large_direct_timefreq', 'wide_large_direct_timefreq_stable', 'wide_large_direct_timefreq_stable_physics', 'wide_large_direct_timefreq_stable_diverse', 'wide_large_direct_timefreq_stable_wide', 'wide_large_direct_timefreq_stable_wide_physics', 'wide_conditional_adversary'))
     p.add_argument('--architecture', choices=('dura_multiscale', 'direct_student_fir', 'dura_frequency_regression', 'dura_reversible', 'direct_spectral_student', 'conditional_iq_flow', 'direct_iq_flow', 'direct_phase_recovery', 'direct_circular_recovery', 'dura_envelope', 'dura_quartic', 'antithetic_iq_flow', 'phase_equivariant_dura', 'dura_circular_recovery', 'conditional_phase_dura', 'conditional_phase_moments', 'phase_supervised_dura', 'lag_context_dura', 'large_context_dura', 'large_context_stable', 'large_direct_timefreq', 'large_direct_timefreq_stable'), default='dura_multiscale')
     args = p.parse_args()
+    if args.spectral_quotient and (args.objective, args.architecture) not in (
+            ('wide_large_context_stable', 'large_context_stable'),
+            ('wide_large_direct_timefreq_stable', 'large_direct_timefreq_stable')):
+        raise ValueError('Spectral quotient requires a registered large stable source objective')
     if args.epoch_flow_times and (args.objective, args.architecture) != ('wide_conditional_flow', 'conditional_iq_flow'):
         raise ValueError('Epoch flow times require conditional flow')
     if args.cuda_graph_flow and ((args.objective, args.architecture) != ('wide_conditional_flow', 'conditional_iq_flow')
@@ -55,7 +60,7 @@ def main():
                                        '--format=csv,noheader,nounits'], text=True)
         apps = subprocess.check_output(['nvidia-smi', '--query-compute-apps=gpu_uuid,pid',
                                         '--format=csv,noheader,nounits'], text=True)
-        ready, free, count = capacity(gpu, apps, args.gpu)
+        ready, free, count = capacity(gpu, apps, args.gpu, minimum_mib=8192 if args.spectral_quotient else 4096)
         if ready:
             print('GPU_QUEUE_SLOT', args.gpu, 'free_mib', free, 'other_apps', count, flush=True)
             break
@@ -68,6 +73,8 @@ def main():
            '--architecture', args.architecture]
     if args.cache is not None:
         cmd.extend(['--source-context-cache', str(args.cache)])
+    if args.spectral_quotient:
+        cmd.append('--spectral-quotient')
     if args.fast_flow_guards:
         cmd.append('--fast-flow-guards')
     if args.cuda_graph_flow:
