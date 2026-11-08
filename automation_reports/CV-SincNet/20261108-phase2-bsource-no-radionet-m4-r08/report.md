@@ -35,3 +35,7 @@ Reuse 9240 closed ancestor tasks, retain 6 quarantines and 138 partial predictio
 ## 2026-11-08 非 RadioNet 任务已实际派发
 
 控制器 PID 1644515、start_ticks 62274143 已核实。6 个非 RadioNet 真实源 checkpoint 的 source-only/no-query smoke PASS；逐项核实引用 r02 至 r06 的 9,240 个完整任务、174,195 份预测，六处隔离的 138 份 partial 不变。1,932 个未启动 RadioNet 任务已取消；剩余 759 个 DADDA 后接 1,587 个 ProtoNet-CDA，任务顺序已逐项核对。新 DADDA 已派发，首次独立核实时新闭合 10 项，16 个真实 worker、GPU 0–7 各 2 个，failed=[]。C 的 RadioNet 已按用户要求停止，已有完整及部分结果保留；两组已知隔离未解决，全预测屏障及评分关闭。
+
+## 2026-11-08 新故障及保留状态
+
+新闭合 124 个任务后，任务 120（DADDA→MoPC，P03/MIX01/7-7，seed 2026092703）在 C 阶段 1 的第 19 轮第 19 次迭代报告 gradient_norm 非有限；异常梯度张量列表为空，根因未确定。该任务输出目录保留，当前无 npz 预测，原始日志保留。控制器已退出，worker 已排空，系统停止继续派发；旧完整预测及六处隔离、后继 claim 均保留。RadioNet 仍取消，预测完成屏障和评分关闭。后续只在诊断和明确恢复范围后从该 run 与祖先安全复用，不能盲重跑失败项。

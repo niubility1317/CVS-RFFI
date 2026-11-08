@@ -1,3 +1,4 @@
 {"at": "2026-11-08T09:52:36+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-08T09:56:35+00:00", "status": "RUNNING", "note": "控制器 PID 1644515 已启动，正在只读核查祖先；source smoke 与新预测尚未开始。", "evidence": ["E:/type10-7/local_artifacts/phase2_group2_bnoradio_20261108/monitor_r08_remote.py"], "row_id": null}
 {"at": "2026-11-08T10:00:54+00:00", "status": "RUNNING", "note": "6 种源 checkpoint 检查通过；复用 9240 完整任务，隔离 6，取消 1932 RadioNet；DADDA 已派发并产生预测。", "evidence": ["E:/type10-7/local_artifacts/phase2_group2_bnoradio_20261108/running_verified.json"], "row_id": null}
+{"at": "2026-11-08T11:09:33+00:00", "status": "FAILED", "note": "DADDA to MoPC task 120 stopped on nonfinite gradient norm; retained all outputs; no automatic retry.", "evidence": ["E:/type10-7/local_artifacts/phase2_group2_bnoradio_20261108/failure_detail_verified.json"], "row_id": null}
