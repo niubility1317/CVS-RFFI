@@ -31,3 +31,7 @@ Reuse 9394 complete ancestor tasks, retain eight quarantines and 171 partials; r
 ## 未开始任务与失败诊断
 
 逐项清点祖先 9,394 个完整任务、8 个隔离任务共 171 份部分预测，取消 1,932 个未开始 RadioNet；待运行 1,556 个 ProtoNet-CDA，随后 634 个 DADDA。失败时记录有限梯度的 FP64 范数和最大值，不更改训练、种子或原非有限停止条件；既有失败任务不重发，任何新失败停止派发并排空。该记录不声称故障根因已解决。每 GPU 本任务 B/C 合计最多 2 个进程，启动前空余至少 6,000 MiB；全预测固定及缺项处理前评分关闭。18 项定向测试和独立 P0/P1 审核通过；真实源 no-query smoke 为启动第一步。
+
+## 实际派发
+
+独立核实 PID 1844972、start_ticks 64209466；六项真实源 checkpoint 的无 query smoke PASS。manifest 引用 9,394 个已完成任务，保留 8 个隔离，取消 1,932 个 RadioNet；独立读取新闭合 70 项，13 个真实 ProtoNet-CDA worker，每卡不超过 2 个，failed=[]。原失败停止条件和训练保持；评分及完整预测屏障关闭。
