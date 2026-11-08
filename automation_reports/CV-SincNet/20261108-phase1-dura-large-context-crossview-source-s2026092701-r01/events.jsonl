@@ -1,0 +1,2 @@
+{"at": "2026-11-07T19:03:28+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-07T20:26:50+00:00", "status": "TRAINING_COMPLETE", "note": "20 epochs on fixed legal source IDs; source-only checkpoint frozen; source diagnostics not identity accuracy.", "evidence": ["N607 source_summary.json SOURCE_TRAINED and 112-record ground_smoke.log"], "row_id": null}

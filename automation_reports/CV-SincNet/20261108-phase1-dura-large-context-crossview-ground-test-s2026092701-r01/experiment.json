@@ -1,0 +1,173 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-dura-large-context-crossview-ground-test-s2026092701-r01",
+  "group_id": "phase1-dura-large-context-crossview",
+  "display_name": "DURA 同记录多视图一致性七景测试",
+  "description": "归一化大容量 DURA 修正，通过同一源物理记录的三个信道视图学习一致恢复。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "dura",
+    "F-free-training",
+    "large-context",
+    "deterministic-gpu",
+    "normalized-decoder",
+    "matched-source-multiview"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261108-phase1-dura-large-context-crossview-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests continued novel and DURA-combinable Phase1 restoration research, F-free/TX-label-free source training, automatic seven-view test and truth-last score.",
+  "code": {
+    "commit": "bfabb5e69206a4362f127f5b25c6ffa9af3bd8e0",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 physical GPU3, FP32 TF32 off deterministic source training; CPU ground",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-dura-large-context-crossview-source-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "frozen candidate + frozen Tri-SIG-TIME SSL on fixed Phase1 seven-view ground IQ",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "168000 fixed Phase1 Main split ground physical records in each of seven views",
+    "label_map_ref": "Six Phase1 transmitter classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "No target labels, clean pair, or target fitting during inference; labels only after all seven predictions",
+    "roles": {
+      "L_s": "source IQ training only, TX hidden",
+      "U_s": "source IQ training only, TX hidden",
+      "V": "not used for G training",
+      "test": "fixed Phase1 ground IQ, truth last"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Seven fixed predictions precede independent truth-last scoring",
+    "support_query_ref": "Phase1 original fixed cross_rx126000 and cross_both42000; no support",
+    "leo_config_ref": "R07 2.462 GHz source views and Phase1 six fixed practical test views",
+    "target_panel": "168000 Phase1 physical records x seven views",
+    "actual_training_labels": "Recovery training uses paired source IQ only; no F outputs, F weights, TX labels, V or target. Frozen Tri-SIG-TIME SSL only after recovery checkpoint frozen.",
+    "augmentation": "Fixed pre-existing Phase1 ground test simulated seven views"
+  },
+  "permissions": {
+    "regime": "Phase1 frozen ground evaluation",
+    "query_use": "Fixed per-record Phase1 IQ only after source training; no target fit, truth only after seven-view predictions",
+    "external_method_exception": null,
+    "claim_scope": "Single-seed repeatedly observed Phase1 simulated ground test; not independent blind or real satellite"
+  },
+  "checkpoint": {
+    "initialization": "Frozen DURA v1.0 plus independently initialized 14793858-parameter zero-output global/local correction",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261108-phase1-dura-large-context-crossview-source-s2026092701-r01",
+      "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+    ],
+    "contract_check_ref": "Fixed original DURA source provenance and exact source context fit IDs; no F/TX/V/target in training",
+    "provenance_verdict": "Original frozen DURA and matching legal source IQ context; no prior candidate checkpoint",
+    "selection_rule": "Final epoch 20 fixed, no source pilot or target based selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "GPU3: one this-run GPU worker; >=4096 MiB free and fewer than three total compute apps; preserve other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-large-context-crossview-ground-test-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-large-context-crossview-source-s2026092701-r01-queue.log",
+    "local_artifact_root": "E:\\type10-7\\github_publish\\CVS-RFFI-repo\\automation_reports\\CV-SincNet\\20261108-phase1-dura-large-context-crossview-ground-test-s2026092701-r01",
+    "launch_command": "nice -n 10 env PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-dura-large-context-crossview-source-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.gpu_capacity_queue --root /home/szu2070436088/2510044040/CV-SincNet --source 20261108-phase1-dura-large-context-crossview-source-s2026092701-r01 --ground 20261108-phase1-dura-large-context-crossview-ground-test-s2026092701-r01 --commit bfabb5e69206a4362f127f5b25c6ffa9af3bd8e0 --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-wide-source-source-s2026092701-r01/source_context.pt --gpu 3 --objective wide_large_context_stable_crossview --architecture large_context_stable",
+    "stop_rule": "Stop exact owner only for source contract/role mismatch, nonfinite computation, incorrect checkpoint, target leakage or unrecoverable technical failure. Preserve all artifacts."
+  },
+  "expected_artifacts": [
+    "flow/test_prediction/complete.json",
+    "flow/test_summary.json",
+    "flow/paired_dura.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "ground accuracy",
+      "raw clean gap in pp and relative percent",
+      "macro F1",
+      "DURA paired repairs and damages",
+      "TX/RX/day groups"
+    ],
+    "dimensions": [
+      "168000 physical records",
+      "clean and six practical views"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-large-context-crossview-ground-test-s2026092701-r01/flow/test_prediction",
+    "scorer_ref": "independent CPU subprocess ground score after seven complete predictions"
+  },
+  "rows": [
+    {
+      "row_id": "large-context-crossview-final",
+      "method": "Normalized large-context DURA with matched-source cross-view consistency",
+      "purpose": "Encourage consistent restoration across three corruptions of the same source record",
+      "config_ref": "experiments/phase1_dura_orthogonal/ground.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Model 2026110612; source fit 2026110611; order 2026110613; fixed evaluation 2026092701.",
+      "k": null,
+      "scenario": "clean and six practical Phase1 Main split views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "168000 ground records x seven views; fixed predictions before independent truth-last",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-large-context-crossview-ground-test-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-large-context-crossview-source-s2026092701-r01-queue.log",
+      "command": "nice -n 10 env PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-dura-large-context-crossview-source-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.gpu_capacity_queue --root /home/szu2070436088/2510044040/CV-SincNet --source 20261108-phase1-dura-large-context-crossview-source-s2026092701-r01 --ground 20261108-phase1-dura-large-context-crossview-ground-test-s2026092701-r01 --commit bfabb5e69206a4362f127f5b25c6ffa9af3bd8e0 --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-wide-source-source-s2026092701-r01/source_context.pt --gpu 3 --objective wide_large_context_stable_crossview --architecture large_context_stable",
+      "expected_artifacts": [
+        "flow/test_prediction/complete.json",
+        "flow/test_summary.json",
+        "flow/paired_dura.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Fresh zero-output normalized correction, frozen DURA; source-only IQ pairs, no F/TX/V/target during training.",
+    "Three fixed received views share the same source physical record; loss is DURA guard plus 0.1 within-record normalized output variance.",
+    "Fixed 32768 source IDs x three views, batch 10 records / 30 views (last batch 8 / 24), 3277 updates per epoch, AdamW .0003, 20 epochs, 65540 total updates.",
+    "At identical source exposure the single-view-mixed batch32 control has 3072 updates per epoch / 61440 total; compute budgets are not identical.",
+    "Twelve focused tests, actual DURA matched-source six-step GPU smoke and independent P0/P1 review passed.",
+    "Single received record at inference; frozen Tri-SIG-TIME SSL seven-view ground predictions precede independent truth-last and no target feedback."
+  ],
+  "registered_at": "2026-11-07T19:03:36+00:00"
+}

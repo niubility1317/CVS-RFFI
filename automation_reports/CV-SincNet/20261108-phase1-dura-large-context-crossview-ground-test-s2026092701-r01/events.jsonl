@@ -1,0 +1,3 @@
+{"at": "2026-11-07T19:03:36+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-07T20:26:57+00:00", "status": "RUNNING", "note": "Seven-view prediction started; no truth until all predictions fixed.", "evidence": ["N607 controller PID 701203 and prediction PID 800931"], "row_id": null}
+{"at": "2026-11-08T09:22:42+00:00", "status": "ANALYZED", "note": "All seven predictions completed before independent scoring; six impaired views below DURA.", "evidence": ["analysis.md; N607 flow/test_summary.json, paired_dura.json, test_prediction/complete.json"], "row_id": null}
