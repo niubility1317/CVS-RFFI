@@ -1,0 +1,3 @@
+{"at": "2026-11-07T16:08:34+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-07T16:11:02+00:00", "status": "QUEUED", "note": "Automatic seven-view prediction follows fixed final20 and no-query source prediction smoke.", "evidence": ["N607:PID519409,controller"], "row_id": null}
+{"at": "2026-11-08T06:00:32+00:00", "status": "ANALYZED", "note": "Seven complete 168000-record views scored independently after fixed predictions; one practical scene meets 3%; five of six scenes decline versus paired DURA.", "evidence": ["analysis.md; N607 flow/test_summary.json and paired_dura.json"], "row_id": null}

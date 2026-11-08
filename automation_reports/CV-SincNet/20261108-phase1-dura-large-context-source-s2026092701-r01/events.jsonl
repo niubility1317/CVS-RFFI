@@ -1,0 +1,3 @@
+{"at": "2026-11-07T16:08:20+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-07T16:10:49+00:00", "status": "RUNNING", "note": "GPU0 training started; real DURA source smoke passed, source-only and frozen DURA.", "evidence": ["N607:PID519398,PID519409,PID519508,smoke.json,source_train.log"], "row_id": null}
+{"at": "2026-11-08T06:00:00+00:00", "status": "TRAINING_COMPLETE", "note": "Fixed final20 source checkpoint completed; no target selection.", "evidence": ["N607 controller source_train.log; final20 source_summary.json"], "row_id": null}
