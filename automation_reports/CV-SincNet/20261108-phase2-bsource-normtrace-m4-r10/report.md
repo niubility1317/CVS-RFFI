@@ -35,3 +35,7 @@ Reuse 9394 complete ancestor tasks, retain eight quarantines and 171 partials; r
 ## 实际派发
 
 独立核实 PID 1844972、start_ticks 64209466；六项真实源 checkpoint 的无 query smoke PASS。manifest 引用 9,394 个已完成任务，保留 8 个隔离，取消 1,932 个 RadioNet；独立读取新闭合 70 项，13 个真实 ProtoNet-CDA worker，每卡不超过 2 个，failed=[]。原失败停止条件和训练保持；评分及完整预测屏障关闭。
+
+## 新故障：实际非有限梯度
+
+新增闭合 283 项后，任务 277（ProtoNet-CDA→MoPC，P02/MIX02/2-1，seed 2026092702，K10/N10）在 C 阶段 2 第 11 轮第 44 步出现非有限 loss、cross_entropy、gradient_norm，以及 18 个包含非有限元素的梯度张量。此故障存在真实非有限梯度，不能解释为仅范数聚合溢出；首次非有限中间量仍未知。该任务 30 份部分预测和日志保留，控制器退出、worker 排空；原预测与隔离、后继 claim 和 RadioNet 取消范围保留，完整预测屏障及评分关闭。
