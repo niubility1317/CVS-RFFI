@@ -42,7 +42,7 @@ def test_resume_preserves_original_recipe_and_budget(module,epoch,cap,gpu,monkey
         return [{'GPU':gpu,'free_memory_MB':20000},{'GPU':gpu,'free_memory_MB':10000}]
     monkeypatch.setattr(module,'recovery_gpu_choice',gpu_choice)
     assert len(module.admitted_gpus())==1 and got['gpu']==(gpu,)
-    assert got['maximum']==(2 if cap==3 else 5)
+    assert got['maximum']==(3 if cap==3 else 5)
 
 
 def test_technical_resume_passes_response_trace_and_coupling(monkeypatch,tmp_path):

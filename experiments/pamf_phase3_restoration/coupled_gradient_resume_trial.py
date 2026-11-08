@@ -21,7 +21,7 @@ def configuration(arm):
     if arm!=ARM:raise ValueError('Original coupled arm required')
     cfg=dict(PARENT_CONFIG)
     cfg.update(run_id=RUN,technical_recovery_parent=original.RUN,technical_recovery_commit=PARENT_COMMIT,
-        technical_recovery_epoch=PARENT_EPOCH,resource_policy='GPU5 only, admit at most one existing process and >=12GiB free, total cap3.',
+        technical_recovery_epoch=PARENT_EPOCH,resource_policy='GPU5 only, admit at most two existing processes and >=12GiB free, total cap3.',
         scientific_change='Exact original coupled objective and source schedule; technical E15 continuation only.')
     return cfg
 
@@ -38,7 +38,7 @@ def train(args,out):
 
 
 def admitted_gpus():
-    return [g for g in recovery_gpu_choice(allowed_gpus=(5,),maximum_processes=2) if g['free_memory_MB']>=12288]
+    return [g for g in recovery_gpu_choice(allowed_gpus=(5,),maximum_processes=3) if g['free_memory_MB']>=12288]
 
 
 def controller(args):return resume.controller(args,RUN,ARM,admitted_gpus,3)
