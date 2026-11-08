@@ -26,7 +26,7 @@
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 CVS-RFFI, CPUthreads2, FP32 network/FP64 posterior, TF32off; GPU2/4 cap3.",
     "cwd": "releases/20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r03-release",
-    "scientific_code_commit": "8cf3669c4a5d98f6c4930117952203afd56f2f6e",
+    "scientific_code_commit": "f81795fae6a2891b3e1f1e03cc94c5a3592f15e7",
     "identity_note": "该commit包含技术续训代码；父配置和E26模型/优化器/随机数在恢复时严格校验。"
   },
   "data": {
@@ -125,7 +125,7 @@
     "rows/<arm>/results.json",
     "complete.json",
     "logs/*.log PRIVATE",
-    "rows/TF_BoundedProjected/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only",
+    "rows/TF_BoundedProjected/training/recovery/E27..E30.pt PRIVATE; E01..E26 in preserved parent run",
     "launch.json actual owner",
     "logs/run/resource_handover_GPU5.json original queue retirement",
     "rows/TF_BoundedProjected/training/technical_resume.json",
@@ -194,7 +194,7 @@
         "rows/<arm>/results.json",
         "complete.json",
         "logs/*.log PRIVATE",
-        "rows/TF_BoundedProjected/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only",
+        "rows/TF_BoundedProjected/training/recovery/E27..E30.pt PRIVATE; E01..E26 in preserved parent run",
         "launch.json actual owner",
         "logs/run/resource_handover_GPU5.json original queue retirement",
         "rows/TF_BoundedProjected/training/technical_resume.json",
