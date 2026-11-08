@@ -3,6 +3,20 @@ import pytest
 from experiments.pamf_phase2_practical import group2_resume
 
 
+def test_user_cancelled_radio_is_excluded_without_removing_other_methods():
+    jobs = [{'profile': 'radionet_ada_knn', 'key': 'r'},
+            {'profile': 'dadda_sda', 'key': 'd'},
+            {'profile': 'protonet_cda', 'key': 'p'}]
+    pending, cancelled = group2_resume.separate_cancelled({'cancelled_profiles': ['radionet_ada_knn']}, jobs)
+    assert [x['key'] for x in pending] == ['d', 'p']
+    assert [x['key'] for x in cancelled] == ['r']
+
+
+def test_cancelled_scope_cannot_silently_exclude_other_methods():
+    with pytest.raises(ValueError):
+        group2_resume.separate_cancelled({'cancelled_profiles': ['dadda_sda']}, [])
+
+
 def test_reuses_closed_jobs_skips_exact_failed_job_and_refuses_other_partial(tmp_path, monkeypatch):
     previous=tmp_path/'previous'; (previous/'predictions'/'done').mkdir(parents=True)
     (previous/'predictions'/'failed').mkdir()

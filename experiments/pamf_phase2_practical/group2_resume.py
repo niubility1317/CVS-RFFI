@@ -23,7 +23,7 @@ def require_same_method(previous, current):
     allowed={'run_id','run_root','release_root','runtime_file','code_commit','authorization','stop_rule',
              'launch_owner','previous_run_root','previous_runtime_file','deferred_failure_keys',
              'gpu_limits','minimum_free_MiB','score_processes','poll_seconds','priority_peer',
-             'last_profiles'}
+             'last_profiles','cancelled_profiles'}
     old={key:value for key,value in previous.items() if key not in allowed}
     new={key:value for key,value in current.items() if key not in allowed}
     require(old==new,'Previous experiment identity differs')
@@ -36,6 +36,15 @@ def prioritize_pending(rt, pending):
             len(set(last_profiles)) == len(last_profiles), 'Invalid last profiles')
     rank = {profile: index for index, profile in enumerate(last_profiles, 1)}
     return sorted(pending, key=lambda job: rank.get(job['profile'], 0)) if rank else pending
+
+
+def separate_cancelled(rt, pending):
+    cancelled = rt.get('cancelled_profiles', [])
+    require(isinstance(cancelled, list) and len(set(cancelled)) == len(cancelled) and
+            all(profile == 'radionet_ada_knn' for profile in cancelled),
+            'Invalid cancelled profiles')
+    return ([job for job in pending if job['profile'] not in cancelled],
+            [job for job in pending if job['profile'] in cancelled])
 
 
 def verify_reuse_binding(rt, job):
@@ -106,6 +115,9 @@ def classify_chain(rt, previous_roots, deferred_keys):
 
 def dispatch(rt):
     validate_runtime(rt)
+    if rt.get('cancelled_profiles'):
+        require(all(int(limit) <= 2 for limit in rt['gpu_limits'].values()),
+                'Cancelled-profile continuation exceeds the per-GPU task limit')
     previous=Path(rt['previous_run_root'])
     previous_rt=read(rt['previous_runtime_file'])
     require(str(previous)==previous_rt['run_root'] and rt['previous_runtime_file']==previous_rt['runtime_file'],
@@ -150,16 +162,12 @@ def dispatch(rt):
     deferred_keys=set(rt['deferred_failure_keys'])
     require(deferred_keys==failures, 'Deferred set differs from recorded failures')
     reused,deferred,pending=classify_chain(rt,[root for root,_,_ in chain],deferred_keys)
+    pending, cancelled = separate_cancelled(rt, pending)
     pending = prioritize_pending(rt, pending)
     root=Path(rt['run_root']);root.mkdir(parents=True,exist_ok=False)
-    if rt.get('priority_peer'):
-        # All ancestor/configuration/prediction checks passed and the successor
-        # now has a real immutable root. Failed preparation leaves no claim.
-        write(previous.parent/'.resume_successors'/(previous.name+'.json'),
-              dict(successor_runtime=rt['runtime_file'],successor_root=str(root)))
     for name in ('logs','launches','jobs'): (root/name).mkdir()
     for index,job in enumerate(pending): write(root/'jobs'/f'{index:05d}.json',job)
-    write(root/'resume_manifest.json',dict(reused=reused,deferred=deferred,pending_count=len(pending),
+    write(root/'resume_manifest.json',dict(reused=reused,deferred=deferred,cancelled=cancelled,pending_count=len(pending),
         previous_run_root=str(previous),truth_read=False,query_fit=False))
     write(root/'owner.json',dict(pid=os.getpid(),cwd=str(Path.cwd()),argv=sys.argv))
     gpu=_smoke_gpu(rt)
@@ -171,10 +179,15 @@ def dispatch(rt):
         proc=subprocess.Popen(command,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT)
         write(root/'launches'/'smoke.json',dict(pid=proc.pid,gpu=gpu,cwd=str(Path.cwd()),argv=command))
         require(proc.wait()==0, 'Real-source no-query smoke failed')
+    # The smoke opens no prediction output. Claim after it succeeds but before
+    # any worker can start, so a preparation failure remains recoverable.
+    write(previous.parent/'.resume_successors'/(previous.name+'.json'),
+          dict(successor_runtime=rt['runtime_file'],successor_root=str(root)))
     _queue(rt,pending,'worker')
     for job in pending: closed_prediction(job,len(job['points'])*len(job['methods']))
     write(root/'pending_predictions_complete.json',dict(status='INCOMPLETE_DEFERRED_FAILURES',
         completed_pending=len(pending),reused=len(reused),deferred=[j['key'] for j in deferred],
+        cancelled_profiles=rt.get('cancelled_profiles', []),cancelled_tasks=len(cancelled),
         truth_read=False,query_fit=False))
 
 
