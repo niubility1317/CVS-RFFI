@@ -1,0 +1,210 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r04",
+  "group_id": "source-input-bounded-projected-prior-single30",
+  "display_name": "有界投影恢复器：GPU 6 上的第 26 轮技术续训",
+  "description": "原 r03 队列未提交训练；使用授权 GPU 6 恢复原 E26 模型、AdamW 和随机状态，续训 E27–E30 并完成既定测试。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "source-only",
+    "original-ground-TriSIGTIME-SSL-Main",
+    "F-guided",
+    "scratch-single30",
+    "bounded-projected-correction"
+  ],
+  "comparison_group_id": "original-vs-bounded-projected-source-prior",
+  "parent_run_ids": [
+    "20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r02"
+  ],
+  "replaces_run_id": "20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r03",
+  "authorization": "原30轮/7410步和两总体七视图正式测试；仅技术恢复，不按目标结果选模。",
+  "code": {
+    "commit": "40bbec6ef471933ee80e5727646614e264606440",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI, CPUthreads2, FP32 network/FP64 posterior, TF32off; GPU6 cap5.",
+    "cwd": "releases/20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r04-release",
+    "scientific_code_commit": "f81795fae6a2891b3e1f1e03cc94c5a3592f15e7",
+    "identity_note": "该commit包含技术续训代码；父配置和E26模型/优化器/随机数在恢复时严格校验。"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "Original R07 L_s6300/U_s56700 paired clean/received IQ and simulated Action/noise; original source mean/covariance.",
+    "contract_ref": "OriginalTriSSLsource_contract/392005/rolecounts6300-56700-27000;R07train63000sameIDset androles/RX/day byID",
+    "physical_ids_ref": "R07train/physical_ids.npy roles.npy;validatedoriginalsourceLUcache IDs foralignment;officialMain source-disjoint viewindexes",
+    "label_map_ref": "Gtrainnone;frozenF0originalsixclassorder,truthonly originalCPUscorerafterallrow42cells fixed",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse original VALIDATED_ONCE R07/capsule/split and a3 source IQ moments/f57 source F0 variance. No target, V, OE or novel training.",
+    "support_query_ref": "No targettraining/support/PCD/unknownrole. OriginalMain two populations168000,all7perrowfixedbefore independenttruth.",
+    "leo_config_ref": "R07sourcecache20trainrealizations/2026101912augmentation;officialMain frozen7observations",
+    "actual_training_labels": "No TX labels. Original physical Action/noise supervision and corrected source noiseless IQ/STFT/.01 continuous frozen F0 features.",
+    "augmentation": "Original R07 clean+six source scenes and original 30-draw order; no new source or target data."
+  },
+  "permissions": {
+    "regime": "source-only-scratch-F0-guided-input-bounded-projected-prior",
+    "query_use": "Physical branch uses original source simulator factors only. Detail branch uses source clean and continuous frozen F0 on the corrected source noiseless inverse. Main uses only received IQ and a frozen original F0 head.",
+    "external_method_exception": null,
+    "claim_scope": "Fixed per-record correction cap uses only received IQ at deployment; no true Action, noise, clean, TX, F0 logits/CE, V/OE or target training."
+  },
+  "checkpoint": {
+    "initialization": "父run从零训练所得E26模型、AdamW及随机状态，仅资源中断技术恢复；父训练6300 L_s/56700 U_s，冻结原F0和源先验。",
+    "sources": [
+      "20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r02/rows/TF_BoundedProjected/training/recovery/E26.pt",
+      "20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r02/rows/TF_BoundedProjected/training/config.json",
+      "原source F0及源端先验"
+    ],
+    "contract_check_ref": "原父run同一L_s/U_s、模拟信道和冻结F0；无V/OE/TX或目标参与，E26为最后完成轮次。",
+    "provenance_verdict": "技术恢复，模型与优化器和随机状态来自同一已中断源域run，无目标预测。",
+    "selection_rule": "固定最后完成E26恢复，最终固定E30；两个总体全七景预测后truth-last。"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/bounded-projected-e26-technical-recovery",
+    "gpu_policy": "GPU6：入场至多3个已有计算进程且空闲≥12288 MiB；持续监测总数≤5，仅停止本任务。",
+    "remote_run_root": "runs/20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r04",
+    "remote_log_root": "logs/20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r04",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r04",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.bounded_projected_gpu6_resume_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 40bbec6ef471933ee80e5727646614e264606440 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r04-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "r03仍活动或已提交、父任务仍活动或预测已开始、配置/模型/优化器/RNG/源顺序不匹配、实际源2检查失败、非有限、残差异常或GPU总数超5：保留输出停止。"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/training/config.json",
+    "rows/<arm>/training/smoke.json",
+    "rows/<arm>/training/smoke_E0.pt PRIVATE",
+    "rows/<arm>/training/data_schedule.npz PRIVATE",
+    "rows/<arm>/training/training.jsonl PRIVATE",
+    "rows/<arm>/training/final.pt PRIVATE",
+    "rows/<arm>/training/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE",
+    "rows/TF_BoundedProjected/training/recovery/E27..E30.pt PRIVATE; E01..E26 in preserved parent run",
+    "launch.json actual owner",
+    "rows/TF_BoundedProjected/training/technical_resume.json",
+    "rows/TF_BoundedProjected/training/technical_resume_smoke.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Original frozen ground Tri-SIG-TIME SSL Main168000: raw clean145385; each practical>=140345 and both raw clean populations separately maintained.",
+      "Original clean and six practical, per TX/RX/day groups, paired raw/DURA repairs and damage. Original ProjectedPriorDetail matched control only after all predictions fixed.",
+      "Every source epoch: unbounded and bounded projected correction NMSE, actual clipping fraction/scale, source losses, optimizer norms, posterior residual, wall time and memory.",
+      "5481223 learned parameters unchanged; bound is on per-record correction L2, not parameter count. Track source and actual deployed effect, not inferred speed."
+    ],
+    "dimensions": [
+      "original Main two populations and seven views",
+      "TX/RX/day/RXday",
+      "single model seed",
+      "matched raw and DURA"
+    ],
+    "prediction_ref": "Fresh fixed candidate Main two populations/all 7; exact r03 raw and DURA reuse; previous detail for post-freeze analysis.",
+    "scorer_ref": "OriginalindependentCUDAemptyCPUscore/sharedscore.lock;whole row/allMainpredictionsbeforetruth. No targetfeedback."
+  },
+  "rows": [
+    {
+      "row_id": "TF_BoundedProjected",
+      "method": "bounded_projected_technical_resume",
+      "purpose": "资源保护后精确续训原方案至E30，并完成原定Main测试。",
+      "config_ref": "experiments.pamf_phase3_restoration.bounded_projected_gpu6_resume_trial.py",
+      "resolved_config_ref": "runs/20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r04/rows/TF_BoundedProjected/training/config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Physicalscratchmodel2026092701/detail2026092702;R07builder2026101901/receiver2026101911/augmentation2026101912;sourceorder2026110102/draw1..20+1..10. Mainoriginalfixedobservations/no newRNG.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": "AdamW(weight_decay1e-4,clip1)",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "父任务26轮6422步，恢复同一优化器和随机状态续训4轮988步，累计30轮7410步。",
+      "output_root": "runs/20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r04/rows/TF_BoundedProjected",
+      "log_path": "runs/20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r04/logs/TF_BoundedProjected-train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.bounded_projected_gpu6_resume_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 40bbec6ef471933ee80e5727646614e264606440 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r04-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/training/config.json",
+        "rows/<arm>/training/smoke.json",
+        "rows/<arm>/training/smoke_E0.pt PRIVATE",
+        "rows/<arm>/training/data_schedule.npz PRIVATE",
+        "rows/<arm>/training/training.jsonl PRIVATE",
+        "rows/<arm>/training/final.pt PRIVATE",
+        "rows/<arm>/training/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE",
+        "rows/TF_BoundedProjected/training/recovery/E27..E30.pt PRIVATE; E01..E26 in preserved parent run",
+        "launch.json actual owner",
+        "rows/TF_BoundedProjected/training/technical_resume.json",
+        "rows/TF_BoundedProjected/training/technical_resume_smoke.json"
+      ]
+    }
+  ],
+  "notes": [
+    "父任务GPU2由其他owner加入后总进程数超过3，仅本任务被停止；完成E26，训练和产物保留，无目标预测。",
+    "严格恢复父模型、优化器、随机状态和源数据顺序；E26是最后完整轮次，不按任何模型性能选择。",
+    "源样本/F0/权重严格加载检查在续训进程取得GPU后先执行；E30固定后自动原Main七景和独立truth-last评分。",
+    "r03原队列未提交工作；仅在核实并停止原控制器后在GPU6接续，用户授权该卡总计算进程最多5。"
+  ],
+  "registered_at": "2026-11-08T03:44:37+00:00"
+}
