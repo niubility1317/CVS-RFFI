@@ -45,10 +45,12 @@ def compare_named(left, right):
                 elements=sum(v['elements'] for v in stats),tensors=len(stats))
 
 
-def run_case(state, reader, clean, trace, indices, target, cache, scale, epoch):
+def run_case(state, reader, clean, trace, indices, target, cache, scale, epoch, path_pair=(False,True)):
     if epoch not in (1,3) or len(clean)!=256: raise ValueError('Fixed 256 source records and odd epoch required')
+    if len(path_pair)!=2 or any(type(value) is not bool for value in path_pair):
+        raise ValueError('Two explicit reference path choices required')
     device=clean.device; values=[]
-    for use_cache in (False,True):
+    for use_cache in path_pair:
         model=drift.feature.factory(drift.feature.ARM).to(device).train()
         model.load_state_dict(state,strict=True)
         optimizer=torch.optim.AdamW(model.parameters(),lr=.001,weight_decay=1e-4)
@@ -85,15 +87,16 @@ def run_case(state, reader, clean, trace, indices, target, cache, scale, epoch):
     g=compare_named(a['gradients'],b['gradients']);u=compare_named(a['parameters'],b['parameters'])
     optimizer_state=compare_named(a['optimizer_state'],b['optimizer_state'])
     delta=abs(a['loss']-b['loss'])
-    return dict(epoch=epoch,loss_original=a['loss'],loss_cached=b['loss'],loss_abs=delta,
+    return dict(epoch=epoch,path_pair=['cached' if value else 'online' for value in path_pair],
+        loss_first=a['loss'],loss_second=b['loss'],loss_abs=delta,
         loss_close=abs(delta)<=ATOL+RTOL*abs(a['loss']),
         input_gradients=dict(max_abs=max(x['max_abs'] for x in inputs),notclose=sum(x['notclose'] for x in inputs)),
         parameter_gradients=g,updated_parameters=u,optimizer_state=optimizer_state,
-        original_seconds=a['elapsed_seconds'],cached_seconds=b['elapsed_seconds'],
+        first_seconds=a['elapsed_seconds'],second_seconds=b['elapsed_seconds'],
         same_device_single_logical_batch_only=True)
 
 
-def worker(args):
+def worker(args, repeat_controls=False):
     torch.set_num_threads(2);torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False
     device='cuda:0';started=time.perf_counter();cfg=validate_source(read(args.inputs))
     reader,identity=load_F0(cfg,device);drift.valid_identity(identity);frozen_eval(reader)
@@ -145,17 +148,19 @@ def worker(args):
                 sl=slice(start,start+32);delta,choice=selected_perturbation(clean[sl],indices[sl],epoch)
                 online=reader.features(clean[sl]+delta);saved=cache[sl][torch.arange(32,device=device),choice]
                 references.append(compare_tensors(online,saved))
-    cases=[run_case(state,reader,clean,trace,indices,target,cache,scale,epoch) for epoch in (1,3)]
+    path_pairs=((False,False),(True,True)) if repeat_controls else ((False,True),)
+    cases=[run_case(state,reader,clean,trace,indices,target,cache,scale,epoch,path_pair=pair)
+           for epoch in (1,3) for pair in path_pairs]
     check_F0_state(reader,snapshot)
     reference=dict(max_abs=max(x['max_abs'] for x in references),notclose=sum(x['notclose'] for x in references),
                    comparisons=len(references))
     write(out/'results.json',dict(status='MEASURED',source_records=256,source_roles={'L_s':128,'U_s':128},
         source_cases=[1,3],logical_batch=256,microbatch=32,source_cache_batch=256,covered_directions=4,
         source_reference=reference,cases=cases,F0_identity=identity,parent_run=drift.PARENT,parent_commit=drift.PARENT_COMMIT,
-        TF32=False,temporary_optimizer_updates=4,checkpoint_changes=0,TX_labels_read=0,V_reads=0,OE_reads=0,
+        TF32=False,temporary_optimizer_updates=2*len(cases),checkpoint_changes=0,TX_labels_read=0,V_reads=0,OE_reads=0,
         target_inputs=0,full_training_equivalence_verified=False,formal_quality_verified=False,
         timing_scope='one logical batch per path excludes cache build; not end-to-end speed',seconds=time.perf_counter()-started))
-    write(out/'complete.json',dict(status='ARTIFACTS_COMPLETE',source_only=True,model_cases=4))
+    write(out/'complete.json',dict(status='ARTIFACTS_COMPLETE',source_only=True,model_cases=2*len(cases)))
     print('SOURCE_GPU_CACHE_COMPARISON_COMPLETE',flush=True)
 
 

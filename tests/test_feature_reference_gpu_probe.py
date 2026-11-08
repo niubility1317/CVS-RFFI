@@ -18,3 +18,12 @@ def test_named_comparison_preserves_gradient_presence():
     assert compare_named(a,b)=={'max_abs':0.,'notclose':0,'elements':2,'tensors':1}
     with pytest.raises(ValueError):compare_named(a,{'one':torch.tensor([1.,2.]),'unused':torch.tensor([0.])})
     with pytest.raises(ValueError):compare_named(a,{'other':torch.tensor([1.,2.])})
+
+
+def test_path_pair_rejects_ambiguous_modes_before_gpu_work():
+    from experiments.pamf_phase3_restoration.feature_reference_gpu_probe import run_case
+    dummy=torch.zeros(256,2,256)
+    with pytest.raises(ValueError):
+        run_case(None,None,dummy,None,None,None,None,None,1,path_pair=(False,))
+    with pytest.raises(ValueError):
+        run_case(None,None,dummy,None,None,None,None,None,1,path_pair=(False,1))
