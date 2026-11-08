@@ -52,12 +52,19 @@ def tasks(rt):
 def closed_prediction(job, expected):
     output = Path(job['output'])
     done, index = read(output/'complete.json'), read(output/'predictions.json')
-    require(done['status']=='PREDICTIONS_COMPLETE' and done['truth_read'] is False and done['query_fit'] is False, 'Prediction not frozen')
+    subset = job.get('save_B_for_mopc', False)
+    if subset:
+        require(job['methods'] == ['orthogonal', 'lora'], 'Invalid saved-B method subset')
+    status = 'SUBSET_PREDICTIONS_FIXED' if subset else 'PREDICTIONS_COMPLETE'
+    require(done['status']==status and done['truth_read'] is False and done['query_fit'] is False, 'Prediction not frozen')
     require(done['rows']==expected==len(index['rows']), 'Incomplete prediction row count')
     require(index['capsule']==job['capsule'] and index['model_seed']==job['seed'] and index['profile']==job['profile'], 'Wrong job binding')
     require(done['capsule_id']==index['capsule_id'], 'Wrong capsule binding')
     require_all_rows(index['rows'], job['points'], job['profile'], job['methods'])
     require(all((output/r['prediction']).is_file() for r in index['rows']), 'Missing prediction artifact')
+    if subset:
+        require(all((output/f'B-K{k}.pt').is_file() for k in {int(k) for k,_ in job['points']}),
+                'Missing saved B state')
 
 
 def _gpu_free(gpu):
