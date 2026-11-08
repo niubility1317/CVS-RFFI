@@ -31,3 +31,7 @@ Reuse 9364 completed ancestor tasks; preserve 7 quarantined failures and all exi
 ## 本次范围与故障保留
 
 独立逐项清点祖先链 9,364 个完整任务（含 r08 新完成 124 项）、7 个隔离任务（共 138 份部分预测），取消 1,932 个未开始 RadioNet；余 1,587 个 ProtoNet-CDA 先于 634 个 DADDA。保留既有模型、种子、预算与数据权限，不重发失败项。所有保留范围预测固定及缺项确定前不评分。每 GPU 本任务 B/C 合计至多 2 个进程，启动前空余不少于 6,000 MiB。对祖先继承、隔离、取消、排序、资源与评分的独立 P0/P1 审核通过；独立清点确认其先决条件。远端真实 source-only/no-query smoke 仍为启动第一步。
+
+## 实际派发与预测增长
+
+控制器 PID 1736557、start_ticks 63104720 已核实；六个非 RadioNet 源 checkpoint 的 source-only/no-query smoke PASS。manifest 记录复用 9,364 个完整任务、保留七处隔离、取消 1,932 个 RadioNet；16 个真实 ProtoNet-CDA worker 在 GPU 0–7 各 2 个运行，failed=[]。两次独立读取活跃任务预测文件由 250 增至 521，这仅证明在途预测增长，并不表示对应任务已闭合。完整预测屏障与评分仍关闭。
