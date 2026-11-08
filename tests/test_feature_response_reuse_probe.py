@@ -1,3 +1,4 @@
+import pytest
 import torch
 
 from experiments.pamf_phase3_restoration.feature_response_reuse_probe import (
@@ -15,12 +16,13 @@ class Reader(torch.nn.Module):
         return self.projection(x.flatten(1))
 
 
-def test_four_direction_cache_matches_online_features_and_gradients():
+@pytest.mark.parametrize('u_index', [6300, 6301])
+def test_four_direction_cache_matches_online_features_and_gradients(u_index):
     torch.manual_seed(17)
     reader = Reader().eval().requires_grad_(False)
     clean = torch.randn(2, 2, 256)
     received = torch.randn(2, 2, 256)
-    indices = torch.tensor([0, 6300])
+    indices = torch.tensor([0, u_index])
     scale = torch.ones(160)
     with torch.no_grad():
         target = reader.features(clean)
@@ -38,7 +40,6 @@ def test_four_direction_cache_matches_online_features_and_gradients():
 
 
 def test_training_reader_is_rejected():
-    import pytest
     reader = Reader().train().requires_grad_(False)
     clean = torch.randn(2, 2, 256)
     with pytest.raises(ValueError, match='frozen evaluation'):
