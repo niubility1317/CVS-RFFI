@@ -58,6 +58,8 @@ def predict(rt, job):
     require(points and all(k in (1, 5, 10, 20) and n in (2, 5, 10, 20) for k, n in points), 'Invalid requested K/N')
     methods = tuple(job['methods'])
     require(methods and len(set(methods)) == len(methods) and set(methods) <= {'lora', 'mopc_hr', 'orthogonal'}, 'Invalid C methods')
+    save_b = job.get('save_B_for_mopc', False)
+    require(not save_b or methods == ('orthogonal', 'lora'), 'Invalid saved-B method subset')
     device = rt.get('device', 'cuda:0')
     source_rt = source_scope(rt)
     source_rt['run_root'] = rt['source_run_root']
@@ -85,7 +87,8 @@ def predict(rt, job):
             old_x = to_tensor(task['support_x'], device, np.float32)
             old_y = to_tensor(task['support_y'], device, np.int64).long()
             synchronize(); started = time.perf_counter()
-            bstate = fit_B(rt, bundle, old_x, old_y, seed_for(seed, job['capsule'], k, 'B'), emit)
+            b_seed = seed_for(seed, job['capsule'], k, 'B')
+            bstate = fit_B(rt, bundle, old_x, old_y, b_seed, emit)
             synchronize()
             b_seconds = time.perf_counter() - started
             old_ids = task['support_ids'].copy()
@@ -100,6 +103,10 @@ def predict(rt, job):
                 bridge_scores = prepared['mopc_hr'].model(old_x)['tx_logits']
                 require(torch.allclose(original_scores, bridge_scores, rtol=1e-4, atol=1e-4), 'B scores changed at C bridge')
                 b_bridge_max_abs_diff = float((original_scores - bridge_scores).abs().max().item())
+            if save_b:
+                from .group2_b_state import save_b_state
+                save_b_state(output/f'B-K{k}.pt', job, k, lookup[k, 0]['split_id'], b_seed,
+                             bstate['model'], prepared['mopc_hr'], old_prototypes)
             for _, n in [point for point in points if point[0] == k]:
                 spec = lookup[k, n]
                 current = load_task(cap, spec['split_id'], stage='C')
@@ -120,7 +127,7 @@ def predict(rt, job):
                     name = f'C-K{k}-N{n}-{method}.npz'
                     np.savez_compressed(output / name, query_indices=split_rows(cap, spec),
                                         predicted_indices=pred, old_restricted_indices=restricted)
-                    rows.append(dict(split_id=spec['split_id'], stage='C', arm=profile+'__'+method,
+                    prediction_row = dict(split_id=spec['split_id'], stage='C', arm=profile+'__'+method,
                         input_path='P0', prediction=name, k=k, new_count=n,
                         registered_classes=spec['registered_classes'], query_count=len(pred),
                         claim='DA_B_to_CIL_core_transplant', resources=dict(B_seconds=b_seconds,
@@ -128,14 +135,18 @@ def predict(rt, job):
                         target_old_labels=6*k, target_new_labels=n*k, query_fit=False,
                         B_bridge_max_abs_diff=b_bridge_max_abs_diff,
                         B_native=plain(bstate.get('resources',{})), C_native=plain(getattr(state,'resource',{})),
-                        C_protocol=plain(getattr(state,'protocol_metadata',{})))))
+                        C_protocol=plain(getattr(state,'protocol_metadata',{}))))
+                    if save_b:
+                        prediction_row['resources']['B_state_ref'] = str(output/f'B-K{k}.pt')
+                    rows.append(prediction_row)
                     print('GROUP2_PREDICTED', profile, method, k, n, len(pred), flush=True)
             del prepared, bstate, old_x, old_y
         require_all_rows(rows, points, profile, methods)
         require(all(torch.equal(source_before[key], value) for key, value in bundle['model'].state_dict().items()), 'A source changed')
         write(output / 'predictions.json', dict(capsule=job['capsule'], capsule_id=manifest['capsule_id'],
               profile=profile, model_seed=seed, rows=rows))
-        write(output / 'complete.json', dict(status='PREDICTIONS_COMPLETE', capsule_id=manifest['capsule_id'],
+        status = 'SUBSET_PREDICTIONS_FIXED' if save_b else 'PREDICTIONS_COMPLETE'
+        write(output / 'complete.json', dict(status=status, capsule_id=manifest['capsule_id'],
               rows=len(rows), truth_read=False, query_fit=False, profile=profile, model_seed=seed))
     finally:
         log.close()
