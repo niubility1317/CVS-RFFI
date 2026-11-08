@@ -1,0 +1,147 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-polyphase-conv-benchmark-s2026092701-r01",
+  "group_id": "phase1-polyphase-conv-benchmark",
+  "display_name": "扩张卷积等价分解的 GPU 数值与速度对照",
+  "description": "先验明真实源 DURA 后，用固定随机张量对照原扩张卷积与多相普通卷积的值、输入及参数梯度和前后向耗时。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "GPU",
+    "training-efficiency",
+    "exact-parity"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261108-phase1-cross-expert-layer-timing-s2026092701-r01",
+    "20261108-phase1-dura-direct-cross-expert-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User authorizes ongoing Phase1 F-free restoration research, source-only diagnostics and GPU use.",
+  "code": {
+    "commit": "a8f9abb7eef0d4279d2195cbad4505aeb1dc71f8",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU2, FP32 TF32off, deterministic; same CPU-staged legal source inputs",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-polyphase-conv-benchmark-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Synthetic fixed-seed tensor; 8 permitted Phase1 source IQ records for frozen DURA smoke only",
+    "version": "synthetic generator seed 2026110830; existing explored source pilot smoke",
+    "representation": "Synthetic FP32 activation 128×192×256 and kernel 192×192×5, plus 8 legal source IQ records for smoke",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "Eight first IDs of fixed Phase1 legal source pilot for DURA smoke, not used in timing",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ only, TX hidden",
+      "U_s": "source IQ only, TX hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Identical source IDs, initial model, ordering and flow-time seeds per paired path",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Synthetic single-convolution FP32 forward/backward timing and numerical comparison; no trained model, full-training or target parity"
+  },
+  "checkpoint": {
+    "initialization": "Fixed seeded synthetic input/weights; frozen DURA only for real source smoke",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Frozen DURA source checkpoint provenance, no F/TX/V/target",
+    "provenance_verdict": "source-only DURA verified",
+    "selection_rule": "Five fixed dilations, two reversed-order timing pairs and per-dilation warmup; no weights saved"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "GPU2 at least 8192 MiB free and fewer than 3 total compute apps; at most one this-task GPU worker; preserve other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-polyphase-conv-benchmark-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-polyphase-conv-benchmark-s2026092701-r01-queue.log",
+    "local_artifact_root": "E:\\type10-7\\github_publish\\CVS-RFFI-repo\\automation_reports\\CV-SincNet\\20261108-phase1-polyphase-conv-benchmark-s2026092701-r01",
+    "launch_command": "nice -n 10 env PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-polyphase-conv-benchmark-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.benchmark_polyphase_conv_queue --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-polyphase-conv-benchmark-s2026092701-r01 --commit a8f9abb7eef0d4279d2195cbad4505aeb1dc71f8 --gpu 2",
+    "stop_rule": "Stop on incorrect source contract/GPU, nonfinite computation or trajectory mismatch; preserve artifacts"
+  },
+  "expected_artifacts": [
+    "result.json: exact loss/model/optimizer/RNG comparisons and paired N607 timings"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "native and polyphase forward/backward seconds",
+      "output input/weight/bias gradient bytewise equality",
+      "absolute and relative floating-point differences"
+    ],
+    "dimensions": [
+      "128x192x256 synthetic activations",
+      "dilations 2,4,8,16,32",
+      "two reversed-order pairs",
+      "shared GPU2"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; no target or TX truth"
+  },
+  "rows": [
+    {
+      "row_id": "polyphase-conv-benchmark",
+      "method": "original dilated convolution versus polyphase ordinary convolution",
+      "purpose": "Measure speed and precision before considering any model integration",
+      "config_ref": "experiments/phase1_dura_orthogonal/benchmark_polyphase_conv.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110830,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": 2026110711,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Same model seed 2026110830 and order seed 2026110831 for each path.",
+      "k": null,
+      "scenario": "Synthetic fixed tensors with eight source IQ DURA smoke",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "5 dilations x (2 warmups + 2 reversed pairs); batch128, no optimization or saved checkpoint",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-polyphase-conv-benchmark-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-polyphase-conv-benchmark-s2026092701-r01-queue.log",
+      "command": "nice -n 10 env PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-polyphase-conv-benchmark-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.benchmark_polyphase_conv_queue --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-polyphase-conv-benchmark-s2026092701-r01 --commit a8f9abb7eef0d4279d2195cbad4505aeb1dc71f8 --gpu 2",
+      "expected_artifacts": [
+        "result.json: exact loss/model/optimizer/RNG comparisons and paired N607 timings"
+      ]
+    }
+  ],
+  "notes": [
+    "Synthetic seeded tensors; eight legal source IQ records only for frozen DURA smoke. No F/TX/V/target reads.",
+    "Each path uses matching inputs and upstream gradients; report bitwise, tolerance, max absolute and relative L2 errors.",
+    "Shared GPU timing and individual operators do not establish full-model speed or prediction parity.",
+    "No modifications to running experiments; prior same-task GPU2 diagnostic completed, capacity rechecked.",
+    "Five mathematical value/gradient tests and independent P0/P1 review passed; real DURA smoke first."
+  ],
+  "registered_at": "2026-11-08T03:39:21+00:00"
+}
