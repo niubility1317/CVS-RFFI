@@ -825,3 +825,7 @@ VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30�
 ## 2026-11-08 TF_FeatureResponse 完整Main结果
 
 VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30核实；原Main42单元全部预测后独立truth-last，4阶段exit0且进程均已退出。1302组/868raw配对及DURA/clean配对复算PASS，最大差1.2e-14，baseline判决差0。六景83.669048/82.648810/81.216667/82.384524/75.313690/67.546429%，1/6；clean两个总体净+59/+33，联合验收False。原科学代码/模型/数据/预算保持，默认DURA不变，其他已登记候选继续。 [完整分析](../../automation_reports/CV-SincNet/20261108-phase1-Restore-FeatureResponse-E30-s2026092701-r01/analysis.md)
+
+## 2026-11-08 TF_ResponseReliability 完整Main结果
+
+VERIFIED / ANALYZED。固定scratch30/7410、全部源日志/顺序和final=E30核实；原Main42单元全部预测后独立truth-last，4阶段exit0且进程均已退出。1302组/868raw配对及DURA/clean配对复算PASS，最大差1.31e-14，baseline判决差0。六景84.359524/82.844048/81.128571/82.947024/74.855952/66.255952%，1/6；clean两个总体净+118/-17，联合验收False。原科学代码/模型/数据/预算保持，默认DURA不变，其他已登记候选继续。 [完整分析](../../automation_reports/CV-SincNet/20261108-phase1-Restore-ResponseReliability-E30-s2026092701-r02/analysis.md)
