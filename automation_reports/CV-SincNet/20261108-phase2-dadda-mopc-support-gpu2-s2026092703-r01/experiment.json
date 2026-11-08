@@ -1,0 +1,171 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase2-dadda-mopc-support-gpu2-s2026092703-r01",
+  "group_id": "phase2-group2-dadda-mopc-nonfinite",
+  "display_name": "Phase2 DADDA→MoPC 支持集数值诊断（GPU2）",
+  "description": "在原 GPU2 对 B r06 任务 5944 的原源权重和 K1/N20 支持集单次诊断首个非有限边界；不生成预测。",
+  "kind": "diagnostic",
+  "stage": "Phase2-B-C",
+  "aliases": [],
+  "tags": [
+    "phase2",
+    "Group2",
+    "DADDA",
+    "MoPC",
+    "diagnostic",
+    "support_only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261105-phase2-bsource-dadda-quarantine-m4-r06",
+    "20261030-phase2-group1-concat-midPL-threepool-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Phase2 现有授权内仅源与当前支持集诊断，禁止重跑正式预测、接触 query 或真值。",
+  "code": {
+    "commit": "07e158f7b36435f47e99d0c9d1f743dcf0944ba0",
+    "checkout": "E:/type10-7/code/worktrees/standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase2-dadda-mopc-support-gpu2-s2026092703-r01-release"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/data/raw_full_wisig_eq_20261029",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+    "physical_ids_ref": "Capsule split support_indices. Source contract uses existing L_s physical-role IDs.",
+    "label_map_ref": null,
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "2-1"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "20261029-phase2-threepool-episodes-s2026102901-r01:P02:MIX05:2-1",
+    "split_id": {
+      "old": "90b25c71919902cf1169c909",
+      "current": "00f947432b1afc1173add988"
+    },
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-milkr-threepool-m4-r01/data_audit.json",
+    "support_query_ref": "B old K1/N0 and C new portion of K1/N20 only. No query.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json",
+    "matrix": {
+      "pool": "P02",
+      "episode": "MIX05",
+      "receiver": "2-1",
+      "K": 1,
+      "N": 20,
+      "old_support_rows": 6,
+      "new_support_rows": 20,
+      "query_rows": 0
+    }
+  },
+  "permissions": {
+    "regime": "source-only checkpoint and labeled L_s plus exactly the current B/C supports",
+    "query_use": "none",
+    "external_method_exception": "Original DADDA L_s replay only.",
+    "claim_scope": "Original GPU2 source/support diagnostic only; no query, truth, scientific prediction, score or production retry."
+  },
+  "checkpoint": {
+    "initialization": "immutable exact DADDA source seed 2026092703",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/dadda_sda-s2026092703/source.pt"
+    ],
+    "contract_check_ref": "group1_source.load_source",
+    "provenance_verdict": "Original r06 matching source contract, verified again by actual diagnostic source-only smoke.",
+    "selection_rule": "Original fixed A checkpoint, no target-based selection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/phase2-group2-scalr",
+    "gpu_policy": "One GPU process on physical GPU2, CUDA_VISIBLE_DEVICES=2, cuda:0, >=6000 MiB free and <=2 task processes per GPU.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase2-dadda-mopc-support-gpu2-s2026092703-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase2-dadda-mopc-support-gpu2-s2026092703-r01",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\20261108-phase2-dadda-mopc-support-gpu2-s2026092703-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.group2_dadda_mopc_diagnostic --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261105-phase2-bsource-dadda-quarantine-m4-r06-release/runtime.json --job /home/szu2070436088/2510044040/CV-SincNet/runs/20261105-phase2-bsource-dadda-quarantine-m4-r06/jobs/05944.json --capsule-id 20261029-phase2-threepool-episodes-s2026102901-r01:P02:MIX05:2-1 --old-split 90b25c71919902cf1169c909 --new-split 00f947432b1afc1173add988 --device cuda:0",
+    "stop_rule": "Single source/support execution; stop at source binding or registration numeric guard and retain the diagnostic log."
+  },
+  "expected_artifacts": [
+    "owner.json",
+    "diagnostic.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "first_nonfinite_boundary",
+      "completed_updates",
+      "affected_tensors"
+    ],
+    "dimensions": [
+      "B/C stage",
+      "epoch",
+      "iteration"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "dadda-mopc-s2026092703-k1-n20",
+      "method": "DADDA-SDA B → MoPC-HR paper C project transplant",
+      "purpose": "source/support diagnostic",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261105-phase2-bsource-dadda-quarantine-m4-r06-release/runtime.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261105-phase2-bsource-dadda-quarantine-m4-r06/jobs/05944.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": 455715709386844994,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed existing capsule. B/C seeds derive from original model seed and job key. No new data, augmentation or evaluation draws.",
+      "k": 1,
+      "scenario": "P02/MIX05/2-1",
+      "optimizer": "Original DADDA optimizer then MoPC SGD momentum .9, weight decay .0002",
+      "lr": {
+        "B": 0.001,
+        "C": 0.01
+      },
+      "epochs": {
+        "B": 100,
+        "C_per_session": 20
+      },
+      "fl_rounds": null,
+      "budget_ref": "Original group1_target.fit_B and group2_cil_bridge.register. C has four five-class sessions and up to 80 updates.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase2-dadda-mopc-support-gpu2-s2026092703-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase2-dadda-mopc-support-gpu2-s2026092703-r01/diagnostic.jsonl",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.group2_dadda_mopc_diagnostic --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261105-phase2-bsource-dadda-quarantine-m4-r06-release/runtime.json --job /home/szu2070436088/2510044040/CV-SincNet/runs/20261105-phase2-bsource-dadda-quarantine-m4-r06/jobs/05944.json --capsule-id 20261029-phase2-threepool-episodes-s2026102901-r01:P02:MIX05:2-1 --old-split 90b25c71919902cf1169c909 --new-split 00f947432b1afc1173add988 --device cuda:0",
+      "expected_artifacts": [
+        "owner.json",
+        "diagnostic.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "One original-device source/support diagnostic only; no query, truth or predictions. GPU2 memory and phase2 task slots independently checked before launch."
+  ],
+  "registered_at": "2026-11-08T14:09:03+00:00"
+}
