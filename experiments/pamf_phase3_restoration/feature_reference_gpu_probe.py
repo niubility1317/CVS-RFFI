@@ -123,12 +123,11 @@ def worker(args):
     if (draw['count'],draw['TX_labels_read'],draw['target_reads'])!=(63000,0,0):raise ValueError('Original source draw required')
     trace={key:rows(folder/(key+'.npy')) for key in ('received','kernel','coefficients','variance')}
     indices=torch.as_tensor(indices_np,device=device,dtype=torch.long);scale=load_scale(args.root).to(device)
-    with torch.no_grad():target=reader.features(clean).detach()
-    cache=cache_source_features(reader,clean,indices)
     model=drift.feature.factory(drift.feature.ARM).to(device).eval();model.load_state_dict(state,strict=True)
     with torch.no_grad():
+        target_smoke=reader.features(clean[:2]).detach()
         c=drift.ReaderCapture(reader);base,aux,loss,_=drift.feature.response_readout(model,c,trace['received'][:2],clean[:2],
-            target[:2],scale,PairedObjective().to(device),source_indices=indices[:2],epoch=1,priors=None,assignment=None,
+            target_smoke,scale,PairedObjective().to(device),source_indices=indices[:2],epoch=1,priors=None,assignment=None,
             source_trace={k:v[:2] for k,v in trace.items()})
         if not torch.isfinite(base).all() or not torch.isfinite(loss).all() or aux['relative_solve_residual'].max()>1e-8:
             raise ValueError('Real production G/F0 source smoke failed')
@@ -137,6 +136,8 @@ def worker(args):
     write(out/'smoke.json',dict(status='PASS',source_rows=2,actual_source_G=True,actual_frozen_F0=True,
                                TX_labels_read=0,V_reads=0,OE_reads=0,target_inputs=0))
     print('REAL_GPU_SOURCE_G_F0_SMOKE_PASS',flush=True)
+    with torch.no_grad():target=reader.features(clean).detach()
+    cache=cache_source_features(reader,clean,indices)
     references=[]
     with torch.no_grad():
         for epoch in (1,3):
