@@ -146,6 +146,8 @@ def smoke(rt):
     x=labeled.x[indices].to(device); y=torch.arange(6,device=device,dtype=torch.long)
     results=[]
     for profile in rt['profiles']:
+        if profile in rt.get('cancelled_profiles', []):
+            continue
         bundle=load_source(source_rt,profile,rt['model_seeds'][0],device)
         model=bundle['model'].eval(); extractor=lambda m,v: embedding(m,row(profile)['method'],v)
         with torch.no_grad():

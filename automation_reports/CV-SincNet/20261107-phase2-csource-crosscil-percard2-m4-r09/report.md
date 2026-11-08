@@ -39,3 +39,7 @@ Drain the quarantined C dispatcher and resume unchanged work with a maximum of t
 ## 接管后预测增长
 
 独立读回已闭合 35723 项，比接管时复用的 35,687 项增加 36 项；每卡至多两个本任务 worker，failed=[]，两项祖先隔离未解除。完整预测屏障和评分未启动。
+
+## 2026-11-08 按用户要求取消未完成 RadioNet
+
+用户取消两组全部尚未完成的 RadioNet 工作，并要求保留已有结果。C r09 调度器与经身份核验的在途 RadioNet worker 已停止；原 root、已有完整预测、已产生的部分预测和日志均未删除，父后继声明保留。停止前独立清点 C 组闭合 35,983 项，其中 RadioNet→MoPC 1,209 项；其他 RadioNet 未完成项取消，不作为完整矩阵结果。Hu→MoPC 原两处隔离继续保留，各 10 份 partial；全预测屏障及评分关闭。worker_state 中 RUNNING 与 active 是停止前快照，实时状态以进程读回为准。
