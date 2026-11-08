@@ -127,7 +127,6 @@
     "logs/*.log PRIVATE",
     "rows/TF_BoundedProjected/training/recovery/E27..E30.pt PRIVATE; E01..E26 in preserved parent run",
     "launch.json actual owner",
-    "logs/run/resource_handover_GPU5.json original queue retirement",
     "rows/TF_BoundedProjected/training/technical_resume.json",
     "rows/TF_BoundedProjected/training/technical_resume_smoke.json"
   ],
@@ -196,7 +195,6 @@
         "logs/*.log PRIVATE",
         "rows/TF_BoundedProjected/training/recovery/E27..E30.pt PRIVATE; E01..E26 in preserved parent run",
         "launch.json actual owner",
-        "logs/run/resource_handover_GPU5.json original queue retirement",
         "rows/TF_BoundedProjected/training/technical_resume.json",
         "rows/TF_BoundedProjected/training/technical_resume_smoke.json"
       ]
