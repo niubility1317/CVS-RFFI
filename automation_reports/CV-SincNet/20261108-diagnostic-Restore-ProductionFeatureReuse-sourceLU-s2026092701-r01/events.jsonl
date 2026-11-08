@@ -1,1 +1,2 @@
 {"at": "2026-11-08T01:59:33+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-08T02:01:57+00:00", "status": "FAILED", "note": "Actual production G/F0 CPU comparison rejected local AdamW update at preset rtol1e-5 atol1e-6; no target or training mutation, log preserved.", "evidence": ["N607 logs/20261108-diagnostic-Restore-ProductionFeatureReuse-sourceLU-s2026092701-r01/stdout.log"], "row_id": null}
