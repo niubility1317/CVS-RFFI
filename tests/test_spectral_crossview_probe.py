@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-from experiments.phase1_dura_orthogonal.spectral_crossview_probe import summarize_ranks
+from experiments.phase1_dura_orthogonal.spectral_crossview_probe import summarize_ranks, jointly_damaged
 
 
 class CrossViewProbeTest(unittest.TestCase):
@@ -11,6 +11,13 @@ class CrossViewProbeTest(unittest.TestCase):
         self.assertEqual(result['top1'], .25)
         self.assertEqual(result['mean_reciprocal_rank'], .5)
         self.assertEqual(result['median_rank'], 3.)
+
+    def test_only_pairs_with_two_damaged_views_are_selected(self):
+        mask = jointly_damaged(np.array(['clean', 'practical_mid', 'practical_high']),
+                               np.array(['practical_mid', 'clean', 'practical_low_urban']))
+        np.testing.assert_array_equal(mask, [False, False, True])
+        with self.assertRaises(ValueError):
+            jointly_damaged(np.array(['clean']), np.array(['clean', 'clean']))
 
     def test_invalid_ranks_rejected(self):
         for ranks in (np.array([0, 1]), np.array([1, 5]), np.array([1.5, 2]), np.array([])):

@@ -23,6 +23,13 @@ def summarize_ranks(ranks, candidates):
             'median_rank': float(np.median(ranks))}
 
 
+def jointly_damaged(reference_scenes, query_scenes):
+    first, second = np.asarray(reference_scenes), np.asarray(query_scenes)
+    if first.ndim != 1 or first.shape != second.shape or len(first) == 0:
+        raise ValueError('Matching nonempty source-view scene arrays required')
+    return (first != 'clean') & (second != 'clean')
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--root', type=Path, required=True)
@@ -61,8 +68,12 @@ def main():
         for first, second in PAIRS:
             a = np.asarray(views[first][selected])
             b = np.asarray(views[second][selected])
+            reference_scenes = scenes[first][selected]
             query_scenes = scenes[second][selected]
-            if not np.isin(query_scenes, core.VIEWS).all():
+            damaged = jointly_damaged(reference_scenes, query_scenes)
+            if not damaged.any():
+                raise ValueError('Both-damaged comparison requires source records')
+            if not np.isin(reference_scenes, core.VIEWS).all() or not np.isin(query_scenes, core.VIEWS).all():
                 raise ValueError('Only registered source views permitted')
             metrics = {}
             for mode in ('spectrum', 'quotient'):
@@ -73,7 +84,9 @@ def main():
                     if len(subset) == 0:
                         raise ValueError('Every query scene requires source records')
                     by_scene[view] = summarize_ranks(subset, len(selected))
-                metrics[mode] = {'overall': summarize_ranks(ranks, len(selected)), 'by_query_scene': by_scene}
+                metrics[mode] = {'overall': summarize_ranks(ranks, len(selected)),
+                                 'both_damaged': summarize_ranks(ranks[damaged], len(selected)),
+                                 'by_query_scene': by_scene}
             result_groups[group + '/' + first + '-' + second] = {'count': len(selected), 'metrics': metrics}
     result = {'status': 'SOURCE_CROSSVIEW_DIAGNOSTIC_COMPLETE', 'commit': args.commit,
               'records': len(ids), 'groups': result_groups, 'regularization': .01,
