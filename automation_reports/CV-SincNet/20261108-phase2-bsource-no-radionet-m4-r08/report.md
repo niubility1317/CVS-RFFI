@@ -31,3 +31,7 @@ Reuse 9240 closed ancestor tasks, retain 6 quarantines and 138 partial predictio
 ## 2026-11-08 控制器已启动，正在准备
 
 独立核实 PID 1644515、start_ticks 62274143、CWD 和命令，控制器正在检查祖先进程、完整预测与隔离。检查时尚无 manifest、source-only smoke、后继 claim 或新 worker，不能称其已开始新预测。前一 r07 在创建 root 与派发前因其他用户复用旧 PID 的 cwd 权限失败，已修复并完成 23 项定向测试及独立 P0/P1 针对性复核。源代码 b46f1336a3772a8ade7e0e6017d61e0de0a5a8bb，镜像 6f7e2a1f28bb71da974780e322f26cd49bb4c0d3；单归档 SHA 与远端 compile 已核实。RadioNet 所有未完成任务取消，保留此前完整和部分结果。
+
+## 2026-11-08 非 RadioNet 任务已实际派发
+
+控制器 PID 1644515、start_ticks 62274143 已核实。6 个非 RadioNet 真实源 checkpoint 的 source-only/no-query smoke PASS；逐项核实引用 r02 至 r06 的 9,240 个完整任务、174,195 份预测，六处隔离的 138 份 partial 不变。1,932 个未启动 RadioNet 任务已取消；剩余 759 个 DADDA 后接 1,587 个 ProtoNet-CDA，任务顺序已逐项核对。新 DADDA 已派发，首次独立核实时新闭合 10 项，16 个真实 worker、GPU 0–7 各 2 个，failed=[]。C 的 RadioNet 已按用户要求停止，已有完整及部分结果保留；两组已知隔离未解决，全预测屏障及评分关闭。
