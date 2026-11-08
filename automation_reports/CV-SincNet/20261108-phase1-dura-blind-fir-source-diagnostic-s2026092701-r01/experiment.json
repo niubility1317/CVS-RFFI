@@ -1,0 +1,138 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-dura-blind-fir-source-diagnostic-s2026092701-r01",
+  "group_id": "phase1-dura-blind-fir-source",
+  "display_name": "DURA 源域多抽头盲信道拟合方向诊断",
+  "description": "只读合法源 IQ，比较 DURA 原物理方向与 8、32、64 抽头正则拟合后的方向；源 clean 理想步长只作不可部署诊断。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "F-free",
+    "oracle-diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户继续授权研发星地恢复网络；仅源域合法 IQ 诊断，不重启已停止任务。",
+  "code": {
+    "commit": "0bba752228926de9d95a1381b4b61c166ddcb201",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU0 FP32 TF32 off, two CPU threads, batch 8",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-dura-blind-fir-source-diagnostic-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "received and clean IQ [2,256]",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "672 frozen source pilot physical IDs, RX4/6 and RX8 by seven views; read indices/rx/scene/split only",
+    "label_map_ref": null,
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Previously explored fixed source pilot; RX8 is source held group, not independent to DURA",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed simulated source epoch19 views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Oracle source IQ geometric diagnostic; no training, no deployable per-record oracle, no claim about target accuracy"
+  },
+  "checkpoint": {
+    "initialization": "Frozen original DURA v1.0 source-only stage2 E20/4940",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "frozen_dura runtime checks original7/63/30, F_access false, TX_labels_read 0, target_training false",
+    "provenance_verdict": "matched Phase1 source contract; no F weights or outputs",
+    "selection_rule": "Fixed original DURA, independent of evaluated target scores"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "GPU0: at least 8192 MiB free, fewer than 3 total GPU apps and no other this-task GPU worker; preserve other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-blind-fir-source-diagnostic-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-blind-fir-source-diagnostic-s2026092701-r01-launcher.log",
+    "local_artifact_root": "E:/type10-7/github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/20261108-phase1-dura-blind-fir-source-diagnostic-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES=0 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-dura-blind-fir-source-diagnostic-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release nice -n 10 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_blind_fir.diagnostic --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-blind-fir-source-diagnostic-s2026092701-r01 --commit 0bba752228926de9d95a1381b4b61c166ddcb201",
+    "stop_rule": "Stop on source role mismatch, source smoke failure, nonfinite output or any target/F/TX read; preserve stopped group and other owners."
+  },
+  "expected_artifacts": [
+    "result.json with source per-view oracle geometry, residual ratio, kernel change; no checkpoint"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source observed residual ratio",
+      "source IQ anchor NMSE",
+      "source ideal positive and signed one-step NMSE",
+      "relative fitted kernel change"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; source paired IQ geometry only"
+  },
+  "rows": [
+    {
+      "row_id": "blind-fir-source-oracle",
+      "method": "Per-record ridge-fitted 8/32/64 complex FIR taps under DURA widely-linear action; compare source-only ideal positive/signed correction direction",
+      "purpose": "Determine whether source error has useful projected direction; no deployment or selection",
+      "config_ref": "experiments/phase1_blind_fir/diagnostic.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Existing pretrained source runs and fixed source pilots; no stochastic training, support or augmentation in this benchmark.",
+      "k": null,
+      "scenario": "seven fixed Phase1 source views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "672 fixed source IQ pairs in 14 cells, batch 8; two-record real-checkpoint smoke",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-blind-fir-source-diagnostic-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-blind-fir-source-diagnostic-s2026092701-r01-launcher.log",
+      "command": "CUDA_VISIBLE_DEVICES=0 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-dura-blind-fir-source-diagnostic-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release nice -n 10 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_blind_fir.diagnostic --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-blind-fir-source-diagnostic-s2026092701-r01 --commit 0bba752228926de9d95a1381b4b61c166ddcb201",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source clean is used only for an ideal line-step diagnostic, never as a deployable input; no TX, F weights or outputs, V or target data.",
+    "Current received and candidate IQ fit a per-record regularized FIR adjustment; no network is trained or checkpoint saved.",
+    "Fixed 672 source pilot records previously explored; DURA may have seen them; no claim about target identity performance or a general theoretical upper bound.",
+    "Four synthetic tests, a real DURA operator synthetic numerical check, one independent P0/P1 review; real source smoke occurs first."
+  ],
+  "registered_at": "2026-11-08T11:09:35+00:00"
+}
