@@ -1,1 +1,2 @@
 {"at": "2026-11-08T04:32:15+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-08T04:34:50+00:00", "status": "FAILED", "note": "Source training stopped before data access: release archive omitted experiments.phase1_dura_innovation_probe; source checkpoint smoke not reached.", "evidence": ["N607 runs/20261108-phase1-dura-cross-expert-polyphase-source-s2026092701-r01-controller/source_train.log"], "row_id": null}
