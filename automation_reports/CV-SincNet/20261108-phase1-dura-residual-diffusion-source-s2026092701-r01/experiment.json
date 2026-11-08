@@ -1,0 +1,147 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-dura-residual-diffusion-source-s2026092701-r01",
+  "group_id": "phase1-dura-residual-diffusion",
+  "display_name": "DURA 条件残差扩散源训练",
+  "description": "以冻结 DURA、当前接收 IQ 与物理创新为条件，训练 clean−DURA 残差的噪声去除网络；固定八步、四条反向配对轨迹平均成单条 IQ。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "dura",
+    "F-free-training",
+    "conditional-residual-diffusion",
+    "deterministic-gpu"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests continued novel and DURA-combinable Phase1 restoration research, F-free/TX-label-free source training, automatic seven-view test and truth-last score.",
+  "code": {
+    "commit": "c48f5bebc921b4e2fd97341cb8eebcf6a627dbe2",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU0 FP32 TF32 off deterministic; batch32 source GPU training; GPU DURA and candidate with frozen CPU classifier for ground prediction; CPU truth scorer",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-residual-diffusion-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "fixed source training cache epochs21/22/23; source diagnostic epoch19",
+    "representation": "Paired source received/clean and frozen DURA output/physical variance",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "32768 source fit IDs randomly sampled without replacement after excluding RX4/6/8 day3 and the 672 fixed source pilot IDs",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Source-only 64-record real-DURA optimizer smoke and 112-source-record frozen-reader preflight; no target",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed source epoch21/22/23 views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "F-free/TX-label-free paired source IQ training; F used only in separate source no-query preflight and frozen ground evaluation"
+  },
+  "checkpoint": {
+    "initialization": "Frozen DURA v1.0 plus independently initialized zero-output 1790786-parameter conditional residual denoiser",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Original source-only DURA provenance and fixed matching source L_s/U_s cache; no F/TX/V/target in G training",
+    "provenance_verdict": "Frozen source-only DURA and matching source IQ cache; fresh denoiser; frozen Tri-SIG-TIME SSL only in separate source no-query preflight and after G freeze",
+    "selection_rule": "Fixed final epoch20, no target or source-score checkpoint selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "GPU0: one this-task GPU training/prediction worker; >=8192 MiB free and fewer than three total compute apps before every GPU stage; preserve other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-residual-diffusion-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-residual-diffusion-source-s2026092701-r01-queue.log",
+    "local_artifact_root": "E:/type10-7/github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/20261108-phase1-dura-residual-diffusion-source-s2026092701-r01",
+    "launch_command": "PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-residual-diffusion-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release nice -n 10 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_residual_diffusion.runner --root /home/szu2070436088/2510044040/CV-SincNet --source 20261108-phase1-dura-residual-diffusion-source-s2026092701-r01 --ground 20261108-phase1-dura-residual-diffusion-ground-test-s2026092701-r01 --commit c48f5bebc921b4e2fd97341cb8eebcf6a627dbe2 --gpu 0 --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-wide-source-source-s2026092701-r01/source_context.pt",
+    "stop_rule": "Stop exact owner only on source contract or role mismatch, nonfinite computation, wrong checkpoint, target leakage, output collision, failed no-query smoke, or unrecoverable technical failure; preserve artifacts and other owners."
+  },
+  "expected_artifacts": [
+    "final.pt fixed final epoch",
+    "source_summary.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source random-time normalized IQ and DURA guard loss",
+      "source smoke finite gradients",
+      "training time and GPU memory"
+    ],
+    "dimensions": [
+      "32768 legal source records",
+      "3 fixed source views",
+      "20 epochs"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "dura-residual-diffusion-final20",
+      "method": "Cosine variance-preserving residual noise, clean-residual prediction at random time; 8 fixed reverse steps and 4 antithetic latent trajectories",
+      "purpose": "Train only on authorized source paired IQ; no F/TX/V/target input",
+      "config_ref": "experiments/phase1_residual_diffusion/train.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110817,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Model 2026110817; source fit 2026110611; order 2026110813; diffusion time 2026110818; training Gaussian 2026110819; fixed antithetic inference latent 2026110820; evaluation 2026092701.",
+      "k": null,
+      "scenario": "fixed source cache epochs 21, 22, 23",
+      "optimizer": "AdamW weight decay 0.001",
+      "lr": 0.0003,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "1790786 trainable + 266951 frozen DURA parameters; 32768 IDs x three source views x 20 epochs; batch32; random time and noise per training exposure",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-residual-diffusion-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-residual-diffusion-source-s2026092701-r01-queue.log",
+      "command": "PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-residual-diffusion-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release nice -n 10 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_residual_diffusion.runner --root /home/szu2070436088/2510044040/CV-SincNet --source 20261108-phase1-dura-residual-diffusion-source-s2026092701-r01 --ground 20261108-phase1-dura-residual-diffusion-ground-test-s2026092701-r01 --commit c48f5bebc921b4e2fd97341cb8eebcf6a627dbe2 --gpu 0 --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-wide-source-source-s2026092701-r01/source_context.pt",
+      "expected_artifacts": [
+        "final.pt fixed final epoch",
+        "source_summary.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Cosine-variance residual diffusion: random-time clean-residual prediction in source training; eight fixed reverse updates and four fixed antithetic latent paths averaged into one IQ.",
+    "Finite deterministic ensemble is not claimed to be a calibrated posterior or an identity-preservation guarantee.",
+    "Only legal source paired IQ and frozen DURA context are used in G training; TX labels, F weights or outputs, V and target are not read.",
+    "Fixed final epoch20; no-query real DURA and 112-source-record frozen reader checks precede training, then seven-view predictions precede independent truth-last.",
+    "Historical ground target is previously exposed; single-seed result is not an independent blind or real satellite result."
+  ],
+  "registered_at": "2026-11-08T11:43:51+00:00"
+}
