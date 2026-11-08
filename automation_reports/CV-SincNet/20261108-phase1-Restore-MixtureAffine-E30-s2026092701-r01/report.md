@@ -43,3 +43,7 @@ VERIFIED：远端控制器 PID 1014456 按登记命令启动，CUDA 为空，等
 `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.mixture_affine_capacity_dispatch --root /home/szu2070436088/2510044040/CV-SincNet --legacy-release /home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-Restore-MixtureAffine-E30-s2026092701-r01-release --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --commit 5f5ca0859a8f4508f3f8b09171b7f818f049300f`
 
 当前 GPU 0 已有 3 条其他计算进程，接管尚未执行；既有 owner 和等待队列继续。预期产物为逐阶段提交／退出状态、源检查、训练日志、完整预测和独立评分。
+
+## GPU 0 后台训练已启动
+
+VERIFIED / RUNNING：原等待控制器在无训练子进程及无预测时安全退出；新控制器 PID 1089066 在 GPU 0 启动训练 PID 1089155，实际入场前已有 2 个其他计算进程、空闲 21039 MiB。原源数据和冻结 F0 的两样本检查、梯度隔离及严格 E0 重载均 PASS；训练预算仍为从零 30 轮／7410 步。该版尚无正式测试结果。原配置中的 GPU 3 等待描述为历史队列，实际资源安排以本记录为准。

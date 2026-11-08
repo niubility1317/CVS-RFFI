@@ -99,13 +99,14 @@
   },
   "execution": {
     "host": "N607",
-    "launch_owner": "codex/root/mixture-affine-scratch30-GPU3",
-    "gpu_policy": "GPU3 only after original mixture candidate finishes all GPU stages or its own worker exits nonzero; then admit at most one existing compute PID and >=12288MiB free, monitor total<=3 every 2s. No other owner signaled.",
+    "launch_owner": "codex/root/mixture-affine-capacity3-gpu0-dispatch",
+    "gpu_policy": "GPU0：入场前既有计算进程最多2，剩余显存至少12288 MiB；运行中总计算进程不超过3，仅保护性停止本任务。",
     "remote_run_root": "runs/20261108-phase1-Restore-MixtureAffine-E30-s2026092701-r01",
     "remote_log_root": "runs/20261108-phase1-Restore-MixtureAffine-E30-s2026092701-r01/logs",
     "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261108-phase1-Restore-MixtureAffine-E30-s2026092701-r01",
     "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.mixture_affine_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit b231eb29aae1ff0d85049960dba02a64b404b4a6 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-Restore-MixtureAffine-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
-    "stop_rule": "Wrong source/F0/mixture prior, output collision, real source2/F0/gate/refiner gradient/strict reload failure, nonfinite, posterior residual>1e-8, GPU cap>3 or unverifiable three checks, or worker failure: stop own worker and preserve artifacts; no blind retry. Otherwise final30 and complete Main7/truth-last."
+    "stop_rule": "Wrong source/F0/mixture prior, output collision, real source2/F0/gate/refiner gradient/strict reload failure, nonfinite, posterior residual>1e-8, GPU cap>3 or unverifiable three checks, or worker failure: stop own worker and preserve artifacts; no blind retry. Otherwise final30 and complete Main7/truth-last.",
+    "resource_dispatch_commit": "5f5ca0859a8f4508f3f8b09171b7f818f049300f"
   },
   "expected_artifacts": [
     "launch.json",
@@ -200,7 +201,8 @@
     "This is a two-sample local source gradient observation, not evidence of whole-dataset saturation, final accuracy, physical identity recovery, or causality on target.",
     "F0 classifier outputs and TX truth are not used in training; original V/OE/target unavailable to G. F0 continuous features make this an F-guided method.",
     "15 focused and technical recovery tests PASS; one independent P0/P1 review PASS; actual source2/F0/gradients/strict reload is first remote GPU step.",
-    "Original candidate remains queued/running and must receive full seven-view formal test. This candidate waits for its GPU stages to finish to avoid sharing its own GPU."
+    "Original candidate remains queued/running and must receive full seven-view formal test. This candidate waits for its GPU stages to finish to avoid sharing its own GPU.",
+    "原配置的GPU3串行队列未启动时安全接管，实际资源调度改为GPU0上限3；模型、数据与30轮科学设置未改变。"
   ],
   "record_type": "managed_run",
   "registered_at": "2026-11-07T23:57:16+00:00"
