@@ -1,0 +1,149 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-direct-gates-shared-source-benchmark-s2026092701-r01",
+  "group_id": "phase1-direct-gates-shared-source-benchmark",
+  "display_name": "双门控共享 DURA 与直接恢复源域基准",
+  "description": "固定两版恢复门控，比较独立计算和共享 DURA/direct 的八类输出及相同 CPU 线程用时。",
+  "kind": "diagnostic",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "frozen-reader-evaluation",
+    "no-update",
+    "proxy-not-accuracy"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261108-phase1-dura-direct-adaptive-mix-source-s2026092701-r01",
+    "20261108-phase1-dura-direct-balanced-mix-source-s2026092701-r02",
+    "20261108-phase1-direct-wide-physics-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests continued novel and DURA-combinable Phase1 restoration research, F-free/TX-label-free source training, automatic seven-view test and truth-last score.",
+  "code": {
+    "commit": "35c9c7f68d090defeb26882b552a92d1a24e59b5",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CPU, two threads, CUDA hidden; source-only fixed evaluation",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-direct-gates-shared-source-benchmark-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "672 previously explored source pilot records, epoch19 paired IQ",
+    "representation": "Source L_s/U_s received and clean IQ with stored frozen clean pseudo-class; no transmitter truth",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "672 fixed source pilot records disjoint from direct and both gate fits",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ only, transmitter truth not read",
+      "U_s": "source IQ only, transmitter truth hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Frozen reader and prior raw/DURA/clean decisions must agree on each record",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed source epoch19 seven simulated views"
+  },
+  "permissions": {
+    "regime": "source_only_frozen_evaluation",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "672 source-record two-gate sequential CPU exact output and timing only; no target parity or parallel throughput claim"
+  },
+  "checkpoint": {
+    "initialization": "Frozen DURA, direct source final20, two source-only final20 gates; frozen Tri-SIG-TIME SSL for source evaluation only",
+    "sources": [
+      "20261108-phase1-dura-direct-adaptive-mix-source-s2026092701-r01",
+      "20261108-phase1-dura-direct-balanced-mix-source-s2026092701-r02",
+      "20261108-phase1-direct-wide-physics-source-s2026092701-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+    ],
+    "contract_check_ref": "Exact source checkpoint provenance; 672 pilot disjoint from 32768 direct and 17632 gate fit IDs; no F-assisted training or target reads",
+    "provenance_verdict": "Frozen source-only recovery checkpoints with fixed reader for source evaluation only",
+    "selection_rule": "Two frozen gate models, source-only throughput and parity; no selection or updates"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "CPU only, two threads, CUDA hidden; preserve all existing jobs",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-direct-gates-shared-source-benchmark-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-direct-gates-shared-source-benchmark-s2026092701-r01-launch.log",
+    "local_artifact_root": "E:\\type10-7\\github_publish\\CVS-RFFI-repo\\automation_reports\\CV-SincNet\\20261108-phase1-direct-gates-shared-source-benchmark-s2026092701-r01",
+    "launch_command": "nice -n 15 env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-direct-gates-shared-source-benchmark-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.benchmark_shared_direct_gates --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-direct-gates-shared-source-benchmark-s2026092701-r01 --commit 35c9c7f68d090defeb26882b552a92d1a24e59b5",
+    "stop_rule": "Stop on source provenance mismatch, nonfinite or bit-different output, output collision or technical failure"
+  },
+  "expected_artifacts": [
+    "result.json: 672 records x 2 pairs, exact eight-field outputs and timings"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "bytewise equality of eight fields",
+      "independent and shared elapsed seconds"
+    ],
+    "dimensions": [
+      "672 source records",
+      "RX4/6 and RX8",
+      "clean and six source views"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "no labels, no target IQ, no score"
+  },
+  "rows": [
+    {
+      "row_id": "direct-gates-shared-source",
+      "method": "Two sequential independent gates versus shared DURA/direct inference",
+      "purpose": "Validate source-only bit equality and compare same-thread timing",
+      "config_ref": "experiments/phase1_dura_orthogonal/benchmark_shared_direct_gates.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Fixed frozen gates seeds 2026110826 and 2026110828, direct parent, source pilot and DURA.",
+      "k": null,
+      "scenario": "672 fixed source pilot IDs x their preexisting views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "672 fixed source IQ, batch8, 2 opposite-order pairs, CPU two threads; no training",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-direct-gates-shared-source-benchmark-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-direct-gates-shared-source-benchmark-s2026092701-r01-launch.log",
+      "command": "nice -n 15 env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-direct-gates-shared-source-benchmark-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.benchmark_shared_direct_gates --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-direct-gates-shared-source-benchmark-s2026092701-r01 --commit 35c9c7f68d090defeb26882b552a92d1a24e59b5",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Frozen DURA/direct, two fixed final20 gates and Tri-SIG-TIME SSL for source-only evaluation; no TX/V/target reads or model updates.",
+    "Independent path recomputes DURA/direct for each gate; shared path computes common inputs once. Byte compare all eight fields for each gate.",
+    "672 source records, two reversed-order paired passes; both CPU 2 threads. Timing excludes load, comparison and I/O; no parallel throughput or target parity claim.",
+    "Seven focused tests and independent P0/P1 review passed; real source frozen-checkpoint smoke first."
+  ],
+  "registered_at": "2026-11-08T01:35:54+00:00"
+}
