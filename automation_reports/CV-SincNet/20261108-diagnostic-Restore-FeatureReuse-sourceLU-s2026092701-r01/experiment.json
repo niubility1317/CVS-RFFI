@@ -1,0 +1,151 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-diagnostic-Restore-FeatureReuse-sourceLU-s2026092701-r01",
+  "group_id": "source-F0-feature-reuse-exactness",
+  "display_name": "冻结特征复用：源样本计算图一致性检查",
+  "description": "合法源L_s/U_s各一条、四种固定扰动，比较在线与缓存参考特征、重复与共享F0图的数值、输入和代理参数梯度及AdamW单步；不修改在训模型。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-LU-only",
+    "frozen-TriSIGTIME-SSL",
+    "CPU-only",
+    "efficiency-diagnostic"
+  ],
+  "comparison_group_id": "source-feature-reuse-exactness",
+  "parent_run_ids": [
+    "20261108-phase1-Restore-FeatureResponse-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户授权源L_s/U_s、冻结F0指导及效率优化；无TX/V/OE/target。代理Conv的比较性AdamW更新不属于恢复器训练。",
+  "code": {
+    "commit": "ddb59c1c285059698edd64964b287f72c93462ad",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI CPU2 nice10, CUDA empty, FP32; actual F0 checkpoint.",
+    "cwd": "releases/20261108-diagnostic-Restore-FeatureReuse-sourceLU-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original R07 draw1 source training cache, fixed source indices0 and6300: one L_s, one U_s.",
+    "representation": "Original source clean and received IQ 2x256; four existing deterministic 1% synthetic perturbations.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "Fixed source array positions0 and6300; roles verified before reading IQ; physical IDs not needed.",
+    "label_map_ref": "No TX truth, logits or classifier head calls; original F0 continuous features only.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "TX labels not read or used.",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Existing VALIDATED_ONCE original R07 source cache / capsule / split, fixed original source-only Tri-SIG-TIME SSL F0.",
+    "support_query_ref": "No target/query, source V/OE/novel inputs or fitted state.",
+    "leo_config_ref": "Existing R07 draw1 only; no new simulated channel and no target.",
+    "actual_training_labels": "No TX labels; toy Conv AdamW equivalence test only, no G training.",
+    "augmentation": "Existing deterministic source perturbation directions at1% RMS.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "source-only-F0-feature-reuse-CPU-diagnostic",
+    "query_use": "One source L_s and one source U_s; no TX/V/OE/target or production G weight.",
+    "external_method_exception": null,
+    "claim_scope": "Two-source-record CPU numerical and autograd equivalence; not full production GPU parity, accuracy or speed."
+  },
+  "checkpoint": {
+    "initialization": "Original frozen Tri-SIG-TIME SSL F0 E50; two identical freshly initialized toy 1x1 Conv models, seed193.",
+    "sources": [
+      "FROZEN_F0 original Tri-SIG-TIME SSL 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d E50/11100",
+      "SOURCE_INPUTS original R07 L_s/U_s clean, received draw1 and source-only F0 variance."
+    ],
+    "contract_check_ref": "Original F0 source identity and source R07 capsule/split; same two permitted rows; no target-derived weights.",
+    "provenance_verdict": "Original legal frozen source F0; fresh toy Conv only; no trained G or target-derived state.",
+    "selection_rule": "Fixed source indices0/6300 and four epoch/direction cases; no scoring or model selection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-feature-reuse-check",
+    "gpu_policy": "CPU2 nice10, CUDA empty; no GPU worker.",
+    "remote_run_root": "runs/20261108-diagnostic-Restore-FeatureReuse-sourceLU-s2026092701-r01",
+    "remote_log_root": "logs/20261108-diagnostic-Restore-FeatureReuse-sourceLU-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261108-diagnostic-Restore-FeatureReuse-sourceLU-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.feature_response_reuse_probe --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261108-diagnostic-Restore-FeatureReuse-sourceLU-s2026092701-r01-release/inputs.json --commit ddb59c1c285059698edd64964b287f72c93462ad",
+    "stop_rule": "Unexpected input/role/F0 identity, non-eval reader, nonfinite value or original/shared loss, input/parameter gradients or toy AdamW update differ at rtol1e-5/atol1e-6: preserve log and stop; no automatic retry."
+  },
+  "expected_artifacts": [
+    "logs/20261108-diagnostic-Restore-FeatureReuse-sourceLU-s2026092701-r01/submitted.json",
+    "logs/20261108-diagnostic-Restore-FeatureReuse-sourceLU-s2026092701-r01/stdout.log",
+    "runs/20261108-diagnostic-Restore-FeatureReuse-sourceLU-s2026092701-r01/results.json",
+    "runs/20261108-diagnostic-Restore-FeatureReuse-sourceLU-s2026092701-r01/complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "For four directions: maximum absolute cached/online reference feature, loss, restored/changed IQ gradients, toy Conv parameter gradients and toy AdamW step differences.",
+      "Report F0 unchanged, source roles and CPU-only / no target / no real G training."
+    ],
+    "dimensions": [
+      "two fixed source L_s/U_s records",
+      "four deterministic 1% source perturbation directions",
+      "original vs feature-cached and autograd-shared computation"
+    ],
+    "prediction_ref": "No target or truth prediction; original F0 continuous features on fixed two source records.",
+    "scorer_ref": "None; numerical assertions in same CPU process, no truth."
+  },
+  "rows": [
+    {
+      "row_id": "source_LU_feature_reuse",
+      "method": "F0_feature_cache_and_shared_graph_equivalence",
+      "purpose": "Check CPU source-sample equivalence of four-direction cached F0 references and reuse of base F0 computation graph.",
+      "config_ref": "experiments.pamf_phase3_restoration.feature_response_reuse_probe.py",
+      "resolved_config_ref": "runs/20261108-diagnostic-Restore-FeatureReuse-sourceLU-s2026092701-r01/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original F0 seed2026092701; fixed toy Conv seed193, fixed source indices0/6300; no random sample selection.",
+      "k": null,
+      "scenario": "Two source L_s/U_s IQ records and four fixed perturbation directions; no target.",
+      "optimizer": "Toy Conv AdamW lr.001 weight_decay1e-4, one comparison step each path per direction; no real G training.",
+      "lr": 0.001,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "CPU2; 4 original vs shared/cached comparisons, 8 toy AdamW steps, original F0 frozen and no production G updates.",
+      "output_root": "runs/20261108-diagnostic-Restore-FeatureReuse-sourceLU-s2026092701-r01",
+      "log_path": "logs/20261108-diagnostic-Restore-FeatureReuse-sourceLU-s2026092701-r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.feature_response_reuse_probe --root /home/szu2070436088/2510044040/CV-SincNet --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261108-diagnostic-Restore-FeatureReuse-sourceLU-s2026092701-r01-release/inputs.json --commit ddb59c1c285059698edd64964b287f72c93462ad",
+      "expected_artifacts": [
+        "logs/20261108-diagnostic-Restore-FeatureReuse-sourceLU-s2026092701-r01/submitted.json",
+        "logs/20261108-diagnostic-Restore-FeatureReuse-sourceLU-s2026092701-r01/stdout.log",
+        "runs/20261108-diagnostic-Restore-FeatureReuse-sourceLU-s2026092701-r01/results.json",
+        "runs/20261108-diagnostic-Restore-FeatureReuse-sourceLU-s2026092701-r01/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Correctness of full production-G parameter gradients, GPU float32 kernels, training trajectory and speed are not established by this CPU toy-model diagnostic.",
+    "Direction cache indexing must match (source_index+epoch)%4, all original F0 feature computation remains frozen; no target selection.",
+    "Training tasks remain unchanged; failed mismatch is retained and does not modify running models."
+  ],
+  "registered_at": "2026-11-08T01:48:51+00:00"
+}
