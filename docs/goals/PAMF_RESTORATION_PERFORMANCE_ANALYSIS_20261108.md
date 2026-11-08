@@ -24,7 +24,8 @@
 1. **识别特征响应约束值得保留。** 在已预登记的匹配对照中，连续特征响应相对只用稠密 IQ 响应的版本，低城区净增 2829 条、提高 1.683929 个百分点，中城区提高 0.900595 个百分点，低郊区提高 0.491667 个百分点；高郊区下降 0.233929 个百分点。它说明针对冻结识别器的连续特征有实际价值，但仍落后 DURA，且是一个种子下的整套训练配方比较。
 2. **提高源响应约束的可靠性有帮助。** 可靠度加权版相对等权匹配版，六景分别提高 0.393 至 0.503 个百分点，但低城区仍只有 66.255952%，比 DURA 低 2.545238 个百分点，另一 clean 总体净少 17 条。不能只看相对弱对照的提升。 [结果](../../automation_reports/CV-SincNet/20261108-phase1-Restore-ResponseReliability-E30-s2026092701-r02/analysis.md)
 3. **源接收机先验失配训练对弱城区有收益。** 与原条件均值匹配版相比，低城区净增 1264 条、提高 0.752381 个百分点，中城区提高 0.317262 个百分点；clean 降低 0.170833 个百分点。下一步需要保护 clean，而不是根据目标成绩逐场景拼接版本。
-4. **增加网络规模或多假设本身不足以保证收益。** 源波形多假设融合版低城区 62.322619%，有界投影版为 68.347619%，均低于 DURA；前者两个 clean 总体仍分别净增 237、13 条。说明应优先保护识别相关信息和物理估计，再判断扩容效果。 [多假设](../../automation_reports/CV-SincNet/20261108-phase1-Restore-MixtureFusion-E30-s2026092701-r01/analysis.md)；[有界投影](../../automation_reports/CV-SincNet/20261108-evaluation-Restore-ScoreRepairBounded-s2026092701-r01/analysis.md)。
+4. **困难源样本加权在一组弱基线上带来六景增益。** 另一组已完成的 F-free 大容量 DURA 修正对照中，困难样本版在原 IQ 损失上增加批内最高四分之一误差项（权重 0.5）；其余登记的源 ID、视图、结构、种子、优化器和 20 轮预算匹配。与普通稳定版相比，六景分别提高 0.010714、0.452976、0.938095、0.196429、1.257738、1.849405 个百分点；但低城区绝对准确率仅 65.009524%，仍比 DURA 低 3.791667 个百分点，六景均未超过 DURA。低城区相对普通版有不同 TX 组受益和受损，不能把均值改善当成逐设备均改善。此为单 seed 且已反复暴露的目标结果，仅作历史描述，不用于改变在训候选、选模或调整预登记测试。[普通版七景](../../automation_reports/CV-SincNet/20261108-phase1-dura-large-context-stable-ground-test-s2026092701-r01/analysis.md)；[困难样本版七景](../../automation_reports/CV-SincNet/20261108-phase1-dura-large-context-stable-tail-ground-test-s2026092701-r01/analysis.md)。
+5. **增加网络规模或多假设本身不足以保证收益。** 源波形多假设融合版低城区 62.322619%，有界投影版为 68.347619%，均低于 DURA；前者两个 clean 总体仍分别净增 237、13 条。说明应优先保护识别相关信息和物理估计，再判断扩容效果。 [多假设](../../automation_reports/CV-SincNet/20261108-phase1-Restore-MixtureFusion-E30-s2026092701-r01/analysis.md)；[有界投影](../../automation_reports/CV-SincNet/20261108-evaluation-Restore-ScoreRepairBounded-s2026092701-r01/analysis.md)。
 
 ## 信道估计和可恢复性的证据
 
