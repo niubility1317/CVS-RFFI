@@ -1,5 +1,8 @@
 # 独立时变复数滤波网络 Phase1 七景测试
 
+**2026-11-08 状态更新：七景预测、独立评分和 DURA 配对均已完成。完整结果见[七场景分析](analysis.md)。下方“尚无结果”文字保留为历史记录。**
+
+
 - run_id：`20261106-phase1-timevarying-inverse-ground-test-s2026092701-r01`
 - group_id：`phase1-timevarying-inverse`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
