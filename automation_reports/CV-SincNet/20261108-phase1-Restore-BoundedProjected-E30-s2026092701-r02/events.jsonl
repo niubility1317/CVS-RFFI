@@ -1,3 +1,4 @@
 {"at": "2026-11-07T19:17:19+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-07T21:23:06+00:00", "status": "RUNNING", "note": "Verified admitted GPU2, actual source2/F0/E0 smoke PASS, epoch1 complete; full Main pending.", "evidence": ["report.md"], "row_id": "TF_BoundedProjected"}
 {"at": "2026-11-07T21:23:16+00:00", "status": "RUNNING", "note": "Verified admitted GPU2, actual source2/F0/E0 smoke PASS, epoch1 complete; full Main pending.", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-11-08T01:04:53+00:00", "status": "STOPPED", "note": "GPU 2 total exceeded 3 after other tasks joined; only own worker stopped; E26 complete and no target predictions.", "evidence": ["N607 runs/20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r02/resource_stop.json"], "row_id": null}
