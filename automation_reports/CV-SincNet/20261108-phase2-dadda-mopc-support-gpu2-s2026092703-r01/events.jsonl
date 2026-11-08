@@ -1,2 +1,3 @@
 {"at": "2026-11-08T14:09:03+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-08T14:12:05+00:00", "status": "RUNNING", "note": "Original GPU2 source/support diagnostic process verified; no-query source smoke PASS.", "evidence": ["E:/type10-7/local_artifacts/20261108-phase2-dadda-mopc-support-gpu2-s2026092703-r01/running_verified.json"], "row_id": null}
+{"at": "2026-11-08T14:14:02+00:00", "status": "ARTIFACTS_COMPLETE", "note": "Original GPU2 support-only diagnostic finished 100 B and 80 C updates; no nonfinite observed; original failure not reproduced.", "evidence": ["E:/type10-7/local_artifacts/20261108-phase2-dadda-mopc-support-gpu2-s2026092703-r01/completion_verified.json"], "row_id": null}
