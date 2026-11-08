@@ -97,7 +97,7 @@
   "execution": {
     "host": "N607",
     "launch_owner": "codex/root/feature-response-scratch30-GPU5",
-    "gpu_policy": "GPU5 only; admission at most one existing GPU compute PID and free>=12288MiB. Monitor every 2s; stop only own child if total>3 or GPU count unavailable three times.",
+    "gpu_policy": "GPU5 only; admit at most two existing GPU compute PIDs and free>=12288MiB, total cap3. Monitor every 2s; stop only own child on cap violation or three unverified counts. Unstarted original owner retired; original science release/commit unchanged.",
     "remote_run_root": "runs/20261108-phase1-Restore-FeatureResponse-E30-s2026092701-r01",
     "remote_log_root": "logs/20261108-phase1-Restore-FeatureResponse-E30-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261108-phase1-Restore-FeatureResponse-E30-s2026092701-r01",
@@ -198,7 +198,8 @@
     "Feature response equals F0(G(y+Aδ))-F0(G(y)) minus [F0(x+δ)-F0(x)], variance-normalized; denominator uses reference response energy plus 1e-4 source feature energy and minimum 1e-12. The added term has weight .01.",
     "Same original ResponseDense E0, priors, optimizer, schedule, data and IQ response; no control weights loaded. The extra two differentiable F0 passes and one detached clean-perturbed F0 pass per source row are explicitly counted.",
     "Eleven focused local tests PASS, including actual objective gradients in a synthetic model and technical recovery regression. One independent P0/P1 review PASS. Real F0/source2/E0/feature-response-gradient smoke is the first remote step and is not yet passed.",
-    "Both Main populations and all seven views are predicted before independent truth-last. No target result is used to adjust this or another candidate. Default DURA unchanged."
+    "Both Main populations and all seven views are predicted before independent truth-last. No target result is used to adjust this or another candidate. Default DURA unchanged.",
+    "Resource handover only: dispatch commit 50abe8303c7e6475032aa82f3422ca5f4b01d65a, original scientific commit 6a54c65a2b54886191f44b6a4d6d94530fcb217d; original model config resource_policy records the initial queue, not the actual capacity3 admission."
   ],
   "record_type": "managed_run",
   "registered_at": "2026-11-07T22:10:37+00:00"

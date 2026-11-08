@@ -43,3 +43,9 @@ VERIFIED / QUEUED。远端控制器 PID 904896 的命令、工作目录和空 CU
 `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.feature_response_capacity_dispatch --root /home/szu2070436088/2510044040/CV-SincNet --legacy-release /home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-Restore-FeatureResponse-E30-s2026092701-r01-release --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --commit 50abe8303c7e6475032aa82f3422ca5f4b01d65a`
 
 控制器 CUDA 为空；预期产物为逐阶段提交／退出状态、真实源检查、训练日志、完整预测与评分。当前为接管前状态。
+
+## 安全接管与真实源检查（2026-11-08）
+
+VERIFIED：旧 owner PID 904896 在确认尚未训练且暂停后无子进程时退出；首次尝试启动新控制器时发现远端日志目录不存在，尚未启动新控制器或训练。独立确认无旧／新 owner、无训练目录和提交标记后，建立日志目录并启动新 owner PID 1058139。训练子进程 PID 1058325 使用原科学 commit 6a54c65a2b54886191f44b6a4d6d94530fcb217d 及原 release；接管 commit 为 50abe8303c7e6475032aa82f3422ca5f4b01d65a。GPU 5 入场时其他进程 2 条、空闲显存 18501 MiB；实际确认本进程在该卡，总数 3。没有对其他 owner 发信号。
+
+真实源 2 条／原 F0／完整后验首步检查 PASS：F0 冻结、物理与细节梯度隔离、严格 E0 重载、源特征响应梯度及训练／部署后验一致；零 TX/V/OE/目标读取及零优化器更新。检查通过后训练继续，尚无完整训练或正式测试结果。原模型配置中的资源文字描述旧等待条件，实际接管策略以本记录及远端 resource_controller 为准；科学配方、预算和输出根均未改变。自动跟踪进程在旧、新 owner 交接间隙退出，核实新 owner 唯一后已恢复。
