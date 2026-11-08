@@ -1,0 +1,3 @@
+{"at": "2026-11-07T22:15:17+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-07T22:16:29+00:00", "status": "RUNNING", "note": "Source smoke passed, physics-plus-wide training running on GPU0; fixed final20 then seven-view independent truth-last.", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-11-08T00:01:26+00:00", "status": "TRAINING_COMPLETE", "note": "Fixed final20 source checkpoint and 672 source pilot summary complete; formal seven-view prediction active.", "evidence": ["analysis.md"], "row_id": null}
