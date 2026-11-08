@@ -27,3 +27,7 @@ Reuse 9240 closed ancestor tasks, retain 6 quarantines and 138 partial predictio
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 2026-11-08 准备阶段失败，未派发
+
+在祖先进程只读核验期间，旧 PID 已被其他用户进程复用，读取其 cwd 被系统拒绝。控制器已退出；失败发生在新 run 根、后继 claim、source smoke 和预测派发之前，无新 worker，所有祖先完整及部分预测保持。已修改身份检查：先检查命令行是否绑定本实验 runtime，无关进程不读取其 cwd；匹配但无法核实 cwd 时仍拒绝。新不可变后继经针对性测试与复核后继续。

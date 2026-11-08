@@ -17,6 +17,20 @@ def test_cancelled_scope_cannot_silently_exclude_other_methods():
         group2_resume.separate_cancelled({'cancelled_profiles': ['dadda_sda']}, [])
 
 
+def test_reused_pid_does_not_require_other_users_cwd(tmp_path, monkeypatch):
+    proc = tmp_path/'123'
+    proc.mkdir()
+    (proc/'cmdline').write_bytes(b'python\x00--runtime\x00/other/runtime.json\x00')
+    def denied(_):
+        raise PermissionError('other user')
+    monkeypatch.setattr(group2_resume.os, 'readlink', denied)
+    old = {'runtime_file': '/own/runtime.json', 'release_root': '/own/release'}
+    assert not group2_resume.previous_process_is_live(123, old, tmp_path)
+    (proc/'cmdline').write_bytes(b'python\x00--runtime\x00/own/runtime.json\x00')
+    with pytest.raises(PermissionError):
+        group2_resume.previous_process_is_live(123, old, tmp_path)
+
+
 def test_reuses_closed_jobs_skips_exact_failed_job_and_refuses_other_partial(tmp_path, monkeypatch):
     previous=tmp_path/'previous'; (previous/'predictions'/'done').mkdir(parents=True)
     (previous/'predictions'/'failed').mkdir()
