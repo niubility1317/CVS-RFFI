@@ -189,10 +189,17 @@ def _record(trace: list[dict[str, Any]], model: nn.Module, terms: Mapping[str, A
         context = {key: fields[key] for key in ("phase", "method", "stage", "epoch", "iteration")
                    if key in fields}
         if "gradient_norm" in nonfinite and "gradient_norm" not in terms:
-            context["nonfinite_gradient_tensors"] = [
-                name for name, param in model.named_parameters()
-                if param.grad is not None and not torch.isfinite(param.grad).all()
-            ]
+            named_gradients = [(name, param.grad.detach()) for name, param in model.named_parameters()
+                               if param.grad is not None]
+            bad = [name for name, value in named_gradients if not torch.isfinite(value).all()]
+            context["nonfinite_gradient_tensors"] = bad
+            # Failure-only observation: preserve the original FP32 guard and
+            # training trajectory while distinguishing aggregate overflow.
+            if not bad and named_gradients:
+                context["gradient_norm_float64"] = float(torch.stack(
+                    [value.double().norm() for _, value in named_gradients]).norm())
+                context["gradient_absmax_float64"] = float(torch.stack(
+                    [value.double().abs().max() for _, value in named_gradients]).max())
         raise FloatingPointError(f"nonfinite registration training term: {', '.join(nonfinite)}; {context}")
     trace.append(row)
     if callback:

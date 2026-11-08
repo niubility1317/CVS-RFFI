@@ -18,6 +18,11 @@ def test_record_identifies_nonfinite_gradient_norm(gradient, names):
                 method="mopc_hr", stage="hierarchical", iteration=7)
     assert f"'nonfinite_gradient_tensors': {names}" in str(failure.value)
     assert "'iteration': 7" in str(failure.value)
+    if names == "[]":
+        assert "'gradient_norm_float64':" in str(failure.value)
+        assert "'gradient_absmax_float64':" in str(failure.value)
+    else:
+        assert "'gradient_norm_float64':" not in str(failure.value)
     assert not trace
 
 
