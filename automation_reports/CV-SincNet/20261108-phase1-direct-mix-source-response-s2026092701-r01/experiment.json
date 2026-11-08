@@ -1,0 +1,152 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-direct-mix-source-response-s2026092701-r01",
+  "group_id": "phase1-direct-mix-source-response",
+  "display_name": "DURA 与融合网络源域微扰响应",
+  "description": "比较 DURA、独立网络、固定各半和两个冻结门控对四类源域人工微扰的响应；无 F 和目标读取。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "f-free",
+    "frozen-gate",
+    "no-update"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261108-phase1-dura-direct-adaptive-mix-source-s2026092701-r01",
+    "20261108-phase1-dura-direct-balanced-mix-source-s2026092701-r02",
+    "20261108-phase1-direct-wide-physics-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests continued novel and DURA-combinable Phase1 restoration research, F-free/TX-label-free source training, automatic seven-view test and truth-last score.",
+  "code": {
+    "commit": "e0cb4bab03804e4f12df7d79a5235aa87db0905b",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CPU, two threads, CUDA hidden; source-only fixed evaluation",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-direct-mix-source-response-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "112 previously explored source pilot records, 8 per each receiver/view group, epoch19 paired IQ",
+    "representation": "paired source IQ, clean-derived synthetic 1% RMS perturbations through DURA estimated action",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "First eight records of each of 14 fixed source RX/view groups; disjoint from direct and both gate fit IDs",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ only, transmitter truth not read",
+      "U_s": "source IQ only, transmitter truth hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Frozen DURA real-source smoke and finite source waveform metrics",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed source epoch19 seven simulated views"
+  },
+  "permissions": {
+    "regime": "source_only_frozen_evaluation",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Synthetic source response proxy only, no identity or target performance claim"
+  },
+  "checkpoint": {
+    "initialization": "Frozen DURA v1, direct final20 and both source-only final20 fusion gates",
+    "sources": [
+      "20261108-phase1-dura-direct-adaptive-mix-source-s2026092701-r01",
+      "20261108-phase1-dura-direct-balanced-mix-source-s2026092701-r02",
+      "20261108-phase1-direct-wide-physics-source-s2026092701-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Fixed parent and gate source provenance; 17632 gate fit and 32768 parent fit disjoint; 672 pilot disjoint from both",
+    "provenance_verdict": "source-only frozen checkpoints",
+    "selection_rule": "All five fixed methods, all four perturbation directions; no selection or model update"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "CPU only, two threads, CUDA hidden; preserve all existing jobs",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-direct-mix-source-response-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-direct-mix-source-response-s2026092701-r01-launch.log",
+    "local_artifact_root": "E:\\type10-7\\github_publish\\CVS-RFFI-repo\\automation_reports\\CV-SincNet\\20261108-phase1-direct-mix-source-response-s2026092701-r01",
+    "launch_command": "nice -n 15 env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-direct-mix-source-response-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.source_direct_mix_response --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-direct-mix-source-response-s2026092701-r01 --commit e0cb4bab03804e4f12df7d79a5235aa87db0905b",
+    "stop_rule": "Stop on provenance mismatch, nonfinite values, real-source smoke mismatch, output collision or technical failure"
+  },
+  "expected_artifacts": [
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source normalized waveform error",
+      "perturbation gain",
+      "relative squared response error",
+      "response norm"
+    ],
+    "dimensions": [
+      "112 fixed source records",
+      "RX4/6 and RX8",
+      "clean and six source views",
+      "four synthetic perturbation directions"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "source clean IQ only, no TX truth"
+  },
+  "rows": [
+    {
+      "row_id": "frozen-direct-mix-response",
+      "method": "Frozen DURA/direct and gate synthetic source response",
+      "purpose": "Measure source perturbation sensitivity and waveform error, no identity claims",
+      "config_ref": "experiments/phase1_dura_orthogonal/source_direct_mix_response.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110826,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "No stochastic model, augmentation, or selection; fixed source pilot and DURA.",
+      "k": null,
+      "scenario": "112 fixed source records, four 1% RMS synthetic perturbations",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "112 source records x four perturbations x five frozen restorers; CPU two threads; no training",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-direct-mix-source-response-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-direct-mix-source-response-s2026092701-r01-launch.log",
+      "command": "nice -n 15 env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-direct-mix-source-response-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.source_direct_mix_response --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-direct-mix-source-response-s2026092701-r01 --commit e0cb4bab03804e4f12df7d79a5235aa87db0905b",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source-only frozen evaluation of DURA, direct, half and two source-only final20 gates; no F/TX/V/target reads or model update.",
+    "Four synthetic source clean perturbations of 1% RMS use original DURA estimated action and re-estimated DURA context after injection.",
+    "112 source records, first eight in each fixed receiver/view group; pilot disjoint from direct and gate fit, original DURA overlap unknown.",
+    "Eight focused tests and independent P0/P1 review passed; real-source checkpoint smoke first.",
+    "Source response is a proxy, not identity accuracy, target performance, or an independently blind finding."
+  ],
+  "registered_at": "2026-11-08T01:49:54+00:00"
+}
