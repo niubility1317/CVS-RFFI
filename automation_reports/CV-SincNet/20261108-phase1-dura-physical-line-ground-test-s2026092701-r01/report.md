@@ -33,3 +33,7 @@
 使用冻结 DURA v1、源域第 20 轮 StableLargeContextDura（源 commit `b873acec23758690e5484bd1c5f82162739c6655`），沿其修正方向在 [0,1] 最小化估计信道下的接收残差。修正幅度只使用 received IQ 与 DURA 估计信道，不使用 clean、F 输出或目标标签；F 为冻结 Tri-SIG-TIME SSL。源域探索理由见 [物理步长诊断](../20261108-phase1-physical-line-source-s2026092701-r01/analysis.md)。历史 Phase1 测试已被观察，本次单 seed 不是新盲测或真实在轨。
 
 代码 commit `2cc7be9a201692268b93d799bfacba0643f51141`，4 项针对性测试通过；独立审查发现评分子进程环境问题，已修复并定点复核通过。远端一次归档 SHA 对比、编译及 112 条真实源记录 smoke 通过。N607 CPU 2 线程 nice15，控制器 PID 954002、预测子进程 PID 954574；已进入七景预测。全部 168000×7 预测固定后自动独立 truth-last，并与 DURA 配对评分。其他健康任务未改动。
+
+## 七景最终评分
+
+七景各 168000 条预测固定后完成独立 truth-last 与 DURA 配对评分。完整逐场景和 TX/RX/day 分组见 [结果分析](analysis.md)。六个 practical 场景均低于 DURA；本结果属于已曝光的 Phase1 地面模拟测试，未作为其他已固定实验的训练或选模反馈。
