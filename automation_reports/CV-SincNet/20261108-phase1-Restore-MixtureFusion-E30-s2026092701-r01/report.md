@@ -47,3 +47,5 @@ VERIFIED：远端控制器 PID 999379 已按登记命令启动，CUDA 为空，G
 新 owner 在 GPU 3 至多已有两个计算进程且剩余至少 12288 MiB 时可启动本任务，总数上限 3；每 2 秒核查，若本任务已占用该卡且总数超过 3，或连续 3 次无法核实进程，仅停止本任务子进程并保留结果，不影响其他 owner。若容量不足则继续等待。真实源 2 条及 F0、梯度和严格重载检查仍为训练首步；通过后继续 30 轮、两总体七视图及独立评分。
 
 命令：在远端 capacity3-dispatch 发布目录执行 Python 模块 experiments.pamf_phase3_restoration.mixture_capacity_dispatch，传入原根目录、原科学 release、原缓存及上述接管 commit；CUDA_VISIBLE_DEVICES 为空，训练／预测子进程按 GPU UUID 指定。独立提交和逐阶段状态、训练日志、七视图预测、truth-last 评分及分析为预期产物。接管前状态为待执行，不能视为训练已经启动。
+
+实际接管命令：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.mixture_capacity_dispatch --root /home/szu2070436088/2510044040/CV-SincNet --legacy-release /home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-Restore-MixtureFusion-E30-s2026092701-r01-release --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --commit c498f710e6040b36121760e89ffdbf8df01a3603`
