@@ -48,12 +48,13 @@ def test_reports_bad_sgd_update_before_next_forward(support):
 
     hook = register_optimizer_step_post_hook(corrupt)
     try:
-        assert diagnostic.trace_registration(prepared, x, y, 42, events.append) is None
+        with pytest.raises(FloatingPointError):
+            diagnostic.trace_registration(prepared, x, y, 42, events.append)
     finally:
         hook.remove()
     assert events[0] == dict(event='FIRST_NONFINITE', boundary='after_sgd', update=1, tensors=['base.weight'])
-    assert events[1]['event'] == 'REGISTRATION_FAILURE'
-    assert events[1]['completed_updates'] == 1
+    assert events[-1]['event'] == 'REGISTRATION_FAILURE'
+    assert events[-1]['completed_updates'] == 1
 
 
 def test_support_rejects_other_capsule_before_reading_samples(tmp_path, monkeypatch):
@@ -91,3 +92,16 @@ def test_support_pair_passes_only_new_class_rows(tmp_path, monkeypatch):
     np.testing.assert_array_equal(old_y, labels[:6])
     np.testing.assert_array_equal(new_x, x[6:])
     np.testing.assert_array_equal(new_y, labels[6:])
+
+
+def test_gradient_diagnostic_distinguishes_float32_overflow_from_nonfinite_values():
+    model = nn.Linear(1, 1, bias=False)
+    model.weight.grad = torch.tensor([[1e20]], dtype=torch.float32)
+    report = diagnostic.gradient_diagnostic(model)
+    assert report['all_elements_finite'] is True
+    assert report['legacy_norm_finite'] is False
+    assert report['norm_float64'] == pytest.approx(1e20, rel=1e-6)
+    model.weight.grad.fill_(float('nan'))
+    report = diagnostic.gradient_diagnostic(model)
+    assert report['all_elements_finite'] is False
+    assert report['norm_float64'] is None

@@ -20,6 +20,20 @@ def nonfinite_tensors(tensors):
     return [name for (name, _), ok in zip(items, finite) if not ok]
 
 
+def gradient_diagnostic(model):
+    """Compare the original FP32 norm statistic with a diagnostic FP64 norm."""
+    grads = [(name, p.grad.detach()) for name, p in model.named_parameters() if p.grad is not None]
+    bad = nonfinite_tensors(grads)
+    if not grads:
+        return dict(all_elements_finite=True, legacy_norm_finite=True, norm_float64=0.0,
+                    nonfinite_gradient_tensors=[])
+    legacy = torch.stack([value.norm().square() for _, value in grads]).sum().sqrt()
+    norm64 = (float(torch.stack([value.double().norm() for _, value in grads]).norm())
+              if not bad else None)
+    return dict(all_elements_finite=not bad, legacy_norm_finite=bool(torch.isfinite(legacy)),
+                norm_float64=norm64, nonfinite_gradient_tensors=bad)
+
+
 def trace_registration(prepared, x, y, seed, emit):
     from .group2_cross_fit import register_c
     from .vendor_native.comparison_suite import registration as native
@@ -51,7 +65,11 @@ def trace_registration(prepared, x, y, seed, emit):
         position.update({key: fields[key] for key in ('stage', 'epoch', 'iteration')})
         inspect('forward_buffers', current.named_buffers(), updates + 1)
         inspect('backward', ((name, p.grad) for name, p in current.named_parameters()), updates + 1)
-        return record(trace, current, terms, callback, start, **fields)
+        try:
+            return record(trace, current, terms, callback, start, **fields)
+        except FloatingPointError:
+            emit(dict(event='GRADIENT_NORM_DIAGNOSTIC', **gradient_diagnostic(current), **position))
+            raise
 
     def observe_step(optimizer, _args, _kwargs):
         nonlocal updates
@@ -77,7 +95,7 @@ def trace_registration(prepared, x, y, seed, emit):
             state = register_c(prepared, x, y, seed=seed, methods=('mopc_hr',))['mopc_hr']
         except FloatingPointError as exc:
             emit(dict(event='REGISTRATION_FAILURE', error=str(exc), completed_updates=updates, **position))
-            return None
+            raise
     emit(dict(event='REGISTRATION_RETURNED', observed_nonfinite=first is not None, completed_updates=updates))
     return state
 
@@ -112,7 +130,8 @@ def run(args, emit):
 
     runtime, job = read(args.runtime), read(args.job)
     profile, seed = job['profile'], int(job['seed'])
-    require(profile == 'dadda_sda' and 'mopc_hr' in job['methods'], 'Not a DADDA→MoPC job')
+    require(profile in ('dadda_sda', 'protonet_cda') and 'mopc_hr' in job['methods'],
+            'Not a supported source→MoPC job')
     activate(runtime)
     torch.set_num_threads(1)
     torch.backends.cuda.matmul.allow_tf32 = False
@@ -131,8 +150,10 @@ def run(args, emit):
         x = labeled.x[indices].to(args.device)
         y = torch.arange(6, device=args.device)
         model = bundle['model']
-        smoke = prepare_b(model, profile, extractor, x, y)['mopc_hr']
-        require(torch.allclose(bundle['score_fn'](model, x), smoke.model(x)['tx_logits'], rtol=1e-4, atol=1e-4),
+        proto = extractor(model, x).detach().clone() if profile == 'protonet_cda' else None
+        smoke = prepare_b(model, profile, extractor, x, y, old_prototypes=proto)['mopc_hr']
+        expected = -torch.cdist(proto, proto).square() if proto is not None else bundle['score_fn'](model, x)
+        require(torch.allclose(expected, smoke.model(x)['tx_logits'], rtol=1e-4, atol=1e-4),
                 'Source-only DADDA bridge smoke failed')
     emit(dict(event='SOURCE_SMOKE_PASS', device=args.device, target_rows=0, query_rows=0))
     del labeled, smoke, x, y
@@ -152,7 +173,10 @@ def run(args, emit):
               model_seed=seed, b_seed=b_seed, c_seed=c_seed, k=k, n=n))
     if bad:
         return
-    prepared = prepare_b(state['model'], profile, extractor, old_x, old_y, b_scores=state['score_fn'])
+    native = state.get('native_state')
+    old_prototypes = getattr(native, 'prototypes', None) if profile == 'protonet_cda' else None
+    prepared = prepare_b(state['model'], profile, extractor, old_x, old_y,
+                         old_prototypes=old_prototypes, b_scores=state['score_fn'])
     with torch.no_grad():
         expected = state['score_fn'](state['model'], old_x)
         actual = prepared['mopc_hr'].model(old_x)['tx_logits']
