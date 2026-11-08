@@ -1,0 +1,152 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-cross-expert-step-breakdown-s2026092701-r01",
+  "group_id": "phase1-cross-expert-step-breakdown",
+  "display_name": "大型时频恢复网络源域 GPU 训练分段计时",
+  "description": "固定真实源输入和完整时频网络，测量数据搬运、前向、损失、反向、裁剪和更新的同步分段耗时。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "GPU",
+    "training-efficiency",
+    "exact-parity"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261108-phase1-cross-expert-cudnn-benchmark-s2026092701-r01",
+    "20261108-phase1-dura-direct-cross-expert-source-s2026092701-r01",
+    "20261108-phase1-direct-wide-physics-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User authorizes ongoing Phase1 F-free restoration research, source-only diagnostics and GPU use.",
+  "code": {
+    "commit": "592e2cad2287fbd29e218d383da2fbf3afa1d9ea",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU2, FP32 TF32off, deterministic; same CPU-staged legal source inputs",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-cross-expert-step-breakdown-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split permitted source L_s/U_s",
+    "version": "fixed deterministic source context epochs21/22/23",
+    "representation": "512 fixed source fit IDs x 3 simulation views: source received/anchor/innovation/variance/clean IQ plus frozen direct prediction",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "First 512 IDs of the existing ordered 32768 legal source fit IDs; three source simulation views",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ only, TX hidden",
+      "U_s": "source IQ only, TX hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Identical source IDs, initial model, ordering and flow-time seeds per paired path",
+    "support_query_ref": null,
+    "leo_config_ref": "pre-existing legal source simulation epochs 21/22/23"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only synchronized GPU phase timings; no target, identity, parity, end-to-end speed or trained model claim"
+  },
+  "checkpoint": {
+    "initialization": "Seeded untrained CrossExpertRefiner; frozen legal DURA/direct for real-source smoke and fixed inputs",
+    "sources": [
+      "20261106-phase1-dura-wide-source-source-s2026092701-r01",
+      "20261108-phase1-direct-wide-physics-source-s2026092701-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Fixed DURA source provenance and exact ordered 32768 source IDs; no F/TX/V/target",
+    "provenance_verdict": "Source-only DURA and source context verified",
+    "selection_rule": "One warmup and four timed source steps on fresh fixed-seed CrossExpertRefiner; no checkpoint saved"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "GPU2 at least 8192 MiB free and fewer than 3 total compute apps; at most one this-task GPU worker; preserve other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-cross-expert-step-breakdown-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-cross-expert-step-breakdown-s2026092701-r01-queue.log",
+    "local_artifact_root": "E:\\type10-7\\github_publish\\CVS-RFFI-repo\\automation_reports\\CV-SincNet\\20261108-phase1-cross-expert-step-breakdown-s2026092701-r01",
+    "launch_command": "nice -n 10 env PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-cross-expert-step-breakdown-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.benchmark_cross_expert_breakdown_queue --root /home/szu2070436088/2510044040/CV-SincNet --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-wide-source-source-s2026092701-r01/source_context.pt --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-cross-expert-step-breakdown-s2026092701-r01 --commit 592e2cad2287fbd29e218d383da2fbf3afa1d9ea --gpu 2",
+    "stop_rule": "Stop on incorrect source contract/GPU, nonfinite computation or trajectory mismatch; preserve artifacts"
+  },
+  "expected_artifacts": [
+    "result.json: exact loss/model/optimizer/RNG comparisons and paired N607 timings"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "data staging time",
+      "forward time",
+      "loss time",
+      "backward time",
+      "gradient clipping time",
+      "optimizer time"
+    ],
+    "dimensions": [
+      "fixed 512 source IDs x 3 views",
+      "one warmup plus four distinct batch128 steps",
+      "one shared GPU timing run"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; no target or TX truth"
+  },
+  "rows": [
+    {
+      "row_id": "cross-expert-step-breakdown",
+      "method": "synchronized timing of fixed GPU training step",
+      "purpose": "Identify measured time distribution to guide later training efficiency tests",
+      "config_ref": "experiments/phase1_dura_orthogonal/benchmark_cross_expert_breakdown.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110830,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": 2026110711,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Same model seed 2026110830 and order seed 2026110831 for each path.",
+      "k": null,
+      "scenario": "512 fixed source IDs, three simulated source views",
+      "optimizer": "AdamW weight decay 0.001",
+      "lr": 0.0003,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "512 IDs x 3 source views; one warmup and four timed steps; batch128, no saved checkpoint",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-cross-expert-step-breakdown-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-cross-expert-step-breakdown-s2026092701-r01-queue.log",
+      "command": "nice -n 10 env PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-cross-expert-step-breakdown-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.benchmark_cross_expert_breakdown_queue --root /home/szu2070436088/2510044040/CV-SincNet --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-wide-source-source-s2026092701-r01/source_context.pt --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-cross-expert-step-breakdown-s2026092701-r01 --commit 592e2cad2287fbd29e218d383da2fbf3afa1d9ea --gpu 2",
+      "expected_artifacts": [
+        "result.json: exact loss/model/optimizer/RNG comparisons and paired N607 timings"
+      ]
+    }
+  ],
+  "notes": [
+    "Only legal source cache and frozen source DURA/direct; no F/TX/V/target reads or saved weights.",
+    "One warmup plus four measured source batches; individual GPU phases synchronize for timing.",
+    "Synchronization overhead and shared GPU competition make times non-equivalent to uninstrumented complete training; no speedup claim.",
+    "Prior GPU2 benchmark completed and old same-task controllers are in CPU prediction; capacity is rechecked before GPU work.",
+    "Four related tests, compile and independent P0/P1 review passed; real checkpoint source smoke is first."
+  ],
+  "registered_at": "2026-11-08T03:10:18+00:00"
+}

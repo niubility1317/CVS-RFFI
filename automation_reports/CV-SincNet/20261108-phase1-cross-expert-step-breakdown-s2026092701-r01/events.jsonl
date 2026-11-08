@@ -1,0 +1,2 @@
+{"at": "2026-11-08T03:10:18+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-08T03:11:21+00:00", "status": "RUNNING", "note": "GPU2 slot 18501 MiB free and two other-owner apps; source checkpoint smoke first, followed by warmup and four timed steps.", "evidence": ["N607 queue PID 1270462, GPU2 worker PID 1270476, runs/20261108-phase1-cross-expert-step-breakdown-s2026092701-r01-queue.log"], "row_id": null}
