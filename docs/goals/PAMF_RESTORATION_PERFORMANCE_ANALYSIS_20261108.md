@@ -17,6 +17,8 @@
 
 来源：[先验失配正式结果](../../automation_reports/CV-SincNet/20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01/analysis.md)；[连续特征响应正式结果](../../automation_reports/CV-SincNet/20261108-phase1-Restore-FeatureResponse-E30-s2026092701-r01/analysis.md)。
 
+低城区退化并不均匀。按评分文件的发射机编码分组，DURA 对编码 1 的准确率为 42.51%、该组 raw clean 为 69.55%；编码 5 分别为 66.84% 和 96.89%；编码 4 分别为 95.35% 和 99.84%。每组各 28000 条。应同时检查逐发射机、接收机和日期，而不能仅看总平均；这些已公开测试分组用于结果解释，不回流当前候选的训练、选模或参数选择。[完整分组](../../automation_reports/CV-SincNet/20261108-phase1-Restore-FeatureResponse-E30-s2026092701-r01/combined_group_metrics.csv)
+
 ## 哪些方向已有可量化收益
 
 1. **识别特征响应约束值得保留。** 在已预登记的匹配对照中，连续特征响应相对只用稠密 IQ 响应的版本，低城区净增 2829 条、提高 1.683929 个百分点，中城区提高 0.900595 个百分点，低郊区提高 0.491667 个百分点；高郊区下降 0.233929 个百分点。它说明针对冻结识别器的连续特征有实际价值，但仍落后 DURA，且是一个种子下的整套训练配方比较。
