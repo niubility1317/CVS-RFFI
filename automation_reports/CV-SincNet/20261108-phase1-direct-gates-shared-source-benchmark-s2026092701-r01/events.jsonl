@@ -1,2 +1,3 @@
 {"at": "2026-11-08T01:35:54+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-08T01:37:02+00:00", "status": "RUNNING", "note": "CPU PID 1141775 live; real-source eight-field bitwise smoke passed.", "evidence": ["/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-direct-gates-shared-source-benchmark-s2026092701-r01-launch.log"], "row_id": null}
+{"at": "2026-11-08T01:42:11+00:00", "status": "ANALYZED", "note": "Two reverse-order pairs of 672 source records: all eight fields bitwise equal for both gates; two-thread sequential timing only.", "evidence": ["/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-direct-gates-shared-source-benchmark-s2026092701-r01/result.json"], "row_id": null}
