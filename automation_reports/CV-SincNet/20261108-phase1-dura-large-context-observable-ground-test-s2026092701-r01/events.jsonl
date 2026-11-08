@@ -1,0 +1,3 @@
+{"at": "2026-11-07T18:47:48+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-07T20:03:22+00:00", "status": "RUNNING", "note": "Seven-view ground prediction started; truth-last pending.", "evidence": ["N607 ground prediction PID 775892 and controller status"], "row_id": null}
+{"at": "2026-11-08T09:33:28+00:00", "status": "ANALYZED", "note": "Seven predictions completed before independent scoring; six impaired views below DURA and above matched stable variant.", "evidence": ["analysis.md; N607 flow/test_summary.json, paired_dura.json, test_prediction/complete.json"], "row_id": null}
