@@ -1,1 +1,2 @@
 {"at": "2026-11-08T09:46:02+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-08T09:50:26+00:00", "status": "FAILED", "note": "旧 PID 复用属于其他用户导致 cwd 权限错误；失败发生在建根、source smoke、claim 和预测前，无 B worker 启动。", "evidence": ["E:/type10-7/local_artifacts/phase2_group2_bnoradio_20261108/preparation_failure_verified.json"], "row_id": null}

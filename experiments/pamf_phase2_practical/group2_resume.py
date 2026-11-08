@@ -113,6 +113,25 @@ def classify_chain(rt, previous_roots, deferred_keys):
     return reused, deferred, pending
 
 
+def previous_process_is_live(pid, ancestor, proc_root=Path('/proc')):
+    proc = proc_root/str(pid)
+    if not pid or not proc.exists():
+        return False
+    try:
+        argv = (proc/'cmdline').read_bytes().replace(b'\0', b' ').decode()
+    except (FileNotFoundError, ProcessLookupError):
+        return False
+    # Reused PIDs often belong to other users, whose cwd may be inaccessible.
+    # Only inspect cwd when their command names this exact previous runtime.
+    if ancestor['runtime_file'] not in argv:
+        return False
+    try:
+        cwd = os.readlink(proc/'cwd')
+    except (FileNotFoundError, ProcessLookupError):
+        return False
+    return cwd == ancestor['release_root']
+
+
 def dispatch(rt):
     validate_runtime(rt)
     if rt.get('cancelled_profiles'):
@@ -151,13 +170,8 @@ def dispatch(rt):
     for root,ancestor,_ in chain:
         launches=[root/'owner.json']+list((root/'launches').glob('*.json'))
         for path in launches:
-            launch=read(path); pid=launch.get('pid'); proc=Path('/proc')/str(pid)
-            if not pid or not proc.exists(): continue
-            try:
-                cwd=os.readlink(proc/'cwd'); argv=(proc/'cmdline').read_bytes().replace(b'\0',b' ').decode()
-            except FileNotFoundError:
-                continue
-            require(not (cwd==ancestor['release_root'] and ancestor['runtime_file'] in argv),
+            launch=read(path); pid=launch.get('pid')
+            require(not previous_process_is_live(pid, ancestor),
                     'Previous run still has an owned controller or worker')
     deferred_keys=set(rt['deferred_failure_keys'])
     require(deferred_keys==failures, 'Deferred set differs from recorded failures')
