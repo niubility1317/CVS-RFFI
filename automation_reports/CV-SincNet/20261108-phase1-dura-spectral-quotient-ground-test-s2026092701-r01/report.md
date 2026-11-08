@@ -1,0 +1,11 @@
+# DURA 大上下文频谱比值约束七景测试
+
+- 代码 commit `fcca99ff7bdcda3310ea6c620d75463794ca2db3`；独立 run `20261108-phase1-dura-spectral-quotient-ground-test-s2026092701-r01`，启动命令和完整数据合同见 [experiment.json](experiment.json)。
+- 模型：冻结 DURA v1.0（266951 参数），独立初始化 14793858 参数全局/局部修正器。
+- 训练：固定 32768 个合规源 ID、三个源视图、batch 32、AdamW 学习率 0.0003、20 轮；原源 IQ 损失加 0.1 倍相邻频谱比值约束，正则 0.01。选固定最后一轮，不用目标选模。
+- 权限：训练不读取 TX 标签、F 权重和输出、V 或目标。固定 DURA 源 checkpoint 只用于 DURA 路线；独立路线不使用 G 或 F 初始化。
+- 测试：冻结后使用 Tri-SIG-TIME SSL Main split 原默认头，对 clean 与六个 practical 各 168000 条预测；七景全部固定后独立 truth-last，并报告同样本 DURA、TX/RX/day、纠错和 raw clean 差距。
+- 资源：N607 GPU 0，至少 8192 MiB 空闲、总计算进程少于 3 且该卡最多一个本任务 GPU worker；尊重其他任务。低优先级后台启动，训练前自动运行真实 DURA checkpoint 与源 IQ 的无查询 smoke，七景固定后自动评分。
+- 依据：源域同记录匹配诊断预定标准为 12 个受损组中至少 8 组提升 5 个百分点；实际 11 组达标。该结果不等于身份准确率或目标性能。
+- 验证：8 项频谱诊断和训练损失测试通过，三层错误配置均在访问数据前拒绝；独立 P0/P1 审查及资源修正定点复核未发现阻断问题。
+- 状态：预登记，尚未启动。
