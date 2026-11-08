@@ -1,0 +1,135 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-spectral-quotient-source-diagnostic-s2026092701-r01",
+  "group_id": "phase1-source-spectral-quotient-diagnostic",
+  "display_name": "源域相邻频谱比值的同记录匹配诊断",
+  "description": "比较正则化相邻频谱比值与归一化复数频谱，在固定源 IQ 配对上的同记录检索；不读取 TX、F、V 或目标。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "F-free",
+    "no-TX",
+    "spectral-quotient",
+    "same-record-diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "用户继续授权研发星地恢复网络；仅源域合法 IQ 诊断，不重启已停止任务。",
+  "code": {
+    "commit": "7ed869a93a26e353a851a36e36f3e129cec4abbd",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CPU, one BLAS thread, nice 10; no GPU, no training",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-source-diagnostic-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "Source received and clean IQ [2,256]; 672 distinct authorized L_s/U_s pilot IDs",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "672 frozen source pilot physical IDs, RX4/6 and RX8 by seven views; read indices/rx/scene/split only",
+    "label_map_ref": null,
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Previously explored fixed source pilot; no TX labels, not a held-out generalization test",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed simulated source epoch19 views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source same-record retrieval diagnostic only; source clean IQ supplies reference; not identity accuracy or target performance"
+  },
+  "checkpoint": {
+    "initialization": "None; deterministic NumPy descriptors only",
+    "sources": [],
+    "contract_check_ref": "source_inputs validates fixed source pilot metadata, L_s/U_s roles and RX/scene consistency",
+    "provenance_verdict": "No learned checkpoint, no F weights or outputs",
+    "selection_rule": "Fixed comparison and regularization 0.01 before data access"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "CPU only, one BLAS thread, nice 10; preserve other processes",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-spectral-quotient-source-diagnostic-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-spectral-quotient-source-diagnostic-s2026092701-r01-launcher.log",
+    "local_artifact_root": "E:/type10-7/github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/20261108-phase1-spectral-quotient-source-diagnostic-s2026092701-r01",
+    "launch_command": "nice -n 10 env OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.spectral_quotient_probe --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-spectral-quotient-source-diagnostic-s2026092701-r01 --commit 7ed869a93a26e353a851a36e36f3e129cec4abbd",
+    "stop_rule": "Stop own process on source contract mismatch, source smoke failure, nonfinite data, output collision, or unauthorized data access; preserve artifacts."
+  },
+  "expected_artifacts": [
+    "result.json; no model or predictions"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "within-group same-record top-1 retrieval",
+      "mean reciprocal rank",
+      "median rank"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven fixed source views"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "source paired IQ only; no target truth"
+  },
+  "rows": [
+    {
+      "row_id": "fixed-adjacent-ratio-vs-spectrum",
+      "method": "Regularized adjacent complex FFT ratio versus complex FFT; unit L2 norm and phase-invariant cosine; regularization 0.01",
+      "purpose": "Source-only viability diagnostic, no target performance claim",
+      "config_ref": "experiments/phase1_dura_orthogonal/spectral_quotient_probe.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Fixed source pilot and existing source augmentation epoch19; no model training or randomness.",
+      "k": null,
+      "scenario": "seven fixed Phase1 source views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "672 source IQ pairs, 48 per RX group and view; eight-record source smoke",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-spectral-quotient-source-diagnostic-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-spectral-quotient-source-diagnostic-s2026092701-r01-launcher.log",
+      "command": "nice -n 10 env OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.spectral_quotient_probe --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-spectral-quotient-source-diagnostic-s2026092701-r01 --commit 7ed869a93a26e353a851a36e36f3e129cec4abbd",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source records are the unit of retrieval, not transmitter identities; source clean reference makes the diagnostic nondeployable.",
+    "Prerecorded research criterion: quotient top-1 exceeds spectrum by at least 5 percentage points in at least 8 of 12 damaged source groups to justify further source-only investigation; no target feedback or automatic deployment.",
+    "No learned checkpoint is consumed, so a real-checkpoint smoke is not applicable; eight real-source no-query samples run first.",
+    "Frequency-ratio motivation: https://arxiv.org/abs/2603.08402; this diagnostic does not assume repeated OFDM symbols, perform receiver calibration, or reproduce its classifier."
+  ],
+  "registered_at": "2026-11-08T07:31:00+00:00"
+}
