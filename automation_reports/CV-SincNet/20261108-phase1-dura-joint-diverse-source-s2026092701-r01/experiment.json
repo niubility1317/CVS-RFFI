@@ -1,0 +1,150 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-dura-joint-diverse-source-s2026092701-r01",
+  "group_id": "phase1-dura-joint-diverse",
+  "display_name": "DURA 联合恢复：源信道视图轮换训练",
+  "description": "与固定三视图联合恢复保持模型与优化预算一致，训练时轮换 30 组合法源信道视图；最终轮冻结后七景测试。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "dura",
+    "F-free-training",
+    "joint-gain",
+    "fixed-particles",
+    "deterministic-gpu",
+    "rotating-source-views"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests continued novel and DURA-combinable Phase1 restoration research, F-free/TX-label-free source training, automatic seven-view test and truth-last score.",
+  "code": {
+    "commit": "0a3179a1cc71eec8b72dd420a0ff9e50462d5fc4",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU6 FP32 TF32 off deterministic; batch32 source GPU training; GPU DURA and candidate with frozen CPU classifier for ground prediction; CPU truth scorer",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-diverse-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "fixed source cache epochs 01–30, rotating three per epoch; source diagnostic epoch19",
+    "representation": "Paired source received/clean and frozen DURA output/physical variance",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "32768 source fit IDs randomly sampled without replacement after excluding RX4/6/8 day3 and the 672 fixed source pilot IDs",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Source-only 64-record real-DURA optimizer smoke and 112-source-record frozen-reader preflight; no target",
+    "support_query_ref": null,
+    "leo_config_ref": "30 fixed source simulated views, three per training epoch"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "F-free/TX-label-free paired source IQ training; F used only in separate source no-query preflight and frozen ground evaluation"
+  },
+  "checkpoint": {
+    "initialization": "Frozen DURA v1.0 plus independent zero-output 1790786-parameter joint proposal correction",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Original source-only DURA provenance and fixed matching source L_s/U_s cache; no F/TX/V/target in G training",
+    "provenance_verdict": "Frozen original DURA and legal source context; new correction initialized from scratch; frozen Tri-SIG-TIME SSL used only in source preflight and after G frozen",
+    "selection_rule": "Fixed final epoch20, no target or source-score checkpoint selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "GPU6: one this-task GPU training/prediction worker; >=8192 MiB free and fewer than three total compute apps before every GPU stage; preserve other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-joint-diverse-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-joint-diverse-source-s2026092701-r01-queue.log",
+    "local_artifact_root": "E:/type10-7/github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/20261108-phase1-dura-joint-diverse-source-s2026092701-r01",
+    "launch_command": "PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-diverse-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release nice -n 10 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_joint_diverse.runner --root /home/szu2070436088/2510044040/CV-SincNet --source 20261108-phase1-dura-joint-diverse-source-s2026092701-r01 --ground 20261108-phase1-dura-joint-diverse-ground-test-s2026092701-r01 --commit 0a3179a1cc71eec8b72dd420a0ff9e50462d5fc4 --gpu 6",
+    "stop_rule": "Stop exact owner only on source contract or role mismatch, nonfinite computation, wrong checkpoint, target leakage, output collision, failed no-query smoke, or unrecoverable technical failure; preserve artifacts and other owners."
+  },
+  "expected_artifacts": [
+    "final.pt fixed final epoch",
+    "source_summary.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source IQ plus DURA guard training loss",
+      "source smoke finite gradients",
+      "training time and memory"
+    ],
+    "dimensions": [
+      "32768 legal source records",
+      "3 rotating source views per epoch",
+      "20 epochs; 30 unique views repeated twice"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "dura-joint-diverse-final20",
+      "method": "Frozen DURA and three joint waveform/gain updates; source channel schedule rotates 30 views twice; inference four antithetic proposals",
+      "purpose": "Train only on authorized source paired IQ; no F/TX/V/target input",
+      "config_ref": "experiments/phase1_joint_diverse/train.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110812,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Model 2026110812; source fit 2026110611; batch order 2026110813; training Gaussian noise 2026110814; fixed antithetic inference latent 2026110811; fixed evaluation 2026092701.",
+      "k": null,
+      "scenario": "fixed source epochs 01–30, three per training epoch, each reused twice",
+      "optimizer": "AdamW weight decay 0.001",
+      "lr": 0.0003,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "1790786 trainable + 266951 frozen DURA parameters; 32768 IDs x three source views x 20 epochs; batch32; 1 stochastic training proposal",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-joint-diverse-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-joint-diverse-source-s2026092701-r01-queue.log",
+      "command": "PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-diverse-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release nice -n 10 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_joint_diverse.runner --root /home/szu2070436088/2510044040/CV-SincNet --source 20261108-phase1-dura-joint-diverse-source-s2026092701-r01 --ground 20261108-phase1-dura-joint-diverse-ground-test-s2026092701-r01 --commit 0a3179a1cc71eec8b72dd420a0ff9e50462d5fc4 --gpu 6",
+      "expected_artifacts": [
+        "final.pt fixed final epoch",
+        "source_summary.json"
+      ]
+    }
+  ],
+  "notes": [
+    "The source-only DURA oracle-action diagnostic shows interaction between action, variance and prior; it is not deployable or an identity-performance upper bound.",
+    "The fixed finite ensemble is not claimed to be calibrated posterior sampling. Every proposal updates a complex gain using only the current received record and frozen estimated action; mean is one IQ output.",
+    "No TX labels, F weights/outputs, V, or target are read by G training; frozen F is used only in a separate source no-query preflight and final frozen evaluation.",
+    "One integrated no-query smoke precedes fixed final-20 training; every version automatically completes seven fixed Phase1 views before independent truth-last score.",
+    "Multi-seed generalization is not established and already-observed ground development data are not a new independent blind test.",
+    "Matched to fixed-view joint run in model, fit IDs, 20 epochs, steps, optimizer and seeds; only source-view schedule differs. Source views 1–30 are reused twice and do not add independent physical records."
+  ],
+  "registered_at": "2026-11-08T10:54:59+00:00"
+}
