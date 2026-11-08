@@ -1,1 +1,2 @@
 {"at": "2026-11-08T11:25:33+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-08T11:29:06+00:00", "status": "RUNNING", "note": "Real source GPU and 112-record frozen-reader no-query checks passed; wide source training and log growth observed on GPU1.", "evidence": ["N607:PID1710339", "N607:PID1710525", "N607:runs/20261108-phase1-dura-joint-wide-source-s2026092701-r01-controller/source_smoke.log", "N607:runs/20261108-phase1-dura-joint-wide-source-s2026092701-r01-controller/ground_smoke.log"], "row_id": null}
