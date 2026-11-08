@@ -8,7 +8,7 @@ def receiver_weights(rx):
     groups, inverse, counts = np.unique(rx, return_inverse=True, return_counts=True)
     if rx.ndim != 1 or not len(rx) or len(groups) != 5:
         raise ValueError('Five nonempty source receiver groups required')
-    return torch.as_tensor((len(rx) / (len(groups) * counts[inverse])).astype(np.float32))
+    return torch.from_dlpack((len(rx) / (len(groups) * counts[inverse])).astype(np.float32))
 
 
 def balanced_oracle_loss(output, anchor, proposal, clean, weight):

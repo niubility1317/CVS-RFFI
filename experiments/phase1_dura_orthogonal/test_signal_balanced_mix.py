@@ -27,3 +27,12 @@ def test_oracle_loss_prefers_fitting_clean_and_has_finite_gradients():
     assert torch.isfinite(alpha.grad).all()
     same=balanced_oracle_loss(anchor,anchor,anchor,clean,weights)
     assert torch.isfinite(same)
+
+
+def test_receiver_weights_do_not_require_torch_numpy_bridge(monkeypatch):
+    def no_numpy_bridge(*args, **kwargs):
+        raise RuntimeError('NumPy bridge unavailable')
+    monkeypatch.setattr(torch, 'as_tensor', no_numpy_bridge)
+    weights=receiver_weights(np.array([1,3,4,6,8,8]))
+    assert weights.shape == (6,)
+    assert torch.isfinite(weights).all()

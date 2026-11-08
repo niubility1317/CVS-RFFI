@@ -1,0 +1,2 @@
+{"at": "2026-11-08T00:37:03+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-08T00:39:12+00:00", "status": "FAILED", "note": "NumPy PyTorch bridge incompatibility before source training; no weights and no ground output; retry with new root.", "evidence": ["/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-direct-balanced-mix-source-s2026092701-r01-controller/source_train.log"], "row_id": null}
