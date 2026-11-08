@@ -1,5 +1,6 @@
 """Run MoPC from the actual B anchors saved by a two-core subset run."""
 from pathlib import Path
+import json
 import time
 
 import numpy as np
@@ -66,8 +67,15 @@ def predict(rt, job):
             new_y = to_tensor(task['support_y'][~mask], device, np.int64).long()
             if str(device).startswith('cuda'): torch.cuda.synchronize()
             started = time.perf_counter()
-            state = register_c({'mopc_hr': anchor}, new_x, new_y,
-                               seed=seed_for(seed, job['capsule'], k, n, 'C'), methods=('mopc_hr',))['mopc_hr']
+            c_seed = seed_for(seed, job['capsule'], k, n, 'C')
+            if job.get('trace_registration', False):
+                from .group2_dadda_mopc_diagnostic import trace_registration
+                def emit(event):
+                    print(json.dumps(dict(job=job['key'], k=k, n=n, **event), allow_nan=False), flush=True)
+                state = trace_registration({'mopc_hr': anchor}, new_x, new_y, c_seed, emit)
+            else:
+                state = register_c({'mopc_hr': anchor}, new_x, new_y,
+                                   seed=c_seed, methods=('mopc_hr',))['mopc_hr']
             if str(device).startswith('cuda'): torch.cuda.synchronize()
             c_seconds = time.perf_counter()-started
             started = time.perf_counter()
