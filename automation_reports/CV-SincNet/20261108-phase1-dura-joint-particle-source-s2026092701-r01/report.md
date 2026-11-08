@@ -59,3 +59,7 @@ N607 输入句柄和原 DURA、Tri-SIG-TIME SSL 来源路径存在；四个 run 
 ## 源场景覆盖核实
 
 真实源训练 smoke 的缓存元数据记录完整 32768 条源物理记录、三个固定视图的场景计数：clean 14854、practical_high 13838、practical_mid 13881、practical_low_suburban 13989、practical_high_urban 13869、practical_mid_urban 14078、practical_low_urban 13795，合计 98304 个视图。七种源模拟类别均有覆盖，不代表不同物理记录数为 98304，也不保证训练分布与目标真实信道一致。smoke 自身仅使用其中 64 条源输入；计数适用范围是完整源缓存，非 smoke 输入计数。证据：N607 runs/20261108-phase1-dura-joint-particle-source-s2026092701-r01-training-smoke/smoke.json。
+
+## 固定训练完成（2026-11-08）
+
+预登记的 20 轮、每轮 3072 次 GPU 更新已完成并保存最终 checkpoint；源摘要确认 32768 个合法源 ID、每条三个视图、DURA 冻结，TX 标签、F 权重与输出、V 和目标读取均为 0。训练目标从首轮 0.02185779 到末轮 0.01443912；累计 5857.7 秒包含源物理算子准备，不含此前缓存载入，训练目标不等于身份识别准确率。源模型 final.pt 和 source_summary.json 已存在，原控制器自动进入七景预测。
