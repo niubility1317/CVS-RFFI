@@ -45,7 +45,8 @@ def factory(arm):configuration(arm);return scratch_covariance_detail(2026092701)
 
 def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.bind_prior,smoke_check=None,
           training_readout=None,smoke_gradient_check=None,training_trace=False,training_posterior_multiplier=1,
-          technical_resume=None,training_F0_multiplier=1,source_perturbed_F0_multiplier=0,additional_prior_keys=()):
+          technical_resume=None,training_F0_multiplier=1,source_perturbed_F0_multiplier=0,additional_prior_keys=(),
+          physical_detail_coupled=False):
     started=time.perf_counter();c=validate_source(read(args.inputs));old,roles=trial.source(args)
     cfg=config_for(args.arm);G=build(args.arm);prior_identity=bind_prior(args.root,G.physical);G=G.to('cuda:0')
     F,identity=load_F0(c,'cuda:0');trial.main_eval.valid_identity(identity);scale=load_scale(args.root).to('cuda:0')
@@ -86,8 +87,14 @@ def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.b
         deployed_smoke=restored
         extra_smoke=smoke_check(G,first['received'][take],restored) if smoke_check else {}
     smoke_trace={k:v[take] for k,v in first.items()} if training_trace else None
-    restored,aux,detail,unused=detail_pass(first['received'][take],clean[take],target2,take,0,smoke_trace);detail.mean().backward()
-    if any(p.grad is not None for p in G.physical.parameters()) or not G.detail.output.weight.grad.abs().sum()>0:raise ValueError('Detail loss must update detail only')
+    restored,aux,detail,unused=detail_pass(first['received'][take],clean[take],target2,take,0,smoke_trace)
+    detail.mean().backward(retain_graph=physical_detail_coupled)
+    physical_grads=[p.grad for p in G.physical.parameters() if p.grad is not None]
+    if not G.detail.output.weight.grad.abs().sum()>0:raise ValueError('Detail loss must reach detail output')
+    if physical_detail_coupled:
+        if not physical_grads or any(not torch.isfinite(g).all() for g in physical_grads) or not any(g.abs().sum()>0 for g in physical_grads):
+            raise ValueError('Coupled detail loss must reach physical estimator')
+    elif physical_grads:raise ValueError('Detail loss must update detail only')
     if smoke_gradient_check is not None:extra_smoke.update(smoke_gradient_check(G))
     G.zero_grad(set_to_none=True)
     physical,unused=source_action_loss(aux,first['kernel'][take],first['coefficients'][take],first['variance'][take]);physical.mean().backward()
@@ -100,7 +107,7 @@ def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.b
     with torch.no_grad():torch.testing.assert_close(probe(first['received'][take]),deployed_smoke,rtol=0,atol=0)
     del probe,first,before,restored,aux,detail,physical,target2,deployed_smoke,smoke_trace
     write(out/'smoke.json',dict(status='PASS',source_rows=2,actual_original_F0=True,actual_full_posterior=True,detail_initial_zero=cfg.get('detail_initial_zero',True),
-        detail_and_physical_gradient_isolation=True,strict_E0_reload=True,F0_frozen=True,optimizer_updates=0,TX_labels_read=0,V_reads=0,OE_reads=0,target_inputs=0,**extra_smoke))
+        detail_and_physical_gradient_isolation=not physical_detail_coupled,strict_E0_reload=True,F0_frozen=True,optimizer_updates=0,TX_labels_read=0,V_reads=0,OE_reads=0,target_inputs=0,**extra_smoke))
     print('COVARIANCE_DETAIL_REAL_SOURCE_SMOKE_PASS',flush=True)
     tick=time.perf_counter()
     with torch.no_grad():targets=torch.cat([F.features(clean[i:i+256]).detach() for i in range(0,63000,256)])
@@ -191,7 +198,7 @@ def train(args,out,*,build=factory,config_for=configuration,bind_prior=control.b
         checkpoint_selection='final30_only',model_state_F0_updates=0,training_stages=1,training_posterior_calls=59070*training_posterior_multiplier,training_posterior_rows=1890000*training_posterior_multiplier,
         source_counterfactual_rows=1890000*(training_posterior_multiplier-1),
         source_operator_full_matrix_supervision=True,source_prior_buffers_unchanged=True,source_actual_IQ_F0_guidance=cfg.get('source_actual_IQ_F0_guidance',True),feature_weight=.01,
-        physical_detail_gradient_isolation=True,independent_branch_clipping=True,
+        physical_detail_gradient_isolation=not physical_detail_coupled,independent_branch_clipping=True,
         technical_recovery_loads=int(technical_resume is not None),technical_recovery_epoch=resume_epoch,
         training_seconds_scope='resumed_segment_only' if technical_resume is not None else 'complete_training',
         inherited_epoch_seconds=sum(row['seconds'] for row in parent_rows)))
