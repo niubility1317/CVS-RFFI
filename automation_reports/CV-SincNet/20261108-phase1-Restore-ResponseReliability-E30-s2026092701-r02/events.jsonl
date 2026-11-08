@@ -1,3 +1,4 @@
 {"at": "2026-11-07T20:49:56+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-07T20:56:30+00:00", "status": "QUEUED", "note": "Verified remote controller and log growth; actual E07 source smoke pending GPU admission.", "evidence": ["report.md"], "row_id": "TF_ResponseReliability"}
 {"at": "2026-11-07T20:56:42+00:00", "status": "QUEUED", "note": "Verified remote controller and log growth; actual E07 source smoke pending GPU admission.", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-11-08T00:22:54+00:00", "status": "RUNNING", "note": "GPU1 own worker 1030799 verified, original F0 source2 and exact E07 optimizer/RNG restoration smoke PASS; training continues from epoch8.", "evidence": ["report.md"], "row_id": null}
