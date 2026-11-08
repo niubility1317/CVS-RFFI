@@ -1,3 +1,4 @@
 {"at": "2026-11-06T18:44:12+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-06T18:45:08+00:00", "status": "QUEUED", "note": "One owner will run source smoke, final five-epoch training, complete seven-view predictions and truth-last scoring.", "evidence": ["N607:pid3602408,queue.log"], "row_id": null}
 {"at": "2026-11-06T20:40:53+00:00", "status": "QUEUED", "note": "Automatic seven-view prediction follows running source training.", "evidence": ["N607:PID3672182,status.json"], "row_id": null}
+{"at": "2026-11-08T10:36:59+00:00", "status": "RUNNING", "note": "Source no-query smoke passed; original owner started seven-view prediction.", "evidence": ["N607:PID1679962", "N607:runs/20261107-phase1-dura-temporal-prior-source-s2026092701-r01-controller/ground_smoke.log"], "row_id": null}

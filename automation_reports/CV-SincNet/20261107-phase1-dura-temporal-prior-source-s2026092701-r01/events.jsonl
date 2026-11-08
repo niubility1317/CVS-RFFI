@@ -1,3 +1,4 @@
 {"at": "2026-11-06T18:43:56+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-06T18:44:52+00:00", "status": "QUEUED", "note": "Queue process verified live; waits until GPU6 has at least 4096 MiB and fewer than three compute apps.", "evidence": ["N607:pid3602408,queue.log"], "row_id": null}
 {"at": "2026-11-06T20:40:44+00:00", "status": "RUNNING", "note": "GPU6 source smoke passed and source training process verified live.", "evidence": ["N607:PID3672182,PID3672864,source_smoke.log"], "row_id": null}
+{"at": "2026-11-08T10:36:59+00:00", "status": "TRAINING_COMPLETE", "note": "Five preregistered epochs complete; DURA frozen; no F, TX labels, V or target reads recorded.", "evidence": ["N607:runs/20261107-phase1-dura-temporal-prior-source-s2026092701-r01/source_summary.json", "N607:runs/20261107-phase1-dura-temporal-prior-source-s2026092701-r01-controller/source_train.log"], "row_id": null}
