@@ -3,7 +3,7 @@
 - run_id：`20261109-phase1-dura-cumulant-true-response-source-s2026092701-r01`
 - group_id：`phase1-dura-cumulant-true-response`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（源训练）；具体进度见 events.jsonl。
 
 ## 目的与对照
 
@@ -45,3 +45,7 @@ GPU4 资源调度先让已登记的源域配对诊断结束，再按不少于 81
 发布归档本地与 N607 SHA-256 均为 `b2b5ad6d67271f44f425d9f135ae36a16c263b87e98a7ed0c1a77c64a4e8a902`。远端编译、3 项源对齐及部署边界检查、runner 和原 DURA 固定依赖导入均通过。真实数据／权重 GPU smoke 尚未执行，须由队列首步完成。
 
 后台队列 PID 2509552 已核实存活、运行于固定发布目录，日志显示等待已有源配对诊断完成后使用 GPU4。启动前 GPU4 空闲 19336 MiB、已有 1 个其他 owner 计算进程；当前本版本尚未开始真实权重 smoke、训练或正式预测。
+
+## 真实检查与训练启动
+
+源配对诊断释放 GPU4 后，64 条合法源记录的真实 DURA 训练 smoke 完成 6 个更新；112 条源记录的冻结识别器无查询检查通过。正式训练 PID 2523627 已核实在固定发布目录和 GPU4 运行，与原有其他 owner 进程共存。此时尚无正式识别成绩。

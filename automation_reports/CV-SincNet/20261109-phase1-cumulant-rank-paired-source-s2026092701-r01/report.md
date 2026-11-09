@@ -3,7 +3,7 @@
 - run_id：`20261109-phase1-cumulant-rank-paired-source-s2026092701-r01`
 - group_id：`phase1-cumulant-rank-paired-source`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED；具体进度见 events.jsonl。
 
 ## 目的与对照
 
@@ -39,3 +39,7 @@
 ## 队列启动（2026-11-09）
 
 发布归档本地与服务器 SHA-256 均为 a14a6035fe1f824e9c8a3528131858093615274fc6e70d5808309d615ed95938，服务器编译及导入通过。后台队列 PID 2427998 的工作目录、命令和等待日志已核实；当前两份最终源训练权重均未完成，队列处于等待状态且没有启动诊断 GPU worker。两个原训练与七景测试控制器保持独立。真实权重 smoke、源域结果及实际 GPU 占用尚待后续核验。
+
+## 诊断完成
+
+672 条源观测的固定配对诊断完成；源波形 NMSE 和同记录匹配的组间差异及权限边界见 [分析](analysis.md)。这不是身份识别成绩，两个版本继续按各自预登记完成七景测试。

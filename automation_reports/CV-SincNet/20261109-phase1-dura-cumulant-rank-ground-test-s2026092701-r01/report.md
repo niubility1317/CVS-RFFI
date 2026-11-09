@@ -3,7 +3,7 @@
 - run_id：`20261109-phase1-dura-cumulant-rank-ground-test-s2026092701-r01`
 - group_id：`phase1-dura-cumulant-rank`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（七景预测）；具体进度见 events.jsonl。
 
 ## 目的与对照
 
@@ -37,3 +37,7 @@
 GPU7 每阶段至少 8192 MiB 空闲且总计算进程少于 3，本任务同卡最多一 worker；真实源 IQ smoke 及 112 条源记录冻结识别器无查询 smoke 后自动训练、七景预测和独立 truth-last。固定 Tri-SIG-TIME SSL Main split 默认头，每景 168000 条，报告与 DURA 配对纠错、TX/RX/day 及相对 raw clean 3% 和绝对 3 个百分点门槛。已曝光 Phase1 地面模拟结果不是新盲测或真实在轨。
 
 代码 1e83c8f23c837cf6ff68c218d2934cad4403411b；精确命令、数据、输出及停止规则见 experiment.json。5 项聚焦检查通过，一次独立 P0/P1 静态审查无阻断；服务器预检和识别结果尚待核实。
+
+## 正式预测启动
+
+最终第 20 轮冻结后，七景预测 PID 2522111 已核实在固定发布目录和 GPU7 运行；全部预测完成后才独立 truth-last。当前没有可报告的识别准确率。

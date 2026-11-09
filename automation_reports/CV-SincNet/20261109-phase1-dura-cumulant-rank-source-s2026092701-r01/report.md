@@ -3,7 +3,7 @@
 - run_id：`20261109-phase1-dura-cumulant-rank-source-s2026092701-r01`
 - group_id：`phase1-dura-cumulant-rank`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：TRAINING_COMPLETE；具体进度见 events.jsonl。
 
 ## 目的与对照
 
@@ -45,3 +45,7 @@ GPU7 每阶段至少 8192 MiB 空闲且总计算进程少于 3，本任务同卡
 ## 排序损失的负对边界
 
 按固定 20 轮采样日程和源域六类设定，无需读取 TX 标签即可证明不同记录负对中至少约 14.1035% 属于同一设备。该数是理论保守下界，不是识别错误率；同设备负对可能造成训练目标冲突，但最终效果须由七景独立评分验证。完整公式、重复视图处理和可复算程序见 [采样审计](sampling_audit.md)；训练与测试配置保持原样。
+
+## 第 20 轮完成
+
+源训练完成 20 轮、32768 条物理记录与 98304 个视图，训练段耗时 5036.9 秒。训练摘要记录未读取 TX 标签、F 权重／输出、V 或目标，DURA 保持冻结。最终权重随后用于独立源配对诊断和七景正式预测；源损失不是身份准确率。
