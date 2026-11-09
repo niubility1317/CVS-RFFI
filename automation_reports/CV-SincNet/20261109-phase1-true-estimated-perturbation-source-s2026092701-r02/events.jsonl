@@ -1,0 +1,2 @@
+{"at": "2026-11-09T04:10:12+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-09T04:11:07+00:00", "status": "LOCAL_VERIFIED", "note": "Fixed minimal package and existing pinned dependency paths; remote compile and direct numerical checks pass; real source checkpoint smoke remains first run step.", "evidence": ["experiments/phase1_dura_orthogonal/test_true_estimated_perturbation.py"], "row_id": null}
