@@ -3,7 +3,7 @@ import hashlib,io,json,subprocess,tarfile
 from pathlib import Path
 from experiments.cric_dura_comparison import publish as transport
 
-NAME='20261109-phase1-pamf-no-reference-speed-control-r02'
+NAME='20261109-phase1-pamf-no-reference-speed-control-r03'
 RUN='20261109-phase1-pamf-no-reference-completion-m190-r01'
 REMOTE=r'''
 import hashlib,json,os,subprocess,tarfile

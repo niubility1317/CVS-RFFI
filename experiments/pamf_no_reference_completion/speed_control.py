@@ -78,7 +78,8 @@ def source_smoke(rt,control):
     ds=SourceDataset(h['source_cache'],'L_s',contract);x=ds.x[:64]
     with torch.inference_mode():pred=reader.classify_features(reader.features(x[:2]))
     if pred.shape!=(2,6) or not bool(torch.isfinite(pred).all()):raise ValueError('Actual checkpoint source smoke failed')
-    meta={k:torch.from_numpy(ds.metadata[k][:64].copy()) for k in ('eq_i','rx_i','day_i','sig_i','base_index')}
+    from experiments.cric_dura_comparison.io import tensor
+    meta={k:tensor(np.asarray(ds.metadata[k][:64],dtype=np.int64)) for k in ('eq_i','rx_i','day_i','sig_i','base_index')}
     c=dict(source_rxs=contract['source_rxs'],source_days=contract['source_days'],fast_as_cache=str(control/'smoke_cache'))
     original=Original(c);fast=Fast(c);numpy_state=np.random.get_state();torch_state=torch.random.get_rng_state().clone()
     start=time.perf_counter();a=original(x,meta,7,1500);original_seconds=time.perf_counter()-start
@@ -155,7 +156,7 @@ def run(rt):
                             recovery=log.with_name(log.stem+'.handoff-recovery.log')
                             if recovery.exists():raise FileExistsError('Recovery log exists')
                             by[k]['recovery_log']=str(recovery)
-                            write(control/'jobs.json',jobs)
+                            atomic(control/'jobs.json',jobs)
                             state['jobs'][k]=dict(status='QUEUED',reconciled_empty_log=str(log))
                     else:v['empty_scans']=0
         for k,v in list(state['jobs'].items()):

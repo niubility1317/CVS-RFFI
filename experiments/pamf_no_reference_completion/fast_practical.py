@@ -30,7 +30,8 @@ class Practical:
         values={k:meta[k].detach().cpu().tolist() for k in keys}
         if set(values['rx_i'])-set(self.c['source_rxs']) or set(values['day_i'])-set(self.c['source_days']) or set(values['eq_i'])!={1}:
             raise ValueError('As source contract differs')
-        raw=x.detach().cpu().contiguous().numpy()
+        if x.dtype!=torch.float32:raise ValueError('Source IQ dtype differs')
+        raw=np.asarray(x.detach().cpu().tolist(),dtype=np.float32)
         if raw.shape!=(len(x),2,256):raise ValueError('Source IQ shape differs')
         # This is an input-addressed memoization key, not an additional data
         # validation or model-selection gate. Identical values, IDs and step
