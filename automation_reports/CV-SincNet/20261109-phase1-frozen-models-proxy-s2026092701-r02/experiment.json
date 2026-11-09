@@ -1,0 +1,148 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261109-phase1-frozen-models-proxy-s2026092701-r02",
+  "group_id": "phase1-frozen-models-proxy",
+  "display_name": "冻结新恢复器源域识别一致性",
+  "description": "对三个已经冻结的恢复模型比较源 clean 伪类别一致性，不是 TX 真值准确率。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "frozen-reader-evaluation",
+    "no-update",
+    "proxy-not-accuracy"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261109-phase1-dura-cumulant-context-source-s2026092701-r01",
+    "20261109-phase1-dura-cumulant-rank-source-s2026092701-r01",
+    "20261109-phase1-blind-polyphase-source-s2026092701-r01"
+  ],
+  "replaces_run_id": "20261109-phase1-frozen-models-proxy-s2026092701-r01",
+  "authorization": "User requests continued novel and DURA-combinable Phase1 restoration research, F-free/TX-label-free source training, automatic seven-view test and truth-last score.",
+  "code": {
+    "commit": "5b31f7559a0b11706fd03facb7c5378b2da6cb50",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CPU, two threads, CUDA disabled; PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-frozen-models-proxy-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-rank-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-frozen-source-proxy-agreement-s2026092701-r02-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-context-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-blind-polyphase-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-blind-unrolled-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-frozen-models-proxy-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "672 previously explored source pilot records, epoch19 paired IQ",
+    "representation": "Source L_s/U_s received and clean IQ with stored frozen clean pseudo-class; no transmitter truth",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "672 pilot records disjoint from all three candidate fit IDs",
+    "label_map_ref": null,
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ only, transmitter truth not read",
+      "U_s": "source IQ only, transmitter truth hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Per-record clean/raw/DURA agreement with previously fixed source decisions",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed source epoch19 seven simulated views"
+  },
+  "permissions": {
+    "regime": "source_only_frozen_evaluation",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Frozen clean pseudo-class agreement only; not TX accuracy, target evaluation or real satellite"
+  },
+  "checkpoint": {
+    "initialization": "Three fixed final20 recovery checkpoints; frozen DURA and Tri-SIG-TIME SSL only for post-freeze source evaluation",
+    "sources": [
+      "20261109-phase1-dura-cumulant-context-source-s2026092701-r01",
+      "20261109-phase1-dura-cumulant-rank-source-s2026092701-r01",
+      "20261109-phase1-blind-polyphase-source-s2026092701-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+    ],
+    "contract_check_ref": "Exact source checkpoint provenance, 32768 fit IDs and 672 pilot disjoint; no F-assisted training or target reads",
+    "provenance_verdict": "Frozen source-only recovery checkpoints with fixed reader for source evaluation only",
+    "selection_rule": "No model choice or updates; predetermined three-candidate matrix"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "CPU only, two threads, CUDA hidden; preserve all existing jobs",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-frozen-models-proxy-s2026092701-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-frozen-models-proxy-s2026092701-r02-launch.log",
+    "local_artifact_root": "E:/type10-7/github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/20261109-phase1-frozen-models-proxy-s2026092701-r02",
+    "launch_command": "nice -n 15 env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-frozen-models-proxy-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-rank-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-frozen-source-proxy-agreement-s2026092701-r02-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-context-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-blind-polyphase-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-blind-unrolled-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-frozen-models-proxy-s2026092701-r01-release/experiments/phase1_cumulant_rank/source_frozen_models_proxy.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-frozen-models-proxy-s2026092701-r02 --commit 5b31f7559a0b11706fd03facb7c5378b2da6cb50",
+    "stop_rule": "Stop on source provenance mismatch, nonfinite output, frozen reference disagreement, output collision or technical failure; preserve artifacts"
+  },
+  "expected_artifacts": [
+    "source_predictions.npz",
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "agreement with clean pseudo-class",
+      "paired delta vs frozen DURA"
+    ],
+    "dimensions": [
+      "672 source records",
+      "RX4/6 and RX8",
+      "clean and six source views"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-frozen-models-proxy-s2026092701-r02/source_predictions.npz",
+    "scorer_ref": "source-only summary after all fixed predictions; no TX truth"
+  },
+  "rows": [
+    {
+      "row_id": "frozen-source-proxy",
+      "method": "Frozen Tri-SIG-TIME SSL clean-proxy agreement",
+      "purpose": "Compare fixed source models without using transmitter labels",
+      "config_ref": "experiments/phase1_cumulant_rank/source_frozen_models_proxy.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Each checkpoint uses its own recorded seed; fixed pilot, no stochastic updates.",
+      "k": null,
+      "scenario": "672 fixed source pilot IDs x their preexisting views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "3 fixed recovery models, 672 source records, CPU 2 threads, no training",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-frozen-models-proxy-s2026092701-r02",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-frozen-models-proxy-s2026092701-r02-launch.log",
+      "command": "nice -n 15 env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-frozen-models-proxy-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-rank-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-frozen-source-proxy-agreement-s2026092701-r02-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-context-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-blind-polyphase-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-blind-unrolled-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-frozen-models-proxy-s2026092701-r01-release/experiments/phase1_cumulant_rank/source_frozen_models_proxy.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-frozen-models-proxy-s2026092701-r02 --commit 5b31f7559a0b11706fd03facb7c5378b2da6cb50",
+      "expected_artifacts": [
+        "source_predictions.npz",
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Fixed clean pseudo-class is not ground truth and cannot establish TX accuracy.",
+    "Three candidate fits are source-only and pilot IDs are disjoint; DURA may have seen source pilot.",
+    "Fixed clean/raw/DURA reference predictions checked for every source record; no target or TX truth read; no model update.",
+    "Formal seven-view evaluations continue irrespective of this diagnostic.",
+    "r01 failed before model or data reads due to regular Python package shadowing; r02 uses direct script entry from the same already verified immutable release."
+  ],
+  "registered_at": "2026-11-09T05:17:16+00:00"
+}

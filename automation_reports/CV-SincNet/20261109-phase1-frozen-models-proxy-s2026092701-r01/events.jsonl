@@ -1,1 +1,2 @@
 {"at": "2026-11-09T05:12:57+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-09T05:16:55+00:00", "status": "FAILED", "note": "模块包路径遮蔽，模型加载前退出；独立 r02 使用同一代码的脚本入口。", "evidence": ["/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-frozen-models-proxy-s2026092701-r01-launch.log"], "row_id": null}
