@@ -75,6 +75,8 @@
 
 当前 F 引导使用的是每条 IQ 的 160 维连续特征，输入为 2 × 256 = 512 个实数。在 F 可微的点，其特征雅可比矩阵至多 160 阶，因此至少存在 352 维输入扰动方向在该点不改变特征的一阶近似。这个维数结论不证明这些方向含有真实发射机信息，也不代表有限幅扰动或受限信号流形上的变化不可识别；它说明仅靠 160 维特征匹配不能约束整个 IQ 波形。现有配对 IQ/STFT 目标可补充这类约束，最终仍需逐设备真实 TX 测试，而不能只检查特征相似度。
 
+固定源 CovarianceDetail 与原 F0 的 28 条 L_s/U_s 配对诊断中，浅层与中层特征损失的恢复 IQ 输入梯度余弦中位数为 0.8471；最终特征与中层为 0.0890、与浅层为 0.0553。该面板包括七景各四条，低城区仅四条；梯度方向不等于 G 参数更新或 TX 信息，也不能证明多层约束有效。可据此研究单个中间层与现有 IQ／最终特征目标的匹配消融，正式性能仍须冻结后逐景评分。[多层输入梯度诊断](../../automation_reports/CV-SincNet/20261109-diagnostic-Restore-MultilevelFGradient-sourceLU-s2026092701-r01/analysis.md)
+
 图像任务中的研究也提出过用任务网络特征指导恢复，并指出指导网络的偏置可能限制被恢复的有用信息；该研究使用图像及交替更新任务网络，不能当作本项目星地结果，也不能据此更改冻结 Tri-SIG-TIME SSL、源数据或无 TX 标签的约束。[Kim 等，CVPR 2024](https://openaccess.thecvf.com/content/CVPR2024/papers/Kim_Beyond_Image_Super-Resolution_for_Image_Recognition_with_Task-Driven_Perceptual_Loss_CVPR_2024_paper.pdf)
 
 ## 发射端相位与信道相位的可辨识性

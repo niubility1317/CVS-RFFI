@@ -3,7 +3,7 @@
 - run_id：`20261109-diagnostic-Restore-MultilevelFGradient-sourceLU-s2026092701-r01`
 - group_id：`source-multilevel-F0-input-gradient`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+已完成 28 条源样本诊断与独立汇总复算。浅层／中层梯度余弦中位数为 0.8471，最终／中层为 0.0890；结果只适用于固定源模型和小面板，不代表 TX 效果。详见 [分析](analysis.md)。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -39,3 +39,7 @@
 代码提交 3af4d5eb10f369f43b5595eee7c203baf48cb4e9；5 项特征捕获、异常清理、梯度和源配对定向检查通过。一次独立 P0/P1 审查未发现阻塞问题。N607 直接连接、目标身份、项目目录与 GPU 只读预检通过。远端每卡总计算进程上限为 3，允许 GPU4 或 6，控制器只处理本 run 子进程；至少留 12000 MiB 显存。
 
 该目录登记此前共享的实验索引存在其他任务的未提交更新，因此本次只追加本 run 的登记文件，不覆盖或重建共享索引。远端尚未发布时，状态为 LOCAL_VERIFIED；实际运行以 PID、CWD、GPU、日志和输出读回为准。
+
+## 完成状态
+
+源-only 诊断 ARTIFACTS_COMPLETE／ANALYZED：远端 smoke 与 complete 已独立读回，terminal 为 0；结果无目标、TX 标签、logits、V/OE 或模型更新。工作进程退出较快，未取得其存活时的独立 GPU PID／日志增长观测，GPU6 仅为提交记录和 CUDA 指派。详见 [分析](analysis.md)。
