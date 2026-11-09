@@ -1,0 +1,37 @@
+# DURA 多信道四方向轮换源训练
+
+- run_id：`20261109-phase1-dura-direction-cycle-source-s2026092701-r01`
+- group_id：`phase1-dura-direction-cycle`；类别：`cvs`；阶段：`Phase1-restoration`
+- 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
+- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+
+## 目的与对照
+
+保持 30 视图与 10% 源扰动联合版设置，按源 epoch 轮换每条记录的四种人工扰动方向。
+
+## 数据、seed与模型来源
+
+实际数据契约、权限例外、完整seed角色、checkpoint来源和选择规则见experiment.json。
+逐行配置通过config_ref/resolved_config_ref定位；待补项必须在对应生命周期补齐。
+
+## 执行与存储
+
+命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
+实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
+
+## 结果与覆盖
+
+尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+
+## 交接
+
+记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 四方向轮换固定方案
+
+与已在训练的 30 信道视图＋10% 扰动联合版保持相同 32,768 源记录、30 个模拟视图、网络、初始化、损失权重、batch 和 20 轮预算。唯一方法变化是按源视图 epoch 轮换四种人工扰动方向：此前每条源记录在 30 个视图只使用同一种方向，新版各方向出现 7 或 8 次，完整 20 轮分别重复一次。
+
+匹配源 action 将扰动映射到对应接收 IQ，固定原接收状态和噪声；人工变化并未证明是真实设备身份差异。训练不读取 F、TX、V 或目标。最终冻结后依次完成七景预测及独立 truth-last；新增对照不改变原联合版和其他实验。
+
+代码 099cb859fc00ffea1da71efe2c0e6884fe281a2a；方向覆盖、实际选取、非法 epoch 和 checkpoint 拒绝四项检查通过，独立 P0/P1 静态审查无阻断。GPU2 逐阶段检查显存与总进程数并保留其他 owner；首步执行真实源训练和无查询识别检查。

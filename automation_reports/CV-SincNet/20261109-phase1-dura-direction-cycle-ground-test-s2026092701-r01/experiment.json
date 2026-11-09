@@ -1,0 +1,168 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261109-phase1-dura-direction-cycle-ground-test-s2026092701-r01",
+  "group_id": "phase1-dura-direction-cycle",
+  "display_name": "DURA 多信道四方向轮换七景测试",
+  "description": "保持 30 视图与 10% 源扰动联合版设置，按源 epoch 轮换每条记录的四种人工扰动方向。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "dura",
+    "cumulant-context",
+    "source-view-diversity",
+    "source-direction-cycle",
+    "F-free-training"
+  ],
+  "comparison_group_id": "phase1-dura-diverse-response10",
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests continued novel and DURA-combinable Phase1 restoration research, F-free/TX-label-free source training, automatic seven-view test and truth-last score.",
+  "code": {
+    "commit": "099cb859fc00ffea1da71efe2c0e6884fe281a2a",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU2 deterministic FP32 TF32off; frozen Tri-SIG-TIME SSL on CPU only for separate source smoke and final evaluation; PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-direction-cycle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-diverse-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-response10-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-context-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-direction-cycle-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "fixed candidate on GPU plus frozen Tri-SIG-TIME SSL CPU default head on identical fixed Phase1 input",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "168000 fixed Phase1 Main split ground physical records in each of seven views",
+    "label_map_ref": "Six Phase1 transmitter classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "No target labels, clean pair, or target fitting during inference; labels only after all seven predictions",
+    "roles": {
+      "L_s": "source IQ training only, TX hidden",
+      "U_s": "source IQ training only, TX hidden",
+      "V": "not used for G training",
+      "test": "fixed Phase1 ground IQ, truth last"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Seven fixed predictions precede independent truth-last scoring",
+    "support_query_ref": "Phase1 original fixed cross_rx126000 and cross_both42000; no support",
+    "leo_config_ref": "fresh source epochs01-30; fixed Phase1 six practical ground test views",
+    "target_panel": "168000 Phase1 physical records x seven views",
+    "actual_training_labels": "G training uses paired L_s/U_s IQ only with TX hidden; F weights and outputs only in separate source no-query smoke and after G freezes for evaluation.",
+    "augmentation": "Fixed pre-existing Phase1 ground test simulated seven views"
+  },
+  "permissions": {
+    "regime": "Phase1 frozen ground evaluation",
+    "query_use": "Fixed per-record Phase1 IQ only after source training; no target fit, truth only after seven-view predictions",
+    "external_method_exception": null,
+    "claim_scope": "Single-seed repeatedly observed Phase1 simulated ground test; not independent blind or real satellite"
+  },
+  "checkpoint": {
+    "initialization": "Frozen original DURA plus independently initialized 14966274-parameter attention/local cumulant-conditioned recovery model; final output projection initialized to zero",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Fixed source-only DURA; 32768 legal source fit IDs; 30 source views with same physical IDs and aligned simulator action; no F/TX/V/target in G training",
+    "provenance_verdict": "Original source-only DURA; independently initialized matched cumulant model; F only in separate no-query preflight and frozen evaluation",
+    "selection_rule": "Fixed final epoch20; no target or source-score checkpoint selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "GPU2 one this-task worker per stage, >=8192 MiB free, fewer than three total compute apps including other owners; preserve other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-dura-direction-cycle-ground-test-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-dura-direction-cycle-source-s2026092701-r01-queue.log",
+    "local_artifact_root": "E:/type10-7/github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/20261109-phase1-dura-direction-cycle-ground-test-s2026092701-r01",
+    "launch_command": "PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-direction-cycle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-diverse-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-response10-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-context-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release nice -n 10 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_cumulant_direction_cycle.runner --root /home/szu2070436088/2510044040/CV-SincNet --source 20261109-phase1-dura-direction-cycle-source-s2026092701-r01 --ground 20261109-phase1-dura-direction-cycle-ground-test-s2026092701-r01 --commit 099cb859fc00ffea1da71efe2c0e6884fe281a2a --gpu 2",
+    "stop_rule": "Stop exact owner on source role or contract mismatch, nonfinite output, wrong checkpoint, target or F/TX leakage, output collision, failed source no-query smoke, or systemic technical failure; preserve other owners and artifacts."
+  },
+  "expected_artifacts": [
+    "flow/test_prediction/complete.json",
+    "flow/test_summary.json",
+    "flow/paired_dura.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "ground accuracy",
+      "raw clean gap in pp and relative percent",
+      "macro F1",
+      "DURA paired repairs and damages",
+      "TX/RX/day groups"
+    ],
+    "dimensions": [
+      "168000 physical records",
+      "clean and six practical views"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-dura-direction-cycle-ground-test-s2026092701-r01/flow/test_prediction",
+    "scorer_ref": "independent CPU subprocess ground score after seven complete predictions"
+  },
+  "rows": [
+    {
+      "row_id": "dura-direction-cycle-final20",
+      "method": "Same 30-view 10% response training as fixed-direction control; direction index rotates by source epoch, four directions per source record",
+      "purpose": "Freeze source model and score the fixed Tri-SIG-TIME SSL default head",
+      "config_ref": "experiments/phase1_cumulant_direction_cycle/ground.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110901,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Model seed 2026110901; source fit 2026110611; training order 2026110902; evaluation 2026092701.",
+      "k": null,
+      "scenario": "clean and six practical Phase1 Main split views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "168000 fixed Phase1 Main split ground IDs x seven views, same frozen Tri-SIG-TIME SSL reader; independent truth-last",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-dura-direction-cycle-ground-test-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-dura-direction-cycle-source-s2026092701-r01-queue.log",
+      "command": "PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-direction-cycle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-diverse-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-response10-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-context-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release nice -n 10 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_cumulant_direction_cycle.runner --root /home/szu2070436088/2510044040/CV-SincNet --source 20261109-phase1-dura-direction-cycle-source-s2026092701-r01 --ground 20261109-phase1-dura-direction-cycle-ground-test-s2026092701-r01 --commit 099cb859fc00ffea1da71efe2c0e6884fe281a2a --gpu 2",
+      "expected_artifacts": [
+        "flow/test_prediction/complete.json",
+        "flow/test_summary.json",
+        "flow/paired_dura.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Same source fit IDs, 30 view schedule, model initialization, optimizer, response amplitude, loss weights, batch and 20-epoch budget as fixed-direction diverse-response control; only direction index uses source epoch.",
+    "For each physical fit position across 30 distinct source views, each of four directions occurs seven or eight times; the full 20-epoch schedule repeats each view twice.",
+    "Fixed source simulator action, receiver state and original observed noise; no full simulator or AGC rerun; synthetic directions are not proven TX identity.",
+    "Training uses no F weights/outputs, TX identity, V or target; frozen F only no-query smoke and final evaluation.",
+    "Fixed final epoch20, all seven predictions precede independent truth-last; historical ground test exposed, not blind or real satellite."
+  ],
+  "registered_at": "2026-11-09T06:24:13+00:00"
+}
