@@ -1,0 +1,2 @@
+{"at": "2026-11-09T04:47:41+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-09T04:50:39+00:00", "status": "LOCAL_VERIFIED", "note": "Remote compile and two matched FIR decomposition tests passed; independent P0/P1 review clear; real source checkpoint smoke is the first execution step.", "evidence": ["experiments/phase1_dura_orthogonal/test_source_delay_components.py"], "row_id": null}
