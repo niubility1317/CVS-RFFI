@@ -1,0 +1,147 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261109-phase1-dura-cumulant-response10-source-s2026092701-r01",
+  "group_id": "phase1-dura-cumulant-response10",
+  "display_name": "DURA 强扰动变化保持源训练",
+  "description": "匹配 1% 真实模拟信道变化保持版，唯一改变固定人造扰动为 clean RMS 的 10%。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "dura",
+    "cumulant-context",
+    "source-simulator-response-10pct",
+    "F-free-training"
+  ],
+  "comparison_group_id": "phase1-dura-cumulant-true-response",
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests continued novel and DURA-combinable Phase1 restoration research, F-free/TX-label-free source training, automatic seven-view test and truth-last score.",
+  "code": {
+    "commit": "d3f60d4f6570c032ad1fb76df65ac464f9f1dbed",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU0 deterministic FP32 TF32 off; frozen Tri-SIG-TIME SSL on CPU for separate source no-query smoke and evaluation; PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-response10-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-true-response-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-context-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-response10-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "fixed source training cache epochs21/22/23; source diagnostic epoch19",
+    "representation": "Paired source received/clean, frozen DURA context, matched source simulator action for source-only perturbation training",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "32768 source fit IDs randomly sampled without replacement after excluding RX4/6/8 day3 and the 672 fixed source pilot IDs",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Source-only 64-record real-DURA optimizer smoke and 112-source-record frozen-reader preflight; no target",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed source epoch21/22/23 views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "F-free/TX-label-free paired source IQ training; F used only in separate source no-query preflight and frozen ground evaluation"
+  },
+  "checkpoint": {
+    "initialization": "Fixed source-only DURA plus independently initialized 14966274-parameter cumulant-conditioned model; no candidate checkpoint inheritance",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Fixed source context cache validated for 32768 legal L_s/U_s source fit IDs and epochs21/22/23; frozen DURA original provenance; no F/TX/V/target in G training",
+    "provenance_verdict": "Frozen source-only DURA and matching source cache; new recovery network initialized independently; frozen F only separate source no-query smoke and final evaluation",
+    "selection_rule": "Fixed epoch20; no target or source-score checkpoint selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "GPU0 one this-task worker per stage; >=8192 MiB free and fewer than three total compute apps including other owners; preserve other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-dura-cumulant-response10-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-dura-cumulant-response10-source-s2026092701-r01-queue.log",
+    "local_artifact_root": "E:/type10-7/github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/20261109-phase1-dura-cumulant-response10-source-s2026092701-r01",
+    "launch_command": "PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-response10-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-true-response-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-context-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release nice -n 10 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_cumulant_response10.runner --root /home/szu2070436088/2510044040/CV-SincNet --source 20261109-phase1-dura-cumulant-response10-source-s2026092701-r01 --ground 20261109-phase1-dura-cumulant-response10-ground-test-s2026092701-r01 --commit d3f60d4f6570c032ad1fb76df65ac464f9f1dbed --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-wide-source-source-s2026092701-r01/source_context.pt --gpu 0",
+    "stop_rule": "Stop exact owner on source role or contract mismatch, nonfinite output, wrong checkpoint, target or F/TX leakage, output collision, failed source no-query smoke, or systemic technical failure; preserve other owners and artifacts."
+  },
+  "expected_artifacts": [
+    "final.pt fixed final epoch",
+    "source_summary.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source IQ guard loss",
+      "finite-window moment loss",
+      "true simulator action synthetic response loss",
+      "training time"
+    ],
+    "dimensions": [
+      "32768 legal source records",
+      "3 fixed source views",
+      "20 epochs"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "dura-cumulant-response10-final20",
+      "method": "Same source inputs, training seed, architecture, loss and budgets as true-response baseline; 10% relative RMS synthetic perturbation instead of 1%, fixed simulator action and received noise",
+      "purpose": "Train only on authorized source paired IQ; no F/TX/V/target input",
+      "config_ref": "experiments/phase1_cumulant_response10/train.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110901,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Model seed 2026110901; source fit 2026110611; training order 2026110902; evaluation 2026092701.",
+      "k": null,
+      "scenario": "fixed source cache epochs 21, 22, 23",
+      "optimizer": "AdamW weight decay 0.001",
+      "lr": 0.0003,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "14966274 trainable + 266951 frozen DURA; 32768 legal source IDs x 3 views x 20 epochs, batch32",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-dura-cumulant-response10-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-dura-cumulant-response10-source-s2026092701-r01-queue.log",
+      "command": "PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-response10-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-true-response-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-context-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release nice -n 10 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_cumulant_response10.runner --root /home/szu2070436088/2510044040/CV-SincNet --source 20261109-phase1-dura-cumulant-response10-source-s2026092701-r01 --ground 20261109-phase1-dura-cumulant-response10-ground-test-s2026092701-r01 --commit d3f60d4f6570c032ad1fb76df65ac464f9f1dbed --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-wide-source-source-s2026092701-r01/source_context.pt --gpu 0",
+      "expected_artifacts": [
+        "final.pt fixed final epoch",
+        "source_summary.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Fixed source simulator action is privileged only for source perturbation training; original observed noise and receiver/channel state held fixed; artificial directions are not verified TX identity.",
+    "1% vs 10% RMS is a fixed source ablation motivated by source-only perturbation-to-residual energy, not target data; synthetic 10% may be outside actual identity perturbations.",
+    "Training reads no F weights or outputs, TX truth, V or target; F only in separate no-query source smoke and frozen evaluation.",
+    "Fixed final epoch20, same 32768 IDs and 3 fixed views; seven complete predictions precede independent truth-last; historical ground test exposed, not blind and not real satellite."
+  ],
+  "registered_at": "2026-11-09T05:37:05+00:00"
+}
