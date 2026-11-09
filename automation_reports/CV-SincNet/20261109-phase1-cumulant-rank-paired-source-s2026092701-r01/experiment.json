@@ -1,0 +1,145 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261109-phase1-cumulant-rank-paired-source-s2026092701-r01",
+  "group_id": "phase1-cumulant-rank-paired-source",
+  "display_name": "四阶与记录排序模型源域配对诊断",
+  "description": "两条预登记的固定源训练模型均冻结后，在同一来源合法 pilot 上比较波形误差和同记录特征。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "paired-IQ",
+    "no-F",
+    "record-retrieval"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261109-phase1-dura-cumulant-context-source-s2026092701-r01",
+    "20261109-phase1-dura-cumulant-rank-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User authorizes ongoing Phase1 F-free restoration research, source-only diagnostics and GPU use.",
+  "code": {
+    "commit": "55dedb9958addafe97e4c75a07d67f326d075253",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU4 FP32 deterministic TF32off after both fixed final checkpoints; CPU queue while waiting",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-rank-paired-source-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split permitted source L_s/U_s",
+    "version": "fixed deterministic source context epochs21/22/23",
+    "representation": "source received and paired clean IQ, frozen DURA and two frozen model outputs; 512 source-train IDs normalize descriptors",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "672 previously explored source pilot IDs, RX4/6 and RX8 x seven views x 48; excluded from each model source fit",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ only, TX hidden",
+      "U_s": "source IQ only, TX hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Source pilot excluded from both candidate fits but previously explored; DURA may have seen it",
+    "support_query_ref": null,
+    "leo_config_ref": "pre-existing legal source simulation epochs 21/22/23"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source paired IQ and privileged same-record retrieval only, no TX identity or deployable reference claim"
+  },
+  "checkpoint": {
+    "initialization": "Frozen DURA and both fixed final20 source-trained models; no model updates",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261109-phase1-dura-cumulant-context-source-s2026092701-r01",
+      "20261109-phase1-dura-cumulant-rank-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "Fixed 32768 source fit excludes 672 pilot; each final source checkpoint and metadata require F/TX/V/target-free source training",
+    "provenance_verdict": "Both models independently source-trained under same source contract, fixed final epoch20; DURA may have seen pilot",
+    "selection_rule": "Analyze both fixed models and DURA; no source or target-based candidate selection; formal seven-view tests continue independently"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "GPU4 >=8192 MiB free, fewer than 3 total GPU apps and no same-project GPU worker; preserve all other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-cumulant-rank-paired-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-cumulant-rank-paired-source-s2026092701-r01-queue.log",
+    "local_artifact_root": "E:/type10-7/github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/20261109-phase1-cumulant-rank-paired-source-s2026092701-r01",
+    "launch_command": "PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-rank-paired-source-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-rank-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-context-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release nice -n 10 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_cumulant_rank.source_pair_queue --root /home/szu2070436088/2510044040/CV-SincNet --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-wide-source-source-s2026092701-r01/source_context.pt --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-cumulant-rank-paired-source-s2026092701-r01 --commit 55dedb9958addafe97e4c75a07d67f326d075253 --gpu 4",
+    "stop_rule": "Stop exact owner on source contract or checkpoint mismatch, nonfinite values, target/F/TX read, parent source failure or output collision; preserve other runs."
+  },
+  "expected_artifacts": [
+    "result.json: source IQ NMSE, cumulant error, same-record retrieval by RX group and view"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source normalized IQ error",
+      "source cumulant feature error",
+      "source same-record top1 and top5"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8 x seven source views x 48 observations",
+      "DURA, cumulant and rank models"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; no target or TX truth"
+  },
+  "rows": [
+    {
+      "row_id": "paired-cumulant-rank-source-pilot",
+      "method": "Frozen DURA, cumulant control and same-record rank model on identical source IQ; IQ NMSE, cumulant loss and 48-record clean-reference retrieval",
+      "purpose": "Source-only mechanism diagnosis without TX identity or target accuracy claim",
+      "config_ref": "experiments/phase1_cumulant_rank/source_pair_probe.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed source-model seed 2026110901, source fit 2026110611; no new training, no target selection.",
+      "k": null,
+      "scenario": "512 held-out-from-normalization source fit IDs, three legal simulated source views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "After both fixed final20 checkpoints: 672 previously explored source pilot records, 14 cells x 48; first 512 source fit IDs normalize source features",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-cumulant-rank-paired-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-cumulant-rank-paired-source-s2026092701-r01-queue.log",
+      "command": "PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-rank-paired-source-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-rank-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-context-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release nice -n 10 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_cumulant_rank.source_pair_queue --root /home/szu2070436088/2510044040/CV-SincNet --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-wide-source-source-s2026092701-r01/source_context.pt --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-cumulant-rank-paired-source-s2026092701-r01 --commit 55dedb9958addafe97e4c75a07d67f326d075253 --gpu 4",
+      "expected_artifacts": [
+        "result.json: paired source IQ NMSE, cumulant error, same-record retrieval by RX group and view"
+      ]
+    }
+  ],
+  "notes": [
+    "Runs only after both source final20 checkpoints; seven-view formal tests continue independently.",
+    "Clean source reference is privileged and unavailable at deployment; matching same records is not TX identity accuracy.",
+    "No F/TX/V/target reads or model updates; historical pilot was previously explored."
+  ],
+  "registered_at": "2026-11-09T03:19:06+00:00"
+}
