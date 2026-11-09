@@ -112,6 +112,8 @@
 同一已冻结源 V 面板的补充事后分析表明，整算子与协方差加权主路的盲估相位分歧，对大相位误差排序 AUC 为 0.5926，弱于两个校正角绝对值各自的 0.6844、0.6518。最高分歧四分之一中整算子校正的平均 IQ NMSE 反而增加；不能把分歧直接当作可靠门控，也不能从该源面板推断目标 TX 收益。[相位分歧诊断](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-coherent-main-phase-sourceV-s2026092701-r01/analysis.md)
 
 
+三版在训宽时频恢复器的源训练顺序与主视图安排一致；已完成轮次中，长尾与视图一致性附加项均非零。前四轮视图一致性版的平均训练轮次耗时比基础版高约 46.79%，但两者使用不同 GPU，且数据只覆盖训练初期。这些是训练过程记录，不能预测最终 TX 成绩，也不用于中途选模。[已完成轮次对照](../../automation_reports/CV-SincNet/20261109-phase1-Restore-WideTimeFreqResponse-E30-s2026092701-r01/source_progress_E08_matched.md)
+
 ## 已完成的其他时频与融合对照
 
 另一独立 F-free 方案冻结 DURA v1，以源配对 IQ 训练 15,062,850 参数的时频联合修正网络，固定 final20 后接同一地面 Tri-SIG-TIME SSL 完成七景评分。六个受损场景分别为 81.2315%、79.1887%、76.9024%、79.7970%、72.1530%、65.1655%，均低于 DURA，也均未达到本对话固定的 **83.5387%（距 raw clean 不超过 3 个百分点）** 下限。该方案的郊区 high 场景中，TX 索引 1 为 41.6000%，同组 DURA 为 58.3321%，说明总体平均值可能掩盖特定设备的大幅损伤。[时频联合对照](../../automation_reports/CV-SincNet/20261108-phase1-dura-joint-timefreq-ground-test-s2026092701-r01/analysis.md)
