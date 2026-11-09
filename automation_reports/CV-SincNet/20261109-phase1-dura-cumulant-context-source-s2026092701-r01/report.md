@@ -1,0 +1,43 @@
+# DURA 多时滞四阶累积量源训练
+
+- run_id：`20261109-phase1-dura-cumulant-context-source-s2026092701-r01`
+- group_id：`phase1-dura-cumulant-context`；类别：`cvs`；阶段：`Phase1-restoration`
+- 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
+- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+
+## 目的与对照
+
+大容量 DURA 波形修正网络以当前信号的多时滞有限窗 C22/C31 统计为条件，以源配对 IQ 和同统计损失训练。
+
+## 数据、seed与模型来源
+
+实际数据契约、权限例外、完整seed角色、checkpoint来源和选择规则见experiment.json。
+逐行配置通过config_ref/resolved_config_ref定位；待补项必须在对应生命周期补齐。
+
+## 执行与存储
+
+命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
+实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
+
+## 结果与覆盖
+
+尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+
+## 交接
+
+记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 固定方案与边界
+
+冻结 DURA v1.0，新建 14966274 参数的大容量恢复器。网络同时使用全窗注意力、局部卷积以及 received、DURA 输出、物理创新的多时滞有限窗 C22/C31 四阶累积量估计，最终输出单条 IQ。累积量采用逐条中心化、能量归一化及有界化，时滞为 0、1、2、4、8、16、32。低噪声保持门沿用已固定的源域门；这些有限样本统计并不保证接收机、信道不变或身份可识别。
+
+固定合法 L_s/U_s 源域 32768 条物理 ID × 三个模拟视图 × 20 轮，batch32，AdamW 学习率 0.0003、权重衰减 0.001。训练目标为归一化 IQ 误差、0.02 倍 DURA 改变量和 0.1 倍源配对累积量误差。最终轮直接冻结，训练不读取 TX 标签、F 权重或输出、V、目标 IQ 或目标真值。
+
+N607 GPU5 每个阶段检查不少于 8192 MiB 空闲、总计算进程少于 3，本任务同卡最多一 worker；真实源样本和权重的 GPU 训练 smoke 及 112 条源记录无查询冻结识别器 smoke 后，自动训练、预测全部七景、独立 truth-last。固定 Tri-SIG-TIME SSL Main split 默认头，每景 168000 条，报告与 DURA 配对纠错、TX/RX/day 及相对 raw clean 3% 和绝对 3 个百分点门槛。历史地面模拟测试已曝光，不能视为新盲测或真实在轨。
+
+代码 5ed56dd1decb913bb0733339462e08cc22a57831；精确命令、输入、输出、资源和停止规则见 experiment.json。项目 Python 的 5 项聚焦检查通过，一次独立 P0/P1 静态审查无阻断。服务器执行及实际识别结果待核实。
+
+## 服务器预检与启动（2026-11-09）
+
+发布归档本地及远端 SHA-256 均为 83f15e1562ebb58bdd3a9958b03437a2b65dfe53227e8ec51d3530cedfe2b86c；远端编译和导入通过。GPU5 启动前空闲 24110 MiB、无 GPU 计算进程。64 条真实源记录的 GPU 训练预检完成 6 个更新，112 条源记录的冻结识别器无查询 smoke 通过。后台控制器 PID 2371623、训练 PID 2372167 的工作目录、命令和 GPU5 占用已核实；训练初始日志已创建，识别性能尚未评分。

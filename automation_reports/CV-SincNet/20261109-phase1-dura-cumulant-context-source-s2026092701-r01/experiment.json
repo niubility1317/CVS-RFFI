@@ -1,0 +1,145 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261109-phase1-dura-cumulant-context-source-s2026092701-r01",
+  "group_id": "phase1-dura-cumulant-context",
+  "display_name": "DURA 多时滞四阶累积量源训练",
+  "description": "大容量 DURA 波形修正网络以当前信号的多时滞有限窗 C22/C31 统计为条件，以源配对 IQ 和同统计损失训练。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "dura",
+    "cumulant-context",
+    "F-free-training",
+    "large-capacity"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests continued novel and DURA-combinable Phase1 restoration research, F-free/TX-label-free source training, automatic seven-view test and truth-last score.",
+  "code": {
+    "commit": "5ed56dd1decb913bb0733339462e08cc22a57831",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU5 deterministic FP32 TF32 off, GPU source training, GPU recovery with frozen CPU Tri-SIG-TIME SSL, CPU truth-last",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-context-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "fixed source training cache epochs21/22/23; source diagnostic epoch19",
+    "representation": "Paired source received/clean and frozen DURA output/physical variance",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "32768 source fit IDs randomly sampled without replacement after excluding RX4/6/8 day3 and the 672 fixed source pilot IDs",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Source-only 64-record real-DURA optimizer smoke and 112-source-record frozen-reader preflight; no target",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed source epoch21/22/23 views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "F-free/TX-label-free paired source IQ training; F used only in separate source no-query preflight and frozen ground evaluation"
+  },
+  "checkpoint": {
+    "initialization": "Frozen original DURA plus independently initialized 14966274-parameter attention/local cumulant-conditioned recovery model; final output projection initialized to zero",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Fixed source context cache validated for 32768 legal L_s/U_s source fit IDs and epochs21/22/23; frozen DURA original provenance; no F/TX/V/target in G training",
+    "provenance_verdict": "Frozen source-only DURA and matching source cache; new recovery network initialized independently; frozen F only separate source no-query smoke and final evaluation",
+    "selection_rule": "Fixed final epoch20; no target or source-score checkpoint selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "GPU5: one this-task worker per GPU stage, >=8192 MiB free and fewer than three total compute apps; preserve all other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-dura-cumulant-context-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-dura-cumulant-context-source-s2026092701-r01-queue.log",
+    "local_artifact_root": "E:/type10-7/github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/20261109-phase1-dura-cumulant-context-source-s2026092701-r01",
+    "launch_command": "PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-context-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release nice -n 10 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_cumulant_context.runner --root /home/szu2070436088/2510044040/CV-SincNet --source 20261109-phase1-dura-cumulant-context-source-s2026092701-r01 --ground 20261109-phase1-dura-cumulant-context-ground-test-s2026092701-r01 --commit 5ed56dd1decb913bb0733339462e08cc22a57831 --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-wide-source-source-s2026092701-r01/source_context.pt --gpu 5",
+    "stop_rule": "Stop exact owner on source role or contract mismatch, nonfinite output, wrong checkpoint, target or F/TX leakage, output collision, failed source no-query smoke, or systemic technical failure; preserve other owners and artifacts."
+  },
+  "expected_artifacts": [
+    "final.pt fixed final epoch",
+    "source_summary.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source normalized IQ and DURA guard loss",
+      "source finite-window cumulant loss",
+      "training time and GPU memory"
+    ],
+    "dimensions": [
+      "32768 legal source records",
+      "3 fixed source views",
+      "20 epochs"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "dura-cumulant-context-final20",
+      "method": "Full-window 8-layer width384 attention with local path and bounded centered lagged C22/C31 statistics from received, anchor and innovation; source IQ + .02 DURA change + .1 matched-cumulant loss",
+      "purpose": "Train only on authorized source paired IQ; no F/TX/V/target input",
+      "config_ref": "experiments/phase1_cumulant_context/train.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110901,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Model seed 2026110901; source fit 2026110611; training order 2026110902; evaluation 2026092701.",
+      "k": null,
+      "scenario": "fixed source cache epochs 21, 22, 23",
+      "optimizer": "AdamW weight decay 0.001",
+      "lr": 0.0003,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "14966274 trainable + 266951 frozen DURA; 32768 legal source IDs x 3 views x 20 epochs, batch32",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-dura-cumulant-context-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-dura-cumulant-context-source-s2026092701-r01-queue.log",
+      "command": "PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-context-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release nice -n 10 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_cumulant_context.runner --root /home/szu2070436088/2510044040/CV-SincNet --source 20261109-phase1-dura-cumulant-context-source-s2026092701-r01 --ground 20261109-phase1-dura-cumulant-context-ground-test-s2026092701-r01 --commit 5ed56dd1decb913bb0733339462e08cc22a57831 --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-wide-source-source-s2026092701-r01/source_context.pt --gpu 5",
+      "expected_artifacts": [
+        "final.pt fixed final epoch",
+        "source_summary.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Finite-window normalized cumulant estimates are not claimed invariant to receiver or channel, nor proven to encode transmitter identity.",
+    "Source paired IQ only, TX labels hidden and no F outputs or weights, V, target IQ or target truth in G training.",
+    "Fixed final epoch20; no-query real-checkpoint smoke, then complete seven-view predictions before independent truth-last; historical ground test exposed, not blind or real satellite."
+  ],
+  "registered_at": "2026-11-09T02:20:27+00:00"
+}
