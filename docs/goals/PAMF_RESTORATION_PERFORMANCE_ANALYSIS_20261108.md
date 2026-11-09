@@ -67,6 +67,8 @@
 
 同一源训练内面板的补充配对检索中，低城区 252 个视图的恢复后 F0 特征，以 512 条源 clean 记录作候选时有 115 个将自身排在第一、164 个排在前五；原接收仅 13 个排在第一。不同记录可能属于同一发射机，这不是 TX 识别率或可部署检索结果。它提示可研究样本间特征距离或局部邻域的保持，但应避免把不同记录强制当成不同身份，并须以合法匹配对照和正式测试验证。[源配对检索诊断](../../automation_reports/CV-SincNet/20261108-diagnostic-Restore-FeatureViewDispersion-sourceLU-s2026092701-r01/source_pair_retrieval_analysis.md)
 
+当前四版共用的原 R07 源缓存有 20 份固定主观测，30 轮按 01–20、01–10 使用；低城区占 189 万次主曝光中的 268580 次（14.21%）。按 63000 条源记录计，60010 条在 20 份主观测中至少出现一次低城区，44201 条覆盖 clean 与六类 practical。该统计不包括一致性版的额外视图或源响应扰动，也不证明场景内部难度和真实信道覆盖充分。[源场景覆盖](../../automation_reports/CV-SincNet/20261109-phase1-Restore-WideTimeFreqResponse-E30-s2026092701-r01/source_scene_coverage.md)
+
 ## 接收机先验失配
 
 固定 480 条源 V 样本的低城区诊断中，在相同盲估信道和噪声下，使用同源接收机拟合的先验得到 412 条正确；只把均值换成其他源接收机时为 408，只换协方差为 364，均值和协方差都换为 341。两套先验均来自各 12600 条合法 L_s/U_s IQ，源 V 仅用于冻结后诊断。该固定反事实中协方差失配影响更大，而且均值和协方差共同变化存在交互，不能简单相加。[源端先验分量对照](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-prior-factor-sourceV-s2026092701-r01/analysis.md)
