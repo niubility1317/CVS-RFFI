@@ -7,7 +7,7 @@ from pathlib import Path
 import subprocess
 import tarfile
 
-from experiments.cric_dura_comparison.publish import ssh, CONNECTION
+from experiments.cric_dura_comparison import publish as transport
 from .method import RUN
 
 REMOTE = r'''
@@ -34,6 +34,9 @@ result=dict(status='SUBMITTED_NOT_YET_VERIFIED',pid=child.pid,cwd=str(release),a
 
 def publish(repo, output):
     repo, out = Path(repo), Path(output)
+    # This checkout is nested under the project, whereas the SSH config lives
+    # at the project root; never infer it from the checkout location.
+    transport.CONNECTION = ['-F', 'E:/type10-7/tools/n607_ssh_config', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10']
     def git(*args):
         return subprocess.check_output(['git', '-C', str(repo), *args])
     commit = git('rev-parse', 'HEAD').decode().strip()
@@ -72,8 +75,8 @@ def publish(repo, output):
                    sha256=hashlib.sha256(archive.read_bytes()).hexdigest())
     for name, obj in [('runtime.json', rt), ('package.json', package)]:
         (out / name).write_text(json.dumps(obj, indent=2) + '\n', encoding='utf-8')
-    subprocess.run(['scp', *CONNECTION, str(archive), 'N607:' + package['archive_remote']], check=True, timeout=120)
-    result = ssh(REMOTE.replace('PACKAGE', repr(package)))
+    subprocess.run(['scp', *transport.CONNECTION, str(archive), 'N607:' + package['archive_remote']], check=True, timeout=120)
+    result = transport.ssh(REMOTE.replace('PACKAGE', repr(package)))
     (out / 'submit.json').write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')
     print(json.dumps(result))
 
