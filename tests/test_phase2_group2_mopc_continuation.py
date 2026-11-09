@@ -55,3 +55,28 @@ def test_duplicate_subset_and_overlapping_prior_categories_rejected(tmp_path, mo
     manifest['deferred'].append(dict(key='old'))
     with pytest.raises(ValueError, match='overlap'):
         continuation.saved_b_jobs({}, parent, manifest, [parent/'jobs/00000.json'])
+
+
+def test_only_empty_pre_registration_identity_failure_is_recoverable(tmp_path):
+    root = tmp_path/'r12'
+    for name in ('jobs', 'logs', 'predictions'):
+        (root/name).mkdir(parents=True)
+    output = root/'predictions/p'
+    output.mkdir()
+    write(root/'jobs/00000.json', dict(key='p', output=str(output)))
+    log = root/'logs/worker-00000.log'
+    log.write_text('ValueError: B/C old physical support differs\n', encoding='utf-8')
+    state = dict(status='FAILED', active=[], completed=0, failed=[dict(index=0, key='p')])
+    manifest = dict(scope='MOPC_ONLY_FROM_SAVED_B')
+    continuation.require_identity_failure_only(root, state, manifest)
+    (output/'C-K1-N2-mopc_hr.npz').touch()
+    with pytest.raises(ValueError, match='not before MoPC'):
+        continuation.require_identity_failure_only(root, state, manifest)
+    (output/'C-K1-N2-mopc_hr.npz').unlink()
+    log.write_text('REGISTRATION_FAILURE\nValueError: B/C old physical support differs\n', encoding='utf-8')
+    with pytest.raises(ValueError, match='not before MoPC'):
+        continuation.require_identity_failure_only(root, state, manifest)
+    log.write_text('ValueError: B/C old physical support differs\n', encoding='utf-8')
+    (root/'predictions/unclassified').mkdir()
+    with pytest.raises(ValueError, match='unclassified'):
+        continuation.require_identity_failure_only(root, state, manifest)
