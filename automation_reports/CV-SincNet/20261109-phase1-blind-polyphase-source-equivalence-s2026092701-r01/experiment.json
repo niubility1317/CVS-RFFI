@@ -1,0 +1,142 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261109-phase1-blind-polyphase-source-equivalence-s2026092701-r01",
+  "group_id": "phase1-blind-polyphase-source-equivalence",
+  "display_name": "盲恢复多相执行源域一致性检查",
+  "description": "用同一源预检权重比较原始和多相计算的源 IQ 与冻结识别器决策，并比较两者各自六步预检权重。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "no-query-smoke",
+    "polyphase",
+    "numerical-comparison"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261109-phase1-blind-unrolled-source-s2026092701-r01",
+    "20261109-phase1-blind-polyphase-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户继续授权研发星地恢复网络；仅源域合法 IQ 诊断，不重启已停止任务。",
+  "code": {
+    "commit": "eda2f5964cc0c76641787cb97c02b2ae47489dd1",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU7 FP32 TF32 off deterministic, source-only 112-record no-query, CPU frozen Tri-SIG-TIME SSL",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-blind-polyphase-source-equivalence-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "received and clean IQ [2,256]",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "112 observations from 672 fixed legal source pilot: RX4/6 and RX8 x seven views x eight; no TX truth",
+    "label_map_ref": null,
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Previously explored source pilot; no full-target equivalence claim",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed simulated source epoch19 views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source no-query comparison using frozen F outputs; no TX truth, V, target IQ or target truth; no model updates"
+  },
+  "checkpoint": {
+    "initialization": "Frozen native and polyphase source-only six-step smoke checkpoints; load native checkpoint into both implementations for fixed-weight comparison",
+    "sources": [
+      "20261109-phase1-blind-unrolled-source-s2026092701-r01",
+      "20261109-phase1-blind-polyphase-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "Both smoke checkpoints have 64 legal L_s/U_s IDs x 3 views, no DURA/F/TX/V/target in G training; source pilot excludes source training IDs",
+    "provenance_verdict": "Source-only smoke weights from fixed legal paired IQ; F separately frozen for source no-query comparison",
+    "selection_rule": "Compare both predetermined implementations and both source smoke checkpoints; no target or performance-based selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "GPU7 >=8192 MiB free, fewer than 3 total compute apps and one this-task worker; preserve existing GPU3,5,6 jobs",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-blind-polyphase-source-equivalence-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-blind-polyphase-source-equivalence-s2026092701-r01-launcher.log",
+    "local_artifact_root": "E:/type10-7/github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/20261109-phase1-blind-polyphase-source-equivalence-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES=7 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-blind-polyphase-source-equivalence-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-blind-polyphase-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-blind-unrolled-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release nice -n 10 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_blind_polyphase.source_equivalence --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-blind-polyphase-source-equivalence-s2026092701-r01 --commit eda2f5964cc0c76641787cb97c02b2ae47489dd1",
+    "stop_rule": "Stop this owner on checkpoint or source-role mismatch, nonfinite output, target access or output collision; preserve other work."
+  },
+  "expected_artifacts": [
+    "result.json with source per-view IQ NMSE and per-record better/worse counts; no trained model"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source IQ maximum absolute difference",
+      "frozen reader logit maximum absolute difference",
+      "source decision mismatch count",
+      "single-run GPU-only forward time"
+    ],
+    "dimensions": [
+      "112 source observations",
+      "same source checkpoint vs independent six-update smoke checkpoints"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "no truth scoring; frozen reader source predictions only"
+  },
+  "rows": [
+    {
+      "row_id": "source-native-polyphase-smoke-comparison",
+      "method": "Same fixed native checkpoint in native and polyphase execution, then each independent six-update checkpoint; IQ max error and frozen-reader decision mismatches",
+      "purpose": "112 source-only records, no target or TX truth; no full-test identity claim",
+      "config_ref": "experiments/phase1_blind_polyphase/source_equivalence.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Previously fixed source smoke seed 2026110903, source fit 2026110611 and order 2026110904; no training in this comparison.",
+      "k": null,
+      "scenario": "seven fixed Phase1 source views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "112 source records in 14 cells; three fixed model forwards and frozen reader predictions, no ground target",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-blind-polyphase-source-equivalence-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-blind-polyphase-source-equivalence-s2026092701-r01-launcher.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-blind-polyphase-source-equivalence-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-blind-polyphase-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-blind-unrolled-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release nice -n 10 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_blind_polyphase.source_equivalence --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-blind-polyphase-source-equivalence-s2026092701-r01 --commit eda2f5964cc0c76641787cb97c02b2ae47489dd1",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source F weights and outputs read exclusively for separate no-query comparison, not training; no TX/V/target.",
+    "Same checkpoint execution comparison and two independently six-step-trained checkpoint comparison are distinct.",
+    "112 source observations do not establish full-target equivalence or identical 20-epoch training trajectories.",
+    "GPU-only forward timer has fixed order and no warmup; descriptive single-run timing, not steady-state or full pipeline benchmark."
+  ],
+  "registered_at": "2026-11-09T02:54:00+00:00"
+}
