@@ -27,3 +27,7 @@ Correct bank-position to physical-ID comparison; preserve r12 eight pre-registra
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## Failed with new nonfinite observations
+
+The support identity repair passed targeted tests and was observed to execute actual MoPC registrations from saved r11 B anchors. The controller drained after two new tasks failed; 14 MoPC-only tasks closed and the two failed tasks retain 10 partial prediction files each. For c0189 the first instrumented nonfinite boundary was support logits; for c0192 it was a batch-normalization running variance. Both subsequently had nonfinite gradient elements. These are first observed instrumented boundaries, not proven first mathematical operations or root causes. Existing r11 predictions/B states, r12 evidence, prior quarantines, and cancellation are retained. The full prediction and scoring barriers remain closed. Evidence: local_artifacts/phase2_group2_bnoradio_20261108/r13_failure_state_verified.json and r13_failure_detail_verified.json.
