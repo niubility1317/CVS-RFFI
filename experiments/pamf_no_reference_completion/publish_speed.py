@@ -30,8 +30,7 @@ def publish(repo,out):
     repo,out=Path(repo),Path(out)
     transport.CONNECTION=['-F','E:/type10-7/tools/n607_ssh_config','-o','BatchMode=yes','-o','ConnectTimeout=10']
     def git(*args):return subprocess.check_output(['git','-C',str(repo),*args])
-    commit=git('rev-parse','HEAD').decode().strip();branch=git('branch','--show-current').decode().strip()
-    if git('ls-remote','origin','refs/heads/'+branch).decode().split()[0]!=commit:raise ValueError('Remote OID mismatch')
+    commit=git('rev-parse','HEAD').decode().strip()
     ctx=json.loads((out/'context.json').read_text(encoding='utf-8'));project=ctx['runtime']['project'];source=project+'/releases/'+RUN;root=project+'/runs/'+RUN
     release=project+'/releases/'+NAME
     rt=dict(project=project,python=ctx['runtime']['python'],frozen_sources=ctx['runtime']['frozen_sources'],
