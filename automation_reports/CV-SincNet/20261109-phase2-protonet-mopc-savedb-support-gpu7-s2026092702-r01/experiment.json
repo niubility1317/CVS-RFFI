@@ -1,0 +1,173 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261109-phase2-protonet-mopc-savedb-support-gpu7-s2026092702-r01",
+  "group_id": "phase2-group2-protonet-mopc-nonfinite",
+  "display_name": "Phase2 MoPC 保存 B 状态前向边界诊断（GPU7）",
+  "description": "单次从 r11 实际 B anchor 和 r13 c0192 支持集诊断前向及 BN 的非有限边界；不预测、不读取 query/truth。",
+  "kind": "diagnostic",
+  "stage": "Phase2-B-C",
+  "aliases": [],
+  "tags": [
+    "phase2",
+    "Group2",
+    "ProtoNet-CDA",
+    "MoPC",
+    "diagnostic",
+    "support_only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261109-phase2-bsource-twocore-m4-r11",
+    "20261109-phase2-bsource-savedb-mopc-m4-r13"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Phase2 现有授权内仅源与当前支持集诊断，禁止重跑正式预测、接触 query 或真值。",
+  "code": {
+    "commit": "c1eee73cb2a1f8636c31959bce98931777e5deb6",
+    "checkout": "E:/type10-7/code/worktrees/standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-protonet-mopc-savedb-support-gpu7-s2026092702-r01-release"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/data/raw_full_wisig_eq_20261029",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+    "physical_ids_ref": "Capsule split support_indices. Source contract uses existing L_s physical-role IDs.",
+    "label_map_ref": null,
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "20-1"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "20261029-phase2-threepool-episodes-s2026102901-r01:P02:MIX05:20-1",
+    "split_id": {
+      "old": "b620fb1ce3f46165ff656ac8",
+      "current": "435c95328ca859d8cb4bcdff"
+    },
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-milkr-threepool-m4-r01/data_audit.json",
+    "support_query_ref": "B old K10/N0 and C new portion of K10/N10 only. No query.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json",
+    "matrix": {
+      "pool": "P02",
+      "episode": "MIX05",
+      "receiver": "20-1",
+      "K": 10,
+      "N": 10,
+      "old_support_rows": 60,
+      "new_support_rows": 100,
+      "query_rows": 0
+    }
+  },
+  "permissions": {
+    "regime": "source-only checkpoint and labeled L_s plus exactly the current B/C supports",
+    "query_use": "none",
+    "external_method_exception": "ProtoNet B uses current labeled old-class support only.",
+    "claim_scope": "Original GPU7 saved-B source/support diagnostic only; no query, truth, prediction, score or formal retry."
+  },
+  "checkpoint": {
+    "initialization": "Exact actual r11 per-K saved B anchor for c0192; no B refit",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-bsource-twocore-m4-r11/predictions/protonet_cda-s2026092702-c0192/B-K10.pt"
+    ],
+    "contract_check_ref": "group1_source.load_source",
+    "provenance_verdict": "r11 actual saved B bound to original job, K, old split, seed; source smoke first.",
+    "selection_rule": "Original r13 failed task, no target scoring or selection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/phase2-group2-scalr",
+    "gpu_policy": "One task process on physical GPU7, CUDA_VISIBLE_DEVICES=7, >=6000 MiB free; B/C <=2 per card.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-protonet-mopc-savedb-support-gpu7-s2026092702-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-protonet-mopc-savedb-support-gpu7-s2026092702-r01",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\20261109-phase2-protonet-mopc-savedb-support-gpu7-s2026092702-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.group2_savedb_diagnostic --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json --job /home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-bsource-savedb-mopc-m4-r13/jobs/00015.json --k 10 --n 10 --device cuda:0",
+    "stop_rule": "Single source/support execution; original numerical guard stops on failure; retain logs and all old outputs."
+  },
+  "expected_artifacts": [
+    "owner.json",
+    "diagnostic.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "first_nonfinite_boundary",
+      "completed_updates",
+      "affected_tensors"
+    ],
+    "dimensions": [
+      "B/C stage",
+      "epoch",
+      "iteration"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "protonet-mopc-s2026092702-k10-n10",
+      "method": "ProtoNet-CDA B → MoPC-HR project transplant",
+      "purpose": "source/support diagnostic",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-bsource-savedb-mopc-m4-r13/jobs/00015.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed existing capsule. B/C seeds derive from original model seed and job key. No new data, augmentation or evaluation draws.",
+      "k": 10,
+      "scenario": "P02/MIX05/20-1",
+      "optimizer": "Saved B anchor; original MoPC SGD momentum .9, weight decay .0002",
+      "lr": {
+        "B": null,
+        "C": 0.01
+      },
+      "epochs": {
+        "B": 0,
+        "C_per_session": 20
+      },
+      "fl_rounds": null,
+      "budget_ref": "Original MoPC 20 epochs per session, two five-class sessions, up to 160 updates.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-protonet-mopc-savedb-support-gpu7-s2026092702-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-protonet-mopc-savedb-support-gpu7-s2026092702-r01/diagnostic.jsonl",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.group2_savedb_diagnostic --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json --job /home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-bsource-savedb-mopc-m4-r13/jobs/00015.json --k 10 --n 10 --device cuda:0",
+      "expected_artifacts": [
+        "owner.json",
+        "diagnostic.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Uses exact r11 saved B and original r13 C seed/support on GPU7; hooks only observe, not fix.",
+    "No query, truth, predictions or scoring; prior 10 partial files and all ancestor artifacts retained.",
+    "Non-reproduction does not prove a fix; first observed module is not automatically a root cause."
+  ],
+  "registered_at": "2026-11-09T01:19:46+00:00"
+}
