@@ -108,3 +108,12 @@
 两项候选曾因共享 GPU 进程数超出原上限被控制器停止。已保留原输出，并分别从 E15 和 E02 的完整模型、优化器与随机状态技术续训；固定累计 30 轮和原两总体七景测试不变，跨 GPU 续训不声称逐位等价。两版均已完成正式评分。[资源中断与续训记录](../../automation_reports/CV-SincNet/20261108-phase1-Restore-GradientCoupled-E30-s2026092701-r02/recovery.md)
 
 同一已冻结源 V 面板的补充事后分析表明，整算子与协方差加权主路的盲估相位分歧，对大相位误差排序 AUC 为 0.5926，弱于两个校正角绝对值各自的 0.6844、0.6518。最高分歧四分之一中整算子校正的平均 IQ NMSE 反而增加；不能把分歧直接当作可靠门控，也不能从该源面板推断目标 TX 收益。[相位分歧诊断](../../automation_reports/CV-SincNet/20261107-diagnostic-Restore-coherent-main-phase-sourceV-s2026092701-r01/analysis.md)
+
+
+## 已完成的其他时频与融合对照
+
+另一独立 F-free 方案冻结 DURA v1，以源配对 IQ 训练 15,062,850 参数的时频联合修正网络，固定 final20 后接同一地面 Tri-SIG-TIME SSL 完成七景评分。六个受损场景分别为 81.2315%、79.1887%、76.9024%、79.7970%、72.1530%、65.1655%，均低于 DURA，也均未达到本对话固定的 **83.5387%（距 raw clean 不超过 3 个百分点）** 下限。该方案的郊区 high 场景中，TX 索引 1 为 41.6000%，同组 DURA 为 58.3321%，说明总体平均值可能掩盖特定设备的大幅损伤。[时频联合对照](../../automation_reports/CV-SincNet/20261108-phase1-dura-joint-timefreq-ground-test-s2026092701-r01/analysis.md)
+
+另一个冻结 DURA 与独立恢复器、使用源数据训练多相跨专家融合的 F-free 方案，低城区为 64.9339%，六个受损场景也均低于 DURA；其训练分阶段、父网络和融合方式均不同，不能与从零单阶段的宽时频 F-guided 版本作单因素对照。[多相跨专家对照](../../automation_reports/CV-SincNet/20261108-phase1-dura-cross-expert-polyphase-ground-test-s2026092701-r02/analysis.md)
+
+这些是已曝光的单 seed 地面模拟测试结果，不是独立盲测或在轨结果。它们说明增大网络或融合时频本身不能保证改善，不证明当前三版会得到相同结论；当前训练、checkpoint 和正式测试矩阵均不根据这些目标结果调整。历史报告另列“相对下降 3%”指标，本对话验收始终使用绝对差 3 个百分点，并单独检查两个 clean 总体。
