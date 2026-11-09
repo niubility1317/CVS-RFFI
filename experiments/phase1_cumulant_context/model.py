@@ -15,7 +15,14 @@ CUMULANT_WEIGHT = .1
 
 
 def cumulant_features(iq):
-    """Bounded, centered C22 and complex C31 plug-in estimates per lag."""
+    """Bounded globally centered fourth-order moment differences.
+
+    The second statistic has three factors at the first time and one at
+    the lagged time; it is not the conventional 3-unconjugated/1-conjugated
+    complex cumulant. Lagged slices are not separately recentered, so their
+    finite-window values are approximations rather than exact sample cumulants.
+    The existing variable name does not change its formula.
+    """
     if iq.ndim != 3 or iq.shape[1:] != (2, 256):
         raise ValueError('IQ must have shape [batch, 2, 256]')
     z = torch.complex(iq[:, 0], iq[:, 1])

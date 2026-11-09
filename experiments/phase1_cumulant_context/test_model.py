@@ -30,6 +30,13 @@ class CumulantContextTest(unittest.TestCase):
         result.square().mean().backward()
         self.assertGreater(model.out.weight.grad.abs().sum().item(), 0)
 
+    def test_zero_lag_pairings_coincide(self):
+        torch.manual_seed(4)
+        x=torch.randn(3,2,256)
+        values=cumulant_features(x)
+        torch.testing.assert_close(values[:,0],values[:,1],rtol=1e-5,atol=1e-6)
+        torch.testing.assert_close(values[:,2],torch.zeros_like(values[:,2]),rtol=0,atol=1e-6)
+
     def test_constant_signal_is_finite(self):
         x = torch.ones(2, 2, 256)
         self.assertTrue(torch.isfinite(cumulant_features(x)).all())
