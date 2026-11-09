@@ -19,12 +19,13 @@ def partition_retained_mopc(previous, state, desired):
             'Invalid failed task indices')
     result = dict(completed=[], quarantined=[], pending=[])
     expected_outputs, expected_launches = set(), set()
-    fields = ('key', 'profile', 'seed', 'capsule', 'methods', 'points', 'load_B_for_mopc', 'trace_registration')
+    fields = ('key', 'profile', 'seed', 'capsule', 'methods', 'load_B_for_mopc', 'trace_registration')
     for i, intended in enumerate(desired):
         actual = read(previous/'jobs'/f'{i:05d}.json')
         key = intended['key']
         output = previous/'predictions'/key
         require(all(actual.get(field) == intended.get(field) for field in fields) and
+                [tuple(point) for point in actual['points']] == [tuple(point) for point in intended['points']] and
                 actual['methods'] == ['mopc_hr'] and bool(actual.get('load_B_for_mopc')) and
                 Path(actual['output']) == output, 'Parent or saved B binding differs')
         launch = previous/'launches'/f'worker-{i:05d}.json'

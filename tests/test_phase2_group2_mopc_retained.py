@@ -18,7 +18,7 @@ def make_parent(tmp_path, monkeypatch):
     for i in range(3):
         key = f'job-{i}'
         next_job = dict(key=key, profile='dadda_sda', seed=7, capsule='capsules/P/M/R',
-                        methods=['mopc_hr'], points=[[1, 2]],
+                        methods=['mopc_hr'], points=[(1, 2)],
                         output=str(tmp_path/'next/predictions'/key),
                         load_B_for_mopc=str(tmp_path/'r11/predictions'/key), trace_registration=True)
         previous = dict(next_job, output=str(root/'predictions'/key))
@@ -81,6 +81,13 @@ def test_completed_wrong_saved_b_is_rejected(tmp_path, monkeypatch):
     write(root/'predictions/job-0/predictions.json',
           {'rows': [dict(k=1, resources={'B_state_ref': 'wrong'})]})
     with pytest.raises(ValueError, match='saved B binding'):
+        retained.partition_retained_mopc(root, state, desired)
+
+
+def test_different_kn_points_are_rejected(tmp_path, monkeypatch):
+    root, state, desired, _ = make_parent(tmp_path, monkeypatch)
+    desired[2]['points'] = [(1, 5)]
+    with pytest.raises(ValueError, match='binding'):
         retained.partition_retained_mopc(root, state, desired)
 
 
