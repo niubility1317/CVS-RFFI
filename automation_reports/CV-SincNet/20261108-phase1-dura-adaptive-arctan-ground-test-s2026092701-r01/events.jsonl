@@ -1,3 +1,4 @@
 {"at": "2026-11-07T21:40:05+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-07T21:41:09+00:00", "status": "QUEUED", "note": "Queue PID 871509 verified; awaiting GPU4 capacity. Fixed final20 then seven-view independent truth-last; no target scores.", "evidence": ["report.md"], "row_id": null}
 {"at": "2026-11-08T03:06:06+00:00", "status": "RUNNING", "note": "112-record frozen source smoke passed; seven-view prediction underway, truth-last score pending.", "evidence": ["N607 controller PID 1151423 and ground prediction PID 1261023"], "row_id": null}
+{"at": "2026-11-09T02:07:00+00:00", "status": "ANALYZED", "note": "Seven complete view predictions precede independent truth-last; DURA paired and full TX/RX/day analysis saved.", "evidence": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-adaptive-arctan-ground-test-s2026092701-r01/flow/paired_dura.json", "row_id": null}

@@ -1,3 +1,4 @@
 {"at": "2026-11-07T21:54:28+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-07T21:55:37+00:00", "status": "QUEUED", "note": "Source smoke passed and source training running on GPU3; fixed seven-view predictions and truth-last follow final20.", "evidence": ["report.md"], "row_id": null}
 {"at": "2026-11-07T23:31:39+00:00", "status": "RUNNING", "note": "Fixed final20 checkpoint; 112-record source-only prediction smoke passed; seven-view prediction active.", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-11-09T02:07:00+00:00", "status": "ANALYZED", "note": "Seven complete view predictions precede independent truth-last; DURA paired and full TX/RX/day analysis saved.", "evidence": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-direct-timefreq-wide-residual-ground-test-s2026092701-r01/flow/paired_dura.json", "row_id": null}

@@ -1,3 +1,4 @@
 {"at": "2026-11-07T23:45:28+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-07T23:46:52+00:00", "status": "PLANNED", "note": "Automatic seven-view prediction and truth-last score follows fixed final20 gate.", "evidence": ["report.md"], "row_id": null}
 {"at": "2026-11-07T23:54:44+00:00", "status": "RUNNING", "note": "112-record source-only ground smoke passed; seven-view ground prediction active.", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-11-09T02:07:00+00:00", "status": "ANALYZED", "note": "Seven complete view predictions precede independent truth-last; DURA paired and full TX/RX/day analysis saved.", "evidence": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261108-phase1-dura-signal-confidence-oof-ground-test-s2026092701-r01/flow/paired_dura.json", "row_id": null}

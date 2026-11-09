@@ -29,3 +29,7 @@
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 2026-11-08 核实源域无查询预测检查通过（112 条），原 owner 已自动启动七景预测，预测进程 PID 1679962；全部预测及独立 truth-last 评分尚未完成，暂无正式识别结果。证据：N607 runs/20261107-phase1-dura-temporal-prior-source-s2026092701-r01-controller/ground_smoke.log、status.json。
+
+## 七景最终评分
+
+七景各 168000 条预测固定后，已完成独立 truth-last 与 DURA 配对评分。六个受损场景均低于 DURA，均未达到相对下降 3% 门槛。逐场景、配对纠错及 TX/RX/day 分组见 [结果分析](analysis.md)。测试为已曝光的 Phase1 地面模拟结果。
