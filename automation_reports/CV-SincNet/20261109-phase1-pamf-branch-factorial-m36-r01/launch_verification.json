@@ -1,0 +1,16 @@
+{
+  "status": "VERIFIED_RUNNING_SNAPSHOT",
+  "observed_date": "2026-11-09",
+  "execution_commit": "17ac02d73c97386a160b1b6e80cb43c5a33fdd7d",
+  "release_archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "source_checkpoint_no_query_smoke": "PASS",
+  "logical_models": 36,
+  "reused_models": 9,
+  "new_models": 27,
+  "new_train_prediction_score_stages": 81,
+  "initial_observed_gpu_workers": 14,
+  "worker_checks": "Matching process identity, command, working directory, GPU compute and log growth observed; source-only CE updates progressed; no unresolved failure at snapshot.",
+  "fixed_outputs": "Raw predictions in cross-receiver and cross-day-cross-receiver populations, seven scenes, followed by independent truth-last score.",
+  "results_status": "New model training in progress; no new model has yet completed its full prediction and scoring matrix."
+}

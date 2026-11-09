@@ -3,7 +3,7 @@
 - run_id：`20261109-phase1-pamf-branch-factorial-m36-r01`
 - group_id：`phase1-pamf-three-branch-factorial`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（2026-11-09 发布后核验；实时状态以远端运行记录为准）
 
 ## 目的与对照
 
@@ -21,9 +21,9 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+尚无新增模型的正式评分。九个已有同契约模型及其冻结预测、评分已核对并登记复用；其余 27 个模型自动训练，完成后自动进行两组七场景原始识别预测及独立评分。保留每row与RX/day/TX/scene/K/seed的对应关系。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
 
-记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+实际执行提交 `17ac02d73c97386a160b1b6e80cb43c5a33fdd7d`；发布包传输一致，远端编译及真实源模型无目标数据启动检查通过。发布后核验见 [launch_verification.json](launch_verification.json)。恢复先核对原运行，不重复启动。
