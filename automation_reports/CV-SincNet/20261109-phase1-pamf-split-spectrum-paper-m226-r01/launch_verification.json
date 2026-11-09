@@ -1,0 +1,21 @@
+{
+  "status": "VERIFIED_RUNNING_SNAPSHOT",
+  "observed_date": "2026-11-09",
+  "execution_commit": "0a94a2e0bef5936b68b31783ccd4c8ef8b7f8240",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "source_checkpoint_no_query_smoke": "PASS",
+  "logical_models": 226,
+  "reused_models": 15,
+  "new_models": 211,
+  "reused_external_rows": 528,
+  "new_train_prediction_score_stages": 633,
+  "observed_own_workers": 13,
+  "observed_own_workers_per_gpu": {"0": 2, "1": 2, "2": 2, "3": 2, "4": 0, "5": 2, "6": 2, "7": 1},
+  "own_gpu_limits": {"0-6": 3, "7": 1},
+  "gpu4_free_mib": 9262,
+  "minimum_free_mib_to_start": 12000,
+  "other_owner_workers_counted": false,
+  "process_evidence": "Controller and worker PID/CWD/argv, GPU membership and log growth independently read back; no recorded failure at snapshot.",
+  "results_status": "Training processes running; prediction, independent scoring and analysis pending."
+}
