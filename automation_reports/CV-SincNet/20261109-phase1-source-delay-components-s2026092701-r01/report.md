@@ -3,7 +3,7 @@
 - run_id：`20261109-phase1-source-delay-components-s2026092701-r01`
 - group_id：`phase1-source-delay-components`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED；源端 672 条观测诊断完成。
 
 ## 目的与对照
 
@@ -39,3 +39,7 @@
 代码 commit：`59036abf3cb85f56b35fbae482e3ea82e0a85c5b`。两项针对性检查已通过，包括真实复数作用的分段可加性、零分量、非法输入；独立 P0/P1 静态审查无阻断。首批实际源记录与冻结 DURA 的 CPU smoke 尚由正式执行首步完成。
 
 固定发布归档本地和远端 SHA-256 均为 `471961e7ae93cdfc4dc2f2902c595c5e65e0338ae369f729abe25ce82596e8ae`；N607 CPU 环境远端编译和 2 项针对性检查通过。真实源 checkpoint smoke 作为执行首步。
+
+## 源域结果
+
+受损源观测中 574/576 条由 16–31 抽头段主导；四段不等于四条真实路径，其他结构和识别效果不能由此推断。组均值、干扰边界与参考文献见 [源域分析](analysis.md)。
