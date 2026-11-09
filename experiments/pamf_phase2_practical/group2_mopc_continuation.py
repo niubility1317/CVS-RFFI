@@ -41,6 +41,28 @@ def saved_b_jobs(rt, previous, manifest, job_files):
     return out
 
 
+def require_identity_failure_only(previous, state, manifest):
+    """Accept the known pre-registration interface failure, preserving its outputs."""
+    require(manifest['scope'] == 'MOPC_ONLY_FROM_SAVED_B' and state['status'] == 'FAILED' and
+            not state['active'] and state['completed'] == 0 and bool(state['failed']),
+            'Previous run is not an empty identity-only failure')
+    failed = set()
+    for item in state['failed']:
+        index, key = item['index'], item['key']
+        job = read(previous/'jobs'/f'{index:05d}.json')
+        output = previous/'predictions'/key
+        log = (previous/'logs'/f'worker-{index:05d}.log').read_text(encoding='utf-8')
+        require(key not in failed and job['key'] == key and Path(job['output']) == output and
+                output.is_dir() and not any(output.glob('*.npz')) and not (output/'complete.json').exists() and
+                'ValueError: B/C old physical support differs' in log and
+                'FIRST_NONFINITE' not in log and 'REGISTRATION_FAILURE' not in log,
+                'Previous failure was not before MoPC registration')
+        failed.add(key)
+    directory = previous/'predictions'
+    require(directory.is_dir() and {p.name for p in directory.iterdir()} == failed,
+            'Previous output contains unclassified work')
+
+
 def dispatch(rt):
     validate_runtime(rt)
     require(all(int(v) <= 2 for v in rt['gpu_limits'].values()), 'Per-GPU task limit exceeds two')
@@ -49,14 +71,27 @@ def dispatch(rt):
     require(str(previous) == parent_rt['run_root'] and rt['previous_runtime_file'] == parent_rt['runtime_file'],
             'Parent runtime differs')
     require_same_method(parent_rt, rt)
-    state, done = read(previous/'worker_state.json'), read(previous/'subset_predictions_complete.json')
-    require(state['status'] == 'COMPLETE' and not state['active'] and not state['failed'] and
-            done['status'] == 'SUBSET_FIXED_MOPC_PENDING' and done['truth_read'] is False and
-            done['query_fit'] is False, 'Parent is not a completed two-core subset')
+    state, manifest = read(previous/'worker_state.json'), read(previous/'resume_manifest.json')
     for path in [previous/'owner.json'] + list((previous/'launches').glob('*.json')):
         require(not previous_process_is_live(read(path).get('pid'), parent_rt), 'Parent process still active')
-    manifest = read(previous/'resume_manifest.json')
-    jobs = saved_b_jobs(rt, previous, manifest, sorted((previous/'jobs').glob('*.json')))
+    if manifest['scope'] == 'MOPC_ONLY_FROM_SAVED_B':
+        require_identity_failure_only(previous, state, manifest)
+        subset_rt = read(parent_rt['previous_runtime_file'])
+        subset = Path(parent_rt['previous_run_root'])
+        require(str(subset) == subset_rt['run_root'] and
+                parent_rt['previous_runtime_file'] == subset_rt['runtime_file'], 'Subset runtime differs')
+        require_same_method(subset_rt, rt)
+        subset_manifest = read(subset/'resume_manifest.json')
+        for key in ('reused', 'deferred', 'cancelled', 'pending_count'):
+            require(manifest[key] == subset_manifest[key], 'Parent categories differ from subset')
+    else:
+        subset, subset_manifest = previous, manifest
+        require(state['status'] == 'COMPLETE' and not state['active'] and not state['failed'],
+                'Parent subset has not completed')
+    done = read(subset/'subset_predictions_complete.json')
+    require(done['status'] == 'SUBSET_FIXED_MOPC_PENDING' and done['truth_read'] is False and
+            done['query_fit'] is False, 'Subset is not fixed')
+    jobs = saved_b_jobs(rt, subset, subset_manifest, sorted((subset/'jobs').glob('*.json')))
     require(done['completed_pending'] == len(jobs), 'Parent completed count differs')
     root = Path(rt['run_root'])
     root.mkdir(parents=True, exist_ok=False)

@@ -50,7 +50,11 @@ def predict(rt, job):
     rows = []
     for k in sorted({p[0] for p in points}):
         old_split = lookup[k, 0]['split_id']
-        _, _, old_ids, _ = support_only(cap, old_split)
+        _, _, old_positions, _ = support_only(cap, old_split)
+        # support_only returns bank positions; load_task returns physical IDs.
+        # Compare the same identity type without opening any query rows.
+        bank_ids = np.load(cap/'ids.npy', mmap_mode='r', allow_pickle=False)
+        old_ids = np.asarray(bank_ids[old_positions])
         b_seed = seed_for(seed, job['capsule'], k, 'B')
         b_ref = subset_output/f'B-K{k}.pt'
         saved = load_b_state(b_ref, job, k, old_split, b_seed, device)
