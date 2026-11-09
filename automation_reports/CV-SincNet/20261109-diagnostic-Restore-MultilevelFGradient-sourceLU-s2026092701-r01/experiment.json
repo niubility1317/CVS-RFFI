@@ -1,0 +1,158 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261109-diagnostic-Restore-MultilevelFGradient-sourceLU-s2026092701-r01",
+  "group_id": "source-multilevel-F0-input-gradient",
+  "display_name": "源域多层识别特征与波形梯度诊断",
+  "description": "复用28条合法源配对和固定源恢复器，比较F0浅层、中层、最终特征及波形损失对恢复IQ的梯度；无训练或目标访问。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-LU-only",
+    "F-feature-guided",
+    "no-training",
+    "multilevel-gradient"
+  ],
+  "comparison_group_id": "source-F0-multilevel-input-gradient",
+  "parent_run_ids": [
+    "20261102-phase1-Restore-CovarianceDetail-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户授权原L_s/U_s源模拟配对及同一冻结F0连续特征指导；不使用TX标签、logits、V/OE或目标，不更新模型。",
+  "code": {
+    "commit": "3af4d5eb10f369f43b5595eee7c203baf48cb4e9",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI, GPU4 or GPU6, CPU threads2, FP64 posterior FP32 models, TF32 off",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-diagnostic-Restore-MultilevelFGradient-sourceLU-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 source contract; R07 63000 source physical pairs draw01",
+    "representation": "Fixed original L_s/U_s paired clean and simulated received IQ, 28 records; source F0 feature maps",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "First 2 original order records each of 7 scenes × L_s/U_s; fixed nonrepresentative sample",
+    "label_map_ref": "No TX label or logits read",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "TX truth not accessed",
+    "roles": {
+      "L_s": 0.1,
+      "U_s": 0.9
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "VALIDATED_ONCE original source handles, fixed original F0 and legal source E30 provenance",
+    "support_query_ref": "No target/support/query",
+    "leo_config_ref": "Original source draw01 simulated conditions",
+    "actual_training_labels": "No training and no identity labels",
+    "augmentation": "Reuse fixed source draw01",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "frozen-source-multilevel-feature-gradient",
+    "query_use": "No target, identity labels, classifier logits or model updates",
+    "external_method_exception": null,
+    "claim_scope": "Exploratory restored-IQ gradient cosines for 28 nonrepresentative source records; not G parameter gradients or performance."
+  },
+  "checkpoint": {
+    "initialization": "Frozen original source-only CovarianceDetail final30/7410 and original Tri-SIG-TIME SSL F0; no optimizer",
+    "sources": [
+      "20261102-phase1-Restore-CovarianceDetail-E30-s2026092701-r01/source-only final30 commit 1fcbc3eb3cc16e7577ecc3cbedda99174b4c5cc6",
+      "Original Tri-SIG-TIME SSL F0 frozen source feature model",
+      "Original R07 source L_s/U_s draw01"
+    ],
+    "contract_check_ref": "Original source roles and VALIDATED_ONCE, checkpoint source-only metadata checked in program",
+    "provenance_verdict": "Same original L_s/U_s source contract; source-only final30 and F0 metadata validated; no model updates or target access",
+    "selection_rule": "Fixed final30; first two source records for each role and each of seven source scenes, no TX-based selection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-multilevel-gradient",
+    "gpu_policy": "GPU4 or 6, one own process, at least 12000 MiB free, total GPU compute cap 3 including other owners",
+    "remote_run_root": "runs/20261109-diagnostic-Restore-MultilevelFGradient-sourceLU-s2026092701-r01",
+    "remote_log_root": "runs/20261109-diagnostic-Restore-MultilevelFGradient-sourceLU-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261109-diagnostic-Restore-MultilevelFGradient-sourceLU-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.source_multilevel_gradient_probe run --root /home/szu2070436088/2510044040/CV-SincNet --commit 3af4d5eb10f369f43b5595eee7c203baf48cb4e9 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261108-diagnostic-Restore-FeatureViewDispersion-sourceLU-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Source/F0/checkpoint mismatch, invalid layer calls, nonfinite features or gradients, posterior residual >1e-8, smoke failure, GPU cap violation or unverifiable GPU count: stop only own child, preserve outputs."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted.json",
+    "worker.log PRIVATE",
+    "smoke.json",
+    "results.json PRIVATE",
+    "complete.json",
+    "terminal.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Pairwise cosine and norms of waveform, shallow, middle and final F0 feature losses with respect to restored IQ",
+      "Source-layer shapes and normalized feature errors, posterior solve residual"
+    ],
+    "dimensions": [
+      "28 source L_s/U_s records",
+      "seven source simulated scenes",
+      "single fixed source final30 recovery model"
+    ],
+    "prediction_ref": "Frozen F0 continuous features only; no logits, TX or target",
+    "scorer_ref": "No labels or truth scoring"
+  },
+  "rows": [
+    {
+      "row_id": "source_multilevel_gradient",
+      "method": "frozen_F0_shallow_middle_final_input_gradient_probe",
+      "purpose": "Determine whether different fixed F0 feature levels provide distinct local input-gradient directions from waveform and final feature losses.",
+      "config_ref": "experiments/pamf_phase3_restoration/source_multilevel_gradient_probe.py",
+      "resolved_config_ref": "runs/20261109-diagnostic-Restore-MultilevelFGradient-sourceLU-s2026092701-r01/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101902
+      },
+      "seed_notes": "Fixed source-only E30 model; original source draw and order; support N/A; evaluation seed identifies original draw.",
+      "k": null,
+      "scenario": "28 original L_s/U_s records, two per role in each of seven source scenes",
+      "optimizer": "NONE",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "28 source records including first two real model smoke; no model updates",
+      "output_root": "runs/20261109-diagnostic-Restore-MultilevelFGradient-sourceLU-s2026092701-r01",
+      "log_path": "runs/20261109-diagnostic-Restore-MultilevelFGradient-sourceLU-s2026092701-r01/worker.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.source_multilevel_gradient_probe run --root /home/szu2070436088/2510044040/CV-SincNet --commit 3af4d5eb10f369f43b5595eee7c203baf48cb4e9 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261108-diagnostic-Restore-FeatureViewDispersion-sourceLU-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted.json",
+        "worker.log PRIVATE",
+        "smoke.json",
+        "results.json PRIVATE",
+        "complete.json",
+        "terminal.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No target, TX labels, classifier logits, V/OE or model updates.",
+    "Input-gradient direction is not G parameter-gradient direction or formal recognition performance.",
+    "Single seed and 28 nonrepresentative source records; no theoretical limit.",
+    "Smoke occurs on first two actual source records and continues on PASS."
+  ],
+  "registered_at": "2026-11-09T04:07:53+00:00"
+}
