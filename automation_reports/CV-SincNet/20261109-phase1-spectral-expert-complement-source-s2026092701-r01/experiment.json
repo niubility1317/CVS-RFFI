@@ -1,0 +1,144 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261109-phase1-spectral-expert-complement-source-s2026092701-r01",
+  "group_id": "phase1-spectral-expert-complement-source",
+  "display_name": "固定恢复专家的源域频率互补诊断",
+  "description": "在已探索源域 pilot 上比较 DURA、联合粒子、残差扩散和固定融合网络的 IQ 误差，并计算依赖 clean IQ 的不可部署频率选择 oracle。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "waveform-diagnostic",
+    "privileged-oracle",
+    "no-F"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261108-phase1-dura-joint-particle-source-s2026092701-r01",
+    "20261108-phase1-dura-residual-diffusion-source-s2026092701-r01",
+    "20261108-phase1-dura-spectral-mixture-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户继续授权研发星地恢复网络；仅源域合法 IQ 诊断，不重启已停止任务。",
+  "code": {
+    "commit": "6417da3a28ea8667510958310e880fdd272d5ea5",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU5 FP32 TF32 off deterministic; 672 source pilot IQ only",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-spectral-expert-complement-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "received and clean IQ [2,256]",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "672 frozen source pilot physical IDs, RX4/6 and RX8 by seven views; read indices/rx/scene/split only",
+    "label_map_ref": null,
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Previously explored fixed source pilot; RX8 is source held group, not independent to DURA",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed simulated source epoch19 views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source paired IQ diagnostic only; no F or target and no identity-accuracy claim"
+  },
+  "checkpoint": {
+    "initialization": "Fixed frozen DURA, joint, residual diffusion and spectral mixture; no model updates",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261108-phase1-dura-joint-particle-source-s2026092701-r01",
+      "20261108-phase1-dura-residual-diffusion-source-s2026092701-r01",
+      "20261108-phase1-dura-spectral-mixture-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "Both 32768-ID parent fits and the gate 17632-ID out-of-parent fit exclude all 672 source pilot IDs; source-only checkpoints",
+    "provenance_verdict": "Three source-only fixed checkpoints with matching legal source roles; pilot disjoint from three new models; DURA may have seen pilot",
+    "selection_rule": "Analyze all three fixed source models without choosing based on target; privileged clean source IQ oracle is nondeployable and no identity bound"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "GPU5: >=8192 MiB free, fewer than 3 total compute apps and at most one this-task worker; preserve others",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-spectral-expert-complement-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-spectral-expert-complement-source-s2026092701-r01-launcher.log",
+    "local_artifact_root": "E:/type10-7/github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/20261109-phase1-spectral-expert-complement-source-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES=5 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-spectral-expert-complement-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-diffusion-source-pilot-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release nice -n 10 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_spectral_moe.source_diagnostic --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-spectral-expert-complement-source-s2026092701-r01 --commit 6417da3a28ea8667510958310e880fdd272d5ea5",
+    "stop_rule": "Stop on source role mismatch, source smoke failure, nonfinite output or any target/F/TX read; preserve stopped group and other owners."
+  },
+  "expected_artifacts": [
+    "result.json with source per-view IQ NMSE and per-record better/worse counts; no trained model"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source per-record normalized IQ error",
+      "mixture better/worse count vs DURA",
+      "privileged frequency-oracle error and bin fractions"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; source paired IQ geometry only"
+  },
+  "rows": [
+    {
+      "row_id": "fixed-three-experts-mixture-oracle-source",
+      "method": "Fixed three experts and source-trained gate, plus unrealizable nearest-complex-spectrum-per-frequency oracle using source clean IQ",
+      "purpose": "Source paired-IQ complementarity analysis only; no trained candidate or identity accuracy claim",
+      "config_ref": "experiments/phase1_spectral_moe/source_diagnostic.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "All three final epoch20 source models frozen from previous registrations; no training, no target selection.",
+      "k": null,
+      "scenario": "seven fixed Phase1 source views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "672 previously explored source IQ pairs; RX4/6 and RX8 x 7 views x 48; two-real-record smoke, batch8",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-spectral-expert-complement-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-spectral-expert-complement-source-s2026092701-r01-launcher.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-spectral-expert-complement-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-diffusion-source-pilot-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release nice -n 10 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_spectral_moe.source_diagnostic --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-spectral-expert-complement-source-s2026092701-r01 --commit 6417da3a28ea8667510958310e880fdd272d5ea5",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source-only IQ diagnosis using previously explored 672 pilot; pilot is excluded from three candidate fits but DURA may have seen it.",
+    "Oracle uses source clean IQ per frequency; it is not deployable and not an identity-accuracy or arbitrary-network upper bound.",
+    "No F weights or outputs, TX labels, V, target IQ, target truth, model updates or target-based model selection."
+  ],
+  "registered_at": "2026-11-09T02:10:51+00:00"
+}
