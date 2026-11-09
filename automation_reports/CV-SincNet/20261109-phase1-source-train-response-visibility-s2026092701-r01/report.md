@@ -3,7 +3,7 @@
 - run_id：`20261109-phase1-source-train-response-visibility-s2026092701-r01`
 - group_id：`phase1-source-train-response-visibility`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（源训练分布诊断完成）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+完成 83,450 条受损源训练观测；城市 low 的 1% 扰动低于残差能量 1% 的比例为 70.21%，固定 action 下 10% 推算为 15.84%。详见 [analysis.md](analysis.md)。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
