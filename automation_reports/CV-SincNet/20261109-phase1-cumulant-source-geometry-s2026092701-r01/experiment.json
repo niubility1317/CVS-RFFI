@@ -1,0 +1,146 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261109-phase1-cumulant-source-geometry-s2026092701-r01",
+  "group_id": "phase1-cumulant-source-geometry",
+  "display_name": "源域多时滞四阶统计记录几何诊断",
+  "description": "比较固定源物理记录的功率、四阶累积量与等权组合在原输入及 DURA 输出下的匹配；不判断 TX 身份。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "cumulant",
+    "record-retrieval",
+    "no-F"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261107-phase1-iq-retrieval-geometry-source-s2026092701-r01",
+    "20261106-phase1-dura-wide-source-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User authorizes ongoing Phase1 F-free restoration research, source-only diagnostics and GPU use.",
+  "code": {
+    "commit": "e20acc7d1f89b7561afecf9584c374f16cc36df6",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU7 FP32 deterministic TF32off, two CPU threads",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-source-geometry-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split permitted source L_s/U_s",
+    "version": "fixed deterministic source context epochs21/22/23",
+    "representation": "fixed source DURA context and paired IQ; 512 fit IDs for normalization, disjoint 512 for retrieval",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "First 512 ordered fit IDs normalize fixed source features; next 512 ordered fit IDs evaluated across three simulated source views",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ only, TX hidden",
+      "U_s": "source IQ only, TX hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Disjoint 512 source fit IDs for normalization and 512 for physical-record retrieval; all are training-pool source IDs",
+    "support_query_ref": null,
+    "leo_config_ref": "pre-existing legal source simulation epochs 21/22/23"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source physical-record retrieval only with privileged clean IQ; no TX identity, deployable lookup or target claim"
+  },
+  "checkpoint": {
+    "initialization": "Frozen original DURA v1.0 and deterministic source context; no trained recovery candidate",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261106-phase1-dura-wide-source-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "Original DURA provenance and exact ordered 32768 source fit IDs; no F/TX/V/target",
+    "provenance_verdict": "DURA and source context F/TX/V/target-free source only",
+    "selection_rule": "Fixed lag 0/1/2/4/8/16/32 and equal standardized power/cumulant blocks; no target access or model selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "GPU7 >=8192 MiB free, fewer than three total compute apps and at most one this-task worker; preserve GPU3/5/6 jobs",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-cumulant-source-geometry-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-cumulant-source-geometry-s2026092701-r01-launcher.log",
+    "local_artifact_root": "E:/type10-7/github_publish/CVS-RFFI-repo/automation_reports/CV-SincNet/20261109-phase1-cumulant-source-geometry-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES=7 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-source-geometry-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-context-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release nice -n 10 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_cumulant_context.source_geometry --root /home/szu2070436088/2510044040/CV-SincNet --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-wide-source-source-s2026092701-r01/source_context.pt --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-cumulant-source-geometry-s2026092701-r01 --commit e20acc7d1f89b7561afecf9584c374f16cc36df6",
+    "stop_rule": "Stop on invalid source contract, nonfinite features, incompatible view alignment or technical failure; preserve artifacts"
+  },
+  "expected_artifacts": [
+    "result.json: source same-record top1/top5/MRR/distance for power, closure and equal-block combination"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "physical-record top1",
+      "physical-record top5",
+      "mean reciprocal rank",
+      "paired feature distance"
+    ],
+    "dimensions": [
+      "512 normalization + 512 disjoint source physical IDs x three fixed views",
+      "received and frozen DURA",
+      "power, cumulants, equal-block combination"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; no target or TX truth"
+  },
+  "rows": [
+    {
+      "row_id": "cumulant-source-record-retrieval",
+      "method": "Finite-window bounded centered lagged C22/C31, 32-band power and equal standardized block combination",
+      "purpose": "Assess source physical-record signal-feature geometry; no TX accuracy or deployment claim",
+      "config_ref": "experiments/phase1_cumulant_context/source_geometry.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed existing source ID order and views; no new random sampling or trained model.",
+      "k": null,
+      "scenario": "512 held-out-from-normalization source fit IDs, three legal simulated source views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "512 normalization IDs and 512 disjoint retrieval IDs; three existing views, no training",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-cumulant-source-geometry-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-cumulant-source-geometry-s2026092701-r01-launcher.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-source-geometry-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-cumulant-context-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-joint-particle-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261108-phase1-spectral-quotient-both-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release nice -n 10 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_cumulant_context.source_geometry --root /home/szu2070436088/2510044040/CV-SincNet --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-wide-source-source-s2026092701-r01/source_context.pt --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase1-cumulant-source-geometry-s2026092701-r01 --commit e20acc7d1f89b7561afecf9584c374f16cc36df6",
+      "expected_artifacts": [
+        "result.json: source record top1/top5/MRR/distance for power, cumulant and equal-block combination"
+      ]
+    }
+  ],
+  "notes": [
+    "Fixed source training pool 1024 legal IDs; DURA may have seen them.",
+    "Clean-reference physical-record retrieval can track signal content and is not TX identity or deployable reference lookup.",
+    "No F, TX labels, V, target or model updates."
+  ],
+  "registered_at": "2026-11-09T03:02:40+00:00"
+}
