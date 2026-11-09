@@ -27,3 +27,7 @@ r14 exited before creating a run root, claim, worker or prediction because the s
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## Retained numerical failure
+
+After the user requested starting the remaining tasks despite the unresolved earlier issue, real source and saved-B smoke passed and 16 workers ran within two per GPU. Fifteen tasks closed (240 predictions) while protonet_cda-s2026092702-c0195 failed at K10/N20, MoPC stage 2 epoch 10 iteration 40. The first instrumented nonfinite boundary was support logits; loss, cross-entropy and 18 gradient tensors were nonfinite. Eleven partial predictions and the worker log are retained. The first observed boundary is not a proven mathematical root. The controller stopped admission and drained; 1874 jobs were unstarted. Existing full and partial results, earlier quarantines and canceled RadioNet remain. No scoring or global prediction barrier opened. Evidence: local_artifacts/phase2_group2_bnoradio_20261108/r15_failure_detail_verified.json and r15_inventory_verified.json.
