@@ -94,7 +94,8 @@ def train(c):
     from experiments.pamf_paper_completion import source
     if c['paper_row']['family']=='architecture':
         with paper_scope(),ce_scope(): return source.train(c)
-    with seed_scope(c['model_seed']),paper_scope(): return source.train(c)
+    from .fast_practical import installed as fast_as_scope
+    with seed_scope(c['model_seed']),paper_scope(),fast_as_scope(c): return source.train(c)
 
 
 def load_reader(folder, contract, row, device):
