@@ -1,0 +1,508 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261109-phase2-bsource-savedb-mopc-m4-r13",
+  "group_id": "phase2-scalr-group2-da-native-cil-cross",
+  "display_name": "Phase2 B 主干：修正支持身份后从已保存 B 接续 MoPC",
+  "description": "Correct bank-position to physical-ID comparison; preserve r12 eight pre-registration failure directories and logs with zero predictions. Resume 1906 MoPC tasks from their actual r11 B anchors; retain nine earlier science quarantines and canceled RadioNet. Nonfinite root cause remains unknown.",
+  "kind": "comparison",
+  "stage": "Phase2-B-C",
+  "aliases": [
+    "SCALR-Group2-7x3"
+  ],
+  "tags": [
+    "SCALR",
+    "phase2",
+    "Group2",
+    "DA-CIL",
+    "truth-last"
+  ],
+  "comparison_group_id": "20261102-phase2-r42-scenes-m4-r08",
+  "parent_run_ids": [
+    "20261030-phase2-group1-concat-midPL-threepool-m4-r01",
+    "20261102-phase2-r42-scenes-m4-r08",
+    "20261102-phase2-scalr-crosscil-7x3-m4-r02",
+    "20261102-phase2-scalr-crosscil-7x3-m4-r03",
+    "20261105-phase2-bsource-unstarted-priority-m4-r04",
+    "20261105-phase2-bsource-other-methods-first-m4-r05",
+    "20261105-phase2-bsource-dadda-quarantine-m4-r06",
+    "20261108-phase2-bsource-no-radionet-m4-r07",
+    "20261108-phase2-bsource-no-radionet-m4-r08",
+    "20261108-phase2-bsource-no-radionet-m4-r09",
+    "20261108-phase2-bsource-normtrace-m4-r10",
+    "20261109-phase2-bsource-twocore-m4-r11",
+    "20261109-phase2-bsource-savedb-mopc-m4-r12"
+  ],
+  "replaces_run_id": "20261109-phase2-bsource-savedb-mopc-m4-r12",
+  "authorization": "User cancelled all unfinished RadioNet tasks; preserve all complete and partial outputs, and continue the other methods.",
+  "code": {
+    "commit": "6d84d3d50ca8cad5fd4fe76abb44121a0ba5efb8",
+    "checkout": "E:/type10-7/code/worktrees/standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/data/raw_full_wisig_eq_20261029",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/builder_only/partition/*/partition.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/score_only/label_map.json",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "483 existing Group1 capsules, p2_min_v1 VALIDATED_ONCE",
+    "split_id": "read exact existing K/N split IDs",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-milkr-threepool-m4-r01/data_audit.json",
+    "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/capsules/P0{1,2,3}/{MIX01..08,LS01..05,MU01..05,LU01..05}/*",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json",
+    "source_target_overlap_policy": "same source physical roles;target opens only B/C current support;query never fit",
+    "matrix": {
+      "K": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "N": [
+        2,
+        5,
+        10,
+        20
+      ],
+      "physical_pools": [
+        "P01",
+        "P02",
+        "P03"
+      ],
+      "MIX_episodes": 8,
+      "diagnostic_episodes_per_scene": 5,
+      "diagnostic_workpoint": [
+        5,
+        20
+      ],
+      "receivers": [
+        "1-1",
+        "14-7",
+        "2-1",
+        "20-1",
+        "7-14",
+        "7-7",
+        "8-8"
+      ],
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "query": "all_registered_complement; independent common-K intersection score also reported"
+    }
+  },
+  "permissions": {
+    "regime": "source-only A + current labeled old-B / new-C support",
+    "query_use": "inductive per-record prediction only; truth after all fixed predictions",
+    "external_method_exception": "original DA source-only L_s replay only where native B requires it",
+    "claim_scope": "exposed development; DA-backbone CIL-core transplant, not author-native full model; Orthogonal discards B bias and normalizes weights"
+  },
+  "checkpoint": {
+    "initialization": "reuse matching seven Group1 frozen source checkpoints, four seeds",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/protonet_cda-s2026092701/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/protonet_cda-s2026092702/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/protonet_cda-s2026092703/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/protonet_cda-s2026092704/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/mrior_sda-s2026092701/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/mrior_sda-s2026092702/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/mrior_sda-s2026092703/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/mrior_sda-s2026092704/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/dadda_sda-s2026092701/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/dadda_sda-s2026092702/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/dadda_sda-s2026092703/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/dadda_sda-s2026092704/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/twostage-s2026092701/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/twostage-s2026092702/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/twostage-s2026092703/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/twostage-s2026092704/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/feature_separation_hu2024-s2026092701/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/feature_separation_hu2024-s2026092702/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/feature_separation_hu2024-s2026092703/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/feature_separation_hu2024-s2026092704/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/poster_ft-s2026092701/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/poster_ft-s2026092702/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/poster_ft-s2026092703/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/poster_ft-s2026092704/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/radionet_ada_knn-s2026092701/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/radionet_ada_knn-s2026092702/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/radionet_ada_knn-s2026092703/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/radionet_ada_knn-s2026092704/source.pt"
+    ],
+    "contract_check_ref": "group1_source.load_source validates source contract and lineage",
+    "provenance_verdict": "source-only Group1 matching source contract; actual load verified by launcher smoke",
+    "selection_rule": "frozen Group1 source checkpoints; no target score selection or training of A"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/phase2-b-no-radio",
+    "gpu_policy": "B/C combined at most 2 task workers per GPU; predecessors stopped; free >=6000 MiB.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-bsource-savedb-mopc-m4-r13",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-bsource-savedb-mopc-m4-r13/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/phase2_group2_bnoradio_20261108",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.group2_mopc_continuation --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+    "stop_rule": "Stop admission and drain on any failure; retain all outputs. Do not retry original scientific quarantines. Scoring remains closed.",
+    "gpu_limits": {
+      "0": 2,
+      "1": 2,
+      "2": 2,
+      "3": 2,
+      "4": 2,
+      "5": 2,
+      "6": 2,
+      "7": 2
+    }
+  },
+  "expected_artifacts": [
+    "resume_manifest.json",
+    "subset_predictions_complete.json",
+    "worker_state.json",
+    "B-K*.pt"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "old_macro_accuracy",
+      "new_macro_accuracy",
+      "H_macro",
+      "macro_f1",
+      "class_floor"
+    ],
+    "dimensions": [
+      "K",
+      "N",
+      "seed",
+      "pool",
+      "receiver",
+      "episode",
+      "scene",
+      "day",
+      "TX",
+      "B_method",
+      "C_core",
+      "natural",
+      "common-K"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-bsource-savedb-mopc-m4-r13/predictions",
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "protonet_cda-s2026092701",
+      "method": "protonet_cda saved actual B -> MoPC C core with nonfinite tracing",
+      "purpose": "primary",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "experiments/pamf_phase2_practical/group2_cil_bridge.py; group1_target.py; external_native.py",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-bsource-savedb-mopc-m4-r13/predictions/protonet_cda-s2026092701-c*",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-bsource-savedb-mopc-m4-r13/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.group2_mopc_continuation --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json (MoPC only)",
+        "worker log with trace"
+      ]
+    },
+    {
+      "row_id": "protonet_cda-s2026092702",
+      "method": "protonet_cda saved actual B -> MoPC C core with nonfinite tracing",
+      "purpose": "primary",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "experiments/pamf_phase2_practical/group2_cil_bridge.py; group1_target.py; external_native.py",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-bsource-savedb-mopc-m4-r13/predictions/protonet_cda-s2026092702-c*",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-bsource-savedb-mopc-m4-r13/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.group2_mopc_continuation --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json (MoPC only)",
+        "worker log with trace"
+      ]
+    },
+    {
+      "row_id": "protonet_cda-s2026092703",
+      "method": "protonet_cda saved actual B -> MoPC C core with nonfinite tracing",
+      "purpose": "primary",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "experiments/pamf_phase2_practical/group2_cil_bridge.py; group1_target.py; external_native.py",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-bsource-savedb-mopc-m4-r13/predictions/protonet_cda-s2026092703-c*",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-bsource-savedb-mopc-m4-r13/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.group2_mopc_continuation --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json (MoPC only)",
+        "worker log with trace"
+      ]
+    },
+    {
+      "row_id": "protonet_cda-s2026092704",
+      "method": "protonet_cda saved actual B -> MoPC C core with nonfinite tracing",
+      "purpose": "primary",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "experiments/pamf_phase2_practical/group2_cil_bridge.py; group1_target.py; external_native.py",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-bsource-savedb-mopc-m4-r13/predictions/protonet_cda-s2026092704-c*",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-bsource-savedb-mopc-m4-r13/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.group2_mopc_continuation --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json (MoPC only)",
+        "worker log with trace"
+      ]
+    },
+    {
+      "row_id": "dadda_sda-s2026092701",
+      "method": "dadda_sda saved actual B -> MoPC C core with nonfinite tracing",
+      "purpose": "primary",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "experiments/pamf_phase2_practical/group2_cil_bridge.py; group1_target.py; external_native.py",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-bsource-savedb-mopc-m4-r13/predictions/dadda_sda-s2026092701-c*",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-bsource-savedb-mopc-m4-r13/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.group2_mopc_continuation --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json (MoPC only)",
+        "worker log with trace"
+      ]
+    },
+    {
+      "row_id": "dadda_sda-s2026092702",
+      "method": "dadda_sda saved actual B -> MoPC C core with nonfinite tracing",
+      "purpose": "primary",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "experiments/pamf_phase2_practical/group2_cil_bridge.py; group1_target.py; external_native.py",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-bsource-savedb-mopc-m4-r13/predictions/dadda_sda-s2026092702-c*",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-bsource-savedb-mopc-m4-r13/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.group2_mopc_continuation --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json (MoPC only)",
+        "worker log with trace"
+      ]
+    },
+    {
+      "row_id": "dadda_sda-s2026092703",
+      "method": "dadda_sda saved actual B -> MoPC C core with nonfinite tracing",
+      "purpose": "primary",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "experiments/pamf_phase2_practical/group2_cil_bridge.py; group1_target.py; external_native.py",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-bsource-savedb-mopc-m4-r13/predictions/dadda_sda-s2026092703-c*",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-bsource-savedb-mopc-m4-r13/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.group2_mopc_continuation --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json (MoPC only)",
+        "worker log with trace"
+      ]
+    },
+    {
+      "row_id": "dadda_sda-s2026092704",
+      "method": "dadda_sda saved actual B -> MoPC C core with nonfinite tracing",
+      "purpose": "primary",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "experiments/pamf_phase2_practical/group2_cil_bridge.py; group1_target.py; external_native.py",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-bsource-savedb-mopc-m4-r13/predictions/dadda_sda-s2026092704-c*",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261109-phase2-bsource-savedb-mopc-m4-r13/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.group2_mopc_continuation --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase2-bsource-savedb-mopc-m4-r13-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json (MoPC only)",
+        "worker log with trace"
+      ]
+    }
+  ],
+  "notes": [
+    "28 source checkpoint completion markers independently observed; actual checkpoint identity is checked at load.",
+    "B fit and old feature caches shared over C cores and N; no query used in fit. No new F/G/source model training.",
+    "Source MoPC/Orthogonal models are not transferred: these are B-backbone C-core transplants. Orthogonal entry discards B bias/scale.",
+    "Native CIL direct-C and SCALR baseline reuse previous scores, excluded from new prediction total.",
+    "ISSL remains stopped; CSIL author binding unavailable; their cells are N/A.",
+    "Full matrix: 7 B methods x 3 C cores x 4 seeds x 483 capsules = 13524 jobs; 252252 prediction rows.",
+    "Completion of this 7x3 run does not assert any requested SCALR or LocalRidge cross-backbone rows are complete.",
+    "r01 source smoke failed due missing frozen_sources; no target prediction, original output preserved. One specific fix and targeted review passed.",
+    "r02: 15 complete task predictions, plus 33 partial prediction files for one failed task, are preserved. This run cannot claim global scored completion while the failure remains unresolved.",
+    "Actual B r02/r03 inventory: 74 complete, 2 quarantined with 33 NPZ each, 13448 unstarted. Ancestor outputs referenced, no completed prediction recomputation.",
+    "Independent watcher restores exact C PID/start_ticks/CWD/runtime after coordinator exit and all surviving B processes drain.",
+    "B has 13524 total jobs / 252252 prediction rows. No global prediction barrier or scoring while quarantines unresolved.",
+    "Priority changes time to other-combination results; no claim of equal-work server acceleration.",
+    "User cancelled unfinished RadioNet in both groups and requires preservation of all existing results.",
+    "Only unstarted non-RadioNet tasks are admitted; all six quarantines remain deferred, complete ancestors reused, and no truth scoring enabled.",
+    "r07 failed before source smoke, parent claim or worker due to an unrelated reused PID; no predictions started; r08 uses the same actual ancestor r06.",
+    "r08 failed on nonfinite MoPC gradient norm; failure and output retained. ProtoNet-CDA unstarted tasks run before DADDA; no failed task is retried.",
+    "Failure-only FP64 gradient-scale logging preserves the original nonfinite guard and training; new failure stops admission and is retained. It does not claim a scientific fix.",
+    "Only two C cores execute; the actual B model and MoPC anchor are saved per K. No global completion or scoring; MoPC is not declared complete.",
+    "MoPC starts from each same actual B anchor saved in r11; no B refit. Original finite guard remains. First-nonfinite boundary tracing is observational. Root cause unresolved; no global scoring or barrier.",
+    "r12 failed before MoPC with no predictions: support bank positions were compared to physical IDs. This run maps positions through ids.npy and compares physical IDs; no earlier failed science job is retried."
+  ],
+  "registered_at": "2026-11-09T00:16:54+00:00"
+}
