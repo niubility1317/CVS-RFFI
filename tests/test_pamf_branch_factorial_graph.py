@@ -173,3 +173,20 @@ def test_native_supervised_loop_with_removed_time(tmp_path, monkeypatch):
     assert done["status"] == "LOCAL_SYNTHETIC_SMOKE_ONLY"
     assert done["updates"] == 4 and done["target_access"] is False and done["U_truth_read"] is False
 
+
+def test_handoff_process_identity_and_gpu_limits():
+    from experiments.pamf_branch_factorial.continuation import limits, can_start, command, matches_worker, matches_dispatcher
+    rt = {'python': '/python', 'source_release': '/old-release'}
+    job = {'kind': 'train', 'config': '/run/configs/train__no_time.json'}
+    args = command(rt, job)
+    assert matches_worker(rt, job, '/old-release', args)
+    assert not matches_worker(rt, job, '/other', args)
+    assert not matches_worker(rt, job, '/old-release', args + ['different'])
+    dispatch = ['/python', '-u', '-m', 'experiments.pamf_branch_factorial.runner',
+                'dispatch', '--config', '/old-release/runtime.json']
+    assert matches_dispatcher(rt, '/old-release', dispatch)
+    assert not matches_dispatcher(rt, '/old-release', command(rt, job))
+    assert [limits(g) for g in range(8)] == [3, 3, 3, 3, 3, 3, 3, 2]
+    assert can_start(0, 2, 12000) and not can_start(0, 3, 24000)
+    assert not can_start(7, 2, 24000) and not can_start(0, 1, 11999)
+
