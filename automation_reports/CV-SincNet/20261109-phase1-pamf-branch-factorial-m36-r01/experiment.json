@@ -1,0 +1,1616 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261109-phase1-pamf-branch-factorial-m36-r01",
+  "group_id": "phase1-pamf-three-branch-factorial",
+  "display_name": "PAMF 三分支结构消融：第一阶段",
+  "description": "去除参考响应，比较时域、频域、功放和三视图路径描述。12结构×3种子；9模型同契约复用、27模型新增训练。仅分类损失监督，raw识别，跨接收机与跨日跨接收机独立评分。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "PAMF",
+    "three-branch",
+    "strict-supervised",
+    "paired-seeds",
+    "raw-only",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261024-phase1-PAMF-REPL-completion-m201-r01",
+    "20261026-phase1-PAMF-noSIG-supervised-ablation-m15-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户明确授权第一阶段分支消融、复用同契约产物、充分使用空闲显卡，训练后自动测试。",
+  "code": {
+    "commit": "release Git HEAD, recorded independently in runtime.json",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 CVS-RFFI; FP32 TF32off; Python and torch from preregistered environment; 2 CPU threads",
+    "cwd": "PROJECT/releases/20261109-phase1-pamf-branch-factorial-m36-r01",
+    "entry": "experiments.pamf_branch_factorial.runner"
+  },
+  "data": {
+    "dataset": "WiSig ManySig",
+    "version": "Existing F0 validated handles",
+    "representation": "equalized1 center256 FP32 unitRMS",
+    "contract_ref": "20261024-phase1-PAMF-REPL-completion-m201-r01 F0 strict_structure source_contract.json",
+    "physical_ids_ref": "Existing F0 role_ids and physical_ID_index_v1; unchanged cached source/test handles",
+    "label_map_ref": "F0 classes:14-10,14-7,20-15,20-19,6-15,8-20",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Six TX as label_map_ref",
+    "roles": {
+      "L_s": 6300,
+      "U_s": {
+        "count": 56700,
+        "reads": 0
+      },
+      "V": 27000
+    },
+    "train_ratio": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Reuse VALIDATED_ONCE; no data membership/bytes change",
+    "support_query_ref": "Phase1 raw inference only; cross-RX 126000, cross-day-cross-RX 42000, pooled168000; seven views",
+    "leo_config_ref": "Existing clean plus six practical views; no additional LEO"
+  },
+  "permissions": {
+    "regime": "PAMF pure CE L_s only; no U/EMA/PL or restoration; retain source channel CE 0.68",
+    "query_use": "Freeze both preregistered populations x seven views before independent CPU truth-last",
+    "external_method_exception": null,
+    "claim_scope": "Exposed Phase1 benchmark; no target feedback or independent-blind selection claim"
+  },
+  "checkpoint": {
+    "initialization": "27 new scratch20+own10+own20; 9 exact structural CE models reused read-only",
+    "sources": [
+      "same seed CE_NO_REFERENCE, NS_NO_REFERENCE, NS_NO_PA_REFERENCE"
+    ],
+    "contract_check_ref": "Read-only same full source contract, model seed, epochs, budget, objective, graph and complete frozen outputs",
+    "provenance_verdict": "9 same-contract source checkpoints and predictions/scores checked; new models from scratch",
+    "selection_rule": "Final epoch50; no target selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex-PAMF-branch-factorial-20261109",
+    "gpu_policy": "Physical GPU0-7; at most2 total GPU compute processes/card including other owners and pending; free>=12000 MiB; CPU<75%, RAM available>=64GiB, IOwait<5%; CPU scorer<=1",
+    "remote_run_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01",
+    "remote_log_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_branch_launch_20261109",
+    "launch_command": "python -m experiments.pamf_branch_factorial.publish --repo <worktree> --output <artifact-root>",
+    "stop_rule": "Source-only actual-checkpoint and branch finite-backward smoke first; two same systemic technical fingerprints stop new dispatch; retain healthy tasks and artifacts; no result-dependent selection"
+  },
+  "expected_artifacts": [
+    "27 new source E50/11100 checkpoints",
+    "9 reused source predictions and independent scores",
+    "27 raw predictions: 2 populations x 7 scenes",
+    "27 independent CPU truth-last scores",
+    "36 model paired seed and pooled population report"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy",
+      "Macro-F1",
+      "paired variant-minus-reference pp"
+    ],
+    "dimensions": [
+      "model_seed",
+      "cross_rx",
+      "cross_both",
+      "pooled",
+      "scene",
+      "RX",
+      "TX",
+      "day"
+    ],
+    "prediction_ref": "runs/<run>/readouts/<row>/predictions",
+    "scorer_ref": "Independent CPU score after both populations and all seven views frozen"
+  },
+  "rows": [
+    {
+      "row_id": "base-s2026092701",
+      "method": "PAMF pure CE base",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "verified historical row; see sources.json",
+      "resolved_config_ref": "historical frozen config",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "EXISTING/base-s2026092701",
+      "log_path": "EXISTING/base-s2026092701/logs",
+      "command": "reuse exact frozen row",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "base-s2026092702",
+      "method": "PAMF pure CE base",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "verified historical row; see sources.json",
+      "resolved_config_ref": "historical frozen config",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "EXISTING/base-s2026092702",
+      "log_path": "EXISTING/base-s2026092702/logs",
+      "command": "reuse exact frozen row",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "base-s2026092703",
+      "method": "PAMF pure CE base",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "verified historical row; see sources.json",
+      "resolved_config_ref": "historical frozen config",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "EXISTING/base-s2026092703",
+      "log_path": "EXISTING/base-s2026092703/logs",
+      "command": "reuse exact frozen row",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "no_signature-s2026092701",
+      "method": "PAMF pure CE no_signature",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "verified historical row; see sources.json",
+      "resolved_config_ref": "historical frozen config",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "EXISTING/no_signature-s2026092701",
+      "log_path": "EXISTING/no_signature-s2026092701/logs",
+      "command": "reuse exact frozen row",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "no_signature-s2026092702",
+      "method": "PAMF pure CE no_signature",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "verified historical row; see sources.json",
+      "resolved_config_ref": "historical frozen config",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "EXISTING/no_signature-s2026092702",
+      "log_path": "EXISTING/no_signature-s2026092702/logs",
+      "command": "reuse exact frozen row",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "no_signature-s2026092703",
+      "method": "PAMF pure CE no_signature",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "verified historical row; see sources.json",
+      "resolved_config_ref": "historical frozen config",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "EXISTING/no_signature-s2026092703",
+      "log_path": "EXISTING/no_signature-s2026092703/logs",
+      "command": "reuse exact frozen row",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "no_signature_no_pa-s2026092701",
+      "method": "PAMF pure CE no_signature_no_pa",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "verified historical row; see sources.json",
+      "resolved_config_ref": "historical frozen config",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "EXISTING/no_signature_no_pa-s2026092701",
+      "log_path": "EXISTING/no_signature_no_pa-s2026092701/logs",
+      "command": "reuse exact frozen row",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "no_signature_no_pa-s2026092702",
+      "method": "PAMF pure CE no_signature_no_pa",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "verified historical row; see sources.json",
+      "resolved_config_ref": "historical frozen config",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "EXISTING/no_signature_no_pa-s2026092702",
+      "log_path": "EXISTING/no_signature_no_pa-s2026092702/logs",
+      "command": "reuse exact frozen row",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "no_signature_no_pa-s2026092703",
+      "method": "PAMF pure CE no_signature_no_pa",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "verified historical row; see sources.json",
+      "resolved_config_ref": "historical frozen config",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "EXISTING/no_signature_no_pa-s2026092703",
+      "log_path": "EXISTING/no_signature_no_pa-s2026092703/logs",
+      "command": "reuse exact frozen row",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "no_pa-s2026092701",
+      "method": "PAMF pure CE no_pa",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_pa-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_pa-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_pa-s2026092701",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__no_pa-s2026092701.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_pa-s2026092701.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "no_pa-s2026092702",
+      "method": "PAMF pure CE no_pa",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_pa-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_pa-s2026092702/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_pa-s2026092702",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__no_pa-s2026092702.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_pa-s2026092702.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "no_pa-s2026092703",
+      "method": "PAMF pure CE no_pa",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_pa-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_pa-s2026092703/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_pa-s2026092703",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__no_pa-s2026092703.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_pa-s2026092703.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "strict_no_frequency-s2026092701",
+      "method": "PAMF pure CE strict_no_frequency",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__strict_no_frequency-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/strict_no_frequency-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/strict_no_frequency-s2026092701",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__strict_no_frequency-s2026092701.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__strict_no_frequency-s2026092701.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "strict_no_frequency-s2026092702",
+      "method": "PAMF pure CE strict_no_frequency",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__strict_no_frequency-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/strict_no_frequency-s2026092702/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/strict_no_frequency-s2026092702",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__strict_no_frequency-s2026092702.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__strict_no_frequency-s2026092702.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "strict_no_frequency-s2026092703",
+      "method": "PAMF pure CE strict_no_frequency",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__strict_no_frequency-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/strict_no_frequency-s2026092703/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/strict_no_frequency-s2026092703",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__strict_no_frequency-s2026092703.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__strict_no_frequency-s2026092703.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "no_time-s2026092701",
+      "method": "PAMF pure CE no_time",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_time-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_time-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_time-s2026092701",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__no_time-s2026092701.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_time-s2026092701.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "no_time-s2026092702",
+      "method": "PAMF pure CE no_time",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_time-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_time-s2026092702/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_time-s2026092702",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__no_time-s2026092702.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_time-s2026092702.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "no_time-s2026092703",
+      "method": "PAMF pure CE no_time",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_time-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_time-s2026092703/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_time-s2026092703",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__no_time-s2026092703.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_time-s2026092703.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "time_only-s2026092701",
+      "method": "PAMF pure CE time_only",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__time_only-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/time_only-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/time_only-s2026092701",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__time_only-s2026092701.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__time_only-s2026092701.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "time_only-s2026092702",
+      "method": "PAMF pure CE time_only",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__time_only-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/time_only-s2026092702/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/time_only-s2026092702",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__time_only-s2026092702.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__time_only-s2026092702.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "time_only-s2026092703",
+      "method": "PAMF pure CE time_only",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__time_only-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/time_only-s2026092703/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/time_only-s2026092703",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__time_only-s2026092703.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__time_only-s2026092703.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "frequency_only-s2026092701",
+      "method": "PAMF pure CE frequency_only",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__frequency_only-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/frequency_only-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/frequency_only-s2026092701",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__frequency_only-s2026092701.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__frequency_only-s2026092701.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "frequency_only-s2026092702",
+      "method": "PAMF pure CE frequency_only",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__frequency_only-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/frequency_only-s2026092702/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/frequency_only-s2026092702",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__frequency_only-s2026092702.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__frequency_only-s2026092702.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "frequency_only-s2026092703",
+      "method": "PAMF pure CE frequency_only",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__frequency_only-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/frequency_only-s2026092703/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/frequency_only-s2026092703",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__frequency_only-s2026092703.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__frequency_only-s2026092703.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "pa_only-s2026092701",
+      "method": "PAMF pure CE pa_only",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__pa_only-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/pa_only-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/pa_only-s2026092701",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__pa_only-s2026092701.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__pa_only-s2026092701.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "pa_only-s2026092702",
+      "method": "PAMF pure CE pa_only",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__pa_only-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/pa_only-s2026092702/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/pa_only-s2026092702",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__pa_only-s2026092702.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__pa_only-s2026092702.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "pa_only-s2026092703",
+      "method": "PAMF pure CE pa_only",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__pa_only-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/pa_only-s2026092703/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/pa_only-s2026092703",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__pa_only-s2026092703.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__pa_only-s2026092703.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "no_frequency_with_rho-s2026092701",
+      "method": "PAMF pure CE no_frequency_with_rho",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_frequency_with_rho-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_frequency_with_rho-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_frequency_with_rho-s2026092701",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__no_frequency_with_rho-s2026092701.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_frequency_with_rho-s2026092701.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "no_frequency_with_rho-s2026092702",
+      "method": "PAMF pure CE no_frequency_with_rho",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_frequency_with_rho-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_frequency_with_rho-s2026092702/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_frequency_with_rho-s2026092702",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__no_frequency_with_rho-s2026092702.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_frequency_with_rho-s2026092702.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "no_frequency_with_rho-s2026092703",
+      "method": "PAMF pure CE no_frequency_with_rho",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_frequency_with_rho-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_frequency_with_rho-s2026092703/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_frequency_with_rho-s2026092703",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__no_frequency_with_rho-s2026092703.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_frequency_with_rho-s2026092703.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "no_path_no_frequency-s2026092701",
+      "method": "PAMF pure CE no_path_no_frequency",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_path_no_frequency-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_path_no_frequency-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_path_no_frequency-s2026092701",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__no_path_no_frequency-s2026092701.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_path_no_frequency-s2026092701.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "no_path_no_frequency-s2026092702",
+      "method": "PAMF pure CE no_path_no_frequency",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_path_no_frequency-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_path_no_frequency-s2026092702/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_path_no_frequency-s2026092702",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__no_path_no_frequency-s2026092702.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_path_no_frequency-s2026092702.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "no_path_no_frequency-s2026092703",
+      "method": "PAMF pure CE no_path_no_frequency",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_path_no_frequency-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_path_no_frequency-s2026092703/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_path_no_frequency-s2026092703",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__no_path_no_frequency-s2026092703.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_path_no_frequency-s2026092703.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "no_path_time_only-s2026092701",
+      "method": "PAMF pure CE no_path_time_only",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_path_time_only-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_path_time_only-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_path_time_only-s2026092701",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__no_path_time_only-s2026092701.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_path_time_only-s2026092701.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "no_path_time_only-s2026092702",
+      "method": "PAMF pure CE no_path_time_only",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_path_time_only-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_path_time_only-s2026092702/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_path_time_only-s2026092702",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__no_path_time_only-s2026092702.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_path_time_only-s2026092702.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    },
+    {
+      "row_id": "no_path_time_only-s2026092703",
+      "method": "PAMF pure CE no_path_time_only",
+      "purpose": "prespecified branch ablation",
+      "config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_path_time_only-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_path_time_only-s2026092703/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Same physical source/test handles, no support or resampling; model seed paired.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW CENTER_UNITS except absent Sinc uses original AdamW and global clipping on remaining parameters",
+      "lr": "2e-4 cosine1e-6 each segment;wd1e-4",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50 epochs=20+10+20, 11100 updates; CE LS0 + 0.68 channel CE; no U/EMA/CRIC/KL; native joint head",
+      "output_root": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/F/no_path_time_only-s2026092703",
+      "log_path": "PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/logs/train__no_path_time_only-s2026092703.log",
+      "command": "python -m experiments.pamf_branch_factorial.runner worker --kind train --config PROJECT/runs/20261109-phase1-pamf-branch-factorial-m36-r01/configs/train__no_path_time_only-s2026092703.json",
+      "expected_artifacts": [
+        "frozen source",
+        "both-population seven-view raw predictions",
+        "independent truth-last score"
+      ]
+    }
+  ],
+  "notes": [
+    "No reference branch in every arm; three-view signature retained when temporal branch and signature are present.",
+    "Temporal removal necessarily removes dependent signature. Strict frequency removal retains PA spectral features but sets circularity input to zero.",
+    "Source benchmark has prior exposure; no test-driven reordering or selection."
+  ],
+  "matrix": {
+    "logical_models": 36,
+    "reused_models": 9,
+    "new_models": 27,
+    "structures": [
+      "base",
+      "no_signature",
+      "no_signature_no_pa",
+      "no_pa",
+      "strict_no_frequency",
+      "no_time",
+      "time_only",
+      "frequency_only",
+      "pa_only",
+      "no_frequency_with_rho",
+      "no_path_no_frequency",
+      "no_path_time_only"
+    ],
+    "seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "stage_jobs": 81,
+    "readout": "raw",
+    "populations": [
+      "cross_rx",
+      "cross_both"
+    ],
+    "paired_sign": "variant_minus_reference"
+  },
+  "registered_at": "2026-11-09T09:44:11+00:00"
+}
