@@ -1,0 +1,205 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261109-phase1-Restore-WideMiddleFeature-E30-s2026092701-r01",
+  "group_id": "source-wide-middle-feature-single30",
+  "display_name": "宽时频恢复器加中层特征保护：单阶段30轮",
+  "description": "同一从零宽时频网络与源损失，新增冻结F0中层配对特征约束及逐样本IQ梯度上限，完整Main七景评估。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "ground-TriSIGTIME-SSL-Main",
+    "wide-time-frequency",
+    "source-F-guided",
+    "source-middle-feature",
+    "scratch-single30",
+    "automatic-Main7"
+  ],
+  "comparison_group_id": "wide-timefreq-vs-middle-feature",
+  "parent_run_ids": [
+    "20261109-phase1-Restore-WideTimeFreqResponse-E30-s2026092701-r01",
+    "20261109-diagnostic-Restore-MultilevelFGradient-sourceLU-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Existing authorized original L_s/U_s simulated pairs, independent F-guided scratch single30 and complete Main seven-view evaluation; no parameter limit.",
+  "code": {
+    "commit": "5503fa43e499db5c6fb1e9dcb63520e81769d333",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Torch, FP32 network/FP64 posterior, TF32 disabled; one own worker, total compute cap3",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-Restore-WideMiddleFeature-E30-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "Original R07 L_s6300/U_s56700 clean/received plus simulator Action/noise; original global/other-RX source moments. One fixed1% source-RMS perturbation per row/epoch. Adds matched source F0 middle maps.",
+    "contract_ref": "OriginalTriSSLsource_contract/392005/rolecounts6300-56700-27000;R07train63000sameIDset androles/RX/day byID",
+    "physical_ids_ref": "R07train/physical_ids.npy roles.npy;validatedoriginalsourceLUcache IDs foralignment;officialMain source-disjoint viewindexes",
+    "label_map_ref": "Gtrainnone;frozenF0originalsixclassorder,truthonly originalCPUscorerafterallrow42cells fixed",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Original VALIDATED_ONCE source capsule/split and physical binding, original full IQ moments. Reuse pre-V fixed ten source-only receiver-prior statistics from r02.",
+    "support_query_ref": "No targettraining/support/PCD/unknownrole. OriginalMain two populations168000,all7perrowfixedbefore independenttruth.",
+    "leo_config_ref": "R07sourcecache20trainrealizations/2026101912augmentation;officialMain frozen7observations",
+    "actual_training_labels": "Zero TX labels. Original physical action/noise, paired IQ/STFT, frozen F0 final/response plus clean/restored middle features; no class logits or CE in G loss.",
+    "augmentation": "Original fixed1%-RMS source IQ perturbation in one of four directions; source Action maps delta into received with the same realized noise."
+  },
+  "permissions": {
+    "regime": "source-only-scratch-continuous-F0-middle-and-response-guidance",
+    "query_use": "Source RX selects training prior/mode factor only. Deployed G consumes current IQ and its fixed source buffers. No V/OE/target fit or TX truth.",
+    "external_method_exception": null,
+    "claim_scope": "No target training, source TX labels, V/OE fitting, F0 logits/CE, new identity head, or prior G weights. Deployed G consumes only received IQ and fixed source buffers."
+  },
+  "checkpoint": {
+    "initialization": "All 6170283 G parameters scratch, same initialization and architecture as wide control; no previous G weights or optimizer.",
+    "sources": [
+      "FROZEN_F0 original source-trained Tri-SIG-TIME SSL continuous final and middle features",
+      "SOURCE_PRIOR legal original source moments",
+      "CONTROL_ONLY 20261109-phase1-Restore-WideTimeFreqResponse-E30-s2026092701-r01; no G state loaded"
+    ],
+    "contract_check_ref": "Original VALIDATED_ONCE R07 source L_s/U_s and original F0/source moments. No control learned state loaded.",
+    "provenance_verdict": "Scratch G; source simulator and frozen source F0 continuous features only, no TX/V/OE/target training.",
+    "selection_rule": "Fixed final30/7410; all two-population seven-view predictions fixed before independent truth-last."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/wide-middle-feature-scratch30",
+    "gpu_policy": "GPU4 or6, at most one existing compute PID before admission, >=12288 MiB free, one own worker, total cap3; stop only own worker.",
+    "remote_run_root": "runs/20261109-phase1-Restore-WideMiddleFeature-E30-s2026092701-r01",
+    "remote_log_root": "runs/20261109-phase1-Restore-WideMiddleFeature-E30-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261109-phase1-Restore-WideMiddleFeature-E30-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.wide_middle_feature_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 5503fa43e499db5c6fb1e9dcb63520e81769d333 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-Restore-WideTimeFreqResponse-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Source/F0/prior mismatch, output collision, real source2/E0/middle-gradient smoke failure, nonfinite, posterior residual>1e-8, GPU cap violation, GPU count unverifiable on three checks, or worker error: preserve and stop; no automatic retry. Otherwise final30 and complete Main7/truth-last."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/training/config.json",
+    "rows/<arm>/training/smoke.json",
+    "rows/<arm>/training/smoke_E0.pt PRIVATE",
+    "rows/<arm>/training/data_schedule.npz PRIVATE",
+    "rows/<arm>/training/training.jsonl PRIVATE",
+    "rows/<arm>/training/final.pt PRIVATE",
+    "rows/<arm>/training/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE",
+    "rows/TF_WideMiddleFeature/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Original ground Tri-SIG-TIME SSL frozen default head Main168000: raw clean145385; each practical>=140345 and both raw clean populations 111019/34366 preserved.",
+      "Every TX/RX/day group and paired raw/DURA repairs/damage; matched wide control only after both fixed matrices scored.",
+      "All30 source logs: middle loss and per-record cap activation, IQ/feature response, posterior residual, wall time and memory.",
+      "6170283 G parameters; two posterior calls and five F0 feature forwards per source record during training; one posterior and one detail path in G deployment."
+    ],
+    "dimensions": [
+      "original Main two populations and seven views",
+      "TX/RX/day/RXday",
+      "single model seed",
+      "matched raw and DURA"
+    ],
+    "prediction_ref": "Original Main cross_rx126000 + cross_both42000, all seven views, original raw/DURA exact-ID reuse.",
+    "scorer_ref": "OriginalindependentCUDAemptyCPUscore/sharedscore.lock;whole row/allMainpredictionsbeforetruth. No targetfeedback."
+  },
+  "rows": [
+    {
+      "row_id": "TF_WideMiddleFeature",
+      "method": "wide_timefrequency_capped_middle_F0_source_guided",
+      "purpose": "Test source F0 middle-map alignment with an input-gradient cap against matched scratch wide baseline.",
+      "config_ref": "experiments/pamf_phase3_restoration/wide_middle_feature_trial.py",
+      "resolved_config_ref": "runs/20261109-phase1-Restore-WideMiddleFeature-E30-s2026092701-r01/rows/TF_WideMiddleFeature/training/config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Physical2026092701/confidence2026092702, original source order2026110102 and R07 draws. Existing source subset2026110707. No new stochastic prior fit.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": "AdamW(weight_decay1e-4,clip1)",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Scratch single-stage E30/7410; original wide source and response losses plus capped F0 middle-feature loss, no ancestor G.",
+      "output_root": "runs/20261109-phase1-Restore-WideMiddleFeature-E30-s2026092701-r01/rows/TF_WideMiddleFeature",
+      "log_path": "runs/20261109-phase1-Restore-WideMiddleFeature-E30-s2026092701-r01/logs/TF_WideMiddleFeature-train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.wide_middle_feature_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 5503fa43e499db5c6fb1e9dcb63520e81769d333 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261109-phase1-Restore-WideTimeFreqResponse-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/training/config.json",
+        "rows/<arm>/training/smoke.json",
+        "rows/<arm>/training/smoke_E0.pt PRIVATE",
+        "rows/<arm>/training/data_schedule.npz PRIVATE",
+        "rows/<arm>/training/training.jsonl PRIVATE",
+        "rows/<arm>/training/final.pt PRIVATE",
+        "rows/<arm>/training/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE",
+        "rows/TF_WideMiddleFeature/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+      ]
+    }
+  ],
+  "notes": [
+    "Added middle t2.pool clean/restored map MSE normalized by clean-map energy; coefficient .01, per-record IQ input-gradient cap .5, detached cap weight.",
+    "F-guided; no TX labels, F logits/CE, source V/OE or target data in G training. Existing training smoke can call frozen F0 default head without using logits as G loss.",
+    "One extra no-grad clean F0 forward plus one intermediate input-gradient evaluation per source microbatch; actual training cost is measured. G deployment makes no F0 call.",
+    "Original initialization, data order, loss, prior and 30 epochs match wide control; separate GPU and trajectory may differ.",
+    "Predictions and independent score automatic; target results cannot tune, select checkpoints or routes. Default DURA unchanged."
+  ],
+  "registered_at": "2026-11-09T04:22:52+00:00"
+}
