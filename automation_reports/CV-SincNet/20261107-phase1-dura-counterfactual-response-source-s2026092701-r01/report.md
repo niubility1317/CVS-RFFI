@@ -3,7 +3,7 @@
 - run_id：`20261107-phase1-dura-counterfactual-response-source-s2026092701-r01`
 - group_id：`phase1-dura-counterfactual-response`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：QUEUED。独立核实的 N607 队列 PID 为 3907664，等待本任务 GPU 3 的训练进程 PID 3823069 结束；新版本尚未训练。
+- 当前登记状态：TRAINING_COMPLETE；后续七景预测和独立评分已完成，见配套测试记录。
 
 ## 目的与对照
 
@@ -23,9 +23,9 @@
 
 ## 结果与覆盖
 
-本地 RTX 5070 Ti 真实 DURA 权重及合法源缓存小规模 GPU smoke 通过：96 条源视图、6 次更新，损失和梯度有限、DURA 保持冻结；不生成正式训练权重。12 项针对性测试通过，包括扰动配对、响应梯度和冻结 checkpoint 元数据拒错。一次独立 P0/P1 审查未发现阻塞问题。N607 发布包校验一致且远端编译通过；正式 N607 源 smoke 将由训练控制器在容量允许后自动执行。
+本地 RTX 5070 Ti 真实 DURA 权重及合法源缓存小规模 GPU smoke 通过：96 条源视图、6 次更新，损失和梯度有限、DURA 保持冻结；不生成正式训练权重。12 项针对性测试通过，包括扰动配对、响应梯度和冻结 checkpoint 元数据拒错。一次独立 P0/P1 审查未发现阻塞问题。N607 发布包校验一致、远端编译通过，正式 N607 源 smoke 已通过。
 
-此处暂无七景识别结果。冻结后由控制器自动完成 [Phase1 Main split 七景测试](../20261107-phase1-dura-counterfactual-response-ground-test-s2026092701-r01/report.md)，全部预测固定后再独立 truth-last 评分。
+源训练 5 轮已完成；[源域分析](analysis.md)记录了训练和波形诊断。冻结后的 [Phase1 Main split 七景测试](../20261107-phase1-dura-counterfactual-response-ground-test-s2026092701-r01/analysis.md)已完成全部预测及独立 truth-last：三种受损场景略优于 DURA，其余三种下降，未达到全部场景下降不超过 3% 的目标。
 
 ## 交接
 
