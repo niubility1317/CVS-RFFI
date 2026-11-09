@@ -3,7 +3,7 @@
 - run_id：`20261109-phase1-Restore-WideMiddleFeature-E30-s2026092701-r01`
 - group_id：`source-wide-middle-feature-single30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -30,4 +30,8 @@
 
 ## 本次预登记
 
-[设计、梯度保护、完整测试与本地核验](launch_analysis.md)。当前为 LOCAL_VERIFIED；远端真实 source2 smoke 和正式训练尚未完成。
+[设计、梯度保护、完整测试与本地核验](launch_analysis.md)。远端真实 source2 smoke 已通过；worker 已在 GPU 6 启动，首个完整训练轮次及正式测试尚未完成。
+
+## 运行状态
+
+控制器 2511012，训练 worker 2511168；实际模块、CWD、GPU、日志和真实源检查见 [启动核验](launch_analysis.md)。30 轮与两总体七景评测仍在进行，尚无性能结果。
