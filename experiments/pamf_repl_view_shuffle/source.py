@@ -39,9 +39,9 @@ def single_base(c,reader=False):
     finally:target.install=old
 
 @contextmanager
-def installed(c,holder,enabled):
+def installed(c,holder,enabled,**kwargs):
     from experiments.pamf_repl_completion.objectives import installed as original
-    with seed_scope(),single_base(c),original(c,holder,enabled):yield
+    with seed_scope(),single_base(c),original(c,holder,enabled,**kwargs):yield
 
 def assert_structure(model,c):
     ref=model.id_backbone.encoder;views=c['view_comparison']['view_count'];pool=ref.sequence_pool

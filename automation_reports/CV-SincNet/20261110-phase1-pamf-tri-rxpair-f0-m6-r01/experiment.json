@@ -1,0 +1,20 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261110-phase1-pamf-tri-rxpair-f0-m6-r01",
+  "display_name": "PAMF Tri-SIG-TIME 多分支与回波校正跨接收机选配",
+  "scope": "Phase1 ManySig Main split F0, original full reference-response PAMF with three views and fixed local shuffle [0,5,3,6,2,1,4,7]. Two arms, each with seeds 2026092701, 2026092702, 2026092703. F0 target is previously exposed development data.",
+  "initialization": "Exact original source-only Tri-SIG-TIME E20 for each seed, then own E10+E20, fixed E50 with 11100 cumulative updates. Same source L/U/RX/day and head. Source U truth and target inputs are unavailable during training.",
+  "matrix": [
+    {"row_prefix": "tri-branch-pair", "beta": 0, "method": "Nearest eligible different-source-RX partner by equal mean normalized distance across time, frequency, PA, signature and reference paths"},
+    {"row_prefix": "tri-echo-pair", "beta": 0.5, "method": "The same pairing with local echo directional discount at both endpoints"}
+  ],
+  "matched_mechanisms": "Same original pseudo acceptance .95 and different-RX/same-pseudo-identity eligibility as Tri-SIG-TIME. Original random draw is consumed for RNG parity. For eligible U anchors both arms probe clean/echo in eval/no-grad, using one independent causal 1–3 sample echo with complex magnitude 0.04–0.10. The one detached partner choice feeds all six existing MixStyle forwards and the two full-feature receiver extrapolation heads. Original U weights, gradient guard, labeled losses and inference are preserved.",
+  "controls": ["Same-seed original complete Tri-SIG-TIME SSL with exact same E20 and frozen DURA caches", "Same-seed ordinary PL with same physical test inputs and DURA caches", "Matched five-branch pairing without echo discount isolates its contribution"],
+  "evaluation": "Clean and six practical scenes. DURA-LU primary, DURA-L and raw secondary. Main combined target is disjoint cross_rx and cross_both (168000 physical packets per scene); cross_date is diagnostic. Independently score after all six prediction matrices freeze, without target feedback. Compare same physical packets, report per scene, seed, TX/RX/day, corrections and regressions. Exclude leo_weak.",
+  "success": "For advancement, positive paired three-seed mean against Tri-SIG-TIME on clean and on the mean of six practical scenes, and positive paired three-seed mean versus ordinary PL in every scene. Disclose every seed-level loss versus either baseline; stronger all-condition attainment requires every paired PL scene-by-seed cell positive and independent protocol confirmation.",
+  "command": "python -m experiments.pamf_physics_tri.publish --pairing --repo REPO --output UNIQUE_LOCAL_ROOT --context EXISTING_CONTEXT --ssh-config N607_CONFIG",
+  "environment": "N607 existing project Python, FP32/TF32 off, immutable Git release commit, PROJECT/releases/RUN-release CWD and PROJECT/runs/RUN output root.",
+  "resources": "Ordinary account, GPU 0–4, up to two observed or pending experiments per GPU including other owners. One launch owner and one real E20 no-query smoke spanning both arms and all seeds.",
+  "stop_rule": "Systemic technical failure stops new dispatch while preserving healthy workers and artifacts. No source diagnostic dispatch, weak scoring, or target-driven tuning/rerun of these registered rows.",
+  "expected_artifacts": ["Real E20 finite source smoke", "Own E30/E50 and U branch pairing counters", "Frozen clean and six practical predictions", "Independent truth-last scores", "Same-packet three-seed results per arm and across arms"]
+}

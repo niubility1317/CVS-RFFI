@@ -35,8 +35,8 @@ def echo_parameters(count, device, dtype, seed):
     return coefficients, delays
 
 
-def physical_directions(student, inputs, seed):
-    """Same-input eval/eval differences; restore modes and global RNG exactly."""
+def physical_probes(student, inputs, seed):
+    """Capture deployed branches before and after a bounded echo."""
     if inputs.ndim != 3 or inputs.shape[1:] != (2, 256) or not len(inputs):
         raise ValueError('Nonempty 256-sample source IQ required')
     coefficients, delays = echo_parameters(len(inputs), inputs.device, inputs.dtype, seed)
@@ -61,6 +61,12 @@ def physical_directions(student, inputs, seed):
         torch.random.set_rng_state(cpu_rng)
         if cuda_rng is not None:
             torch.cuda.set_rng_state(cuda_rng, inputs.device)
+    return raw, directions, norms
+
+
+def physical_directions(student, inputs, seed):
+    """Same-input eval/eval differences; restore modes and global RNG exactly."""
+    _, directions, norms = physical_probes(student, inputs, seed)
     return directions, norms
 
 

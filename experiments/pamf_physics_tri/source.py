@@ -12,14 +12,20 @@ from .plan import RUN, SEEDS
 
 def parent(c):
     seed = c['model_seed']
+    if (seed not in SEEDS or c['run_id'] != RUN or c['row_id'] != f'tri-label-tangent-s{seed}'
+            or c['algorithm_id'] != 'pamf_tri_label_tangent_v1'
+            or c['physical_relation'] != dict(beta=.5, l_weight=.05, u_weight=0.)):
+        raise ValueError('Unregistered Tri-SIG-TIME physical continuation')
+    return original_parent(c)
+
+
+def original_parent(c):
+    seed = c['model_seed']
     original = f'main_split-repl-shuffled_time-3view-s{seed}'
     root = Path(c['output_root'])
-    if (seed not in SEEDS or c['run_id'] != RUN or c['row_id'] != f'tri-label-tangent-s{seed}'
-            or root.parts[-5:] != ('runs', RUN, 'F', c['row_id'], 'source')
-            or c['algorithm_id'] != 'pamf_tri_label_tangent_v1'
-            or c['physical_relation'] != dict(beta=.5, l_weight=.05, u_weight=0.)
+    if (root.parts[-5:] != ('runs', c['run_id'], 'F', c['row_id'], 'source')
             or c['paper_row']['row_id'] != f'main_split-factorial-ssl-full-permuted-s{seed}'):
-        raise ValueError('Unregistered Tri-SIG-TIME physical continuation')
+        raise ValueError('Unregistered Tri-SIG-TIME output or evaluation row')
     expected = root.parents[3] / tri.RUN / 'F' / original / 'source' / 'segment20'
     if Path(c['shared_prefix']) != expected:
         raise ValueError('Only the exact original shuffled same-seed E20 is allowed')
@@ -42,7 +48,7 @@ def train(c):
     return train_trajectory(c, parent(c), installed, ssl=True)
 
 
-def train_trajectory(c, prefix, scope, *, ssl):
+def train_trajectory(c, prefix, scope, *, ssl, physical_L=True):
     from experiments.cric_dura_comparison.f_train import train as segment
 
     root = Path(c['output_root'])
@@ -62,8 +68,8 @@ def train_trajectory(c, prefix, scope, *, ssl):
         steps = epochs * 222
         if (evidence['status'] != 'SOURCE_FROZEN' or evidence['updates'] != epochs * 222
                 or evidence['target_access'] or evidence['U_truth_read'] or evidence['head_fit_updates']
-                or model._physical_L_calls != steps or model._physical_L_samples != 64 * steps):
-            raise ValueError('Physical true-label continuation execution differs')
+                or (physical_L and (model._physical_L_calls != steps or model._physical_L_samples != 64 * steps))):
+            raise ValueError('Source continuation execution differs')
         if ssl:
             state = holder['objective'].state_dict()
             if (state['calls'] != steps or state['student_views'] != 6 * state['seen']
@@ -74,7 +80,8 @@ def train_trajectory(c, prefix, scope, *, ssl):
             if progress['U_actual'] or progress['PL_seen'] or model._cd_U_seen:
                 raise ValueError('Supervised physical training accessed U')
             state = dict(calls=0, seen=0, accepted=0, student_views=0, U_truth_read=False, EMA_updates=0)
-        state['physical_L'] = dict(calls=model._physical_L_calls, selected_samples=model._physical_L_samples)
+        if physical_L:
+            state['physical_L'] = dict(calls=model._physical_L_calls, selected_samples=model._physical_L_samples)
         write(folder / ('repl_state.json' if ssl else 'physical_state.json'), state)
         segments.append(dict(folder=str(folder), **evidence))
         states.append(state)
@@ -83,9 +90,10 @@ def train_trajectory(c, prefix, scope, *, ssl):
                                          updates=(offset + epochs) * 222), exclusive=False)
     shutil.copyfile(Path(previous) / 'final_ssdg.pth', root / 'final_ssdg.pth')
     write(root / 'source_contract.json', read(c['source_contract']))
+    physical = {'actual_physical_L': {k: sum(s['physical_L'][k] for s in states)
+                for k in ('calls', 'selected_samples')}} if physical_L else {}
     write(root / 'complete.json', dict(status='SOURCE_FROZEN', epoch=50, updates=11100, config=c, segments=segments,
           initialization='same_contract_scratch20_own10_own20', ancestors=[s['folder'] for s in segments],
           source_contract=c['source_contract'], target_access=False, U_truth_read=False, head_fit_updates=0,
           actual_REPL={k: sum(s[k] for s in states) for k in ('calls', 'seen', 'accepted', 'student_views')},
-          actual_physical_L={k: sum(s['physical_L'][k] for s in states) for k in ('calls', 'selected_samples')},
-          seconds=time.monotonic() - started, cumulative_training_seconds=sum(s['seconds'] for s in segments)))
+          seconds=time.monotonic() - started, cumulative_training_seconds=sum(s['seconds'] for s in segments), **physical))

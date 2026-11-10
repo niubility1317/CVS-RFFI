@@ -12,7 +12,8 @@ from .plan import candidate_rows, configuration
 from .source import parent, train
 
 
-def smoke(rt, *, rows=candidate_rows, configure=configuration, check_parent=parent, scope=installed, ssl=True):
+def smoke(rt, *, rows=candidate_rows, configure=configuration, check_parent=parent, scope=installed,
+          ssl=True, check_pairing=False):
     import torch
     from torch.nn import functional as F
     from experiments.cric_dura_comparison import f_train, t1_model
@@ -61,13 +62,21 @@ def smoke(rt, *, rows=candidate_rows, configure=configuration, check_parent=pare
                 raise ValueError('Complete original Tri-SIG-TIME U smoke differs')
             if (a.seed != seed or a.use_unlabeled or a.use_ema_teacher or not bool(torch.isfinite(loss))
                     or (not ssl and net._cd_U_seen)
-                    or net._physical_L_calls != 1 or net._physical_L_samples != 64
-                    or metrics['physical_L_valid_anchors'] <= 0
                     or any(p.grad is not None and not bool(torch.isfinite(p.grad).all()) for p in net.parameters())):
-                raise ValueError('Physical L or complete original Tri-SIG-TIME U smoke differs')
+                raise ValueError('Finite source smoke with exact stage options required')
+            if check_pairing:
+                pair = state['U_branch_pairing']
+                if (pair['calls'] != 1 or pair['extra_eval_forwards'] != 2 or pair['probed'] <= 0
+                        or pair['changed_vs_random'] <= 0 or (pair['beta'] > 0 and pair['mean_eligible_discount'] <= 0)):
+                    raise ValueError('Actual U branch probes and eligible partner replacements required')
+                details = dict(U_branch_pairing=pair)
+            else:
+                if net._physical_L_calls != 1 or net._physical_L_samples != 64 or metrics['physical_L_valid_anchors'] <= 0:
+                    raise ValueError('Physical L smoke did not execute the registered relation')
+                details = dict(L_anchors=metrics['physical_L_valid_anchors'])
             checks.append(dict(row=row['row_id'], graph=graph, finite_backward=True,
-                               L_anchors=metrics['physical_L_valid_anchors'], U_seen=state['seen'],
-                               U_views=state['student_views'], peak_allocated_bytes=torch.cuda.max_memory_allocated()))
+                               U_seen=state['seen'], U_views=state['student_views'],
+                               peak_allocated_bytes=torch.cuda.max_memory_allocated(), **details))
             del net, loss, correction, ce, output, loaders, cp, holder
         torch.cuda.empty_cache()
     write(Path(rt['run_root']) / 'smoke.json', dict(status='PASS', checks=checks, real_checkpoint=True,

@@ -4,6 +4,11 @@ from experiments.cric_dura_comparison.f_model import PREFIX
 from .objective import Objective
 
 
+def partner_eligibility(classes, accepted, receivers):
+    return ((classes[:, None] == classes[None, :]) & (receivers[:, None] != receivers[None, :])
+            & accepted[:, None] & accepted[None, :])
+
+
 def protected_partners(probability,weight,receivers,allowed,threshold):
     p,w=probability.detach(),weight.detach();n=len(p)
     if receivers.shape!=(n,) or set(receivers.tolist())-set(allowed):
@@ -14,7 +19,7 @@ def protected_partners(probability,weight,receivers,allowed,threshold):
         or bool(((w<0)|(w>1)).any())):
         raise ValueError('Normalized detached teacher probabilities/confidence required')
     cls=p.argmax(1);confident=w>=threshold
-    eligible=(cls[:,None]==cls[None,:])&(receivers[:,None]!=receivers[None,:])&confident[:,None]&confident[None,:]
+    eligible=partner_eligibility(cls,confident,receivers)
     valid=eligible.any(1)
     index=torch.rand(n,n,device=p.device).masked_fill(~eligible,-1.).argmax(1)
     index=torch.where(valid,index,torch.arange(n,device=p.device))

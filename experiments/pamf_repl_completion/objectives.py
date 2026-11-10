@@ -16,6 +16,8 @@ def portable_style_forward(self,student,x,domain,pseudo,accepted,metadata):
     if self.style_calls%6==0:
         rx=metadata['rx_i'].to(x.device).long()
         partner,valid=source_partners(pseudo,accepted,rx,self.c['source_rxs'],self.c['num_classes'],x.dtype)
+        select=getattr(self,'select_style_partners',None)
+        if select is not None:partner=select(partner,valid)
         if bool((valid&(~accepted|~accepted[partner]|(pseudo!=pseudo[partner])|(rx==rx[partner]))).any()):raise ValueError('Cross-RX pseudo identity differs')
         alpha=torch.tensor(recipe['alpha'],device=x.device)
         lam=torch.distributions.Beta(alpha,alpha).sample((n,1,1))
@@ -65,7 +67,7 @@ def objective(c):
     return cls(c)
 
 @contextmanager
-def installed(c,holder,repl_enabled):
+def installed(c,holder,repl_enabled,*,objective_factory=objective):
     from experiments.cric_dura_comparison import t1_model,f_train
     from experiments.pamf_ssl_research.hard_pl_train import installed as hard_installed
     old_install,old_pair,old_args=t1_model.install,t1_model.pair,f_train.arguments
@@ -88,6 +90,6 @@ def installed(c,holder,repl_enabled):
     try:
         with loader_scope():
             if repl_enabled:
-                with portable_scope(),hard_installed(c,holder,objective_cls=objective):yield
+                with portable_scope(),hard_installed(c,holder,objective_cls=objective_factory):yield
             else:yield
     finally:t1_model.install,t1_model.pair,f_train.arguments=old_install,old_pair,old_args
