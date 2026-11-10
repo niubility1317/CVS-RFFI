@@ -1,0 +1,18 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261110-phase1-pamf-ptbr-route-f0-s2026092701-m1-r01",
+  "display_name": "PAMF 参考路由稳定性物理关系单种子探索",
+  "scope": "Phase1 ManySig F0; old full reference-response PAMF; 3 SIG-TIME views; natural order; seed 2026092701",
+  "source_permissions": "Existing same-contract L_s/U_s/V; U transmitter identity hidden; no target inputs or truth during training",
+  "initialization": "Actual same-contract F21 scratch E20 prefix checked at load; train own E10+E20 and freeze E50",
+  "method": "Ordinary PL .95/weight 1 and five physical relations beta .5, L/U weights .05; retain all samples and set only reference finite-difference direction to zero when raw and bounded-echo selected delay differ",
+  "controls": ["matched F0 seed Tri-SIG-TIME SSL, shuffled-time full method, raw cross_rx/cross_both", "matched F0 seed ordinary PL", "matched F0 seed equal-direction beta=.5 PTBR"],
+  "evaluation": "Freeze model; predict clean and six practical scenes for cross_date, cross_rx and cross_both, raw and existing frozen DURA readouts; independent truth-last scoring; no leo_weak",
+  "resources": "N607 ordinary account, GPU 1, at most two observed or pending processes on the card; preserve other owners",
+  "execution": "python -m experiments.pamf_physics_route.publish --repo REPO --output UNIQUE_LOCAL_ROOT --context EXISTING_CONTEXT --ssh-config N607_CONFIG",
+  "environment": "Existing project Python, released Git commit, FP32/TF32 off, unique PROJECT/releases/RUN-release CWD and PROJECT/runs/RUN output root",
+  "stop_rule": "Systemic training, prediction or scoring failure stops new dispatch; isolated source diagnostic failure is recorded without blocking frozen predictions; preserve all healthy workers and outputs",
+  "expected_artifacts": ["actual E20 source-only no-query smoke with L/U routing counts", "E30 and E50 source checkpoints and complete routing/exposure logs", "frozen seven-scene predictions", "independent truth-last scores and matched same-row analysis"],
+  "selection": "Fixed final E50. Source screen: V not below PL by more than .2 pp or equal beta=.5 by more than .1 pp; complete the fixed pilot tests regardless; no target feedback or reruns for performance. Evaluate raw cross_rx plus cross_both with matched IDs against Tri-SIG-TIME and ordinary PL in clean and each practical scene.",
+  "limitations": "Previously exposed benchmark; one seed and one split; route changes need not indicate loss of TX information and no universal improvement is guaranteed"
+}
