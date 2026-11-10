@@ -1,0 +1,273 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261111-phase1-pamf-tri-u-beta0-extra-f0-m3-r01",
+  "group_id": "phase1-trisig-u-beta0-extra-seeds",
+  "display_name": "Tri 无标签分支关系新增三种子与原模型 DURA 配对",
+  "description": "Replicate unchanged beta=0 U five-branch relation with model seeds 04/05/06; compare exact original same-seed Tri-SIG-TIME E50 with newly computed matching seven-scene DURA-LU predictions.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [
+    "Tri SSL unprotected physical relation"
+  ],
+  "tags": [
+    "PAMF",
+    "semi-supervised",
+    "extra-seeds",
+    "matched-baseline",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests Tri-SIG-TIME-based multi-branch SSL research, three paired seeds, practical seven scenes and GPU 0-4 on N607.",
+  "code": {
+    "commit": "release Git HEAD",
+    "checkout": "E:\\codex\\home\\worktrees\\pamf-ssl-multibranch-ablation\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Phase1 Python; FP32 TF32 off; 2 CPU threads",
+    "cwd": "PROJECT/releases/20261111-phase1-pamf-tri-u-beta0-extra-f0-m3-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig Main split",
+    "version": null,
+    "representation": "equalized1 / unitRMS / FP32 IQ 2x256 / Fs25MHz",
+    "contract_ref": "existing unchanged VALIDATED_ONCE Main split source/received IQ handles",
+    "physical_ids_ref": "Main split source role index and cross_rx/cross_both manifests",
+    "label_map_ref": "original six TX classes",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 6300,
+      "U_s": "56700 source IQ with TX labels hidden",
+      "V": "27000 non-updating source validation"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "reuse VALIDATED_ONCE, no data rebuild",
+    "support_query_ref": null,
+    "leo_config_ref": "clean plus six practical scenes only; no leo_weak",
+    "source_rxs": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_rxs": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ]
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Phase1 terrestrial proxy; direct recognition; no future-date or in-orbit claim"
+  },
+  "checkpoint": {
+    "initialization": "same-seed Tri-SIG-TIME source-only scratch E20; continue E10+E20",
+    "sources": [
+      "20261027-phase1-pamf-repl-shuffled-views-m16-r02 same-seed source segment20"
+    ],
+    "contract_check_ref": "source.parent and resolved source contract",
+    "provenance_verdict": "same F0 source contract; no target or U truth use",
+    "selection_rule": "fixed final E50, no target feedback"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-tri-u-extra-20261111",
+    "gpu_policy": "All N607 GPUs 0-7 authorized; 5,6,7 preferred, at most two observed or pending processes/card; preserve other owners",
+    "remote_run_root": "PROJECT/runs/20261111-phase1-pamf-tri-u-beta0-extra-f0-m3-r01",
+    "remote_log_root": "PROJECT/runs/20261111-phase1-pamf-tri-u-beta0-extra-f0-m3-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/pamf_tri_u_extra_20261111",
+    "launch_command": "python -m experiments.pamf_tri_u_extra.publish --repo REPO --output UNIQUE_LOCAL_ROOT --context EXISTING_CONTEXT --ssh-config N607_CONFIG",
+    "stop_rule": "Systemic technical failure stops new dispatch; retain healthy workers and output; no target-driven decisions"
+  },
+  "expected_artifacts": [
+    "three real-checkpoint no-query smokes",
+    "three fixed E50 U relation candidates",
+    "original Tri E50 04/05/06 baseline prediction (new DURA readout)",
+    "six complete seven-scene predictions before independent truth-last scoring",
+    "three-seed matched per-scene, TX/RX/day and same-packet comparison"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro F1",
+      "paired corrected and missed",
+      "U acceptance",
+      "resource use"
+    ],
+    "dimensions": [
+      "seed",
+      "scene",
+      "TX",
+      "RX",
+      "day",
+      "population"
+    ],
+    "prediction_ref": "experiments/pamf_paper_completion/evaluation.py:predict",
+    "scorer_ref": "experiments/pamf_paper_completion/evaluation.py:score"
+  },
+  "rows": [
+    {
+      "row_id": "tri-u-beta0-s2026092704",
+      "method": "Unchanged full Tri-SIG-TIME SSL plus accepted-U five-branch relation beta 0 and weight .05",
+      "purpose": "Additional paired model-seed replication against the original same-seed Tri E50",
+      "config_ref": "RUN/configs/train__tri-u-beta0-s2026092704.json",
+      "resolved_config_ref": "RUN/F/tri-u-beta0-s2026092704/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "view_count": 3,
+        "U_use": true
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-u-beta0-s2026092704/source",
+      "log_path": "RUN/logs/train__tri-u-beta0-s2026092704.log",
+      "command": "python -m experiments.pamf_tri_u_extra.runner worker --kind train --config RUN/configs/train__tri-u-beta0-s2026092704.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "original REPL and physical U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-u-beta0-s2026092705",
+      "method": "Unchanged full Tri-SIG-TIME SSL plus accepted-U five-branch relation beta 0 and weight .05",
+      "purpose": "Additional paired model-seed replication against the original same-seed Tri E50",
+      "config_ref": "RUN/configs/train__tri-u-beta0-s2026092705.json",
+      "resolved_config_ref": "RUN/F/tri-u-beta0-s2026092705/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "view_count": 3,
+        "U_use": true
+      },
+      "seeds": {
+        "model": 2026092705,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-u-beta0-s2026092705/source",
+      "log_path": "RUN/logs/train__tri-u-beta0-s2026092705.log",
+      "command": "python -m experiments.pamf_tri_u_extra.runner worker --kind train --config RUN/configs/train__tri-u-beta0-s2026092705.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "original REPL and physical U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-u-beta0-s2026092706",
+      "method": "Unchanged full Tri-SIG-TIME SSL plus accepted-U five-branch relation beta 0 and weight .05",
+      "purpose": "Additional paired model-seed replication against the original same-seed Tri E50",
+      "config_ref": "RUN/configs/train__tri-u-beta0-s2026092706.json",
+      "resolved_config_ref": "RUN/F/tri-u-beta0-s2026092706/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "view_count": 3,
+        "U_use": true
+      },
+      "seeds": {
+        "model": 2026092706,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-u-beta0-s2026092706/source",
+      "log_path": "RUN/logs/train__tri-u-beta0-s2026092706.log",
+      "command": "python -m experiments.pamf_tri_u_extra.runner worker --kind train --config RUN/configs/train__tri-u-beta0-s2026092706.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "original REPL and physical U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    }
+  ],
+  "notes": [
+    "Beta=0 recipe was identified after exposure to Main split results for seeds 01/02/03; these new model seeds reduce seed overfitting but do not make the existing physical test set blind.",
+    "The candidate recipe and E50 freeze are fixed before these additional seed predictions; no target-driven checkpoint selection or rerun.",
+    "Original Tri seed 04/05/06 source E20 and E50 are reused. Prior paper completion did not contain these three matching DURA readouts; original-model predictions are newly computed with the frozen DURA caches.",
+    "Ordinary PL matching 04/05/06 is not available in this release; comparison against PL remains limited to previously matched seeds 01/02/03.",
+    "Only clean and six practical scenes; DURA-LU primary, raw and DURA-L secondary; cross_rx plus cross_both main and cross_date diagnostic."
+  ],
+  "registered_at": "2026-11-10T17:05:38+00:00"
+}
