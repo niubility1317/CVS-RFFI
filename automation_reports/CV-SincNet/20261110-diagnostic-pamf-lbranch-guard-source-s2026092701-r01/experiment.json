@@ -1,0 +1,150 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261110-diagnostic-pamf-lbranch-guard-source-s2026092701-r01",
+  "group_id": "pamf-lbranch-guard-source-only",
+  "display_name": "冻结 PAMF 真实标签分支关系与梯度保护源域检验",
+  "description": "Frozen Tri-SIG-TIME SSL: source L branch relations, CE gradient conflict and analytical support-restricted protection; five source V receiver directional proxies. No optimizer, model mutation, U or target.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "PAMF",
+    "source_only",
+    "real_label",
+    "branch_gradient",
+    "gradient_guard",
+    "no_training",
+    "no_target"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User explicitly requests frozen PAMF, legal source data, no training and no target access.",
+  "code": {
+    "commit": "Git commit containing probe.py and this registration",
+    "checkout": "E:/codex/home/worktrees/pamf-reference-sinc-source-check/standard_ce_baselines_20261010",
+    "environment": "N607 CVS-RFFI Python, CPU 2 threads, CUDA hidden, FP32 TF32 off",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release"
+  },
+  "data": {
+    "dataset": "ManySig Main split",
+    "version": "existing VALIDATED_ONCE source F0",
+    "representation": "equalized1 unitRMS FP32 IQ [2,256] 25MHz",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json#role_ids",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+    "roles": {
+      "L_s": "6300 IQ loaded, 1080 analyzed in 12 balanced batches",
+      "U_s": "not accessed",
+      "V": "27000 IQ loaded, 1080 analyzed in 12 balanced batches"
+    },
+    "train_ratio": null,
+    "capsule_id": "unchanged Phase1 VALIDATED_ONCE Main source handle",
+    "split_id": "Main split F0 original source role IDs",
+    "validation_ref": "existing source contract and source physical ID binding",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "not accessed",
+    "external_method_exception": null,
+    "claim_scope": "Single frozen seed, source L/V gradient-only descriptive evaluation; no updates, no target, no performance claim"
+  },
+  "checkpoint": {
+    "initialization": "Tri-SIG-TIME SSL fixed final E50 same-contract scratch/own 20+10+20",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+    "provenance_verdict": "Existing loader validates source-only source contract, own ancestry and fixed E50; checkpoint smoke includes finite Sinc-coordinate gradients before source data opens",
+    "selection_rule": "Previously fixed final E50 seed2026092701; no target-based choice"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/pamf-lbranch-guard-source-check",
+    "gpu_policy": "CPU2 threads, no GPU",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261110-diagnostic-pamf-lbranch-guard-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261110-diagnostic-pamf-lbranch-guard-source-s2026092701-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/pamf_lbranch_guard_source_20261110",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261110-diagnostic-pamf-lbranch-guard-source-s2026092701-r01/probe.py",
+    "stop_rule": "Stop on source role or provenance mismatch, output exists, nonfinite/disconnected gradients, state changes or technical failure; no automatic retry or changes to others"
+  },
+  "expected_artifacts": [
+    "summary.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "L branch and clean CE gradient norms and cosine on each branch support",
+      "L CE first-order support projection effect",
+      "five source RX V true-label CE gradient alignment raw/protected",
+      "aggregated branches and 12 balanced batches"
+    ],
+    "dimensions": [
+      "branch",
+      "batch",
+      "source_RX"
+    ],
+    "prediction_ref": "no target predictions; no learned head; fixed source V gradient diagnostic",
+    "scorer_ref": "Source V labels used only to measure directional effects, never optimize/protect"
+  },
+  "rows": [
+    {
+      "row_id": "source-LV-gradient-12batch",
+      "method": "L-true-label five-branch same-day cross-RX relation and support-restricted CE gradient projection",
+      "purpose": "Frozen source-only no-update feasibility",
+      "config_ref": "experiments/pamf_lbranch_gradient_probe/probe.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Other random seeds N/A; deterministic source sample ordinals 0:60:5",
+      "k": null,
+      "scenario": "clean source L and V only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "L6300/V27000 IQ loaded; 1080 L and 1080 V gradient forwards, 12 batches; no parameter updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261110-diagnostic-pamf-lbranch-guard-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261110-diagnostic-pamf-lbranch-guard-source-s2026092701-r01/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261110-diagnostic-pamf-lbranch-guard-source-s2026092701-r01/probe.py",
+      "expected_artifacts": [
+        "summary.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Frozen parameters temporarily require gradients, no optimizer, no parameter mutation, no accumulated gradients, no classification heads.",
+    "L clean CE with LS0.01 is a proxy, not full existing L objective or Adam update; V gradients are measured only, not used in projection.",
+    "Each loss .01, total .05 as historical multi-branch comparison; metrics on same parameter support, not cross-group norm comparisons.",
+    "Fixed ordinal is not a same-event TX observation; the two roles have distinct physical IDs."
+  ],
+  "registered_at": "2026-11-10T10:42:08+00:00"
+}
