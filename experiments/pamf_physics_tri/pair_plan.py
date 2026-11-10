@@ -1,7 +1,6 @@
 """Two fixed three-seed REPL partner-selection variants on Main split."""
 from experiments.pamf_repl_view_shuffle.plan import VIEWS
 from .plan import SEEDS, continuation
-from .source import original_parent
 
 
 RUN = '20261110-phase1-pamf-tri-rxpair-f0-m6-r01'
@@ -22,6 +21,8 @@ def configuration(context, row, project, commit, *, run_id=RUN):
 
 
 def parent(c):
+    from .source import original_parent
+
     seed, arm = c['model_seed'], c['algorithm_id']
     if (c['run_id'] != RUN or seed not in SEEDS or arm not in ARMS or c['row_id'] != f'{arm}-s{seed}'
             or c['receiver_pairing'] != dict(beta=ARMS[arm]) or 'physical_relation' in c):
