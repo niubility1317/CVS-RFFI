@@ -1,5 +1,6 @@
 """Source V only; frozen F21; gradients measured, never applied or saved as weights."""
 import contextlib
+import argparse
 import json
 from pathlib import Path
 import sys
@@ -23,11 +24,15 @@ with contextlib.redirect_stdout(sys.stderr):
 reader.eval().requires_grad_(True)
 data = SourceDataset(c['source_cache'], 'V', contract)
 meta = data.metadata
+parser = argparse.ArgumentParser()
+parser.add_argument('--all-v', action='store_true')
+args = parser.parse_args()
 cells = sorted(set(zip(meta['y'].tolist(), meta['rx_i'].tolist(), meta['day_i'].tolist())))
-indices = np.asarray([int(i) for y, rx, day in cells
+stratified = np.asarray([int(i) for y, rx, day in cells
     for i in np.flatnonzero((meta['y'] == y) & (meta['rx_i'] == rx) & (meta['day_i'] == day))[:8]], dtype=np.int64)
-if len(cells) != 90 or len(indices) != 720:
+if len(cells) != 90 or len(stratified) != 720 or len(data) != 27000:
     raise ValueError('Source V stratification differs')
+indices = np.arange(len(data), dtype=np.int64) if args.all_v else stratified
 core = reader.core.id_backbone
 modules = dict(time=core.t_proj, frequency_main=core.f_proj, frequency_stats=core.freq_stats_proj,
                pa_main=core.pa_proj, pa_stats=core.pa_stats_proj, path=reader.sequence_pool,
@@ -42,8 +47,8 @@ if not params:
 components = ('true_all', 'true_accepted', 'true_rejected', 'pl_correct', 'pl_wrong')
 acc = [[torch.zeros_like(p, device='cpu', dtype=torch.float64) for p in params] for _ in components]
 accepted = pseudo_wrong = 0
-for start in range(0, len(indices), 32):
-    part = indices[start:start + 32]
+for start in range(0, len(indices), 64):
+    part = indices[start:start + 64]
     x = data.x.index_select(0, torch.as_tensor(part, dtype=torch.long)).to('cuda:0')
     y = torch.as_tensor(meta['y'][part].tolist(), dtype=torch.long, device='cuda:0')
     logits = reader.classify_features(reader.features(x))
@@ -82,8 +87,9 @@ for name, group in groups.items():
 if any(p.grad is not None for p in reader.parameters()):
     raise ValueError('Probe unexpectedly populated parameter gradients')
 print(json.dumps(dict(status='SOURCE_GRADIENT_PROBE_COMPLETE', source_only=True, role='V', count=len(indices),
-    sample_rule='first 8 per source TX/RX/day', accepted=accepted, accepted_wrong=pseudo_wrong, threshold=.95,
-    ce='clean hard true-label CE', pl='clean hard pseudo-label CE, mean over all 720',
+    sample_rule='all source V' if args.all_v else 'first 8 per source TX/RX/day',
+    accepted=accepted, accepted_wrong=pseudo_wrong, threshold=.95,
+    ce='clean hard true-label CE', pl='clean hard pseudo-label CE, mean over selected source V',
     model_mode='eval; same inputs and logits; no update', target_reads=0, U_reads=0, optimizer_updates=0,
     scope='descriptive source V surrogate; not the complete multi-view L loss or actual U training dynamics',
     groups=result, groups_without_parameters=empty_groups), allow_nan=False))
