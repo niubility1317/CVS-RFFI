@@ -153,7 +153,7 @@
       "lr": "original native segment schedule",
       "epochs": 50,
       "fl_rounds": null,
-      "budget_ref": "reused E20/4440; own E10+E20/6660; same L64/U<=128 physical directions; two extra reference-gradient evaluations each step",
+      "budget_ref": "reused E20/4440; own E10+E20/6660; same L64/U<=128 physical directions; two extra reference-gradient evaluations and reference pair-distance recomputation each step",
       "output_root": "PROJECT/runs/20261110-phase1-pamf-ptbr-adaptive-f0-s2026092701-m1-r01/F/ptbr-adaptive-s2026092701/source",
       "log_path": "PROJECT/runs/20261110-phase1-pamf-ptbr-adaptive-f0-s2026092701-m1-r01/logs/train__ptbr-adaptive-s2026092701.log",
       "command": "worker --kind train --config PROJECT/runs/20261110-phase1-pamf-ptbr-adaptive-f0-s2026092701-m1-r01/configs/train__ptbr-adaptive-s2026092701.json",
@@ -230,10 +230,10 @@
     "Base gradient uses original supervised and ordinary PL losses from the current source batch; relation gradient uses the physical reference L/U terms after the registered five-branch mean.",
     "Scale=clip(||base||/(||relation||+1e-12),.1,1); zero relation gives 1. Detached scalar, no V initialization, no target or U labels; other branches and all base losses unchanged.",
     "The .1 floor means the reference relation is not guaranteed below the base norm; no Adam-update or identity-preservation guarantee.",
-    "Same source exposures and optimization steps as equal beta=.5; two extra reference-parameter autograd evaluations each update, so training compute is not matched.",
+    "Same source exposures and optimization steps as equal beta=.5; two extra reference-parameter autograd evaluations and reference distance recomputation each update, so training compute is not matched.",
     "Fixed prior to reference-budget target scoring. Historical F0 benchmark already exposed; report limitations and no target-driven selection or retries.",
     "Before expansion, final V no worse than original PL by .2 pp and equal beta=.5 by .1 pp; report nonfinite skips, anchors, scale and source diagnostics; do not cancel fixed pilot tests.",
     "Wait until fixed-budget owner is terminal with matched scores available; all candidate predictions precede truth-last scoring. Source diagnostics run but do not gate fixed candidate predictions."
   ],
-  "registered_at": "2026-11-10T07:06:11.953086+00:00"
+  "registered_at": "2026-11-10T07:33:53.750019+00:00"
 }

@@ -28,7 +28,7 @@ def make(template):
     r = s['rows'][0]
     r.update(physical_row=candidate_rows()[0], method='PTBR beta=0.5 + detached adaptive reference gradient budget',
              purpose='compare source-batch adaptive, equal and fixed reference relation budgets',
-             budget_ref='reused E20/4440; own E10+E20/6660; same L64/U<=128 physical directions; two extra reference-gradient evaluations each step')
+             budget_ref='reused E20/4440; own E10+E20/6660; same L64/U<=128 physical directions; two extra reference-gradient evaluations and reference pair-distance recomputation each step')
     s['expected_artifacts'] = ['one-row real E20 no-query finite-backward and adaptive-budget smoke',
         'own E30 and E50 source trajectories, reference scale statistics, L/U physical exposure counts and resource costs',
         'full source L/V physical diagnostics and stratified original As',
@@ -38,7 +38,7 @@ def make(template):
         'Base gradient uses original supervised and ordinary PL losses from the current source batch; relation gradient uses the physical reference L/U terms after the registered five-branch mean.',
         'Scale=clip(||base||/(||relation||+1e-12),.1,1); zero relation gives 1. Detached scalar, no V initialization, no target or U labels; other branches and all base losses unchanged.',
         'The .1 floor means the reference relation is not guaranteed below the base norm; no Adam-update or identity-preservation guarantee.',
-        'Same source exposures and optimization steps as equal beta=.5; two extra reference-parameter autograd evaluations each update, so training compute is not matched.',
+        'Same source exposures and optimization steps as equal beta=.5; two extra reference-parameter autograd evaluations and reference distance recomputation each update, so training compute is not matched.',
         'Fixed prior to reference-budget target scoring. Historical F0 benchmark already exposed; report limitations and no target-driven selection or retries.',
         'Before expansion, final V no worse than original PL by .2 pp and equal beta=.5 by .1 pp; report nonfinite skips, anchors, scale and source diagnostics; do not cancel fixed pilot tests.',
         'Wait until fixed-budget owner is terminal with matched scores available; all candidate predictions precede truth-last scoring. Source diagnostics run but do not gate fixed candidate predictions.']
