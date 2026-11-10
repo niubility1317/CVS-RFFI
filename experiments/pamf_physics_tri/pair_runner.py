@@ -5,10 +5,11 @@ from functools import partial
 from experiments.cric_dura_comparison.io import read
 from experiments.pamf_physics_route import prepare as routes
 from experiments.pamf_physics_route import runner as dispatching
-from . import pair_plan, partial_plan, practical_plan, recovery_plan, scheduled_plan, weak_practical_plan
+from . import pair_plan, partial_plan, practical_plan, recovery_plan, scheduled_plan, validation_plan, weak_practical_plan
 from .pairing import installed as pairing_scope
 from .practical_gate import installed as practical_scope
 from .recovery import installed as recovery_scope
+from .validation_scope import installed as validation_scope
 from .runner import smoke, worker as existing_worker
 from .source import train_trajectory
 
@@ -48,7 +49,8 @@ METHODS = {pair_plan.RUN: (pair_plan, pairing_scope, check_pairing),
            partial_plan.RUN: (partial_plan, recovery_scope, check_partial),
            practical_plan.RUN: (practical_plan, practical_scope, check_practical),
            weak_practical_plan.RUN: (weak_practical_plan, practical_scope, check_practical),
-           scheduled_plan.RUN: (scheduled_plan, practical_scope, check_practical)}
+           scheduled_plan.RUN: (scheduled_plan, practical_scope, check_practical),
+           validation_plan.RUN: (validation_plan, validation_scope, check_practical)}
 
 
 def worker(c, kind):
@@ -61,7 +63,8 @@ def worker(c, kind):
         return train_trajectory(c, plan.parent(c), installed, ssl=True, physical_L=False)
     if kind == 'smoke':
         return smoke(c, rows=plan.candidate_rows, configure=plan.configuration, check_parent=plan.parent,
-                     scope=installed, check_u=check_u)
+                     scope=installed, check_u=check_u,
+                     graph_check=validation_plan.check_graph if plan is validation_plan else None)
     raise ValueError('Only source and clean/practical evaluation stages are allowed')
 
 
@@ -69,7 +72,8 @@ def dispatch(rt):
     plan, _, _ = METHODS[rt['run_id']]
     prepare = partial(routes.prepare, rows_for_run=lambda _: plan.candidate_rows(), configure=plan.configuration,
                       source_diagnostic=False, tri_dura=True,
-                      extra_controls=scheduled_plan.extra_controls if plan is scheduled_plan else None)
+                      extra_controls=scheduled_plan.extra_controls if plan is scheduled_plan else None,
+                      dynamic_protocol=plan is validation_plan)
     launch = partial(dispatching.launch, module='experiments.pamf_physics_tri.pair_runner')
     dispatching.dispatch(rt, prepare_run=prepare, launch_worker=launch)
 

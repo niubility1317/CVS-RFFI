@@ -54,9 +54,14 @@ def prepare_row(root, row):
     seed = cfg['model_seed']
     if tuple(cfg['views']) != VIEWS:
         raise ValueError('Exactly clean and the six practical scenes are required')
-    _, tri = tri_entry(root.parent, seed)
+    if cfg['protocol_id'] == 'F0':
+        _, tri = tri_entry(root.parent, seed)
+        suffix = f's{seed}'
+    else:
+        suffix = f'{cfg["protocol_id"]}-s{seed}'
+        tri = sources[f'tri_sigtime_ssl-{suffix}']
     candidate_input = read(root / 'configs' / f'predict__{row}.json')
-    entries = {'candidate': sources[row], 'PL': sources[f'baseline_pl-s{seed}'],
+    entries = {'candidate': sources[row], 'PL': sources[f'baseline_pl-{suffix}'],
                'Tri-SIG-TIME': tri}
     if f'weak_branch_fixed-s{seed}' in sources:
         entries['Weak-branch-fixed'] = sources[f'weak_branch_fixed-s{seed}']
@@ -150,7 +155,12 @@ def summarize(prepared):
 
 
 def run(spec):
-    return summarize([prepare_row(Path(root), row) for root, row in spec])
+    prepared = [prepare_row(Path(root), row) for root, row in spec]
+    protocols = list(dict.fromkeys(cfg['protocol_id'] for cfg, _ in prepared))
+    if len(protocols) == 1:
+        return summarize(prepared)
+    return dict(status='PAIRED_BY_PROTOCOL_COMPLETE', protocols={pid: summarize(
+        [(cfg, entries) for cfg, entries in prepared if cfg['protocol_id'] == pid]) for pid in protocols})
 
 
 def compare_baselines(runs):

@@ -7,7 +7,8 @@ from experiments.pamf_physics_branch.plan import RUN as PRIOR
 from .plan import RUN, REPLICATION_RUN, candidate_rows, configuration
 
 
-def prepare(rt, *, rows_for_run=None, configure=None, source_diagnostic=None, tri_dura=False, extra_controls=None):
+def prepare(rt, *, rows_for_run=None, configure=None, source_diagnostic=None, tri_dura=False, extra_controls=None,
+            dynamic_protocol=False):
     ctx, root = read(rt['context']), Path(rt['run_root'])
     run_id = rt.get('run_id', RUN)
     h = ctx['handles']['F0']
@@ -35,8 +36,14 @@ def prepare(rt, *, rows_for_run=None, configure=None, source_diagnostic=None, tr
     predictions = [str(root / 'readouts' / row['row_id'] / 'predictions' / 'complete.json') for row in rows]
     for row in rows:
         rid, seed = row['row_id'], row['model_seed']
-        baseline = ctx['existing'][f'F0-ordinary_PL-s{seed}']
-        if tri_dura:
+        pid = row['protocol_id'] if dynamic_protocol else 'F0'
+        h = ctx['handles'][pid]
+        baseline = ctx['existing'][f'{pid}-ordinary_PL-s{seed}']
+        if dynamic_protocol:
+            from experiments.pamf_paper_completion.plan import RUN as PAPER_RUN
+            original = f'{row["setting"]}-factorial-ssl-full-permuted-s{seed}'
+            tri = read(Path(rt['project']) / 'runs' / PAPER_RUN / 'sources.json')[original]
+        elif tri_dura:
             from .paired_report import tri_entry
             _, tri = tri_entry(Path(rt['project']) / 'runs', seed)
         else:
@@ -44,8 +51,9 @@ def prepare(rt, *, rows_for_run=None, configure=None, source_diagnostic=None, tr
                       / f'main_split-repl-shuffled_time-3view-s{seed}')
             tri = dict(predictions=folder / 'predictions', scores=folder / 'scores')
         c = configure(ctx, row, rt['project'], rt['code_commit'], run_id=run_id)
-        controls = [(f'baseline_pl-s{seed}', baseline['predictions'], baseline['scores']),
-                    (f'tri_sigtime_ssl-s{seed}', tri['predictions'], tri['scores'])]
+        suffix = f'{pid}-s{seed}' if dynamic_protocol else f's{seed}'
+        controls = [(f'baseline_pl-{suffix}', baseline['predictions'], baseline['scores']),
+                    (f'tri_sigtime_ssl-{suffix}', tri['predictions'], tri['scores'])]
         if c['paper_row'].get('learning_regime') == 'supervised':
             sup = ctx['existing'][f'F0-supervised-s{seed}']
             controls.append((f'baseline_sup-s{seed}', sup['predictions'], sup['scores']))
@@ -70,10 +78,10 @@ def prepare(rt, *, rows_for_run=None, configure=None, source_diagnostic=None, tr
                       frozen_sources=rt['frozen_sources'], output_root=str(diagnostic))
             add(rid, 'source_diagnostic', dc, diagnostic, 'SOURCE_DIAGNOSTIC_COMPLETE',
                 [str(source / 'complete.json')], nonblocking=True)
-        p = dict(run_id=run_id, row_id=rid, paper_row=c['paper_row'], protocol_id='F0', model_seed=seed,
+        p = dict(run_id=run_id, row_id=rid, paper_row=c['paper_row'], protocol_id=pid, model_seed=seed,
                  source_output=str(source), source_contract=h['source_contract'], classes=h['classes'],
                  source_days=[1, 2, 3], tests={t: dict(views_root=h['tests'][t]['views_root']) for t in TASKS},
-                 restored_caches={k: v['path'] for k, v in ctx['caches']['F0'].items()},
+                 restored_caches={k: v['path'] for k, v in ctx['caches'][pid].items()},
                  views=row['views'], readouts=list(READOUTS), reuse_predictions=None,
                  output_root=str(out / 'predictions'), frozen_sources=rt['frozen_sources'])
         s = deepcopy(p)

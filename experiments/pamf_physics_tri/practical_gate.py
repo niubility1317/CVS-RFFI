@@ -128,6 +128,6 @@ class PracticalGate(GuardedReceiverExtrapolation):
 
 
 @contextmanager
-def installed(c, holder):
-    with labeled_scope(c, holder, objective_factory=PracticalGate):
+def installed(c, holder, *, base_scope=None):
+    with labeled_scope(c, holder, objective_factory=PracticalGate, base_scope=base_scope):
         yield

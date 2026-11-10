@@ -48,14 +48,16 @@ def structure(model,row,seed):
     return model
 
 @contextmanager
-def installed(c,holder,ssl_enabled=False):
+def installed(c,holder,ssl_enabled=False,*,objective_factory=None,validate=None):
     from experiments.cric_dura_comparison import t1_model,f_train
     from experiments.pamf_repl_completion.objectives import loader_scope,portable_scope,objective
     from experiments.pamf_ssl_research.hard_pl_train import installed as hard_scope
     from .plan import validate_config
+    validate = validate or validate_config
+    objective_factory = objective_factory or objective
     old_install,old_args=t1_model.install,f_train.arguments
     def build(net,cfg):
-        validate_config(cfg)
+        validate(cfg)
         return structure(old_install(net,cfg),cfg['paper_row'],cfg['model_seed'])
     def args(cfg,device):
         return source_arguments(old_args,cfg,device)
@@ -63,7 +65,7 @@ def installed(c,holder,ssl_enabled=False):
     try:
         with loader_scope():
             if ssl_enabled:
-                with portable_scope(),hard_scope(c,holder,objective_cls=objective):yield
+                with portable_scope(),hard_scope(c,holder,objective_cls=objective_factory):yield
             else:yield
     finally:t1_model.install,f_train.arguments=old_install,old_args
 

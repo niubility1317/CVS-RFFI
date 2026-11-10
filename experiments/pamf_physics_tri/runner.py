@@ -13,7 +13,7 @@ from .source import parent, train
 
 
 def smoke(rt, *, rows=candidate_rows, configure=configuration, check_parent=parent, scope=installed,
-          ssl=True, check_u=None):
+          ssl=True, check_u=None, graph_check=None):
     import torch
     from torch.nn import functional as F
     from experiments.cric_dura_comparison import f_train, t1_model
@@ -36,7 +36,7 @@ def smoke(rt, *, rows=candidate_rows, configure=configuration, check_parent=pare
                 a = f_train.arguments(cfg, 'cuda:0')
                 a.input_len = 256
                 net = t1_model.install(native.build_baseline_model(a, 'cuda:0'), cfg).cuda()
-            graph = assert_structure(net, cfg) if ssl else dict(view_count=3, parameters=232993, order=list(range(8)))
+            graph = (graph_check or assert_structure)(net, cfg) if ssl else dict(view_count=3, parameters=232993, order=list(range(8)))
             net.load_state_dict(cp['model'], strict=True)
             net.train()
             if ssl:

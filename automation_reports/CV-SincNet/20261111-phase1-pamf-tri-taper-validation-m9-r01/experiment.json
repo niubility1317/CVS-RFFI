@@ -1,0 +1,16 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261111-phase1-pamf-tri-taper-validation-m9-r01",
+  "display_name": "PAMF 五分支弱信道退火跨接收机与标注比例验证",
+  "scope": "Receiver split 1 (F1_rx_repartition_r01), Receiver split 2 (F2_rx_repartition_r01), and 5% labeled (label05); each with seeds 2026092701/02/03. These datasets and earlier baseline predictions have been exposed, so this is an independent configuration check rather than an unexposed blind test.",
+  "method": "Freeze the F0-developed Tri weak taper: same source-only five deployed branches, same per-packet other-RX labeled anchors and >=4/5 raw and full-strength source-practical branch votes, same .95 pseudo gate, original REPL losses/guard, and U physical-half input 0.25*(50-epoch)/29 interpolation for E21–E50. No change of recipe, model order, default head, epochs, U truth permission or inference.",
+  "initialization": "For each of the nine rows, reuse that same setting and seed's actual original paper Tri-SIG-TIME E20 scratch segment. Verify identity, checkpoint payload and exact source contract, no target ancestry. Continue its own E10+E20, fixed E50. No foreign checkpoint fallback.",
+  "controls": ["Same setting and seed complete original Tri-SIG-TIME SSL, its frozen predictions and independent scores", "same setting and seed ordinary PL, its frozen predictions and scores"],
+  "evaluation": "Use each protocol's original matching cached L/LU DURA and matching clean/six-practical physical observations. DURA-LU primary, DURA-L/raw secondary. All nine candidate predictions freeze before independent truth-last scoring. Report per setting, seed, scene, TX/RX/day, matched physical-ID corrections/regressions and actual sample counts. No leo_weak; no target feedback or score-selected reruns.",
+  "success": "Separately for every setting, check three-seed means against Tri on clean and six-scene mean and every clean/practical mean against PL; disclose every seed/scene loss and TX/RX/day loss. Full robust claim also requires additional paired seeds and independent unexposed data.",
+  "environment": "N607 ordinary account, project Python, immutable commit and unique release/run roots, FP32/TF32 off.",
+  "command": "python -m experiments.pamf_physics_tri.publish --validate-taper --repo REPO --output UNIQUE_LOCAL_ROOT --context EXISTING_CONTEXT --ssh-config N607_CONFIG",
+  "resources": "GPU 0–7, at most two observed or pending workers per card including other owners. One owner, one actual no-query E20 smoke across nine rows.",
+  "stop_rule": "Stop new dispatch on systemic technical failure, preserve healthy workers and artifacts; no weak scoring or optional source diagnostic.",
+  "expected_artifacts": ["Nine source-contract and real-checkpoint smoke records", "Each setting's own E30/E50 and actual U view counters", "Nine frozen seven-scene matrices with setting-specific DURA caches", "Independent truth-last scoring and three-seed physical-packet paired analysis"]
+}

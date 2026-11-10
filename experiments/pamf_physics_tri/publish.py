@@ -7,13 +7,14 @@ from .plan import RUN, SEEDS
 
 
 def publish(repo, output, context, ssh_config, *, pairing=False, recovery=False, partial_recovery=False,
-            practical_gate=False, weak_practical=False, scheduled_practical=False):
+            practical_gate=False, weak_practical=False, scheduled_practical=False, validate_taper=False):
     from .pair_plan import RUN as PAIR_RUN
     from .partial_plan import RUN as PARTIAL_RUN
     from .practical_plan import RUN as PRACTICAL_RUN
     from .recovery_plan import RUN as RECOVERY_RUN
     from .weak_practical_plan import RUN as WEAK_RUN
     from .scheduled_plan import RUN as SCHEDULE_RUN
+    from .validation_plan import RUN as VALIDATION_RUN, SETTINGS
 
     old_run, old_remote = base.RUN, base.REMOTE
     base.RUN, gpus = RUN, [0, 1]
@@ -29,6 +30,8 @@ def publish(repo, output, context, ssh_config, *, pairing=False, recovery=False,
         base.RUN, gpus = WEAK_RUN, list(range(8))
     elif scheduled_practical:
         base.RUN, gpus = SCHEDULE_RUN, list(range(8))
+    elif validate_taper:
+        base.RUN, gpus = VALIDATION_RUN, list(range(8))
     owner = f'codex-{base.RUN}'
     runner = 'experiments.pamf_physics_tri.pair_runner' if base.RUN != RUN else 'experiments.pamf_physics_tri.runner'
     preflight = (
@@ -36,6 +39,20 @@ def publish(repo, output, context, ssh_config, *, pairing=False, recovery=False,
         f" path=project/'runs'/{TRI_RUN!r}/'F'/f'main_split-repl-shuffled_time-3view-s{{seed}}'/'source'/'segment20'\n"
         " if not (path/'final_ssdg.pth').is_file() or not (path/'complete.json').is_file():raise FileNotFoundError(path)\n"
     )
+    if validate_taper:
+        from experiments.pamf_paper_completion.plan import RUN as PAPER_RUN
+        preflight += (
+            f"for setting,pid in {SETTINGS!r}.items():\n"
+            " for path in [ctx['handles'][pid]['source_cache'],ctx['handles'][pid]['source_contract'],"
+            "*[ctx['handles'][pid]['tests'][t]['views_root'] for t in ('cross_date','cross_rx','cross_both')]]:\n"
+            "  if not Path(path).exists():raise FileNotFoundError(path)\n"
+            " for v in ctx['caches'][pid].values():\n"
+            "  d=json.loads((Path(v['path'])/'complete.json').read_text())\n"
+            "  if d['status']!='DURA_IQ_CACHE_COMPLETE' or d['truth_read']:raise ValueError('Missing matching DURA cache')\n"
+            f" for seed in {SEEDS!r}:\n"
+            f"  path=project/'runs'/{PAPER_RUN!r}/'F'/f'{{setting}}-factorial-ssl-full-permuted-s{{seed}}'/'source'/'segment20'\n"
+            "  if not (path/'final_ssdg.pth').is_file() or not (path/'complete.json').is_file():raise FileNotFoundError(path)\n"
+        )
     base.REMOTE = (old_remote.replace("rt=p['runtime']; project=",
                                     f"rt=p['runtime']; rt['parent_seeds']=[]; rt['allowed_gpus']={gpus!r}; project=")
         .replace("[rt['python'],rt['weak_root']+'/manifest.json',rt['weak_truth'],*rt['frozen_sources'].values()]",
@@ -63,7 +80,8 @@ if __name__ == '__main__':
     experiment.add_argument('--practical-gate', action='store_true')
     experiment.add_argument('--weak-practical', action='store_true')
     experiment.add_argument('--scheduled-practical', action='store_true')
+    experiment.add_argument('--validate-taper', action='store_true')
     a = p.parse_args()
     publish(a.repo, a.output, a.context, a.ssh_config, pairing=a.pairing, recovery=a.recovery,
             partial_recovery=a.partial_recovery, practical_gate=a.practical_gate, weak_practical=a.weak_practical,
-            scheduled_practical=a.scheduled_practical)
+            scheduled_practical=a.scheduled_practical, validate_taper=a.validate_taper)
