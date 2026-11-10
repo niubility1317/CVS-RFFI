@@ -16,7 +16,8 @@ from experiments.pamf_repl_completion.runner import activate
 from experiments.cric_dura_comparison.f_data import SourceDataset
 from experiments.pamf_paper_completion.model import load_reader
 from experiments.pamf_branch_training.relation import capture_branches
-from experiments.pamf_physics_branch.geometry import physical_branch_loss
+from experiments.pamf_physics_branch.geometry import physical_branch_loss, bounded_echo, tangent
+from experiments.pamf_physics_branch.objective import echo_parameters
 
 root = Path('/home/szu2070436088/2510044040/CV-SincNet/runs/20261110-phase1-pamf-ptbr-f0-s2026092701-m2-r01')
 c = read(root / 'configs/source_diagnostic__baseline_pl-s2026092701.json')
@@ -29,6 +30,7 @@ data = SourceDataset(c['source_cache'], 'V', contract)
 meta = data.metadata
 parser = argparse.ArgumentParser()
 parser.add_argument('--all-v', action='store_true')
+parser.add_argument('--beta', type=float, choices=(0., .5), default=0.)
 args = parser.parse_args()
 cells = sorted(set(zip(meta['y'].tolist(), meta['rx_i'].tolist(), meta['day_i'].tolist())))
 repeats = 300 if args.all_v else 8
@@ -59,6 +61,15 @@ for repeat in range(repeats):
     record = torch.as_tensor(part, dtype=torch.long, device='cuda:0')
     with capture_branches(core, reader.sequence_pool, reader.response_projection) as features:
         logits = reader.classify_features(reader.features(x))
+    if args.beta:
+        coefficients, delays = echo_parameters(len(x), x.device, x.dtype, 202611200 + 90 * repeat)
+        transformed = bounded_echo(x, coefficients, delays)
+        with torch.no_grad():
+            with capture_branches(core, reader.sequence_pool, reader.response_projection) as changed:
+                reader.features(transformed)
+            directions = {branch: tangent(features[branch], changed[branch])[0] for branch in features}
+    else:
+        directions = {branch: torch.zeros_like(value) for branch, value in features.items()}
     conf, pseudo = logits.detach().softmax(1).max(1)
     selected = conf >= .95
     accepted += int(selected.sum())
@@ -68,8 +79,8 @@ for repeat in range(repeats):
     for kind, labels, mask in (('L', y, torch.ones_like(selected)), ('U', pseudo, selected)):
         for branch, value in features.items():
             values = {branch: value}
-            loss, counts = physical_branch_loss(values, {branch: torch.zeros_like(value)}, labels, rx, day,
-                                                record, mask, beta=0., single_receiver=False)
+            loss, counts = physical_branch_loss(values, {branch: directions[branch]}, labels, rx, day,
+                                                record, mask, beta=args.beta, single_receiver=False)
             # The registered .05 relation weight applies to the mean of five branches.
             objectives[kind + '_' + branch] = .01 * loss / repeats
             if branch == 'time':
@@ -103,6 +114,6 @@ if any(p.grad is not None for p in reader.parameters()):
     raise ValueError('Probe must not apply or retain parameter gradients')
 print(json.dumps(dict(status='SOURCE_RELATION_GRADIENT_PROBE_COMPLETE', source_only=True, role='V', count=count,
     batch_rule=str(repeats) + ' batches of one packet per source TX/RX/day cell', accepted=accepted, accepted_wrong=wrong,
-    valid_anchors=valid, target_reads=0, U_reads=0, optimizer_updates=0, model_mode='eval', beta=0.,
+    valid_anchors=valid, target_reads=0, U_reads=0, optimizer_updates=0, model_mode='eval', beta=args.beta,
     relation_weight_per_branch=.01, scope='source V diagnostic proxy; not actual train-mode objective',
     branches=result), allow_nan=False))
