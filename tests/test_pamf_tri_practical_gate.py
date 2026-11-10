@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import torch
 
-from experiments.pamf_physics_tri.practical_gate import PracticalGate, select_views
+from experiments.pamf_physics_tri.practical_gate import PracticalGate, select_views, view_strength
 
 
 def test_practical_views_only_enter_accepted_physical_slots_and_gate_is_respected():
@@ -17,7 +17,8 @@ def test_practical_views_only_enter_accepted_physical_slots_and_gate_is_respecte
     gate = PracticalGate.__new__(PracticalGate)
     gate.labeled = (batch, pseudo, metadata['rx_i'])
     gate.c = dict(model_seed=1, source_rxs=[1, 3], num_classes=2, practical_gate=dict(branch_gate=True))
-    gate.as_calls = gate.as_offered = gate.as_used = gate.as_certified = 0
+    gate.as_calls = gate.as_offered = gate.as_used = gate.as_certified = gate.as_active_certified = 0
+    gate.strength_weighted_uses = 0.
     with patch('experiments.pamf_physics_tri.practical_gate.capture_pair', return_value=({}, {})), \
          patch('experiments.pamf_physics_tri.practical_gate.branch_certificate',
                return_value=(torch.tensor([True, True]), torch.tensor([False, True]))):
@@ -38,3 +39,13 @@ def test_random_control_matches_certified_dose_and_preserves_global_rng():
     assert (random & ~offered).sum() == 0
     assert torch.equal(random, select_views(offered, certified, 'random', 123))
     assert torch.equal(before, torch.random.get_rng_state())
+
+
+def test_registered_schedules_have_fixed_boundaries_and_zero_tail():
+    base = dict(strength=.25)
+    assert view_strength(dict(base, schedule='early'), 35) == .25
+    assert view_strength(dict(base, schedule='early'), 36) == 0.
+    assert view_strength(dict(base, schedule='late'), 35) == 0.
+    assert view_strength(dict(base, schedule='late'), 36) == .25
+    assert view_strength(dict(base, schedule='taper'), 21) == .25
+    assert view_strength(dict(base, schedule='taper'), 50) == 0.

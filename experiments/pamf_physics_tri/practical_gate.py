@@ -46,11 +46,26 @@ def select_views(offered, certified, mode, seed):
     raise ValueError('Unknown practical U routing mode')
 
 
+def view_strength(recipe, epoch):
+    strength = recipe.get('strength', 1.)
+    schedule = recipe.get('schedule', 'constant')
+    if schedule == 'early':
+        return strength if epoch <= 35 else 0.
+    if schedule == 'late':
+        return strength if epoch >= 36 else 0.
+    if schedule == 'taper':
+        return strength * max(0., min(1., (50 - epoch) / 29.))
+    if schedule == 'constant':
+        return strength
+    raise ValueError('Unknown practical U strength schedule')
+
+
 class PracticalGate(GuardedReceiverExtrapolation):
     def __init__(self, c):
         super().__init__(c)
         self.labeled = None
-        self.as_calls = self.as_offered = self.as_used = self.as_certified = 0
+        self.as_calls = self.as_offered = self.as_used = self.as_certified = self.as_active_certified = 0
+        self.strength_weighted_uses = 0.
 
     def validate_unlabeled_batch(self, batch):
         super().validate_unlabeled_batch(batch)
@@ -75,7 +90,9 @@ class PracticalGate(GuardedReceiverExtrapolation):
         recipe = self.c['practical_gate']
         mode = recipe.get('mode', 'branch' if recipe.get('branch_gate') else 'all')
         selected = select_views(offered, certified, mode, self.c['model_seed'] * 100_000 + step)
-        strength = recipe.get('strength', 1.)
+        strength = view_strength(recipe, epoch)
+        if strength == 0.:
+            selected = torch.zeros_like(selected)
         mixed = ordinary.clone()
         mixed[indices] = x[indices]
         view = simulated[selected]
@@ -85,7 +102,9 @@ class PracticalGate(GuardedReceiverExtrapolation):
         self.as_calls += 1
         self.as_offered += int(offered.sum())
         self.as_certified += int((offered & certified).sum())
+        self.as_active_certified += int((offered & certified).sum()) if strength else 0
         self.as_used += int(selected.sum())
+        self.strength_weighted_uses += strength * int(selected.sum())
         return mixed
 
     def state_dict(self):
@@ -94,14 +113,17 @@ class PracticalGate(GuardedReceiverExtrapolation):
         mode = recipe.get('mode', 'branch' if recipe.get('branch_gate') else 'all')
         if (self.labeled is not None or self.as_calls != self.calls
                 or not 0 <= self.as_certified <= self.as_offered <= self.seen // 2
-                or self.as_used != (self.as_offered if mode == 'all' else self.as_certified)):
+                or not 0 <= self.as_used <= self.as_offered
+                or (mode == 'all' and recipe.get('schedule', 'constant') == 'constant' and self.as_used != self.as_offered)
+                or (mode != 'all' and self.as_used != self.as_active_certified)):
             raise ValueError('Simulated U views must match the registered source gate')
         # Native counters assume all physical slots were raw when hard_pl_no_uas is set.
         state['raw_As_seen'] -= self.as_used
         state['physical_seen'] += self.as_used
         state['physical_student_views'] += 2 * self.as_used
         state['U_practical_gate'] = dict(calls=self.as_calls, offered=self.as_offered,
-            certified=self.as_certified, used=self.as_used, recipe=recipe)
+            certified=self.as_certified, active_certified=self.as_active_certified, used=self.as_used,
+            strength_weighted_uses=self.strength_weighted_uses, recipe=recipe)
         return state
 
 

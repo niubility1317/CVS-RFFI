@@ -1,0 +1,21 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261111-phase1-pamf-tri-weak-schedule-f0-m9-r01",
+  "display_name": "Tri-SIG-TIME 多分支弱信道训练时序",
+  "scope": "F0 Main split, original complete reference-response PAMF with three SIG-TIME views and fixed permutation [0,5,3,6,2,1,4,7]. Three variants and seeds 2026092701/02/03. F0 is an exposed development benchmark.",
+  "initialization": "Exact original source-only same-seed Tri-SIG-TIME E20; own E10+E20 to fixed E50 and 11100 cumulative updates. Same source roles, original labeled losses, U pseudo-label rules, random pairing, gradient guard, and inference head.",
+  "matrix": [
+    {"arm": "tri-weak-early", "strength": ".25 in epochs 21–35, zero in epochs 36–50"},
+    {"arm": "tri-weak-late", "strength": "zero in epochs 21–35, .25 in epochs 36–50"},
+    {"arm": "tri-weak-taper", "strength": ".25*(50-epoch)/29, epochs 21–50 inclusive"}
+  ],
+  "method": "Same actual five-branch source cross-RX L-anchor certificate, same source practical simulator and all probes as prior weak branch .25. Selected U physical slots interpolate raw and channel IQ by registered schedule; 0 means exact raw. The certificate evaluates the full-strength simulated view in all epochs. All variants calculate the simulator and probes even when strength is zero, so compute and branch exposure are matched. Early/late share nominal 15 active epochs but adaptive accepted counts can differ. Taper uses strength 0 on epoch 50. This is a fixed schedule comparison using the previously proposed physics-aware multi-branch method, with no additional U teacher, change of default head or target-derived per-class weights.",
+  "controls": ["Same-seed original Tri-SIG-TIME SSL", "same-seed ordinary PL", "prior fixed-strength .25 branch route, reused from 20261111-phase1-pamf-tri-weak-practical-f0-m9-r01 after score freeze"],
+  "evaluation": "Fixed E50; clean and six practical scenes. DURA-LU primary, DURA-L and raw secondary; combined disjoint cross_rx+cross_both have 168000 packets per scene; cross_date diagnostic. All nine prediction matrices freeze before independent truth-last scores. Report each seed and scene, TX/RX/day, matched packet corrections and regressions. No leo_weak.",
+  "success": "Exceed Tri three-seed mean on clean and six-scene mean; exceed ordinary PL in every scene on three-seed mean. Record every seed/scenario and all subgroup losses. Stronger all-condition claim additionally requires each seed/scene vs PL positive and independent settings.",
+  "environment": "N607 ordinary account, project Python, immutable release and unique run/output root, FP32/TF32 off.",
+  "command": "python -m experiments.pamf_physics_tri.publish --scheduled-practical --repo REPO --output UNIQUE_LOCAL_ROOT --context EXISTING_CONTEXT --ssh-config N607_CONFIG",
+  "resources": "GPU 0–7; no more than two observed or pending workers per card including other owners. One owner and nine-row actual E20 source-only smoke.",
+  "stop_rule": "Systemic technical failure stops new dispatch while healthy workers and outputs remain. No target-driven tuning, checkpoint selection, rerun, optional source diagnostic or weak scoring.",
+  "expected_artifacts": ["Nine source-only real E20 finite smoke checks", "Own E30/E50 and strength-weighted actual U exposure", "Nine frozen seven-scene predictions", "Independent paired same-packet three-seed DURA/raw analysis"]
+}
