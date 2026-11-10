@@ -35,18 +35,24 @@ for setting in settings:
     data = SourceDataset(handle['source_cache'], 'V', contract)
     meta = data.metadata
     cells = sorted(set(zip(meta['y'].tolist(), meta['rx_i'].tolist(), meta['day_i'].tolist())))
-    picks = [np.flatnonzero((meta['y'] == y) & (meta['rx_i'] == rx) & (meta['day_i'] == day))[:8]
+    quota = 2 if setting == 'ManyRx' else 8
+    picks = [np.flatnonzero((meta['y'] == y) & (meta['rx_i'] == rx) & (meta['day_i'] == day))[:quota]
              for y, rx, day in cells]
-    if not cells or any(len(x) != 8 for x in picks):
-        raise ValueError('At least eight source V packets per observed TX/RX/day cell required')
+    if not cells or any(len(x) != quota for x in picks):
+        raise ValueError('Insufficient source V packets in a TX/RX/day cell: ' + setting)
     single_rx = len(set(meta['rx_i'].tolist())) == 1
-    selected_count = 8 * len(cells)
+    selected_count = quota * len(cells)
+    if setting == 'ManyRx':
+        batches = [np.asarray([i for cell, values in zip(cells, picks) if cell[2] == day for i in values], np.int64)
+                   for day in sorted(set(cell[2] for cell in cells))]
+    else:
+        batches = [np.asarray([item[i] for item in picks for i in (2*repeat, 2*repeat+1)], np.int64)
+                   for repeat in range(4)]
     params = list(reader.response_projection.parameters())
     names = ('ce', 'pl', 'relation_L', 'relation_U')
     grad = {name: [torch.zeros_like(p, device='cpu', dtype=torch.float64) for p in params] for name in names}
     totals = dict(accepted=0, accepted_wrong=0, anchors_L=0, anchors_U=0, delay_changes=0)
-    for repeat in range(4):
-        part = np.asarray([item[i] for item in picks for i in (2*repeat, 2*repeat+1)], dtype=np.int64)
+    for repeat, part in enumerate(batches):
         x = data.x.index_select(0, torch.as_tensor(part, dtype=torch.long)).to('cuda:0')
         y = torch.as_tensor(meta['y'][part].tolist(), dtype=torch.long, device='cuda:0')
         rx = torch.as_tensor(meta['rx_i'][part].tolist(), dtype=torch.long, device='cuda:0')
@@ -77,7 +83,8 @@ for setting in settings:
         totals['anchors_U'] += u_stats['valid_anchors']
         losses = (F.cross_entropy(logits, y, reduction='sum') / selected_count,
                   (F.cross_entropy(logits, pseudo, reduction='none') * mask).sum() / selected_count,
-                  .01 * relation_l / 4, .01 * relation_u / 4)
+                  .01 * relation_l * len(part) / selected_count,
+                  .01 * relation_u * len(part) / selected_count)
         for j, name in enumerate(names):
             values = torch.autograd.grad(losses[j], params, retain_graph=j < len(names)-1, allow_unused=True)
             for i, value in enumerate(values):
@@ -88,7 +95,8 @@ for setting in settings:
     direct_norm, relation_norm = float(direct.norm()), float(relation.norm())
     if any(p.grad is not None for p in reader.parameters()):
         raise ValueError('Probe cannot apply or retain parameter gradients')
-    rows[setting] = dict(V_total=len(data), selected=selected_count, cells=len(cells), single_receiver=single_rx,
+    rows[setting] = dict(V_total=len(data), selected=selected_count, cells=len(cells), per_cell=quota,
+        batches=len(batches), classes=len(contract['classes']), single_receiver=single_rx,
         direct_ce_pl_norm=direct_norm, reference_relation_norm=relation_norm,
         relation_to_direct=relation_norm/direct_norm if direct_norm else None,
         cosine=float(torch.dot(direct, relation)/(direct_norm*relation_norm)) if direct_norm and relation_norm else None,
@@ -96,7 +104,7 @@ for setting in settings:
     del reader, data, x, logits, feature, changed, losses
     torch.cuda.empty_cache()
 print(json.dumps(dict(status='SOURCE_CROSS_SETTING_PROBE_COMPLETE', source_only=True, target_reads=0, U_reads=0,
-    seed=2026092701, optimizer_updates=0, selected_rule='first eight V packets per observed TX/RX/day cell',
-    batch_rule='four balanced batches, two packets per cell', beta=.5,
+    seed=2026092701, optimizer_updates=0, selected_rule='first eight V per cell, or first two for sparse ManyRx',
+    batch_rule='two packets per cell; ManyRx split by day', beta=.5,
     scope='frozen original PL models, eval mode, reference parameters only; local proxy, not training trajectory',
     rows=rows), allow_nan=False))
