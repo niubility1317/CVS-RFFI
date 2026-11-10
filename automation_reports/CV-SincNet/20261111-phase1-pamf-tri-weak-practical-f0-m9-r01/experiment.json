@@ -1,0 +1,21 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261111-phase1-pamf-tri-weak-practical-f0-m9-r01",
+  "display_name": "Tri-SIG-TIME 弱信道扰动与等剂量五分支筛选",
+  "scope": "F0 Main split original full reference-response PAMF, three SIG-TIME views and fixed permutation [0,5,3,6,2,1,4,7]. Three arms x seeds 2026092701/02/03. Target F0 has been exposed and is development evaluation.",
+  "initialization": "Reuse exact source-only original same-seed Tri-SIG-TIME E20, continue own E10+E20 for fixed E50 and 11100 cumulative updates. Same original source L/U roles and model/head.",
+  "matrix": [
+    {"arm": "tri-weak-all", "selection": "all accepted U in original physical half"},
+    {"arm": "tri-weak-random", "selection": "random accepted U count matching that step's actual branch certificate count"},
+    {"arm": "tri-weak-branch", "selection": "accepted U with at least four of five raw branches and four of five same-record simulated branches supporting pseudo class"}
+  ],
+  "method": "Both random and branch routes evaluate the same detached five-branch certificate with the same physical half, cross-RX current L anchors, source simulator, and independent deterministic random draws. Selected slots get 0.75 raw plus 0.25 source-practical IQ; the remaining physical slots receive raw. Interpolation is a finite received-IQ proxy, not a separately sampled real propagation channel. Random dose matches the branch-eligible count within its own current batch; the learned trajectories differ, so matching is not claimed between models globally. Both baseline REPL loss and accepted raw pseudo labels, gradient guard, six U forwards, L supervision and default inference are retained. Original As simulator is fixed three-scene source-only, and U labels remain hidden.",
+  "controls": ["Same-seed complete Tri-SIG-TIME SSL", "same-seed ordinary PL", "random same-step certificate-count control", "full-dose existing practical-U and gated-U results as historical comparators"],
+  "evaluation": "Fixed E50, clean and six practical scenarios, DURA-LU primary, DURA-L and raw secondary. Main test cross_rx plus cross_both, 168000 disjoint physical packets per scene. All nine frozen prediction matrices precede independent truth-last scores. Per seed, scene, TX/RX/day and same-packet correction/regression. No leo_weak.",
+  "success": "Three-seed mean exceeds Tri on clean and practical-six mean, and exceeds PL in every scene. Disclose each seed loss; all-condition evidence additionally requires each PL seed/scenario cell positive and independent settings.",
+  "environment": "N607 ordinary account and project Python, immutable release and unique run/output root, FP32/TF32 off.",
+  "command": "python -m experiments.pamf_physics_tri.publish --weak-practical --repo REPO --output UNIQUE_LOCAL_ROOT --context EXISTING_CONTEXT --ssh-config N607_CONFIG",
+  "resources": "GPU 0–7, at most two observed or pending processes per GPU including other owners; one run owner and nine-row actual E20 no-query smoke.",
+  "stop_rule": "Systemic technical failure stops new dispatch while healthy workers and outputs remain. No optional source diagnostics, target-driven tuning or rerun, or weak scoring.",
+  "expected_artifacts": ["Nine finite source-only real E20 smoke checks", "Nine own E30/E50 and source U routing counts", "Nine frozen seven-scene predictions", "Independent three-seed paired DURA/raw analysis"]
+}

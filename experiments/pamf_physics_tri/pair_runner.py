@@ -5,7 +5,7 @@ from functools import partial
 from experiments.cric_dura_comparison.io import read
 from experiments.pamf_physics_route import prepare as routes
 from experiments.pamf_physics_route import runner as dispatching
-from . import pair_plan, partial_plan, practical_plan, recovery_plan
+from . import pair_plan, partial_plan, practical_plan, recovery_plan, weak_practical_plan
 from .pairing import installed as pairing_scope
 from .practical_gate import installed as practical_scope
 from .recovery import installed as recovery_scope
@@ -46,7 +46,8 @@ def check_practical(state):
 METHODS = {pair_plan.RUN: (pair_plan, pairing_scope, check_pairing),
            recovery_plan.RUN: (recovery_plan, recovery_scope, check_recovery),
            partial_plan.RUN: (partial_plan, recovery_scope, check_partial),
-           practical_plan.RUN: (practical_plan, practical_scope, check_practical)}
+           practical_plan.RUN: (practical_plan, practical_scope, check_practical),
+           weak_practical_plan.RUN: (weak_practical_plan, practical_scope, check_practical)}
 
 
 def worker(c, kind):

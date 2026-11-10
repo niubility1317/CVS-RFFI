@@ -7,11 +7,12 @@ from .plan import RUN, SEEDS
 
 
 def publish(repo, output, context, ssh_config, *, pairing=False, recovery=False, partial_recovery=False,
-            practical_gate=False):
+            practical_gate=False, weak_practical=False):
     from .pair_plan import RUN as PAIR_RUN
     from .partial_plan import RUN as PARTIAL_RUN
     from .practical_plan import RUN as PRACTICAL_RUN
     from .recovery_plan import RUN as RECOVERY_RUN
+    from .weak_practical_plan import RUN as WEAK_RUN
 
     old_run, old_remote = base.RUN, base.REMOTE
     base.RUN, gpus = RUN, [0, 1]
@@ -23,6 +24,8 @@ def publish(repo, output, context, ssh_config, *, pairing=False, recovery=False,
         base.RUN, gpus = PARTIAL_RUN, [5, 6, 7]
     elif practical_gate:
         base.RUN, gpus = PRACTICAL_RUN, list(range(8))
+    elif weak_practical:
+        base.RUN, gpus = WEAK_RUN, list(range(8))
     owner = f'codex-{base.RUN}'
     runner = 'experiments.pamf_physics_tri.pair_runner' if base.RUN != RUN else 'experiments.pamf_physics_tri.runner'
     preflight = (
@@ -55,6 +58,7 @@ if __name__ == '__main__':
     experiment.add_argument('--recovery', action='store_true')
     experiment.add_argument('--partial-recovery', action='store_true')
     experiment.add_argument('--practical-gate', action='store_true')
+    experiment.add_argument('--weak-practical', action='store_true')
     a = p.parse_args()
     publish(a.repo, a.output, a.context, a.ssh_config, pairing=a.pairing, recovery=a.recovery,
-            partial_recovery=a.partial_recovery, practical_gate=a.practical_gate)
+            partial_recovery=a.partial_recovery, practical_gate=a.practical_gate, weak_practical=a.weak_practical)

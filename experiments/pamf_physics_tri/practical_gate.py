@@ -30,6 +30,22 @@ def capture_pair(student, clean, changed):
     return raw, altered
 
 
+def select_views(offered, certified, mode, seed):
+    if mode == 'all':
+        return offered
+    if mode == 'branch':
+        return offered & certified
+    if mode == 'random':
+        choices = offered.nonzero(as_tuple=True)[0]
+        count = int((offered & certified).sum())
+        generator = torch.Generator(device='cpu').manual_seed(seed)
+        order = torch.randperm(len(choices), generator=generator)[:count].to(choices.device)
+        selected = torch.zeros_like(offered)
+        selected[choices[order]] = True
+        return selected
+    raise ValueError('Unknown practical U routing mode')
+
+
 class PracticalGate(GuardedReceiverExtrapolation):
     def __init__(self, c):
         super().__init__(c)
@@ -56,10 +72,16 @@ class PracticalGate(GuardedReceiverExtrapolation):
         _, certified = branch_certificate(raw, altered, labels, l_rx, metadata['rx_i'][indices],
                                           pseudo[indices], self.c['num_classes'], 4)
         offered = accepted[indices]
-        selected = offered & certified if self.c['practical_gate']['branch_gate'] else offered
+        recipe = self.c['practical_gate']
+        mode = recipe.get('mode', 'branch' if recipe.get('branch_gate') else 'all')
+        selected = select_views(offered, certified, mode, self.c['model_seed'] * 100_000 + step)
+        strength = recipe.get('strength', 1.)
         mixed = ordinary.clone()
         mixed[indices] = x[indices]
-        mixed[indices[selected]] = simulated[selected]
+        view = simulated[selected]
+        if strength != 1.:
+            view = x[indices[selected]] + strength * (view - x[indices[selected]])
+        mixed[indices[selected]] = view
         self.as_calls += 1
         self.as_offered += int(offered.sum())
         self.as_certified += int((offered & certified).sum())
@@ -68,16 +90,18 @@ class PracticalGate(GuardedReceiverExtrapolation):
 
     def state_dict(self):
         state = super().state_dict()
+        recipe = self.c['practical_gate']
+        mode = recipe.get('mode', 'branch' if recipe.get('branch_gate') else 'all')
         if (self.labeled is not None or self.as_calls != self.calls
                 or not 0 <= self.as_certified <= self.as_offered <= self.seen // 2
-                or self.as_used != (self.as_certified if self.c['practical_gate']['branch_gate'] else self.as_offered)):
+                or self.as_used != (self.as_offered if mode == 'all' else self.as_certified)):
             raise ValueError('Simulated U views must match the registered source gate')
         # Native counters assume all physical slots were raw when hard_pl_no_uas is set.
         state['raw_As_seen'] -= self.as_used
         state['physical_seen'] += self.as_used
         state['physical_student_views'] += 2 * self.as_used
         state['U_practical_gate'] = dict(calls=self.as_calls, offered=self.as_offered,
-            certified=self.as_certified, used=self.as_used, branch_gate=self.c['practical_gate']['branch_gate'])
+            certified=self.as_certified, used=self.as_used, recipe=recipe)
         return state
 
 
