@@ -1,7 +1,7 @@
 """Install branch supervision around the original matched PAMF PL trainer."""
 from contextlib import contextmanager
 
-from .objective import GuardedBranchPL, install_labeled
+from .objective import BranchPL, install_labeled
 from .source_ids import indexed_source_scope
 
 
@@ -17,7 +17,7 @@ def installed(config, holder, *, branch_u_enabled):
     def build(model, cfg):
         model = original_install(model, cfg)
         model = paper_model.structure(model, cfg['paper_row'], cfg['model_seed'])
-        return install_labeled(model, cfg)
+        return install_labeled(model, cfg) if cfg['branch_relation']['l_weight'] else model
 
     def arguments(cfg, device):
         return paper_model.source_arguments(original_arguments, cfg, device)
@@ -26,7 +26,7 @@ def installed(config, holder, *, branch_u_enabled):
     try:
         with indexed_source_scope(), loader_scope():
             if branch_u_enabled:
-                with hard_scope(config, holder, objective_cls=GuardedBranchPL):
+                with hard_scope(config, holder, objective_cls=BranchPL):
                     yield
             else:
                 yield

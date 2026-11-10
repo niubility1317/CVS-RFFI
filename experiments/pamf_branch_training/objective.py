@@ -1,17 +1,19 @@
-"""Train-only branch objectives for the existing no-reference PAMF graph."""
+"""Train-only branch objectives for the original full PAMF graph."""
 from contextlib import contextmanager
 from types import MethodType
 
 import torch
 
-from experiments.pamf_ssl_research.hard_pl_guard_objective import Guarded
 from experiments.pamf_ssl_research.hard_pl_objective import HardPLObjective
 from .relation import branch_relation_loss, capture_branches
 
 
 def _actual_paths(student):
     reference = student.id_backbone.encoder
-    return reference.core.id_backbone, reference.sequence_pool, getattr(reference, 'response_projection', None)
+    projection = getattr(reference, 'response_projection', None)
+    if projection is None:
+        raise ValueError('Original full PAMF reference-response branch is required')
+    return reference.core.id_backbone, reference.sequence_pool, projection
 
 
 def _source_meta(metadata, device, allowed_receivers):
@@ -23,7 +25,7 @@ def _source_meta(metadata, device, allowed_receivers):
 
 
 def install_labeled(student, config):
-    """Augment the real labeled objective before U gradient protection."""
+    """Augment the original labeled objective with branch relations."""
     original_context = student._phase1_labeled_feature_context
     original_hook = student._source_labeled_feature_hook
     student._branch_pending = None
@@ -105,7 +107,3 @@ class BranchPL(HardPLObjective):
         state['branch_U'] = dict(calls=self.branch_u_calls, extra_backbone_forwards=0,
                                  target_access=False, U_truth_read=False)
         return state
-
-
-class GuardedBranchPL(Guarded, BranchPL):
-    pass

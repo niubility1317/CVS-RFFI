@@ -21,7 +21,7 @@ def capture_branches(core, sequence, reference=None):
     try:
         for name, module in modules.items():
             if module is None:
-                raise ValueError('Full no-reference branch graph required')
+                raise ValueError('Expected PAMF branch graph required')
 
             def record(_module, _inputs, output, name=name):
                 if name in captured or not isinstance(output, torch.Tensor) or output.ndim != 2:
@@ -34,7 +34,7 @@ def capture_branches(core, sequence, reference=None):
             raise ValueError('An expected branch was not executed')
         packet.update(time=captured['time'],
                       frequency=captured['frequency_main'] + captured['frequency_stats'],
-                      pa=captured['pa_main'] + 1.25 * captured['pa_stats'],
+                      pa=captured['pa_main'] + .25 * captured['pa_stats'],
                       path=captured['path'])
         if reference is not None:
             packet['reference'] = captured['reference']

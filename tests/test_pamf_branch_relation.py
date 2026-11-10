@@ -71,7 +71,7 @@ def test_capture_reconstructs_same_pass_branches_and_removes_hooks():
         for module in (core.t_proj, core.f_proj, core.freq_stats_proj, core.pa_proj, core.pa_stats_proj, sequence):
             module(x)
     assert torch.allclose(packet['frequency'], core.f_proj(x) + core.freq_stats_proj(x))
-    assert torch.allclose(packet['pa'], core.pa_proj(x) + 1.25 * core.pa_stats_proj(x))
+    assert torch.allclose(packet['pa'], core.pa_proj(x) + .25 * core.pa_stats_proj(x))
     assert all(len(m._forward_hooks) == 0 for m in (core.t_proj, core.f_proj, core.pa_proj, sequence))
 
 
@@ -131,6 +131,7 @@ def test_branch_pl_executes_on_hidden_u_with_original_student_forward():
             self.id_backbone.encoder.core = nn.Module()
             self.id_backbone.encoder.core.id_backbone = Core()
             self.id_backbone.encoder.sequence_pool = nn.Linear(3, 3, bias=False)
+            self.id_backbone.encoder.response_projection = nn.Linear(3, 3, bias=False)
             self._cd_U_seen = self._cd_U_accepted = 0
 
         def forward(self, x):
@@ -140,7 +141,8 @@ def test_branch_pl_executes_on_hidden_u_with_original_student_forward():
             core = self.id_backbone.encoder.core.id_backbone
             path = self.id_backbone.encoder.sequence_pool
             parts = [core.t_proj(x), core.f_proj(x), core.freq_stats_proj(x),
-                     core.pa_proj(x), core.pa_stats_proj(x), path(x)]
+                     core.pa_proj(x), core.pa_stats_proj(x), path(x),
+                     self.id_backbone.encoder.response_projection(x)]
             z = sum(parts)
             return {'tx_logits': torch.stack((z[:, 0], -z[:, 0]), dim=1)}
 
