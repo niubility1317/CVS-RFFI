@@ -28,15 +28,19 @@ def validate_source(c):
 
 def checked_parent(c):
     """Check actual source contract, scratch ancestry and payload before reuse."""
+    validate_source(c)
+    return checked_e20_parent(c)
+
+
+def checked_e20_parent(c):
     import torch
-    row = validate_source(c)
     folder = Path(c['shared_prefix'])
     done = read(folder / 'complete.json')
     cfg = done['config']
     if (done['status'] != 'SOURCE_FROZEN' or done['epoch'] != 20 or done['updates'] != 4440
             or done['target_access'] or done['U_truth_read'] or done['head_fit_updates']
             or done['initialization'] != 'scratch' or done['ancestors'] != []
-            or cfg['ablation'] != c['ablation'] or cfg['model_seed'] != SEED
+            or cfg['ablation'] != c['ablation'] or cfg['model_seed'] != c['model_seed']
             or read(cfg['source_contract']) != read(c['source_contract'])):
         raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH_OR_PROVENANCE')
     payload = torch.load(folder / 'final_ssdg.pth', map_location='cpu', weights_only=False)

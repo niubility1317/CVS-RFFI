@@ -6,13 +6,17 @@ import time
 from experiments.cric_dura_comparison.io import read, write
 from experiments.pamf_branch_training import plan as old_plan
 from experiments.pamf_branch_training.source import checked_parent as old_checked_parent
-from .plan import RUN, SEED, validate_candidate
+from .plan import RUN, validate_candidate
 from .training_scope import installed
 
 
 def validate_source(c):
     row = validate_candidate(c['physical_row'])
-    if (c['run_id'] != RUN or c['row_id'] != row['row_id'] or c['model_seed'] != SEED
+    return validate_source_config(c, row, RUN)
+
+
+def validate_source_config(c, row, run_id):
+    if (c['run_id'] != run_id or c['row_id'] != row['row_id'] or c['model_seed'] != row['model_seed']
             or c['source_rxs'] != row['source_rxs'] or c['source_days'] != row['source_days']
             or c['num_classes'] != 6 or c['epochs'] != 50 or c['optimizer_updates'] != 11100
             or c['ablation'] != 'F21' or not c['U_use'] or c['own_EMA'] or c['native_U_gate']

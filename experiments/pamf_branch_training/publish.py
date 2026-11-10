@@ -28,9 +28,10 @@ for path in [rt['python'],rt['weak_root']+'/manifest.json',rt['weak_truth'],*rt[
 h=ctx['handles']['F0']
 for path in [h['source_cache'],h['source_contract'],*[h['tests'][t]['views_root'] for t in ('cross_date','cross_rx','cross_both')]]:
  if not Path(path).exists():raise FileNotFoundError(path)
-for kind in ('F20','F21'):
- path=Path(ctx['sources']['2026092701'][kind])/'segment20'
- if not (path/'final_ssdg.pth').is_file() or not (path/'complete.json').is_file():raise FileNotFoundError(path)
+for seed in rt.get('parent_seeds',[2026092701]):
+ for kind in rt.get('parent_kinds',['F20','F21']):
+  path=Path(ctx['sources'][str(seed)][kind])/'segment20'
+  if not (path/'final_ssdg.pth').is_file() or not (path/'complete.json').is_file():raise FileNotFoundError(path)
 for v in ctx['caches']['F0'].values():
  d=json.loads((Path(v['path'])/'complete.json').read_text())
  if d['status']!='DURA_IQ_CACHE_COMPLETE' or d['truth_read']:raise ValueError('Frozen cache missing')

@@ -1,6 +1,7 @@
 """One owner, source-only route-stability training, practical-only testing."""
 import argparse
 import csv
+from functools import partial
 import os
 from pathlib import Path
 import subprocess
@@ -11,7 +12,7 @@ from experiments.pamf_physics_branch import runner as physical
 from experiments.pamf_physics_branch.route_training_scope import installed
 from .plan import candidate_rows, configuration
 from .prepare import prepare
-from .source import validate_source
+from .source import checked_parent
 
 
 def worker(c, kind):
@@ -20,21 +21,26 @@ def worker(c, kind):
             raise ValueError('Only practical evaluation stages are permitted')
         return physical.worker(c, kind)
     from experiments.pamf_physics_branch import source, smoke
-    old = source.validate_source, source.installed, smoke.candidate_rows, smoke.configuration, smoke.installed
-    source.validate_source, source.installed = validate_source, installed
-    smoke.candidate_rows, smoke.configuration, smoke.installed = candidate_rows, configuration, installed
+    old = source.checked_parent, source.installed, smoke.checked_parent, smoke.candidate_rows, smoke.configuration, smoke.installed
+    source.checked_parent, source.installed = checked_parent, installed
+    smoke.checked_parent = checked_parent
+    smoke.candidate_rows = partial(candidate_rows, c['run_id'])
+    smoke.configuration = partial(configuration, run_id=c['run_id'])
+    smoke.installed = installed
     try:
         from experiments.pamf_repl_completion.runner import activate
         activate(c)
         if kind == 'train':
             return source.train(c)
         result = smoke.smoke(c)
-        evidence = read(Path(c['run_root']) / 'smoke.json')['checks'][0]['U']['reference_routing']
-        if evidence['calls'] != 2 or evidence['selected_samples'] != 192:
-            raise ValueError('Actual source smoke did not execute both L and U routing')
+        for check in read(Path(c['run_root']) / 'smoke.json')['checks']:
+            evidence = check['U']['reference_routing']
+            if evidence['calls'] != 2 or evidence['selected_samples'] != 192:
+                raise ValueError('Actual source smoke did not execute both L and U routing')
         return result
     finally:
-        (source.validate_source, source.installed, smoke.candidate_rows, smoke.configuration, smoke.installed) = old
+        (source.checked_parent, source.installed, smoke.checked_parent, smoke.candidate_rows,
+         smoke.configuration, smoke.installed) = old
 
 
 def launch(rt, job, gpu):
