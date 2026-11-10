@@ -32,16 +32,18 @@ def current_workers(rt,jobs):
         if not p.name.isdigit():continue
         try:
             pid=int(p.name)
-            if not alive(pid) or os.readlink(p/'cwd')!=rt['source_release']:continue
+            if not alive(pid):continue
+            cwd=os.readlink(p/'cwd')
             argv=[x.decode() for x in (p/'cmdline').read_bytes().split(b'\0') if x]
             if '--config' not in argv:continue
             job=by_config.get(argv[argv.index('--config')+1])
             if not job or argv!=command(rt,job):continue
+            if cwd!=job.get('worker_release',rt['source_release']):continue
             if job['id'] in found:raise ValueError('Duplicate original worker: '+job['id'])
             env=dict(x.split(b'=',1) for x in (p/'environ').read_bytes().split(b'\0') if b'=' in x)
             gpu=None if job['kind']=='score' else int(env[b'CUDA_VISIBLE_DEVICES'])
-            found[job['id']]=dict(status='RUNNING',pid=pid,gpu=gpu,cwd=rt['source_release'],argv=argv,
-                log=str(Path(rt['run_root'])/'logs'/(job['id']+'.log')),adopted=True)
+            found[job['id']]=dict(status='RUNNING',pid=pid,gpu=gpu,cwd=cwd,argv=argv,
+                log=job.get('recovery_log',str(Path(rt['run_root'])/'logs'/(job['id']+'.log'))),adopted=True)
         except (FileNotFoundError,ProcessLookupError,PermissionError):continue
     return found
 
@@ -139,6 +141,11 @@ def run(rt):
     write(control/'jobs.json',jobs);atomic(control/'pipeline_state.json',state)
     write(root/'handoff.json',dict(status='HANDOFF',previous_pid=old,new_pid=os.getpid(),control_root=str(control),
         source_release=rt['source_release'],adopted=list(observed),accelerated_queued=len(accelerated)))
+    return run_loop(rt,control,state,jobs,sources,failures,accelerated)
+
+
+def run_loop(rt,control,state,jobs,sources,failures,accelerated):
+    root=Path(rt['run_root']);by={j['id']:j for j in jobs}
     previous_sample=resource_sample();time.sleep(1);turn=0
     while True:
         current=resource_sample();guard=resource_guard(previous_sample,current);previous_sample=current
@@ -184,7 +191,7 @@ def run(rt):
         score=next((j for j in eligible if j['kind']=='score'),None)
         if score and not any(by[k]['kind']=='score' for k in active) and not foreign_CPU_score({v['pid'] for v in active.values()}):
             start(score,None);eligible.remove(score)
-        for gpu in range(8):
+        for gpu in rt.get('dispatch_gpus',range(8)):
             _,free=capacity(gpu);own=sum(v.get('gpu')==gpu for v in active.values())
             if not can_start(gpu,own,free):continue
             pool=[j for j in eligible if j['kind']!='score']
@@ -199,6 +206,7 @@ def run(rt):
             job=min(matches,key=rank);start(job,gpu);eligible.remove(job)
         state.update(updated_at=time.time(),counts=dict(Counter(v['status'] for v in state['jobs'].values())),failures=dict(failures),
             systemic_stop_new_launches=systemic,resource_guard=guard,own_gpu_limits={'0-6':3,'7':2},other_owners_counted=False,
+            dispatch_gpus=list(rt.get('dispatch_gpus',range(8))),
             accelerated_queued=sum(state['jobs'][k]['status']=='QUEUED' for k in accelerated))
         atomic(control/'pipeline_state.json',state)
         if not active and (not pending or systemic) and not uncertain:break
