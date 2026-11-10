@@ -5,8 +5,9 @@ from functools import partial
 from experiments.cric_dura_comparison.io import read
 from experiments.pamf_physics_route import prepare as routes
 from experiments.pamf_physics_route import runner as dispatching
-from . import pair_plan, partial_plan, recovery_plan
+from . import pair_plan, partial_plan, practical_plan, recovery_plan
 from .pairing import installed as pairing_scope
+from .practical_gate import installed as practical_scope
 from .recovery import installed as recovery_scope
 from .runner import smoke, worker as existing_worker
 from .source import train_trajectory
@@ -35,9 +36,17 @@ def check_partial(state):
     return details
 
 
+def check_practical(state):
+    data = state['U_practical_gate']
+    if data['calls'] != 1 or data['offered'] <= 0 or not 0 <= data['used'] <= data['offered']:
+        raise ValueError('Actual source-channel U routing must be executed')
+    return dict(U_practical_gate=data)
+
+
 METHODS = {pair_plan.RUN: (pair_plan, pairing_scope, check_pairing),
            recovery_plan.RUN: (recovery_plan, recovery_scope, check_recovery),
-           partial_plan.RUN: (partial_plan, recovery_scope, check_partial)}
+           partial_plan.RUN: (partial_plan, recovery_scope, check_partial),
+           practical_plan.RUN: (practical_plan, practical_scope, check_practical)}
 
 
 def worker(c, kind):

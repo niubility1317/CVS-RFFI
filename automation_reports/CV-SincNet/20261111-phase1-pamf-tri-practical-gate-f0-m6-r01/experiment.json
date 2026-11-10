@@ -1,0 +1,20 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261111-phase1-pamf-tri-practical-gate-f0-m6-r01",
+  "display_name": "Tri-SIG-TIME 源信道无标签视图的五分支跨接收机门控",
+  "scope": "Phase1 F0 Main split, original full reference-response PAMF and three SIG-TIME views with permutation [0,5,3,6,2,1,4,7]. Two arms and seeds 2026092701/02/03. F0 is an already exposed development benchmark.",
+  "initialization": "Reuse each exact original same-seed source-only Tri-SIG-TIME E20; continue own E10+E20 to fixed E50 and 11100 cumulative steps. Preserve source roles, class order, default head and original accepted pseudo labels.",
+  "matrix": [
+    {"arm": "tri-practical-u", "gate": "all accepted source-U samples in the existing physical half"},
+    {"arm": "tri-branch-practical-u", "gate": "accepted source-U physical-half samples whose fused pseudo class is supported by at least four of five raw branches and four of five same-record simulated branches"}
+  ],
+  "method": "Original T1 source practical residual simulator generates one source-only three-scene simulated IQ for each physical-half U packet. Current true L anchors exclude the U packet's source RX. Each U branch compares with the six raw L class centroids. Both arms run exactly the same detached eval-mode branch probes and simulator; the branch-gated arm uses the simulated view only when all classes have anchors and both vote counts pass. Otherwise the existing raw slot is used. U confidence .95, original REPL random cross-RX plan, six student forwards, objective weights, existing guard and all L losses remain. Simulated U truth is never accessed. U As uses existing As CE slot, no As KL. All source-channel draws are keyed by existing training source physical identity and step.",
+  "controls": ["Original same-seed complete Tri-SIG-TIME SSL", "same-seed ordinary PL on the same inputs", "ungated source-practical U at equal branch-probe and simulator dose"],
+  "evaluation": "Fixed E50. Clean and six practical scenes, DURA-LU primary, DURA-L and raw secondary. Cross_rx plus cross_both comprise disjoint 168000 physical packets per scene; cross_date is diagnostic. All six candidates' predictions freeze before independent truth-last scoring. Report every seed and scenario, per TX/RX/day and same-packet corrections and regressions. Exclude leo_weak.",
+  "success": "Three-seed mean exceeds Tri on clean and six-scene mean, and exceeds ordinary PL in every scene. Report every individual seed and scenario. Stronger all-condition evidence requires every PL seed/scenario cell positive and independent protocol confirmation.",
+  "environment": "N607 ordinary account, existing project Python, immutable Git release and unique run/output root, FP32/TF32 off.",
+  "command": "python -m experiments.pamf_physics_tri.publish --practical-gate --repo REPO --output UNIQUE_LOCAL_ROOT --context EXISTING_CONTEXT --ssh-config N607_CONFIG",
+  "resources": "GPUs 0–7, no more than two observed or pending processes per GPU including other owners. One release owner and six-row real E20 no-query smoke.",
+  "stop_rule": "Stop new dispatch on systemic technical failure, preserving healthy workers and outputs. No weak scoring, target-driven candidate selection, tuning or rerun.",
+  "expected_artifacts": ["Six real E20 source-only finite smoke checks", "Own E30/E50 and actual simulated-U counters", "Six frozen seven-scene prediction matrices", "Independent same-packet three-seed DURA/raw scoring"]
+}

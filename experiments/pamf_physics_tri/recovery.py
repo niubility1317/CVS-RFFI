@@ -184,10 +184,12 @@ class GuardedPartialRecovery(Guarded, PartialRecovery):
 
 
 @contextmanager
-def installed(c, holder):
+def installed(c, holder, *, objective_factory=None):
     from experiments.cric_dura_comparison import t1_model
 
-    objective_cls = GuardedPartialRecovery if c['rejected_u_recovery'].get('partial_labels') else GuardedRecovery
+    objective_cls = objective_factory
+    if objective_cls is None:
+        objective_cls = GuardedPartialRecovery if c['rejected_u_recovery'].get('partial_labels') else GuardedRecovery
     with original_tri(c, holder, enabled=True, objective_factory=objective_cls):
         old_install = t1_model.install
 
