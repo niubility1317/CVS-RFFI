@@ -11,9 +11,26 @@ from experiments.pamf_branch_training.relation import capture_branches
 from experiments.pamf_paper_completion.model import load_reader
 from experiments.pamf_physics_branch.geometry import bounded_echo, tangent
 from experiments.pamf_physics_branch.objective import echo_parameters
+from experiments.pamf_physics_branch.source_diagnostic import identity_basis, direction_overlap
 
 
-def probe(config, role='V', device='cuda:0'):
+def reference_basis(reader, config, contract, device):
+    """Descriptive L-centroid basis; it is not an identified TX subspace."""
+    data = SourceDataset(config['source_cache'], 'L_s', contract)
+    vectors, labels = [], []
+    with torch.no_grad():
+        for begin in range(0, len(data), 128):
+            end = min(begin + 128, len(data))
+            x = data.x[begin:end].to(device)
+            with capture_branches(reader.core.id_backbone, reader.sequence_pool, reader.response_projection) as paths:
+                reader.features(x)
+            vectors.append(torch.nn.functional.normalize(paths['reference'], dim=1).cpu())
+            labels.append(torch.as_tensor(data.metadata['y'][begin:end], dtype=torch.long))
+    basis, rank = identity_basis(torch.cat(vectors), torch.cat(labels), classes=len(contract['classes']))
+    return basis.to(device), rank
+
+
+def probe(config, role='V', device='cuda:0', identity_overlap=False):
     if role not in ('L_s', 'V') or any(config.get(k) for k in
             ('truth', 'target_truth', 'tests', 'views_root', 'target_inputs')):
         raise ValueError('Only declared labeled source roles are allowed')
@@ -22,6 +39,7 @@ def probe(config, role='V', device='cuda:0'):
     contract = read(config['source_contract'])
     reader, _ = load_reader(config['source_output'], contract, config['paper_row'], device)
     reader.eval()
+    basis, rank = reference_basis(reader, config, contract, device) if identity_overlap else (None, None)
     data = SourceDataset(config['source_cache'], role, contract)
     meta = data.metadata
     metrics = defaultdict(lambda: defaultdict(float))
@@ -43,7 +61,10 @@ def probe(config, role='V', device='cuda:0'):
             changed = r0['selected_delay_samples'] != r1['selected_delay_samples']
             confidence, pred = p0.max(1)
             pred1 = p1.argmax(1)
-            drift = {n: tangent(raw[n], altered[n])[1] for n in names}
+            directions = {n: tangent(raw[n], altered[n]) for n in names}
+            drift = {n: pair[1] for n, pair in directions.items()}
+            if basis is not None:
+                overlap, overlap_valid = direction_overlap(directions['reference'][0], basis)
             y = torch.as_tensor(meta['y'][begin:end], device=device, dtype=torch.long)
             rx = torch.as_tensor(meta['rx_i'][begin:end], device=device, dtype=torch.long)
             day = torch.as_tensor(meta['day_i'][begin:end], device=device, dtype=torch.long)
@@ -61,6 +82,10 @@ def probe(config, role='V', device='cuda:0'):
                     out['prediction_flips'] += int(((pred != pred1) & mask_group).sum())
                     out['quality_sum'] += float(r0['quality'][mask_group].sum())
                     out['coherence_sum'] += float(r0['coherence'][mask_group].sum())
+                    if basis is not None:
+                        valid = mask_group & overlap_valid
+                        out['overlap_nonzero'] += int(valid.sum())
+                        out['overlap_sum'] += float(overlap[valid].sum())
                     for n in names:
                         out['drift_' + n + '_sum'] += float(drift[n][mask_group].sum())
     rows = []
@@ -73,12 +98,16 @@ def probe(config, role='V', device='cuda:0'):
         if count:
             for key in ('quality', 'coherence', *('drift_' + n for n in names)):
                 row[key + '_mean'] = row[key + '_sum'] / count
+        if basis is not None:
+            row['overlap_nonzero'] = int(row['overlap_nonzero'])
+            row['overlap_mean'] = (row['overlap_sum'] / row['overlap_nonzero']
+                                   if row['overlap_nonzero'] else None)
         rows.append(row)
     if sum(r['count'] for r in rows if r['dimension'] == 'overall') != contract['counts'][role]:
         raise ValueError('Source role coverage mismatch')
     return dict(status='SOURCE_DELAY_PROBE_COMPLETE', role=role, row_id=config['row_id'],
                 source_only=True, target_reads=0, U_reads=0, fitted_updates=0,
-                echo_seed_rule='202611200 + batch_start', rows=rows)
+                echo_seed_rule='202611200 + batch_start', reference_basis_rank=rank, rows=rows)
 
 
 if __name__ == '__main__':
@@ -86,5 +115,6 @@ if __name__ == '__main__':
     parser.add_argument('--config', required=True)
     parser.add_argument('--role', choices=('L_s', 'V'), default='V')
     parser.add_argument('--device', default='cuda:0')
+    parser.add_argument('--identity-overlap', action='store_true')
     args = parser.parse_args()
-    print(json.dumps(probe(read(args.config), args.role, args.device), allow_nan=False))
+    print(json.dumps(probe(read(args.config), args.role, args.device, args.identity_overlap), allow_nan=False))
