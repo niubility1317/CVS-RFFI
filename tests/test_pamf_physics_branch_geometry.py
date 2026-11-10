@@ -2,7 +2,9 @@ import pytest
 import torch
 from torch.nn import functional as F
 
-from experiments.pamf_physics_branch.geometry import bounded_echo, physical_branch_loss, soft_distances, tangent
+from experiments.pamf_physics_branch.geometry import (
+    bounded_echo, physical_branch_loss, protect_labeled_identity, soft_distances, tangent,
+)
 
 
 def test_causal_complex_echo_is_bounded_and_does_not_wrap():
@@ -33,6 +35,19 @@ def test_finite_differences_are_detached_and_soft_distance_is_bounded():
     assert bool((corrected >= 0).all()) and bool((corrected <= original + 1e-6).all())
     corrected.sum().backward()
     assert base.grad is not None and bool(torch.isfinite(base.grad).all())
+
+
+def test_identity_guard_preserves_class_axis_and_keeps_residual_magnitude():
+    features = torch.tensor([[1., 0., 0.], [1., 0., 0.], [-1., 0., 0.], [-1., 0., 0.]], requires_grad=True)
+    direction = F.normalize(torch.tensor([[1., 1., 0.]]).repeat(4, 1), dim=1)
+    labels = torch.tensor([0, 0, 1, 1])
+    protected = protect_labeled_identity(features, direction, labels)
+    assert not protected.requires_grad
+    assert torch.allclose(protected[:, 0], torch.zeros(4), atol=1e-6)
+    assert torch.allclose(protected[:, 1:], direction[:, 1:], atol=1e-6)
+    original, corrected = soft_distances(features, protected, .5)
+    assert torch.allclose(corrected, original)
+    assert not protect_labeled_identity(features, direction, torch.zeros_like(labels)).any()
 
 
 def test_zero_direction_and_unaccepted_records_have_no_gradient():

@@ -64,7 +64,7 @@ def physical_directions(student, inputs, seed):
     return directions, norms
 
 
-def source_relation(packet, directions, labels, metadata, selected, c, accepted=None):
+def source_relation(packet, directions, labels, metadata, selected, c, accepted=None, *, protect_identity=False):
     device = labels.device
     rx = metadata['rx_i'].to(device).long().index_select(0, selected)
     days = metadata['day_i'].to(device).long().index_select(0, selected)
@@ -75,12 +75,17 @@ def source_relation(packet, directions, labels, metadata, selected, c, accepted=
     selected_accepted = (torch.ones_like(chosen, dtype=torch.bool) if accepted is None
                          else accepted.index_select(0, selected))
     branch = {k: v.index_select(0, selected) for k, v in packet.items()}
+    if protect_identity:
+        if accepted is not None:
+            raise ValueError('Identity protection requires visible source labels')
+        from .geometry import protect_labeled_identity
+        directions = {k: protect_labeled_identity(v, directions[k], chosen) for k, v in branch.items()}
     return physical_branch_loss(branch, directions, chosen, rx, days, ids,
            selected_accepted, beta=c['physical_relation']['beta'],
            single_receiver=len(c['source_rxs']) == 1, reference_scale=c.get('reference_scale', 1.))
 
 
-def install_labeled(student, config):
+def install_labeled(student, config, *, protect_identity=False):
     original_context = student._phase1_labeled_feature_context
     original_hook = student._source_labeled_feature_hook
     student._physical_pending = None
@@ -108,7 +113,8 @@ def install_labeled(student, config):
         step = self._feature_l_steps + config.get('step_offset', 0)
         selected = select_indices(torch.ones_like(labels, dtype=torch.bool), 64, 202611101 + 2 * step)
         directions, norms = physical_directions(self, ordinary.index_select(0, selected), 202611103 + 2 * step)
-        branch, counts = source_relation(packet, directions, labels, kwargs['extra'][1], selected, config)
+        branch, counts = source_relation(packet, directions, labels, kwargs['extra'][1], selected, config,
+                                         protect_identity=protect_identity)
         self._physical_L_calls += 1
         self._physical_L_samples += len(selected)
         metrics.update(physical_L_loss=branch.detach(), physical_L_calls=self._physical_L_calls,

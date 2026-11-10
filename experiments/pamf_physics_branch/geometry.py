@@ -59,6 +59,21 @@ def soft_distances(features, directions, beta):
     return ordinary, corrected
 
 
+@torch.no_grad()
+def protect_labeled_identity(features, directions, labels):
+    """Keep the labeled class-contrast span out of the physical discount."""
+    z = F.normalize(features.detach().float(), dim=1, eps=1e-8)
+    centroids = torch.stack([z[labels == label].mean(0) for label in labels.unique()])
+    if len(centroids) < 2:
+        return torch.zeros_like(directions)
+    centered = centroids - centroids.mean(0)
+    _, singular, basis = torch.linalg.svd(centered, full_matrices=False)
+    basis = basis[singular > max(1e-6, 1e-5 * float(singular[0]))]
+    u = directions.detach().float()
+    # Preserve the residual norm so strong overlap attenuates the discount.
+    return (u - (u @ basis.T) @ basis).to(directions.dtype)
+
+
 def physical_branch_loss(features, directions, labels, receivers, days, record_ids, accepted,
                          *, beta, single_receiver, temperature=.2, reference_scale=1.):
     """Same-day source identity relation, using true or already accepted pseudo labels."""
