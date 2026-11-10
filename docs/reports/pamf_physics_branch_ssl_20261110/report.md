@@ -29,7 +29,11 @@
 
 真实与合成信号中，接收机、信道和发射机的影响会重叠。项目合成级联诊断给出相同波形可由 TX 侧或 RX 侧某些图像／三次失真生成的反例；这限制任何仅从单个接收包声称恢复物理真值的说法。[受控级联代码](../../../experiments/cvs_reference_identity/physics.py) [项目结构实验的物理声明边界](../../../experiments/cric_dura_comparison/final_results.py)
 
+原始全量源 L/V 已知激励诊断还发现，80:160 窗口的模板相关在 V 的源 RX1 均值约 0.9983，而源 RX3 约 0.7870、RX8 约 0.8010。这里的 RX 分组同时包含接收链与传播差异，不能仅归因于接收机硬件；但它提醒我们：参考路径的可靠度可能有很强的域差，不能假定每个包的参考响应都同样可信。[原始源域全量诊断](E:/type10-7/automation_reports/CV-SincNet/20261002-diagnostic-rff-known-excitation-source-manysig-m1-r01/report.md) 因此新源诊断按 RX/day/TX 报告参考质量、周期相干性与延迟格点变化，而不预先按单个阈值丢弃这些组。
+
 文献中频谱再生与 PA 非线性相关，但 CFO 随时间变化且含收发机相对项；该论文将 CFO 作为辅助而非单独永久身份特征。[Xie 等，2024/2025](https://arxiv.org/abs/2412.07269) 因此不能把人为改变 PA 的增强一律标为身份不变，也不能把所有 CFO 变化都当作纯噪声抹去。
+
+项目曾在五个源留出 RX、冻结识别器上比较普通增强含／不含额外 PA 作用；去掉这一额外作用后准确率平均高约 0.6002 pp，但两种增强均明显低于 raw。该实验是冻结头输入效应，不能直接推断新网络训练效果或判定所有 PA 扰动无效；它进一步说明随意把接收 IQ 的非线性变化当作身份保持增强存在风险。[源 PA 输入诊断](E:/type10-7/automation_reports/CV-SincNet/20261016-diagnostic-ordinary-PA-heldsource-manysig-s2026092701-m5-r01/report.md)
 
 ## 3. 候选：物理干预方向校正的分支关系
 

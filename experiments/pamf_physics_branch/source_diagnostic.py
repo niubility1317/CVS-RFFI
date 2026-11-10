@@ -115,6 +115,7 @@ def run(c, device='cuda:0'):
                 entry = groups.setdefault((dimension, key), dict(count=0, raw_correct=0, echo_correct=0,
                     prediction_flips=0, reference_delay_changes=0, raw_accepted=0, accepted_wrong=0,
                     channel_agreement_accepted=0, channel_agreement_wrong=0,
+                    reference_quality_sum=0., reference_coherence_sum=0.,
                     branch_drift_sum={name: 0. for name in drift}))
                 accepted = confidence >= .95
                 transferred = accepted & (confidence1 >= .95) & (raw == echo)
@@ -123,6 +124,8 @@ def run(c, device='cuda:0'):
                 entry['echo_correct'] += int(((echo == y) & mask).sum())
                 entry['prediction_flips'] += int(((raw != echo) & mask).sum())
                 entry['reference_delay_changes'] += int((changed_delay & mask).sum())
+                entry['reference_quality_sum'] += float(r0['quality'][mask].sum())
+                entry['reference_coherence_sum'] += float(r0['coherence'][mask].sum())
                 entry['raw_accepted'] += int((accepted & mask).sum())
                 entry['accepted_wrong'] += int((accepted & (raw != y) & mask).sum())
                 entry['channel_agreement_accepted'] += int((transferred & mask).sum())
@@ -145,6 +148,8 @@ def run(c, device='cuda:0'):
                 basis_report[name].update(V_nonzero=item['nonzero'],
                     V_overlap_mean=item['sum'] / item['nonzero'] if item['nonzero'] else None)
         results = [dict(dimension=dimension, stratum=key, **value,
+                        reference_quality_mean=value['reference_quality_sum'] / value['count'],
+                        reference_coherence_mean=value['reference_coherence_sum'] / value['count'],
                         branch_drift_mean={k: v / value['count'] for k, v in value['branch_drift_sum'].items()})
                    for (dimension, key), value in sorted(groups.items())]
         cells = sorted(set(zip(meta['y'].tolist(), meta['rx_i'].tolist(), meta['day_i'].tolist())))
