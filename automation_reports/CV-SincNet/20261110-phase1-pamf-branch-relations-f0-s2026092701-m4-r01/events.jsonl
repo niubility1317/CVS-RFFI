@@ -1,1 +1,2 @@
 {"at": "2026-11-10T04:14:40+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-10T04:24:26+00:00", "status": "RUNNING", "note": "VERIFIED: 四臂真实 E20 smoke 通过；GPU 0 和 1 各两个训练进程；工作目录、参数、显卡、日志增长及首轮 222 更新已读回。运行代码 commit beb681dc0458585c29fc1d66404bb96e4988057f。", "evidence": ["N607:runs/20261110-phase1-pamf-branch-relations-f0-s2026092701-m4-r01/pipeline_state.json", "N607:runs/20261110-phase1-pamf-branch-relations-f0-s2026092701-m4-r01/smoke.json"], "row_id": null}

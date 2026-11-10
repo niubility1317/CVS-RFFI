@@ -3,7 +3,7 @@
 - run_id：`20261110-phase1-pamf-branch-relations-f0-s2026092701-m4-r01`
 - group_id：`phase1-pamf-branch-relations`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按 events.jsonl 及独立证据更新）
 
 ## 目的与对照
 
@@ -24,6 +24,8 @@
 
 命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
 实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
+
+2026-11-10 已启动：代码 commit `beb681dc0458585c29fc1d66404bb96e4988057f`，单次发布包传输及远端编译通过；四臂真实 E20 无查询 smoke 全部通过，之后 GPU 0、1 各运行两组。已独立核对进程工作目录、命令、GPU 和日志增长；四组均完成续训首个 epoch、222 次更新。该状态不代表后续训练、预测或评分已经完成。
 
 ## 结果与覆盖
 
