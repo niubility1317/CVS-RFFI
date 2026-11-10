@@ -43,6 +43,19 @@ def test_interrupted_prediction_repoints_independent_scoring(tmp_path):
     assert new_dep['dependencies']==[new['completion']]
 
 
+def test_successor_handoff_record_is_exclusive_and_validated(tmp_path,monkeypatch):
+    import json
+    from experiments.pamf_split_spectrum_paper import link_gpu01_handoff as link
+    previous=tmp_path/'old';current=tmp_path/'new';previous.mkdir();current.mkdir()
+    (previous/'pipeline_state.json').write_text(json.dumps({'pid':10}),encoding='utf8')
+    state={'status':'RUNNING','pid':11,'previous_pid':10,'dispatch_gpus':[2,3,4,5,6,7],'jobs':{}}
+    (current/'pipeline_state.json').write_text(json.dumps(state),encoding='utf8')
+    monkeypatch.setattr(link,'alive',lambda pid:pid==11)
+    result=link.link(previous,current)
+    assert result['control_root']==str(current)
+    assert link.link(previous,current)==result
+
+
 def test_takeover_persists_retry_without_losing_existing_jobs(tmp_path, monkeypatch):
     import json
     import pathlib
