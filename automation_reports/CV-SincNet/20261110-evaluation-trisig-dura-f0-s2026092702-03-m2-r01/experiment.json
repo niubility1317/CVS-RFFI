@@ -1,0 +1,218 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261110-evaluation-trisig-dura-f0-s2026092702-03-m2-r01",
+  "group_id": "trisig-dura-main-matched-baseline",
+  "display_name": "Tri-SIG-TIME SSL 与 DURA v1.0 的三种子匹配基线补测",
+  "description": "复用种子01，冻结原三视图模型补测种子02/03，提供完整SSL与DURA七景配对基线。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [
+    "Tri-SIG-TIME SSL",
+    "DURA v1.0"
+  ],
+  "tags": [
+    "PAMF",
+    "DURA",
+    "three-seed",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261101-evaluation-P3Restore-TF-TriSIGSSL-main-s2026092701-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户 2026-11-10 要求完整 Tri-SIG-TIME SSL、普通 PL 及 DURA 的三种子配对七景对比。",
+  "code": {
+    "commit": "RELEASE_HEAD",
+    "checkout": "isolated pamf-physics-ssl worktree",
+    "environment": "N607 existing Phase1 Python/Torch, FP32, TF32 off, CPU threads 2",
+    "cwd": "PROJECT/releases/20261110-evaluation-trisig-dura-f0-s2026092702-03-m2-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig Main split",
+    "version": "split 392005",
+    "representation": "equalized1/unitRMS; original fixed FP32 IQ 2x256, cached DURA v1 output",
+    "contract_ref": "20261027 Tri-SIG-TIME F0 source_contract and existing DURA-LU source_contract",
+    "physical_ids_ref": "existing VALIDATED_ONCE F0 cross_rx/cross_both view indices",
+    "label_map_ref": "original six-class F0 order",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "F0 source contract classes",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": "Main split 392005",
+    "validation_ref": "existing VALIDATED_ONCE source and target handles; no data regeneration",
+    "support_query_ref": "Phase1 no support; held-out target IQ prediction only before independent truth",
+    "leo_config_ref": "existing six practical fixed observations; no leo_weak"
+  },
+  "permissions": {
+    "regime": "frozen Phase1 source models",
+    "query_use": "prediction only, all two seed predictions before independent scorer",
+    "external_method_exception": null,
+    "claim_scope": "previously exposed Main split terrestrial proxy; no in-orbit claim"
+  },
+  "checkpoint": {
+    "initialization": "no training; original corresponding frozen E50 models",
+    "sources": [
+      "original three-view 3ff8 E50 seed02/03",
+      "DURA v1 R69 stage2 E20/4940; original L/U cache",
+      "seed01 20261101 evaluation primary raw plus DURA"
+    ],
+    "contract_check_ref": "original source loader and DURA cache role/source contract/physical ID checks",
+    "provenance_verdict": "existing source-only own trajectories and fixed default G",
+    "selection_rule": "fixed E50; no target selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-trisig-dura-baseline-20261110",
+    "gpu_policy": "GPU0/1 only, global CUDA and pending under 2/card, free >=6000 MiB; protect other owners",
+    "remote_run_root": "PROJECT/runs/20261110-evaluation-trisig-dura-f0-s2026092702-03-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261110-evaluation-trisig-dura-f0-s2026092702-03-m2-r01/logs",
+    "local_artifact_root": "local_artifacts/trisig_dura_baseline_20261110",
+    "launch_command": "PYTHON -m experiments.pamf_trisig_dura_baseline.runner dispatch --project PROJECT --commit COMMIT",
+    "stop_rule": "input/identity/protocol/nonfinite/output collision or failed prediction stops new work, preserves artifacts and other owners"
+  },
+  "expected_artifacts": [
+    "source-only checkpoint smoke",
+    "seed02/03 seven-scene raw+DURA predictions",
+    "independent truth-last scores",
+    "three-seed paired comparison"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro-F1",
+      "same-packet repairs and damage"
+    ],
+    "dimensions": [
+      "seed",
+      "scene",
+      "TX",
+      "RX",
+      "day",
+      "cross_rx",
+      "cross_both"
+    ],
+    "prediction_ref": "experiments/pamf_trisig_dura_baseline/evaluation.py:predict",
+    "scorer_ref": "experiments/pamf_trisig_dura_baseline/evaluation.py:score"
+  },
+  "rows": [
+    {
+      "row_id": "trisig-dura-s2026092702",
+      "method": "Tri-SIG-TIME SSL fixed E50 + DURA v1",
+      "purpose": "paired frozen baseline",
+      "config_ref": "experiments/pamf_trisig_dura_baseline/evaluation.py",
+      "resolved_config_ref": "existing original predict and score configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "existing original model seed and fixed data; data/support not separately randomized",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "zero updates; 168000 physical samples x 7 views; raw decisions reused",
+      "output_root": "PROJECT/runs/20261110-evaluation-trisig-dura-f0-s2026092702-03-m2-r01/predictions/2026092702",
+      "log_path": "PROJECT/runs/20261110-evaluation-trisig-dura-f0-s2026092702-03-m2-r01/logs/predict-2026092702.log",
+      "command": "PYTHON -m experiments.pamf_trisig_dura_baseline.runner predict --project PROJECT --seed 2026092702",
+      "expected_artifacts": [
+        "predictions.npz",
+        "complete.json",
+        "scores.json"
+      ]
+    },
+    {
+      "row_id": "trisig-dura-s2026092703",
+      "method": "Tri-SIG-TIME SSL fixed E50 + DURA v1",
+      "purpose": "paired frozen baseline",
+      "config_ref": "experiments/pamf_trisig_dura_baseline/evaluation.py",
+      "resolved_config_ref": "existing original predict and score configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "existing original model seed and fixed data; data/support not separately randomized",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "zero updates; 168000 physical samples x 7 views; raw decisions reused",
+      "output_root": "PROJECT/runs/20261110-evaluation-trisig-dura-f0-s2026092702-03-m2-r01/predictions/2026092703",
+      "log_path": "PROJECT/runs/20261110-evaluation-trisig-dura-f0-s2026092702-03-m2-r01/logs/predict-2026092703.log",
+      "command": "PYTHON -m experiments.pamf_trisig_dura_baseline.runner predict --project PROJECT --seed 2026092703",
+      "expected_artifacts": [
+        "predictions.npz",
+        "complete.json",
+        "scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Seed01 reuses existing fixed-DURA primary evaluation; no claim of independent blind benchmark.",
+    "Other running owner retains sole ownership of physical route candidate.",
+    "No raw checkpoint updates, target fitting or leo_weak test."
+  ],
+  "registered_at": "2026-11-10T08:51:20+00:00"
+}
