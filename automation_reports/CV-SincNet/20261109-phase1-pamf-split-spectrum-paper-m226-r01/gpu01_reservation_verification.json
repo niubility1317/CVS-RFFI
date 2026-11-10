@@ -1,0 +1,17 @@
+{
+  "status": "VERIFIED",
+  "observed_date": "2026-11-10",
+  "reserved_gpus": [0, 1],
+  "gpu0_used_mib": 15,
+  "gpu1_used_mib": 15,
+  "gpu0_compute_processes": 0,
+  "gpu1_compute_processes": 0,
+  "dispatch_gpus": [2, 3, 4, 5, 6, 7],
+  "current_run_controller": "RUNNING",
+  "current_run_requeued": 6,
+  "old_run_controller": "RUNNING",
+  "old_run_requeued": 3,
+  "retry_dependencies_verified": true,
+  "original_output_directories_preserved": true,
+  "previous_controller_handoff_records": "VERIFIED"
+}
