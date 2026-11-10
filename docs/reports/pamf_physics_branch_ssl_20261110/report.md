@@ -14,6 +14,8 @@
 
 外部已有射频半监督一致性与伪标签工作，不能把“信道增强＋一致性”当作新概念。[Wang 等，2023](https://arxiv.org/abs/2304.14795) 已组合射频信号增强、一致性与伪标签；[VC-SEI，2024](https://doi.org/10.1109/TWC.2024.3463740) 已研究可变信道下的半监督域适应，但其目标域有标注数据的协议与本项目源域训练不同，不能直接复用该权限。基于已知变换的局部不变性和切向距离早有研究，[Tangent Prop 原论文](https://proceedings.neurips.cc/paper/1991/hash/65658fde58ab3c2b6e5132a39fae7cb9-Abstract.html)可追溯这一思想。2026 年已有题为 [Physics-Constrained Self-Supervised Learning for Few-Shot Channel-Robust Specific Emitter Identification](https://doi.org/10.1109/LCOMM.2026.3744903) 的论文，题名、作者和 DOI 已经 Crossref 出版元数据核验；目前尚未取得可核查的原文，不能断言机制差异或全球首创。
 
+进一步核对原文，[Huang 等，AAAI 2026](https://ojs.aaai.org/index.php/AAAI/article/download/37005/40967) 已将物理启发增强、类别／原型对齐和伪标签组合用于射频指纹；其完整方法还利用未标注目标域样本自适应，与本轮仅用源 L/U 训练的权限不同，因此不能把其完整结果直接当作同协议对照。论文也报告仅用源域数据训练的模型，但它使用不同数据与网络，不能据此推断 PAMF 的数值收益。[Pan 等，2025](https://arxiv.org/abs/2412.08885) 使用不同信道估计与均衡得到的残差信道视图做自监督对比，之后在新环境以少量标签微调；这提示参考响应和均衡残差可提供可检验的物理变化线索，同时也说明“残差信道视图＋对比学习”本身已有先例。以上文献不改变已登记的 PTBR 配方，也不授权使用目标样本训练或调参。
+
 ## 2. PAMF 的物理信息和不可辨识性
 
 对概念性离散接收链，可写成 `y = R_rx(H * T_tx(s)) + n`，其后还有同步、均衡、裁窗及归一化。实际输入已是接收 IQ；不存在可直接读取的发射机真实波形或目标信道真值。
