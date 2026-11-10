@@ -1,5 +1,6 @@
 """Compare frozen-model CE/PL and beta=0 branch relations on source V only."""
 import contextlib
+import argparse
 import json
 from pathlib import Path
 import sys
@@ -26,11 +27,16 @@ with contextlib.redirect_stdout(sys.stderr):
 reader.eval().requires_grad_(True)
 data = SourceDataset(c['source_cache'], 'V', contract)
 meta = data.metadata
+parser = argparse.ArgumentParser()
+parser.add_argument('--all-v', action='store_true')
+args = parser.parse_args()
 cells = sorted(set(zip(meta['y'].tolist(), meta['rx_i'].tolist(), meta['day_i'].tolist())))
-indices = [np.flatnonzero((meta['y'] == y) & (meta['rx_i'] == rx) & (meta['day_i'] == day))[:8]
+repeats = 300 if args.all_v else 8
+indices = [np.flatnonzero((meta['y'] == y) & (meta['rx_i'] == rx) & (meta['day_i'] == day))[:repeats]
            for y, rx, day in cells]
-if len(cells) != 90 or any(len(i) != 8 for i in indices) or len(data) != 27000:
+if len(cells) != 90 or any(len(i) != repeats for i in indices) or len(data) != 27000:
     raise ValueError('Exact stratified source V population required')
+count = 90 * repeats
 core = reader.core.id_backbone
 modules = dict(time=[core.t_proj], frequency=[core.f_proj, core.freq_stats_proj],
                pa=[core.pa_proj, core.pa_stats_proj], path=[reader.sequence_pool],
@@ -44,7 +50,7 @@ positions = {id(p): i for i, p in enumerate(params)}
 names = ('ce', 'pl') + tuple(kind + '_' + branch for kind in ('L', 'U') for branch in groups)
 acc = {name: [torch.zeros_like(p, device='cpu', dtype=torch.float64) for p in params] for name in names}
 valid, accepted, wrong = {'L': 0, 'U': 0}, 0, 0
-for repeat in range(8):
+for repeat in range(repeats):
     part = np.asarray([row[repeat] for row in indices], dtype=np.int64)
     x = data.x.index_select(0, torch.as_tensor(part, dtype=torch.long)).to('cuda:0')
     y = torch.as_tensor(meta['y'][part].tolist(), dtype=torch.long, device='cuda:0')
@@ -57,15 +63,15 @@ for repeat in range(8):
     selected = conf >= .95
     accepted += int(selected.sum())
     wrong += int((selected & (pseudo != y)).sum())
-    objectives = {'ce': F.cross_entropy(logits, y, reduction='sum') / 720,
-                  'pl': (F.cross_entropy(logits, pseudo, reduction='none') * selected).sum() / 720}
+    objectives = {'ce': F.cross_entropy(logits, y, reduction='sum') / count,
+                  'pl': (F.cross_entropy(logits, pseudo, reduction='none') * selected).sum() / count}
     for kind, labels, mask in (('L', y, torch.ones_like(selected)), ('U', pseudo, selected)):
         for branch, value in features.items():
             values = {branch: value}
             loss, counts = physical_branch_loss(values, {branch: torch.zeros_like(value)}, labels, rx, day,
                                                 record, mask, beta=0., single_receiver=False)
             # The registered .05 relation weight applies to the mean of five branches.
-            objectives[kind + '_' + branch] = .01 * loss / 8
+            objectives[kind + '_' + branch] = .01 * loss / repeats
             if branch == 'time':
                 valid[kind] += counts['valid_anchors']
     for j, name in enumerate(names):
@@ -87,11 +93,16 @@ for branch, group in groups.items():
         gradient_norms={name: float(value.norm()) for name, value in vectors.items()},
         ce_vs_L=cosine(vectors['ce'], vectors['L_' + branch]),
         pl_vs_U=cosine(vectors['pl'], vectors['U_' + branch]),
-        ce_vs_pl=cosine(vectors['ce'], vectors['pl']))
+        ce_vs_pl=cosine(vectors['ce'], vectors['pl']),
+        L_vs_U=cosine(vectors['L_' + branch], vectors['U_' + branch]),
+        ce_pl_sum_norm=float((vectors['ce'] + vectors['pl']).norm()),
+        relation_sum_norm=float((vectors['L_' + branch] + vectors['U_' + branch]).norm()),
+        ce_pl_sum_vs_relation_sum=cosine(vectors['ce'] + vectors['pl'],
+                                        vectors['L_' + branch] + vectors['U_' + branch]))
 if any(p.grad is not None for p in reader.parameters()):
     raise ValueError('Probe must not apply or retain parameter gradients')
-print(json.dumps(dict(status='SOURCE_RELATION_GRADIENT_PROBE_COMPLETE', source_only=True, role='V', count=720,
-    batch_rule='8 batches of one packet per source TX/RX/day cell', accepted=accepted, accepted_wrong=wrong,
+print(json.dumps(dict(status='SOURCE_RELATION_GRADIENT_PROBE_COMPLETE', source_only=True, role='V', count=count,
+    batch_rule=str(repeats) + ' batches of one packet per source TX/RX/day cell', accepted=accepted, accepted_wrong=wrong,
     valid_anchors=valid, target_reads=0, U_reads=0, optimizer_updates=0, model_mode='eval', beta=0.,
     relation_weight_per_branch=.01, scope='source V diagnostic proxy; not actual train-mode objective',
     branches=result), allow_nan=False))
