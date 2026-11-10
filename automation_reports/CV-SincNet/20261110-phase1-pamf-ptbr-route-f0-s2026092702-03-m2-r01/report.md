@@ -19,4 +19,25 @@
 
 独立的同包分析核对了三个种子每个目标群的有序物理 ID、每路每景正确数和既有评分，共输出 3,150 条按场景、TX、RX 和日期的汇总。源模型时序与 SSL 配方不同，差值用于整方法比较。种子 2026092703 的 mid urban 和 low urban 中普通 PL 分别领先 0.0256、0.2274 个百分点，故总体平均领先不能替代逐种子检查。
 
-新方法的三种子性能待七景预测冻结并完成独立评分后报告。配对分析工具为 [`paired_report.py`](../../../experiments/pamf_physics_route/paired_report.py)，完整基线产物保存在本机 `E:/type10-7/local_artifacts/pamf_physics_route_replication_20261110/tri_sigtime_vs_pl_paired_three_seeds.json`。
+配对分析工具为 [`paired_report.py`](../../../experiments/pamf_physics_route/paired_report.py)，完整基线产物保存在本机 `E:/type10-7/local_artifacts/pamf_physics_route_replication_20261110/tri_sigtime_vs_pl_paired_three_seeds.json`。
+
+## 候选结果
+
+三个种子均冻结到 E50，七景预测和独立评分已完成。种子 1 冻结后原队列等待 GPU 1 释放，评估承接到授权的 GPU 0，原发布代码、模型、测试视图和恢复缓存保持相同。其可选源诊断跳过。种子 2、3 的六项训练、预测及评分任务均完成。三行未产生 weak 预测。
+
+| DURA-LU 场景 | 参考路由 PTBR 准确率 | 对普通 PL（百分点） | 对 Tri-SIG-TIME SSL（百分点） |
+| --- | ---: | ---: | ---: |
+| clean | 84.8329% | −0.1966 | −2.1286 |
+| high suburban | 82.7756% | −0.0458 | −1.5198 |
+| mid suburban | 81.4188% | −0.0522 | −1.4577 |
+| low suburban | 79.7639% | −0.0514 | −1.2990 |
+| high urban | 81.5522% | −0.0500 | −1.3542 |
+| mid urban | 74.7831% | −0.0151 | −0.6206 |
+| low urban | 67.9706% | +0.0310 | −0.2990 |
+| 六景均值 | 78.0440% | −0.0306 | −1.0917 |
+
+对普通 PL 的 clean 配对差依次为 −0.1821、−0.1655、−0.2423 个百分点，六景均值依次为 +0.1210、−0.0839、−0.1289。即使在候选唯一平均胜出的 low urban，种子 3 仍下降 0.0625 个百分点。相对 Tri-SIG-TIME SSL，三个种子的 clean 和六景均值全部下降。DURA-L 的 clean 和六景均值相对 PL 分别为 −0.2173、−0.0981 个百分点，raw 分别为 −0.1925、−0.1613。相对 Tri-SIG-TIME SSL，DURA-L 分别为 −2.1081、−1.3874，raw 分别为 −2.1296、−0.3777。
+
+同包汇总核对了 6,300 条场景、TX、RX 和日期统计。DURA-LU clean 相对普通 PL 合计纠正 3,193 个种子－记录判决、错失 4,184 个。相对 Tri-SIG-TIME SSL 分别为 9,900 和 20,628 个。每种子使用相同的 168,000 个物理记录，合计值不能当作更多独立记录。相对 PL 的 clean 差异在 TX `14-7` 为 −2.5202、`20-19` 为 +2.0405 个百分点。相对 Tri-SIG-TIME SSL 的 clean 差异在 TX `20-15` 为 −7.8369，RX `8-8` 为 −7.2597，`2021_03_15` 为 −4.0056 个百分点。这些分层用于定位失败模式，未参与配方或检查点选择。
+
+参考路由候选未达到性能目标，停止扩展该版。下一候选已在原 Tri-SIG-TIME 训练骨架上运行，使用原重排的同种子 E20 和原 REPL，在真实标签关系中保护类中心差异。完整配对产物保存在本机 `E:/type10-7/local_artifacts/pamf_physics_route_replication_20261110/route_paired_three_seeds.json`。
