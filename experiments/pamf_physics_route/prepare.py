@@ -7,7 +7,7 @@ from experiments.pamf_physics_branch.plan import RUN as PRIOR
 from .plan import RUN, REPLICATION_RUN, candidate_rows, configuration
 
 
-def prepare(rt):
+def prepare(rt, *, rows_for_run=None, configure=None, source_diagnostic=None, tri_dura=False):
     ctx, root = read(rt['context']), Path(rt['run_root'])
     run_id = rt.get('run_id', RUN)
     h = ctx['handles']['F0']
@@ -29,27 +29,34 @@ def prepare(rt):
                          completion=str(folder / 'complete.json'), successful_statuses=[status],
                          dependencies=list(dependencies), nonblocking=nonblocking))
 
-    rows = candidate_rows(run_id)
+    rows = (rows_for_run or candidate_rows)(run_id)
+    configure = configure or configuration
+    source_diagnostic = run_id != REPLICATION_RUN if source_diagnostic is None else source_diagnostic
     predictions = [str(root / 'readouts' / row['row_id'] / 'predictions' / 'complete.json') for row in rows]
     for row in rows:
         rid, seed = row['row_id'], row['model_seed']
         baseline = ctx['existing'][f'F0-ordinary_PL-s{seed}']
-        tri = (Path(rt['project']) / 'runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/readouts'
-               / f'main_split-repl-shuffled_time-3view-s{seed}')
+        if tri_dura:
+            from .paired_report import tri_entry
+            _, tri = tri_entry(Path(rt['project']) / 'runs', seed)
+        else:
+            folder = (Path(rt['project']) / 'runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/readouts'
+                      / f'main_split-repl-shuffled_time-3view-s{seed}')
+            tri = dict(predictions=folder / 'predictions', scores=folder / 'scores')
         for name, pred, score in ((f'baseline_pl-s{seed}', baseline['predictions'], baseline['scores']),
-                                   (f'tri_sigtime_ssl-s{seed}', tri / 'predictions', tri / 'scores')):
+                                   (f'tri_sigtime_ssl-s{seed}', tri['predictions'], tri['scores'])):
             frozen = read(Path(pred) / 'complete.json')
             if frozen['status'] != 'ALL_PREDICTIONS_COMPLETE' or frozen['truth_read']:
                 raise ValueError('Matched controls must have predictions frozen without truth')
             if read(Path(score) / 'complete.json')['status'] != 'SCORED_COMPLETE':
                 raise ValueError('Matched clean/practical scores are required')
             sources[name] = dict(predictions=str(pred), scores=str(score), reused=True)
-        c = configuration(ctx, row, rt['project'], rt['code_commit'], run_id=run_id)
+        c = configure(ctx, row, rt['project'], rt['code_commit'], run_id=run_id)
         c['frozen_sources'] = rt['frozen_sources']
         source = Path(c['output_root'])
         out = root / 'readouts' / rid
         add(rid, 'train', c, source, 'SOURCE_FROZEN')
-        if run_id != REPLICATION_RUN:
+        if source_diagnostic:
             diagnostic = root / 'source_diagnostics' / rid
             dc = dict(run_id=run_id, row_id=rid, paper_row=c['paper_row'], source_output=str(source),
                       source_contract=h['source_contract'], source_cache=c['source_cache'],

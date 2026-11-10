@@ -1,0 +1,16 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261110-phase1-pamf-tri-label-tangent-f0-m3-r01",
+  "display_name": "PAMF Tri-SIG-TIME 真实标签身份方向保护三种子",
+  "scope": "Phase1 ManySig F0, seeds 2026092701/02/03, full original reference-response PAMF, three views, fixed local shuffle [0,5,3,6,2,1,4,7].",
+  "initialization": "Reuse the actual same-seed original Tri-SIG-TIME source-only E20 scratch prefix. Continue own E10+E20 to fixed E50. Use no target data or U truth in training.",
+  "method": "Keep complete Tri-SIG-TIME supervised and REPL paths. After its U gradient guard add five-branch L-only physical relations, weight .05 and beta .5, same 64 L draws and bounded echo as PTBR. Before distance discount project each echo direction off the detached current true-label centroid contrast span without renormalization. No additional U objective.",
+  "controls": ["same-seed original Tri-SIG-TIME SSL with the same shuffled E20 and DURA-LU", "same-seed ordinary PL with matching F0 input and DURA-LU"],
+  "evaluation": "Clean and six practical scenes, DURA-LU primary, DURA-L and raw secondary. Main scope disjoint cross_rx plus cross_both, cross_date diagnostic. All three prediction matrices frozen before independent truth-last scoring. No leo_weak, no target feedback into checkpoints or recipe.",
+  "execution": "python -m experiments.pamf_physics_tri.publish --repo REPO --output UNIQUE_LOCAL_ROOT --context EXISTING_CONTEXT --ssh-config N607_CONFIG",
+  "environment": "N607 existing project Python, FP32/TF32 off, immutable Git release commit, PROJECT/releases/RUN-release CWD, PROJECT/runs/RUN output root.",
+  "resources": "Ordinary account, GPU 0 and 1 with no more than two observed or pending experiments each. Existing owners preserved. One real E20 no-query smoke spanning the three rows.",
+  "stop_rule": "Systemic training, prediction or scoring failure stops new dispatch and preserves healthy workers and artifacts. No additional source diagnostic dispatch.",
+  "expected_artifacts": ["same-seed E20 provenance and finite L/U smoke", "own E30/E50 and L/REPL exposure state", "truth-blind seven-scene predictions", "independent scores and same-packet three-seed DURA/raw comparison"],
+  "limitations": "Physical perturbation models a bounded post-reception echo. Batch class contrasts may include receiver effects. Benchmark was previously exposed. Isolate contribution by controlled source-loss ablations only if useful; do not infer pure supervised gains from SSL rows."
+}

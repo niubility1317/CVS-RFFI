@@ -43,9 +43,9 @@ def worker(c, kind):
          smoke.configuration, smoke.installed) = old
 
 
-def launch(rt, job, gpu):
+def launch(rt, job, gpu, *, module='experiments.pamf_physics_route.runner'):
     path = Path(rt['run_root']) / 'logs' / (job['id'] + '.log')
-    cmd = [rt['python'], '-u', '-m', 'experiments.pamf_physics_route.runner',
+    cmd = [rt['python'], '-u', '-m', module,
            'worker', '--kind', job['kind'], '--config', job['config']]
     env = dict(os.environ, PYTHONPATH=rt['release_root'], CUDA_VISIBLE_DEVICES='' if gpu is None else str(gpu),
                OMP_NUM_THREADS='2', MKL_NUM_THREADS='2', OPENBLAS_NUM_THREADS='2', PYTHONUNBUFFERED='1')
@@ -78,10 +78,10 @@ def analyze(rt):
           test_scope='clean_and_six_practical', target_feedback_forbidden=True, results=len(records)))
 
 
-def dispatch(rt):
+def dispatch(rt, *, prepare_run=prepare, launch_worker=launch):
     from experiments.pamf_branch_training import prepare as old_prepare
     old = old_prepare.prepare, base.admits, base.launch, base.analyze
-    old_prepare.prepare, base.admits, base.launch, base.analyze = prepare, physical.admits, launch, analyze
+    old_prepare.prepare, base.admits, base.launch, base.analyze = prepare_run, physical.admits, launch_worker, analyze
     try:
         base.dispatch(rt)
     finally:
