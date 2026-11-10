@@ -16,8 +16,8 @@ PROJECT_RUNS={
    analyze_module='experiments.pamf_split_spectrum_paper.analyze',gpu7_limit=1,control_jobs=False,
    source_model_commit='0a94a2e0bef5936b68b31783ccd4c8ef8b7f8240'),
  'old':dict(run='20261109-phase1-pamf-no-reference-completion-m190-r01',
-   controller='20261109-phase1-pamf-no-reference-speed-control-r03',
-   controller_module='experiments.pamf_no_reference_completion.speed_control',
+   controller='20261110-phase1-pamf-no-reference-reserve-gpu01-r01',
+   controller_module='experiments.pamf_no_reference_completion.drain_control',
    worker_module='experiments.pamf_no_reference_completion.runner',
    analyze_module='experiments.pamf_no_reference_completion.analyze',gpu7_limit=2,control_jobs=True,
    source_model_commit='33e46b2ab2b726900a2f0d9e775b0a2778820f39')}
