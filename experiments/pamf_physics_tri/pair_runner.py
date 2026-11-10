@@ -68,7 +68,8 @@ def worker(c, kind):
 def dispatch(rt):
     plan, _, _ = METHODS[rt['run_id']]
     prepare = partial(routes.prepare, rows_for_run=lambda _: plan.candidate_rows(), configure=plan.configuration,
-                      source_diagnostic=False, tri_dura=True)
+                      source_diagnostic=False, tri_dura=True,
+                      extra_controls=scheduled_plan.extra_controls if plan is scheduled_plan else None)
     launch = partial(dispatching.launch, module='experiments.pamf_physics_tri.pair_runner')
     dispatching.dispatch(rt, prepare_run=prepare, launch_worker=launch)
 

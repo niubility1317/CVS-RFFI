@@ -7,7 +7,7 @@ from experiments.pamf_physics_branch.plan import RUN as PRIOR
 from .plan import RUN, REPLICATION_RUN, candidate_rows, configuration
 
 
-def prepare(rt, *, rows_for_run=None, configure=None, source_diagnostic=None, tri_dura=False):
+def prepare(rt, *, rows_for_run=None, configure=None, source_diagnostic=None, tri_dura=False, extra_controls=None):
     ctx, root = read(rt['context']), Path(rt['run_root'])
     run_id = rt.get('run_id', RUN)
     h = ctx['handles']['F0']
@@ -56,6 +56,9 @@ def prepare(rt, *, rows_for_run=None, configure=None, source_diagnostic=None, tr
             if read(Path(score) / 'complete.json')['status'] != 'SCORED_COMPLETE':
                 raise ValueError('Matched clean/practical scores are required')
             sources[name] = dict(predictions=str(pred), scores=str(score), reused=True)
+        if extra_controls:
+            for name, pred, score in extra_controls(rt, row):
+                sources[name] = dict(predictions=str(pred), scores=str(score), reused=True)
         c['frozen_sources'] = rt['frozen_sources']
         source = Path(c['output_root'])
         out = root / 'readouts' / rid

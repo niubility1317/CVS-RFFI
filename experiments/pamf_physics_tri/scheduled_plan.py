@@ -33,3 +33,12 @@ def parent(c):
             or any(k in c for k in ('physical_relation', 'receiver_pairing', 'rejected_u_recovery'))):
         raise ValueError('Unregistered weak-view schedule continuation')
     return original_parent(c)
+
+
+def extra_controls(rt, row):
+    from pathlib import Path
+    from .weak_practical_plan import RUN as FIXED_RUN
+
+    seed = row['model_seed']
+    root = Path(rt['project']) / 'runs' / FIXED_RUN / 'readouts' / f'tri-weak-branch-s{seed}'
+    return [(f'weak_branch_fixed-s{seed}', root / 'predictions', root / 'scores')]
