@@ -1,1 +1,2 @@
 {"at": "2026-11-10T20:32:11+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-10T20:34:07+00:00", "status": "RUNNING", "note": "VERIFIED six real E20 no-query smoke rows; six workers on GPUs 0,1,2,4,5,6. Existing owner processes preserved; all six predictions must freeze before scoring.", "evidence": ["runs/20261111-phase1-pamf-tri-u-phase-subset-f0-m6-r01/pipeline_state.json"], "row_id": null}
