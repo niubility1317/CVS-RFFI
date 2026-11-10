@@ -26,6 +26,16 @@ def remap(value, mapping):
     return value
 
 
+def source_contract_matches(saved, original, cfg):
+    # build_contract_split preserves the original physical roles and adds the
+    # actual input representation to its saved training contract.
+    return (all(k in saved and saved[k] == value for k, value in original.items()) and
+            saved.get('physical_roles') == 'EXACT_MATCH' and
+            saved.get('dataset_path') == cfg['dataset'] and
+            saved.get('equalized') == 1 and saved.get('out_len') == 256 and
+            saved.get('normalize') is True and len(saved.get('classes', [])) == 6)
+
+
 def plan_recovery(old_root, new_root, jobs, state, sources, recovery_commit):
     old_root, new_root = Path(old_root), Path(new_root)
     mapping = {}
@@ -37,7 +47,8 @@ def plan_recovery(old_root, new_root, jobs, state, sources, recovery_commit):
         if status not in ('FAILED', 'QUEUED', 'BLOCKED_TECHNICAL_DEPENDENCY'):
             raise ValueError('Unreconciled previous job: ' + job['id'])
         if status == 'FAILED' and (job['family'] != 'architecture' or job['kind'] != 'train' or
-             state['jobs'][job['id']].get('failure') != "AttributeError: 'CVSincNet' object has no attribute '_factorial_aux'"):
+             state['jobs'][job['id']].get('failure') not in ("AttributeError: 'CVSincNet' object has no attribute '_factorial_aux'",
+             'ValueError: Saved training evidence is incomplete or incompatible')):
             raise ValueError('Unexpected failure: ' + job['id'])
         old = Path(read(job['config'])['output_root'])
         try: relative = old.relative_to(old_root)
@@ -49,7 +60,9 @@ def plan_recovery(old_root, new_root, jobs, state, sources, recovery_commit):
         if status != 'COMPLETE':
             original_cfg = read(job['config']); cfg = remap(original_cfg, mapping)
             if status == 'FAILED':
-                cfg['recover_ce_from'] = original_cfg['output_root']
+                cfg['recover_ce_from'] = original_cfg.get('recover_ce_from',original_cfg['output_root'])
+                cfg['recovery_commit'] = recovery_commit
+            elif job['kind']=='train' and 'recover_ce_from' in cfg:
                 cfg['recovery_commit'] = recovery_commit
             elif job['kind']=='train':
                 cfg['code_commit'] = recovery_commit
@@ -84,7 +97,7 @@ def recover_ce(c):
         init.get('scratch_only') is not True or init.get('target_access') is not False or
         init.get('model_seed')!=base['model_seed'] or resolved.get('model_seed')!=base['model_seed'] or
         resolved.get('source_counts')!={'L_s':6300,'U_s':56700,'V':27000} or
-        contract!=read(base['source_contract'])):
+        not source_contract_matches(contract,read(base['source_contract']),base)):
         raise ValueError('Saved training evidence is incomplete or incompatible')
     device=torch.device('cuda:0'); payload=torch.load(old/'last.pt', map_location=device,weights_only=False)
     if (payload.get('epoch')!=200 or payload.get('variant')!=base['variant'] or
