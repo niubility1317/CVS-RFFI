@@ -99,6 +99,21 @@ def test_main_and_e200_graphs_have_removed_original_frequency():
     net = ce_build(CE_VARIANT, 2026092701).eval()
     assert not net.core.id_backbone.use_freq_path
     assert net(torch.randn(2, 2, 256)).shape == (2, 6)
+    import copy
+    x = torch.randn(2, 2, 256)
+    clone = copy.deepcopy(net).eval()
+    assert torch.equal(net(x), clone(x))
+
+
+def test_scored_population_accepts_query_count_and_checks_conflicts():
+    import pytest
+    from experiments.pamf_no_reference_completion.analyze import normalize_counts as old_normalize
+    from experiments.pamf_split_spectrum_paper.analyze import normalize_counts as new_normalize
+    for normalize in (old_normalize, new_normalize):
+        assert normalize([{'query_count': 3}])[0]['count'] == 3
+        assert normalize([{'count': 3}])[0]['count'] == 3
+        with pytest.raises(ValueError):
+            normalize([{'count': 3, 'query_count': 4}])
 
 
 def test_each_new_structural_graph_rebuilds_from_its_checkpoint():

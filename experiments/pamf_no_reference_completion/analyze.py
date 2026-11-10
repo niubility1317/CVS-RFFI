@@ -7,6 +7,16 @@ from experiments.cric_dura_comparison.io import read,write
 from .plan import VIEWS
 
 
+def normalize_counts(records):
+    result = []
+    for record in records:
+        count = record.get('count', record.get('query_count'))
+        if count is None or ('query_count' in record and record['query_count'] != count):
+            raise ValueError('Missing or conflicting population count')
+        result.append(dict(record, count=count))
+    return result
+
+
 def combine(records):
     if not records: raise ValueError('Empty population')
     size=len(records[0]['confusion']);cm=[[0]*size for _ in range(size)]
@@ -55,7 +65,7 @@ def run(rt):
         structure='full' if external else r['structure']; group='external' if external else r['family']
         views=list(VIEWS) if external else r['views']
         routes=['raw', 'DURA-'+r['G_roles']] if external else r['readouts']
-        records=score['results']
+        records=normalize_counts(score['results'])
         for view in views:
             for route in routes:
                 selected=[x for x in records if x['test'] in ('cross_rx','cross_both') and x['readout']==route and
@@ -142,7 +152,7 @@ def run(rt):
         paired_groups[key].append(rec['pamf_minus_comparison_pp'])
     paired_summary=[dict(key,seed_n=len(vals),mean=statistics.mean(vals),sd=statistics.stdev(vals) if len(vals)>1 else 0.)
                     for key,vals in paired_groups.items()]
-    out=root/'analysis';out.mkdir(exist_ok=False)
+    out=Path(rt.get('analysis_root',root/'analysis'));out.mkdir(parents=True,exist_ok=False)
     for name,data in (('per_seed.csv',all_records),('summary.csv',summary),('paired_external.csv',paired),
                       ('paired_external_summary.csv',paired_summary),('paired_structural.csv',structural),('paired_architecture.csv',architecture)):
         with (out/name).open('x',encoding='utf-8',newline='') as f:
@@ -162,5 +172,5 @@ def run(rt):
     lines += ['', '完整逐种子、逐场景和同种子配对结果见同目录 CSV。',
               '历史数据已用于方法开发；不将该对照宣称为独立盲选。','']
     (out/'report.md').write_text('\n'.join(lines),encoding='utf-8')
-    write(out/'complete.json',dict(status='ANALYZED',pamf_rows=226,external_rows=528,common_receivers=common,
+    write(out/'complete.json',dict(status='ANALYZED',pamf_rows=226,original_pamf_rows=190,branch_panel_rows=36,external_rows=528,common_receivers=common,
           target_feedback_forbidden=True,truth_last=True,pooled_macro_f1_from_confusion=True))

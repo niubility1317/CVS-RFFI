@@ -57,12 +57,12 @@ def install(model, use_time, use_path, use_pa, use_spectrum):
             _, _, _, pa_stats = module._mirror_compressed_features(x, sinc_iq=None)
         else:
             pa_stats = x.new_zeros((len(x), 3))
-        module._factorial_aux = (None, pa_stats)
+        module.pa_stats_proj._factorial_pa_stats = pa_stats
     def clear_aux(module, args, output):
-        if hasattr(module, '_factorial_aux'):
-            del module._factorial_aux
+        if hasattr(module.pa_stats_proj, '_factorial_pa_stats'):
+            del module.pa_stats_proj._factorial_pa_stats
     def pa_inputs(module, args):
-        return (core._factorial_aux[1],)
+        return (module._factorial_pa_stats,)
     core.register_forward_pre_hook(gather_aux)
     core.register_forward_hook(clear_aux)
     core.pa_stats_proj.register_forward_pre_hook(pa_inputs)

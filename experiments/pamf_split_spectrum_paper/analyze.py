@@ -5,6 +5,7 @@ from pathlib import Path
 import statistics
 from experiments.cric_dura_comparison.io import read,write
 from .plan import VIEWS
+from experiments.pamf_no_reference_completion.analyze import normalize_counts
 
 
 def combine(records):
@@ -45,7 +46,7 @@ def run(rt):
         structure='full' if external else r['structure']; group='external' if external else r['family']
         views=list(VIEWS) if external else r['views']
         routes=['raw', 'DURA-'+r['G_roles']] if external else r['readouts']
-        records=score['results']
+        records=normalize_counts(score['results'])
         for view in views:
             for route in routes:
                 selected=[x for x in records if x['test'] in ('cross_rx','cross_both') and x['readout']==route and
@@ -132,7 +133,7 @@ def run(rt):
         paired_groups[key].append(rec['pamf_minus_comparison_pp'])
     paired_summary=[dict(key,seed_n=len(vals),mean=statistics.mean(vals),sd=statistics.stdev(vals) if len(vals)>1 else 0.)
                     for key,vals in paired_groups.items()]
-    out=root/'analysis';out.mkdir(exist_ok=False)
+    out=Path(rt.get('analysis_root',root/'analysis'));out.mkdir(parents=True,exist_ok=False)
     for name,data in (('per_seed.csv',all_records),('summary.csv',summary),('paired_external.csv',paired),
                       ('paired_external_summary.csv',paired_summary),('paired_structural.csv',structural),('paired_architecture.csv',architecture)):
         with (out/name).open('x',encoding='utf-8',newline='') as f:
