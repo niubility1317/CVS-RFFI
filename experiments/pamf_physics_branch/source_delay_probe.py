@@ -17,6 +17,8 @@ def probe(config, role='V', device='cuda:0'):
     if role not in ('L_s', 'V') or any(config.get(k) for k in
             ('truth', 'target_truth', 'tests', 'views_root', 'target_inputs')):
         raise ValueError('Only declared labeled source roles are allowed')
+    from experiments.pamf_repl_completion.runner import activate
+    activate(config)
     contract = read(config['source_contract'])
     reader, _ = load_reader(config['source_output'], contract, config['paper_row'], device)
     reader.eval()
