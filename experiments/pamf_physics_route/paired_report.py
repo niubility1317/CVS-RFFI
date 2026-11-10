@@ -58,6 +58,8 @@ def prepare_row(root, row):
     candidate_input = read(root / 'configs' / f'predict__{row}.json')
     entries = {'candidate': sources[row], 'PL': sources[f'baseline_pl-s{seed}'],
                'Tri-SIG-TIME': tri}
+    if f'baseline_sup-s{seed}' in sources:
+        entries['Sup'] = sources[f'baseline_sup-s{seed}']
     return cfg, {name: frozen_row(entry, seed, root.parent, candidate_input) for name, entry in entries.items()}
 
 

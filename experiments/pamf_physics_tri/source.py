@@ -39,9 +39,12 @@ def parent(c):
 
 
 def train(c):
+    return train_trajectory(c, parent(c), installed, ssl=True)
+
+
+def train_trajectory(c, prefix, scope, *, ssl):
     from experiments.cric_dura_comparison.f_train import train as segment
 
-    prefix = parent(c)
     root = Path(c['output_root'])
     root.mkdir(parents=True, exist_ok=False)
     write(root / 'resolved_config.json', c)
@@ -52,19 +55,27 @@ def train(c):
         cfg = dict(c, output_root=str(folder), segment_epochs=epochs, epoch_offset=offset,
                    step_offset=offset * 222, parent_source=previous)
         holder = {}
-        with installed(cfg, holder):
+        with scope(cfg, holder):
             segment(cfg)
         evidence = read(folder / 'complete.json')
-        state = holder['objective'].state_dict()
         model = holder['model']
+        steps = epochs * 222
         if (evidence['status'] != 'SOURCE_FROZEN' or evidence['updates'] != epochs * 222
                 or evidence['target_access'] or evidence['U_truth_read'] or evidence['head_fit_updates']
-                or state['calls'] != epochs * 222 or state['student_views'] != 6 * state['seen']
-                or state['EMA_updates'] or state['U_truth_read'] or model._physical_L_calls != state['calls']
-                or model._physical_L_samples != 64 * state['calls']):
-            raise ValueError('Physical L or original Tri-SIG-TIME U execution differs')
+                or model._physical_L_calls != steps or model._physical_L_samples != 64 * steps):
+            raise ValueError('Physical true-label continuation execution differs')
+        if ssl:
+            state = holder['objective'].state_dict()
+            if (state['calls'] != steps or state['student_views'] != 6 * state['seen']
+                    or state['EMA_updates'] or state['U_truth_read']):
+                raise ValueError('Original Tri-SIG-TIME U execution differs')
+        else:
+            progress = read(folder / 'progress.json')
+            if progress['U_actual'] or progress['PL_seen'] or model._cd_U_seen:
+                raise ValueError('Supervised physical training accessed U')
+            state = dict(calls=0, seen=0, accepted=0, student_views=0, U_truth_read=False, EMA_updates=0)
         state['physical_L'] = dict(calls=model._physical_L_calls, selected_samples=model._physical_L_samples)
-        write(folder / 'repl_state.json', state)
+        write(folder / ('repl_state.json' if ssl else 'physical_state.json'), state)
         segments.append(dict(folder=str(folder), **evidence))
         states.append(state)
         previous = str(folder)
@@ -76,4 +87,5 @@ def train(c):
           initialization='same_contract_scratch20_own10_own20', ancestors=[s['folder'] for s in segments],
           source_contract=c['source_contract'], target_access=False, U_truth_read=False, head_fit_updates=0,
           actual_REPL={k: sum(s[k] for s in states) for k in ('calls', 'seen', 'accepted', 'student_views')},
+          actual_physical_L={k: sum(s['physical_L'][k] for s in states) for k in ('calls', 'selected_samples')},
           seconds=time.monotonic() - started, cumulative_training_seconds=sum(s['seconds'] for s in segments)))

@@ -12,7 +12,7 @@ from .plan import candidate_rows, configuration
 from .source import parent, train
 
 
-def smoke(rt):
+def smoke(rt, *, rows=candidate_rows, configure=configuration, check_parent=parent, scope=installed, ssl=True):
     import torch
     from torch.nn import functional as F
     from experiments.cric_dura_comparison import f_train, t1_model
@@ -20,26 +20,29 @@ def smoke(rt):
     from experiments.pamf_repl_view_shuffle.source import assert_structure
 
     ctx, checks = read(rt['context']), []
-    for row in candidate_rows():
-        c = configuration(ctx, row, rt['project'], rt['code_commit'])
+    for row in rows():
+        c = configure(ctx, row, rt['project'], rt['code_commit'])
         seed = c['model_seed']
-        prefix = parent(c)
+        prefix = check_parent(c)
         cp = torch.load(Path(prefix['folder']) / 'final_ssdg.pth', map_location='cpu', weights_only=False)
         cfg = dict(c, epoch_offset=20, step_offset=4440, segment_epochs=10, hard_pl_smoke=True)
         holder = {}
         torch.manual_seed(seed)
         torch.cuda.reset_peak_memory_stats()
-        with installed(cfg, holder):
+        with scope(cfg, holder):
             loaders = f_train.context(cfg)
             with f_train.class_dimension(cfg), native_scope(f_train.original_config(seed)) as native:
                 a = f_train.arguments(cfg, 'cuda:0')
                 a.input_len = 256
                 net = t1_model.install(native.build_baseline_model(a, 'cuda:0'), cfg).cuda()
-            graph = assert_structure(net, cfg)
+            graph = assert_structure(net, cfg) if ssl else dict(view_count=3, parameters=232993, order=list(range(8)))
             net.load_state_dict(cp['model'], strict=True)
             net.train()
-            net._cd_U_loader = loaders['unlabeled_loader']
-            net._cd_U_iter = iter(net._cd_U_loader)
+            if ssl:
+                net._cd_U_loader = loaders['unlabeled_loader']
+                net._cd_U_iter = iter(net._cd_U_loader)
+            elif loaders['unlabeled_loader'] is not None:
+                raise ValueError('Supervised source must not construct a U loader')
             batch = next(iter(loaders['train_loader']))
             x, y, domain = [v.cuda() for v in batch[:3]]
             metadata = {k: v.cuda() if torch.is_tensor(v) else v for k, v in batch[3].items()}
@@ -51,11 +54,13 @@ def smoke(rt):
                 optimizer_step=1, identity_loss=ce, labeled_count=128, labeled_inputs=x)
             loss = ce + correction
             loss.backward()
-            state = holder['objective'].state_dict()
-            if (a.seed != seed or graph['order'] != [0, 5, 3, 6, 2, 1, 4, 7]
-                    or a.use_unlabeled or a.use_ema_teacher or not bool(torch.isfinite(loss))
-                    or state['calls'] != 1 or state['seen'] != 256 or state['student_views'] != 1536
-                    or state['U_gradient_guard']['calls'] != 1 or state['U_truth_read'] or state['EMA_updates']
+            state = holder['objective'].state_dict() if ssl else dict(seen=0, student_views=0)
+            if ssl and (graph['order'] != [0, 5, 3, 6, 2, 1, 4, 7] or state['calls'] != 1
+                        or state['seen'] != 256 or state['student_views'] != 1536
+                        or state['U_gradient_guard']['calls'] != 1 or state['U_truth_read'] or state['EMA_updates']):
+                raise ValueError('Complete original Tri-SIG-TIME U smoke differs')
+            if (a.seed != seed or a.use_unlabeled or a.use_ema_teacher or not bool(torch.isfinite(loss))
+                    or (not ssl and net._cd_U_seen)
                     or net._physical_L_calls != 1 or net._physical_L_samples != 64
                     or metrics['physical_L_valid_anchors'] <= 0
                     or any(p.grad is not None and not bool(torch.isfinite(p.grad).all()) for p in net.parameters())):

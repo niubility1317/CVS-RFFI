@@ -43,15 +43,19 @@ def prepare(rt, *, rows_for_run=None, configure=None, source_diagnostic=None, tr
             folder = (Path(rt['project']) / 'runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/readouts'
                       / f'main_split-repl-shuffled_time-3view-s{seed}')
             tri = dict(predictions=folder / 'predictions', scores=folder / 'scores')
-        for name, pred, score in ((f'baseline_pl-s{seed}', baseline['predictions'], baseline['scores']),
-                                   (f'tri_sigtime_ssl-s{seed}', tri['predictions'], tri['scores'])):
+        c = configure(ctx, row, rt['project'], rt['code_commit'], run_id=run_id)
+        controls = [(f'baseline_pl-s{seed}', baseline['predictions'], baseline['scores']),
+                    (f'tri_sigtime_ssl-s{seed}', tri['predictions'], tri['scores'])]
+        if c['paper_row'].get('learning_regime') == 'supervised':
+            sup = ctx['existing'][f'F0-supervised-s{seed}']
+            controls.append((f'baseline_sup-s{seed}', sup['predictions'], sup['scores']))
+        for name, pred, score in controls:
             frozen = read(Path(pred) / 'complete.json')
             if frozen['status'] != 'ALL_PREDICTIONS_COMPLETE' or frozen['truth_read']:
                 raise ValueError('Matched controls must have predictions frozen without truth')
             if read(Path(score) / 'complete.json')['status'] != 'SCORED_COMPLETE':
                 raise ValueError('Matched clean/practical scores are required')
             sources[name] = dict(predictions=str(pred), scores=str(score), reused=True)
-        c = configure(ctx, row, rt['project'], rt['code_commit'], run_id=run_id)
         c['frozen_sources'] = rt['frozen_sources']
         source = Path(c['output_root'])
         out = root / 'readouts' / rid
