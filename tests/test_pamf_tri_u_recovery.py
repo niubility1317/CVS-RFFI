@@ -1,7 +1,9 @@
 import torch
 
 from experiments.pamf_physics_tri.pairing import BRANCHES
-from experiments.pamf_physics_tri.recovery import RejectedURecovery, branch_certificate
+from experiments.pamf_physics_tri.recovery import (
+    RejectedURecovery, branch_certificate, candidate_classes, candidate_mass_loss,
+)
 
 
 def test_certificate_uses_other_receiver_and_checks_same_pseudo_class_under_echo():
@@ -30,3 +32,20 @@ def test_recovery_selection_keeps_original_hard_pseudo_threshold():
     scores = torch.tensor([.98, .95, .94, .5, .49])
     assert obj.accept_pseudo(None, None, scores, None).tolist() == [True, True, False, False, False]
     assert obj.candidates.tolist() == [False, False, True, True, False]
+
+
+def test_partial_class_evidence_preserves_teacher_and_excludes_unsupported_logits():
+    raw = torch.tensor([[[.9, .8, .7, .1, .3, 0.]]]).expand(1, 5, 6).clone()
+    echo = raw.clone()
+    echo[:, :, 1] = .2
+    teacher = torch.tensor([4])
+    ordinary, physical = candidate_classes(raw, echo, teacher)
+    assert ordinary.tolist() == [[True, True, False, False, True, False]]
+    assert physical.tolist() == [[True, False, True, False, True, False]]
+
+    logits = torch.tensor([[.9, .8, .7, .1, .3, 0.]], requires_grad=True)
+    loss = candidate_mass_loss(logits, physical)
+    torch.testing.assert_close(loss, -logits.softmax(1)[physical].sum().log().view(1))
+    loss.sum().backward()
+    assert (logits.grad[physical] < 0).all() and (logits.grad[~physical] > 0).all()
+    assert torch.equal(candidate_mass_loss(logits, torch.ones_like(physical)), torch.zeros(1))

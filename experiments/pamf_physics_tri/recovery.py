@@ -12,22 +12,28 @@ from experiments.pamf_ssl_research.hard_pl_receiver_extrapolation_objective impo
 from .pairing import BRANCHES
 
 
-def branch_certificate(clean, echo, labels, labeled_rx, query_rx, pseudo, classes, required_votes):
-    """Vote for the original fused pseudo-class using only other-RX L centroids."""
+def branch_scores(clean, echo, labels, labeled_rx, query_rx, classes):
+    """Compare each raw/echo feature to source label centroids excluding its RX."""
     count = len(labels)
     known = F.one_hot(labels, classes).T.bool()[None, :, :]
     members = known & (query_rx[:, None, None] != labeled_rx[None, None, :])
     have_all_classes = members.any(2).all(1)
-    raw_votes = torch.zeros_like(pseudo)
-    echo_votes = torch.zeros_like(pseudo)
+    raw, reflected = [], []
     for name in BRANCHES:
         features = F.normalize(clean[name].float(), dim=1, eps=1e-8)
         centroids = F.normalize(members.to(features.dtype) @ features[:count], dim=2, eps=1e-8)
         raw_scores = (centroids @ features[count:, :, None]).squeeze(2)
         echo_features = F.normalize(echo[name][count:].float(), dim=1, eps=1e-8)
         echo_scores = (centroids @ echo_features[:, :, None]).squeeze(2)
-        raw_votes += raw_scores.argmax(1) == pseudo
-        echo_votes += echo_scores.argmax(1) == pseudo
+        raw.append(raw_scores)
+        reflected.append(echo_scores)
+    return torch.stack(raw, dim=1), torch.stack(reflected, dim=1), have_all_classes
+
+
+def branch_certificate(clean, echo, labels, labeled_rx, query_rx, pseudo, classes, required_votes):
+    raw, reflected, have_all_classes = branch_scores(clean, echo, labels, labeled_rx, query_rx, classes)
+    raw_votes = (raw.argmax(2) == pseudo[:, None]).sum(1)
+    echo_votes = (reflected.argmax(2) == pseudo[:, None]).sum(1)
     branch = have_all_classes & (raw_votes >= required_votes)
     return branch, branch & (echo_votes >= required_votes)
 
@@ -51,6 +57,13 @@ class RejectedURecovery(ReceiverExtrapolation):
         self.candidates = ~accepted & (confidence >= self.recipe['minimum_confidence'])
         return accepted
 
+    def certificate(self, clean, echo, labels, l_rx, u_rx, pseudo, indices):
+        return branch_certificate(clean, echo, labels, l_rx, u_rx, pseudo[indices], self.c['num_classes'],
+                                  self.recipe['required_votes'])
+
+    def extra_ce(self, logits, pseudo):
+        return F.cross_entropy(logits, pseudo, reduction='none', label_smoothing=.01)
+
     def mixed_view(self, student, x, ordinary, physical, metadata, epoch, step, pseudo, accepted):
         mixed = super().mixed_view(student, x, ordinary, physical, metadata, epoch, step, pseudo, accepted)
         if self.labeled is None or self.candidates is None or self.recovered is not None:
@@ -61,8 +74,7 @@ class RejectedURecovery(ReceiverExtrapolation):
         if indices.numel():
             seed = self.c['model_seed'] * 100_000 + step
             clean, echo = branch_views(student, torch.cat((raw_l, x[indices])), seed)
-            branch, stable = branch_certificate(clean, echo, labels, l_rx, metadata['rx_i'][indices],
-                                                pseudo[indices], self.c['num_classes'], self.recipe['required_votes'])
+            branch, stable = self.certificate(clean, echo, labels, l_rx, metadata['rx_i'][indices], pseudo, indices)
             eligible[indices] = stable if self.recipe['require_echo'] else branch
             self.probe_steps += 1
             self.probed += len(indices)
@@ -87,8 +99,7 @@ class RejectedURecovery(ReceiverExtrapolation):
             if self.recovered is None or len(self.raw_logits) != 2:
                 raise ValueError('Two existing raw U student logits required')
             pseudo, mask = self.recovered
-            first, second = (F.cross_entropy(v, pseudo, reduction='none', label_smoothing=.01)
-                             for v in self.raw_logits)
+            first, second = (self.extra_ce(v, pseudo) for v in self.raw_logits)
             rescue = self.recipe['weight'] * (.5 * (first + second) * mask).mean()
             value = value + rescue
             self.recovery_calls += 1
@@ -116,11 +127,68 @@ class GuardedRecovery(Guarded, RejectedURecovery):
     pass
 
 
+def candidate_classes(raw, echo, pseudo):
+    """Two anchor-supported classes plus the fused top class, if different."""
+    raw_rank = raw.mean(1).topk(2, dim=1).indices
+    echo_rank = torch.minimum(raw, echo).mean(1).topk(2, dim=1).indices
+
+    def support(rank):
+        return torch.zeros_like(raw[:, 0], dtype=torch.bool).scatter_(1, rank, True).scatter_(1, pseudo[:, None], True)
+
+    return support(raw_rank), support(echo_rank)
+
+
+def candidate_mass_loss(logits, admissible):
+    return torch.logsumexp(logits, dim=1) - torch.logsumexp(logits.masked_fill(~admissible, -torch.inf), dim=1)
+
+
+class PartialRecovery(RejectedURecovery):
+    def __init__(self, c):
+        super().__init__(c)
+        self.admissible = None
+        self.class_set_changes = self.class_slots = 0
+
+    def accept_pseudo(self, student, x, confidence, pseudo):
+        accepted = super().accept_pseudo(student, x, confidence, pseudo)
+        self.admissible = torch.ones((len(pseudo), self.c['num_classes']), dtype=torch.bool, device=pseudo.device)
+        return accepted
+
+    def certificate(self, clean, echo, labels, l_rx, u_rx, pseudo, indices):
+        raw, reflected, valid = branch_scores(clean, echo, labels, l_rx, u_rx, self.c['num_classes'])
+        ordinary, stable = candidate_classes(raw, reflected, pseudo[indices])
+        chosen = stable if self.recipe['require_echo'] else ordinary
+        self.admissible[indices[valid]] = chosen[valid]
+        self.class_slots += int(chosen[valid].sum())
+        self.class_set_changes += int(((ordinary != stable).any(1) & valid).sum())
+        return valid, valid
+
+    def extra_ce(self, logits, pseudo):
+        return candidate_mass_loss(logits, self.admissible)
+
+    def loss(self, student, device):
+        try:
+            return super().loss(student, device)
+        finally:
+            self.admissible = None
+
+    def state_dict(self):
+        state = super().state_dict()
+        if self.admissible is not None or not 2 * self.used <= self.class_slots <= 3 * self.used:
+            raise ValueError('Rejected-U partial supervision requires a two- or three-class set')
+        state['U_recovery'].update(class_set_changes=self.class_set_changes, candidate_class_slots=self.class_slots)
+        return state
+
+
+class GuardedPartialRecovery(Guarded, PartialRecovery):
+    pass
+
+
 @contextmanager
 def installed(c, holder):
     from experiments.cric_dura_comparison import t1_model
 
-    with original_tri(c, holder, enabled=True, objective_factory=GuardedRecovery):
+    objective_cls = GuardedPartialRecovery if c['rejected_u_recovery'].get('partial_labels') else GuardedRecovery
+    with original_tri(c, holder, enabled=True, objective_factory=objective_cls):
         old_install = t1_model.install
 
         def install(model, cfg):

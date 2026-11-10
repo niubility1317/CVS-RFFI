@@ -1,0 +1,20 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261110-phase1-pamf-tri-u-partial-f0-m6-r01",
+  "display_name": "Tri-SIG-TIME 基于跨接收机分支的部分标签与回波证据",
+  "scope": "Phase1 ManySig Main split F0, original full reference-response PAMF, three views and fixed local shuffle [0,5,3,6,2,1,4,7]. Two methods x model seeds 2026092701, 2026092702, 2026092703. F0 target is previously exposed. The running rejected-U hard-certificate candidate has only yielded source-training exposure counters when this design is fixed.",
+  "initialization": "Exact original source-only Tri-SIG-TIME E20 of each seed; then own E10+E20 to fixed E50/11100 updates. Same source L/U, source RX/day, head and existing deployment graph.",
+  "matrix": [
+    {"row_prefix": "tri-branch-partial", "method": "Rank classes using equal mean cosine evidence across the five raw U branches and their source L centroids"},
+    {"row_prefix": "tri-echo-partial", "method": "Rank classes by averaging each branch's lesser raw or echo cosine evidence for the same class. Echo is bounded post-reception complex convolution with a direct tap and a 1–3 sample delayed tap, magnitude .04–.10."}
+  ],
+  "training": "Original .95 high-confidence acceptance, pseudo labels, six views, cross-receiver random pairing, U gradient guard and supervised loss are preserved. On rejected U in [.50,.95), compute class centroids on the same step's labeled source IQ, excluding the U receiver and requiring all registered classes. Keep the union of the two best branch-evidence classes and the original fused argmax; the loss is negative log of the student probability mass in this two- or three-class set. Use weight 1, averaged over the final two existing raw U forwards and the full original U batch. Both arms run the same raw/echo probes in eval/no-grad; only the class evidence ranking differs. No target access or U truth during training.",
+  "controls": ["Exact same-seed full Tri-SIG-TIME SSL", "Ordinary PL matched to the same F0 inputs", "Raw branch partial-label control at equal probe dose"],
+  "evaluation": "Fixed E50, clean plus six practical satellite-ground scenes. DURA-LU primary, DURA-L and raw secondary. Combine disjoint cross_rx and cross_both, 168000 physical packets per scene, cross_date diagnostic. Score independently after all six predictions freeze, then report per scene and seed, TX/RX/day, paired corrections and regressions. Exclude leo_weak.",
+  "success": "Positive paired three-seed means versus Tri-SIG-TIME on clean and practical-six mean, and positive paired mean versus PL in every scene. Report all seed losses. Stronger all-condition attainment requires each PL scene-by-seed cell positive and confirmation on an independent protocol.",
+  "command": "python -m experiments.pamf_physics_tri.publish --partial-recovery --repo REPO --output UNIQUE_LOCAL_ROOT --context EXISTING_CONTEXT --ssh-config N607_CONFIG",
+  "environment": "N607 existing project Python, ordinary account, immutable Git release under PROJECT/releases/RUN-release, FP32/TF32 off, own PROJECT/runs/RUN output root.",
+  "resources": "GPU 5–7, up to two observed/pending experiment processes per GPU including other owners. Preserve live owners on all cards. One owner and one real E20 source-only smoke over six rows.",
+  "stop_rule": "Systemic technical failure stops new dispatch and preserves healthy jobs and artifacts. No optional source diagnostic stage, weak scoring, or target-driven tuning/rerun.",
+  "expected_artifacts": ["Actual E20 finite source-only smoke", "Own E30/E50 and partial-label coverage", "Six seven-scene prediction matrices and independent scores", "Three-seed same-packet comparisons"]
+}
