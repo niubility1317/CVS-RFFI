@@ -1,0 +1,20 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261110-phase1-pamf-tri-u-recovery-f0-m6-r01",
+  "display_name": "Tri-SIG-TIME 拒绝样本的跨接收机分支复核与物理确认",
+  "scope": "Phase1 ManySig Main split F0, original full reference-response PAMF, three views and fixed local shuffle [0,5,3,6,2,1,4,7]. Two methods, each with seeds 2026092701, 2026092702, 2026092703. F0 target is previously exposed development data.",
+  "initialization": "Exact source-only Tri-SIG-TIME E20 for each seed followed by own E10+E20 to fixed E50 (11100 total updates). Same source L/U, days, RXs and existing head. No target data or U truth in training.",
+  "matrix": [
+    {"row_prefix": "tri-branch-recover", "method": "Source-labeled other-RX class centroids, require at least four out of five raw feature paths to agree with the original fused U pseudo label"},
+    {"row_prefix": "tri-echo-recover", "method": "Same raw acceptance, additionally require four out of five paths to agree with the same pseudo label for the same packet under bounded causal echo"}
+  ],
+  "training": "Both candidates keep original random cross-RX pairs, .95 acceptance, six U student forwards and guard. Extra CE can affect only .50 <= fused confidence < .95. Branches use current L raw anchors, excluding each U record's own RX, require all six L classes, and use no U truth. Clean and echo probes are matched eval/no-grad, independent bounded causal echo 1–3 samples, magnitude .04–.10. Extra .01-smoothed CE is weight 1.0, averaged over existing raw U passes 5 and 6 and the original full U batch, then goes into original REPL guard. Source L loss, original pseudo CE and inference graph stay fixed.",
+  "controls": ["Exact same-seed full Tri-SIG-TIME SSL", "Ordinary PL on same F0 test inputs", "Clean-only branch certificate with matched probe compute"],
+  "evaluation": "Fixed E50; clean plus six practical scenes. DURA-LU primary, DURA-L and raw secondary. Main combines disjoint cross_rx and cross_both (168000 physical packets per scene); cross_date is diagnostic. Independent scoring only after all six prediction matrices freeze. Report per scene, seed, TX/RX/day, paired corrections and regressions. Exclude leo_weak.",
+  "success": "Positive paired three-seed means versus Tri-SIG-TIME on clean and practical-six mean, and positive paired mean versus PL in every scene. Report every individual seed loss; stronger all-condition attainment requires every PL scene-by-seed cell positive and independent protocol confirmation.",
+  "command": "python -m experiments.pamf_physics_tri.publish --recovery --repo REPO --output UNIQUE_LOCAL_ROOT --context EXISTING_CONTEXT --ssh-config N607_CONFIG",
+  "environment": "N607 ordinary account and existing project Python, immutable Git release, PROJECT/releases/RUN-release CWD, FP32/TF32 off, PROJECT/runs/RUN output root.",
+  "resources": "GPU 0–4, at most two observed or pending experiments per GPU including other owners. Single run owner, one real no-query E20 smoke spanning the six rows.",
+  "stop_rule": "Systemic technical failure stops new dispatch and preserves healthy workers and artifacts. No target-driven rerun, weak scoring, or optional source-diagnostic stage.",
+  "expected_artifacts": ["E20 source-only finite backward smoke", "Own E30/E50 and actual rejected-U coverage counters", "Six frozen seven-scene prediction sets", "Independent scores and paired same-packet report"]
+}

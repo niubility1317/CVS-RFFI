@@ -35,7 +35,7 @@ def echo_parameters(count, device, dtype, seed):
     return coefficients, delays
 
 
-def physical_probes(student, inputs, seed):
+def branch_views(student, inputs, seed):
     """Capture deployed branches before and after a bounded echo."""
     if inputs.ndim != 3 or inputs.shape[1:] != (2, 256) or not len(inputs):
         raise ValueError('Nonempty 256-sample source IQ required')
@@ -52,15 +52,20 @@ def physical_probes(student, inputs, seed):
                 student(inputs)
             with capture_branches(core, sequence, reference) as changed:
                 student(transformed)
-            directions, norms = {}, {}
-            for name in raw:
-                directions[name], norms[name] = tangent(raw[name], changed[name])
     finally:
         for module, mode in modes:
             module.training = mode
         torch.random.set_rng_state(cpu_rng)
         if cuda_rng is not None:
             torch.cuda.set_rng_state(cuda_rng, inputs.device)
+    return raw, changed
+
+
+def physical_probes(student, inputs, seed):
+    raw, changed = branch_views(student, inputs, seed)
+    directions, norms = {}, {}
+    for name in raw:
+        directions[name], norms[name] = tangent(raw[name], changed[name])
     return raw, directions, norms
 
 

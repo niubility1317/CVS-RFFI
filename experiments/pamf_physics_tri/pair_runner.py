@@ -5,10 +5,30 @@ from functools import partial
 from experiments.cric_dura_comparison.io import read
 from experiments.pamf_physics_route import prepare as routes
 from experiments.pamf_physics_route import runner as dispatching
-from .pair_plan import candidate_rows, configuration, parent
-from .pairing import installed
+from . import pair_plan, recovery_plan
+from .pairing import installed as pairing_scope
+from .recovery import installed as recovery_scope
 from .runner import smoke, worker as existing_worker
 from .source import train_trajectory
+
+
+def check_pairing(state):
+    pair = state['U_branch_pairing']
+    if (pair['calls'] != 1 or pair['extra_eval_forwards'] != 2 or pair['probed'] <= 0
+            or pair['changed_vs_random'] <= 0 or (pair['beta'] > 0 and pair['mean_eligible_discount'] <= 0)):
+        raise ValueError('Actual U branch probes and eligible partner replacements required')
+    return dict(U_branch_pairing=pair)
+
+
+def check_recovery(state):
+    recovery = state['U_recovery']
+    if recovery['calls'] != 1 or recovery['extra_eval_forwards'] != 2 or recovery['probed'] <= 0:
+        raise ValueError('Actual rejected-U source probe required')
+    return dict(U_recovery=recovery)
+
+
+METHODS = {pair_plan.RUN: (pair_plan, pairing_scope, check_pairing),
+           recovery_plan.RUN: (recovery_plan, recovery_scope, check_recovery)}
 
 
 def worker(c, kind):
@@ -16,16 +36,18 @@ def worker(c, kind):
         return existing_worker(c, kind)
     from experiments.pamf_repl_completion.runner import activate
     activate(c)
+    plan, installed, check_u = METHODS[c['run_id']]
     if kind == 'train':
-        return train_trajectory(c, parent(c), installed, ssl=True, physical_L=False)
+        return train_trajectory(c, plan.parent(c), installed, ssl=True, physical_L=False)
     if kind == 'smoke':
-        return smoke(c, rows=candidate_rows, configure=configuration, check_parent=parent, scope=installed,
-                     check_pairing=True)
+        return smoke(c, rows=plan.candidate_rows, configure=plan.configuration, check_parent=plan.parent,
+                     scope=installed, check_u=check_u)
     raise ValueError('Only source and clean/practical evaluation stages are allowed')
 
 
 def dispatch(rt):
-    prepare = partial(routes.prepare, rows_for_run=lambda _: candidate_rows(), configure=configuration,
+    plan, _, _ = METHODS[rt['run_id']]
+    prepare = partial(routes.prepare, rows_for_run=lambda _: plan.candidate_rows(), configure=plan.configuration,
                       source_diagnostic=False, tri_dura=True)
     launch = partial(dispatching.launch, module='experiments.pamf_physics_tri.pair_runner')
     dispatching.dispatch(rt, prepare_run=prepare, launch_worker=launch)

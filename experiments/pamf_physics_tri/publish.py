@@ -6,14 +6,16 @@ from experiments.pamf_repl_view_shuffle.plan import RUN as TRI_RUN
 from .plan import RUN, SEEDS
 
 
-def publish(repo, output, context, ssh_config, *, pairing=False):
+def publish(repo, output, context, ssh_config, *, pairing=False, recovery=False):
     from .pair_plan import RUN as PAIR_RUN
+    from .recovery_plan import RUN as RECOVERY_RUN
 
     old_run, old_remote = base.RUN, base.REMOTE
-    base.RUN = PAIR_RUN if pairing else RUN
-    gpus = [0, 1, 2, 3, 4] if pairing else [0, 1]
-    owner = 'codex-pamf-tri-rxpair-20261110' if pairing else 'codex-pamf-tri-label-tangent-20261110'
-    runner = 'experiments.pamf_physics_tri.pair_runner' if pairing else 'experiments.pamf_physics_tri.runner'
+    base.RUN = RECOVERY_RUN if recovery else PAIR_RUN if pairing else RUN
+    multi_gpu = pairing or recovery
+    gpus = [0, 1, 2, 3, 4] if multi_gpu else [0, 1]
+    owner = f'codex-{base.RUN}'
+    runner = 'experiments.pamf_physics_tri.pair_runner' if multi_gpu else 'experiments.pamf_physics_tri.runner'
     preflight = (
         f"for seed in {SEEDS!r}:\n"
         f" path=project/'runs'/{TRI_RUN!r}/'F'/f'main_split-repl-shuffled_time-3view-s{{seed}}'/'source'/'segment20'\n"
@@ -39,6 +41,8 @@ if __name__ == '__main__':
     p = argparse.ArgumentParser()
     for key in ('repo', 'output', 'context', 'ssh_config'):
         p.add_argument('--' + key.replace('_', '-'), required=True)
-    p.add_argument('--pairing', action='store_true')
+    experiment = p.add_mutually_exclusive_group()
+    experiment.add_argument('--pairing', action='store_true')
+    experiment.add_argument('--recovery', action='store_true')
     a = p.parse_args()
-    publish(a.repo, a.output, a.context, a.ssh_config, pairing=a.pairing)
+    publish(a.repo, a.output, a.context, a.ssh_config, pairing=a.pairing, recovery=a.recovery)

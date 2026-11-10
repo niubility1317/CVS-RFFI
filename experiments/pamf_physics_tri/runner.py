@@ -13,7 +13,7 @@ from .source import parent, train
 
 
 def smoke(rt, *, rows=candidate_rows, configure=configuration, check_parent=parent, scope=installed,
-          ssl=True, check_pairing=False):
+          ssl=True, check_u=None):
     import torch
     from torch.nn import functional as F
     from experiments.cric_dura_comparison import f_train, t1_model
@@ -64,12 +64,8 @@ def smoke(rt, *, rows=candidate_rows, configure=configuration, check_parent=pare
                     or (not ssl and net._cd_U_seen)
                     or any(p.grad is not None and not bool(torch.isfinite(p.grad).all()) for p in net.parameters())):
                 raise ValueError('Finite source smoke with exact stage options required')
-            if check_pairing:
-                pair = state['U_branch_pairing']
-                if (pair['calls'] != 1 or pair['extra_eval_forwards'] != 2 or pair['probed'] <= 0
-                        or pair['changed_vs_random'] <= 0 or (pair['beta'] > 0 and pair['mean_eligible_discount'] <= 0)):
-                    raise ValueError('Actual U branch probes and eligible partner replacements required')
-                details = dict(U_branch_pairing=pair)
+            if check_u:
+                details = check_u(state)
             else:
                 if net._physical_L_calls != 1 or net._physical_L_samples != 64 or metrics['physical_L_valid_anchors'] <= 0:
                     raise ValueError('Physical L smoke did not execute the registered relation')
