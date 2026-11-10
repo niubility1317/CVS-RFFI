@@ -126,7 +126,7 @@ def dispatch(rt):
     peak = max(x['peak_allocated_bytes'] for x in read(root / 'smoke.json')['checks'])
     required_mib = max(6000, int(peak / 1024**2) + 2000)
     state.update(status='RUNNING', admission_mib=required_mib)
-    failed = []
+    failed, nonblocking_failed = [], []
     while True:
         for key, (process, item) in list(active.items()):
             if process.poll() is None:
@@ -135,7 +135,7 @@ def dispatch(rt):
             state['jobs'][key] = dict(item, status='COMPLETE' if ok else 'FAILED',
                                       ended_at=time.time(), exit_code=process.returncode)
             if not ok:
-                failed.append(key)
+                (nonblocking_failed if by[key].get('nonblocking') is True else failed).append(key)
             del active[key]
         block_failed_dependencies(jobs, state, [])
         pending = [j for j in jobs if state['jobs'][j['id']]['status'] == 'QUEUED']
@@ -159,7 +159,7 @@ def dispatch(rt):
             state['jobs'][job['id']] = item
             candidates.remove(job)
         state.update(updated_at=time.time(), counts=dict(Counter(v['status'] for v in state['jobs'].values())),
-                     failed_jobs=failed, stop_new_dispatch=bool(failed))
+                     failed_jobs=failed, nonblocking_failed_jobs=nonblocking_failed, stop_new_dispatch=bool(failed))
         atomic(root / 'pipeline_state.json', state)
         if not active and (not pending or failed):
             break

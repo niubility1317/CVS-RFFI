@@ -1,4 +1,4 @@
-"""Summarize every finalized source training step for the fixed PTBR pilot."""
+"""Summarize every finalized source step for physical PTBR pilot rows."""
 import argparse
 import json
 from pathlib import Path
@@ -12,14 +12,17 @@ def stats(values):
                 minimum=min(values), maximum=max(values), mean=statistics.fmean(values))
 
 
-def summarize(root):
+def summarize(root, row_ids=None):
     root = Path(root)
     state = json.loads((root / 'pipeline_state.json').read_text(encoding='utf-8'))
     rows = {}
-    for tag in ('beta0', 'beta05'):
-        rid = 'ptbr-' + tag + '-s2026092701'
+    if row_ids is None:
+        labels = [('beta0', 'ptbr-beta0-s2026092701'), ('beta05', 'ptbr-beta05-s2026092701')]
+    else:
+        labels = [(rid, rid) for rid in row_ids]
+    for tag, rid in labels:
         if state['jobs']['train__' + rid]['status'] != 'COMPLETE':
-            raise ValueError('Both source models must have completed before full-log diagnosis')
+            raise ValueError('Each requested source model must be complete before full-log diagnosis')
         source = root / 'F' / rid / 'source'
         epochs, segments = [], {}
         for end, offset in ((30, 20), (50, 30)):
@@ -34,12 +37,18 @@ def summarize(root):
                     'physical_U_distance_correction', 'physical_L_samples', 'physical_U_samples')
             keys += tuple('physical_' + role + '_direction_' + branch for role in ('L', 'U')
                           for branch in ('time', 'frequency', 'pa', 'path', 'reference'))
+            if rid.startswith('ptbr-adaptive-'):
+                keys += ('adaptive_reference_scale', 'adaptive_reference_base_grad',
+                         'adaptive_reference_relation_grad')
             summary = {}
             for key in keys:
                 values = [float(m[key]) for m in steps if key in m]
                 if len(values) != expected:
                     raise ValueError('Source metric coverage missing: ' + key)
                 summary[key] = stats(values)
+                if key == 'adaptive_reference_scale':
+                    summary[key].update(at_floor=sum(v <= .10000001 for v in values),
+                                        at_ceiling=sum(v >= .99999999 for v in values))
             skips = sum(bool(m.get('train/skipped_nonfinite_loss', 0)
                              or m.get('train/skipped_nonfinite_grad', 0)) for m in steps)
             exposure = json.loads((path / 'physical_state.json').read_text(encoding='utf-8'))
@@ -58,5 +67,6 @@ def summarize(root):
 if __name__ == '__main__':
     p = argparse.ArgumentParser()
     p.add_argument('--root', required=True)
+    p.add_argument('--row', action='append')
     args = p.parse_args()
-    print(json.dumps(summarize(args.root), allow_nan=False))
+    print(json.dumps(summarize(args.root, args.row), allow_nan=False))
