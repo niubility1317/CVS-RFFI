@@ -20,7 +20,7 @@ def parent(c):
             or c['paper_row']['row_id'] != baseline or c['algorithm_id'] != 'pamf_sup_label_tangent_v1'
             or c['physical_relation'] != dict(beta=.5, l_weight=.05, u_weight=0.)):
         raise ValueError('Unregistered supervised physical continuation')
-    expected = root.parents[3] / PREFIX_RUN / 'F' / f'F20-s{seed}' / 'source' / 'segment20'
+    expected = root.parents[3] / PREFIX_RUN / f'F20-s{seed}' / 'source' / 'segment20'
     if Path(c['shared_prefix']) != expected:
         raise ValueError('Only the original same-seed F20 prefix is allowed')
     proxy = dict(c, run_id=paper.RUN, row_id=baseline)
