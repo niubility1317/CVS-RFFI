@@ -1,5 +1,7 @@
 # Tri-SIG-TIME SSL 与 DURA v1.0 的三种子匹配基线补测
 
+> **更正：本补测属于重复评测。** 原论文补齐实验 `20261027-phase1-pamf-paper-completion-m119-r03` 已有 Main split 原完整 Tri-SIG-TIME SSL 的三个模型种子及对应 DURA 七景，本次先前判断 02／03 缺失是检索不充分。后续以原论文实验为正式比较基准；保留本次补测及以下历史过程作为追溯，不再称其补齐了缺失对照。
+
 - run_id：`20261110-evaluation-trisig-dura-f0-s2026092702-03-m2-r01`
 - group_id：`trisig-dura-main-matched-baseline`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
@@ -55,3 +57,5 @@
 完整逐 TX／RX／日期及总体 confusion、Macro-F1 和原始配对计数保留在各自独立 `scores.json`；[只读汇总脚本](../../../experiments/pamf_trisig_dura_baseline/summarize_existing.py)仅消费已完成评分，不读取 IQ、真值或模型。两个新增种子的预测阶段墙钟分别为 87.72 和 89.16 秒，复用 DURA IQ 与 raw 决策，不能当作 DURA＋F 端到端耗时。三个种子重复测试相同物理包，不是 504000 个独立包。新物理路由候选及其与本基线逐包比较尚未完成，用户总体目标仍 ACTIVE。
 
 用户要求核对既有 Phase1 三种子后，已通过 [只读复用检查](../../../experiments/pamf_trisig_dura_baseline/audit_reuse.py) 核实三个 F 均为原 `20261027-phase1-pamf-repl-shuffled-views-m16-r02` 对应 seed 的三视图固定重排行、E50／11100，且为源域冻结模型；不是重新训练的模型。三个种子各两人群、七景共 42 组 raw 决策与原始正式预测逐条一致，全部不一致数为 0；DURA 缓存 ID 与原预测 ID 全部同序。该检查 0 真值读取、0 模型更新。已有原直接识别结果始终直接复用；本补测仅新增 02／03 两份原 F 的 DURA 读出，不据此宣称此前不存在其他未检索到的 DURA 结果。
+
+进一步定位原论文补齐实验后，[逐包检查](../../../experiments/pamf_trisig_dura_baseline/audit_original_paper.py)确认其 `main_split-factorial-ssl-full-permuted` 三行均复用上述原 F 源路径，全部预测和独立评分已完成。原论文实验与本次／原 seed01 结果的三个种子、两人群、七景、raw／DURA-LU 共 84 组预测逐包比较，物理 ID 顺序一致，决策差异均为 0；检查 0 真值读取、0 模型更新。上表数值与原论文实验相同，但应归回原论文实验作为主对照，本次属于重复预测，不计为独立复现或新增模型种子。
