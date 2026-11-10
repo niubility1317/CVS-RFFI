@@ -77,7 +77,7 @@ def source_relation(packet, directions, labels, metadata, selected, c, accepted=
     branch = {k: v.index_select(0, selected) for k, v in packet.items()}
     return physical_branch_loss(branch, directions, chosen, rx, days, ids,
            selected_accepted, beta=c['physical_relation']['beta'],
-           single_receiver=len(c['source_rxs']) == 1)
+           single_receiver=len(c['source_rxs']) == 1, reference_scale=c.get('reference_scale', 1.))
 
 
 def install_labeled(student, config):

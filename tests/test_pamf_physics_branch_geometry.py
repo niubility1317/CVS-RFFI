@@ -67,3 +67,22 @@ def test_one_receiver_fallback_and_no_eligible_pairs():
     zero, stats = physical_branch_loss({'time': feature}, {'time': direction}, labels, rx, days, ids,
                                        torch.zeros(4, dtype=torch.bool), beta=.5, single_receiver=False)
     assert stats['valid_anchors'] == 0 and zero.item() == 0
+
+
+def test_reference_scale_changes_only_reference_relation_gradient():
+    torch.manual_seed(8)
+    names = ('time', 'frequency', 'pa', 'path', 'reference')
+    features = {name: torch.randn(6, 5, requires_grad=True) for name in names}
+    directions = {name: F.normalize(torch.randn(6, 5), dim=1) for name in names}
+    labels = torch.tensor([0, 0, 1, 1, 0, 1])
+    receivers = torch.tensor([1, 2, 1, 2, 1, 2])
+    args = (features, directions, labels, receivers, torch.ones(6), torch.arange(6),
+            torch.ones(6, dtype=torch.bool))
+    equal, _ = physical_branch_loss(*args, beta=.5, single_receiver=False)
+    scaled, _ = physical_branch_loss(*args, beta=.5, single_receiver=False, reference_scale=.1)
+    equal_grad = torch.autograd.grad(equal, tuple(features.values()), retain_graph=True)
+    scaled_grad = torch.autograd.grad(scaled, tuple(features.values()))
+    for name, old, new in zip(names, equal_grad, scaled_grad):
+        assert torch.allclose(new, old * (.1 if name == 'reference' else 1.), atol=1e-7)
+    with pytest.raises(ValueError):
+        physical_branch_loss(*args, beta=.5, single_receiver=False, reference_scale=1.1)

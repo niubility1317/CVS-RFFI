@@ -1,0 +1,234 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261110-phase1-pamf-ptbr-refbudget-f0-s2026092701-m1-r01",
+  "group_id": "phase1-pamf-ptbr-reference-budget",
+  "display_name": "PAMF 物理分支参考响应梯度预算单种子对照",
+  "description": "由源验证集固定模型的参考分支局部梯度诊断提出，仅缩小参考关系项权重。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-PTBR-refbudget-pilot"
+  ],
+  "tags": [
+    "PAMF",
+    "SSL",
+    "physics-aware",
+    "matched-control",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01",
+    "20261024-phase1-PAMF-REPL-completion-m201-r01",
+    "20261110-phase1-pamf-branch-relations-f0-s2026092701-m4-r01",
+    "20261110-phase1-pamf-ptbr-f0-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-11-10 用户要求训练机制兼具多分支与物理感知，并授权 N607 GPU 0/1 每卡两个实验进程。",
+  "code": {
+    "commit": "Recorded immutable release commit in runtime.json at launch",
+    "checkout": "current PAMF branch-training Git worktree",
+    "environment": "N607 existing project Python, FP32/TF32 off, no installs",
+    "cwd": "PROJECT/releases/20261110-phase1-pamf-ptbr-refbudget-f0-s2026092701-m1-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig F0, six classes",
+    "version": "existing VALIDATED_ONCE",
+    "representation": "received IQ float32 [2,256]",
+    "contract_ref": "F0 same source contract and validated target handles in private runtime context",
+    "physical_ids_ref": "F0 target physical IDs; weak view manifest physical_ids_ref",
+    "label_map_ref": "F0 source contract classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "F0 source contract classes",
+    "roles": {
+      "L_s": "true labels; up to 64 source records per L step for echo directions",
+      "U_s": "hidden TX; ordinary PL threshold .95; select at most 128 U independently of acceptance, use accepted subset for relations",
+      "V": "27000 source validation, no training or checkpoint selection"
+    },
+    "train_ratio": "F0 fixed source roles",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "previous VALIDATED_ONCE; Phase2 capsule/split not applicable",
+    "support_query_ref": "Phase1 fixed prediction only; Phase2 support/query not applicable",
+    "leo_config_ref": "existing weak-view manifest, fixed seeds 2026100912/13/14"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only_after_fixed_final_checkpoint",
+    "external_method_exception": null,
+    "claim_scope": "single-seed exploratory, previously exposed benchmark; no general or statistical claim"
+  },
+  "checkpoint": {
+    "initialization": "matched F21 scratch E20, then own 10+20; no prior candidate checkpoint",
+    "sources": [
+      "same-contract F21 scratch E20; preexisting ordinary PL seven-view scores; previous PL weak scores if complete"
+    ],
+    "contract_check_ref": "pamf_physics_branch.source.checked_parent using actual F21 payload and source roles",
+    "provenance_verdict": "Actual parent contract and scratch checkpoint inspected at load; fail on mismatch",
+    "selection_rule": "fixed final E50; no target selection or tuning"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-refbudget-20261110",
+    "gpu_policy": "GPU 0/1; matched PTBR owner must be ANALYZED with no running jobs; at most two total observed/pending workers per card",
+    "remote_run_root": "PROJECT/runs/20261110-phase1-pamf-ptbr-refbudget-f0-s2026092701-m1-r01",
+    "remote_log_root": "PROJECT/runs/20261110-phase1-pamf-ptbr-refbudget-f0-s2026092701-m1-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_physics_branch_refbudget_20261110",
+    "launch_command": "PYTHON -u -m experiments.pamf_physics_branch_balanced.runner dispatch --config PROJECT/releases/20261110-phase1-pamf-ptbr-refbudget-f0-s2026092701-m1-r01-release/runtime.json",
+    "stop_rule": "Any technical failure stops new dispatch; preserve healthy workers and all artifacts; no target-driven retry"
+  },
+  "expected_artifacts": [
+    "one-row real E20 no-query finite-backward smoke",
+    "own E30 and E50 source trajectories and identical L/U physical exposure counts",
+    "full source L/V physical diagnostics and stratified original As",
+    "all practical and weak predictions frozen before independent truth-last scoring",
+    "same-row comparison to beta=0.5 and ordinary PL",
+    "PID/CWD/GPU/log readback"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "paired percentage-point differences"
+    ],
+    "dimensions": [
+      "one seed",
+      "cross_date/cross_rx/cross_both",
+      "clean and six practical",
+      "weak combined_target/cross_rx/cross_both",
+      "receiver/day/transmitter"
+    ],
+    "prediction_ref": "PROJECT/runs/20261110-phase1-pamf-branch-relations-f0-s2026092701-m4-r01/readouts/ROW",
+    "scorer_ref": "separate CPU scorer, after all same-row predictions"
+  },
+  "rows": [
+    {
+      "row_id": "ptbr-refbudget-s2026092701",
+      "method": "PTBR beta=0.5 + reference relation scale 0.1",
+      "purpose": "matched beta=0.5 reference-budget effect; same exposure and data",
+      "config_ref": "PROJECT/runs/20261110-phase1-pamf-ptbr-refbudget-f0-s2026092701-m1-r01/configs/train__ptbr-refbudget-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261110-phase1-pamf-ptbr-refbudget-f0-s2026092701-m1-r01/F/ptbr-refbudget-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original F0 seeds; echo has fixed source RNG by global step; weak view seeds in manifest; no support.",
+      "k": null,
+      "scenario": "clean and six practical in three F0 populations; raw three weak scenes on combined target",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS",
+      "lr": "original native segment schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reused E20/4440; own E10+E20/6660; L64/U<=128 each use two no-grad forwards",
+      "output_root": "PROJECT/runs/20261110-phase1-pamf-ptbr-refbudget-f0-s2026092701-m1-r01/F/ptbr-refbudget-s2026092701/source",
+      "log_path": "PROJECT/runs/20261110-phase1-pamf-ptbr-refbudget-f0-s2026092701-m1-r01/logs/train__ptbr-refbudget-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261110-phase1-pamf-ptbr-refbudget-f0-s2026092701-m1-r01/configs/train__ptbr-refbudget-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/physical_state.json",
+        "source/segment50/physical_state.json",
+        "readouts/ROW/scores/complete.json",
+        "readouts/ROW/weak_scores/complete.json"
+      ],
+      "physical_row": {
+        "row_id": "ptbr-refbudget-s2026092701",
+        "model_seed": 2026092701,
+        "beta": 0.5,
+        "protocol_id": "F0",
+        "regime": "pl",
+        "structure": "full",
+        "signature_views": 3,
+        "permuted": false,
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "epochs": 50,
+        "updates": 11100,
+        "new_updates": 6660,
+        "l_weight": 0.05,
+        "u_weight": 0.05,
+        "L_limit": 64,
+        "U_limit": 128,
+        "echo_magnitude": [
+          0.04,
+          0.1
+        ],
+        "echo_delays": [
+          1,
+          2,
+          3
+        ],
+        "physical_forward_mode": "eval_no_grad_restore_modes_rng",
+        "positives": "same_pseudo_or_label_same_day_other_rx",
+        "negatives": "different_pseudo_or_label_same_day_same_rx",
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "weak_views": [
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "reference_scale": 0.1
+      }
+    }
+  ],
+  "notes": [
+    "Source-only fixed-F21 eval gradient probe: beta=.5 reference L+U relation norm .6353 vs direct CE+PL .0828; different train-mode batch geometry remains unverified.",
+    "Only reference branch relation term is multiplied by .1 before the original five-branch mean; CE, PL, sampling, physical proxy, train budget and beta=.5 unchanged.",
+    "Reference scale is a source-motivated fixed probe, not a calibrated physical truth or a performance guarantee; match beta=.5 and ordinary PL.",
+    "Source V screen before expansion: final V no worse than original PL by .2 pp and matched beta=.5 by .1 pp; report anchors and nonfinite counts; never cancel preregistered test.",
+    "Candidate fixed after earlier F0 benchmark exposure, but before matched beta=.5 target scoring; not a pristine unseen-data blind test.",
+    "Wait until matched PTBR owner is ANALYZED; predict all fixed views before truth-last scoring; no target-based tuning, selection or retry."
+  ],
+  "registered_at": "2026-11-10T06:03:01.511616+00:00"
+}

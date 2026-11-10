@@ -20,6 +20,7 @@ def validate_source(c):
             or c['paper_row']['permuted'] or c['paper_row']['signature_views'] != 3
             or c['hard_pl'] != dict(method='HPL2', threshold=.95, weight=1.)
             or c['hard_pl_label_smoothing'] != 0.
+            or c.get('reference_scale', 1.) != 1.
             or c['physical_relation'] != dict(beta=row['beta'], l_weight=.05, u_weight=.05)):
         raise ValueError('PTBR source method, permissions or matched architecture differs')
     if any(c.get(k) for k in ('truth', 'target_truth', 'target_inputs', 'tests',

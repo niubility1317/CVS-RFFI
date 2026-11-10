@@ -60,12 +60,12 @@ def soft_distances(features, directions, beta):
 
 
 def physical_branch_loss(features, directions, labels, receivers, days, record_ids, accepted,
-                         *, beta, single_receiver, temperature=.2):
+                         *, beta, single_receiver, temperature=.2, reference_scale=1.):
     """Same-day source identity relation, using true or already accepted pseudo labels."""
     if (not features or features.keys() != directions.keys() or labels.ndim != 1
             or any(v.shape != labels.shape for v in (receivers, days, record_ids, accepted))
             or accepted.dtype != torch.bool or labels.dtype != torch.long
-            or temperature <= 0 or not 0 <= beta <= 1):
+            or temperature <= 0 or not 0 <= beta <= 1 or not 0 <= reference_scale <= 1):
         raise ValueError('Aligned branch features and legal source relation required')
     if bool((labels[accepted] < 0).any()):
         raise ValueError('Accepted identities must be nonnegative')
@@ -93,7 +93,8 @@ def physical_branch_loss(features, directions, labels, receivers, days, record_i
         permitted = (positive | negative)[valid]
         denominator = torch.logsumexp(score.masked_fill(~permitted, -torch.inf), dim=1)
         positive_mean = score.masked_fill(~pos, 0.).sum(1) / pos.sum(1)
-        losses.append((denominator - positive_mean).mean())
+        scale = reference_scale if name == 'reference' else 1.
+        losses.append(scale * (denominator - positive_mean).mean())
         correction.append((original - adjusted)[valid].mean().detach())
     return torch.stack(losses).mean(), dict(valid_anchors=int(valid.sum()),
            nonzero_directions={k: int((v.detach().norm(dim=1) > 0).sum()) for k, v in directions.items()},
