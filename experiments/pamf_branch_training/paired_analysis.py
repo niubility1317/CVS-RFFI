@@ -79,16 +79,19 @@ def compare(candidate, baseline, candidate_name, baseline_name, family):
 
 def run(manifest, output):
     spec = json.loads(Path(manifest).read_text(encoding='utf-8-sig'))
+    comparisons = spec.pop('_comparisons', None)
+    if comparisons is None:
+        comparisons = [(name, baseline) for name in ('sup_l', 'pl_l', 'pl_u', 'pl_lu')
+                       for baseline in (('baseline_sup',) if name == 'sup_l' else
+                                        ('baseline_pl', 'natural_repl', 'shuffled_ssl'))]
     scored = {}
     for name, paths in spec.items():
         scored[name] = {family: cells(json.loads(Path(path).read_text(encoding='utf-8-sig')), weak=family == 'weak')
                         for family, path in paths.items()}
     result = []
-    for name in ('sup_l', 'pl_l', 'pl_u', 'pl_lu'):
-        for baseline in (('baseline_sup',) if name == 'sup_l' else
-                         ('baseline_pl', 'natural_repl', 'shuffled_ssl')):
-            for family in sorted(scored[name].keys() & scored[baseline].keys()):
-                result.extend(compare(scored[name][family], scored[baseline][family], name, baseline, family))
+    for name, baseline in comparisons:
+        for family in sorted(scored[name].keys() & scored[baseline].keys()):
+            result.extend(compare(scored[name][family], scored[baseline][family], name, baseline, family))
     path = Path(output)
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open('x', encoding='utf-8', newline='') as f:

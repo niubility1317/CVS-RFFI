@@ -47,7 +47,7 @@ result=dict(status='SUBMITTED_NOT_YET_VERIFIED',pid=child.pid,cwd=str(release),a
 '''
 
 
-def publish(repo, output, context, ssh_config):
+def publish(repo, output, context, ssh_config, launch_owner='codex-pamf-branch-training-20261110'):
     repo, out = Path(repo), Path(output)
     out.mkdir(parents=True, exist_ok=True)
     def git(*args):
@@ -63,7 +63,7 @@ def publish(repo, output, context, ssh_config):
     rt = dict(run_id=RUN, project=project, release_root=release, run_root=project + '/runs/' + RUN,
               context=release + '/context.json', runtime_file=release + '/runtime.json', python=old['python'],
               code_commit=commit, frozen_sources=old['frozen_sources'], allowed_gpus=[0, 1],
-              launch_owner='codex-pamf-branch-training-20261110',
+              launch_owner=launch_owner,
               weak_root=project + '/runs/20261010-phase1-state-action-completed-test-manysig-m24-r01/weak_views',
               weak_truth=project + '/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json')
     archive = out / (RUN + '-release.tar.gz')
