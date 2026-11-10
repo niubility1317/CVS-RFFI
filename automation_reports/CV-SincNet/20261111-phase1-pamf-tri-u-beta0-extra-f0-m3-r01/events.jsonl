@@ -1,1 +1,2 @@
 {"at": "2026-11-10T17:05:38+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-10T17:09:52+00:00", "status": "RUNNING", "note": "VERIFIED three original E20 finite-backward and three original E50 source-only reader smokes; candidates on GPUs 5,6,7 and matched original-model predictions on 0,1,2. Six frozen prediction sets required before any score.", "evidence": ["runs/20261111-phase1-pamf-tri-u-beta0-extra-f0-m3-r01/pipeline_state.json"], "row_id": null}
