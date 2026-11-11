@@ -1,0 +1,11 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261111-phase1-pamf-single-rx-source-v-probe-r02",
+  "scope": "Descriptive calibration only on complete m1-natural source L_s and held-out source V, one source RX, three source days and six transmitters. No U labels, U IQ, target data, training or checkpoint selection.",
+  "reason": "r01 stopped before any source data measurement because the reused historical ordinary PL source configuration has no paper_row field. r02 obtains its matching row from the registered paper plan, verifies its seed, and uses a new immutable run and release.",
+  "method": "Load the already-frozen same-contract ordinary PL, original Tri, day and day_physics E50 models for all three matched seeds. Measure source V accuracy, threshold-0.95 acceptance and accepted errors overall, by source day and by transmitter. Build five-branch true-label centroids from full source L_s, excluding the queried source day, and measure the accepted fraction and label errors that pass four branch votes before and after a bounded-echo source-only proxy. This full-L-bank bounded-echo diagnostic is not a replay of the minibatch As gate and cannot measure hidden-U truth.",
+  "command": "python -m experiments.pamf_physics_tri.publish --source-probe --repo REPO --output UNIQUE_LOCAL_ROOT --context EXISTING_CONTEXT --ssh-config N607_CONFIG",
+  "environment": "N607 ordinary account, immutable release and unique source diagnostic output root; available GPU 0–7, no more than two observed/pending processes per GPU including other owners.",
+  "stop_rule": "Stop on invalid source roles/contract, unavailable frozen parent, or technical failure; preserve logs and outputs. No target scoring or training in this diagnostic.",
+  "expected_artifacts": ["12 frozen model source-only accuracy and calibration summaries by source day and transmitter", "Five-branch raw and bounded-echo certificate acceptance/error counts", "Explicit evidence that U and target were not read"]
+}

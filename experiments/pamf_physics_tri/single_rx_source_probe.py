@@ -15,7 +15,7 @@ from experiments.pamf_physics_branch.geometry import bounded_echo
 from experiments.pamf_physics_branch.objective import echo_parameters
 from .recovery import branch_certificate
 
-RUN = '20261111-phase1-pamf-single-rx-source-v-probe-r01'
+RUN = '20261111-phase1-pamf-single-rx-source-v-probe-r02'
 
 
 def get_features(reader, x):
@@ -75,6 +75,7 @@ def evaluate(source, row, contract, cache, device):
 
 
 def run(project, output, device):
+    from experiments.pamf_paper_completion.plan import make_plan
     project, output = Path(project), Path(output)
     runs = project / 'runs'
     paper = read(runs / '20261027-phase1-pamf-paper-completion-m119-r03' / 'sources.json')
@@ -94,7 +95,11 @@ def run(project, output, device):
             if done['target_access'] or done['U_truth_read'] or contract['source_rxs'] != [1]:
                 raise ValueError('Frozen matching source-only model required')
             started = time.monotonic()
-            result = evaluate(source, cfg['paper_row'], contract, cfg['source_cache'], device)
+            registered = pl_row if name == 'PL' else tri_row
+            paper_row = next(r for r in make_plan()['rows'] if r['row_id'] == registered)
+            if cfg['model_seed'] != seed:
+                raise ValueError('Source checkpoint must use the matching model seed')
+            result = evaluate(source, paper_row, contract, cfg['source_cache'], device)
             results.append(dict(arm=name, seed=seed, source=source, results=result, seconds=time.monotonic() - started))
             print('SOURCE_V_PROBE', name, seed, flush=True)
     output.mkdir(parents=True, exist_ok=False)
