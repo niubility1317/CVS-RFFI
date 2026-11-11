@@ -1,0 +1,21 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261111-phase1-pamf-tri-single-rx-day-m6-r01",
+  "display_name": "单源接收机跨日期多分支物理感知半监督研究",
+  "scope": "Previously exposed development setting source_rx_1 / m1-natural only; seeds 2026092701, 2026092702 and 2026092703; Main split excluded. Source receiver 1 and source days 1, 2, 3; L_s 1260, hidden U_s 11340, V 5400. No target/query training.",
+  "motivation": "In the existing 11-setting matched comparison, this setting has the largest DURA-LU Tri-versus-PL deficit: -0.6941 percentage points over the six practical scenes and -0.7789 percentage points clean, with all six practical means below PL. Target results were already observed; this is development evidence, not a blind confirmatory evaluation.",
+  "method": "Continue the original full Tri-SIG-TIME E20 and use accepted pseudo identities across different known source days as the grouping for its existing U feature style pairing, deployed joint160 contrast, and joint160 extrapolation. Real RX metadata remains unchanged for source validation and physical signal simulation; a day-group substitute exists only inside the original U feature passes. Add a 0.025-weight supervised-contrastive relation averaged across the five actual time, frequency, PA, SIG-TIME and reference branch outputs from the existing first two U passes, with positives of the same accepted pseudo identity on different source days, negatives of different accepted pseudo identities, and no unaccepted examples. Retain the preceding branch-specific U/L gradient guard. Cross-day describes different source recording days, not a synthetic receiver or verified same-device truth.",
+  "candidates": [
+    {"arm": "day", "physical_view_strength": 0.0},
+    {"arm": "day_physics", "physical_view_strength": "0.25 linearly tapered to zero through E50, only after four-of-five clean/perturbed branch votes against real-L same-class anchors from different source days"}
+  ],
+  "initialization": "Exact m1-natural same-seed source-only original Tri E20, same six-class model and sample roles; own E10 and E20, fixed E50/11100 updates; no target-based checkpoint selection.",
+  "controls": ["existing exact-setting/seed original Tri-SIG-TIME SSL", "existing exact-setting/seed ordinary PL"],
+  "evaluation": "Both fixed arms and all three seeds, all predictions frozen before independent truth-last scoring; clean and six practical scenes, each m1-natural same-packet matched controls. Primary DURA-LU, secondary DURA-L and raw. Report per-seed, per-scene, TX/RX/day and paired corrections/regressions. No leo_weak; no test-driven checkpoint choice, candidate tuning, or selective reruns.",
+  "success": "Aim for greater than 2 percentage points over ordinary PL in each of clean and six practical DURA-LU scene means, and improvement over original Tri. Report each seed separately. A positive result on source_rx_1 cannot establish improvement on other splits; later independent settings and paired seeds are required.",
+  "command": "python -m experiments.pamf_physics_tri.publish --single-rx --repo REPO --output UNIQUE_LOCAL_ROOT --context EXISTING_CONTEXT --ssh-config N607_CONFIG",
+  "environment": "N607 ordinary account, project Python, immutable Git release and unique run/output root, FP32/TF32 off.",
+  "resources": "GPU 0–7, no more than two observed or pending processes per GPU including other owners. One owner and actual same-contract E20 no-query smoke across all six rows.",
+  "stop_rule": "Systemic technical failure stops new dispatch and preserves healthy workers and artifacts. User-directed stops are not scientific failures. No target-driven reruns.",
+  "expected_artifacts": ["Six real-E20 no-query smoke checks with nonzero cross-day relations", "Six own E30/E50 checkpoints and recorded cross-day/physical counters", "Six frozen seven-scene prediction sets", "Independent same-packet, three-seed and subgroup truth-last comparisons"]
+}

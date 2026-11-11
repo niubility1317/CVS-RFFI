@@ -84,7 +84,9 @@ class PracticalGate(GuardedReceiverExtrapolation):
         clean = torch.cat((raw_l, x[indices]))
         changed = torch.cat((raw_l, simulated))
         raw, altered = capture_pair(student, clean, changed)
-        _, certified = branch_certificate(raw, altered, labels, l_rx, metadata['rx_i'][indices],
+        query_group = (self.query_group(metadata, indices) if hasattr(self, 'query_group')
+                       else metadata['rx_i'][indices])
+        _, certified = branch_certificate(raw, altered, labels, l_rx, query_group,
                                           pseudo[indices], self.c['num_classes'], 4)
         offered = accepted[indices]
         recipe = self.c['practical_gate']

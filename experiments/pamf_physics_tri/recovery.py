@@ -204,7 +204,8 @@ def installed(c, holder, *, objective_factory=None, base_scope=None):
                 rx = meta['rx_i'].to(labels.device).long()
                 if set(rx.tolist()) - set(cfg['source_rxs']) or not bool(meta['tx_label_visible'].all()):
                     raise ValueError('Receiver-excluded certificates require true source L labels')
-                objective.labeled = kwargs['labeled_inputs'].detach(), labels.detach(), rx
+                group = objective.labeled_group(meta, labels) if hasattr(objective, 'labeled_group') else rx
+                objective.labeled = kwargs['labeled_inputs'].detach(), labels.detach(), group
                 try:
                     return original_hook(**kwargs)
                 finally:
