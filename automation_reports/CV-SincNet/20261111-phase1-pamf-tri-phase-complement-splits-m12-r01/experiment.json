@@ -1,0 +1,799 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261111-phase1-pamf-tri-phase-complement-splits-m12-r01",
+  "group_id": "phase1-trisig-phase-complement-split-stability",
+  "display_name": "Tri phase branch consistency receiver and label stability",
+  "description": "Fixed accepted source-U common-phase consistency on time/path/reference across two receiver partitions and two label fractions. Selected after exposed Main target results; no new setting target feedback.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [
+    "Tri SSL unprotected physical relation"
+  ],
+  "tags": [
+    "PAMF",
+    "semi-supervised",
+    "phase",
+    "receiver-split",
+    "label-fraction",
+    "three-seed",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-paper-completion-m119-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests multi-branch semi-supervised Tri SSL research and authorizes N607 GPU 0-7, max two processes per card.",
+  "code": {
+    "commit": "release Git HEAD",
+    "checkout": "E:\\codex\\home\\worktrees\\pamf-ssl-multibranch-ablation\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Phase1 Python; FP32 TF32 off; 2 CPU threads",
+    "cwd": "PROJECT/releases/20261111-phase1-pamf-tri-phase-complement-splits-m12-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig receiver split 1/2 and 1%/5% labeled",
+    "version": null,
+    "representation": "equalized1 / unitRMS / FP32 IQ 2x256 / Fs25MHz",
+    "contract_ref": "Each row uses its own existing VALIDATED_ONCE source and received-IQ handles",
+    "physical_ids_ref": "Original corresponding paper source roles and cross_date/cross_rx/cross_both IDs",
+    "label_map_ref": "original six TX classes",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "6300 for each RX split, 630 for 1%, 3150 for 5%",
+      "U_s": "56700 for RX splits, 62370 for 1%, 59850 for 5%; TX labels hidden",
+      "V": "27000, source only"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "reuse VALIDATED_ONCE, no data rebuild",
+    "support_query_ref": null,
+    "leo_config_ref": "clean plus six practical scenes only; no leo_weak",
+    "source_rxs": [],
+    "target_rxs": []
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Phase1 terrestrial proxy; direct recognition; no future-date or in-orbit claim"
+  },
+  "checkpoint": {
+    "initialization": "Each setting and seed own Tri SSL scratch E20, continue E10+E20",
+    "sources": [
+      "20261027-phase1-pamf-paper-completion-m119-r03 matching setting and seed segment20"
+    ],
+    "contract_check_ref": "source.parent and resolved source contract",
+    "provenance_verdict": "Same setting/seed original source contract, source-only scratch E20",
+    "selection_rule": "Fixed final E50; candidate chosen after Main target exposure, no current-setting target feedback"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-tri-phase-splits-20261111",
+    "gpu_policy": "All N607 GPU 0-7, at most two total observed or pending processes/card, memory admission, protect other owners",
+    "remote_run_root": "PROJECT/runs/20261111-phase1-pamf-tri-phase-complement-splits-m12-r01",
+    "remote_log_root": "PROJECT/runs/20261111-phase1-pamf-tri-phase-complement-splits-m12-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/pamf_tri_phase_splits_20261111",
+    "launch_command": "python -m experiments.pamf_tri_phase_splits.publish --repo REPO --output UNIQUE_LOCAL_ROOT --context EXISTING_CONTEXT --ssh-config N607_CONFIG",
+    "stop_rule": "Systemic technical failure stops new dispatch; retain healthy workers and output; no target-driven decisions"
+  },
+  "expected_artifacts": [
+    "12 real-checkpoint source-only finite-backward smokes",
+    "12 frozen E50 models and phase-U exposure records",
+    "12 complete seven-scene predictions before independent truth scoring",
+    "matched Tri and PL scene, TX/RX/day paired analysis"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro F1",
+      "paired corrected and missed",
+      "U acceptance",
+      "resource use"
+    ],
+    "dimensions": [
+      "seed",
+      "scene",
+      "TX",
+      "RX",
+      "day",
+      "population"
+    ],
+    "prediction_ref": "experiments/pamf_paper_completion/evaluation.py:predict",
+    "scorer_ref": "experiments/pamf_paper_completion/evaluation.py:score"
+  },
+  "rows": [
+    {
+      "row_id": "tri-phase-complement-splits-receiver_split_1-s2026092701",
+      "method": "Complete Tri SSL plus accepted-U bounded common-phase consistency on time, path and reference, weight .05 inside original U guard",
+      "purpose": "Evaluate fixed Main-exposed recipe across this setting against its own Tri SSL and ordinary PL",
+      "config_ref": "RUN/configs/train__tri-phase-complement-splits-receiver_split_1-s2026092701.json",
+      "resolved_config_ref": "RUN/F/tri-phase-complement-splits-receiver_split_1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F1_rx_repartition_r01",
+        "source_rxs": [
+          0,
+          1,
+          2,
+          5,
+          7
+        ],
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "view_count": 3,
+        "U_use": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-phase-complement-splits-receiver_split_1-s2026092701/source",
+      "log_path": "RUN/logs/train__tri-phase-complement-splits-receiver_split_1-s2026092701.log",
+      "command": "python -m experiments.pamf_tri_phase_splits.runner worker --kind train --config RUN/configs/train__tri-phase-complement-splits-receiver_split_1-s2026092701.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-phase-complement-splits-receiver_split_1-s2026092702",
+      "method": "Complete Tri SSL plus accepted-U bounded common-phase consistency on time, path and reference, weight .05 inside original U guard",
+      "purpose": "Evaluate fixed Main-exposed recipe across this setting against its own Tri SSL and ordinary PL",
+      "config_ref": "RUN/configs/train__tri-phase-complement-splits-receiver_split_1-s2026092702.json",
+      "resolved_config_ref": "RUN/F/tri-phase-complement-splits-receiver_split_1-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F1_rx_repartition_r01",
+        "source_rxs": [
+          0,
+          1,
+          2,
+          5,
+          7
+        ],
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "view_count": 3,
+        "U_use": true
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-phase-complement-splits-receiver_split_1-s2026092702/source",
+      "log_path": "RUN/logs/train__tri-phase-complement-splits-receiver_split_1-s2026092702.log",
+      "command": "python -m experiments.pamf_tri_phase_splits.runner worker --kind train --config RUN/configs/train__tri-phase-complement-splits-receiver_split_1-s2026092702.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-phase-complement-splits-receiver_split_1-s2026092703",
+      "method": "Complete Tri SSL plus accepted-U bounded common-phase consistency on time, path and reference, weight .05 inside original U guard",
+      "purpose": "Evaluate fixed Main-exposed recipe across this setting against its own Tri SSL and ordinary PL",
+      "config_ref": "RUN/configs/train__tri-phase-complement-splits-receiver_split_1-s2026092703.json",
+      "resolved_config_ref": "RUN/F/tri-phase-complement-splits-receiver_split_1-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F1_rx_repartition_r01",
+        "source_rxs": [
+          0,
+          1,
+          2,
+          5,
+          7
+        ],
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "view_count": 3,
+        "U_use": true
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-phase-complement-splits-receiver_split_1-s2026092703/source",
+      "log_path": "RUN/logs/train__tri-phase-complement-splits-receiver_split_1-s2026092703.log",
+      "command": "python -m experiments.pamf_tri_phase_splits.runner worker --kind train --config RUN/configs/train__tri-phase-complement-splits-receiver_split_1-s2026092703.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-phase-complement-splits-receiver_split_2-s2026092701",
+      "method": "Complete Tri SSL plus accepted-U bounded common-phase consistency on time, path and reference, weight .05 inside original U guard",
+      "purpose": "Evaluate fixed Main-exposed recipe across this setting against its own Tri SSL and ordinary PL",
+      "config_ref": "RUN/configs/train__tri-phase-complement-splits-receiver_split_2-s2026092701.json",
+      "resolved_config_ref": "RUN/F/tri-phase-complement-splits-receiver_split_2-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F2_rx_repartition_r01",
+        "source_rxs": [
+          0,
+          3,
+          9,
+          10,
+          11
+        ],
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "view_count": 3,
+        "U_use": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-phase-complement-splits-receiver_split_2-s2026092701/source",
+      "log_path": "RUN/logs/train__tri-phase-complement-splits-receiver_split_2-s2026092701.log",
+      "command": "python -m experiments.pamf_tri_phase_splits.runner worker --kind train --config RUN/configs/train__tri-phase-complement-splits-receiver_split_2-s2026092701.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-phase-complement-splits-receiver_split_2-s2026092702",
+      "method": "Complete Tri SSL plus accepted-U bounded common-phase consistency on time, path and reference, weight .05 inside original U guard",
+      "purpose": "Evaluate fixed Main-exposed recipe across this setting against its own Tri SSL and ordinary PL",
+      "config_ref": "RUN/configs/train__tri-phase-complement-splits-receiver_split_2-s2026092702.json",
+      "resolved_config_ref": "RUN/F/tri-phase-complement-splits-receiver_split_2-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F2_rx_repartition_r01",
+        "source_rxs": [
+          0,
+          3,
+          9,
+          10,
+          11
+        ],
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "view_count": 3,
+        "U_use": true
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-phase-complement-splits-receiver_split_2-s2026092702/source",
+      "log_path": "RUN/logs/train__tri-phase-complement-splits-receiver_split_2-s2026092702.log",
+      "command": "python -m experiments.pamf_tri_phase_splits.runner worker --kind train --config RUN/configs/train__tri-phase-complement-splits-receiver_split_2-s2026092702.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-phase-complement-splits-receiver_split_2-s2026092703",
+      "method": "Complete Tri SSL plus accepted-U bounded common-phase consistency on time, path and reference, weight .05 inside original U guard",
+      "purpose": "Evaluate fixed Main-exposed recipe across this setting against its own Tri SSL and ordinary PL",
+      "config_ref": "RUN/configs/train__tri-phase-complement-splits-receiver_split_2-s2026092703.json",
+      "resolved_config_ref": "RUN/F/tri-phase-complement-splits-receiver_split_2-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F2_rx_repartition_r01",
+        "source_rxs": [
+          0,
+          3,
+          9,
+          10,
+          11
+        ],
+        "source_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "view_count": 3,
+        "U_use": true
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-phase-complement-splits-receiver_split_2-s2026092703/source",
+      "log_path": "RUN/logs/train__tri-phase-complement-splits-receiver_split_2-s2026092703.log",
+      "command": "python -m experiments.pamf_tri_phase_splits.runner worker --kind train --config RUN/configs/train__tri-phase-complement-splits-receiver_split_2-s2026092703.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-phase-complement-splits-labeled_1pct-s2026092701",
+      "method": "Complete Tri SSL plus accepted-U bounded common-phase consistency on time, path and reference, weight .05 inside original U guard",
+      "purpose": "Evaluate fixed Main-exposed recipe across this setting against its own Tri SSL and ordinary PL",
+      "config_ref": "RUN/configs/train__tri-phase-complement-splits-labeled_1pct-s2026092701.json",
+      "resolved_config_ref": "RUN/F/tri-phase-complement-splits-labeled_1pct-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label01",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_counts": {
+          "L_s": 630,
+          "U_s": 62370,
+          "V": 27000
+        },
+        "view_count": 3,
+        "U_use": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-phase-complement-splits-labeled_1pct-s2026092701/source",
+      "log_path": "RUN/logs/train__tri-phase-complement-splits-labeled_1pct-s2026092701.log",
+      "command": "python -m experiments.pamf_tri_phase_splits.runner worker --kind train --config RUN/configs/train__tri-phase-complement-splits-labeled_1pct-s2026092701.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-phase-complement-splits-labeled_1pct-s2026092702",
+      "method": "Complete Tri SSL plus accepted-U bounded common-phase consistency on time, path and reference, weight .05 inside original U guard",
+      "purpose": "Evaluate fixed Main-exposed recipe across this setting against its own Tri SSL and ordinary PL",
+      "config_ref": "RUN/configs/train__tri-phase-complement-splits-labeled_1pct-s2026092702.json",
+      "resolved_config_ref": "RUN/F/tri-phase-complement-splits-labeled_1pct-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label01",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_counts": {
+          "L_s": 630,
+          "U_s": 62370,
+          "V": 27000
+        },
+        "view_count": 3,
+        "U_use": true
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-phase-complement-splits-labeled_1pct-s2026092702/source",
+      "log_path": "RUN/logs/train__tri-phase-complement-splits-labeled_1pct-s2026092702.log",
+      "command": "python -m experiments.pamf_tri_phase_splits.runner worker --kind train --config RUN/configs/train__tri-phase-complement-splits-labeled_1pct-s2026092702.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-phase-complement-splits-labeled_1pct-s2026092703",
+      "method": "Complete Tri SSL plus accepted-U bounded common-phase consistency on time, path and reference, weight .05 inside original U guard",
+      "purpose": "Evaluate fixed Main-exposed recipe across this setting against its own Tri SSL and ordinary PL",
+      "config_ref": "RUN/configs/train__tri-phase-complement-splits-labeled_1pct-s2026092703.json",
+      "resolved_config_ref": "RUN/F/tri-phase-complement-splits-labeled_1pct-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label01",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_counts": {
+          "L_s": 630,
+          "U_s": 62370,
+          "V": 27000
+        },
+        "view_count": 3,
+        "U_use": true
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-phase-complement-splits-labeled_1pct-s2026092703/source",
+      "log_path": "RUN/logs/train__tri-phase-complement-splits-labeled_1pct-s2026092703.log",
+      "command": "python -m experiments.pamf_tri_phase_splits.runner worker --kind train --config RUN/configs/train__tri-phase-complement-splits-labeled_1pct-s2026092703.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-phase-complement-splits-labeled_5pct-s2026092701",
+      "method": "Complete Tri SSL plus accepted-U bounded common-phase consistency on time, path and reference, weight .05 inside original U guard",
+      "purpose": "Evaluate fixed Main-exposed recipe across this setting against its own Tri SSL and ordinary PL",
+      "config_ref": "RUN/configs/train__tri-phase-complement-splits-labeled_5pct-s2026092701.json",
+      "resolved_config_ref": "RUN/F/tri-phase-complement-splits-labeled_5pct-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label05",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_counts": {
+          "L_s": 3150,
+          "U_s": 59850,
+          "V": 27000
+        },
+        "view_count": 3,
+        "U_use": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-phase-complement-splits-labeled_5pct-s2026092701/source",
+      "log_path": "RUN/logs/train__tri-phase-complement-splits-labeled_5pct-s2026092701.log",
+      "command": "python -m experiments.pamf_tri_phase_splits.runner worker --kind train --config RUN/configs/train__tri-phase-complement-splits-labeled_5pct-s2026092701.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-phase-complement-splits-labeled_5pct-s2026092702",
+      "method": "Complete Tri SSL plus accepted-U bounded common-phase consistency on time, path and reference, weight .05 inside original U guard",
+      "purpose": "Evaluate fixed Main-exposed recipe across this setting against its own Tri SSL and ordinary PL",
+      "config_ref": "RUN/configs/train__tri-phase-complement-splits-labeled_5pct-s2026092702.json",
+      "resolved_config_ref": "RUN/F/tri-phase-complement-splits-labeled_5pct-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label05",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_counts": {
+          "L_s": 3150,
+          "U_s": 59850,
+          "V": 27000
+        },
+        "view_count": 3,
+        "U_use": true
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-phase-complement-splits-labeled_5pct-s2026092702/source",
+      "log_path": "RUN/logs/train__tri-phase-complement-splits-labeled_5pct-s2026092702.log",
+      "command": "python -m experiments.pamf_tri_phase_splits.runner worker --kind train --config RUN/configs/train__tri-phase-complement-splits-labeled_5pct-s2026092702.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-phase-complement-splits-labeled_5pct-s2026092703",
+      "method": "Complete Tri SSL plus accepted-U bounded common-phase consistency on time, path and reference, weight .05 inside original U guard",
+      "purpose": "Evaluate fixed Main-exposed recipe across this setting against its own Tri SSL and ordinary PL",
+      "config_ref": "RUN/configs/train__tri-phase-complement-splits-labeled_5pct-s2026092703.json",
+      "resolved_config_ref": "RUN/F/tri-phase-complement-splits-labeled_5pct-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label05",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_counts": {
+          "L_s": 3150,
+          "U_s": 59850,
+          "V": 27000
+        },
+        "view_count": 3,
+        "U_use": true
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-phase-complement-splits-labeled_5pct-s2026092703/source",
+      "log_path": "RUN/logs/train__tri-phase-complement-splits-labeled_5pct-s2026092703.log",
+      "command": "python -m experiments.pamf_tri_phase_splits.runner worker --kind train --config RUN/configs/train__tri-phase-complement-splits-labeled_5pct-s2026092703.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    }
+  ],
+  "notes": [
+    "The two subsets are complementary; each branch mean is normalized within its subset, so changing subset changes which and how many terms receive the fixed weight.",
+    "Bounded phase and all REPL settings match the earlier full-phase candidate; the new ablation was conceived after that previously exposed Main split result and is developmental, not an independent blind test.",
+    "No target-truth or U-truth training; fixed E50 before target predictions; no target-driven checkpoint selection or rerun.",
+    "DURA-LU primary; raw and DURA-L secondary; cross_rx plus cross_both main and cross_date diagnostic; no leo_weak."
+  ],
+  "registered_at": "2026-11-11T00:16:55+00:00"
+}
