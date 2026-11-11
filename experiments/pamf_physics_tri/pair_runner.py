@@ -5,7 +5,7 @@ from functools import partial
 from experiments.cric_dura_comparison.io import read
 from experiments.pamf_physics_route import prepare as routes
 from experiments.pamf_physics_route import runner as dispatching
-from . import branchguard_plan, certified_day_plan, curriculum_plan, fused_physics_plan, pair_plan, partial_plan, practical_plan, recovery_plan, scheduled_plan, single_rx_plan, validation_plan, weak_practical_plan
+from . import branchguard_plan, certified_day_plan, curriculum_plan, fused_physics_plan, multilevel_physics_plan, pair_plan, partial_plan, practical_plan, recovery_plan, scheduled_plan, single_rx_plan, validation_plan, weak_practical_plan
 from .branch_guard import installed as branchguard_scope
 from .pairing import installed as pairing_scope
 from .practical_gate import installed as practical_scope
@@ -17,6 +17,7 @@ from .single_rx import installed as single_rx_scope
 from .certified_day import installed as certified_day_scope
 from .curriculum import installed as curriculum_scope
 from .fused_physics import installed as fused_physics_scope
+from .multilevel_physics import installed as multilevel_physics_scope
 
 
 def check_pairing(state):
@@ -87,6 +88,17 @@ def check_fused_physics(state):
     return dict(details, U_fused_physics=fused)
 
 
+def check_multilevel_physics(state):
+    details = check_single_rx(state)
+    level = state['U_multilevel_physics']
+    expected = {key for key, enabled in level['recipe'].items() if enabled}
+    if (level['calls'] != 1 or level['selected'] <= 0 or level['extra_student_forwards'] != 0
+            or set(level['smoke_gradients']) != expected
+            or any(min(norms.values()) <= 0 for norms in level['smoke_gradients'].values())):
+        raise ValueError('Every new physical objective must train signature and reference branches')
+    return dict(details, U_multilevel_physics=level)
+
+
 METHODS = {pair_plan.RUN: (pair_plan, pairing_scope, check_pairing),
            recovery_plan.RUN: (recovery_plan, recovery_scope, check_recovery),
            partial_plan.RUN: (partial_plan, recovery_scope, check_partial),
@@ -98,7 +110,8 @@ METHODS = {pair_plan.RUN: (pair_plan, pairing_scope, check_pairing),
            single_rx_plan.RUN: (single_rx_plan, single_rx_scope, check_single_rx),
            certified_day_plan.RUN: (certified_day_plan, certified_day_scope, check_certified_day),
            curriculum_plan.RUN: (curriculum_plan, curriculum_scope, check_curriculum),
-           fused_physics_plan.RUN: (fused_physics_plan, fused_physics_scope, check_fused_physics)}
+           fused_physics_plan.RUN: (fused_physics_plan, fused_physics_scope, check_fused_physics),
+           multilevel_physics_plan.RUN: (multilevel_physics_plan, multilevel_physics_scope, check_multilevel_physics)}
 
 
 def worker(c, kind):
@@ -112,7 +125,7 @@ def worker(c, kind):
     if kind == 'smoke':
         return smoke(c, rows=plan.candidate_rows, configure=plan.configuration, check_parent=plan.parent,
                      scope=installed, check_u=check_u,
-                     graph_check=plan.check_graph if plan in (validation_plan, branchguard_plan, single_rx_plan, certified_day_plan, curriculum_plan, fused_physics_plan) else None)
+                     graph_check=plan.check_graph if plan in (validation_plan, branchguard_plan, single_rx_plan, certified_day_plan, curriculum_plan, fused_physics_plan, multilevel_physics_plan) else None)
     raise ValueError('Only source and clean/practical evaluation stages are allowed')
 
 
@@ -124,8 +137,9 @@ def dispatch(rt):
                                       branchguard_plan.extra_controls if plan is branchguard_plan else
                                       certified_day_plan.extra_controls if plan is certified_day_plan else
                                       curriculum_plan.extra_controls if plan is curriculum_plan else
-                                      fused_physics_plan.extra_controls if plan is fused_physics_plan else None),
-                      dynamic_protocol=plan in (validation_plan, branchguard_plan, single_rx_plan, certified_day_plan, curriculum_plan, fused_physics_plan))
+                                      fused_physics_plan.extra_controls if plan is fused_physics_plan else
+                                      multilevel_physics_plan.extra_controls if plan is multilevel_physics_plan else None),
+                      dynamic_protocol=plan in (validation_plan, branchguard_plan, single_rx_plan, certified_day_plan, curriculum_plan, fused_physics_plan, multilevel_physics_plan))
     launch = partial(dispatching.launch, module='experiments.pamf_physics_tri.pair_runner')
     from experiments.pamf_physics_branch import runner as physical
     old_admits = physical.admits

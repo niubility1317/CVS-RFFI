@@ -1,0 +1,21 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261111-phase1-pamf-tri-multilevel-physics-m9-r01",
+  "scope": "Three new semi-supervised objectives, each with seeds 2026092701/02/03, single source receiver m1-natural, full old three-view PAMF with reference response. Main split excluded. Historical target scores were exposed; this is development evaluation.",
+  "motivation": "A physical transformation of the same received source-U packet provides paired observations without requiring two distinct packets to share a true TX identity. The existing four-of-five source-L branch gate screens raw/As pairs; this does not prove physical identity preservation or target generalization. Existing consistency, physical augmentation and multibranch RFFI literature precludes a broad novelty claim.",
+  "candidates": [
+    {"arm": "branch", "mechanism": "For the five deployed time, frequency, PA, SIG-TIME and reference paths, minimize same-packet cosine distance from two detached ordinary-view branch vectors to their corresponding certified physical-view vectors. Average branches and all source-U slots. Coefficient inherits original Tri joint-contrast weight, U weight and CE normalizer."},
+    {"arm": "soft", "mechanism": "For certified physical slots, minimize KL from the mean detached softmax of the two ordinary fused logits to each of the two physical-view logits. Average all U slots. The coefficient inherits the original Tri physical-view CE dose and normalizer. This intentionally adds soft teacher consistency to physical U; the old As KL=0 setting applies only to the original within-pair KL, not this new term."},
+    {"arm": "combined", "mechanism": "Apply both fixed branch and soft-prediction objectives with the same individual coefficients."}
+  ],
+  "shared": "Use existing four ordinary/mixed student passes and existing accepted, four-branch-certified, nonzero-strength As indices; no extra student forward. Raw features and soft teacher are detached. Preserve original U CE/KL masks, cross-day relations, original Tri mechanisms, per-branch U/L gradient guard and deployed classifier. The new source-U terms enter the same guard; no source-U TX truth or target data.",
+  "initialization": "Exact matching source-only original Tri E20 prefix per model seed, then own E10+E20 to fixed E50/11100 updates; fixed graph permutation and original data roles.",
+  "controls": ["matching ordinary PL", "matching original Tri", "matching prior day_physics", "matching prior branch-certified method"],
+  "evaluation": "All nine candidate predictions frozen before independent truth-last score. Clean and six practical scenes, same physical IDs, DURA-LU primary, DURA-L/raw secondary, cross_date separate from cross_rx/cross_both; report per-seed, scenario, TX/RX/day and same-packet corrections/regressions. No leo_weak, target-guided checkpoint selection or selective rerun. Each of three arms must be reported; no test-based candidate filtering.",
+  "success": "Aim for greater than 2 percentage points over ordinary PL in clean and every practical DURA-LU scene and improvement over Tri, with individual seed/scene outcomes explicit. A positive result here cannot establish all-settings superiority.",
+  "command": "python -m experiments.pamf_physics_tri.publish --multilevel-physics --repo REPO --output UNIQUE_LOCAL_ROOT --context EXISTING_CONTEXT --ssh-config N607_CONFIG",
+  "environment": "N607 ordinary account; immutable code release and unique run root; real source E20 no-query smoke across nine rows must verify selected physical slots and signature/reference gradients for each enabled objective.",
+  "resources": "GPU 0–7, up to four observed or pending processes per GPU including other owners, with conservative memory reservation; existing fused-physics run and other healthy processes remain untouched.",
+  "stop_rule": "Systemic technical failure stops new dispatch; preserve all healthy workers, output and failure evidence.",
+  "expected_artifacts": ["Nine genuine source E20 no-query smoke checks", "Nine own E30/E50 models and component counters", "Nine complete frozen predictions then independent matched three-seed and subgroup scores"]
+}
