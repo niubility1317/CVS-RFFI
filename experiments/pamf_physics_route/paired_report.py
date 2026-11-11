@@ -77,6 +77,10 @@ def prepare_row(root, row):
     fused_physics = f'fused-physics-{cfg["protocol_id"]}-s{seed}'
     if fused_physics in sources:
         entries['Fused-physics'] = sources[fused_physics]
+    for arm in ('contrast', 'joint'):
+        packet = f'packet-{arm}-{cfg["protocol_id"]}-s{seed}'
+        if packet in sources:
+            entries[f'Packet-{arm}'] = sources[packet]
     if f'baseline_sup-s{seed}' in sources:
         entries['Sup'] = sources[f'baseline_sup-s{seed}']
     return cfg, {name: frozen_row(entry, seed, root.parent, candidate_input) for name, entry in entries.items()}
