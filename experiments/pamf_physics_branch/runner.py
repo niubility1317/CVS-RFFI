@@ -49,15 +49,16 @@ def launch(rt, job, gpu):
                          argv=cmd, log=str(path), started_at=time.time())
 
 
-def admits(gpu, active, required_mib):
+def admits(gpu, active, required_mib, *, max_total=2):
     from experiments.pamf_repl_completion.runner import capacity, processes
     cuda, free = capacity(gpu)
     pending = {pid for pid, card in processes().items() if card == gpu}
-    if len(cuda | pending) >= 2:
-        return False
     own = [p for p, item in active.values() if item['gpu'] == gpu]
-    initializing = sum(p.pid not in cuda for p in own)
-    return len(own) < 2 and free >= required_mib * (1 + initializing)
+    own_pids = {p.pid for p in own}
+    if len(cuda | pending | own_pids) >= max_total:
+        return False
+    initializing = len((pending | own_pids) - cuda)
+    return len(own) < max_total and free >= required_mib * (1 + initializing)
 
 
 def dispatch(rt):

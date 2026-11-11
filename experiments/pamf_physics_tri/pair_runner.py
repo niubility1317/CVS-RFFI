@@ -5,7 +5,7 @@ from functools import partial
 from experiments.cric_dura_comparison.io import read
 from experiments.pamf_physics_route import prepare as routes
 from experiments.pamf_physics_route import runner as dispatching
-from . import branchguard_plan, certified_day_plan, pair_plan, partial_plan, practical_plan, recovery_plan, scheduled_plan, single_rx_plan, validation_plan, weak_practical_plan
+from . import branchguard_plan, certified_day_plan, curriculum_plan, pair_plan, partial_plan, practical_plan, recovery_plan, scheduled_plan, single_rx_plan, validation_plan, weak_practical_plan
 from .branch_guard import installed as branchguard_scope
 from .pairing import installed as pairing_scope
 from .practical_gate import installed as practical_scope
@@ -15,6 +15,7 @@ from .runner import smoke, worker as existing_worker
 from .source import train_trajectory
 from .single_rx import installed as single_rx_scope
 from .certified_day import installed as certified_day_scope
+from .curriculum import installed as curriculum_scope
 
 
 def check_pairing(state):
@@ -72,6 +73,10 @@ def check_certified_day(state):
     return dict(details, U_relation_certificate=cert)
 
 
+def check_curriculum(state):
+    return check_certified_day(state) if 'U_relation_certificate' in state else check_single_rx(state)
+
+
 METHODS = {pair_plan.RUN: (pair_plan, pairing_scope, check_pairing),
            recovery_plan.RUN: (recovery_plan, recovery_scope, check_recovery),
            partial_plan.RUN: (partial_plan, recovery_scope, check_partial),
@@ -81,7 +86,8 @@ METHODS = {pair_plan.RUN: (pair_plan, pairing_scope, check_pairing),
            validation_plan.RUN: (validation_plan, validation_scope, check_practical),
            branchguard_plan.RUN: (branchguard_plan, branchguard_scope, check_branch_guard),
            single_rx_plan.RUN: (single_rx_plan, single_rx_scope, check_single_rx),
-           certified_day_plan.RUN: (certified_day_plan, certified_day_scope, check_certified_day)}
+           certified_day_plan.RUN: (certified_day_plan, certified_day_scope, check_certified_day),
+           curriculum_plan.RUN: (curriculum_plan, curriculum_scope, check_curriculum)}
 
 
 def worker(c, kind):
@@ -95,7 +101,7 @@ def worker(c, kind):
     if kind == 'smoke':
         return smoke(c, rows=plan.candidate_rows, configure=plan.configuration, check_parent=plan.parent,
                      scope=installed, check_u=check_u,
-                     graph_check=plan.check_graph if plan in (validation_plan, branchguard_plan, single_rx_plan, certified_day_plan) else None)
+                     graph_check=plan.check_graph if plan in (validation_plan, branchguard_plan, single_rx_plan, certified_day_plan, curriculum_plan) else None)
     raise ValueError('Only source and clean/practical evaluation stages are allowed')
 
 
@@ -105,10 +111,18 @@ def dispatch(rt):
                       source_diagnostic=False, tri_dura=True,
                       extra_controls=(scheduled_plan.extra_controls if plan is scheduled_plan else
                                       branchguard_plan.extra_controls if plan is branchguard_plan else
-                                      certified_day_plan.extra_controls if plan is certified_day_plan else None),
-                      dynamic_protocol=plan in (validation_plan, branchguard_plan, single_rx_plan, certified_day_plan))
+                                      certified_day_plan.extra_controls if plan is certified_day_plan else
+                                      curriculum_plan.extra_controls if plan is curriculum_plan else None),
+                      dynamic_protocol=plan in (validation_plan, branchguard_plan, single_rx_plan, certified_day_plan, curriculum_plan))
     launch = partial(dispatching.launch, module='experiments.pamf_physics_tri.pair_runner')
-    dispatching.dispatch(rt, prepare_run=prepare, launch_worker=launch)
+    from experiments.pamf_physics_branch import runner as physical
+    old_admits = physical.admits
+    if rt.get('max_processes_per_gpu', 2) == 4:
+        physical.admits = partial(old_admits, max_total=4)
+    try:
+        dispatching.dispatch(rt, prepare_run=prepare, launch_worker=launch)
+    finally:
+        physical.admits = old_admits
 
 
 if __name__ == '__main__':

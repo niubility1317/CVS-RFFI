@@ -71,6 +71,9 @@ def prepare_row(root, row):
     day_physics = f'day-physics-{cfg["protocol_id"]}-s{seed}'
     if day_physics in sources:
         entries['Day-physics'] = sources[day_physics]
+    branch_certified = f'branch-certified-{cfg["protocol_id"]}-s{seed}'
+    if branch_certified in sources:
+        entries['Branch-certified'] = sources[branch_certified]
     if f'baseline_sup-s{seed}' in sources:
         entries['Sup'] = sources[f'baseline_sup-s{seed}']
     return cfg, {name: frozen_row(entry, seed, root.parent, candidate_input) for name, entry in entries.items()}
