@@ -15,7 +15,7 @@ def test_split_matrix_and_forbidden_parent_or_truth():
     rows = plan.candidate_rows()
     assert len(rows) == 12
     for row in rows:
-        c = plan.configuration(context, row, '/test/project', 'test')
+        c = plan.configuration(context, row, Path('/test/project'), 'test')
         plan.validate_candidate(c)
         bad = copy.deepcopy(c)
         bad['shared_prefix'] = bad['shared_prefix'].replace(str(row['model_seed']), '2026092799')

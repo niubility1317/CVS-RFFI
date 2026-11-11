@@ -6,7 +6,7 @@ from experiments.pamf_tri_u_phase.plan import RECIPE
 
 _validate_paper = paper.validate_config
 
-RUN = '20261111-phase1-pamf-tri-phase-complement-splits-m12-r01'
+RUN = '20261111-phase1-pamf-tri-phase-complement-splits-m12-r02'
 SETTINGS = ('receiver_split_1', 'receiver_split_2', 'labeled_1pct', 'labeled_5pct')
 SEEDS = (2026092701, 2026092702, 2026092703)
 SUBSET = ('time', 'path', 'reference')
@@ -26,7 +26,7 @@ def candidate_id(row):
 def configuration(context, row, project, commit):
     if row not in candidate_rows():
         raise ValueError('Unregistered paper setting or seed')
-    c = paper.configuration(context, row, project, commit)
+    c = paper.configuration(context, row, str(project), commit)
     rid = candidate_id(row)
     c.update(run_id=RUN, row_id=rid, algorithm_id=ARM, phase_relation=deepcopy(RECIPE),
              phase_subset=list(SUBSET),
