@@ -1,1 +1,2 @@
 {"at": "2026-11-11T03:05:34+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-11T03:10:51+00:00", "status": "RUNNING", "note": "VERIFIED four GPU workers PID/CWD/cmd and initial logs; all 12 real-checkpoint no-query smokes PASS, other rows queued, transfer and compile PASS.", "evidence": ["runs/20261111-phase1-pamf-tri-u-channels-f0-m12-r01/pipeline_state.json"], "row_id": null}
