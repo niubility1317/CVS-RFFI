@@ -1,0 +1,20 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261112-phase1-pamf-tri-source-prototype-m9-r01",
+  "scope": "Exploratory m1-natural single-source-receiver full three-view PAMF with reference response; source RX 1, source days 1/2/3, six identities. Three fixed arms and three matched seeds 2026092701/02/03. Main split and leo_weak excluded. Prior target results are exposed; this is not independent confirmation.",
+  "hypothesis": "Use real labeled source samples from other acquisition days to provide class-discriminative anchors for physical views of accepted unlabeled source packets. This may reduce cross-day shortcut learning and complement the existing same-packet physics contrast; no performance or novelty guarantee is implied.",
+  "candidates": [
+    {"arm": "fusion", "mechanism": "Physical U fusion features contrast with six current real-L cross-day class centroids."},
+    {"arm": "branch", "mechanism": "Physical U time, frequency, PA, signature and reference features each contrast with corresponding real-L cross-day class centroids; average the five losses."},
+    {"arm": "fusion_branch", "mechanism": "Include both the fusion and averaged five-branch source prototype objectives."}
+  ],
+  "shared": "Bank uses current true labeled source batch in eval/no-gradient mode and excludes the U sample's acquisition day for every class. Normalize features and centroids; cosine class logits use the existing contrast temperature 0.2. Cross-entropy uses the existing accepted U pseudo-class, only at existing 4-of-5 branch-certified physical As slots, and skips queries without all six other-day labeled classes. Average each pair over both existing physical student views and all U slots. Add each included loss using the original Tri joint-contrast coefficient, U weight and CE normalizer, inside the existing branch-specific U/L gradient guard. No U truth, target data, additional train-mode student forward, changed PL mask or model head. One extra eval-mode source-L forward per batch is added and accounted for.",
+  "initialization": "Each student continues from the exact same-setting, same-seed source-only original Tri E20, through its own E30 and fixed final E50/11100 updates. Preserve the fixed Tri time permutation and all original mechanisms, cross-day source relation, existing branch-certified physical views and fusion-plus-five-branch same-packet contrast.",
+  "controls": ["same-setting and same-seed ordinary PL", "original Tri-SIG-TIME SSL", "matched fusion-plus-branch physical contrast without prototypes", "earlier physical candidates"],
+  "evaluation": "Freeze all nine predictions before independent truth-last scoring. Evaluate clean plus six practical scenes on identical physical IDs, DURA-LU primary and DURA-L/raw secondary. Report cross-date separately from combined cross-RX and cross-both, each seed and scene, TX/RX/day and paired corrections/regressions. No test-selected checkpoint, target-based tuning or selective rerun.",
+  "success": "Seek greater than 2 percentage points over matching PL in clean and each practical DURA-LU scene, and improve over Tri. Report seed and subgroup failures. A single exposed setting cannot establish performance across all settings.",
+  "command": "python -m experiments.pamf_physics_tri.publish --source-prototype --repo REPO --output UNIQUE_LOCAL_ROOT --context EXISTING_CONTEXT --ssh-config N607_CONFIG",
+  "resources": "N607 ordinary non-privileged account; immutable release and run; GPU 0–7, at most four observed/pending processes per GPU including other owners, conservative free-memory reservation; preserve unrelated healthy jobs.",
+  "stop_rule": "Any systemic technical failure stops new dispatch while preserving healthy workers and outputs. Each real matching E20 no-query smoke must exercise selected source-U prototype loss and nonzero signature/reference gradients for every enabled component.",
+  "expected_artifacts": ["Nine real E20 no-query smoke results", "Nine fixed E50 source models with source prototype counters", "Nine frozen seven-scene predictions then independent truth-last matched seed/scene/subgroup comparisons"]
+}

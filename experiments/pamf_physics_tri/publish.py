@@ -10,7 +10,7 @@ def publish(repo, output, context, ssh_config, *, pairing=False, recovery=False,
             practical_gate=False, weak_practical=False, scheduled_practical=False, validate_taper=False,
             branch_guard=False, single_rx=False, nonmain_takeover=False, source_probe=False, certified_day=False,
             curriculum=False, fused_physics=False, multilevel_physics=False, soft_channel=False, packet_contrast=False,
-            hybrid_contrast=False, teacher_anchor=False):
+            hybrid_contrast=False, teacher_anchor=False, source_prototype=False):
     from .pair_plan import RUN as PAIR_RUN
     from .partial_plan import RUN as PARTIAL_RUN
     from .practical_plan import RUN as PRACTICAL_RUN
@@ -30,6 +30,7 @@ def publish(repo, output, context, ssh_config, *, pairing=False, recovery=False,
     from .packet_contrast_plan import RUN as PACKET_CONTRAST_RUN
     from .hybrid_contrast_plan import RUN as HYBRID_CONTRAST_RUN
     from .teacher_anchor_plan import RUN as TEACHER_ANCHOR_RUN
+    from .source_prototype_plan import RUN as SOURCE_PROTOTYPE_RUN
 
     old_run, old_remote = base.RUN, base.REMOTE
     base.RUN, gpus = RUN, [0, 1]
@@ -71,6 +72,8 @@ def publish(repo, output, context, ssh_config, *, pairing=False, recovery=False,
         base.RUN, gpus = HYBRID_CONTRAST_RUN, list(range(8))
     elif teacher_anchor:
         base.RUN, gpus = TEACHER_ANCHOR_RUN, list(range(8))
+    elif source_prototype:
+        base.RUN, gpus = SOURCE_PROTOTYPE_RUN, list(range(8))
     owner = f'codex-{base.RUN}'
     runner = ('experiments.pamf_physics_tri.single_rx_source_probe' if source_probe else
               'experiments.pamf_physics_tri.nonmain_takeover' if nonmain_takeover else
@@ -80,9 +83,9 @@ def publish(repo, output, context, ssh_config, *, pairing=False, recovery=False,
         f" path=project/'runs'/{TRI_RUN!r}/'F'/f'main_split-repl-shuffled_time-3view-s{{seed}}'/'source'/'segment20'\n"
         " if not (path/'final_ssdg.pth').is_file() or not (path/'complete.json').is_file():raise FileNotFoundError(path)\n"
     )
-    if validate_taper or branch_guard or single_rx or certified_day or curriculum or fused_physics or multilevel_physics or soft_channel or packet_contrast or hybrid_contrast or teacher_anchor:
+    if validate_taper or branch_guard or single_rx or certified_day or curriculum or fused_physics or multilevel_physics or soft_channel or packet_contrast or hybrid_contrast or teacher_anchor or source_prototype:
         from experiments.pamf_paper_completion.plan import RUN as PAPER_RUN
-        selected_settings = {SINGLE_SETTING: SINGLE_PROTOCOL} if single_rx or certified_day or curriculum or fused_physics or multilevel_physics or soft_channel or packet_contrast or hybrid_contrast or teacher_anchor else SETTINGS
+        selected_settings = {SINGLE_SETTING: SINGLE_PROTOCOL} if single_rx or certified_day or curriculum or fused_physics or multilevel_physics or soft_channel or packet_contrast or hybrid_contrast or teacher_anchor or source_prototype else SETTINGS
         preflight += (
             f"for setting,pid in {selected_settings!r}.items():\n"
             " for path in [ctx['handles'][pid]['source_cache'],ctx['handles'][pid]['source_contract'],"
@@ -106,7 +109,7 @@ def publish(repo, output, context, ssh_config, *, pairing=False, recovery=False,
             )
     base.REMOTE = (old_remote.replace("rt=p['runtime']; project=",
                                     f"rt=p['runtime']; rt['parent_seeds']=[]; rt['allowed_gpus']={gpus!r}; "
-                                    f"rt['max_processes_per_gpu']={4 if curriculum or fused_physics or multilevel_physics or soft_channel or packet_contrast or hybrid_contrast or teacher_anchor else 2}; project=")
+                                    f"rt['max_processes_per_gpu']={4 if curriculum or fused_physics or multilevel_physics or soft_channel or packet_contrast or hybrid_contrast or teacher_anchor or source_prototype else 2}; project=")
         .replace("[rt['python'],rt['weak_root']+'/manifest.json',rt['weak_truth'],*rt['frozen_sources'].values()]",
                  "[rt['python'],*rt['frozen_sources'].values()]")
         .replace("for v in ctx['caches']['F0'].values():", preflight + "for v in ctx['caches']['F0'].values():")
@@ -145,6 +148,7 @@ if __name__ == '__main__':
     experiment.add_argument('--packet-contrast', action='store_true')
     experiment.add_argument('--hybrid-contrast', action='store_true')
     experiment.add_argument('--teacher-anchor', action='store_true')
+    experiment.add_argument('--source-prototype', action='store_true')
     a = p.parse_args()
     publish(a.repo, a.output, a.context, a.ssh_config, pairing=a.pairing, recovery=a.recovery,
             partial_recovery=a.partial_recovery, practical_gate=a.practical_gate, weak_practical=a.weak_practical,
@@ -152,4 +156,4 @@ if __name__ == '__main__':
             single_rx=a.single_rx, nonmain_takeover=a.nonmain_takeover, source_probe=a.source_probe,
             certified_day=a.certified_day, curriculum=a.curriculum, fused_physics=a.fused_physics,
             multilevel_physics=a.multilevel_physics, soft_channel=a.soft_channel, packet_contrast=a.packet_contrast,
-            hybrid_contrast=a.hybrid_contrast, teacher_anchor=a.teacher_anchor)
+            hybrid_contrast=a.hybrid_contrast, teacher_anchor=a.teacher_anchor, source_prototype=a.source_prototype)
