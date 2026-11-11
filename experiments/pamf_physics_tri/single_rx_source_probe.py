@@ -15,7 +15,7 @@ from experiments.pamf_physics_branch.geometry import bounded_echo
 from experiments.pamf_physics_branch.objective import echo_parameters
 from .recovery import branch_certificate
 
-RUN = '20261111-phase1-pamf-single-rx-source-v-probe-r02'
+RUN = '20261111-phase1-pamf-single-rx-source-v-probe-r03'
 
 
 def get_features(reader, x):
@@ -125,7 +125,7 @@ def dispatch(rt):
     env = dict(os.environ, PYTHONPATH=rt['release_root'], CUDA_VISIBLE_DEVICES=str(gpu),
                OMP_NUM_THREADS='2', MKL_NUM_THREADS='2', OPENBLAS_NUM_THREADS='2')
     command = [rt['python'], '-u', '-m', 'experiments.pamf_physics_tri.single_rx_source_probe', 'worker',
-               '--project', rt['project'], '--output', str(root / 'result')]
+               '--config', rt['runtime_file'], '--project', rt['project'], '--output', str(root / 'result')]
     with (root / 'probe.log').open('x') as log:
         child = subprocess.Popen(command, cwd=rt['release_root'], env=env, stdin=subprocess.DEVNULL,
                                  stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
@@ -149,4 +149,6 @@ if __name__ == '__main__':
     if a.action == 'dispatch':
         dispatch(read(a.config))
     else:
+        from experiments.pamf_repl_completion.runner import activate
+        activate(read(a.config))
         run(a.project, a.output, a.device)

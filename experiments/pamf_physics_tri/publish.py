@@ -19,7 +19,7 @@ def publish(repo, output, context, ssh_config, *, pairing=False, recovery=False,
     from .branchguard_plan import RUN as BRANCHGUARD_RUN
     from .single_rx_plan import RUN as SINGLE_RX_RUN, SETTING as SINGLE_SETTING, PROTOCOL as SINGLE_PROTOCOL
     from .nonmain_takeover import RUN as TAKEOVER_RUN
-    SOURCE_PROBE_RUN = '20261111-phase1-pamf-single-rx-source-v-probe-r02'
+    SOURCE_PROBE_RUN = '20261111-phase1-pamf-single-rx-source-v-probe-r03'
 
     old_run, old_remote = base.RUN, base.REMOTE
     base.RUN, gpus = RUN, [0, 1]
