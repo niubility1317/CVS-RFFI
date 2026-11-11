@@ -1,1 +1,2 @@
 {"at": "2026-11-11T08:17:52+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-11T08:22:45+00:00", "status": "RUNNING", "note": "VERIFIED controller and 12 GPU workers PID/CWD/cmd/GPU, real-checkpoint no-query smoke PASS, log growth, all eight cards under per-card four-process limit; separate run and code from other chat.", "evidence": ["runs/20261111-phase1-pamf-tri-u-coherence-m1-m12-r01/pipeline_state.json"], "row_id": null}
