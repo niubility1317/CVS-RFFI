@@ -1,0 +1,20 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261111-phase1-pamf-tri-soft-channel-m6-r01",
+  "scope": "Two semi-supervised continuous channel-routing rules, each with seeds 2026092701/02/03, m1-natural one-source-receiver full three-view PAMF with reference response. Main split excluded. This uses previously exposed target settings and is development evidence.",
+  "hypothesis": "Hard four-of-five raw and As votes in the preceding source-channel gate leave many physical U slots raw. A continuous source-only measure can instead set the severity of the simulated view per sample, preserving the original 0.95 raw pseudo-label acceptance rule and avoiding an additional fitted threshold. This is an experimentally testable hypothesis, not a guarantee of TX identity preservation.",
+  "candidates": [
+    {"arm": "vote", "mechanism": "For each accepted physical-slot source-U signal with all source-L classes available from different source days, calculate the fraction of five branches whose class-centroid vote agrees with its pseudo class, averaged across raw and simulated As views. Multiply the existing fixed 0.25-to-zero physical perturbation strength by that fraction. Zero evidence or missing classes leaves the slot raw."},
+    {"arm": "vote_stability", "mechanism": "Use the same vote fraction multiplied by the mean clipped [0,1] cosine similarity of each of the five actual raw and simulated-As branch features, making the perturbation weaker when those paths are physically unstable."}
+  ],
+  "shared": "Use the current student on hidden-label source U and true labels only from the current source L batch. Simulated As, deployed feature paths and branch-centroid probe are the existing two eval forwards; no new student training forward, no target access and no U truth. Preserve raw pseudo-CE/KL acceptance, cross-day relations, full Tri training and branch-specific U/L gradient protection. The prior four-vote gate's count remains reported for comparison, but it is not a hard selection condition here. Effective per-sample As interpolation strength stays within [0,0.25] and follows the original taper.",
+  "initialization": "Same-setting same-seed original Tri source-only E20, then own E10+E20, fixed E50/11100, unchanged source sample roles and fixed signature permutation.",
+  "controls": ["matching ordinary PL", "matching original Tri", "matching prior hard-gated day_physics", "matching prior branch-certified method"],
+  "evaluation": "All six predictions frozen before independent truth-last scores; clean and six practical scenarios, same physical IDs, DURA-LU primary, DURA-L/raw secondary, cross_date separate from cross_rx/cross_both. Report each seed, scenario, TX/RX/day, paired corrections and regressions. No leo_weak, target-based checkpoint selection or selective reruns.",
+  "success": "Greater than 2 percentage points above PL for clean and each practical DURA-LU scene and improvement over Tri, reporting all seed/scenario negatives; success here cannot prove all settings.",
+  "command": "python -m experiments.pamf_physics_tri.publish --soft-channel --repo REPO --output UNIQUE_LOCAL_ROOT --context EXISTING_CONTEXT --ssh-config N607_CONFIG",
+  "environment": "N607 ordinary account, immutable release, unique run root and real E20 no-query smoke across six rows.",
+  "resources": "GPU 0–7, up to four observed/pending processes per GPU including other owners, with memory reservation. Preserve all healthy fused and multilevel workers.",
+  "stop_rule": "On systemic technical failure stop new dispatch, leave other healthy workers and artifacts intact.",
+  "expected_artifacts": ["Six actual E20 smoke checks with nonzero bounded continuous routing", "Six frozen E50 sources with channel-strength counters", "Six frozen seven-scene predictions then independent same-seed comparison"]
+}
