@@ -7,7 +7,8 @@ from .plan import RUN, SEEDS
 
 
 def publish(repo, output, context, ssh_config, *, pairing=False, recovery=False, partial_recovery=False,
-            practical_gate=False, weak_practical=False, scheduled_practical=False, validate_taper=False):
+            practical_gate=False, weak_practical=False, scheduled_practical=False, validate_taper=False,
+            branch_guard=False):
     from .pair_plan import RUN as PAIR_RUN
     from .partial_plan import RUN as PARTIAL_RUN
     from .practical_plan import RUN as PRACTICAL_RUN
@@ -15,6 +16,7 @@ def publish(repo, output, context, ssh_config, *, pairing=False, recovery=False,
     from .weak_practical_plan import RUN as WEAK_RUN
     from .scheduled_plan import RUN as SCHEDULE_RUN
     from .validation_plan import RUN as VALIDATION_RUN, SETTINGS
+    from .branchguard_plan import RUN as BRANCHGUARD_RUN
 
     old_run, old_remote = base.RUN, base.REMOTE
     base.RUN, gpus = RUN, [0, 1]
@@ -32,6 +34,8 @@ def publish(repo, output, context, ssh_config, *, pairing=False, recovery=False,
         base.RUN, gpus = SCHEDULE_RUN, list(range(8))
     elif validate_taper:
         base.RUN, gpus = VALIDATION_RUN, list(range(8))
+    elif branch_guard:
+        base.RUN, gpus = BRANCHGUARD_RUN, list(range(8))
     owner = f'codex-{base.RUN}'
     runner = 'experiments.pamf_physics_tri.pair_runner' if base.RUN != RUN else 'experiments.pamf_physics_tri.runner'
     preflight = (
@@ -39,7 +43,7 @@ def publish(repo, output, context, ssh_config, *, pairing=False, recovery=False,
         f" path=project/'runs'/{TRI_RUN!r}/'F'/f'main_split-repl-shuffled_time-3view-s{{seed}}'/'source'/'segment20'\n"
         " if not (path/'final_ssdg.pth').is_file() or not (path/'complete.json').is_file():raise FileNotFoundError(path)\n"
     )
-    if validate_taper:
+    if validate_taper or branch_guard:
         from experiments.pamf_paper_completion.plan import RUN as PAPER_RUN
         preflight += (
             f"for setting,pid in {SETTINGS!r}.items():\n"
@@ -81,7 +85,8 @@ if __name__ == '__main__':
     experiment.add_argument('--weak-practical', action='store_true')
     experiment.add_argument('--scheduled-practical', action='store_true')
     experiment.add_argument('--validate-taper', action='store_true')
+    experiment.add_argument('--branch-guard', action='store_true')
     a = p.parse_args()
     publish(a.repo, a.output, a.context, a.ssh_config, pairing=a.pairing, recovery=a.recovery,
             partial_recovery=a.partial_recovery, practical_gate=a.practical_gate, weak_practical=a.weak_practical,
-            scheduled_practical=a.scheduled_practical, validate_taper=a.validate_taper)
+            scheduled_practical=a.scheduled_practical, validate_taper=a.validate_taper, branch_guard=a.branch_guard)

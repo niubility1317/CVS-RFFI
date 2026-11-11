@@ -56,7 +56,7 @@ def prepare_row(root, row):
         raise ValueError('Exactly clean and the six practical scenes are required')
     if cfg['protocol_id'] == 'F0':
         _, tri = tri_entry(root.parent, seed)
-        suffix = f's{seed}'
+        suffix = f'F0-s{seed}' if f'baseline_pl-F0-s{seed}' in sources else f's{seed}'
     else:
         suffix = f'{cfg["protocol_id"]}-s{seed}'
         tri = sources[f'tri_sigtime_ssl-{suffix}']
@@ -65,6 +65,9 @@ def prepare_row(root, row):
                'Tri-SIG-TIME': tri}
     if f'weak_branch_fixed-s{seed}' in sources:
         entries['Weak-branch-fixed'] = sources[f'weak_branch_fixed-s{seed}']
+    taper = f'taper-control-{cfg["protocol_id"]}-s{seed}'
+    if taper in sources:
+        entries['Taper-original-guard'] = sources[taper]
     if f'baseline_sup-s{seed}' in sources:
         entries['Sup'] = sources[f'baseline_sup-s{seed}']
     return cfg, {name: frozen_row(entry, seed, root.parent, candidate_input) for name, entry in entries.items()}

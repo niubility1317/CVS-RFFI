@@ -1,0 +1,16 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261111-phase1-pamf-tri-branchguard-m12-r01",
+  "display_name": "PAMF 五分支源 U 梯度保护的跨设置实验",
+  "scope": "F0 Main split, receiver splits 1/2 and 5% labeled; each has seeds 2026092701/02/03. All four conditions have previously exposed target data and are development evaluation.",
+  "method": "Keep the existing full Tri-SIG-TIME REPL and the fixed F0-developed source-practical five-branch U certificate and .25-to-zero E21–50 taper. Replace only the existing one-sided U/L gradient projection grouping. Instead of lumping all branch projections in other, separately project and cap U gradient against the complete current true L objective within time, frequency, PA, signature and reference parameter groups. Retain the pre-existing t2 and classifier groups and an other group, max U/L norm ratio 1 and zero U for tiny L unchanged. All existing raw/U losses, selection and head remain; domain parameters not belonging to the deployed encoder stay in original groups. This uses no U labels or target training data.",
+  "initialization": "Exact same-setting and same-seed original source-only Tri-SIG-TIME scratch E20; own E10+E20, fixed E50/11100 updates. Match physical source IDs/roles, RX/day and checkpoint provenance.",
+  "controls": ["Exact same setting/seed original Tri-SIG-TIME SSL", "ordinary PL with matching setting/seed and physical test inputs", "same-setting/seed existing taper with the original three-group gradient guard"],
+  "evaluation": "Fixed E50, clean and six practical scenes, DURA-LU primary, DURA-L/raw secondary, each protocol's exact matching frozen caches. All 12 frozen prediction matrices precede independent truth-last scoring. Three-seed matched physical packet comparisons by scenario and TX/RX/day; no leo_weak, no target-driven selection/tuning/reruns.",
+  "success": "Every setting must separately exceed Tri on three-seed mean clean and six-practical mean and exceed PL in each scene mean; report each seed/scenario and subgroup loss. Universal claim requires each seed/scenario positive versus PL and independent unexposed settings and extra paired seeds.",
+  "command": "python -m experiments.pamf_physics_tri.publish --branch-guard --repo REPO --output UNIQUE_LOCAL_ROOT --context EXISTING_CONTEXT --ssh-config N607_CONFIG",
+  "environment": "N607 ordinary account, project Python, immutable Git release and unique run/output root, FP32/TF32 off.",
+  "resources": "GPU 0–7, no more than two observed or pending processes per GPU including other owners. One owner and real-checkpoint no-query smoke across 12 rows.",
+  "stop_rule": "Systemic technical failure stops new dispatch and preserves other healthy workers and artifacts. No optional source diagnostics, weak scoring, or target-driven reruns.",
+  "expected_artifacts": ["Twelve same-contract original E20 source-only smoke checks", "Own E30/E50 and per-branch gradient conflict/cap counts", "Twelve frozen seven-scene predictions", "Independent three-seed and same-packet raw/DURA analysis per setting"]
+}

@@ -9,15 +9,18 @@ def parameter_group(name):
 
 
 @torch.no_grad()
-def projected_gradients(named, labeled, unlabeled, *, max_u_ratio=1.):
+def projected_gradients(named, labeled, unlabeled, *, max_u_ratio=1., group_fn=parameter_group,
+                        groups=('t2', 'cls_head', 'other')):
     if not isinstance(max_u_ratio,(int,float)) or not math.isfinite(max_u_ratio) or max_u_ratio<=0:
         raise ValueError('Finite positive U/L norm ratio required')
     if not len(named) == len(labeled) == len(unlabeled):
         raise ValueError('Gradient/parameter lengths differ')
     combined = [None] * len(named)
     details = {}
-    for group in ('t2', 'cls_head', 'other'):
-        indices = [i for i, (name, _) in enumerate(named) if parameter_group(name) == group
+    if any(group_fn(name) not in groups for name, _ in named):
+        raise ValueError('Every parameter must belong to a registered gradient group')
+    for group in groups:
+        indices = [i for i, (name, _) in enumerate(named) if group_fn(name) == group
                    and (labeled[i] is not None or unlabeled[i] is not None)]
         if not indices:
             details[group] = dict(L_norm=0.,U_norm=0.,applied_U_norm=0.,dot_before=0.,dot_after=0.,
@@ -61,11 +64,12 @@ class _ExplicitGradient(torch.autograd.Function):
         return (None, None, *(None if g is None else g * scale for g in ctx.gradients))
 
 
-def protected_loss(labeled, unlabeled, named, *, max_u_ratio=1.):
+def protected_loss(labeled, unlabeled, named, *, max_u_ratio=1., group_fn=parameter_group,
+                   groups=('t2', 'cls_head', 'other')):
     parameters = tuple(p for _, p in named)
     gl = torch.autograd.grad(labeled, parameters, retain_graph=True, allow_unused=True)
     gu = torch.autograd.grad(unlabeled, parameters, retain_graph=True, allow_unused=True)
-    gradients, details = projected_gradients(named, gl, gu, max_u_ratio=max_u_ratio)
+    gradients, details = projected_gradients(named, gl, gu, max_u_ratio=max_u_ratio, group_fn=group_fn, groups=groups)
     value = _ExplicitGradient.apply((labeled + unlabeled).detach(), gradients, *parameters)
     return value, details, gradients
 
