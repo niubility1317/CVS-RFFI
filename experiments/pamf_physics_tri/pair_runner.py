@@ -5,7 +5,7 @@ from functools import partial
 from experiments.cric_dura_comparison.io import read
 from experiments.pamf_physics_route import prepare as routes
 from experiments.pamf_physics_route import runner as dispatching
-from . import branchguard_plan, certified_day_plan, curriculum_plan, fused_physics_plan, hybrid_contrast_plan, multilevel_physics_plan, packet_contrast_plan, pair_plan, partial_plan, practical_plan, recovery_plan, scheduled_plan, single_rx_plan, soft_channel_plan, validation_plan, weak_practical_plan
+from . import branchguard_plan, certified_day_plan, curriculum_plan, fused_physics_plan, hybrid_contrast_plan, multilevel_physics_plan, packet_contrast_plan, pair_plan, partial_plan, practical_plan, recovery_plan, scheduled_plan, single_rx_plan, soft_channel_plan, teacher_anchor_plan, validation_plan, weak_practical_plan
 from .branch_guard import installed as branchguard_scope
 from .pairing import installed as pairing_scope
 from .practical_gate import installed as practical_scope
@@ -21,6 +21,7 @@ from .multilevel_physics import installed as multilevel_physics_scope
 from .soft_channel import installed as soft_channel_scope
 from .packet_contrast import installed as packet_contrast_scope
 from .hybrid_contrast import installed as hybrid_contrast_scope
+from .teacher_anchor import installed as teacher_anchor_scope
 
 
 def check_pairing(state):
@@ -134,6 +135,19 @@ def check_hybrid_contrast(state):
     return dict(details, U_fused_physics=fused, U_hybrid_contrast=hybrid)
 
 
+def check_teacher_anchor(state):
+    details = check_hybrid_contrast(state)
+    teacher = state['U_teacher_anchor']
+    expected = {'raw', 'physical'} if teacher['recipe']['mode'] == 'teacher_physical' else {'raw'}
+    if (teacher['calls'] != 1 or teacher['raw_used'] <= 0 or not teacher['teacher_frozen']
+            or teacher['extra_teacher_forwards'] != 1 or teacher['extra_student_forwards'] != 0
+            or teacher['U_truth_read'] or teacher['target_access'] or set(teacher['smoke_gradients']) != expected
+            or any(min(value.values()) <= 0 for value in teacher['smoke_gradients'].values())
+            or ('physical' in expected and teacher['physical_used'] <= 0)):
+        raise ValueError('Actual frozen PL teacher and source-U student gradients required')
+    return dict(details, U_teacher_anchor=teacher)
+
+
 METHODS = {pair_plan.RUN: (pair_plan, pairing_scope, check_pairing),
            recovery_plan.RUN: (recovery_plan, recovery_scope, check_recovery),
            partial_plan.RUN: (partial_plan, recovery_scope, check_partial),
@@ -149,7 +163,8 @@ METHODS = {pair_plan.RUN: (pair_plan, pairing_scope, check_pairing),
            multilevel_physics_plan.RUN: (multilevel_physics_plan, multilevel_physics_scope, check_multilevel_physics),
            soft_channel_plan.RUN: (soft_channel_plan, soft_channel_scope, check_soft_channel),
            packet_contrast_plan.RUN: (packet_contrast_plan, packet_contrast_scope, check_packet_contrast),
-           hybrid_contrast_plan.RUN: (hybrid_contrast_plan, hybrid_contrast_scope, check_hybrid_contrast)}
+           hybrid_contrast_plan.RUN: (hybrid_contrast_plan, hybrid_contrast_scope, check_hybrid_contrast),
+           teacher_anchor_plan.RUN: (teacher_anchor_plan, teacher_anchor_scope, check_teacher_anchor)}
 
 
 def worker(c, kind):
@@ -163,7 +178,7 @@ def worker(c, kind):
     if kind == 'smoke':
         return smoke(c, rows=plan.candidate_rows, configure=plan.configuration, check_parent=plan.parent,
                      scope=installed, check_u=check_u,
-                     graph_check=plan.check_graph if plan in (validation_plan, branchguard_plan, single_rx_plan, certified_day_plan, curriculum_plan, fused_physics_plan, multilevel_physics_plan, soft_channel_plan, packet_contrast_plan, hybrid_contrast_plan) else None)
+                     graph_check=plan.check_graph if plan in (validation_plan, branchguard_plan, single_rx_plan, certified_day_plan, curriculum_plan, fused_physics_plan, multilevel_physics_plan, soft_channel_plan, packet_contrast_plan, hybrid_contrast_plan, teacher_anchor_plan) else None)
     raise ValueError('Only source and clean/practical evaluation stages are allowed')
 
 
@@ -179,8 +194,9 @@ def dispatch(rt):
                                       multilevel_physics_plan.extra_controls if plan is multilevel_physics_plan else
                                       soft_channel_plan.extra_controls if plan is soft_channel_plan else
                                       packet_contrast_plan.extra_controls if plan is packet_contrast_plan else
-                                      hybrid_contrast_plan.extra_controls if plan is hybrid_contrast_plan else None),
-                      dynamic_protocol=plan in (validation_plan, branchguard_plan, single_rx_plan, certified_day_plan, curriculum_plan, fused_physics_plan, multilevel_physics_plan, soft_channel_plan, packet_contrast_plan, hybrid_contrast_plan))
+                                      hybrid_contrast_plan.extra_controls if plan is hybrid_contrast_plan else
+                                      teacher_anchor_plan.extra_controls if plan is teacher_anchor_plan else None),
+                      dynamic_protocol=plan in (validation_plan, branchguard_plan, single_rx_plan, certified_day_plan, curriculum_plan, fused_physics_plan, multilevel_physics_plan, soft_channel_plan, packet_contrast_plan, hybrid_contrast_plan, teacher_anchor_plan))
     launch = partial(dispatching.launch, module='experiments.pamf_physics_tri.pair_runner')
     from experiments.pamf_physics_branch import runner as physical
     old_admits = physical.admits
