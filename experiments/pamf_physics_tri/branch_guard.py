@@ -19,11 +19,13 @@ def parameter_group(name):
         return 'signature'
     if '.response_projection.' in name or name.endswith('.response_gain'):
         return 'reference'
-    if '.freq_stats_proj.' in name or '.f_proj.' in name:
+    core_prefix = 'id_backbone.encoder.core.id_backbone.'
+    core_part = name.removeprefix(core_prefix).split('.', 1)[0] if name.startswith(core_prefix) else ''
+    if core_part in ('f1', 'f2', 'f3', 'f_proj', 'freq_gate', 'freq_stats_proj'):
         return 'frequency'
-    if '.pa_stats_proj.' in name or '.pa_proj.' in name:
+    if core_part in ('pa_b1', 'pa_b2', 'pa_b3', 'pa_gate', 'pa_proj', 'pa_stats_proj'):
         return 'pa'
-    if '.t_proj.' in name:
+    if core_part == 't_proj':
         return 'time'
     return 'other'
 

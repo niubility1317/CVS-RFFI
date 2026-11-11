@@ -39,7 +39,7 @@ def prepare(rt, *, rows_for_run=None, configure=None, source_diagnostic=None, tr
         pid = row['protocol_id'] if dynamic_protocol else 'F0'
         h = ctx['handles'][pid]
         baseline = ctx['existing'][f'{pid}-ordinary_PL-s{seed}']
-        if dynamic_protocol:
+        if dynamic_protocol and pid != 'F0':
             from experiments.pamf_paper_completion.plan import RUN as PAPER_RUN
             original = f'{row["setting"]}-factorial-ssl-full-permuted-s{seed}'
             tri = read(Path(rt['project']) / 'runs' / PAPER_RUN / 'sources.json')[original]
