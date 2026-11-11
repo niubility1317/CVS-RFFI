@@ -77,9 +77,20 @@ def worker(c,kind):
     activate(c);return train(c) if kind=='train' else smoke(c)
 
 
+def admits_exclusive(gpu,active,required_mib,*,base_admits):
+    from experiments.pamf_repl_completion.runner import capacity,processes
+    cuda,_=capacity(gpu)
+    pending={pid for pid,card in processes().items() if card==gpu}
+    own={process.pid for process,item in active.values() if item['gpu']==gpu}
+    return not ((cuda|pending)-own) and base_admits(gpu,active,required_mib)
+
+
 def dispatch(rt):
     launch=partial(dispatching.launch,module='experiments.pamf_tri_u_channels_m1.runner')
-    dispatching.dispatch(rt,prepare_run=prepare,launch_worker=launch)
+    previous=evaluation.admits
+    evaluation.admits=partial(admits_exclusive,base_admits=previous)
+    try:dispatching.dispatch(rt,prepare_run=prepare,launch_worker=launch)
+    finally:evaluation.admits=previous
 
 
 if __name__=='__main__':

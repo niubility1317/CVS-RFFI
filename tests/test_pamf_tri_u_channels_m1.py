@@ -19,3 +19,17 @@ def test_single_source_contract_and_target_isolation():
         with pytest.raises(ValueError):plan.validate_candidate(bad)
         bad=copy.deepcopy(c);bad['channel_perturbation']['delay']=99
         with pytest.raises(ValueError):plan.validate_candidate(bad)
+
+
+def test_no_gpu_admission_with_foreign_worker(monkeypatch):
+    from types import SimpleNamespace
+    from experiments.pamf_repl_completion import runner as capacity
+    from experiments.pamf_tri_u_channels_m1.runner import admits_exclusive
+    monkeypatch.setattr(capacity,'capacity',lambda gpu:({10},16000))
+    monkeypatch.setattr(capacity,'processes',lambda:{10:gpu_number,20:gpu_number})
+    gpu_number=7
+    active={'our':(SimpleNamespace(pid=10),{'gpu':7})}
+    assert not admits_exclusive(7,active,6000,base_admits=lambda *args:True)
+    monkeypatch.setattr(capacity,'processes',lambda:{10:7})
+    assert admits_exclusive(7,active,6000,base_admits=lambda *args:True)
+    assert not admits_exclusive(7,active,6000,base_admits=lambda *args:False)

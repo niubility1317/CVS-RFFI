@@ -4,7 +4,7 @@ from experiments.pamf_paper_completion import plan as paper
 from experiments.pamf_tri_u_phase.plan import RECIPE
 from experiments.pamf_tri_u_channels.plan import ARMS, SEEDS
 
-RUN='20261111-phase1-pamf-tri-u-channels-m1-m12-r01'
+RUN='20261111-phase1-pamf-tri-u-channels-m1-m12-r02'
 SETTING='source_rx_1'
 _validate_paper=paper.validate_config
 

@@ -1,0 +1,733 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261111-phase1-pamf-tri-u-channels-m1-m12-r02",
+  "group_id": "phase1-trisig-unlabeled-channel-consistency-m1",
+  "display_name": "Tri SSL source-U channel consistency single source receiver",
+  "description": "Four pre-fixed CFO/multipath U perturbations on single source RX; three seeds each. User selected setting after historical target exposure, where PL most exceeds Tri. Distinct from other owner cross-day and branch-gradient mechanisms; no target feedback for new matrix.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [
+    "Tri SSL unprotected physical relation"
+  ],
+  "tags": [
+    "PAMF",
+    "semi-supervised",
+    "CFO",
+    "multipath",
+    "multi-branch",
+    "three-seed",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-paper-completion-m119-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests multiple semi-supervised multi-branch mechanisms and parallel N607 GPUs 0-7, max two processes per card.",
+  "code": {
+    "commit": "release Git HEAD",
+    "checkout": "E:\\codex\\home\\worktrees\\pamf-ssl-multibranch-ablation\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Phase1 Python; FP32 TF32 off; 2 CPU threads",
+    "cwd": "PROJECT/releases/20261111-phase1-pamf-tri-u-channels-m1-m12-r02-release"
+  },
+  "data": {
+    "dataset": "ManySig 1 source receiver",
+    "version": null,
+    "representation": "equalized1 / unitRMS / FP32 IQ 2x256 / Fs25MHz",
+    "contract_ref": "Existing validated m1-natural source and received-IQ handles",
+    "physical_ids_ref": "Single-source-RX cross_rx/cross_both same-packet identities",
+    "label_map_ref": "original six TX classes",
+    "source_receivers": [
+      1
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 1260,
+      "U_s": "11340 source IQ, TX labels hidden",
+      "V": "5400 source validation, no fitting"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "reuse VALIDATED_ONCE, no data rebuild",
+    "support_query_ref": null,
+    "leo_config_ref": "clean plus six practical scenes only; no leo_weak",
+    "source_rxs": [
+      1
+    ],
+    "target_rxs": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10
+    ]
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Phase1 terrestrial proxy; direct recognition; no future-date or in-orbit claim"
+  },
+  "checkpoint": {
+    "initialization": "Each seed own single-RX original Tri source-only scratch E20, then E10+E20",
+    "sources": [
+      "20261027-phase1-pamf-paper-completion-m119-r03 matching source_rx_1 seed segment20"
+    ],
+    "contract_check_ref": "source.parent and resolved source contract",
+    "provenance_verdict": "same m1-natural source contract and seed, source-only scratch",
+    "selection_rule": "All 12 fixed final E50, all seven scenes; historical test exposure and target-based setting selection disclosed"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-tri-u-channels-m1-20261111",
+    "gpu_policy": "All GPUs 0-7 eligible, admit only GPUs without external CUDA or pending workers; at most two own workers/card, free-memory admission; preserve other owners",
+    "remote_run_root": "PROJECT/runs/20261111-phase1-pamf-tri-u-channels-m1-m12-r02",
+    "remote_log_root": "PROJECT/runs/20261111-phase1-pamf-tri-u-channels-m1-m12-r02/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/pamf_tri_u_channels_m1_r02_20261111",
+    "launch_command": "python -m experiments.pamf_tri_u_channels_m1.publish --repo REPO --output UNIQUE_LOCAL_ROOT --context EXISTING_CONTEXT --ssh-config N607_CONFIG",
+    "stop_rule": "Systemic technical failure stops new dispatch; retain healthy workers and output; no target-driven decisions"
+  },
+  "expected_artifacts": [
+    "12 real-checkpoint no-query finite-backward smokes",
+    "12 E50 checkpoints and source-U acceptance counters",
+    "all 12 seven-scene predictions frozen before scoring",
+    "paired per-scene Tri/PL, TX/RX/day corrected and missed, runtime and failure analysis"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro F1",
+      "paired corrected and missed",
+      "U acceptance",
+      "resource use"
+    ],
+    "dimensions": [
+      "seed",
+      "scene",
+      "TX",
+      "RX",
+      "day",
+      "population"
+    ],
+    "prediction_ref": "experiments/pamf_paper_completion/evaluation.py:predict",
+    "scorer_ref": "experiments/pamf_paper_completion/evaluation.py:score"
+  },
+  "rows": [
+    {
+      "row_id": "tri-u-cfo-m1-s2026092701",
+      "method": "Complete single-RX Tri SSL plus source-U five-branch consistency under tri-u-cfo",
+      "purpose": "Fixed physical perturbation versus single-RX same-seed Tri and ordinary PL; target >2 pp per scene",
+      "config_ref": "RUN/configs/train__tri-u-cfo-m1-s2026092701.json",
+      "resolved_config_ref": "RUN/F/tri-u-cfo-m1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m1-natural",
+        "view_count": 3,
+        "U_use": true,
+        "channel_perturbation": {
+          "kind": "cfo",
+          "delay": 0,
+          "echo_amplitude": 0.0
+        }
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-u-cfo-m1-s2026092701/source",
+      "log_path": "RUN/logs/train__tri-u-cfo-m1-s2026092701.log",
+      "command": "python -m experiments.pamf_tri_u_channels_m1.runner worker --kind train --config RUN/configs/train__tri-u-cfo-m1-s2026092701.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-u-echo1-m1-s2026092701",
+      "method": "Complete single-RX Tri SSL plus source-U five-branch consistency under tri-u-echo1",
+      "purpose": "Fixed physical perturbation versus single-RX same-seed Tri and ordinary PL; target >2 pp per scene",
+      "config_ref": "RUN/configs/train__tri-u-echo1-m1-s2026092701.json",
+      "resolved_config_ref": "RUN/F/tri-u-echo1-m1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m1-natural",
+        "view_count": 3,
+        "U_use": true,
+        "channel_perturbation": {
+          "kind": "echo",
+          "delay": 1,
+          "echo_amplitude": 0.15
+        }
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-u-echo1-m1-s2026092701/source",
+      "log_path": "RUN/logs/train__tri-u-echo1-m1-s2026092701.log",
+      "command": "python -m experiments.pamf_tri_u_channels_m1.runner worker --kind train --config RUN/configs/train__tri-u-echo1-m1-s2026092701.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-u-echo3-m1-s2026092701",
+      "method": "Complete single-RX Tri SSL plus source-U five-branch consistency under tri-u-echo3",
+      "purpose": "Fixed physical perturbation versus single-RX same-seed Tri and ordinary PL; target >2 pp per scene",
+      "config_ref": "RUN/configs/train__tri-u-echo3-m1-s2026092701.json",
+      "resolved_config_ref": "RUN/F/tri-u-echo3-m1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m1-natural",
+        "view_count": 3,
+        "U_use": true,
+        "channel_perturbation": {
+          "kind": "echo",
+          "delay": 3,
+          "echo_amplitude": 0.15
+        }
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-u-echo3-m1-s2026092701/source",
+      "log_path": "RUN/logs/train__tri-u-echo3-m1-s2026092701.log",
+      "command": "python -m experiments.pamf_tri_u_channels_m1.runner worker --kind train --config RUN/configs/train__tri-u-echo3-m1-s2026092701.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-u-cfo-echo3-m1-s2026092701",
+      "method": "Complete single-RX Tri SSL plus source-U five-branch consistency under tri-u-cfo-echo3",
+      "purpose": "Fixed physical perturbation versus single-RX same-seed Tri and ordinary PL; target >2 pp per scene",
+      "config_ref": "RUN/configs/train__tri-u-cfo-echo3-m1-s2026092701.json",
+      "resolved_config_ref": "RUN/F/tri-u-cfo-echo3-m1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m1-natural",
+        "view_count": 3,
+        "U_use": true,
+        "channel_perturbation": {
+          "kind": "cfo_echo",
+          "delay": 3,
+          "echo_amplitude": 0.15
+        }
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-u-cfo-echo3-m1-s2026092701/source",
+      "log_path": "RUN/logs/train__tri-u-cfo-echo3-m1-s2026092701.log",
+      "command": "python -m experiments.pamf_tri_u_channels_m1.runner worker --kind train --config RUN/configs/train__tri-u-cfo-echo3-m1-s2026092701.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-u-cfo-m1-s2026092702",
+      "method": "Complete single-RX Tri SSL plus source-U five-branch consistency under tri-u-cfo",
+      "purpose": "Fixed physical perturbation versus single-RX same-seed Tri and ordinary PL; target >2 pp per scene",
+      "config_ref": "RUN/configs/train__tri-u-cfo-m1-s2026092702.json",
+      "resolved_config_ref": "RUN/F/tri-u-cfo-m1-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m1-natural",
+        "view_count": 3,
+        "U_use": true,
+        "channel_perturbation": {
+          "kind": "cfo",
+          "delay": 0,
+          "echo_amplitude": 0.0
+        }
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-u-cfo-m1-s2026092702/source",
+      "log_path": "RUN/logs/train__tri-u-cfo-m1-s2026092702.log",
+      "command": "python -m experiments.pamf_tri_u_channels_m1.runner worker --kind train --config RUN/configs/train__tri-u-cfo-m1-s2026092702.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-u-echo1-m1-s2026092702",
+      "method": "Complete single-RX Tri SSL plus source-U five-branch consistency under tri-u-echo1",
+      "purpose": "Fixed physical perturbation versus single-RX same-seed Tri and ordinary PL; target >2 pp per scene",
+      "config_ref": "RUN/configs/train__tri-u-echo1-m1-s2026092702.json",
+      "resolved_config_ref": "RUN/F/tri-u-echo1-m1-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m1-natural",
+        "view_count": 3,
+        "U_use": true,
+        "channel_perturbation": {
+          "kind": "echo",
+          "delay": 1,
+          "echo_amplitude": 0.15
+        }
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-u-echo1-m1-s2026092702/source",
+      "log_path": "RUN/logs/train__tri-u-echo1-m1-s2026092702.log",
+      "command": "python -m experiments.pamf_tri_u_channels_m1.runner worker --kind train --config RUN/configs/train__tri-u-echo1-m1-s2026092702.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-u-echo3-m1-s2026092702",
+      "method": "Complete single-RX Tri SSL plus source-U five-branch consistency under tri-u-echo3",
+      "purpose": "Fixed physical perturbation versus single-RX same-seed Tri and ordinary PL; target >2 pp per scene",
+      "config_ref": "RUN/configs/train__tri-u-echo3-m1-s2026092702.json",
+      "resolved_config_ref": "RUN/F/tri-u-echo3-m1-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m1-natural",
+        "view_count": 3,
+        "U_use": true,
+        "channel_perturbation": {
+          "kind": "echo",
+          "delay": 3,
+          "echo_amplitude": 0.15
+        }
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-u-echo3-m1-s2026092702/source",
+      "log_path": "RUN/logs/train__tri-u-echo3-m1-s2026092702.log",
+      "command": "python -m experiments.pamf_tri_u_channels_m1.runner worker --kind train --config RUN/configs/train__tri-u-echo3-m1-s2026092702.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-u-cfo-echo3-m1-s2026092702",
+      "method": "Complete single-RX Tri SSL plus source-U five-branch consistency under tri-u-cfo-echo3",
+      "purpose": "Fixed physical perturbation versus single-RX same-seed Tri and ordinary PL; target >2 pp per scene",
+      "config_ref": "RUN/configs/train__tri-u-cfo-echo3-m1-s2026092702.json",
+      "resolved_config_ref": "RUN/F/tri-u-cfo-echo3-m1-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m1-natural",
+        "view_count": 3,
+        "U_use": true,
+        "channel_perturbation": {
+          "kind": "cfo_echo",
+          "delay": 3,
+          "echo_amplitude": 0.15
+        }
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-u-cfo-echo3-m1-s2026092702/source",
+      "log_path": "RUN/logs/train__tri-u-cfo-echo3-m1-s2026092702.log",
+      "command": "python -m experiments.pamf_tri_u_channels_m1.runner worker --kind train --config RUN/configs/train__tri-u-cfo-echo3-m1-s2026092702.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-u-cfo-m1-s2026092703",
+      "method": "Complete single-RX Tri SSL plus source-U five-branch consistency under tri-u-cfo",
+      "purpose": "Fixed physical perturbation versus single-RX same-seed Tri and ordinary PL; target >2 pp per scene",
+      "config_ref": "RUN/configs/train__tri-u-cfo-m1-s2026092703.json",
+      "resolved_config_ref": "RUN/F/tri-u-cfo-m1-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m1-natural",
+        "view_count": 3,
+        "U_use": true,
+        "channel_perturbation": {
+          "kind": "cfo",
+          "delay": 0,
+          "echo_amplitude": 0.0
+        }
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-u-cfo-m1-s2026092703/source",
+      "log_path": "RUN/logs/train__tri-u-cfo-m1-s2026092703.log",
+      "command": "python -m experiments.pamf_tri_u_channels_m1.runner worker --kind train --config RUN/configs/train__tri-u-cfo-m1-s2026092703.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-u-echo1-m1-s2026092703",
+      "method": "Complete single-RX Tri SSL plus source-U five-branch consistency under tri-u-echo1",
+      "purpose": "Fixed physical perturbation versus single-RX same-seed Tri and ordinary PL; target >2 pp per scene",
+      "config_ref": "RUN/configs/train__tri-u-echo1-m1-s2026092703.json",
+      "resolved_config_ref": "RUN/F/tri-u-echo1-m1-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m1-natural",
+        "view_count": 3,
+        "U_use": true,
+        "channel_perturbation": {
+          "kind": "echo",
+          "delay": 1,
+          "echo_amplitude": 0.15
+        }
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-u-echo1-m1-s2026092703/source",
+      "log_path": "RUN/logs/train__tri-u-echo1-m1-s2026092703.log",
+      "command": "python -m experiments.pamf_tri_u_channels_m1.runner worker --kind train --config RUN/configs/train__tri-u-echo1-m1-s2026092703.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-u-echo3-m1-s2026092703",
+      "method": "Complete single-RX Tri SSL plus source-U five-branch consistency under tri-u-echo3",
+      "purpose": "Fixed physical perturbation versus single-RX same-seed Tri and ordinary PL; target >2 pp per scene",
+      "config_ref": "RUN/configs/train__tri-u-echo3-m1-s2026092703.json",
+      "resolved_config_ref": "RUN/F/tri-u-echo3-m1-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m1-natural",
+        "view_count": 3,
+        "U_use": true,
+        "channel_perturbation": {
+          "kind": "echo",
+          "delay": 3,
+          "echo_amplitude": 0.15
+        }
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-u-echo3-m1-s2026092703/source",
+      "log_path": "RUN/logs/train__tri-u-echo3-m1-s2026092703.log",
+      "command": "python -m experiments.pamf_tri_u_channels_m1.runner worker --kind train --config RUN/configs/train__tri-u-echo3-m1-s2026092703.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-u-cfo-echo3-m1-s2026092703",
+      "method": "Complete single-RX Tri SSL plus source-U five-branch consistency under tri-u-cfo-echo3",
+      "purpose": "Fixed physical perturbation versus single-RX same-seed Tri and ordinary PL; target >2 pp per scene",
+      "config_ref": "RUN/configs/train__tri-u-cfo-echo3-m1-s2026092703.json",
+      "resolved_config_ref": "RUN/F/tri-u-cfo-echo3-m1-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m1-natural",
+        "view_count": 3,
+        "U_use": true,
+        "channel_perturbation": {
+          "kind": "cfo_echo",
+          "delay": 3,
+          "echo_amplitude": 0.15
+        }
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "budget_ref": "20+10+20=E50/11100; initial PL E14-20, complete original REPL E21-50",
+      "output_root": "RUN/F/tri-u-cfo-echo3-m1-s2026092703/source",
+      "log_path": "RUN/logs/train__tri-u-cfo-echo3-m1-s2026092703.log",
+      "command": "python -m experiments.pamf_tri_u_channels_m1.runner worker --kind train --config RUN/configs/train__tri-u-cfo-echo3-m1-s2026092703.json",
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    }
+  ],
+  "notes": [
+    "The two subsets are complementary; each branch mean is normalized within its subset, so changing subset changes which and how many terms receive the fixed weight.",
+    "Bounded phase and all REPL settings match the earlier full-phase candidate; the new ablation was conceived after that previously exposed Main split result and is developmental, not an independent blind test.",
+    "No target-truth or U-truth training; fixed E50 before target predictions; no target-driven checkpoint selection or rerun.",
+    "DURA-LU primary; raw and DURA-L secondary; cross_rx plus cross_both main and cross_date diagnostic; no leo_weak."
+  ],
+  "registered_at": "2026-11-11T04:07:37+00:00"
+}
