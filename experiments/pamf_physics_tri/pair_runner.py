@@ -5,7 +5,7 @@ from functools import partial
 from experiments.cric_dura_comparison.io import read
 from experiments.pamf_physics_route import prepare as routes
 from experiments.pamf_physics_route import runner as dispatching
-from . import branchguard_plan, certified_day_plan, curriculum_plan, fused_physics_plan, multilevel_physics_plan, pair_plan, partial_plan, practical_plan, recovery_plan, scheduled_plan, single_rx_plan, soft_channel_plan, validation_plan, weak_practical_plan
+from . import branchguard_plan, certified_day_plan, curriculum_plan, fused_physics_plan, multilevel_physics_plan, packet_contrast_plan, pair_plan, partial_plan, practical_plan, recovery_plan, scheduled_plan, single_rx_plan, soft_channel_plan, validation_plan, weak_practical_plan
 from .branch_guard import installed as branchguard_scope
 from .pairing import installed as pairing_scope
 from .practical_gate import installed as practical_scope
@@ -19,6 +19,7 @@ from .curriculum import installed as curriculum_scope
 from .fused_physics import installed as fused_physics_scope
 from .multilevel_physics import installed as multilevel_physics_scope
 from .soft_channel import installed as soft_channel_scope
+from .packet_contrast import installed as packet_contrast_scope
 
 
 def check_pairing(state):
@@ -109,6 +110,17 @@ def check_soft_channel(state):
     return dict(details, U_soft_channel=soft)
 
 
+def check_packet_contrast(state):
+    fused = state['U_fused_physics']
+    details = check_fused_physics(state) if fused['cosine_enabled'] else check_single_rx(state)
+    packet = state['U_packet_contrast']
+    if (fused['calls'] != 1 or fused['selected'] <= 0 or packet['calls'] != 1
+            or packet['anchors'] <= 0 or packet['extra_student_forwards'] != 0
+            or min(packet['smoke_gradients'].values()) <= 0):
+        raise ValueError('Actual same-packet contrast must reach signature and reference paths')
+    return dict(details, U_fused_physics=fused, U_packet_contrast=packet)
+
+
 METHODS = {pair_plan.RUN: (pair_plan, pairing_scope, check_pairing),
            recovery_plan.RUN: (recovery_plan, recovery_scope, check_recovery),
            partial_plan.RUN: (partial_plan, recovery_scope, check_partial),
@@ -122,7 +134,8 @@ METHODS = {pair_plan.RUN: (pair_plan, pairing_scope, check_pairing),
            curriculum_plan.RUN: (curriculum_plan, curriculum_scope, check_curriculum),
            fused_physics_plan.RUN: (fused_physics_plan, fused_physics_scope, check_fused_physics),
            multilevel_physics_plan.RUN: (multilevel_physics_plan, multilevel_physics_scope, check_multilevel_physics),
-           soft_channel_plan.RUN: (soft_channel_plan, soft_channel_scope, check_soft_channel)}
+           soft_channel_plan.RUN: (soft_channel_plan, soft_channel_scope, check_soft_channel),
+           packet_contrast_plan.RUN: (packet_contrast_plan, packet_contrast_scope, check_packet_contrast)}
 
 
 def worker(c, kind):
@@ -136,7 +149,7 @@ def worker(c, kind):
     if kind == 'smoke':
         return smoke(c, rows=plan.candidate_rows, configure=plan.configuration, check_parent=plan.parent,
                      scope=installed, check_u=check_u,
-                     graph_check=plan.check_graph if plan in (validation_plan, branchguard_plan, single_rx_plan, certified_day_plan, curriculum_plan, fused_physics_plan, multilevel_physics_plan, soft_channel_plan) else None)
+                     graph_check=plan.check_graph if plan in (validation_plan, branchguard_plan, single_rx_plan, certified_day_plan, curriculum_plan, fused_physics_plan, multilevel_physics_plan, soft_channel_plan, packet_contrast_plan) else None)
     raise ValueError('Only source and clean/practical evaluation stages are allowed')
 
 
@@ -150,8 +163,9 @@ def dispatch(rt):
                                       curriculum_plan.extra_controls if plan is curriculum_plan else
                                       fused_physics_plan.extra_controls if plan is fused_physics_plan else
                                       multilevel_physics_plan.extra_controls if plan is multilevel_physics_plan else
-                                      soft_channel_plan.extra_controls if plan is soft_channel_plan else None),
-                      dynamic_protocol=plan in (validation_plan, branchguard_plan, single_rx_plan, certified_day_plan, curriculum_plan, fused_physics_plan, multilevel_physics_plan, soft_channel_plan))
+                                      soft_channel_plan.extra_controls if plan is soft_channel_plan else
+                                      packet_contrast_plan.extra_controls if plan is packet_contrast_plan else None),
+                      dynamic_protocol=plan in (validation_plan, branchguard_plan, single_rx_plan, certified_day_plan, curriculum_plan, fused_physics_plan, multilevel_physics_plan, soft_channel_plan, packet_contrast_plan))
     launch = partial(dispatching.launch, module='experiments.pamf_physics_tri.pair_runner')
     from experiments.pamf_physics_branch import runner as physical
     old_admits = physical.admits

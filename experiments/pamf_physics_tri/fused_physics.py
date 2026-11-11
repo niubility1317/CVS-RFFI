@@ -59,7 +59,12 @@ class FusedPhysics(SingleRxDay):
                 self.fusion_smoke_gradients = {key: value ** .5 for key, value in norms.items()}
             recipe = self.c['hard_pl_joint_contrast']
             scale = self.settings['weight'] * recipe['weight'] / recipe['CE_normalizer']
-            self.pending_gradient_loss = self.pending_gradient_loss + scale * relation
+            cosine_enabled = getattr(self, 'include_fused_cosine', lambda: True)()
+            if cosine_enabled:
+                self.pending_gradient_loss = self.pending_gradient_loss + scale * relation
+            extra = getattr(self, 'additional_fusion_loss', None)
+            if extra is not None:
+                self.pending_gradient_loss = self.pending_gradient_loss + scale * extra(self.fusion_views, self.physical_selection)
             self.fusion_calls += 1
             self.fusion_selected += int(self.physical_selection.sum())
             self.metrics.update(HPL_fused_physics_loss=relation.detach(), HPL_fused_physics_weight=scale,
@@ -76,7 +81,8 @@ class FusedPhysics(SingleRxDay):
             raise ValueError('One same-packet physical fusion loss per source-U loss required')
         state['U_fused_physics'] = dict(calls=self.fusion_calls, selected=self.fusion_selected,
             coefficient='original joint contrast coefficient and CE normalizer', raw_features_detached=True,
-            extra_student_forwards=0, physical_inputs='existing branch-certified source As')
+            extra_student_forwards=0, physical_inputs='existing branch-certified source As',
+            cosine_enabled=getattr(self, 'include_fused_cosine', lambda: True)())
         if self.c.get('hard_pl_smoke'):
             state['U_fused_physics']['smoke_gradients'] = self.fusion_smoke_gradients
         return state
