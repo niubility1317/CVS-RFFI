@@ -95,6 +95,9 @@ class PracticalGate(GuardedReceiverExtrapolation):
         strength = view_strength(recipe, epoch)
         if strength == 0.:
             selected = torch.zeros_like(selected)
+        record = getattr(self, 'record_practical_selection', None)
+        if record is not None:
+            record(indices[selected], len(x))
         mixed = ordinary.clone()
         mixed[indices] = x[indices]
         view = simulated[selected]
