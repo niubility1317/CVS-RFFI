@@ -8,7 +8,7 @@ from .plan import RUN, SEEDS
 
 def publish(repo, output, context, ssh_config, *, pairing=False, recovery=False, partial_recovery=False,
             practical_gate=False, weak_practical=False, scheduled_practical=False, validate_taper=False,
-            branch_guard=False, single_rx=False, nonmain_takeover=False, source_probe=False):
+            branch_guard=False, single_rx=False, nonmain_takeover=False, source_probe=False, certified_day=False):
     from .pair_plan import RUN as PAIR_RUN
     from .partial_plan import RUN as PARTIAL_RUN
     from .practical_plan import RUN as PRACTICAL_RUN
@@ -20,6 +20,7 @@ def publish(repo, output, context, ssh_config, *, pairing=False, recovery=False,
     from .single_rx_plan import RUN as SINGLE_RX_RUN, SETTING as SINGLE_SETTING, PROTOCOL as SINGLE_PROTOCOL
     from .nonmain_takeover import RUN as TAKEOVER_RUN
     SOURCE_PROBE_RUN = '20261111-phase1-pamf-single-rx-source-v-probe-r03'
+    from .certified_day_plan import RUN as CERTIFIED_DAY_RUN
 
     old_run, old_remote = base.RUN, base.REMOTE
     base.RUN, gpus = RUN, [0, 1]
@@ -45,6 +46,8 @@ def publish(repo, output, context, ssh_config, *, pairing=False, recovery=False,
         base.RUN, gpus = TAKEOVER_RUN, [6, 7]
     elif source_probe:
         base.RUN, gpus = SOURCE_PROBE_RUN, list(range(8))
+    elif certified_day:
+        base.RUN, gpus = CERTIFIED_DAY_RUN, list(range(8))
     owner = f'codex-{base.RUN}'
     runner = ('experiments.pamf_physics_tri.single_rx_source_probe' if source_probe else
               'experiments.pamf_physics_tri.nonmain_takeover' if nonmain_takeover else
@@ -54,9 +57,9 @@ def publish(repo, output, context, ssh_config, *, pairing=False, recovery=False,
         f" path=project/'runs'/{TRI_RUN!r}/'F'/f'main_split-repl-shuffled_time-3view-s{{seed}}'/'source'/'segment20'\n"
         " if not (path/'final_ssdg.pth').is_file() or not (path/'complete.json').is_file():raise FileNotFoundError(path)\n"
     )
-    if validate_taper or branch_guard or single_rx:
+    if validate_taper or branch_guard or single_rx or certified_day:
         from experiments.pamf_paper_completion.plan import RUN as PAPER_RUN
-        selected_settings = {SINGLE_SETTING: SINGLE_PROTOCOL} if single_rx else SETTINGS
+        selected_settings = {SINGLE_SETTING: SINGLE_PROTOCOL} if single_rx or certified_day else SETTINGS
         preflight += (
             f"for setting,pid in {selected_settings!r}.items():\n"
             " for path in [ctx['handles'][pid]['source_cache'],ctx['handles'][pid]['source_contract'],"
@@ -101,8 +104,10 @@ if __name__ == '__main__':
     experiment.add_argument('--single-rx', action='store_true')
     experiment.add_argument('--nonmain-takeover', action='store_true')
     experiment.add_argument('--source-probe', action='store_true')
+    experiment.add_argument('--certified-day', action='store_true')
     a = p.parse_args()
     publish(a.repo, a.output, a.context, a.ssh_config, pairing=a.pairing, recovery=a.recovery,
             partial_recovery=a.partial_recovery, practical_gate=a.practical_gate, weak_practical=a.weak_practical,
             scheduled_practical=a.scheduled_practical, validate_taper=a.validate_taper, branch_guard=a.branch_guard,
-            single_rx=a.single_rx, nonmain_takeover=a.nonmain_takeover, source_probe=a.source_probe)
+            single_rx=a.single_rx, nonmain_takeover=a.nonmain_takeover, source_probe=a.source_probe,
+            certified_day=a.certified_day)

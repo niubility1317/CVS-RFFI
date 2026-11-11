@@ -68,6 +68,9 @@ def prepare_row(root, row):
     taper = f'taper-control-{cfg["protocol_id"]}-s{seed}'
     if taper in sources:
         entries['Taper-original-guard'] = sources[taper]
+    day_physics = f'day-physics-{cfg["protocol_id"]}-s{seed}'
+    if day_physics in sources:
+        entries['Day-physics'] = sources[day_physics]
     if f'baseline_sup-s{seed}' in sources:
         entries['Sup'] = sources[f'baseline_sup-s{seed}']
     return cfg, {name: frozen_row(entry, seed, root.parent, candidate_input) for name, entry in entries.items()}

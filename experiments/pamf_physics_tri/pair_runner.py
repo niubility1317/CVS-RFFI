@@ -5,7 +5,7 @@ from functools import partial
 from experiments.cric_dura_comparison.io import read
 from experiments.pamf_physics_route import prepare as routes
 from experiments.pamf_physics_route import runner as dispatching
-from . import branchguard_plan, pair_plan, partial_plan, practical_plan, recovery_plan, scheduled_plan, single_rx_plan, validation_plan, weak_practical_plan
+from . import branchguard_plan, certified_day_plan, pair_plan, partial_plan, practical_plan, recovery_plan, scheduled_plan, single_rx_plan, validation_plan, weak_practical_plan
 from .branch_guard import installed as branchguard_scope
 from .pairing import installed as pairing_scope
 from .practical_gate import installed as practical_scope
@@ -14,6 +14,7 @@ from .validation_scope import installed as validation_scope
 from .runner import smoke, worker as existing_worker
 from .source import train_trajectory
 from .single_rx import installed as single_rx_scope
+from .certified_day import installed as certified_day_scope
 
 
 def check_pairing(state):
@@ -63,6 +64,14 @@ def check_single_rx(state):
     return dict(details, U_cross_day=day)
 
 
+def check_certified_day(state):
+    details = check_single_rx(state)
+    cert = state['U_relation_certificate']
+    if cert['calls'] != 1 or not 0 < cert['relation_used'] <= cert['offered'] or not cert['raw_pseudo_CE_mask_unchanged']:
+        raise ValueError('Actual source-certified day relation must execute')
+    return dict(details, U_relation_certificate=cert)
+
+
 METHODS = {pair_plan.RUN: (pair_plan, pairing_scope, check_pairing),
            recovery_plan.RUN: (recovery_plan, recovery_scope, check_recovery),
            partial_plan.RUN: (partial_plan, recovery_scope, check_partial),
@@ -71,7 +80,8 @@ METHODS = {pair_plan.RUN: (pair_plan, pairing_scope, check_pairing),
            scheduled_plan.RUN: (scheduled_plan, practical_scope, check_practical),
            validation_plan.RUN: (validation_plan, validation_scope, check_practical),
            branchguard_plan.RUN: (branchguard_plan, branchguard_scope, check_branch_guard),
-           single_rx_plan.RUN: (single_rx_plan, single_rx_scope, check_single_rx)}
+           single_rx_plan.RUN: (single_rx_plan, single_rx_scope, check_single_rx),
+           certified_day_plan.RUN: (certified_day_plan, certified_day_scope, check_certified_day)}
 
 
 def worker(c, kind):
@@ -85,7 +95,7 @@ def worker(c, kind):
     if kind == 'smoke':
         return smoke(c, rows=plan.candidate_rows, configure=plan.configuration, check_parent=plan.parent,
                      scope=installed, check_u=check_u,
-                     graph_check=plan.check_graph if plan in (validation_plan, branchguard_plan, single_rx_plan) else None)
+                     graph_check=plan.check_graph if plan in (validation_plan, branchguard_plan, single_rx_plan, certified_day_plan) else None)
     raise ValueError('Only source and clean/practical evaluation stages are allowed')
 
 
@@ -94,8 +104,9 @@ def dispatch(rt):
     prepare = partial(routes.prepare, rows_for_run=lambda _: plan.candidate_rows(), configure=plan.configuration,
                       source_diagnostic=False, tri_dura=True,
                       extra_controls=(scheduled_plan.extra_controls if plan is scheduled_plan else
-                                      branchguard_plan.extra_controls if plan is branchguard_plan else None),
-                      dynamic_protocol=plan in (validation_plan, branchguard_plan, single_rx_plan))
+                                      branchguard_plan.extra_controls if plan is branchguard_plan else
+                                      certified_day_plan.extra_controls if plan is certified_day_plan else None),
+                      dynamic_protocol=plan in (validation_plan, branchguard_plan, single_rx_plan, certified_day_plan))
     launch = partial(dispatching.launch, module='experiments.pamf_physics_tri.pair_runner')
     dispatching.dispatch(rt, prepare_run=prepare, launch_worker=launch)
 
