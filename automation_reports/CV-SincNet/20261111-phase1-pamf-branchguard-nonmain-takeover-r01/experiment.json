@@ -1,0 +1,13 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261111-phase1-pamf-branchguard-nonmain-takeover-r01",
+  "scope": "Technical continuation of the nine already-frozen source models in receiver splits 1 and 2 and 5% labeled, each with seeds 2026092701, 2026092702 and 2026092703; no Main split, no new training.",
+  "reason": "The user stopped the original three Main split source workers. Their original owner treated SIGTERM as technical failure, stopped dispatch, and finished the other nine healthy workers; this controller resumes their original preregistered tests after that owner has exited.",
+  "method": "Unmodified original branchguard source checkpoints, prediction and score configs, original immutable execution release and originally registered output locations. The existing original real-checkpoint no-query smoke covered all twelve rows. Original ordinary PL, Tri and taper results remain exact-setting/seed controls.",
+  "evaluation": "All nine seven-scene clean/practical predictions must complete without truth before the first independent score. Same DURA-LU primary and DURA-L/raw secondary; retain same-packet and TX/RX/day analysis. No leo_weak or Main split evaluation. No target-dependent selection or reruns.",
+  "command": "python -m experiments.pamf_physics_tri.publish --nonmain-takeover --repo REPO --output UNIQUE_LOCAL_ROOT --context EXISTING_CONTEXT --ssh-config N607_CONFIG",
+  "environment": "N607 ordinary account; new immutable control release and run root; worker CWD/PYTHONPATH remain the original branchguard release.",
+  "resources": "Only GPU 6 and 7, at most one prediction worker on either card; system-wide maximum two observed/pending processes per card. CPU truth scoring is serial.",
+  "stop_rule": "Stop all new dispatch on any technical failure; let already-running healthy workers finish and retain all output. Never overwrite existing output paths.",
+  "expected_artifacts": ["Nine originally specified frozen practical prediction sets", "Nine independent truth-last score sets", "Same-setting and same-packet comparisons to originally specified PL, Tri and taper controls"]
+}

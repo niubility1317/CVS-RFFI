@@ -8,7 +8,7 @@ from .plan import RUN, SEEDS
 
 def publish(repo, output, context, ssh_config, *, pairing=False, recovery=False, partial_recovery=False,
             practical_gate=False, weak_practical=False, scheduled_practical=False, validate_taper=False,
-            branch_guard=False, single_rx=False):
+            branch_guard=False, single_rx=False, nonmain_takeover=False):
     from .pair_plan import RUN as PAIR_RUN
     from .partial_plan import RUN as PARTIAL_RUN
     from .practical_plan import RUN as PRACTICAL_RUN
@@ -18,6 +18,7 @@ def publish(repo, output, context, ssh_config, *, pairing=False, recovery=False,
     from .validation_plan import RUN as VALIDATION_RUN, SETTINGS
     from .branchguard_plan import RUN as BRANCHGUARD_RUN
     from .single_rx_plan import RUN as SINGLE_RX_RUN, SETTING as SINGLE_SETTING, PROTOCOL as SINGLE_PROTOCOL
+    from .nonmain_takeover import RUN as TAKEOVER_RUN
 
     old_run, old_remote = base.RUN, base.REMOTE
     base.RUN, gpus = RUN, [0, 1]
@@ -39,8 +40,11 @@ def publish(repo, output, context, ssh_config, *, pairing=False, recovery=False,
         base.RUN, gpus = BRANCHGUARD_RUN, list(range(8))
     elif single_rx:
         base.RUN, gpus = SINGLE_RX_RUN, list(range(8))
+    elif nonmain_takeover:
+        base.RUN, gpus = TAKEOVER_RUN, [6, 7]
     owner = f'codex-{base.RUN}'
-    runner = 'experiments.pamf_physics_tri.pair_runner' if base.RUN != RUN else 'experiments.pamf_physics_tri.runner'
+    runner = ('experiments.pamf_physics_tri.nonmain_takeover' if nonmain_takeover else
+              'experiments.pamf_physics_tri.pair_runner' if base.RUN != RUN else 'experiments.pamf_physics_tri.runner')
     preflight = (
         f"for seed in {SEEDS!r}:\n"
         f" path=project/'runs'/{TRI_RUN!r}/'F'/f'main_split-repl-shuffled_time-3view-s{{seed}}'/'source'/'segment20'\n"
@@ -91,8 +95,9 @@ if __name__ == '__main__':
     experiment.add_argument('--validate-taper', action='store_true')
     experiment.add_argument('--branch-guard', action='store_true')
     experiment.add_argument('--single-rx', action='store_true')
+    experiment.add_argument('--nonmain-takeover', action='store_true')
     a = p.parse_args()
     publish(a.repo, a.output, a.context, a.ssh_config, pairing=a.pairing, recovery=a.recovery,
             partial_recovery=a.partial_recovery, practical_gate=a.practical_gate, weak_practical=a.weak_practical,
             scheduled_practical=a.scheduled_practical, validate_taper=a.validate_taper, branch_guard=a.branch_guard,
-            single_rx=a.single_rx)
+            single_rx=a.single_rx, nonmain_takeover=a.nonmain_takeover)
