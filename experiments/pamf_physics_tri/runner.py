@@ -13,7 +13,7 @@ from .source import parent, train
 
 
 def smoke(rt, *, rows=candidate_rows, configure=configuration, check_parent=parent, scope=installed,
-          ssl=True, check_u=None, graph_check=None):
+          ssl=True, check_u=None, graph_check=None, segment_output=False):
     import torch
     from torch.nn import functional as F
     from experiments.cric_dura_comparison import f_train, t1_model
@@ -27,6 +27,8 @@ def smoke(rt, *, rows=candidate_rows, configure=configuration, check_parent=pare
         prefix = check_parent(c)
         cp = torch.load(Path(prefix['folder']) / 'final_ssdg.pth', map_location='cpu', weights_only=False)
         cfg = dict(c, epoch_offset=20, step_offset=4440, segment_epochs=10, hard_pl_smoke=True)
+        if segment_output:
+            cfg['output_root'] = str(Path(c['output_root']) / 'segment30')
         holder = {}
         torch.manual_seed(seed)
         torch.cuda.reset_peak_memory_stats()

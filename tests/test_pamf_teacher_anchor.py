@@ -1,5 +1,6 @@
 import pytest
 import torch
+from pathlib import Path
 
 from experiments.pamf_physics_tri.teacher_anchor import distill_pair
 from experiments.pamf_physics_tri import teacher_anchor_plan
@@ -25,3 +26,9 @@ def test_invalid_teacher_mask_and_fixed_three_mode_matrix():
     assert len(rows) == 9
     assert {r['arm'] for r in rows} == {'agree', 'teacher', 'teacher_physical'}
     assert {r['model_seed'] for r in rows} == {2026092701, 2026092702, 2026092703}
+
+
+def test_source_root_is_identical_for_source_and_segment_configs():
+    source = Path('/project/runs/run/F/row/source')
+    for path in (source, source / 'segment30', source / 'segment50'):
+        assert teacher_anchor_plan.source_root({'output_root': str(path)}) == source

@@ -7,7 +7,7 @@ from experiments.pamf_repl_view_shuffle.plan import VIEWS
 from . import hybrid_contrast_plan as base
 from .plan import SEEDS
 
-RUN = '20261112-phase1-pamf-tri-teacher-anchor-m9-r01'
+RUN = '20261112-phase1-pamf-tri-teacher-anchor-m9-r02'
 MODES = ('agree', 'teacher', 'teacher_physical')
 
 
@@ -33,9 +33,14 @@ def teacher_source(project, seed):
     return source
 
 
+def source_root(c):
+    root = Path(c['output_root'])
+    return root.parent if root.name in ('segment30', 'segment50') else root
+
+
 def proxy(c, row):
     original = old_row(row)
-    root = Path(c['output_root'])
+    root = source_root(c)
     return dict(c, run_id=base.RUN, row_id=original['row_id'], algorithm_id='pamf_tri_hybrid_contrast_v1',
                 output_root=str(root.parents[3] / base.RUN / 'F' / original['row_id'] / 'source'))
 
@@ -46,7 +51,9 @@ def validate(c):
             or c['protocol_id'] != 'm1-natural' or c['algorithm_id'] != 'pamf_tri_teacher_anchor_v1'
             or c['teacher_anchor'] != dict(mode=row['arm'], threshold=.95, coefficient='original_joint')):
         raise ValueError('Unregistered source-only PL teacher anchor')
-    root = Path(c['output_root'])
+    root = source_root(c)
+    if root.parts[-5:] != ('runs', RUN, 'F', row['row_id'], 'source'):
+        raise ValueError('Dedicated teacher-anchor source root required')
     expected_teacher = teacher_source(root.parents[4], row['model_seed'])
     if Path(c['teacher_source']) != expected_teacher:
         raise ValueError('Teacher must be the same-setting, same-seed source-only PL')
@@ -72,7 +79,7 @@ def configuration(context, row, project, commit, *, run_id=RUN):
 
 def parent(c):
     row = validate(c)
-    root = Path(c['output_root'])
+    root = source_root(c)
     if root.parts[-5:] != ('runs', RUN, 'F', row['row_id'], 'source'):
         raise ValueError('Dedicated teacher-anchor output root required')
     return base.parent(proxy(c, row))

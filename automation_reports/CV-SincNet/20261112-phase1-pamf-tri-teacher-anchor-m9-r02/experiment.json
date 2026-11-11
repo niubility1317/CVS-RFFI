@@ -1,0 +1,40 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261112-phase1-pamf-tri-teacher-anchor-m9-r02",
+  "scope": "Three source-only semi-supervised teacher-anchor rules, seeds 2026092701/02/03, m1-natural one source receiver, complete three-view PAMF/reference response. Main split excluded. Existing target scores are exposed: this is development evaluation and does not supply independent confirmation.",
+  "motivation": "The source-only ordinary PL and physical fusion-plus-branch contrast models share the exact L/U/V sample roles and model seed but exhibit different cross-date behavior. Test whether a frozen natural-order PL source teacher can preserve its source-domain predictions during physical multibranch contrast while allowing the student to retain the fixed Tri permutation. Teacher distillation and physical consistency are established ideas; this combination is a research hypothesis, not a broad novelty or performance claim.",
+  "teacher": "Each seed uses the exact fixed-final E50 ordinary-PL model from the pre-existing same-setting/seed source-only baseline, with its natural signature order, original default head, matching source data roles and physical IDs. Verify full checkpoint trajectory, no target access, no U truth, same seed/source contract, and fixed final checkpoint. Teacher is eval/frozen, consumes only current source-U raw IQ, performs one additional no-gradient teacher forward per U batch and is not deployed. Student retains original Tri E20 and fixed shuffled order. This adds an already-trained E50 teacher and teacher compute; it is not equal-total-training-compute to PL or Tri.",
+  "candidates": [
+    {
+      "arm": "agree",
+      "mechanism": "Transfer the teacher's detached six-class probability distribution to the two existing ordinary U student logits only when teacher confidence is at least 0.95, student is already accepted, and teacher/student pseudo classes agree."
+    },
+    {
+      "arm": "teacher",
+      "mechanism": "Transfer the detached teacher distribution on ordinary U student passes whenever teacher confidence is at least 0.95, including cases where the original student rejected or disagreed."
+    },
+    {
+      "arm": "teacher_physical",
+      "mechanism": "Use the same teacher-confident raw U term as teacher, plus teacher-distribution transfer to the two existing physical student passes on the intersection of teacher-confident samples and the actual source-branch-certified As slots."
+    }
+  ],
+  "shared": "Use mean per-packet KL to detached teacher probabilities, averaged over all U slots; scale each included term by original Tri joint-contrast coefficient 0.05, U weight 6 and CE normalizer 1.25. No new student forward, no teacher training or EMA, and no target/U truth. Preserve ordinary pseudo-CE/KL masks, original fixed Tri graph, same-packet fusion-plus-five-branch physical contrast, source-day relation and the existing branch-specific U/L gradient guard. The teacher is not a guarantee of label correctness; teacher and student see correlated source data.",
+  "initialization": "Student uses exact same-setting and same-seed source-only original Tri E20, then own E10+E20 to fixed E50/11100; teacher is the separately recorded matching PL E50, never a student initialization.",
+  "controls": [
+    "matching ordinary PL teacher",
+    "matching original Tri",
+    "matching physical fusion-plus-branch contrast without teacher",
+    "matching previous packet, fusion and physical candidates"
+  ],
+  "evaluation": "All nine candidate predictions frozen before independent truth-last scoring. Clean and six practical scenes, DURA-LU primary, DURA-L/raw secondary; cross_date separately from combined cross_rx/cross_both, same physical IDs. Report every arm/seed/scene, TX/RX/day and paired corrections/regressions. No leo_weak, test-selected checkpoints or selective reruns.",
+  "success": "Aim for more than 2 pp above ordinary PL in clean and each practical DURA-LU scene and improvement over Tri, preserving individual seed, scene and subgroup regressions. No single exposed setting can establish all-settings success.",
+  "command": "python -m experiments.pamf_physics_tri.publish --teacher-anchor --repo REPO --output UNIQUE_LOCAL_ROOT --context EXISTING_CONTEXT --ssh-config N607_CONFIG",
+  "resources": "N607 ordinary account, immutable release/run, GPU 0–7, at most four observed/pending processes per GPU including other owners, conservative free-memory reservation; existing jobs retained.",
+  "stop_rule": "Any systemic technical failure stops new dispatch, preserving healthy workers and outputs. Nine genuine E20 no-query smoke checks must load the matching source-only frozen teacher and show active raw/physical teacher gradients as applicable.",
+  "expected_artifacts": [
+    "Nine source-contract E20 plus frozen-PL-teacher smoke checks",
+    "Nine fixed E50 models and teacher/physical counters",
+    "Nine frozen seven-scene predictions followed by independent matched three-seed and subgroup comparisons"
+  ],
+  "retry_reason": "r01 no-query smoke passed, but eight workers failed before training because teacher lookup inferred the project root from a segment output path. r02 normalizes source/segment roots, tests both paths, and executes the actual segment path in the real no-query smoke. The unstarted ninth row and all failed outputs remain preserved; no target prediction occurred."
+}
