@@ -50,6 +50,13 @@ predictions. r02 admits a GPU only when no external CUDA process or recognized
 pending experiment worker is present. This is an admission-time check and cannot
 prevent another owner subsequently starting work on the same GPU.
 
+Two r02 workers were temporarily paused when the other chat subsequently used
+their GPUs. The user then explicitly allowed sharing with up to four experiment
+processes per GPU; those two same workers were resumed after checking their
+identity and current process counts. The running r02 dispatcher keeps its more
+restrictive original admission configuration. Paused wall time must not be
+reported as pure training cost.
+
 - run_id：`20261111-phase1-pamf-tri-u-channels-m1-m12-r02`
 - group_id：`phase1-trisig-unlabeled-channel-consistency-m1`；类别：`comparison`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
