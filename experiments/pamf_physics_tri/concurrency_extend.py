@@ -1,4 +1,4 @@
-"""Add the staged confidence queue to the existing single GPU owner."""
+"""Add the staged Hybrid queue to the existing single GPU owner."""
 import argparse
 import os
 from pathlib import Path
@@ -10,16 +10,18 @@ from experiments.cric_dura_comparison.io import read
 from experiments.practical_full_2x2.cache import atomic
 from . import concurrency_takeover as scheduler
 
-OLD_RELEASE = scheduler.PROJECT / 'releases/20261113-pamf-concurrency-takeover-r01'
-OLD_SCRIPT = OLD_RELEASE / 'experiments/pamf_physics_tri/concurrency_takeover.py'
-CONFIDENCE_RUN = '20261113-phase1-pamf-confidence-only-m9-r01'
-CONFIDENCE_MODULE = 'experiments.pamf_physics_tri.confidence_runner'
+OLD_RELEASE = scheduler.PROJECT / 'releases/20261113-phase1-pamf-confidence-only-m9-r01-release'
+OLD_MODULE = 'experiments.pamf_physics_tri.concurrency_extend'
+NEW_RUN = '20261113-phase1-pamf-hybrid-confidence-m30-r01'
+NEW_MODULE = 'experiments.pamf_physics_tri.hybrid_confidence_runner'
+EXISTING = scheduler.RUNS + (('20261113-phase1-pamf-confidence-only-m9-r01',
+                              'experiments.pamf_physics_tri.confidence_runner', None),)
 
 
 def queues():
     result = []
     old_pids = set()
-    for run, module, _ in scheduler.RUNS:
+    for run, module, _ in EXISTING:
         root = scheduler.PROJECT / 'runs' / run
         state = read(root / 'pipeline_state.json')
         if state['status'] == 'ANALYZED':
@@ -34,15 +36,15 @@ def queues():
     pid = old_pids.pop() if old_pids else None
     if pid is not None:
         info = scheduler.process_info(pid)
-        expected = [result[0]['rt']['python'], '-u', str(OLD_SCRIPT)]
+        expected = [result[0]['rt']['python'], '-u', '-m', OLD_MODULE]
         if info is None or info['argv'] != expected or info['cwd'] != str(OLD_RELEASE):
             raise ValueError('Existing shared owner identity differs')
-    root = scheduler.PROJECT / 'runs' / CONFIDENCE_RUN
+    root = scheduler.PROJECT / 'runs' / NEW_RUN
     state = read(root / 'pipeline_state.json')
-    rt = read(scheduler.PROJECT / 'releases' / (CONFIDENCE_RUN + '-release') / 'runtime.json')
+    rt = read(scheduler.PROJECT / 'releases' / (NEW_RUN + '-release') / 'runtime.json')
     if state['status'] != 'STAGED' or any(item['status'] != 'QUEUED' for item in state['jobs'].values()):
-        raise ValueError('Confidence queue is not cleanly staged')
-    result.append(dict(run=CONFIDENCE_RUN, module=CONFIDENCE_MODULE, old_pid=None,
+        raise ValueError('Hybrid queue is not cleanly staged')
+    result.append(dict(run=NEW_RUN, module=NEW_MODULE, old_pid=None,
                        rt=rt, root=root, state=state, jobs=read(root / 'jobs.json')))
     return pid, result
 
