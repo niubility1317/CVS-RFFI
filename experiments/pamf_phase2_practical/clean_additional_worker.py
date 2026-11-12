@@ -9,7 +9,7 @@ import torch
 from . import external_additional as extra
 from .episodic_experiment import split_rows
 from .episodic_io import load_task
-from .external_execution import infer, seed_for, source_runtime
+from .external_execution import infer, logger, seed_for, source_runtime
 from .features import tensor
 from .io import activate, read, require, write
 
@@ -78,7 +78,10 @@ def run(rt,job):
             s=specs[k,n];task=get(s,'C');mask=task['support_y']>=6
             x=tensor(task['support_x'][mask],device)
             y=torch.tensor(task['support_y'][mask].tolist(),device=device,dtype=torch.long)
-            state=direct_issl(bundle,x,y,seed_for(job['seed'],job['capsule'],k,n,'C'))
+            emit,stream=logger(root/f'C-K{k}-N{n}-fit.jsonl',dict(profile=profile,stage='C',k=k,new_count=n,
+                               query_fit=False,truth_read=False))
+            try:state=direct_issl(bundle,x,y,seed_for(job['seed'],job['capsule'],k,n,'C'),logger=emit)
+            finally:stream.close()
             save(s,'C',task,state)
     require(all(torch.equal(before[k],v) for k,v in model.state_dict().items()),'A source anchor changed')
     write(root/'predictions.json',dict(capsule_id=manifest['capsule_id'],capsule=job['capsule'],

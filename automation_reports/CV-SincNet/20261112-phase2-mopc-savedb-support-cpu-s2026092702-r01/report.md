@@ -1,0 +1,5 @@
+# MoPC 保存 B 的 CPU 源／支持诊断
+
+状态：PLANNED_NOT_STARTED。拟比较 r15 失败任务 `protonet_cda-s2026092702-c0195` 的实际 r11 B-K10 状态和原 K10/N20 support，在 CPU 上执行原优化路径及显式梯度裁剪 1.0 的诊断变体。变体更改优化器更新，不称作者仓库原版。两次各自重新加载同一保存 B，不拟合新的 B；原始 seed、阶段预算、loss、guard 保持。只读源权重、源 L_s 和任务 support；不读取 query/truth，不生成预测、不评分、不重发正式任务。CPU 与原 GPU 数值内核和随机数不同，未复现也不证明 GPU 故障已修复。
+
+代码与配置以本报告所属提交为准；固定 release `releases/20261112-phase2-clean-preparation-r02` 中的诊断候选，CPU 单进程、1 线程，源 `releases/20261109-phase2-bsource-savedb-mopc-m4-r15-release/runtime.json` 和该 run `jobs/00002.json`，标准输出作为本机不可覆盖诊断证据。首个非有限按原 guard 停止，保留已有输出；两个变体独立记录完成与否和更新次数。所有源状态、旧 partial、claim 和评分屏障不变。
