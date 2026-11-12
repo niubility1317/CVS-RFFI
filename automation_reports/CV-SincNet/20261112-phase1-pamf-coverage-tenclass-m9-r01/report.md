@@ -3,7 +3,7 @@
 - run_id：`20261112-phase1-pamf-coverage-tenclass-m9-r01`
 - group_id：`phase1-pamf-branch-prototype-tuning`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（以远端状态和 events.jsonl 为准）
 
 ## 目的与对照
 
@@ -19,8 +19,7 @@
 
 ## 执行与存储
 
-命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
-实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
+2026-11-12：N607 代码 commit `f76f48321de24ceafbc295876de68dd58bc4284c`，发布包校验、远端编译、真实 checkpoint 无查询 smoke 通过。控制器 PID 1881305；已核实 6 条训练在 GPU 0、1、3、4、5、7 运行，与前一任务安全共享，各卡总进程数不超过 2。其余 3 行等待空位，其他 owner 保持运行。逐行训练后自动执行七景预测及独立评分。
 
 ## 结果与覆盖
 
