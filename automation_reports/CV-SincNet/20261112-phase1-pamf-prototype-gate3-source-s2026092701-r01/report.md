@@ -3,7 +3,7 @@
 - run_id：`20261112-phase1-pamf-prototype-gate3-source-s2026092701-r01`
 - group_id：`phase1-pamf-branch-prototype-tuning`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：QUEUED（实际状态按 events.jsonl 及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按 events.jsonl 及独立证据更新）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-2026-11-12：N607 发布和远端编译完成，控制器已独立读回并等待匹配的四票源域基准完成。当前没有 GPU worker、训练或评分结果；基准完成后才会执行真实 checkpoint 无查询 smoke 与候选训练。执行代码 commit `e2ef742496865659103f05c90c98602d4479542d`。
+匹配的四票源域基准已完成。N607 真实 checkpoint 无查询 smoke 通过，候选已从相同源域开发划分、相同种子的 E20 在 GPU 0 续训；独立读回进程和运行配置，尚无门槛对照评分。执行代码 commit `e2ef742496865659103f05c90c98602d4479542d`。
 
 按预登记 artifact 逐项记录路径和缺项；保留每 row 与 RX/day/TX/scene/K/seed 的对应关系。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
