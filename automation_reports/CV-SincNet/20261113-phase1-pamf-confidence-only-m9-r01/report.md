@@ -3,7 +3,7 @@
 - run_id：`20261113-phase1-pamf-confidence-only-m9-r01`
 - group_id：`phase1-pamf-branch-prototype-tuning`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（以远端状态和 events.jsonl 为准）
 
 ## 目的与对照
 
@@ -17,8 +17,9 @@
 
 ## 执行与存储
 
-命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
-实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
+2026-11-13：执行代码 commit `0f0cb6dde56f203e96e415d1692b681e3eb8c4a9`；发布包校验及远端编译通过。统一队列控制器 PID 1959602 接管既有两个本任务队列与本 run，保持已有训练进程、科学代码和输出；每卡总进程最多 6 个，GPU 7 最多 4 个，计入其他用户并预留正在初始化的显存。
+
+三种设置的真实 checkpoint 无目标查询 smoke 已通过。所抽取批次中，通过 0.95 的样本分别为 159、235、242 条，全部进入原型目标，没有使用分支投票；这是启动验证样本而非最终覆盖率。首批两个 10 类训练在 GPU 0 和 7 已核实启动，其余按资源空位排队。训练后自动完成七景预测及独立评分。
 
 ## 结果与覆盖
 
