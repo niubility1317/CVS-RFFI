@@ -1,1 +1,2 @@
 {"at": "2026-11-12T18:44:33+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-12T18:46:53+00:00", "status": "QUEUED", "note": "Shared owner PID 2023062 adopted previous healthy workers. Real-checkpoint smoke queued for sufficient GPU memory; fixed 24 training rows depend on smoke, followed automatically by seven-view prediction and truth-last scoring.", "evidence": ["/home/szu2070436088/2510044040/CV-SincNet/runs/20261113-phase1-pamf-hybrid-confidence-weight-m24-r01/pipeline_state.json"], "row_id": null}
