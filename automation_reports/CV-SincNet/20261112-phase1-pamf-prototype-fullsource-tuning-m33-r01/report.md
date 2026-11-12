@@ -3,7 +3,7 @@
 - run_id：`20261112-phase1-pamf-prototype-fullsource-tuning-m33-r01`
 - group_id：`phase1-pamf-branch-prototype-tuning`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（以远端状态和 events.jsonl 为准）
 
 ## 目的与对照
 
@@ -17,7 +17,9 @@
 ## 执行与存储
 
 命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
-实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
+2026-11-12：N607 发布，代码 commit `17c363ee19adb2696d6516c96dcc0db059c1c564`，压缩包传输校验及远端编译通过。真实 checkpoint 无目标查询 smoke 通过；控制器 PID 1843699，已核实 8 个本 run 训练子进程及 GPU 0–7 资源。其他 owner 保持运行。每行完成训练后自动进入七景预测，预测完成后独立 truth-last 评分。
+
+不设源域开发集；三种设置各自沿用原始 L/U/V 角色和同设置同种子 Tri E20 权重，固定新增 33 行。普通 PL 和既有原型对照复用，不重训。测试集此前已曝光，此矩阵为探索性比较，结果不反馈到队列或参数选择。
 
 ## 结果与覆盖
 

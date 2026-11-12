@@ -3,7 +3,7 @@
 - run_id：`20261112-phase1-pamf-prototype-m6-source-s2026092701-r01`
 - group_id：`phase1-pamf-branch-prototype-tuning`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按 events.jsonl 及独立证据更新）
+- 当前登记状态：STOPPED（保留既有产物）
 
 ## 目的与对照
 
@@ -20,6 +20,8 @@
 实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
 
 ## 结果与覆盖
+
+2026-11-12：用户要求取消源域留出并保持原始数据配置后，精确停止了本试验所属控制器及子进程；独立进程检查确认停止，其他 owner 未受影响。该未完成试验没有正式测试结果，已有产物保留。后续改用完整源数据的独立 run。
 
 2026-11-12：N607 发布及远端编译完成，真实 checkpoint 无查询 smoke 通过。五个温度候选分别在 GPU 2、6、7、1、3 训练，已独立读回进程、命令与显卡；GPU 2、6 与其他用户进程共享，未停止或修改这些进程。执行代码 commit `705740f448c42080df7996ae02fbb0cfb66040d3`。本试验仅进行源域开发，尚无目标预测或性能结果。
 
