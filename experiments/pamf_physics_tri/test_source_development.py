@@ -25,20 +25,21 @@ def test_split_rejects_duplicate_ids_and_classes_without_two_samples():
         split_labeled_ids(np.array(['a', 'b', 'c']), np.array([0, 0, 1]), seed=1)
 
 
+class Labeled(torch.utils.data.Dataset):
+    role = 'L_s'
+    iq_binding = {'role': 'L_s'}
+    metadata = {'ids': np.array([f'id-{i}' for i in range(300)]),
+                'y': np.repeat(np.arange(3), 100)}
+    x = torch.arange(300).reshape(300, 1)
+
+    def __len__(self):
+        return len(self.x)
+
+    def __getitem__(self, i):
+        return self.x[i], self.metadata['y'][i]
+
+
 def test_training_loader_cannot_access_development_records():
-    class Labeled(torch.utils.data.Dataset):
-        role = 'L_s'
-        iq_binding = {'role': 'L_s'}
-        metadata = {'ids': np.array([f'id-{i}' for i in range(300)]),
-                    'y': np.repeat(np.arange(3), 100)}
-        x = torch.arange(300).reshape(300, 1)
-
-        def __len__(self):
-            return len(self.x)
-
-        def __getitem__(self, i):
-            return self.x[i], self.metadata['y'][i]
-
     dataset = Labeled()
     train_ids, dev_ids = split_labeled_ids(dataset.metadata['ids'], dataset.metadata['y'], seed=20261112)
     original_u, original_v = object(), object()
@@ -76,3 +77,51 @@ def test_installed_scope_enforces_matching_parent_before_loading(tmp_path):
         with installed(c):
             pass
     assert f_train.context is original
+
+
+def test_installed_scope_replaces_actual_training_loader(monkeypatch):
+    from experiments.cric_dura_comparison import f_train
+    dataset = Labeled()
+    train_ids, dev_ids = split_labeled_ids(dataset.metadata['ids'], dataset.metadata['y'], seed=20261112)
+    original = lambda cfg: {'train_loader': FixedEpochLoader(dataset, 128, 7), 'split_info': {}}
+    monkeypatch.setattr(f_train, 'context', original)
+    cfg = {'model_seed': 7, 'source_development': {'train_ids': train_ids, 'dev_ids': dev_ids}}
+    with installed(cfg):
+        actual = f_train.context(cfg)['train_loader'].dataset
+        assert set(actual.metadata['ids']) == set(train_ids)
+        assert not set(actual.metadata['ids']) & set(dev_ids)
+    assert f_train.context is original
+
+
+def test_ssl_scope_keeps_partition_after_native_loader_override(monkeypatch):
+    from contextlib import contextmanager
+    from experiments.cric_dura_comparison import f_data, f_train
+    from experiments.pamf_paper_completion import model
+    from experiments.pamf_physics_tri import source_tuning
+    from experiments.pamf_repl_completion.objectives import loader_scope
+
+    dataset = Labeled()
+    train_ids, dev_ids = split_labeled_ids(dataset.metadata['ids'], dataset.metadata['y'], seed=20261112)
+    raw = lambda cfg: {'train_loader': FixedEpochLoader(dataset, 128, 7), 'split_info': {}}
+    monkeypatch.setattr(f_data, 'context', raw)
+    monkeypatch.setattr(f_train, 'context', raw)
+
+    @contextmanager
+    def paper(cfg, holder, **kwargs):
+        with loader_scope():
+            yield
+
+    @contextmanager
+    def practical(cfg, holder, *, base_scope, objective_factory):
+        with base_scope(cfg, holder, True, objective_factory):
+            yield
+
+    monkeypatch.setattr(model, 'installed', paper)
+    monkeypatch.setattr(source_tuning, 'practical_scope', practical)
+    cfg = {'model_seed': 7, 'U_use': True,
+           'source_development': {'train_ids': train_ids, 'dev_ids': dev_ids}}
+    with source_tuning.ssl_scope(cfg, {}):
+        actual = f_train.context(cfg)['train_loader'].dataset
+        assert set(actual.metadata['ids']) == set(train_ids)
+        assert not set(actual.metadata['ids']) & set(dev_ids)
+    assert f_train.context is raw
