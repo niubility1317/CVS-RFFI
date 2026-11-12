@@ -3,7 +3,7 @@
 - run_id：`20261113-phase1-pamf-hybrid-confidence-weight-m24-r01`
 - group_id：`phase1-pamf-branch-prototype-tuning`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：QUEUED（以远端状态和 events.jsonl 为准）
+- 当前登记状态：RUNNING（以远端状态和 events.jsonl 为准）
 
 ## 目的与对照
 
@@ -20,7 +20,7 @@
 
 ## 执行与存储
 
-2026-11-13：执行代码 commit `f8c13f1dee36ec28df5ea0ea0361ea6eb629dd63`；发布包校验和远端编译通过。统一调度器 PID 2023062 已接管此前健康任务并加入本队列，原训练进程和输出保留。GPU 7 总进程上限 4，其余卡上限 6，同时检查显存并预留初始化空间。当前真实 checkpoint smoke 等待显存；24 行训练在 smoke 通过后自动启动，每行随后预测七景并独立评分。
+2026-11-13：执行代码 commit `f8c13f1dee36ec28df5ea0ea0361ea6eb629dd63`；发布包校验和远端编译通过。统一调度器 PID 2023062 已接管此前健康任务并加入本队列，原训练进程和输出保留。GPU 7 总进程上限 4，其余卡上限 6，同时检查显存并预留初始化空间。四种设置、两档权重的真实 checkpoint 无查询 smoke 均通过，确认全部置信通过样本参与且未使用分支投票或原型。首批训练已核实启动；24 行逐行续训后自动预测七景并独立评分。
 
 ## 结果与覆盖
 
