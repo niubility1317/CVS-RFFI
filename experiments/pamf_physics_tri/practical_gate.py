@@ -123,16 +123,20 @@ class PracticalGate(GuardedReceiverExtrapolation):
         state = super().state_dict()
         recipe = self.c['practical_gate']
         mode = recipe.get('mode', 'branch' if recipe.get('branch_gate') else 'all')
+        all_confident = recipe.get('all_confident', False)
+        offered_limit = self.seen if all_confident else self.seen // 2
         if (self.labeled is not None or self.as_calls != self.calls
-                or not 0 <= self.as_certified <= self.as_offered <= self.seen // 2
+                or not 0 <= self.as_certified <= self.as_offered <= offered_limit
                 or not 0 <= self.as_used <= self.as_offered
+                or (all_confident and self.as_used != self.as_offered)
                 or (mode == 'all' and recipe.get('schedule', 'constant') == 'constant' and self.as_used != self.as_offered)
                 or (mode != 'all' and self.as_used != self.as_active_certified)):
             raise ValueError('Simulated U views must match the registered source gate')
         # Native counters assume all physical slots were raw when hard_pl_no_uas is set.
-        state['raw_As_seen'] -= self.as_used
-        state['physical_seen'] += self.as_used
-        state['physical_student_views'] += 2 * self.as_used
+        physical_used = self.as_physical_used if all_confident else self.as_used
+        state['raw_As_seen'] -= physical_used
+        state['physical_seen'] += physical_used
+        state['physical_student_views'] += 2 * physical_used
         state['U_practical_gate'] = dict(calls=self.as_calls, offered=self.as_offered,
             certified=self.as_certified, active_certified=self.as_active_certified, used=self.as_used,
             strength_weighted_uses=self.strength_weighted_uses, recipe=recipe)

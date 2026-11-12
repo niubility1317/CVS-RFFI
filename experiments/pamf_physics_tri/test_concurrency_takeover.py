@@ -11,3 +11,5 @@ def test_limits_count_other_owners_and_gpu_seven_cap():
 def test_initializing_worker_reserves_memory_and_counts_once():
     assert not may_launch({1}, {1, 2}, {2}, 10000, 6000, 6)
     assert may_launch({1}, {1, 2}, {2}, 12000, 6000, 6)
+    assert not may_launch({1, 2}, {1, 2}, {2}, 10000, 6000, 6, {2})
+    assert may_launch({1, 2}, {1, 2}, {2}, 12000, 6000, 6, {2})

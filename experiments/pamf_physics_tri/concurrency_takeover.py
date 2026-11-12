@@ -17,9 +17,10 @@ RUNS = (
 LIMITS = {gpu: (4 if gpu == 7 else 6) for gpu in range(8)}
 
 
-def may_launch(cuda, pending, own, free_mib, admission_mib, limit):
+def may_launch(cuda, pending, own, free_mib, admission_mib, limit, young_own=frozenset()):
     known = cuda | pending | own
-    initializing = len((pending | own) - cuda)
+    # CUDA becomes visible before the worker reaches its model-memory peak.
+    initializing = len(((pending | own) - cuda) | young_own)
     return len(known) < limit and free_mib >= admission_mib * (1 + initializing)
 
 
@@ -122,6 +123,7 @@ def run(queues, read, atomic):
                           prior_controller_pid=q['old_pid'], resource_limits=LIMITS,
                           scheduler='shared takeover; original worker code and output roots unchanged')
         atomic(q['root'] / 'pipeline_state.json', q['state'])
+    turn = 0
     while queues:
         for q in list(queues):
             state, active = q['state'], q['active']
@@ -137,6 +139,9 @@ def run(queues, read, atomic):
                 ok = (exit_code in (None, 0)) and done(q['by'][key])
                 state['jobs'][key] = dict(item, status='COMPLETE' if ok else 'FAILED',
                                           ended_at=time.time(), exit_code=exit_code)
+                if ok and key == 'smoke' and q['module'].endswith('confidence_runner'):
+                    peak = max(entry['peak_allocated_bytes'] for entry in read(q['root'] / 'smoke.json')['checks'])
+                    state['admission_mib'] = max(6000, int(peak / 1024**2) + 2000)
                 if not ok:
                     q['failed'].append(key)
                 del active[key]
@@ -146,7 +151,9 @@ def run(queues, read, atomic):
                         for key, (process, item) in q['active'].items()]
         owned_pids = {item['pid'] for _, _, _, item in active_items}
         available = [(q, job) for q in queues if not q['failed'] for job in q['jobs']
-                     if q['state']['jobs'][job['id']]['status'] == 'QUEUED' and ready(job)]
+                     if q['state']['jobs'][job['id']]['status'] == 'QUEUED' and ready(job)
+                     and (not q['module'].endswith('confidence_runner') or job['kind'] != 'train'
+                          or q['state']['jobs']['smoke']['status'] == 'COMPLETE')]
         scoring = [(q, j) for q, j in available if j['kind'] in ('score', 'weak_score')]
         if scoring and not any(item['gpu'] is None for _, _, _, item in active_items) and not foreign_CPU_score(owned_pids):
             q, job = scoring[0]
@@ -160,11 +167,24 @@ def run(queues, read, atomic):
                 candidates = [(q, j) for q, j in available if j['kind'] not in ('score', 'weak_score')]
                 if not candidates:
                     break
-                q, job = next(((q, j) for q, j in candidates if j['kind'] == 'predict'), candidates[0])
+                urgent = next(((q, j) for q, j in candidates if j['kind'] == 'predict'), None)
+                if urgent is None:
+                    urgent = next(((q, j) for q, j in candidates if j['kind'] == 'smoke'), None)
+                if urgent is None:
+                    for offset in range(len(queues)):
+                        index = (turn + offset) % len(queues)
+                        selected = next(((q, j) for q, j in candidates if q is queues[index]), None)
+                        if selected is not None:
+                            urgent = selected
+                            turn = (index + 1) % len(queues)
+                            break
+                q, job = urgent
                 cuda, free = capacity(gpu)
                 pending = {pid for pid, card in processes().items() if card == gpu}
                 own = {item['pid'] for other in queues for _, item in other['active'].values() if item['gpu'] == gpu}
-                if not may_launch(cuda, pending, own, free, q['state']['admission_mib'], LIMITS[gpu]):
+                young = {item['pid'] for other in queues for _, item in other['active'].values()
+                         if item['gpu'] == gpu and time.time() - item['started_at'] < 90}
+                if not may_launch(cuda, pending, own, free, q['state']['admission_mib'], LIMITS[gpu], young):
                     break
                 process, item = launch(q['rt'], job, gpu, module=q['module'])
                 q['active'][job['id']] = (process, item)
@@ -186,6 +206,8 @@ def run(queues, read, atomic):
                 atomic(q['root'] / 'pipeline_state.json', state)
                 if q['module'].endswith('target_tuning_runner'):
                     from experiments.pamf_physics_tri.target_tuning_report import analyze
+                elif q['module'].endswith('confidence_runner'):
+                    from experiments.pamf_physics_tri.confidence_runner import analyze
                 else:
                     from experiments.pamf_physics_tri.coverage_runner import analyze
                 analyze(q['rt'])
