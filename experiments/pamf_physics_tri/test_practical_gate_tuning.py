@@ -68,3 +68,14 @@ def test_gate_comparison_uses_matched_source_results(tmp_path):
     result = json.loads((root / 'analysis' / 'complete.json').read_text())
     assert result['source_pilot_pass'] and result['source_score_improvement'] == pytest.approx(.05)
     assert result['target_reads'] == 0
+
+
+def test_prototype_weight_scales_only_the_prototype_term():
+    import torch
+    from experiments.pamf_physics_tri.source_prototype import weighted_prototype
+    component = torch.tensor(2., requires_grad=True)
+    result = weighted_prototype({'branch': component}, {'weight': .5})
+    result.backward()
+    assert result.item() == 1.
+    assert component.grad.item() == .5
+    assert weighted_prototype({'branch': component.detach()}, {}).item() == 2.

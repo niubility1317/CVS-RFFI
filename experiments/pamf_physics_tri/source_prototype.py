@@ -11,6 +11,10 @@ from .hybrid_contrast import HybridContrast
 from .practical_gate import installed as practical_scope
 
 
+def weighted_prototype(components, recipe):
+    return recipe.get('weight', 1.) * sum(components.values())
+
+
 def prototype_loss(query, bank, labels, bank_days, query_days, pseudo, selected, classes, temperature=.2):
     """Contrast U against true-L class centroids excluding U's acquisition day."""
     if (query.ndim != 2 or bank.ndim != 2 or query.shape[1] != bank.shape[1]
@@ -108,7 +112,7 @@ class SourcePrototype(HybridContrast):
         self.prototype_calls += 1
         self.prototype_used += 2 * counts[0]
         self.metrics.update({f'HPL_source_prototype_{key}': value.detach() for key, value in components.items()})
-        return original + sum(components.values())
+        return original + weighted_prototype(components, self.c['source_prototype'])
 
     def loss(self, student, device):
         try:

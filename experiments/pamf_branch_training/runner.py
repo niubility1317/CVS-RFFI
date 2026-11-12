@@ -58,6 +58,11 @@ def admits(gpu, active, required_mib):
     return free >= required_mib * (1 + pending)
 
 
+def choose_gpu_job(available, prioritize_prediction=False):
+    preferred = 'predict' if prioritize_prediction else 'train'
+    return next((job for job in available if job['kind'] == preferred), available[0])
+
+
 def analyze(rt):
     import csv
     root = Path(rt['run_root'])
@@ -152,8 +157,7 @@ def dispatch(rt):
             available = [j for j in candidates if j['kind'] not in ('score', 'weak_score')]
             if not available:
                 continue
-            # Train the four fixed rows first; weak baseline jobs use remaining capacity.
-            job = next((j for j in available if j['kind'] == 'train'), available[0])
+            job = choose_gpu_job(available, rt.get('prioritize_prediction', False))
             process, item = launch(rt, job, gpu)
             active[job['id']] = (process, item)
             state['jobs'][job['id']] = item
