@@ -176,15 +176,17 @@ def _bytes(model: nn.Module, extra: Any = None) -> int:
 
 def _record(trace: list[dict[str, Any]], model: nn.Module, terms: Mapping[str, Any],
             callback: Logger | None, start: float, **fields: Any) -> None:
-    gradients = [p.grad.detach().norm().square() for p in model.parameters() if p.grad is not None]
+    # Accumulate the observational norm in FP64. Squaring finite FP32
+    # gradients in FP32 can overflow and falsely trip the numerical guard.
+    gradients = [p.grad.detach().double().norm() for p in model.parameters() if p.grad is not None]
     row = {**fields, **{key: float(value.detach()) if isinstance(value, torch.Tensor)
                        else value for key, value in terms.items()},
            "gradient_norm": float(terms["gradient_norm"]) if "gradient_norm" in terms else
-                            (float(torch.stack(gradients).sum().sqrt()) if gradients else 0.0),
+                            (float(torch.stack(gradients).norm()) if gradients else 0.0),
            "elapsed_seconds": time.perf_counter() - start,
            "source_validation": None, "source_validation_reason": "Phase2 does not select on validation"}
     nonfinite = [key for key, value in row.items()
-                 if isinstance(value, float) and not torch.isfinite(torch.tensor(value))]
+                 if isinstance(value, float) and not math.isfinite(value)]
     if nonfinite:
         context = {key: fields[key] for key in ("phase", "method", "stage", "epoch", "iteration")
                    if key in fields}
@@ -193,8 +195,7 @@ def _record(trace: list[dict[str, Any]], model: nn.Module, terms: Mapping[str, A
                                if param.grad is not None]
             bad = [name for name, value in named_gradients if not torch.isfinite(value).all()]
             context["nonfinite_gradient_tensors"] = bad
-            # Failure-only observation: preserve the original FP32 guard and
-            # training trajectory while distinguishing aggregate overflow.
+            # Keep diagnostics for genuinely nonfinite gradients or terms.
             if not bad and named_gradients:
                 context["gradient_norm_float64"] = float(torch.stack(
                     [value.double().norm() for _, value in named_gradients]).norm())

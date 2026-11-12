@@ -42,13 +42,13 @@ def fit_C(rt,bundle,x,y,new_ids,seed,logger):
         anchor=registration_anchor(bundle)
         cfg=dict(seed=seed,old_adaptation_epochs=0,mopc_epochs=20,mopc_stage_size=5,
             mopc_batch_size=16,mopc_lr=.01,mopc_momentum=.9,mopc_weight_decay=.0002,
-            mopc_noise_std=.05,mopc_alpha=.97,mopc_beta=1.,mopc_lambda_max=1.,mopc_semantics='paper')
+            mopc_noise_std=.05,mopc_alpha=.97,mopc_beta=1.,mopc_lambda_max=1.,mopc_semantics='public_code')
         state=cil.register_new_classes(anchor,x,y,new_ids,config=cfg,logger=logger)
         state.protocol_metadata.update(C_initialization='A_no_B',C_inherits_B_state=False,B_executed=False,
             source_base_metadata_fixed_before_B=True,actual_target_old_labels=0,actual_target_new_labels=len(y))
         state.resource.update(C_initialization='A_no_B',C_inherits_B=False,actual_target_old_labels=0,
             actual_target_new_labels=len(y),source_prototype_count=len(anchor.prototypes),
-            C_epochs_per_session=20,C_new_classes_per_session=5,mopc_semantics='paper')
+            C_epochs_per_session=20,C_new_classes_per_session=5,mopc_semantics='public_code')
         return dict(model=state.model,score_fn=lambda model,iq:state.score(iq),classes=state.classes,
                     resources=state.resource,native_state=state,profile=profile)
     if method=='orthogonal':
@@ -62,12 +62,38 @@ def fit_C(rt,bundle,x,y,new_ids,seed,logger):
         model=copy.deepcopy(bundle['model']).eval().requires_grad_(False)
         old=bundle['native_state']
         with torch.no_grad():z=embedding(model,method,x).detach().cpu()
-        gallery=torch.cat((old['source_enrollment_features'],z))
-        labels=torch.cat((old['source_enrollment_y'],y.detach().cpu()))
-        state=extra._metric_state(dict(bundle,model=model),gallery,labels)
+        old_z=old['source_enrollment_features'].detach().cpu()
+        old_y=old['source_enrollment_y'].detach().cpu()
+        new_y=y.detach().cpu()
+        ids=tuple(int(i) for i in new_ids)
+        if not ids or tuple(torch.unique(new_y,sorted=True).tolist())!=ids:
+            raise ValueError('new support labels must match new IDs')
+        counts=[int((new_y==i).sum()) for i in ids]
+        if not counts[0] or any(n!=counts[0] for n in counts):
+            raise ValueError('new support must have equal samples per class')
+        old_ids=tuple(int(i) for i in bundle['classes'])
+        if set(old_ids).intersection(ids) or tuple(torch.unique(old_y,sorted=True).tolist())!=old_ids:
+            raise ValueError('source gallery classes must match the old classes')
+        generator=torch.Generator().manual_seed(seed)
+        selected=[]
+        for class_id in old_ids:
+            indexes=torch.where(old_y==class_id)[0]
+            if len(indexes)<counts[0]:
+                raise ValueError('source gallery has fewer examples than new support')
+            selected.append(indexes[torch.randperm(len(indexes),generator=generator)[:counts[0]]])
+        selected=torch.cat(selected)
+        gallery=torch.cat((old_z[selected],z))
+        labels=torch.cat((old_y[selected],new_y))
+        # At most 2K-1 neighbors lets a K-sample class win a strict majority;
+        # K=1 therefore does not degenerate into a many-class tie.
+        knn_k=min(15,2*counts[0]-1)
+        state=extra._metric_state(dict(bundle,model=model),gallery,labels,knn_k=knn_k)
         state['resources'].update(actual_target_old_labels=0,actual_target_new_labels=len(y),
-            source_gallery_count=len(old['source_enrollment_y']),optimizer_steps=0,
-            C_initialization='A_source_gallery_no_B')
+            source_gallery_count=len(selected),source_gallery_available=len(old_y),
+            source_samples_per_class=counts[0],
+            gallery_balance='seeded_equal_per_class_source_subsample_v1',
+            knn_rule='min_15_2K_minus_1',optimizer_steps=0,
+            C_initialization='A_balanced_source_gallery_no_B')
         return state
     if method=='issl_author_behavior':
         extra._seed(seed);model=copy.deepcopy(bundle['model']).requires_grad_(True)

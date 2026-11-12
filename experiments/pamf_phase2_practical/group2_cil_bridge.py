@@ -160,6 +160,7 @@ def register(anchor: RegistrationState, new_x: torch.Tensor, new_y: torch.Tensor
         raise ValueError('new support K must match old support K')
     cfg = RegistrationConfig(seed=seed, old_adaptation_epochs=0,
         mopc_epochs=20 if epochs is None else epochs,
+        mopc_semantics='public_code',
         orthogonal_epochs=50 if epochs is None else epochs)
     device = new_x.device
     devices = [device.index if device.index is not None else torch.cuda.current_device()] if device.type == 'cuda' else []

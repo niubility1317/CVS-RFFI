@@ -617,9 +617,12 @@ def _state(bundle,model,support_x,support_y,**resources):
     return result
 
 
-def _metric_state(state,features,labels,source=False):
+def _metric_state(state,features,labels,source=False,knn_k=None):
     p=state['profile'];classes=tuple(sorted(set(labels.cpu().tolist())))
     f=features.detach().cpu().clone();y=labels.detach().cpu().clone()
+    if knn_k is not None and (p!='lora_triplet_knn' or not isinstance(knn_k,int) or knn_k<1):
+        raise ValueError('knn_k must be positive for LoRa')
+    effective_k=min(15 if knn_k is None else knn_k,len(f))
     n=dict(state.get('native_state',{}),enrollment_features=f,enrollment_y=y)
     if p=='tweak_m1':
         centroids=torch.stack([f[y==c].mean(0) for c in classes])
@@ -648,13 +651,13 @@ def _metric_state(state,features,labels,source=False):
             return weights/weights.sum(1,keepdim=True).clamp_min(1e-12)
     else:
         def score(model,x):
-            z=native_features(model,x);distance=torch.cdist(z,f.to(x.device));k=min(15,len(f))
-            # Uniform 15-neighbor native LoRa vote; class ties choose lowest class.
+            z=native_features(model,x);distance=torch.cdist(z,f.to(x.device));k=effective_k
+            # Uniform native LoRa vote; class ties choose lowest class.
             ix=distance.argsort(dim=1,stable=True)[:,:k];neighbors=y.to(x.device)[ix]
             return torch.stack([(neighbors==c).sum(1).to(z.dtype) for c in classes],1)/k
     result=dict(state,score_fn=score,classes=classes,native_state=n)
     result['resources']=dict(state['resources'],enrollment_count=len(y),source_enrollment=source,
-        knn_k=min(15,len(y)) if p=='lora_triplet_knn' else None,query_fit=False)
+        knn_k=effective_k if p=='lora_triplet_knn' else None,query_fit=False)
     return result
 
 

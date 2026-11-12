@@ -88,6 +88,12 @@ def test_frozen_source_checkpoint_exports_only_L_prototypes_and_roundtrips(tmp_p
     torch.testing.assert_close(bundle['base_metadata']['old_prototypes'], expected, rtol=0, atol=0)
     assert bundle['score_fn'](bundle['model'], datasets['L_s'].x[:1]).shape == (1, 6)
     assert roles == ['L_s', 'U_s', 'V']
+    # Older A checkpoints remain usable because their C setting was not used
+    # for A training; provenance must still report the actual saved setting.
+    payload['recipe']['C_semantics'] = 'paper'
+    torch.save(payload, output / 'source.pt')
+    historical = source.load_source(config, 'mopc_hr', 42, 'cpu')
+    assert historical['provenance']['recipe']['C_semantics'] == 'paper'
     # A former generic payload has no author-network identity and cannot be reused.
     payload['recipe']['architecture'].pop('architecture')
     torch.save(payload, output / 'source.pt')
@@ -124,7 +130,7 @@ def test_direct_C_consumes_frozen_A_prototypes_and_native_five_class_sessions(mo
                           tuple(range(6, 12)), 51, traces.append)
     assert observed['old_adaptation_epochs'] == 0
     assert observed['mopc_epochs'] == 20 and observed['mopc_stage_size'] == 5
-    assert observed['mopc_semantics'] == 'paper' and observed['mopc_lr'] == .01
+    assert observed['mopc_semantics'] == 'public_code' and observed['mopc_lr'] == .01
     assert [row['registered_count'] for row in traces] == [11, 12]
     assert result['classes'] == tuple(range(12))
     assert result['model'].fc.in_features == 256 and result['model'].fc.out_features == 12

@@ -36,6 +36,12 @@ def logits(model,method,x):
     return extra.native_logits(model,x) if method in EXTRA else nets.classifier_logits(model,method,x)
 
 
+def pseudo_label_scores(method, scores):
+    # Orthogonal's cosine scores are bounded; the unscaled six-way softmax
+    # cannot attain the prescribed confidence threshold, even in principle.
+    return scores / .1 if method == 'orthogonal' else scores
+
+
 def source_data(c,role):
     from experiments.cric_dura_comparison.f_data import SourceDataset
     data=SourceDataset(c['source_cache'],role,read(c['source_contract']))
@@ -61,13 +67,16 @@ def recipe(profile):
         source_fc_hz=2462e6,source_fs_hz=25e6,
         metric_temperature=.1,no_added_classifier=True,EMA=False,early_stopping=False,selection='fixed_final_epoch',
         native_supervised_objective_retained=True,target_contact=False,U_TX_truth_read=False)
+    if r['method']=='orthogonal':
+        result.update(schema='group1_source_orthogonal_tempered_PL_v2',
+            PL_score='cosine_logits_divided_by_0.1_for_confidence_and_loss')
     if r['method']=='mopc_hr':
         from .mopc_author import architecture_metadata
         result.update(architecture=architecture_metadata(),
             native_supervised_objective='source_TX_CE_native_linear_fc',
             source_metadata='frozen_A_clean_L_s_old6_prototypes_only',
             source_optimizer='Adam',source_learning_rate=.001,L_batch=128,U_batch=256,
-            C_initialization='A_no_B',C_semantics='paper',C_new_classes_per_session=5,
+            C_initialization='A_no_B',C_semantics='public_code',C_new_classes_per_session=5,
             C_epochs_per_session=20,C_optimizer='SGD',C_learning_rate=.01)
     return result
 
@@ -213,7 +222,7 @@ def _train_native(c,profile,seed,out,device):
                                 zp=embedding(model,method,x[ix].to(device));cy=y[ix].to(device)
                                 cp=torch.stack([zp[cy==i][:5].mean(0) for i in range(6)])
                                 prob=(-torch.cdist(embedding(model,method,ux),cp).square()).softmax(1)
-                            else:prob=logits(model,method,ux).softmax(1)
+                            else:prob=pseudo_label_scores(method,logits(model,method,ux)).softmax(1)
                             conf,pseudo=prob.max(1)
                         model.train();mask=conf>=.95;seen+=len(ux);accepted+=int(mask.sum())
                         accepted_hist+=torch.bincount(pseudo[mask].cpu(),minlength=6)
@@ -227,7 +236,7 @@ def _train_native(c,profile,seed,out,device):
                         elif method=='protonet':
                             zu=embedding(model,method,ux)
                             pl=masked_ce(-torch.cdist(zu,cp.detach()).square(),pseudo,conf)
-                        else:pl=masked_ce(logits(model,method,ux),pseudo,conf)
+                        else:pl=masked_ce(pseudo_label_scores(method,logits(model,method,ux)),pseudo,conf)
                         value=value+pl
                     if not bool(torch.isfinite(value)):raise FloatingPointError('Nonfinite native Group1 source loss')
                     value.backward()
@@ -416,7 +425,13 @@ def load_source(c,profile,seed,device):
         require(cfg['group1_recipe']==recipe(profile),'PAMF source recipe mismatch')
         return dict(model=model,reader=model,classes=tuple(range(6)),profile=profile,method='pamf')
     payload=torch.load(folder/'source.pt',map_location='cpu',weights_only=False)
-    require(payload['schema']=='group1_A_v1' and payload['recipe']==recipe(profile),'Source recipe mismatch')
+    saved_recipe=payload['recipe'];current_recipe=recipe(profile)
+    recipe_matches=saved_recipe==current_recipe
+    if r['method']=='mopc_hr' and saved_recipe.get('C_semantics')=='paper':
+        # C was never run during A training. Preserve the actual saved recipe
+        # while allowing an otherwise identical A checkpoint as the C anchor.
+        recipe_matches=dict(saved_recipe,C_semantics='public_code')==current_recipe
+    require(payload['schema']=='group1_A_v1' and recipe_matches,'Source recipe mismatch')
     require(payload['source_contract']==expected and payload['seed']==seed and not payload['target_contact'] and payload['ancestors']==[],
             'CHECKPOINT_DATA_CONTRACT_MISMATCH_OR_PROVENANCE')
     model=model_for(r['method'],device);model.load_state_dict(payload['model'],strict=True);model.eval().requires_grad_(False)
@@ -437,7 +452,7 @@ def load_source(c,profile,seed,device):
     return dict(model=model,profile=profile,method=r['method'],classes=tuple(range(6)),
         score_fn=score,features_fn=lambda net,x:embedding(net,r['method'],x),native_state=native,
         base_metadata=base_metadata,source_contract=expected,resources={},source_path=str(folder),source_checkpoint=str(folder/'source.pt'),
-        provenance=dict(recipe=recipe(profile),source_only=True))
+        provenance=dict(recipe=saved_recipe,source_only=True))
 
 
 def train(c,profile,seed,output,device='cuda:0'):
