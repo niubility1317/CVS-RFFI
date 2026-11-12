@@ -70,13 +70,16 @@ def build_gallery(model: nn.Module, extractor: Callable, old_x: torch.Tensor,
 
 
 def register_lora(gallery: Gallery, new_x: torch.Tensor, new_y: torch.Tensor,
-                  *, k: int = 15) -> LoRaState:
-    if k <= 0 or len(new_y) == 0:
+                  *, k: int | None = None) -> LoRaState:
+    if (k is not None and k <= 0) or len(new_y) == 0:
         raise ValueError('positive neighbour count and nonempty new support required')
     class_count = int(new_y.max().item()) + 1
     _validate(new_x, new_y, tuple(range(gallery.old_count, class_count)))
     if len(new_y) // (class_count - gallery.old_count) != len(gallery.labels) // gallery.old_count:
         raise ValueError('old and new classes must use the same K')
+    if k is None:
+        shots = len(new_y) // (class_count - gallery.old_count)
+        k = min(15, 2 * shots - 1)
     new_z = _extract(gallery.model, gallery.extractor, new_x)
     if new_z.shape[1] != gallery.features.shape[1]:
         raise ValueError('new feature dimension differs from old gallery')

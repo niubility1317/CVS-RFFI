@@ -66,6 +66,11 @@ def predict(rt, job):
     bundle = load_source(source_rt, profile, seed, device)
     source_before = {key: value.detach().clone() for key, value in bundle['model'].state_dict().items()}
     cap = Path(rt['data_root']) / job['capsule']
+    clean_root = rt.get('clean_root')
+    def task_at(spec, stage):
+        if clean_root:
+            return load_task(cap, spec['split_id'], stage=stage, clean_root=clean_root, task_root=rt['data_root'])
+        return load_task(cap, spec['split_id'], stage=stage)
     manifest = read(cap / 'manifest.json')
     require(manifest['protocol_schema'] == 'p2_min_v1' and manifest['phase2_data_status'] == 'VALIDATED_ONCE', 'Wrong capsule')
     splits = [read(path) for path in (cap / 'splits').glob('*.json')]
@@ -83,7 +88,7 @@ def predict(rt, job):
         log.flush()
     try:
         for k in sorted({p[0] for p in points}):
-            task = load_task(cap, lookup[k, 0]['split_id'], stage='B')
+            task = task_at(lookup[k, 0], 'B')
             old_x = to_tensor(task['support_x'], device, np.float32)
             old_y = to_tensor(task['support_y'], device, np.int64).long()
             synchronize(); started = time.perf_counter()
@@ -109,7 +114,7 @@ def predict(rt, job):
                              bstate['model'], prepared['mopc_hr'], old_prototypes)
             for _, n in [point for point in points if point[0] == k]:
                 spec = lookup[k, n]
-                current = load_task(cap, spec['split_id'], stage='C')
+                current = task_at(spec, 'C')
                 mask = current['support_y'] < 6
                 require(np.array_equal(old_ids, current['support_ids'][mask]), 'B/C old physical support differs')
                 new_x = to_tensor(current['support_x'][~mask], device, np.float32)
@@ -128,7 +133,8 @@ def predict(rt, job):
                     np.savez_compressed(output / name, query_indices=split_rows(cap, spec),
                                         predicted_indices=pred, old_restricted_indices=restricted)
                     prediction_row = dict(split_id=spec['split_id'], stage='C', arm=profile+'__'+method,
-                        input_path='P0', prediction=name, k=k, new_count=n,
+                        input_path='P0', input_condition='clean_ground_pre_satellite_normalized' if clean_root else 'satellite_received',
+                        prediction=name, k=k, new_count=n,
                         registered_classes=spec['registered_classes'], query_count=len(pred),
                         claim='DA_B_to_CIL_core_transplant', resources=dict(B_seconds=b_seconds,
                         C_seconds=c_seconds, query_seconds=q_seconds, B_fit_shared_across_C=True,

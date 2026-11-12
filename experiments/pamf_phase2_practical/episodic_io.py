@@ -33,7 +33,7 @@ def observation_id(physical_id, episode_id):
     return identity(['Full-eq-episodic-observation-v1',physical_id,episode_id])
 
 
-def load_task(capsule, split_id, *, stage):
+def load_task(capsule, split_id, *, stage, clean_root=None, task_root=None):
     """Mmap metadata only; select permitted rows before any model sees IQ."""
     require(stage in ('A','B','C'),'Unknown stage')
     require(len(split_id)==24 and all(c in '0123456789abcdef' for c in split_id),'Invalid split ID')
@@ -48,18 +48,42 @@ def load_task(capsule, split_id, *, stage):
     require(n in (0,2,5,10,20) and k in (1,5,10,20) and len(classes)==6+n,'Wrong K/registration stage')
     support=np.asarray(split['support_indices'],dtype=np.int32)
     require(len(support)==k*len(classes),'Wrong support size')
-    bank=np.load(root/'received.npy',mmap_mode='r',allow_pickle=False)
     ids=np.load(root/'ids.npy',mmap_mode='r',allow_pickle=False)
     registered=np.load(root/'stage_rows'/f'N{n:02d}.npy',allow_pickle=False)
-    require(bank.dtype==np.float32 and bank.shape==(manifest['received_count'],2,256),'Wrong received bank')
-    require(ids.shape==(len(bank),) and registered.ndim==1 and registered.dtype==np.int32,'Wrong bank/index schema')
-    require(len(registered)==len(set(registered.tolist())) and (registered>=0).all() and (registered<len(bank)).all(),'Illegal registered positions')
+    require((clean_root is None)==(task_root is None),'Clean input requires both roots')
+    mapping=None
+    if clean_root is None:
+        bank=np.load(root/'received.npy',mmap_mode='r',allow_pickle=False)
+        require(bank.shape==(manifest['received_count'],2,256),'Wrong received bank')
+        condition='satellite_received'
+    else:
+        clean_root=Path(clean_root).resolve();task_root=Path(task_root).resolve()
+        completed=read(clean_root/'completion.json')
+        require(completed.get('status')=='CLEAN_PAIRED_COMPLETE' and Path(completed['parent_task_root']).resolve()==task_root,
+                'Clean pairing is incomplete or bound to a different parent')
+        relative=root.resolve().relative_to(task_root/'capsules')
+        clean_cap=clean_root/'capsules'/relative
+        clean_manifest=read(clean_cap/'manifest.json')
+        require(clean_manifest['capsule_id']==manifest['capsule_id'] and
+                clean_manifest['receiver']==manifest['receiver'] and
+                clean_manifest['input_condition']=='clean_ground_pre_satellite_normalized', 'Wrong clean capsule')
+        mapping=np.load(clean_cap/'row_to_clean.npy',mmap_mode='r',allow_pickle=False)
+        bank=np.load(clean_root/'banks'/manifest['receiver']/'clean.npy',mmap_mode='r',allow_pickle=False)
+        require(mapping.dtype==np.int32 and mapping.shape==(manifest['received_count'],) and
+                (mapping>=0).all() and (mapping<len(bank)).all(), 'Wrong clean mapping')
+        require(bank.ndim==3 and bank.shape[1:]==(2,256),'Wrong clean bank')
+        condition='clean_ground_pre_satellite_normalized'
+    require(bank.dtype==np.float32,'Wrong bank dtype')
+    require(ids.shape==(manifest['received_count'],) and registered.ndim==1 and registered.dtype==np.int32,'Wrong bank/index schema')
+    require(len(registered)==len(set(registered.tolist())) and (registered>=0).all() and (registered<len(ids)).all(),'Illegal registered positions')
     query=query_complement(registered,support)
     require(len(query)==split['query_count'],'Wrong query complement count')
-    out=dict(manifest=manifest,split=split,query_x=bank[query],query_ids=np.asarray(ids[query]))
+    def rows(indices):
+        return bank[indices if mapping is None else mapping[indices]]
+    out=dict(manifest=manifest,split=split,query_x=rows(query),query_ids=np.asarray(ids[query]),input_condition=condition)
     # A does not open the target support-label file or read support IQ.
     if stage!='A':
         labels=np.load(root/'support_labels'/(split_id+'.npy'),allow_pickle=False)
         require(labels.tolist()==np.repeat(np.arange(len(classes)),k).tolist(),'Wrong support labels')
-        out.update(support_x=bank[support],support_ids=np.asarray(ids[support]),support_y=labels)
+        out.update(support_x=rows(support),support_ids=np.asarray(ids[support]),support_y=labels)
     return out

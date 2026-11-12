@@ -148,6 +148,17 @@ def predict(rt,job):
     require(manifest['protocol_schema']=='p2_min_v1' and manifest['phase2_data_status']=='VALIDATED_ONCE','Wrong data handles')
     specs=[read(p) for p in (cap/'splits').glob('*.json')];lookup={(s['k'],s['new_count']):s for s in specs}
     Ks,Cs=workpoints(manifest['episode_id']);rows=[];B_support_features={}
+    clean_root=rt.get('clean_root')
+    if clean_root:
+        require(r['method']!='pamf','Clean PAMF requires the frozen SCALR runner, not the LocalRidge runner')
+        if 'points' in job:
+            Cs=sorted({(int(k),int(n)) for k,n in job['points']})
+            require(Cs and all(k in (1,5,10,20) and n in (2,5,10,20) for k,n in Cs),'Invalid clean workpoints')
+            Ks=sorted({k for k,n in Cs})
+    def task_at(spec, stage):
+        if clean_root:
+            return load_task(cap,spec['split_id'],stage=stage,clean_root=clean_root,task_root=rt['data_root'])
+        return load_task(cap,spec['split_id'],stage=stage)
     if job.get('scope')=='pilot_main':Ks,Cs=[5],[(5,20)]
     elif job.get('scope')=='curve_extra':Ks,Cs=[k for k in Ks if k!=5],[(k,n) for k,n in Cs if (k,n)!=(5,20)]
     engine=load_G(rt,device) if r['method']=='pamf' else None
@@ -160,12 +171,13 @@ def predict(rt,job):
         if restricted is not None:payload['old_restricted_indices']=restricted
         np.savez_compressed(out/name,**payload)
         rows.append(dict(split_id=s['split_id'],stage=stage,arm=profile,input_path=path,
+            input_condition='clean_ground_pre_satellite_normalized' if clean_root else 'satellite_received',
             prediction=name,k=s['k'],new_count=s['new_count'],registered_classes=s['registered_classes'],
             resources=plain(resources or {}),**metadata))
         print('GROUP1_PREDICTED',profile,stage,path,s['k'],s['new_count'],len(pred),flush=True)
     def pamf_stage(s,stage):
         from .milkr.d92_branch_local_ridge import fit_branch_local_ridge
-        task=load_task(cap,s['split_id'],stage=stage);states={};costs={}
+        task=task_at(s,stage);states={};costs={}
         for support_path in (0,1):
             path=out/f'{stage}-K{s["k"]}-N{s["new_count"]}-S{support_path}-fit.json'
             with Measure(path,dict(profile=profile,seed=seed,stage=stage,support_restored=support_path,
@@ -242,12 +254,12 @@ def predict(rt,job):
             for k,n in Cs:pamf_stage(lookup[k,n],'C')
         else:
             for k in Ks:
-                s=lookup[k,0];task=load_task(cap,s['split_id'],stage='A')
+                s=lookup[k,0];task=task_at(s,'A')
                 with Measure(out/f'A0-K{k}.json',dict(stage='A0_QUERY',profile=profile),model):
                     pred,_=infer(bundle,task['query_x'],6,rt.get('batch_size',128))
                 save(s,'A0','P0',pred)
                 if r['category']=='DA':
-                    task=load_task(cap,s['split_id'],stage='B');sx=tensor(task['support_x'],device)
+                    task=task_at(s,'B');sx=tensor(task['support_x'],device)
                     sy=torch.tensor(task['support_y'].tolist(),device=device,dtype=torch.long)
                     with Measure(out/f'B-K{k}-fit.json',dict(stage='B',profile=profile,K=k,
                                  actual_target_old_labels=len(sy),actual_target_new_labels=0),optimizers=True) as probe:
@@ -260,7 +272,7 @@ def predict(rt,job):
                     save(s,'B','P0',pred,resources=probe.result);del state,sx,sy
             if r['category']=='CIL':
                 for k,n in Cs:
-                    s=lookup[k,n];task=load_task(cap,s['split_id'],stage='C');keep=task['support_y']>=6
+                    s=lookup[k,n];task=task_at(s,'C');keep=task['support_y']>=6
                     sx=tensor(task['support_x'][keep],device)
                     sy=torch.tensor(task['support_y'][keep].tolist(),device=device,dtype=torch.long)
                     with Measure(out/f'C-K{k}-N{n}-fit.json',dict(stage='C',profile=profile,K=k,N=n,

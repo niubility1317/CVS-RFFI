@@ -50,3 +50,16 @@ def test_lora_ties_use_lowest_class_and_rejects_invalid_support():
         build_gallery(model, extract, torch.tensor([[0., 0.]]), torch.tensor([0]), old_count=2)
     with pytest.raises(ValueError):
         register_lora(old, torch.tensor([[0., 1.], [0., 2.]]), torch.tensor([2, 2]), k=2)
+
+
+def test_default_neighbours_follow_balanced_shots():
+    model = Shift()
+    old = build_gallery(model, extract, torch.tensor([[0., 0.], [10., 0.]]), torch.tensor([0, 1]), old_count=2)
+    state = register_lora(old, torch.tensor([[0., 20.]]), torch.tensor([2]))
+    assert state.k == 1
+    assert state.predict(torch.tensor([[0., 20.]])).tolist() == [2]
+    old_x = torch.tensor([[float(i), 0.] for i in range(5)] + [[float(i), 10.] for i in range(5)])
+    old_y = torch.tensor([0]*5 + [1]*5)
+    old = build_gallery(model, extract, old_x, old_y, old_count=2)
+    state = register_lora(old, torch.tensor([[float(i), 20.] for i in range(5)]), torch.tensor([2]*5))
+    assert state.k == 9
