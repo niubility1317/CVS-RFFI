@@ -26,6 +26,8 @@ from . import source_prototype_plan
 from .source_prototype import installed as source_prototype_scope
 from . import physical_branch_dropout_plan
 from .physical_branch_dropout import installed as physical_branch_dropout_scope
+from . import full_matrix_plan
+from .full_matrix import installed as full_matrix_scope
 
 
 def check_pairing(state):
@@ -174,6 +176,10 @@ def check_physical_branch_dropout(state):
     return dict(details, U_physical_branch_dropout=route)
 
 
+def check_full_matrix(state):
+    return check_source_prototype(state) if 'U_source_prototype' in state else check_hybrid_contrast(state)
+
+
 METHODS = {pair_plan.RUN: (pair_plan, pairing_scope, check_pairing),
            recovery_plan.RUN: (recovery_plan, recovery_scope, check_recovery),
            partial_plan.RUN: (partial_plan, recovery_scope, check_partial),
@@ -192,7 +198,8 @@ METHODS = {pair_plan.RUN: (pair_plan, pairing_scope, check_pairing),
            hybrid_contrast_plan.RUN: (hybrid_contrast_plan, hybrid_contrast_scope, check_hybrid_contrast),
            teacher_anchor_plan.RUN: (teacher_anchor_plan, teacher_anchor_scope, check_teacher_anchor),
            source_prototype_plan.RUN: (source_prototype_plan, source_prototype_scope, check_source_prototype),
-           physical_branch_dropout_plan.RUN: (physical_branch_dropout_plan, physical_branch_dropout_scope, check_physical_branch_dropout)}
+           physical_branch_dropout_plan.RUN: (physical_branch_dropout_plan, physical_branch_dropout_scope, check_physical_branch_dropout),
+           full_matrix_plan.RUN: (full_matrix_plan, full_matrix_scope, check_full_matrix)}
 
 
 def worker(c, kind):
@@ -206,8 +213,8 @@ def worker(c, kind):
     if kind == 'smoke':
         return smoke(c, rows=plan.candidate_rows, configure=plan.configuration, check_parent=plan.parent,
                      scope=installed, check_u=check_u,
-                     graph_check=plan.check_graph if plan in (validation_plan, branchguard_plan, single_rx_plan, certified_day_plan, curriculum_plan, fused_physics_plan, multilevel_physics_plan, soft_channel_plan, packet_contrast_plan, hybrid_contrast_plan, teacher_anchor_plan, source_prototype_plan, physical_branch_dropout_plan) else None,
-                     segment_output=plan in (teacher_anchor_plan, source_prototype_plan, physical_branch_dropout_plan))
+                     graph_check=plan.check_graph if plan in (validation_plan, branchguard_plan, single_rx_plan, certified_day_plan, curriculum_plan, fused_physics_plan, multilevel_physics_plan, soft_channel_plan, packet_contrast_plan, hybrid_contrast_plan, teacher_anchor_plan, source_prototype_plan, physical_branch_dropout_plan, full_matrix_plan) else None,
+                     segment_output=plan in (teacher_anchor_plan, source_prototype_plan, physical_branch_dropout_plan, full_matrix_plan))
     raise ValueError('Only source and clean/practical evaluation stages are allowed')
 
 
@@ -227,7 +234,7 @@ def dispatch(rt):
                                       teacher_anchor_plan.extra_controls if plan is teacher_anchor_plan else
                                       source_prototype_plan.extra_controls if plan is source_prototype_plan else
                                       physical_branch_dropout_plan.extra_controls if plan is physical_branch_dropout_plan else None),
-                      dynamic_protocol=plan in (validation_plan, branchguard_plan, single_rx_plan, certified_day_plan, curriculum_plan, fused_physics_plan, multilevel_physics_plan, soft_channel_plan, packet_contrast_plan, hybrid_contrast_plan, teacher_anchor_plan, source_prototype_plan, physical_branch_dropout_plan))
+                      dynamic_protocol=plan in (validation_plan, branchguard_plan, single_rx_plan, certified_day_plan, curriculum_plan, fused_physics_plan, multilevel_physics_plan, soft_channel_plan, packet_contrast_plan, hybrid_contrast_plan, teacher_anchor_plan, source_prototype_plan, physical_branch_dropout_plan, full_matrix_plan))
     launch = partial(dispatching.launch, module='experiments.pamf_physics_tri.pair_runner')
     from experiments.pamf_physics_branch import runner as physical
     old_admits = physical.admits

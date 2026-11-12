@@ -27,14 +27,16 @@ class SingleRxDay(BranchGuard):
     def unlabeled_student_forward(self, student, x, domain, pseudo, accepted, metadata):
         days = metadata['day_i'].to(x.device).long()
         actual_rx = metadata['rx_i'].to(x.device).long()
-        if set(actual_rx.tolist()) != set(self.c['source_rxs']) or set(days.tolist()) - set(self.c['source_days']):
-            raise ValueError('Only the declared single source receiver and source days are allowed')
-        # The existing feature-pairing implementation groups by metadata rx_i.
-        # Substitute day only inside its six U feature passes; signal simulation
-        # and the upstream source-data validation continue to see the real RX.
-        grouped = dict(metadata, rx_i=days)
+        if (not actual_rx.numel() or set(actual_rx.tolist()) - set(self.c['source_rxs'])
+                or set(days.tolist()) - set(self.c['source_days'])):
+            raise ValueError('Only declared source receivers and source days are allowed')
+        single_receiver = len(self.c['source_rxs']) == 1
+        # One RX needs source-day pairing. With multiple RXs retain the original
+        # receiver extrapolation, while the explicit branch relation stays cross-day.
+        grouped = dict(metadata, rx_i=days) if single_receiver else metadata
         original = self.c
-        self.c = dict(original, source_rxs=original['source_days'])
+        if single_receiver:
+            self.c = dict(original, source_rxs=original['source_days'])
         try:
             if self._rxe_forward_index < 2:
                 core, sequence, reference = _actual_paths(student)
