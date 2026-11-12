@@ -8,4 +8,6 @@
 
 服务器 `completion.json` 为 `CLEAN_PAIRED_COMPLETE`：7 RX、554823 条原始物理记录、483 个 capsule、9660 个 split，CPU 单进程用时约 140.2 秒。独立只读审计逐项重新核对 483 个 capsule 的观测 ID、物理 ID、池归属及完整性，并按原复数归一化公式对 896 条记录逐值核对，结果 VERIFIED；未读取 query 标签、训练或预测。clean bank 占用约 1.1 GiB，映射约 54 MiB。不同 episode 的同一地面记录复用一份原值，不作为新观测。
 
-本次提供 clean 可选读取入口和原生外部/交叉 worker 的接入基础，并修正交叉 LoRa 的默认邻居数为 `min(15, 2K-1)`。历史已有结果未更改。`clean_comparison_plan.py` 只产生四组候选矩阵，明确为 `PLANNED_NOT_LAUNCH_READY`，不是可启动调度器。SCALR 的干净输入与两路径/阶段隔离、Tweak M1 和长预算 ISSL 的完整绑定、Orthogonal 修复版权重、MoPC 的真实非有限故障、共享 GPU 并发和独立评分屏障仍须完成及验证；不能用历史星地输入或旧方法冒充这些准备已完成。
+本次提供 clean 可选读取入口和原生外部/交叉 worker 的接入基础，并修正交叉 LoRa 的默认邻居数为 `min(15, 2K-1)`。历史已有结果未更改。新增单任务 SCALR 和外部 worker 入口；SCALR 仅读该任务的阶段合法 query，只输出 raw/raw 与恢复/恢复，已通过模拟测试，但尚未进行真实 checkpoint 的无 query smoke。外部入口对 MoPC、Tweak M1 和 ISSL 暂时拒绝启动，避免错误版本或已知未解决的数值故障。
+
+`clean_comparison_plan.py` 只产生四组候选矩阵，明确为 `PLANNED_NOT_LAUNCH_READY`，不是完整调度器。Tweak M1 和长预算 ISSL 的完整绑定、Orthogonal 修复版权重、MoPC 的真实非有限故障、真实 checkpoint smoke、共享 GPU 并发和独立评分屏障仍须完成及验证；不能用历史星地输入或旧方法冒充这些准备已完成。
