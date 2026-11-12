@@ -3,7 +3,7 @@
 - run_id：`20261113-phase1-pamf-hybrid-confidence-m30-r01`
 - group_id：`phase1-pamf-branch-prototype-tuning`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（以远端状态和 events.jsonl 为准）
 
 ## 目的与对照
 
@@ -17,8 +17,7 @@
 
 ## 执行与存储
 
-命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
-实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
+2026-11-13：执行代码 commit `9dc290d6a4737444077dd06b60965fb78b763fdb`；发布包校验和远端编译通过。统一控制器 PID 1979678 接管既有三个本任务队列，原健康训练 worker、数据和输出保持；按每卡最多 6 个进程、GPU 7 最多 4 个进程及显存余量统一调度。十种设置的真实 checkpoint 无目标查询 smoke 全部通过，通过置信度的样本均进入 Hybrid 辅助项，未使用分支投票或原型。首条训练 PID 1980487 已在 GPU 0 核实启动；余下逐行排队，训练完成后自动进行七景预测及独立评分。
 
 ## 结果与覆盖
 
