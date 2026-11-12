@@ -49,6 +49,44 @@ def from_protonet(model: nn.Module, prototypes: torch.Tensor) -> ProtoClassifier
     return ProtoClassifier(model, prototypes.detach()).eval()
 
 
+class TweakClassifier(nn.Module):
+    """Preserve M1 decisions with finite score coordinates for C transplants."""
+    def __init__(self, model, centroids, radii):
+        super().__init__()
+        self.base=copy.deepcopy(model).eval()
+        self.register_buffer('centroids',centroids.detach().clone())
+        self.register_buffer('radii',radii.detach().clone())
+        count,dim=centroids.shape
+        self.fc=nn.Linear(count+dim,count).to(centroids)
+        with torch.no_grad():
+            self.fc.weight.zero_();self.fc.weight[:,:count].copy_(torch.eye(count,device=centroids.device,dtype=centroids.dtype))
+            self.fc.bias.zero_()
+
+    def forward(self,x):
+        from .external_additional import native_features
+        z=native_features(self.base,x)
+        distance=torch.cdist(z,self.centroids)
+        radius=self.radii[None,:];inside=distance<radius
+        # The native sentinel -1e30 is safe for argmax but unsuitable as a
+        # trainable feature. This per-record finite value preserves the choice.
+        outside=-(distance.amax(dim=1,keepdim=True)+1.)
+        contained=torch.where(inside,-distance,outside)
+        scores=torch.where(inside.any(1,keepdim=True),contained,radius-distance)
+        mapped=torch.cat((scores,z),dim=1)
+        return {'features':mapped,'tx_logits':self.fc(mapped)}
+
+
+def from_tweak(model,state,*,old_count):
+    if getattr(model,'profile',None)!='tweak_m1' or tuple(state['classes'])!=tuple(range(old_count)):
+        raise ValueError('Tweak M1 old-class state required')
+    native=state['native_state'];centroids=native['centroids'];radii=native['radii']
+    if centroids.ndim!=2 or centroids.shape[0]!=old_count or radii.shape!=(old_count,) or \
+       not bool(torch.isfinite(centroids).all() and torch.isfinite(radii).all() and (radii>=0).all()):
+        raise ValueError('Invalid Tweak M1 centroids or radii')
+    device=next(model.parameters()).device
+    return TweakClassifier(model,centroids.to(device),radii.to(device)).eval()
+
+
 class RadioNetClassifier(nn.Module):
     """Retain B kNN votes as explicit features plus the B embedding."""
     def __init__(self, model, scores, old_count):

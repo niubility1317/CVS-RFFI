@@ -11,7 +11,8 @@ def test_only_bound_corrected_profiles_are_accepted():
     validate(rt,dict(base,profile='issl_fixed_v1'),'native_cil')
     validate(rt,dict(base,profile='dadda_sda',methods=['orthogonal','lora']),'hybrid')
     validate(rt,dict(base,profile='tweak_m1',methods=['lora']),'hybrid')
-    with pytest.raises(ValueError):validate(rt,dict(base,profile='tweak_m1',methods=['orthogonal']),'hybrid')
+    validate(rt,dict(base,profile='tweak_m1',methods=['orthogonal']),'hybrid')
+    with pytest.raises(ValueError):validate(rt,dict(base,profile='tweak_m1',methods=['mopc_hr']),'hybrid')
     for profile in ('radionet_ada_knn','feature_separation_hu2024'):
         with pytest.raises(ValueError):validate(rt,dict(base,profile=profile),'native_da')
     for profile in ('mopc_hr','issl_author_behavior'):

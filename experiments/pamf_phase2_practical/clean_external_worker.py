@@ -28,7 +28,7 @@ def validate(rt, job, group):
     elif group=='hybrid':
         methods=job.get('methods',[])
         supported=(job.get('profile') in HYBRID_B and set(methods)<=HYBRID_C) or (
-            job.get('profile')=='tweak_m1' and methods==['lora'])
+            job.get('profile')=='tweak_m1' and set(methods)<={'lora','orthogonal'})
         require(supported and methods and len(set(methods))==len(methods), 'Hybrid bridge unbound or unresolved')
     else:
         raise ValueError('Unknown clean external group')

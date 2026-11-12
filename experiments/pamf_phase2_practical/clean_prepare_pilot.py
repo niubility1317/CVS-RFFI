@@ -48,10 +48,10 @@ def prepare(plan_root,run_root,release_root,clean_root,pamf_template,group1_temp
             key=f'hybrid-{profile}-{i:02d}';out=run_root/'tasks'/key
             add(key,'hybrid',native_file,dict(common,profile=profile,methods=['orthogonal','lora'],output=str(out)),out)
         key=f'hybrid-tweak_m1-{i:02d}';out=run_root/'tasks'/key
-        add(key,'hybrid',native_file,dict(common,profile='tweak_m1',methods=['lora'],output=str(out)),out)
+        add(key,'hybrid',native_file,dict(common,profile='tweak_m1',methods=['lora','orthogonal'],output=str(out)),out)
         blocked.extend([dict(capsule=cap,profile='orthogonal_fixed',reason='matching repaired source weights unavailable'),
                         dict(capsule=cap,profile='mopc_hr_public_code',reason='genuine nonfinite failure unresolved'),
-                        dict(capsule=cap,profile='tweak_m1_to_mopc_or_orthogonal',reason='compatible state bridge unverified')])
+                        dict(capsule=cap,profile='tweak_m1_to_mopc',reason='genuine MoPC nonfinite failure unresolved')])
     queue=dict(phase='pilot',run_root=str(run_root),release_root=str(release_root),jobs=jobs,allowed_gpus=allowed_gpus,
         max_per_gpu=2,minimum_free_MiB=6000,poll_seconds=5,input_condition='clean_ground_pre_satellite_normalized')
     write(plan_root/'scheduler.json',queue)
