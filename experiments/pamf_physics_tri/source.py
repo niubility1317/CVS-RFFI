@@ -96,4 +96,5 @@ def train_trajectory(c, prefix, scope, *, ssl, physical_L=True):
           initialization='same_contract_scratch20_own10_own20', ancestors=[s['folder'] for s in segments],
           source_contract=c['source_contract'], target_access=False, U_truth_read=False, head_fit_updates=0,
           actual_REPL={k: sum(s[k] for s in states) for k in ('calls', 'seen', 'accepted', 'student_views')},
-          seconds=time.monotonic() - started, cumulative_training_seconds=sum(s['seconds'] for s in segments), **physical))
+          seconds=time.monotonic() - started, cumulative_training_seconds=sum(s['seconds'] for s in segments),
+          **({'source_development_only': True} if c.get('source_development') else {}), **physical))

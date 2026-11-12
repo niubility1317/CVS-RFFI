@@ -25,9 +25,12 @@ def configuration(context, row, project, commit, partition):
     original_id = f"{row['setting']}-factorial-ssl-full-permuted-s{row['model_seed']}"
     paper_row = next(r for r in paper.make_plan()['rows'] if r['row_id'] == original_id)
     c = paper.configuration(context, paper_row, project, commit)
+    gate = dict(mode='branch', strength=.25, schedule='taper')
+    if 'required_votes' in row:
+        gate['required_votes'] = row['required_votes']
     c.update(run_id=RUN, row_id=row['row_id'], algorithm_id='pamf_tri_source_tuning_v1',
              tuning_row=dict(row), source_development=dict(partition),
-             practical_gate=dict(mode='branch', strength=.25, schedule='taper'),
+             practical_gate=gate,
              day_relation_weight=.025, fused_physics=dict(weight='original_joint', raw_detached=True),
              hybrid_contrast=dict(mode='fusion_branch', temperature=.2),
              source_prototype=dict(mode='branch', temperature=row['temperature'], coefficient='original_joint'),
@@ -39,6 +42,9 @@ def configuration(context, row, project, commit, partition):
 def validate(c):
     row = validate_candidate(c.get('tuning_row'))
     part = c.get('source_development')
+    gate = dict(mode='branch', strength=.25, schedule='taper')
+    if 'required_votes' in row:
+        gate['required_votes'] = row['required_votes']
     root = Path(c['output_root'])
     if root.name in ('segment20', 'segment30', 'segment50'):
         root = root.parent
@@ -49,7 +55,7 @@ def validate(c):
             or root.parts[-5:] != ('runs', RUN, 'F', row['row_id'], 'source')
             or not isinstance(part, dict) or set(part) != {'train_ids', 'dev_ids', 'seed'}
             or part['seed'] != SPLIT_SEED or not part['train_ids'] or not part['dev_ids']
-            or c.get('practical_gate') != dict(mode='branch', strength=.25, schedule='taper')
+            or c.get('practical_gate') != gate
             or c.get('day_relation_weight') != .025
             or c.get('fused_physics') != dict(weight='original_joint', raw_detached=True)
             or c.get('hybrid_contrast') != dict(mode='fusion_branch', temperature=.2)
@@ -57,5 +63,6 @@ def validate(c):
         raise ValueError('Source development candidate differs from the registered recipe')
     proxy = dict(c, run_id=paper.RUN, row_id=c['paper_row']['row_id'])
     proxy.pop('parent_source', None)
+    proxy.pop('shared_prefix', None)
     paper.validate_config(proxy)
     return row

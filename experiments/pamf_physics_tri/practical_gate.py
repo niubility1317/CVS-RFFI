@@ -46,6 +46,13 @@ def select_views(offered, certified, mode, seed):
     raise ValueError('Unknown practical U routing mode')
 
 
+def required_votes(recipe):
+    votes = recipe.get('required_votes', 4)
+    if votes not in (3, 4, 5):
+        raise ValueError('Source branch certificate requires three to five votes')
+    return votes
+
+
 def view_strength(recipe, epoch):
     strength = recipe.get('strength', 1.)
     schedule = recipe.get('schedule', 'constant')
@@ -86,10 +93,10 @@ class PracticalGate(GuardedReceiverExtrapolation):
         raw, altered = capture_pair(student, clean, changed)
         query_group = (self.query_group(metadata, indices) if hasattr(self, 'query_group')
                        else metadata['rx_i'][indices])
-        _, certified = branch_certificate(raw, altered, labels, l_rx, query_group,
-                                          pseudo[indices], self.c['num_classes'], 4)
-        offered = accepted[indices]
         recipe = self.c['practical_gate']
+        _, certified = branch_certificate(raw, altered, labels, l_rx, query_group,
+                                          pseudo[indices], self.c['num_classes'], required_votes(recipe))
+        offered = accepted[indices]
         mode = recipe.get('mode', 'branch' if recipe.get('branch_gate') else 'all')
         selected = select_views(offered, certified, mode, self.c['model_seed'] * 100_000 + step)
         strength = view_strength(recipe, epoch)
