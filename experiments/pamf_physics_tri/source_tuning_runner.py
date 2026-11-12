@@ -124,7 +124,9 @@ def dispatch(rt):
     from experiments.pamf_physics_route.runner import launch
 
     def admits(gpu, active, required_mib):
-        return physical_admits(gpu, active, required_mib, max_total=1)
+        if any(item['gpu'] == gpu for _, item in active.values()):
+            return False
+        return physical_admits(gpu, active, required_mib, max_total=rt.get('max_total_processes_per_gpu', 1))
 
     old = preparation.prepare, base.admits, base.launch, base.analyze
     preparation.prepare, base.admits = prepare, admits

@@ -162,3 +162,62 @@ def test_one_percent_release_targets_only_its_own_source_and_workers(monkeypatch
     assert publisher.publish('repo', 'out', 'context', 'ssh', run_id=source_tuning_label01.RUN,
         protocol_id='label01', setting='labeled_1pct',
         worker_module='experiments.pamf_physics_tri.source_tuning_label01', gpus=(4, 5, 7)) == 'captured'
+
+
+def test_six_receiver_pilot_sweeps_five_temperatures(monkeypatch):
+    from experiments.pamf_paper_completion import plan as paper
+    from experiments.pamf_physics_tri import source_tuning_plan as plan, source_tuning_m6
+    monkeypatch.setattr(paper, 'configuration', lambda ctx, row, project, commit: {
+        'paper_row': row, 'source_contract': 'm6.json', 'model_seed': row['model_seed'],
+        'run_id': paper.RUN, 'row_id': row['row_id'], 'protocol_id': row['protocol_id']})
+    monkeypatch.setattr(paper, 'validate_config', lambda cfg: cfg)
+    with source_tuning_m6.configured():
+        rows = plan.candidate_rows()
+        assert {r['temperature'] for r in rows} == {.05, .1, .2, .4, .8}
+        assert {r['protocol_id'] for r in rows} == {'m6-natural'}
+        for row in rows:
+            cfg = plan.configuration({}, row, '/project', 'commit',
+                {'train_ids': ['a'], 'dev_ids': ['b'], 'seed': 20261112})
+            assert cfg['paper_row']['data_setting'] == 'source_rx_6'
+            assert cfg['run_id'] == source_tuning_m6.RUN
+            plan.validate(cfg)
+        scores = [{'row_id': r['row_id'], 'clean_accuracy': .8, 'physical_accuracy': .7} for r in rows]
+        assert select(scores)['temperature'] == .2
+
+
+def test_parallel_run_allows_two_total_but_only_one_own_worker(monkeypatch):
+    from experiments.pamf_branch_training import runner as base
+    from experiments.pamf_physics_branch import runner as physical
+    from experiments.pamf_physics_tri import source_tuning_runner
+    seen = []
+    monkeypatch.setattr(physical, 'admits', lambda gpu, active, required, max_total: seen.append(max_total) or True)
+
+    def dispatch(rt):
+        assert base.admits(2, {}, 6000)
+        assert not base.admits(2, {'own': (object(), {'gpu': 2})}, 6000)
+
+    monkeypatch.setattr(base, 'dispatch', dispatch)
+    source_tuning_runner.dispatch({'max_total_processes_per_gpu': 2})
+    assert seen == [2]
+
+
+def test_six_receiver_release_uses_registered_data_and_capacity(monkeypatch):
+    from experiments.pamf_physics_tri import source_tuning_publish as publisher, source_tuning_m6
+    from experiments.pamf_branch_training import publish as base
+
+    def capture(*args, **kwargs):
+        script = base.REMOTE
+        compile(script.replace('PACKAGE', '{}'), '<remote-preflight>', 'exec')
+        assert "ctx['handles']['m6-natural']" in script
+        assert 'source_rx_6-factorial-ssl-full-permuted-s2026092701' in script
+        assert "rt['allowed_gpus']=[2, 6, 7, 1, 3]" in script
+        assert "rt['max_total_processes_per_gpu']=2" in script
+        assert 'experiments.pamf_physics_tri.source_tuning_m6' in script
+        assert base.RUN == source_tuning_m6.RUN
+        return 'captured'
+
+    monkeypatch.setattr(base, 'publish', capture)
+    assert publisher.publish('repo', 'out', 'context', 'ssh', run_id=source_tuning_m6.RUN,
+        protocol_id='m6-natural', setting='source_rx_6',
+        worker_module='experiments.pamf_physics_tri.source_tuning_m6', gpus=(2, 6, 7, 1, 3),
+        max_total_processes_per_gpu=2) == 'captured'

@@ -7,12 +7,14 @@ from .source_tuning_plan import RUN
 
 
 def publish(repo, output, context, ssh_config, *, run_id=RUN, protocol_id='ManyRx', setting='ten_class',
-            worker_module='experiments.pamf_physics_tri.source_tuning_runner', gpus=(0, 1, 3, 4, 5, 7)):
+            worker_module='experiments.pamf_physics_tri.source_tuning_runner', gpus=(0, 1, 3, 4, 5, 7),
+            max_total_processes_per_gpu=1):
     old_run, old_remote = base.RUN, base.REMOTE
     script = old_remote
     substitutions = [
         ("rt=p['runtime']; project=", f"rt=p['runtime']; rt['allowed_gpus']={list(gpus)!r}; "
-         f"rt['worker_module']={worker_module!r}; rt['parent_seeds']=[]; project="),
+         f"rt['worker_module']={worker_module!r}; rt['max_total_processes_per_gpu']={max_total_processes_per_gpu!r}; "
+         "rt['parent_seeds']=[]; project="),
         ("[rt['python'],rt['weak_root']+'/manifest.json',rt['weak_truth'],*rt['frozen_sources'].values()]",
          "[rt['python'],*rt['frozen_sources'].values()]"),
         ("h=ctx['handles']['F0']", f"h=ctx['handles'][{protocol_id!r}]"),
