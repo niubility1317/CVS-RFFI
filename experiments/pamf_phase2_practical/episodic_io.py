@@ -33,7 +33,7 @@ def observation_id(physical_id, episode_id):
     return identity(['Full-eq-episodic-observation-v1',physical_id,episode_id])
 
 
-def load_task(capsule, split_id, *, stage, clean_root=None, task_root=None):
+def load_task(capsule, split_id, *, stage, clean_root=None, task_root=None, restored_root=None):
     """Mmap metadata only; select permitted rows before any model sees IQ."""
     require(stage in ('A','B','C'),'Unknown stage')
     require(len(split_id)==24 and all(c in '0123456789abcdef' for c in split_id),'Invalid split ID')
@@ -51,6 +51,7 @@ def load_task(capsule, split_id, *, stage, clean_root=None, task_root=None):
     ids=np.load(root/'ids.npy',mmap_mode='r',allow_pickle=False)
     registered=np.load(root/'stage_rows'/f'N{n:02d}.npy',allow_pickle=False)
     require((clean_root is None)==(task_root is None),'Clean input requires both roots')
+    require(restored_root is None or clean_root is not None,'Restored clean input requires clean mapping')
     mapping=None
     if clean_root is None:
         bank=np.load(root/'received.npy',mmap_mode='r',allow_pickle=False)
@@ -86,4 +87,12 @@ def load_task(capsule, split_id, *, stage, clean_root=None, task_root=None):
         labels=np.load(root/'support_labels'/(split_id+'.npy'),allow_pickle=False)
         require(labels.tolist()==np.repeat(np.arange(len(classes)),k).tolist(),'Wrong support labels')
         out.update(support_x=rows(support),support_ids=np.asarray(ids[support]),support_y=labels)
+    if restored_root is not None:
+        restored_root=Path(restored_root).resolve();done=read(restored_root/'completion.json')
+        require(done.get('status')=='CLEAN_DURA_COMPLETE' and Path(done['clean_root']).resolve()==clean_root and
+                done.get('restorer_id')=='dura_v1', 'Restored bank is incomplete or mismatched')
+        restored=np.load(restored_root/'banks'/manifest['receiver']/'restored.npy',mmap_mode='r',allow_pickle=False)
+        require(restored.dtype==np.float32 and restored.shape==bank.shape,'Wrong restored clean bank')
+        out['restored_query_x']=restored[mapping[query]]
+        if stage!='A':out['restored_support_x']=restored[mapping[support]]
     return out

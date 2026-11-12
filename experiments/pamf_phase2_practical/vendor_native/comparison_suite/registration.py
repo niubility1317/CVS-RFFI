@@ -62,6 +62,8 @@ class RegistrationConfig:
     mopc_lambda_max: float = 1.0
     mopc_stage_size: int = 5
     mopc_semantics: str = "paper"
+    # Explicit diagnostic variant. None preserves the original optimizer path.
+    mopc_max_grad_norm: float | None = None
     orthogonal_epochs: int = 50
     orthogonal_lr: float = 0.08
     orthogonal_top_k: int = 60
@@ -73,6 +75,10 @@ class RegistrationConfig:
     def __post_init__(self) -> None:
         if self.mopc_semantics not in ("paper", "public_code"):
             raise ValueError("mopc_semantics must be paper or public_code")
+        if self.mopc_max_grad_norm is not None and (
+            not math.isfinite(self.mopc_max_grad_norm) or self.mopc_max_grad_norm <= 0
+        ):
+            raise ValueError("mopc_max_grad_norm must be finite and positive")
         for name in ("old_adaptation_epochs", "csil_epochs", "mopc_epochs", "orthogonal_epochs"):
             if getattr(self, name) < 0:
                 raise ValueError(f"{name} must be non-negative")
@@ -98,6 +104,23 @@ def _seeded_kaiming_uniform(tensor, *, a, generator):
 
 def _mopc_similarity(cfg):
     return "official_code_dot_softmax" if cfg.mopc_semantics == "public_code" else "paper_cosine"
+
+
+def _clip_finite_gradients(parameters, max_norm):
+    """Explicit diagnostic clipping using an FP64 norm; reject nonfinite gradients."""
+    if not math.isfinite(max_norm) or max_norm <= 0:
+        raise ValueError('max_norm must be finite and positive')
+    grads=[p.grad.detach() for p in parameters if p.grad is not None]
+    if any(g.is_sparse or not bool(torch.isfinite(g).all()) for g in grads):
+        raise FloatingPointError('Nonfinite or sparse gradient cannot be stabilized')
+    if not grads:return 0.0,False
+    norm=float(torch.stack([g.double().norm() for g in grads]).norm())
+    if not math.isfinite(norm):raise FloatingPointError('Nonfinite FP64 gradient norm')
+    clipped=norm>max_norm
+    if clipped:
+        with torch.no_grad():
+            for g in grads:g.mul_(max_norm/norm)
+    return norm,clipped
 
 
 def _method(value: str) -> str:
@@ -555,7 +578,7 @@ def _mopc_register(state: RegistrationState, x: torch.Tensor, y: torch.Tensor,
         p.requires_grad_(True)
     historical = state.prototypes.detach().clone()
     gen = torch.Generator(device=x.device).manual_seed(cfg.seed + 991)
-    stages = []
+    stages = []; clipped_updates = 0
     for stage_index, begin in enumerate(range(state.old_count, len(state.classes), cfg.mopc_stage_size), 1):
         end = min(begin + cfg.mopc_stage_size, len(state.classes))
         stage_rows = ((y >= begin) & (y < end)).nonzero().flatten()
@@ -596,6 +619,9 @@ def _mopc_register(state: RegistrationState, x: torch.Tensor, y: torch.Tensor,
                 logger, start, phase="C", method="mopc_hr", stage=stage_index, epoch=epoch,
                 iteration=iteration, learning_rate=cfg.mopc_lr, beta=cfg.mopc_beta,
                 lambda_max=cfg.mopc_lambda_max, registered_count=end)
+            if cfg.mopc_max_grad_norm is not None:
+                _,clipped=_clip_finite_gradients(model.parameters(),cfg.mopc_max_grad_norm)
+                clipped_updates+=int(clipped)
             optimizer.step()
         previous_z = _features(reference, "mopc_hr", x[stage_rows], cfg.extraction_batch_size)
         current_z = _features(model, "mopc_hr", x[stage_rows], cfg.extraction_batch_size)
@@ -618,6 +644,10 @@ def _mopc_register(state: RegistrationState, x: torch.Tensor, y: torch.Tensor,
             mopc_version="public_code_semantics_matched_IQ_extension",
             prototype_correction="raw_dot_softmax", hierarchical_regularization="unsquared_layer_L2",
             prototype_CE_temperature=2.0, computed_but_unoptimized_KD=True)
+    if cfg.mopc_max_grad_norm is not None:
+        state.protocol_metadata.update(stabilization='diagnostic_global_gradient_clipping',
+            gradient_clip_max_norm=cfg.mopc_max_grad_norm,gradient_clipped_updates=clipped_updates,
+            author_optimizer_unchanged=False)
 
 
 def _orthogonal_register(state: RegistrationState, x: torch.Tensor, y: torch.Tensor,

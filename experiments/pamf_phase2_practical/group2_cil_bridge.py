@@ -148,7 +148,9 @@ def make_anchor(model: AdaptedClassifier, old_x: torch.Tensor, old_y: torch.Tens
 
 
 def register(anchor: RegistrationState, new_x: torch.Tensor, new_y: torch.Tensor, *,
-             seed: int, epochs: int | None = None) -> RegistrationState:
+             seed: int, epochs: int | None = None, mopc_max_grad_norm: float | None = None) -> RegistrationState:
+    if mopc_max_grad_norm is not None and anchor.method!='mopc_hr':
+        raise ValueError('MoPC diagnostic clipping is not an Orthogonal option')
     old = len(anchor.classes)
     if new_y.ndim != 1 or len(new_y) == 0 or new_y.dtype != torch.long:
         raise ValueError('new support labels are invalid')
@@ -161,6 +163,7 @@ def register(anchor: RegistrationState, new_x: torch.Tensor, new_y: torch.Tensor
     cfg = RegistrationConfig(seed=seed, old_adaptation_epochs=0,
         mopc_epochs=20 if epochs is None else epochs,
         mopc_semantics='public_code',
+        mopc_max_grad_norm=mopc_max_grad_norm,
         orthogonal_epochs=50 if epochs is None else epochs)
     device = new_x.device
     devices = [device.index if device.index is not None else torch.cuda.current_device()] if device.type == 'cuda' else []

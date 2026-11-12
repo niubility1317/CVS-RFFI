@@ -1,0 +1,33 @@
+import numpy as np
+import torch
+from torch import nn
+
+from experiments.pamf_phase2_practical import clean_additional_worker as worker
+from experiments.pamf_phase2_practical.external_execution import infer
+
+
+def test_m1_query_decisions_are_one_record_each():
+    model=nn.Linear(2,6).eval(); calls=[]
+    def score(net,x):
+        calls.append(len(x));return net(x[:, :, 0])
+    state=dict(model=model,score_fn=score,classes=tuple(range(6)))
+    pred,_=infer(state,np.ones((4,2,256),np.float32),6,batch=1)
+    assert len(pred)==4 and calls==[1,1,1,1]
+
+
+def test_issl_fixed_v1_uses_long_budget_and_no_target_old(monkeypatch):
+    model=nn.Linear(2,6);seen={}
+    bundle=dict(profile='issl_fixed_v1',model=model,native_state={
+        'source_replay_x':torch.ones(6,2,256), 'source_replay_y':torch.arange(6)})
+    monkeypatch.setattr(worker.extra,'_issl_expand',lambda m,count:seen.update(classes=count))
+    def ssl(m,x,old,spec,seed,logger):
+        seen.update(ssl_epochs=spec['C_SSL_epochs'],ssl_rows=len(x),old_count=old)
+    def train(m,x,y,epochs,batch,lr,seed,logger,**kw):
+        seen.update(transfer_epochs=epochs,transfer_labels=y.tolist(),stage=kw['stage'])
+    monkeypatch.setattr(worker.extra,'_issl_ssl',ssl)
+    monkeypatch.setattr(worker.extra,'_train_ce',train)
+    result=worker.direct_issl(bundle,torch.ones(4,2,256),torch.tensor([6,6,7,7]),123)
+    assert seen==dict(classes=8,ssl_epochs=2000,ssl_rows=16,old_count=6,transfer_epochs=300,
+                      transfer_labels=[0,1,2,3,4,5,6,6,7,7],stage='C_transfer')
+    assert result['resources']['actual_target_old_labels']==0
+    assert result['resources']['actual_target_new_labels']==4

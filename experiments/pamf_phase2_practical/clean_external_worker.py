@@ -5,9 +5,9 @@ from pathlib import PurePosixPath
 from .io import read, require
 
 
-NATIVE_DA = {'protonet_cda','mrior_sda','dadda_sda','twostage','poster_ft'}
-NATIVE_CIL = {'orthogonal','lora_triplet_knn'}
-HYBRID_B = NATIVE_DA
+NATIVE_DA = {'protonet_cda','mrior_sda','dadda_sda','twostage','poster_ft','tweak_m1'}
+NATIVE_CIL = {'orthogonal','lora_triplet_knn','issl_fixed_v1'}
+HYBRID_B = NATIVE_DA - {'tweak_m1'}
 HYBRID_C = {'orthogonal','lora'}
 
 
@@ -27,15 +27,20 @@ def validate(rt, job, group):
         require(job.get('profile') in NATIVE_CIL, 'Native CIL profile unbound or unresolved')
     elif group=='hybrid':
         methods=job.get('methods',[])
-        require(job.get('profile') in HYBRID_B and methods and len(set(methods))==len(methods)
-                and set(methods)<=HYBRID_C, 'Hybrid bridge unbound or unresolved')
+        supported=(job.get('profile') in HYBRID_B and set(methods)<=HYBRID_C) or (
+            job.get('profile')=='tweak_m1' and methods==['lora'])
+        require(supported and methods and len(set(methods))==len(methods), 'Hybrid bridge unbound or unresolved')
     else:
         raise ValueError('Unknown clean external group')
 
 
 def run(rt,job,group):
     validate(rt,job,group)
-    if group=='hybrid':
+    if group=='hybrid' and job['profile']=='tweak_m1':
+        from .clean_tweak_lora_worker import run as predict
+    elif job['profile'] in ('tweak_m1','issl_fixed_v1'):
+        from .clean_additional_worker import run as predict
+    elif group=='hybrid':
         from .group2_worker import predict
     else:
         from .group1_target import predict

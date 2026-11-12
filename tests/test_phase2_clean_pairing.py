@@ -68,6 +68,15 @@ class CleanPairingTests(unittest.TestCase):
             np.testing.assert_array_equal(task['support_x'][:, 0, 0], [11, 10, 9, 8, 7, 6])
             np.testing.assert_array_equal(task['query_x'][:, 0, 0], [5, 4, 3, 2, 1, 0])
             self.assertNotIn('support_x', load_task(cap, split_id, stage='A', clean_root=clean, task_root=parent))
+            restored=root/'restored';(restored/'banks'/'1-1').mkdir(parents=True)
+            (restored/'completion.json').write_text(json.dumps({'status':'CLEAN_DURA_COMPLETE',
+                'clean_root':str(clean),'restorer_id':'dura_v1'}))
+            np.save(restored/'banks'/'1-1'/'restored.npy',bank+100)
+            cached=load_task(cap,split_id,stage='B',clean_root=clean,task_root=parent,restored_root=restored)
+            np.testing.assert_array_equal(cached['restored_support_x'][:,0,0],[111,110,109,108,107,106])
+            np.testing.assert_array_equal(cached['restored_query_x'][:,0,0],[105,104,103,102,101,100])
+            self.assertNotIn('restored_support_x',load_task(cap,split_id,stage='A',clean_root=clean,
+                             task_root=parent,restored_root=restored))
             np.save(cap/'received.npy', bank)
             legacy = load_task(cap, split_id, stage='B')
             np.testing.assert_array_equal(legacy['support_x'][:, 0, 0], [0, 1, 2, 3, 4, 5])

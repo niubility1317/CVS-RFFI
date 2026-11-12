@@ -29,9 +29,11 @@ def prepare_b(model, profile, extractor, old_x, old_y, *, old_count=6, old_proto
     return result
 
 
-def register_c(prepared, new_x, new_y, *, seed, methods):
+def register_c(prepared, new_x, new_y, *, seed, methods, mopc_max_grad_norm=None):
     if len(methods) != len(set(methods)):
         raise ValueError('duplicate registration method')
+    if mopc_max_grad_norm is not None and 'mopc_hr' not in methods:
+        raise ValueError('MoPC diagnostic clipping requires the MoPC method')
     missing = set(methods) - set(prepared)
     if missing:
         raise NotImplementedError('No compatible B-to-C state bridge for: ' + ', '.join(sorted(missing)))
@@ -40,5 +42,9 @@ def register_c(prepared, new_x, new_y, *, seed, methods):
         if method == 'lora':
             result[method] = lora.register_lora(prepared[method], new_x, new_y)
         else:
-            result[method] = cil.register(prepared[method], new_x, new_y, seed=seed)
+            if method=='mopc_hr' and mopc_max_grad_norm is not None:
+                result[method] = cil.register(prepared[method], new_x, new_y, seed=seed,
+                                              mopc_max_grad_norm=mopc_max_grad_norm)
+            else:
+                result[method] = cil.register(prepared[method], new_x, new_y, seed=seed)
     return result

@@ -142,6 +142,9 @@ def predict(rt,job):
     torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False
     profile,seed=job['profile'],job['seed'];r=row(profile);device='cuda:0'
     bundle=load_source(source_scope(rt),profile,seed,device)
+    if rt.get('clean_root'):
+        from .clean_source_smoke import check
+        check(rt,bundle)
     model=bundle['model'];model.eval();before={k:v.detach().clone() for k,v in model.state_dict().items()}
     out=Path(job['output']);out.mkdir(parents=True,exist_ok=False)
     cap=Path(rt['data_root'])/job['capsule'];manifest=read(cap/'manifest.json')

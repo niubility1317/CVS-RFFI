@@ -64,6 +64,9 @@ def predict(rt, job):
     source_rt = source_scope(rt)
     source_rt['run_root'] = rt['source_run_root']
     bundle = load_source(source_rt, profile, seed, device)
+    if rt.get('clean_root'):
+        from .clean_source_smoke import check
+        check(rt,bundle)
     source_before = {key: value.detach().clone() for key, value in bundle['model'].state_dict().items()}
     cap = Path(rt['data_root']) / job['capsule']
     clean_root = rt.get('clean_root')
