@@ -13,7 +13,8 @@ from .source import parent, train
 
 
 def smoke(rt, *, rows=candidate_rows, configure=configuration, check_parent=parent, scope=installed,
-          ssl=True, check_u=None, graph_check=None, segment_output=False):
+          ssl=True, check_u=None, graph_check=None, segment_output=False, labeled_batch_offset=0, write_result=True):
+    from itertools import islice
     import torch
     from torch.nn import functional as F
     from experiments.cric_dura_comparison import f_train, t1_model
@@ -46,7 +47,7 @@ def smoke(rt, *, rows=candidate_rows, configure=configuration, check_parent=pare
                 net._cd_U_iter = iter(net._cd_U_loader)
             elif loaders['unlabeled_loader'] is not None:
                 raise ValueError('Supervised source must not construct a U loader')
-            batch = next(iter(loaders['train_loader']))
+            batch = next(islice(iter(loaders['train_loader']), labeled_batch_offset, None))
             x, y, domain = [v.cuda() for v in batch[:3]]
             metadata = {k: v.cuda() if torch.is_tensor(v) else v for k, v in batch[3].items()}
             with net._phase1_labeled_feature_context():
@@ -77,8 +78,10 @@ def smoke(rt, *, rows=candidate_rows, configure=configuration, check_parent=pare
                                peak_allocated_bytes=torch.cuda.max_memory_allocated(), **details))
             del net, loss, correction, ce, output, loaders, cp, holder
         torch.cuda.empty_cache()
-    write(Path(rt['run_root']) / 'smoke.json', dict(status='PASS', checks=checks, real_checkpoint=True,
-          optimizer_updates=0, query_reads=0, U_truth_reads=0))
+    if write_result:
+        write(Path(rt['run_root']) / 'smoke.json', dict(status='PASS', checks=checks, real_checkpoint=True,
+              optimizer_updates=0, query_reads=0, U_truth_reads=0))
+    return checks
 
 
 def worker(c, kind):

@@ -7,7 +7,7 @@ from experiments.pamf_repl_view_shuffle.plan import VIEWS
 from experiments.pamf_single_view_paper.plan import PROTOCOLS
 from .plan import SEEDS, continuation
 
-RUN = '20261112-phase1-pamf-tri-two-methods-full-m60-r01'
+RUN = '20261112-phase1-pamf-tri-two-methods-full-m60-r02'
 METHODS = ('hybrid', 'branch_prototype')
 SETTINGS = {name: value[0] for name, value in PROTOCOLS.items() if name != 'source_rx_1'}
 

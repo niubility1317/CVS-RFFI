@@ -1,6 +1,7 @@
 from collections import Counter
 
 import torch
+import pytest
 
 from experiments.pamf_physics_tri import full_matrix_plan as plan
 from experiments.pamf_physics_tri.branch_guard import BranchGuard
@@ -44,3 +45,33 @@ def test_single_receiver_preserves_original_day_fallback(monkeypatch):
     grouped, allowed = obj.unlabeled_student_forward(None, torch.ones(2, 1), None, None, None, meta)
     assert grouped.tolist() == [2, 1] and allowed == [1, 2, 3]
     assert obj.c['source_rxs'] == [1]
+
+
+def test_only_genuinely_empty_certified_batch_is_retryable(monkeypatch):
+    from experiments.pamf_physics_tri import pair_runner
+    from experiments.pamf_physics_tri.full_matrix import EmptyCertifiedBatch
+    monkeypatch.setattr(pair_runner, 'check_single_rx', lambda _: {})
+    state = {'U_fused_physics': {'selected': 0}, 'U_hybrid_contrast': {'calls': 1, 'anchors': 0}}
+    with pytest.raises(EmptyCertifiedBatch):
+        pair_runner.check_full_matrix(state)
+    state['U_hybrid_contrast']['anchors'] = 1
+    with pytest.raises(ValueError, match='inconsistent'):
+        pair_runner.check_full_matrix(state)
+
+
+def test_matrix_smoke_retries_only_empty_source_batch(monkeypatch, tmp_path):
+    from experiments.pamf_physics_tri import full_matrix, runner
+    import json
+    monkeypatch.setattr(plan, 'candidate_rows', lambda: [{'row_id': 'one'}])
+    seen = []
+    def fake_smoke(rt, **kwargs):
+        offset = kwargs['labeled_batch_offset']
+        seen.append(offset)
+        if offset < 2:
+            raise full_matrix.EmptyCertifiedBatch()
+        return [{'row': 'one', 'finite_backward': True}]
+    monkeypatch.setattr(runner, 'smoke', fake_smoke)
+    full_matrix.smoke({'run_root': str(tmp_path)})
+    saved = json.loads((tmp_path / 'smoke.json').read_text())
+    assert seen == [0, 1, 2]
+    assert saved['checks'][0]['source_labeled_batch_offset'] == 2

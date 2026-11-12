@@ -177,6 +177,12 @@ def check_physical_branch_dropout(state):
 
 
 def check_full_matrix(state):
+    if state['U_fused_physics']['selected'] == 0:
+        from .full_matrix import EmptyCertifiedBatch
+        check_single_rx(state)
+        if state['U_hybrid_contrast']['calls'] != 1 or state['U_hybrid_contrast']['anchors'] != 0:
+            raise ValueError('Empty physical batch has inconsistent hybrid execution')
+        raise EmptyCertifiedBatch('No certified physical packet in this source batch')
     return check_source_prototype(state) if 'U_source_prototype' in state else check_hybrid_contrast(state)
 
 
@@ -211,6 +217,9 @@ def worker(c, kind):
     if kind == 'train':
         return train_trajectory(c, plan.parent(c), installed, ssl=True, physical_L=False)
     if kind == 'smoke':
+        if plan is full_matrix_plan:
+            from .full_matrix import smoke as full_matrix_smoke
+            return full_matrix_smoke(c)
         return smoke(c, rows=plan.candidate_rows, configure=plan.configuration, check_parent=plan.parent,
                      scope=installed, check_u=check_u,
                      graph_check=plan.check_graph if plan in (validation_plan, branchguard_plan, single_rx_plan, certified_day_plan, curriculum_plan, fused_physics_plan, multilevel_physics_plan, soft_channel_plan, packet_contrast_plan, hybrid_contrast_plan, teacher_anchor_plan, source_prototype_plan, physical_branch_dropout_plan, full_matrix_plan) else None,
