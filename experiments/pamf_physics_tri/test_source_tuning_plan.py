@@ -122,3 +122,43 @@ def test_preparation_registers_only_source_jobs_with_one_shared_partition(monkey
     configs = [json.loads(Path(j['config']).read_text(encoding='utf-8')) for j in jobs if j['kind'] == 'train']
     assert all(c['source_development'] == configs[0]['source_development'] for c in configs)
     assert all(not any(c.get(k) for k in ('truth', 'tests', 'target_inputs')) for c in configs)
+
+
+def test_one_percent_plan_uses_its_own_data_and_run(monkeypatch):
+    from experiments.pamf_paper_completion import plan as paper
+    from experiments.pamf_physics_tri import source_tuning_plan as plan, source_tuning_label01
+    monkeypatch.setattr(paper, 'configuration', lambda ctx, row, project, commit: {
+        'paper_row': row, 'source_contract': 'label01.json', 'model_seed': row['model_seed'],
+        'run_id': paper.RUN, 'row_id': row['row_id'], 'protocol_id': row['protocol_id']})
+    monkeypatch.setattr(paper, 'validate_config', lambda cfg: cfg)
+    with source_tuning_label01.configured():
+        rows = plan.candidate_rows()
+        assert len(rows) == 3 and {r['protocol_id'] for r in rows} == {'label01'}
+        for row in rows:
+            cfg = plan.configuration({}, row, '/project', 'commit',
+                {'train_ids': ['a'], 'dev_ids': ['b'], 'seed': 20261112})
+            assert cfg['paper_row']['data_setting'] == 'labeled_1pct'
+            assert cfg['run_id'] == source_tuning_label01.RUN
+            plan.validate(cfg)
+        scores = [{'row_id': r['row_id'], 'clean_accuracy': .8, 'physical_accuracy': .7} for r in rows]
+        assert select(scores)['temperature'] == .2
+
+
+def test_one_percent_release_targets_only_its_own_source_and_workers(monkeypatch):
+    from experiments.pamf_physics_tri import source_tuning_publish as publisher, source_tuning_label01
+    from experiments.pamf_branch_training import publish as base
+
+    def capture(*args, **kwargs):
+        script = base.REMOTE
+        compile(script.replace('PACKAGE', '{}'), '<remote-preflight>', 'exec')
+        assert "ctx['handles']['label01']" in script
+        assert 'labeled_1pct-factorial-ssl-full-permuted-s2026092701' in script
+        assert 'experiments.pamf_physics_tri.source_tuning_label01' in script
+        assert "rt['allowed_gpus']=[4, 5, 7]" in script
+        assert base.RUN == source_tuning_label01.RUN
+        return 'captured'
+
+    monkeypatch.setattr(base, 'publish', capture)
+    assert publisher.publish('repo', 'out', 'context', 'ssh', run_id=source_tuning_label01.RUN,
+        protocol_id='label01', setting='labeled_1pct',
+        worker_module='experiments.pamf_physics_tri.source_tuning_label01', gpus=(4, 5, 7)) == 'captured'

@@ -1,11 +1,11 @@
 """Fixed selection rule for the source-development temperature pilot."""
 import math
 
-from .source_tuning_plan import candidate_rows
+from . import source_tuning_plan as plan
 
 
 def select(scores):
-    rows = candidate_rows()
+    rows = plan.candidate_rows()
     by_id = {s['row_id']: s for s in scores}
     if len(by_id) != len(scores) or set(by_id) != {r['row_id'] for r in rows}:
         raise ValueError('Exactly one source-development score per registered candidate is required')

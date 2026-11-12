@@ -12,12 +12,16 @@ def prepare(rt):
     from .source_development import split_labeled_ids
 
     root, ctx = Path(rt['run_root']), read(rt['context'])
-    handle = ctx['handles']['ManyRx']
+    rows = plan.candidate_rows()
+    protocols = {row['protocol_id'] for row in rows}
+    if len(protocols) != 1:
+        raise ValueError('One source data configuration per pilot is required')
+    handle = ctx['handles'][next(iter(protocols))]
     source = SourceDataset(handle['source_cache'], 'L_s', read(handle['source_contract']))
     train_ids, dev_ids = split_labeled_ids(source.metadata['ids'], source.metadata['y'], seed=plan.SPLIT_SEED)
     partition = dict(train_ids=train_ids, dev_ids=dev_ids, seed=plan.SPLIT_SEED)
     jobs, sources = [], {}
-    for row in plan.candidate_rows():
+    for row in rows:
         cfg = plan.configuration(ctx, row, rt['project'], rt['code_commit'], partition)
         cfg['frozen_sources'] = rt['frozen_sources']
         rid, folder = row['row_id'], Path(cfg['output_root'])
@@ -51,7 +55,7 @@ def smoke(rt):
     checks = []
     for row in plan.candidate_rows():
         cfg = read(root / 'configs' / f"train__{row['row_id']}.json")
-        original = f"ten_class-factorial-ssl-full-permuted-s{row['model_seed']}"
+        original = f"{row['setting']}-factorial-ssl-full-permuted-s{row['model_seed']}"
         parent = Path(rt['project']) / 'runs' / PAPER_RUN / 'F' / original / 'source' / 'segment20'
 
         def parent_check(c):
@@ -124,7 +128,7 @@ def dispatch(rt):
 
     old = preparation.prepare, base.admits, base.launch, base.analyze
     preparation.prepare, base.admits = prepare, admits
-    base.launch = partial(launch, module='experiments.pamf_physics_tri.source_tuning_runner')
+    base.launch = partial(launch, module=rt.get('worker_module', 'experiments.pamf_physics_tri.source_tuning_runner'))
     base.analyze = analyze
     try:
         return base.dispatch(rt)

@@ -22,7 +22,7 @@ def validate_candidate(row):
 
 def configuration(context, row, project, commit, partition):
     validate_candidate(row)
-    original_id = f"ten_class-factorial-ssl-full-permuted-s{row['model_seed']}"
+    original_id = f"{row['setting']}-factorial-ssl-full-permuted-s{row['model_seed']}"
     paper_row = next(r for r in paper.make_plan()['rows'] if r['row_id'] == original_id)
     c = paper.configuration(context, paper_row, project, commit)
     c.update(run_id=RUN, row_id=row['row_id'], algorithm_id='pamf_tri_source_tuning_v1',
@@ -45,7 +45,7 @@ def validate(c):
     if (c.get('run_id') != RUN or c.get('row_id') != row['row_id']
             or c.get('model_seed') != row['model_seed'] or c.get('algorithm_id') != 'pamf_tri_source_tuning_v1'
             or c.get('protocol_id') != row['protocol_id']
-            or c.get('paper_row', {}).get('row_id') != f"ten_class-factorial-ssl-full-permuted-s{row['model_seed']}"
+            or c.get('paper_row', {}).get('row_id') != f"{row['setting']}-factorial-ssl-full-permuted-s{row['model_seed']}"
             or root.parts[-5:] != ('runs', RUN, 'F', row['row_id'], 'source')
             or not isinstance(part, dict) or set(part) != {'train_ids', 'dev_ids', 'seed'}
             or part['seed'] != SPLIT_SEED or not part['train_ids'] or not part['dev_ids']
