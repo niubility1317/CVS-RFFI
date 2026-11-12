@@ -1,5 +1,11 @@
 # CVS项目场景与数据协议
 
+## Phase2 三池 clean 配对诊断（2026-11-12，用户指定）
+
+本组对比使用既有三池任务的同一物理记录和 support/query 划分，将星地叠加前的地面 IQ 按原输入归一化方式作为 clean 输入。clean 仍包含实际地面信道、接收机和噪声，不能称为理想无噪输入；它不替换历史星地 received 或历史结果。三池物理互斥、池内多组重采样、K 前缀和 query 补集均保持。离线数据制作端可读取物理记录 ID 建立映射，模型只能读取当前阶段允许的 support 和 query，不得读取 query 标签或利用 query 更新状态；独立 truth-last 权限保持。
+
+PAMF 使用冻结的 Tri-SIG-TIME SSL 与 SCALR，仅比较 support raw/query raw 与 support 经冻结 DURA 恢复/query 经同一 DURA 恢复。其他对比方法仅使用 clean support raw/query raw。DURA 处理 clean 的结果须标明输入口径，不视为已证明有效。旧历史测试已暴露，此诊断不称为独立盲测。
+
 ## Phase2 R42 派生的无目标旧类 support 直接注册（2026-11-02，用户授权）
 
 用户要求对比两种直接注册：旧类识别分别使用冻结 Tri-SIG-TIME SSL 分类头，或使用冻结的源域 L_s 旧类原型；目标端仅使用新类 support，不执行 B，不读取或拟合目标旧类 support，实际目标标签为旧类 0、新类 N×K。原 R42 的平衡 support 门控及全类 support 拟合不适用，该实验必须称为 R42 派生变体，记录替代机制，不改标或覆盖原 R42。
