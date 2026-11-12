@@ -44,3 +44,20 @@ def test_plan_and_completion_bind_exact_clean_task(tmp_path):
     dump(out/'complete.json',dict(status='PREDICTIONS_COMPLETE',capsule_id='wrong',model_seed=2026092701,
                                   rows=2,truth_read=False,query_fit=False))
     assert not completion_matches(entry)
+
+
+def test_pamf_plan_rejects_missing_restoration_cache(tmp_path):
+    # The planner must not label a not-yet-produced cached run as ready.
+    parent=tmp_path/'parent';parent.mkdir();clean=tmp_path/'clean'
+    dump(clean/'completion.json',{'status':'CLEAN_PAIRED_COMPLETE','parent_task_root':str(parent)})
+    cache=tmp_path/'cache';cache.mkdir();phase1=tmp_path/'phase1';phase1.mkdir()
+    contract=tmp_path/'contract.json';dump(contract,{})
+    rt=dict(clean_root=str(clean),data_root=str(parent),restored_root=str(tmp_path/'missing'),
+            source_contract=str(contract),source_cache=str(cache),phase1_release=str(phase1),
+            release_root=str(tmp_path),arm='R42',kernel_method='adaptive_residual_ensemble',model_seeds=[2026092701])
+    job=dict(seed=2026092701,capsule='capsules/P01/MIX01/1-1',points=[[5,20]])
+    entry=dict(id='pamf',group='pamf',runtime=dump(tmp_path/'rt.json',rt),job=dump(tmp_path/'job.json',job),
+               completion=str(tmp_path/'run/task/predictions/1-1/complete.json'))
+    config=dict(run_root=str(tmp_path/'run'),jobs=[entry],max_per_gpu=2,minimum_free_MiB=6000,phase='pilot',
+                input_condition='clean_ground_pre_satellite_normalized',release_root=str(tmp_path),allowed_gpus=[0])
+    with pytest.raises(FileNotFoundError):validate_plan(config)

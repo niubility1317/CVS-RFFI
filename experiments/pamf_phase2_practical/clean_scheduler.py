@@ -41,6 +41,10 @@ def validate_plan(config):
         if group=='pamf':
             require(rt.get('arm')=='R42' and rt.get('kernel_method')=='adaptive_residual_ensemble'
                     and rt.get('model_seeds')==[job['seed']] and not job.get('reuse_file'), 'Wrong SCALR runtime')
+            if rt.get('restored_root'):
+                restored=read(Path(rt['restored_root'])/'completion.json')
+                require(restored.get('status')=='CLEAN_DURA_COMPLETE' and restored.get('restorer_id')=='dura_v1'
+                        and Path(restored['clean_root']).resolve()==clean,'Restored cache is missing or mismatched')
             source_root=Path(rt.get('scalr_source_root',rt['run_root']))
             require((Path(rt['PAMF_sources'][str(job['seed'])])/'final_ssdg.pth').is_file() and
                     Path(rt['DURA']['checkpoint']).is_file() and
