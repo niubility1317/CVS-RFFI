@@ -27,6 +27,7 @@ def analyze(rt):
         if used != accepted:
             raise ValueError('Confidence-accepted U and auxiliary exposures differ')
         entry = dict(row_id=row['row_id'], setting=row['setting'], model_seed=row['model_seed'],
+                     auxiliary_weight=row.get('auxiliary_weight', 1.),
                      current=current, ordinary_PL=pl, original_hybrid=hybrid,
                      coverage=dict(seen=seen, accepted=accepted, auxiliary_used=used),
                      clean_delta_vs_PL=current['clean'] - pl['clean'],
@@ -34,14 +35,14 @@ def analyze(rt):
                      clean_delta_vs_hybrid=current['clean'] - hybrid['clean'],
                      practical_delta_vs_hybrid=current['practical_mean'] - hybrid['practical_mean'])
         rows.append(entry)
-        groups[row['setting']].append(entry)
+        groups[(row['setting'], row.get('auxiliary_weight', 1.))].append(entry)
     summary = []
-    for setting, values in sorted(groups.items()):
+    for (setting, weight), values in sorted(groups.items()):
         if len(values) != len(plan.SEEDS):
             raise ValueError('Three declared seeds required per data configuration')
         n = len(values)
         average = lambda key: sum(v[key] for v in values) / n
-        summary.append(dict(setting=setting, seeds=n,
+        summary.append(dict(setting=setting, auxiliary_weight=weight, seeds=n,
             clean=sum(v['current']['clean'] for v in values) / n,
             practical_mean=sum(v['current']['practical_mean'] for v in values) / n,
             scenes={view: sum(v['current']['scenes'][view] for v in values) / n for view in VIEWS},
@@ -54,7 +55,7 @@ def analyze(rt):
     write(out / 'results.json', dict(status='ANALYZED', rows=rows, summary=summary,
           test_scope='direct clean and six practical', interpretation='previously exposed target; exploratory'))
     with (out / 'summary.csv').open('x', encoding='utf-8', newline='') as f:
-        fields = ['setting', 'seeds', 'clean', 'practical_mean', *VIEWS[1:], 'coverage',
+        fields = ['setting', 'auxiliary_weight', 'seeds', 'clean', 'practical_mean', *VIEWS[1:], 'coverage',
                   'clean_delta_vs_PL', 'practical_delta_vs_PL', 'clean_delta_vs_hybrid', 'practical_delta_vs_hybrid']
         writer = csv.DictWriter(f, fieldnames=fields)
         writer.writeheader()

@@ -139,7 +139,7 @@ def run(queues, read, atomic):
                 ok = (exit_code in (None, 0)) and done(q['by'][key])
                 state['jobs'][key] = dict(item, status='COMPLETE' if ok else 'FAILED',
                                           ended_at=time.time(), exit_code=exit_code)
-                if ok and key == 'smoke' and q['module'].endswith('confidence_runner'):
+                if ok and key == 'smoke':
                     peak = max(entry['peak_allocated_bytes'] for entry in read(q['root'] / 'smoke.json')['checks'])
                     state['admission_mib'] = max(6000, int(peak / 1024**2) + 2000)
                 if not ok:
@@ -152,7 +152,7 @@ def run(queues, read, atomic):
         owned_pids = {item['pid'] for _, _, _, item in active_items}
         available = [(q, job) for q in queues if not q['failed'] for job in q['jobs']
                      if q['state']['jobs'][job['id']]['status'] == 'QUEUED' and ready(job)
-                     and (not q['module'].endswith('confidence_runner') or job['kind'] != 'train'
+                     and ('smoke' not in q['state']['jobs'] or job['kind'] != 'train'
                           or q['state']['jobs']['smoke']['status'] == 'COMPLETE')]
         scoring = [(q, j) for q, j in available if j['kind'] in ('score', 'weak_score')]
         if scoring and not any(item['gpu'] is None for _, _, _, item in active_items) and not foreign_CPU_score(owned_pids):
@@ -206,6 +206,8 @@ def run(queues, read, atomic):
                 atomic(q['root'] / 'pipeline_state.json', state)
                 if q['module'].endswith('target_tuning_runner'):
                     from experiments.pamf_physics_tri.target_tuning_report import analyze
+                elif q['module'].endswith('hybrid_weight_runner'):
+                    from experiments.pamf_physics_tri.hybrid_weight_report import analyze
                 elif q['module'].endswith('hybrid_confidence_runner'):
                     from experiments.pamf_physics_tri.hybrid_confidence_report import analyze
                 elif q['module'].endswith('confidence_runner'):

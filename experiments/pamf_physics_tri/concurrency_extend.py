@@ -1,4 +1,4 @@
-"""Add the staged Hybrid queue to the existing single GPU owner."""
+"""Add staged reduced-weight Hybrid rows to the existing single GPU owner."""
 import argparse
 import os
 from pathlib import Path
@@ -10,12 +10,14 @@ from experiments.cric_dura_comparison.io import read
 from experiments.practical_full_2x2.cache import atomic
 from . import concurrency_takeover as scheduler
 
-OLD_RELEASE = scheduler.PROJECT / 'releases/20261113-phase1-pamf-confidence-only-m9-r01-release'
+OLD_RELEASE = scheduler.PROJECT / 'releases/20261113-phase1-pamf-hybrid-confidence-m30-r01-release'
 OLD_MODULE = 'experiments.pamf_physics_tri.concurrency_extend'
-NEW_RUN = '20261113-phase1-pamf-hybrid-confidence-m30-r01'
-NEW_MODULE = 'experiments.pamf_physics_tri.hybrid_confidence_runner'
+NEW_RUN = '20261113-phase1-pamf-hybrid-confidence-weight-m24-r01'
+NEW_MODULE = 'experiments.pamf_physics_tri.hybrid_weight_runner'
 EXISTING = scheduler.RUNS + (('20261113-phase1-pamf-confidence-only-m9-r01',
-                              'experiments.pamf_physics_tri.confidence_runner', None),)
+                              'experiments.pamf_physics_tri.confidence_runner', None),
+                             ('20261113-phase1-pamf-hybrid-confidence-m30-r01',
+                              'experiments.pamf_physics_tri.hybrid_confidence_runner', None))
 
 
 def queues():
