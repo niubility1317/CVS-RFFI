@@ -206,10 +206,14 @@ def installed(c, holder, *, objective_factory=None, base_scope=None):
                     raise ValueError('Receiver-excluded certificates require true source L labels')
                 group = objective.labeled_group(meta, labels) if hasattr(objective, 'labeled_group') else rx
                 objective.labeled = kwargs['labeled_inputs'].detach(), labels.detach(), group
+                if hasattr(objective, 'labeled_metadata'):
+                    objective.labeled_metadata = meta
                 try:
                     return original_hook(**kwargs)
                 finally:
                     objective.labeled = None
+                    if hasattr(objective, 'labeled_metadata'):
+                        objective.labeled_metadata = None
 
             hook._accepts_labeled_inputs = True
             model._source_labeled_feature_hook = MethodType(hook, model)
