@@ -3,7 +3,7 @@
 - run_id：`20261113-phase1-pamf-hybrid-confidence-low-m24-r01`
 - group_id：`phase1-pamf-branch-prototype-tuning`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（以远端状态和 events.jsonl 为准）
 
 ## 目的与对照
 
@@ -16,6 +16,8 @@
 ## 执行与存储
 
 N607 独立 run 和输出目录；GPU 7 每卡总进程上限 4，其余卡上限 6，并检查剩余显存。真实权重无目标查询 smoke 后自动训练，每行训练完成即自动预测 clean 和六种 practical 场景，七景预测完成后独立 truth-last 评分。系统性技术失败停止本队列新派发，保留既有结果及其他 owner。具体命令、环境、路径见 experiment.json。
+
+执行 commit `b3f6a04ac1792f0f39dd1dc1a3a1829037c0a893`；发布包传输校验和远端编译通过。远端 owner PID 2270706 已启动真实 checkpoint smoke，等待通过后自动派发训练。
 
 ## 结果与覆盖
 
