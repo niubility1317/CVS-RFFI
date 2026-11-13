@@ -7,7 +7,8 @@ from .io import read,require,write
 
 
 def prepare(plan_root,run_root,release_root,clean_root,pamf_template,group1_template,
-            additional_template,source_root,scalr_root,*,capsules,seed,allowed_gpus,restored_root=None):
+            additional_template,source_root,scalr_root,*,capsules,seed,allowed_gpus,restored_root=None,
+            orthogonal_source_root=None):
     plan_root=Path(plan_root).resolve();run_root=Path(run_root).resolve();release_root=Path(release_root).resolve()
     require(seed in (2026092701,2026092702,2026092703,2026092704),'Unknown seed')
     require(capsules and len(capsules)<=5 and len(set(capsules))==len(capsules),'Choose at most five distinct pilot capsules')
@@ -16,11 +17,21 @@ def prepare(plan_root,run_root,release_root,clean_root,pamf_template,group1_temp
     require(allowed_gpus and len(set(allowed_gpus))==len(allowed_gpus) and all(type(g) is int and 0<=g<=7 for g in allowed_gpus),'Wrong GPU list')
     require(not run_root.exists(),'Run output root already exists')
     pamf=read(pamf_template);native=read(group1_template);additional=read(additional_template)
+    if orthogonal_source_root is not None:
+        folder=Path(orthogonal_source_root)/'source'/f'orthogonal-s{seed}'
+        require((folder/'source.pt').is_file()
+                and read(folder/'recipe.json')['schema']=='group1_source_orthogonal_tempered_PL_v2',
+                'Missing corrected Orthogonal source')
     plan_root.mkdir(parents=True,exist_ok=False);(plan_root/'runtime').mkdir();(plan_root/'jobs').mkdir()
     native_file=plan_root/'runtime/native.json'
     native.update(data_root=pamf['data_root'],clean_root=str(clean_root),run_root=str(source_root),source_run_root=str(source_root),
                   release_root=str(release_root),runtime_file=str(native_file),additional_sources=additional['additional_sources'])
     write(native_file,native)
+    orthogonal_file=None
+    if orthogonal_source_root is not None:
+        orthogonal_file=plan_root/'runtime/orthogonal.json'
+        write(orthogonal_file,dict(native,run_root=str(Path(orthogonal_source_root).resolve()),
+                                   runtime_file=str(orthogonal_file)))
     jobs=[];blocked=[]
     b_profiles=('protonet_cda','mrior_sda','dadda_sda','twostage','poster_ft')
     def add(key,group,rt_file,job,out):
@@ -49,9 +60,17 @@ def prepare(plan_root,run_root,release_root,clean_root,pamf_template,group1_temp
             add(key,'hybrid',native_file,dict(common,profile=profile,methods=['orthogonal','lora'],output=str(out)),out)
         key=f'hybrid-tweak_m1-{i:02d}';out=run_root/'tasks'/key
         add(key,'hybrid',native_file,dict(common,profile='tweak_m1',methods=['lora','orthogonal'],output=str(out)),out)
-        blocked.extend([dict(capsule=cap,profile='orthogonal_fixed',reason='matching repaired source weights unavailable'),
-                        dict(capsule=cap,profile='mopc_hr_public_code',reason='genuine nonfinite failure unresolved'),
-                        dict(capsule=cap,profile='tweak_m1_to_mopc',reason='genuine MoPC nonfinite failure unresolved')])
+        if orthogonal_file:
+            key=f'cil-orthogonal-{i:02d}';out=run_root/'tasks'/key
+            add(key,'native_cil',orthogonal_file,dict(common,profile='orthogonal',output=str(out)),out)
+        else:
+            blocked.append(dict(capsule=cap,group='native_cil',profile='orthogonal_fixed',
+                                reason='matching repaired source weights unavailable'))
+        blocked.append(dict(capsule=cap,group='native_cil',profile='mopc_hr_public_code',
+                            reason='genuine nonfinite failure unresolved'))
+        blocked.extend(dict(capsule=cap,group='hybrid',profile=profile,method='mopc_hr',
+                            reason='genuine MoPC nonfinite failure unresolved')
+                       for profile in (*b_profiles,'tweak_m1'))
     queue=dict(phase='pilot',run_root=str(run_root),release_root=str(release_root),jobs=jobs,allowed_gpus=allowed_gpus,
         max_per_gpu=2,minimum_free_MiB=6000,poll_seconds=5,input_condition='clean_ground_pre_satellite_normalized')
     write(plan_root/'scheduler.json',queue)
@@ -69,10 +88,11 @@ def main():
         p.add_argument('--'+name,required=True)
     p.add_argument('--capsule',action='append',required=True);p.add_argument('--seed',type=int,default=2026092701)
     p.add_argument('--gpu',action='append',type=int,required=True);p.add_argument('--restored-root')
+    p.add_argument('--orthogonal-source-root')
     a=p.parse_args()
     result=prepare(a.plan_root,a.run_root,a.release_root,a.clean_root,a.pamf_template,a.group1_template,
         a.additional_template,a.source_root,a.scalr_root,capsules=a.capsule,seed=a.seed,
-        allowed_gpus=a.gpu,restored_root=a.restored_root)
+        allowed_gpus=a.gpu,restored_root=a.restored_root,orthogonal_source_root=a.orthogonal_source_root)
     print(result)
 
 

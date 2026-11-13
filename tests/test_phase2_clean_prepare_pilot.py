@@ -28,7 +28,20 @@ def test_prepare_pilot_emits_bound_queue_and_explicit_blockers(tmp_path):
     group1=put(tmp_path/'group1.json',common);additional=put(tmp_path/'additional.json',{'additional_sources':extras})
     summary=prepare(tmp_path/'plan',tmp_path/'run',release,clean,pamf,group1,additional,source,scalr.parent,
         capsules=['capsules/P01/MIX01/1-1'],seed=seed,allowed_gpus=[0,1])
-    assert summary['jobs']==15 and len(summary['blocked'])==3 and not summary['formal_experiment_started']
+    assert summary['jobs']==15 and len(summary['blocked'])==8 and not summary['formal_experiment_started']
+    assert {r['profile'] for r in summary['blocked'] if r['group']=='hybrid'}=={
+        'protonet_cda','mrior_sda','dadda_sda','twostage','poster_ft','tweak_m1'}
     config=json.loads((tmp_path/'plan/scheduler.json').read_text())
     assert validate_plan(config)['jobs']==15
     assert not (tmp_path/'run').exists()
+    repaired=tmp_path/'repaired'
+    folder=repaired/'source'/f'orthogonal-s{seed}'
+    put(folder/'recipe.json',{'schema':'group1_source_orthogonal_tempered_PL_v2'})
+    (folder/'source.pt').write_bytes(b'x')
+    summary=prepare(tmp_path/'ready-plan',tmp_path/'ready-run',release,clean,pamf,group1,additional,source,scalr.parent,
+        capsules=['capsules/P01/MIX01/1-1'],seed=seed,allowed_gpus=[0,1],orthogonal_source_root=repaired)
+    assert summary['jobs']==16 and len(summary['blocked'])==7
+    config=json.loads((tmp_path/'ready-plan/scheduler.json').read_text())
+    assert validate_plan(config)['jobs']==16
+    orthogonal=next(entry for entry in config['jobs'] if entry['id']=='cil-orthogonal-00')
+    assert json.loads(open(orthogonal['runtime']).read())['run_root']==str(repaired)

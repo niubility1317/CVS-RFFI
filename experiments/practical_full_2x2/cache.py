@@ -108,11 +108,14 @@ class Reader:
         req=dict(protocol_id=self.c['protocol_id'],epoch=epoch,stage=stage,probability=p,
             source_cache=self.c['source_cache'],source_contract=self.c['source_contract'],cache_root=self.c['augmentation_cache'])
         path=Path(self.c['augmentation_cache'])/'requests'/(name+'.json')
-        if not path.exists():atomic(path,req)
+        if not self.c.get('reuse_source_augmentation') and not path.exists():atomic(path,req)
         return path,Path(req['cache_root'])/req['protocol_id']/key(epoch,stage,p)
     def get(self,indices,epoch,stage,progress,max_epochs):
         p=probability(progress);path,root=self.request(epoch,stage,p)
-        if epoch<max_epochs:self.request(epoch+1,stage,probability(epoch/max_epochs))
+        if self.c.get('reuse_source_augmentation'):
+            if not (root/'complete.json').is_file():
+                raise ValueError('Read-only source augmentation cache is incomplete')
+        elif epoch<max_epochs:self.request(epoch+1,stage,probability(epoch/max_epochs))
         begin=time.monotonic()
         while not (root/'complete.json').exists():
             if path.with_suffix('.failed').exists():raise RuntimeError(read(path.with_suffix('.failed'))['error'])
