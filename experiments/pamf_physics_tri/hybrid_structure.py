@@ -10,6 +10,10 @@ from experiments.pamf_ssl_research.u_gradprotect_objective import projected_grad
 from pathlib import Path
 
 
+def physical_delta_norm(x,view,accepted):
+    return torch.where(accepted,(view-x).flatten(1).norm(dim=1),torch.zeros_like(accepted,dtype=x.dtype))
+
+
 class HybridStructure(HybridTracked):
     def __init__(self, c, probe=None):
         super().__init__(c)
@@ -28,14 +32,17 @@ class HybridStructure(HybridTracked):
             self.trace_batch = dict(epoch=epoch, step=step, packet=metadata['base_index'].detach().cpu().tolist(),
                 rx=metadata['rx_i'].detach().cpu().tolist(), day=metadata['day_i'].detach().cpu().tolist(),
                 confidence=self.trace_confidence.cpu().tolist(), pseudo=pseudo.detach().cpu().tolist(),
-                accepted=accepted.detach().cpu().tolist(),physical_strength=0.,main_view_routed=0,aux_physical_nonzero=0)
+                accepted=accepted.detach().cpu().tolist(),physical_strength=0.,main_view_routed=0,
+                aux_physical_nonzero=0,physical_delta_l2=[0.]*len(x))
             mixed = ordinary.clone(); mixed[physical] = x[physical]
             return mixed
         mixed = super().mixed_view(student, x, ordinary, physical, metadata, epoch, step, pseudo, accepted)
         strength=view_strength(self.c['practical_gate'],epoch)
+        delta=physical_delta_norm(x,self.aux_view,accepted)
         self.trace_batch.update(physical_strength=strength,
             main_view_routed=int(accepted.sum()) if self.c['structure_arm'] in ('B','D') else 0,
-            aux_physical_nonzero=int(accepted.sum()) if self.c['structure_arm'] in ('C','D','E') and strength>0 else 0)
+            aux_physical_nonzero=int((delta>0).sum()) if self.c['structure_arm'] in ('C','D','E') else 0,
+            physical_delta_l2=delta.detach().cpu().tolist())
         if self.c['structure_arm'] in ('B', 'D'):
             self.as_physical_used += int((accepted & physical).sum())
             return self.aux_view

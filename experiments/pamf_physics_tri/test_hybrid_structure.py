@@ -7,6 +7,7 @@ from torch import nn
 from experiments.cric_dura_comparison import f_optimizer
 from experiments.pamf_physics_tri.hybrid_update_probe import installed
 from experiments.pamf_physics_tri.hybrid_paired_score import net_stats
+from experiments.pamf_physics_tri.hybrid_structure import physical_delta_norm
 
 
 def test_structural_matrix_has_matched_abcd_without_parameter_grid():
@@ -52,3 +53,9 @@ def test_paired_net_corrections_and_damage_are_both_counted():
     overall=next(r for r in rows if r['dimension']=='overall')
     assert (overall['repairs'],overall['damage'],overall['net'],overall['count'])==(2,1,1,4)
     assert sum(r['net'] for r in rows if r['dimension']=='receiver')==1
+
+
+def test_actual_physical_change_only_counts_accepted_nonzero_views():
+    x=torch.zeros(3,2);view=torch.tensor([[3.,4.],[0.,0.],[6.,8.]])
+    actual=physical_delta_norm(x,view,torch.tensor([True,True,False]))
+    torch.testing.assert_close(actual,torch.tensor([5.,0.,0.]))
