@@ -27,12 +27,30 @@ N607 与既有低权重任务使用同一资源 owner，GPU 7 总进程上限 4�
 
 | 实验行／方法 | clean | high | mid | low suburban | high urban | mid urban | low urban | 六景平均 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
+| receiver_split_2-hybrid-tracked-contrast-s2026092701：普通 PL | 83.39 | 80.84 | 77.64 | 74.61 | 77.13 | 61.99 | 50.46 | 70.45 |
+| receiver_split_2-hybrid-tracked-contrast-s2026092701：原 Hybrid | 84.24 | 76.15 | 73.37 | 71.11 | 72.62 | 58.99 | 48.42 | 66.78 |
+| receiver_split_2-hybrid-tracked-contrast-s2026092701：独立视图方案 | 84.29 | 77.24 | 74.44 | 71.98 | 73.70 | 59.78 | 49.02 | 67.69 |
+| receiver_split_2-hybrid-tracked-contrast-s2026092702：普通 PL | 82.81 | 78.71 | 75.74 | 72.99 | 75.06 | 60.54 | 49.40 | 68.74 |
+| receiver_split_2-hybrid-tracked-contrast-s2026092702：原 Hybrid | 83.30 | 77.82 | 74.71 | 72.04 | 74.23 | 59.59 | 48.65 | 67.84 |
+| receiver_split_2-hybrid-tracked-contrast-s2026092702：独立视图方案 | 83.81 | 78.16 | 75.07 | 72.36 | 74.63 | 59.84 | 48.84 | 68.15 |
+| receiver_split_2-hybrid-tracked-positive-s2026092701：普通 PL | 83.39 | 80.84 | 77.64 | 74.61 | 77.13 | 61.99 | 50.46 | 70.45 |
+| receiver_split_2-hybrid-tracked-positive-s2026092701：原 Hybrid | 84.24 | 76.15 | 73.37 | 71.11 | 72.62 | 58.99 | 48.42 | 66.78 |
+| receiver_split_2-hybrid-tracked-positive-s2026092701：独立视图方案 | 84.01 | 77.80 | 74.82 | 72.31 | 74.24 | 60.14 | 49.12 | 68.07 |
+| receiver_split_2-hybrid-tracked-positive-s2026092702：普通 PL | 82.81 | 78.71 | 75.74 | 72.99 | 75.06 | 60.54 | 49.40 | 68.74 |
+| receiver_split_2-hybrid-tracked-positive-s2026092702：原 Hybrid | 83.30 | 77.82 | 74.71 | 72.04 | 74.23 | 59.59 | 48.65 | 67.84 |
+| receiver_split_2-hybrid-tracked-positive-s2026092702：独立视图方案 | 83.54 | 77.61 | 74.63 | 71.97 | 74.07 | 59.59 | 48.67 | 67.76 |
 | ten_class-hybrid-tracked-contrast-s2026092701：普通 PL | 84.20 | 74.86 | 70.99 | 67.36 | 70.69 | 53.51 | 40.97 | 63.06 |
 | ten_class-hybrid-tracked-contrast-s2026092701：原 Hybrid | 82.50 | 73.06 | 69.19 | 65.60 | 68.85 | 52.04 | 39.95 | 61.45 |
 | ten_class-hybrid-tracked-contrast-s2026092701：独立视图方案 | 82.42 | 73.15 | 69.26 | 65.73 | 68.97 | 52.17 | 39.98 | 61.54 |
 | ten_class-hybrid-tracked-contrast-s2026092702：普通 PL | 83.89 | 75.76 | 71.87 | 68.37 | 71.56 | 54.11 | 41.32 | 63.83 |
 | ten_class-hybrid-tracked-contrast-s2026092702：原 Hybrid | 83.80 | 73.82 | 69.92 | 66.35 | 69.82 | 52.63 | 40.32 | 62.14 |
 | ten_class-hybrid-tracked-contrast-s2026092702：独立视图方案 | 83.69 | 73.93 | 70.02 | 66.40 | 69.94 | 52.68 | 40.32 | 62.21 |
+| ten_class-hybrid-tracked-contrast-s2026092703：普通 PL | 83.41 | 74.75 | 70.76 | 67.29 | 70.58 | 53.53 | 41.03 | 62.99 |
+| ten_class-hybrid-tracked-contrast-s2026092703：原 Hybrid | 83.06 | 74.11 | 70.14 | 66.64 | 70.01 | 52.96 | 40.54 | 62.40 |
+| ten_class-hybrid-tracked-contrast-s2026092703：独立视图方案 | 83.08 | 74.12 | 70.20 | 66.70 | 69.99 | 53.04 | 40.60 | 62.44 |
+| ten_class-hybrid-tracked-positive-s2026092701：普通 PL | 84.20 | 74.86 | 70.99 | 67.36 | 70.69 | 53.51 | 40.97 | 63.06 |
+| ten_class-hybrid-tracked-positive-s2026092701：原 Hybrid | 82.50 | 73.06 | 69.19 | 65.60 | 68.85 | 52.04 | 39.95 | 61.45 |
+| ten_class-hybrid-tracked-positive-s2026092701：独立视图方案 | 82.40 | 73.11 | 69.20 | 65.67 | 68.90 | 52.19 | 39.99 | 61.51 |
 
 10 类 contrast 模式的 seed 01／02 已完整记录 30 轮：各 1704960 次 U 曝光，分别通过 1372008／1371602 次，均覆盖 58828 个不同 base_index。对连续重复曝光，伪类别分别变化 25366／1646132 和 24866／1646132 次；这只是预测稳定性，并非伪标签正确率。此组预定测试只有 raw；报告驱动 A/B/C/D 实验另有 raw 和 DURA-LU。
 
