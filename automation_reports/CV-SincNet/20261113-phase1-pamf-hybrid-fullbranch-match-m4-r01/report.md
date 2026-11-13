@@ -3,7 +3,7 @@
 - run_id：`20261113-phase1-pamf-hybrid-fullbranch-match-m4-r01`
 - group_id：`phase1-pamf-branch-prototype-tuning`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（以远端状态和 events.jsonl 为准）
 
 ## 目的与对照
 
@@ -16,6 +16,8 @@ E 条件与已发布 C 融合层条件严格配对：Main 的 2026092701 和 10 
 ## 执行与存储
 
 逐样本记录源 U 置信度、伪类别、RX/day、两次增强视图预测及辅助损失；每 50 步同步，记录独立辅助梯度和同状态 AdamW 更新差量。统一 owner 保留其他健康 worker 并按每 GPU 6、GPU 7 为 4 的总进程上限与显存余量调度。每行自动预测 raw 和 DURA-LU 的 clean＋六种场景并独立评分；C 与 E 的预测冻结后独立计算各 TX/RX/day 错变对、对变错和净变化。
+
+执行 commit `aa3abebe712a2ec478318df5c391646e8c807bf4`；发布传输和远端编译已核实。统一 owner PID 2369027 保留既有健康 worker；已逐项核对四组 C/E resolved config，仅实验身份与是否增加分支辅助不同。真实权重 smoke 正等待 GPU 容量，后续训练和测试自动接续。
 
 ## 结果与覆盖
 
