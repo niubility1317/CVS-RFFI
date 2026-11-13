@@ -206,6 +206,8 @@ def run(queues, read, atomic):
                 atomic(q['root'] / 'pipeline_state.json', state)
                 if q['module'].endswith('target_tuning_runner'):
                     from experiments.pamf_physics_tri.target_tuning_report import analyze
+                elif q['module'].endswith('hybrid_low_runner'):
+                    from experiments.pamf_physics_tri.hybrid_low_report import analyze
                 elif q['module'].endswith('hybrid_weight_runner'):
                     from experiments.pamf_physics_tri.hybrid_weight_report import analyze
                 elif q['module'].endswith('hybrid_confidence_runner'):

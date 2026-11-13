@@ -1,0 +1,942 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261113-phase1-pamf-hybrid-confidence-low-m24-r01",
+  "group_id": "phase1-pamf-branch-prototype-tuning",
+  "display_name": "Hybrid 全置信样本低辅助权重对照",
+  "description": "四种配置、三种子比较全置信 Hybrid 辅助权重 0.05 与 0.10，并配对既有全权重。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-hybrid-confidence-low-auxiliary-weight"
+  ],
+  "tags": [
+    "PAMF",
+    "Hybrid",
+    "confidence-only",
+    "auxiliary-weight"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-paper-completion-m119-r03",
+    "20261112-phase1-pamf-tri-two-methods-full-m60-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-11-13 用户将优化目标更改为 Hybrid，要求所有通过置信度的伪标签参与辅助训练。",
+  "code": {
+    "commit": "actual committed release identity in runtime.json",
+    "checkout": "PAMF branch-training Git worktree",
+    "environment": "N607 existing CVS-RFFI Python, FP32",
+    "cwd": "PROJECT/releases/20261113-phase1-pamf-hybrid-confidence-low-m24-r01-release"
+  },
+  "data": {
+    "dataset": "original receiver split 2, ten-class, 1%-labeled and six-source-receiver",
+    "version": "existing source data",
+    "representation": "IQ [2,256]",
+    "contract_ref": "context.handles indexed by row protocol_id",
+    "physical_ids_ref": "original source and test contracts",
+    "label_map_ref": "each matching source contract classes",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "each matching source contract",
+    "roles": {
+      "L_s": "complete original labeled role for each configuration",
+      "U_s": "original source U, TX hidden",
+      "V": "original source V unchanged"
+    },
+    "train_ratio": "original per-configuration roles; no source holdout",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing data roles; Phase2 capsule not applicable",
+    "support_query_ref": "per-row frozen seven-view prediction then independent truth-last scoring",
+    "leo_config_ref": "original six practical scenario views, identical physical IDs per matched row"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "frozen direct prediction then independent truth-last",
+    "external_method_exception": null,
+    "claim_scope": "previously exposed test sets; exploratory comparison without target feedback into training"
+  },
+  "checkpoint": {
+    "initialization": "same-setting same-seed original full-L Tri E20, then own E10+E20",
+    "sources": [
+      "20261027-phase1-pamf-paper-completion-m119-r03"
+    ],
+    "contract_check_ref": "hybrid_confidence_plan.parent -> full_matrix_plan.parent",
+    "provenance_verdict": "matching original full-source same-seed E20; no held-out L or target ancestry",
+    "selection_rule": "all 30 fixed rows, final E50; no target-driven checkpoint selection"
+  },
+  "execution": {
+    "host": "N607 ordinary user",
+    "launch_owner": "codex-20261113-phase1-pamf-hybrid-confidence-low-m24-r01",
+    "gpu_policy": "single shared owner; GPU 7 total max 4 and other cards max 6, includes other users and memory reservations",
+    "remote_run_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01",
+    "remote_log_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_hybrid_low_20261113",
+    "launch_command": "python -m experiments.pamf_physics_tri.hybrid_low_publish --repo REPO --output LOCAL_ROOT --context CONTEXT --ssh-config N607_CONFIG",
+    "stop_rule": "Systemic technical failure stops new dispatch for the affected queue; preserve other healthy workers and outputs"
+  },
+  "expected_artifacts": [
+    "real-checkpoint no-query smoke per weight and setting",
+    "24 matching full-source E30/E50 continuations",
+    "24 direct seven-view predictions and independent truth-last scores",
+    "matched ordinary PL, original Hybrid and full-weight confidence Hybrid comparisons"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean accuracy",
+      "six individual practical accuracies",
+      "six-scene mean",
+      "accepted and routed exposures",
+      "pseudo-class counts"
+    ],
+    "dimensions": [
+      "four configurations",
+      "two auxiliary weights",
+      "three seeds",
+      "clean and six practical",
+      "TX/RX/day"
+    ],
+    "prediction_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/readouts/ROW/predictions",
+    "scorer_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/readouts/ROW/scores"
+  },
+  "rows": [
+    {
+      "row_id": "receiver_split_2-hybrid-confidence-weight005-s2026092701",
+      "method": "Hybrid all confidence >=0.95; extra auxiliary weight 0.05; no vote or prototype",
+      "purpose": "fixed confidence-only Hybrid comparison",
+      "config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__receiver_split_2-hybrid-confidence-weight005-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/receiver_split_2-hybrid-confidence-weight005-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F2_rx_repartition_r01"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed source and target roles; no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matching original Tri scratch E20 reused; own E10 + E20 = 6660 updates",
+      "output_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/receiver_split_2-hybrid-confidence-weight005-s2026092701/source",
+      "log_path": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs/train__receiver_split_2-hybrid-confidence-weight005-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__receiver_split_2-hybrid-confidence-weight005-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/receiver_split_2-hybrid-confidence-weight005-s2026092701/predictions/complete.json",
+        "readouts/receiver_split_2-hybrid-confidence-weight005-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "receiver_split_2-hybrid-confidence-weight005-s2026092702",
+      "method": "Hybrid all confidence >=0.95; extra auxiliary weight 0.05; no vote or prototype",
+      "purpose": "fixed confidence-only Hybrid comparison",
+      "config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__receiver_split_2-hybrid-confidence-weight005-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/receiver_split_2-hybrid-confidence-weight005-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F2_rx_repartition_r01"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed source and target roles; no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matching original Tri scratch E20 reused; own E10 + E20 = 6660 updates",
+      "output_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/receiver_split_2-hybrid-confidence-weight005-s2026092702/source",
+      "log_path": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs/train__receiver_split_2-hybrid-confidence-weight005-s2026092702.log",
+      "command": "worker --kind train --config PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__receiver_split_2-hybrid-confidence-weight005-s2026092702.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/receiver_split_2-hybrid-confidence-weight005-s2026092702/predictions/complete.json",
+        "readouts/receiver_split_2-hybrid-confidence-weight005-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "receiver_split_2-hybrid-confidence-weight005-s2026092703",
+      "method": "Hybrid all confidence >=0.95; extra auxiliary weight 0.05; no vote or prototype",
+      "purpose": "fixed confidence-only Hybrid comparison",
+      "config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__receiver_split_2-hybrid-confidence-weight005-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/receiver_split_2-hybrid-confidence-weight005-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F2_rx_repartition_r01"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed source and target roles; no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matching original Tri scratch E20 reused; own E10 + E20 = 6660 updates",
+      "output_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/receiver_split_2-hybrid-confidence-weight005-s2026092703/source",
+      "log_path": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs/train__receiver_split_2-hybrid-confidence-weight005-s2026092703.log",
+      "command": "worker --kind train --config PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__receiver_split_2-hybrid-confidence-weight005-s2026092703.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/receiver_split_2-hybrid-confidence-weight005-s2026092703/predictions/complete.json",
+        "readouts/receiver_split_2-hybrid-confidence-weight005-s2026092703/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "receiver_split_2-hybrid-confidence-weight010-s2026092701",
+      "method": "Hybrid all confidence >=0.95; extra auxiliary weight 0.1; no vote or prototype",
+      "purpose": "fixed confidence-only Hybrid comparison",
+      "config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__receiver_split_2-hybrid-confidence-weight010-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/receiver_split_2-hybrid-confidence-weight010-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F2_rx_repartition_r01"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed source and target roles; no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matching original Tri scratch E20 reused; own E10 + E20 = 6660 updates",
+      "output_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/receiver_split_2-hybrid-confidence-weight010-s2026092701/source",
+      "log_path": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs/train__receiver_split_2-hybrid-confidence-weight010-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__receiver_split_2-hybrid-confidence-weight010-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/receiver_split_2-hybrid-confidence-weight010-s2026092701/predictions/complete.json",
+        "readouts/receiver_split_2-hybrid-confidence-weight010-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "receiver_split_2-hybrid-confidence-weight010-s2026092702",
+      "method": "Hybrid all confidence >=0.95; extra auxiliary weight 0.1; no vote or prototype",
+      "purpose": "fixed confidence-only Hybrid comparison",
+      "config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__receiver_split_2-hybrid-confidence-weight010-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/receiver_split_2-hybrid-confidence-weight010-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F2_rx_repartition_r01"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed source and target roles; no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matching original Tri scratch E20 reused; own E10 + E20 = 6660 updates",
+      "output_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/receiver_split_2-hybrid-confidence-weight010-s2026092702/source",
+      "log_path": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs/train__receiver_split_2-hybrid-confidence-weight010-s2026092702.log",
+      "command": "worker --kind train --config PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__receiver_split_2-hybrid-confidence-weight010-s2026092702.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/receiver_split_2-hybrid-confidence-weight010-s2026092702/predictions/complete.json",
+        "readouts/receiver_split_2-hybrid-confidence-weight010-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "receiver_split_2-hybrid-confidence-weight010-s2026092703",
+      "method": "Hybrid all confidence >=0.95; extra auxiliary weight 0.1; no vote or prototype",
+      "purpose": "fixed confidence-only Hybrid comparison",
+      "config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__receiver_split_2-hybrid-confidence-weight010-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/receiver_split_2-hybrid-confidence-weight010-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F2_rx_repartition_r01"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed source and target roles; no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matching original Tri scratch E20 reused; own E10 + E20 = 6660 updates",
+      "output_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/receiver_split_2-hybrid-confidence-weight010-s2026092703/source",
+      "log_path": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs/train__receiver_split_2-hybrid-confidence-weight010-s2026092703.log",
+      "command": "worker --kind train --config PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__receiver_split_2-hybrid-confidence-weight010-s2026092703.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/receiver_split_2-hybrid-confidence-weight010-s2026092703/predictions/complete.json",
+        "readouts/receiver_split_2-hybrid-confidence-weight010-s2026092703/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-hybrid-confidence-weight005-s2026092701",
+      "method": "Hybrid all confidence >=0.95; extra auxiliary weight 0.05; no vote or prototype",
+      "purpose": "fixed confidence-only Hybrid comparison",
+      "config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__ten_class-hybrid-confidence-weight005-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/ten_class-hybrid-confidence-weight005-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed source and target roles; no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matching original Tri scratch E20 reused; own E10 + E20 = 6660 updates",
+      "output_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/ten_class-hybrid-confidence-weight005-s2026092701/source",
+      "log_path": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs/train__ten_class-hybrid-confidence-weight005-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__ten_class-hybrid-confidence-weight005-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-hybrid-confidence-weight005-s2026092701/predictions/complete.json",
+        "readouts/ten_class-hybrid-confidence-weight005-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-hybrid-confidence-weight005-s2026092702",
+      "method": "Hybrid all confidence >=0.95; extra auxiliary weight 0.05; no vote or prototype",
+      "purpose": "fixed confidence-only Hybrid comparison",
+      "config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__ten_class-hybrid-confidence-weight005-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/ten_class-hybrid-confidence-weight005-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed source and target roles; no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matching original Tri scratch E20 reused; own E10 + E20 = 6660 updates",
+      "output_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/ten_class-hybrid-confidence-weight005-s2026092702/source",
+      "log_path": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs/train__ten_class-hybrid-confidence-weight005-s2026092702.log",
+      "command": "worker --kind train --config PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__ten_class-hybrid-confidence-weight005-s2026092702.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-hybrid-confidence-weight005-s2026092702/predictions/complete.json",
+        "readouts/ten_class-hybrid-confidence-weight005-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-hybrid-confidence-weight005-s2026092703",
+      "method": "Hybrid all confidence >=0.95; extra auxiliary weight 0.05; no vote or prototype",
+      "purpose": "fixed confidence-only Hybrid comparison",
+      "config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__ten_class-hybrid-confidence-weight005-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/ten_class-hybrid-confidence-weight005-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed source and target roles; no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matching original Tri scratch E20 reused; own E10 + E20 = 6660 updates",
+      "output_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/ten_class-hybrid-confidence-weight005-s2026092703/source",
+      "log_path": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs/train__ten_class-hybrid-confidence-weight005-s2026092703.log",
+      "command": "worker --kind train --config PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__ten_class-hybrid-confidence-weight005-s2026092703.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-hybrid-confidence-weight005-s2026092703/predictions/complete.json",
+        "readouts/ten_class-hybrid-confidence-weight005-s2026092703/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-hybrid-confidence-weight010-s2026092701",
+      "method": "Hybrid all confidence >=0.95; extra auxiliary weight 0.1; no vote or prototype",
+      "purpose": "fixed confidence-only Hybrid comparison",
+      "config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__ten_class-hybrid-confidence-weight010-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/ten_class-hybrid-confidence-weight010-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed source and target roles; no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matching original Tri scratch E20 reused; own E10 + E20 = 6660 updates",
+      "output_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/ten_class-hybrid-confidence-weight010-s2026092701/source",
+      "log_path": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs/train__ten_class-hybrid-confidence-weight010-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__ten_class-hybrid-confidence-weight010-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-hybrid-confidence-weight010-s2026092701/predictions/complete.json",
+        "readouts/ten_class-hybrid-confidence-weight010-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-hybrid-confidence-weight010-s2026092702",
+      "method": "Hybrid all confidence >=0.95; extra auxiliary weight 0.1; no vote or prototype",
+      "purpose": "fixed confidence-only Hybrid comparison",
+      "config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__ten_class-hybrid-confidence-weight010-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/ten_class-hybrid-confidence-weight010-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed source and target roles; no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matching original Tri scratch E20 reused; own E10 + E20 = 6660 updates",
+      "output_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/ten_class-hybrid-confidence-weight010-s2026092702/source",
+      "log_path": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs/train__ten_class-hybrid-confidence-weight010-s2026092702.log",
+      "command": "worker --kind train --config PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__ten_class-hybrid-confidence-weight010-s2026092702.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-hybrid-confidence-weight010-s2026092702/predictions/complete.json",
+        "readouts/ten_class-hybrid-confidence-weight010-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-hybrid-confidence-weight010-s2026092703",
+      "method": "Hybrid all confidence >=0.95; extra auxiliary weight 0.1; no vote or prototype",
+      "purpose": "fixed confidence-only Hybrid comparison",
+      "config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__ten_class-hybrid-confidence-weight010-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/ten_class-hybrid-confidence-weight010-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed source and target roles; no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matching original Tri scratch E20 reused; own E10 + E20 = 6660 updates",
+      "output_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/ten_class-hybrid-confidence-weight010-s2026092703/source",
+      "log_path": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs/train__ten_class-hybrid-confidence-weight010-s2026092703.log",
+      "command": "worker --kind train --config PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__ten_class-hybrid-confidence-weight010-s2026092703.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-hybrid-confidence-weight010-s2026092703/predictions/complete.json",
+        "readouts/ten_class-hybrid-confidence-weight010-s2026092703/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-hybrid-confidence-weight005-s2026092701",
+      "method": "Hybrid all confidence >=0.95; extra auxiliary weight 0.05; no vote or prototype",
+      "purpose": "fixed confidence-only Hybrid comparison",
+      "config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__labeled_1pct-hybrid-confidence-weight005-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/labeled_1pct-hybrid-confidence-weight005-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed source and target roles; no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matching original Tri scratch E20 reused; own E10 + E20 = 6660 updates",
+      "output_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/labeled_1pct-hybrid-confidence-weight005-s2026092701/source",
+      "log_path": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs/train__labeled_1pct-hybrid-confidence-weight005-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__labeled_1pct-hybrid-confidence-weight005-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/labeled_1pct-hybrid-confidence-weight005-s2026092701/predictions/complete.json",
+        "readouts/labeled_1pct-hybrid-confidence-weight005-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-hybrid-confidence-weight005-s2026092702",
+      "method": "Hybrid all confidence >=0.95; extra auxiliary weight 0.05; no vote or prototype",
+      "purpose": "fixed confidence-only Hybrid comparison",
+      "config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__labeled_1pct-hybrid-confidence-weight005-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/labeled_1pct-hybrid-confidence-weight005-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed source and target roles; no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matching original Tri scratch E20 reused; own E10 + E20 = 6660 updates",
+      "output_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/labeled_1pct-hybrid-confidence-weight005-s2026092702/source",
+      "log_path": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs/train__labeled_1pct-hybrid-confidence-weight005-s2026092702.log",
+      "command": "worker --kind train --config PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__labeled_1pct-hybrid-confidence-weight005-s2026092702.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/labeled_1pct-hybrid-confidence-weight005-s2026092702/predictions/complete.json",
+        "readouts/labeled_1pct-hybrid-confidence-weight005-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-hybrid-confidence-weight005-s2026092703",
+      "method": "Hybrid all confidence >=0.95; extra auxiliary weight 0.05; no vote or prototype",
+      "purpose": "fixed confidence-only Hybrid comparison",
+      "config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__labeled_1pct-hybrid-confidence-weight005-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/labeled_1pct-hybrid-confidence-weight005-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed source and target roles; no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matching original Tri scratch E20 reused; own E10 + E20 = 6660 updates",
+      "output_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/labeled_1pct-hybrid-confidence-weight005-s2026092703/source",
+      "log_path": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs/train__labeled_1pct-hybrid-confidence-weight005-s2026092703.log",
+      "command": "worker --kind train --config PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__labeled_1pct-hybrid-confidence-weight005-s2026092703.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/labeled_1pct-hybrid-confidence-weight005-s2026092703/predictions/complete.json",
+        "readouts/labeled_1pct-hybrid-confidence-weight005-s2026092703/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-hybrid-confidence-weight010-s2026092701",
+      "method": "Hybrid all confidence >=0.95; extra auxiliary weight 0.1; no vote or prototype",
+      "purpose": "fixed confidence-only Hybrid comparison",
+      "config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__labeled_1pct-hybrid-confidence-weight010-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/labeled_1pct-hybrid-confidence-weight010-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed source and target roles; no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matching original Tri scratch E20 reused; own E10 + E20 = 6660 updates",
+      "output_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/labeled_1pct-hybrid-confidence-weight010-s2026092701/source",
+      "log_path": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs/train__labeled_1pct-hybrid-confidence-weight010-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__labeled_1pct-hybrid-confidence-weight010-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/labeled_1pct-hybrid-confidence-weight010-s2026092701/predictions/complete.json",
+        "readouts/labeled_1pct-hybrid-confidence-weight010-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-hybrid-confidence-weight010-s2026092702",
+      "method": "Hybrid all confidence >=0.95; extra auxiliary weight 0.1; no vote or prototype",
+      "purpose": "fixed confidence-only Hybrid comparison",
+      "config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__labeled_1pct-hybrid-confidence-weight010-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/labeled_1pct-hybrid-confidence-weight010-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed source and target roles; no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matching original Tri scratch E20 reused; own E10 + E20 = 6660 updates",
+      "output_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/labeled_1pct-hybrid-confidence-weight010-s2026092702/source",
+      "log_path": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs/train__labeled_1pct-hybrid-confidence-weight010-s2026092702.log",
+      "command": "worker --kind train --config PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__labeled_1pct-hybrid-confidence-weight010-s2026092702.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/labeled_1pct-hybrid-confidence-weight010-s2026092702/predictions/complete.json",
+        "readouts/labeled_1pct-hybrid-confidence-weight010-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-hybrid-confidence-weight010-s2026092703",
+      "method": "Hybrid all confidence >=0.95; extra auxiliary weight 0.1; no vote or prototype",
+      "purpose": "fixed confidence-only Hybrid comparison",
+      "config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__labeled_1pct-hybrid-confidence-weight010-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/labeled_1pct-hybrid-confidence-weight010-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed source and target roles; no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matching original Tri scratch E20 reused; own E10 + E20 = 6660 updates",
+      "output_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/labeled_1pct-hybrid-confidence-weight010-s2026092703/source",
+      "log_path": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs/train__labeled_1pct-hybrid-confidence-weight010-s2026092703.log",
+      "command": "worker --kind train --config PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__labeled_1pct-hybrid-confidence-weight010-s2026092703.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/labeled_1pct-hybrid-confidence-weight010-s2026092703/predictions/complete.json",
+        "readouts/labeled_1pct-hybrid-confidence-weight010-s2026092703/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-hybrid-confidence-weight005-s2026092701",
+      "method": "Hybrid all confidence >=0.95; extra auxiliary weight 0.05; no vote or prototype",
+      "purpose": "fixed confidence-only Hybrid comparison",
+      "config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__source_rx_6-hybrid-confidence-weight005-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/source_rx_6-hybrid-confidence-weight005-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed source and target roles; no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matching original Tri scratch E20 reused; own E10 + E20 = 6660 updates",
+      "output_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/source_rx_6-hybrid-confidence-weight005-s2026092701/source",
+      "log_path": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs/train__source_rx_6-hybrid-confidence-weight005-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__source_rx_6-hybrid-confidence-weight005-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/source_rx_6-hybrid-confidence-weight005-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-hybrid-confidence-weight005-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-hybrid-confidence-weight005-s2026092702",
+      "method": "Hybrid all confidence >=0.95; extra auxiliary weight 0.05; no vote or prototype",
+      "purpose": "fixed confidence-only Hybrid comparison",
+      "config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__source_rx_6-hybrid-confidence-weight005-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/source_rx_6-hybrid-confidence-weight005-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed source and target roles; no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matching original Tri scratch E20 reused; own E10 + E20 = 6660 updates",
+      "output_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/source_rx_6-hybrid-confidence-weight005-s2026092702/source",
+      "log_path": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs/train__source_rx_6-hybrid-confidence-weight005-s2026092702.log",
+      "command": "worker --kind train --config PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__source_rx_6-hybrid-confidence-weight005-s2026092702.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/source_rx_6-hybrid-confidence-weight005-s2026092702/predictions/complete.json",
+        "readouts/source_rx_6-hybrid-confidence-weight005-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-hybrid-confidence-weight005-s2026092703",
+      "method": "Hybrid all confidence >=0.95; extra auxiliary weight 0.05; no vote or prototype",
+      "purpose": "fixed confidence-only Hybrid comparison",
+      "config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__source_rx_6-hybrid-confidence-weight005-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/source_rx_6-hybrid-confidence-weight005-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed source and target roles; no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matching original Tri scratch E20 reused; own E10 + E20 = 6660 updates",
+      "output_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/source_rx_6-hybrid-confidence-weight005-s2026092703/source",
+      "log_path": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs/train__source_rx_6-hybrid-confidence-weight005-s2026092703.log",
+      "command": "worker --kind train --config PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__source_rx_6-hybrid-confidence-weight005-s2026092703.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/source_rx_6-hybrid-confidence-weight005-s2026092703/predictions/complete.json",
+        "readouts/source_rx_6-hybrid-confidence-weight005-s2026092703/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-hybrid-confidence-weight010-s2026092701",
+      "method": "Hybrid all confidence >=0.95; extra auxiliary weight 0.1; no vote or prototype",
+      "purpose": "fixed confidence-only Hybrid comparison",
+      "config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__source_rx_6-hybrid-confidence-weight010-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/source_rx_6-hybrid-confidence-weight010-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed source and target roles; no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matching original Tri scratch E20 reused; own E10 + E20 = 6660 updates",
+      "output_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/source_rx_6-hybrid-confidence-weight010-s2026092701/source",
+      "log_path": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs/train__source_rx_6-hybrid-confidence-weight010-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__source_rx_6-hybrid-confidence-weight010-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/source_rx_6-hybrid-confidence-weight010-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-hybrid-confidence-weight010-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-hybrid-confidence-weight010-s2026092702",
+      "method": "Hybrid all confidence >=0.95; extra auxiliary weight 0.1; no vote or prototype",
+      "purpose": "fixed confidence-only Hybrid comparison",
+      "config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__source_rx_6-hybrid-confidence-weight010-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/source_rx_6-hybrid-confidence-weight010-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed source and target roles; no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matching original Tri scratch E20 reused; own E10 + E20 = 6660 updates",
+      "output_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/source_rx_6-hybrid-confidence-weight010-s2026092702/source",
+      "log_path": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs/train__source_rx_6-hybrid-confidence-weight010-s2026092702.log",
+      "command": "worker --kind train --config PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__source_rx_6-hybrid-confidence-weight010-s2026092702.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/source_rx_6-hybrid-confidence-weight010-s2026092702/predictions/complete.json",
+        "readouts/source_rx_6-hybrid-confidence-weight010-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-hybrid-confidence-weight010-s2026092703",
+      "method": "Hybrid all confidence >=0.95; extra auxiliary weight 0.1; no vote or prototype",
+      "purpose": "fixed confidence-only Hybrid comparison",
+      "config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__source_rx_6-hybrid-confidence-weight010-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/source_rx_6-hybrid-confidence-weight010-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed source and target roles; no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matching original Tri scratch E20 reused; own E10 + E20 = 6660 updates",
+      "output_root": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/F/source_rx_6-hybrid-confidence-weight010-s2026092703/source",
+      "log_path": "PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/logs/train__source_rx_6-hybrid-confidence-weight010-s2026092703.log",
+      "command": "worker --kind train --config PROJECT/runs/20261113-phase1-pamf-hybrid-confidence-low-m24-r01/configs/train__source_rx_6-hybrid-confidence-weight010-s2026092703.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/source_rx_6-hybrid-confidence-weight010-s2026092703/predictions/complete.json",
+        "readouts/source_rx_6-hybrid-confidence-weight010-s2026092703/scores/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Every confidence-accepted source U packet is routed into Hybrid auxiliary training, including the original non-physical half; branch votes and prototype loss are absent.",
+    "If only one accepted pseudo-class occurs, a same-packet cosine term substitutes for unavailable contrastive negatives.",
+    "The existing physical strength taper is retained; expanded physical routing also changes the original mixed U path.",
+    "Prior ordinary PL and original Hybrid controls are reused by same setting and seed.",
+    "Previously exposed target tests imply exploratory results; fixed matrix and training do not depend on target scores.",
+    "The fixed 0.05 and 0.10 coefficients scale only the additional Hybrid fusion/branch auxiliary loss; all confidence-accepted U remain selected.",
+    "The 1.0 confidence-only Hybrid is the completed 20261113-phase1-pamf-hybrid-confidence-m30-r01, reused by setting and seed.",
+    "Full-weight scores never block reduced-weight training or testing; incomplete comparisons are recorded as pending."
+  ],
+  "registered_at": "2026-11-13T01:40:35+00:00"
+}
