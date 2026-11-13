@@ -12,12 +12,17 @@ def occupancy():
     raw=subprocess.check_output(['nvidia-smi','--query-gpu=uuid,index,memory.free','--format=csv,noheader,nounits'],text=True)
     result={};mapping={}
     for line in raw.splitlines():
-        uid,gpu,free=[v.strip() for v in line.split(',')];mapping[uid]=int(gpu);result[int(gpu)]=dict(pids=set(),free=int(free),blocked=False)
-    for line in subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid','--format=csv,noheader,nounits'],text=True).splitlines():
-        uid,pid=[v.strip() for v in line.split(',')];pid=int(pid);r=result[mapping[uid]];r['pids'].add(pid)
+        uid,gpu,free=[v.strip() for v in line.split(',')];mapping[uid]=int(gpu);result[int(gpu)]=dict(pids=set(),used_by_pid={},free=int(free),blocked=False)
+    for line in subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid,used_gpu_memory','--format=csv,noheader,nounits'],text=True).splitlines():
+        uid,pid,used=[v.strip() for v in line.split(',')];pid=int(pid);r=result[mapping[uid]];r['pids'].add(pid)
+        r['used_by_pid'][pid]=int(used) if used.isdigit() else 0
         try:owner=Path('/proc',str(pid)).stat().st_uid
         except FileNotFoundError:owner=None
         if owner!=os.getuid():r['blocked']=True
+    # Read free memory after process usage so growing allocations are never
+    # paired with an older, larger free-memory figure.
+    for line in subprocess.check_output(['nvidia-smi','--query-gpu=index,memory.free','--format=csv,noheader,nounits'],text=True).splitlines():
+        gpu,free=map(int,line.split(','));result[gpu]['free']=min(result[gpu]['free'],free)
     # Count admitted workers which have not initialized CUDA yet, including other owners.
     for p in Path('/proc').iterdir():
         if not p.name.isdigit():continue

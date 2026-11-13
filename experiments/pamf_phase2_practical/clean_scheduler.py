@@ -10,17 +10,19 @@ import time
 
 from .clean_external_worker import validate as validate_external
 from .clean_pairing import EPISODES,POOLS,RECEIVERS
-from .io import read, require, write
+from .io import atomic, read, require, write
 
 
 def validate_plan(config):
     root=Path(config['run_root']).resolve();jobs=config['jobs'];ids=set();outputs=set();capsules=set();seeds=set()
-    require(jobs and config.get('max_per_gpu')==2 and config.get('minimum_free_MiB',0)>=6000,'Wrong resource limits')
+    limit=config.get('max_per_gpu')
+    require(jobs and limit in (2,5) and config.get('minimum_free_MiB',0)>=6000,'Wrong resource limits')
     require(config.get('input_condition')=='clean_ground_pre_satellite_normalized','Wrong input condition')
     require(config.get('phase')=='pilot','Full matrix requires preregistered scientific thresholds and is not yet enabled')
     require(Path(config['release_root']).is_dir(),'Missing immutable release root')
     gpus=config.get('allowed_gpus',[])
     require(gpus and len(gpus)==len(set(gpus)) and all(type(g) is int and 0<=g<=7 for g in gpus),'Wrong GPU list')
+    require(limit!=5 or len(gpus)==4,'Five workers per GPU require the four-GPU pilot configuration')
     allowed_capsules={f'capsules/{p}/{e}/{r}' for p in POOLS for e in EPISODES for r in RECEIVERS}
     for entry in jobs:
         key=entry['id'];require(re.fullmatch(r'[A-Za-z0-9_-]+',key) is not None and key not in ids,'Invalid or duplicate job id');ids.add(key)
@@ -70,7 +72,7 @@ def validate_plan(config):
     return dict(jobs=len(jobs),groups=sorted({x['group'] for x in jobs}),prediction_only=True,truth_opened=False)
 
 
-def choose(jobs,active,devices,allowed,minimum_free):
+def choose(jobs,active,devices,allowed,minimum_free,max_per_gpu=2):
     """Return safe (job,gpu) admissions for one resource snapshot."""
     pending=sorted(jobs,key=lambda j:(j.get('priority',0),-j.get('measured_cost_seconds',0),j['id']))
     own_pids={v['pid'] for v in active.values()};chosen=[]
@@ -78,9 +80,12 @@ def choose(jobs,active,devices,allowed,minimum_free):
         if not pending:break
         device=devices[gpu];others=set(device['pids'])-own_pids
         if device.get('blocked') or others:continue
-        own=sum(v['gpu']==gpu for v in active.values())
-        free=device['free']
-        while pending and own<2 and free>=minimum_free:
+        admitted={v['pid'] for v in active.values() if v['gpu']==gpu}
+        own=len(admitted)
+        used_by_pid=device.get('used_by_pid',{})
+        reserved=sum(max(0,minimum_free-used_by_pid.get(pid,0)) for pid in admitted)
+        free=device['free']-reserved
+        while pending and own<max_per_gpu and free>=minimum_free:
             job=pending.pop(0);chosen.append((job,gpu));own+=1;free-=minimum_free
     return chosen
 
@@ -113,19 +118,29 @@ def dispatch(config):
             del active[key]
         if failed:pending.clear()
         if not failed and not stopped:
-            for job,gpu in choose(pending,{k:dict(pid=v['process'].pid,gpu=v['gpu']) for k,v in active.items()},
-                                  occupancy(),config['allowed_gpus'],config['minimum_free_MiB']):
+            try:
+                admitted=choose(pending,{k:dict(pid=v['process'].pid,gpu=v['gpu']) for k,v in active.items()},
+                                occupancy(),config['allowed_gpus'],config['minimum_free_MiB'],config['max_per_gpu'])
+            except (OSError,ValueError,KeyError,subprocess.SubprocessError) as exc:
+                failed.append(dict(id='occupancy',error=str(exc)));admitted=[]
+            for job,gpu in admitted:
                 module='clean_scalr_worker' if job['group']=='pamf' else 'clean_external_worker'
                 cmd=[sys.executable,'-u','-m',__package__+'.'+module,'--runtime',job['runtime'],'--job',job['job']]
                 if job['group']!='pamf':cmd.extend(['--group',job['group']])
                 env=dict(os.environ,CUDA_VISIBLE_DEVICES=str(gpu),OMP_NUM_THREADS='1',MKL_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1')
-                log=(control/'logs'/(job['id']+'.log')).open('x',encoding='utf-8')
-                try:process=subprocess.Popen(cmd,cwd=config['release_root'],env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT)
-                except Exception:log.close();raise
+                log=None
+                try:
+                    log=(control/'logs'/(job['id']+'.log')).open('x',encoding='utf-8')
+                    process=subprocess.Popen(cmd,cwd=config['release_root'],env=env,stdin=subprocess.DEVNULL,
+                                             stdout=log,stderr=subprocess.STDOUT)
+                except OSError as exc:
+                    if log is not None:log.close()
+                    failed.append(dict(id=job['id'],error=str(exc)));break
                 active[job['id']]=dict(job=job,gpu=gpu,process=process,stream=log);pending.remove(job)
+        if failed:pending.clear()
         status='FAILED' if failed else 'STOPPED' if stopped else 'RUNNING'
-        write(control/'state.json',dict(status=status,completed=len(done),failed=failed,pending=len(pending),
-             active=[dict(id=k,pid=v['process'].pid,gpu=v['gpu']) for k,v in active.items()],truth_opened=False),exclusive=False)
+        atomic(control/'state.json',dict(status=status,completed=len(done),failed=failed,pending=len(pending),
+               active=[dict(id=k,pid=v['process'].pid,gpu=v['gpu']) for k,v in active.items()],truth_opened=False))
         if pending or active:time.sleep(config.get('poll_seconds',5))
     if failed:raise RuntimeError('Technical failure retained; no further jobs dispatched')
     if stopped:return

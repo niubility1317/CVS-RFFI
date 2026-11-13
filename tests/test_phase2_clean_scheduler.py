@@ -35,6 +35,9 @@ def test_plan_and_completion_bind_exact_clean_task(tmp_path):
     config=dict(run_root=str(tmp_path/'run'),jobs=[entry],max_per_gpu=2,minimum_free_MiB=6000,
                 input_condition='clean_ground_pre_satellite_normalized',phase='pilot',release_root=str(tmp_path),allowed_gpus=[0,1])
     assert validate_plan(config)['jobs']==1
+    assert validate_plan(dict(config,max_per_gpu=5,allowed_gpus=[1,2,3,4]))['jobs']==1
+    with pytest.raises(ValueError,match='four-GPU'):
+        validate_plan(dict(config,max_per_gpu=5))
     with pytest.raises(ValueError):validate_plan(dict(config,jobs=[entry,entry]))
     with pytest.raises(ValueError):validate_plan(dict(config,minimum_free_MiB=4000))
     with pytest.raises(ValueError):validate_plan(dict(config,phase='full'))
@@ -44,6 +47,15 @@ def test_plan_and_completion_bind_exact_clean_task(tmp_path):
     dump(out/'complete.json',dict(status='PREDICTIONS_COMPLETE',capsule_id='wrong',model_seed=2026092701,
                                   rows=2,truth_read=False,query_fit=False))
     assert not completion_matches(entry)
+
+
+def test_five_worker_limit_reserves_unallocated_memory():
+    jobs=[dict(id=str(i)) for i in range(10)]
+    active={str(i):dict(pid=i,gpu=1) for i in range(1,5)}
+    devices={1:dict(pids={1,2,3,4},used_by_pid={1:6000,2:6000,3:6000,4:200},free=11799)}
+    assert choose(jobs,active,devices,[1],6000,5)==[]
+    devices[1]['free']=11800
+    assert len(choose(jobs,active,devices,[1],6000,5))==1
 
 
 def test_pamf_plan_rejects_missing_restoration_cache(tmp_path):
