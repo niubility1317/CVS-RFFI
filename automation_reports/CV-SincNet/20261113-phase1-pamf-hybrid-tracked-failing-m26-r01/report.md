@@ -3,7 +3,7 @@
 - run_id：`20261113-phase1-pamf-hybrid-tracked-failing-m26-r01`
 - group_id：`phase1-pamf-branch-prototype-tuning`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（以远端状态和 events.jsonl 为准）
 
 ## 目的与对照
 
@@ -18,6 +18,8 @@
 所有置信度至少 0.95 的 U 进入辅助损失；每批原 U 训练维持 ordinary/raw 半批，额外辅助视图独立生成，恒定物理扰动强度 0.1、辅助权重 0.1。两模式分别使用伪类别负样本对比和无伪类别负样本的同信号余弦。每个 U 曝光记录 base_index、RX/day、置信度、伪类别、通过状态、两个辅助视图预测及辅助损失；每 50 步同步落盘并单独记录辅助梯度与有标签梯度的分组点积及范数，另记录追加后的 U 总损失。轨迹不含真值或 IQ，沿原合法源域身份记录，仅供事后诊断。
 
 N607 与既有低权重任务使用同一资源 owner，GPU 7 总进程上限 4，其余 GPU 总进程上限 6，并按剩余显存准入；不重启健康训练。真实权重 no-query smoke 通过后自动逐行训练、七景预测、独立 truth-last 评分并按选中种子报告。系统性技术失败停止新派发；路径、命令及选定种子见 experiment.json。
+
+执行 commit `7c6b607f9bdbe2424a2ccf2b44951574ee762921`；发布包传输和远端编译已验证。统一 owner PID 2319567 接续先前 24 个健康训练 worker；真实 checkpoint 的五配置×两模式共 10 组 smoke 均通过，U 真值与目标查询读取次数均为 0，首批 7 行训练已启动。
 
 ## 结果与覆盖
 
