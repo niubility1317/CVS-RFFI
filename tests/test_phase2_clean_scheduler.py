@@ -36,8 +36,9 @@ def test_plan_and_completion_bind_exact_clean_task(tmp_path):
                 input_condition='clean_ground_pre_satellite_normalized',phase='pilot',release_root=str(tmp_path),allowed_gpus=[0,1])
     assert validate_plan(config)['jobs']==1
     assert validate_plan(dict(config,max_per_gpu=5,allowed_gpus=[1,2,3,4]))['jobs']==1
-    with pytest.raises(ValueError,match='four-GPU'):
+    with pytest.raises(ValueError,match='three or four'):
         validate_plan(dict(config,max_per_gpu=5))
+    assert validate_plan(dict(config,max_per_gpu=5,allowed_gpus=[1,2,3]))['jobs']==1
     with pytest.raises(ValueError):validate_plan(dict(config,jobs=[entry,entry]))
     with pytest.raises(ValueError):validate_plan(dict(config,minimum_free_MiB=4000))
     with pytest.raises(ValueError):validate_plan(dict(config,phase='full'))

@@ -22,7 +22,7 @@ def validate_plan(config):
     require(Path(config['release_root']).is_dir(),'Missing immutable release root')
     gpus=config.get('allowed_gpus',[])
     require(gpus and len(gpus)==len(set(gpus)) and all(type(g) is int and 0<=g<=7 for g in gpus),'Wrong GPU list')
-    require(limit!=5 or len(gpus)==4,'Five workers per GPU require the four-GPU pilot configuration')
+    require(limit!=5 or len(gpus) in (3,4),'Five workers per GPU require three or four configured GPUs')
     allowed_capsules={f'capsules/{p}/{e}/{r}' for p in POOLS for e in EPISODES for r in RECEIVERS}
     for entry in jobs:
         key=entry['id'];require(re.fullmatch(r'[A-Za-z0-9_-]+',key) is not None and key not in ids,'Invalid or duplicate job id');ids.add(key)
