@@ -26,9 +26,11 @@ def summarize_trace(paths):
                     receivers[str(rx)] += 1; days[str(day)] += 1
                     if accepted:
                         classes[str(pseudo)] += 1
-                        counts['accepted_view1_agrees'] += int(v1 == pseudo)
-                        counts['accepted_view2_agrees'] += int(v2 == pseudo)
-                        e['accepted_views_both_agree'] += int(v1 == pseudo and v2 == pseudo)
+                        if v1 is not None and v2 is not None:
+                            counts['accepted_aux_views_observed'] += 1
+                            counts['accepted_view1_agrees'] += int(v1 == pseudo)
+                            counts['accepted_view2_agrees'] += int(v2 == pseudo)
+                            e['accepted_views_both_agree'] += int(v1 == pseudo and v2 == pseudo)
                     if packet in previous:
                         counts['repeat_exposures'] += 1
                         counts['pseudo_changed'] += int(previous[packet] != pseudo)
