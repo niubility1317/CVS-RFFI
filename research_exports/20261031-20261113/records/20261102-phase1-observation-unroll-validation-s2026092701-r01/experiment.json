@@ -1,0 +1,115 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-observation-unroll-validation-s2026092701-r01",
+  "group_id": "phase1-observation-unroll",
+  "display_name": "Phase1 observation-conditioned unrolled inverse fixed evaluation",
+  "description": "Frozen observation-conditioned three-step blind inverse; no DURA in candidate, fixed Tri-SIG-TIME SSL.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "hierarchical_prior",
+    "blind_channel",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-observation-unroll-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "Blind action posterior plus three observation/learned prior updates; no DURA in candidate",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No source true identity labels, simulated channel truth, U_s truth, V or test in this validation; clean-F pseudo labels only",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Source clean F high-confidence pseudo targets only; no TX labels, U_s truth, V or test.",
+    "external_method_exception": null,
+    "claim_scope": "Source source IDs used by F and seen in other channel views, pseudo targets not independent test; bounded correction may exploit classifier"
+  },
+  "checkpoint": {
+    "initialization": "Frozen source-trained observation-conditioned unrolled network, source-only blind channel and Gaussian prior, gate .8; DURA comparator only.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "Observation-conditioned source training commit 7d9c8570361db942713359149c4b2e46be06281b; blind source estimator 94693a342bb2daa684c0f21415d7b949f9fb2107 and frozen source prior.",
+    "provenance_verdict": "Source only; DURA absent from candidate; fixed evaluation before source validation or target results. Prior model training running at registration.",
+    "selection_rule": "Before source training completes, fixed three correction strengths and two gates; RX4/6 classification and IQ guard versus parent and DURA, net gain >=10; RX8 heldout; ground test always full model."
+  },
+  "expected_artifacts": [
+    "source_validation.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "per receiver and scenario clean-F pseudo target agreement",
+      "aligned IQ normalized MSE",
+      "violations and fixed selection rule"
+    ],
+    "dimensions": [
+      "RX4/6 validation and RX8 source heldout across seven scenarios; two input gates"
+    ],
+    "scientific_rule": "Frozen clean F pseudo targets, per-cell classification and aligned IQ guard, no TX identity truth or target."
+  },
+  "rows": [
+    {
+      "row_id": "free_full_hard_validation_s2026092701",
+      "method": "Observation-conditioned three-step unrolled inverse",
+      "purpose": "Fixed evaluation of end-to-end source-trained physics-conditioned restoration",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120454,
+        "split": 392005,
+        "data": 2026120355,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "Prior model seed 2026125054; fixed final epoch8; no source validation training.",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "none (fixed checkpoint)",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source_validation.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Fixed evaluation while unrolled model source training running, before source validation or ground results.",
+    "No DURA architecture, weights, teacher output or inference in candidate; DURA only as external comparator.",
+    "Three fixed observation-gradient and learned bounded correction steps; step .8 and ground gate .8.",
+    "Previously explored Phase1 source and ground test; simulated single-seed results not independent blind or real satellite."
+  ]
+}

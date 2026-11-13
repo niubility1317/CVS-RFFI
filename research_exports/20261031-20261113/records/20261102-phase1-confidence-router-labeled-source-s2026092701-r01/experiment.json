@@ -1,0 +1,122 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-confidence-router-labeled-source-s2026092701-r01",
+  "group_id": "phase1-confidence-router-labeled-source",
+  "display_name": "置信度候选选择合法源标签真值后复核",
+  "description": "固定相对盲父模型入选的候选输出，先完整冻结预测，再用合法 L_s 地面训练标签比较干净、原始、DURA、父模型和候选。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "L_s_truth_last",
+    "blind_channel",
+    "diagnostic",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-confidence-router-source-validation-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "IQ [2,256], source L_s roles only; source truth released after prediction artifact fixed",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Only legitimate source L_s truth after all predictions fixed; no U_s truth, V or test read",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "L_s source-only prediction first, independently score with source L_s truth later; no U_s truth, V or target IQ",
+    "external_method_exception": null,
+    "claim_scope": "Source L_s data previously used by ground F and/or prior views; not independent blind or target test"
+  },
+  "checkpoint": {
+    "initialization": "Fixed source-selected gate .8, candidate confidence margin .05, fixed clean denoiser, blind estimator and source prior; F frozen; DURA comparator only.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "Source selection SHA256 2d3cac93b1e177258003891ff203d9b392f57b023cef8fcc387166ae0e017a24; denoiser SHA256 5f23bc370ea445dbffe21e1a125f1066321a9df46a1c90e0b617648255323642; blind/prior fixed.",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "No model selection. Freeze source predictions and SHA256 first; score L_s truth once for source diagnosis."
+  },
+  "expected_artifacts": [
+    "prediction_complete.json",
+    "predictions.npz",
+    "source_truth_score.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source L_s labeled correct counts",
+      "paired repairs and harms versus blind parent and DURA"
+    ],
+    "dimensions": [
+      "RX4/6 combined by scenario",
+      "RX8 by scenario"
+    ],
+    "scientific_rule": "Only source L_s labels after fixed predictions; source exposure already occurred; no target or clean-blind claim."
+  },
+  "rows": [
+    {
+      "row_id": "confidence_router_labeled_source_s2026092701",
+      "method": "fixed input-only confidence-selected noise adaptive restorer with gate .8",
+      "purpose": "audit pseudo-label gains on legal L_s source labels with predictions fixed first",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120454,
+        "split": 392005,
+        "data": 2026120455,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "prior sample same as fixed estimator; source split 2026110551; no additional model updates",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 1,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "prediction_complete.json",
+        "predictions.npz",
+        "source_truth_score.json"
+      ]
+    }
+  ],
+  "notes": [
+    "L_s source labels read only after all predictions fixed and SHA verified.",
+    "Frozen ground F trained on source L_s IDs; other source channel views previously explored; not independent blind.",
+    "Gate .8 and margin .05 fixed by source primary parent criteria; no DURA-based selection passed.",
+    "No U_s truth, V, Phase1 test IQ or real satellite data."
+  ]
+}

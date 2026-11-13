@@ -1,0 +1,118 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-noise-prox-source-validation-s2026092701-r01",
+  "group_id": "phase1-noise-prox-source-validation",
+  "display_name": "噪声自适应先验恢复的大规模源域筛选",
+  "description": "固定地面去噪器与盲信道模型，分别比较三种自适应系数和两种保护门阈值，在源域按预登记规则筛选。",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "blind_channel",
+    "conditional_prior",
+    "source_selection",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-noise-prox-diagnostic-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "IQ [2,256], fixed learned prior and input-estimated noise-adaptive blind data-prox, input protection gate; DURA comparison only",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No TX labels, U_s truth, V or test read; F clean pseudo targets for source evaluation",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Source-only pilot with RX8 source holdout; no target IQ, V, or truth",
+    "external_method_exception": null,
+    "claim_scope": "Single seed source-only diagnostic; no independent blind or real satellite claim"
+  },
+  "checkpoint": {
+    "initialization": "Fixed clean denoiser SHA256 5f23bc370ea445dbffe21e1a125f1066321a9df46a1c90e0b617648255323642 and blind model SHA256 0ef60a205f785bda45f9936d519e925179dbbddeef2fd6cd285a83b02a284338; fixed source Gaussian prior, F and input gate.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "Exact denoiser, blind model and source prior SHA256 checked at runtime; source screening rules pinned 86acfb414d70c638ef086e318739cc158a9b6601.",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "RX4/6 each receiver/scene pseudo correct drop <= max(1,ceil(.5% valid)); clean IQ <=reference+.001; impaired IQ <=1.2*reference+1e-6; aggregate impaired gain >=10. Threshold .8/.99, multiplier .25/1/4; DURA and blind parent. RX8 excluded."
+  },
+  "expected_artifacts": [
+    "source_validation.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source pseudo target agreement",
+      "normalized aligned IQ MSE",
+      "gate activation",
+      "source net gains"
+    ],
+    "dimensions": [
+      "source RX4/6 by scene",
+      "heldout RX8 by scene"
+    ],
+    "scientific_rule": "Pseudo targets not truth; source seen in other views; selected candidate requires separate fixed Phase1 predictions and truth-last scoring."
+  },
+  "rows": [
+    {
+      "row_id": "noise_prox_source_validation_s2026092701",
+      "method": "fixed learned denoiser and noise-adaptive blind data prox with input gate",
+      "purpose": "source selection versus DURA and blind posterior parent",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120454,
+        "split": 392005,
+        "data": 2026120455,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "prior sample same as fixed estimator; source split 2026110551; no additional model updates",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 1,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source_validation.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Broad screening predeclared after observing 384-record pilot; source IDs seen in other simulated views, not independent blind.",
+    "Per multiplier primary includes IQ guard; accuracy-only audit reports IQ separately.",
+    "No TX labels, U_s truth, V, target IQ or automatic Phase1 test."
+  ]
+}

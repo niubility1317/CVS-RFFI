@@ -1,0 +1,207 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261110-phase1-pamf-ptbr-adaptive-f0-s2026092701-m1-r01",
+  "group_id": "phase1-pamf-ptbr-adaptive-reference-budget",
+  "display_name": "PAMF 物理分支自适应参考梯度预算单种子对照",
+  "description": "当前源训练批次的参考参数梯度范数决定有界物理关系剂量。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-PTBR-adaptive-pilot"
+  ],
+  "tags": [
+    "PAMF",
+    "SSL",
+    "physics-aware",
+    "matched-control",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01",
+    "20261024-phase1-PAMF-REPL-completion-m201-r01",
+    "20261110-phase1-pamf-branch-relations-f0-s2026092701-m4-r01",
+    "20261110-phase1-pamf-ptbr-f0-s2026092701-m2-r01",
+    "20261110-phase1-pamf-ptbr-refbudget-f0-s2026092701-m1-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig F0, six classes",
+    "version": "existing VALIDATED_ONCE",
+    "representation": "received IQ float32 [2,256]",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "F0 source contract classes",
+    "roles": {
+      "L_s": "true labels; up to 64 source records per L step for echo directions",
+      "U_s": "hidden TX; ordinary PL threshold .95; select at most 128 U independently of acceptance, use accepted subset for relations",
+      "V": "27000 source validation, no training or checkpoint selection"
+    },
+    "train_ratio": "F0 fixed source roles",
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only_after_fixed_final_checkpoint",
+    "external_method_exception": null,
+    "claim_scope": "single-seed exploratory, previously exposed benchmark; no general or statistical claim"
+  },
+  "checkpoint": {
+    "initialization": "matched F21 scratch E20, then own 10+20; no prior candidate checkpoint",
+    "sources": [
+      "same-contract F21 scratch E20; preexisting ordinary PL seven-view scores; previous PL weak scores if complete"
+    ],
+    "contract_check_ref": "pamf_physics_branch.source.checked_parent using actual F21 payload and source roles",
+    "provenance_verdict": "Actual parent contract and scratch checkpoint inspected at load; fail on mismatch",
+    "selection_rule": "fixed final E50; no target selection or tuning"
+  },
+  "expected_artifacts": [
+    "one-row real E20 no-query finite-backward and adaptive-budget smoke",
+    "own E30 and E50 source trajectories, reference scale statistics, L/U physical exposure counts and resource costs",
+    "full source L/V physical diagnostics and stratified original As",
+    "all practical and weak predictions frozen before independent truth-last scoring",
+    "same-row comparison to equal beta=0.5, fixed reference 0.1 and ordinary PL",
+    "[已省略运行细节]"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "paired percentage-point differences"
+    ],
+    "dimensions": [
+      "one seed",
+      "cross_date/cross_rx/cross_both",
+      "clean and six practical",
+      "weak combined_target/cross_rx/cross_both",
+      "receiver/day/transmitter"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "ptbr-adaptive-s2026092701",
+      "method": "PTBR beta=0.5 + detached adaptive reference gradient budget",
+      "purpose": "compare source-batch adaptive, equal and fixed reference relation budgets",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original F0 seeds; echo has fixed source RNG by global step; weak view seeds in manifest; no support.",
+      "k": null,
+      "scenario": "clean and six practical in three F0 populations; raw three weak scenes on combined target",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS",
+      "lr": "original native segment schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/physical_state.json",
+        "source/segment50/physical_state.json",
+        "readouts/ROW/scores/complete.json",
+        "readouts/ROW/weak_scores/complete.json"
+      ],
+      "physical_row": {
+        "row_id": "ptbr-adaptive-s2026092701",
+        "model_seed": 2026092701,
+        "beta": 0.5,
+        "protocol_id": "F0",
+        "regime": "pl",
+        "structure": "full",
+        "signature_views": 3,
+        "permuted": false,
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "epochs": 50,
+        "updates": 11100,
+        "new_updates": 6660,
+        "l_weight": 0.05,
+        "u_weight": 0.05,
+        "L_limit": 64,
+        "U_limit": 128,
+        "echo_magnitude": [
+          0.04,
+          0.1
+        ],
+        "echo_delays": [
+          1,
+          2,
+          3
+        ],
+        "physical_forward_mode": "eval_no_grad_restore_modes_rng",
+        "positives": "same_pseudo_or_label_same_day_other_rx",
+        "negatives": "different_pseudo_or_label_same_day_same_rx",
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "weak_views": [
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ],
+        "adaptive_budget": {
+          "floor": 0.1,
+          "eps": 1e-12
+        }
+      }
+    }
+  ],
+  "notes": [
+    "Base gradient uses original supervised and ordinary PL losses from the current source batch; relation gradient uses the physical reference L/U terms after the registered five-branch mean.",
+    "Scale=clip(||base||/(||relation||+1e-12),.1,1); zero relation gives 1. Detached scalar, no V initialization, no target or U labels; other branches and all base losses unchanged.",
+    "The .1 floor means the reference relation is not guaranteed below the base norm; no Adam-update or identity-preservation guarantee.",
+    "Same source exposures and optimization steps as equal beta=.5; two extra reference-parameter autograd evaluations and reference distance recomputation each update, so training compute is not matched.",
+    "Fixed prior to reference-budget target scoring. Historical F0 benchmark already exposed; report limitations and no target-driven selection or retries.",
+    "Before expansion, final V no worse than original PL by .2 pp and equal beta=.5 by .1 pp; report nonfinite skips, anchors, scale and source diagnostics; do not cancel fixed pilot tests.",
+    "Wait until fixed-budget owner is terminal with matched scores available; all candidate predictions precede truth-last scoring. Source diagnostics run but do not gate fixed candidate predictions."
+  ]
+}

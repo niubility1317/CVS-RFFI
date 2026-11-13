@@ -1,0 +1,137 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-analysis-Restore-CleanReceivedRestored-Main-s2026092701-r01",
+  "group_id": "fixed-clean-received-restored-triple-correctness",
+  "display_name": "原 clean、受损输入与恢复输出的三方配对",
+  "description": "复用三个已完成版本及 DURA 的固定 Main 预测，计算同条记录的三方正确性组合。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "posthoc",
+    "fixed-predictions",
+    "truth-last",
+    "original-ground-TriSIGTIME-SSL-Main",
+    "no-new-prediction"
+  ],
+  "comparison_group_id": "already-frozen-clean-vs-raw-received-vs-restored",
+  "parent_run_ids": [
+    "20261107-phase1-Restore-JointPrior-E30-s2026092701-r01",
+    "20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01",
+    "20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "Existing fixed 168000 physical IDs × seven original Main views, raw/DURA and three candidate discrete predictions; no raw IQ.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "actual_training_labels": "No training. Ground Main true TX used only for post-hoc descriptive scoring after all fixed prediction matrices are verified.",
+    "augmentation": "No new augmentation, channel observations or model forwards."
+  },
+  "permissions": {
+    "regime": "fixed-prediction-ground-Main-truth-last-analysis",
+    "query_use": "Only previously fixed and scored original Main predictions and truth; no input IQ, neural inference, target fitting, threshold tuning, model selection or routing.",
+    "external_method_exception": null,
+    "claim_scope": "Post-hoc paired correctness analysis on previously exposed single-seed simulated ground benchmark; no theoretical limit or in-orbit claim."
+  },
+  "checkpoint": {
+    "initialization": "No checkpoint or model loaded; use only original fixed prediction and completion artifacts.",
+    "sources": [
+      "FIXED_PREDICTIONS 20261107-phase1-Restore-JointPrior-E30-s2026092701-r01",
+      "FIXED_PREDICTIONS 20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01",
+      "FIXED_PREDICTIONS 20261107-phase1-Restore-MismatchedPrior-E30-s2026092701-r01",
+      "DURA_v1 and original Tri-SIG-TIME SSL baseline decisions reused and required identical across the three matrices."
+    ],
+    "contract_check_ref": "Original F0 identity and final30/7410 source-only training metadata for each candidate, all prediction cells, aligned IDs and baseline streams checked before truth.",
+    "provenance_verdict": "No new trained state, neural forward, IQ reads or target fit; independent truth-side analysis after previously fixed predictions.",
+    "selection_rule": "Three already reported candidate rows and fixed DURA are specified together; no test-driven reranking or per-TX routing."
+  },
+  "expected_artifacts": [
+    "results.json aggregate only",
+    "complete.json",
+    "stdout.log PRIVATE"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Eight joint truth-correctness cells for raw clean, raw received and restored prediction, per original view and subgroup.",
+      "Separate cases raw clean wrong and raw received wrong corrected by G, versus raw clean wrong but raw received already correct.",
+      "Validate every group marginal and raw-to-G repair/damage counts against existing independent truth-last scores."
+    ],
+    "dimensions": [
+      "cross_rx/cross_both and combined",
+      "clean and six practical scenes",
+      "TX/RX/day/RXday"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "fixed_prediction_analysis",
+      "method": "clean_received_restored_joint_correctness",
+      "purpose": "Identify how many clean mistakes were fixed specifically by the restoration relative to raw received.",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "No new RNG. Original BF/F0 and original Main observations.",
+      "k": null,
+      "scenario": "Previously scored original Main clean plus six practical views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "results.json aggregate only",
+        "complete.json",
+        "stdout.log PRIVATE"
+      ]
+    }
+  ],
+  "notes": [
+    "This is a post-hoc explanation of previously observed Main results, not an independent blind test and not a method selection or target adaptation.",
+    "Three candidate matrices and DURA are included together, fixed in code before this reanalysis; no new or selected target samples.",
+    "Two local synthetic correctness/negative tests PASS. One independent P0/P1 review PASS; shared scoring lock waits rather than colliding.",
+    "Original per-group truth-last score marginals and raw-to-G repair/damage must match all new aggregate joint cells.",
+    "No GPU, no model or IQ, no optimizer, no new neural prediction, and no target-derived training state."
+  ]
+}

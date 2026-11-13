@@ -1,0 +1,135 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-dura-reversible-ground-test-s2026092701-r01",
+  "group_id": "phase1-dura-reversible",
+  "display_name": "DURA 可逆耦合七景测试",
+  "description": "在冻结 DURA 输出上训练四层时间奇偶加性可逆耦合，目标源 IQ 加 DURA 波形保护。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "dura",
+    "F-free-training",
+    "reversible-coupling",
+    "deterministic-gpu"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "frozen candidate + frozen Tri-SIG-TIME SSL on fixed Phase1 seven-view ground IQ",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "No target labels, clean pair, or target fitting during inference; labels only after all seven predictions",
+    "roles": {
+      "L_s": "source IQ training only, TX hidden",
+      "U_s": "source IQ training only, TX hidden",
+      "V": "not used for G training",
+      "test": "fixed Phase1 ground IQ, truth last"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "target_panel": "168000 Phase1 physical records x seven views",
+    "actual_training_labels": "Recovery training uses paired source IQ only; no F outputs, F weights, TX labels, V or target. Frozen Tri-SIG-TIME SSL only after recovery checkpoint frozen.",
+    "augmentation": "Fixed pre-existing Phase1 ground test simulated seven views"
+  },
+  "permissions": {
+    "regime": "Phase1 frozen ground evaluation",
+    "query_use": "Fixed per-record Phase1 IQ only after source training; no target fit, truth only after seven-view predictions",
+    "external_method_exception": null,
+    "claim_scope": "Single-seed repeatedly observed Phase1 simulated ground test; not independent blind or real satellite"
+  },
+  "checkpoint": {
+    "initialization": "Frozen DURA and newly initialized 42888-parameter, four-layer zero-head additive coupling",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "DURA source-only; source context exact ordered 32768 fit IDs and no F/TX/V/target",
+    "provenance_verdict": "DURA and fixed source IQ context have no target ancestry",
+    "selection_rule": "Fixed final epoch five, no target or pilot-based selection"
+  },
+  "expected_artifacts": [
+    "flow/test_prediction/complete.json",
+    "flow/test_summary.json",
+    "flow/paired_dura.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "ground accuracy",
+      "raw clean gap in pp and relative percent",
+      "macro F1",
+      "DURA paired repairs and damages",
+      "TX/RX/day groups"
+    ],
+    "dimensions": [
+      "168000 physical records",
+      "clean and six practical views"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "dura-reversible-final",
+      "method": "Four trainable alternating even/odd additive invertible couplings after frozen DURA",
+      "purpose": "Complete mandatory seven-view Phase1 test and paired DURA comparison",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Correction initialization 2026110612; source fit ID selection 2026110611; training order 2026110613; evaluation 2026092701",
+      "k": null,
+      "scenario": "clean and six practical Phase1 Main split views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "flow/test_prediction/complete.json",
+        "flow/test_summary.json",
+        "flow/paired_dura.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Four additive temporal coupling layers have explicit analytic inverse without input, source clean, F or hidden context; floating point recovery verified on source.",
+    "Theoretical invertibility does not imply improved identity recognition or preserve information exactly under finite precision.",
+    "Train fixed five epochs on source-only IQ and DURA guard; no F/TX/V/target reads or target selection.",
+    "Frozen model followed by mandatory 168000 x seven Phase1 ground views using Tri-SIG-TIME SSL and independent truth-last scoring.",
+    "GPU0 queue waits until fewer than three total compute apps and at least 4096 MiB are free; other owner tasks are preserved."
+  ]
+}

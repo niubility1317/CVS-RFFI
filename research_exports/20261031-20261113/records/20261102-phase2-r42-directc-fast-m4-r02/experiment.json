@@ -1,0 +1,9079 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase2-r42-directc-fast-m4-r02",
+  "group_id": "phase2-r42-direct-c-zero-target-old",
+  "display_name": "R42 直接注册：共享核与 CUDA 加速无中断接管",
+  "description": "Fixed direct-C MIX01 16 KN; identical source and task definitions; inherit finished/in-flight predictions; share CPU kernels and use FP64 CUDA for large support.",
+  "kind": "cvs",
+  "stage": "Phase2-C",
+  "aliases": [
+    "R42-direct-C-zero-old"
+  ],
+  "tags": [
+    "R42-derived",
+    "direct-C",
+    "zero-target-old-labels",
+    "MIX01",
+    "DURA",
+    "truth-last",
+    "shelved",
+    "negative-result",
+    "do-not-promote"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase2-r42-directc-mix01-m4-r01",
+    "20261101-phase2-r42-mix16-mgpu-m4-r07",
+    "20261101-phase2-mopc-author-group1-m4-r04",
+    "20261101-phase2-native-score-recovery-m4-r01"
+  ],
+  "data": {
+    "dataset": "[已省略路径]",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "483 existing Group1 capsules, p2_min_v1 VALIDATED_ONCE",
+    "split_id": "read exact existing K/N split IDs",
+    "source_target_overlap_policy": "same source physical roles;target opens only B/C current support;query never fit",
+    "matrix": {
+      "K": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "N": [
+        2,
+        5,
+        10,
+        20
+      ],
+      "physical_pools": [
+        "P01",
+        "P02",
+        "P03"
+      ],
+      "MIX_episodes": 8,
+      "diagnostic_episodes_per_scene": 5,
+      "diagnostic_workpoint": [
+        5,
+        20
+      ],
+      "receivers": [
+        "1-1",
+        "14-7",
+        "2-1",
+        "20-1",
+        "7-14",
+        "7-7",
+        "8-8"
+      ],
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "query": "all_registered_complement; independent common-K intersection score also reported"
+    }
+  },
+  "permissions": {
+    "regime": "direct_C_target_new_support_only",
+    "query_use": "prediction_only_then_truth_last",
+    "external_method_exception": "Native CIL source replay/prototypes per original fixed run",
+    "claim_scope": "MIX01 exposed development evaluation; no target-driven selection"
+  },
+  "checkpoint": {
+    "initialization": "reuse original full source-only Tri-SIG-TIME SSL",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "existing validated Group1 source contract + trisig_source.validate_done rechecks complete original source recipe",
+    "provenance_verdict": "MATCHING_SOURCE_ONLY_FROZEN_REUSE_AFTER_EXTERNAL_CUDA_OUTAGE",
+    "selection_rule": "Reuse fixed four Tri-SIG-TIME SSL and R42 source encoders and inherited source-only K1 kernel rule; source prototypes aggregate clean L_s only."
+  },
+  "expected_artifacts": [
+    "four source-only prototypes and no-query smoke",
+    "84 fixed prediction units/10752 rows",
+    "global truth-last scores",
+    "per-KN paths and native CIL comparisons"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "H_macro",
+      "old_macro_accuracy",
+      "new_macro_accuracy",
+      "macro_f1",
+      "class_floor"
+    ],
+    "dimensions": [
+      "3 pools",
+      "7 RX",
+      "4 model seeds",
+      "MIX01",
+      "K=1/5/10/20",
+      "N=2/5/10/20",
+      "2 variants",
+      "S0/S1",
+      "Q0/Q1"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "s2026092701-c00",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/1-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092701-c01",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/14-7",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092701-c02",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/2-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092701-c03",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/20-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092701-c04",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/7-14",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092701-c05",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/7-7",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092701-c06",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/8-8",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092701-c07",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/1-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092701-c08",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/14-7",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092701-c09",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/2-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092701-c10",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/20-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092701-c11",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/7-14",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092701-c12",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/7-7",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092701-c13",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/8-8",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092701-c14",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/1-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092701-c15",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/14-7",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092701-c16",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/2-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092701-c17",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/20-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092701-c18",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/7-14",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092701-c19",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/7-7",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092701-c20",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/8-8",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092702-c00",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/1-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092702-c01",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/14-7",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092702-c02",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/2-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092702-c03",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/20-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092702-c04",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/7-14",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092702-c05",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/7-7",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092702-c06",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/8-8",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092702-c07",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/1-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092702-c08",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/14-7",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092702-c09",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/2-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092702-c10",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/20-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092702-c11",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/7-14",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092702-c12",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/7-7",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092702-c13",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/8-8",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092702-c14",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/1-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092702-c15",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/14-7",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092702-c16",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/2-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092702-c17",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/20-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092702-c18",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/7-14",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092702-c19",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/7-7",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092702-c20",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/8-8",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092703-c00",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/1-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092703-c01",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/14-7",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092703-c02",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/2-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092703-c03",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/20-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092703-c04",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/7-14",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092703-c05",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/7-7",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092703-c06",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/8-8",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092703-c07",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/1-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092703-c08",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/14-7",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092703-c09",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/2-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092703-c10",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/20-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092703-c11",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/7-14",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092703-c12",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/7-7",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092703-c13",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/8-8",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092703-c14",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/1-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092703-c15",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/14-7",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092703-c16",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/2-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092703-c17",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/20-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092703-c18",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/7-14",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092703-c19",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/7-7",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092703-c20",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/8-8",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092704-c00",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/1-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092704-c01",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/14-7",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092704-c02",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/2-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092704-c03",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/20-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092704-c04",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/7-14",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092704-c05",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/7-7",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092704-c06",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/8-8",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092704-c07",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/1-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092704-c08",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/14-7",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092704-c09",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/2-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092704-c10",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/20-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092704-c11",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/7-14",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092704-c12",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/7-7",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092704-c13",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P02/MIX01/8-8",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092704-c14",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/1-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092704-c15",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/14-7",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092704-c16",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/2-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092704-c17",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/20-1",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092704-c18",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/7-14",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092704-c19",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/7-7",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    },
+    {
+      "row_id": "s2026092704-c20",
+      "method": "R42-derived-head and R42-derived-source-prototype",
+      "purpose": "direct-C-frozen-comparison",
+      "data_overrides": {
+        "capsule": "capsules/P03/MIX01/8-8",
+        "workpoints": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            10
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            5,
+            20
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            20,
+            2
+          ],
+          [
+            20,
+            5
+          ],
+          [
+            20,
+            10
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "support_paths": [
+          0,
+          1
+        ],
+        "query_paths": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule split and observation; split/support seeds inherited by immutable split ID; no redraw.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01",
+      "optimizer": "No neural optimizer; fixed source-rule kernel",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "128 fixed predictions",
+        "independent 128 score rows"
+      ]
+    }
+  ],
+  "notes": [
+    "Only target new support is consumed: zero old target labels, N*K new labels.",
+    "Old source uses frozen C4 head or its source L_s prototype-weighted prior; both use frozen C4/C8 R42 kernel rule with residual strength 1 and source-fixed ridge; unsupported old/new target gate removed.",
+    "Old class kernel-residual columns share one value, preserving frozen-prior old class ordering.",
+    "Original physical split excludes old support from its query for paired comparison; physical examples may be query at another K.",
+    "All target observations are previously exposed evaluation: no blind test claim or target-result tuning.",
+    "Native existing S0Q0 reused; other new-path versus native S0Q0 is cross-input, not matched.",
+    "ISSL user-stopped; Tweak/CSIL N/A.",
+    "Each existing prediction unit is reused from r01; predecessor workers finish naturally and count against GPU caps.",
+    "CPU states share a mathematically identical kernel; support size >=256 uses FP64 CUDA with pair budget 262144 and CPU fallback for close ties.",
+    "Four actual-checkpoint source-only smoke checks compare scores and predictions before controller handoff; no target or query access.",
+    "All 84 units and 10752 predictions freeze globally before independent four-process CPU truth-last scoring.",
+    "2026-11-02 用户要求将本次零目标旧类 support 的两种 R42 派生直接注册实验搁置；仅保留为已完成负结果，不作为当前候选或自动启动后续实验。该处置不适用于原 R42。"
+  ],
+  "replaces_run_id": "20261102-phase2-r42-directc-mix01-m4-r01"
+}

@@ -1,0 +1,130 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261103-phase1-shared-physical-full-replay-s2026092701-r01",
+  "group_id": "phase1-shared-physical-full-prediction-replay",
+  "display_name": "三个物理恢复模型的完整七景共享推理逐条复核",
+  "description": "三个原预测全部完成后，只读重算共享推理并逐条比较冻结的raw和restored分类，核对每景门控计数；不读取目标真值，不覆盖或替代原产物。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "performance",
+    "physical-fusion"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261103-phase1-dura-physical-fusion-source-s2026092701-r02",
+    "20261103-phase1-dura-physical-wide-source-s2026092701-r01",
+    "20261103-phase1-dura-physical-local-teacher-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "IQ [2,256], Phase1 frozen seven-view replay; no target truth",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "No target or source truth read in this diagnostic",
+    "roles": {
+      "L_s": "source smoke IQ only",
+      "U_s": "source smoke IQ only, identity hidden",
+      "V": "not read",
+      "test": "fixed IQ read only after all three original predictions complete"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "target_panel": "168000 Phase1 physical records x seven views",
+    "actual_training_labels": "Controller trained using legal L_s fit labels and high-confidence frozen F pseudo labels for U_s; no U_s truth, V or test used in training",
+    "augmentation": "Fixed pre-existing Phase1 ground test simulated seven views"
+  },
+  "permissions": {
+    "regime": "Phase1 post-completion read-only full prediction verification",
+    "query_use": "Read fixed target IQ only after three original seven-view outputs are complete; compare class predictions, no labels or adaptation",
+    "external_method_exception": null,
+    "claim_scope": "Technical exact class and per-view gate-count equality on already-observed Phase1 development test, no new scientific score"
+  },
+  "checkpoint": {
+    "initialization": "three fixed source-trained physical fusion checkpoints",
+    "sources": [
+      "20261103-phase1-dura-physical-fusion-source-s2026092701-r02",
+      "20261103-phase1-dura-physical-wide-source-s2026092701-r01",
+      "20261103-phase1-dura-physical-local-teacher-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "frozen source prediction manifests and established source contract",
+    "provenance_verdict": "previously verified; strict metadata and model load",
+    "selection_rule": "All three fixed original physical-fusion candidates; no selection or tuning based on replay"
+  },
+  "expected_artifacts": [
+    "result.json with seven-view class equality and per-view gate counts; full waveform comparison unavailable"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "raw class equality",
+      "restored class equality",
+      "per-view gate count equality"
+    ],
+    "dimensions": [
+      "3 candidates",
+      "168000 physical records",
+      "seven views"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "complete-shared-vs-original-fixed-predictions",
+      "method": "read-only recomputation with shared DURA and physical posterior after original predictions complete",
+      "purpose": "Verify exact final raw/restored decision files and per-view gate totals",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Existing pretrained source runs and fixed source pilots; no stochastic training, support or augmentation in this benchmark.",
+      "k": null,
+      "scenario": "Phase1 fixed clean and six practical test views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No original predictions, controllers, scores or logs are changed.",
+    "Waits for all three original seven-view manifests; verifies target classes without reading target truth.",
+    "Old full IQ waveforms were not saved; only per-record decisions and per-view gate counts can be verified in full."
+  ]
+}

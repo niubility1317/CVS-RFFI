@@ -1,0 +1,103 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-dura-oracle-action-source-s2026092701-r01",
+  "group_id": "phase1-dura-source-oracle-action",
+  "display_name": "DURA 双阶段源域模拟信道与方差替换诊断",
+  "description": "固定原 DURA，在 Phase1 源 IQ 上将估计信道作用和噪声方差分别替换为同一条模拟观测的已知参数，比较波形误差；只做不可部署的源反事实。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "F-free",
+    "frequency-diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "source received/clean IQ and simulator kernel, widely-linear coefficients, variance",
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only privileged simulator oracle, IQ NMSE not identity accuracy or performance upper bound"
+  },
+  "checkpoint": {
+    "initialization": "Frozen original DURA stage2 E20/4940",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "frozen_dura source-only provenance and epoch19 matching source action cache",
+    "provenance_verdict": "Original source-only DURA, no F or target ancestry",
+    "selection_rule": "Fixed original DURA; no target score selection"
+  },
+  "expected_artifacts": [
+    "result.json four estimated/oracle action and variance combinations by source RX/view"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source IQ NMSE with estimated and simulator action/variance",
+      "paired count of improved samples"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "dura-two-stage-source-oracle-action",
+      "method": "Four fixed context interventions: estimated/true simulated action crossed with estimated/true simulated real noise variance, both DURA stages recomputed",
+      "purpose": "Separate source simulation context-error effects without target access",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Existing pretrained source runs and fixed source pilots; no stochastic training, support or augmentation in this benchmark.",
+      "k": null,
+      "scenario": "seven fixed Phase1 source views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "True simulated parameters are privileged source-only diagnostics, unavailable at target inference, not deployable or accuracy bounds.",
+    "Uses epoch19 balanced source pilot; original DURA may have seen source domain. No F/TX/V/target or training.",
+    "Unlike 20261030 source-inverse diagnostic that substituted only final fixed-prior CG16, both standard two-CG stages and their prior inputs are recomputed under each context intervention."
+  ]
+}

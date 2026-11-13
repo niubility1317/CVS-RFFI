@@ -1,0 +1,137 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-dura-frequency-ground-test-s2026092701-r01",
+  "group_id": "phase1-dura-source-frequency-regression",
+  "display_name": "DURA 源频域回归七景测试",
+  "description": "冻结 DURA，以源 IQ 拟合四组噪声条件化广义线性复频域残差。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "dura",
+    "F-free-training",
+    "source-frequency-regression",
+    "deterministic-gpu"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261107-phase1-dura-frequency-regression-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "frozen candidate + frozen Tri-SIG-TIME SSL on fixed Phase1 seven-view ground IQ",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "No target labels, clean pair, or target fitting during inference; labels only after all seven predictions",
+    "roles": {
+      "L_s": "source IQ training only, TX hidden",
+      "U_s": "source IQ training only, TX hidden",
+      "V": "not used for G training",
+      "test": "fixed Phase1 ground IQ, truth last"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "target_panel": "168000 Phase1 physical records x seven views",
+    "actual_training_labels": "Recovery training uses paired source IQ only; no F outputs, F weights, TX labels, V or target. Frozen Tri-SIG-TIME SSL only after recovery checkpoint frozen.",
+    "augmentation": "Fixed pre-existing Phase1 ground test simulated seven views"
+  },
+  "permissions": {
+    "regime": "Phase1 frozen ground evaluation",
+    "query_use": "Fixed per-record Phase1 IQ only after source training; no target fit, truth only after seven-view predictions",
+    "external_method_exception": null,
+    "claim_scope": "Single-seed repeatedly observed Phase1 simulated ground test; not independent blind or real satellite"
+  },
+  "checkpoint": {
+    "initialization": "Frozen source-only DURA; four sets of complex ridge coefficients fitted once on 32768 source IDs x three views",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "DURA source-only; source context exact ordered fit IDs and no F/TX/V/target; true checkpoint no-query smoke",
+    "provenance_verdict": "Original DURA and source IQ source-only, no target ancestry",
+    "selection_rule": "Binned frequency regression selected from source holdout only; all legal fit IDs used once; no target selection"
+  },
+  "expected_artifacts": [
+    "flow/test_prediction/complete.json",
+    "flow/test_summary.json",
+    "flow/paired_dura.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "ground accuracy",
+      "raw clean gap in pp and relative percent",
+      "macro F1",
+      "DURA paired repairs and damages",
+      "TX/RX/day groups"
+    ],
+    "dimensions": [
+      "168000 physical records",
+      "clean and six practical views"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "dura-frequency-final",
+      "method": "Four source-noise-bin widely-linear complex spectral DURA residual",
+      "purpose": "Complete mandatory seven-view Phase1 test and paired DURA comparison",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Fixed source IDs 2026110611 and evaluation 2026092701; closed-form deterministic fit",
+      "k": null,
+      "scenario": "clean and six practical Phase1 Main split views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "flow/test_prediction/complete.json",
+        "flow/test_summary.json",
+        "flow/paired_dura.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source-only global and four-bin regressions were compared on disjoint physical source IDs; four-bin selection precedes this candidate ground evaluation.",
+    "One fixed ridge fit on 32768 legal source IDs x three views; no F/TX/V/target data used to fit or select.",
+    "Inference uses received IQ and frozen DURA output/variance; no clean, true labels or target adaptation.",
+    "Source IQ NMSE is not identity accuracy. Lowest-noise group showed a majority of individual source records worsening.",
+    "Fixed epoch-0 analytic checkpoint then mandatory 168000 x seven Phase1 ground views with frozen Tri-SIG-TIME SSL and independent truth-last.",
+    "GPU2 queue counts all compute apps and waits while 3 or more exist; preserve other jobs."
+  ]
+}

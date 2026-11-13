@@ -1,0 +1,186 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase2-milkr-nativeskip-s2026092701-r27",
+  "group_id": "phase2-milkr-native-skip",
+  "display_name": "MILKR 共同空间与原始细节双分量编码",
+  "description": "R28 fixed halfenergy CCA64 + shared native PCA in remaining dimensions; source paired control gate before fourcorner threequery pilot.",
+  "kind": "cvs",
+  "stage": "Phase2-B-C",
+  "aliases": [],
+  "tags": [
+    "MILKR",
+    "Tri-SIG-TIME-SSL",
+    "Phase2",
+    "K-N",
+    "small-screen",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-phase2-milkr-confprior-s2026092701-r26",
+    "20261031-phase2-milkr-phaseorbit-s2026092701-r19",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "data": {
+    "dataset": "[已省略路径]",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "1-1"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "one existing P01/MIX01/1-1 VALIDATED_ONCE capsule",
+    "split_id": "read exact existing K/N split IDs",
+    "source_target_overlap_policy": "same source physical roles;target opens only B/C current support;query never fit",
+    "matrix": {
+      "K": [
+        1,
+        20
+      ],
+      "N": [
+        2,
+        20
+      ],
+      "physical_pool": "P01",
+      "episode": "MIX01",
+      "query": "all_registered_complement",
+      "receiver": "1-1"
+    }
+  },
+  "permissions": {
+    "regime": "fixed_source_complete_Tri_SIG_TIME_SSL_then_current_labeled_support_only",
+    "query_use": "per_sample_test_only",
+    "external_method_exception": null,
+    "claim_scope": "User-authorized queryfusion extension; finalall16KN twoS Q0original+5 andQF>Q0; QG-only separatelyreported, QFvsoriginalQG notsameinputpair"
+  },
+  "checkpoint": {
+    "initialization": "reuse original full source-only Tri-SIG-TIME SSL",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "existing validated Group1 source contract + trisig_source.validate_done rechecks complete original source recipe",
+    "provenance_verdict": "MATCHING_SOURCE_ONLY_REUSE",
+    "selection_rule": "fixed final E50/11100; model seed first predeclared numeric order; no target selection"
+  },
+  "expected_artifacts": [
+    "source_smoke.json",
+    "source_selection.json candidate/control source rules and gate",
+    "source_orbit_cca.npz only if source passes",
+    "36 fixed predictions only if eligible",
+    "12 strict-support fits and fusion audits",
+    "independent scores if predicted",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "old_macro_accuracy",
+      "new_macro_accuracy",
+      "H_macro",
+      "macro_f1",
+      "class_floor"
+    ],
+    "dimensions": [
+      "RX",
+      "K",
+      "N",
+      "arm",
+      "S/Q"
+    ],
+    "primary": "Finalevery16KN bothS Q0 matchedoriginalQ0>=+5pp andsame-stateQF>Q0; sourceprior/fusion fixed beforetarget",
+    "success": "allcorners twoS Q0+5 andQF>Q0 plusoldnewrawmeanguard before remaining12KN; all16 then6RXconfirmation",
+    "secondary": "matchedraw/Gcontrol; pathchanged QF; sourcepairedcandidate/control; currentSUPgate audits; cost/cache0",
+    "scientific_source_rule": "Fixed .5energy CCA64 + .5energy shared native PCA top(d-64) perblock. Both trained excludes heldRX/twoTX. Candidate/control each K1grid120, K20physicalOOF, primarymean H(Q0,QF)gain>=.5pp and eachsourceK/S Q0gain>=-.25pp. Failed source ->target0/no finalcheckpoint. R27 prior/supportconfidence/fusion unchanged.",
+    "promotion_rule": "PerKN/perS raw+5 andfusionpositive, nevermean-only; QGcontrol retained notrequiredtoexceedraw innewuserauthorizedfusiondefinition"
+  },
+  "rows": [
+    {
+      "row_id": "rx-1-1",
+      "method": "R28 fixed equalenergy CCA/nativePCA + R27 prior/fusion",
+      "purpose": "paired_KN_screen",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/1-1",
+        "workpoints": [
+          {
+            "K": 1,
+            "N": 2
+          },
+          {
+            "K": 1,
+            "N": 20
+          },
+          {
+            "K": 20,
+            "N": 2
+          },
+          {
+            "K": 20,
+            "N": 20
+          }
+        ],
+        "B_K": [
+          1,
+          20
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "split/support/evaluation are fixed existing split IDs and physical complement, not redrawn; augmentation per existing MIX01/physical seed; source proxy seed2026103101",
+      "k": [
+        1,
+        20
+      ],
+      "scenario": "MIX01 fixed six-practical residual received",
+      "optimizer": "FrozenF/G/head; analytic sourceCCA64+PCA; currentSUP residualKRR physicalOOF",
+      "lr": null,
+      "epochs": 0,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    }
+  ],
+  "notes": [
+    "New feature hypothesis: CCA removes private/native RF detail while aligning observed raw/G. Fixed equalenergy normalized CCA64 and shared nativePCA d-64 concatenated preserve existing perblock dimension. PCA center/basis fit joinedraw/G sourceL, same basis for both paths. No target selection of weight/rank.",
+    "Five source heldRX/twoTX folds exclude held rows from BOTH encoder components. F still saw source6; old4/new2 proxy removes heldnew head columns before softmax. Source3scenes vs target6 restriction disclosed. Candidate/control source K1 rules calibrated separately with120fixedgrid; K20samephysicalOOF; source gate frozen before launch.",
+    "Only frozen encoder biases/projections reach target, no source examples/covariance/class bank. CurrentSUP prior gate/residualKRR and same-record queryfusion exactly R27. Pure support S0/S1, Q0raw/Q1G-only/Q2fusion. F/G/head updates0. Independent truth only after all36 predictions.",
+    "Source primary Hgain>=.5pp and each K1/20,S0/S1 Q0gain>=-.25pp versus CCA-onlycontrol. Failed -> source-onlystop, no final checkpoint/targetIQ. Pass -> firstRX fourcorner36; everycornerbothS raworiginal+5/QF>raw plusoldnewguard to remaining12KN then6RX; final16KN criterion unchanged.",
+    "REJECTED_EXTRA_GATE: generic separate design approval/spec/builder-review ritual conflicts with userexclusive minimal workflow. Method/matrix/stop in this preregistration; one actual P0/P1 review only. No additional approval or report seal.",
+    "SourceGPU4 targetGPU0 actualfree checked, preserve unrelated owners and every old immutable root; no stop/restart healthy processes."
+  ]
+}

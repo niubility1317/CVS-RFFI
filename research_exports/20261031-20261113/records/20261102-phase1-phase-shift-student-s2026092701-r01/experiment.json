@@ -1,0 +1,129 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-phase-shift-student-s2026092701-r01",
+  "group_id": "phase1-phase-shift-anchored-independent-restoration",
+  "display_name": "时移相位锚定的独立时频恢复网络",
+  "description": "冻结输入相位因子加固定24采样点对齐，后接从头训练的时域及多尺度时频注意力恢复，源域教师 DURA，部署不依赖 DURA。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "phase",
+    "timing",
+    "independent_restorer",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-adaptive-phase-factor-s2026092701-r01",
+    "20261102-phase1-blind-gate-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "float32 IQ [2,256]; source L_s/U_s paired clean and simulated post_sync residual channel",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No TX labels or U_s truth read; frozen DURA and Tri-SIG-TIME SSL predictions guide source training",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Source-only training and candidate selection, no V, no test IQ, no Phase3; further test requires separate fixed inference implementation",
+    "external_method_exception": null,
+    "claim_scope": "Single seed, source heldout and Phase1 development previously observed, no independent-blind or real satellite claim"
+  },
+  "checkpoint": {
+    "initialization": "Random independent time-frequency body, fixed source-selected phase factor, frozen source gate, frozen DURA and Tri-SIG-TIME SSL teachers",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "Phase checkpoint SHA256 8e9fd8f97a57263be320b8dd57e4dd615fb015d5aab2d276d43864ec8fe8e508; phase code f8a2f526d67e21757c6972124403b6c3078e8d5b; frozen gate c905f3ab3d7f0d121e2c44c3b0bfb26188fa5825",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "RX4/6 source cache19 pseudo-target vs DURA: per-cell loss <=max(1,ceil(.5% valid)), clean IQ <= DURA+.001, impaired IQ <=1.2*DURA+1e-6, aggregate impaired net >=10; epochs1/3/5, alpha .5/1 in aligned coordinates, gate threshold .8/.99; RX8 heldout not used"
+  },
+  "expected_artifacts": [
+    "source_smoke/result.json",
+    "source/checkpoint_epoch01.pt",
+    "source/checkpoint_epoch03.pt",
+    "source/checkpoint_epoch05.pt",
+    "source/source_selection.json",
+    "source/selected.pt if selected",
+    "completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source pseudo-target agreement",
+      "aligned IQ MSE",
+      "repair/damage/net"
+    ],
+    "dimensions": [
+      "source receiver and simulated scene",
+      "RX8 heldout"
+    ],
+    "scientific_rule": "Source results use high-confidence ground-model pseudo-labels; Phase1 3% goal requires seven-view test after fixed independent inference."
+  },
+  "rows": [
+    {
+      "row_id": "phase_shift_student_s2026092701",
+      "method": "fixed phase and +24 timing anchor followed by independent temporal/spectral attention network, DURA source teacher only",
+      "purpose": "source test whether phase and timing alignment improves independent IQ restoration",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026111554,
+        "split": 392005,
+        "data": 2026110551,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026111555
+      },
+      "seed_notes": "Fixed source split seed 2026110551; model 2026111554; shuffle 2026111555; training cache11–15, selection cache19",
+      "k": null,
+      "scenario": "source clean plus six impaired simulated scenes",
+      "optimizer": "AdamW weight_decay .001",
+      "lr": 0.0001,
+      "epochs": 5,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source_smoke/result.json",
+        "source/checkpoint_epoch01.pt",
+        "source/checkpoint_epoch03.pt",
+        "source/checkpoint_epoch05.pt",
+        "source/source_selection.json",
+        "source/selected.pt if selected",
+        "completion.json"
+      ]
+    }
+  ],
+  "notes": [
+    "+24 delay observed in 384 exploratory source training records; central aligned wave does not by itself improve classification.",
+    "Frozen phase factor chosen on correlated source IDs; no independent-blind claim.",
+    "No TX labels, U_s truth, V or test IQ; frozen DURA and Tri-SIG-TIME SSL source teachers.",
+    "Input-only inference with gate and phase factor; source-only run does not automatically invoke target tests."
+  ]
+}

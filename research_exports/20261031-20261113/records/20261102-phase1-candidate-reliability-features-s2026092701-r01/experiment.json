@@ -1,0 +1,115 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-candidate-reliability-features-s2026092701-r01",
+  "group_id": "phase1-candidate-reliability",
+  "display_name": "Phase1 fixed source candidate reliability feature extraction",
+  "description": "Extract classifier confidence, relative embedding and waveform distances for five fixed restoration candidates on the 1047 source L_s records, without source labels.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "hierarchical_prior",
+    "truth_last",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-source-physical-union-audit-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "Source IQ [2,256], 5 fixed candidate waveforms, frozen F confidence and label-invariant pairwise features",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Only legitimate source L_s truth after all predictions fixed; no U_s truth, V or test read",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Source IQ and fixed candidate predictions only; no source true labels, U_s truth, V or target data during extraction",
+    "external_method_exception": null,
+    "claim_scope": "Source L_s data previously used by ground F and/or prior views; not independent blind or target test"
+  },
+  "checkpoint": {
+    "initialization": "Frozen DURA comparator, six-component and twelve-component blind priors, joint and free source controllers, frozen F and gate; no model update.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "Fixed source model commits and 1047 previously fixed source predictions must replay exactly",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "No selection, labels, fitting or target inference in extraction; save numeric source features for preregistered follow-up"
+  },
+  "expected_artifacts": [
+    "features.npz",
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "fixed candidate prediction replay",
+      "finite label-invariant candidate reliability features"
+    ],
+    "dimensions": [
+      "RX4/6 combined by scenario",
+      "RX8 by scenario"
+    ],
+    "scientific_rule": "No labels during feature extraction; only previous fixed source predictions and IQ. Features include confidence, normalized entropy, cosine similarity, agreement and waveform distances."
+  },
+  "rows": [
+    {
+      "row_id": "candidate_source_reliability_features",
+      "method": "label-invariant candidate reliability features for source crossfit",
+      "purpose": "enable source receiver-heldout selector with confidence and signal structure",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120454,
+        "split": 392005,
+        "data": 2026120455,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "Frozen direct mixture trained using 4096 other IDs, F previously used these source IDs; no updates.",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 1,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "features.npz",
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No source labels during extraction.",
+    "Five fixed candidates must reproduce previously fixed source predictions.",
+    "Models saw source data and source views were explored; no independent-blind claim.",
+    "No U_s truth, V or target data."
+  ]
+}

@@ -1,0 +1,1018 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261112-phase1-pamf-prototype-fullsource-tuning-m33-r01",
+  "group_id": "phase1-pamf-branch-prototype-tuning",
+  "display_name": "完整源数据 PAMF 原型参数三种子七景对照",
+  "description": "固定比较三种数据配置的 11 个新参数，每个种子继承匹配原 E20，逐行自动预测并独立评分。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-fullsource-prototype-parameter-comparison"
+  ],
+  "tags": [
+    "PAMF",
+    "source-development",
+    "prototype-temperature"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-paper-completion-m119-r03",
+    "20261112-phase1-pamf-tri-two-methods-full-m60-r02"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManyRx ten-class, ManySig 1%-labeled and ManySig six-source-receiver",
+    "version": "existing source data",
+    "representation": "IQ [2,256]",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "each matching source contract",
+    "roles": {
+      "L_s": "entire original labeled role for each configuration; no internal holdout",
+      "U_s": "original source U; true TX hidden",
+      "V": "original source V; health only"
+    },
+    "train_ratio": "original per-configuration roles, unchanged",
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "frozen predictions then independent truth-last per row",
+    "external_method_exception": null,
+    "claim_scope": "exploratory on previously exposed test sets; fixed matrix, no target feedback into training or selection"
+  },
+  "checkpoint": {
+    "initialization": "matching original full-L Tri E20 by configuration and model seed, then own E10+E20",
+    "sources": [
+      "20261027-phase1-pamf-paper-completion-m119-r03"
+    ],
+    "contract_check_ref": "target_tuning_plan.parent -> full_matrix_plan.parent and checked_e20_parent",
+    "provenance_verdict": "original same-data same-seed scratch E20; no development holdout or target ancestry",
+    "selection_rule": "all 33 declared new parameter rows; fixed final E50; no target-driven selection"
+  },
+  "expected_artifacts": [
+    "real-checkpoint no-query smoke",
+    "33 own full-source E30/E50 continuations",
+    "33 direct seven-view predictions",
+    "33 per-row independent truth-last scores",
+    "same-setting same-seed matched PL and original prototype comparisons, three-seed summary"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro-F1",
+      "paired percentage-point differences"
+    ],
+    "dimensions": [
+      "three model seeds",
+      "clean and six practical",
+      "cross-date, cross-RX, cross-both",
+      "TX/RX/day"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "ten_class-prototype-temp010-s2026092701",
+      "method": "prototype temperature=0.1, votes=4, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-prototype-temp010-s2026092701/predictions/complete.json",
+        "readouts/ten_class-prototype-temp010-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-prototype-temp010-s2026092702",
+      "method": "prototype temperature=0.1, votes=4, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-prototype-temp010-s2026092702/predictions/complete.json",
+        "readouts/ten_class-prototype-temp010-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-prototype-temp010-s2026092703",
+      "method": "prototype temperature=0.1, votes=4, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-prototype-temp010-s2026092703/predictions/complete.json",
+        "readouts/ten_class-prototype-temp010-s2026092703/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-prototype-temp040-s2026092701",
+      "method": "prototype temperature=0.4, votes=4, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-prototype-temp040-s2026092701/predictions/complete.json",
+        "readouts/ten_class-prototype-temp040-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-prototype-temp040-s2026092702",
+      "method": "prototype temperature=0.4, votes=4, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-prototype-temp040-s2026092702/predictions/complete.json",
+        "readouts/ten_class-prototype-temp040-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-prototype-temp040-s2026092703",
+      "method": "prototype temperature=0.4, votes=4, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-prototype-temp040-s2026092703/predictions/complete.json",
+        "readouts/ten_class-prototype-temp040-s2026092703/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-prototype-gate3-s2026092701",
+      "method": "prototype temperature=0.2, votes=3, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-prototype-gate3-s2026092701/predictions/complete.json",
+        "readouts/ten_class-prototype-gate3-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-prototype-gate3-s2026092702",
+      "method": "prototype temperature=0.2, votes=3, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-prototype-gate3-s2026092702/predictions/complete.json",
+        "readouts/ten_class-prototype-gate3-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-prototype-gate3-s2026092703",
+      "method": "prototype temperature=0.2, votes=3, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-prototype-gate3-s2026092703/predictions/complete.json",
+        "readouts/ten_class-prototype-gate3-s2026092703/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-prototype-weight050-s2026092701",
+      "method": "prototype temperature=0.2, votes=4, weight=0.5",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-prototype-weight050-s2026092701/predictions/complete.json",
+        "readouts/ten_class-prototype-weight050-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-prototype-weight050-s2026092702",
+      "method": "prototype temperature=0.2, votes=4, weight=0.5",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-prototype-weight050-s2026092702/predictions/complete.json",
+        "readouts/ten_class-prototype-weight050-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-prototype-weight050-s2026092703",
+      "method": "prototype temperature=0.2, votes=4, weight=0.5",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-prototype-weight050-s2026092703/predictions/complete.json",
+        "readouts/ten_class-prototype-weight050-s2026092703/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-prototype-weight200-s2026092701",
+      "method": "prototype temperature=0.2, votes=4, weight=2.0",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-prototype-weight200-s2026092701/predictions/complete.json",
+        "readouts/ten_class-prototype-weight200-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-prototype-weight200-s2026092702",
+      "method": "prototype temperature=0.2, votes=4, weight=2.0",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-prototype-weight200-s2026092702/predictions/complete.json",
+        "readouts/ten_class-prototype-weight200-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-prototype-weight200-s2026092703",
+      "method": "prototype temperature=0.2, votes=4, weight=2.0",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-prototype-weight200-s2026092703/predictions/complete.json",
+        "readouts/ten_class-prototype-weight200-s2026092703/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-prototype-temp010-s2026092701",
+      "method": "prototype temperature=0.1, votes=4, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/labeled_1pct-prototype-temp010-s2026092701/predictions/complete.json",
+        "readouts/labeled_1pct-prototype-temp010-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-prototype-temp010-s2026092702",
+      "method": "prototype temperature=0.1, votes=4, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/labeled_1pct-prototype-temp010-s2026092702/predictions/complete.json",
+        "readouts/labeled_1pct-prototype-temp010-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-prototype-temp010-s2026092703",
+      "method": "prototype temperature=0.1, votes=4, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/labeled_1pct-prototype-temp010-s2026092703/predictions/complete.json",
+        "readouts/labeled_1pct-prototype-temp010-s2026092703/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-prototype-temp040-s2026092701",
+      "method": "prototype temperature=0.4, votes=4, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/labeled_1pct-prototype-temp040-s2026092701/predictions/complete.json",
+        "readouts/labeled_1pct-prototype-temp040-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-prototype-temp040-s2026092702",
+      "method": "prototype temperature=0.4, votes=4, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/labeled_1pct-prototype-temp040-s2026092702/predictions/complete.json",
+        "readouts/labeled_1pct-prototype-temp040-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-prototype-temp040-s2026092703",
+      "method": "prototype temperature=0.4, votes=4, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/labeled_1pct-prototype-temp040-s2026092703/predictions/complete.json",
+        "readouts/labeled_1pct-prototype-temp040-s2026092703/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-prototype-temp005-s2026092701",
+      "method": "prototype temperature=0.05, votes=4, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/source_rx_6-prototype-temp005-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-prototype-temp005-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-prototype-temp005-s2026092702",
+      "method": "prototype temperature=0.05, votes=4, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/source_rx_6-prototype-temp005-s2026092702/predictions/complete.json",
+        "readouts/source_rx_6-prototype-temp005-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-prototype-temp005-s2026092703",
+      "method": "prototype temperature=0.05, votes=4, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/source_rx_6-prototype-temp005-s2026092703/predictions/complete.json",
+        "readouts/source_rx_6-prototype-temp005-s2026092703/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-prototype-temp010-s2026092701",
+      "method": "prototype temperature=0.1, votes=4, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/source_rx_6-prototype-temp010-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-prototype-temp010-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-prototype-temp010-s2026092702",
+      "method": "prototype temperature=0.1, votes=4, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/source_rx_6-prototype-temp010-s2026092702/predictions/complete.json",
+        "readouts/source_rx_6-prototype-temp010-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-prototype-temp010-s2026092703",
+      "method": "prototype temperature=0.1, votes=4, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/source_rx_6-prototype-temp010-s2026092703/predictions/complete.json",
+        "readouts/source_rx_6-prototype-temp010-s2026092703/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-prototype-temp040-s2026092701",
+      "method": "prototype temperature=0.4, votes=4, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/source_rx_6-prototype-temp040-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-prototype-temp040-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-prototype-temp040-s2026092702",
+      "method": "prototype temperature=0.4, votes=4, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/source_rx_6-prototype-temp040-s2026092702/predictions/complete.json",
+        "readouts/source_rx_6-prototype-temp040-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-prototype-temp040-s2026092703",
+      "method": "prototype temperature=0.4, votes=4, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/source_rx_6-prototype-temp040-s2026092703/predictions/complete.json",
+        "readouts/source_rx_6-prototype-temp040-s2026092703/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-prototype-temp080-s2026092701",
+      "method": "prototype temperature=0.8, votes=4, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/source_rx_6-prototype-temp080-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-prototype-temp080-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-prototype-temp080-s2026092702",
+      "method": "prototype temperature=0.8, votes=4, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/source_rx_6-prototype-temp080-s2026092702/predictions/complete.json",
+        "readouts/source_rx_6-prototype-temp080-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-prototype-temp080-s2026092703",
+      "method": "prototype temperature=0.8, votes=4, weight=1",
+      "purpose": "fixed full-source parameter comparison",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed physical split; data, support and evaluation seeds are not separately controlled.",
+      "k": null,
+      "scenario": "clean and six practical; direct raw default head",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/source_rx_6-prototype-temp080-s2026092703/predictions/complete.json",
+        "readouts/source_rx_6-prototype-temp080-s2026092703/scores/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "11 parameter variants across the three requested data settings, each with the original three model seeds.",
+    "Previously completed original prototype and ordinary PL scores are reused, not retrained.",
+    "Each row automatically predicts all seven views and independently scores after that row completes.",
+    "The same benchmark was previously exposed; comparisons are exploratory and do not feed training, candidate selection or reruns.",
+    "The separate completed development-only models are tested as requested but are not mixed with these full-source matched comparisons."
+  ]
+}

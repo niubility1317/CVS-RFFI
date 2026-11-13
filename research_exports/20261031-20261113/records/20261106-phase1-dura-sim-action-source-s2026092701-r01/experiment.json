@@ -1,0 +1,108 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-dura-sim-action-source-s2026092701-r01",
+  "group_id": "phase1-dura-sim-action",
+  "display_name": "DURA 源模拟信道作用与先验联合训练GPU 训练",
+  "description": "DURA 可训练副本在源 IQ 损失和冻结原版保护上，额外用源模拟信道作用监督固定复探针响应，联合更新物理估计与先验；推理不需要模拟真值。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "dura",
+    "F-free-training",
+    "simulated-action-guidance"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "source received/clean IQ and source simulator kernel/main/image coefficients; true variance is not used",
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "F-free and TX-label-free paired source IQ training, source IQ diagnostics; no target score"
+  },
+  "checkpoint": {
+    "initialization": "Original DURA v1.0 stage2 E20/4940 source-only checkpoint; trainable independent copy and separate frozen original reference",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "frozen_dura validates original7/63/30 and original DURA F/TX/target access fields; candidate and anchor are separate copies",
+    "provenance_verdict": "Source-only original DURA, no F or target ancestry",
+    "selection_rule": "Reset AdamW, fixed final 5 incremental epochs after parent E20; no source or target score selection"
+  },
+  "expected_artifacts": [
+    "final.pt: fixed final epoch",
+    "source_summary.json: source IQ only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source paired IQ NMSE",
+      "training IQ loss"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "dura-sim-action-final",
+      "method": "Internally refine DURA with source IQ loss and DURA guard plus 0.01 log-normalized source simulator action response loss",
+      "purpose": "Train a distinct F-free recovery network at fixed five-epoch budget",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Original DURA seed 2026092701, source fit sampling 2026110611, optimizer order 2026110613; no new random model initialization.",
+      "k": null,
+      "scenario": "fixed source cache epochs 21, 22, 23",
+      "optimizer": "AdamW, weight decay 0, optimizer reset",
+      "lr": 1e-05,
+      "epochs": 5,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "final.pt: fixed final epoch",
+        "source_summary.json: source IQ only"
+      ]
+    }
+  ],
+  "notes": [
+    "Frozen original DURA anchor and separately trainable same-source candidate; source IQ/guard plus 0.01 mean log1p normalized action response error on a fixed complex probe and its i rotation.",
+    "Source simulator kernel/main/image are privileged source-only training labels, same physical IDs and views; target inference uses only received IQ. Simulator variance is not supervised.",
+    "Probe random seed 2026110614. This supervises only two action responses, not guaranteed full-operator identification.",
+    "No F weights/outputs, TX labels, V or target data in training. Reset AdamW lr=1e-5, weight decay 0, five fixed epochs.",
+    "All seven Phase1 views run and score truth-last regardless of source metrics; frozen Tri-SIG-TIME SSL only after model freeze."
+  ]
+}

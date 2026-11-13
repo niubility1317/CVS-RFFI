@@ -1,0 +1,230 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261110-phase1-pamf-tri-u-physical-f0-m3-r01",
+  "group_id": "phase1-trisig-unlabeled-physical-relation",
+  "display_name": "Tri-SIG-TIME SSL 已接受无标签物理分支关系三种子",
+  "description": "Retain complete Tri-SIG-TIME SSL and add bounded-echo five-branch relation to accepted source-U pseudo-labels, inside the existing U gradient guard; no added L loss.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [
+    "Tri SSL unprotected physical relation"
+  ],
+  "tags": [
+    "PAMF",
+    "semi-supervised",
+    "unlabeled-physical-relation",
+    "three-seed",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig Main split",
+    "version": null,
+    "representation": "equalized1 / unitRMS / FP32 IQ 2x256 / Fs25MHz",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 6300,
+      "U_s": "56700 source IQ with TX labels hidden",
+      "V": "27000 non-updating source validation"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "source_rxs": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_rxs": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ]
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Phase1 terrestrial proxy; direct recognition; no future-date or in-orbit claim"
+  },
+  "checkpoint": {
+    "initialization": "same-seed Tri-SIG-TIME source-only scratch E20; continue E10+E20",
+    "sources": [
+      "20261027-phase1-pamf-repl-shuffled-views-m16-r02 same-seed source segment20"
+    ],
+    "contract_check_ref": "source.parent and resolved source contract",
+    "provenance_verdict": "same F0 source contract; no target or U truth use",
+    "selection_rule": "fixed final E50, no target feedback"
+  },
+  "expected_artifacts": [
+    "three real-checkpoint no-query smokes with finite U relation gradients",
+    "three E50 source checkpoints and U/acceptance/anchor exposure",
+    "seven-view predictions fixed before independent truth-last scoring",
+    "paired scene and TX/RX/day analyses"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro F1",
+      "paired corrected and missed",
+      "U acceptance",
+      "resource use"
+    ],
+    "dimensions": [
+      "seed",
+      "scene",
+      "TX",
+      "RX",
+      "day",
+      "population"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "tri-u-physical-s2026092701",
+      "method": "Complete Tri-SIG-TIME SSL plus accepted source-U pseudo-label five-branch bounded-echo relation, beta .5 and weight .05 within original U guard",
+      "purpose": "Test U physical-branch relation against exact same-seed original Tri-SIG-TIME SSL",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "view_count": 3,
+        "U_use": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "original REPL and physical U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-u-physical-s2026092702",
+      "method": "Complete Tri-SIG-TIME SSL plus accepted source-U pseudo-label five-branch bounded-echo relation, beta .5 and weight .05 within original U guard",
+      "purpose": "Test U physical-branch relation against exact same-seed original Tri-SIG-TIME SSL",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "view_count": 3,
+        "U_use": true
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "original REPL and physical U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-u-physical-s2026092703",
+      "method": "Complete Tri-SIG-TIME SSL plus accepted source-U pseudo-label five-branch bounded-echo relation, beta .5 and weight .05 within original U guard",
+      "purpose": "Test U physical-branch relation against exact same-seed original Tri-SIG-TIME SSL",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "view_count": 3,
+        "U_use": true
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "original REPL and physical U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    }
+  ],
+  "notes": [
+    "The new relation uses accepted pseudo labels, never U truth; same-day cross-RX positives and same-RX negatives.",
+    "Bounded post-reception causal echo is a local physical proxy, not a calibrated satellite channel; same U identities and five actual branches.",
+    "Weight .05 and beta .5 fixed for this research prior to the new target predictions; no target-based selection or rerun.",
+    "Main split and historical test results were previously exposed; outcomes are development evidence, not fresh independent blind confirmation.",
+    "Original paper-completion Main split Tri-SIG-TIME and ordinary PL DURA rows are matched controls; PL has different time order and recipe.",
+    "Distinct from other-owner rejected-U branch/echo corroboration: this experiment adds a physical relation among already accepted U and does not change acceptance.",
+    "DURA-LU primary; raw and DURA-L secondary; cross_rx plus cross_both main, cross_date diagnostic."
+  ]
+}

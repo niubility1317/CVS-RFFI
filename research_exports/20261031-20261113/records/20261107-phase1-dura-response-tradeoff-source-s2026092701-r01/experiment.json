@@ -1,0 +1,113 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-dura-response-tradeoff-source-s2026092701-r01",
+  "group_id": "phase1-dura-response-tradeoff-source",
+  "display_name": "DURA 源扰动响应与波形误差权衡",
+  "description": "在每个源组用 24 条记录拟合固定复频域修正，留出 24 条测量波形与四种合成扰动响应。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "F-free",
+    "response-tradeoff",
+    "dura"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261107-phase1-dura-perturbation-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split source pilot",
+    "version": "source cache R07 epoch19",
+    "representation": "672 fixed source pilot paired received/clean IQ, frozen DURA output",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Held-out source waveform NMSE and artificial perturbation response tradeoff; fitted coefficients not saved or applied on target"
+  },
+  "checkpoint": {
+    "initialization": "Fixed source-only DURA; diagnostic per-frequency closed-form fit, no network weight updates",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Fixed DURA source-only checkpoint and 672 source L_s/U_s pilot IDs with within-group disjoint fit/holdout",
+    "provenance_verdict": "DURA source-only with no F/TX/V/target ancestry",
+    "selection_rule": "Predefined weights 0, 0.05, 0.5 and ridge 0.001, no target selection"
+  },
+  "expected_artifacts": [
+    "result.json: 14 held-out source groups, waveform NMSE and four synthetic response metrics"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "waveform NMSE",
+      "relative perturbation response squared error",
+      "real directional gain"
+    ],
+    "dimensions": [
+      "336 held-out source physical records",
+      "RX4/6 and RX8 x seven views x 24",
+      "baseline and three fixed source fit weights"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "response-tradeoff-source",
+      "method": "Complex spectral residual fit with clean waveform plus fixed synthetic response weights",
+      "purpose": "Test whether source perturbation-response improvements come with held-out waveform damage before designing a network",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Fixed deterministic within-group source split and three preregistered response weights",
+      "k": null,
+      "scenario": "fixed previously explored source pilot grouped by RX and source simulation view",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "result.json: 14 held-out source groups, waveform NMSE and four synthetic response metrics"
+      ]
+    }
+  ],
+  "notes": [
+    "Synthetic 1% RMS directions use source clean IQ and estimated DURA action; source diagnosis only.",
+    "Waveform and four response terms normalized per source record; direction contributions averaged.",
+    "Per-frequency complex coefficients are fit only on half of each source group, evaluated only on held-out records, and never saved.",
+    "No F weights, TX labels, V or target reads; DURA may have seen source domain. Not identity performance or deployment evidence."
+  ]
+}

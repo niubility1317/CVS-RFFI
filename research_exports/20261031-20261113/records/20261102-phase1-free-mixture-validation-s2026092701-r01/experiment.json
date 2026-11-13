@@ -1,0 +1,110 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-free-mixture-validation-s2026092701-r01",
+  "group_id": "phase1-free-mixture",
+  "display_name": "Phase1 direct physical mixture source validation",
+  "description": "Fixed source-only validation of direct classifier-weighted physical mixture against blind posterior parent and DURA.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "hierarchical_prior",
+    "blind_channel",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-free-mixture-pilot-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "IQ [2,256], frozen blind physical posterior and direct learned six-component mixture",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No source true identity labels, simulated channel truth, U_s truth, V or test in this validation; clean-F pseudo labels only",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Only source fit L_s truth and U_s high-confidence clean F pseudo targets; no U_s truth/V/test",
+    "external_method_exception": null,
+    "claim_scope": "Source source IDs used by F and seen in other channel views, pseudo targets not independent test; bounded correction may exploit classifier"
+  },
+  "checkpoint": {
+    "initialization": "Frozen direct mixture controller and blind six-component source posterior, ground F and gate; DURA only comparator.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "Frozen direct mixture training commit 25fe47b9101033b4343ee7b7825c0f7ad79885bc; blind epoch10 and 8192-ID source prior; frozen Tri-SIG-TIME SSL",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "Fixed blend .25/.5/1 and gates .8/.99; RX4/6 classification and IQ guards against parent and DURA, net improvement >=10; RX8 heldout observation; no automatic target test."
+  },
+  "expected_artifacts": [
+    "source_validation.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "per receiver and scenario clean-F pseudo target agreement",
+      "aligned IQ normalized MSE",
+      "violations and fixed selection rule"
+    ],
+    "dimensions": [
+      "RX4/6 validation and RX8 source heldout across seven scenarios; two input gates"
+    ],
+    "scientific_rule": "Frozen clean F high-confidence pseudo targets; source classification and aligned IQ guards per cell; no true identity labels, U_s truth, V or test."
+  },
+  "rows": [
+    {
+      "row_id": "free_mixture_validation_s2026092701",
+      "method": "direct learned six-hypothesis IQ mixture versus blind parent and DURA",
+      "purpose": "larger source-only receiver/scenario validation of source prior",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120454,
+        "split": 392005,
+        "data": 2026120355,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "Frozen direct mixture trained seed 2026121954 and source fit seed 2026121855; no training in validation.",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "none (fixed checkpoint)",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source_validation.json"
+      ]
+    }
+  ],
+  "notes": "Follow-up after observing 384-record source pilot; source IDs previously observed in other views; no physical truth labels, U_s truth, V or test; fixed source rules."
+}

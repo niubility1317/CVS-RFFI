@@ -1,0 +1,363 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261103-phase2-csource-hu-aux-m3-r02",
+  "group_id": "phase2-group2-csource-hu-aux",
+  "display_name": "Phase2 第二组：Hu 源辅助补充三个种子",
+  "description": "Train Hu source auxiliaries for remaining three model seeds, reusing existing seed-one auxiliaries.",
+  "kind": "comparison",
+  "stage": "Phase2-source-only",
+  "aliases": [
+    "Phase2-Csource-Hu-source-aux-seeds2to4"
+  ],
+  "tags": [
+    "SCALR",
+    "phase2",
+    "Group2",
+    "DA-CIL",
+    "truth-last"
+  ],
+  "comparison_group_id": "20261102-phase2-r42-scenes-m4-r08",
+  "parent_run_ids": [
+    "20261030-phase2-group1-concat-midPL-threepool-m4-r01",
+    "20261101-phase2-mopc-author-group1-m4-r04"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "[已省略路径]",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "not applicable; source-only auxiliary L_s role",
+    "split_id": "fixed source L_s contract",
+    "source_target_overlap_policy": "same source physical roles;target opens only B/C current support;query never fit",
+    "matrix": {
+      "source_role": "L_s",
+      "source_examples": 6300,
+      "source_classes": 6,
+      "source_receivers": 5,
+      "source_views": "clean_L_s_only",
+      "model_seeds": [
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "C_source_methods": [
+        "mopc_hr",
+        "orthogonal",
+        "lora_triplet_knn"
+      ],
+      "target_examples": 0,
+      "query_examples": 0
+    }
+  },
+  "permissions": {
+    "regime": "source-only L_s with source TX and receiver labels",
+    "query_use": "none; no target/query handles provided",
+    "external_method_exception": "Hu project auxiliary source training",
+    "claim_scope": "Hu TX/RX separation objective on frozen C-source embeddings; project transplant, source clean-only auxiliary, not original Hu full source training"
+  },
+  "checkpoint": {
+    "initialization": "Reuse matching frozen C source checkpoints; train only new Hu auxiliary branches.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "group1_source.load_source validates source contract and lineage",
+    "provenance_verdict": "source-only Group1 matching source contract; actual load verified by launcher smoke",
+    "selection_rule": "frozen Group1 source checkpoints; no target score selection or training of A"
+  },
+  "expected_artifacts": [
+    "source_smoke.json",
+    "worker_state.json",
+    "source/*/hu_aux.pt",
+    "source/*/metadata.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source_loss",
+      "source_steps",
+      "source_seconds"
+    ],
+    "dimensions": [
+      "C_source_method",
+      "model_seed",
+      "source_epoch"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "hu_aux__mopc_hr-s2026092702",
+      "method": "mopc_hr frozen source seed 2026092702 → Hu TX/RX source auxiliary",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": null,
+      "scenario": "source clean L_s only",
+      "optimizer": "Adam lr0.005, 200 epochs, batch256",
+      "lr": 0.005,
+      "epochs": 200,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "hu_aux.pt",
+        "metadata.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "hu_aux__mopc_hr-s2026092703",
+      "method": "mopc_hr frozen source seed 2026092703 → Hu TX/RX source auxiliary",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": null,
+      "scenario": "source clean L_s only",
+      "optimizer": "Adam lr0.005, 200 epochs, batch256",
+      "lr": 0.005,
+      "epochs": 200,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "hu_aux.pt",
+        "metadata.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "hu_aux__mopc_hr-s2026092704",
+      "method": "mopc_hr frozen source seed 2026092704 → Hu TX/RX source auxiliary",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": null,
+      "scenario": "source clean L_s only",
+      "optimizer": "Adam lr0.005, 200 epochs, batch256",
+      "lr": 0.005,
+      "epochs": 200,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "hu_aux.pt",
+        "metadata.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "hu_aux__orthogonal-s2026092702",
+      "method": "orthogonal frozen source seed 2026092702 → Hu TX/RX source auxiliary",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": null,
+      "scenario": "source clean L_s only",
+      "optimizer": "Adam lr0.005, 200 epochs, batch256",
+      "lr": 0.005,
+      "epochs": 200,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "hu_aux.pt",
+        "metadata.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "hu_aux__orthogonal-s2026092703",
+      "method": "orthogonal frozen source seed 2026092703 → Hu TX/RX source auxiliary",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": null,
+      "scenario": "source clean L_s only",
+      "optimizer": "Adam lr0.005, 200 epochs, batch256",
+      "lr": 0.005,
+      "epochs": 200,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "hu_aux.pt",
+        "metadata.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "hu_aux__orthogonal-s2026092704",
+      "method": "orthogonal frozen source seed 2026092704 → Hu TX/RX source auxiliary",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": null,
+      "scenario": "source clean L_s only",
+      "optimizer": "Adam lr0.005, 200 epochs, batch256",
+      "lr": 0.005,
+      "epochs": 200,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "hu_aux.pt",
+        "metadata.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "hu_aux__lora_triplet_knn-s2026092702",
+      "method": "lora_triplet_knn frozen source seed 2026092702 → Hu TX/RX source auxiliary",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": null,
+      "scenario": "source clean L_s only",
+      "optimizer": "Adam lr0.005, 200 epochs, batch256",
+      "lr": 0.005,
+      "epochs": 200,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "hu_aux.pt",
+        "metadata.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "hu_aux__lora_triplet_knn-s2026092703",
+      "method": "lora_triplet_knn frozen source seed 2026092703 → Hu TX/RX source auxiliary",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": null,
+      "scenario": "source clean L_s only",
+      "optimizer": "Adam lr0.005, 200 epochs, batch256",
+      "lr": 0.005,
+      "epochs": 200,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "hu_aux.pt",
+        "metadata.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "hu_aux__lora_triplet_knn-s2026092704",
+      "method": "lora_triplet_knn frozen source seed 2026092704 → Hu TX/RX source auxiliary",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": null,
+      "scenario": "source clean L_s only",
+      "optimizer": "Adam lr0.005, 200 epochs, batch256",
+      "lr": 0.005,
+      "epochs": 200,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "hu_aux.pt",
+        "metadata.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source auxiliary is trained once per C source checkpoint and seed on cached source features and then reused for all target episodes.",
+    "C source backbone is frozen; source auxiliary is clean-L_s-only and does not reproduce original Hu clean+sat PL source budget.",
+    "Hu target-old B and native C registration are separate later runs; this source run performs no target prediction or scoring.",
+    "Source loss values are diagnostics, not target-score-based selection; checkpoint is fixed final epoch 200.",
+    "Seed 2026092701 completed in 20261103-phase2-csource-hu-aux-m1-r01 and is reused, not retrained."
+  ]
+}

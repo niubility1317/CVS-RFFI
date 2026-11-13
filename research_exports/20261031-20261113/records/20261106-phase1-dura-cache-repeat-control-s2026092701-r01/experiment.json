@@ -1,0 +1,112 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-dura-cache-repeat-control-s2026092701-r01",
+  "group_id": "phase1-dura-cache-repeat-control",
+  "display_name": "同缓存路径 GPU 训练重复性对照",
+  "description": "在相同源缓存、模型种子、GPU 和五轮训练配置下重复两次，判断同一路径本身是否产生权重差异。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "F-free",
+    "dura",
+    "gpu-training",
+    "cache-parity"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 with fixed augmented epochs 21/22/23",
+    "representation": "source received and clean IQ",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Technical source training parity and timing only; no target predictions and no new recovery variant"
+  },
+  "checkpoint": {
+    "initialization": "Identical DURA v1.0 and same initialized multiscale correction, seed 2026110612, for both technical replicates",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Original DURA source provenance verified by frozen_dura",
+    "provenance_verdict": "Original source-only DURA and same-contract source-only candidate, subject to completion check",
+    "selection_rule": "Fixed final epoch 5 for both; no checkpoint selection"
+  },
+  "expected_artifacts": [
+    "fresh/final.pt and cached/final.pt: private source training checkpoints",
+    "result.json: exact weight, loss and source group comparison plus timings"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "full model parameter bitwise equality",
+      "source loss and source group equality",
+      "full training time"
+    ],
+    "dimensions": [
+      "fresh and cached full five-epoch source training"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "fixed-model-fresh-versus-cached",
+      "method": "Two independently initialized repetitions of the same cached source training path",
+      "purpose": "Measure same-path reproducibility control after fresh versus cached checkpoint mismatch",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Fixed model initialization 2026110612, source fit 2026110611, optimizer order 2026110613; DURA seed 2026092701.",
+      "k": null,
+      "scenario": "source simulated views 21, 22, 23",
+      "optimizer": "AdamW weight decay 0.001",
+      "lr": 0.0003,
+      "epochs": 5,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "fresh/final.pt and cached/final.pt: private source training checkpoints",
+        "result.json: exact weight, loss and source group comparison plus timings"
+      ]
+    }
+  ],
+  "notes": [
+    "Both runs consume the identical frozen legal source IQ context cache; no target IQ, labels, F or V.",
+    "Control tests same-path repeatability under current GPU settings and load; it cannot alone prove the cause of any fresh-versus-cache difference.",
+    "No target predictions are generated; original fresh-versus-cached evidence remains unchanged."
+  ]
+}

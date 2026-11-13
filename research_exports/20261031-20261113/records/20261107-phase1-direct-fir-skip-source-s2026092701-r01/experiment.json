@@ -1,0 +1,113 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-direct-fir-skip-source-s2026092701-r01",
+  "group_id": "phase1-direct-fir-skip-source",
+  "display_name": "独立 FIR 学生跳过 DURA 源域验证",
+  "description": "比较固定独立学生原路径和省略 DURA 上下文及其分类的源域输出与计时。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "no-query",
+    "inference-timing",
+    "cpu"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261107-phase1-direct-student-fir-source-s2026092701-r01",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "fixed Phase1 source pilot R07 epoch19",
+    "representation": "received source IQ and fixed source reference predictions",
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only parity and timing with frozen F; no target inference or identity accuracy claim"
+  },
+  "checkpoint": {
+    "initialization": "Frozen source-only direct FIR student, DURA v1.0 and Tri-SIG-TIME SSL default classifier",
+    "sources": [
+      "20261107-phase1-direct-student-fir-source-s2026092701-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+    ],
+    "contract_check_ref": "ground.load_fixed verifies matching source-only G checkpoint and frozen Tri-SIG-TIME SSL",
+    "provenance_verdict": "Fixed source-only checkpoints, no target ancestry; F read only for frozen prediction diagnostic",
+    "selection_rule": "Already fixed final source epoch 5, original frozen classifier; no target selection"
+  },
+  "expected_artifacts": [
+    "result.json: waveform and logits exactness, decisions and paired source timing"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "maximum absolute source waveform/logit difference",
+      "source decision mismatches",
+      "paired source probe CPU time"
+    ],
+    "dimensions": [
+      "112 source samples",
+      "seven views",
+      "two receiver groups"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "source-direct-fir-skip",
+      "method": "Original DURA-context path versus direct IQ-only FIR student",
+      "purpose": "Measure fixed source output equivalence and prospective CPU inference savings",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Existing fixed FIR source checkpoint and Tri-SIG-TIME SSL seed 2026092701; no new training or selection.",
+      "k": null,
+      "scenario": "source pilot RX4/6 and RX8 x seven views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "result.json: waveform and logits exactness, decisions and paired source timing"
+      ]
+    }
+  ],
+  "notes": [
+    "F and DURA are frozen source inference only; no TX labels, target IQ or target truth.",
+    "Both paths warm up and alternate order on 112 source records. Probe timing includes its own checks.",
+    "Compare restored waveform, raw/restored logits and decisions exactly; verify original raw/anchor against fixed source pilot.",
+    "Source equality does not prove complete target prediction equality; no running predictor is changed.",
+    "Single small shared-CPU timing is not a full-test speed guarantee."
+  ]
+}

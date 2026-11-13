@@ -1,0 +1,237 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase2-hu2024-scaled-nodura-m4-r01",
+  "group_id": "phase2-hu2024-gradient-calibration",
+  "display_name": "Hu2024 源域梯度校准：四种子无 DURA 匹配评估",
+  "description": "保留原特征分离公式；以合法源初始梯度固定相似项权重 1/8192，重新训练与评估。",
+  "kind": "comparison",
+  "stage": "Phase1-Phase2-A-B",
+  "aliases": [],
+  "tags": [
+    "Hu2024",
+    "feature-separation",
+    "source-gradient-calibrated",
+    "no-DURA",
+    "four-seed",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261029-phase2-threepool-episodes-s2026102901-r01"
+  ],
+  "replaces_run_id": "20261030-phase2-group1-concat-midPL-threepool-m4-r01",
+  "data": {
+    "dataset": "[已省略路径]",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "483r10physicalpool/episode/RXcapsules",
+    "split_id": "9660r10actualKsplits",
+    "source_target_overlap_policy": "same source physical roles;target opens only B/C current support;query never fit"
+  },
+  "permissions": {
+    "regime": "source_then_current_labeled_support",
+    "query_use": "test_only",
+    "external_method_exception": "Hu native source and B support training; no DURA",
+    "claim_scope": "WiSig port; published loss weights unavailable; source calibrated; benchmark already exposed"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "source_only": true,
+    "checkpoint_reuse_count": 0,
+    "provenance_verdict": "SCRATCH_NEW_SOURCE_ONLY",
+    "selection_rule": "fixed_final_epoch",
+    "contract_check_ref": "same VALIDATED_ONCE source contract;own stage20+10+20 ancestry only for PAMF;DURA frozen original",
+    "provenance_status": "new scratch;own-stage exact ancestry only;frozen DURA source history retained"
+  },
+  "expected_artifacts": [
+    "source/*/group1_complete.json",
+    "source/*/epochs.jsonl",
+    "phase1/readouts/*/predictions/complete.json",
+    "phase1/readouts/*/scores/scores.json",
+    "predictions/*",
+    "scores/*",
+    "pipeline_state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_F1",
+      "source_V_accuracy",
+      "PL_acceptance",
+      "source_loss_terms"
+    ],
+    "dimensions": [
+      "seed",
+      "phase",
+      "receiver",
+      "scene",
+      "K",
+      "pool",
+      "episode"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "feature_separation_hu2024-s2026092701",
+      "method": "feature_separation_hu2024",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.005_batch256_sourceV_plateau_factor0.1_patience10",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Source-only calibrated λ_similarity=1/8192; no DURA; fixed 200 epochs; Phase1 seven views and native Phase2 B."
+    },
+    {
+      "row_id": "feature_separation_hu2024-s2026092702",
+      "method": "feature_separation_hu2024",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.005_batch256_sourceV_plateau_factor0.1_patience10",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Source-only calibrated λ_similarity=1/8192; no DURA; fixed 200 epochs; Phase1 seven views and native Phase2 B."
+    },
+    {
+      "row_id": "feature_separation_hu2024-s2026092703",
+      "method": "feature_separation_hu2024",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.005_batch256_sourceV_plateau_factor0.1_patience10",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Source-only calibrated λ_similarity=1/8192; no DURA; fixed 200 epochs; Phase1 seven views and native Phase2 B."
+    },
+    {
+      "row_id": "feature_separation_hu2024-s2026092704",
+      "method": "feature_separation_hu2024",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.005_batch256_sourceV_plateau_factor0.1_patience10",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Source-only calibrated λ_similarity=1/8192; no DURA; fixed 200 epochs; Phase1 seven views and native Phase2 B."
+    }
+  ],
+  "notes": [
+    "See docs/HU2024_GRADIENT_CALIBRATION_20261031.md; coefficients not published in paper; target results were previously exposed."
+  ]
+}

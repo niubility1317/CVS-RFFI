@@ -1,0 +1,22 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261112-phase1-pamf-tri-hybrid-contrast-m9-r01",
+  "scope": "Three source-only physical contrast structures, each with seeds 2026092701/02/03, m1-natural single source RX and the full three-view PAMF/reference response. Main split excluded. The setting and historical target results were exposed; this is development evaluation.",
+  "initialization": "Exact same-setting same-seed original Tri source-only E20, own E10+E20, fixed E50/11100 and original fixed permutation.",
+  "controls": [
+    "matching ordinary PL",
+    "matching original Tri",
+    "matching day_physics",
+    "matching branch-certified",
+    "matching fused cosine",
+    "matching packet contrast",
+    "matching packet contrast plus cosine"
+  ],
+  "evaluation": "All nine predictions must be frozen before independent truth-last scores; clean and six practical scenes, DURA-LU primary, DURA-L/raw secondary; cross_date separate from combined cross_rx/cross_both, matching physical IDs. Report every arm, seed, scene, TX/RX/day and paired corrections/regressions. No leo_weak, test-dependent checkpoint choice or selective reruns.",
+  "success": "Aim for over 2 percentage points above PL in clean and each practical DURA-LU scene and improvement over Tri. Mean gains must not hide seed, scene, TX, RX, or date regressions; independent tests are required for general claims.",
+  "expected_artifacts": [
+    "Nine source-only real-checkpoint smoke checks",
+    "Nine fixed E50 model trajectories and objective counters",
+    "Nine frozen seven-scene predictions then independent same-seed analyses"
+  ]
+}

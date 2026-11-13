@@ -1,0 +1,111 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-dura-response-parameter-source-s2026092701-r01",
+  "group_id": "phase1-dura-response-parameter-source",
+  "display_name": "DURA 源微扰响应与参数梯度诊断",
+  "description": "评估源合成微扰响应损失与源 IQ 保护损失对同一修正网络参数的梯度关系。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "F-free",
+    "counterfactual-response",
+    "gpu"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261107-phase1-dura-nonlinear-residual-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split permitted source L_s/U_s",
+    "version": "fixed deterministic source context epochs21/22/23",
+    "representation": "First 32 source physical IDs x 3 fixed views, four 1% source-clean-derived IQ perturbations",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ only, TX hidden",
+      "U_s": "source IQ only, TX hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Small source synthetic-response and parameter-gradient diagnostics only; no target, identity or general performance claim"
+  },
+  "checkpoint": {
+    "initialization": "Frozen original DURA and fixed 117062-parameter source correction initialization; no optimization",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Exact DURA source checkpoint, deterministic source context and matching source initialization/fit IDs; no F/TX/V/target",
+    "provenance_verdict": "Original DURA and source IQ context are F/TX/V/target free",
+    "selection_rule": "Fixed 32 IDs and four predefined perturbations; no target selection"
+  },
+  "expected_artifacts": [
+    "result.json: source response losses and parameter-gradient cosine/norm ratio"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source normalized response error",
+      "gradient cosine",
+      "0.01-weighted gradient norm ratio"
+    ],
+    "dimensions": [
+      "32 source IDs x 3 views",
+      "4 fixed source IQ perturbations"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "source-response-parameter",
+      "method": "Compare source guard and synthetic response parameter gradients at fixed initialization",
+      "purpose": "Assess source gradient compatibility for a prospective physically perturbed recovery objective",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": 2026110711,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed source correction initialization 2026110612; deterministic first 32 source IDs; no new random draw",
+      "k": null,
+      "scenario": "32 source IDs x three fixed simulated views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "result.json: source response losses and parameter-gradient cosine/norm ratio"
+      ]
+    }
+  ],
+  "notes": [
+    "Four directions are source clean-derived conjugate, amplitude cubic, phase slope and local difference, each 1% relative RMS.",
+    "Perturbations are sent through DURA estimated action, added to current received IQ, then full DURA is recomputed.",
+    "Gradient cosine/norm ratio is at a fixed untrained correction initialization, averaged across the three equal-size batches.",
+    "No optimizer, weight saving, F/TX/V/target; synthetic response is not transmitter identity or target performance."
+  ]
+}

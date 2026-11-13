@@ -1,0 +1,109 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-dura-source-repetition-s2026092701-r01",
+  "group_id": "phase1-dura-source-repetition",
+  "display_name": "源域相位对齐重复结构诊断",
+  "description": "固定六个时延，测量源域复相关与源 clean 最优非负修正量；只用于波形诊断。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "F-free",
+    "repetition",
+    "gpu-diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261103-phase1-dura-crossfit-blend-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split source pilot",
+    "version": "source cache R07 epoch19",
+    "representation": "672 received/clean source IQ paired records with public RX and view",
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source waveform-only diagnostic; no identity accuracy or target selection"
+  },
+  "checkpoint": {
+    "initialization": "Fixed DURA v1.0 source-only checkpoint",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Original DURA source-only provenance; fixed legal L_s/U_s source pilot with TX hidden",
+    "provenance_verdict": "Fixed original DURA source-only provenance previously verified",
+    "selection_rule": "Fixed DURA checkpoint and lags 8,16,20,32,40,64 before this diagnostic"
+  },
+  "expected_artifacts": [
+    "result.json: source lag correlations and nondeployable source-clean oracle"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source clean/received/DURA complex lag correlation",
+      "source DURA IQ NMSE and capped positive-step source-clean oracle",
+      "fraction negative optimum"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views",
+      "48 records per group"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "fixed-dura-source-repetition-diagnostic",
+      "method": "Non-circular DURA-phase-aligned lag projection; source clean optimal real coefficient clipped to [0,0.5]",
+      "purpose": "Measure repetition evidence and source-only ideal correction; no deployed model or identity claim",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Existing fixed DURA checkpoint and source pilot; no training or target access",
+      "k": null,
+      "scenario": "source pilot RX4/6 and RX8 x seven views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "result.json: source lag correlations and nondeployable source-clean oracle"
+      ]
+    }
+  ],
+  "notes": [
+    "No F weights or outputs, TX labels, V, target IQ or truth.",
+    "Source pilot previously explored; DURA may have seen it, so no independent generalization claim.",
+    "Source-clean optimum is unavailable at deployment and neither identity accuracy nor a general upper bound.",
+    "Fixed lag20 residual projection diagnostic using historical F50 was different; these data and phase-aligned projection do not claim comparability."
+  ]
+}

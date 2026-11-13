@@ -1,0 +1,178 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-Restore-ModulationCovariance-E30-s2026092701-r01",
+  "group_id": "receiver-modulation-source-operator-recovery",
+  "display_name": "物理接收调制估计与分量监督，从零单阶段 30 轮",
+  "description": "包级主路/镜像复增益，加独立线性与局部相位。用原源模拟真值监督调制、FIR、完整算子与噪声。独立冻结 Main 七景。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "original-ground-TriSIGSSL-Main",
+    "receiver-modulation",
+    "factor-supervision",
+    "scratch-single30",
+    "automatic-Main7"
+  ],
+  "comparison_group_id": "same-source-covariance-MAP-structured-receiver-modulation",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "Original R07 received IQ, FIR64, main/image coefficient traces and scalar noise. Same source-fitted covariance as original BF.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "actual_training_labels": "Original source-only simulator physical supervision, L_s6300/U_s56700. Zero true TX, F0 guidance, V/OE/novel/target training.",
+    "augmentation": "OriginalR07fs25MHz/fc2.462GHz/post_sync/noEQ/reflect/refSNR30/15percentclean+sixuniform;draw1..20+1..10;sourceorder2026110102. Mainall7unchanged;no target normalization orsampling."
+  },
+  "permissions": {
+    "regime": "source-only-scratch-operator-and-receiver-modulation-training",
+    "query_use": "G training only original L_s/U_s cached IQ and simulator traces. Same original F0 only at source smoke and frozen Main inference.",
+    "external_method_exception": null,
+    "claim_scope": "Composite change of modulation parametrization and direct factor supervision with equivalent whole Action loss. Frozen source evidence motivates architecture."
+  },
+  "checkpoint": {
+    "initialization": "All G parameters scratch seed2026092701 and identity physical heads. No learned model ancestry. Original source-only Gaussian statistics.",
+    "sources": [
+      "DATA_ONLY R07 original source L_s6300/U_s56700, twenty traces plus first ten repeated",
+      "DATA_ONLY original 63000-source prior a3a90b55a73702954c453eec9c1ad17fec24d87f, FP32 buffers",
+      "FROZEN_F0 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d only smoke and Main",
+      "FROZEN_COMPARISON_ONLY 20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01/bf29554a03e28a012eaaa134f5c7b3f7856f2268/E30, no initialization",
+      "SOURCE_MECHANISM_ONLY 20261107-diagnostic-Restore-action-factor-sourceV-s2026092701-r01/1065b7fd515402862a8b47bca8bddf597d823b54; zero V updates/selection."
+    ],
+    "contract_check_ref": "Original source L_s/U_s IDs, legal cached source moments and exact frozen F0. Strict new E0 and final30 state.",
+    "provenance_verdict": "Scratch original source G; no checkpoint initialization, target or source V fitting.",
+    "selection_rule": "One fixed final30/7410 candidate. Full Main before truth. No source quality gate, target feedback or reranking."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/training/config.json",
+    "rows/<arm>/training/smoke.json",
+    "rows/<arm>/training/smoke_E0.pt PRIVATE",
+    "rows/<arm>/training/data_schedule.npz PRIVATE",
+    "rows/<arm>/training/training.jsonl PRIVATE",
+    "rows/<arm>/training/final.pt PRIVATE",
+    "rows/<arm>/training/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE",
+    "rows/TF_ModulationCovariance/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only",
+    "resource_controller.json: actual owner and both code identities"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Main original two populations and combined 168000 x7. Six gaps <=3pp and both clean preserved.",
+      "Same-row true TX repairs/damage vs raw, DURA and frozen BF; RX/day/TX groups and macro F1.",
+      "All 30 epochs, 7410 steps, per-record whole Action, modulation, FIR shape, noise losses, wall time and peak memory.",
+      "0 training F0 and posterior calls, 1229833 learned parameters, same FP64 posterior in inference."
+    ],
+    "dimensions": [
+      "original cross_rx126000 and cross_both42000 x seven",
+      "TX/RX/day/RXday",
+      "fixed seed2026092701"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "TF_ModulationCovariance",
+      "method": "source-supervised-structured-main-image-modulation",
+      "purpose": "Improve estimation of receiver modulation where fixed source action decomposition showed the strongest TX leverage.",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Scratchmodel2026092701/sourceorder2026110102/R07builder2026101901-receiver2026101911-aug2026101912/Mainreceived2027. No trainingGaussiannoise/latent/RNGselection. Priorfullsourcepopulationfixed.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": "AdamW(weight_decay1e-4,clip1)",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/training/config.json",
+        "rows/<arm>/training/smoke.json",
+        "rows/<arm>/training/smoke_E0.pt PRIVATE",
+        "rows/<arm>/training/data_schedule.npz PRIVATE",
+        "rows/<arm>/training/training.jsonl PRIVATE",
+        "rows/<arm>/training/final.pt PRIVATE",
+        "rows/<arm>/training/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE",
+        "rows/TF_ModulationCovariance/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+      ]
+    }
+  ],
+  "notes": [
+    "Source V480 true TX paired evidence: low urban blind401, known FIR400, known modulation424, both430 with same estimated noise.",
+    "New modulation head predicts constant packet-wide complex gains, separate branch slopes, and interpolated local phase with DC and linear trends removed.",
+    "Fixed .1 full Action relative MSE + .05 direct gauge-aligned modulation relative MSE + .02 FIR shape squared error + .001 log noise MSE.",
+    "Source gauge target phase detached, direct modulation term does not move the FIR head through alignment. Whole Action and FIR still train both estimators.",
+    "One single-stage source run, no learned G ancestor, no F0 guidance, no analytic phase grid in deployment.",
+    "Full original Main with frozen F0, original source-only checkpoint final30, no target-dependent choices.",
+    "Independent physical/operational review P0/P1 only, 12 focused tests. Real L_s/U_s no-query source2 smoke first.",
+    "Third queued controller uses no GPU until the earlier C4 and phase-only GPU stages are over.",
+    "Resource-only update, no new scientific candidate, source/target score-based selection, architecture[已省略路径] change, or new checkpoint ancestor.",
+    "Normal GPU5 serial schedule: modulation first and mismatched after its final GPU stage, independent of score. Both keep original run roots and real terminal names for existing successors.",
+    "Old unstarted output skeleton and launch.json retained. New resource_controller.json is exclusive; any submitted work or training output blocks handover.",
+    "Nine focused tests PASS (five registered-resource and four existing packet-resource checks) plus one resource-only independent P0/P1 review PASS. Original model reviews not repeated."
+  ]
+}

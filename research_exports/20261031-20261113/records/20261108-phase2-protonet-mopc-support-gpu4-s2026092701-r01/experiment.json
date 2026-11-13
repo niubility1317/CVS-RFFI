@@ -1,0 +1,140 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase2-protonet-mopc-support-gpu4-s2026092701-r01",
+  "group_id": "phase2-group2-protonet-mopc-nonfinite",
+  "display_name": "Phase2 ProtoNet-CDA→MoPC 支持集数值诊断（GPU4）",
+  "description": "对 B r09 任务22的原源权重、K10/N20支持集和原GPU4单次检查梯度统计与非有限边界。",
+  "kind": "diagnostic",
+  "stage": "Phase2-B-C",
+  "aliases": [],
+  "tags": [
+    "phase2",
+    "Group2",
+    "ProtoNet-CDA",
+    "MoPC",
+    "diagnostic",
+    "support_only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261108-phase2-bsource-no-radionet-m4-r09",
+    "20261030-phase2-group1-concat-midPL-threepool-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "[已省略路径]",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "20-1"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "20261029-phase2-threepool-episodes-s2026102901-r01:P03:MIX07:20-1",
+    "split_id": {
+      "old": "9af0cb49f027e3a33635475a",
+      "current": "103d70df3bfa635a640d78d6"
+    },
+    "matrix": {
+      "pool": "P03",
+      "episode": "MIX07",
+      "receiver": "20-1",
+      "K": 10,
+      "N": 20,
+      "old_support_rows": 60,
+      "new_support_rows": 200,
+      "query_rows": 0
+    }
+  },
+  "permissions": {
+    "regime": "source-only checkpoint and labeled L_s plus exactly the current B/C supports",
+    "query_use": "none",
+    "external_method_exception": "ProtoNet B uses current labeled old-class support only.",
+    "claim_scope": "Original GPU4 source/support diagnostic only; no query, truth, scientific prediction, score or production retry."
+  },
+  "checkpoint": {
+    "initialization": "immutable exact ProtoNet-CDA source seed 2026092701",
+    "sources": [
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "group1_source.load_source",
+    "provenance_verdict": "Original r09 matching source contract; actual source-only smoke checks bridge at diagnostic start.",
+    "selection_rule": "Original fixed A checkpoint, no target-based selection."
+  },
+  "expected_artifacts": [
+    "owner.json",
+    "diagnostic.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "first_nonfinite_boundary",
+      "completed_updates",
+      "affected_tensors"
+    ],
+    "dimensions": [
+      "B/C stage",
+      "epoch",
+      "iteration"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "protonet-mopc-s2026092701-k10-n20",
+      "method": "ProtoNet-CDA B → MoPC-HR project transplant",
+      "purpose": "source/support diagnostic",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed existing capsule. B/C seeds derive from original model seed and job key. No new data, augmentation or evaluation draws.",
+      "k": 10,
+      "scenario": "P03/MIX07/20-1",
+      "optimizer": "Original ProtoNet B support prototypes then MoPC SGD momentum .9, weight decay .0002",
+      "lr": {
+        "B": null,
+        "C": 0.01
+      },
+      "epochs": {
+        "B": 0,
+        "C_per_session": 20
+      },
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "owner.json",
+        "diagnostic.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Original r09 task22 GPU4 source/support diagnosis; compare original FP32 norm with diagnostic FP64 only after the unchanged numeric guard triggers.",
+    "Preserve 33 existing partial predictions; absence of reproduction does not establish a fix."
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-diagnostic-phase1-source-v-restoration-s2026092701-r01",
+  "group_id": "phase1-source-v-frozen-restoration-diagnostic",
+  "display_name": "Phase1 独立源验证集冻结恢复器诊断",
+  "description": "从源 V 中不按标签抽取 4096 条，冻结 Tri-SIG-TIME SSL、DURA 和复数频谱候选，在 clean 与三个模拟星地视图上全部预测封存后独立连接源 V 真值，不拟合或更新任何模型。",
+  "kind": "diagnostic",
+  "stage": "Phase1-source-validation",
+  "aliases": [],
+  "tags": [
+    "source_V",
+    "truth_last",
+    "frozen_restoration",
+    "phase1_only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-complex-mask-source-s2026092701-r02"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 source contract",
+    "representation": "4096 deterministic sample of 27000 source V IQ [2,256]; clean and three simulated practical views",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Six source TX; V labels read only by independent scorer after sealed predictions",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "No target/test IQ, no Phase3; V truth opens only after all V predictions sealed",
+    "external_method_exception": null,
+    "claim_scope": "Source V random sample only; F may have used V for historical model selection; frozen mask did not train or select on V; simulated satellite is not a real link"
+  },
+  "checkpoint": {
+    "initialization": "Frozen Tri-SIG-TIME SSL, original DURA, fixed source-IQ-selected complex-mask checkpoint",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "V physical IDs checked disjoint from L_s/U_s and aligned by exact source contract; fixed mask commit checked",
+    "provenance_verdict": "No V used in mask fitting/selection; F historical V model selection possible; all models fixed, no target data used",
+    "selection_rule": "No selection: a single previously frozen candidate is compared with DURA and raw on same sampled V IDs"
+  },
+  "expected_artifacts": [
+    "source_smoke.json",
+    "prediction/complete.json",
+    "four views x three prediction arrays",
+    "summary.json",
+    "completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "repair/damage/net"
+    ],
+    "dimensions": [
+      "clean and three simulated practical views",
+      "TX",
+      "RX",
+      "day",
+      "same 4096 V physical IDs"
+    ],
+    "scientific_rule": "No model selection; report fixed DURA and candidate against true source V labels only after all views sealed"
+  },
+  "rows": [
+    {
+      "row_id": "fixed_source_v_sample",
+      "method": "frozen Tri-SIG-TIME SSL + DURA / source-selected complex mask",
+      "purpose": "source_V_truth_last_diagnostic",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110561,
+        "augmentation": 2026110562,
+        "support": null,
+        "evaluation": 2026110563
+      },
+      "seed_notes": "Support null: Phase1 no support; data seed samples V without labels, augmentation seed controls channel draw, evaluation seed controls receiver hardware.",
+      "k": null,
+      "scenario": "clean plus practical low suburban, mid urban, low urban source V",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source_smoke.json",
+        "prediction/complete.json",
+        "four views x three prediction arrays",
+        "summary.json",
+        "completion.json"
+      ]
+    }
+  ],
+  "notes": [
+    "V role remains a single validation role and is not split into method roles; sampled IDs do not update any model or persistent statistics.",
+    "Predictions for all views are sealed before scorer reads V y; labels are not read by predictor.",
+    "No target IQ or truth; independent source V evaluation is not an independent blind target test.",
+    "发布前纠正登记命令中的本机解释器路径；尚未启动诊断，代码与数据规则不变。"
+  ]
+}

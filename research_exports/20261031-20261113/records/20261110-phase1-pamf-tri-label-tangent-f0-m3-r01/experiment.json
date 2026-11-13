@@ -1,0 +1,18 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261110-phase1-pamf-tri-label-tangent-f0-m3-r01",
+  "display_name": "PAMF Tri-SIG-TIME 真实标签身份方向保护三种子",
+  "scope": "Phase1 ManySig F0, seeds 2026092701/02/03, full original reference-response PAMF, three views, fixed local shuffle [0,5,3,6,2,1,4,7].",
+  "initialization": "Reuse the actual same-seed original Tri-SIG-TIME source-only E20 scratch prefix. Continue own E10+E20 to fixed E50. Use no target data or U truth in training.",
+  "controls": [
+    "same-seed original Tri-SIG-TIME SSL with the same shuffled E20 and DURA-LU",
+    "same-seed ordinary PL with matching F0 input and DURA-LU"
+  ],
+  "evaluation": "Clean and six practical scenes, DURA-LU primary, DURA-L and raw secondary. Main scope disjoint cross_rx plus cross_both, cross_date diagnostic. All three prediction matrices frozen before independent truth-last scoring. No leo_weak, no target feedback into checkpoints or recipe.",
+  "expected_artifacts": [
+    "same-seed E20 provenance and finite L/U smoke",
+    "own E30/E50 and L/REPL exposure state",
+    "truth-blind seven-scene predictions",
+    "independent scores and same-packet three-seed DURA/raw comparison"
+  ]
+}

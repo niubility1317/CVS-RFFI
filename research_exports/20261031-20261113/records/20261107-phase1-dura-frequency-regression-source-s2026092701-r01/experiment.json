@@ -1,0 +1,111 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-dura-frequency-regression-source-s2026092701-r01",
+  "group_id": "phase1-dura-frequency-regression-source",
+  "display_name": "DURA 源域全局复频域回归诊断",
+  "description": "对固定源 IQ 评估全局及按可观测噪声分组的广义线性频域残差回归，源记录分开拟合与验证。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "F-free",
+    "frequency-regression",
+    "gpu"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261106-phase1-dura-wide-source-source-s2026092701-r01",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split permitted source L_s/U_s",
+    "version": "fixed deterministic source context epochs21/22/23",
+    "representation": "32768 source physical fit IDs x three paired received/DURA/clean IQ views; 28672 IDs fit, 4096 IDs held out",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ only, TX hidden",
+      "U_s": "source IQ only, TX hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Held-out source IQ NMSE only; no saved filter, target accuracy, deployment or real satellite claim"
+  },
+  "checkpoint": {
+    "initialization": "Fixed source-only DURA outputs from existing approved IQ context, no learned model checkpoint",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Source context schema, source view order, distinct 32768 source fit IDs and no F/TX/V/target",
+    "provenance_verdict": "Original DURA and source IQ context are F/TX/V/target free",
+    "selection_rule": "Global plus four fixed source-noise quartile regressions; ridge 0.001; no target selection"
+  },
+  "expected_artifacts": [
+    "result.json: held-out source IQ NMSE and count, global and four observable-noise bins"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "mean per-record IQ NMSE",
+      "number of records with lower IQ NMSE than DURA"
+    ],
+    "dimensions": [
+      "three fixed source views",
+      "four training-source variance/received-power quartile bins"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "dura-frequency-source-regression",
+      "method": "Shared widely-linear spectral residual, global and fixed source-noise bins",
+      "purpose": "Evaluate whether population-level spectral correction can reduce held-out source IQ error without per-record clean calibration",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": 2026110711,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Deterministic split by original source index modulo 8; no new randomness",
+      "k": null,
+      "scenario": "64 fixed source training IDs, three source simulation views",
+      "optimizer": "closed-form complex ridge 0.001",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "result.json: held-out source IQ NMSE and count, global and four observable-noise bins"
+      ]
+    }
+  ],
+  "notes": [
+    "Fits frequency-dependent complex residual using DURA output, received IQ and their time-domain conjugates.",
+    "Training only uses clean source IQ; noise quartile boundaries are determined from fitting records only.",
+    "Same physical ID cannot appear in fitting and held-out sets, including across source views.",
+    "This is a source feasibility diagnostic; filters are not saved or evaluated on the target, and IQ NMSE is not identity accuracy."
+  ]
+}

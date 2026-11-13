@@ -1,0 +1,103 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-adaptive-inverse-source-s2026092701-r01",
+  "group_id": "phase1-adaptive-inverse",
+  "display_name": "独立自适应复数滤波恢复网络源域 GPU 训练",
+  "description": "逐窗口估计 33 抽头复数和共轭滤波器，结合独立局部波形残差；从随机初始化训练，无 DURA、F、TX 标签、V 或目标。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "independent-restoration",
+    "F-free-training",
+    "adaptive-complex-filter"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "paired received/clean IQ; direct recovery uses only received IQ",
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "F-free and TX-label-free paired source IQ training, source IQ diagnostics; no target score"
+  },
+  "checkpoint": {
+    "initialization": "AdaptiveInverseRecovery width32, 33 FIR taps, 31334 parameters, from scratch; zero heads reproduce received IQ",
+    "sources": [],
+    "contract_check_ref": "No upstream G or F initialization or teacher; frozen DURA only after source checkpoint for diagnostics and paired test",
+    "provenance_verdict": "Random initialization; no pretrained G, F or target ancestry",
+    "selection_rule": "Fixed final epoch 20; no source or target score selection"
+  },
+  "expected_artifacts": [
+    "final.pt: fixed final epoch",
+    "source_summary.json: source IQ only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source paired IQ NMSE",
+      "training IQ loss"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "adaptive-inverse-final",
+      "method": "Input-conditioned per-window widely-linear 33-tap FIR plus nonlinear waveform residual; no DURA input",
+      "purpose": "Train independent F-free network for 20 epochs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "New model initialization 2026110612; source fit 2026110611, fixed input caches and DURA seed 2026092701; optimizer ordering 2026110613.",
+      "k": null,
+      "scenario": "fixed source cache epochs 21, 22, 23",
+      "optimizer": "AdamW weight decay 0.001",
+      "lr": 0.0003,
+      "epochs": 20,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "final.pt: fixed final epoch",
+        "source_summary.json: source IQ only"
+      ]
+    }
+  ],
+  "notes": [
+    "Train from scratch on paired source IQ, no DURA or F weights/outputs, TX labels, V or target; frozen DURA loaded only after candidate freeze for source diagnostic and formal paired comparison.",
+    "Per-window 33-tap complex and conjugate FIR correction plus nonlinear time residual; zero output heads reproduce received IQ at initialization.",
+    "This is an independent recovery route and does not yet show scientific improvement; direct dual-domain source results motivated exploring conditional inversion.",
+    "Twenty fixed training epochs; all seven Phase1 test views and independent truth-last scoring regardless of source metrics."
+  ]
+}

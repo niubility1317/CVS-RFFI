@@ -1,0 +1,139 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-dura-temporal-prior-ground-test-s2026092701-r01",
+  "group_id": "phase1-dura-temporal-prior",
+  "display_name": "多尺度时间先验 DURA 七景测试",
+  "description": "冻结 DURA 和源遮挡 IQ 先验，在源训练时对恢复与 clean 的先验隐藏特征进行 8/32 时间尺度中心化一致性约束。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "dura",
+    "F-free-training",
+    "temporal-source-prior",
+    "deterministic-gpu"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261107-phase1-masked-iq-prior-source-s2026092701-r01",
+    "20261107-phase1-masked-prior-temporal-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "frozen candidate + frozen Tri-SIG-TIME SSL on fixed Phase1 seven-view ground IQ",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "No target labels, clean pair, or target fitting during inference; labels only after all seven predictions",
+    "roles": {
+      "L_s": "source IQ training only, TX hidden",
+      "U_s": "source IQ training only, TX hidden",
+      "V": "not used for G training",
+      "test": "fixed Phase1 ground IQ, truth last"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "target_panel": "168000 Phase1 physical records x seven views",
+    "actual_training_labels": "Recovery training uses paired source IQ only; no F outputs, F weights, TX labels, V or target. Frozen Tri-SIG-TIME SSL only after recovery checkpoint frozen.",
+    "augmentation": "Fixed pre-existing Phase1 ground test simulated seven views"
+  },
+  "permissions": {
+    "regime": "Phase1 frozen ground evaluation",
+    "query_use": "Fixed per-record Phase1 IQ only after source training; no target fit, truth only after seven-view predictions",
+    "external_method_exception": null,
+    "claim_scope": "Single-seed repeatedly observed Phase1 simulated ground test; not independent blind or real satellite"
+  },
+  "checkpoint": {
+    "initialization": "Fixed source-only DURA and source-only masked IQ prior; fresh zero-head multiscale correction",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261107-phase1-masked-iq-prior-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "Prior status and no F/TX/V/target, commit and exact ordered 32768 source fit IDs; original DURA source-only provenance",
+    "provenance_verdict": "DURA and masked prior source-only with matching data roles and no target ancestry",
+    "selection_rule": "Fixed final epoch 5; no target or pilot score selection"
+  },
+  "expected_artifacts": [
+    "flow/test_prediction/complete.json",
+    "flow/test_summary.json",
+    "flow/paired_dura.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "ground accuracy",
+      "raw clean gap in pp and relative percent",
+      "macro F1",
+      "DURA paired repairs and damages",
+      "TX/RX/day groups"
+    ],
+    "dimensions": [
+      "168000 physical records",
+      "clean and six practical views"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "dura-temporal-source-prior-final",
+      "method": "Fresh multiscale DURA correction with IQ guard and 0.05 frozen source-prior time-centered 8/32-bin feature consistency",
+      "purpose": "Complete mandatory seven-view Phase1 test and paired DURA comparison",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Correction 2026110612; source IDs 2026110611; order 2026110613; random masks 2026110711; source prior 2026110707",
+      "k": null,
+      "scenario": "clean and six practical Phase1 Main split views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "flow/test_prediction/complete.json",
+        "flow/test_summary.json",
+        "flow/paired_dura.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Frozen original DURA and source-only masked IQ prior; no F, TX, V or target in G training.",
+    "One fixed-seed random 32-sample mask per source record; prior hidden activations centered over time then pooled to 8 and 32 bins; normalized feature MSE weight .05.",
+    "Fixed source prior and correction use exactly the same 32768 permitted source IDs; no target or source pilot results select a checkpoint.",
+    "Same deterministic source context produced on GPU7 is reused on GPU6; original benchmark weights and running models are unchanged.",
+    "GPU6 capacity queue counts all compute apps and waits if fewer than 4096 MiB or three apps already present.",
+    "Fixed final epoch and mandatory 168000 x seven Phase1 Main split predictions with frozen Tri-SIG-TIME SSL, then independent truth-last."
+  ]
+}

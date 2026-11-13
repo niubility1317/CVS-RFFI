@@ -1,0 +1,137 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01",
+  "group_id": "phase3-independent-restoration-source-pairs",
+  "display_name": "Phase3恢复器原L_s/U_s全量G10-clean配对缓存",
+  "description": "仅制备63000条原源配对和可选实际F0 clean特征；0优化，不训练G，不打开OE/V/目标。",
+  "kind": "diagnostic",
+  "stage": "Phase3",
+  "aliases": [],
+  "tags": [
+    "Phase3",
+    "source-only",
+    "data-cache",
+    "P3-Restore-TF",
+    "no-updates"
+  ],
+  "comparison_group_id": "P3Restore-TF-IQ-vs-F0-guided-single30",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 L_s6300/U_s56700/V27000;source G10 MIX01",
+    "representation": "Originalroleorder L_s then U_s;P0 unchanged plus samepacket rawFP64->FP32->oneRMS clean;optional F0clean fused160 stored separately",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "actual_training_labels": "No optimizer. No TX/V/OE/novel/target inputs;raw PKL wholefile includes otherroles but only originalLsUs packetvalues indexed.",
+    "augmentation": "No new views;first2Ls canonical observe audit bitwise equals P0;one raw RMS perrecord/no postchannel RMS."
+  },
+  "permissions": {
+    "regime": "source_only_data_cache_zero_optimization",
+    "query_use": "0query/targetU/V/OE/novel;originalsource pairedIQ and frozenF0 cleanfeatures only",
+    "external_method_exception": null,
+    "claim_scope": "Data preparation,not learned G/performance or samequality speed. PureIQ optimization consumer never opens optional F0array."
+  },
+  "checkpoint": {
+    "initialization": "TFscratch identity only real2Ls no-update smoke/no Gancestor/noDURAmodelloaded",
+    "sources": [
+      "OriginalTriSIGSSL F0 main_split-repl-shuffled_time-3view-s2026092701/final_ssdg.pth/3ff8f4b7e85b5608f5b45350aa18081499a7ef1d/E50-11100/232993",
+      "OriginalLd319 P0 and validatedUs56700 G10 P0;not restoredIQ or logits",
+      "RawManySig2.359GB wholepickle;onlyoriginalLsUs packetvalues indexed"
+    ],
+    "contract_check_ref": "OriginalF0 strictancestry/data392005/fullroleIDs and source-only complete metadata;source P0 contract-order and producer identities",
+    "provenance_verdict": "F0 sourceonly verifiedr02;no PCD/r03 teacher/init;newTF smoke random/no learnupdates;no oldnormalizedIQ or teacherIQ",
+    "selection_rule": "No checkpoint selection. All63000 originalsource records;F0clean features once;complete manifest only after all arrays,smoke and frozenF0 check."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted.json",
+    "smoke.json",
+    "GPU_runtime.json",
+    "cache/manifest.json",
+    "cache/clean.npy PRIVATE",
+    "cache/received.npy PRIVATE",
+    "cache/F0_features.npy PRIVATE",
+    "cache/{ids,roles,rx,day}.npy PRIVATE",
+    "results.json",
+    "complete.json",
+    "controller_complete.json",
+    "logs/worker.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "63000IDrole alignment/oneRMS/finiteFP32 IQ/F0fused160",
+      "2Lsactualsmoke/inputVJPcap.5/unchangedG-F0/no labels-noOE-V-target/0updates",
+      "pairpreparation/F0featurecache/wholewallseconds/F0rows63004/head2/Grows2"
+    ],
+    "dimensions": [
+      "L_s6300/U_s56700/source5RX3day/oneMIX01"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "source_pairs",
+      "method": "OriginalLsUs63000G10P0-clean-pairs-and-separateF0clean-fused160",
+      "purpose": "diagnostic",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026104001,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "modelonlyscratchsmoke;fixedsplit392005/scene2026103001/channel2026104001/receiver2027;no sampling/support/evaluation randomseed",
+      "k": null,
+      "scenario": "OriginalLsUs oneG10MIX01/0V-OE-target",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "submitted.json",
+        "smoke.json",
+        "GPU_runtime.json",
+        "cache/manifest.json",
+        "cache/clean.npy PRIVATE",
+        "cache/received.npy PRIVATE",
+        "cache/F0_features.npy PRIVATE",
+        "cache/{ids,roles,rx,day}.npy PRIVATE",
+        "results.json",
+        "complete.json",
+        "controller_complete.json",
+        "logs/worker.log"
+      ]
+    }
+  ],
+  "notes": [
+    "NewG remains single30 pending full automatic evaluation;this cache does not constitute training or qualify sixscene gap.",
+    "24focused source/cache tests PASS;one independent P0/P1 PASS. Existing architecture/objective not re-reviewed.",
+    "RawwholePKL reads other-role bytes/namespace;only originalLsUs raw packetvalues indexed. Privatecoordinates never G inputs. No y/V/OE/target arrays opened.",
+    "PureIQ cache consumer does not open or return F0feature array;guidance consumer validates actualoriginal F0 ancestry/dimension/order. F0knowledgeE50-11100 disclosed.",
+    "One Git identity/archive transfer SHA/remotecompile/preflight/firstactualsmoke continues. No extra seals/datarehash/approval. DefaultDURA/otherowners unchanged."
+  ]
+}

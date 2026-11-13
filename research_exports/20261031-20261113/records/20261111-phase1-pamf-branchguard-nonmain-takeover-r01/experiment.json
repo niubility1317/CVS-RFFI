@@ -1,0 +1,11 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261111-phase1-pamf-branchguard-nonmain-takeover-r01",
+  "scope": "Technical continuation of the nine already-frozen source models in receiver splits 1 and 2 and 5% labeled, each with seeds 2026092701, 2026092702 and 2026092703; no Main split, no new training.",
+  "evaluation": "All nine seven-scene clean/practical predictions must complete without truth before the first independent score. Same DURA-LU primary and DURA-L/raw secondary; retain same-packet and TX/RX/day analysis. No leo_weak or Main split evaluation. No target-dependent selection or reruns.",
+  "expected_artifacts": [
+    "Nine originally specified frozen practical prediction sets",
+    "Nine independent truth-last score sets",
+    "Same-setting and same-packet comparisons to originally specified PL, Tri and taper controls"
+  ]
+}

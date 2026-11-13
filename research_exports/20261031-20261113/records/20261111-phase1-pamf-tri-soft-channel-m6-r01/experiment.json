@@ -1,0 +1,19 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261111-phase1-pamf-tri-soft-channel-m6-r01",
+  "scope": "Two semi-supervised continuous channel-routing rules, each with seeds 2026092701/02/03, m1-natural one-source-receiver full three-view PAMF with reference response. Main split excluded. This uses previously exposed target settings and is development evidence.",
+  "initialization": "Same-setting same-seed original Tri source-only E20, then own E10+E20, fixed E50/11100, unchanged source sample roles and fixed signature permutation.",
+  "controls": [
+    "matching ordinary PL",
+    "matching original Tri",
+    "matching prior hard-gated day_physics",
+    "matching prior branch-certified method"
+  ],
+  "evaluation": "All six predictions frozen before independent truth-last scores; clean and six practical scenarios, same physical IDs, DURA-LU primary, DURA-L/raw secondary, cross_date separate from cross_rx/cross_both. Report each seed, scenario, TX/RX/day, paired corrections and regressions. No leo_weak, target-based checkpoint selection or selective reruns.",
+  "success": "Greater than 2 percentage points above PL for clean and each practical DURA-LU scene and improvement over Tri, reporting all seed/scenario negatives; success here cannot prove all settings.",
+  "expected_artifacts": [
+    "Six actual E20 smoke checks with nonzero bounded continuous routing",
+    "Six frozen E50 sources with channel-strength counters",
+    "Six frozen seven-scene predictions then independent same-seed comparison"
+  ]
+}

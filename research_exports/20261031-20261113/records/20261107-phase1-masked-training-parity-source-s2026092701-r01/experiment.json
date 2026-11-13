@@ -1,0 +1,117 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-masked-training-parity-source-s2026092701-r01",
+  "group_id": "phase1-masked-training-parity-source",
+  "display_name": "遮挡先验短程训练真实源样本一致性",
+  "description": "使用真实 DURA 源上下文与源先验，对原版和精简损失进行相同种子短程训练并比较参数。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "F-free",
+    "gpu-latency",
+    "expert-distillation"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261107-phase1-masked-iq-prior-source-s2026092701-r01",
+    "20261106-phase1-dura-wide-source-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split permitted source L_s/U_s",
+    "version": "fixed deterministic source context epochs21/22/23",
+    "representation": "64 source fit IDs x three views, received/anchor/innovation/variance/clean IQ",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ only, TX hidden",
+      "U_s": "source IQ only, TX hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Short local training trajectory parity on known source records, not full training or target prediction equality"
+  },
+  "checkpoint": {
+    "initialization": "Frozen source-only prior final epoch5; new zero-head correction independently reinitialized for each path",
+    "sources": [
+      "20261107-phase1-masked-iq-prior-source-s2026092701-r01",
+      "20261106-phase1-dura-wide-source-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "Context contract and prior commit/ordered fit IDs match; no F/TX/V/target",
+    "provenance_verdict": "Both prior and source context are F/TX/V/target-free source only",
+    "selection_rule": "Fixed prior and same initialized correction, no target selection"
+  },
+  "expected_artifacts": [
+    "sample.pt: private source context subset",
+    "result.json: short training parameter and source output parity"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "per-step training loss exactness",
+      "final parameter exactness",
+      "all 192 source output exactness",
+      "short training elapsed time"
+    ],
+    "dimensions": [
+      "64 source physical records x three views",
+      "two epochs batch32 each"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "masked-prior-short-training-parity",
+      "method": "Original and pruned masked prior loss with same fresh recovery initialization, minibatch order and masks",
+      "purpose": "Check source training trajectories, not full target predictions",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": 2026110711,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Model 2026110612, order 2026110613, mask 2026110711, fixed source prior 2026110707",
+      "k": null,
+      "scenario": "64 fixed source training IDs, three source simulation views",
+      "optimizer": "AdamW weight decay .001, gradient clip 1",
+      "lr": 0.0003,
+      "epochs": 2,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "sample.pt: private source context subset",
+        "result.json: short training parameter and source output parity"
+      ]
+    }
+  ],
+  "notes": [
+    "No F, TX labels, V or target data.",
+    "Source sample is derived from previously validated, source-only deterministic DURA context, not a new data contract.",
+    "Both short trajectories use same initial model, source order, masks, deterministic GPU settings and optimizer.",
+    "Each path gets a full warmup; fixed timing order is not a controlled full training speed benchmark.",
+    "Do not change currently running [计算环境] experiment; equal 192 source outputs do not establish full target equivalence."
+  ]
+}

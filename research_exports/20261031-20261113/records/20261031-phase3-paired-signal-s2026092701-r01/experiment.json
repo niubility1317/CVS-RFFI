@@ -1,0 +1,232 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-paired-signal-s2026092701-r01",
+  "group_id": "pamf-phase3-paired-signal",
+  "display_name": "PAMF第三阶段：同记录接收与恢复信号的端到端开放学习",
+  "description": "Three independent pure-r03 shared encoders: sourceP1/P1, sourceP0/P1, targetP0/P1+PCD; exact source streams, frozen P1 F0 identity, same observation and DURA.",
+  "kind": "cvs",
+  "stage": "Phase3-paired-signal-open-adaptation",
+  "aliases": [
+    "同记录接收恢复开放表征"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "paired_signal",
+    "source_control",
+    "UDA",
+    "DURA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-paired-signal",
+  "parent_run_ids": [
+    "20261031-phase3-fresh-development-rx3-2-s2026092701-r01",
+    "20261031-phase3-body-prototype-s2026092701-r01",
+    "20261030-phase3-star-signal-open-s2026092701-r03"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Original source G10 received/restored L/OE/V/NV and fixed RX3-2 star U/future pairedQ",
+    "version": "Unchanged VALIDATED_ONCE source392005 and fresh development handles",
+    "representation": "Same-record P0/P1 to shared SignalOpen plus zero-init bounded difference/product residual; F0 default identity uses P1 only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "3-2/index34"
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [
+      "2021-03-01 U",
+      "2021-03-15/23 futureQ"
+    ],
+    "tx_sets_ref": "Old14-10/14-7/20-15/20-19/6-15/8-20; future unregistered5-5/10-7/2-19/7-11 only builder/scorer; later7-11 not inU",
+    "roles": {
+      "source_L": 6300,
+      "source_OE": 6134,
+      "source_V_known_calibration": 27000,
+      "source_NV": 3150,
+      "original_U_s_new": 0,
+      "target_star_U": 576,
+      "target_future_Q_unique": 10238,
+      "target_future_known": 4508,
+      "target_future_unknown": 5730,
+      "U_truth_fit": 0
+    },
+    "train_ratio": "OriginalF0 L6300/63000=10%; source labels/membership unchanged, targetTXlabels0. Additional P0 evidence, not new physical records.",
+    "capsule_id": "p3fresh-b14665c51b89f44f2b76c137",
+    "split_id": "077495132350495f37a33d84"
+  },
+  "permissions": {
+    "regime": "Original pure-r03 initialization for all3 students; sourceL realy/OE membership, raw/restoredsameobservation. SourceP1 control masks P0. TARGET_PAIR uses only legal U and synchronized phase/gain; 16capacity notK.",
+    "query_use": "All neural/source density states freeze before Vknown tau. NV and pairedfuture Q fixed10x3 predictions then independent3truth; no Qfit/Utruth/EMA or default identity update.",
+    "external_method_exception": null,
+    "claim_scope": "Source input effect SOURCE_PAIR-SOURCE_P1; matched UDA TARGET_PAIR-SOURCE_PAIR; extraP0/adapter vsoldPCD not single-factor. Exposed devRX/seed/globalhistoryUNKNOWN, fullgoalACTIVE."
+  },
+  "checkpoint": {
+    "initialization": "All3 PairedSignal students independently from pure-source r03 plus samezero Linear320to160; SOURCE controls not used as target initialization, no target PCDFresh init",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "[已省略路径]",
+    "provenance_verdict": "Same source392005 and pureF0/r03/G; SOURCE444 original control and newtwoSOURCE sealed before U, exact sourceindices; targetstateexplicitU576.",
+    "selection_rule": "444each/1332new; zero-init adapter51360, fixed deltaL2<=.1, PCD unchanged eps.05/temp.1/16slots; onlyfinal states, no Qselection"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/{train,eval}.json",
+    "logs/{driver,train,predict,score}.log",
+    "train/{resolved_config,smoke,complete}.json",
+    "train/<ARM>/{steps.jsonl,complete.json,final.pt}",
+    "train/{U_manifest,U_cache_reference,prototype_initialization}.json",
+    "predict/{models,calibration,source,targets,thresholds.npz,complete.json}",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macroAK",
+      "macroCK",
+      "macroRU",
+      "Hscore",
+      "origF0P1closedminusAK",
+      "AUROC/OSCR",
+      "sourcepairinputeffect",
+      "targetpairUDAeffect",
+      "pairedcorrect/rejectevents",
+      "sourceknown12/42",
+      "fulltraininggradients/adapterbound",
+      "AN/HOWNA"
+    ],
+    "dimensions": [
+      "10readouts",
+      "source5RX/cleanRX34/starRX34",
+      "sixrequiredscenes",
+      "trueTX/RX/day",
+      "sourceP1-sourcePAIR-targetPAIR andoldPCD"
+    ],
+    "targets_ref": "CleanRU95/starRU90/CK90/origF0P1gap2pp/requiredscene-rosters; sourceknown12; mainstarAKaboveSOURCE_PAIR/OLDPCD,RUnotlower. FullgoalACTIVE.",
+    "primary": [
+      "TARGET_PAIR_predicted_ratio"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "SOURCE_P1-s2026092701",
+      "method": "SOURCE_P1",
+      "purpose": "P1-only input control",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "All source streams2026103017/18; TARGET only U2026103112/phasegain3114/prototype3113, inherited future3133/3134; sourcecontrols U/augmentation/prototype unused.",
+      "k": null,
+      "scenario": "All learning starP0/P1; alltesting throughfrozenDURA; defaultidentity P1 only",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/{driver,train,predict,score}.log",
+        "train/{resolved_config,smoke,complete}.json",
+        "train/<ARM>/{steps.jsonl,complete.json,final.pt}",
+        "train/{U_manifest,U_cache_reference,prototype_initialization}.json",
+        "predict/{models,calibration,source,targets,thresholds.npz,complete.json}",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    },
+    {
+      "row_id": "SOURCE_PAIR-s2026092701",
+      "method": "SOURCE_PAIR",
+      "purpose": "same-record P0/P1 source learning",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "All source streams2026103017/18; TARGET only U2026103112/phasegain3114/prototype3113, inherited future3133/3134; sourcecontrols U/augmentation/prototype unused.",
+      "k": null,
+      "scenario": "All learning starP0/P1; alltesting throughfrozenDURA; defaultidentity P1 only",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/{driver,train,predict,score}.log",
+        "train/{resolved_config,smoke,complete}.json",
+        "train/<ARM>/{steps.jsonl,complete.json,final.pt}",
+        "train/{U_manifest,U_cache_reference,prototype_initialization}.json",
+        "predict/{models,calibration,source,targets,thresholds.npz,complete.json}",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    },
+    {
+      "row_id": "TARGET_PAIR-s2026092701",
+      "method": "TARGET_PAIR",
+      "purpose": "same-record pair plus unlabeled PCD",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026103114,
+        "support": 2026103113,
+        "evaluation": null
+      },
+      "seed_notes": "All source streams2026103017/18; TARGET only U2026103112/phasegain3114/prototype3113, inherited future3133/3134; sourcecontrols U/augmentation/prototype unused.",
+      "k": null,
+      "scenario": "All learning starP0/P1; alltesting throughfrozenDURA; defaultidentity P1 only",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/{driver,train,predict,score}.log",
+        "train/{resolved_config,smoke,complete}.json",
+        "train/<ARM>/{steps.jsonl,complete.json,final.pt}",
+        "train/{U_manifest,U_cache_reference,prototype_initialization}.json",
+        "predict/{models,calibration,source,targets,thresholds.npz,complete.json}",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "One received percanonical, P0/P1 are sameobservation, no new clean reference/channel.",
+    "Two sourcecontrols first and all3 independentlyinitialize pure-r03/zeroresidual; source exactstreams; target16slots nottrueK.",
+    "Source input and UDA effects separately paired; SOURCE_P1 nominalarchitecture same but information differs.",
+    "F0/default/G/Sinc/buffers frozen, P0onlyopenbranch, all10x3predictions before independent3truth, thresholds sourceonly.",
+    "No discovery/anonymous registration; oldPCD baseline retained unless preregistered jointgate passes; formal24-18 unopened, fullgoalACTIVE."
+  ]
+}

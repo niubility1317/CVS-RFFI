@@ -1,0 +1,108 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-dura-internal-guard-source-s2026092701-r02",
+  "group_id": "phase1-dura-internal-guard",
+  "display_name": "DURA 内部物理和先验联合优化源 IQ GPU 训练",
+  "description": "固定原 DURA 作为源 IQ 参考，另加载同源副本，联合更新物理估计和先验；不读取 F、TX 标签或目标。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "dura",
+    "F-free-training",
+    "internal-refinement"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": "20261106-phase1-dura-internal-guard-source-s2026092701-r01",
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "paired received/clean IQ, per-packet DURA and its estimated physical action",
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "F-free and TX-label-free paired source IQ training, source IQ diagnostics; no target score"
+  },
+  "checkpoint": {
+    "initialization": "Original DURA v1.0 stage2 E20/4940 source-only checkpoint; trainable independent copy and separate frozen original reference",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "frozen_dura validates original7/63/30 and original DURA F/TX/target access fields; candidate and anchor are separate copies",
+    "provenance_verdict": "Source-only original DURA, no F or target ancestry",
+    "selection_rule": "Reset AdamW, fixed final 5 incremental epochs after parent E20; no source or target score selection"
+  },
+  "expected_artifacts": [
+    "final.pt: fixed final epoch",
+    "source_summary.json: source IQ only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source paired IQ NMSE",
+      "training IQ loss"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "dura-internal-guard-final",
+      "method": "Train independent original-DURA physics and prior weights with source IQ loss, small residual regularization and original-DURA-relative degradation guard",
+      "purpose": "Train a distinct F-free recovery network at fixed five-epoch budget",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Original DURA seed 2026092701, source fit sampling 2026110611, optimizer order 2026110613; no new random model initialization.",
+      "k": null,
+      "scenario": "fixed source cache epochs 21, 22, 23",
+      "optimizer": "AdamW, weight decay 0, optimizer reset",
+      "lr": 1e-05,
+      "epochs": 5,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "final.pt: fixed final epoch",
+        "source_summary.json: source IQ only"
+      ]
+    }
+  ],
+  "notes": [
+    "Original DURA remains frozen as source reference; a separately loaded candidate copy is trainable. DURA_frozen metadata refers to the source reference, while candidate_dura_trainable is true.",
+    "All G training uses only legal L_s/U_s paired IQ and source-only original DURA; no F weights/outputs, TX labels, V or target access.",
+    "Reset AdamW lr=1e-5, weight decay 0, five fixed incremental epochs, preserving model eval behavior.",
+    "Seven Phase1 views and truth-last score proceed irrespective of source metrics; frozen Tri-SIG-TIME SSL used only after candidate freeze.",
+    "Technical r02 after r01 preflight compared GPU batch8 with batch32 and hit 1.43e-6 float difference; r02 compares matching batch sizes under unchanged tolerance. No scientific configuration change."
+  ]
+}

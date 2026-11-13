@@ -1,0 +1,250 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase2-milkr-identityheld-s2026092701-r17",
+  "group_id": "phase2-milkr-adapter-TX-held-K1-calibration",
+  "display_name": "MILKR适配器设备留出与K1核重校准",
+  "description": "R18同时排除source RX和两TX训练线性encoder，以held设备源验证选择rank/metric/K1规则；F自身已见六TX，不冒称F-novel。",
+  "kind": "cvs",
+  "stage": "Phase2-B-C",
+  "aliases": [],
+  "tags": [
+    "MILKR",
+    "Tri-SIG-TIME-SSL",
+    "Phase2",
+    "K-N",
+    "small-screen",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-phase2-milkr-signature-kn-s2026092701-r05",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261031-phase2-milkr-sourcebridge-s2026092701-r11",
+    "20261031-phase2-milkr-pairedcca-confirm-s2026092701-r13",
+    "20261031-phase2-milkr-pairedcca-s2026092701-r12",
+    "20261031-phase2-milkr-physicalH-s2026092701-r14",
+    "20261031-phase2-milkr-kernelmargin-s2026092701-r15",
+    "20261031-phase2-milkr-classwhiten-s2026092701-r16"
+  ],
+  "data": {
+    "dataset": "[已省略路径]",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "1-1"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "one existing P01/MIX01/1-1 VALIDATED_ONCE capsule",
+    "split_id": "read exact existing K/N split IDs",
+    "source_target_overlap_policy": "same source physical roles;target opens only B/C current support;query never fit",
+    "matrix": {
+      "K": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "N": [
+        2,
+        5,
+        10,
+        20
+      ],
+      "physical_pool": "P01",
+      "episode": "MIX01",
+      "query": "all_registered_complement",
+      "receiver": "1-1"
+    }
+  },
+  "permissions": {
+    "regime": "fixed_source_complete_Tri_SIG_TIME_SSL_then_current_labeled_support_only",
+    "query_use": "per_sample_test_only",
+    "external_method_exception": null,
+    "claim_scope": "source adapter-TX/RX-held selection only; F has seen allsourceTX/RX; no targettuning; currentK all16KNstrictcriteria"
+  },
+  "checkpoint": {
+    "initialization": "reuse original full source-only Tri-SIG-TIME SSL",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "existing validated Group1 source contract + trisig_source.validate_done rechecks complete original source recipe",
+    "provenance_verdict": "MATCHING_SOURCE_ONLY_REUSE",
+    "selection_rule": "fixed final E50/11100; model seed first predeclared numeric order; no target selection"
+  },
+  "expected_artifacts": [
+    "source_smoke.json",
+    "source_calibration_grid.json sourceonly1440candidates",
+    "source_selection.json",
+    "source_identity_cca.npz ifsourcegatePASS",
+    "complete.json",
+    "80targetrows onlyifsourcegatePASS"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "old_macro_accuracy",
+      "new_macro_accuracy",
+      "H_macro",
+      "macro_f1",
+      "class_floor"
+    ],
+    "dimensions": [
+      "RX",
+      "K",
+      "N",
+      "arm",
+      "S/Q"
+    ],
+    "primary": "Every targetKN cell separately: bothS Q0-original>=5pp and Q1>Q0, not mean substitution",
+    "success": "all16KN twoS meet Q0+5pp/Q1increment; matching-original gain for all4case also explicitly reported percell; no pooledmean-only success",
+    "secondary": "all4 originalpaired gains perKN, R14/R17samecasehistoricalcomparisons; old/new/F1/floor; sourceadapter-heldnew accuracy",
+    "scientific_source_rule": "5fixedfolds: sortedRX, heldTXpairs(0,1)/(1,2)/(2,3)/(3,4)/(4,5), excludeheldRX andheldTX allRX/bothepochs fromnewencoderfit. old4/new2 source evalep91 K1/5/20; rank16/32/64/96 x metric0/.5/.9 x24K1kernelsx5ridge=1440 sourcecandidates. GatefourH>=control+.5pp,newmacro>=+1pp,everyK/S Q0H>=+.25pp,K1newQ0eachS>=+1pp,eachK/S Q1-Q0>=0 andmeanQ1gain>0. BesteligibleH/newgain/regularity deterministictie; none=>target0.",
+    "promotion_rule": "Strict user: every16targetKN bothS Q0-original>=5pp andQ1>Q0, plus preexistingmean old/newguard>=original-1pp; all4matched5flag reported. Mean-only cannot expand; onlyallcell pass unchangedother6RX confirmation."
+  },
+  "rows": [
+    {
+      "row_id": "rx-1-1",
+      "method": "R18 adapterTX-held sourceencoder + sourcecalibrated normalizedK1ridge + R14higherKhead",
+      "purpose": "paired_KN_screen",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/1-1",
+        "workpoints": [
+          {
+            "K": 1,
+            "N": 2
+          },
+          {
+            "K": 1,
+            "N": 5
+          },
+          {
+            "K": 1,
+            "N": 10
+          },
+          {
+            "K": 1,
+            "N": 20
+          },
+          {
+            "K": 5,
+            "N": 2
+          },
+          {
+            "K": 5,
+            "N": 5
+          },
+          {
+            "K": 5,
+            "N": 10
+          },
+          {
+            "K": 5,
+            "N": 20
+          },
+          {
+            "K": 10,
+            "N": 2
+          },
+          {
+            "K": 10,
+            "N": 5
+          },
+          {
+            "K": 10,
+            "N": 10
+          },
+          {
+            "K": 10,
+            "N": 20
+          },
+          {
+            "K": 20,
+            "N": 2
+          },
+          {
+            "K": 20,
+            "N": 5
+          },
+          {
+            "K": 20,
+            "N": 10
+          },
+          {
+            "K": 20,
+            "N": 20
+          }
+        ],
+        "B_K": [
+          1,
+          5,
+          10,
+          20
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "split/support/evaluation are fixed existing split IDs and physical complement, not redrawn; augmentation per existing MIX01/physical seed; source proxy seed2026103101",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01 fixed six-practical residual received",
+      "optimizer": "source analytical CCA/metric + sourceK1grid; K1ridge=ref_lambda*currentSupportClassCount/6; K>1unchanged nestedridge",
+      "lr": null,
+      "epochs": 0,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    }
+  ],
+  "notes": [
+    "FullTri-SIG-TIME SSL232993params/completeREPL+fixedpermutation, DURA v1.0 and neuraldefaulthead frozen. R17 historicaltargetresults operationaldiagnosis only, no R17weightinheritance. Newsourceencoder fit fromlegalF0 sourceL features only.",
+    "Eachfold excludesboth allheldRX rows andallheldTX rows onallRX inbothcachedaugmentationepochs91/92. CCA andclassmetric fitonlyfourremainingTX/otherRX. F itself wastrainedall5sourceRX/all6sourceTX; adapterheldout isnot F-novel/trueunknownvalidation.",
+    "FiveRXfixedorder andTXpaircycle predeterminednotbyscore. HeldTX0/5 occuronce,1..4twice; smallsourceproxy not full15pairmatrix. Allold4/new2 support/query fromheldRX evalepoch91,52/class, supportprefix<=20/querylast32 canonicalIDs disjoint.",
+    "SourcepairedCCA maximumrank96 fitonce/fold, truncateexactsameSVD to16/32/64/96. Classmetric0/.5/.9 usesnoncontiguoussourceclassinverse mapping; sameT rightmultipliesbothprojectionweights. Sourcecov/classmeans/examples not uploaded, finalfullsourceL encoderordinaryPairedCCAfile.",
+    "K1 originalR9rule servedcontrol only; full24signaturekernelx5ridge sourcegrid perrepresentation. FinalK1lambda ref chosenat6supportclasses andscaledbyallocatedcurrentSupportClassCount/6 (meanlossnormalization), neverquerycount/quota. SourceC6 to targetC8..26 isextrapolation. K>1 R14nested path unchanged.",
+    "Control rank16/metric0/oldR9K1rule trainedunderidenticaladapterheldfolds. Sourcegate requirespositivehigherK aswellasK1/heldnewTX gains; geometry mathematicallyunchangedhigherK cannotpass onlyK1 improvement.",
+    "Source old4/new2 not targetold6/new20; sourceknownF semanticlimit and3sourcechannel/6targetchanneldifference disclosed. SourceK1/5/20, targetK10 interpolation, finalnewencoderall6sourceL atselectedrank/metric, no U/Vtruth.",
+    "StrictS0/Q0 rawonly,S1/Q1 actualGonly; sourceencoderfrozenbeforetarget; currentKlabels only; samefittedhead queryroutes, allclassesindependentargmax, no querytruegroup/quota/statistics/fitting.",
+    "UniqueindependentP0/P1reviewPASS. Testscoverclasssubset/rank32,TX/RX exclusionacrossepochs,K1scale hand-equivalence/K>1identity, K1-onlycannotpassallKsourcegate,oldR17noise/sourcecheckpoints PASS. RealF/G smoke launcherfirststep thenimmediatecalibration.",
+    "Onlysourcepass startsfirstRX1-1 P01/MIX01 all16KN/fourroute80rows; allpredictionsfixed beforeindependenttruthlast; original/R14/R17historicalsamematrix reused. No mean-onlypromotion, failure preserveall/no selectivererun/otherowners untouched."
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-direct-received-source-diagnostic-s2026092701-r01",
+  "group_id": "phase1-direct-received-source-diagnostic",
+  "display_name": "独立模型与接收 IQ、DURA 的源域配对诊断",
+  "description": "冻结独立恢复器，对同一源 IQ 比较原始接收、直接恢复和 DURA 输出波形误差，不读取 F、TX 标签、V 或目标。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "F-free",
+    "frequency-diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261106-phase1-direct-dualdomain-source-s2026092701-r01",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "received and clean IQ [2,256]",
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source IQ reconstruction error only; no identity accuracy or independent generalization"
+  },
+  "checkpoint": {
+    "initialization": "Fixed direct dual-domain checkpoint and frozen original DURA",
+    "sources": [
+      "20261106-phase1-direct-dualdomain-source-s2026092701-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Runtime verifies direct source-only checkpoint commit and permission fields, frozen_dura verifies DURA provenance",
+    "provenance_verdict": "Both fixed Phase1 models, no F or target ancestry",
+    "selection_rule": "Fixed trained direct model and DURA, no target score selection"
+  },
+  "expected_artifacts": [
+    "result.json with source group mean NMSE and per-record paired improvement counts"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source IQ NMSE of received, direct, DURA",
+      "paired per-record improvement counts"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "received-direct-dura-source-pair",
+      "method": "Frozen direct and DURA on the same 672 source IQ pairs",
+      "purpose": "Identify whether the direct model reduces received-source IQ error",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Existing pretrained source runs and fixed source pilots; no stochastic training, support or augmentation in this benchmark.",
+      "k": null,
+      "scenario": "seven fixed Phase1 source views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source samples previously inspected; DURA may have seen their source domain.",
+    "No F, TX label, V or target read and no model updates.",
+    "Real-checkpoint source smoke runs first; GPU7 batch 32."
+  ]
+}

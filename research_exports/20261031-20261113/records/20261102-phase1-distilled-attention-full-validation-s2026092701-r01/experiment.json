@@ -1,0 +1,111 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-distilled-attention-full-validation-s2026092701-r01",
+  "group_id": "phase1-attention-waveform",
+  "display_name": "Phase1 full-source teacher-guided attention validation",
+  "description": "Fixed evaluation of full-source direct attention student, frozen Tri-SIG-TIME SSL; DURA used for source training only.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "attention",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-distilled-attention-full-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "Direct IQ attention restoration, three blends to input and two protective gate thresholds",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No source true identity labels, U_s truth, V or test; frozen F pseudo labels only",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Frozen clean F pseudo targets only; no source true identity, U_s truth, V or test",
+    "external_method_exception": null,
+    "claim_scope": "Source source IDs used by F and seen in other channel views, pseudo targets not independent test; bounded correction may exploit classifier"
+  },
+  "checkpoint": {
+    "initialization": "Final epoch8 source-teacher direct attention, frozen F and input gate; DURA comparator only at evaluation.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "Full-source attention training commit 4066269354c6192e4592cafaad1cb77ac12babf7; fixed final epoch8.",
+    "provenance_verdict": "Predeclared before full-source training finishes; teacher used for source training only; Phase1 ground test previously observed.",
+    "selection_rule": "Before training completes, fixed blends .25/.5/1 and gates .8/.99, RX4/6 classification and IQ guards vs DURA, net >=10; RX8 source holdout. Formal ground test separately required regardless of result."
+  },
+  "expected_artifacts": [
+    "source_validation.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "per receiver and scenario clean-F pseudo target agreement",
+      "aligned IQ normalized MSE",
+      "violations and fixed selection rule"
+    ],
+    "dimensions": [
+      "RX4/6 validation and RX8 source heldout across seven scenarios; two input gates"
+    ],
+    "scientific_rule": "Frozen clean F high-confidence pseudo targets; per-cell classification and aligned IQ guards versus DURA; no true identity labels, U_s truth, V or test."
+  },
+  "rows": [
+    {
+      "row_id": "free_full_hard_validation_s2026092701",
+      "method": "full-source teacher-guided attention waveform student",
+      "purpose": "source-only receiver/scenario validation before any ground test",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120454,
+        "split": 392005,
+        "data": 2026120355,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "Network init 2026123054 and order seed 2026123056; 38951 source fit IDs; fixed Phase1 views.",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "none (fixed checkpoint)",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source_validation.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Fixed source-only six candidate/gate combinations before training completion.",
+    "No identity truth, U_s truth, V or test.",
+    "Formal seven-view ground test required regardless of source results."
+  ]
+}

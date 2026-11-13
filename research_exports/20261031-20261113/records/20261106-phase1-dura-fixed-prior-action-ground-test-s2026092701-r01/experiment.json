@@ -1,0 +1,134 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-dura-fixed-prior-action-ground-test-s2026092701-r01",
+  "group_id": "phase1-dura-fixed-prior-action",
+  "display_name": "DURA 冻结原先验候选 Phase1 七景测试",
+  "description": "从原 DURA 独立副本出发，固定原两阶段先验，只更新上下文估计；使用源 IQ 和模拟信道作用联合监督，推理只用接收 IQ。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "dura",
+    "F-free-training",
+    "simulated-action-guidance"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261106-phase1-dura-fixed-prior-action-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "frozen candidate + frozen Tri-SIG-TIME SSL on fixed Phase1 seven-view ground IQ",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "No target labels, clean pair, or target fitting during inference; labels only after all seven predictions",
+    "roles": {
+      "L_s": "source IQ training only, TX hidden",
+      "U_s": "source IQ training only, TX hidden",
+      "V": "not used for G training",
+      "test": "fixed Phase1 ground IQ, truth last"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "target_panel": "168000 Phase1 physical records x seven views",
+    "actual_training_labels": "Recovery training uses paired source IQ only; no F outputs, F weights, TX labels, V or target. Frozen Tri-SIG-TIME SSL only after recovery checkpoint frozen.",
+    "augmentation": "Fixed pre-existing Phase1 ground test simulated seven views"
+  },
+  "permissions": {
+    "regime": "Phase1 frozen ground evaluation",
+    "query_use": "Fixed per-record Phase1 IQ only after source training; no target fit, truth only after seven-view predictions",
+    "external_method_exception": null,
+    "claim_scope": "Single-seed repeatedly observed Phase1 simulated ground test; not independent blind or real satellite"
+  },
+  "checkpoint": {
+    "initialization": "Original DURA v1.0 stage2 E20/4940 source-only checkpoint; trainable independent copy and separate frozen original reference",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "frozen_dura validates original7/63/30 and original DURA F/TX/target access fields; candidate and anchor are separate copies",
+    "provenance_verdict": "Source-only original DURA, no F or target ancestry",
+    "selection_rule": "Reset AdamW, fixed final 5 incremental epochs after parent E20; no source or target score selection"
+  },
+  "expected_artifacts": [
+    "flow/test_prediction/complete.json",
+    "flow/test_summary.json",
+    "flow/paired_dura.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "ground accuracy",
+      "raw clean gap in pp and relative percent",
+      "macro F1",
+      "DURA paired repairs and damages",
+      "TX/RX/day groups"
+    ],
+    "dimensions": [
+      "168000 physical records",
+      "clean and six practical views"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "dura-fixed-prior-action-final",
+      "method": "Freeze original DURA priors; update context using source IQ guard and 0.01 source simulator action response loss",
+      "purpose": "Complete mandatory Phase1 seven-view test and paired DURA comparison",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Original DURA seed 2026092701, source fit sampling 2026110611, optimizer order 2026110613; no new random model initialization.",
+      "k": null,
+      "scenario": "clean and six practical Phase1 Main split views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "flow/test_prediction/complete.json",
+        "flow/test_summary.json",
+        "flow/paired_dura.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Candidate starts from original source-only DURA, not the action-guided candidate. Original context/prior factorial pilot informed this hypothesis.",
+    "Both original prior modules are frozen exactly; gradients propagate through them to train context. Ground loader verifies equality to original.",
+    "Fixed source 8192 IDs x epochs21/22/23, five epochs, batch32, AdamW lr1e-5, weight decay0, fixed final epoch.",
+    "Source simulator kernel/main/image used only in source training, no true variance supervision; inference uses received IQ.",
+    "No F, TX labels, V or target in training; seven Phase1 views and truth-last mandatory regardless of source IQ results."
+  ]
+}

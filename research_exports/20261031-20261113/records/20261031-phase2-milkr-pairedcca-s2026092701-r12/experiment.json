@@ -1,0 +1,242 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase2-milkr-pairedcca-s2026092701-r12",
+  "group_id": "phase2-milkr-source-paired-canonical-space",
+  "display_name": "MILKR源配对CCA共同空间先导",
+  "description": "R14对raw/restored分别使用source-only投影到共同相关空间；保留严格四路输入和R12当前支持head。先源RX留出四路门槛，通过才访问目标。",
+  "kind": "cvs",
+  "stage": "Phase2-B-C",
+  "aliases": [],
+  "tags": [
+    "MILKR",
+    "Tri-SIG-TIME-SSL",
+    "Phase2",
+    "K-N",
+    "small-screen",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-phase2-milkr-signature-kn-s2026092701-r05",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261031-phase2-milkr-sourcebridge-s2026092701-r11"
+  ],
+  "data": {
+    "dataset": "[已省略路径]",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "1-1"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "one existing P01/MIX01/1-1 VALIDATED_ONCE capsule",
+    "split_id": "read exact existing K/N split IDs",
+    "source_target_overlap_policy": "same source physical roles;target opens only B/C current support;query never fit",
+    "matrix": {
+      "K": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "N": [
+        2,
+        5,
+        10,
+        20
+      ],
+      "physical_pool": "P01",
+      "episode": "MIX01",
+      "query": "all_registered_complement",
+      "receiver": "1-1"
+    }
+  },
+  "permissions": {
+    "regime": "fixed_source_complete_Tri_SIG_TIME_SSL_then_current_labeled_support_only",
+    "query_use": "per_sample_test_only",
+    "external_method_exception": null,
+    "claim_scope": "exposed developmental research; source selects K1, per-row support selects K>1; no query tuning within run; no blind independent claim"
+  },
+  "checkpoint": {
+    "initialization": "reuse original full source-only Tri-SIG-TIME SSL",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "existing validated Group1 source contract + trisig_source.validate_done rechecks complete original source recipe",
+    "provenance_verdict": "MATCHING_SOURCE_ONLY_REUSE",
+    "selection_rule": "fixed final E50/11100; model seed first predeclared numeric order; no target selection"
+  },
+  "expected_artifacts": [
+    "source_smoke.json",
+    "source_selection.json",
+    "source_cca.npz if source gate PASS",
+    "complete.json",
+    "80predictions/scores if source gate PASS"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "old_macro_accuracy",
+      "new_macro_accuracy",
+      "H_macro",
+      "macro_f1",
+      "class_floor"
+    ],
+    "dimensions": [
+      "RX",
+      "K",
+      "N",
+      "arm",
+      "S/Q"
+    ],
+    "primary": "C macro H equal-weight across 16 KN cells, separately for S0Q0/S1Q0, paired with matching original",
+    "success": "both S: Q0-original Q0 >=5pp and new Q1-new Q0 >0; report every KN cell and stricter every-cell pass separately",
+    "secondary": "matched R13 r11 and originalMILKR reused; allstrict4paths; old/new/F1/floor",
+    "scientific_source_rule": "Leave one sourceRX out before CCA/bridge fit; each heldRX twoepisodes, allK 1/5/10/20 support prefix <=20, held32/class positions20..51. Ranks16/32/64/96, fixedridge.01trace/d. Eligible: fourpathH vs R13>=+.5pp, bothS Q0>=R13-.5pp, bothS Q1-Q0>=+.5pp. Best meanH amongeligible, smallrank tie. None=>target0.",
+    "promotion_rule": "unchanged user four-path criteria: bothS target Q0-original>=5pp, Q1>Q0, Q0 old/new>=original-1pp; report everyKN; pass only permits unchanged other6RX confirmation"
+  },
+  "rows": [
+    {
+      "row_id": "rx-1-1",
+      "method": "R14 frozen source-paired CCA + nested physicalsupport head",
+      "purpose": "paired_KN_screen",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/1-1",
+        "workpoints": [
+          {
+            "K": 1,
+            "N": 2
+          },
+          {
+            "K": 1,
+            "N": 5
+          },
+          {
+            "K": 1,
+            "N": 10
+          },
+          {
+            "K": 1,
+            "N": 20
+          },
+          {
+            "K": 5,
+            "N": 2
+          },
+          {
+            "K": 5,
+            "N": 5
+          },
+          {
+            "K": 5,
+            "N": 10
+          },
+          {
+            "K": 5,
+            "N": 20
+          },
+          {
+            "K": 10,
+            "N": 2
+          },
+          {
+            "K": 10,
+            "N": 5
+          },
+          {
+            "K": 10,
+            "N": 10
+          },
+          {
+            "K": 10,
+            "N": 20
+          },
+          {
+            "K": 20,
+            "N": 2
+          },
+          {
+            "K": 20,
+            "N": 5
+          },
+          {
+            "K": 20,
+            "N": 10
+          },
+          {
+            "K": 20,
+            "N": 20
+          }
+        ],
+        "B_K": [
+          1,
+          5,
+          10,
+          20
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "split/support/evaluation are fixed existing split IDs and physical complement, not redrawn; augmentation per existing MIX01/physical seed; source proxy seed2026103101",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01 fixed six-practical residual received",
+      "optimizer": "FP64 Cholesky, no gradient updates",
+      "lr": null,
+      "epochs": 0,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    }
+  ],
+  "notes": [
+    "FullTri-SIG-TIME SSL232993 and DURA v1.0 frozen; original source F0 contract/provenance unchanged; no F/G or defaulthead updates.",
+    "SourceL only, cached augmentationepochs91/92; sourcey used only sourceproxy support/H evaluation. U/V truth0, target sourcecalibration0.",
+    "8normalized blocks, each marginalcovariance+.01trace/d*I inverse-root, crosscovariance SVD; rawPx and restoredPy project separately to sharedrank; padzero originalwidth andunitnormalize. Rank selectedsourceonly.",
+    "Every shadowCCA and R13bridge trained excluding all observations of heldsourceRX. Support and query physicalIDs disjoint within each sourceepisode; heldfirst20 excluded from32query/class. Source sixclasses all knownF, proxy not novelidentity confirmation.",
+    "StrictS0 onlyraw support through rawencoder, strictS1 onlyactualG support through restoredencoder; Q0 onlyrawencoder, Q1 onlyactualG restoredencoder. No dualquery or dualsupport mixing.",
+    "CurrentK labels only, independentK/N states, originalR12 nested supportCV. Target carries frozenparameter checkpoint only, no sourceexampleIQ/features.",
+    "FirstRX1-1 P01/MIX01 seed2026092701 all16KN/allregisteredquerycomplement fixed. No targetscore tuning/reordering/selectivererun. Negative sourcegate=>no target. All80predictions fixed before scorer.",
+    "Singlearm R14, include_R9_control=false. Reuse original80 and r11R13 matched80 as historicalcontrols, not extra physicalobservations. No healthyotherowner modified."
+  ]
+}

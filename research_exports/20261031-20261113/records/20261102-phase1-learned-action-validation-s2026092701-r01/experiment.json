@@ -1,0 +1,120 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-learned-action-validation-s2026092701-r01",
+  "group_id": "phase1-learned-action-recovery",
+  "display_name": "Fixed learned-channel unrolled restoration source",
+  "description": "Fixed DURA-free joint learned channel and observation-conditioned unrolled IQ restoration with frozen Tri-SIG-TIME SSL.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "hierarchical_prior",
+    "blind_channel",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-learned-channel-source-s2026092701-r03",
+    "20261102-phase1-observation-unroll-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "Blind action posterior plus three observation/learned prior updates; no DURA in candidate",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No source true identity labels, simulated channel truth, U_s truth, V or test in this validation; clean-F pseudo labels only",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Source clean F high-confidence pseudo targets only; no TX labels, U_s truth, V or test.",
+    "external_method_exception": null,
+    "claim_scope": "Post-hoc source validation replay, F pseudo labels not truth; original source IDs and results previously explored; not independent blind test"
+  },
+  "checkpoint": {
+    "initialization": "Frozen independent blind action, source Gaussian prior, source-trained channel regressor and source-trained three-step observation-conditioned corrector; fixed gate .8; no DURA.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "Independent blind source action checkpoint 94693a342bb2daa684c0f21415d7b949f9fb2107",
+      "Fixed source Gaussian prior, corruption gate and frozen Tri-SIG-TIME SSL"
+    ],
+    "contract_check_ref": "Channel regressor training commit 0831bcec99be5d2e3d20aa093a674a5eed6eb68d and unroll training commit 7d9c8570361db942713359149c4b2e46be06281b; exact source fit IDs and view assignments equal.",
+    "provenance_verdict": "Source only; DURA absent from candidate; fixed evaluation before source validation or target results. Prior model training running at registration.",
+    "selection_rule": "Fixed source validation with 3 correction strengths and 2 gates, per-record predictions before aggregation, no target. Compare also to stored unrolled source predictions; full candidate ground test always required."
+  },
+  "expected_artifacts": [
+    "source_predictions.npz",
+    "prediction_complete.json",
+    "source_validation.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "per receiver and scenario clean-F pseudo target agreement",
+      "aligned IQ normalized MSE",
+      "violations and fixed selection rule"
+    ],
+    "dimensions": [
+      "RX4/6 validation and RX8 source heldout across seven scenarios; two input gates"
+    ],
+    "scientific_rule": "Fixed source clean-F pseudo targets, 126 RX/scene/gate/strength cells; compare paired unrolled source decisions, no TX truth or target. Ground test always fixed full model."
+  },
+  "rows": [
+    {
+      "row_id": "free_full_hard_validation_s2026092701",
+      "method": "independent learned-channel three-step unrolled restoration",
+      "purpose": "evaluate source-supervised blind channel and unrolled waveform recovery together",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120454,
+        "split": 392005,
+        "data": 2026120355,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "Prior model seed 2026125054; fixed final epoch8; no source validation training.",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "none (fixed checkpoint)",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source_predictions.npz",
+        "prediction_complete.json",
+        "source_validation.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Candidate and full seven-view ground test fixed before learned-channel source validation or target results; prior source diagnostics and ground development tests previously observed.",
+    "No DURA architecture, weights, teacher or inference in candidate; DURA only as comparator where applicable.",
+    "Channel regressor uses received IQ and blind parent only; source clean IQ used for channel training and source evaluation, never as deployed input.",
+    "Ground evaluation uses CPU eight threads and checks raw F against fixed GPU baseline on every batch before truth; source validation CPU two threads.",
+    "Repeated simulated Phase1 development test, single seed; not independent blind or real satellite."
+  ]
+}

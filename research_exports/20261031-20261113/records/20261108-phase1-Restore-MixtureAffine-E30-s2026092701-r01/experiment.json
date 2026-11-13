@@ -1,0 +1,175 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-Restore-MixtureAffine-E30-s2026092701-r01",
+  "group_id": "source-mixture-affine-scratch30",
+  "display_name": "源波形多假设抗饱和融合，单阶段30轮",
+  "description": "与已登记后验 softmax 融合版匹配，仅将融合调整改成中心化仿射 IQ 组合，避免后验概率饱和使源梯度消失。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "original-ground-TriSIGTIME-SSL-Main",
+    "source-mixture",
+    "saturation-resistant",
+    "source-F-guided",
+    "scratch-single30",
+    "automatic-Main7"
+  ],
+  "comparison_group_id": "matched-mixture-softmax-vs-affine",
+  "parent_run_ids": [
+    "20261108-phase1-Restore-MixtureFusion-E30-s2026092701-r01",
+    "20261107-diagnostic-Restore-waveform-mixture-sourceV-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "OriginalR07 clean/receivedIQ2x256/FIR64/main-image256/scalarnoise + source63000IQmu-fullC andF0variance. Everyrecord receives physical+detail+feature loss.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "actual_training_labels": "Zero TX truth. Source simulator action/noise, source IQ/STFT and continuous frozen F0 output features only.",
+    "augmentation": "Original fixed source R07 20 channel draws and repeat first 10; no target augmentation or fits."
+  },
+  "permissions": {
+    "regime": "source-only-scratch-affine-mixture-continuous-F0",
+    "query_use": "L_s/U_s IQ and simulated action/noise; source-fitted mixture moments and continuous original frozen F0. No TX labels, logits or CE for G. V/OE are not training inputs; no target fitting.",
+    "external_method_exception": null,
+    "claim_scope": "Matched fusion mapping change with source-only gradient evidence. Signed affine coefficients are not probabilities; IQ refiner remains unrestricted. No DURA change, independent blind test or theoretical limit claim."
+  },
+  "checkpoint": {
+    "initialization": "5,893,131 scratch G parameters; same physical seed2026092701 and gate/refiner seed2026092702 as registered mixture softmax control. Initial state tensors and outputs match; no control G weights or optimizer state loaded.",
+    "sources": [
+      "FROZEN_F0 original Tri-SIG-TIME SSL source continuous features; no logits/CE for G.",
+      "DATA_ONLY original L_s/U_s IQ, simulator action/noise, source prior mean/covariance/F feature scale.",
+      "DATA_ONLY four source waveform mixture statistics from 20261107-diagnostic-Restore-waveform-mixture-sourceV-s2026092701-r01/f4dab0140b598bbc3cd212ab4259138e468e1a20, fit solely on L_s/U_s.",
+      "SOURCE_TRAIN_DIAGNOSTIC_ONLY two L_s/U_s records, IQ gradient difference; no F0, target, V/OE or TX labels.",
+      "IMPLEMENTATION_CONTROL_ONLY 20261108-phase1-Restore-MixtureFusion-E30-s2026092701-r01; no learned G weights."
+    ],
+    "contract_check_ref": "Original VALIDATED_ONCE L_s/U_s capsule, original F0 identity, source moment and mixture producer metadata; strict own G configuration and final30.",
+    "provenance_verdict": "Scratch G, source-only simulator and frozen original F0 continuous features; prior learned solely from unlabeled L_s/U_s. No target, OE, V or source TX truth enters training.",
+    "selection_rule": "One fixed scratch final30/7410 candidate, full two-population Main seven-view regardless source quality. Comparison to the original fixed candidate only when both complete prediction matrices are fixed; no target score selection."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/training/config.json",
+    "rows/<arm>/training/smoke.json",
+    "rows/<arm>/training/smoke_E0.pt PRIVATE",
+    "rows/<arm>/training/data_schedule.npz PRIVATE",
+    "rows/<arm>/training/training.jsonl PRIVATE",
+    "rows/<arm>/training/final.pt PRIVATE",
+    "rows/<arm>/training/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE",
+    "rows/TF_MixtureAffine/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Same original Tri-SIG-TIME SSL default head: raw clean 145385/168000; each practical >=140345 and both populations clean maintained 111019/34366.",
+      "Per TX/RX/day, paired raw/DURA repairs/damage; matched original mixture only after both fixed complete matrices.",
+      "All 30 source logs including centered coefficient RMS, IQ correction NMSE, prior invariance, posterior residual, real gradients, training time and peak memory."
+    ],
+    "dimensions": [
+      "originalMain2pop7",
+      "allTX/RX/day/RXday",
+      "oneactualmodelseed2026092701/detailseed2026092702",
+      "physical/detailbranches/fullsourceexposure"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "TF_MixtureAffine",
+      "method": "centered_affine_source_mixture_fusion_with_multiscale_residual",
+      "purpose": "Test a saturation-resistant differentiable fusion against the fixed original posterior-softmax mixture candidate.",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Physicalscratchmodel2026092701/detail2026092702;R07builder2026101901/receiver2026101911/augmentation2026101912;sourceorder2026110102/draw1..20+1..10. Mainoriginalfixedobservations/no newRNG.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": "AdamW(weight_decay1e-4,clip1)",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/training/config.json",
+        "rows/<arm>/training/smoke.json",
+        "rows/<arm>/training/smoke_E0.pt PRIVATE",
+        "rows/<arm>/training/data_schedule.npz PRIVATE",
+        "rows/<arm>/training/training.jsonl PRIVATE",
+        "rows/<arm>/training/final.pt PRIVATE",
+        "rows/<arm>/training/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE",
+        "rows/TF_MixtureAffine/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+      ]
+    }
+  ],
+  "notes": [
+    "On the same two original L_s/U_s source samples and same G initialization, IQ-only gate output gradient sum was 4.2091e-25 for original softmax adjustment and 0.185376 for centered affine, with exactly matching initial IQ; refiner gradient 20.757282 for both.",
+    "This is a two-sample local source gradient observation, not evidence of whole-dataset saturation, final accuracy, physical identity recovery, or causality on target.",
+    "F0 classifier outputs and TX truth are not used in training; original V/OE/target unavailable to G. F0 continuous features make this an F-guided method.",
+    "15 focused and technical recovery tests PASS; one independent P0/P1 review PASS; actual source2/F0/gradients/strict reload is first remote GPU step.",
+    "Original candidate remains queued/running and must receive full seven-view formal test. This candidate waits for its GPU stages to finish to avoid sharing its own GPU.",
+    "原配置的GPU3串行队列未启动时安全接管，实际资源调度改为GPU0上限3；模型、数据与30轮科学设置未改变。"
+  ]
+}

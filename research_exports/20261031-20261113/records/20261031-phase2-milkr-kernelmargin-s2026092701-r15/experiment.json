@@ -1,0 +1,248 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase2-milkr-kernelmargin-s2026092701-r15",
+  "group_id": "phase2-milkr-kernel-margin-diagnostic",
+  "display_name": "MILKR相同核最大间隔判决对照",
+  "description": "R16保留R14源CCA16/支持选择核，以C-SVC替换最终平方ridge判决。明确为目标函数变体，不冒充原ridge未改。全局C仅源选，失败target0。",
+  "kind": "cvs",
+  "stage": "Phase2-B-C",
+  "aliases": [],
+  "tags": [
+    "MILKR",
+    "Tri-SIG-TIME-SSL",
+    "Phase2",
+    "K-N",
+    "small-screen",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-phase2-milkr-signature-kn-s2026092701-r05",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261031-phase2-milkr-sourcebridge-s2026092701-r11",
+    "20261031-phase2-milkr-pairedcca-confirm-s2026092701-r13",
+    "20261031-phase2-milkr-pairedcca-s2026092701-r12",
+    "20261031-phase2-milkr-physicalH-s2026092701-r14"
+  ],
+  "data": {
+    "dataset": "[已省略路径]",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "1-1"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "one existing P01/MIX01/1-1 VALIDATED_ONCE capsule",
+    "split_id": "read exact existing K/N split IDs",
+    "source_target_overlap_policy": "same source physical roles;target opens only B/C current support;query never fit",
+    "matrix": {
+      "K": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "N": [
+        2,
+        5,
+        10,
+        20
+      ],
+      "physical_pool": "P01",
+      "episode": "MIX01",
+      "query": "all_registered_complement",
+      "receiver": "1-1"
+    }
+  },
+  "permissions": {
+    "regime": "fixed_source_complete_Tri_SIG_TIME_SSL_then_current_labeled_support_only",
+    "query_use": "per_sample_test_only",
+    "external_method_exception": null,
+    "claim_scope": "explicit kernel-C-SVC classifier objective variant, not unchanged ridge MILKR; frozenF/G/defaultneuralhead; currentK support only; developmental exposed benchmark"
+  },
+  "checkpoint": {
+    "initialization": "reuse original full source-only Tri-SIG-TIME SSL",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "existing validated Group1 source contract + trisig_source.validate_done rechecks complete original source recipe",
+    "provenance_verdict": "MATCHING_SOURCE_ONLY_REUSE",
+    "selection_rule": "fixed final E50/11100; model seed first predeclared numeric order; no target selection"
+  },
+  "expected_artifacts": [
+    "source_smoke.json",
+    "source_cca_provenance.json",
+    "source_cca.npz sameR14arrays",
+    "source_selection.json with sklearnversion/C",
+    "complete.json",
+    "80pilotpredictions/scores only if sourcegatePASS"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "old_macro_accuracy",
+      "new_macro_accuracy",
+      "H_macro",
+      "macro_f1",
+      "class_floor"
+    ],
+    "dimensions": [
+      "RX",
+      "K",
+      "N",
+      "arm",
+      "S/Q"
+    ],
+    "primary": "C macro H equal-weight across 16 KN cells, separately for S0Q0/S1Q0, paired with matching original",
+    "success": "User clarified every K/N cell >=5pp; bothsupport routes separately, Q1>Q0 percell. All4 matching-original gains explicitly checked; means never substitute for a failedcell.",
+    "secondary": "R14matched80/ridge control and originalMILKR80; all4paths/all16KN; old/new/F1/floor; no querytrueold/newrole",
+    "scientific_source_rule": "source5heldRX x2ep x4K xoldcount2..5 x4paths; shadowCCA excludesheldRX, support<=20/held32 physicallydisjoint. C.1/1/10/100 + exactR14ridge control. SourcefourH>=ridge+.5pp, eachS Q0>=ridge-.5pp, eachKmean>=ridge-.5pp, bothS Q1>Q0. BestsourceH then smallerC, nonepasses=>target0.",
+    "promotion_rule": "Superseded by latest user: firstRX every16KN must pass Q0-original>=5pp and Q1>Q0 for bothS; also report all4case+5 status. No mean-only expansion. Source gate/model/C-grid/matrix unchanged."
+  },
+  "rows": [
+    {
+      "row_id": "rx-1-1",
+      "method": "R16 sourceCCA16 + unchanged R14supportselected kernel + sourcefrozenC precomputed C-SVC",
+      "purpose": "paired_KN_screen",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/1-1",
+        "workpoints": [
+          {
+            "K": 1,
+            "N": 2
+          },
+          {
+            "K": 1,
+            "N": 5
+          },
+          {
+            "K": 1,
+            "N": 10
+          },
+          {
+            "K": 1,
+            "N": 20
+          },
+          {
+            "K": 5,
+            "N": 2
+          },
+          {
+            "K": 5,
+            "N": 5
+          },
+          {
+            "K": 5,
+            "N": 10
+          },
+          {
+            "K": 5,
+            "N": 20
+          },
+          {
+            "K": 10,
+            "N": 2
+          },
+          {
+            "K": 10,
+            "N": 5
+          },
+          {
+            "K": 10,
+            "N": 10
+          },
+          {
+            "K": 10,
+            "N": 20
+          },
+          {
+            "K": 20,
+            "N": 2
+          },
+          {
+            "K": 20,
+            "N": 5
+          },
+          {
+            "K": 20,
+            "N": 10
+          },
+          {
+            "K": 20,
+            "N": 20
+          }
+        ],
+        "B_K": [
+          1,
+          5,
+          10,
+          20
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "split/support/evaluation are fixed existing split IDs and physical complement, not redrawn; augmentation per existing MIX01/physical seed; source proxy seed2026103101",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01 fixed six-practical residual received",
+      "optimizer": "R14 nested kernel ridge feature/kernel selection, then libsvm C-SVC OVO CPU; tol1e-4/max_iter100000",
+      "lr": null,
+      "epochs": 0,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Explicit classification objective diagnostic: sameR14sourceCCA16 and current-support-selected featureweights/kernel/tau; replaces final squaredridge classifier with maxmargin C-SVC. Does not retrain frozen neural defaulthead or F/G.",
+    "Training precomputedGram on currentK only; libsvm OVO fit yieldsOVR decision_function allregisteredclass scores. Same lexicaltie allclass argmax, no truequeryrole/quota/jointassignment/statistics/fitting.",
+    "C.1/1/10/100 chosenone global parameter on legitimate sourceheldmatrix. Source ridgecontrol exactR14; target fits only selectedone C, no targetC selection. Classorder0..C-1 and fit_status0 required, nonconvergence technicalfailure.",
+    "SVCtol1e-4/max_iter100000/cache256MB; localsklearn1.7.2/remote1.7.0 independentlyreadbeforelaunch. No crossversionpickle, remote sourceexecution first. CCAparameter arraycopy sameR14, originalF0 source[已省略路径] checked.",
+    "SourceL6300physical/12600pairedsimulations, five shadowCCAs excludingheldRX. Source2..5oldgroups of6 with randomclassorder, new/old0.2..2; targetN20/6=3.33 ratio and 26class complexity are extrapolation. Source6allknownF, not true novel confirmation.",
+    "Source supportprefix<=20/held32 physicallydisjoint perclass/episode; old_count1 excluded per establishedbandwidth requirement. NoU/Vtruth, no targetduring sourcechoice.",
+    "StrictS0/Q0 rawonly, S1/Q1 actualGonly; bothquerypaths share same fittedsupportstate. CurrentK labels/allregisteredquerycomplement; no extra physical labels.",
+    "CandidateuniqueP0/P1reviewPASS. Synthetic heldidentity classification/allclassshape/querybatchindependence/coefunchanged/selectionJSON and exactridgecontrol PASS. Source actualcheckpoint noquerysmoke launcherfirststep thenimmediate sourcecalibration.",
+    "OnlysourcegatePASS startsfirstRX1-1 P01/MIX01 all16KN80rows, allpredictionsfixed beforeindependenttruthlast; sameuser twoS Q0+5pp/Q1>Q0/oldnewguard; pilotpass onlyunchanged remaining6RX confirmation. Negativecandidate no expansion, no targetfeedbacktuning.",
+    "While healthy source-only controller running, user answered optional question: every K/N cell at least+5pp. This changes only acceptance/promotion, no model/sourcechoice/matrix/seed/trainingbudget or rerun. Original immutable release snapshot preserved, canonical report amendment records latest instruction."
+  ]
+}

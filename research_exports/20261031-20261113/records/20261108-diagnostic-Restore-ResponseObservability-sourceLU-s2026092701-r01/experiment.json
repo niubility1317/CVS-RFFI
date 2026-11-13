@@ -1,0 +1,136 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-diagnostic-Restore-ResponseObservability-sourceLU-s2026092701-r01",
+  "group_id": "source-directional-observability-and-response",
+  "display_name": "源域微弱变化的可观察性与恢复响应",
+  "description": "复用 224 条源 IQ 的已冻结响应，按同条模拟 Action 和标量噪声强度预设分箱，检查响应偏差与可观察性代理。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "no-target",
+    "no-fit",
+    "no-neural-forwards",
+    "directional-response"
+  ],
+  "comparison_group_id": "fixed-source-directions-by-action-noise-proxy",
+  "parent_run_ids": [
+    "20261107-diagnostic-Restore-CovarianceResponse-sourceLU-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original R07 draw01 224 fixed source records:35 L_s,189 U_s; seven scenes,32 records each.",
+    "representation": "Original source simulated Action/noise and already frozen four-direction IQ/F0 response statistics.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "actual_training_labels": "No optimization or TX labels. CPU calculation reuses source simulation Action/noise and saved model response statistics.",
+    "augmentation": "Existing fixed 1%-RMS perturbations; no new synthesis.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "read-only-source-simulator-and-saved-responses",
+    "query_use": "224 pre-existing L_s/U_s source rows and their saved IQ/F0 response statistics only. No target, V/OE/novel, TX truth or model forward.",
+    "external_method_exception": null,
+    "claim_scope": "Synthetic-direction scalar-white-noise proxy and observed fixed G/F0 response association, not identity preservation, deployable source-action access, causal gain or theory bound."
+  },
+  "checkpoint": {
+    "initialization": "None: no models loaded, no forward or optimizer.",
+    "sources": [
+      "20261107-diagnostic-Restore-CovarianceResponse-sourceLU-s2026092701-r01/4f1551ce4d81f4f3d1cade52bebaaeabe1b7316e fixed source responses and original R07 source draw01 simulator trace."
+    ],
+    "contract_check_ref": "Original source diagnostic status/source-only fields, ID/scene alignment, original cache contract and actual two-row matrix smoke.",
+    "provenance_verdict": "Source L_s/U_s only; saved fixed responses are derived from previously frozen source-only models. No target or V/OE reads.",
+    "selection_rule": "All fixed 7 scenes × 4 directions × 3 models, predefined proxy bins [0,1),[1,9),[9,25),[25,∞); no model selection."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "results.json",
+    "complete.json",
+    "stdout.log PRIVATE"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Proxy ||A_true delta||² / scalar noise variance; fixed bins 0,1,9,25; sample counts and energy-weighted IQ/F0 projection and response error.",
+      "Seven scenes and all-source pooled, four synthetic directions and three previously frozen models. Scenes have distinct records."
+    ],
+    "dimensions": [
+      "source scene",
+      "synthetic direction",
+      "frozen model",
+      "predefined action/noise proxy interval"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "source_response_noise_proxy",
+      "method": "source_action_noise_proxy_association",
+      "purpose": "Test whether weak source perturbations fall in low action-to-noise regimes and whether fixed response errors vary across those bins.",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110707,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026110707
+      },
+      "seed_notes": "Exact previously fixed original draw01,224 source records and four 1% directions.",
+      "k": null,
+      "scenario": "Source L_s/U_s seven simulation scenes only, no target.",
+      "optimizer": "NONE",
+      "lr": 0.001,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "results.json",
+        "complete.json",
+        "stdout.log PRIVATE"
+      ]
+    }
+  ],
+  "notes": [
+    "All bin thresholds fixed before this calculation; the threshold9 follows the earlier source scalar-noise Fisher proxy, not target tuning.",
+    "Recorded true simulator Action and scalar variance are used only for source diagnosis; variance is a model proxy and source counterfactuals reuse the same noise.",
+    "Small fixed source samples and distinct source records per scene do not establish a causal effect, TX authenticity or information limit.",
+    "Two focused tests passed; independent P0/P1 identified Torch/NumPy bridge incompatibility, fixed and targeted re-review passed. First two source rows are an actual matrix smoke."
+  ]
+}

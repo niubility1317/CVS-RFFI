@@ -1,0 +1,151 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-source-cluster-geometry-s2026092701-r01",
+  "group_id": "pamf-phase3-source-cluster-geometry",
+  "display_name": "PAMF第三阶段：四种冻结表征的源端簇几何排障",
+  "description": "Source L only, fixed four coordinates x five prototype receiver leaveouts, early-day discovery and later-day class transfer; no target access or neural fitting.",
+  "kind": "diagnostic",
+  "stage": "Phase3-source-cluster-diagnostic",
+  "aliases": [
+    "源端簇几何排障"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "source_diagnostic",
+    "clustering",
+    "frozen_features",
+    "no_target"
+  ],
+  "comparison_group_id": "phase3-source-cluster-geometry",
+  "parent_run_ids": [
+    "20261031-phase3-fresh-development-rx3-2-s2026092701-r01",
+    "20261031-phase3-pcd-cluster-registry-s2026092701-r01",
+    "20261030-phase3-star-signal-open-s2026092701-r03"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Existing source G10 P1 L6300 only",
+    "version": "Unchanged VALIDATED_ONCE source role and physical IDs",
+    "representation": "Four frozen160D coordinates from F0 raw, originalr03 z, freshPCD z and existing PCD whitening",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [],
+    "tx_sets_ref": "All original six registered source classes; no actual unknown or unseen RX claims",
+    "roles": {
+      "source_L": 6300,
+      "support_per_case": 5040,
+      "early_discovery_per_case": 420,
+      "later_inference_per_case": 840,
+      "source_V_new": 0,
+      "source_NV_new": 0,
+      "source_OE_new": 0,
+      "original_U_s_new": 0,
+      "target_U_new": 0,
+      "target_Q_new": 0,
+      "private_truth_new": 0
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": null,
+    "split_id": "392005 unchanged source roles; five receiver-based prototype exclusions only"
+  },
+  "permissions": {
+    "regime": "Legal source L y/rx/day only. U/future labels of this source statistical episode withheld from fit/predict, all20 predictions before metrics. PCD has inherited targetU576 neural ancestry, despite zero new target input.",
+    "query_use": "No actual target/query values or private truths. Fixed20 source tasks; later source labels never remap clusters. No optimizer/head/GMM/threshold update.",
+    "external_method_exception": null,
+    "claim_scope": "Source training-role statistical diagnostic only. All six devices/five receivers seen by model training; source prototype holdout is not unseen-receiver validation. AN/RU/HOW=N/A."
+  },
+  "checkpoint": {
+    "initialization": "Frozen original F0/default6, source-onlyr03, fresh TARGET_PCD444 and DURA; no new train or model selection",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "[已省略路径]",
+    "provenance_verdict": "Matching source392005, fixed original models, explicit inherited PCD targetU576. Source-only input claim does not imply source-only model lineage.",
+    "selection_rule": "All four fixed coordinate choices, all five source RX cases, no parameter scan or target-based choice"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "configs/diagnostic.json",
+    "logs/diagnostic.log",
+    "diagnostic/{resolved_config,smoke,summary,complete}.json",
+    "diagnostic/cases/<repr>/RX<rx>/{state,predictions}.npz",
+    "diagnostic/cases/<repr>/RX<rx>/metrics.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source later six-class macro correct accepted",
+      "source later macro acceptance",
+      "same P1 original F0 baseline gap",
+      "source centroid nearest-class accuracy",
+      "early cluster strict-majority matches/purity/noise/ARI",
+      "geometry within/between source identities",
+      "AN/RU/HOW not applicable"
+    ],
+    "dimensions": [
+      "four frozen160D coordinates",
+      "five sourceRX prototype exclusions",
+      "source early day1 vs later days2/3",
+      "six TX complete denominator"
+    ],
+    "targets_ref": "Source-screen all5: latermacroacc80/accept90/F0gap2pp/all6earlymatched; does not certify unknown or newRX target goal",
+    "primary": [
+      "All four representations separately; eligibility for future research only, no automatic target access or baseline change"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "source-cluster-geometry-s2026092701",
+      "method": "Four fixed frozen source cluster coordinates",
+      "purpose": "Separate representation failure from global whitening/cluster support failure using source-only inputs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No new stochastic sample/channel; fixed existing ID order and deterministic HDBSCAN brute parameters",
+      "k": null,
+      "scenario": "Source G10 P1 only, all model-training RX and devices seen, no clean or actual target inputs",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "configs/diagnostic.json",
+        "logs/diagnostic.log",
+        "diagnostic/{resolved_config,smoke,summary,complete}.json",
+        "diagnostic/cases/<repr>/RX<rx>/{state,predictions}.npz",
+        "diagnostic/cases/<repr>/RX<rx>/metrics.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "No source V/NV/OE/U_s or actual targetU/Q values.",
+    "All20 source predictions fixed before early/later labels used for evaluation; mapping early-only strict-majority Hungarian.",
+    "Model training has seen every source class/receiver/record; diagnostic eligibility is not independent generalization.",
+    "Existing PCD research baseline and prior NO_PROMOTION results remain unchanged, full goal ACTIVE.",
+    "All20 source tasks complete, no real target or private truth reads.",
+    "Source-screen results are not unknown registration or independent unseen-RX validation. PCD baseline unchanged."
+  ]
+}

@@ -1,0 +1,194 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-momentum-prototype-s2026092701-r01",
+  "group_id": "pamf-phase3-momentum-prototype",
+  "display_name": "PAMF第三阶段：固定教师与动量教师的无标签开放表征适应",
+  "description": "Matched fixed/EMA source-r03 teachers on same U576 weak/strong records, source replay and frozen F0 identity; two new students, exact SOURCE/PCD controls, eight readouts and three DURA conditions.",
+  "kind": "cvs",
+  "stage": "Phase3-unsupervised-open-adaptation",
+  "aliases": [
+    "动量原型无标签适应"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "UDA",
+    "momentum_teacher",
+    "prototype",
+    "DURA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-momentum-prototype",
+  "parent_run_ids": [
+    "20261031-phase3-fresh-development-rx3-2-s2026092701-r01",
+    "20261031-phase3-body-prototype-s2026092701-r01",
+    "20261030-phase3-star-signal-open-s2026092701-r03"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Original source G10 P1 L/OE/V/NV and fixed RX3-2 star U/future paired Q",
+    "version": "Unchanged VALIDATED_ONCE source392005 and fresh development handles",
+    "representation": "Frozen DURA P1 -> original F0 default identity plus new SignalOpen student; train-only16slot cosine/center/teacher",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "3-2/index34"
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [
+      "2021-03-01 U",
+      "2021-03-15/23 futureQ"
+    ],
+    "tx_sets_ref": "Old14-10/14-7/20-15/20-19/6-15/8-20; future unregistered5-5/10-7/2-19/7-11 only builder/scorer; later7-11 not inU",
+    "roles": {
+      "source_L": 6300,
+      "source_OE": 6134,
+      "source_V_known_calibration": 27000,
+      "source_NV": 3150,
+      "original_U_s_new": 0,
+      "target_star_U": 576,
+      "target_future_Q_unique": 10238,
+      "target_future_known": 4508,
+      "target_future_unknown": 5730,
+      "U_truth_fit": 0
+    },
+    "train_ratio": "Original F0 L6300/63000=10%; sourceL/OE replay and knownV labels retained, target TX labels0",
+    "capsule_id": "p3fresh-b14665c51b89f44f2b76c137",
+    "split_id": "077495132350495f37a33d84"
+  },
+  "permissions": {
+    "regime": "Pure-source r03 initialization, sourceL real y/OE membership replay. U only existing starP1+fixedphase/gain,16capacity nottrueK, no neighbor/hardpseudo/Sinkhorn. Teacher/center fit onlyU, noquery.",
+    "query_use": "KnownV only four new6tau after both nets and sourceGMMfreeze. NV and pairedQ only frozen prediction, independent3truth after all8x3. No target truth feedback/registration.",
+    "external_method_exception": null,
+    "claim_scope": "One exposed development RX/seed, not blind confirmation. SourceV calibrated and globalphysicalhistoryUNKNOWN. FixedvsEMA isolates teacher update; PCDeffect is multi-component comparison. FullgoalACTIVE."
+  },
+  "checkpoint": {
+    "initialization": "Each student/teacher independently from original pure-source r03, never target-adapted PCDFresh or SOURCE444 as init; original F0/default/G frozen",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "[已省略路径]",
+    "provenance_verdict": "Same source392005 F0/r03/G ancestors; SOURCE444 pure-source control precedes U and exactsourceindicesmatch; new students haveU576 ancestor; oldPCDU576 explicit",
+    "selection_rule": "Fixed444 each, noQ/sourceNV checkpointselection; teacher .996/.9 center/.04/.1 temperatures/auxweight.1 fixedbefore training; onlyfinalstudentdeploys"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/{train,eval}.json",
+    "logs/{driver,train,predict,score}.log",
+    "train/{resolved_config,smoke,complete}.json",
+    "train/<ARM>/{steps.jsonl,complete.json,final.pt,aux_teacher.pt}",
+    "predict/{models,calibration,source,targets,thresholds.npz,complete.json}",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macroAK",
+      "macroCK",
+      "macroRU",
+      "Hscore",
+      "origF0sameDURAclosedminusAK",
+      "AUROC/OSCR",
+      "EMA_FIXED pairedchanges",
+      "sourceknown12/42",
+      "Uteacherentropy/slotmass/gradients",
+      "AN/HOWNA"
+    ],
+    "dimensions": [
+      "8readouts",
+      "source5RX/cleanRX34/starRX34",
+      "requiredsixscenes",
+      "trueTX/receiver/day",
+      "fixedvsEMA and source/oldPCD matchedIDs"
+    ],
+    "targets_ref": "CleanRU95/starRU90/CK90/origF0gap2pp/fullrosterandscenes; sourceknown12; starAKaboveSOURCEandOLDPCD/RUnotlower; no goalrelaxation",
+    "primary": [
+      "EMA_TEACHER_predicted_ratio"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "FIXED_TEACHER-s2026092701",
+      "method": "FIXED_TEACHER",
+      "purpose": "Same-record soft prototype consistency, teacher frozen",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026103114,
+        "support": 2026103113,
+        "evaluation": null
+      },
+      "seed_notes": "SourceL/OE2026103017/18 andU2026103112 exactpaired; views inheritedfixed3114; headinit3113; Qscene/channel inherited3133/3134, no new draw",
+      "k": null,
+      "scenario": "Source starreplay + targetstarU576, then source/clean/starDURA frozen tests",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/{driver,train,predict,score}.log",
+        "train/{resolved_config,smoke,complete}.json",
+        "train/<ARM>/{steps.jsonl,complete.json,final.pt,aux_teacher.pt}",
+        "predict/{models,calibration,source,targets,thresholds.npz,complete.json}",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    },
+    {
+      "row_id": "EMA_TEACHER-s2026092701",
+      "method": "EMA_TEACHER",
+      "purpose": "Same-record soft prototype consistency, teacher EMA.996",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026103114,
+        "support": 2026103113,
+        "evaluation": null
+      },
+      "seed_notes": "SourceL/OE2026103017/18 andU2026103112 exactpaired; views inheritedfixed3114; headinit3113; Qscene/channel inherited3133/3134, no new draw",
+      "k": null,
+      "scenario": "Source starreplay + targetstarU576, then source/clean/starDURA frozen tests",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/{driver,train,predict,score}.log",
+        "train/{resolved_config,smoke,complete}.json",
+        "train/<ARM>/{steps.jsonl,complete.json,final.pt,aux_teacher.pt}",
+        "predict/{models,calibration,source,targets,thresholds.npz,complete.json}",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "No targetTX/K/quota or query fitting; all Uteacher probabilities remain predictions, not accuracy.",
+    "Both new branches independently initialize pure-source r03 and match completed SOURCE444 sampling; fixedcontrol precedes U.",
+    "Teacher/head/center are trainingonly, originalF0 closed prediction unchanged in all frozen tests.",
+    "All8x3 predictions before independent3truth; main fixedlastcolumn, no after-score selection; formal24-18 unaccessed.",
+    "No discovery/anonymous registration in this candidate; fullgoalACTIVE and PCD researchbaseline retained unless preregistered jointgate passes."
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-pcd-relative-metric-s2026092701-r01",
+  "group_id": "pamf-phase3-pcd-relative-metric",
+  "display_name": "PAMF第三阶段：冻结PCD的相对马氏拒识",
+  "description": "Fit source-L class/sharedwithin and class-agnostic background Gaussians on final frozen PCD units, compare routed RMD with same-statistic MD and exact old-PCD controls; originalF0 remains identity.",
+  "kind": "cvs",
+  "stage": "Phase3-PCD-relative-distance-three-DURA",
+  "aliases": [
+    "PCD相对马氏拒识"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "DURA",
+    "RMD",
+    "frozen_PCD",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-pcd-relative-metric",
+  "parent_run_ids": [
+    "20261031-phase3-fresh-development-rx3-2-s2026092701-r01",
+    "20261031-phase3-source-cluster-geometry-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Existing source G10 P1 and fresh RX3-2 future feature caches",
+    "version": "VALIDATED_ONCE original roles and exact frozen source_geometry074/freshf4b5 PCD identities",
+    "representation": "FP32 PCD unit160 converted to FP64 unit; source L fits six arithmeticmeans/sharedwithin+global cov shrunk0.1/Cholesky, originalF0 identity",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "3-2"
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [
+      "2021-03-01",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "tx_sets_ref": "Private builder/scorer only: old6 and metadata-selected discover3/late1; algorithm registered roster only old6",
+    "roles": {
+      "source_L_features_and_labels": 6300,
+      "source_OE_values_new": 0,
+      "original_Us_values_new": 0,
+      "source_V_threshold_calibration": 27000,
+      "source_novel_cached_features": 3150,
+      "target_U_values_new": 0,
+      "PCD_inherited_target_U_count": 576,
+      "future_Q_each": 10238,
+      "future_Q_known": 4508,
+      "future_Q_unknown": 5730
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": null,
+    "split_id": "392005 and inherited fresh public Q capsule/split; source metadata handles reused"
+  },
+  "permissions": {
+    "regime": "Source L known labels fit Gaussian aggregates only; source V known labels calibrate rejection. No new neural/identity/prototype/U/G updates. Source input statistics over PCD retains U576 ancestor.",
+    "query_use": "All6x3 predictions before independent CPU connects sourceNV/cleanQ/starQ truth once each. Actual F0 predicted class routes distances and tau, never true TX.",
+    "external_method_exception": null,
+    "claim_scope": "Additional source-statistic RMD readout, not new targetUDA or anonymousREG, not source-only model or independent blind. Original F0 default identity unchanged; AN/HOW N/A."
+  },
+  "checkpoint": {
+    "initialization": "No training: exact final fresh TARGET_PCD444 with U576 ancestry; originalF0/default6, originalr03 and DURA only actualCP smoke.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "[已省略路径]",
+    "provenance_verdict": "Source392005 and source_geometry074 PCD sourcefeatures match exact freshf4b5 TARGET_PCD. PCDtargetU576 inherited, all new statistics L-only; actualF0 unchanged.",
+    "selection_rule": "One fixed source-L Gaussian/shrink0.1 candidate, routedRMD primary. No target tuning, shrink search or replacing primary with pooled/MD."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/run.json",
+    "logs/{predict,score}.log",
+    "predict/{resolved_config,smoke,complete}.json",
+    "predict/models/{metric,density}.npz",
+    "predict/models/complete.json",
+    "predict/thresholds.npz",
+    "predict/calibration/complete.json",
+    "predict/source/source_DURA/{known,novel}_predictions.npz",
+    "predict/targets/<condition>/predictions.npz",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro A_K C_K R_U H",
+      "originalF0 sameDURA closed gap",
+      "AUROC OSCR",
+      "paired RMDpred vsOLDPCDpred and MDpred"
+    ],
+    "dimensions": [
+      "OLDPCD pooled/pred +MD pooled/pred +RMD pooled/pred",
+      "source_DURA/clean_DURA/star_DURA",
+      "all required TX RX day sixscene;03-23missingknownNA"
+    ],
+    "targets_ref": "sourceknown12/cal and cleanRU95/starRU90 CK90 origF0loss2pp/full main-scene coverage; starAK>OLDPCDpred and RU notlower",
+    "primary": [
+      "RMD_predicted fixed; MD matched mechanism control, no primary swaps; science failure no seed expansion"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "pcd-relative-metric-s2026092701",
+      "method": "Routed relative Mahalanobis over frozen PCD units",
+      "purpose": "Test class-agnostic source background cancellation vs receiver-local GMM evidence",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103131,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026103133
+      },
+      "seed_notes": "No stochastic new training[已省略路径]; inherited fixed source/fresh episode only",
+      "k": null,
+      "scenario": "ThreeDURA conditions, all existing star features and pairedclean futuretestonly",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/run.json",
+        "logs/{predict,score}.log",
+        "predict/{resolved_config,smoke,complete}.json",
+        "predict/models/{metric,density}.npz",
+        "predict/models/complete.json",
+        "predict/thresholds.npz",
+        "predict/calibration/complete.json",
+        "predict/source/source_DURA/{known,novel}_predictions.npz",
+        "predict/targets/<condition>/predictions.npz",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Current final PCD targetU576 ancestor preserved; no loading it as source-only initializer.",
+    "MD/RMD fit full within-class RX/day variation; differs from oldF0 multibranch/MetricNet/nuisance projection RMD and oldknown90/OE32.",
+    "Whole six-condition readout roster is fixed before target access; originalF0 default head never replaced by nearestclass.",
+    "OldPCD raw/margin/calibration and original12tau exact reused; new4x6tau sourceV only, all36freeze before novel/Q.",
+    "No new targetUDA/discovery/anonymousREG or blind confirmation; sourceV calibration/oldNVQ exposure/singleRXseed/formal24-18 untouched; goalACTIVE.",
+    "All6x3 DURA predictions completed before independent3truth; no new realNN/IQ/Ufit or anonymousREG.",
+    "Fixed primary and shrink retained, no target-based threshold changes, reruns or seed expansion."
+  ]
+}

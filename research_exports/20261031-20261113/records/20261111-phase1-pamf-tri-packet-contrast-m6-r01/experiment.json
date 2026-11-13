@@ -1,0 +1,20 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261111-phase1-pamf-tri-packet-contrast-m6-r01",
+  "scope": "Two source-only semi-supervised physical contrast objectives with seeds 2026092701/02/03, m1-natural single source RX and full three-view PAMF/reference response. Main split excluded. Existing target test results are exposed; development evaluation only.",
+  "initialization": "Exact same-setting and same-seed original source-only Tri E20, then own E10+E20 to fixed E50/11100, same source roles and fixed permutation.",
+  "controls": [
+    "matching ordinary PL",
+    "matching original Tri",
+    "matching day_physics",
+    "matching branch-certified",
+    "matching fused-physics cosine-only"
+  ],
+  "evaluation": "All six candidate predictions frozen before independent truth-last scoring. Clean and six practical scenes, DURA-LU primary, DURA-L/raw secondary; cross_date separate from cross_rx/cross_both. Report each seed, scenario, TX/RX/day and paired corrections/regressions; no leo_weak, target-driven checkpoint selection or selective reruns.",
+  "success": "Aim to exceed PL by more than 2 percentage points in clean and all six practical DURA-LU scenes and exceed Tri. All seeds, negative scenes and development-setting limits must be reported.",
+  "expected_artifacts": [
+    "Six true-checkpoint no-query source smoke checks",
+    "Six own E30/E50 sources and packet-contrast counters",
+    "Six frozen seven-scene predictions then independent same-seed analyses"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261110-phase1-pamf-tri-u-recovery-f0-m6-r01",
+  "display_name": "Tri-SIG-TIME 拒绝样本的跨接收机分支复核与物理确认",
+  "scope": "Phase1 ManySig Main split F0, original full reference-response PAMF, three views and fixed local shuffle [0,5,3,6,2,1,4,7]. Two methods, each with seeds 2026092701, 2026092702, 2026092703. F0 target is previously exposed development data.",
+  "initialization": "Exact source-only Tri-SIG-TIME E20 for each seed followed by own E10+E20 to fixed E50 (11100 total updates). Same source L/U, days, RXs and existing head. No target data or U truth in training.",
+  "controls": [
+    "Exact same-seed full Tri-SIG-TIME SSL",
+    "Ordinary PL on same F0 test inputs",
+    "Clean-only branch certificate with matched probe compute"
+  ],
+  "evaluation": "Fixed E50; clean plus six practical scenes. DURA-LU primary, DURA-L and raw secondary. Main combines disjoint cross_rx and cross_both (168000 physical packets per scene); cross_date is diagnostic. Independent scoring only after all six prediction matrices freeze. Report per scene, seed, TX/RX/day, paired corrections and regressions. Exclude leo_weak.",
+  "success": "Positive paired three-seed means versus Tri-SIG-TIME on clean and practical-six mean, and positive paired mean versus PL in every scene. Report every individual seed loss; stronger all-condition attainment requires every PL scene-by-seed cell positive and independent protocol confirmation.",
+  "expected_artifacts": [
+    "E20 source-only finite backward smoke",
+    "Own E30/E50 and actual rejected-U coverage counters",
+    "Six frozen seven-scene prediction sets",
+    "Independent scores and paired same-packet report"
+  ]
+}

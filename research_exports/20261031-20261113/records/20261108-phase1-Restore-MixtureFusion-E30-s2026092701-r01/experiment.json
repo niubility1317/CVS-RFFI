@@ -1,0 +1,173 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-Restore-MixtureFusion-E30-s2026092701-r01",
+  "group_id": "source-mixture-fusion-scratch30",
+  "display_name": "源波形多假设融合与细节恢复器，单阶段30轮",
+  "description": "单次物理后验解生成四个源波形假设，观测条件融合后接不限幅多尺度 IQ 细节网络；源端连续 F0 指导。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "original-ground-TriSIGTIME-SSL-Main",
+    "source-mixture",
+    "source-F-guided",
+    "scratch-single30",
+    "automatic-Main7"
+  ],
+  "comparison_group_id": "source-mixture-guided-restoration",
+  "parent_run_ids": [
+    "20261107-diagnostic-Restore-waveform-mixture-sourceV-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "OriginalR07 clean/receivedIQ2x256/FIR64/main-image256/scalarnoise + source63000IQmu-fullC andF0variance. Everyrecord receives physical+detail+feature loss.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "actual_training_labels": "Zero TX truth. Source simulator action/noise, source IQ/STFT and continuous frozen F0 output features only.",
+    "augmentation": "Original fixed source R07 20 channel draws and repeat first 10; no target augmentation or fits."
+  },
+  "permissions": {
+    "regime": "source-only-scratch-mixture-guided-continuous-F0",
+    "query_use": "L_s/U_s IQ and simulated action/noise; source-fitted mixture moments and continuous original frozen F0. No TX labels, logits or CE for G. V/OE are not training inputs; no target fitting.",
+    "external_method_exception": null,
+    "claim_scope": "New composite model, not an isolated mixture ablation; no DURA version change or theoretical upper bound. Ground Main already exposed, one seed."
+  },
+  "checkpoint": {
+    "initialization": "5,893,131 scratch G parameters; physical seed2026092701, gate/refiner seed2026092702; gate and IQ residual start zero. No prior G weights or optimizer state.",
+    "sources": [
+      "FROZEN_F0 original Tri-SIG-TIME SSL, original continuous source features; no logits/CE for G.",
+      "DATA_ONLY original L_s/U_s IQ and simulator action/noise pairs; 20 fixed draws plus 10 repeats.",
+      "DATA_ONLY original source mean/covariance and F feature scale, fitted on L_s/U_s.",
+      "DATA_ONLY four source waveform mixture statistics from 20261107-diagnostic-Restore-waveform-mixture-sourceV-s2026092701-r01/f4dab0140b598bbc3cd212ab4259138e468e1a20, fit exclusively on original L_s/U_s; no trained G state.",
+      "SOURCE_VALIDATION_ONLY the source V diagnostic; no V records or labels enter training."
+    ],
+    "contract_check_ref": "Original VALIDATED_ONCE L_s/U_s capsule, original F0 identity, source moment and mixture producer metadata; strict own G configuration and final30.",
+    "provenance_verdict": "Scratch G, source-only simulator and frozen original F0 continuous features; prior learned solely from unlabeled L_s/U_s. No target, OE, V or source TX truth enters training.",
+    "selection_rule": "Single fixed candidate final30/7410, no early stop or source-quality cancellation; freeze both Main population seven-view matrices before independent truth-last."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/training/config.json",
+    "rows/<arm>/training/smoke.json",
+    "rows/<arm>/training/smoke_E0.pt PRIVATE",
+    "rows/<arm>/training/data_schedule.npz PRIVATE",
+    "rows/<arm>/training/training.jsonl PRIVATE",
+    "rows/<arm>/training/final.pt PRIVATE",
+    "rows/<arm>/training/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE",
+    "rows/TF_MixtureFusion/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Same original Tri-SIG-TIME SSL default head: raw clean 145385/168000, each of six scenes at least 140345 correct; maintain both raw clean populations 111019/34366.",
+      "Per TX/RX/day and paired raw/DURA corrections and damage; fixed full Main seven views.",
+      "All 30 source logs, mixture prior buffer invariance, posterior residual, branch gradients, runtime and peak memory."
+    ],
+    "dimensions": [
+      "originalMain2pop7",
+      "allTX/RX/day/RXday",
+      "oneactualmodelseed2026092701/detailseed2026092702",
+      "physical/detailbranches/fullsourceexposure"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "TF_MixtureFusion",
+      "method": "learned_source_mixture_fusion_with_unrestricted_multiscale_residual",
+      "purpose": "Test source-only multi-hypothesis fusion and direct IQ residual under frozen F0 continuous guidance.",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Physicalscratchmodel2026092701/detail2026092702;R07builder2026101901/receiver2026101911/augmentation2026101912;sourceorder2026110102/draw1..20+1..10. Mainoriginalfixedobservations/no newRNG.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": "AdamW(weight_decay1e-4,clip1)",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/training/config.json",
+        "rows/<arm>/training/smoke.json",
+        "rows/<arm>/training/smoke_E0.pt PRIVATE",
+        "rows/<arm>/training/data_schedule.npz PRIVATE",
+        "rows/<arm>/training/training.jsonl PRIVATE",
+        "rows/<arm>/training/final.pt PRIVATE",
+        "rows/<arm>/training/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE",
+        "rows/TF_MixtureFusion/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+      ]
+    }
+  ],
+  "notes": [
+    "Four-component waveform mixture statistics were fit only to source L_s/U_s clean IQ; prior source V diagnostics are validation only.",
+    "Four hypotheses and their source-evidence weights enter an observation-only gate; a multiscale nonlinear IQ residual has no magnitude cap. Gate and residual start zero so initial IQ equals the source mixture posterior.",
+    "Independent P0/P1 review identified one NumPy bridge issue; fixed via float64 frombuffer and targeted re-review PASS. Six new and five resume tests PASS locally.",
+    "Actual source2 original F0, gate/refiner gradients, source-action gradient isolation and strict E0 reload are the first remote training step, pending GPU admission.",
+    "Fixed final30, complete both population seven-view predictions before truth-last; no target-score driven tuning or routing.",
+    "Resource handover only: dispatch commit c498f710e6040b36121760e89ffdbf8df01a3603, original scientific commit fa22a4663b3fe6c5b7ff8b756ea151faab19e2a3; the original model config resource_policy records the initial queue and does not describe actual capacity3 admission."
+  ]
+}

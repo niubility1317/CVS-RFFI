@@ -1,0 +1,21 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261110-phase1-pamf-tri-rxpair-f0-m6-r01",
+  "display_name": "PAMF Tri-SIG-TIME 多分支与回波校正跨接收机选配",
+  "scope": "Phase1 ManySig Main split F0, original full reference-response PAMF with three views and fixed local shuffle [0,5,3,6,2,1,4,7]. Two arms, each with seeds 2026092701, 2026092702, 2026092703. F0 target is previously exposed development data.",
+  "initialization": "Exact original source-only Tri-SIG-TIME E20 for each seed, then own E10+E20, fixed E50 with 11100 cumulative updates. Same source L/U/RX/day and head. Source U truth and target inputs are unavailable during training.",
+  "controls": [
+    "Same-seed original complete Tri-SIG-TIME SSL with exact same E20 and frozen DURA caches",
+    "Same-seed ordinary PL with same physical test inputs and DURA caches",
+    "Matched five-branch pairing without echo discount isolates its contribution"
+  ],
+  "evaluation": "Clean and six practical scenes. DURA-LU primary, DURA-L and raw secondary. Main combined target is disjoint cross_rx and cross_both (168000 physical packets per scene); cross_date is diagnostic. Independently score after all six prediction matrices freeze, without target feedback. Compare same physical packets, report per scene, seed, TX/RX/day, corrections and regressions. Exclude leo_weak.",
+  "success": "For advancement, positive paired three-seed mean against Tri-SIG-TIME on clean and on the mean of six practical scenes, and positive paired three-seed mean versus ordinary PL in every scene. Disclose every seed-level loss versus either baseline; stronger all-condition attainment requires every paired PL scene-by-seed cell positive and independent protocol confirmation.",
+  "expected_artifacts": [
+    "Real E20 finite source smoke",
+    "Own E30/E50 and U branch pairing counters",
+    "Frozen clean and six practical predictions",
+    "Independent truth-last scores",
+    "Same-packet three-seed results per arm and across arms"
+  ]
+}

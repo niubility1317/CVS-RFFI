@@ -1,0 +1,106 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-dura-context-prior-source-s2026092701-r01",
+  "group_id": "phase1-dura-context-prior-source",
+  "display_name": "源域信道上下文与恢复先验交叉对照",
+  "description": "同一源 IQ 上交叉原 DURA 与固定候选的上下文和先验，定位源重建误差变化。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "F-free",
+    "frequency-diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261106-phase1-dura-sim-action-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "source received and clean IQ",
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source IQ 2x2 intervention; context jointly includes base, action and variance, no target identity inference"
+  },
+  "checkpoint": {
+    "initialization": "Original DURA and fixed final epoch5 source simulator action-guided candidate",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261106-phase1-dura-sim-action-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "Require candidate source summary and checkpoint complete with expected commit, objective, seed, weight, and F/TX/target exclusions",
+    "provenance_verdict": "Original source-only DURA and same-contract source-only candidate, subject to completion check",
+    "selection_rule": "Prespecified candidate final epoch5; no target score selection"
+  },
+  "expected_artifacts": [
+    "result.json per-group source paired NMSE and improved counts"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source NMSE",
+      "paired improvement count"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "context-prior-factorial",
+      "method": "Original or candidate context crossed with original or candidate prior, four arms",
+      "purpose": "Distinguish context, prior, and interaction contributions",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Existing pretrained source runs and fixed source pilots; no stochastic training, support or augmentation in this benchmark.",
+      "k": null,
+      "scenario": "seven fixed Phase1 source views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Diagnostic arms are not released recovery versions or target-selected models.",
+    "Context includes coarse base, action and noise variance together.",
+    "Source pilot excluded from candidate fit; original DURA may have seen this source domain.",
+    "No TX, F, V, target or model updates."
+  ]
+}

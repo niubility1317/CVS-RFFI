@@ -1,0 +1,118 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-bayes-residual-full-s2026092701-r01",
+  "group_id": "phase1-bayes-residual-full",
+  "display_name": "多源信道视图的物理后验残差网络",
+  "description": "固定盲信道与条件后验，在三个不同源信道视图上训练物理反投影条件残差网络。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "blind_channel",
+    "physics_residual",
+    "L_s_supervised",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-bayes-residual-pilot-s2026092701-r01",
+    "20261102-phase1-bayes-residual-scale-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "IQ [2,256], fixed blind posterior and action-adjoint residual; source paired ground IQ, legal L_s labels and frozen F soft targets",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "L_s metadata contains 6300 truth labels; only fit-ID L_s truth enters loss; no U_s truth, V or test read",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "source L_s training labels only for optimizer; U_s truth, V and test inaccessible",
+    "external_method_exception": null,
+    "claim_scope": "Source physical IDs observed in previous channel views, RX8 same prior pilot; no independent blind or real satellite claim"
+  },
+  "checkpoint": {
+    "initialization": "Random identity-output residual corrector; blind estimator, source Gaussian prior, and F frozen; legal L_s labels enter source training; DURA loaded after training.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "Blind action SHA256 0ef60a205f785bda45f9936d519e925179dbbddeef2fd6cd285a83b02a284338 and source prior SHA256 5e35516d54d3e3d1d1749933861f290c1f87c8ffdb4b863d2f9819914135ceb9",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "Fixed final epoch3, no source holdout selection; evaluate identical 384 RX8 source records after training; no target IQ."
+  },
+  "expected_artifacts": [
+    "checkpoint_epoch03.pt",
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source clean-F pseudo-target agreement",
+      "direct normalized IQ MSE",
+      "L_s training exposure"
+    ],
+    "dimensions": [
+      "six source RX8 heldout scenarios"
+    ],
+    "scientific_rule": "L_s labels train only, source F pseudo targets not actual test truth; fixed prior views and RX8 cohort previously observed, no clean-blind claim."
+  },
+  "rows": [
+    {
+      "row_id": "bayes_residual_full_s2026092701",
+      "method": "identity-initialized dilated residual network conditioned on blind posterior and action-adjoint residual; legal L_s truth and frozen F soft targets",
+      "purpose": "test if larger multi-view source training learns a more useful correction direction",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120854,
+        "split": 392005,
+        "data": 2026120855,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "fixed prior and RX8 cohort; data-order seed 2026120855, fresh source views21–23",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "AdamW weight_decay .001",
+      "lr": 0.001,
+      "epochs": 3,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "checkpoint_epoch03.pt",
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Metadata loads 6300 source L_s truth labels to verify IDs; only fit IDs enter loss; no U_s truth.",
+    "Source cache views21–23 share original physical IDs, provenance checked and no target reads.",
+    "Parent blind estimator and F frozen; DURA only after training; unprotected clean branch needs blind gate.",
+    "Budget and learning rate informed by prior source observations; RX8 previously seen; no independent blind or real satellite."
+  ]
+}

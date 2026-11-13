@@ -1,0 +1,116 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-score-prox-pilot-s2026092701-r01",
+  "group_id": "phase1-score-prox",
+  "display_name": "学习地面先验和盲信道一致性交替恢复原型",
+  "description": "从干净地面源 IQ 学习带噪声条件的信号去噪先验，推理时与冻结盲信道估计和数据一致性算子交替。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "learned_ground_prior",
+    "blind_data_prox",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-blind-bayes-action-full-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "IQ [2,256], learned clean source denoising prior, frozen blind action and Gaussian posterior initialization with data-consistency prox",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No TX labels or U_s truth loaded in either training or evaluation",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Source training ground IQ and frozen classifier outputs only; no TX labels, U_s truth, V or test",
+    "external_method_exception": null,
+    "claim_scope": "Source physical IDs observed in previous channel views, RX8 same prior pilot; no independent blind or real satellite claim"
+  },
+  "checkpoint": {
+    "initialization": "Random learned ground denoiser identity initialized; F frozen. Blind action checkpoint and source prior loaded only after training; DURA comparison only.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "Exact blind action sha256 0ef60a205f785bda45f9936d519e925179dbbddeef2fd6cd285a83b02a284338; source prior sha256 5e35516d54d3e3d1d1749933861f290c1f87c8ffdb4b863d2f9819914135ceb9",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "Three fixed clean-IQ source epochs, epoch3 weights; 3 fixed proximal strengths .1,1,10 and fixed RX8 384 source diagnostic. No automatic Phase1 test."
+  },
+  "expected_artifacts": [
+    "checkpoint_epoch03.pt",
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source clean-F pseudo-target agreement",
+      "direct normalized IQ MSE",
+      "L_s training exposure"
+    ],
+    "dimensions": [
+      "six source RX8 heldout scenarios"
+    ],
+    "scientific_rule": "Source F pseudo targets not truth, source IDs previously observed in other views, no target test."
+  },
+  "rows": [
+    {
+      "row_id": "score_prox_pilot_s2026092701",
+      "method": "noise-conditioned clean source denoiser and blind data-consistency proximal iteration",
+      "purpose": "test learned non-Gaussian ground signal prior without DURA inference",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026121054,
+        "split": 392005,
+        "data": 2026121055,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "4096 source fit IDs disjoint from 8192 existing prior IDs; fixed 384 RX8 probe",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "AdamW weight_decay .001",
+      "lr": 0.0003,
+      "epochs": 3,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "checkpoint_epoch03.pt",
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No TX labels or U_s truth loaded.",
+    "Ground denoiser trained without DURA or blind network; post-training inference uses fixed blind model and prior, DURA comparison only.",
+    "Source physical IDs and RX8 views previously explored; not independent blind or real satellite.",
+    "No V or Phase1 test IQ."
+  ]
+}

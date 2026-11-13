@@ -1,0 +1,140 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-dura-expert-distill-ground-test-s2026092701-r01",
+  "group_id": "phase1-dura-expert-distill",
+  "display_name": "三专家源蒸馏单专家七景测试",
+  "description": "冻结 DURA，独立初始化单多尺度修正；用合法源 IQ 和固定三专家源波形教师训练，推理不调用三专家。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "dura",
+    "F-free-training",
+    "source-expert-distillation",
+    "deterministic-gpu"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261106-phase1-dura-expert-mixture-source-s2026092701-r01",
+    "20261107-phase1-source-expert-teacher-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "frozen candidate + frozen Tri-SIG-TIME SSL on fixed Phase1 seven-view ground IQ",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "No target labels, clean pair, or target fitting during inference; labels only after all seven predictions",
+    "roles": {
+      "L_s": "source IQ training only, TX hidden",
+      "U_s": "source IQ training only, TX hidden",
+      "V": "not used for G training",
+      "test": "fixed Phase1 ground IQ, truth last"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "target_panel": "168000 Phase1 physical records x seven views",
+    "actual_training_labels": "Recovery training uses paired source IQ only; no F outputs, F weights, TX labels, V or target. Frozen Tri-SIG-TIME SSL only after recovery checkpoint frozen.",
+    "augmentation": "Fixed pre-existing Phase1 ground test simulated seven views"
+  },
+  "permissions": {
+    "regime": "Phase1 frozen ground evaluation",
+    "query_use": "Fixed per-record Phase1 IQ only after source training; no target fit, truth only after seven-view predictions",
+    "external_method_exception": null,
+    "claim_scope": "Single-seed repeatedly observed Phase1 simulated ground test; not independent blind or real satellite"
+  },
+  "checkpoint": {
+    "initialization": "Frozen source-only DURA v1.0 and fixed source-only three-expert waveform teacher; fresh independently initialized single multiscale correction",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261106-phase1-dura-expert-mixture-source-s2026092701-r01",
+      "20261107-phase1-source-expert-teacher-s2026092701-r01"
+    ],
+    "contract_check_ref": "Expert teacher source ancestry, no target/F/TX/V, deterministic context and exact ordered 32768 fit IDs and three views checked before training",
+    "provenance_verdict": "DURA and expert teacher source-only with matching data contract and no target ancestry; student independently initialized",
+    "selection_rule": "Fixed final epoch 5; no source or target performance selection"
+  },
+  "expected_artifacts": [
+    "flow/test_prediction/complete.json",
+    "flow/test_summary.json",
+    "flow/paired_dura.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "ground accuracy",
+      "raw clean gap in pp and relative percent",
+      "macro F1",
+      "DURA paired repairs and damages",
+      "TX/RX/day groups"
+    ],
+    "dimensions": [
+      "168000 physical records",
+      "clean and six practical views"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "dura-single-expert-distilled-final",
+      "method": "Single multiscale DURA correction with IQ guard plus 0.5 normalized source-only expert-mixture waveform teacher loss",
+      "purpose": "Complete mandatory seven-view Phase1 test and paired DURA comparison",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Correction seed 2026110612, source fit seed 2026110611, order seed 2026110613; fixed DURA seed 2026092701.",
+      "k": null,
+      "scenario": "clean and six practical Phase1 Main split views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "flow/test_prediction/complete.json",
+        "flow/test_summary.json",
+        "flow/paired_dura.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source-only original DURA context and fixed source-only three-expert IQ teacher are used during training; no F weights or outputs, TX labels, V or target.",
+    "Student IQ loss and DURA guard plus 0.5 normalized student-versus-mixture waveform loss, fresh zero-head initialization and final fixed epoch 5.",
+    "Teacher cache 98304 source views matches exact ordered fit IDs, epochs21/22/23 and same deterministic source context; source pilot and target excluded from fitting.",
+    "Inference uses DURA and single 117062-parameter correction; three-expert network and teacher cache are absent. Actual latency and ground performance remain unmeasured.",
+    "Freeze final epoch independent of source or target scores; complete all seven 168000-record Phase1 views, fixed Tri-SIG-TIME SSL, independent truth-last scoring.",
+    "Parent mixture has 351301 trainable parameters and three correction forwards; teacher generation and parent training costs counted separately."
+  ]
+}

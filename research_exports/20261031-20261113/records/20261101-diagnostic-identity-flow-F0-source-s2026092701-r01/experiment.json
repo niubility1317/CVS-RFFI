@@ -1,0 +1,113 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-identity-flow-F0-source-s2026092701-r01",
+  "group_id": "phase3-identity-flow-source-gradient",
+  "display_name": "生成式恢复网络接入真实冻结 F0 的源域梯度诊断",
+  "description": "两条源 L_s 记录检查独立 F0 身份梯度与流匹配梯度；无优化、无目标数据。",
+  "kind": "diagnostic",
+  "stage": "Phase3-source-F0-gradient-feasibility",
+  "aliases": [],
+  "tags": [
+    "Phase3",
+    "conditional-flow",
+    "source-only",
+    "frozen-F0",
+    "gradient"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-phase3-fresh-dura-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Two fixed nonclean original R07 epoch01 source L_s paired IQ, 2.462 GHz, not G10; no target or held-out IQ",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "target_panel": "none"
+  },
+  "permissions": {
+    "regime": "source-only F0 feature-guided feasibility; no optimization",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Two-source gradient compatibility only; no accuracy, generalization, loss-weight, or deployment claim"
+  },
+  "checkpoint": {
+    "initialization": "Random scratch conditional flow, zero output; original Phase3 F0 frozen, no updates",
+    "sources": [
+      "Original Phase3 F0 from fixed fresh-DURA reference runtime"
+    ],
+    "contract_check_ref": "Original Phase3 F0 loader and exact original source L_s/U_s physical role sets",
+    "provenance_verdict": "Original source F0 E50/11100, 232993 parameters; inherited supervised identity information disclosed; no DURA or target model read",
+    "selection_rule": "Fixed first two nonclean source L_s records, fixed seeds, no outcome selection"
+  },
+  "expected_artifacts": [
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "F0-to-endpoint gradient norms",
+      "F0-to-flow-field gradient norm",
+      "flow-to-flow-field gradient norm",
+      "F0 state unchanged"
+    ],
+    "dimensions": [
+      "two source L_s records",
+      "two fixed noise paths"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "real-F0-source-gradient",
+      "method": "Two-noise conditional flow plus original frozen F0 feature anchor and agreement",
+      "purpose": "source gradient feasibility",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed flow seed 2026092701 and noise seed 2026110102; first two nonclean source L_s",
+      "k": null,
+      "scenario": "two source L_s R07 epoch01 paired observations",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "New route differs from other chat deterministic full-rate time-frequency residual: a conditional Transformer velocity field and explicit Gaussian paths. Earlier R20 conditional flow had different coarse DURA/MAP structure and failed; novelty is not asserted.",
+    "Only a two-record numerical feasibility diagnostic, not training or a 3pp result. R07 source 2.462 GHz differs from G10 2.45 GHz.",
+    "Frozen original F0 carries its source supervised knowledge; no TX labels, V/OE/target IQ, threshold fitting, model update or source performance assessment.",
+    "Separate F0 and flow gradient checks prevent one loss from masking a zero gradient in the other. Focused tests pass and independent P0/P1 review completed."
+  ]
+}

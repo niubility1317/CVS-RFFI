@@ -1,0 +1,128 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-Restore-Fgeometry-RXday-s2026092701-r01",
+  "group_id": "restoration-source-Fgeometry-RXday-association",
+  "display_name": "恢复性能源端诊断：冻结F特征的接收机与日期相关变异",
+  "description": "仅复用原63000条LsUs的冻结F0特征与RX/day元数据，分解组间变异并比较VarF固定尺度；不读取IQ/TX/V/OE/target，不加载神经网络或拟合分类头。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "source-only",
+    "frozen-features",
+    "RX-day-association",
+    "CPU-only",
+    "no-updates"
+  ],
+  "comparison_group_id": "raw-vs-fixed-VarF-scaled-source-feature-energy",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Originalsource392005/Ls6300Us56700;completedcanonicalLUcache",
+    "representation": "ExistingfrozenF0_features.npy FP32[63000,160] plusRX/day/roles metadata;previoussource-onlyVarF scale andfourvariancebands;noIQarrays",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "actual_training_labels": "No model training orlabels. rolesLs6300Us56700andpublicRX/day only.",
+    "augmentation": "None;allsourcefeature rows fixed existingproducer output."
+  },
+  "permissions": {
+    "regime": "source-only-zero-update-CPU-descriptive-feature-statistics",
+    "query_use": "No IQ/TX/y/V/OE/novel/target/modelweights,classificationheadorNN reads. Only cachedoriginalsourcefeatures/metadataandexistingdata-onlyscale.",
+    "external_method_exception": null,
+    "claim_scope": "Descriptiveassociationin63000sourcecleanfeatures;fixedscalechangesfeatureenergyweighting. Notrestorationerror/gradientenergy,identitydecomposition,causalRXnuisance,Mainperformance orinformationceiling."
+  },
+  "checkpoint": {
+    "initialization": "No model loaded or updated;existingfeatureproducer identity only.",
+    "sources": [
+      "20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache/F0_features.npy;original3ff8/sourceonlyfullTriSIGSSL50-11100/defaulthead;producerANALYZED/VALIDATED_ONCE",
+      "20261101-diagnostic-Restore-learned-prior-physics-s2026092701-r01/feature_geometry.json andresults.json;fixedscaleandbands63000source-onlyF0moments/0updates"
+    ],
+    "contract_check_ref": "Reuseexistingcapsule_id/split_id/status/countandoriginalF0identity;no datarehashor revalidation.",
+    "provenance_verdict": "Matchingoriginalsource392005/F0. No newcheckpointcapabilityneeded. Referencedupstreamsourcecacheproducerrealcheckpointsource2smokePASS;firststepcurrentdatahandlecheckscontinueimmediately.",
+    "selection_rule": "No checkpoint/hyperparameter selection;all160dimensions/all63000source rows/fixedfour40dim variancebands. ReportfullallRX/day/cellcounts. No targetscores consumed."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json(data-onlyhandles;referenceupstreamactualsourcecheckpointsmoke)",
+    "results.json",
+    "complete.json",
+    "terminal.json",
+    "worker.log PRIVATE"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Perdimtotal/RX/day/jointbetweenvarianceandconditionalincrements(includeinteractions)",
+      "RawvsfixedVarFscaledfeatureenergyfractions/ALLandfourvariancebands",
+      "All63000sourcecounts/RX/day/jointcells/zero-variance-dimensions"
+    ],
+    "dimensions": [
+      "oneCPUrow",
+      "sourceLs6300Us56700",
+      "160F0features",
+      "5sourceRX/3sourceDays/15cells",
+      "fixedfour40dimvariancebands"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "source-feature-domains",
+      "method": "source-F0-RXday-between-variance",
+      "purpose": "source-onlymechanismdiagnosis",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "NoRNG ornewmodels;seedmodelidentifiesoriginalF0,splitoriginal392005;allsource rows used.",
+      "k": null,
+      "scenario": "sourceclean-F0features-only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json(data-onlyhandles;referenceupstreamactualsourcecheckpointsmoke)",
+        "results.json",
+        "complete.json",
+        "terminal.json",
+        "worker.log PRIVATE"
+      ]
+    }
+  ],
+  "notes": [
+    "Hypothesisfromsourcegeometry:compare whetherfixedVarFweighting increases RX/day-associatedSOURCECLEANFEATUREenergyshare, especiallylower-variancebands. Reportdifferencescontinuously;notfixedsignificanceornewGpromotionthreshold.",
+    "Nestedjointminusday/RX increments includeinteractions;notpureadditivemain effects. MarginalRX/dayfractionsmustnotbeadded ifcorrelated. Constantdimsundefined->JSONnull,notfalsezero.",
+    "NoTXconditioning:associationcannotidentifycausalnuisanceorcleanidentitycomponents. Datecancontainmeaningfuldevice drift;nofeaturedeletion/projectionornewtrainselectedautomatically.",
+    "CanonicalLUfeaturecache differs fromR07cleanpreparation/batchsize atsmallFP32level;reportvariance-difference asdescriptivecomparison,notclaimbitwiseequivalence or addparitygate.",
+    "3focusedtestsPASS;oneindependentP0P1PASS(existingdura_diagnostic_review). No NNcheckpointloadedinthisG0stage;reuseproduceractualsourcecheckpointsmoke pluscurrentdatahandlefirststep,notextramodel/smokeartifacts.",
+    "No G newversion,training,targetprediction ortruth. Therefore no newMainseven test triggered bythisstatisticsonlyrun. OverallgoalACTIVE/notmet/defaultDURAunchanged."
+  ]
+}

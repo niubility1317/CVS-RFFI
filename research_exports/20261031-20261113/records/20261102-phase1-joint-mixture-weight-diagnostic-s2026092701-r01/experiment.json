@@ -1,0 +1,111 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-joint-mixture-weight-diagnostic-s2026092701-r01",
+  "group_id": "phase1-joint-mixture",
+  "display_name": "Phase1 physical mixture source weight diagnostic",
+  "description": "Diagnose posterior weight concentration, controller change, and fixed-hypothesis pseudo-label coverage on explored source RX8 records.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "conditional_posterior",
+    "pairwise_utility",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-joint-mixture-pilot-s2026092701-r01",
+    "20261102-phase1-joint-mixture-validation-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "Ungated six posterior IQ states, posterior weights, learned corrections and source clean-F pseudo targets",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No L_s or U_s truth; only frozen clean F pseudo targets, no V or test",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Previously explored source RX8 cache and frozen clean F pseudo targets only; no true identity labels, U_s truth, V or test",
+    "external_method_exception": null,
+    "claim_scope": "Source source IDs used by F and seen in other channel views, pseudo targets not independent test; bounded correction may exploit classifier"
+  },
+  "checkpoint": {
+    "initialization": "Frozen source-trained mixture controller and six-component blind source posterior; frozen F; no DURA inference",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "Frozen source-trained controller commit c67dc6d7b6a3880ffe2fe4e49357ee4da18eb4ef; fixed blind epoch10 and 8192-ID prior",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "No selection; fixed 384 source RX8 IDs, 64 per impaired scene, fixed scale1; report statistics and inaccessible pseudo-target oracle."
+  },
+  "expected_artifacts": [
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "weight concentration and entropy",
+      "controller weight total variation and top-component changes",
+      "parent repairs and damages",
+      "source-only fixed-component pseudo-target oracle"
+    ],
+    "dimensions": [
+      "384 source RX8 records, 64 per impaired scene"
+    ],
+    "scientific_rule": "Clean F high confidence pseudo targets, no true labels; pseudo-target oracle is unavailable at inference and is not a general bound."
+  },
+  "rows": [
+    {
+      "row_id": "joint_mixture_weight_diagnostic_s2026092701",
+      "method": "source-only analysis of frozen physical posterior and learned weight changes",
+      "purpose": "assess posterior concentration and conditional-wave complementarity",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026121854,
+        "split": 392005,
+        "data": 2026121855,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "Frozen controller model seed 2026121854; 384 previously explored RX8 source records fixed by seed 2026120355; no training.",
+      "k": null,
+      "scenario": "six source simulated impaired scenes",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 1,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": "Fixed source diagnostic after observing source validation; no identities, L_s truth, U_s truth, V or test. Results reflect model and records previously explored, not independent test."
+}

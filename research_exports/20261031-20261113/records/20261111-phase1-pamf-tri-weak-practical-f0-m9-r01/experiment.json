@@ -1,0 +1,21 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261111-phase1-pamf-tri-weak-practical-f0-m9-r01",
+  "display_name": "Tri-SIG-TIME 弱信道扰动与等剂量五分支筛选",
+  "scope": "F0 Main split original full reference-response PAMF, three SIG-TIME views and fixed permutation [0,5,3,6,2,1,4,7]. Three arms x seeds 2026092701/02/03. Target F0 has been exposed and is development evaluation.",
+  "initialization": "Reuse exact source-only original same-seed Tri-SIG-TIME E20, continue own E10+E20 for fixed E50 and 11100 cumulative updates. Same original source L/U roles and model/head.",
+  "controls": [
+    "Same-seed complete Tri-SIG-TIME SSL",
+    "same-seed ordinary PL",
+    "random same-step certificate-count control",
+    "full-dose existing practical-U and gated-U results as historical comparators"
+  ],
+  "evaluation": "Fixed E50, clean and six practical scenarios, DURA-LU primary, DURA-L and raw secondary. Main test cross_rx plus cross_both, 168000 disjoint physical packets per scene. All nine frozen prediction matrices precede independent truth-last scores. Per seed, scene, TX/RX/day and same-packet correction/regression. No leo_weak.",
+  "success": "Three-seed mean exceeds Tri on clean and practical-six mean, and exceeds PL in every scene. Disclose each seed loss; all-condition evidence additionally requires each PL seed/scenario cell positive and independent settings.",
+  "expected_artifacts": [
+    "Nine finite source-only real E20 smoke checks",
+    "Nine own E30/E50 and source U routing counts",
+    "Nine frozen seven-scene predictions",
+    "Independent three-seed paired DURA/raw analysis"
+  ]
+}

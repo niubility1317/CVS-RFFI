@@ -1,0 +1,216 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-phase3-ground-open-s2026092701-r01",
+  "group_id": "pamf-phase3-ground-open",
+  "display_name": "PAMF第三阶段：地面开放训练与普通源域PL",
+  "description": "Matched complete original-F0 SUP versus ordinary source Us PL on G(clean), common CE/KD and same RX/day OE energy rank; separate known CAL/TEST.",
+  "kind": "cvs",
+  "stage": "Phase3-ground-open",
+  "aliases": [
+    "地面开放训练"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "source_clean",
+    "ordinaryPL",
+    "default_head",
+    "DURA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-ground-sup-vs-ssl",
+  "parent_run_ids": [
+    "20261031-phase3-fresh-development-rx3-2-s2026092701-r01",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Original source392005 clean to G(clean); fixed paired source star and fresh RX34 future",
+    "version": "Unchanged VALIDATED_ONCE source392005 and fresh development handles",
+    "representation": "Full native 232993 reader/default6 joint training. G fixed. Own six-logit energy, no extra head, source y/RX/day balanced CAL/TEST13500 each.",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "3-2/index34"
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [
+      "2021-03-01 U",
+      "2021-03-15/23 futureQ"
+    ],
+    "tx_sets_ref": "Old14-10/14-7/20-15/20-19/6-15/8-20; future unregistered5-5/10-7/2-19/7-11 only builder/scorer; later7-11 not inU",
+    "roles": {
+      "source_L": 6300,
+      "source_Us": 56700,
+      "source_OE": 6134,
+      "source_CAL": 13500,
+      "source_known_TEST": 13500,
+      "source_NV": 3150,
+      "source_Q": 16650,
+      "target_U_new": 0,
+      "target_U_ID_new": 0,
+      "target_clean_Q": 10238,
+      "target_star_Q": 10238,
+      "future_known": 4508,
+      "future_unknown": 5730,
+      "formal_RX24_18_new": 0
+    },
+    "train_ratio": "Original F0 labeled source6300/63000=10%; sourceOE outside-six membership allowed, OEtrueTXhidden; no new source labels or targetTXlabels.",
+    "capsule_id": "p3fresh-b14665c51b89f44f2b76c137",
+    "split_id": "077495132350495f37a33d84"
+  },
+  "permissions": {
+    "regime": "L true y/F0 G(clean) teacher; OE outside-six/publicRXday only; SSL Us values/publicRXday noTX. CAL known-only threshold. TEST/NV/Q not train.",
+    "query_use": "Synthetic actualCP smoke before source data. data->4440train->knownCAL18tau->all12 predictions->independentCPU4truth once. No target U, Q updates, quota or threshold tuning.",
+    "external_method_exception": null,
+    "claim_scope": "Ground source clean candidate, crossRX retained. No new targetUDA/discovery/registration; full goal ACTIVE, formal0, AN/H_OW NA, exposeddevelopment."
+  },
+  "checkpoint": {
+    "initialization": "Complete original F0 E50/11100 reader/default6; Sinc48/buffers fixed. Both arms independently initialized, same L/OE indices. Fixed DURA R69.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "[已省略路径]",
+    "provenance_verdict": "Original source392005 F0 ancestor unchanged, new teacher same G(clean). Existing clean source and OE VALIDATED_ONCE handles, no target-contaminated model inheritance.",
+    "selection_rule": "Final2220 each, no V/NV/Q checkpoint selection; primary SSL_energy predetermined."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/{data,train,eval}.json",
+    "logs/*.log",
+    "data/{complete,smoke}.json",
+    "data/roles/*",
+    "data/queries/*",
+    "data/private/known_test_truth.npz",
+    "train/{complete,smoke}.json",
+    "train/rows/*/{final.pt,complete.json,steps.jsonl}",
+    "predict/{resolved_config,smoke,complete}.json",
+    "predict/calibration/complete.json",
+    "predict/thresholds.npz",
+    "predict/queries/*/predictions.npz",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macroAK",
+      "macroCK",
+      "macroRU",
+      "H-score",
+      "originalF0/studentclosed",
+      "AUROC/OSCR",
+      "pairedcorrectaccept/reject",
+      "full4440loss/gradient/PLaccept",
+      "ANHOWNA"
+    ],
+    "dimensions": [
+      "3methods x4DURAconditions",
+      "source24groups",
+      "TX/RX/day/scene/day_scene"
+    ],
+    "targets_ref": "Source clean CK95/RU95/originalF0gap2pp all24groups; crossclean CK90/RU95/gap2pp/fullscene. Star CK90/RU90/gap2pp diagnostic. No auto expansion; full goal ACTIVE.",
+    "primary": [
+      "SSL_energy"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "SUP-s2026092701",
+      "method": "SUP",
+      "purpose": "CE+KD+sameRXdayOE energy ranking supervised control",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110101,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "L2026103017/OE2026103018 reset eacharm, Us2026110102. Source scenes3001/channel4001/future3133/3134/receiver2027 unchanged; no newchannel.",
+      "k": null,
+      "scenario": "Source G(clean) training; source and crossRX clean/star all DURA",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{data,train,eval}.json",
+        "logs/*.log",
+        "data/{complete,smoke}.json",
+        "data/roles/*",
+        "data/queries/*",
+        "data/private/known_test_truth.npz",
+        "train/{complete,smoke}.json",
+        "train/rows/*/{final.pt,complete.json,steps.jsonl}",
+        "predict/{resolved_config,smoke,complete}.json",
+        "predict/calibration/complete.json",
+        "predict/thresholds.npz",
+        "predict/queries/*/predictions.npz",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    },
+    {
+      "row_id": "SSL-s2026092701",
+      "method": "SSL",
+      "purpose": "CE+KD+sameRXdayOE energy ranking + ordinary Us PL.95 weight1",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110101,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "L2026103017/OE2026103018 reset eacharm, Us2026110102. Source scenes3001/channel4001/future3133/3134/receiver2027 unchanged; no newchannel.",
+      "k": null,
+      "scenario": "Source G(clean) training; source and crossRX clean/star all DURA",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{data,train,eval}.json",
+        "logs/*.log",
+        "data/{complete,smoke}.json",
+        "data/roles/*",
+        "data/queries/*",
+        "data/private/known_test_truth.npz",
+        "train/{complete,smoke}.json",
+        "train/rows/*/{final.pt,complete.json,steps.jsonl}",
+        "predict/{resolved_config,smoke,complete}.json",
+        "predict/calibration/complete.json",
+        "predict/thresholds.npz",
+        "predict/queries/*/predictions.npz",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Ground clean exception explicitly authorized by user; target clean only frozen evaluation.",
+    "V had historical exposure; new half split is role separation, not a new blind benchmark.",
+    "Source/target unknown namespaces distinct; missing class full macro NA.",
+    "Calibrate known only; no NV/target score feedback; SUP never opens Us.",
+    "4440steps not20epochs, SSL extra compute explicit, fixed DURA; no targetUDA claim."
+  ]
+}

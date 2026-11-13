@@ -1,0 +1,209 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-phase3-ground-geometry-s2026092701-r01",
+  "group_id": "pamf-phase3-ground-geometry",
+  "display_name": "PAMF第三阶段：源Us统计子空间拒识",
+  "description": "Frozen original F0: standard ViM and source15domain mean-constrained ViM; no new neural optimizer or source TX labels before CAL.",
+  "kind": "cvs",
+  "stage": "Phase3-ground-geometry",
+  "aliases": [
+    "源侧无标签子空间拒识"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "source_clean",
+    "Us",
+    "ViM",
+    "DURA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-source-standard-domain-vim",
+  "parent_run_ids": [
+    "20261101-phase3-ground-open-s2026092701-r03",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Reused D7 source392005 G(clean) Us56700/CAL13500 and sourceQ16650 plus RX34 paired futureQ10238",
+    "version": "Unchanged VALIDATED_ONCE source392005 and fresh development handles",
+    "representation": "Actual frozen native FP32 normalized160 classifier coordinates, bias0 scale30; uncentered second moment and fixed residual80.",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "3-2/index34"
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [
+      "2021-03-01 U",
+      "2021-03-15/23 futureQ"
+    ],
+    "tx_sets_ref": "Old14-10/14-7/20-15/20-19/6-15/8-20; future unregistered5-5/10-7/2-19/7-11 only builder/scorer; later7-11 not inU",
+    "roles": {
+      "source_L_new": 0,
+      "source_OE_new": 0,
+      "source_Us_new_reads": 56700,
+      "source_CAL": 13500,
+      "source_known_TEST": 13500,
+      "source_NV": 3150,
+      "source_Q": 16650,
+      "target_U_new": 0,
+      "target_U_ID_new": 0,
+      "target_clean_Q": 10238,
+      "target_star_Q": 10238,
+      "future_known": 4508,
+      "future_unknown": 5730,
+      "formal_RX24_18_new": 0
+    },
+    "train_ratio": "Original F0 labeled source6300/63000=10%; sourceOE outside-six membership allowed, OEtrueTXhidden; no new source labels or targetTXlabels.",
+    "capsule_id": "p3fresh-b14665c51b89f44f2b76c137",
+    "split_id": "077495132350495f37a33d84"
+  },
+  "permissions": {
+    "regime": "Us membership known by legal role; TX GT hidden. Source RX/day only statistical fit; source known CAL y only threshold protection. New L/OE/targetU reads0. F0/G frozen, oldSSL energy cached only.",
+    "query_use": "ActualCP synthetic noquery smoke then Us PCA/SVD/alpha freeze, CAL freezes12new+12oldtau; all16 before CPU4truth once, no CPU refit. No query updates/batch fit/ranking/quota.",
+    "external_method_exception": null,
+    "claim_scope": "Source statistical geometry, not new NN training or full-system unlabeled. Formal CK95/RU95/gap2 and required main scenes95; fullgoalACTIVE/ANHOWNA/formal0, one seed/RX exposed development."
+  },
+  "checkpoint": {
+    "initialization": "Frozen original F0 E50/11100, native default6, DURA R69v1.0; no new student and no oldSSL inheritance in geometric paths.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "[已省略路径]",
+    "provenance_verdict": "Matched original F0 source392005 ancestor and unchanged D7 source G(clean) capsule. OldSSL comparison retains sourceUs ancestry; its NN is never forwarded.",
+    "selection_rule": "No neural selection/optimizer. Fixed residual80, nuisance<=14/15source RXday means, alpha sourceUs. PrimaryF0_domain_vim before Q; no sweep."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/eval.json",
+    "logs/*.log",
+    "predict/{resolved_config,smoke,complete}.json",
+    "predict/classifier_head.npz",
+    "predict/models/complete.json",
+    "predict/models/*/{state.npz,complete.json}",
+    "predict/calibration/complete.json",
+    "predict/thresholds.npz",
+    "predict/queries/*/predictions.npz",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macroAK",
+      "macroCK",
+      "macroRU",
+      "H-score",
+      "canonical originalF0/fresh closed",
+      "AUROC/OSCR",
+      "pairedcorrectaccept/reject",
+      "replay_logit_and_argmax_differences",
+      "source_rank_alpha_orthogonality",
+      "ANHOWNA"
+    ],
+    "dimensions": [
+      "4methods x4DURAconditions",
+      "source24groups",
+      "sixmainstarScenes",
+      "TX/RX/day/scene/day_scene"
+    ],
+    "targets_ref": "Formal all4conditions CK95/RU95/canonicalF0gap2pp and complete main scenes95; sourceclean all24groups. Groundstage and frozen4success separate; fullgoalACTIVE.",
+    "primary": [
+      "F0_domain_vim"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "standard-s2026092701",
+      "method": "standard",
+      "purpose": "SourceUs-only uncentered ViM standard",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110101,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Deterministic FP64 aggregate eig/SVD, no new RNG/data. OldCALsplit2026110101; existing G10 source3001/channel4001/future3133/3134/receiver2027.",
+      "k": null,
+      "scenario": "Four source/cross clean/star DURAconditions; two energy cached controls and two fresh sameF0 readouts",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/eval.json",
+        "logs/*.log",
+        "predict/{resolved_config,smoke,complete}.json",
+        "predict/classifier_head.npz",
+        "predict/models/complete.json",
+        "predict/models/*/{state.npz,complete.json}",
+        "predict/calibration/complete.json",
+        "predict/thresholds.npz",
+        "predict/queries/*/predictions.npz",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    },
+    {
+      "row_id": "domain_orthogonal-s2026092701",
+      "method": "domain_orthogonal",
+      "purpose": "SourceUs-only uncentered ViM domain_orthogonal",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110101,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Deterministic FP64 aggregate eig/SVD, no new RNG/data. OldCALsplit2026110101; existing G10 source3001/channel4001/future3133/3134/receiver2027.",
+      "k": null,
+      "scenario": "Four source/cross clean/star DURAconditions; two energy cached controls and two fresh sameF0 readouts",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/eval.json",
+        "logs/*.log",
+        "predict/{resolved_config,smoke,complete}.json",
+        "predict/classifier_head.npz",
+        "predict/models/complete.json",
+        "predict/models/*/{state.npz,complete.json}",
+        "predict/calibration/complete.json",
+        "predict/thresholds.npz",
+        "predict/queries/*/predictions.npz",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Domain mean projection is our variation, not standard ViM reproduction or proof of full receiver invariance.",
+    "New L/OE and targetU0; sourceUsTX hidden but knownCAL13500 and original labeledF0 ancestry retained.",
+    "Canonical oldF0 closed baseline separate from fresh replay; replay differences reported, not forced exact.",
+    "Two old energies and all eight old overall metrics exact; no oldSSL real forward.",
+    "Main domain method fixed despite standard result; no sourceNV/target tuning or seed promotion below95."
+  ]
+}

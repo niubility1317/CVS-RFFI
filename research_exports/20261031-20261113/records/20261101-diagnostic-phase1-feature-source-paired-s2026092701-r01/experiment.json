@@ -1,0 +1,120 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-phase1-feature-source-paired-s2026092701-r01",
+  "group_id": "phase1-feature-source-paired-diagnostic",
+  "display_name": "Phase1 特征条件模型源域配对诊断",
+  "description": "比较固定 DURA 与已完成的特征条件网络，在同一源训练样本上的干净基座一致性和波形误差。",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [],
+  "tags": [
+    "Phase1",
+    "Tri-SIG-TIME-SSL",
+    "DURA",
+    "feature-conditioned",
+    "source-only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261101-phase1-feature-conditioned-E30-s2026092701-r02",
+    "20261101-diagnostic-phase1-dura-trisig-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "Phase1 R07 source IQ, fixed DURA and fixed feature-conditioned model",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Six original classes; no TX labels in restorer training",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "target_panel": "none",
+    "actual_training_labels": "Diagnostic reads no TX labels, V or test IQ; trained candidate used legitimate L_s labels only",
+    "augmentation": "Source views 01 and 20"
+  },
+  "permissions": {
+    "regime": "Phase1 L_s/U_s source IQ only; frozen Tri-SIG-TIME, DURA and feature model",
+    "query_use": "No test or V access",
+    "external_method_exception": null,
+    "claim_scope": "In-training source teacher agreement only, not accuracy"
+  },
+  "checkpoint": {
+    "initialization": "Fixed feature-conditioned E30, original DURA and Tri-SIG-TIME SSL E50",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "Exact field metadata, DURA SHA256 and source ID/native IQ alignment",
+    "provenance_verdict": "Fixed source-trained feature correction and original frozen Phase1 models",
+    "selection_rule": "Fixed source records and views; no selection or update"
+  },
+  "expected_artifacts": [
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean-teacher agreement",
+      "paired repair/damage counts",
+      "IQ NMSE",
+      "clean-to-output KL"
+    ],
+    "dimensions": [
+      "source views 01/20; same 512 IDs",
+      "source scene, state, role"
+    ],
+    "targets_ref": "in-training source diagnostic, not TX accuracy"
+  },
+  "notes": [
+    "固定 512 个源训练 ID（L128/U384），视图 01/20；同一 ID 重复不视为独立样本。",
+    "原 DURA 现场输出须与已保存的 native 源输出匹配；特征条件模型须满足 E30、14790 更新、基座身份与 DURA SHA。",
+    "比较 clean teacher 一致性的逐样本修复/损伤、KL 和 IQ NMSE；诊断本身不读取 TX 标签、V、测试 IQ，不更新模型。",
+    "原候选训练使用合法 6300 条 L_s 标签和 U_s 干净教师伪目标，未读取 U_s 标签；源诊断不是真实准确率或独立泛化。"
+  ],
+  "rows": [
+    {
+      "row_id": "paired_source",
+      "method": "DURA vs fixed feature-conditioned model with frozen Tri-SIG-TIME",
+      "purpose": "Assess whether source consistency improves or damages DURA decisions",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed source rows and views; deterministic fixed model",
+      "k": null,
+      "scenario": "Phase1 source views 01 and 20",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ]
+}

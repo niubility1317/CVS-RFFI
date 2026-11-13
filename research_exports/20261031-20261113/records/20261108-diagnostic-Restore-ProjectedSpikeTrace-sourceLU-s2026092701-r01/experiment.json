@@ -1,0 +1,143 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-diagnostic-Restore-ProjectedSpikeTrace-sourceLU-s2026092701-r01",
+  "group_id": "source-projected-detail-spike-layer-trace",
+  "display_name": "投影细节尖峰的源输入与网络层幅度追踪",
+  "description": "复用同一 E10 到 E11 的临时源复现，在首个修正 NMSE 超过100的微批中记录输入、后验基线与网络各层汇总。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "no-target",
+    "technical-replay",
+    "no-deployment-checkpoint"
+  ],
+  "comparison_group_id": "original-projected-E11-source-spike",
+  "parent_run_ids": [
+    "20261108-diagnostic-Restore-ProjectedE11Replay-sourceLU-s2026092701-r01",
+    "20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original R07 draw11 63000 source rows, L_s6300/U_s56700, original saved E11 order.",
+    "representation": "Original source clean/received IQ, simulator Action/noise and frozen original F0 continuous features.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "actual_training_labels": "No TX labels; original simulated source physical action/noise and frozen original F0 continuous features.",
+    "augmentation": "Original saved draw11 and epoch11 permutation, no new source synthesis.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "source-only-bounded-technical-replay",
+    "query_use": "Original L_s/U_s source rows only; no TX truth, V/OE/target inputs or target predictions.",
+    "external_method_exception": null,
+    "claim_scope": "Source-only layer activation magnitudes at first reproduced spike; never infer target identity, modify the running parent or select a deployment checkpoint."
+  },
+  "checkpoint": {
+    "initialization": "Original source-only ProjectedPriorDetail E10/2470 model, AdamW and RNG loaded only for disposable E11 replay; no candidate is saved.",
+    "sources": [
+      "20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01/8cf3669c4a5d98f6c4930117952203afd56f2f6e/rows/TF_ProjectedPriorDetail/training/recovery/E10.pt",
+      "Original frozen source Tri-SIG-TIME SSL F0 and original source mean/covariance."
+    ],
+    "contract_check_ref": "Original E10 code/config/epoch/steps and technical-only metadata, source-only smoke and saved E11 order/draw; exact original source release imported.",
+    "provenance_verdict": "Original E10 source L_s/U_s only, F0 continuous guidance, no TX/V/OE/target. Temporary optimizer steps cannot initialize deployment.",
+    "selection_rule": "E10 fixed as original E11 technical boundary. Source activations captured only for highest correction record of first flagged microbatch; not model selection."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted.json",
+    "smoke.json",
+    "replay.log PRIVATE",
+    "results.json",
+    "terminal.json",
+    "complete.json",
+    "spike_trace.json if projected spike is reproduced"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Original source replay spike outcome, batch location and actual proposal/projected correction/operator; fixed threshold100.",
+      "At the first flagged microbatch, maximum record received/clean/posterior base, predicted noise, per-layer activation norm/RMS/absolute max and prior output weight stats.",
+      "Fixed checkpoint trajectory may diverge on a shared GPU; absence of a reproduced spike means no layer trace and no conclusion."
+    ],
+    "dimensions": [
+      "one original E11 source epoch",
+      "logical/microbatch",
+      "first flagged source record"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "projected_spike_layer_trace",
+      "method": "original_projected_E11_source_replay_with_readonly_hooks",
+      "purpose": "Determine whether the reproduced large proposal follows a large posterior input or internal detail-network activations.",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110707,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026110707
+      },
+      "seed_notes": "Original E10 saved RNG, E11 order and draw11.",
+      "k": null,
+      "scenario": "Original L_s/U_s source only, no target.",
+      "optimizer": "Original AdamW state temporarily restored; original LR/branch clipping unchanged.",
+      "lr": 0.001,
+      "epochs": 1,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "submitted.json",
+        "smoke.json",
+        "replay.log PRIVATE",
+        "results.json",
+        "terminal.json",
+        "complete.json",
+        "spike_trace.json if projected spike is reproduced"
+      ]
+    }
+  ],
+  "notes": [
+    "First source replay observed 14/32 records above100 after25 updates; max proposal209.6703, projected189.4231, spectral operator norm7.543; actual direction was not amplified.",
+    "Record input, posterior base, predicted noise, output weights and original detail-layer norms for the same highest-error record; hooks retain tensors without changing gradient or RNG.",
+    "The rerun may follow a different floating-point trajectory and may not reproduce the spike. No target, TX, V/OE, final model, early stopping or change to the parent training.",
+    "Two targeted tests and one independent P0/P1 review passed. Actual original E10/F0 source2 smoke is first."
+  ]
+}

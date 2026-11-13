@@ -1,0 +1,130 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-spectral-prior-full-s2026092701-r01",
+  "group_id": "phase1-spectral-prior-gate",
+  "display_name": "无标签信号库频谱门控的源域训练",
+  "description": "对输入相位时移锚点与无标签地面源 IQ 信号库形成的多邻域参考，用轻量复数频谱门控预测单次 IQ 修复；DURA 仅在源域筛选对照。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "retrieval",
+    "spectral_gate",
+    "independent_restorer",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-adaptive-phase-factor-s2026092701-r01",
+    "20261102-phase1-blind-gate-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "float32 IQ [2,256]; 8192 disjoint source clean IQ dictionary, 16 input-correlated complex gain-aligned neighbors; no class metadata",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No TX labels or U_s truth read; frozen DURA and Tri-SIG-TIME SSL predictions guide source training",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Source-only training and candidate selection; no V, test IQ, Phase3; no automatic test predictions",
+    "external_method_exception": null,
+    "claim_scope": "Single seed, source heldout and Phase1 development previously observed, no independent-blind or real satellite claim"
+  },
+  "checkpoint": {
+    "initialization": "Random spectral gate; fixed source phase factor and gate; frozen Tri-SIG-TIME SSL. DURA only loaded after training for source evaluation.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "Pinned r02 source dependency 284317bd819df974395d3388b1920a41300937cb; fixed phase checkpoint SHA256 8e9fd8f97a57263be320b8dd57e4dd615fb015d5aab2d276d43864ec8fe8e508",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "Source RX4/6 cache19 vs DURA: per-cell F pseudo-target decrease <= max(1,ceil(.5% valid)), clean IQ <= DURA+.001, impaired IQ <=1.2*DURA+1e-6, aggregate impaired pseudo-correct net >=10; epochs1/2/3 alpha .5/1 threshold .8/.99; RX8 heldout not used"
+  },
+  "expected_artifacts": [
+    "source_smoke/result.json",
+    "source/checkpoint_epoch01.pt",
+    "source/checkpoint_epoch02.pt",
+    "source/checkpoint_epoch03.pt",
+    "source/source_selection.json",
+    "source/selected.pt if selected",
+    "completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source pseudo-target agreement",
+      "normalized aligned IQ MSE",
+      "source net gains"
+    ],
+    "dimensions": [
+      "source RX4/6 and scene",
+      "heldout RX8 and scene"
+    ],
+    "scientific_rule": "Source F pseudo-target agreement is not ground truth or 3% goal; selected network needs separately fixed inference and full Phase1 test."
+  },
+  "rows": [
+    {
+      "row_id": "spectral_prior_gate_s2026092701",
+      "method": "label-free source dictionary top16 phase-aligned average, complex frequency residual gate, frozen input protection and phase",
+      "purpose": "test source improvement and preservation vs DURA before any Phase1 test",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026112554,
+        "split": 392005,
+        "data": 2026110551,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026112555
+      },
+      "seed_notes": "Fixed source split 2026110551, model 2026112554, dictionary sample and train shuffle 2026112555; caches11–13 train,19 source eval",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "AdamW weight_decay .001",
+      "lr": 0.0003,
+      "epochs": 3,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source_smoke/result.json",
+        "source/checkpoint_epoch01.pt",
+        "source/checkpoint_epoch02.pt",
+        "source/checkpoint_epoch03.pt",
+        "source/source_selection.json",
+        "source/selected.pt if selected",
+        "completion.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Dictionary and training/validation/holdout physical IDs are mutually disjoint; source IDs appeared in earlier channel views, no blind claim.",
+    "Dictionary can inject foreign transmitter fingerprints; classification and IQ guarded independently.",
+    "Phase factor previously trained from DURA source teacher; network inference does not call DURA.",
+    "DURA loaded only after all three checkpoints fixed; no TX labels, U_s truth, V or test IQ.",
+    "Pilot 64 updates: 251 valid source pseudo targets, spectral 211, raw 213, DURA 240; no target result."
+  ]
+}

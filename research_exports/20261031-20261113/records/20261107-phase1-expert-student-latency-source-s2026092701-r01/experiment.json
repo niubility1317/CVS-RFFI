@@ -1,0 +1,110 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-expert-student-latency-source-s2026092701-r01",
+  "group_id": "phase1-expert-student-latency-source",
+  "display_name": "三专家与蒸馏单专家 GPU 同输入时延比较",
+  "description": "固定相同来源数据的三专家和蒸馏单专家，在合法源 IQ 上测量 GPU 修正及 DURA 加修正路径的同步时延。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "F-free",
+    "gpu-latency",
+    "expert-distillation"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261106-phase1-dura-expert-mixture-source-s2026092701-r01",
+    "20261107-phase1-dura-expert-distill-source-s2026092701-r01",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split source pilot",
+    "version": "source cache R07 epoch19",
+    "representation": "fixed source received IQ and DURA context; no labels",
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Shared-GPU source eager correction-only and DURA-plus-correction synchronized timing, no F or target accuracy"
+  },
+  "checkpoint": {
+    "initialization": "Frozen source-only final epoch5 expert mixture, frozen source-only final epoch5 distilled student and original DURA",
+    "sources": [
+      "20261106-phase1-dura-expert-mixture-source-s2026092701-r01",
+      "20261107-phase1-dura-expert-distill-source-s2026092701-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Frozen models strict source-only ancestry, matching exact 32768 fit IDs and pilot disjointness",
+    "provenance_verdict": "All models have source-only ancestry; F/TX/V/target not used",
+    "selection_rule": "Both fixed final checkpoints, no target selection"
+  },
+  "expected_artifacts": [
+    "result.json: paired B1/B8 synchronized source wall time and parameter counts"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "B1/B8 correction-only and DURA-plus-correction median/mean/p95 milliseconds"
+    ],
+    "dimensions": [
+      "112 legal source records",
+      "B1 112 paired timings",
+      "B8 28 paired timings"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "source-expert-student-latency",
+      "method": "Frozen same-input paired source GPU latency for three-expert mixture and one distilled correction",
+      "purpose": "Measure computational cost rather than infer speed from parameter count",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Existing fixed tail-excess source G and Tri-SIG-TIME SSL seed 2026092701; no training or selection.",
+      "k": null,
+      "scenario": "source pilot 112 records across two receiver groups and seven views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "result.json: paired B1/B8 synchronized source wall time and parameter counts"
+      ]
+    }
+  ],
+  "notes": [
+    "Both source-only checkpoints are frozen, use identical source inputs, and alternate measurement order; no F, TX labels, V or target.",
+    "GPU wall time is synchronized, input IQ is already on GPU; includes eager DURA context and correction for full-path rows, excludes model loading, host-to-device input transfer and classifier.",
+    "DURA context uses current eager implementation rather than official optimized graph; results do not claim official end-to-end latency or accuracy equivalence.",
+    "Shared GPU load and limited sample counts affect latency; do not infer unchanged target predictions or recognition performance."
+  ]
+}

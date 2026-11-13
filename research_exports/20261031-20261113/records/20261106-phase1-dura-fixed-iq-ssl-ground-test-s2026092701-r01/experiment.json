@@ -1,0 +1,138 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-dura-fixed-iq-ssl-ground-test-s2026092701-r01",
+  "group_id": "phase1-dura-fixed-iq-ssl",
+  "display_name": "固定源 IQ 表征恢复器七景正式测试",
+  "description": "固定原 DURA 和仅由合法源 IQ 自监督训练的辅助编码器；独立初始化多尺度恢复修正，用源 IQ 与固定表征共同约束训练，七景冻结测试。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "dura",
+    "F-free-training",
+    "fixed-source-iq-ssl",
+    "deterministic-gpu"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261106-phase1-dura-joint-iq-ssl-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "frozen candidate + frozen Tri-SIG-TIME SSL on fixed Phase1 seven-view ground IQ",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "No target labels, clean pair, or target fitting during inference; labels only after all seven predictions",
+    "roles": {
+      "L_s": "source IQ training only, TX hidden",
+      "U_s": "source IQ training only, TX hidden",
+      "V": "not used for G training",
+      "test": "fixed Phase1 ground IQ, truth last"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "target_panel": "168000 Phase1 physical records x seven views",
+    "actual_training_labels": "Recovery training uses paired source IQ only; no F outputs, F weights, TX labels, V or target. Frozen Tri-SIG-TIME SSL only after recovery checkpoint frozen.",
+    "augmentation": "Fixed pre-existing Phase1 ground test simulated seven views"
+  },
+  "permissions": {
+    "regime": "Phase1 frozen ground evaluation",
+    "query_use": "Fixed per-record Phase1 IQ only after source training; no target fit, truth only after seven-view predictions",
+    "external_method_exception": null,
+    "claim_scope": "Single-seed repeatedly observed Phase1 simulated ground test; not independent blind or real satellite"
+  },
+  "checkpoint": {
+    "initialization": "Frozen source-only DURA v1.0 and frozen source-only self-supervised auxiliary encoder from 20261106-phase1-dura-joint-iq-ssl-source-s2026092701-r01; 117062-parameter correction independently zero-head initialized",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261106-phase1-dura-joint-iq-ssl-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "DURA provenance checked by frozen_dura; teacher summary/checkpoint fixed commit and TX/F/V/target-free source access, exact ordered 8192 fit IDs, auxiliary state strict load; no G weights inherited",
+    "provenance_verdict": "Both DURA and auxiliary teacher are source-only with matching training IDs and no target ancestry",
+    "selection_rule": "Fixed final epoch 5; no source or target performance selection"
+  },
+  "expected_artifacts": [
+    "flow/test_prediction/complete.json",
+    "flow/test_summary.json",
+    "flow/paired_dura.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "ground accuracy",
+      "raw clean gap in pp and relative percent",
+      "macro F1",
+      "DURA paired repairs and damages",
+      "TX/RX/day groups"
+    ],
+    "dimensions": [
+      "168000 physical records",
+      "clean and six practical views"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "dura-fixed-source-iq-ssl-final",
+      "method": "Fresh multiscale DURA correction trained against source IQ and a frozen source-only IQ representation (feature weight 0.05)",
+      "purpose": "Complete mandatory Phase1 seven-view test and paired DURA comparison",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Fresh correction initialization 2026110612, source fit 2026110611, order 2026110613; teacher init 2026110615 and fixed E5 source state; DURA seed 2026092701.",
+      "k": null,
+      "scenario": "clean and six practical Phase1 Main split views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "flow/test_prediction/complete.json",
+        "flow/test_summary.json",
+        "flow/paired_dura.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Candidate trains correction from independently initialized zero output heads using fixed DURA context and fixed source IQ encoder; feature weight 0.05 plus original IQ and DURA guard losses.",
+    "Encoder checkpoint 20261106-phase1-dura-joint-iq-ssl-source-s2026092701-r01 was trained solely on matching source IQ, with no TX labels, F, V or target; its parameters are frozen and never used at ground inference.",
+    "The fixed source context cache was constructed and exactly verified in deterministic GPU mode; it is source-only and matched on fit IDs and data contract.",
+    "Five epochs, model seed 2026110612, fixed data seed 2026110611, order seed 2026110613, CUDA deterministic mode with slice-based linear interpolation; no target-driven selection.",
+    "Freeze final epoch and run all seven Phase1 Main split views with frozen Tri-SIG-TIME SSL, 168000 each, truth-last, regardless of source results.",
+    "Joint SSL version differs in encoder schedule and execution mode; simple outcome differences cannot be attributed solely to freezing."
+  ]
+}

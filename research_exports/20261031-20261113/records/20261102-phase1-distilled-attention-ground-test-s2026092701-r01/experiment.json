@@ -1,0 +1,138 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-distilled-attention-ground-test-s2026092701-r01",
+  "group_id": "phase1-attention-waveform",
+  "display_name": "Phase1 source-teacher attention ground test",
+  "description": "Fixed matched teacher-guided direct attention restorer with frozen Tri-SIG-TIME SSL on seven Phase1 views; truth last.",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "Phase1",
+    "Tri-SIG-TIME-SSL",
+    "frozen-model",
+    "ground-test",
+    "truth-last",
+    "nonblind-development"
+  ],
+  "comparison_group_id": "phase1-trisigtime-frozen-raw-clean",
+  "parent_run_ids": [
+    "20261102-phase1-distilled-attention-pilot-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "IQ [2,256] direct multiscale waveform attention, full restoration strength, fixed input gate and F",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "No test truth, clean pair, U_s truth or V during inference; fixed ground test truth after all seven views",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "target_panel": "168000 Phase1 physical records x seven views",
+    "actual_training_labels": "Only L_s fit truth and high confidence clean F pseudo labels for U_s; no U_s truth, V or test during training.",
+    "augmentation": "Fixed pre-existing Phase1 ground test simulated seven views"
+  },
+  "permissions": {
+    "regime": "Source-trained frozen candidate, fixed Phase1 ground test inference then truth-last scoring",
+    "query_use": "Per-record received IQ and frozen F predictions only; no clean pair, labels or adaptation at inference",
+    "external_method_exception": null,
+    "claim_scope": "Single-seed repeated ground development test, not independent blind or real satellite."
+  },
+  "checkpoint": {
+    "initialization": "Final source-trained attention student, full output, gate .8, frozen F; DURA teacher used during training only, absent at student inference.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "Teacher-guided attention training commit 9e07e6b076cb2fbcd081e043d9881c378a668004 final epoch8.",
+    "provenance_verdict": "Predeclared before teacher-guided model training and source validation complete; matched source DURA teacher used only in training, frozen F.",
+    "selection_rule": "Full network output scale1 and gate .8 fixed before source result; all seven views complete before truth."
+  },
+  "expected_artifacts": [
+    "prediction_smoke.json",
+    "flow/test_prediction/complete.json",
+    "flow/test_summary.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "per-view frozen F raw and restored accuracy",
+      "per-view clean-relative percentage point and relative percent gap",
+      "macro F1",
+      "TX/RX/day accuracy"
+    ],
+    "dimensions": [
+      "168000 Phase1 ground test physical records x seven views",
+      "TX/RX/day and six practical scenes"
+    ],
+    "targets_ref": "All six simulated satellite views at most 3 percentage points and 3% relative below F clean; clean output degradation <=1 percentage point"
+  },
+  "notes": [
+    "Full output and gate .8 fixed while training is still running, before source results.",
+    "DURA source-only waveform teacher during training; no DURA inference in student.",
+    "1047 source cohort raw/gate and batch replay before test.",
+    "All seven view predictions fixed before truth; no U_s truth or V.",
+    "Ground development test previously observed; not blind or actual satellite."
+  ],
+  "rows": [
+    {
+      "row_id": "flow",
+      "method": "matched source-teacher attention waveform student, full output and gate .8",
+      "purpose": "Fixed seven-view ground test for direct attention student trained from source teacher",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120454,
+        "split": 392005,
+        "data": 2026120355,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "Frozen source attention network seed 2026123054 and fixed Phase1 views.",
+      "k": null,
+      "scenario": "Phase1 clean and six simulated practical ground test views",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 1,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "prediction_smoke.json",
+        "flow/test_prediction/complete.json",
+        "flow/test_summary.json"
+      ]
+    }
+  ]
+}

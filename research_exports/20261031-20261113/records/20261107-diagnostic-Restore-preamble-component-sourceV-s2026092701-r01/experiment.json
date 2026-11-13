@@ -1,0 +1,131 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-diagnostic-Restore-preamble-component-sourceV-s2026092701-r01",
+  "group_id": "source-frozen-preamble-component-attribution",
+  "display_name": "源端重复结构、段内差异与段外波形的识别贡献",
+  "description": "固定源 V480 七景，在同条 BF 和 clean IQ 间正交拆分误差，冻结 F0 全因子归因。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-V-only",
+    "fixed-TriSIGTIME-SSL",
+    "preamble",
+    "CPU-only",
+    "no-training"
+  ],
+  "comparison_group_id": "source-V480-paired-repeat-contrast-outside",
+  "parent_run_ids": [
+    "20261102-diagnostic-Restore-CovarianceDetail-sourceV-s2026092701-r01",
+    "20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 source contract; existing R07 fixed1800 V/7 frozen validation views",
+    "representation": "Original R07 source V480 × 7, cached BF IQ and aligned original source clean IQ. Fixed window [80:160], four 20-sample blocks.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original six known sourceTX; V trueTX validation only, no train/selection",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "actual_training_labels": "No training. Two real L_s clean/received pairs for smoke. V frozen diagnosis only.",
+    "augmentation": "Reuse all seven original source V observations, no regenerated signals.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "frozen-source-V-oracle-IQ-attribution",
+    "query_use": "Source clean IQ used only to construct the counterfactual. No target, OE, novel, fit, or selection.",
+    "external_method_exception": null,
+    "claim_scope": "Conditional true TX contributions with fixed baseline, fixed basis and oracle IQ. No deployable arm or theoretical limit."
+  },
+  "checkpoint": {
+    "initialization": "Frozen original F0, cached original blind BF IQ. No G load or update.",
+    "sources": [
+      "EXACT_FROZEN_SOURCE_IQ 20261102-diagnostic-Restore-CovarianceDetail-sourceV-s2026092701-r01/f29b31417ce98a280eac25ea2fa78e0c49a5f0ff",
+      "FROZEN_F0 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d original E50/11100/default head"
+    ],
+    "contract_check_ref": "Original validated R07 source handles and exact cached reference/scene physical IDs.",
+    "provenance_verdict": "Frozen same-source BF and F0. No G training, target or OE/novel/TX access.",
+    "selection_rule": "Fixed all eight masks, all seven scenes. No selection or state fitting."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "runtime_observation.json",
+    "smoke.json",
+    "reference.npz PRIVATE",
+    "7 scene.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "terminal.json",
+    "source_truth.json aggregate only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "TX accuracy, repairs/damage and original clean-correct retention",
+      "Relative IQ correction energy for each orthogonal component"
+    ],
+    "dimensions": [
+      "V480, fixed 32 per RX/day",
+      "seven source views",
+      "all eight masks"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "preamble_repeat_contrast_outside",
+      "method": "frozen_oracle_orthogonal_IQ_ablation",
+      "purpose": "Localize missed recognition to periodically coherent, within-window contrast, or outside-window IQ.",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101902
+      },
+      "seed_notes": "Fixed original record order and original F0; no new RNG or phase selection.",
+      "k": null,
+      "scenario": "Original source V480 x7, five inference-only readouts.",
+      "optimizer": "NONE",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "runtime_observation.json",
+        "smoke.json",
+        "reference.npz PRIVATE",
+        "7 scene.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "terminal.json",
+        "source_truth.json aggregate only"
+      ]
+    }
+  ],
+  "notes": [
+    "Phase increments estimated from the same cached blind IQ only.",
+    "The masked substitution needs true source clean and can have interactions across parts.",
+    "No deployment claim, target read, or automatic follow-on training."
+  ]
+}

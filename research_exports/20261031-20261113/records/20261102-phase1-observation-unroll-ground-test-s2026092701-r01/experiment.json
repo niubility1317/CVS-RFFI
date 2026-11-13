@@ -1,0 +1,138 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-observation-unroll-ground-test-s2026092701-r01",
+  "group_id": "phase1-observation-unroll",
+  "display_name": "Phase1 observation-conditioned unrolled inverse fixed evaluation",
+  "description": "Frozen observation-conditioned three-step blind inverse; no DURA in candidate, fixed Tri-SIG-TIME SSL.",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "Phase1",
+    "Tri-SIG-TIME-SSL",
+    "frozen-model",
+    "ground-test",
+    "truth-last",
+    "nonblind-development"
+  ],
+  "comparison_group_id": "phase1-trisigtime-frozen-raw-clean",
+  "parent_run_ids": [
+    "20261102-phase1-observation-unroll-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "Blind action posterior and source-trained denoising prior with three stable observation updates; frozen input gate and F",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "No test truth, clean pair, U_s truth or V during inference; fixed ground test truth after all seven views",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "target_panel": "168000 Phase1 physical records x seven views",
+    "actual_training_labels": "Prior trained from source clean IQ and frozen F soft outputs without TX labels; independent blind source model trained without TX labels; no U_s truth, V or test.",
+    "augmentation": "Fixed pre-existing Phase1 ground test simulated seven views"
+  },
+  "permissions": {
+    "regime": "Source-trained frozen candidate, fixed Phase1 ground test inference then truth-last scoring",
+    "query_use": "Per-record received IQ and frozen F predictions only; no clean pair, labels or adaptation at inference",
+    "external_method_exception": null,
+    "claim_scope": "Previously observed Phase1 single-seed simulated development test, not independent blind or actual satellite."
+  },
+  "checkpoint": {
+    "initialization": "Frozen source-trained observation-conditioned unrolled network, source-only blind channel and Gaussian prior, gate .8; DURA comparator only.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "Observation-conditioned source training commit 7d9c8570361db942713359149c4b2e46be06281b; blind source estimator 94693a342bb2daa684c0f21415d7b949f9fb2107 and frozen source prior.",
+    "provenance_verdict": "Source only; DURA absent from candidate; fixed evaluation before source validation or target results. Prior model training running at registration.",
+    "selection_rule": "Three learned steps, fixed physical step .8 and gate .8 before source validation and target predictions; all seven views before truth."
+  },
+  "expected_artifacts": [
+    "prediction_smoke.json",
+    "flow/test_prediction/complete.json",
+    "flow/test_summary.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "per-view frozen F raw and restored accuracy",
+      "per-view clean-relative percentage point and relative percent gap",
+      "macro F1",
+      "TX/RX/day accuracy"
+    ],
+    "dimensions": [
+      "168000 Phase1 ground test physical records x seven views",
+      "TX/RX/day and six practical scenes"
+    ],
+    "targets_ref": "All six simulated satellite views at most 3 percentage points and 3% relative below F clean; clean output degradation <=1 percentage point"
+  },
+  "notes": [
+    "Fixed evaluation while unrolled model source training running, before source validation or ground results.",
+    "No DURA architecture, weights, teacher output or inference in candidate; DURA only as external comparator.",
+    "Three fixed observation-gradient and learned bounded correction steps; step .8 and ground gate .8.",
+    "Previously explored Phase1 source and ground test; simulated single-seed results not independent blind or real satellite."
+  ],
+  "rows": [
+    {
+      "row_id": "flow",
+      "method": "Observation-conditioned three-step unrolled inverse",
+      "purpose": "Fixed evaluation of end-to-end source-trained physics-conditioned restoration",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120454,
+        "split": 392005,
+        "data": 2026120355,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "Source prior seed 2026125054; F, action, source prior and test views fixed.",
+      "k": null,
+      "scenario": "Phase1 clean and six simulated practical ground test views",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 1,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "prediction_smoke.json",
+        "flow/test_prediction/complete.json",
+        "flow/test_summary.json"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-source-headAux-s2026092701-r01",
+  "group_id": "phase1-dura-source-head-aux-gradient",
+  "display_name": "原头5维与新增5维：源IQ梯度冲突及等步长诊断",
+  "description": "复用固定pureG源512×01/20 IQ，分解精确head5/aux5梯度并比较物理IQ+cap1的head/joint等IQ预算一步；0优化/新G/TX/V/target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "head5-aux5",
+    "gradient-conflict",
+    "matched-local-IQ-step",
+    "single-stage-efficiency"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-diagnostic-DURA-source-softReference10IQ-s2026092701-r01",
+    "20261031-diagnostic-DURA-source-cleanTangent-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Fixedsource512128L384U pairedclean/basis10/targetPhi10/Fcleanlogits pluspreviouspureGsource01/20restoredIQ;noGcheckpointloads",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "target_panel": "None",
+    "actual_training_labels": "No optimizer/Gtraining/directTXtruth. FrozenF sourcefeatures/inputgradients,pairedsourceclean andcachedsourceG IQ only"
+  },
+  "permissions": {
+    "regime": "Source_only_frozenF_head_aux_gradient_diagnostic",
+    "query_use": "No target/query/truth/V. PairedsourceIQ localstepsareofflineoracles,notdeployment/gradientadaptation",
+    "external_method_exception": null,
+    "claim_scope": "Local source head/aux conflict andcleanFproxy only,nottrueTX/hardware/target/Gtraining efficacy;noautomatictraining"
+  },
+  "checkpoint": {
+    "initialization": "FrozenoriginalF50/defaulthead only;noGloaded/trained/initialized;oldpureGsourceIQdataonly",
+    "sources": [
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth",
+      "runs/20261031-diagnostic-DURA-source-softReference10IQ-s2026092701-r01/feasibility.npz DATAONLYclean/basis/target/IDs/cleanlogits",
+      "runs/20261031-diagnostic-DURA-source-cleanTangent-s2026092701-r01/source-{1,20}.npz DATAONLYpureG8cfrestoredsourceIQ"
+    ],
+    "contract_check_ref": "OriginalF4df7/source50/11100/7-63-30;pureG8cf/scratchE30/7410sourceonlyfixedfinal;originalsource63000L/Uroles/512IDs/clean/RX/day/basis/headspan;metadata0TX-V-target;real2LsFcache/defaulthead/fullgradientdecomposition",
+    "provenance_verdict": "Existingmatchedoriginalsource-onlyFandpureGdatahandles;noGcheckpoint/failedJ/GN-IQread. Source512excludedfromprototypefit62488butFtrainedallsource,notunseen/blind. F50knowledgecostretained.",
+    "selection_rule": "FixedpureG8cf/caches01and20/source512. Originalbasis10/beta.25/alpha.003313 unchanged. Splithead5/aux5exactgradients. Oneheadandonejointphysical+cap1stepatmatchedmin(.01cleanL2,.1errorL2)budget;no model/step/alpha/beta/dimensionsearch."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "source-1.npz PRIVATE",
+    "source-20.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "head_aux_cosine/joint_head_cosine/aux_head_norm_ratio",
+      "baseline/head/jointcleanFchoiceagreementandpairedIQNMSE",
+      "perRX/day/L-Ugroupsandfixedhypothesisdecision",
+      "actualF-VJPcounts/newG0/optimizer0/Funchanged/seconds"
+    ],
+    "dimensions": [
+      "512uniquesourcephysicalrecords128L384U",
+      "sourcecaches01and20",
+      "head5/joint10oneequalIQbudgetstep",
+      "overall/RX/day/role"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "source-head-aux",
+      "method": "Exacthead5/aux5gradientdecomposition;equalIQbudgetphysical+boundedguidanceonfixedsourceG IQ",
+      "purpose": "diagnostic",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No newrandomdraw/modelinit. ExistingF/pureG2026092701/source8cf;fixedsourceindices128L384U;cachedAUG2026101912/RX2026101911;deterministicminnorm/offset, no support/evaluationrandomness.",
+      "k": null,
+      "scenario": "Source512128L384U×cached01/20;pairedsourcecleanIQoracle;notdeployable",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "source-1.npz PRIVATE",
+        "source-20.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Exact10E30changedbothdimensionandderivativemode. ThisdiagnosticisolatesgradientcomponentsatSAMEfixedpureGsourceIQ;itdoesnotcausallyidentifywhynewGtargetperformancechangedanddoesnotretuneusingtargetgroups.",
+    "OneFforwardpertwocomponentgradients. Head5andaux5rawgradientsbothincludealpha. Sumverifiedagainstfullexact10Fobjectiveonreal2Ls. ForheadandjointseparatelycapguideIQnormtooriginalIQgradientnorm,addphysicalIQgradient. OneIQstepinnormalizeddescentdirectionwithSAMEperpacketmin(.01cleanL2,.1restorationerrorL2)length. Zero-directionremainstationary. Normboundnotclaimloss/NMSEmonotonicity.",
+    "FixedruleBEFOREnewFaccess:eachcacheall512cosinesdefined,negativeheadauxfraction>=.25,medianjointheadcos<.9,headstepcleanFagreement>=jointstep+4of512,each5sourceRXheadagreement>=joint,headmeanIQNMSE<=1.02baseline. Bothviewsrequired. Thesearepreregisteredresearchcriteria,notuniversalphysicsconstants;failuredoesnotpermitthresholdorstepsizeadjustment.",
+    "ReferenceisoriginalcleanFchoice,nottrueTXtruthornewhead. Pairedsourcecleanisneededforphysicalgradient/stepbudget;IQstepsareofflineoracle,neverdeployment. NooptimizerorNNparameterupdate,nonewG/noGcheckpointread. PassonlysupportsseparatelyregisteredmatchedE30candidatewithmandatoryfullsevenformal,notautomatictrainingorperformanceclaim.",
+    "Firstreal2Lscheckpointsmoke:actualcleanFsource10Phi/defaultheadcacheagreementandhead+auxgradientequalsfull10gradient. F4/inputVJP6/newG0. MainF1024original+2048step=3072/inputVJP2048. AllFstateunchanged/gradNone;allsource-onlyroles/IDsmatched. All1024sourceobservationsindependentlyrecomputed.",
+    "Threefocusedtestsandactualmodule--helpPASS. OneindependentP0P1PASSincludingtargetedboolDLPackfix;onepreflight/archiveSHA/compile/postPID-CWD-argv-env-loggrowth. DefaultDURA/F/goalunchanged;noformalaccessinthisdiagnostic.",
+    "ActualN607Torch2.1boolDLPackfailed;castalloutputtensorsFP32beforeexistingownedFP32numpy_values. Syntheticbool->floatreadbackPASS;definedstored0/1,all()semanticsunchanged. OneP0P1directfixrereviewPASS."
+  ]
+}

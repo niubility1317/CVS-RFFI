@@ -1,0 +1,178 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01",
+  "group_id": "source-supervised-observation-projected-prior-detail",
+  "display_name": "后验约束的条件 IQ 先验，从零单阶段 30 轮",
+  "description": "细节网络提出条件先验均值，由物理后验投影再修正 IQ。源训练以同算子的无噪收缩误差监督。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "original-ground-TriSIGSSL-Main",
+    "posterior-projected-prior",
+    "source-noiseless-shrinkage",
+    "scratch-single30",
+    "automatic-Main7"
+  ],
+  "comparison_group_id": "same-budget-source-frozen-F0-additive-vs-projected-prior-detail",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "Original R07 L_s/U_s clean+received IQ and true physical trace. Original source prior unchanged.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "actual_training_labels": "Original L_s6300/U_s56700 source IQ and physics factors. F0 source continuous features only, zero TX or V/OE/target training.",
+    "augmentation": "R07 fixed original draws 1..20 then 1..10 and source order2026110102. C4 branches are internal signed coordinate maps of the same input."
+  },
+  "permissions": {
+    "regime": "source-only-scratch-projected-prior-F0-continuous-guidance",
+    "query_use": "Physical branch uses original source simulator factors only. Detail branch uses source clean and continuous frozen F0 on the corrected source noiseless inverse. Main uses only received IQ and a frozen original F0 head.",
+    "external_method_exception": null,
+    "claim_scope": "Same 5,481,223 parameter scratch budget as original additive CovarianceDetail, composite projected update and shrinkage loss."
+  },
+  "checkpoint": {
+    "initialization": "All 5481223 learned parameters scratch, physical seed2026092701 and detail seed2026092702. Source moment/variance data only.",
+    "sources": [
+      "FROZEN_FEATURE_ONLY originalTriSIGTIME_SSLF0/3ff8f4b7e85b5608f5b45350aa18081499a7ef1d/E50-11100/defaulthead",
+      "DATA_ONLY R07 original L_s6300/U_s56700 and fixed 20 draws plus first 10 repeated, zero TX/V/OE/target",
+      "DATA_ONLY 20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01/a3a90b55a73702954c453eec9c1ad17fec24d87f original legal IQ mean/full covariance",
+      "DATA_ONLY f57c54cad7491e3e8a36f7ea51a9caa13a3a0ab9/source63000 original F0 feature variance160",
+      "EVAL_CONTROL_ONLY 20261102-phase1-Restore-CovarianceDetail-E30-s2026092701-r01/1fcbc3eb3cc16e7577ecc3cbedda99174b4c5cc6 final30, no weights inherited",
+      "SOURCE_MECHANISM_ONLY 20261107-diagnostic-Restore-posterior-bias-noise-sourceV-s2026092701-r01/d10d70012b2a2fc8a5b7f58b46d2d5b642243717, no V weights or data inherited"
+    ],
+    "contract_check_ref": "Original source IDs and roles, original unchanged IQ moments, legal original F0 and own strict E0/final30.",
+    "provenance_verdict": "All learned G scratch. Separate approved source continuous-F0 guidance. Source V results are explanatory only.",
+    "selection_rule": "Fixed scratch final30 after 7410 steps. Full original Main seven-view matrix automatic independent of training or source metrics."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/training/config.json",
+    "rows/<arm>/training/smoke.json",
+    "rows/<arm>/training/smoke_E0.pt PRIVATE",
+    "rows/<arm>/training/data_schedule.npz PRIVATE",
+    "rows/<arm>/training/training.jsonl PRIVATE",
+    "rows/<arm>/training/final.pt PRIVATE",
+    "rows/<arm>/training/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE",
+    "rows/TF_ProjectedPriorDetail/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only",
+    "launch.json actual owner",
+    "logs/run/resource_handover_GPU5.json original queue retirement"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Full original Main combined and separate cross_rx126000/cross_both42000, six gaps <=3pp and both clean preserved.",
+      "Same-record true TX repairs/damage vs raw and DURA; paired historical BF/additive detail only after fixed outputs.",
+      "All 30 epochs/7410 steps, physical Action/noise, noiseless-shrinkage IQ and F0 feature loss, actual deployed IQ NMSE, wall time and peak memory.",
+      "5,481,223 parameters, single posterior Cholesky per record in train/deploy; 1.89M original source continuous feature forwards and 63k cached targets."
+    ],
+    "dimensions": [
+      "original Main two populations and seven views",
+      "TX/RX/day/RXday",
+      "single model seed",
+      "matched raw and DURA"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "TF_ProjectedPriorDetail",
+      "method": "conditional_prior_posterior_projected_detail",
+      "purpose": "Reduce source-measured Gaussian shrinkage using a projected conditional prior mean while preserving observation constraints.",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Physicalscratchmodel2026092701/detail2026092702;R07builder2026101901/receiver2026101911/augmentation2026101912;sourceorder2026110102/draw1..20+1..10. Mainoriginalfixedobservations/no newRNG.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": "AdamW(weight_decay1e-4,clip1)",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/training/config.json",
+        "rows/<arm>/training/smoke.json",
+        "rows/<arm>/training/smoke_E0.pt PRIVATE",
+        "rows/<arm>/training/data_schedule.npz PRIVATE",
+        "rows/<arm>/training/training.jsonl PRIVATE",
+        "rows/<arm>/training/final.pt PRIVATE",
+        "rows/<arm>/training/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE",
+        "rows/TF_ProjectedPriorDetail/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+      ]
+    }
+  ],
+  "notes": [
+    "Frozen source V480 known A/noise study: low urban raw 474, original known Gaussian 426, no noise 452, no shrinkage 458. Mechanism only.",
+    "Physical Action and noise learn from original R07 trace. Frozen prior has original mean and full covariance from original L_s/U_s.",
+    "Proposal comes from current IQ and detached original posterior only. Deployment adds (I-KA) to the proposed mean shift; source clean never enters inference.",
+    "Train prior using the counterfactual source IQ with exact predicted-operator shrinkage removed by the proposal. F0 guidance uses continuous fused160.",
+    "One single-stage optimizer, independent gradients and clipping, no old G weights, no F head replacement.",
+    "Original same F0, raw and DURA, complete Main two populations x7, independent CPU truth-last, no default change.",
+    "Resource-only schedule change; original L_s/U_s, F guidance, architecture, seed, 30 epochs, Main7 and truth-last remain fixed.",
+    "Original serial GPU4/6 queue changes to independent normal GPU5 capacity. No other candidate score or target value used for scheduling.",
+    "Eleven focused existing/new dispatcher tests pass; original model review and smoke remain in force."
+  ]
+}

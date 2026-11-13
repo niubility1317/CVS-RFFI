@@ -1,0 +1,106 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-phase-gain-oracle-s2026092701-r01",
+  "group_id": "phase1-attention-waveform",
+  "display_name": "Phase1 paired source phase-gain oracle diagnostic",
+  "description": "Post-hoc clean-paired per-record phase and gain upper probe on source IQ; not a deployable restoration model.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "attention",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-attention-domain-diagnostic-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "IQ [2,256], per-record optimal phase and complex scalar from matched clean source signal",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No source true identity labels, U_s truth, V or test; frozen F pseudo labels only",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Source received and paired clean IQ used to calculate oracle coefficients; no identity truth, U_s truth, V or test",
+    "external_method_exception": null,
+    "claim_scope": "Nondeployable clean-pair oracle for global phase/gain only, source pseudo targets previously explored."
+  },
+  "checkpoint": {
+    "initialization": "No learned restorer; clean F and DURA comparator only; paired clean IQ directly determines oracle coefficients.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "Frozen Tri-SIG-TIME SSL and fixed source IQ pairs.",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "Fixed seed 2026130155, 1024 source records per RX cohort; compare raw, ideal phase, ideal phase+gain and DURA, no target or training."
+  },
+  "expected_artifacts": [
+    "source_validation.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean-F pseudo-label agreement",
+      "direct IQ normalized MSE"
+    ],
+    "dimensions": [
+      "1024 RX4/6 source validation",
+      "1024 RX8 source holdout"
+    ],
+    "scientific_rule": "Clean-paired optimal per-record phase or complex scalar minimizes source IQ error; pseudo targets are not ground truth; output is unavailable at deployment."
+  },
+  "rows": [
+    {
+      "row_id": "free_full_hard_validation_s2026092701",
+      "method": "nondeployable clean-paired optimal phase and complex gain oracle",
+      "purpose": "test whether global phase and gain can explain raw-to-DURA source gap",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120454,
+        "split": 392005,
+        "data": 2026120355,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "Fixed source draw seed 2026130155; no model training.",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "none (fixed checkpoint)",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source_validation.json"
+      ]
+    }
+  ],
+  "notes": "Post-hoc clean-paired oracle. Per-record clean IQ is unavailable during deployment. No identity truth, U_s truth, V or test."
+}

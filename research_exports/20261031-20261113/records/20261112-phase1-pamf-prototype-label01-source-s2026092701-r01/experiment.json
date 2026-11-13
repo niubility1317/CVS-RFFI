@@ -1,0 +1,184 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261112-phase1-pamf-prototype-label01-source-s2026092701-r01",
+  "group_id": "phase1-pamf-branch-prototype-tuning",
+  "display_name": "1% 标签 PAMF 分支原型温度源域内部开发试验",
+  "description": "在 1% 标签配置从零训练三组相同划分的 Hybrid＋分支原型，仅在源 L 内部开发集选温度。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-label01-branch-prototype-source-temperature-pilot"
+  ],
+  "tags": [
+    "PAMF",
+    "source-development",
+    "prototype-temperature"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig 1%-labeled six-class, previously validated original roles",
+    "version": "existing source data",
+    "representation": "IQ [2,256]",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "context.handles.label01.classes",
+    "roles": {
+      "L_s": "630 original; deterministic per-class split 504 train / 126 dev",
+      "U_s": "62370 source U; true TX hidden",
+      "V": "27000 source V; health diagnostics only"
+    },
+    "train_ratio": "source L split 80/20 by class with seed 20261112",
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "no target access in this pilot",
+    "external_method_exception": null,
+    "claim_scope": "Source-domain pilot; previously exposed targets; no target performance claim"
+  },
+  "checkpoint": {
+    "initialization": "scratch for each candidate, own E20/E30/E50",
+    "sources": [
+      "historical same-contract E20 only for operational no-update smoke, never initialization"
+    ],
+    "contract_check_ref": "source_development.installed and verify_parent_partition",
+    "provenance_verdict": "fresh own-source trajectory; smoke checkpoint excluded from training and selection",
+    "selection_rule": "fixed final E50; source L_dev clean and physical accuracy equally weighted"
+  },
+  "expected_artifacts": [
+    "real-checkpoint no-query smoke",
+    "three scratch E50 source models",
+    "three held-out source L clean and simulated-physical results",
+    "fixed source-only selection and promotion decision"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "equal-weight mean clean/physical"
+    ],
+    "dimensions": [
+      "6 classes",
+      "1% labels",
+      "seed 2026092701",
+      "three temperatures",
+      "clean and fixed source simulated practical"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "label01-prototype-temp-010-s2026092701",
+      "method": "Hybrid plus branch prototype, prototype temperature 0.1",
+      "purpose": "source-only fixed candidate",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 20261112,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Internal L split seed in data; support/evaluation seeds not applicable; simulated channel uses fixed epoch and step.",
+      "k": null,
+      "scenario": "source clean and source simulated low suburban, mid urban, low urban",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "source_scores/label01-prototype-temp-010-s2026092701/complete.json"
+      ]
+    },
+    {
+      "row_id": "label01-prototype-temp-020-s2026092701",
+      "method": "Hybrid plus branch prototype, prototype temperature 0.2",
+      "purpose": "source-only fixed candidate",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 20261112,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Internal L split seed in data; support/evaluation seeds not applicable; simulated channel uses fixed epoch and step.",
+      "k": null,
+      "scenario": "source clean and source simulated low suburban, mid urban, low urban",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "source_scores/label01-prototype-temp-020-s2026092701/complete.json"
+      ]
+    },
+    {
+      "row_id": "label01-prototype-temp-040-s2026092701",
+      "method": "Hybrid plus branch prototype, prototype temperature 0.4",
+      "purpose": "source-only fixed candidate",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 20261112,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Internal L split seed in data; support/evaluation seeds not applicable; simulated channel uses fixed epoch and step.",
+      "k": null,
+      "scenario": "source clean and source simulated low suburban, mid urban, low urban",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "source_scores/label01-prototype-temp-040-s2026092701/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "All temperatures use the same internal L split. U truth, target and query remain inaccessible.",
+    "At least 0.25 percentage point source-development mean improvement versus temperature 0.2 is required for a separate multi-seed stage.",
+    "No target predictions in this source-only pilot. Selected candidates require full-L retraining and independent truth-last target evaluation.",
+    "Previous target scores motivated the overall research; resulting target reuse is exploratory, not an independent blind confirmation."
+  ]
+}

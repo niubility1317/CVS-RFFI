@@ -1,0 +1,12 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261111-phase1-pamf-tri-natural-warmup-m6-r01",
+  "scope": "Single source receiver m1-natural, complete three-view PAMF with reference response, seeds 2026092701/02/03. Main split excluded. Existing target data and prior results are exposed, so this is development evidence.",
+  "evaluation": "Freeze all six candidate predictions before independent truth-last scores. Each m1-natural same-packet test: clean and six practical scenes; DURA-LU primary, DURA-L/raw secondary; cross_date separately from the cross_rx/cross_both combined population. Report each seed, scene, TX/RX/day and paired corrections/regressions. No leo_weak or target-driven model selection/reruns.",
+  "success": "Aim to exceed PL by more than 2 percentage points in clean and every practical DURA-LU scene and exceed original Tri; report all seed/scenario negatives, and do not generalize from this exposed setting.",
+  "expected_artifacts": [
+    "Six true E20 parent, no-query smoke checks",
+    "Six E30/E50 fixed continuation sources and actual SSL counters",
+    "Six frozen seven-scene predictions followed by independent matched three-seed and subgroup scores"
+  ]
+}

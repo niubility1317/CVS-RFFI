@@ -1,0 +1,112 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-unroll-ls-truth-s2026092701-r02",
+  "group_id": "phase1-fixed-ls-truth",
+  "display_name": "Post-hoc fixed unroll source L_s truth audit",
+  "description": "Score fixed source predictions on authorized L_s identity labels after all predictions are fixed; no U_s, V or ground truth.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "hierarchical_prior",
+    "truth_last",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-unroll-source-replay-s2026092701-r01"
+  ],
+  "replaces_run_id": "20261102-phase1-unroll-ls-truth-s2026092701-r01",
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "IQ [2,256], source L_s roles only; source truth released after prediction artifact fixed",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Only legitimate source L_s truth after all predictions fixed; no U_s truth, V or test read",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "After verifying fixed 11761 source predictions and role split, read only legitimate L_s identity labels; U_s labels remain -1, V and ground truth not read.",
+    "external_method_exception": null,
+    "claim_scope": "Post-hoc source L_s audit, F trained on source IDs and source views previously explored; not independent test or ground accuracy."
+  },
+  "checkpoint": {
+    "initialization": "Previously fixed source predictions; no model inference or adaptation during source scoring; DURA is comparator only.",
+    "sources": [
+      "[已省略路径]",
+      "Frozen source F contract and authorized L_s metadata"
+    ],
+    "contract_check_ref": "Verify prediction SHA256, exact 11761 source IDs and roles, matching receiver and scene metadata, and disjoint restoration training IDs before reading L_s truth.",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "Fixed original full candidate, gate .8, no target-guided selection; audit registered after source pseudo results, and score fixed before reading L_s truth."
+  },
+  "expected_artifacts": [
+    "source_ls_truth_score.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source L_s labeled correct counts",
+      "paired repairs and harms versus blind parent and DURA"
+    ],
+    "dimensions": [
+      "RX4/6 combined by scenario",
+      "RX8 by scenario"
+    ],
+    "scientific_rule": "Score previously fixed source L_s subset using legal labels; per RX4/6 and RX8, 7 views and impaired aggregate, paired repairs/harm vs parent/DURA; no U_s, V or target truth."
+  },
+  "rows": [
+    {
+      "row_id": "free_mixture_labeled_source_s2026092701",
+      "method": "fixed unroll full candidate, gate .8",
+      "purpose": "audit source pseudo-label agreement against authorized L_s true identity",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120454,
+        "split": 392005,
+        "data": 2026120455,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "Controller trained on 38951 other source IDs with seed 2026122054; F previously used these audit IDs.",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 1,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source_ls_truth_score.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Post-hoc L_s scoring was declared after source pseudo-label results; not a blind selection or independent source test.",
+    "All source model outputs fixed and hashed before any L_s truth is read; only authorized L_s identity labels, U_s truth never read.",
+    "Ground tests already predeclared and running independently; no target adaptation.",
+    "r01 entry path corrected before any scoring or L_s label access; r02 is otherwise identical."
+  ]
+}

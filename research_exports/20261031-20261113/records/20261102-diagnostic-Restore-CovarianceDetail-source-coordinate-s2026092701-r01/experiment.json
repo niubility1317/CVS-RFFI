@@ -1,0 +1,150 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-diagnostic-Restore-CovarianceDetail-source-coordinate-s2026092701-r01",
+  "group_id": "frozen-restoration-source-coordinate-response",
+  "display_name": "冻结恢复器：源端I/Q坐标响应诊断",
+  "description": "固定final30/1fcb G与原3ff8 F0，源V每RX/day前32条共480，四个季度旋转输入后把输出反旋回原坐标。角度0复用f29缓存，只新增其余三个方向，不训练/融合/择角或读目标。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "frozen-final30",
+    "coordinate-counterfactual",
+    "not-phase-invariance",
+    "no-training",
+    "no-angle-selection",
+    "no-new-deployed-G"
+  ],
+  "comparison_group_id": "same-frozenG-same-sourceV-original-output-vs-coordinate-counterfactuals",
+  "parent_run_ids": [
+    "20261102-phase1-Restore-CovarianceDetail-E30-s2026092701-r01",
+    "20261102-diagnostic-Restore-CovarianceDetail-sourceV-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 source contract; existing R07 fixed1800 V/7 frozen validation views",
+    "representation": "Existingf29 sourceV received IQ andfrozenG/F0 arrays;fixedquarterrotations0/90/180/270 theninverseoutputrotation. AllF0readouts inoriginalcoordinates.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original six known sourceTX; V trueTX validation only, no train/selection",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "actual_training_labels": "No training/gradients/optimizer/stateupdates.0TX/OE/novel/target. Source Ls2 smoke first;V onlyfrozen counterfactual validation.",
+    "augmentation": "I/Qcoordinatequarterrotation ofexistingVinput,inverseoutputmap;notnewnativechannelobservations. OriginalsourceVreceiver1902 retained.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "frozen-source-V-coordinate-counterfactual-validation",
+    "query_use": "No target IQ/predictions/truth or priorMain/sourceTXscoresread. OnlyexistingV references/received/cachedG/F0;currentLs2firstNNsmoke.0TXlabelreadanywhere.",
+    "external_method_exception": null,
+    "claim_scope": "Descriptive coordinate equivariance error andsame-frame IQ/F0agreement,notTXaccuracy,unseenRXproof,informationceiling,phaseinvarianceornewdeployedGversion. Nooutputensemble/bestangle/defaultreplacement."
+  },
+  "checkpoint": {
+    "initialization": "Frozen1fcbCovarianceDetail final30/7410/5481223+original3ff8F0/defaulthead;noGtraining orancestorchange.",
+    "sources": [
+      "FROZENFINAL 20261102-phase1-Restore-CovarianceDetail-E30-s2026092701-r01/TF_CovarianceDetail/1fcbc3eb3cc16e7577ecc3cbedda99174b4c5cc6/final30-7410",
+      "Original3ff8F0/fullTriSIGTIME_SSL/E50-11100/232993/defaulthead/frozen",
+      "CACHED_VALIDATION_ONLY 20261102-diagnostic-Restore-CovarianceDetail-sourceV-s2026092701-r01/f29b31417ce98a280eac25ea2fa78e0c49a5f0ff/quarter0IQ-features-logitsandcleanreferences;0recomputeoriginalbaseline",
+      "DATA_ONLY originalR07sourceLs2 received draw1,roleLs;noTXlabels"
+    ],
+    "contract_check_ref": "Same original sourcecontract,strictGconfig/state/final30/0TX-V-OE-targettraining,same3ff8F0identitymatchingf29complete1800Vcache. Source2actualG/F0 allfouranglesfirst.",
+    "provenance_verdict": "Verifiedsameparentdata contract;source-onlycontinuousF0knowledge alreadycounted,notF-free.No newcheckpoint selection/init ortargetfeedback.",
+    "selection_rule": "Fixedparentfinal30andcanonicalC4anglesbeforeanynewtargetaccess. Balanced sourcepanel chosenonlyRX/day/order;all28cellsreported. Noqualitygateorangle/methodchoice."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted.json",
+    "smoke.json",
+    "runtime_worker_observation.json PRIVATE",
+    "references.npz PRIVATE",
+    "seven source scene.npz PRIVATE",
+    "predictions_complete.json",
+    "results.json",
+    "terminal.json",
+    "complete.json",
+    "logs/worker.log PRIVATE"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "IQNMSE tooriginalclean,normalizedequivarianceerrorvsoriginalGoutput",
+      "Same-frame F0cos/sourcevarianceMSE/Fcleanagreement andoriginalGdecisionagreement;nottrueTXaccuracy",
+      "Fcleanrepair/damage againstoriginalG;allangles/scenes/RX/day/RXday/overall",
+      "672groupstats/28cells/13440coordinateoutputrecords;independentCPU fromsavedsame-framearrays,0labels/NN",
+      "10080newG/F0+source2allangles8each;3360quarter0G/F0reused+480cleanF0refsreused,0newtraining"
+    ],
+    "dimensions": [
+      "sourceV480",
+      "scene7",
+      "quarter0/1/2/3",
+      "sourceRX5",
+      "day3",
+      "RXday15",
+      "overall"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "frozen_source_coordinate",
+      "method": "frozen_finalG_coordinate_counterfactual_validation",
+      "purpose": "Testcoordinate responseofsameG withoutmodeltraining/selectionorinvarianceassumptions",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101902
+      },
+      "seed_notes": "No newRNG. ParentG/F0seed2026092701/detailseed2702/sourcepriortraininghistoryretained. Fixedfirst32perRXday;anglescanonicalquarterrotations;sourceVreceiver2026101902 unchanged.",
+      "k": null,
+      "scenario": "OriginalsourceV480x7x4coordinatecounterfactuals;0target",
+      "optimizer": "NONE/frozeninference",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "submitted.json",
+        "smoke.json",
+        "runtime_worker_observation.json PRIVATE",
+        "references.npz PRIVATE",
+        "seven source scene.npz PRIVATE",
+        "predictions_complete.json",
+        "results.json",
+        "terminal.json",
+        "complete.json",
+        "logs/worker.log PRIVATE"
+      ]
+    }
+  ],
+  "notes": [
+    "Primaryperformancegoal remainsoriginalTriSIGSSL/Main6each3pp+bothclean;17completedcandidatecountunchanged. ThisisnotnewdeployedGorMainprediction.",
+    "CounterfactualRxtheninverseoutputmap,allF0features/headinoriginalcoordinates. DoesnotassumeF0phaseinvariance,doesnotaverageorselectangles. Noidentitylabels/prototypes/newhead.",
+    "PurefrozenVvalidation,historicallyexposedseen5RX/3days;notunseenRXevidence. SourceGmeanresidualandActiontestsprovidecounterevidenceforsimplermechanisms;coordinatebiasnowahypothesis,notconclusion.",
+    "Fixed480balanced15RXdayx32,all7views/all4angles. Quarter0cachef29exact;onlyother3new,0cleanreferenceNNrecompute.",
+    "SourceLs2all4anglesisfirstNNstep,8G/8F0;PASSimmediatelycontinues.5targetedchecksPASS/oneP0P1PASS. Onecodecommit/archiveSHA/remotecompile/livePID-CWD-CUDA-GPU-loggrowth.",
+    "0TX/OE/novel/target/training/gradient/stateupdate/earlystop/thresholdfit;F0knowledgeinparentmethodexplicitnotF-free;sourcecachedreferencesonlyvalidation.",
+    "No deployment/defaultchange/targetfit/angleselection/sourcequalityfilter. Allpositiveandnegativeorientationreadoutsreported. Failurepreserve/noautomaticretry."
+  ]
+}

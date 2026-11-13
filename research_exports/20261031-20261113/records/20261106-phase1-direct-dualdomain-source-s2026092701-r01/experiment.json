@@ -1,0 +1,103 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-direct-dualdomain-source-s2026092701-r01",
+  "group_id": "phase1-direct-dualdomain",
+  "display_name": "独立时域频域恢复网络源 IQ GPU 训练",
+  "description": "从随机初始化的直接双域 IQ 恢复网络学习时域和频域修正；训练无 DURA、无 F、无 TX 标签和目标数据。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "independent-restoration",
+    "F-free-training",
+    "dual-domain"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "paired received/clean IQ; direct recovery uses only received IQ",
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "F-free and TX-label-free paired source IQ training, source IQ diagnostics; no target score"
+  },
+  "checkpoint": {
+    "initialization": "DualDomainRecovery width 32, 42308 parameters, from scratch; zero-initialized output heads produce received IQ",
+    "sources": [],
+    "contract_check_ref": "No upstream G or F initialization or teacher; frozen DURA only after source checkpoint for diagnostics and paired test",
+    "provenance_verdict": "Random initialization; no pretrained G, F or target ancestry",
+    "selection_rule": "Fixed final epoch 20; no source or target score selection"
+  },
+  "expected_artifacts": [
+    "final.pt: fixed final epoch",
+    "source_summary.json: source IQ only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source paired IQ NMSE",
+      "training IQ loss"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "direct-dualdomain-final",
+      "method": "Direct received IQ plus learned dilated temporal and complex FFT-domain residual branches; no DURA input",
+      "purpose": "Train a distinct F-free recovery network at fixed five-epoch budget",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "New model initialization 2026110612; source fit 2026110611, fixed input caches and DURA seed 2026092701; optimizer ordering 2026110613.",
+      "k": null,
+      "scenario": "fixed source cache epochs 21, 22, 23",
+      "optimizer": "AdamW",
+      "lr": 0.0003,
+      "epochs": 20,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "final.pt: fixed final epoch",
+        "source_summary.json: source IQ only"
+      ]
+    }
+  ],
+  "notes": [
+    "Direct recovery model is trained from scratch on source paired IQ, no DURA/F weights or outputs, TX labels, V or target reads; DURA is loaded only after source freeze for diagnostic and ground paired comparison.",
+    "Initial zero heads reproduce received IQ; temporal and complex spectral branches learn residuals.",
+    "20 epochs differs from five-epoch DURA variants; compare total training cost explicitly.",
+    "All seven fixed Phase1 test views run and score truth-last regardless of source diagnostic."
+  ]
+}

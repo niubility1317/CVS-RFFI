@@ -1,0 +1,19 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261110-phase1-pamf-ptbr-route-f0-s2026092701-m1-r01",
+  "display_name": "PAMF 参考路由稳定性物理关系单种子探索",
+  "scope": "Phase1 ManySig F0; old full reference-response PAMF; 3 SIG-TIME views; natural order; seed 2026092701",
+  "initialization": "Actual same-contract F21 scratch E20 prefix checked at load; train own E10+E20 and freeze E50",
+  "controls": [
+    "matched F0 seed Tri-SIG-TIME SSL, shuffled-time full method, raw cross_rx/cross_both",
+    "matched F0 seed ordinary PL",
+    "matched F0 seed equal-direction beta=.5 PTBR"
+  ],
+  "evaluation": "Freeze model; predict clean and six practical scenes for cross_date, cross_rx and cross_both, raw and existing frozen DURA readouts; independent truth-last scoring; no leo_weak",
+  "expected_artifacts": [
+    "actual E20 source-only no-query smoke with L/U routing counts",
+    "E30 and E50 source checkpoints and complete routing/exposure logs",
+    "frozen seven-scene predictions",
+    "independent truth-last scores and matched same-row analysis"
+  ]
+}

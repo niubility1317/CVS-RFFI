@@ -1,0 +1,139 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-diagnostic-Restore-CovarianceResponse-sourceLU-s2026092701-r01",
+  "group_id": "source-LU-known-action-directional-response",
+  "display_name": "固定恢复器对微弱源IQ变化的响应：IQ与连续F0特征",
+  "description": "原L_s/U_s固定224条、四种1%源RMS合成变化、记录的真实源Action与同一次噪声；三版final30、七种源场景。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-V-only",
+    "source-LU-statistics",
+    "held-receiver",
+    "frozen-TriSIGTIME-SSL",
+    "CPU-only"
+  ],
+  "comparison_group_id": "same-source-LU-directional-response-final30-family",
+  "parent_run_ids": [
+    "20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r02",
+    "20261107-phase1-Restore-SignedCovariance-E30-s2026092701-r02",
+    "20261107-phase1-Restore-CoupledCovariance-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original R07 draw1 source training cache, fixed224 unique records:35L_s/189U_s.",
+    "representation": "Original clean/received IQ2x256 plus saved simulator FIR/main/image/noise traces. No new noise draw or RMS renormalization.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original six known sourceTX; V trueTX validation only, no train/selection",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "actual_training_labels": "No training or truth reads; label-hidden source IQ and simulator traces only.",
+    "augmentation": "Fixed1% source-RMS conjugate, amplitude cubic, phase slope and local difference. Each source observation retains the original realized noise.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "frozen-LU-response-proxy-diagnostic",
+    "query_use": "224 legal L_s/U_s, zero TX/V/OE/target/optimization or classification-head calls.",
+    "external_method_exception": null,
+    "claim_scope": "Energy-weighted finite-difference response to synthetic source proxies. Not actual TX identity, a deployment oracle, Main accuracy or a universal recovery bound."
+  },
+  "checkpoint": {
+    "initialization": "Same original three source-only final30 G and original F0, all frozen.",
+    "sources": [
+      "FROZEN_G 20261107-phase1-Restore-ConditionedCovariance-E30-s2026092701-r02/ebb279ff3ad430e6a8242686d816976339444588 E30/7410",
+      "FROZEN_G 20261107-phase1-Restore-SignedCovariance-E30-s2026092701-r02/96143e689001ad94c6885bc2d032a1c897a097a6 E30/7410",
+      "FROZEN_G 20261107-phase1-Restore-CoupledCovariance-E30-s2026092701-r01/6d3dda3c88765c38e1813ecb733948234bb63190 E30/7410",
+      "FROZEN_F0 original Tri-SIG-TIME SSL 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d E50/11100",
+      "SOURCE_INPUTS original R07 L_s/U_s draw1 and same known simulator Action/noise; no V cache opened."
+    ],
+    "contract_check_ref": "Strict three original final30 configs/commits/7410 and zero V/target training provenance. Actual3G/F0 feature smoke before full source matrix.",
+    "provenance_verdict": "Original source-only final30 family, no target-selected checkpoint. Same family as pre-Main E20 and full30 source comparison.",
+    "selection_rule": "All three fixed final30 versions, all seven source scenes and all four directions; fixed1% strength, no case/direction/model selection."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "runtime_observation.json",
+    "reference.npz PRIVATE",
+    "seven scene.npz PRIVATE",
+    "submitted-predict.json",
+    "terminal-predict.json",
+    "results.json all84 response cells",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "IQ delta projection gain, normalized squared response error and norm ratio; matching continuousF0 delta statistics.",
+      "Per-record reference/response energy, inner product and squared error; cell ratios formed from sums. Exact zero-reference rows counted, undefined ratios remain null.",
+      "All84 method/scene/direction cells plus all per-record saved vectors, independently recomputed after completion; no TX scoring."
+    ],
+    "dimensions": [
+      "three fixed source-only final30 models",
+      "seven source scenes,32 records each",
+      "four fixed1% source-RMS directions"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "source_LU_known_action_directional_response",
+      "method": "known_source_action_synthetic_response_probe",
+      "purpose": "Measure whether pointwise restoration preserves weak input changes and their continuous feature directions.",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101902
+      },
+      "seed_notes": "Fixed original record order and original F0; no new RNG or phase selection.",
+      "k": null,
+      "scenario": "Original source V480 x7, five inference-only readouts.",
+      "optimizer": "NONE",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "runtime_observation.json",
+        "reference.npz PRIVATE",
+        "seven scene.npz PRIVATE",
+        "submitted-predict.json",
+        "terminal-predict.json",
+        "results.json all84 response cells",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "The four fixed direction definitions and1% scale match the existing source perturbation convention; this probe uses recorded true simulator Action rather than a model-estimated action.",
+    "Frozen original source models re-estimate all internal quantities on perturbed received IQ. No cached context shortcut or deployment change.",
+    "Three new numerical/boundary tests and five reused parent/protocol tests PASS. One independent P0/P1 review PASS. Actual3G/originalF0 continuous-feature smoke first, then full matrix.",
+    "No source TX labels, V/OE/target samples, default-head calls, gradients, optimizer steps or model-state updates.",
+    "Small or large synthetic response is not automatically good identity recovery; response can include nuisance amplification. Undefined zero-reference feature ratios are not replaced with zero.",
+    "All other training/test budgets and versions continue unchanged."
+  ]
+}

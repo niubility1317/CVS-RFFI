@@ -1,0 +1,147 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-phase1-noise-guard-router-s2026092701-r01",
+  "group_id": "phase1-source-noise-guard-router",
+  "display_name": "Phase1 噪声门控四专家恢复网络",
+  "description": "以源域人工加噪和置信伪标签训练四专家选择器，使用源域验证确定能量门控；固定后进行 Phase1 地面开发测试。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "Phase1",
+    "Tri-SIG-TIME-SSL",
+    "source-only",
+    "noise-guard",
+    "expert-router",
+    "truth-last"
+  ],
+  "comparison_group_id": "phase1-trisigtime-frozen-raw-clean",
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261101-phase1-boundary-student-E30-s2026092701-r02",
+    "20261101-phase1-feature-conditioned-E30-s2026092701-r02"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "Phase1 source noisy received IQ, frozen expert outputs and Tri-SIG-TIME class probabilities",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Six original classes; L_s labels and high-confidence U_s clean-teacher pseudo-labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "target_panel": "168000 Phase1 physical records x seven views",
+    "actual_training_labels": "L_s true labels; U_s teacher pseudo-labels with clean confidence >=0.95; no U_s labels, V or test IQ",
+    "augmentation": "Source views 01 and 20 with seeded added 15 and 5 dB Gaussian noise, plus clean and unaugmented"
+  },
+  "permissions": {
+    "regime": "Phase1 L_s true labels, U_s clean teacher pseudo-labels and source IQ only; no V/test during source training",
+    "query_use": "Frozen per-record received IQ and frozen expert/F outputs only; no clean or label at inference",
+    "external_method_exception": null,
+    "claim_scope": "Previously observed single-seed Phase1 development test, not blind"
+  },
+  "checkpoint": {
+    "initialization": "Frozen DURA, Tri-SIG-TIME SSL, source-trained boundary/feature models and 26-64-4 source-trained router",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "experiments/pamf_phase1_flow/guarded_router_weights.json"
+    ],
+    "contract_check_ref": "Frozen F/DURA provenance and exact expert checkpoint and source router asset SHA-256",
+    "provenance_verdict": "Four frozen experts; router source-trained with L_s labels and U_s clean-teacher pseudo-labels, source-selected gate",
+    "selection_rule": "Source validation epoch 20, probability difference 0 and log-DURA-energy <= -1.0; fixed before target predictions"
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "gpu_smoke.json",
+    "submitted.json",
+    "logs/{smoke,worker,gpu_smoke,predict,score}.log",
+    "flow/{choice_counts.json,test_prediction,test_summary.json}",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Tri-SIG-TIME raw clean, per-scene raw and restored accuracy, macro F1 and clean-relative gap",
+      "per-TX, RX, day accuracy"
+    ],
+    "dimensions": [
+      "168000 Phase1 ground test physical records x seven views",
+      "TX/RX/day and six practical scenes"
+    ],
+    "targets_ref": "Each of six restored practical scenes within 3 percentage points of same reader raw clean; restored clean degradation at most 1 percentage point"
+  },
+  "notes": [
+    "四专家为原始 IQ、DURA、边界学生和特征条件恢复模型；使用冻结 Tri-SIG-TIME SSL 的四组类别概率以及原始/DURA 的对数能量预测选择。",
+    "源域训练使用 L_s 真标签和高置信 clean 教师 U_s 伪标签，源域人工加噪 15 dB 和 5 dB；源验证固定 20 轮模型、概率差 0 和 DURA 对数能量门限 −1。",
+    "源留出 799 条有效记录，两个强噪声视图分别净修复 57 和 63，两个原始源视图变化 −1 和 +1；专家本身训练见过源记录。",
+    "固定的 Phase1 测试只读取每条接收 IQ，不读取 clean 配对或标签；七视图全部预测固定后 CPU 才接入 TX 真值。",
+    "本方案受已观察的 Phase1 测试专家互补上界启发，故该测试非独立盲测；同时报告百分点和相对百分比下降。",
+    "首次发布包因 Windows Git 默认换行转换而未通过源域权重字节校验；保留原发布包，修正打包并使用独立 v2 发布路径。首次校验未读取 Phase1 测试 IQ 或真值。"
+  ],
+  "rows": [
+    {
+      "row_id": "flow",
+      "method": "Source-noise-trained four-expert router with validated DURA-energy guard",
+      "purpose": "Select received or restored IQ to exploit expert complementarity while guarding ordinary source views",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110173,
+        "split": 2026110171,
+        "data": 2026110171,
+        "augmentation": 2026110172,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source split 2026110171, additive noise seed 2026110172 plus view offsets, router initialization 2026110173, fitting order 2026110174; fixed original Phase1 test views",
+      "k": null,
+      "scenario": "Source clean, original simulated views 01/20 and 15/5 dB noise; fixed Phase1 clean and six practical received views",
+      "optimizer": "AdamW (completed source training)",
+      "lr": 0.001,
+      "epochs": 20,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "smoke.json",
+        "gpu_smoke.json",
+        "submitted.json",
+        "logs/{smoke,worker,gpu_smoke,predict,score}.log",
+        "flow/{choice_counts.json,test_prediction,test_summary.json}",
+        "complete.json"
+      ]
+    }
+  ]
+}

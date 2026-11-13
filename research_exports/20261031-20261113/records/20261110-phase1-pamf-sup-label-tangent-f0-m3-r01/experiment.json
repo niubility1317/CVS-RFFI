@@ -1,0 +1,18 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261110-phase1-pamf-sup-label-tangent-f0-m3-r01",
+  "display_name": "PAMF-Sup 五分支真标签物理方向保护三种子",
+  "scope": "Phase1 ManySig F0, seeds 2026092701/02/03, old complete PAMF, 3 SIG-TIME views, natural order, original complete PAMF-Sup L objective (not CE-only).",
+  "initialization": "Exact same-seed historical F20 scratch E20 from the matched PAMF-Sup control; check actual zero U exposure and checkpoint provenance. Own E10+E20 to fixed E50.",
+  "controls": [
+    "same-seed original PAMF-Sup with the same F20 E20 prefix and DURA",
+    "same-seed ordinary PL and complete Tri-SIG-TIME SSL as additional references"
+  ],
+  "evaluation": "Clean and six practical scenes, DURA-LU as the requested overall readout and DURA-L for a system with L-only F and G. Raw also reported. All three prediction matrices frozen before independent truth-last scoring. No leo_weak. No target feedback into checkpoints or recipe.",
+  "expected_artifacts": [
+    "same-seed no-U E20 smoke",
+    "own E30/E50, L physical update counts and zero U exposure",
+    "seven-scene frozen predictions",
+    "independent scores and same-packet three-seed comparisons"
+  ]
+}

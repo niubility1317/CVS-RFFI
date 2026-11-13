@@ -1,0 +1,136 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-diagnostic-Restore-structured-IQ-noise-sourceV-s2026092701-r01",
+  "group_id": "frozen-source-structured-IQ-noise-posterior",
+  "display_name": "源端结构化 I/Q 噪声与条件后验误差",
+  "description": "固定源 V120 七景，标量与结构化噪声分别在同一盲估和同一已知模拟 Action 上配对。全路径固定原协方差先验。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-V-only",
+    "fixed-frozen-BF",
+    "structured-IQ-noise",
+    "analytic-posterior-risk",
+    "CPU-only",
+    "no-training"
+  ],
+  "comparison_group_id": "same-action-same-mean-variance-scalar-vs-IQ-blocks",
+  "parent_run_ids": [
+    "20261102-diagnostic-Restore-CovarianceDetail-sourceV-s2026092701-r01",
+    "20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 source contract; existing R07 fixed1800 V/7 frozen validation views",
+    "representation": "Original R07 source V IQ, simulator Action and scalar variance; same clean reference and frozen F0 as f29. Estimated coefficients from frozen BF.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original six known sourceTX; V trueTX validation only, no train/selection",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "actual_training_labels": "No training or labels. Source L_s2 smoke; all V inputs are frozen diagnostic. No OE, novel, target.",
+    "augmentation": "Reuse all seven original source V observations, no regenerated signals.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "source-frozen-structured-noise-comparison",
+    "query_use": "Same source V truth-free diagnostics only; known source simulator and blind branches reported separately. No fitting or selection.",
+    "external_method_exception": null,
+    "claim_scope": "Exact conditional variance within stated Gaussian proxy given fixed A/noise, empirical source IQ and Fclean consistency. No TX or Main upper bound."
+  },
+  "checkpoint": {
+    "initialization": "Frozen original BF scratch E30 and original F0 E50; no model updates.",
+    "sources": [
+      "FROZEN_BF 20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01/bf29554a03e28a012eaaa134f5c7b3f7856f2268/source-only final30/7410",
+      "REFERENCE_ONLY 20261102-diagnostic-Restore-CovarianceDetail-sourceV-s2026092701-r01/f29 saved source V clean IQ/feature/logits and physical ID order",
+      "FROZEN_F0 original3ff8f4b7e85b5608f5b45350aa18081499a7ef1d Tri-SIG-TIME SSL/E50/defaulthead",
+      "DATA_ONLY R07 fixed source V traces 120x7 plus original L_s2 smoke"
+    ],
+    "contract_check_ref": "Same original R07 source roles/VALIDATED_ONCE handles, exact original BF final30 and original F0; unchanged prior buffers.",
+    "provenance_verdict": "Frozen same-source BF and F0. No G training, target or OE/novel/TX access.",
+    "selection_rule": "All four fixed readouts and seven scenes; no gain or threshold scanning, source selection or deployment changes."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "runtime_observation.json",
+    "reference.npz PRIVATE",
+    "7 source scene.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "logs/stdout.log PRIVATE",
+    "terminal.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Paired IQ NMSE, Fclean agreement, cosine and repairs/damage vs matched scalar",
+      "Normalized posterior trace for known A/noise; same real noise power, measured residual proxy NLL and whitened energy",
+      "28 cells, 840 estimator rows, 3360 F0 outputs, 8 smoke F0 outputs, 120 cached clean references"
+    ],
+    "dimensions": [
+      "7 source V scenes",
+      "4 fixed readouts",
+      "same 120 source V records"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "fixed_source_structured_noise",
+      "method": "fixed_scalar_vs_time_varying_IQ_noise_blocks",
+      "purpose": "Assess structured noise both with estimated coefficients and known simulator coefficients; quantify conditional IQ risk.",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101902
+      },
+      "seed_notes": "Fixed original record order and original F0; no new RNG or phase selection.",
+      "k": null,
+      "scenario": "Original source V 120 x7.",
+      "optimizer": "NONE",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "runtime_observation.json",
+        "reference.npz PRIVATE",
+        "7 source scene.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "logs/stdout.log PRIVATE",
+        "terminal.json"
+      ]
+    }
+  ],
+  "notes": [
+    "All readouts use exact same received records and frozen BF source prior buffers.",
+    "Structured covariance fixes real average variance and uses per-sample widely linear m/i for variance and cross-correlation.",
+    "Conditional covariance trace is exact for the registered Gaussian model. Source residual NLL tests the proxy on realized residuals.",
+    "No F0 gradients, source V fit, target access or change to running/queued C4 or DURA."
+  ]
+}

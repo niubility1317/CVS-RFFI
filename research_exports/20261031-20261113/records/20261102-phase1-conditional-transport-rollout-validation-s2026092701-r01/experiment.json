@@ -1,0 +1,110 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-conditional-transport-rollout-validation-s2026092701-r01",
+  "group_id": "phase1-conditional-transport",
+  "display_name": "Phase1 rollout conditional transport source validation",
+  "description": "Fixed source-only receiver/scenario validation of the four-step-trained conditional IQ transport; evaluate 1/4/8 inference steps.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "conditional_posterior",
+    "pairwise_utility",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-conditional-transport-rollout-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "IQ [2,256], six frozen class-conditional posterior waveform hypotheses; candidate F feature/probability, predicted noise and forward residual",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No true source labels used in evaluation; U_s truth, V and test not read",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Only source fit L_s truth and U_s high-confidence clean F pseudo targets; no U_s truth/V/test",
+    "external_method_exception": null,
+    "claim_scope": "Source source IDs used by F and seen in other channel views, pseudo targets not independent test; bounded correction may exploit classifier"
+  },
+  "checkpoint": {
+    "initialization": "Frozen four-step-trained conditional transport, blind parent, Tri-SIG-TIME SSL, source priors and input protection gate; DURA is source reference only.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "Transport checkpoint SHA256 c47bb4ad18cd31e3e06e7e92f1faee4262cee74e599ebdd246a061425cd243ec; blind parent and source prior exact checks in code.",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "Predeclared 1/4/8 transport steps and 0.8/0.99 input gates; RX4/6 source validation versus parent and DURA, per-cell classification and aligned IQ guards, at least 10 net source gains; RX8 source holdout; no automatic test."
+  },
+  "expected_artifacts": [
+    "source_validation.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "per receiver and scenario clean-F pseudo target agreement",
+      "aligned IQ normalized MSE",
+      "violations and fixed selection rule"
+    ],
+    "dimensions": [
+      "RX4/6 validation and RX8 source heldout across seven scenarios; fixed 1,4,8 Euler steps"
+    ],
+    "scientific_rule": "Frozen clean F high confidence pseudo targets; no physical truth labels; select against parent and DURA with fixed per-scene classification, clean IQ and impaired IQ guards and net gain >=10 on RX4/6."
+  },
+  "rows": [
+    {
+      "row_id": "transport_rollout_validation_s2026092701",
+      "method": "fixed four-step-trained conditional IQ transport versus blind parent and DURA",
+      "purpose": "larger source-only receiver/scenario validation with fixed predeclared selection",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026121354,
+        "split": 392005,
+        "data": 2026121355,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "4096 source fit IDs disjoint from 8192 prior IDs, source fit/order seed 2026121355, MLP seed 2026121356",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "none (fixed checkpoint)",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source_validation.json"
+      ]
+    }
+  ],
+  "notes": "Registered after observing RX8 source pilot; all physical IDs previously observed in other source views. No true labels or test; selection uses existing frozen source protection rules."
+}

@@ -1,0 +1,137 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-diagnostic-Restore-modulation-components-sourceV-s2026092701-r01",
+  "group_id": "receiver-modulation-source-component-attribution",
+  "display_name": "主路相位、增益及镜像的源端识别归因",
+  "description": "固定盲估 FIR、噪声和原高斯先验。主路相位、主路复增益、完整主路、完整镜像分别用源模拟真值替换。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-V-only",
+    "fixed-TriSIGTIME-SSL",
+    "phase-gain-image-attribution",
+    "CPU-only",
+    "no-training"
+  ],
+  "comparison_group_id": "same-source-V480-FIR-and-noise-modulation-components",
+  "parent_run_ids": [
+    "20261107-diagnostic-Restore-action-factor-sourceV-s2026092701-r01",
+    "20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 source contract; existing R07 fixed1800 V/7 frozen validation views",
+    "representation": "Original R07 V480×7 simulated IQ and cached h, m, i, noise. No regeneration. All branches share estimated FIR and noise.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original six known sourceTX; V trueTX validation only, no train/selection",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "actual_training_labels": "None. Original L_s2 real smoke, then frozen source V, no fit or updates.",
+    "augmentation": "Reuse all seven original source V observations, no regenerated signals.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "source-only-frozen-receiver-modulation-attribution",
+    "query_use": "Known simulator factors used in source diagnostic only. No TX in prediction, no target/OE/novel or training.",
+    "external_method_exception": null,
+    "claim_scope": "Matched source conditional true-TX and IQ attribution, not deployed IQ restoration, Main score or theoretical ceiling."
+  },
+  "checkpoint": {
+    "initialization": "Original frozen BF E30 and original F0 default head. No new checkpoint.",
+    "sources": [
+      "FROZEN_BF 20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01/bf29554a03e28a012eaaa134f5c7b3f7856f2268 original BF final30 estimator",
+      "FIXED_SOURCE_CONTROLS 20261107-diagnostic-Restore-action-factor-sourceV-s2026092701-r01/1065b7fd515402862a8b47bca8bddf597d823b54 original blind and complete modulation",
+      "FROZEN_F0 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d original E50/11100 default head",
+      "DATA_ONLY R07 original source V480 x7 and original L_s2 smoke"
+    ],
+    "contract_check_ref": "Existing original validated handles, frozen source factor references and identical physical records.",
+    "provenance_verdict": "Frozen same-source BF and F0. No G training, target or OE/novel/TX access.",
+    "selection_rule": "All six readouts and all seven views fixed. Four source conditional substitutions use the same aligned FIR gauge."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "runtime_observation.json",
+    "reference.npz PRIVATE",
+    "7 source scene.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "logs/stdout.log PRIVATE",
+    "terminal.json",
+    "independent_check.json",
+    "source_truth.json aggregate only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "True source TX, paired repairs and damage for phase, complex gain, main, image and complete modulation",
+      "IQ NMSE, Action relative MSE, F0 cosine, F(clean) agreement. Phase magnitude and residual statistics."
+    ],
+    "dimensions": [
+      "same source V480",
+      "seven fixed source views",
+      "six fixed cells per scene"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "fixed_source_modulation_components",
+      "method": "source_main_and_image_component_attribution",
+      "purpose": "Identify which simulator modulation components account for paired source TX repair.",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101902
+      },
+      "seed_notes": "Fixed original record order and original F0; no new RNG or phase selection.",
+      "k": null,
+      "scenario": "Original source V480 x7, five inference-only readouts.",
+      "optimizer": "NONE",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "runtime_observation.json",
+        "reference.npz PRIVATE",
+        "7 source scene.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "logs/stdout.log PRIVATE",
+        "terminal.json",
+        "independent_check.json",
+        "source_truth.json aggregate only"
+      ]
+    }
+  ],
+  "notes": [
+    "Main phase-only uses the angle of the optimal complex multiplier from estimated to true main. Complex gain adds magnitude; full main adds the remaining timewise profile.",
+    "Image replacement leaves estimated main untouched. The two original controls are reused exactly. Seven fixed source V scenes only.",
+    "Source truth opens only after all predicted outputs and independent comparison. Current formal Main jobs remain unchanged."
+  ]
+}

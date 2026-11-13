@@ -1,0 +1,144 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-diagnostic-Restore-CovarianceDetail-final-latency-s2026092701-r01",
+  "group_id": "restoration-final-CovarianceDetail-vs-defaultDURA-GF0-latency",
+  "display_name": "最终双分支恢复器与默认DURA：同原识别器实测延迟",
+  "description": "父实验完整Main结束后，固定最终G30与同原TriSIGSSL F0，B1/B128比较rawF、DURA G、新G、DURA G+F、新G+F的同步wall/CUDAevent和增量显存。源only、0训练、0目标访问。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary-unchanged",
+    "cost-secondary",
+    "source-only",
+    "fixed-final30",
+    "zero-update",
+    "same-original-F0",
+    "not-new-accuracy-result"
+  ],
+  "comparison_group_id": "same-original-TriSIGSSL-F0-final-G-vs-default-DURA-execution-cost",
+  "parent_run_ids": [
+    "20261102-phase1-Restore-CovarianceDetail-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300/Us56700;existingR07 source draw1 fixed512 panel",
+    "representation": "R07 received IQ2x256 only;fixed512 panel128Ls384Us. B1 deterministic25 linspace positions x4repeat, B128 four128 blocks x5repeat. No new observation.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "actual_training_labels": "No training/backward/optimizer;0TX/V/OE/novel/target. Allmodels frozen. F0defaulthead usedsource smoke/timing only.",
+    "augmentation": "Nonegenerated;existing source draw1 only;fixed input/order/method schedule.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "source-only-final-frozen-inference-cost",
+    "query_use": "Onlyparentcompletion/terminal metadata;no parentMainpredictions/scores read. SourceR07receivedIQ only afterparentfullMaincomplete;0truth/newtarget access.",
+    "external_method_exception": null,
+    "claim_scope": "Same-GPU shared-load synchronous compute-only latency/throughput andincrementalallocatedmemory. Notaccuracy/ceiling/newGmodelversion/defaultreplacement or standaloneprocessmemory;noIO/model-load/first-capturein reportedtimedregion."
+  },
+  "checkpoint": {
+    "initialization": "No new G training. Strict frozenCovarianceDetail1fcb final30/7410/5481223;original3ff8F0 E50/11100/defaulthead;fixed47c264 runtime/R69 DURA20/4940/266951.",
+    "sources": [
+      "FROZENFINAL 20261102-phase1-Restore-CovarianceDetail-E30-s2026092701-r01/TF_CovarianceDetail/1fcbc3eb3cc16e7577ecc3cbedda99174b4c5cc6/final30-7410/sourceonly",
+      "OriginalTriSIGTIME_SSLF0/3ff8f4b7e85b5608f5b45350aa18081499a7ef1d/E50-11100/232993/defaultjointhead",
+      "DefaultDURA R69/b2a2ce937a64654e17e84c2aa817b9da4257a48f/stage2E20-4940/266951/fixed47c264286ca689f060a3f36aafb763fe209a6f06/InferenceEngine(reuse=True,graph=True,native=False)",
+      "DATA_ONLY R07 originalLsUs fixed512/draw1/0TX-target;no clean reference ornewstatisticsfit"
+    ],
+    "contract_check_ref": "ParentcompleteARTIFACTS_COMPLETE andallterminalexit0;strictsourcefinal30/1fcb/config/finiteFP32state/0TX-V-OE-target andsame3ff8F0. DefaultDURAfixed47c/R69 strictloader. Existingvalidatedsourcehandlesreused.",
+    "provenance_verdict": "Inference-onlysameknownsourcecontract;no newmodel/checkpointselection/initialization ortarget feedback. SourceF0knowledge alreadyincludedparent method;notF-free.",
+    "selection_rule": "Fixedparentfinal30;startdepends onlycompleteallMainstages regardlessquality/pass. Allfive routes/alltimings retained;no model/epoch/latencybest-run selection."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted.json",
+    "smoke.json",
+    "source_records.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "terminal.json",
+    "logs/worker.log PRIVATE"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "B1:3warmup+100timedperroute;B128:3warmup+20timedperroute;5routes600timed/30warmup/5smoke routecalls",
+      "Median/p90 synchronouswallms,medianCUDAeventms,recordthroughput;balancedper-case andglobalfirst-position rotation",
+      "Peakallocatedandincrementalbytes withallG/DURA/F0+source512+allgraphsresident;notindividualprocessmemory",
+      "All3modelstatesunchanged/0optimizer-TX-V-OE-novel-target;logicaleachroute3049/newG6098/DURAlogical6098/F09147,DURA graphinternalstartupnotinstrumented",
+      "[已省略运行细节]"
+    ],
+    "dimensions": [
+      "batch1/128",
+      "raw_F0/DURA_G/new_G/DURA_G_F0/new_G_F0",
+      "warmup/timed",
+      "fixed512sourcepanel/draw1"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "final_inference_cost",
+      "method": "final_CovarianceDetail_vs_defaultDURA_sameF0_latency",
+      "purpose": "MeasureactualfrozenG andG+sameF0 cost aftercompleteMain",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101911
+      },
+      "seed_notes": "No newmodel/dataRNG. FrozenG/F0seed2026092701;originalR07builder/receiver/augseeds retainedas provenance. Deterministicpanel/positions/schedule,notquality/TXselected.",
+      "k": null,
+      "scenario": "Originalsource512/draw1;B1/B128compute-only",
+      "optimizer": "NONE/frozeninferenceonly",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "submitted.json",
+        "terminal.json",
+        "smoke.json",
+        "timings.jsonl PRIVATE",
+        "runtime_worker_observation.json PRIVATE",
+        "results.json",
+        "complete.json",
+        "logs/worker.log PRIVATE"
+      ]
+    }
+  ],
+  "notes": [
+    "Primaryperformanceparent30/fullMainunchanged. Thisdiagnosticonlyafterparentcomplete;the parentMainquality/pass doesnotselectmodel orcontrolwhetherprofile runs.",
+    "Sameoriginal3ff8F0 defaulthead forraw/DURA/newG. Default47c264/R69DURA usesreuse=True graph=True native=False/FP32TF32off;newG actualeager FP32TF/detail+FP64posterior. Actualexecutionpathscompared,notclaimedidenticaloptimization.",
+    "Fixedsource512/draw1/128Ls384Us;B1only25uniquepositions x4reps,not100independentpackets;B1284blocksx5reps. Methodsbalancedgloballyandpercase byrotatingorder;everyplannedrow retained.",
+    "3warmupsperrouteperbatch/firstgraphcaptureexcluded. BoundariesCUDA synchronize/wall perf_counter_ns+CUDAevents;inputpre-resident/selectionoutside;actualG/F0internalchecksandDURAstaticinputcopyincluded. Post-outputfinitecheckoutside timedregion.",
+    "All3models andallgraphshapes+512inputsresident;incrementalrouteallocationpeaks reported. Cannotinterpretcombinedresidentallocated asstandalone newGorDURA memory.",
+    "Eachroute3047warm/timedlogicalsourcevisits+2smoke=3049;newG6098actual/Dura6098logical/F09147actual. ExtraDura graphfirst-captureinternalpassesnotinstrumented;startupnotclaimedzero-cost.",
+    "Actualsource2G/F0/Dura smoke first,all635routecalls automatically;all3states unchanged. No newtrainedweights/accuracy/truth/target/OE/V/novel/optimization orstatisticsfit. DURAdefaultunchanged.",
+    "4targetedchecksPASS/oneP0P1PASS. OnearchiveSHA/remotecompile;CPUcontrollerobserveactualGPUworkerPID/CWD/cmd/CUDA/GPU/loggrowth aftersmoke;missingcapture reportedfalse,notinventedVERIFIED.",
+    "SharedGPUadmissionincludesexistingtasks/free12GB/max3totalprocesses. Alltimingsretained;no exclusivity/migration/reset orotherownerstop. Reportshared-loadlimit,nothardware-intrinsicms orspeedupfromstaticMAC.",
+    "OriginalDURA4.531972ms belongedoldF50 andcannotstandin forcurrentTriSIGSSL. ThissameF0runmeasuresactualG/G+F distinction,not newperformancecandidate."
+  ]
+}

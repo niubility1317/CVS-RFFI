@@ -1,0 +1,20 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261111-phase1-pamf-tri-weak-schedule-f0-m9-r01",
+  "display_name": "Tri-SIG-TIME 多分支弱信道训练时序",
+  "scope": "F0 Main split, original complete reference-response PAMF with three SIG-TIME views and fixed permutation [0,5,3,6,2,1,4,7]. Three variants and seeds 2026092701/02/03. F0 is an exposed development benchmark.",
+  "initialization": "Exact original source-only same-seed Tri-SIG-TIME E20; own E10+E20 to fixed E50 and 11100 cumulative updates. Same source roles, original labeled losses, U pseudo-label rules, random pairing, gradient guard, and inference head.",
+  "controls": [
+    "Same-seed original Tri-SIG-TIME SSL",
+    "same-seed ordinary PL",
+    "prior fixed-strength .25 branch route, reused from 20261111-phase1-pamf-tri-weak-practical-f0-m9-r01 after score freeze"
+  ],
+  "evaluation": "Fixed E50; clean and six practical scenes. DURA-LU primary, DURA-L and raw secondary; combined disjoint cross_rx+cross_both have 168000 packets per scene; cross_date diagnostic. All nine prediction matrices freeze before independent truth-last scores. Report each seed and scene, TX/RX/day, matched packet corrections and regressions. No leo_weak.",
+  "success": "Exceed Tri three-seed mean on clean and six-scene mean; exceed ordinary PL in every scene on three-seed mean. Record every seed/scenario and all subgroup losses. Stronger all-condition claim additionally requires each seed/scene vs PL positive and independent settings.",
+  "expected_artifacts": [
+    "Nine source-only real E20 finite smoke checks",
+    "Own E30/E50 and strength-weighted actual U exposure",
+    "Nine frozen seven-scene predictions",
+    "Independent paired same-packet three-seed DURA/raw analysis"
+  ]
+}

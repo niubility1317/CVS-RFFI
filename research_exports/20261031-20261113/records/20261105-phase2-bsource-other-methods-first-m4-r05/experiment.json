@@ -1,0 +1,955 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261105-phase2-bsource-other-methods-first-m4-r05",
+  "group_id": "phase2-scalr-group2-da-native-cil-cross",
+  "display_name": "Phase2 B 主干先运行其他未开始的方法",
+  "description": "沿 r02、r03、r04 复用 341 个完整任务，四处隔离共保留 129 份部分预测。13,179 个未启动任务先排 MRIOR、DADDA、Two-stage、Hu 和 POSTER，再排 ProtoNet-CDA，RadioNet 最后。记录后续注册数值异常的字段和步数，保留原训练、预测和停止规则。",
+  "kind": "comparison",
+  "stage": "Phase2-B-C",
+  "aliases": [
+    "SCALR-Group2-7x3"
+  ],
+  "tags": [
+    "SCALR",
+    "phase2",
+    "Group2",
+    "DA-CIL",
+    "truth-last"
+  ],
+  "comparison_group_id": "20261102-phase2-r42-scenes-m4-r08",
+  "parent_run_ids": [
+    "20261030-phase2-group1-concat-midPL-threepool-m4-r01",
+    "20261102-phase2-r42-scenes-m4-r08",
+    "20261102-phase2-scalr-crosscil-7x3-m4-r02",
+    "20261102-phase2-scalr-crosscil-7x3-m4-r03",
+    "20261105-phase2-bsource-unstarted-priority-m4-r04"
+  ],
+  "replaces_run_id": "20261105-phase2-bsource-unstarted-priority-m4-r04",
+  "data": {
+    "dataset": "[已省略路径]",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "483 existing Group1 capsules, p2_min_v1 VALIDATED_ONCE",
+    "split_id": "read exact existing K/N split IDs",
+    "source_target_overlap_policy": "same source physical roles;target opens only B/C current support;query never fit",
+    "matrix": {
+      "K": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "N": [
+        2,
+        5,
+        10,
+        20
+      ],
+      "physical_pools": [
+        "P01",
+        "P02",
+        "P03"
+      ],
+      "MIX_episodes": 8,
+      "diagnostic_episodes_per_scene": 5,
+      "diagnostic_workpoint": [
+        5,
+        20
+      ],
+      "receivers": [
+        "1-1",
+        "14-7",
+        "2-1",
+        "20-1",
+        "7-14",
+        "7-7",
+        "8-8"
+      ],
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "query": "all_registered_complement; independent common-K intersection score also reported"
+    }
+  },
+  "permissions": {
+    "regime": "source-only A + current labeled old-B / new-C support",
+    "query_use": "inductive per-record prediction only; truth after all fixed predictions",
+    "external_method_exception": "original DA source-only L_s replay only where native B requires it",
+    "claim_scope": "exposed development; DA-backbone CIL-core transplant, not author-native full model; Orthogonal discards B bias and normalizes weights"
+  },
+  "checkpoint": {
+    "initialization": "reuse matching seven Group1 frozen source checkpoints, four seeds",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "group1_source.load_source validates source contract and lineage",
+    "provenance_verdict": "source-only Group1 matching source contract; actual load verified by launcher smoke",
+    "selection_rule": "frozen Group1 source checkpoints; no target score selection or training of A"
+  },
+  "expected_artifacts": [
+    "resume_manifest.json",
+    "pending_predictions_complete.json",
+    "worker_state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "old_macro_accuracy",
+      "new_macro_accuracy",
+      "H_macro",
+      "macro_f1",
+      "class_floor"
+    ],
+    "dimensions": [
+      "K",
+      "N",
+      "seed",
+      "pool",
+      "receiver",
+      "episode",
+      "scene",
+      "day",
+      "TX",
+      "B_method",
+      "C_core",
+      "natural",
+      "common-K"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "protonet_cda-s2026092701",
+      "method": "protonet_cda B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "protonet_cda-s2026092702",
+      "method": "protonet_cda B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "protonet_cda-s2026092703",
+      "method": "protonet_cda B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "protonet_cda-s2026092704",
+      "method": "protonet_cda B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "mrior_sda-s2026092701",
+      "method": "mrior_sda B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "mrior_sda-s2026092702",
+      "method": "mrior_sda B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "mrior_sda-s2026092703",
+      "method": "mrior_sda B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "mrior_sda-s2026092704",
+      "method": "mrior_sda B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "dadda_sda-s2026092701",
+      "method": "dadda_sda B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "dadda_sda-s2026092702",
+      "method": "dadda_sda B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "dadda_sda-s2026092703",
+      "method": "dadda_sda B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "dadda_sda-s2026092704",
+      "method": "dadda_sda B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "twostage-s2026092701",
+      "method": "twostage B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "twostage-s2026092702",
+      "method": "twostage B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "twostage-s2026092703",
+      "method": "twostage B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "twostage-s2026092704",
+      "method": "twostage B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation_hu2024-s2026092701",
+      "method": "feature_separation_hu2024 B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation_hu2024-s2026092702",
+      "method": "feature_separation_hu2024 B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation_hu2024-s2026092703",
+      "method": "feature_separation_hu2024 B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation_hu2024-s2026092704",
+      "method": "feature_separation_hu2024 B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "poster_ft-s2026092701",
+      "method": "poster_ft B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "poster_ft-s2026092702",
+      "method": "poster_ft B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "poster_ft-s2026092703",
+      "method": "poster_ft B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "poster_ft-s2026092704",
+      "method": "poster_ft B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada_knn-s2026092701",
+      "method": "radionet_ada_knn B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada_knn-s2026092702",
+      "method": "radionet_ada_knn B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada_knn-s2026092703",
+      "method": "radionet_ada_knn B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada_knn-s2026092704",
+      "method": "radionet_ada_knn B -> MoPC, Orthogonal, LoRa C core transplants",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N plus LS/MU/LU K5N20",
+      "optimizer": "original B profile and C core; see released code",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    }
+  ],
+  "notes": [
+    "28 source checkpoint completion markers independently observed; actual checkpoint identity is checked at load.",
+    "B fit and old feature caches shared over C cores and N; no query used in fit. No new F/G/source model training.",
+    "Source MoPC/Orthogonal models are not transferred: these are B-backbone C-core transplants. Orthogonal entry discards B bias/scale.",
+    "Native CIL direct-C and SCALR baseline reuse previous scores, excluded from new prediction total.",
+    "ISSL remains stopped; CSIL author binding unavailable; their cells are N/A.",
+    "Full matrix: 7 B methods x 3 C cores x 4 seeds x 483 capsules = 13524 jobs; 252252 prediction rows.",
+    "Completion of this 7x3 run does not assert any requested SCALR or LocalRidge cross-backbone rows are complete.",
+    "r01 source smoke failed due missing frozen_sources; no target prediction, original output preserved. One specific fix and targeted review passed.",
+    "r02: 15 complete task predictions, plus 33 partial prediction files for one failed task, are preserved. This run cannot claim global scored completion while the failure remains unresolved.",
+    "Actual B r02/r03 inventory: 74 complete, 2 quarantined with 33 NPZ each, 13448 unstarted. Ancestor outputs referenced, no completed prediction recomputation.",
+    "[已省略运行细节]",
+    "B has 13524 total jobs / 252252 prediction rows. No global prediction barrier or scoring while quarantines unresolved.",
+    "Priority changes time to other-combination results; no claim of equal-work server acceleration."
+  ]
+}

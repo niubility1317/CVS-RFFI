@@ -1,0 +1,134 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-blind-gate-s2026092701-r01",
+  "group_id": "phase1-blind-input-clean-protection",
+  "display_name": "只依赖输入信号的干净保护与直接恢复",
+  "description": "训练独立盲信道受损识别网络保护干净波形，筛选固定识别指导直接 IQ 恢复候选；源域新记录选模，冻结后 Phase1 评估。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "blind_gate",
+    "clean_protection",
+    "direct_iq",
+    "source_only_selection",
+    "truth_last",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-direct-semantic-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "float32 IQ [2,256]; source L_s/U_s paired clean and simulated post_sync residual channel",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Six Phase1 TX; detector training uses corruption scene labels only, no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "No target data until all source selection fixed; then seven-view predictions before truth; no Phase3",
+    "external_method_exception": null,
+    "claim_scope": "Single seed, source heldout and Phase1 development previously observed, no independent-blind or real satellite claim"
+  },
+  "checkpoint": {
+    "initialization": "New blind IQ corruption detector; fixed direct semantic source checkpoints 1/3/5; ground SSL frozen; no DURA",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "core.data checks physical IDs against Tri-SIG-TIME roles; parent commit exact",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "Fresh RX4/6 day3 source F pseudo agreement and IQ, 3 parent checkpoints x alpha .25/.5 x gate thresholds .8/.9/.95/.99; <=0.5% cell accuracy loss, clean IQ <=.001, impaired IQ <=1.1x raw+1e-6, net gain >=10; retain raw if no candidate; RX8 heldout not used in selection"
+  },
+  "expected_artifacts": [
+    "source_smoke/result.json",
+    "source/source_selection.json",
+    "source/selected.pt if selected",
+    "source/prediction_smoke.json if selected",
+    "source/flow/test_prediction/complete.json if selected",
+    "source/flow/test_summary.json and paired_dura.json if selected",
+    "completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "repair/damage/net",
+      "raw clean gap pp",
+      "relative clean decline",
+      "aligned IQ MSE"
+    ],
+    "dimensions": [
+      "source per receiver and scene F pseudo agreement",
+      "source clean preservation and gate rate",
+      "seven Phase1 development views",
+      "TX RX day post-truth scorer"
+    ],
+    "scientific_rule": "Goal six scenario accuracies versus clean ground SSL <=3 pp and also <=3% relative, clean protection, no blind claim."
+  },
+  "rows": [
+    {
+      "row_id": "blind_gate_s2026092701",
+      "method": "blind input-only temporal-spectral corruption detector gating fixed direct IQ semantic-restorer outputs, no DURA dependency",
+      "purpose": "source-selected clean protection then Phase1 test",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026111054,
+        "split": 392005,
+        "data": 2026110551,
+        "augmentation": 2026111054,
+        "support": null,
+        "evaluation": 2026111055
+      },
+      "seed_notes": "source exact role split fixed 2026110551, gate initialization and phase augmentation 2026111054, source ordering 2026111055",
+      "k": null,
+      "scenario": "source clean + six simulated scenarios, followed by seven full Phase1 views if selected",
+      "optimizer": "AdamW weight_decay .001",
+      "lr": 0.0003,
+      "epochs": 3,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source_smoke/result.json",
+        "source/source_selection.json",
+        "source/selected.pt if selected",
+        "source/prediction_smoke.json if selected",
+        "source/flow/test_prediction/complete.json if selected",
+        "source/flow/test_summary.json and paired_dura.json if selected",
+        "completion.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source IQ and simulated clean/impaired scene labels train gate; no TX labels, V, target IQ or DURA read during training.",
+    "Frozen clean F outputs only for source selection, F parameters never trained.",
+    "Gate design responds to previously observed source clean-guard failure; new validation IDs disjoint from prior 4096 but historical F and models saw source IDs.",
+    "Fixed Phase1 development set is nonblind."
+  ]
+}

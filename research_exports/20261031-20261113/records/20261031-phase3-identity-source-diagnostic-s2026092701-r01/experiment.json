@@ -1,0 +1,144 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-identity-source-diagnostic-s2026092701-r01",
+  "group_id": "pamf-phase3-identity-source-diagnostic",
+  "display_name": "PAMF第三阶段：身份初始化与保真源端诊断",
+  "description": "Read-only F0 vs untrained source-r03/native-head composition vs SOURCE_JOINT444 on source L/OE only. No adaptation, fitted head or target data.",
+  "kind": "diagnostic",
+  "stage": "Phase3-source-training-diagnostic",
+  "aliases": [
+    "身份初始化源端诊断"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "source_only",
+    "identity_geometry",
+    "no_target",
+    "no_optimization"
+  ],
+  "comparison_group_id": "phase3-source-initialization-fidelity",
+  "parent_run_ids": [
+    "20261031-phase3-joint-identity-s2026092701-r01",
+    "20261031-phase3-class-density-s2026092701-r01",
+    "20261030-phase3-star-signal-open-s2026092701-r03"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Existing source star G10 P1 L/OE only",
+    "version": "Existing source VALIDATED_ONCE handles reused; no new received or Full data reads",
+    "representation": "Same cached full256 FP32 restored source IQ; three frozen source-only identity paths",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original six registered L labels only; OE outside-six membership without true TX",
+    "roles": {
+      "source_L_diagnostic": 6300,
+      "source_OE_diagnostic": 6134,
+      "source_V_new": 0,
+      "source_novel_new": 0,
+      "source_U_s_new": 0,
+      "target_U_new": 0,
+      "target_Q_new": 0,
+      "private_truth_reads": 0,
+      "formal_RX24_18_new": 0
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": null,
+    "split_id": "392005 original source roles; derived source L/OE handles unchanged"
+  },
+  "permissions": {
+    "regime": "Frozen F0, frozen INIT(source-r03 plus original nativeW), frozen SOURCE_JOINT(source-only/U0); labels only legal L, OE membership/public RX/day. No target-adapted model.",
+    "query_use": "No target U/Q or V/NV/private truth reads. First actual F0/r03/G synthetic smoke then source-only single forward per model/record, no optimizer or fitted head/adapter/threshold.",
+    "external_method_exception": null,
+    "claim_scope": "Source training diagnostic only, no target accuracy/unknown macro rejection or blind generalization claims. Scene missing in L metadata stays N/A."
+  },
+  "checkpoint": {
+    "initialization": "No new training: F0, source-only r03 body/projection plus original W, strict SOURCE_JOINT444; TARGET_JOINT never loaded.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "[已省略路径]",
+    "provenance_verdict": "Same original source contract392005; SOURCE_JOINT proven source-only/U0; source-only initial composition is distinct from F0.",
+    "selection_rule": "Three preregistered frozen source models; no checkpoint selection or parameter adjustment."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "configs/diagnostic.json",
+    "logs/diagnostic.log",
+    "diagnostic/{resolved_config,smoke,summary,complete}.json",
+    "diagnostic/{L_rows,OE_rows}.npz",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source L native macro accuracy and CE",
+      "per TX/RX/day source diagnostics",
+      "default-head and rawfeature cosine/norm drift",
+      "source known crossRX/day centroid geometry",
+      "OE max probability/entropy without TX labels",
+      "source correct-to-wrong and wrong-to-correct pairs"
+    ],
+    "dimensions": [
+      "F0 / INIT / SOURCE",
+      "L6300 / OE6134",
+      "source six TX / five RX / three days",
+      "scene N/A where metadata absent"
+    ],
+    "targets_ref": "No target performance evaluated or scientific promotion from this diagnostic; original Phase3 targets remain unchanged",
+    "primary": [
+      "source-only initialization and identity fidelity evidence; no fitted model or threshold"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "source-identity-diagnostic-s2026092701",
+      "method": "Frozen source identity initialization comparison",
+      "purpose": "Diagnose native-head and representation compatibility before a new candidate, no target reads",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No new stochastic learning/sampling; original fixed source observations and models reused, same deterministic all-L/OE order",
+      "k": null,
+      "scenario": "Source existing G10 P1 only; no clean or target paths",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "configs/diagnostic.json",
+        "logs/diagnostic.log",
+        "diagnostic/{resolved_config,smoke,summary,complete}.json",
+        "diagnostic/{L_rows,OE_rows}.npz",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Only source train roles L/OE, no heldout or target data.",
+    "No private truth scorer: legal training L labels are diagnostic inputs, not target truth.",
+    "No new identity head/prototype classifier/rotation/adapter fitted; source centroids are descriptive statistics.",
+    "All models frozen; no selection/promotion, full goal ACTIVE."
+  ]
+}

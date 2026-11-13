@@ -1,0 +1,177 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase1-DURA-relationSIG-E30-s2026092701-r01",
+  "group_id": "phase1-dura-cross-RX-relation-SIG-E30",
+  "display_name": "跨接收机签名关系指导：恢复器从零单阶段30轮",
+  "description": "原G266951/物理4项/E30预算不变，源F真实SIG缓存与源RX构成cross-RX余弦距离关系，单prefix/VJP及逐IQcap0.5；无新推理模块，完整七景。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "E30",
+    "single-stage",
+    "scratch",
+    "cross-RX-cosine-relation",
+    "F-guided",
+    "training-efficiency"
+  ],
+  "comparison_group_id": "DURA-cross-RX-relation-SIG-vs-instance-SIG-E30",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalR07source63000/20cachedreceived-clean-actionviews/repeat01..10;actualweightedcleanSIG160cache40.32MBreuse;originalsourceRXappendedperbatchaslosscontextonly",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "target_panel": "Eachnewversionall168000x7regardlesssourceperformance",
+    "actual_training_labels": "Pairedsourceclean/action plus frozenFactualSIG andknownsourceRXmetadataforcrossRXpairmask. NoTX/V/target/classloss/newhead. SourceRXdoesnotenterGforward",
+    "augmentation": "No new augmentation/draw/signflip;originalR07source15percentclean/85percentsixpractical;01..20then01..10"
+  },
+  "permissions": {
+    "regime": "Authorized_source_F_guided_cross_RX_signature_relation_restoration",
+    "query_use": "OnlysourcebatchrelationshipsusedforGtraining;F50/defaultheadfrozen;0TX-V-target/pseudoTX/headfit. TargetG-forwardreceivedIQonly/eachroleall7fixedbeforeindependenttruthlast",
+    "external_method_exception": null,
+    "claim_scope": "CustomrelativecosinedistanceSIGrelationlossinspiredbyrelationaldistillation/notoriginalRKDreproduction. No hardware/RX-invariance claim fromfeaturegeometry alone. F-guided/notF-free;alloldFAILs/outputs/defaultpreserved"
+  },
+  "checkpoint": {
+    "initialization": "Gscratch/noGcheckpointancestor/noIQteacher;exactoriginalSIGcontrolfactory266951/noextrainit/noinferencebranch. OriginalsourceF50frozenonly",
+    "sources": [
+      "NoGinitializationcheckpoint",
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth originalsource4df7/50/11100/Fteacherandpostfreezeassessment",
+      "runs/20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01/source_signature_cache actualF-onlypairedcleanSIG DATAONLY; producedbeforeoldGoptimizer,notoldGancestor",
+      "OriginaldefaultR69 onlypostfreezeprofile/baseline; SIG47591 andpureG8cf frozenpredictions comparisons only"
+    ],
+    "contract_check_ref": "Original7/63/30source63000L6300U56700/VALIDATED_ONCEhandles/Froles;F50/source4df7/50-11100/defaulthead;existingF-onlySIGcachemetadata-order;originalsourceRX63000int64;strictE0/final30aliases",
+    "provenance_verdict": "No G checkpoint initialization oroldGmodifiedIQ. F-onlySIGcache fromsame-source originalF50 producedbeforeoldGoptimizer reused/newFcache0/newpersistentbytes0. F50/11100/originalcache63000prefix/.847077s costsretained;sourceRXlosscontext only,0TX/V/target.",
+    "selection_rule": "Fixedfinal30/7410;onlySIGtrainingobjectivechangesfrominstancerelativeMSEtocrossRXrelativecosinedistancegeometry. d=1-normalizedSIGcos;error_i=mean_mask(d_s-d_t)^2/mean_mask(d_t²).clamp_min1e-4;allsourceRXdifferentpairs/noquerypairs. WholeSUMrelationinputVJPthenperIQdetachedcap.5;surrogatevalueisnotweightedglobalpairloss. No earlystop/targetfeedback/source-target-ranking/normalizer-grid."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "plan.json",
+    "smoke.json",
+    "submitted-scratch_joint.json",
+    "scratch_joint/launch.json",
+    "scratch_joint/resolved_config.json",
+    "scratch_joint/initialization.json",
+    "scratch_joint/training.jsonl",
+    "scratch_joint/training_complete.json",
+    "scratch_joint/final.pt",
+    "scratch_joint/matched_profile.json",
+    "scratch_joint/source_prediction/complete.json",
+    "scratch_joint/source_summary.json",
+    "scratch_joint/target_prediction/complete.json",
+    "scratch_joint/target_summary.json",
+    "scratch_joint/complete.json",
+    "complete.json",
+    "scratch_joint/teacher_load.json",
+    "scratch_joint/source_reference.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy/MacroF1/correct-repair-damage-net",
+      "overall/TX/RX/day/sixgap3pp/clean/R17each1pp/oldlowurban70",
+      "full30physical4-weightedrelationloss/diagnosticinstanceSIGerror/pressurecap/clip/L-Uexposure/sourceview",
+      "crossRXpeer-counts/activefraction/teacher-distance-denominator/RNGreplay/emptygraphvisibility",
+      "Fprefix-inputVJP1.89meach/fullF0/cache/RNG/frozenstate",
+      "completeGparams-bytes-ConvLinearMAC-FFT-CG/actualsamecardlatency-throughput-VRAM/wholecost"
+    ],
+    "dimensions": [
+      "singlemodelseed2026092701",
+      "sourceV1800x7",
+      "formal168000x7",
+      "overall/TX/RX/day",
+      "matchedSIG47591primary/pureG8cfsecondary/defaultDURA"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "scratch_joint",
+      "method": "OriginalG266951+crossRXrelativecosinedistanceSIGguide/alpha1-perIQcap.5;noextrainferencebranch",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103004,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "model/CUDAprobe2026092701;split392005/sourcepositions2026101901;originalcachedchannelaugmentation2026101912/receiver2026101911;shuffleNumPy2026103004;allcrossRXpairsdeterministic/noextramethodRNG;eval2027;supportN/A",
+      "k": null,
+      "scenario": "Originalsourcecache15percentclean/85percentpractical;01..20then01..10;no teacherIQ;formalclean+sixpractical",
+      "optimizer": "resetAdamW/W1e-4/globalclip1/warm247cos2e-5",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "plan.json",
+        "smoke.json",
+        "submitted-scratch_joint.json",
+        "scratch_joint/launch.json",
+        "scratch_joint/resolved_config.json",
+        "scratch_joint/initialization.json",
+        "scratch_joint/training.jsonl",
+        "scratch_joint/training_complete.json",
+        "scratch_joint/final.pt",
+        "scratch_joint/matched_profile.json",
+        "scratch_joint/source_prediction/complete.json",
+        "scratch_joint/source_summary.json",
+        "scratch_joint/target_prediction/complete.json",
+        "scratch_joint/target_summary.json",
+        "scratch_joint/complete.json",
+        "complete.json",
+        "scratch_joint/teacher_load.json",
+        "scratch_joint/source_reference.json"
+      ]
+    }
+  ],
+  "notes": [
+    "SourceRXandSIGparameterdiagnosticsdidnotqualifyreweightingorblindamplification. ThisindependenthypothesischangesthegeometryofsourceFguidance,notitscap/Garchitecture. ExistingsoftReference usedperinstancehead5shiftedprototypes;thisusespairwisenonlinearSIGcosinedistance,notthatoldmethod. AlloldFAILs/actualformalresultsremainunchanged.",
+    "TeacherweightedSIG160 remainsfixedoriginalF50. NormalizeeachsourceSIG eps1e-4;d=1-cos. OnlypairswithdifferentknownsourceRX;perrowrelativeMSE normalizedbymean squaredteacher crossRXdistance clamp1e-4. AllcrossRXpairsdeterministic. No hard/softTXlabel,confidencegate ornewclassifier. No crossRXpair giveserror0/activity0,loggedexplicitly.",
+    "InputVJPofSUMrelationrowerrors includesbothpairendpoints. Detachper-recordgradientandcapusing.5ofthatrecordfinalIQNMSEgradient;injectintorestoredIQ. Thisisstep-localpreconditionedderivative,notgradientofweightedglobalrelationrisk. Alpha1/noamplification/clampmaxweight1. InstanceSIGrelativeerrorstillloggedbutnotloss. SharedrotationcanpreservecosinerelationswithoutpreservingFheaddecisions;physicalIQanchorsremainandrealformalidentitytestisrequired.",
+    "SameGfactory266951/noadditionaltrainablemodule/initialstate-RNG/inference path;singleE30/7410/physical4/LR[已省略路径] unchanged. Targetcache160 reusedwithoriginalRX metadataappendedtoeachbatch161trainingcontextonly;noG RXargument/noqueryrelationstatistics/noextraFforward/VJP. Temporarybatchpackingandrelationmatrixcompute counted inactualtime,notcalledfree.",
+    "OriginalG ancestor0/F50source4df7/50-11100 knowledgeexplicit. OriginalF-onlySIG63000x160/40.32MB reusedread-only/newFcache0/newpersistentcachebytes0;producer63000prefix/.847077s retained. CachewasmadebeforeoldGoptimizer;oldGnotancestor. OnlineFprefix/VJP1.89meach/fullFtraining0;Fstate/headfrozen/G-onlyoptimizer.",
+    "3focusedtestsPASS:explicitcrossRXpairvalues/teacher-detach/bothendpoints;rotationfreedom/emptygraph/invalidRXdtype;actualcoupledIQgradientcap/zeroIQprotection. Actualfactory266951/configE30-all7routes/effectivenewobjective-hook/target-wrapper161/physical4-instance-diagnostic-only/RNG/helpPASS. OneP0P1PASS. Firstreal2noncleanLsRX1-3 actualF/cache/activepair/cap/allGgrad/strictE0/nativeoptimized/FstatePASScontinuesimmediately;G8/fullF4/prefix2/VJP2.",
+    "AdamW.001/warm247/cos2e-5/WD1e-4/globalclip1/FP32/TF32off;source01..20then01..10;model-CUDAprobe2026092701/npshuffle2026103004. Perrow all7formal168000 andsourceV1800 afterfixedfinal30;sourceworsecannotcanceltest. PrimarySIG47591/secondarypureG8cf/defaultDURA/R17;eachsix>=137216correct/81.6761904762%,clean>=142256/R17eachloss<=1680/oldlowU70separate.",
+    "Relatedworkinspiration:Parketal.RelationalKnowledgeDistillation,CVPR2019,[已省略链接] . Theirrelationsidea doesnotestablishthisIQmethodperformance;customcrossRXcosine-distance/capmethodnotoriginalRKDreproduction. Actualformalresultsrequired;nohardwareorphysicalceilingclaim.",
+    "[已省略运行细节]"
+  ]
+}

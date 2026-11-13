@@ -1,0 +1,109 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-dura-nonlinear-guard-source-s2026092701-r01",
+  "group_id": "phase1-dura-nonlinear-guard",
+  "display_name": "DURA 非线性幅度保持版源 IQ GPU 训练",
+  "description": "在冻结 DURA 的正交修正上，用源 clean IQ 的饱和非线性幅度响应辅助训练；不使用 F、TX 标签或目标。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "dura",
+    "F-free-training",
+    "orthogonal"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "paired received/clean IQ, per-packet DURA and its estimated physical action",
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "F-free and TX-label-free paired source IQ training, source IQ diagnostics; no target score"
+  },
+  "checkpoint": {
+    "initialization": "Original DURA v1.0 stage2 E20/4940; zero-initialized new source-only orthogonal correction",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "frozen_dura verifies original7/63/30, training_F_access false, TX labels 0 and target_training false",
+    "provenance_verdict": "Fixed DURA source-only original contract; no target ancestry",
+    "selection_rule": "Fixed final epoch 5; no source or target performance selection"
+  },
+  "expected_artifacts": [
+    "final.pt: fixed final epoch",
+    "source_summary.json: source IQ only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source paired IQ NMSE",
+      "training IQ loss"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "dura-orthogonal-final",
+      "method": "DURA plus signed innovation and orthogonal IQ correction, source-only DURA guard and smooth nonlinear amplitude-response loss",
+      "purpose": "Train a distinct F-free recovery network at fixed five-epoch budget",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "New model initialization 2026110612; source fit 2026110611, fixed input caches and DURA seed 2026092701; optimizer ordering 2026110613.",
+      "k": null,
+      "scenario": "fixed source cache epochs 21, 22, 23",
+      "optimizer": "AdamW",
+      "lr": 0.0003,
+      "epochs": 5,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "final.pt: fixed final epoch",
+        "source_summary.json: source IQ only"
+      ]
+    }
+  ],
+  "notes": [
+    "One controller first runs real-checkpoint source smoke then source training; all predictions and independent scoring continue automatically.",
+    "No frozen-F weights or outputs enter source training; frozen F only read after model freeze for evaluation.",
+    "Source metrics never cancel any of the seven prespecified ground views.",
+    "Original DURA and previously user-stopped experiments are not changed.",
+    "Fixed loss adds 0.1 times mean squared difference in psi(z)=z*|z|^2/(1+|z|^2), with both z normalized by per-record clean IQ RMS, to source IQ and DURA guard terms. This is a waveform hypothesis, not proof of recovered transmitter features.",
+    "Same source IDs, seed, GPU, five epochs and architecture as dura_guard. Automatic full seven-view test regardless of source metrics."
+  ]
+}

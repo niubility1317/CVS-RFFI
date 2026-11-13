@@ -1,0 +1,117 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-direct-spectral-source-validation-s2026092701-r01",
+  "group_id": "phase1-direct-spectral-source-validation",
+  "display_name": "独立频域时域恢复网络逐场景源域筛选",
+  "description": "固定完整源训练最终权重，按预声明标准以 DURA 为对照做源域逐场景筛选和 RX8 留出观察。",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "blind_channel",
+    "conditional_prior",
+    "source_selection",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-direct-spectral-full-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "IQ [2,256]; input-only complex spectral and temporal direct network with input protection gate; DURA benchmark only",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No TX labels, U_s truth, V or test read; F clean pseudo targets for source evaluation",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Source-only pilot with RX8 source holdout; no target IQ, V, or truth",
+    "external_method_exception": null,
+    "claim_scope": "Single seed source-only diagnostic; no independent blind or real satellite claim"
+  },
+  "checkpoint": {
+    "initialization": "Fixed direct spectral source epoch03 checkpoint; SHA recorded at runtime; frozen F and input gate, DURA comparator only.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "Direct source training commit 79053b41ca9d349b267c8c06b7b4655de8dc7769, fixed final checkpoint and complete result verified at runtime; source selection rules pinned 86acfb414d70c638ef086e318739cc158a9b6601.",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "RX4/6 each receiver/scene pseudo correct drop <= max(1,ceil(.5% valid)); clean IQ <=DURA+.001; impaired IQ <=1.2*DURA+1e-6; aggregate impaired gain >=10. Threshold .8/.99; separate accuracy-only audit. RX8 excluded."
+  },
+  "expected_artifacts": [
+    "source_validation.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source pseudo target agreement",
+      "normalized aligned IQ MSE",
+      "gate activation",
+      "source net gains"
+    ],
+    "dimensions": [
+      "source RX4/6 by scene",
+      "heldout RX8 by scene"
+    ],
+    "scientific_rule": "Pseudo targets not truth; source seen in other views; selected candidate requires separate fixed Phase1 predictions and truth-last scoring."
+  },
+  "rows": [
+    {
+      "row_id": "direct_spectral_source_validation_s2026092701",
+      "method": "fixed direct spectral temporal restorer plus input-only gate",
+      "purpose": "source selection against frozen DURA",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120454,
+        "split": 392005,
+        "data": 2026120455,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "prior sample same as fixed estimator; source split 2026110551; no additional model updates",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 1,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source_validation.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Rules predeclared before full direct training result is inspected.",
+    "Source IDs previously used in other simulated views; no independent blind claim.",
+    "Primary includes IQ guard; secondary accuracy-only audit reports IQ separately.",
+    "No TX labels, U_s truth, V, target IQ, or automatic Phase1 prediction."
+  ]
+}

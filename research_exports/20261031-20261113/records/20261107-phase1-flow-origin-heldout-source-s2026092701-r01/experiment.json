@@ -1,0 +1,114 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-flow-origin-heldout-source-s2026092701-r01",
+  "group_id": "phase1-flow-origin-heldout-source",
+  "display_name": "源域流起点学习与留出对照",
+  "description": "两条小规模固定预算流训练轨迹在独立源记录上比较起点与路径速度误差。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "GPU",
+    "flow",
+    "heldout",
+    "diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261107-phase1-dura-iqflow-source-s2026092701-r01",
+    "20261107-phase1-dura-iqflow-origin-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split permitted source L_s/U_s",
+    "version": "fixed deterministic source context epochs21/22/23",
+    "representation": "384 fit and 128 heldout physical source IDs, three views per record",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ only, TX hidden",
+      "U_s": "source IQ only, TX hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source waveform NMSE and path velocity error only, never identity accuracy or target model selection"
+  },
+  "checkpoint": {
+    "initialization": "New zero-head flow per arm; fixed source DURA cached outputs; real DURA checkpoint no-query source smoke",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261106-phase1-dura-wide-source-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "Fixed DURA source-only checkpoint and deterministic source context; no F/TX/V/target",
+    "provenance_verdict": "Source IQ and DURA context only, no target ancestry",
+    "selection_rule": "Both fixed five-epoch arms, no candidate weights saved, no target data"
+  },
+  "expected_artifacts": [
+    "result.json: held-out path velocity error, output and anchor source NMSE for both fixed arms"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "held-out source velocity NMSE",
+      "held-out source waveform NMSE"
+    ],
+    "dimensions": [
+      "384 fit IDs x 3 views",
+      "128 heldout IDs x 3 views",
+      "five epochs x two fixed arms"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "flow-origin-heldout",
+      "method": "Uniform versus half-origin conditional IQ flow",
+      "purpose": "Diagnose source path and deployment-origin behavior without using the target",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": 2026110711,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Model 2026110612, order 2026110613, mask 2026110711, fixed source prior 2026110707",
+      "k": null,
+      "scenario": "64 fixed source training IDs, three source simulation views",
+      "optimizer": "AdamW weight decay 0.001",
+      "lr": 0.0003,
+      "epochs": 5,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "result.json: held-out path velocity error, output and anchor source NMSE for both fixed arms"
+      ]
+    }
+  ],
+  "notes": [
+    "Arms match initialization, optimizer, source records and seed; fixed different time distributions.",
+    "No trained weights saved and no effect on already-registered formal candidates; source proxy is not identity performance.",
+    "Fixed first 512 source IDs may be nonrepresentative; disjoint holdout only applies to this small diagnostic training.",
+    "No TX/F/V/target access; real source checkpoint no-query smoke on [计算环境] CPU before local GPU launch."
+  ]
+}

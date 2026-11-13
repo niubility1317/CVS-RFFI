@@ -1,0 +1,98 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-masked-loss-latency-synthetic-s2026092701-r01",
+  "group_id": "phase1-masked-loss-latency-synthetic",
+  "display_name": "遮挡先验训练损失精简 GPU 测速",
+  "description": "固定真实源先验权重与同一合成输入，比较原损失及省略未使用插值的损失、梯度和耗时。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "F-free",
+    "gpu-latency",
+    "expert-distillation"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261107-phase1-masked-iq-prior-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "synthetic Gaussian IQ, not project data",
+    "version": "fixed seed 2026110712",
+    "representation": "one synthetic batch of 32 IQ windows and masks",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "synthetic": "generated input only; no source or target IQ"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Local paired microbenchmark of loss and output gradient, no full model performance or target identity result"
+  },
+  "checkpoint": {
+    "initialization": "Fixed final source-only masked IQ prior, commit acdfd17ae205fa5e04b32a5ecdd5eea5d7bb21d4",
+    "sources": [
+      "20261107-phase1-masked-iq-prior-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "Source-only parent training and exact checkpoint commit",
+    "provenance_verdict": "Source-only prior, synthetic input",
+    "selection_rule": "Fixed existing final source prior"
+  },
+  "expected_artifacts": [
+    "result.json: 20 paired loss/gradient timings, equality, device"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "median loss-plus-output-gradient time",
+      "loss and output gradient bitwise equality"
+    ],
+    "dimensions": [
+      "batch32 synthetic IQ",
+      "four warmups and 20 alternating paired timings"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "masked-prior-loss-pruned-interpolation",
+      "method": "Original masked prior loss vs identical operations omitting unused linear interpolation",
+      "purpose": "Measure local training component speed and exact loss/output-gradient parity",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110707,
+        "split": null,
+        "data": 2026110712,
+        "augmentation": 2026110712,
+        "support": null,
+        "evaluation": 2026110712
+      },
+      "seed_notes": "Fixed real source prior, fixed synthetic input and mask",
+      "k": null,
+      "scenario": "synthetic random inputs only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "result.json: 20 paired loss/gradient timings, equality, device"
+      ]
+    }
+  ],
+  "notes": [
+    "Actual frozen source-only masked prior checkpoint, generated synthetic input only; no F, TX, V or target.",
+    "Alternate order, synchronize GPU, exclude initialization, loading and transfers.",
+    "No model updates; microbenchmark is neither whole-training timing nor test-output equivalence.",
+    "No changes to currently running remote experiments."
+  ]
+}

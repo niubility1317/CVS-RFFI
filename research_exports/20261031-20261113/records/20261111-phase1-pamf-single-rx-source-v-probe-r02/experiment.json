@@ -1,0 +1,10 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261111-phase1-pamf-single-rx-source-v-probe-r02",
+  "scope": "Descriptive calibration only on complete m1-natural source L_s and held-out source V, one source RX, three source days and six transmitters. No U labels, U IQ, target data, training or checkpoint selection.",
+  "expected_artifacts": [
+    "12 frozen model source-only accuracy and calibration summaries by source day and transmitter",
+    "Five-branch raw and bounded-echo certificate acceptance/error counts",
+    "Explicit evidence that U and target were not read"
+  ]
+}

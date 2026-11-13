@@ -1,0 +1,135 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-diagnostic-Restore-ProjectedE11-sourceLU-s2026092701-r01",
+  "group_id": "source-projected-detail-instability-E11",
+  "display_name": "投影细节分支第11轮异常：固定检查点的源端压力测试",
+  "description": "比较原投影细节版源训练 E10/E11 技术检查点，在源 draw11 固定压力样本上的提案、投影修正与输出误差。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "no-target",
+    "frozen-technical-checkpoints",
+    "numerical-stability"
+  ],
+  "comparison_group_id": "original-E10-versus-E11-source-stress",
+  "parent_run_ids": [
+    "20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original R07 draw11 source L_s/U_s only; five fixed source-input stress strata of 32 each, at most160 unique records.",
+    "representation": "Existing source clean/received IQ and original simulated source coefficient/noise metadata for deterministic stress selection.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "actual_training_labels": "No optimization or labels. Frozen E10/E11 model forwards on original L_s/U_s clean/received source only.",
+    "augmentation": "None; original source draw11 only.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "frozen-source-technical-checkpoint-stress-diagnostic",
+    "query_use": "At most160 L_s/U_s source rows, with source clean only for error metrics; no source TX, V/OE/novel or target.",
+    "external_method_exception": null,
+    "claim_scope": "Frozen model source stress outputs and projection amplification, not final model selection or target accuracy. Intermediate checkpoints are technical diagnostics only."
+  },
+  "checkpoint": {
+    "initialization": "Original ProjectedPriorDetail E10/2470 and E11/2717 technical checkpoints, frozen eval only; original 8cf source release implementation loaded explicitly.",
+    "sources": [
+      "20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01/8cf3669c4a5d98f6c4930117952203afd56f2f6e/rows/TF_ProjectedPriorDetail/training/recovery/E10.pt and E11.pt"
+    ],
+    "contract_check_ref": "Exact original source-only smoke, original parent commit/config, epoch and updates, exact original release implementation, strict state load.",
+    "provenance_verdict": "Original G trained on source L_s/U_s and source F0 feature guidance; no TX/V/OE/target. Checkpoints are read-only for technical analysis.",
+    "selection_rule": "E10/E11 fixed by source training anomaly boundary, never for deployment or target scoring. Source sample selection uses only fixed input/noise statistics."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "results.json",
+    "complete.json",
+    "stdout.log PRIVATE"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Proposal and projected correction NMSE, norm amplification, base and deployed IQ NMSE, posterior residual; per-source stress group and each checkpoint.",
+      "Five deterministic groups:32 evenly spaced,32 largest received peaks,32 largest simulator coefficient peaks,32 smallest and32 largest scalar variances. Groups overlap.",
+      "No inference on target and no identity/accuracy or finite-sample upper-bound claim. Frozen endpoints cannot reconstruct intermediate E11 minibatch weights."
+    ],
+    "dimensions": [
+      "original E10 or E11 technical state",
+      "fixed source input/noise stress group"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "projected_E11_source_stress",
+      "method": "fixed_original_projected_checkpoint_source_stress",
+      "purpose": "Locate whether source input extremes and the projected prior correction can reproduce large finite amplification near the E11 spike.",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110707,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026110707
+      },
+      "seed_notes": "Exact parent seed2026092701; fixed deterministic source draw11 stress groups.",
+      "k": null,
+      "scenario": "Source L_s/U_s draw11 only; no V/OE/target.",
+      "optimizer": "NONE",
+      "lr": 0.001,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "results.json",
+        "complete.json",
+        "stdout.log PRIVATE"
+      ]
+    }
+  ],
+  "notes": [
+    "Parent source loss jumped at E11; diagnostic does not stop, change or restart healthy original training.",
+    "Stress selection uses only source input and simulation metadata, never TX or target; overlapping groups are not representative random strata.",
+    "Original model release is imported ahead of the diagnostic code so its posterior arithmetic and parameter layout match E10/E11 exactly.",
+    "Two focused tests and one independent P0/P1 review passed. Real E10/E11 source2 smoke precedes all stress forwards.",
+    "A nonreproduction at frozen boundaries cannot exclude a transient within-epoch optimizer state or another unselected source record."
+  ]
+}

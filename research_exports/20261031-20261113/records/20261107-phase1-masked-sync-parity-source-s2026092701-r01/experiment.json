@@ -1,0 +1,112 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-masked-sync-parity-source-s2026092701-r01",
+  "group_id": "phase1-masked-sync-parity-source",
+  "display_name": "遮挡起点去同步的源训练配对",
+  "description": "源 IQ 固定初始化、遮挡序列和数据，交替先后顺序对比受检和内部生成范围路径。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "GPU",
+    "training-efficiency",
+    "exact-parity"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261107-phase1-masked-training-full-parity-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split permitted source L_s/U_s",
+    "version": "fixed deterministic source context epochs21/22/23",
+    "representation": "32768 source fit IDs x three views, received/anchor/innovation/variance/clean IQ",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ only, TX hidden",
+      "U_s": "source IQ only, TX hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Training loss, parameter and timing parity on fixed source IQ; no target predictions"
+  },
+  "checkpoint": {
+    "initialization": "Existing legal masked source prior and DURA-derived correction initialization",
+    "sources": [
+      "20261107-phase1-masked-iq-prior-source-s2026092701-r01",
+      "20261106-phase1-dura-wide-source-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "Original DURA provenance, prior commit and exact ordered 32768 source IDs; no F/TX/V/target",
+    "provenance_verdict": "Both prior and source context are F/TX/V/target-free source only",
+    "selection_rule": "Fixed 4 paired trials, two epochs each; alternating run order, no target"
+  },
+  "expected_artifacts": [
+    "result.json: four exact trajectory comparisons and per-pair training times"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "per-step loss parity",
+      "model parameter parity",
+      "optimization elapsed seconds"
+    ],
+    "dimensions": [
+      "512 source records x 3 views",
+      "2 epochs x 4 pairs",
+      "GPU timing"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "mask-sync-parity",
+      "method": "Checked versus generated-range prior mask",
+      "purpose": "Measure whether removal of redundant GPU mask range sync accelerates source training exactly",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": 2026110711,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Model 2026110612, order 2026110613, mask 2026110711, fixed source prior 2026110707",
+      "k": null,
+      "scenario": "64 fixed source training IDs, three source simulation views",
+      "optimizer": "AdamW weight decay .001, gradient clip 1",
+      "lr": 0.0003,
+      "epochs": 5,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "result.json: four exact trajectory comparisons and per-pair training times"
+      ]
+    }
+  ],
+  "notes": [
+    "Four pairs alternate path ordering; shared local GPU and cold start limit timing.",
+    "Only training-generated integer mask starts skip the redundant GPU check; default input remains checked.",
+    "No F weights or outputs, TX labels, V, target or target predictions."
+  ]
+}

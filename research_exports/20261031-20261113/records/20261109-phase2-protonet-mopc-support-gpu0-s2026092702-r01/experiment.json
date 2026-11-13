@@ -1,0 +1,140 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261109-phase2-protonet-mopc-support-gpu0-s2026092702-r01",
+  "group_id": "phase2-group2-protonet-mopc-nonfinite",
+  "display_name": "Phase2 ProtoNet-CDA→MoPC 真实非有限支持集诊断（GPU0）",
+  "description": "单次检查 B r10 任务277 原源 checkpoint 和 K10/N10 支持集在原 GPU0 的首个非有限边界。",
+  "kind": "diagnostic",
+  "stage": "Phase2-B-C",
+  "aliases": [],
+  "tags": [
+    "phase2",
+    "Group2",
+    "ProtoNet-CDA",
+    "MoPC",
+    "diagnostic",
+    "support_only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261108-phase2-bsource-normtrace-m4-r10",
+    "20261030-phase2-group1-concat-midPL-threepool-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "[已省略路径]",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "2-1"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "20261029-phase2-threepool-episodes-s2026102901-r01:P02:MIX02:2-1",
+    "split_id": {
+      "old": "771fc49eb0fcbf3d7b1637f5",
+      "current": "bb6b7389e6bfc6ed1678b5a0"
+    },
+    "matrix": {
+      "pool": "P02",
+      "episode": "MIX02",
+      "receiver": "2-1",
+      "K": 10,
+      "N": 10,
+      "old_support_rows": 60,
+      "new_support_rows": 100,
+      "query_rows": 0
+    }
+  },
+  "permissions": {
+    "regime": "source-only checkpoint and labeled L_s plus exactly the current B/C supports",
+    "query_use": "none",
+    "external_method_exception": "ProtoNet B uses current labeled old-class support only.",
+    "claim_scope": "Original GPU0 source/support diagnostic only; no query, truth, prediction, score or production retry."
+  },
+  "checkpoint": {
+    "initialization": "immutable exact ProtoNet-CDA source seed 2026092702",
+    "sources": [
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "group1_source.load_source",
+    "provenance_verdict": "Original r10 matching source contract; source-only smoke checks bridge at diagnostic start.",
+    "selection_rule": "Original fixed A checkpoint, no target-based selection."
+  },
+  "expected_artifacts": [
+    "owner.json",
+    "diagnostic.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "first_nonfinite_boundary",
+      "completed_updates",
+      "affected_tensors"
+    ],
+    "dimensions": [
+      "B/C stage",
+      "epoch",
+      "iteration"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "protonet-mopc-s2026092702-k10-n10",
+      "method": "ProtoNet-CDA B → MoPC-HR project transplant",
+      "purpose": "source/support diagnostic",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed existing capsule. B/C seeds derive from original model seed and job key. No new data, augmentation or evaluation draws.",
+      "k": 10,
+      "scenario": "P02/MIX02/2-1",
+      "optimizer": "Original ProtoNet B support prototypes then MoPC SGD momentum .9, weight decay .0002",
+      "lr": {
+        "B": null,
+        "C": 0.01
+      },
+      "epochs": {
+        "B": 0,
+        "C_per_session": 20
+      },
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "owner.json",
+        "diagnostic.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Original r10 task277 GPU0 source/support diagnosis; locate first nonfinite boundary without changing training or guard.",
+    "Preserve 30 existing partial predictions; absence of reproduction does not establish a fix."
+  ]
+}

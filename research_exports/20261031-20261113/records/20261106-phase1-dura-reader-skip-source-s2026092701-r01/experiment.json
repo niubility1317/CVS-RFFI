@@ -1,0 +1,112 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-dura-reader-skip-source-s2026092701-r01",
+  "group_id": "phase1-dura-reader-skip-source",
+  "display_name": "省略未使用 DURA 分类的源域一致性与测速",
+  "description": "固定恢复器及 Tri-SIG-TIME SSL，比较原始三次分类与跳过 DURA 中间分类对源样本完整 logits、决策和端到端单批耗时的影响。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "no-query",
+    "inference-timing",
+    "cpu"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261106-phase1-dura-tail-excess-source-s2026092701-r01",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "fixed Phase1 source pilot R07 epoch19",
+    "representation": "received source IQ and fixed source reference predictions",
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only parity and timing with frozen F; no target inference or identity accuracy claim"
+  },
+  "checkpoint": {
+    "initialization": "Frozen source-only tail-excess correction, DURA v1.0, and Tri-SIG-TIME SSL default classifier",
+    "sources": [
+      "20261106-phase1-dura-tail-excess-source-s2026092701-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+    ],
+    "contract_check_ref": "ground.load_fixed verifies matching source-only G checkpoint and frozen Tri-SIG-TIME SSL",
+    "provenance_verdict": "Fixed source-only checkpoints, no target ancestry; F read only for frozen prediction diagnostic",
+    "selection_rule": "Fixed existing final epoch 5 G and original Tri-SIG-TIME SSL, no target-based selection"
+  },
+  "expected_artifacts": [
+    "result.json: source logits and decision parity and per-path timing"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "maximum absolute source logit difference",
+      "source decision mismatch count",
+      "paired single-run timing"
+    ],
+    "dimensions": [
+      "112 source samples",
+      "seven views",
+      "two receiver groups"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "source-reader-skip",
+      "method": "Compare standard three-reader and skip-middle-reader execution on identical IQ",
+      "purpose": "Measure source output parity and prospective CPU inference acceleration",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Existing fixed tail-excess source G and Tri-SIG-TIME SSL seed 2026092701; no training or selection.",
+      "k": null,
+      "scenario": "source pilot RX4/6 and RX8 x seven views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "result.json: source logits and decision parity and per-path timing"
+      ]
+    }
+  ],
+  "notes": [
+    "F and DURA are used only as frozen source inference in this diagnostic; no TX labels, target IQ or target truth are read.",
+    "Standard and skip paths alternate order per batch; both recompute DURA and candidate; skip only removes the unused anchor reader forward.",
+    "Source equality does not prove complete ground output equality; no running predictor will be changed or switched by this probe.",
+    "Single timing on shared CPU and 112 records is not a full-test speed guarantee."
+  ]
+}

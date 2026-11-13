@@ -1,0 +1,141 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-source-spectral-calibration-s2026092701-r01",
+  "group_id": "pamf-phase3-source-spectral-calibration",
+  "display_name": "PAMF第三阶段：源接收机无标签幅频补偿的时序证伪",
+  "description": "Label-free early source RX periodograms, other-four-RX references and frozen bounded spectral gains; paired later-day source identity/geometry diagnostics, no target access.",
+  "kind": "diagnostic",
+  "stage": "Phase3-source-input-diagnostic",
+  "aliases": [
+    "源接收机幅频补偿证伪"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "source_diagnostic",
+    "spectral_calibration",
+    "no_target",
+    "DURA"
+  ],
+  "comparison_group_id": "phase3-source-spectral-calibration",
+  "parent_run_ids": [
+    "20261030-phase3-star-signal-open-s2026092701-r03",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Original source G10 DURA P1 L6300 only",
+    "version": "Unchanged source contract392005 VALIDATED_ONCE physical roles",
+    "representation": "Frozen source P1 IQ -> unchanged or receiver-specific bounded real spectral gains -> original F0 default logits and pure-source r03 units",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original six TX, five source RX, no actual unknown or unseen RX claim",
+    "roles": {
+      "source_L": 6300,
+      "early_calibration": 2100,
+      "later_diagnostic": 4200,
+      "source_V_new": 0,
+      "source_NV_new": 0,
+      "source_OE_new": 0,
+      "original_U_s_new": 0,
+      "target_U_new": 0,
+      "target_Q_new": 0,
+      "private_truth_new": 0
+    },
+    "train_ratio": "No new neural training; original F0 labeled6300/total63000=10%, source r03 L/OE ancestors retained",
+    "capsule_id": null,
+    "split_id": "392005 unchanged source L; day1 fit vs days2/3 diagnostic"
+  },
+  "permissions": {
+    "regime": "Original source L only; spectrum fit receives IQ/RX/day but not y. Source labels score only after both full prediction paths freeze. No target-adapted ancestor or checkpoint loaded.",
+    "query_use": "TargetU/Q/V/NV/OE/Us/private truth zero. No parameter/threshold fit on later source days. No actual open-world performance claim.",
+    "external_method_exception": null,
+    "claim_scope": "Previously trained source L temporal diagnostic, not unseen receiver/unknown validation. All open/registration metrics NA; PCD research baseline and absolute targets unchanged."
+  },
+  "checkpoint": {
+    "initialization": "Frozen original F0/default6, original source-only r03 E_SIGNAL2220, DURA v1R69; no new neural initialization, training or selection",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "[已省略路径]",
+    "provenance_verdict": "Same source392005 physical roles and F0/r03/G ancestors already verified; no target-adapted PCD loaded",
+    "selection_rule": "One fixed PSD method vs identity; width17/floor1e-8/gain[.5,2] set before source data access, no scan or target-based choice"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "configs/diagnostic.json",
+    "logs/diagnostic.log",
+    "diagnostic/{resolved_config,smoke,state,predictions,predictions_complete,summary,complete}.{json,npz}",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "early/later source macro closed accuracy",
+      "paired later gained/lost correct identities",
+      "perRX/day/TX complete source accuracy",
+      "sameTX crossRX centroid cosine distance",
+      "betweenTX centroid cosine distance",
+      "AK/CK/RU/H/AN/HOW NA"
+    ],
+    "dimensions": [
+      "identity vs receiver_PSD",
+      "sourceRX1/3/4/6/8",
+      "early day1 vs later days2/3",
+      "six source TX"
+    ],
+    "targets_ref": "Fixed source screen: perRX later F0 drop<=2pp; r03 sameTX crossRX distance reduced>=10%; betweenTX distance retained>=95%; all three required. No automatic target access.",
+    "primary": [
+      "RECEIVER_PSD relative to IDENTITY; source hypothesis falsification only"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "source-spectral-s2026092701",
+      "method": "Frozen receiver PSD amplitude compensation",
+      "purpose": "Test label-free input-level receiver common-response correction before target research",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No new random sample/channel/optimizer; deterministic full source L and FFT",
+      "k": null,
+      "scenario": "Original source G10 DURA P1 only; model has seen RX/TX/records",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "configs/diagnostic.json",
+        "logs/diagnostic.log",
+        "diagnostic/{resolved_config,smoke,state,predictions,predictions_complete,summary,complete}.{json,npz}",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "No actual targetU/Q or private truths; no target-adapted checkpoint.",
+    "All source predictions freeze before label evaluation; earlier spectrum fit has no TX label input.",
+    "Temporal source diagnostic with model-seen records, not independent unseenRX evidence.",
+    "Current PCD research baseline remains; full Phase3 goal ACTIVE, no open or registration achievement."
+  ]
+}

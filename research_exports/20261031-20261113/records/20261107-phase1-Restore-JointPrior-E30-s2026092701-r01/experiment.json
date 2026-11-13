@@ -1,0 +1,179 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-Restore-JointPrior-E30-s2026092701-r01",
+  "group_id": "joint-source-mean-coupled-covariance-single30",
+  "display_name": "条件均值与耦合协方差联合恢复器，从零单阶段 30 轮",
+  "description": "在固定耦合协方差结构上增加共享上下文的130参数均值输出头，按原先验逐坐标标准差限幅，仍经同一物理后验恢复IQ。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "original-ground-TriSIGTIME-SSL-Main",
+    "conditional-mean-and-covariance",
+    "source-F-guided",
+    "scratch-single30",
+    "automatic-Main7"
+  ],
+  "comparison_group_id": "same-coupled-covariance-with-or-without-conditional-mean",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "Original R07 L_s6300/U_s56700 IQ and simulated Action/noise. Existing source global/other-RX moments and original top64 normalized factors. No new IQ statistics fit.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "actual_training_labels": "No TX labels. Physical Action/noise source supervision; shared mean/covariance prior network learns actual noisy IQ/STFT/original frozen F0 continuous features.",
+    "augmentation": "Original R07 draws/order. Fifteen odd epochs full prior and fifteen even epochs excluded-RX prior, with unchanged source exposure."
+  },
+  "permissions": {
+    "regime": "source-only-scratch-joint-mean-covariance-F0-guidance",
+    "query_use": "Source RX selects training prior/mode factor only. Deployed G consumes current IQ and its fixed source buffers. No V/OE/target fit or TX truth.",
+    "external_method_exception": null,
+    "claim_scope": "Adds a bounded conditional prior mean to the fixed coupled model. Prior-factor source diagnosis and source training evidence motivate the addition; no target score selection, target training, new identity head, V/OE fitting or old G initialization."
+  },
+  "checkpoint": {
+    "initialization": "All1471463 G parameters scratch: physical1230341 seed2026092701, prior network241122 seed2026092702. Existing coupled-control parameters match at E0; new mean head130 parameters is zero. No ancestor G weights.",
+    "sources": [
+      "FROZEN_FEATURE_ONLY original Tri-SIG-TIME SSL 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d E50/11100 default head",
+      "DATA_ONLY R07 original L_s6300/U_s56700 IQ and simulator Action/noise",
+      "DATA_ONLY original source63000 mean/full C a3a90b55a73702954c453eec9c1ad17fec24d87f",
+      "DATA_ONLY source fused160 variance f57c54cad7491e3e8a36f7ea51a9caa13a3a0ab9",
+      "DERIVED_SOURCE_STATS_ONLY 20261107-diagnostic-Restore-receiver-prior-sourceV-s2026092701-r02/1a9aafda7cf9cf5ee1d293a5e782ef57e27eb5ad existing five other-RX L_s/U_s moments.",
+      "SOURCE_MECHANISM_ONLY 20261107-diagnostic-Restore-conditional-variance-E02-sourceLU-s2026092701-r01/055f41652902c577bc848a4a8364f4aa7a487b6c; no E02 weights inherited.",
+      "SOURCE_GEOMETRY_ONLY 20261107-analysis-Restore-source-covariance-capacity-s2026110707-r01/63afe5cb59da641d5bee751a182facaa9aad498d; existing L_s/U_s statistics only, no new source or target model fit.",
+      "IMPLEMENTATION_CONTROL_ONLY 20261107-phase1-Restore-CoupledCovariance-E30-s2026092701-r01/6d3dda3c88765c38e1813ecb733948234bb63190; no learned weights loaded.",
+      "SOURCE_DIAGNOSIS_ONLY 20261107-diagnostic-Restore-prior-factor-sourceV-s2026092701-r01; no V fitting or checkpoint selection.",
+      "SOURCE_TRAINING_ANALYSIS_ONLY 20261107-phase1-Restore-CoupledCovariance-E30-s2026092701-r01/source_family_progress_E20.md/3e33528b8e9f2a0620320a5df5df0e3703dad75d; no target results used."
+    ],
+    "contract_check_ref": "Original R07 source L_s/U_s contract, frozen original F0 and source-only moments unchanged. Exact own E0/final30 configuration loads; no prior G checkpoint ancestry.",
+    "provenance_verdict": "No ancestor G checkpoint. Only source statistics and approved original F0 feature loss. Source diagnostic motivates architecture without target results.",
+    "selection_rule": "Fixed final30/7410, full Main two populations/all7 regardless of source score. Independent truth after all candidate predictions fixed."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/training/config.json",
+    "rows/<arm>/training/smoke.json",
+    "rows/<arm>/training/smoke_E0.pt PRIVATE",
+    "rows/<arm>/training/data_schedule.npz PRIVATE",
+    "rows/<arm>/training/training.jsonl PRIVATE",
+    "rows/<arm>/training/final.pt PRIVATE",
+    "rows/<arm>/training/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE",
+    "rows/TF_JointPrior/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Original ground Tri-SIG-TIME SSL default head Main: raw clean145385/168000; each practical>=140345/168000 and both clean populations preserved.",
+      "All same-record TX/RX/day/RXday groups and paired raw/DURA repairs/damage. Compare the preregistered Coupled control after both complete matrices freeze; pending control explicitly reported.",
+      "All30 logs/source permutations/final30 state: IQ/STFT/F0/Action/noise, coupled factor metrics and prior-mean raw/standardized RMS.",
+      "1471463 parameters, +130 versus Coupled. Actual shared wall times/memory; one FP64 posterior and one F0 feature forward per source microbatch, no presumed speedup."
+    ],
+    "dimensions": [
+      "original Main two populations and seven views",
+      "TX/RX/day/RXday",
+      "single model seed",
+      "matched raw and DURA"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "TF_JointPrior",
+      "method": "joint_conditional_mean_and_coupled_covariance",
+      "purpose": "Test bounded observation-dependent prior mean as an addition to the fixed coupled covariance and physical posterior.",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Physical2026092701/confidence2026092702, original source order2026110102 and R07 draws. Existing source subset2026110707. No new stochastic prior fit.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": "AdamW(weight_decay1e-4,clip1)",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/training/config.json",
+        "rows/<arm>/training/smoke.json",
+        "rows/<arm>/training/smoke_E0.pt PRIVATE",
+        "rows/<arm>/training/data_schedule.npz PRIVATE",
+        "rows/<arm>/training/training.jsonl PRIVATE",
+        "rows/<arm>/training/final.pt PRIVATE",
+        "rows/<arm>/training/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE",
+        "rows/TF_JointPrior/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+      ]
+    }
+  ],
+  "notes": [
+    "mu_y=mu_source+sqrt(diag(C_source))*softsign(raw_mean), with a shared-context Conv1d64->2 head. Bound is one prior std per real coordinate, fixed without V/target calibration; zero start exactly preserves the coupled control.",
+    "C_y retains original C+B(KK^T-I)B^T, strict source-whitened margin and stable positive-diagonal mapping. One FP64 Gaussian posterior uses both learned mean and covariance.",
+    "This is a conditional IQ mean decoder before the physical posterior, not a post-posterior free IQ residual. Its effect is weighted by the measurement posterior; no guarantee of clean preservation is assumed.",
+    "Matched control 20261107-phase1-Restore-CoupledCovariance-E30-s2026092701-r01; all pre-existing physical/prior parameters initialize identically, original source draws/order/loss/F0/30 budget unchanged. Shared context gradients change with the added head.",
+    "Source mean/covariance factor diagnosis showed contributions from both components; common20 source training showed nonzero coupled updates and lower source IQ/feature errors. Neither is evidence of Main acceptance.",
+    "No source TX truth, V/OE/novel fit, target U/Q, oracle prior receiver, F0 logits/CE or new identity head in G updates. F0 is frozen and only continuous source features guide the prior network.",
+    "Eleven focused tests PASS, including five joint-prior and six coupled-regression tests; one independent P0/P1 review PASS. Actual original source2/F0/mean and covariance gradients/E0 test remains first training step.",
+    "GPU1 normal total cap3, no GPU6 extra-cap authorization transfer. Wait on Coupled GPU termination only, not its scores. Healthy jobs and immutable output roots preserved."
+  ]
+}

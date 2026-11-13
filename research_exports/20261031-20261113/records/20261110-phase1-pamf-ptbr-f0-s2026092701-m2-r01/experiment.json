@@ -1,0 +1,286 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261110-phase1-pamf-ptbr-f0-s2026092701-m2-r01",
+  "group_id": "phase1-pamf-physics-branch-relations",
+  "display_name": "PAMF 物理干预方向校正半监督单种子对照",
+  "description": "同包有界两径扰动测量实际多分支有限差分；匹配比较 beta=0 与 beta=0.5。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-PTBR-pilot"
+  ],
+  "tags": [
+    "PAMF",
+    "SSL",
+    "physics-aware",
+    "matched-control",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01",
+    "20261024-phase1-PAMF-REPL-completion-m201-r01",
+    "20261110-phase1-pamf-branch-relations-f0-s2026092701-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig F0, six classes",
+    "version": "existing VALIDATED_ONCE",
+    "representation": "received IQ float32 [2,256]",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "F0 source contract classes",
+    "roles": {
+      "L_s": "true labels; up to 64 source records per L step for echo directions",
+      "U_s": "hidden TX; ordinary PL threshold .95; select at most 128 U independently of acceptance, use accepted subset for relations",
+      "V": "27000 source validation, no training or checkpoint selection"
+    },
+    "train_ratio": "F0 fixed source roles",
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only_after_fixed_final_checkpoint",
+    "external_method_exception": null,
+    "claim_scope": "single-seed exploratory, previously exposed benchmark; no general or statistical claim"
+  },
+  "checkpoint": {
+    "initialization": "matched F21 scratch E20, then own 10+20; no prior candidate checkpoint",
+    "sources": [
+      "same-contract F21 scratch E20; preexisting ordinary PL seven-view scores; previous PL weak scores if complete"
+    ],
+    "contract_check_ref": "pamf_physics_branch.source.checked_parent using actual F21 payload and source roles",
+    "provenance_verdict": "Actual parent contract and scratch checkpoint inspected at load; fail on mismatch",
+    "selection_rule": "fixed final E50; no target selection or tuning"
+  },
+  "expected_artifacts": [
+    "two-row real E20 source-only finite backward smoke",
+    "two own E30 and E50 source trajectories with L/U direction exposure counts",
+    "full L_s/V raw/echo, pseudo-label proxy, branch direction, L-derived class-subspace overlap and reference-delay diagnostics; 720 L and 720 V on each of three original As scenes",
+    "all per-row practical and weak predictions frozen before truth-side scoring",
+    "same-seed paired raw/DURA/weak comparison with reused ordinary PL",
+    "[已省略运行细节]"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "paired percentage-point differences"
+    ],
+    "dimensions": [
+      "one seed",
+      "cross_date/cross_rx/cross_both",
+      "clean and six practical",
+      "weak combined_target/cross_rx/cross_both",
+      "receiver/day/transmitter"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "ptbr-beta0-s2026092701",
+      "method": "ordinary PL + physical branch direction relations beta=0.0",
+      "purpose": "matched physical-direction ablation",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original F0 seeds; echo has fixed source RNG by global step; weak view seeds in manifest; no support.",
+      "k": null,
+      "scenario": "clean and six practical in three F0 populations; raw three weak scenes on combined target",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS",
+      "lr": "original native segment schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/physical_state.json",
+        "source/segment50/physical_state.json",
+        "readouts/ROW/scores/complete.json",
+        "readouts/ROW/weak_scores/complete.json"
+      ],
+      "physical_row": {
+        "row_id": "ptbr-beta0-s2026092701",
+        "model_seed": 2026092701,
+        "beta": 0.0,
+        "protocol_id": "F0",
+        "regime": "pl",
+        "structure": "full",
+        "signature_views": 3,
+        "permuted": false,
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "epochs": 50,
+        "updates": 11100,
+        "new_updates": 6660,
+        "l_weight": 0.05,
+        "u_weight": 0.05,
+        "L_limit": 64,
+        "U_limit": 128,
+        "echo_magnitude": [
+          0.04,
+          0.1
+        ],
+        "echo_delays": [
+          1,
+          2,
+          3
+        ],
+        "physical_forward_mode": "eval_no_grad_restore_modes_rng",
+        "positives": "same_pseudo_or_label_same_day_other_rx",
+        "negatives": "different_pseudo_or_label_same_day_same_rx",
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "weak_views": [
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ]
+      }
+    },
+    {
+      "row_id": "ptbr-beta05-s2026092701",
+      "method": "ordinary PL + physical branch direction relations beta=0.5",
+      "purpose": "matched physical-direction ablation",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original F0 seeds; echo has fixed source RNG by global step; weak view seeds in manifest; no support.",
+      "k": null,
+      "scenario": "clean and six practical in three F0 populations; raw three weak scenes on combined target",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS",
+      "lr": "original native segment schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/physical_state.json",
+        "source/segment50/physical_state.json",
+        "readouts/ROW/scores/complete.json",
+        "readouts/ROW/weak_scores/complete.json"
+      ],
+      "physical_row": {
+        "row_id": "ptbr-beta05-s2026092701",
+        "model_seed": 2026092701,
+        "beta": 0.5,
+        "protocol_id": "F0",
+        "regime": "pl",
+        "structure": "full",
+        "signature_views": 3,
+        "permuted": false,
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "epochs": 50,
+        "updates": 11100,
+        "new_updates": 6660,
+        "l_weight": 0.05,
+        "u_weight": 0.05,
+        "L_limit": 64,
+        "U_limit": 128,
+        "echo_magnitude": [
+          0.04,
+          0.1
+        ],
+        "echo_delays": [
+          1,
+          2,
+          3
+        ],
+        "physical_forward_mode": "eval_no_grad_restore_modes_rng",
+        "positives": "same_pseudo_or_label_same_day_other_rx",
+        "negatives": "different_pseudo_or_label_same_day_same_rx",
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "weak_views": [
+          "leo_clear_weak",
+          "leo_low_elev_weak",
+          "leo_rain_weak"
+        ]
+      }
+    }
+  ],
+  "notes": [
+    "Exploratory beta=0.5 versus matched beta=0 primary test; no significance claim from one seed.",
+    "Post-reception finite echo is a bounded propagation proxy, not identified real transmitter or full satellite channel.",
+    "Complete candidate/baseline source diagnostics before any candidate target prediction; all fixed rows then evaluated without selection.",
+    "Expansion screen: final source V beta=0.5 no worse than ordinary PL by 0.2 pp or beta=0 by 0.1 pp; report actual anchors and nonfinite counts.",
+    "Existing branch pilot runs to its terminal state before this owner uses the same GPU reservation.",
+    "Fixed final checkpoint; target results do not select, modify or restart candidates."
+  ]
+}

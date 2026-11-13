@@ -1,0 +1,174 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-Restore-PacketInverseFilter-E30-s2026092701-r01",
+  "group_id": "source-scratch-packet-position-wise-inverse",
+  "display_name": "整包时变复数逆滤波恢复器，从零单阶段 30 轮",
+  "description": "前导重复参考条件化。包首、中段、后段独立产生复数主路、共轭路及 IQ 残差。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "original-ground-TriSIGSSL-Main",
+    "packet-inverse-filter",
+    "continuous-source-F0",
+    "scratch-single30",
+    "automatic-Main7"
+  ],
+  "comparison_group_id": "original-Main-R07-matched-MSAT-M20-and-packet-filter",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "Original R07 L_s/U_s clean+received IQ, fixed 20 draws plus first ten. No source simulator factors as model input.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "actual_training_labels": "No TX. Original 63000 paired source IQ and frozen F0 clean continuous features only.",
+    "augmentation": "Original R07 draws 1..20 then 1..10, source order2026110102, no new augmentation."
+  },
+  "permissions": {
+    "regime": "source-only-scratch-packet-filter-F0-continuous-guidance",
+    "query_use": "Train G only with original source IQ and approved frozen continuous F0 features. Main F0 default head is read-only inference.",
+    "external_method_exception": null,
+    "claim_scope": "Standalone IQ-to-IQ candidate; matched training recipe to frozen MSAT_M20 historical control. Single model seed."
+  },
+  "checkpoint": {
+    "initialization": "All 490866 G parameters scratch, seed2026092701. Identity at E0.",
+    "sources": [
+      "FROZEN_FEATURE_ONLY original Tri-SIG-TIME SSL 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d E50/11100/default head",
+      "DATA_ONLY R07 source L_s6300/U_s56700, fixed original draws, same physical ID binding",
+      "MATCHED_RECIPE_ONLY 20261101-phase1-Restore-MSAT-M20-F0-E30-s2026092701-r01/MSAT_M20, no model weights inherited",
+      "SOURCE_MECHANISM_ONLY 20261107-diagnostic-Restore-preamble-edges-sourceV-s2026092701-r01/096bee5a981303c69063813c60ae3935e6395df7, no V data or fitted state"
+    ],
+    "contract_check_ref": "Original source roles and physical IDs; original F0 contract; own strict E0 and final30.",
+    "provenance_verdict": "G scratch. Explicitly a separate continuous source F0-guided arm. V/OE only frozen diagnosis.",
+    "selection_rule": "Final30 only, 7410 updates, full pre-registered original Main matrix and independent scoring."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/training/config.json",
+    "rows/<arm>/training/smoke.json",
+    "rows/<arm>/training/smoke_E0.pt PRIVATE",
+    "rows/<arm>/training/data_schedule.npz PRIVATE",
+    "rows/<arm>/training/training.jsonl PRIVATE",
+    "rows/<arm>/training/final.pt PRIVATE",
+    "rows/<arm>/training/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE",
+    "rows/TF_PacketInverseFilter/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only",
+    "launch.json: dispatcher and scientific commit identities",
+    "logs/<arm>-train.log: unchanged original source training"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Original Main all six gaps ≤3pp and both clean populations independently kept.",
+      "Same-record TX repairs and damage versus raw and DURA, TX/RX/day/RXday.",
+      "Original source IQ/STFT/continuous-F0 metrics; actual wall time and peak memory separately from performance."
+    ],
+    "dimensions": [
+      "original Main two populations and seven views",
+      "TX/RX/day/RXday",
+      "single model seed",
+      "matched raw and DURA"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "TF_PacketInverseFilter",
+      "method": "position_wise_widely_linear_iq_inverse",
+      "purpose": "Evaluate independent full-packet architecture with distinct front, center and tail operators.",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Scratch model2026092701. R07 source builder2026101901, receiver2026101911, augmentation2026101912. Original source order2026110102.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": "AdamW(weight_decay1e-4,clip1)",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/training/config.json",
+        "rows/<arm>/training/smoke.json",
+        "rows/<arm>/training/smoke_E0.pt PRIVATE",
+        "rows/<arm>/training/data_schedule.npz PRIVATE",
+        "rows/<arm>/training/training.jsonl PRIVATE",
+        "rows/<arm>/training/final.pt PRIVATE",
+        "rows/<arm>/training/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE",
+        "rows/TF_PacketInverseFilter/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+      ]
+    }
+  ],
+  "notes": [
+    "V480 frozen attribution suggests tail sensitivity in urban and front contribution in low suburban. No V training, fitting or checkpoint selection.",
+    "Fixed region overlap and separate heads; conjugate taps and residual computed from each current received IQ.",
+    "No DURA or previous learned G initialization. Original raw and DURA comparisons remain exactly bound to original Tri-SIG-TIME SSL.",
+    "Real source smoke is first training action after GPU admission. Automatic full prediction and independent scoring; no target feedback.",
+    "Resource-only handover of already registered packet candidate, not a new model/matrix or result-based candidate selection. Original L_s/U_s, F0 continuous guidance, architecture, scratch30/7410 and all Main views unchanged.",
+    "Original wait controller has no GPU stage and has not created its immutable run root. Only it is retired; original logs/release/local submission remain. New owner exclusively creates original run root, writes real original stage terminals used by the existing MismatchedPrior successor.",
+    "Four focused resource/controller/protocol tests and one resource-only independent P0/P1 review PASS. Original scientific-model review is not repeated. Real source smoke remains the first original training action.",
+    "GPU5 uses only original normal cap3, not GPU6 extra cap5. Actual capacity rechecked before every GPU stage; all healthy jobs preserved."
+  ]
+}

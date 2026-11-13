@@ -1,0 +1,349 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261113-phase1-pamf-confidence-only-m9-r01",
+  "group_id": "phase1-pamf-branch-prototype-tuning",
+  "display_name": "PAMF 仅置信度筛选的分支辅助实验",
+  "description": "三个完整源数据配置、三个种子；全部置信度至少 0.95 的 U 参与辅助训练，不使用分支投票。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-confidence-only-auxiliary"
+  ],
+  "tags": [
+    "PAMF",
+    "confidence-only",
+    "no-branch-vote"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-paper-completion-m119-r03",
+    "20261112-phase1-pamf-tri-two-methods-full-m60-r02"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "original ManyRx ten-class, ManySig 1%-labeled and six-source-receiver",
+    "version": "existing source data",
+    "representation": "IQ [2,256]",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "each matching source contract",
+    "roles": {
+      "L_s": "entire original labeled role, no held-out subset",
+      "U_s": "original source U, TX hidden",
+      "V": "original source V unchanged"
+    },
+    "train_ratio": "original per-setting data roles unchanged",
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "frozen predictions then independent truth-last",
+    "external_method_exception": null,
+    "claim_scope": "previously exposed test set; exploratory comparison without target feedback into training"
+  },
+  "checkpoint": {
+    "initialization": "matching original full-L same-setting same-seed Tri E20, then own E10+E20",
+    "sources": [
+      "20261027-phase1-pamf-paper-completion-m119-r03"
+    ],
+    "contract_check_ref": "confidence_plan.parent -> full_matrix_plan.parent and checked_e20_parent",
+    "provenance_verdict": "original matching full-L scratch E20; no L holdout or target ancestry",
+    "selection_rule": "all nine fixed rows, final E50; no target-driven selection"
+  },
+  "expected_artifacts": [
+    "real-checkpoint no-query smoke",
+    "nine matching full-source E30/E50 continuations",
+    "nine direct seven-view predictions and independent truth-last scores",
+    "confidence-accepted and auxiliary-routed counts, pseudo-class distribution, source labeled reliability",
+    "three-seed matched ordinary PL and original branch-prototype comparisons"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "six-scene accuracy",
+      "accepted and routed exposures",
+      "pseudo-class counts",
+      "source labeled confidence precision"
+    ],
+    "dimensions": [
+      "three configurations",
+      "three model seeds",
+      "clean and six practical",
+      "TX/RX/day"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "ten_class-confidence-only-s2026092701",
+      "method": "Hybrid plus branch prototype; all confidence >=0.95, no branch vote",
+      "purpose": "fixed confidence-only coverage comparison",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original data roles, no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-confidence-only-s2026092701/predictions/complete.json",
+        "readouts/ten_class-confidence-only-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-confidence-only-s2026092702",
+      "method": "Hybrid plus branch prototype; all confidence >=0.95, no branch vote",
+      "purpose": "fixed confidence-only coverage comparison",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original data roles, no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-confidence-only-s2026092702/predictions/complete.json",
+        "readouts/ten_class-confidence-only-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-confidence-only-s2026092703",
+      "method": "Hybrid plus branch prototype; all confidence >=0.95, no branch vote",
+      "purpose": "fixed confidence-only coverage comparison",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original data roles, no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-confidence-only-s2026092703/predictions/complete.json",
+        "readouts/ten_class-confidence-only-s2026092703/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-confidence-only-s2026092701",
+      "method": "Hybrid plus branch prototype; all confidence >=0.95, no branch vote",
+      "purpose": "fixed confidence-only coverage comparison",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original data roles, no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/labeled_1pct-confidence-only-s2026092701/predictions/complete.json",
+        "readouts/labeled_1pct-confidence-only-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-confidence-only-s2026092702",
+      "method": "Hybrid plus branch prototype; all confidence >=0.95, no branch vote",
+      "purpose": "fixed confidence-only coverage comparison",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original data roles, no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/labeled_1pct-confidence-only-s2026092702/predictions/complete.json",
+        "readouts/labeled_1pct-confidence-only-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-confidence-only-s2026092703",
+      "method": "Hybrid plus branch prototype; all confidence >=0.95, no branch vote",
+      "purpose": "fixed confidence-only coverage comparison",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original data roles, no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/labeled_1pct-confidence-only-s2026092703/predictions/complete.json",
+        "readouts/labeled_1pct-confidence-only-s2026092703/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-confidence-only-s2026092701",
+      "method": "Hybrid plus branch prototype; all confidence >=0.95, no branch vote",
+      "purpose": "fixed confidence-only coverage comparison",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original data roles, no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/source_rx_6-confidence-only-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-confidence-only-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-confidence-only-s2026092702",
+      "method": "Hybrid plus branch prototype; all confidence >=0.95, no branch vote",
+      "purpose": "fixed confidence-only coverage comparison",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original data roles, no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/source_rx_6-confidence-only-s2026092702/predictions/complete.json",
+        "readouts/source_rx_6-confidence-only-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-confidence-only-s2026092703",
+      "method": "Hybrid plus branch prototype; all confidence >=0.95, no branch vote",
+      "purpose": "fixed confidence-only coverage comparison",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original data roles, no internal L holdout.",
+      "k": null,
+      "scenario": "direct raw clean and six practical",
+      "optimizer": "original matching native AdamW",
+      "lr": "original native schedule",
+      "epochs": 50,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/source_rx_6-confidence-only-s2026092703/predictions/complete.json",
+        "readouts/source_rx_6-confidence-only-s2026092703/scores/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Every confidence-accepted U packet is routed into extra same-packet auxiliary training, including the original non-physical half; no branch voting is evaluated.",
+    "Prototype loss uses available cross-day true-L class centers. When the positive center is missing it uses the same U packet raw view as a detached positive; when no negative center exists it uses a same-packet cosine term. All accepted packets participate.",
+    "If only one pseudo-class is present, an identity-free same-packet cosine term replaces the absent contrastive-negative contribution.",
+    "Original channel-strength taper and all other mechanisms are retained; new physical U routing also changes the existing mixed U path.",
+    "Source labeled confidence precision is an in-training diagnostic, not held-out accuracy.",
+    "Previously exposed target tests are exploratory and do not change the fixed matrix or select training checkpoints."
+  ]
+}

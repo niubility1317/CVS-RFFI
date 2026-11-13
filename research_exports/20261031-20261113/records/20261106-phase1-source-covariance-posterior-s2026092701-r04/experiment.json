@@ -1,0 +1,120 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-source-covariance-posterior-s2026092701-r04",
+  "group_id": "phase1-source-covariance-posterior",
+  "display_name": "源相关后验与 DURA 互补性诊断",
+  "description": "仅在合法源 pilot，使用同条 clean IQ 求 DURA 到相关后验方向的受限理想步长，检验若干物理后验是否有互补线性方向；所有步长均不可部署。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "F-free",
+    "covariance",
+    "physical-posterior",
+    "oracle-diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "source paired received/clean IQ, source clean second moment, simulated source action/variance",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only IQ NMSE and solver residual; true source action is privileged and not a theoretical upper bound or TX accuracy"
+  },
+  "checkpoint": {
+    "initialization": "Frozen original DURA v1.0 plus source-only IQ second moment fitted from fixed 8192 source IDs",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "frozen_dura source-only provenance and epoch19 matching source action cache",
+    "provenance_verdict": "Original source-only DURA, no F or target ancestry",
+    "selection_rule": "Fixed shrinkage 0.1 and 40 CG iterations for all preregistered variants; no target selection"
+  },
+  "expected_artifacts": [
+    "result.json per-source-scene IQ NMSE, paired changes and actual CG residual",
+    "source_covariance.pt: source-only aggregate prior, kept on [计算环境]"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source per-record ideal positive and signed blend IQ NMSE",
+      "number of improved records",
+      "negative optimal step fraction",
+      "CG relative residual"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8 by seven source views",
+      "true action/true noise and estimated action/estimated noise",
+      "isotropic and source-correlated prior"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "fixed-source-covariance-posterior",
+      "method": "Three frozen posterior directions, DURA anchor and source-clean privileged per-record positive [0,.5] or signed [-.5,.5] normalized line minimization",
+      "purpose": "Bound the source IQ benefit of fixed posterior directions as a preliminary complement diagnostic",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Fixed source fit selection 2026110611, original DURA seed 2026092701, fixed source pilot; no target access or parameter optimizer.",
+      "k": null,
+      "scenario": "source pilot epochs19, seven fixed views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "result.json per-source-scene IQ NMSE, paired changes and actual CG residual",
+        "source_covariance.pt: source-only aggregate prior, kept on [计算环境]"
+      ]
+    }
+  ],
+  "notes": [
+    "No F, TX labels, V, target IQ/truth, or model updates; fit uses only legal source IQ.",
+    "True simulator action and variance are privileged source-only quantities, never available to the deployable model; this restricted Gaussian diagnostic is not an upper bound.",
+    "Source second moment and source pilot use previously explored domains; DURA may have seen these domains.",
+    "Output includes true recomputed CG residual; finite-iteration errors can affect comparisons.",
+    "No target performance data will select or rank candidates.",
+    "40-step source run showed high true residual for some correlated-prior records; this preregistered follow-up tests numerical convergence only, without target data.",
+    "Source-only 160-step results showed a gap between paired true-action/true-noise and estimated-action/estimated-noise, which does not identify either factor; this fixed 2x2 intervention separates them.",
+    "All line steps use the matched source clean IQ, including estimated-action variants; every oracle step is nondeployable. Bounds apply only to tested directions and fixed step range, not to general methods or target identity."
+  ]
+}

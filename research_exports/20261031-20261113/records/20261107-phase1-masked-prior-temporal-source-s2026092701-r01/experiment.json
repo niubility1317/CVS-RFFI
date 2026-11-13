@@ -1,0 +1,114 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-masked-prior-temporal-source-s2026092701-r01",
+  "group_id": "phase1-masked-prior-temporal-source",
+  "display_name": "遮挡先验源域时间结构诊断",
+  "description": "比较全局池化与保留 8、32、256 个时间段的先验隐藏表征，检查源域同记录检索。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "F-free",
+    "masked-prior",
+    "temporal-retrieval"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261107-phase1-masked-iq-prior-source-s2026092701-r01",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261107-phase1-masked-prior-representation-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split source pilot",
+    "version": "source cache R07 epoch19",
+    "representation": "672 fixed source pilot paired received/clean IQ, frozen DURA output",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Same-record retrieval only; may exploit packet or receiver cues, not TX identity or target accuracy"
+  },
+  "checkpoint": {
+    "initialization": "Fixed source-only masked IQ prior final epoch five and original DURA",
+    "sources": [
+      "20261107-phase1-masked-iq-prior-source-s2026092701-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Prior and DURA source-only provenance verified; 32768 prior fit IDs disjoint from pilot",
+    "provenance_verdict": "Fixed original DURA source-only provenance previously verified",
+    "selection_rule": "Fixed DURA and prior final epoch; no target access"
+  },
+  "expected_artifacts": [
+    "result.json: grouped source same-record retrieval across fixed temporal resolutions"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source same-record top1 within RX/scene",
+      "matched versus other cosine margin"
+    ],
+    "dimensions": [
+      "672 source records",
+      "21 RX x source-view groups",
+      "global and 8/32/256 time bins"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "masked-source-temporal-record-retrieval",
+      "method": "Fixed mask and frozen prior/random hidden features: global mean/std or per-channel time-centered temporal bins 8/32/256",
+      "purpose": "Check whether per-record temporal structure is lost by global pooling",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110707,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": 2026110707,
+        "support": null,
+        "evaluation": 2026110708
+      },
+      "seed_notes": "Five epochs, fixed final epoch; source pilot mask seed independent",
+      "k": null,
+      "scenario": "fixed previously explored source pilot grouped by RX and source simulation view",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "result.json: grouped source same-record retrieval across fixed temporal resolutions"
+      ]
+    }
+  ],
+  "notes": [
+    "No F weights/outputs, TX labels, V, target IQ/truth or parameter updates.",
+    "Temporal bin choices fixed before diagnostic; per-record matching is not transmitter identity accuracy.",
+    "Random same-architecture prior is independently initialized with fixed seed, not the original prior initialization.",
+    "Source pilot was previously explored and is not independent of DURA ancestry."
+  ]
+}

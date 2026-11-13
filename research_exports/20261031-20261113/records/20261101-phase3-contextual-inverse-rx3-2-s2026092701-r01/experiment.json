@@ -1,0 +1,180 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-phase3-contextual-inverse-rx3-2-s2026092701-r01",
+  "group_id": "phase3-contextual-inverse-paired-diagnostic",
+  "display_name": "动态逆变换恢复器接入Phase3：同记录冻结PCD对照",
+  "description": "原固定F0/E0/PCD和密度阈值保持，比较新恢复器和DURA在相同源、跨RX clean/星地记录上的身份与未知拒识。",
+  "kind": "cvs",
+  "stage": "Phase3-fresh-contextual-G-diagnostic",
+  "aliases": [],
+  "tags": [
+    "Phase3",
+    "frozen-PCD",
+    "same-record",
+    "restoration",
+    "truth-last"
+  ],
+  "comparison_group_id": "phase3-contextual-G-versus-DURA-fixed-system",
+  "parent_run_ids": [
+    "20261101-phase1-contextual-inverse-E30-s2026092701-r01",
+    "20261031-phase3-fresh-dura-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Existing source star V/NV and fixed RX3-2 future paired clean/star public IQ",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "New G forward on fixed source V/novel and RX34 paired clean/star public IQ; original same-ID DURA/clean-raw predictions exactly reused",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "3-2"
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L_new": 0,
+      "source_OE_new": 0,
+      "source_V_raw_forward_DURA_reuse": 27000,
+      "source_NV_raw_forward_DURA_reuse": 3150,
+      "cross_clean_Q": 10238,
+      "cross_star_Q": 10238,
+      "known_future": 4508,
+      "unknown_future": 5730,
+      "source_Us_new": 0,
+      "target_U_new": 0,
+      "target_U_ID_new": 0,
+      "formal_RX24_18_new": 0
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": null,
+    "split_id": "392005 original F0 source split; derived role handles unchanged",
+    "derived_public_handles": {
+      "clean_DURA": {
+        "capsule_id": "p3fresh-97a3ca8706dbe966ac510a61",
+        "split_id": "7fdd29104962ba0d92969faf",
+        "expected_count": 10238,
+        "view_family": "clean_cross_receiver"
+      },
+      "star_DURA": {
+        "capsule_id": "p3fresh-e56d8e305e37c68dd40db030",
+        "split_id": "b9888c49e89d418cc25ab5ff",
+        "expected_count": 10238,
+        "view_family": "practical_cross_receiver"
+      }
+    },
+    "actual_training_labels": "No G/F0/E0/PCD training; no target U or target/private truth read before all new predictions complete"
+  },
+  "permissions": {
+    "regime": "Frozen original F0/E0/PCD densities and source thresholds, plus frozen source-trained new G; no fit or target U access",
+    "query_use": "Each target query independently through new G/F0/E0/PCD; all source/clean/star predictions and controls validated before CPU truth-last",
+    "external_method_exception": null,
+    "claim_scope": "Historical exposed RX34 development and source diagnostics; PCD has inherited target-U576 ancestor. New G changes PCD input distribution; fixed thresholds are a diagnostic, not recalibrated deployment or new blind test."
+  },
+  "checkpoint": {
+    "initialization": "Fixed contextual G E30 plus original frozen F0/E0/PCD and exact old DURA matched control; zero new optimization",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "[已省略路径]",
+    "provenance_verdict": "G source-only L_s/U_s and no F/TX/OE/V/target training, code9959956a; original F0/r03, frozen RX34-PCD target-U576 ancestor, old DURA and source density/thresholds retained",
+    "selection_rule": "Fixed single original E30 G before any new Phase3 prediction; no target-derived selection, retraining, threshold or density fit"
+  },
+  "expected_artifacts": [
+    "config.json",
+    "submitted.json",
+    "logs/predict.log",
+    "logs/score.log",
+    "predict/config.json",
+    "predict/smoke.json",
+    "predict/source/{known,novel}.npz",
+    "predict/targets/{clean,star}.npz",
+    "predict/complete.json",
+    "score/results.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro A_K",
+      "macro C_K",
+      "macro R_U",
+      "H-score",
+      "original F0 closed accuracy",
+      "candidate-minus-DURA paired repairs/damages and unknown reject changes",
+      "same-ID raw-clean versus candidate-star per-scene F0/A_K gap",
+      "clean damage",
+      "TX/RX/day/scene/day-scene"
+    ],
+    "dimensions": [
+      "source V/novel",
+      "RX34 clean",
+      "RX34 star",
+      "TX/RX/day/scene",
+      "candidate and exact DURA reference"
+    ],
+    "targets_ref": "Each scene F0 same-record raw-clean gap <=3pp, clean damage <=1pp; Phase3 CK>=90%, clean RU>=95%, star RU>=90%, same-G closed-open loss<=2pp. Historical fixed PCD thresholds; no autonomous registration claim.",
+    "primary": [
+      "PCD_predicted_ratio"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "contextual-G-fixed-PCD",
+      "method": "New G plus frozen F0/E0/PCD and inherited density/thresholds vs same-ID DURA",
+      "purpose": "Independent frozen-system Phase3 compatibility and task performance; do not promote without matched downstream calibration and full protocol.",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No new random sampling/fit or channel; inherited source3001/4001,future3133/3134,receiver2027,density3019.",
+      "k": null,
+      "scenario": "source V/novel and same RX34 two-date clean and fixed G10 star records",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "config.json",
+        "submitted.json",
+        "logs/predict.log",
+        "logs/score.log",
+        "predict/config.json",
+        "predict/smoke.json",
+        "predict/source/{known,novel}.npz",
+        "predict/targets/{clean,star}.npz",
+        "predict/complete.json",
+        "score/results.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "This is mandated evaluation of the already-trained candidate; it was fixed before reading its historical F50 target scores. User subsequently asked future exploration to differ from the other chat; no new time-frequency candidate is launched here.",
+    "G is frozen source-trained E30/7410 using R07 source observations at 2.462GHz, not G10. Test G10 at 2.45GHz is a distribution shift and cannot be relabeled as G10 training.",
+    "Original F0, source E0, RX34-adapted PCD, densities and thresholds are fixed. PCD carries original U576 ancestor, with no new U or ID read; threshold mismatch to new G must be disclosed.",
+    "Complete old six-path fresh-DURA prediction artifact and its exact baseline identities are independently verified before new public IQ. New source known/novel and clean/star paths must all complete, validate IDs and density scores before CPU scorer opens source novel or target truth.",
+    "Compare F0 macro closed and PCD A_K/C_K/R_U/H with old DURA same ID; pair repair/damage and reject changes. Each scene raw-clean vs star gap uses identical known IDs within that scene, complete six-TX roster or N/A.",
+    "Five focused tests passed; independent P0/P1 review and targeted followups corrected original baseline binding, paired direction, and truth-scene validation. Actual source and target results not yet available."
+  ]
+}

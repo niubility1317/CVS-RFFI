@@ -1,0 +1,111 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-masked-teacher-batch-parity-source-s2026092701-r01",
+  "group_id": "phase1-masked-teacher-batch-parity-source",
+  "display_name": "遮挡教师批量预计算源域对照",
+  "description": "比较冻结教师小批与大批的逐值输出及本机耗时，不更新模型。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "GPU",
+    "training-efficiency",
+    "exact-parity"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261107-phase1-fused-guard-full-parity-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split permitted source L_s/U_s",
+    "version": "fixed deterministic source context epochs21/22/23",
+    "representation": "512 selected source IDs x 3 views x 5 epochs",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ only, TX hidden",
+      "U_s": "source IQ only, TX hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source teacher target parity and local timing only; no model training, target prediction or identity claims"
+  },
+  "checkpoint": {
+    "initialization": "Fixed legal source prior; cached DURA context and source initialization metadata checked by existing loader, but no model optimization",
+    "sources": [
+      "20261107-phase1-masked-iq-prior-source-s2026092701-r01",
+      "20261106-phase1-dura-wide-source-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "Original DURA provenance, prior commit and exact ordered 32768 source IDs; no F/TX/V/target",
+    "provenance_verdict": "Both prior and source context are F/TX/V/target-free source only",
+    "selection_rule": "Existing fixed legal source prior and context, no selection by target and no saved weights"
+  },
+  "expected_artifacts": [
+    "result.json: per-pair exact output comparison and batch 32/256 timing"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "elementwise teacher output parity",
+      "target preparation elapsed seconds"
+    ],
+    "dimensions": [
+      "512 source IDs x 3 views x 5 epochs",
+      "two pairs, reversed batch order"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "teacher-batch-parity",
+      "method": "Frozen masked teacher batch 32 versus batch 256",
+      "purpose": "Test source-teacher precompute exactness and speed before considering training integration",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110707,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": 2026110711,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen source prior seed 2026110707, order 2026110613, mask 2026110711; no optimizer",
+      "k": null,
+      "scenario": "512 fixed source IDs, three source simulation views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 5,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "result.json: per-pair exact output comparison and batch 32/256 timing"
+      ]
+    }
+  ],
+  "notes": [
+    "Same seed, clean inputs and masks in both batches; warmup followed by two reversed-order pairs.",
+    "Output comparison covers teacher tensors only; no optimizer updates, full training parity or [计算环境] timing claims.",
+    "No F, TX labels, source V or target data; source context, prior and initial provenance checked by existing loader.",
+    "Execution stdout and completed result.json were observed directly; no separate launcher log was created."
+  ]
+}

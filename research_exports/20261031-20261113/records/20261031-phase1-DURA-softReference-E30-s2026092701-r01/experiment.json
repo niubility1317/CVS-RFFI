@@ -1,0 +1,192 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase1-DURA-softReference-E30-s2026092701-r01",
+  "group_id": "phase1-dura-source-soft-crossRX-reference-E30",
+  "display_name": "跨接收机软特征参考：从零单阶段30轮",
+  "description": "同266951G/noVar四物理项/原alpha/逐样本IQ梯度cap1，新增已源域校准的soft跨RX参考偏移；只读原raw J及1.26MB新偏移缓存，训练F前向0；scratch30/7410及全七景。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "E30",
+    "single-stage",
+    "scratch",
+    "F-guided",
+    "cache-reuse",
+    "soft-cross-RX-reference",
+    "training-efficiency"
+  ],
+  "comparison_group_id": "DURA-soft-crossRX-reference-vs-balanced-instance-and-pureG-E30",
+  "parent_run_ids": [
+    "20261031-phase1-DURA-balancedTangent-E30-s2026092701-r01",
+    "20261031-diagnostic-DURA-source-softRXreference-s2026092701-r01",
+    "20261031-diagnostic-DURA-source-softReferenceIQ-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalR07source63000/20views+repeat01..10;readonly rawsourcecleanJ645.12MB plusnew63000x5FP32softreferenceoffset1.26MB;no newchannelgeneration",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "target_panel": "Eachnewversionall168000x7regardlesssourceperformance",
+    "actual_training_labels": "Sourcepairedclean/action,original frozenFsourceJ andsoftotherRX/dayfeaturemeans;0directTX/V/target;Fsourceknowledge inherited",
+    "augmentation": "OriginalR07 15percentclean/6practical;epoch01..20then01..10;sourceIDs/roles/onceunitRMS/receiver-day/Vpanel unchanged"
+  },
+  "permissions": {
+    "regime": "Authorized_source_F_guided_soft_crossRX_reference",
+    "query_use": "Gtraining sourceJ/offset only,no Fmodel/target;real2LsFsmoke andpostfreezeoriginalF/defaulthead formal;eachroleallsevenpredictions beforeindependenttruth",
+    "external_method_exception": "Explicituserpermission2026-10-30 onlysourceFweights/featuresforG;notF-free;frozenFnoheadtraining/updates",
+    "claim_scope": "F-guided/notF-free;localreference feasibility nottargetguarantee;detachedstepgradientcaponly/notGparameterbound/notgloballyfixedenergy derivative;notnewblindtest"
+  },
+  "checkpoint": {
+    "initialization": "Gscratch/noGancestor/nolearnedIQteacher;rawFsourceJ plusfixedsourceoffsetDATAONLY;no producerGload",
+    "sources": [
+      "runs/20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/scratch_joint/source_clean_J_cache DATAONLY",
+      "runs/20261030-phase1-DURA-source-Fguide-cos010-s2026092701-r01/scratch_joint/source_feature_cache DATAONLY",
+      "runs/20261031-diagnostic-DURA-source-softRXreference-s2026092701-r01/reference_geometry.npz DATAONLY",
+      "runs/20261031-diagnostic-DURA-source-softReferenceIQ-s2026092701-r01/feasibility.npz andresults.json sourcequalificationONLY",
+      "OriginalF50/defaulthead source4df7/final50/11100 realnoquerysmoke/postfreezeeval;R69onlyprofile"
+    ],
+    "contract_check_ref": "original7/63/30 source63000 L6300U56700 IDsroles;originalF50teacher/cacheTX-V-target0;qualifiedref beta.25/calalpha unchanged;512offsetmatch;rawJoriginalbasis",
+    "provenance_verdict": "RawJ andF160 sourceclean dataonly,computedbeforeproducerG target;newGancestor0. Softsourcepositions512excludedfromfitmeans62488 butFtrainedallsources. No directTX/V/target/producerGweights. F50/cache/calibrationcostdisclosed.",
+    "selection_rule": "Fixedfinal30/7410;beta.25 andalpha.0033130025035573727 andcap1fixedbycompletedsourcequalification. No TXweights/curriculum/target-basedselection. SourcecalibrationatpriorfinalGnotearlytrajectoryproof."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "plan.json",
+    "smoke.json",
+    "submitted-scratch_joint.json",
+    "scratch_joint/launch.json",
+    "scratch_joint/resolved_config.json",
+    "scratch_joint/initialization.json",
+    "scratch_joint/training.jsonl",
+    "scratch_joint/training_complete.json",
+    "scratch_joint/final.pt",
+    "scratch_joint/matched_profile.json",
+    "scratch_joint/source_prediction/complete.json",
+    "scratch_joint/source_summary.json",
+    "scratch_joint/target_prediction/complete.json",
+    "scratch_joint/target_summary.json",
+    "scratch_joint/complete.json",
+    "complete.json",
+    "scratch_joint/cache_reuse.json",
+    "source_soft_reference_cache/offsets.npy",
+    "source_soft_reference_cache/physical_ids.npy",
+    "source_soft_reference_cache/complete.json",
+    "scratch_joint/source_reference.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy/MacroF1/correct-repair-damage-net",
+      "TX/RX/day",
+      "eachscene rawclean_gap3pp",
+      "cleanpreservation/R17eachscene1pp/oldlowurban70",
+      "complete30sourcecurves/alllosses/cacheviews/clip",
+      "stepweight/limitedfraction/raw-balancedIQpressure/epochmaxbound/referenceoffsetnorm/guidevalue-exceedsIQfraction",
+      "new-historicalFcounts/cachetime-bytes/sourceexposures",
+      "actualGpreparation-training-cacheproduction-wholepipelinecost",
+      "fullGparams-bytes-ConvLinearMAC-FFT-CG/VRAM/samecardB1-B128latencyP95throughput"
+    ],
+    "dimensions": [
+      "arm",
+      "clean/sixpractical",
+      "TX",
+      "RX",
+      "day",
+      "originalF50seed2026092701"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "scratch_joint",
+      "method": "Scratchjoint30/noVarfourlosses+alpha detachedcap1 shiftedJquadratic;d=phi(softotherRXreference)-phi(sourceclean)",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103004,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "model/CUDAprobe2026092701/npshuffle2026103004/AUG2026101912/RX2026101911/split392005/data2026101901/eval2027;no newsupport/observations",
+      "k": null,
+      "scenario": "Unchangedoriginalsourcecache15percentclean/85percentpractical;first10sourceviews matchedteacherIQ;formalclean+sixpractical",
+      "optimizer": "AdamWreset/weightdecay1e-4/clip1",
+      "lr": "warm247/peak.001/cosinefinal.00002/7410updates",
+      "epochs": 30,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "plan.json",
+        "smoke.json",
+        "submitted-scratch_joint.json",
+        "scratch_joint/launch.json",
+        "scratch_joint/resolved_config.json",
+        "scratch_joint/initialization.json",
+        "scratch_joint/training.jsonl",
+        "scratch_joint/training_complete.json",
+        "scratch_joint/final.pt",
+        "scratch_joint/matched_profile.json",
+        "scratch_joint/source_prediction/complete.json",
+        "scratch_joint/source_summary.json",
+        "scratch_joint/target_prediction/complete.json",
+        "scratch_joint/target_summary.json",
+        "scratch_joint/complete.json",
+        "complete.json",
+        "scratch_joint/cache_reuse.json",
+        "source_soft_reference_cache/offsets.npy",
+        "source_soft_reference_cache/physical_ids.npy",
+        "source_soft_reference_cache/complete.json",
+        "scratch_joint/source_reference.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Solemethodchangevs75da balancedinstancecontrol:fixedsource offsetd!=0. Phi=4normalize(F160)@originalrawJrank5basis;d=phi(normalize(.75originalunit+.25softotherRX/dayreference))-phi(originalclean). Samealpha.0033130025035573727/sdetachcap1;allmodulesjointfromstep1through30. No curriculum/newhead/network/classweights.",
+    "Qualifiedreference usesoriginalFsoft6posterior,90RX/day/softcoordinateweightedmeans,62488fit(6172L56316U),512probeexcludedfromfit,other4RXx3daysequalaverage. NoTX/hardpseudoTX. Fhastrainedonallsources,notindependentgeneralizationprobe.",
+    "SourcegeometryPASS:512/512headchoicespreserved,head-visibleRXscatterratio.52361878,softspreadratio1.01464818,minNeff684.292. SourceIQcalibrationPASS:linearresidmax6.4919e-6,meanshiftNMSE3.39375e-5,p95.000105399;exactFrelativeoffseterrormedian.143853/p95.495730;512choicespreserved.",
+    "Sourceviews01/20:prototype-vs-exactgradientcos.656546/.669879 vsIQ.047375/.048753,nonnegative501/491,allRXmeanspositive,actualcapmax1.000000358/1.000000238. LocalatpriorpureGfinalnotearlytrajectoryproof;guidevalueexceedsIQ13/17,soNO lossvaluebound withshiftedreference. OnlyIQ-outputgradientcap,notGparameterbound. sdetachstep-localsurrogate,notfullglobalfixedenergyderivative.",
+    "ReadoriginalrawJ63000x5x2x256FP32/645.12MB andF16040.32MB. Controllerproducesnewfullsourceoffsets63000x5FP32/1.26MB once,checks512matchqualifiedoffsetswithsameoldJbasis;newFinputs/VJP0. TrainingonlyreadsJ/offsets,noFmodel/forward/VJP. HistoricalF50/11100,rawJ63000F/315000VJP/30.008929s,F1603.782270s,reference.212823s/calibration3.156706s disclosed. Newcacheproductiontimeandstorage reported,notzeroALLnewcache.",
+    "SameGfactory/CUDAprobe2026092701/npshuffle2026103004/LR/noVarIQ1-prior.1-STFT.05-action.05/source01..20then01..10as75daand8cf. Primarycontrol75da d0,secondarypureG8cf. Actualwalltimeincludescache/qualificationseparately;singlehardwaretimingnotcausalorbitwiseguarantee.",
+    "12focusedtestsPASS(training3/tangent4/reference5),actualmodule--helpPASS;oneP0P1PASS. Launchfirstreal2LsGthree-modulegradients/actualshiftedguidecap/Funchanged/defaulthead/strictreload,thenimmediatelycontinue. Everybatchfinite/capchecked;all30means/exposures/weights/value>IQlogged.",
+    "Fixedfinal30/7410thenunchangedprofile/source1800x7/target168000x7,eachroleall7fixedbeforeindependentCPUtruthlast. EverynewGformal evenifsourceworse. SameoriginalF50/defaulthead;no separateclassifier/targetadaptation. Eachsixsatellite>=137216correct/81.6761904762% andcleanpreserve;R17loss<=1680andoldlowurban70separate. DefaultDURA/P2/P3unchanged;goalACTIVE."
+  ]
+}

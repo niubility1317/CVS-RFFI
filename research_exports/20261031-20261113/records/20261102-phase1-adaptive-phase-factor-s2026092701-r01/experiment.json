@@ -1,0 +1,126 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-adaptive-phase-factor-s2026092701-r01",
+  "group_id": "phase1-input-adaptive-phase-factor",
+  "display_name": "输入自适应相位因子的源域可行性",
+  "description": "以单独的旋转不变量网络，学习不变与抵消输入相位的混合规则；源域冻结 DURA 仅提供复增益相位代理目标。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "complex_phase",
+    "physics",
+    "feasibility",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-teacher-student-s2026092701-r01",
+    "20261102-phase1-blind-gate-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "float32 IQ [2,256]; source L_s/U_s paired clean and simulated post_sync residual channel",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No TX labels or U_s truth read; frozen DURA and Tri-SIG-TIME SSL predictions guide source training",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Source-only phase proxy experiment; no V, no test IQ, no Phase3",
+    "external_method_exception": null,
+    "claim_scope": "Single seed, source heldout and Phase1 development previously observed, no independent-blind or real satellite claim"
+  },
+  "checkpoint": {
+    "initialization": "Random input adaptive phase factor; frozen source gate and DURA source teacher only",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "Pinned parent release a90a5e381c19e94455bfafd9c67321833c764491, gate c905f3ab3d7f0d121e2c44c3b0bfb26188fa5825",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "Source RX4/6 source-epoch16 active impaired scenes: mean cosine loss <=95% of identity, each scene/receiver loss <=identity+.05; best of epochs1–3; heldout RX8 not used"
+  },
+  "expected_artifacts": [
+    "source_smoke/result.json",
+    "source/checkpoint_epoch01.pt",
+    "source/checkpoint_epoch02.pt",
+    "source/checkpoint_epoch03.pt",
+    "source/source_selection.json",
+    "source/selected.pt if selected",
+    "completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "mean phase cosine loss",
+      "per-cell phase cosine loss"
+    ],
+    "dimensions": [
+      "source receiver and impaired scene",
+      "source RX8 heldout"
+    ],
+    "scientific_rule": "Proxy alignment to source DURA phase is not Phase1 classification improvement or satisfaction of 3% goal."
+  },
+  "rows": [
+    {
+      "row_id": "adaptive_phase_factor_s2026092701",
+      "method": "input-only invariant/equivariant phase-factor mixture; DURA used only to derive source proxy target",
+      "purpose": "test source feasibility of condition-adaptive phase behavior",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026111454,
+        "split": 392005,
+        "data": 2026110551,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026111455
+      },
+      "seed_notes": "Fixed source split seed 2026110551; model 2026111454; shuffle 2026111455; training cache1–3, selection cache16",
+      "k": null,
+      "scenario": "source six impaired simulated scenes; no Phase1 target data",
+      "optimizer": "AdamW weight_decay .001",
+      "lr": 0.0003,
+      "epochs": 3,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "source_smoke/result.json",
+        "source/checkpoint_epoch01.pt",
+        "source/checkpoint_epoch02.pt",
+        "source/checkpoint_epoch03.pt",
+        "source/source_selection.json",
+        "source/selected.pt if selected",
+        "completion.json"
+      ]
+    }
+  ],
+  "notes": [
+    "DURA source teacher and frozen gate only; model deploy input is IQ alone.",
+    "F is not loaded here; eventual network must use frozen Tri-SIG-TIME SSL.",
+    "No TX labels, U_s truth, V or test IQ.",
+    "Source phase proxy is not classification accuracy; RX4/6 and RX8 identities previously examined under other views."
+  ]
+}

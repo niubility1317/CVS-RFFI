@@ -1,0 +1,106 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-direct-dura-complement-source-s2026092701-r01",
+  "group_id": "phase1-direct-dura-source-complement",
+  "display_name": "独立模型与 DURA 的源域理想互补方向诊断",
+  "description": "在固定源 IQ 上沿独立输出减 DURA 输出的方向计算逐条理想步长；只作波形几何诊断，无部署系数、F、TX、V 或目标读取。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "F-free",
+    "frequency-diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261106-phase1-direct-dualdomain-source-s2026092701-r01",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "received and clean IQ [2,256]",
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Nondeployable source-clean oracle line diagnostic; not identity accuracy or general upper bound"
+  },
+  "checkpoint": {
+    "initialization": "Fixed direct dual-domain checkpoint and frozen original DURA",
+    "sources": [
+      "20261106-phase1-direct-dualdomain-source-s2026092701-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Runtime verifies direct source-only checkpoint commit and permission fields, frozen_dura verifies DURA provenance",
+    "provenance_verdict": "Both fixed Phase1 models, no F or target ancestry",
+    "selection_rule": "Fixed trained direct model and DURA, no target score selection"
+  },
+  "expected_artifacts": [
+    "result.json with source group DURA and bounded oracle IQ NMSE and sign statistics"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source DURA IQ NMSE",
+      "bounded positive and signed oracle IQ NMSE",
+      "optimal step sign and mean"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "direct-dura-oracle-line",
+      "method": "DURA anchor plus normalized direction direct-minus-DURA; source clean optimal step bounded to positive [0,.5] or signed [-.5,.5]",
+      "purpose": "Assess whether the direct network offers a useful source IQ correction direction",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Existing pretrained source runs and fixed source pilots; no stochastic training, support or augmentation in this benchmark.",
+      "k": null,
+      "scenario": "seven fixed Phase1 source views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source clean IQ computes an ideal per-record step; not deployable and not an identity metric.",
+    "Direction normalized to DURA RMS; mean optimal coefficient is unclipped; reported oracle NMSE uses clipped steps.",
+    "Previously explored source IQ, not independent of DURA; no model updates, F/TX/V/target."
+  ]
+}

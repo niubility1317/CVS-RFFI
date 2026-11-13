@@ -1,0 +1,2468 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261104-phase2-csource-crosscil-priority-m4-r06",
+  "group_id": "phase2-group2-csource-bc",
+  "display_name": "Phase2 第二组：其他方法优先、RadioNet 暂缓",
+  "description": "Prioritize all non-RadioNet methods, retain the complete matrix, and run RadioNet after their completion.",
+  "kind": "comparison",
+  "stage": "Phase2-B-C",
+  "aliases": [
+    "Phase2-Csource-B-C-priority"
+  ],
+  "tags": [
+    "SCALR",
+    "phase2",
+    "Group2",
+    "DA-CIL",
+    "truth-last"
+  ],
+  "comparison_group_id": "20261102-phase2-r42-scenes-m4-r08",
+  "parent_run_ids": [
+    "20261030-phase2-group1-concat-midPL-threepool-m4-r01",
+    "20261101-phase2-mopc-author-group1-m4-r04",
+    "20261103-phase2-csource-bc-pilot-m1-r01",
+    "20261103-phase2-csource-poster-pilot-m1-r01",
+    "20261103-phase2-csource-hu-pilot-m1-r01",
+    "20261103-phase2-csource-hu-aux-m1-r01",
+    "20261103-phase2-csource-hu-aux-m3-r02",
+    "20261103-phase2-csource-crosscil-7x3-m4-r01",
+    "20261103-phase2-csource-crosscil-fast-m4-r02",
+    "20261103-phase2-csource-crosscil-scorefast-m4-r03",
+    "20261103-phase2-csource-crosscil-moregpu-m4-r04"
+  ],
+  "replaces_run_id": "20261103-phase2-csource-crosscil-moregpu-m4-r04",
+  "data": {
+    "dataset": "[已省略路径]",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "483 existing Group1 capsules, p2_min_v1 VALIDATED_ONCE",
+    "split_id": "read exact existing K/N split IDs",
+    "source_target_overlap_policy": "same source physical roles;target opens only B/C current support;query never fit",
+    "matrix": {
+      "K": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "N": [
+        2,
+        5,
+        10,
+        20
+      ],
+      "physical_pools": [
+        "P01",
+        "P02",
+        "P03"
+      ],
+      "MIX_episodes": 8,
+      "diagnostic_episodes_per_scene": 5,
+      "diagnostic_workpoint": [
+        5,
+        20
+      ],
+      "receivers": [
+        "1-1",
+        "14-7",
+        "2-1",
+        "20-1",
+        "7-14",
+        "7-7",
+        "8-8"
+      ],
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "query": "all_registered_complement; independent common-K intersection score also reported"
+    }
+  },
+  "permissions": {
+    "regime": "source-only A + current labeled old-B / new-C support",
+    "query_use": "inductive per-record prediction only; truth after all fixed predictions",
+    "external_method_exception": "original DA source-only L_s replay only where native B requires it",
+    "claim_scope": "Exposed development project transplant preserving the C source backbone and native C core; Hu clean-L_s-only auxiliary, POSTER projection and other auxiliary-head changes differ from authors. Orthogonal may drop B bias; LoRa uses native kNN instead of the B decision. No external DURA."
+  },
+  "checkpoint": {
+    "initialization": "Reuse C-source Group1 checkpoints and completed seed-bound Hu source auxiliaries; no source retraining.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "group1_source.load_source validates source contract and lineage",
+    "provenance_verdict": "source-only Group1 matching source contract; actual load verified by launcher smoke",
+    "selection_rule": "frozen Group1 source checkpoints; no target score selection or training of A"
+  },
+  "expected_artifacts": [
+    "takeover.json",
+    "source_smoke.json",
+    "worker_state.json",
+    "predictions_complete.json",
+    "score_state.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "old_macro_accuracy",
+      "new_macro_accuracy",
+      "H_macro",
+      "macro_f1",
+      "class_floor"
+    ],
+    "dimensions": [
+      "K",
+      "N",
+      "seed",
+      "pool",
+      "receiver",
+      "episode",
+      "scene",
+      "day",
+      "TX",
+      "B_method",
+      "C_core",
+      "natural",
+      "common-K"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "protonet_cda__mopc_hr-s2026092701",
+      "method": "mopc_hr source → protonet_cda B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "protonet_cda__mopc_hr-s2026092702",
+      "method": "mopc_hr source → protonet_cda B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "protonet_cda__mopc_hr-s2026092703",
+      "method": "mopc_hr source → protonet_cda B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "protonet_cda__mopc_hr-s2026092704",
+      "method": "mopc_hr source → protonet_cda B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "protonet_cda__orthogonal-s2026092701",
+      "method": "orthogonal source → protonet_cda B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "protonet_cda__orthogonal-s2026092702",
+      "method": "orthogonal source → protonet_cda B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "protonet_cda__orthogonal-s2026092703",
+      "method": "orthogonal source → protonet_cda B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "protonet_cda__orthogonal-s2026092704",
+      "method": "orthogonal source → protonet_cda B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "protonet_cda__lora_triplet_knn-s2026092701",
+      "method": "lora_triplet_knn source → protonet_cda B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "protonet_cda__lora_triplet_knn-s2026092702",
+      "method": "lora_triplet_knn source → protonet_cda B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "protonet_cda__lora_triplet_knn-s2026092703",
+      "method": "lora_triplet_knn source → protonet_cda B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "protonet_cda__lora_triplet_knn-s2026092704",
+      "method": "lora_triplet_knn source → protonet_cda B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "mrior_sda__mopc_hr-s2026092701",
+      "method": "mopc_hr source → mrior_sda B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "mrior_sda__mopc_hr-s2026092702",
+      "method": "mopc_hr source → mrior_sda B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "mrior_sda__mopc_hr-s2026092703",
+      "method": "mopc_hr source → mrior_sda B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "mrior_sda__mopc_hr-s2026092704",
+      "method": "mopc_hr source → mrior_sda B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "mrior_sda__orthogonal-s2026092701",
+      "method": "orthogonal source → mrior_sda B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "mrior_sda__orthogonal-s2026092702",
+      "method": "orthogonal source → mrior_sda B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "mrior_sda__orthogonal-s2026092703",
+      "method": "orthogonal source → mrior_sda B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "mrior_sda__orthogonal-s2026092704",
+      "method": "orthogonal source → mrior_sda B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "mrior_sda__lora_triplet_knn-s2026092701",
+      "method": "lora_triplet_knn source → mrior_sda B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "mrior_sda__lora_triplet_knn-s2026092702",
+      "method": "lora_triplet_knn source → mrior_sda B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "mrior_sda__lora_triplet_knn-s2026092703",
+      "method": "lora_triplet_knn source → mrior_sda B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "mrior_sda__lora_triplet_knn-s2026092704",
+      "method": "lora_triplet_knn source → mrior_sda B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "dadda_sda__mopc_hr-s2026092701",
+      "method": "mopc_hr source → dadda_sda B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "dadda_sda__mopc_hr-s2026092702",
+      "method": "mopc_hr source → dadda_sda B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "dadda_sda__mopc_hr-s2026092703",
+      "method": "mopc_hr source → dadda_sda B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "dadda_sda__mopc_hr-s2026092704",
+      "method": "mopc_hr source → dadda_sda B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "dadda_sda__orthogonal-s2026092701",
+      "method": "orthogonal source → dadda_sda B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "dadda_sda__orthogonal-s2026092702",
+      "method": "orthogonal source → dadda_sda B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "dadda_sda__orthogonal-s2026092703",
+      "method": "orthogonal source → dadda_sda B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "dadda_sda__orthogonal-s2026092704",
+      "method": "orthogonal source → dadda_sda B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "dadda_sda__lora_triplet_knn-s2026092701",
+      "method": "lora_triplet_knn source → dadda_sda B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "dadda_sda__lora_triplet_knn-s2026092702",
+      "method": "lora_triplet_knn source → dadda_sda B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "dadda_sda__lora_triplet_knn-s2026092703",
+      "method": "lora_triplet_knn source → dadda_sda B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "dadda_sda__lora_triplet_knn-s2026092704",
+      "method": "lora_triplet_knn source → dadda_sda B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "twostage_sda__mopc_hr-s2026092701",
+      "method": "mopc_hr source → twostage_sda B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "twostage_sda__mopc_hr-s2026092702",
+      "method": "mopc_hr source → twostage_sda B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "twostage_sda__mopc_hr-s2026092703",
+      "method": "mopc_hr source → twostage_sda B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "twostage_sda__mopc_hr-s2026092704",
+      "method": "mopc_hr source → twostage_sda B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "twostage_sda__orthogonal-s2026092701",
+      "method": "orthogonal source → twostage_sda B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "twostage_sda__orthogonal-s2026092702",
+      "method": "orthogonal source → twostage_sda B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "twostage_sda__orthogonal-s2026092703",
+      "method": "orthogonal source → twostage_sda B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "twostage_sda__orthogonal-s2026092704",
+      "method": "orthogonal source → twostage_sda B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "twostage_sda__lora_triplet_knn-s2026092701",
+      "method": "lora_triplet_knn source → twostage_sda B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "twostage_sda__lora_triplet_knn-s2026092702",
+      "method": "lora_triplet_knn source → twostage_sda B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "twostage_sda__lora_triplet_knn-s2026092703",
+      "method": "lora_triplet_knn source → twostage_sda B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "twostage_sda__lora_triplet_knn-s2026092704",
+      "method": "lora_triplet_knn source → twostage_sda B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada_knn__mopc_hr-s2026092701",
+      "method": "mopc_hr source → radionet_ada_knn B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada_knn__mopc_hr-s2026092702",
+      "method": "mopc_hr source → radionet_ada_knn B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada_knn__mopc_hr-s2026092703",
+      "method": "mopc_hr source → radionet_ada_knn B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada_knn__mopc_hr-s2026092704",
+      "method": "mopc_hr source → radionet_ada_knn B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada_knn__orthogonal-s2026092701",
+      "method": "orthogonal source → radionet_ada_knn B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada_knn__orthogonal-s2026092702",
+      "method": "orthogonal source → radionet_ada_knn B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada_knn__orthogonal-s2026092703",
+      "method": "orthogonal source → radionet_ada_knn B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada_knn__orthogonal-s2026092704",
+      "method": "orthogonal source → radionet_ada_knn B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada_knn__lora_triplet_knn-s2026092701",
+      "method": "lora_triplet_knn source → radionet_ada_knn B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada_knn__lora_triplet_knn-s2026092702",
+      "method": "lora_triplet_knn source → radionet_ada_knn B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada_knn__lora_triplet_knn-s2026092703",
+      "method": "lora_triplet_knn source → radionet_ada_knn B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada_knn__lora_triplet_knn-s2026092704",
+      "method": "lora_triplet_knn source → radionet_ada_knn B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "poster_ft__mopc_hr-s2026092701",
+      "method": "mopc_hr source → poster_ft B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "poster_ft__mopc_hr-s2026092702",
+      "method": "mopc_hr source → poster_ft B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "poster_ft__mopc_hr-s2026092703",
+      "method": "mopc_hr source → poster_ft B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "poster_ft__mopc_hr-s2026092704",
+      "method": "mopc_hr source → poster_ft B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "poster_ft__orthogonal-s2026092701",
+      "method": "orthogonal source → poster_ft B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "poster_ft__orthogonal-s2026092702",
+      "method": "orthogonal source → poster_ft B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "poster_ft__orthogonal-s2026092703",
+      "method": "orthogonal source → poster_ft B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "poster_ft__orthogonal-s2026092704",
+      "method": "orthogonal source → poster_ft B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "poster_ft__lora_triplet_knn-s2026092701",
+      "method": "lora_triplet_knn source → poster_ft B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "poster_ft__lora_triplet_knn-s2026092702",
+      "method": "lora_triplet_knn source → poster_ft B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "poster_ft__lora_triplet_knn-s2026092703",
+      "method": "lora_triplet_knn source → poster_ft B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "poster_ft__lora_triplet_knn-s2026092704",
+      "method": "lora_triplet_knn source → poster_ft B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation_hu2024__mopc_hr-s2026092701",
+      "method": "mopc_hr source → feature_separation_hu2024 B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation_hu2024__mopc_hr-s2026092702",
+      "method": "mopc_hr source → feature_separation_hu2024 B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation_hu2024__mopc_hr-s2026092703",
+      "method": "mopc_hr source → feature_separation_hu2024 B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation_hu2024__mopc_hr-s2026092704",
+      "method": "mopc_hr source → feature_separation_hu2024 B → mopc_hr C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation_hu2024__orthogonal-s2026092701",
+      "method": "orthogonal source → feature_separation_hu2024 B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation_hu2024__orthogonal-s2026092702",
+      "method": "orthogonal source → feature_separation_hu2024 B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation_hu2024__orthogonal-s2026092703",
+      "method": "orthogonal source → feature_separation_hu2024 B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation_hu2024__orthogonal-s2026092704",
+      "method": "orthogonal source → feature_separation_hu2024 B → orthogonal C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation_hu2024__lora_triplet_knn-s2026092701",
+      "method": "lora_triplet_knn source → feature_separation_hu2024 B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation_hu2024__lora_triplet_knn-s2026092702",
+      "method": "lora_triplet_knn source → feature_separation_hu2024 B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation_hu2024__lora_triplet_knn-s2026092703",
+      "method": "lora_triplet_knn source → feature_separation_hu2024 B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation_hu2024__lora_triplet_knn-s2026092704",
+      "method": "lora_triplet_knn source → feature_separation_hu2024 B → lora_triplet_knn C",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 2026102901,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing capsule split/support/channel seeds; source model seed is explicit",
+      "k": "1,5,10,20",
+      "scenario": "8 MIX full K/N; LS/MU/LU K5N20",
+      "optimizer": "fixed native B objective and C core with declared C-source transplant",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "metrics.json",
+        "common_query_metrics.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Fixed 7 B × 3 C × 4 seeds × 483 capsules: 40572 jobs and 252252 prediction rows.",
+    "All 21 previously completed P01/MIX01/1-1 seed01 K5N20 rows and their natural/common scores are reused without recomputing.",
+    "Pilot B state was not retained. Its equality to the newly fitted B state for other N is unknown; reused rows mark B_fit_shared_across_N null and disclose provenance. Newly generated N share one new B fit per K.",
+    "Target predictions and scores are exposed-development assessment; results cannot change methods, budgets, selection or retry.",
+    "Hu source auxiliary TX/RX branch uses clean L_s, 200 epochs, frozen C backbone, explicit source RX and TX labels; differs from native Hu source recipe.",
+    "External B/C support/query remain raw without DURA; ISSL remains stopped and CSIL author binding unavailable.",
+    "Group2a failed r02/r03 partial predictions remain separate, preserved and not restarted by this owner.",
+    "CUDA MoPC hierarchy batches only elementwise subtraction/square; each layer reduction, accumulation order and objective remain unchanged.",
+    "Local source-shape model microbenchmark 20-epoch 5-class/5-shot warm median 4.29 s → 3.64 s on RTX5070Ti, two samples each, not [计算环境] total throughput.",
+    "GPU model parameter and loss traces vary between repeated original runs due existing nondeterministic backward; fixed-tensor CUDA loss and gradients match bitwise; real source checkpoint no-query smoke repeats this check on [计算环境].",
+    "All parent workers finish naturally; every closed parent prediction is linked unchanged and all 21 original pilot scores remain referenced.",
+    "Old parent is resumed on any error before ownership transfer; no additional model/source training or target-based selection.",
+    "After the global ALL_PREDICTIONS_FIXED barrier, use at most four long-lived CPU scorers; each calls the unchanged independent _score once per unscored job.",
+    "Reuse natural/common scores for the 21 fixed pilot rows; no query or truth enters any training or prediction process.",
+    "On scoring process or submission failure stop admission, drain in-flight tasks, record FAILED and retain outputs.",
+    "[计算环境] measured isolated scorer module/process startup median 3.61s (5 sequential starts under shared CPU), not end-to-end scoring throughput.",
+    "Previously observed [计算环境] same B/C/seed/scene/K5N20 LS old 17.92s vs optimized 18.08s on different pools and shared GPU, so no server-side MoPC speedup claim yet.",
+    "GPU concurrency increase only; scientific matrix, source checkpoints, prediction reuse and truth-last barrier unchanged. Actual throughput and shared GPU use are to be measured.",
+    "User requested all other B methods before RadioNet; unchanged task indices, matrix, seeds, budgets and source checkpoints.",
+    "Old owned workers finish naturally; all complete predictions and pilot scores are reused; all predictions are frozen before independent truth-last scoring.",
+    "RadioNet acceleration benchmark not yet validated on [计算环境]; original gradient calculation is retained."
+  ]
+}

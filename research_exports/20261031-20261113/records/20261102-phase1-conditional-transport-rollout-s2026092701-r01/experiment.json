@@ -1,0 +1,115 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-conditional-transport-rollout-s2026092701-r01",
+  "group_id": "phase1-conditional-transport",
+  "display_name": "Phase1 self-rollout conditional transport pilot",
+  "description": "Fine-tune the exact three-epoch source flow pilot through four self-generated recovery steps using paired ground IQ and frozen-F features; compare 1/4/8 inference steps.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "conditional_transport",
+    "rectified_flow",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-conditional-transport-pilot-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "IQ [2,256]; parent posterior, current transport state, estimated-channel backprojection, estimated log noise, flow time",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "L_s fit ID labels only for source supervised loss; U_s clean-F soft outputs only, never U_s true labels, V or test",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Only source fit L_s truth and U_s high-confidence clean F pseudo targets; no U_s truth/V/test",
+    "external_method_exception": null,
+    "claim_scope": "Source source IDs used by F and seen in other channel views, pseudo targets not independent test; bounded correction may exploit classifier"
+  },
+  "checkpoint": {
+    "initialization": "Exact three-epoch source flow pilot checkpoint SHA256 7e0e2e5c8ce097062eb2a31f92442b84910338c81adddb90889a650df4a95c3c, frozen blind parent, source Gaussian prior and Tri-SIG-TIME SSL; DURA only loaded after training as comparison.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "Blind action SHA256 0ef60a205f785bda45f9936d519e925179dbbddeef2fd6cd285a83b02a284338 and source prior SHA256 5e35516d54d3e3d1d1749933861f290c1f87c8ffdb4b863d2f9819914135ceb9; flow pilot SHA256 7e0e2e5c8ce097062eb2a31f92442b84910338c81adddb90889a650df4a95c3c",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "Fine-tune fixed source flow pilot for three additional source views with four-step rollout; final checkpoint, fixed 1/4/8-step RX8 source probe; no automatic test."
+  },
+  "expected_artifacts": [
+    "checkpoint_epoch03.pt",
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "normalized final IQ loss",
+      "source clean-F pseudo target agreement",
+      "direct IQ normalized MSE"
+    ],
+    "dimensions": [
+      "six RX8 source heldout scenes; raw, parent, DURA, 1/4/8 transport steps"
+    ],
+    "scientific_rule": "Only L_s fit truth used for supervised source loss; U_s clean-F soft output; training uses own generated trajectory, clean IQ only in loss. No true target labels or test access."
+  },
+  "rows": [
+    {
+      "row_id": "conditional_transport_rollout_s2026092701",
+      "method": "source-trained four-step self-rollout conditional IQ transport",
+      "purpose": "assess whether training on self-generated trajectory improves source signal recovery versus teacher-interpolated flow",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026121454,
+        "split": 392005,
+        "data": 2026121455,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "4096 source fit IDs excluding 8192 prior IDs; source fit and shuffle seed 2026121455, model and transport time seed 2026121454",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "AdamW weight_decay .001",
+      "lr": 0.0005,
+      "epochs": 3,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "checkpoint_epoch03.pt",
+        "result.json"
+      ]
+    }
+  ],
+  "notes": "Follow-up after observing pilot source results: exact pilot initialization, four-step unrolled source trajectory, 3 additional epochs; no phase1 test. Original three training epochs add compute.",
+  "methods": [
+    "conditional continuous IQ transport using frozen blind posterior and dynamic estimated-channel backprojection"
+  ]
+}

@@ -1,0 +1,198 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-fresh-development-rx3-2-s2026092701-r01",
+  "group_id": "pamf-phase3-fresh-development",
+  "display_name": "PAMF第三阶段：新接收机时序发现池与固定PCD验证",
+  "description": "Build RX3-2 early U and future Q locally from existing Full validation, then fixed PCD444 and six readouts across three DURA conditions; no new neural mechanism.",
+  "kind": "cvs",
+  "stage": "Phase3-fresh-development-fixed-PCD-three-DURA",
+  "aliases": [
+    "新接收机PCD验证"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "fresh_receiver",
+    "fixed_PCD",
+    "unlabelled_DA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-fixed-PCD-new-development-receiver",
+  "parent_run_ids": [
+    "20261031-phase3-body-prototype-s2026092701-r02",
+    "20261031-phase3-body-prototype-s2026092701-r01",
+    "20261031-phase3-class-density-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Existing source roles plus three validated Full eq1 RX3-2 members",
+    "version": "VALIDATED_ONCE Full metadata reused; new fixed G10 episode, canonical U/future disjoint",
+    "representation": "Star received once and frozen DURA P1 for all learning; paired future clean test only, no clean U",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "3-2"
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [
+      "2021-03-01",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "tx_sets_ref": "Private builder/scorer only: old6 and metadata-selected discover3/late1; algorithm registered roster only old6",
+    "roles": {
+      "source_L_train": 6300,
+      "source_OE_train": 6134,
+      "source_Us_new": 0,
+      "source_V_known_tau": 27000,
+      "source_novel_truthside_only": 3150,
+      "star_U": 576,
+      "cross_clean_Q": 10238,
+      "cross_star_Q": 10238,
+      "unique_new_canonical": 10814,
+      "formal_RX24_18_new": 0
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": "p3fresh-b14665c51b89f44f2b76c137",
+    "split_id": "077495132350495f37a33d84",
+    "derived_public_handles": {
+      "discovery": {
+        "count": 576,
+        "capsule_id": "p3fresh-b14665c51b89f44f2b76c137",
+        "split_id": "077495132350495f37a33d84"
+      },
+      "future_star": {
+        "count": 10238,
+        "capsule_id": "p3fresh-e56d8e305e37c68dd40db030",
+        "split_id": "b9888c49e89d418cc25ab5ff"
+      },
+      "future_clean": {
+        "count": 10238,
+        "capsule_id": "p3fresh-97a3ca8706dbe966ac510a61",
+        "split_id": "7fdd29104962ba0d92969faf"
+      }
+    }
+  },
+  "permissions": {
+    "regime": "Source L labels and OE membership; early target U has no TX/K/quotas. Future Q never trained. U truth stays local, future truth only independent scorer.",
+    "query_use": "Local synthetic G10 smoke before Full; actual source-only checkpoints no-query smoke before model source/U; fixed444; source fit+V calibration frozen; all six x three predictions before independent truth.",
+    "external_method_exception": null,
+    "claim_scope": "Development new receiver and metadata-chosen TX; no exhaustive global-history blind claim, discovery or registration not implemented in this row."
+  },
+  "checkpoint": {
+    "initialization": "Fresh PCD from original source-only r03; reuse SOURCE444 only as source-only control, no old target-adapted initialization.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "[已省略路径]",
+    "provenance_verdict": "Original matching392005/roles; independent new target-U student; reused control identities remain their original runs/commits, all derived target weights/densities marked U ancestry.",
+    "selection_rule": "Fixed PCD444, no CCD/PL/EMA/head replacement; source192L64OE crossset+OE_KL+10anchor, target.1global+local, fixedK16 capacity not trueK"
+  },
+  "expected_artifacts": [
+    "pool/complete.json",
+    "pool/builder_report.json",
+    "pool/{discovery,future_star,future_clean}/{public,truth}/*",
+    "launch.json",
+    "pipeline_state.json",
+    "train/{final.pt,steps.jsonl,complete.json}",
+    "predict/{complete.json,models/*,thresholds.npz,source/*,targets/*}",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro A_K",
+      "macro R_U",
+      "H-score",
+      "macro C_K",
+      "original sameP1 F0 closed minus open AK",
+      "AUROC",
+      "OSCR AUC",
+      "knowncorrect rejected",
+      "source novel crossRX/day geometry"
+    ],
+    "dimensions": [
+      "six readouts / three DURA",
+      "six known / four unregistered truth-side only",
+      "TX/RX/day/MIX6scene; missing roster N/A",
+      "all444 training and source sampling match"
+    ],
+    "targets_ref": "Latest20261031 threeconditions allDURA; condition-specific targets remainclean95/star90, CK90/AKloss2pp. FullzeroTXlabelDA/discovery/futureanonymousREG stillrequired.",
+    "primary": [
+      "macro A_K",
+      "macro R_U",
+      "macro H-score",
+      "cleanRU95/starRU90 CK90 originalsameGclosedminusAK2pp/sourceknown12/coverage",
+      "star AK strictly above E0 and SOURCE, RU not below both; joint absolute and coverage criteria remain required"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "fresh-rx3-2-s2026092701",
+      "method": "PAMF-OW fixed body PCD on new star U576",
+      "purpose": "Independent new-U444, source-only matched control reused; fresh two-day future, main PCD_predicted_ratio",
+      "data_overrides": {
+        "public_handles": {
+          "discovery": {
+            "count": 576,
+            "capsule_id": "p3fresh-b14665c51b89f44f2b76c137",
+            "split_id": "077495132350495f37a33d84"
+          },
+          "future_star": {
+            "count": 10238,
+            "capsule_id": "p3fresh-e56d8e305e37c68dd40db030",
+            "split_id": "b9888c49e89d418cc25ab5ff"
+          },
+          "future_clean": {
+            "count": 10238,
+            "capsule_id": "p3fresh-97a3ca8706dbe966ac510a61",
+            "split_id": "7fdd29104962ba0d92969faf"
+          }
+        }
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103131,
+        "augmentation": 2026103114,
+        "support": null,
+        "evaluation": 2026103134
+      },
+      "seed_notes": "selection3131/scene3133/channel3134/shuffle3135 with prefix202610; source streams2026103017/18; Ubatch2026103112/proto2026103113; receiver2027",
+      "k": null,
+      "scenario": "source seenRX starDURA, Ustar576 only, paired fresh future cleanDURA/starDURA",
+      "optimizer": "AdamW body+projection+PCD auxiliary prototypes, Sinc48 fixed",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "pool/complete.json",
+        "pool/builder_report.json",
+        "pool/{discovery,future_star,future_clean}/{public,truth}/*",
+        "launch.json",
+        "pipeline_state.json",
+        "train/{final.pt,steps.jsonl,complete.json}",
+        "predict/{complete.json,models/*,thresholds.npz,source/*,targets/*}",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Selected PCD research baseline does not retroactively promote historical rows; thresholds and targets unchanged.",
+    "No U truth transferred; future true TX/day/scenario only scorer.",
+    "No unknown discovery/REG yet; A_N/H_OW N/A and full goal ACTIVE.",
+    "Public handles frozen after completed immutable local builder, before any remote model launch; see derived_public_handles."
+  ]
+}

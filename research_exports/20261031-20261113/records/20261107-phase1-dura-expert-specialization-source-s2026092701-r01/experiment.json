@@ -1,0 +1,110 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-dura-expert-specialization-source-s2026092701-r01",
+  "group_id": "phase1-dura-expert-specialization-source",
+  "display_name": "三专家源域门控与分工诊断",
+  "description": "冻结三专家源训练最终权重，在 672 条合法源 pilot IQ 上测量专家门控权重、波形误差和源 clean 最优专家诊断；不用于选模。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "F-free",
+    "expert-mixture",
+    "gpu-diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261106-phase1-dura-expert-mixture-source-s2026092701-r01",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split source pilot",
+    "version": "source cache R07 epoch19",
+    "representation": "672 received/clean source IQ paired records with public RX and view",
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only gate and waveform diagnostics, no TX identity accuracy, no target selection"
+  },
+  "checkpoint": {
+    "initialization": "Fixed source-only final epoch5 three-expert correction and original DURA v1.0",
+    "sources": [
+      "20261106-phase1-dura-expert-mixture-source-s2026092701-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Strict source checkpoint identity, source-only flags, 32768 fit IDs and pilot disjointness; DURA source-only provenance verified",
+    "provenance_verdict": "Pre-registered source-only model; checkpoint and completion verified at diagnostic execution",
+    "selection_rule": "Final epoch 5 fixed before target access; diagnose this exact candidate regardless of source or target outcomes"
+  },
+  "expected_artifacts": [
+    "result.json: aggregate source gate, expert and mixture waveform metrics"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "gate weight and entropy",
+      "expert and mixture source IQ NMSE",
+      "nondeployable source-clean best-expert diagnostic"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views",
+      "48 records per group"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "frozen-three-expert-source-diagnostic",
+      "method": "Source-only frozen gate/expert waveform analysis and source-clean oracle",
+      "purpose": "Check whether expert routes differ and gate specializes without using F or TX labels",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Existing fixed tail-excess source G and Tri-SIG-TIME SSL seed 2026092701; no training or selection.",
+      "k": null,
+      "scenario": "source pilot RX4/6 and RX8 x seven views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "result.json: aggregate source gate, expert and mixture waveform metrics"
+      ]
+    }
+  ],
+  "notes": [
+    "No F weights or outputs, TX labels, V, or target IQ or truth; source clean IQ only for source waveform error.",
+    "Source pilot disjoint from the expert fit set, but previously explored and not an independent blind test.",
+    "Per-record best expert uses corresponding source clean and is unavailable during deployment; it is not an identity accuracy estimate or a general performance bound.",
+    "Diagnostic does not select, alter or stop the fixed candidate or its mandatory seven-view test."
+  ]
+}

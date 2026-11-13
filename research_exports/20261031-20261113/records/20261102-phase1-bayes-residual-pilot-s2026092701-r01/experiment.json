@@ -1,0 +1,117 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-bayes-residual-pilot-s2026092701-r01",
+  "group_id": "phase1-bayes-residual",
+  "display_name": "物理后验残差恢复网络源域原型",
+  "description": "固定盲信道与条件后验，利用反投影残差训练轻量 IQ 修正网络；仅合法 L_s 训练标签参与真值监督。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "blind_channel",
+    "residual_correction",
+    "L_s_supervised",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-blind-bayes-action-full-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "IQ [2,256], input-only estimated-action posterior and backprojected residual; paired ground IQ, legal L_s labels and frozen F soft targets guide training",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "L_s metadata contains 6300 truth labels; only fit-ID L_s truth enters loss; no U_s truth, V or test read",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "L_s source train labels only in optimizer; U_s truth, V and test remain inaccessible",
+    "external_method_exception": null,
+    "claim_scope": "Source physical IDs observed in previous channel views, RX8 same prior pilot; no independent blind or real satellite claim"
+  },
+  "checkpoint": {
+    "initialization": "Random residual corrector with identity output. Fixed blind estimator and Gaussian prior; frozen F and legal L_s labels train residual; DURA loaded only after optimization for source comparison.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "Blind action SHA256 0ef60a205f785bda45f9936d519e925179dbbddeef2fd6cd285a83b02a284338 and source prior SHA256 5e35516d54d3e3d1d1749933861f290c1f87c8ffdb4b863d2f9819914135ceb9",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "One fixed pass over 4096 source train IDs, final checkpoint; fixed 384 source RX8 sample, no test or checkpoint selection."
+  },
+  "expected_artifacts": [
+    "checkpoint.pt",
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source clean-F pseudo-target agreement",
+      "direct normalized IQ MSE",
+      "L_s training exposure"
+    ],
+    "dimensions": [
+      "six source RX8 heldout scenarios"
+    ],
+    "scientific_rule": "Source RX8 clean-F pseudo targets not true labels; L_s train truth used only on fit IDs. No target predictions."
+  },
+  "rows": [
+    {
+      "row_id": "bayes_residual_pilot_s2026092701",
+      "method": "identity-initialized dilated residual CNN conditioned on posterior IQ and estimated-channel adjoint residual, L_s truth + F soft targets",
+      "purpose": "assess whether data-consistency-conditioned correction improves frozen blind Bayesian restoration",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120654,
+        "split": 392005,
+        "data": 2026120655,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "fixed parent prior and RX8 cohort; source fit subset and order seed2026120655",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "AdamW weight_decay .001",
+      "lr": 0.0001,
+      "epochs": 1,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "checkpoint.pt",
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "L_s metadata loads 6300 labels for physical ID verification; only fit IDs L_s labels enter loss; U_s truth not loaded.",
+    "Parent and F frozen, DURA only loaded after training.",
+    "Source physical IDs and RX8 sample previously observed; not independent blind or real satellite.",
+    "No V or Phase1 test IQ."
+  ]
+}

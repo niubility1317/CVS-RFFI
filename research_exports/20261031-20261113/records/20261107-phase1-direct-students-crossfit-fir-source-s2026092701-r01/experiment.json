@@ -1,0 +1,117 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-direct-students-crossfit-fir-source-s2026092701-r01",
+  "group_id": "phase1-direct-students-crossfit-fir-source",
+  "display_name": "独立学生源域交叉拟合复滤波诊断",
+  "description": "用同记录源 clean 半窗拟合标量或 17 抽头复滤波，在另一半窗测量源 IQ 误差并双向交叉。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source-only",
+    "F-free",
+    "direct-student",
+    "crossfit-fir"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261106-phase1-direct-spectral-distill-source-s2026092701-r01",
+    "20261106-phase1-direct-spectral-wide-distill-source-s2026092701-r01",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split source pilot",
+    "version": "source cache R07 epoch19",
+    "representation": "672 fixed source pilot paired received/clean IQ, frozen DURA output",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Per-record clean-calibrated source crossfit only; not deployment, identity accuracy or general upper bound"
+  },
+  "checkpoint": {
+    "initialization": "Two fixed independently trained source-only spectral students and fixed DURA",
+    "sources": [
+      "20261106-phase1-direct-spectral-distill-source-s2026092701-r01",
+      "20261106-phase1-direct-spectral-wide-distill-source-s2026092701-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Source summary/checkpoint commit, 8192/32768 fit sizes, flags, DURA teacher ancestry and disjoint source pilot",
+    "provenance_verdict": "Both students and original DURA source-only with no target ancestry",
+    "selection_rule": "Fixed final 20-epoch checkpoints, no source or target score selection"
+  },
+  "expected_artifacts": [
+    "result.json: held-out source IQ error after per-record scalar/FIR calibration"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "held-out unaligned IQ NMSE",
+      "cross-fitted scalar IQ NMSE",
+      "cross-fitted complex FIR17 IQ NMSE"
+    ],
+    "dimensions": [
+      "672 source records",
+      "RX4/6 and RX8 x seven views x 48",
+      "received, 8192 student, 32768 student, DURA"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "fixed-direct-student-crossfit-fir",
+      "method": "Fit complex scalar or 17-tap ridge FIR on one clean source half, evaluate other half, swap halves",
+      "purpose": "Diagnose whether stationary frequency-selective errors account for direct student source distortion",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Two pre-existing independently initialized students share model seed and source data sampling rule; the 32768 source IDs include the earlier 8192, with fourfold updates.",
+      "k": null,
+      "scenario": "fixed previously explored source pilot grouped by RX and source simulation view",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "result.json: held-out source IQ error after per-record scalar/FIR calibration"
+      ]
+    }
+  ],
+  "notes": [
+    "No F, TX, V, target IQ/truth or parameter updates.",
+    "Source clean calibration is unavailable in deployment; first and second halves exchange fit/evaluation roles.",
+    "17-tap ridge factor .001 fixed before diagnostic; fitted filters see adjacent prediction IQ at boundary but no held-out clean.",
+    "Two students use different source sizes and training exposure; source pilot previously explored, no independent target claim.",
+    "No candidate selection, hyperparameter tuning or rerun based on target outcomes."
+  ]
+}

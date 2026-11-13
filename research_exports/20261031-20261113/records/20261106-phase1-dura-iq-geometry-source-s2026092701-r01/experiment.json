@@ -1,0 +1,109 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-dura-iq-geometry-source-s2026092701-r01",
+  "group_id": "phase1-dura-iq-geometry",
+  "display_name": "DURA 噪声门控与源 IQ 相似关系训练",
+  "description": "冻结原 DURA，训练噪声门控时变修正，新增基于源 clean IQ 的批内软相似关系保持；无 F、TX 标签、V 或目标。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "dura",
+    "F-free-training",
+    "source-iq-geometry",
+    "source-calibrated-noise-gate"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "paired received/clean IQ, per-packet DURA and its estimated physical action",
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "F-free and TX-label-free paired source IQ training, source IQ diagnostics; no target score"
+  },
+  "checkpoint": {
+    "initialization": "Frozen original DURA v1.0 E20/4940 with independently initialized 28614-parameter time-varying correction and zero heads",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "frozen_dura verifies original7/63/30, training_F_access false, TX labels 0 and target_training false",
+    "provenance_verdict": "Fixed DURA source-only original contract; no target ancestry",
+    "selection_rule": "Fixed final epoch 5; no source or target performance selection"
+  },
+  "expected_artifacts": [
+    "final.pt: fixed final epoch",
+    "source_summary.json: source IQ only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source paired IQ NMSE",
+      "training IQ loss"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "dura-iq-geometry-final",
+      "method": "Noise-gated DURA time-varying correction, IQ guard plus 0.2 KL of clean-clean versus restored-clean waveform similarity distributions, temperature 0.5",
+      "purpose": "Train a distinct F-free recovery network at fixed five-epoch budget",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "New model initialization 2026110612; source fit 2026110611, fixed input caches and DURA seed 2026092701; optimizer ordering 2026110613.",
+      "k": null,
+      "scenario": "fixed source cache epochs 21, 22, 23",
+      "optimizer": "AdamW weight decay 0.001",
+      "lr": 0.0003,
+      "epochs": 5,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "final.pt: fixed final epoch",
+        "source_summary.json: source IQ only"
+      ]
+    }
+  ],
+  "notes": [
+    "Original source-only DURA frozen; independently initialized 28614-parameter correction, 5 epochs; no F weights/outputs, TX labels, V or target data during G training.",
+    "Noise gate thresholds -3.8 and -2.8 derive from previously explored 672-record source pilot, not independent validation; inference only uses current IQ and DURA context.",
+    "Each source IQ record is flattened and unit normalized; target distribution uses batch clean-clean cosine similarities and prediction uses restored-clean similarities. Softmax temperature 0.5 and mean row-wise KL weight 0.2.",
+    "No TX identity labels or learned recognition features; neighborhood preservation is packet waveform geometry, not a demonstrated transmitter-identity objective.",
+    "All seven Phase1 views run and score truth-last regardless of source metrics."
+  ]
+}

@@ -1,0 +1,177 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase1-DURA-SIGcontextPrior-E30-s2026092701-r01",
+  "group_id": "phase1-DURA-source-SIG-prior-context-pair-E30",
+  "display_name": "源发射机特征参与恢复解码：从零单阶段30轮",
+  "description": "原四物理项和输出SIG指导保留；两个prior中层各预测160维源SIG，新增0.01×两预测相对MSE均值。预测参与三个解码层的有界调制。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "E30",
+    "scratch",
+    "single-stage",
+    "F-guided",
+    "prior-SIG-context"
+  ],
+  "comparison_group_id": "DURA-source-SIG-prior-context-vs-matched-aux-E30",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalR07source63000/20cachedreceived-clean-actionviews/repeat01..10;actualweightedcleanSIG160cache40.32MBreuse",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "target_panel": "Eachnewversionall168000x7regardlesssourceperformance",
+    "actual_training_labels": "Pairedsourceclean/action and frozenFactualSIG only. NoTX/V/target/pseudoTX/newclassifier/headfit. NoRX/scene/F inputtoG.",
+    "augmentation": "OriginalR07cached15percentclean/85percentsixpractical;01..20then01..10;noaugmentationorRNGchange"
+  },
+  "permissions": {
+    "regime": "Authorized_source_F_guided_prior_SIG_decoder_context",
+    "query_use": "F50sourceSIGguidanceonly/frozenF-defaulthead. G trainingonlyLsUsIQ+pairedsimulator+sourceSIG. TestG receivesIQonly;eachroleall7beforeindependenttruthlast.",
+    "external_method_exception": null,
+    "claim_scope": "F-guided/notF-free;newarchitecturehypothesiswithnoqualificationclaim;sourceoraclesnotdeployableorupperbound. Oldnegativeversions/defaultDURAunchanged."
+  },
+  "checkpoint": {
+    "initialization": "Gscratch/344295params/base266951sameinit+77344newparameters/noGancestor/noIQteacher;originalphysicalandSIGobjectives;F50frozen",
+    "sources": [
+      "NoGinitializationcheckpoint",
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth originalsource4df7/50/11100/Fteacherandpostfreezeassessment",
+      "runs/20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01/source_signature_cache actualF-onlycleanSIG DATAONLY/producedbeforeoldGoptimizer/notGancestor",
+      "OriginalSIG47591 andpureG8cf frozenpredictions/defaultR69/R17 comparisons only;matchedothernewrow 20261031-phase1-DURA-SIGpriorAux-E30-s2026092701-r01"
+    ],
+    "contract_check_ref": "Original7/63/30source63000L6300U56700/VALIDATED_ONCEhandles/matchingF50source4df7-50-11100/defaulthead/existingF-onlySIGcachemetadata-order/strictE0-final30aliases",
+    "provenance_verdict": "NoGancestor/oracleIQ/oldGmodifiedIQ. Cache63000x160FP32/40.32MB F-only/source4df7 matchingdata,preGoptimizer;reuseindependentproof/newcacheF0. F50/11100+producer63000prefix/.847077s knowledgecostexplicit.",
+    "selection_rule": "Fixedfinal30/7410. Two registeredrows bothformalall7regardlesssourcequality;noepochselection/earlystop/targetfeedback/grid. Bothnewheads fixed8bins/160D/seedoffset2026103113/.01mean2aux;mainonlydecoder3levels bound.1/zeroLinear. Nativeinterpolation bothtrainingandfrozen. No SIGfastTrain slices."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "plan.json",
+    "smoke.json",
+    "submitted-scratch_joint.json",
+    "scratch_joint/launch.json",
+    "scratch_joint/resolved_config.json",
+    "scratch_joint/initialization.json",
+    "scratch_joint/training.jsonl",
+    "scratch_joint/training_complete.json",
+    "scratch_joint/final.pt",
+    "scratch_joint/matched_profile.json",
+    "scratch_joint/source_prediction/complete.json",
+    "scratch_joint/source_summary.json",
+    "scratch_joint/target_prediction/complete.json",
+    "scratch_joint/target_summary.json",
+    "scratch_joint/complete.json",
+    "complete.json",
+    "source_signature_cache/targets.npy",
+    "source_signature_cache/physical_ids.npy",
+    "source_signature_cache/complete.json",
+    "scratch_joint/teacher_load.json",
+    "scratch_joint/source_reference.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy/MacroF1/correct-repair-damage-net/overall-TX-RX-day",
+      "sixeachgap3pp/cleanstrict/R17each1pp/oldlowurban70",
+      "full30physical4+originalSIGalpha1cap.5+.01mean2priorSIGaux/perheaderrors/exposures/views/Ffreeze-RNG",
+      "completeGparameters-storage-ConvLinearMAC-2prior4CG27FFT/nativeactualsamecardlatency-throughput-VRAM/train-wholetime/one-stagebudget-Fknowledgecost"
+    ],
+    "dimensions": [
+      "fixedmodelseed2026092701",
+      "sourceV1800x7",
+      "formal168000x7",
+      "overall/TX/RX/day",
+      "matchedpureGanddefaultDURA"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "scratch_joint",
+      "method": "G344295/physical4+SIGalpha1cap.5+.01mean2priorSIGaux/3leveldecoderSIGcontext",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103004,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "model/CUDAprobe2026092701;split392005/sourcepositions2026101901;cachedchannel2026101912/receiver2026101911;shuffleNumPy2026103004;newheadsCPUseedmodel+2026103113+priorindex/forkpreserved;eval2027;supportN/A",
+      "k": null,
+      "scenario": "Originalsourcecache15percentclean/85percentpractical;01..20then01..10;no teacherIQ;formalclean+sixpractical",
+      "optimizer": "resetAdamW/W1e-4/globalclip1/warm247cos2e-5",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "plan.json",
+        "smoke.json",
+        "submitted-scratch_joint.json",
+        "scratch_joint/launch.json",
+        "scratch_joint/resolved_config.json",
+        "scratch_joint/initialization.json",
+        "scratch_joint/training.jsonl",
+        "scratch_joint/training_complete.json",
+        "scratch_joint/final.pt",
+        "scratch_joint/matched_profile.json",
+        "scratch_joint/source_prediction/complete.json",
+        "scratch_joint/source_summary.json",
+        "scratch_joint/target_prediction/complete.json",
+        "scratch_joint/target_summary.json",
+        "scratch_joint/complete.json",
+        "complete.json",
+        "source_signature_cache/targets.npy",
+        "source_signature_cache/physical_ids.npy",
+        "source_signature_cache/complete.json",
+        "scratch_joint/teacher_load.json",
+        "scratch_joint/source_reference.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Newpairedarchitecturetest/NOTsourcequalified. OriginalSIG47591mainbaseline;pairednewrowsisolateinferenceconditioner;newauxvsoriginalSIGisolatesprior-auxaddition. OriginalmidSIGcoarse-trainonlyandcontextFiLMstatisticsnegativeresultspreserved/notsuccess/noGancestor. Oldperiod20/RX/gradient/physicaloraclesFAILpreserved/noautomaticfollowupfromFAIL.",
+    "Bothpriorsreuseoriginalencoder/decode/out/aliases. Poolactualencoderlevel1 B16x128 into8bins,Linear128to160. MainLinear160to112 zero-init supplies3decoderlevels widths28/16/12 scale1+.1tanh andshift.1tanh. Auxsameprojectionseed/predictionlosswithnoinferenceheadexecution/conditioner. Originalprior.outzero/E0conditionergradzeroexpected;auxalreadyreachespriorblock0/block1/predictors.",
+    "OutputoriginalactualweightedTripleSIGrelativeMSE alpha1 andexactprefix-inputVJP/IQcap.5 remain. Newordinaryaux .01mean2relativeMSE(targetdetached,denominatorfloor1e-4) gradientoutsideoutputSIGcap;globalclip1 remains. ThismayalsoaffectearlierGthroughpriorinputs/noprior-onlygradientclaim. NoTX/RX/scene/Fdeploymentinput/newclassifier.",
+    "4focusedtestsPASS inclinit/RNG/actualconditioningconnectedboundedgradient/perrecorddetachedtarget/matchedauxskippedhead. BothactualCLI/factory/aliases/fullG/initIQ/defaultobjective-return-and-newreturn/fakeguideassembledloss/metadata/sharedCPUlockchecksPASS. OneindependentP0P1reviewPASSforeachcandidate/togethercommoncode. Firstreal2noncleanLssmoke actualcache/F-prefix/auxshallow-mid-headgrad/originalcap/allGgrad/strictE0/nativeoptimized/Ffreeze/inferenceheadcalls;G12/fullF4/prefix2/VJP2 each;PASScontinues.",
+    "Gscratch30/7410/B256/onejointstage/source01..20then01..10/L189000U1701000/AdamW.001/warm247/cos2e-5/WD1e-4/clip1/FP32TF32off. F50source4df7/50-11100/cache63000prefix/.847077s disclosure;source-onlyFcache40.32MBreused/newFcache0;onlineprefix-VJP1.89meach/fullFtrain0. Main344295/25144872ConvLinearMAC/aux308231/25068072inferenceMAC;allparametersretainedincludingauxheads;actualprofiletoverify.",
+    "Automaticnativeprofile/source1800x7/formal168000x7/allpredictionsthentruthlastregardlesssourcequality. Sixeachcorrect>=137216/81.6761904762%,clean>=142256/R17eachloss<=1680/lowU70separate. Independentoutputs/sharedCPUlock/onearchive/preflight/compile/postPID-CWD-argv-GPU-loggrowth;ownGPU<=2andCPUscorer<=1/otherownersuntouched. Singlemodelseed/exposedengineeringbenchmark/notnewblindtest/defaultDURAunchanged/fullgoalACTIVE."
+  ]
+}

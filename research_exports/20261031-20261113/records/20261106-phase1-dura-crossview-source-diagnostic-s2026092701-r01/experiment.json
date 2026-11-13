@@ -1,0 +1,105 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-dura-crossview-source-diagnostic-s2026092701-r01",
+  "group_id": "phase1-dura-source-crossview",
+  "display_name": "DURA 对同源 IQ 三种模拟信道的误差分解",
+  "description": "对 672 条合法源 IQ 的三个固定模拟视图计算 DURA 波形误差的有限三视图均值项与离散项，不训练或读取 F、TX、V、目标。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "F-free",
+    "frequency-diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache fixed simulated epochs 21/22/23",
+    "representation": "received and clean IQ [2,256]",
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Exploratory finite three-view source IQ decomposition; not identity or independent target performance"
+  },
+  "checkpoint": {
+    "initialization": "Frozen original DURA stage2 E20/4940",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "frozen_dura validates original7/63/30 and source-only checkpoint; fresh source cache shared physical IDs",
+    "provenance_verdict": "Fixed source-only DURA, no F or target ancestry",
+    "selection_rule": "Fixed original DURA, no target selection"
+  },
+  "expected_artifacts": [
+    "result.json per-RX and clean-count groups of finite three-view source IQ decomposition"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "mean three-view source IQ NMSE",
+      "squared error of finite three-view mean",
+      "finite three-view error dispersion"
+    ],
+    "dimensions": [
+      "672 physical source records",
+      "three simulated views",
+      "RX4/6 and RX8, clean view count"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "fixed-dura-source-three-view",
+      "method": "Frozen DURA per physical source IQ across three fixed simulated observations",
+      "purpose": "Assess channel-dependent source error variability for possible cross-view training",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Existing pretrained source runs and fixed source pilots; no stochastic training, support or augmentation in this benchmark.",
+      "k": null,
+      "scenario": "three source simulated views at epochs 21,22,23",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Per-record squared mean error plus finite-view dispersion equals average source IQ NMSE; it is not an irreducible bias estimate.",
+    "Averaging three outputs is an unavailable-view oracle, not a deployable proposal or identity metric.",
+    "Source data were explored and DURA may have seen corresponding source domains. No F/TX/V/target reads."
+  ]
+}

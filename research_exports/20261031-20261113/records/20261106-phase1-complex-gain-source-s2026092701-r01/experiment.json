@@ -1,0 +1,107 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-complex-gain-source-s2026092701-r01",
+  "group_id": "phase1-complex-gain-source",
+  "display_name": "源域整体相位与复增益误差诊断",
+  "description": "比较原始输入、自适应滤波、双域和 DURA 的源域逐记录最优相位和复增益校正误差，不部署源真值。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "F-free",
+    "frequency-diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261106-phase1-adaptive-inverse-source-s2026092701-r01",
+    "20261106-phase1-direct-dualdomain-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "source received and clean IQ",
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only per-record clean-IQ oracle alignment, not deployable or identity accuracy"
+  },
+  "checkpoint": {
+    "initialization": "Fixed original DURA, independently trained adaptive inverse and dual-domain source checkpoints",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261106-phase1-adaptive-inverse-source-s2026092701-r01",
+      "20261106-phase1-direct-dualdomain-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "Each fixed source-only checkpoint verified by its loader; no selection or target training",
+    "provenance_verdict": "Original source-only DURA and same-contract source-only candidate, subject to completion check",
+    "selection_rule": "Prespecified candidate final epoch5; no target score selection"
+  },
+  "expected_artifacts": [
+    "result.json four source models x unaligned, oracle phase, oracle complex gain"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "per-record normalized waveform error",
+      "oracle phase and complex gain correction"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "oracle-phase-and-gain",
+      "method": "Four fixed input/output methods; per-record minimum phase-only and unconstrained complex gain source IQ errors",
+      "purpose": "Measure which source waveform errors can be explained by one global phase or gain",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Existing pretrained source runs and fixed source pilots; no stochastic training, support or augmentation in this benchmark.",
+      "k": null,
+      "scenario": "seven fixed Phase1 source views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Oracle uses same-record clean source IQ; it is not available for target inference and not a trained model.",
+    "Previously explored source pilot, not independent of original DURA; no TX, F, V, target or model updates.",
+    "Oracle complex gain is an upper-bound reference within the scalar-gain family only, not a bound on all restorers or identity accuracy."
+  ]
+}

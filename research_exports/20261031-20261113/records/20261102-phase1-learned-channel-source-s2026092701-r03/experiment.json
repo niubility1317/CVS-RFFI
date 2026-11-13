@@ -1,0 +1,113 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-learned-channel-source-s2026092701-r03",
+  "group_id": "phase1-learned-channel",
+  "display_name": "Source-supervised blind channel correction regressor",
+  "description": "Learn bounded complex 5-tap correction from received and blind-parent forward features using paired source clean IQ as offline target; no DURA or TX labels.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "attention",
+    "waveform",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": "20261102-phase1-learned-channel-source-s2026092701-r02",
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "Fixed approved impaired source IQ and paired source clean IQ; target bounded oracle 5-tap fit to clean-forward signal; features use received and blind-parent forward only.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No TX source labels or U_s truth; only clean source IQ and frozen F soft outputs",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Source L_s/U_s paired clean and impaired IQ to create source-only channel target; no TX labels, U_s truth, V or ground test.",
+    "external_method_exception": null,
+    "claim_scope": "Source channel regressor training only, not restoration or ground accuracy. Source pairs previously explored."
+  },
+  "checkpoint": {
+    "initialization": "Fresh zero-output 62-feature regressor, independent frozen blind source action and source Gaussian prior; no DURA or F network.",
+    "sources": [
+      "Fixed independent source blind action checkpoint 94693a342bb2daa684c0f21415d7b949f9fb2107",
+      "Fixed source Gaussian prior"
+    ],
+    "contract_check_ref": "Same 8192 source fit IDs and source view assignments as independent unroll; disjoint source validation and heldout; source clean paired IQ target only; no DURA.",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "8192 fit IDs fixed, source view first non-clean, 30 epochs, final checkpoint; no validation/ground selection."
+  },
+  "expected_artifacts": [
+    "checkpoint.pt",
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source training coefficient error",
+      "source fit L_s/U_s and scene counts"
+    ],
+    "dimensions": [
+      "fixed source fit only; no TX label or validation scoring"
+    ],
+    "scientific_rule": "Frozen independent blind operator; estimate source oracle complex-FIR correction from paired clean IQ, train regressor from observable received and blind-parent features only. 30 epochs, no labels or F."
+  },
+  "rows": [
+    {
+      "row_id": "free_mixture_pilot_s2026092701",
+      "method": "source-supervised bounded complex channel predictor",
+      "purpose": "predict source oracle channel correction using only observable blind features",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026128054,
+        "split": 392005,
+        "data": 2026125055,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "Model seed 2026128054, fit seed 2026125055, order seed 2026128055.",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "AdamW weight_decay 0.0001",
+      "lr": 0.0005,
+      "epochs": 30,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "checkpoint.pt",
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No DURA or F network in training or channel predictor.",
+    "Paired source clean IQ constructs bounded oracle correction as supervision only; inference predictor consumes received and blind-parent output.",
+    "Training uses fixed 8192 source fit IDs, one previously approved impaired view each, disjoint validation and heldout.",
+    "This is an operator model, not yet a restoration result; predeclare source diagnostics before model results.",
+    "r01 source smoke failed due to NumPy/PyTorch array conversion; r02 uses tested buffer conversion. Full r01 training never started.",
+    "r02 source smoke failed on NumPy integer tensor indexing; r03 uses independently tested torch.long indices. Full r02 training never started."
+  ]
+}

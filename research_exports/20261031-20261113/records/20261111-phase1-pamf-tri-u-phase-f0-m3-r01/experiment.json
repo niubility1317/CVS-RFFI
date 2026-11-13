@@ -1,0 +1,231 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261111-phase1-pamf-tri-u-phase-f0-m3-r01",
+  "group_id": "phase1-trisig-unlabeled-common-phase-consistency",
+  "display_name": "Tri-SIG-TIME 无标签公共相位旋转五分支一致性三种子",
+  "description": "Retain complete original Tri SSL; add accepted source-U five-branch cosine consistency between unrotated and bounded common-phase-rotated views, inside original U gradient guard.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [
+    "Tri SSL unprotected physical relation"
+  ],
+  "tags": [
+    "PAMF",
+    "semi-supervised",
+    "phase",
+    "multi-branch",
+    "three-seed",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig Main split",
+    "version": null,
+    "representation": "equalized1 / unitRMS / FP32 IQ 2x256 / Fs25MHz",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 6300,
+      "U_s": "56700 source IQ with TX labels hidden",
+      "V": "27000 non-updating source validation"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "source_rxs": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_rxs": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ]
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Phase1 terrestrial proxy; direct recognition; no future-date or in-orbit claim"
+  },
+  "checkpoint": {
+    "initialization": "same-seed Tri-SIG-TIME source-only scratch E20; continue E10+E20",
+    "sources": [
+      "20261027-phase1-pamf-repl-shuffled-views-m16-r02 same-seed source segment20"
+    ],
+    "contract_check_ref": "source.parent and resolved source contract",
+    "provenance_verdict": "same F0 source contract; no target or U truth use",
+    "selection_rule": "fixed final E50, no target feedback"
+  },
+  "expected_artifacts": [
+    "three real-checkpoint no-query finite-backward smokes",
+    "three E50 models and U/phase exposure",
+    "seven-scene truth-blind predictions fixed before independent scoring",
+    "paired scene and TX/RX/day comparisons"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro F1",
+      "paired corrected and missed",
+      "U acceptance",
+      "resource use"
+    ],
+    "dimensions": [
+      "seed",
+      "scene",
+      "TX",
+      "RX",
+      "day",
+      "population"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "tri-u-phase-s2026092701",
+      "method": "Complete Tri SSL plus accepted source-U five-branch cosine consistency under independent common phase angles in [-pi/8, pi/8], weight .05, within original U guard",
+      "purpose": "Test bounded receive-phase robustness against original same-seed complete Tri SSL",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "view_count": 3,
+        "U_use": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-u-phase-s2026092702",
+      "method": "Complete Tri SSL plus accepted source-U five-branch cosine consistency under independent common phase angles in [-pi/8, pi/8], weight .05, within original U guard",
+      "purpose": "Test bounded receive-phase robustness against original same-seed complete Tri SSL",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "view_count": 3,
+        "U_use": true
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    },
+    {
+      "row_id": "tri-u-phase-s2026092703",
+      "method": "Complete Tri SSL plus accepted source-U five-branch cosine consistency under independent common phase angles in [-pi/8, pi/8], weight .05, within original U guard",
+      "purpose": "Test bounded receive-phase robustness against original same-seed complete Tri SSL",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "view_count": 3,
+        "U_use": true
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026102207,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed controls independent scratch model and source loader; augmentation value is fixed temporal permutation seed, original source augmentation schedules unchanged; fixed evaluation IQ reused",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "unchanged native optimizer and CENTER_UNITS Sinc mapping",
+      "lr": 0.0002,
+      "epochs": "20 shared source prefix + 10 + 20, fixed E50",
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "E50 source checkpoint",
+        "REPL and phase-U exposure counters",
+        "frozen seven-scene predictions and scores"
+      ]
+    }
+  ],
+  "notes": [
+    "Phase rotation is a received-IQ nuisance hypothesis, not an identified satellite channel; it may suppress identity-bearing effects and must be experimentally tested.",
+    "Accepted U only; no U truth; teacher is detached unrotated eval-mode actual branches; same model student uses rotated IQ; no extra learned or inference head.",
+    "Angle bound pi/8, weight .05 and fixed final E50 are set before new target predictions; no target-based tuning or checkpoint selection.",
+    "Main split test has been exposed in prior work; this is developmental evaluation, not fresh blind confirmation.",
+    "Global phase augmentations and phase-consistent RFF models already exist: [已省略链接] and [已省略链接] . No novelty or universal efficacy claimed.",
+    "Original paper-completion Main split Tri and ordinary PL matched baseline outputs; PL uses different ordering/training mechanisms.",
+    "DURA-LU primary; raw and DURA-L secondary; cross_rx plus cross_both main, cross_date diagnostic; no leo_weak."
+  ]
+}

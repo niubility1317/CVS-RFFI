@@ -1,0 +1,175 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r03",
+  "group_id": "source-input-bounded-projected-prior-single30",
+  "display_name": "有界投影恢复器：第 26 轮技术续训",
+  "description": "从资源保护中断前最后完成的第26轮恢复模型、AdamW和随机状态，继续原第27至30轮与完整地面测试。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "source-only",
+    "original-ground-TriSIGTIME-SSL-Main",
+    "F-guided",
+    "scratch-single30",
+    "bounded-projected-correction"
+  ],
+  "comparison_group_id": "original-vs-bounded-projected-source-prior",
+  "parent_run_ids": [
+    "20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r02"
+  ],
+  "replaces_run_id": "20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r02",
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "Original R07 L_s6300/U_s56700 paired clean/received IQ and simulated Action/noise; original source mean/covariance.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "actual_training_labels": "No TX labels. Original physical Action/noise supervision and corrected source noiseless IQ/STFT/.01 continuous frozen F0 features.",
+    "augmentation": "Original R07 clean+six source scenes and original 30-draw order; no new source or target data."
+  },
+  "permissions": {
+    "regime": "source-only-scratch-F0-guided-input-bounded-projected-prior",
+    "query_use": "Physical branch uses original source simulator factors only. Detail branch uses source clean and continuous frozen F0 on the corrected source noiseless inverse. Main uses only received IQ and a frozen original F0 head.",
+    "external_method_exception": null,
+    "claim_scope": "Fixed per-record correction cap uses only received IQ at deployment; no true Action, noise, clean, TX, F0 logits/CE, V/OE or target training."
+  },
+  "checkpoint": {
+    "initialization": "父run从零训练所得E26模型、AdamW及随机状态，仅资源中断技术恢复；父训练6300 L_s/56700 U_s，冻结原F0和源先验。",
+    "sources": [
+      "20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r02/rows/TF_BoundedProjected/training/recovery/E26.pt",
+      "20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r02/rows/TF_BoundedProjected/training/config.json",
+      "原source F0及源端先验"
+    ],
+    "contract_check_ref": "原父run同一L_s/U_s、模拟信道和冻结F0；无V/OE/TX或目标参与，E26为最后完成轮次。",
+    "provenance_verdict": "技术恢复，模型与优化器和随机状态来自同一已中断源域run，无目标预测。",
+    "selection_rule": "固定最后完成E26恢复，最终固定E30；两个总体全七景预测后truth-last。"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/training/config.json",
+    "rows/<arm>/training/smoke.json",
+    "rows/<arm>/training/smoke_E0.pt PRIVATE",
+    "rows/<arm>/training/data_schedule.npz PRIVATE",
+    "rows/<arm>/training/training.jsonl PRIVATE",
+    "rows/<arm>/training/final.pt PRIVATE",
+    "rows/<arm>/training/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE",
+    "rows/TF_BoundedProjected/training/recovery/E27..E30.pt PRIVATE; E01..E26 in preserved parent run",
+    "launch.json actual owner",
+    "rows/TF_BoundedProjected/training/technical_resume.json",
+    "rows/TF_BoundedProjected/training/technical_resume_smoke.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Original frozen ground Tri-SIG-TIME SSL Main168000: raw clean145385; each practical>=140345 and both raw clean populations separately maintained.",
+      "Original clean and six practical, per TX/RX/day groups, paired raw/DURA repairs and damage. Original ProjectedPriorDetail matched control only after all predictions fixed.",
+      "Every source epoch: unbounded and bounded projected correction NMSE, actual clipping fraction/scale, source losses, optimizer norms, posterior residual, wall time and memory.",
+      "5481223 learned parameters unchanged; bound is on per-record correction L2, not parameter count. Track source and actual deployed effect, not inferred speed."
+    ],
+    "dimensions": [
+      "original Main two populations and seven views",
+      "TX/RX/day/RXday",
+      "single model seed",
+      "matched raw and DURA"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "TF_BoundedProjected",
+      "method": "bounded_projected_technical_resume",
+      "purpose": "资源保护后精确续训原方案至E30，并完成原定Main测试。",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Physicalscratchmodel2026092701/detail2026092702;R07builder2026101901/receiver2026101911/augmentation2026101912;sourceorder2026110102/draw1..20+1..10. Mainoriginalfixedobservations/no newRNG.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": "AdamW(weight_decay1e-4,clip1)",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/training/config.json",
+        "rows/<arm>/training/smoke.json",
+        "rows/<arm>/training/smoke_E0.pt PRIVATE",
+        "rows/<arm>/training/data_schedule.npz PRIVATE",
+        "rows/<arm>/training/training.jsonl PRIVATE",
+        "rows/<arm>/training/final.pt PRIVATE",
+        "rows/<arm>/training/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE",
+        "rows/TF_BoundedProjected/training/recovery/E27..E30.pt PRIVATE; E01..E26 in preserved parent run",
+        "launch.json actual owner",
+        "rows/TF_BoundedProjected/training/technical_resume.json",
+        "rows/TF_BoundedProjected/training/technical_resume_smoke.json"
+      ]
+    }
+  ],
+  "notes": [
+    "父任务GPU2由其他owner加入后总进程数超过3，仅本任务被停止；完成E26，训练和产物保留，无目标预测。",
+    "严格恢复父模型、优化器、随机状态和源数据顺序；E26是最后完整轮次，不按任何模型性能选择。",
+    "源样本/F0/权重严格加载检查在续训进程取得GPU后先执行；E30固定后自动原Main七景和独立truth-last评分。"
+  ]
+}

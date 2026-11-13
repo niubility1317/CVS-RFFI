@@ -1,0 +1,19 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261112-phase1-pamf-tri-source-prototype-m9-r01",
+  "scope": "Exploratory m1-natural single-source-receiver full three-view PAMF with reference response; source RX 1, source days 1/2/3, six identities. Three fixed arms and three matched seeds 2026092701/02/03. Main split and leo_weak excluded. Prior target results are exposed; this is not independent confirmation.",
+  "initialization": "Each student continues from the exact same-setting, same-seed source-only original Tri E20, through its own E30 and fixed final E50/11100 updates. Preserve the fixed Tri time permutation and all original mechanisms, cross-day source relation, existing branch-certified physical views and fusion-plus-five-branch same-packet contrast.",
+  "controls": [
+    "same-setting and same-seed ordinary PL",
+    "original Tri-SIG-TIME SSL",
+    "matched fusion-plus-branch physical contrast without prototypes",
+    "earlier physical candidates"
+  ],
+  "evaluation": "Freeze all nine predictions before independent truth-last scoring. Evaluate clean plus six practical scenes on identical physical IDs, DURA-LU primary and DURA-L/raw secondary. Report cross-date separately from combined cross-RX and cross-both, each seed and scene, TX/RX/day and paired corrections/regressions. No test-selected checkpoint, target-based tuning or selective rerun.",
+  "success": "Seek greater than 2 percentage points over matching PL in clean and each practical DURA-LU scene, and improve over Tri. Report seed and subgroup failures. A single exposed setting cannot establish performance across all settings.",
+  "expected_artifacts": [
+    "Nine real E20 no-query smoke results",
+    "Nine fixed E50 source models with source prototype counters",
+    "Nine frozen seven-scene predictions then independent truth-last matched seed/scene/subgroup comparisons"
+  ]
+}

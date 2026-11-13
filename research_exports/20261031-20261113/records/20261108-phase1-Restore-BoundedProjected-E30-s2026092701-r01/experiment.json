@@ -1,0 +1,176 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-phase1-Restore-BoundedProjected-E30-s2026092701-r01",
+  "group_id": "source-input-bounded-projected-prior-single30",
+  "display_name": "输入相关投影修正上限恢复器，从零单阶段 30 轮",
+  "description": "对原投影先验恢复网络的最终 IQ 修正设置当前 received IQ 范数两倍的上限，训练与部署一致。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "source-only",
+    "original-ground-TriSIGTIME-SSL-Main",
+    "F-guided",
+    "scratch-single30",
+    "bounded-projected-correction"
+  ],
+  "comparison_group_id": "original-vs-bounded-projected-source-prior",
+  "parent_run_ids": [
+    "20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01",
+    "20261108-diagnostic-Restore-ProjectedSpikeTrace-sourceLU-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "Original R07 L_s6300/U_s56700 paired clean/received IQ and simulated Action/noise; original source mean/covariance.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "actual_training_labels": "No TX labels. Original physical Action/noise supervision and corrected source noiseless IQ/STFT/.01 continuous frozen F0 features.",
+    "augmentation": "Original R07 clean+six source scenes and original 30-draw order; no new source or target data."
+  },
+  "permissions": {
+    "regime": "source-only-scratch-F0-guided-input-bounded-projected-prior",
+    "query_use": "Physical branch uses original source simulator factors only. Detail branch uses source clean and continuous frozen F0 on the corrected source noiseless inverse. Main uses only received IQ and a frozen original F0 head.",
+    "external_method_exception": null,
+    "claim_scope": "Fixed per-record correction cap uses only received IQ at deployment; no true Action, noise, clean, TX, F0 logits/CE, V/OE or target training."
+  },
+  "checkpoint": {
+    "initialization": "All5481223 learned parameters scratch, physical seed2026092701 and detail seed2026092702. No parent model or optimizer loaded.",
+    "sources": [
+      "FROZEN_F0 original source Tri-SIG-TIME SSL and legal source mean/covariance.",
+      "IMPLEMENTATION_CONTROL_ONLY 20261107-phase1-Restore-ProjectedPriorDetail-E30-s2026092701-r01/8cf3669c4a5d98f6c4930117952203afd56f2f6e; no learned weights loaded.",
+      "SOURCE_DIAGNOSTIC_ONLY 20261108-diagnostic-Restore-ProjectedSpikeTrace-sourceLU-s2026092701-r01/7b4a0290ddcd524c631e9c6c365ecaa01133b457; no target or TX."
+    ],
+    "contract_check_ref": "Original R07 source L_s/U_s and original frozen source F0/moments. Current projected implementation uses algebraically equivalent batched matrix-vector innovation; original control used matmul, not bitwise equality.",
+    "provenance_verdict": "Scratch G with source physical and F0 continuous guidance only. No TX/V/OE/target training or parent learned state.",
+    "selection_rule": "Fixed final30/7410 only, full Main two populations×seven views, all predictions before independent truth-last. No target-based switching or selection."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/training/config.json",
+    "rows/<arm>/training/smoke.json",
+    "rows/<arm>/training/smoke_E0.pt PRIVATE",
+    "rows/<arm>/training/data_schedule.npz PRIVATE",
+    "rows/<arm>/training/training.jsonl PRIVATE",
+    "rows/<arm>/training/final.pt PRIVATE",
+    "rows/<arm>/training/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE",
+    "rows/TF_BoundedProjected/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only",
+    "launch.json actual owner",
+    "logs/run/resource_handover_GPU5.json original queue retirement"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Original frozen ground Tri-SIG-TIME SSL Main168000: raw clean145385; each practical>=140345 and both raw clean populations separately maintained.",
+      "Original clean and six practical, per TX/RX/day groups, paired raw/DURA repairs and damage. Original ProjectedPriorDetail matched control only after all predictions fixed.",
+      "Every source epoch: unbounded and bounded projected correction NMSE, actual clipping fraction/scale, source losses, optimizer norms, posterior residual, wall time and memory.",
+      "5481223 learned parameters unchanged; bound is on per-record correction L2, not parameter count. Track source and actual deployed effect, not inferred speed."
+    ],
+    "dimensions": [
+      "original Main two populations and seven views",
+      "TX/RX/day/RXday",
+      "single model seed",
+      "matched raw and DURA"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "TF_BoundedProjected",
+      "method": "input_relative_bounded_projected_prior",
+      "purpose": "Test whether controlling rare extreme learned posterior corrections improves source stability and frozen-F0 Main identification.",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Physicalscratchmodel2026092701/detail2026092702;R07builder2026101901/receiver2026101911/augmentation2026101912;sourceorder2026110102/draw1..20+1..10. Mainoriginalfixedobservations/no newRNG.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": "AdamW(weight_decay1e-4,clip1)",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/training/config.json",
+        "rows/<arm>/training/smoke.json",
+        "rows/<arm>/training/smoke_E0.pt PRIVATE",
+        "rows/<arm>/training/data_schedule.npz PRIVATE",
+        "rows/<arm>/training/training.jsonl PRIVATE",
+        "rows/<arm>/training/final.pt PRIVATE",
+        "rows/<arm>/training/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE",
+        "rows/TF_BoundedProjected/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+      ]
+    }
+  ],
+  "notes": [
+    "Source diagnostic: one replay had normal received/base norms≈16/15.69 but learned proposal177.05 and projected correction221.14; the observed projection amplified that direction1.249×. Original parent E11 later recovered without intervention.",
+    "Per-record output d=P delta; return d*min(1,2||received||/||d||). Unclipped path returns original values; source noiseless objective and deployed output use the same bounded d.",
+    "The factor2 is fixed from a broad source-stability margin: 149 fixed E10/E11 source stress records had maximum correction NMSE0.1508 with normalized IQ energy≈0.5; not fit to target or a performance-optimality claim.",
+    "All weights scratch; F0 stays frozen. No TX labels, V/OE/target, real channel action or noise are deployment inputs. Cap can change true signal as well as noise.",
+    "Original control executed scientific commit8cf while its later dispatcher was d38; current model uses mathematically equivalent batched innovation computation, not bitwise identical control code. Differences cannot be assigned solely to the cap.",
+    "Eight focused tests PASS. Independent P0/P1 review caught a missing training callback context, fixed and targeted review PASS. Actual source2/F0/E0/gradient smoke is first.",
+    "Both Main populations and all seven views automatically tested after final30; both clean population guards remain. User priority is performance; cap is a source hypothesis, not demonstrated Main improvement."
+  ]
+}

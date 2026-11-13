@@ -1,0 +1,152 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-diagnostic-Restore-CoupledLowRank-sourceLU-s2026092701-r01",
+  "group_id": "source-only-equivalent-posterior-cost",
+  "display_name": "耦合后验低秩等价求解：源端数值、梯度与微批耗时",
+  "description": "只读固定Coupled E20与原F0，比较原完整后验和等价低秩求解，不修改任何训练或部署版本。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "frozen-E20-diagnostic",
+    "no-optimizer",
+    "no-target",
+    "FP64",
+    "gradient-equivalence",
+    "shared-GPU-microbatch"
+  ],
+  "comparison_group_id": "same-frozen-source-G-dense-vs-low-rank-posterior",
+  "parent_run_ids": [
+    "20261107-phase1-Restore-CoupledCovariance-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original R07 draw1 source-only sample:224 rows,35L_s+189U_s,all five sourceRX and seven simulation scenes.",
+    "representation": "Existing paired clean/received IQ2x256 and simulator Action/noise, source receiver metadata and existing global/other-RX priors.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "actual_training_labels": "No training. Gradient calculations use legal source clean/received pairs, simulator traces and frozen original F0 continuous features.",
+    "augmentation": "None beyond already fixed source draw01",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "read-only-source-checkpoint-numerical-cost-probe",
+    "query_use": "224 L_s/U_s rows only. No TX truth, V/OE/novel/target inputs; no optimizer or model-state update.",
+    "external_method_exception": null,
+    "claim_scope": "Numerical/gradient equivalence and same shared-GPU source microbatch forward/backward cost. Excludes optimizer[已省略路径] overhead and establishes neither full-training speedup nor Main accuracy."
+  },
+  "checkpoint": {
+    "initialization": "Load fixed original Coupled E20/4940 only for a frozen numerical diagnostic, and original F0 E50/11100. No new G training or initialization of a future candidate.",
+    "sources": [
+      "FROZEN_SOURCE_G_DIAGNOSTIC 20261107-phase1-Restore-CoupledCovariance-E30-s2026092701-r01/6d3dda3c88765c38e1813ecb733948234bb63190/rows/TF_CoupledCovariance/training/recovery/E20.pt; original L_s/U_s only, no checkpoint selection.",
+      "FROZEN_F0 20261027-phase1-pamf-repl-shuffled-views-m16-r02/3ff8f4b7e85b5608f5b45350aa18081499a7ef1d/main_split-repl-shuffled_time-3view-s2026092701; original source contract, target_access false.",
+      "SOURCE_STATISTICS_ONLY original global source mean/C, f57 continuous-F0 variance and1a9 other-RX moments; no new fit."
+    ],
+    "contract_check_ref": "Strict original6d3 checkpoint config/E20/4940, original source smoke zero TX/V/OE/target, original F0 identity and source-only data handles.",
+    "provenance_verdict": "Fixed source-only G and F0 weights used read-only; gradients computed but optimizer/model updates0; target-contaminated/unknown ancestry not allowed.",
+    "selection_rule": "Fixed existing common-E20 diagnostic point, not deployment selection. All14 source cells run; no target or checkpoint reranking."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted.json",
+    "smoke.json",
+    "runtime_observation.json",
+    "progress.json",
+    "results.json aggregate numerics/timings",
+    "terminal.json",
+    "complete.json",
+    "probe.log PRIVATE"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Maxabs IQ<=1e-5, relative total-loss error<=1e-5, relative L2 all-G and conditional-mean-input gradient errors<=1e-4; relative posterior residual<=1e-8.",
+      "Both original source global and source other-RX prior; seven scenes,32 rows each,14 cells. All physical and prior branches/F0 source objective included in forward/backward.",
+      "One matched numerical/warmup pair, then three timed pairs with alternating order. Actual shared GPU forward/backward/total seconds and allocated peak memory.",
+      "Strict final G/F0 state unchanged, zero optimizer/TX/V/OE/target. No classification accuracy or full-epoch speedup claim."
+    ],
+    "dimensions": [
+      "seven source simulation scenes",
+      "global or other-RX prior",
+      "dense or low-rank exact algebra",
+      "three timed paired repetitions"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "source_low_rank_numerics_timing",
+      "method": "source_low_rank_conditional_posterior_probe",
+      "purpose": "Falsify numerical/gradient equivalence and measure actual source microbatch compute cost before any integration.",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110707,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026110707
+      },
+      "seed_notes": "Frozen source G20; deterministic source quotas and matched per-cell dropout RNG, original R07 draw1.",
+      "k": null,
+      "scenario": "Source-only7 scenes ×2 prior contexts,32 rows/cell; no Main or target.",
+      "optimizer": "NONE",
+      "lr": 0.001,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "submitted.json",
+        "smoke.json",
+        "runtime_observation.json",
+        "progress.json",
+        "results.json aggregate numerics/timings",
+        "terminal.json",
+        "complete.json",
+        "probe.log PRIVATE"
+      ]
+    }
+  ],
+  "notes": [
+    "Write C_y=Q+BKK^TB^T where Q=C-BB^T is strictly SPD under the existing stored mode margin. Factor AQA^T+noiseI without gradients; only a64x64 factor carries covariance-head gradients.",
+    "Conditional mean remains differentiable. PhysicalA/noise/sourceC/B must be fixed inputs and are explicitly rejected if grad-enabled; this matches the current separated training objective.",
+    "The original coupled model is not edited, resumed or re-trained. No target data, predictions, route or optimizer are involved.",
+    "Seven focused numerical/protocol-negative tests PASS and one independent P0/P1 review PASS. Actual original G/F0 source2 smoke first, then all fixed source cells.",
+    "G runs in training mode for matched source microbatch computation but weights/buffers must remain unchanged; identical RNG is reset for paired implementations. F0 remains frozen.",
+    "Timing is shared-GPU source microbatch compute, not exclusive throughput, end-to-end30-epoch time, or B1 deployment latency. Existing primary performance experiments continue unchanged."
+  ]
+}

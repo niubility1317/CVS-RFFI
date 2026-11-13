@@ -1,0 +1,122 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261108-diagnostic-Restore-FeatureReuseDrift-sourceLU-s2026092701-r01",
+  "group_id": "source-production-G-F0-feature-reuse-drift",
+  "display_name": "生产恢复器特征复用：单步数值差异定位",
+  "description": "原生产G/F0 CPU复核未通过预设AdamW更新容差；同固定源L/U样本逐层记录误差及裁剪前后梯度，验证差异位置和可能原因，不修改训练。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-LU-only",
+    "frozen-TriSIGTIME-SSL",
+    "CPU-only",
+    "efficiency-diagnostic"
+  ],
+  "comparison_group_id": "source-feature-reuse-update-drift",
+  "parent_run_ids": [
+    "20261108-diagnostic-Restore-ProductionFeatureReuse-sourceLU-s2026092701-r01",
+    "20261107-phase1-Restore-JointPrior-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original R07 draw1 source training cache, fixed indices0 and6301: one L_s, one U_s.",
+    "representation": "Original source clean/received IQ and saved simulator kernel, coefficients and variance; four existing deterministic 1% directions.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "TX labels not read or used.",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "actual_training_labels": "No TX labels; local real-G copy AdamW comparison only.",
+    "augmentation": "Existing deterministic source perturbation directions at1% RMS; odd source epoch1/3 covers all four.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "source-only-production-G-F0-feature-reuse-CPU-diagnostic",
+    "query_use": "Fixed source L_s/U_s two IQ and source simulator traces; no TX/V/OE/target or target-derived checkpoint.",
+    "external_method_exception": null,
+    "claim_scope": "Same two-source-record CPU numerical drift localization with original fixed G; does not establish equivalence, GPU behavior, convergence or final recognition."
+  },
+  "checkpoint": {
+    "initialization": "Original JointPrior E30/7410 from scratch source-only; state strict-loaded into matching FeatureResponse G architecture; fresh local AdamW only.",
+    "sources": [
+      "FROZEN_G 20261107-phase1-Restore-JointPrior-E30-s2026092701-r01/4bba9df3bb2c909dc333dce0cf0102cb641b1682 fixed final30 source-only; never select by target outcome.",
+      "FROZEN_F0 original Tri-SIG-TIME SSL 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d E50/11100",
+      "SOURCE_INPUTS original R07 source L_s/U_s draw1 and recorded simulator Action/noise."
+    ],
+    "contract_check_ref": "Original fixed final30 source-only training: zero TX/V/OE/target training and G parent loads, original source F0 and same R07 L/U contract; strict state names/shapes and provenance verified.",
+    "provenance_verdict": "Fixed source-only E30 architecture-compatible parent, not selected from target results; source raw IQ and frozen original F0 only.",
+    "selection_rule": "Same prior pre-fixed source-only JointPrior final E30 and source indices0/6301; no additional model selection, same epoch1/3."
+  },
+  "expected_artifacts": [
+    "logs/20261108-diagnostic-Restore-FeatureReuseDrift-sourceLU-s2026092701-r01/submitted.json",
+    "logs/20261108-diagnostic-Restore-FeatureReuseDrift-sourceLU-s2026092701-r01/stdout.log",
+    "runs/20261108-diagnostic-Restore-FeatureReuseDrift-sourceLU-s2026092701-r01/results.json PRIVATE parameter-level diagnostics",
+    "runs/20261108-diagnostic-Restore-FeatureReuseDrift-sourceLU-s2026092701-r01/complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Original prescribed rtol1e-5 atol1e-6 violations for loss, F0 input gradients, each G gradient, and each local fresh-AdamW output parameter.",
+      "Layer and coordinate of largest update difference; corresponding gradients before and after clipping, predicted first-step AdamW epsilon sensitivity and observed parameter difference.",
+      "Verify F0 unchanged, finite posterior, no TX/V/OE/target and no saved or active G update."
+    ],
+    "dimensions": [
+      "two fixed source L_s/U_s records",
+      "odd epochs1/3 covering four directions",
+      "original versus cached/shared training graph"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "source_LU_feature_reuse_drift",
+      "method": "production_G_F0_feature_reuse_drift_localization",
+      "purpose": "Localize the already observed first-step production G AdamW mismatch without changing tolerance or optimization.",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed source-only JointPrior E30 seed2026092701; source indices0 and6301 and odd source epochs1/3; no target-based selection.",
+      "k": null,
+      "scenario": "Same original R07 source2 IQ/trace and fixed global prior, odd epochs1/3.",
+      "optimizer": "Fresh local AdamW lr.001 weight_decay1e-4, one comparison step for each path and epoch; no saved or active G training update.",
+      "lr": 0.001,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "logs/20261108-diagnostic-Restore-FeatureReuseDrift-sourceLU-s2026092701-r01/submitted.json",
+        "logs/20261108-diagnostic-Restore-FeatureReuseDrift-sourceLU-s2026092701-r01/stdout.log",
+        "runs/20261108-diagnostic-Restore-FeatureReuseDrift-sourceLU-s2026092701-r01/results.json PRIVATE parameter-level diagnostics",
+        "runs/20261108-diagnostic-Restore-FeatureReuseDrift-sourceLU-s2026092701-r01/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "The prior r01 did not satisfy original update tolerance; artifact completion means measurement completed, never mathematical or training equivalence.",
+    "Do not change preset tolerance or infer practical safety from small absolute values; further GPU and training quality tests remain necessary.",
+    "Only source data, F0 and an in-memory fixed G copy; no real training state is modified."
+  ]
+}

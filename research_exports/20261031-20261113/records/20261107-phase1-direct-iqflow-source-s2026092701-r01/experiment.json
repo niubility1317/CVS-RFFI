@@ -1,0 +1,115 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-direct-iqflow-source-s2026092701-r01",
+  "group_id": "phase1-direct-iqflow",
+  "display_name": "独立 IQ 流 GPU 训练",
+  "description": "以单条 received IQ 为锚点，用源 clean IQ 训练路径速度，四步确定性积分。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "received-only",
+    "F-free-training",
+    "conditional-flow",
+    "deterministic-gpu"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261106-phase1-dura-wide-source-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "Paired source received/clean and frozen DURA output/physical variance",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "F-free and TX-label-free paired source IQ training, source IQ diagnostics; no target score"
+  },
+  "checkpoint": {
+    "initialization": "New 28162-parameter velocity network, zero output head; no DURA weights in trainable model",
+    "sources": [
+      "20261106-phase1-dura-wide-source-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "Validated source context exact ordered 32768 fit IDs and no F/TX/V/target; DURA fields loaded but not used in direct objective",
+    "provenance_verdict": "Fixed source IQ context has no target ancestry; training controller loads frozen DURA for smoke and source evaluation",
+    "selection_rule": "Fixed final epoch twenty, no target or pilot-based selection"
+  },
+  "expected_artifacts": [
+    "final.pt: fixed final epoch",
+    "source_summary.json: source IQ only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source paired IQ NMSE",
+      "training IQ loss"
+    ],
+    "dimensions": [
+      "RX4/6 and RX8",
+      "seven source views"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "direct-iqflow-final",
+      "method": "Received-only deterministic IQ path velocity",
+      "purpose": "Train a direct conditional IQ flow using source received and source clean IQ",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Initialization 2026110612; source fit 2026110611; order 2026110613; flow time 2026110713; evaluation 2026092701",
+      "k": null,
+      "scenario": "fixed source cache epochs 21, 22, 23",
+      "optimizer": "AdamW weight decay 0.001",
+      "lr": 0.0003,
+      "epochs": 20,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "final.pt: fixed final epoch",
+        "source_summary.json: source IQ only"
+      ]
+    }
+  ],
+  "notes": [
+    "Uniform source t and linear received-to-clean interpolation; velocity target clean-received; four fixed Euler inference steps.",
+    "Direct network objective and inference use only the received IQ, not DURA fields; reused source cache contains DURA tensors and controller loads DURA for smoke/source evaluation.",
+    "No F/TX/V/target in recovery training; fixed last checkpoint, no target selection or tuning.",
+    "Historical R03 deterministic flow used F guidance and different classifier; its result cannot be attributed to this candidate.",
+    "All seven 168000-record Phase1 predictions must finish before independent truth-last; compare frozen Tri-SIG-TIME SSL DURA. Ground evaluation also computes DURA for matched control.",
+    "GPU2 queue waits for fewer than three total compute apps and at least 4096 MiB free; preserve other owners.",
+    "Technical stop on invalid input, provenance failure, non-finite/OOM, output conflict, smoke, prediction or scoring failure; no automatic retry."
+  ]
+}

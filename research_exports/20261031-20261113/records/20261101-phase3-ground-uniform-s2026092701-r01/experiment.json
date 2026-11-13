@@ -1,0 +1,170 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-phase3-ground-uniform-s2026092701-r01",
+  "group_id": "pamf-phase3-ground-uniform",
+  "display_name": "PAMF第三阶段：地面均匀OE置信度训练",
+  "description": "Planned complete originalF0 student UNIFORM: known CE/KD plus equal-public-domain uniform outside-six posterior; CPAIR cached controls. Real execution awaits usable CUDA.",
+  "kind": "cvs",
+  "stage": "Phase3-ground-uniform",
+  "aliases": [
+    "地面均匀OE训练"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "source_clean",
+    "uniform_OE",
+    "default_head",
+    "DURA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-ground-centered-rank-vs-uniform",
+  "parent_run_ids": [
+    "20261101-phase3-ground-centered-s2026092701-r01",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "Planned unchanged D7 source392005 G(clean) L6300/OE6134/CAL13500/sourceQ16650, paired RX34futureQ10238",
+    "version": "Unchanged VALIDATED_ONCE source392005 and fresh development handles",
+    "representation": "Complete native232993/default6 joint; stable KL(U6||softmaxOE) equal15publicRXday domains; no pair-risk in objective, no new head or projection.",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "3-2/index34"
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [
+      "2021-03-01 U",
+      "2021-03-15/23 futureQ"
+    ],
+    "tx_sets_ref": "Old14-10/14-7/20-15/20-19/6-15/8-20; future unregistered5-5/10-7/2-19/7-11 only builder/scorer; later7-11 not inU",
+    "roles": {
+      "source_L": 6300,
+      "source_OE": 6134,
+      "source_Us_new": 0,
+      "source_CAL": 13500,
+      "source_known_TEST": 13500,
+      "source_NV": 3150,
+      "source_Q": 16650,
+      "target_U_new": 0,
+      "target_U_ID_new": 0,
+      "target_clean_Q": 10238,
+      "target_star_Q": 10238,
+      "future_known": 4508,
+      "future_unknown": 5730,
+      "formal_RX24_18_new": 0
+    },
+    "train_ratio": "Original F0 labeled source6300/63000=10%; sourceOE outside-six membership allowed, OEtrueTXhidden; no new source labels or targetTXlabels.",
+    "capsule_id": "p3fresh-b14665c51b89f44f2b76c137",
+    "split_id": "077495132350495f37a33d84"
+  },
+  "permissions": {
+    "regime": "Planned sourceL true6y/cached sameGcleanF0teacher and OEoutside6/publicRXday only; no OE TX/K, newUs/U/CAL/TEST/NV/Q training. Original models untouched.",
+    "query_use": "Only after healthy CUDA: realCP noquery smoke then2220source updates, finalfreeze and CAL12new+12oldtau; all16 beforeCPU4truth once. This preparation has no realdata/checkpoint smoke or execution.",
+    "external_method_exception": null,
+    "claim_scope": "Local synthetic readiness only until execution; no actual metrics or scientific verdict. Formal95CK/RU/gap2/allmainScenes/fullgoalACTIVE/ANHOWNA unchanged."
+  },
+  "checkpoint": {
+    "initialization": "Planned complete originalF0 E50/11100 independently copied, fresh AdamW; not CPAIR/contrast/PCD weights. Default6joint/Sinc48 and buffersfixed.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "[已省略路径]",
+    "provenance_verdict": "Expected matching originalF0 source392005 and unchanged D7 roles; source ancestry guards and strict loaders tested synthetically. No actual weights read by this preparation.",
+    "selection_rule": "Fixedfinal2220/UNIFORM_centered main, no NV/Q/CAL neural selection or sweep; future actualCP smoke remains pending."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/{train,eval}.json",
+    "logs/*.log",
+    "train/{resolved_config,complete,smoke}.json",
+    "train/rows/UNIFORM/{final.pt,complete.json,steps.jsonl}",
+    "predict/{resolved_config,smoke,complete}.json",
+    "predict/calibration/complete.json",
+    "predict/thresholds.npz",
+    "predict/queries/*/predictions.npz",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macroAK",
+      "macroCK",
+      "macroRU",
+      "H-score",
+      "canonicalF0/studentclosed",
+      "AUROC/OSCR",
+      "pairedcorrectaccept/reject",
+      "full2220uniform-and-pairdiagnostics/gradients",
+      "ANHOWNA"
+    ],
+    "dimensions": [
+      "4methods x4DURAconditions",
+      "source24groups",
+      "sixmainstarScenes",
+      "TX/RX/day/scene/day_scene"
+    ],
+    "targets_ref": "Formal all4 CK95/RU95/originalF0gap2pp and complete main scenes95; sourceclean24groups; fullgoalACTIVE. No measured result in preparation.",
+    "primary": [
+      "UNIFORM_centered"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "UNIFORM-s2026092701",
+      "method": "UNIFORM",
+      "purpose": "CE/KD plus equal15domain uniformOE, same originalF0/sourcebatch/budget as cached CPAIR; rank only diagnostic",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110101,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Same L2026103017/OE2026103018 streams, planned2220sourceindices compare oldCPAIR; no newchannel RNG, existing source3001/channel4001/future3133/3134/receiver2027.",
+      "k": null,
+      "scenario": "Planned G(clean) source training and four source/cross clean/star DURA frozen conditions",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/*.log",
+        "train/{resolved_config,complete,smoke}.json",
+        "train/rows/UNIFORM/{final.pt,complete.json,steps.jsonl}",
+        "predict/{resolved_config,smoke,complete}.json",
+        "predict/calibration/complete.json",
+        "predict/thresholds.npz",
+        "predict/queries/*/predictions.npz",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Current state is local preparation, no real checkpoint smoke/NNupdates/predictions/scores. [计算环境] CUDA health evidence kept private.",
+    "Single uniform student independently originalF0; pair risk is diagnostic, no SupCon, PCD, newsourceUs or targetU.",
+    "Two controls exact from oldCPAIR cols2/3; canonical originalF0 separate baseline_logits.",
+    "12new+12old thresholds=24FP64/192B; main centered index3 fixed.",
+    "Local toy validation cannot establish real-weight compatibility or performance. Resource recovery precedes actual launch."
+  ]
+}

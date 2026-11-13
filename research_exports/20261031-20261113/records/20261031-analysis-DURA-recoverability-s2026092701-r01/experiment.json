@@ -1,0 +1,128 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-analysis-DURA-recoverability-s2026092701-r01",
+  "group_id": "phase1-dura-existing-IQ-recoverability",
+  "display_name": "DURA 既有全量 IQ 保真与识别恢复程度分析",
+  "description": "复用default/noVar/RXcanonical及raw已完整七景输出，CPU独立复算NMSE分布、逐包阈值、尾部和理想复标量校正。",
+  "kind": "analysis",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "recoverability",
+    "existing-output",
+    "truth-side"
+  ],
+  "comparison_group_id": "DURA-source-F-guided-vs-matched-noVarAux",
+  "parent_run_ids": [
+    "20261021-phase1-restoration-stage2-graph-s2026092701-r01",
+    "20261030-phase1-DURA-direct-noVarAux-s2026092701-r01",
+    "20261031-phase1-DURA-source-RXcanonical-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Original63000source paired IQ/actions;20fixedcacheepochs then01-10 with fresh30shuffles",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "target_panel": "Eachnewversionall168000x7regardlesssourceperformance",
+    "actual_training_labels": "PairedIQ/action/noise;frozenoriginalFsourcefeatures;directTX0/V0/target0",
+    "augmentation": "Original15percentclean/85percentpractical;no new IQ augmentation"
+  },
+  "permissions": {
+    "regime": "Existingcompleteprediction_truthside_analysis_only",
+    "query_use": "All2x7 readouts perrole complete before independenttruthlast",
+    "external_method_exception": "Explicituserpermission2026-10-30 onlysourceFweights/featuresforG;notF-free;frozenFnoheadtraining/updates",
+    "claim_scope": "Energyfit not informationrecovery;oracle alignment usespairedclean onlyinscorer,not deployed/universalaccuracyupperbound"
+  },
+  "checkpoint": {
+    "initialization": "No model consumed",
+    "sources": [],
+    "contract_check_ref": "Existingfrozen.load_reader strictFmetadata/ancestry/sourcecontract plusGsourceIDsrolebinding;read-onlypreflightL6300/U56700 sets match;noTXvaluesread",
+    "provenance_verdict": "No new checkpoint load;existingFsameidentity checked inpredictionmetadata",
+    "selection_rule": "Allfixedthreeversions+raw,allsevenviews,no bestscene/model selection"
+  },
+  "expected_artifacts": [
+    "results.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "NMSE",
+      "quantiles",
+      "accuracy",
+      "retainedaccuracy",
+      "phaseoracles",
+      "tail24error"
+    ],
+    "dimensions": [
+      "case",
+      "view"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "existing_audit",
+      "method": "CPU existingoutputaudit",
+      "purpose": "primary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103004,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Model2026092701/shuffle2026103004/cache2026101912/eval2027;enhancementseed2026103107 separately restores physical/probe RNG",
+      "k": null,
+      "scenario": "Originalsevenviews;one training,physical/enhanced frozenreadouts",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "results.json"
+      ]
+    }
+  ],
+  "notes": [
+    "All existingpredictioncomplete/physicalIDs/arrays validatedbefore truth;no newpredictions/weights/updates.",
+    "Energyfit=1-meanpacketNMSE not boundedinformationrecovery fraction;phase/complexscalaralignment onlypairedcleanoracle diagnostic.",
+    "CPUanalysis consumesnomodel:checkpointsmoke notapplicable;actualE30candidatehasone reviewandsmoke."
+  ]
+}

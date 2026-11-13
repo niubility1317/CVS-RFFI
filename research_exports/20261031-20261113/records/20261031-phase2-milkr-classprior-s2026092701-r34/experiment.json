@@ -1,0 +1,187 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase2-milkr-classprior-s2026092701-r34",
+  "group_id": "phase2-milkr-class-calibrated-prior",
+  "display_name": "MILKR 当前support类别校准先验",
+  "description": "R35 closedform membership+oldclass calibration fromcurrentSUP, simplexbounded; R34dualRF kernels/F8/Gonce unchanged, no neuralheadupdate.",
+  "kind": "cvs",
+  "stage": "Phase2-B-C",
+  "aliases": [],
+  "tags": [
+    "MILKR",
+    "Tri-SIG-TIME-SSL",
+    "Phase2",
+    "K-N",
+    "small-screen",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-phase2-milkr-orbitmix-s2026092701-r33",
+    "20261031-phase2-milkr-ridgeprior-s2026092701-r30",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "data": {
+    "dataset": "[已省略路径]",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "1-1"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "one existing P01/MIX01/1-1 VALIDATED_ONCE capsule",
+    "split_id": "read exact existing K/N split IDs",
+    "source_target_overlap_policy": "same source physical roles;target opens only B/C current support;query never fit",
+    "matrix": {
+      "K": [
+        1,
+        20
+      ],
+      "N": [
+        2,
+        20
+      ],
+      "physical_pool": "P01",
+      "episode": "MIX01",
+      "query": "all_registered_complement",
+      "receiver": "1-1"
+    }
+  },
+  "permissions": {
+    "regime": "fixed_source_complete_Tri_SIG_TIME_SSL_then_current_labeled_support_only",
+    "query_use": "per_sample_test_only",
+    "external_method_exception": null,
+    "claim_scope": "User-authorized queryfusion extension; finalall16KN twoS Q0original+5 andQF>Q0; QG-only separatelyreported, QFvsoriginalQG notsameinputpair"
+  },
+  "checkpoint": {
+    "initialization": "reuse original full source-only Tri-SIG-TIME SSL",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "existing validated Group1 source contract + trisig_source.validate_done rechecks complete original source recipe",
+    "provenance_verdict": "MATCHING_SOURCE_ONLY_REUSE",
+    "selection_rule": "fixed final E50/11100; model seed first predeclared numeric order; no target selection"
+  },
+  "expected_artifacts": [
+    "source_smoke.json originalF/G/C4head/dualRF",
+    "source_selection.json source120K1rule/classgate",
+    "source_orbit_cca.npz freshsource2CCA64",
+    "36fixedpredictionrows",
+    "12fit classgate counts/outputdim/568bytes/norm/audits",
+    "12fusion audits/cache0",
+    "independent scores",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "old_macro_accuracy",
+      "new_macro_accuracy",
+      "H_macro",
+      "macro_f1",
+      "class_floor"
+    ],
+    "dimensions": [
+      "RX",
+      "K",
+      "N",
+      "arm",
+      "S/Q"
+    ],
+    "primary": "Finalevery16KN bothS Q0 matchedoriginalQ0>=+5pp andsame-stateQF>Q0; sourceprior/fusion fixed beforetarget",
+    "success": "allcorners twoS Q0+5 andQF>Q0 plusoldnewrawmeanguard before remaining12KN; all16 then6RXconfirmation",
+    "secondary": "classconfusion correction, old/newH; membershipequivalence/baseheadunchanged; simplex/cap/rowsum; classgate568bytes(targetm6)/groupcounts/currentSUPscope; twoRF kernels/extraRAM; QGmatched/QFpathchanged, cache0/time",
+    "scientific_source_rule": "q asR31, weightedSUP old/new groups .5 each (oldonly1). Jointtarget [oldmembership,oldclassonehot ifold else uniform(m)]. Onecenteredridge solve lambda=.1tracecov/d withunpenalized targetmean. Membershipg sameR31 whenbothgroups; oldonlyg1. Projectoldclassoutputs onto simplex to pcal. prior=.5*g*(pcal-1/m) oldslots/new0. Zero covarianceexplicitconstant. CurrentSUPonly/eachphysicalfoldTRAINonly. DualRF=.5K4+.5K8/source120K1/ref6scale unchanged. No sourcegainveto/target36falsification.",
+    "promotion_rule": "PerKN/perS raw+5 andfusionpositive, nevermean-only; QGcontrol retained notrequiredtoexceedraw innewuserauthorizedfusiondefinition"
+  },
+  "rows": [
+    {
+      "row_id": "rx-1-1",
+      "method": "R35 currentSUP closedform class prior + equal C4/C8 kernels",
+      "purpose": "paired_KN_screen",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/1-1",
+        "workpoints": [
+          {
+            "K": 1,
+            "N": 2
+          },
+          {
+            "K": 1,
+            "N": 20
+          },
+          {
+            "K": 20,
+            "N": 2
+          },
+          {
+            "K": 20,
+            "N": 20
+          }
+        ],
+        "B_K": [
+          1,
+          20
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "split/support/evaluation are fixed existing split IDs and physical complement, not redrawn; augmentation per existing MIX01/physical seed; source proxy seed2026103101",
+      "k": [
+        1,
+        20
+      ],
+      "scenario": "MIX01 fixed six-practical residual received",
+      "optimizer": "FrozenneuralF/G/head; fresh2sourceCCA64; currentSUPmultioutputridge+simplex prior/oneKRR physicalOOF",
+      "lr": null,
+      "epochs": 0,
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    }
+  ],
+  "notes": [
+    "New currentSUP classcalibration of MILKRprior, not a neuralhead replacement/retraining. OriginalF sixclass logits andoriginalC4headprobfunction stayexactproducer. FinalKRRdecisions intentionallychange via calibratedprior. Targetlabels onlyallocatedSUP; noquerytruth/oldnewrole/quota input.",
+    "Sameq=[sqrt(m)(p-u),entropyconfidence,top2margin] andridgefraction.1. Oldnewgroups eachsumweight.5, oldonlytotal1. Multioutputtargets membership + oldclassonehot; newSUP classtargetuniformoveroldcolumns. Closedformmean/cov/rhs TRAINonly. Membershippart equalsR31binaryridge; classpart projectedperrecord tosimplex, bounds pcal andpriorcap.5 andsumprior0. Zero cov explicitsourceuninformativeconstant, no silentnumericfallback.",
+    "Targetm6 gives d8, outputs7, mean8+coef56+targetmean7=71FP64/568bytes. Publicaudit onlydimension/counts/norm/trace/ridge/mode; no calibratedcoefficients committed. NoF/G/headparameters/buffers updated; classcal state belongs currentSUPcase, notwrittenbacktocheckpoint.",
+    "R34dualRF architecture kept:8F samepacket C4even/C8all, Goriginalonce, fresh2sourceCCA64=557440params, kernels separateSUPscales thenfixedhalf. EveryphysicalOOF bothscales/classgate/KRR TRAINonly; queryperrecordfrozen, no crossKNS. Source5RXTXheld excludesbothencodersheldRX/twoTX; headheldnewcolscropbeforesoftmax.",
+    "F sawsource6, source3scenes/new2 vs target6scenes/new20 andexposedbenchmark limits. Source120K1 Q0QF H/ref6scale; fixednewprior directcornerfalsification withlegal/numeric onlysourcegate, noHgainveto/nooldrunretuning. FirstRX1-1 P01MIX01 seed2026092701 K1/20 N2/20 36allfixedthen independenttruth.",
+    "EverycornerbothS raworiginal>=+5 andQF>Q0 plusoldnewguard to remaining12KN then6RX; finalall16/sevenRX unchanged. Gonlymatchedcontrol complete/QFcrossinputexplicit. SourceGPU4 targetGPU0 capacitychecked/otherownersprotected. REJECTED_EXTRA_GATE generic separate designapproval/spec/builderreview; minimalprereg+one actualP0/P1review only. Privatefolderprecheckedabsent."
+  ]
+}

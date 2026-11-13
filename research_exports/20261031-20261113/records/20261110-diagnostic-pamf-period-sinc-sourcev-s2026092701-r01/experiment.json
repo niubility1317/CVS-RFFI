@@ -1,0 +1,119 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261110-diagnostic-pamf-period-sinc-sourcev-s2026092701-r01",
+  "group_id": "pamf-period-sinc-source-only",
+  "display_name": "冻结 PAMF 逐周期参考与共享 Sinc 源域诊断",
+  "description": "Frozen Tri-SIG-TIME SSL, balanced source V1800, no training; reference-period and actual shared Sinc cross-RX geometry, joint gap complement and full/cropped filtering boundary.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source_V_only",
+    "PAMF",
+    "LSTF",
+    "shared_Sinc",
+    "no_training",
+    "no_target"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig Main split",
+    "version": "existing VALIDATED_ONCE source F0",
+    "representation": "equalized1, unitRMS FP32 IQ [2,256], 25 MHz",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "[已省略路径]",
+    "roles": {
+      "L_s": "not consumed",
+      "U_s": "not read",
+      "V": "27000 V IQ loaded by SourceDataset; balanced first 20 per TX/RX/day cell (1800) used for model forward"
+    },
+    "train_ratio": null,
+    "capsule_id": "unchanged Phase1 VALIDATED_ONCE source handle",
+    "split_id": "Main split / F0 original source role IDs"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "not accessed",
+    "external_method_exception": null,
+    "claim_scope": "single seed; source V descriptive only; no target, U, training, fitted head, TX hardware parameter or generalization claim"
+  },
+  "checkpoint": {
+    "initialization": "fixed source final E50, own E20+E10+E20 from scratch, source-only; model seed 2026092701",
+    "sources": [
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "[已省略路径]",
+    "provenance_verdict": "Parent registration and per-segment loader validate same contract, own parent chain, source-only and 11100 updates; actual checkpoint smoke before V load",
+    "selection_rule": "Fixed previously declared final E50, seed 2026092701; no candidate selection or target data"
+  },
+  "expected_artifacts": [
+    "summary.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "same-TX cross-RX vs different-TX fixed triplet cosine gaps",
+      "joint gap complementarity",
+      "RX strata",
+      "full-signal vs crop Sinc relative boundary error",
+      "reference quality"
+    ],
+    "dimensions": [
+      "TX",
+      "RX",
+      "day",
+      "source-V"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "sourceV-balanced-1800",
+      "method": "Frozen Tri-SIG-TIME SSL joint160, reference cycle residuals, shared Sinc window/delta",
+      "purpose": "No-training source stability, descriptive complementarity and boundary",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "data/augmentation/support/evaluation random seeds N/A; deterministic first 20 per source V cell",
+      "k": null,
+      "scenario": "clean source V only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "summary.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No target or U access; ordinal aligns samples for balanced descriptive comparison only, not same-event pairs.",
+    "Actual comparison is nonparametric feature geometry, not training, fitted head or accuracy gain.",
+    "Existing raw completed F seed 01 selected for matched source contract; source V previously used for diagnostics.",
+    "SourceDataset loads V27000 into memory; selected1800 source V only enter frozen forward. No raw IQ or individual features leave source host."
+  ]
+}

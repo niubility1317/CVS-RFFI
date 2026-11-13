@@ -1,0 +1,112 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-free-mixture-pilot-s2026092701-r01",
+  "group_id": "phase1-free-mixture",
+  "display_name": "Phase1 direct supervised physical mixture pilot",
+  "description": "Train direct classifier-weighted continuous mixture of six fixed posterior IQ hypotheses, without adding concentrated posterior logits to network weights.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "conditional_posterior",
+    "pairwise_utility",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-tempered-posterior-diagnostic-s2026092701-r01",
+    "20261102-phase1-joint-mixture-pilot-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "IQ [2,256], six blind physical posterior waveforms and F candidate features; directly learned six-class mixture",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Only L_s fit labels enter training; U_s uses high-confidence frozen clean F pseudo labels, no U_s truth, V or test",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Only source fit L_s truth and U_s high-confidence clean F pseudo targets; no U_s truth/V/test",
+    "external_method_exception": null,
+    "claim_scope": "Source source IDs used by F and seen in other channel views, pseudo targets not independent test; bounded correction may exploit classifier"
+  },
+  "checkpoint": {
+    "initialization": "Random MLP with zero final layer yields uniform weights, frozen blind posterior and Tri-SIG-TIME SSL; DURA only compared after training.",
+    "sources": [
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]",
+      "[已省略路径]"
+    ],
+    "contract_check_ref": "Source blind epoch10 and 8192-ID six-class source prior; frozen Tri-SIG-TIME SSL; controller new from scratch.",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "4096 fixed source fit IDs disjoint from 8192 prior IDs, source views21/22/23, eight epochs final weight; RX8 source diagnostic blend .25/.5/1; no target selection or automatic test."
+  },
+  "expected_artifacts": [
+    "checkpoint.pt",
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "eligible source train exposures and L_s labels",
+      "source clean-F pseudo target agreement",
+      "direct normalized IQ MSE"
+    ],
+    "dimensions": [
+      "six source RX8 heldout scenarios"
+    ],
+    "scientific_rule": "Train fixed F waveform CE + 0.5 direct six-class CE + 0.2 paired IQ MSE using legal L_s fit truth and high-confidence U_s clean F pseudo target; no U_s truth, V or test."
+  },
+  "rows": [
+    {
+      "row_id": "free_mixture_pilot_s2026092701",
+      "method": "direct supervised six-component mixture with optional convex blend to blind posterior",
+      "purpose": "learn hypothesis weights directly rather than perturb concentrated posterior",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026121954,
+        "split": 392005,
+        "data": 2026121855,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "Same 4096 fit IDs as prior joint pilot, fit seed 2026121855, network seed 2026121954, order seed 2026121856; no target data.",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "AdamW weight_decay 0.0001",
+      "lr": 0.0003,
+      "epochs": 8,
+      "fl_rounds": null,
+      "expected_artifacts": [
+        "checkpoint.pt",
+        "result.json"
+      ]
+    }
+  ],
+  "notes": "Designed after observing posterior saturation and fixed-temperature failure on same source sample; source IDs previously explored. Uses L_s fit truth and U_s pseudo targets only; DURA comparator after fit, no V/test/U_s truth; no automatic target test."
+}
