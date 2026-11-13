@@ -3,7 +3,7 @@
 - run_id：`20261113-phase1-pamf-hybrid-margin-m4-r01`
 - group_id：`phase1-pamf-branch-prototype-tuning`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：QUEUED（实际状态按 events.jsonl 及独立证据更新）
 
 ## 目的与对照
 
@@ -17,7 +17,7 @@
 
 使用与 C 匹配的固定输入路由、物理扰动日程及辅助权重，不开展调参；原始参照与分类器权重仅在新增损失中停止梯度。逐样本记录实际扰动范数、置信度、伪标签和间隔违约，周期性记录同状态 AdamW 更新差量。每行训练完成自动冻结 raw 与 DURA-LU 的 clean 和六个 practical 场景预测，再进行独立评分和 C/M 配对错变对／对变错分析。其他命令、环境、CWD、launch owner、资源限制、输出和 stop rule 见 experiment.json。
 
-准备阶段：本地针对性检查通过；真实 checkpoint 的无查询 smoke 尚未运行，尚未发布和启动训练。
+发布 commit `233085d1202fea21e49004c182a13c308148662b`；本地针对性检查通过，发布包传输与远端编译已核实。统一 owner PID 2456596 已接续本任务原队列并登记本实验；真实 checkpoint 的无查询 smoke 等待 GPU 容量，四行训练尚未启动。对照配置已逐行比较，仅预定目标函数相关字段不同。
 
 ## 结果与覆盖
 
