@@ -26,7 +26,8 @@ def score(c):
         for arm,folder in c['predictions'].items():
             with np.load(Path(folder)/task/'predictions.npz',allow_pickle=False) as f:
                 arrays[arm]={k:f[k].copy() for k in f.files}
-        ids=arrays['A']['ids']
+        base_arm=c.get('base_arm','A');compare_arms=c.get('compare_arms',['B','C','D'])
+        ids=arrays[base_arm]['ids']
         if any(not np.array_equal(x['ids'],ids) for x in arrays.values()):
             raise ValueError('Paired prediction physical IDs differ')
         truth=read(c['tests'][task]['truth'])
@@ -34,8 +35,8 @@ def score(c):
         rx=np.asarray([str(truth[str(i)]['receiver']) for i in ids]);day=np.asarray([str(truth[str(i)]['day']) for i in ids])
         for route in c['readouts']:
             for view in c['views']:
-                key=route+'__'+view;a=arrays['A'][key]
-                for arm in ('B','C','D'):
+                key=route+'__'+view;a=arrays[base_arm][key]
+                for arm in compare_arms:
                     rows.extend(dict(task=task,readout=route,view=view,arm=arm,**v)
                                 for v in net_stats(y,a,arrays[arm][key],rx,day))
     out=Path(c['output_root']);out.mkdir(parents=True,exist_ok=False)

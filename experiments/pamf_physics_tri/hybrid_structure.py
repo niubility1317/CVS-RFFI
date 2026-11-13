@@ -35,13 +35,15 @@ class HybridStructure(HybridTracked):
         strength=view_strength(self.c['practical_gate'],epoch)
         self.trace_batch.update(physical_strength=strength,
             main_view_routed=int(accepted.sum()) if self.c['structure_arm'] in ('B','D') else 0,
-            aux_physical_nonzero=int(accepted.sum()) if self.c['structure_arm'] in ('C','D') and strength>0 else 0)
+            aux_physical_nonzero=int(accepted.sum()) if self.c['structure_arm'] in ('C','D','E') and strength>0 else 0)
         if self.c['structure_arm'] in ('B', 'D'):
             self.as_physical_used += int((accepted & physical).sum())
             return self.aux_view
         return mixed
 
     def additional_fusion_loss(self, views, selected):
+        if self.c['structure_arm'] == 'E':
+            return HybridTracked.additional_fusion_loss(self, views, selected)
         pseudo, accepted = self.hybrid_labels
         student = self.aux_student
         if self.c['structure_arm'] in ('A', 'B'):
@@ -96,7 +98,7 @@ class HybridStructure(HybridTracked):
 
     def state_dict(self):
         state = super().state_dict()
-        enabled = self.c['structure_arm'] in ('C','D')
+        enabled = self.c['structure_arm'] in ('C','D','E')
         state['U_fused_physics'].update(extra_student_forwards=2 if enabled else 0, auxiliary_enabled=enabled,
                                         selected=state['U_fused_physics']['selected'] if enabled else 0)
         state['U_confidence_only']['used'] = state['accepted'] if enabled else 0
@@ -105,7 +107,7 @@ class HybridStructure(HybridTracked):
         return state
 
     def guide(self,labeled,student):
-        if self.c['structure_arm'] in ('C','D') and self.calls % 50 == 0 and not self.c.get('hard_pl_smoke'):
+        if self.c['structure_arm'] in ('C','D','E') and self.calls % 50 == 0 and not self.c.get('hard_pl_smoke'):
             named=[(n,p) for n,p in student.named_parameters() if p.requires_grad]
             params=[p for _,p in named]
             gl=torch.autograd.grad(labeled,params,retain_graph=True,allow_unused=True)
