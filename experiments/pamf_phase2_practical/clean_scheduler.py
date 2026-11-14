@@ -17,7 +17,7 @@ from .io import atomic, read, require, write
 def validate_plan(config):
     root=Path(config['run_root']).resolve();jobs=config['jobs'];ids=set();outputs=set();capsules=set();seeds=set()
     limit=config.get('max_per_gpu')
-    require(jobs and limit in (2,5) and config.get('minimum_free_MiB',0)>=6000,'Wrong resource limits')
+    require(jobs and limit in (2,5,7) and config.get('minimum_free_MiB',0)>=6000,'Wrong resource limits')
     require(config.get('input_condition')=='clean_ground_pre_satellite_normalized','Wrong input condition')
     phase=config.get('phase')
     require(phase in ('pilot','full'),'Unknown comparison phase')
@@ -25,6 +25,10 @@ def validate_plan(config):
     gpus=config.get('allowed_gpus',[])
     require(gpus and len(gpus)==len(set(gpus)) and all(type(g) is int and 0<=g<=7 for g in gpus),'Wrong GPU list')
     require(limit!=5 or len(gpus) in (3,4),'Five workers per GPU require three or four configured GPUs')
+    require(limit!=7 or len(gpus)==5,'Seven workers per GPU require five configured GPUs')
+    if limit==7:
+        require(config.get('worker_reserve_MiB')==3000 and config.get('one_per_snapshot') is True,
+                'Seven-worker mode requires a 3000 MiB reservation and staggered admission')
     allowed_capsules={f'capsules/{p}/{e}/{r}' for p in POOLS for e in EPISODES for r in RECEIVERS}
     full_points={(t['capsule'],t['seed']):t['points'] for t in comparison_tasks()} if phase=='full' else {}
     identities=set()
@@ -83,7 +87,7 @@ def validate_plan(config):
     return dict(jobs=len(jobs),groups=sorted({x['group'] for x in jobs}),prediction_only=True,truth_opened=False)
 
 
-def choose(jobs,active,devices,allowed,minimum_free,max_per_gpu=2):
+def choose(jobs,active,devices,allowed,minimum_free,max_per_gpu=2,*,worker_reserve=None,one_per_snapshot=False):
     """Return safe (job,gpu) admissions for one resource snapshot."""
     pending=sorted(jobs,key=lambda j:(j.get('priority',0),-j.get('measured_cost_seconds',0),j['id']))
     own_pids={v['pid'] for v in active.values()};chosen=[]
@@ -94,10 +98,12 @@ def choose(jobs,active,devices,allowed,minimum_free,max_per_gpu=2):
         admitted={v['pid'] for v in active.values() if v['gpu']==gpu}
         own=len(admitted)
         used_by_pid=device.get('used_by_pid',{})
-        reserved=sum(max(0,minimum_free-used_by_pid.get(pid,0)) for pid in admitted)
+        reservation=minimum_free if worker_reserve is None else worker_reserve
+        reserved=sum(max(0,reservation-used_by_pid.get(pid,0)) for pid in admitted)
         free=device['free']-reserved
         while pending and own<max_per_gpu and free>=minimum_free:
-            job=pending.pop(0);chosen.append((job,gpu));own+=1;free-=minimum_free
+            job=pending.pop(0);chosen.append((job,gpu));own+=1;free-=reservation
+            if one_per_snapshot:break
     return chosen
 
 
@@ -131,7 +137,9 @@ def dispatch(config):
         if not failed and not stopped:
             try:
                 admitted=choose(pending,{k:dict(pid=v['process'].pid,gpu=v['gpu']) for k,v in active.items()},
-                                occupancy(),config['allowed_gpus'],config['minimum_free_MiB'],config['max_per_gpu'])
+                                occupancy(),config['allowed_gpus'],config['minimum_free_MiB'],config['max_per_gpu'],
+                                worker_reserve=config.get('worker_reserve_MiB'),
+                                one_per_snapshot=config.get('one_per_snapshot',False))
             except (OSError,ValueError,KeyError,subprocess.SubprocessError) as exc:
                 failed.append(dict(id='occupancy',error=str(exc)));admitted=[]
             for job,gpu in admitted:

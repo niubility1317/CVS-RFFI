@@ -39,6 +39,13 @@ def test_plan_and_completion_bind_exact_clean_task(tmp_path):
     with pytest.raises(ValueError,match='three or four'):
         validate_plan(dict(config,max_per_gpu=5))
     assert validate_plan(dict(config,max_per_gpu=5,allowed_gpus=[1,2,3]))['jobs']==1
+    assert validate_plan(dict(config,max_per_gpu=7,allowed_gpus=[0,1,2,3,4],
+                              worker_reserve_MiB=3000,one_per_snapshot=True))['jobs']==1
+    with pytest.raises(ValueError,match='five configured GPUs'):
+        validate_plan(dict(config,max_per_gpu=7,allowed_gpus=[1,2,3],
+                           worker_reserve_MiB=3000,one_per_snapshot=True))
+    with pytest.raises(ValueError,match='staggered admission'):
+        validate_plan(dict(config,max_per_gpu=7,allowed_gpus=[0,1,2,3,4]))
     with pytest.raises(ValueError):validate_plan(dict(config,jobs=[entry,entry]))
     with pytest.raises(ValueError):validate_plan(dict(config,minimum_free_MiB=4000))
     with pytest.raises(ValueError):validate_plan(dict(config,phase='full'))
@@ -63,6 +70,17 @@ def test_five_worker_limit_reserves_unallocated_memory():
     assert choose(jobs,active,devices,[1],6000,5)==[]
     devices[1]['free']=11800
     assert len(choose(jobs,active,devices,[1],6000,5))==1
+
+
+def test_seven_worker_mode_admits_one_per_snapshot_and_protects_memory():
+    jobs=[dict(id=str(i)) for i in range(10)]
+    active={str(i):dict(pid=i,gpu=1) for i in range(1,7)}
+    devices={1:dict(pids=set(range(1,7)),used_by_pid={i:1000 for i in range(1,7)},free=19000)}
+    assert len(choose(jobs,active,devices,[1],6000,7,worker_reserve=3000,one_per_snapshot=True))==1
+    devices[1]['free']=17999
+    assert choose(jobs,active,devices,[1],6000,7,worker_reserve=3000,one_per_snapshot=True)==[]
+    devices[1]['free']=19000;devices[1]['pids'].add(999)
+    assert choose(jobs,active,devices,[1],6000,7,worker_reserve=3000,one_per_snapshot=True)==[]
 
 
 def test_pamf_plan_rejects_missing_restoration_cache(tmp_path):
