@@ -5,3 +5,5 @@
 全部覆盖后先验证每份 prediction 的任务、数据口径、行和文件，再开启独立 truth-last 评分；最多 4 个 CPU 进程，无目标反馈。输出独占 `runs/20261115-phase2-clean-auto-score-m4-r01`，每个任务保留 natural 和 common-K，PAMF 两种路径分开；真实 B 状态不同的结果不可声称共享 B。执行 `python -m experiments.pamf_phase2_practical.clean_auto_score --preparations <project>/preparations --output <project>/runs/20261115-phase2-clean-auto-score-m4-r01 --interval 300 --workers 4`。
 
 当前 ISSL、若干混合组和 MoPC 均未完成，且 MoPC 已发生真实非有限；观察器应保持 WAITING，不打开 truth，不重复预测。发生预测完整性或评分错误保留日志与输出并停下，不能把部分结果冒充全量评分。
+
+2026-11-15：独立读回 PID 4185761 为 WAITING，32844 方法任务单元中 25448 单元仍不完整，真值未开启。随后发现新调度计划写入时可能发生 JSON 半写竞态，准备经测试的 r02 观察器安全接续；r01 只负责等待，不评分或修改现有实验。

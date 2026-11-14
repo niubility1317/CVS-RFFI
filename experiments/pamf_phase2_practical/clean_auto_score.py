@@ -67,6 +67,15 @@ def merge_rows(rows):
     return list(chosen.values())
 
 
+def mark_incomplete(path, unstable):
+    path = Path(path)
+    stamp = (path.stat().st_size, path.stat().st_mtime_ns)
+    last, count = unstable.get(str(path), (None, 0))
+    count = count + 1 if stamp == last else 1
+    unstable[str(path)] = (stamp, count)
+    require(count < 3, 'Malformed JSON remained unchanged')
+
+
 def collect(preparations, expected, unstable=None):
     if unstable is None:
         unstable = {}
@@ -74,7 +83,12 @@ def collect(preparations, expected, unstable=None):
     for config_path in sorted(Path(preparations).glob('*phase2*clean*/scheduler.json')):
         if config_path.parent.name in EXCLUDED_PLANS:
             continue
-        config = read(config_path)
+        try:
+            config = read(config_path)
+        except json.JSONDecodeError:
+            mark_incomplete(config_path, unstable)
+            continue
+        unstable.pop(str(config_path), None)
         require(config.get('input_condition') == 'clean_ground_pre_satellite_normalized',
                 'Unexpected clean plan condition')
         for entry in config['jobs']:
@@ -89,12 +103,7 @@ def collect(preparations, expected, unstable=None):
             try:
                 valid = completion_matches(entry)
             except json.JSONDecodeError:
-                marker = Path(entry['completion'])
-                stamp = (marker.stat().st_size, marker.stat().st_mtime_ns)
-                last, count = unstable.get(str(marker), (None, 0))
-                count = count + 1 if stamp == last else 1
-                unstable[str(marker)] = (stamp, count)
-                require(count < 3, 'Malformed completion marker remained unchanged')
+                mark_incomplete(entry['completion'], unstable)
                 continue
             unstable.pop(entry['completion'], None)
             require(valid, 'Invalid completed prediction')

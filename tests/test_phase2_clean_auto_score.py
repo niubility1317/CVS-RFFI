@@ -94,3 +94,15 @@ def test_transient_incomplete_completion_marker_is_not_counted(tmp_path, monkeyp
     with pytest.raises(ValueError, match='Malformed'):
         auto.collect(tmp_path/'plans', expected, unstable)
 
+
+def test_transient_scheduler_plan_is_not_counted(tmp_path):
+    from experiments.pamf_phase2_practical import clean_auto_score as auto
+    plan = tmp_path/'plans/20261115-phase2-clean-new/scheduler.json'
+    plan.parent.mkdir(parents=True)
+    plan.write_text('{')
+    unstable = {}
+    assert auto.collect(tmp_path/'plans', {}, unstable) == ({}, {})
+    assert auto.collect(tmp_path/'plans', {}, unstable) == ({}, {})
+    with pytest.raises(ValueError, match='Malformed'):
+        auto.collect(tmp_path/'plans', {}, unstable)
+
