@@ -1,4 +1,5 @@
 """Reproduce the ProtoNet/MoPC synthetic instability with and without clipping."""
+import argparse
 from collections import deque
 import json
 import os
@@ -17,8 +18,8 @@ def finite_absmax(value):
     return float(value.max()) if bool(torch.isfinite(value).all()) else None
 
 
-def run_variant(clip):
-    torch.manual_seed(1731)
+def run_variant(clip,semantics='paper',seed=1731):
+    torch.manual_seed(seed)
     model=from_protonet(ProtoNet(6).cuda().eval(),torch.randn(6,256,device='cuda')*.001).cuda()
     old_x=torch.randn(60,2,256,device='cuda');old_y=torch.arange(6,device='cuda').repeat_interleave(10)
     anchor=make_anchor(model,old_x,old_y,method='mopc_hr')
@@ -43,7 +44,7 @@ def run_variant(clip):
         return historical_record(trace,current,terms,callback,start,**fields)
     try:
         with patch.object(ProtoClassifier,'forward',observe_forward),patch.object(native,'_record',observe_record):
-            state=register(anchor,x,y,seed=42,mopc_semantics='paper',mopc_max_grad_norm=clip)
+            state=register(anchor,x,y,seed=42,mopc_semantics=semantics,mopc_max_grad_norm=clip)
         status='COMPLETE';error=None;updates=len(state.loss_trace)
         clipped=state.protocol_metadata.get('gradient_clipped_updates',0)
     except FloatingPointError as exc:
@@ -54,13 +55,18 @@ def run_variant(clip):
 
 
 def main():
+    p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--semantics',choices=['paper','public_code'],default='paper')
+    p.add_argument('--seed',type=int,action='append')
+    args=p.parse_args()
     if os.environ.get('CUBLAS_WORKSPACE_CONFIG') not in (':4096:8',':16:8'):
         raise ValueError('Deterministic CUBLAS_WORKSPACE_CONFIG is required before startup')
     torch.set_num_threads(1);torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False
     torch.use_deterministic_algorithms(True);torch.backends.cudnn.deterministic=True
-    results=[run_variant(None),run_variant(1.)]
-    print(json.dumps(dict(scope='synthetic_only',seed=1731,semantics='paper',guard='historical_fp32',
-        results=results,query_read=False,truth_read=False,predictions_written=False),allow_nan=False),flush=True)
+    for seed in args.seed or [1731]:
+        results=[run_variant(None,args.semantics,seed),run_variant(1.,args.semantics,seed)]
+        print(json.dumps(dict(scope='synthetic_only',seed=seed,semantics=args.semantics,guard='historical_fp32',
+            results=results,query_read=False,truth_read=False,predictions_written=False),allow_nan=False),flush=True)
 
 
 if __name__=='__main__':main()
