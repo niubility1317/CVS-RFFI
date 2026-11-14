@@ -57,6 +57,21 @@ def test_reports_bad_sgd_update_before_next_forward(support):
     assert events[-1]['completed_updates'] == 1
 
 
+def test_public_code_reports_nonfinite_objective_input(support, monkeypatch):
+    from experiments.pamf_phase2_practical.vendor_native.comparison_suite import registration
+    prepared, x, y = support
+    original = registration._logits
+    def bad_logits(*args, **kwargs):
+        value = original(*args, **kwargs)
+        return value * float('inf') if torch.is_grad_enabled() else value
+    monkeypatch.setattr(registration, '_logits', bad_logits)
+    events = []
+    with pytest.raises(FloatingPointError):
+        diagnostic.trace_registration(prepared, x, y, 42, events.append)
+    assert events[0]['boundary'] == 'objective_inputs'
+    assert 'support_logits' in events[0]['tensors']
+
+
 def test_support_rejects_other_capsule_before_reading_samples(tmp_path, monkeypatch):
     def forbidden(*_args):
         pytest.fail('unbound support samples must not be opened')

@@ -44,6 +44,49 @@ def test_bridge_supports_historical_paper_semantics_for_diagnostics(monkeypatch)
     assert seen==[('paper',1.),('public_code',None)]
 
 
+def test_public_code_does_not_evaluate_discarded_paper_objective(monkeypatch):
+    from experiments.pamf_phase2_practical.vendor_native.comparison_suite import registration
+
+    class Encoder(nn.Module):
+        def __init__(self):
+            super().__init__();self.layer=nn.Linear(2,4)
+        def forward(self,x):return {'features':self.layer(x)}
+
+    torch.manual_seed(7)
+    model=from_protonet(Encoder().eval(),torch.randn(2,4)*.01)
+    anchor=make_anchor(model,torch.randn(4,2),torch.tensor([0,0,1,1]),method='mopc_hr')
+    def reject_paper(*args,**kwargs):
+        raise AssertionError('public code evaluated unused paper objective')
+    monkeypatch.setattr(registration,'mopc_hr_incremental_objective',reject_paper)
+    cfg=RegistrationConfig(seed=7,mopc_semantics='public_code',mopc_epochs=1,mopc_batch_size=4)
+    result=register_new_classes(anchor,torch.randn(4,2),torch.tensor([2,2,3,3]),[2,3],config=cfg)
+    assert result.loss_trace and all(torch.isfinite(torch.tensor(row['loss'])) for row in result.loss_trace)
+
+
+def test_public_code_objective_and_gradients_match_previous_implementation():
+    from experiments.pamf_phase2_practical.vendor_native.comparison_suite import registration
+    import torch.nn.functional as F
+
+    torch.manual_seed(11)
+    logits=torch.randn(4,3,requires_grad=True)
+    proto_logits=torch.randn(4,3,requires_grad=True)
+    parameters={'a':torch.randn(3,2,requires_grad=True),'b':torch.randn(3,requires_grad=True)}
+    previous={name:torch.randn_like(value) for name,value in parameters.items()}
+    labels=torch.tensor([0,1,2,0]); proto_labels=torch.tensor([1,2,0,1])
+    paper=registration.mopc_hr_incremental_objective(logits,labels,proto_logits,proto_labels,
+                                                       parameters,previous,lambda_max=.7)
+    old_hr=sum(.7*(1.0-j/len(parameters))*(p-previous[name]).norm(2)
+               for j,(name,p) in enumerate(parameters.items()))
+    old_loss=paper.cross_entropy+F.cross_entropy(proto_logits/2.,proto_labels)+old_hr
+    current=registration._mopc_public_objective(logits,labels,proto_logits,proto_labels,
+                                                  parameters,previous,lambda_max=.7)
+    variables=[logits,proto_logits,*parameters.values()]
+    old_grad=torch.autograd.grad(old_loss,variables,retain_graph=True)
+    new_grad=torch.autograd.grad(current.total,variables)
+    assert torch.equal(old_loss,current.total)
+    assert all(torch.equal(a,b) for a,b in zip(old_grad,new_grad))
+
+
 @pytest.mark.parametrize('seed',[1731,1732,1733])
 def test_diagnostic_variant_handles_large_synthetic_support(seed):
     class Encoder(nn.Module):

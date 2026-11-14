@@ -40,6 +40,7 @@ def trace_registration(prepared, x, y, seed, emit):
 
     objective, record, correction = (native.mopc_hr_incremental_objective,
                                      native._record, native.correct_old_prototypes)
+    public_objective = native._mopc_public_objective
     model = first = None
     updates = 0
     position = {}
@@ -56,6 +57,12 @@ def trace_registration(prepared, x, y, seed, emit):
     def observe_objective(logits, labels, proto_logits, proto_labels, *args, **kwargs):
         inspect('objective_inputs', [('support_logits', logits), ('prototype_logits', proto_logits)], updates + 1)
         terms = objective(logits, labels, proto_logits, proto_labels, *args, **kwargs)
+        inspect('objective_terms', vars(terms).items(), updates + 1)
+        return terms
+
+    def observe_public_objective(logits, labels, proto_logits, proto_labels, *args, **kwargs):
+        inspect('objective_inputs', [('support_logits', logits), ('prototype_logits', proto_logits)], updates + 1)
+        terms = public_objective(logits, labels, proto_logits, proto_labels, *args, **kwargs)
         inspect('objective_terms', vars(terms).items(), updates + 1)
         return terms
 
@@ -88,6 +95,7 @@ def trace_registration(prepared, x, y, seed, emit):
 
     with ExitStack() as stack:
         stack.enter_context(patch.object(native, 'mopc_hr_incremental_objective', observe_objective))
+        stack.enter_context(patch.object(native, '_mopc_public_objective', observe_public_objective))
         stack.enter_context(patch.object(native, '_record', observe_record))
         stack.enter_context(patch.object(native, 'correct_old_prototypes', observe_correction))
         stack.callback(register_optimizer_step_post_hook(observe_step).remove)

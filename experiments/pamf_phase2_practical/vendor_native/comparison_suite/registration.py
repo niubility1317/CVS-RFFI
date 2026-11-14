@@ -23,7 +23,7 @@ import torch.nn.functional as F
 from experiments.pamf_phase2_practical.vendor_native.paper_reproduction.CSIL.losses import compute_csil_loss
 from experiments.pamf_phase2_practical.vendor_native.paper_reproduction.mopc_hr_non_exemplar_cil_sei.algorithm import (
     compute_class_prototypes, correct_old_prototypes, prototype_augmentation,
-    mopc_hr_incremental_objective,
+    mopc_hr_incremental_objective, MoPCHRLoss,
 )
 from experiments.pamf_phase2_practical.vendor_native.paper_reproduction.orthogonal_incremental_sei.losses import incremental_calibration_loss
 
@@ -104,6 +104,16 @@ def _seeded_kaiming_uniform(tensor, *, a, generator):
 
 def _mopc_similarity(cfg):
     return "official_code_dot_softmax" if cfg.mopc_semantics == "public_code" else "paper_cosine"
+
+
+def _mopc_public_objective(logits, labels, proto_logits, proto_labels, parameters, previous, *, lambda_max):
+    """The public trainer's optimized objective, without the unused paper penalty."""
+    pairs = list(parameters.items())
+    hr = sum(lambda_max * (1.0 - j / len(pairs)) *
+             (p - previous[name]).norm(2) for j, (name, p) in enumerate(pairs))
+    proto_ce = F.cross_entropy(proto_logits / 2.0, proto_labels)
+    cross_entropy = F.cross_entropy(logits, labels)
+    return MoPCHRLoss(cross_entropy + proto_ce + hr, cross_entropy, proto_ce, hr)
 
 
 def _clip_finite_gradients(parameters, max_norm):
@@ -600,17 +610,14 @@ def _mopc_register(state: RegistrationState, x: torch.Tensor, y: torch.Tensor,
                 torch.arange(begin, device=x.device), num_samples=cfg.mopc_batch_size,
                 noise_std=cfg.mopc_noise_std, generator=gen)
             proto_logits = model.fc(augmented)[:, :end]
-            terms = mopc_hr_incremental_objective(logits, y[indices], proto_logits, augmented_y,
-                dict(model.named_parameters()), previous, beta=cfg.mopc_beta, lambda_max=cfg.mopc_lambda_max)
             if cfg.mopc_semantics == "public_code":
                 # Public MoPC_HR_trainer.stage1_distill computes KD but omits it
                 # from the optimized loss; its HR is unsquared layerwise norm.
-                pairs = list(model.named_parameters())
-                hr = sum(cfg.mopc_lambda_max * (1.0 - j / len(pairs)) *
-                         (p - previous[name]).norm(2) for j, (name, p) in enumerate(pairs))
-                proto_ce = F.cross_entropy(proto_logits / 2.0, augmented_y)
-                terms = type(terms)(terms.cross_entropy + proto_ce + hr,
-                                    terms.cross_entropy, proto_ce, hr)
+                terms = _mopc_public_objective(logits, y[indices], proto_logits, augmented_y,
+                    dict(model.named_parameters()), previous, lambda_max=cfg.mopc_lambda_max)
+            else:
+                terms = mopc_hr_incremental_objective(logits, y[indices], proto_logits, augmented_y,
+                    dict(model.named_parameters()), previous, beta=cfg.mopc_beta, lambda_max=cfg.mopc_lambda_max)
             terms.total.backward()
             _record(state.loss_trace, model,
                 {"loss": terms.total, "cross_entropy": terms.cross_entropy,
