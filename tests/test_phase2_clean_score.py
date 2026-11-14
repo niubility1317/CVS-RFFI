@@ -72,3 +72,28 @@ def test_parallel_scoring_after_all_predictions_are_fixed(tmp_path):
     assert (output/'one/metrics.json').exists() and (output/'two/metrics.json').exists()
     with pytest.raises(ValueError,match='between 1 and 4'):
         clean_score.run(config,prep,tmp_path/'run/other',workers=5)
+
+
+def test_auto_score_checks_predictions_before_scoring_and_keeps_k(tmp_path, monkeypatch):
+    from experiments.pamf_phase2_practical import clean_auto_score as auto
+    config, _ = make_case(tmp_path)
+    entry = config['jobs'][0]
+    runtime_path = __import__('pathlib').Path(entry['runtime'])
+    runtime = json.loads(runtime_path.read_text())
+    runtime['clean_root'] = str(tmp_path/'clean')
+    runtime_path.write_text(json.dumps(runtime))
+    job = json.loads(__import__('pathlib').Path(entry['job']).read_text())
+    u = auto.unit(entry['group'], job)
+    wanted = auto.expected_rows(entry['group'], job)
+    original = np.load
+    def no_truth(path, *args, **kwargs):
+        assert 'score_only' not in str(path)
+        return original(path, *args, **kwargs)
+    monkeypatch.setattr(np, 'load', no_truth)
+    auto.validate_before_truth({u: wanted}, {u: [entry]})
+    monkeypatch.setattr(np, 'load', original)
+    assert auto.score_unit((u, [entry], wanted, str(tmp_path/'scored'))) == 8
+    result = next((tmp_path/'scored').glob('*/metrics.json'))
+    rows = json.loads(result.read_text())['rows']
+    assert {row['k'] for row in rows} == {1, 5, 10, 20}
+    assert all(row['metrics']['accuracy'] == 1 for row in rows)
