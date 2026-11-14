@@ -18,8 +18,10 @@ from .group2_savedb_diagnostic import observe_support_forward
 from .io import activate, read, require
 
 
-def run(rt, job, k, n, device, variant, emit):
-    require(variant in ('original', 'clip1', 'clip10'), 'Unsupported diagnostic variant')
+def run(rt, job, k, n, device, variant, emit, *, repeats=1):
+    require(variant in ('original', 'clip1', 'clip10', 'original_uninstrumented'), 'Unsupported diagnostic variant')
+    require(type(repeats) is int and 1 <= repeats <= 20 and
+            (variant == 'original_uninstrumented' or repeats == 1), 'Invalid diagnostic repeat count')
     require(job.get('profile') == 'protonet_cda' and job.get('methods') == ['mopc_hr']
             and job.get('save_B_for_mopc') and [k, n] in job['points'], 'Wrong diagnostic job')
     activate(rt)
@@ -39,7 +41,7 @@ def run(rt, job, k, n, device, variant, emit):
     x, y = support_only_clean(rt['data_root'], rt['clean_root'], job['capsule'], new[0]['split_id'])
     x = to_tensor(x, device, np.float32)
     y = to_tensor(y, device, np.int64).long()
-    clip = {'original': None, 'clip1': 1.0, 'clip10': 10.0}[variant]
+    clip = {'original': None, 'clip1': 1.0, 'clip10': 10.0, 'original_uninstrumented': None}[variant]
     emit(dict(event='SAVED_CLEAN_B_SUPPORT_READY', variant=variant, key=job['key'], k=k, n=n,
               b_seed=b_seed, c_seed=c_seed, query_read=False, truth_read=False, predictions_written=False))
 
@@ -47,6 +49,21 @@ def run(rt, job, k, n, device, variant, emit):
         require(tuple(methods) == ('mopc_hr',), 'Wrong diagnostic methods')
         return {'mopc_hr': cil.register(prepared['mopc_hr'], inputs, labels, seed=seed,
                                         mopc_semantics='public_code', mopc_max_grad_norm=clip)}
+
+    if variant == 'original_uninstrumented':
+        for i in range(repeats):
+            try:
+                state = cil.register(anchor, x, y, seed=c_seed, mopc_semantics='public_code')
+                emit(dict(event='REPEAT_COMPLETE', repeat=i+1, updates=len(state.loss_trace),
+                          query_read=False, truth_read=False, predictions_written=False))
+            except FloatingPointError as exc:
+                emit(dict(event='DIAGNOSTIC_RESULT', variant=variant, status='NONFINITE', repeat=i+1,
+                          error=str(exc), optimizer_changed=False, query_read=False,
+                          truth_read=False, predictions_written=False))
+                return
+        emit(dict(event='DIAGNOSTIC_RESULT', variant=variant, status='COMPLETE', repeats=repeats,
+                  optimizer_changed=False, query_read=False, truth_read=False, predictions_written=False))
+        return
 
     try:
         with patch.object(cross, 'register_c', register), observe_support_forward(emit):
@@ -66,9 +83,10 @@ def main():
     p.add_argument('--k', type=int, required=True)
     p.add_argument('--n', type=int, required=True)
     p.add_argument('--device', choices=['cuda:0'], required=True)
+    p.add_argument('--repeats', type=int, default=1)
     a = p.parse_args()
     run(read(a.runtime), read(a.job), a.k, a.n, a.device, a.variant,
-        lambda event: print(json.dumps(event, allow_nan=False), flush=True))
+        lambda event: print(json.dumps(event, allow_nan=False), flush=True), repeats=a.repeats)
 
 
 if __name__ == '__main__':
