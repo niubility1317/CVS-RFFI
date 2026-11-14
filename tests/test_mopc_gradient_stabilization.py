@@ -26,6 +26,24 @@ def test_clipping_is_opt_in_and_requires_positive_finite_limit():
         with pytest.raises(ValueError):RegistrationConfig(mopc_max_grad_norm=value)
 
 
+def test_bridge_supports_historical_paper_semantics_for_diagnostics(monkeypatch):
+    from experiments.pamf_phase2_practical import group2_cil_bridge as bridge
+    class Encoder(nn.Module):
+        def __init__(self):
+            super().__init__();self.layer=nn.Linear(2,4)
+        def forward(self,x):return {'features':self.layer(x)}
+    model=bridge.from_protonet(Encoder().eval(),torch.randn(2,4))
+    anchor=bridge.make_anchor(model,torch.randn(4,2),torch.tensor([0,0,1,1]),method='mopc_hr')
+    seen=[]
+    def capture(state,x,y,ids,config):
+        seen.append((config.mopc_semantics,config.mopc_max_grad_norm))
+        return state
+    monkeypatch.setattr(bridge,'register_new_classes',capture)
+    bridge.register(anchor,torch.randn(2,2),torch.tensor([2,2]),seed=7,mopc_semantics='paper',mopc_max_grad_norm=1.)
+    bridge.register(anchor,torch.randn(2,2),torch.tensor([2,2]),seed=7)
+    assert seen==[('paper',1.),('public_code',None)]
+
+
 @pytest.mark.parametrize('seed',[1731,1732,1733])
 def test_diagnostic_variant_handles_large_synthetic_support(seed):
     class Encoder(nn.Module):

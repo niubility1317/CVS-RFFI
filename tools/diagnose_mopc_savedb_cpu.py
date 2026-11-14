@@ -12,8 +12,9 @@ from experiments.pamf_phase2_practical.group1 import source_scope
 from experiments.pamf_phase2_practical.group1_source import load_source
 from experiments.pamf_phase2_practical.group2_b_state import load_b_state
 from experiments.pamf_phase2_practical.group2_c_backbone_worker import support_only
-from experiments.pamf_phase2_practical.group2_cross_fit import register_c
+from experiments.pamf_phase2_practical.group2_cil_bridge import register
 from experiments.pamf_phase2_practical.clean_source_smoke import check
+from experiments.pamf_phase2_practical.vendor_native.comparison_suite import registration
 
 
 BASE=Path('/home/szu2070436088/2510044040/CV-SincNet')
@@ -21,8 +22,31 @@ RUNTIME=BASE/'releases/20261109-phase2-bsource-savedb-mopc-m4-r15-release/runtim
 JOB=BASE/'runs/20261109-phase2-bsource-savedb-mopc-m4-r15/jobs/00002.json'
 
 
+def historical_record(trace,model,terms,callback,start,**fields):
+    """Preserve r15's FP32 aggregate and float32 finite checks."""
+    gradients=[p.grad.detach().norm().square() for p in model.parameters() if p.grad is not None]
+    row={**fields,**{k:float(v.detach()) if isinstance(v,torch.Tensor) else v for k,v in terms.items()},
+         'gradient_norm':float(terms['gradient_norm']) if 'gradient_norm' in terms else
+                         (float(torch.stack(gradients).sum().sqrt()) if gradients else 0.),
+         'elapsed_seconds':time.perf_counter()-start,
+         'source_validation':None,'source_validation_reason':'Phase2 does not select on validation'}
+    bad=[k for k,v in row.items() if isinstance(v,float) and not torch.isfinite(torch.tensor(v))]
+    if bad:
+        context={k:fields[k] for k in ('phase','method','stage','epoch','iteration') if k in fields}
+        if 'gradient_norm' in bad and 'gradient_norm' not in terms:
+            named=[(n,p.grad.detach()) for n,p in model.named_parameters() if p.grad is not None]
+            context['nonfinite_gradient_tensors']=[n for n,g in named if not torch.isfinite(g).all()]
+            if not context['nonfinite_gradient_tensors'] and named:
+                context['gradient_norm_float64']=float(torch.stack([g.double().norm() for _,g in named]).norm())
+                context['gradient_absmax_float64']=float(torch.stack([g.double().abs().max() for _,g in named]).max())
+        raise FloatingPointError(f"nonfinite registration training term: {', '.join(bad)}; {context}")
+    trace.append(row)
+    if callback:callback(dict(row))
+
+
 def main():
     torch.set_num_threads(1);rt=read(RUNTIME);job=read(JOB);activate(rt)
+    registration._record=historical_record
     require(job['key']=='protonet_cda-s2026092702-c0195' and [10,20] in job['points'],'Wrong original diagnostic')
     sr=source_scope(rt);sr['run_root']=rt['source_run_root']
     bundle=load_source(sr,job['profile'],job['seed'],'cpu');check(rt,bundle)
@@ -42,8 +66,8 @@ def main():
     for cap_value in (None,1.0):
         anchor=load_b_state(b_path,job,10,old_id,b_seed,'cpu')['anchor'];start=time.perf_counter()
         try:
-            state=register_c({'mopc_hr':anchor},new_x,new_y,seed=c_seed,methods=('mopc_hr',),
-                             mopc_max_grad_norm=cap_value)['mopc_hr']
+            state=register(anchor,new_x,new_y,seed=c_seed,mopc_semantics='paper',
+                           mopc_max_grad_norm=cap_value)
             item=dict(clip=cap_value,status='COMPLETE',updates=len(state.loss_trace),
                       max_loss=max(v['loss'] for v in state.loss_trace),
                       clipped_updates=state.protocol_metadata.get('gradient_clipped_updates',0))
@@ -51,7 +75,8 @@ def main():
         item['seconds']=time.perf_counter()-start;results.append(item)
     print(json.dumps(dict(status='CPU_SUPPORT_DIAGNOSTIC_COMPLETE',task=job['key'],k=10,n=20,
         saved_b=str(b_path),device='cpu',source_only_smoke='PASS',results=results,query_rows=0,truth_read=False,
-        identity_predictions=0,official_retry=False,claim='CPU and GPU kernels differ; clipping changes optimization'),allow_nan=False))
+        identity_predictions=0,official_retry=False,mopc_semantics='paper_as_historical_r15',
+        claim='CPU and GPU kernels differ; clipping changes optimization'),allow_nan=False))
 
 
 if __name__=='__main__':main()

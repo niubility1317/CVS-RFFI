@@ -146,6 +146,15 @@ def dispatch(config):
     if stopped:return
     write(control/'predictions_complete.json',dict(status='SELECTED_PREDICTIONS_FIXED',jobs=len(done),truth_read=False,
           global_prediction_barrier=False))
+    if config.get('auto_score'):
+        score=config['auto_score']
+        require(not read(score['preparation']).get('blocked'),'Cannot score incomplete comparison')
+        cmd=[sys.executable,'-u','-m',__package__+'.clean_score','--config',score['config'],
+             '--preparation',score['preparation'],'--output',score['output'],
+             '--workers',str(score.get('workers',1))]
+        with (control/'score.log').open('x',encoding='utf-8') as log:
+            subprocess.run(cmd,cwd=config['release_root'],stdin=subprocess.DEVNULL,
+                           stdout=log,stderr=subprocess.STDOUT,check=True)
 
 
 def main():

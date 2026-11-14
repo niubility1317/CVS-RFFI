@@ -186,7 +186,8 @@ def make_anchor(model: AdaptedClassifier, old_x: torch.Tensor, old_y: torch.Tens
 
 
 def register(anchor: RegistrationState, new_x: torch.Tensor, new_y: torch.Tensor, *,
-             seed: int, epochs: int | None = None, mopc_max_grad_norm: float | None = None) -> RegistrationState:
+             seed: int, epochs: int | None = None, mopc_max_grad_norm: float | None = None,
+             mopc_semantics: str = 'public_code') -> RegistrationState:
     if mopc_max_grad_norm is not None and anchor.method!='mopc_hr':
         raise ValueError('MoPC diagnostic clipping is not an Orthogonal option')
     old = len(anchor.classes)
@@ -200,7 +201,7 @@ def register(anchor: RegistrationState, new_x: torch.Tensor, new_y: torch.Tensor
         raise ValueError('new support K must match old support K')
     cfg = RegistrationConfig(seed=seed, old_adaptation_epochs=0,
         mopc_epochs=20 if epochs is None else epochs,
-        mopc_semantics='public_code',
+        mopc_semantics=mopc_semantics,
         mopc_max_grad_norm=mopc_max_grad_norm,
         orthogonal_epochs=50 if epochs is None else epochs)
     device = new_x.device
