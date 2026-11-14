@@ -59,7 +59,7 @@ def predict(rt, job):
     methods = tuple(job['methods'])
     require(methods and len(set(methods)) == len(methods) and set(methods) <= {'lora', 'mopc_hr', 'orthogonal'}, 'Invalid C methods')
     save_b = job.get('save_B_for_mopc', False)
-    require(not save_b or methods == ('orthogonal', 'lora'), 'Invalid saved-B method subset')
+    require(not save_b or methods in (('orthogonal', 'lora'),('mopc_hr',)), 'Invalid saved-B method subset')
     device = rt.get('device', 'cuda:0')
     source_rt = source_scope(rt)
     source_rt['run_root'] = rt['source_run_root']
@@ -140,7 +140,7 @@ def predict(rt, job):
                         prediction=name, k=k, new_count=n,
                         registered_classes=spec['registered_classes'], query_count=len(pred),
                         claim='DA_B_to_CIL_core_transplant', resources=dict(B_seconds=b_seconds,
-                        C_seconds=c_seconds, query_seconds=q_seconds, B_fit_shared_across_C=True,
+                        C_seconds=c_seconds, query_seconds=q_seconds, B_fit_shared_across_C=len(methods)>1,
                         target_old_labels=6*k, target_new_labels=n*k, query_fit=False,
                         B_bridge_max_abs_diff=b_bridge_max_abs_diff,
                         B_native=plain(bstate.get('resources',{})), C_native=plain(getattr(state,'resource',{})),
@@ -154,7 +154,7 @@ def predict(rt, job):
         require(all(torch.equal(source_before[key], value) for key, value in bundle['model'].state_dict().items()), 'A source changed')
         write(output / 'predictions.json', dict(capsule=job['capsule'], capsule_id=manifest['capsule_id'],
               profile=profile, model_seed=seed, rows=rows))
-        status = 'SUBSET_PREDICTIONS_FIXED' if save_b else 'PREDICTIONS_COMPLETE'
+        status = 'SUBSET_PREDICTIONS_FIXED' if save_b and methods==('orthogonal','lora') else 'PREDICTIONS_COMPLETE'
         write(output / 'complete.json', dict(status=status, capsule_id=manifest['capsule_id'],
               rows=len(rows), truth_read=False, query_fit=False, profile=profile, model_seed=seed))
     finally:

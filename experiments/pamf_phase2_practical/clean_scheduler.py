@@ -25,7 +25,7 @@ def validate_plan(config):
     gpus=config.get('allowed_gpus',[])
     require(gpus and len(gpus)==len(set(gpus)) and all(type(g) is int and 0<=g<=7 for g in gpus),'Wrong GPU list')
     require(limit!=5 or len(gpus) in (3,4),'Five workers per GPU require three or four configured GPUs')
-    require(limit!=7 or len(gpus)==5,'Seven workers per GPU require five configured GPUs')
+    require(limit!=7 or len(gpus) in (3,5),'Seven workers per GPU require three or five configured GPUs')
     if limit==7:
         require(config.get('worker_reserve_MiB')==3000 and config.get('one_per_snapshot') is True,
                 'Seven-worker mode requires a 3000 MiB reservation and staggered admission')

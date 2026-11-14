@@ -7,7 +7,7 @@ from experiments.pamf_phase2_practical import clean_tweak_lora_worker as worker
 from experiments.pamf_phase2_practical import external_additional as extra
 
 
-@pytest.mark.parametrize('method',['lora','orthogonal'])
+@pytest.mark.parametrize('method',['lora','orthogonal','mopc_hr'])
 def test_tweak_registration_keeps_single_query_decisions(tmp_path,monkeypatch,method):
     cap=tmp_path/'data/capsules/P01/MIX01/1-1';(cap/'splits').mkdir(parents=True)
     (cap/'manifest.json').write_text(json.dumps({'capsule_id':'cap'}))
@@ -24,20 +24,24 @@ def test_tweak_registration_keeps_single_query_decisions(tmp_path,monkeypatch,me
     monkeypatch.setattr(worker.extra,'load_source',lambda *args:bundle)
     monkeypatch.setattr(worker,'load_task',task)
     monkeypatch.setattr(worker,'split_rows',lambda cap,spec:np.arange(len(spec['registered_classes'])))
-    if method=='orthogonal':
+    if method in ('orthogonal','mopc_hr'):
         from experiments.pamf_phase2_practical.group2_cil_bridge import register
         monkeypatch.setattr(worker,'register_c',lambda prepared,x,y,seed,methods:
-                            {'orthogonal':register(prepared['orthogonal'],x,y,seed=seed,epochs=1)})
+                            {method:register(prepared[method],x,y,seed=seed,epochs=1)})
     actual=worker.score_fixed;observed=[]
     def score(*args,**kwargs):observed.append(kwargs['batch_size']);return actual(*args,**kwargs)
     monkeypatch.setattr(worker,'score_fixed',score)
     rt=dict(clean_root='unused',data_root=str(tmp_path/'data'))
     job=dict(profile='tweak_m1',methods=[method],seed=2026092701,capsule='capsules/P01/MIX01/1-1',
              output=str(tmp_path/'out'),points=[[1,2]])
+    if method=='mopc_hr':job.update(key='test-tweak',save_B_for_mopc=True)
     worker.run(rt,job)
     result=json.loads((tmp_path/'out/predictions.json').read_text())['rows'][0]
     assert observed==[1] and result['query_records_per_decision']==1
     if method=='lora':
         assert result['knn_k']==1 and result['claim']=='Tweak_M1_B_to_LoRa_core_transplant'
-    else:
+    elif method=='orthogonal':
         assert result['knn_k'] is None and result['claim']=='Tweak_M1_B_to_Orthogonal_core_transplant'
+    else:
+        assert result['knn_k'] is None and result['claim']=='Tweak_M1_B_to_MoPC_core_transplant'
+        assert (tmp_path/'out/B-K1.pt').is_file()

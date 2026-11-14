@@ -8,7 +8,7 @@ from .io import read, require
 NATIVE_DA = {'protonet_cda','mrior_sda','dadda_sda','twostage','poster_ft','tweak_m1'}
 NATIVE_CIL = {'orthogonal','lora_triplet_knn','issl_fixed_v1','mopc_hr'}
 HYBRID_B = NATIVE_DA - {'tweak_m1'}
-HYBRID_C = {'orthogonal','lora'}
+HYBRID_C = {'orthogonal','lora','mopc_hr'}
 
 
 def validate(rt, job, group):
@@ -28,7 +28,7 @@ def validate(rt, job, group):
     elif group=='hybrid':
         methods=job.get('methods',[])
         supported=(job.get('profile') in HYBRID_B and set(methods)<=HYBRID_C) or (
-            job.get('profile')=='tweak_m1' and set(methods)<={'lora','orthogonal'})
+            job.get('profile')=='tweak_m1' and set(methods)<={'lora','orthogonal','mopc_hr'})
         require(supported and methods and len(set(methods))==len(methods), 'Hybrid bridge unbound or unresolved')
     else:
         raise ValueError('Unknown clean external group')

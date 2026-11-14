@@ -8,7 +8,7 @@ import torch
 from .io import activate, read, require
 
 
-def support_only_clean(data_root, clean_root, capsule, split_id):
+def support_only_clean(data_root, clean_root, capsule, split_id, *, new_only=True):
     data=Path(data_root).resolve();clean=Path(clean_root).resolve();cap=(data/capsule).resolve()
     require(cap.is_relative_to(data/'capsules') and len(split_id)==24 and
             all(c in '0123456789abcdef' for c in split_id), 'Invalid capsule/split')
@@ -21,7 +21,8 @@ def support_only_clean(data_root, clean_root, capsule, split_id):
     require(done.get('status')=='CLEAN_PAIRED_COMPLETE' and Path(done['parent_task_root']).resolve()==data,
             'Clean pairing binding mismatch')
     k,n=int(split['k']),int(split['new_count']);classes=split['registered_classes']
-    require(k in (1,5,10,20) and n in (2,5,10,20) and len(classes)==6+n, 'Wrong K/N')
+    require(k in (1,5,10,20) and n in (0,2,5,10,20) and len(classes)==6+n and
+            ((new_only and n>0) or (not new_only and n==0)), 'Wrong K/N or support role')
     idx=np.asarray(split['support_indices'],dtype=np.int64)
     require(len(idx)==k*(6+n) and len(np.unique(idx))==len(idx) and
             (idx>=0).all() and (idx<manifest['received_count']).all(), 'Wrong support positions')
@@ -34,9 +35,10 @@ def support_only_clean(data_root, clean_root, capsule, split_id):
     bank=np.load(clean/'banks'/manifest['receiver']/'clean.npy',mmap_mode='r',allow_pickle=False)
     require(mapping.dtype==np.int32 and mapping.shape==(manifest['received_count'],) and
             bank.dtype==np.float32 and bank.ndim==3 and bank.shape[1:]==(2,256), 'Wrong clean data layout')
-    new=labels>=6;selected=np.asarray(mapping[idx[new]],dtype=np.int64)
+    selected_mask=(labels>=6) if new_only else (labels<6)
+    selected=np.asarray(mapping[idx[selected_mask]],dtype=np.int64)
     require((selected>=0).all() and (selected<len(bank)).all(), 'Wrong clean support mapping')
-    return np.array(bank[selected],dtype=np.float32,copy=True),labels[new].astype(np.int64)
+    return np.array(bank[selected],dtype=np.float32,copy=True),labels[selected_mask].astype(np.int64)
 
 
 def run(rt, source_root, capsule, seed, k, n, device):

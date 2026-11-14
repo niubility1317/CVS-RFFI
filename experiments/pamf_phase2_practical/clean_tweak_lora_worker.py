@@ -9,7 +9,7 @@ from . import external_additional as extra
 from .clean_source_smoke import check
 from .episodic_experiment import split_rows
 from .episodic_io import load_task
-from .external_execution import seed_for,source_runtime
+from .external_execution import seed_for,source_runtime,plain
 from .features import tensor
 from .group2_cross_fit import prepare_b,register_c
 from .group2_worker import score_fixed
@@ -19,7 +19,8 @@ from .io import activate,read,require,write
 def run(rt,job):
     methods=job.get('methods',[])
     require(job.get('profile')=='tweak_m1' and methods and len(set(methods))==len(methods)
-            and set(methods)<={'lora','orthogonal'},'Tweak MoPC numerical failure remains unresolved')
+            and set(methods)<={'lora','orthogonal','mopc_hr'},'Tweak registration method is unavailable')
+    require(not job.get('save_B_for_mopc') or methods==['mopc_hr'], 'Invalid saved-B method subset')
     points=sorted(set(tuple(map(int,p)) for p in job['points']))
     require(points and all(k in (1,5,10,20) and n in (2,5,10,20) for k,n in points),'Wrong workpoints')
     activate(rt);torch.set_num_threads(1);torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False
@@ -33,8 +34,12 @@ def run(rt,job):
     for k in sorted({k for k,n in points}):
         old=get(specs[k,0],'B');x=tensor(old['support_x'],device)
         y=torch.tensor(old['support_y'].tolist(),device=device,dtype=torch.long)
-        b=extra.fit_B(rt,bundle,x,y,seed_for(job['seed'],job['capsule'],k,'B'))
+        b_seed=seed_for(job['seed'],job['capsule'],k,'B')
+        b=extra.fit_B(rt,bundle,x,y,b_seed)
         prepared=prepare_b(b['model'],'tweak_m1',extra.native_features,x,y,old_count=6,b_scores=b)
+        if job.get('save_B_for_mopc'):
+            from .group2_b_state import save_b_state
+            save_b_state(output/f'B-K{k}.pt',job,k,specs[k,0]['split_id'],b_seed,b['model'],prepared['mopc_hr'])
         for _,n in (p for p in points if p[0]==k):
             spec=specs[k,n];task=get(spec,'C');mask=task['support_y']<6
             require(np.array_equal(old['support_ids'],task['support_ids'][mask]),'B/C old support mismatch')
@@ -49,8 +54,10 @@ def run(rt,job):
                 rows.append(dict(split_id=spec['split_id'],stage='C',arm='tweak_m1__'+method,input_path='S0Q0',
                     input_condition='clean_ground_pre_satellite_normalized',prediction=name,k=k,new_count=n,
                     registered_classes=spec['registered_classes'],query_count=len(query),query_records_per_decision=1,
-                    claim='Tweak_M1_B_to_'+('LoRa' if method=='lora' else 'Orthogonal')+'_core_transplant',
-                    knn_k=state.k if method=='lora' else None))
+                    claim='Tweak_M1_B_to_'+{'lora':'LoRa','orthogonal':'Orthogonal','mopc_hr':'MoPC'}[method]+'_core_transplant',
+                    knn_k=state.k if method=='lora' else None,
+                    resources=dict(B_state_ref=str(output/f'B-K{k}.pt') if job.get('save_B_for_mopc') else None,
+                                   C_protocol=plain(getattr(state,'protocol_metadata',{})))))
     require(all(torch.equal(before[k],v) for k,v in model.state_dict().items()),'Source state changed')
     require(len(rows)==len(points)*len(methods),'Incomplete C rows')
     write(output/'predictions.json',dict(capsule_id=manifest['capsule_id'],capsule=job['capsule'],

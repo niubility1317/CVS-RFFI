@@ -41,8 +41,10 @@ def test_plan_and_completion_bind_exact_clean_task(tmp_path):
     assert validate_plan(dict(config,max_per_gpu=5,allowed_gpus=[1,2,3]))['jobs']==1
     assert validate_plan(dict(config,max_per_gpu=7,allowed_gpus=[0,1,2,3,4],
                               worker_reserve_MiB=3000,one_per_snapshot=True))['jobs']==1
-    with pytest.raises(ValueError,match='five configured GPUs'):
-        validate_plan(dict(config,max_per_gpu=7,allowed_gpus=[1,2,3],
+    assert validate_plan(dict(config,max_per_gpu=7,allowed_gpus=[5,6,7],
+                              worker_reserve_MiB=3000,one_per_snapshot=True))['jobs']==1
+    with pytest.raises(ValueError,match='three or five configured GPUs'):
+        validate_plan(dict(config,max_per_gpu=7,allowed_gpus=[1,2],
                            worker_reserve_MiB=3000,one_per_snapshot=True))
     with pytest.raises(ValueError,match='staggered admission'):
         validate_plan(dict(config,max_per_gpu=7,allowed_gpus=[0,1,2,3,4]))

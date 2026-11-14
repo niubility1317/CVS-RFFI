@@ -152,6 +152,11 @@ def predict(rt,job):
     specs=[read(p) for p in (cap/'splits').glob('*.json')];lookup={(s['k'],s['new_count']):s for s in specs}
     Ks,Cs=workpoints(manifest['episode_id']);rows=[];B_support_features={}
     clean_root=rt.get('clean_root')
+    if job.get('reuse') is not None:
+        require(clean_root and profile=='mopc_hr','Only clean native MoPC may reuse pilot rows')
+        from .clean_mopc_reuse import copy_pilot_rows
+        rows.extend(copy_pilot_rows(job,rt,manifest,lookup,out))
+    reused={(r['stage'],r['k'],r['new_count']) for r in rows}
     if clean_root:
         require(r['method']!='pamf','Clean PAMF requires the frozen SCALR runner, not the LocalRidge runner')
         if 'points' in job:
@@ -257,10 +262,12 @@ def predict(rt,job):
             for k,n in Cs:pamf_stage(lookup[k,n],'C')
         else:
             for k in Ks:
-                s=lookup[k,0];task=task_at(s,'A')
-                with Measure(out/f'A0-K{k}.json',dict(stage='A0_QUERY',profile=profile),model):
-                    pred,_=infer(bundle,task['query_x'],6,rt.get('batch_size',128))
-                save(s,'A0','P0',pred)
+                s=lookup[k,0]
+                if ('A0',k,0) not in reused:
+                    task=task_at(s,'A')
+                    with Measure(out/f'A0-K{k}.json',dict(stage='A0_QUERY',profile=profile),model):
+                        pred,_=infer(bundle,task['query_x'],6,rt.get('batch_size',128))
+                    save(s,'A0','P0',pred)
                 if r['category']=='DA':
                     task=task_at(s,'B');sx=tensor(task['support_x'],device)
                     sy=torch.tensor(task['support_y'].tolist(),device=device,dtype=torch.long)
@@ -275,6 +282,7 @@ def predict(rt,job):
                     save(s,'B','P0',pred,resources=probe.result);del state,sx,sy
             if r['category']=='CIL':
                 for k,n in Cs:
+                    if ('C',k,n) in reused:continue
                     s=lookup[k,n];task=task_at(s,'C');keep=task['support_y']>=6
                     sx=tensor(task['support_x'][keep],device)
                     sy=torch.tensor(task['support_y'][keep].tolist(),device=device,dtype=torch.long)

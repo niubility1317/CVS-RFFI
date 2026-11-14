@@ -42,3 +42,19 @@ def test_clean_support_rejects_mismatched_data_binding(tmp_path):
     write(clean/'completion.json',dict(status='CLEAN_PAIRED_COMPLETE',parent_task_root=str(tmp_path/'other')))
     with pytest.raises(ValueError,match='Clean pairing'):
         support_only_clean(data,clean,'capsules/P01/MIX01/1-1',sid)
+
+
+def test_clean_old_support_selects_only_six_old_classes(tmp_path):
+    data=tmp_path/'data';clean=tmp_path/'clean';cap=data/'capsules/P01/MIX01/1-1';sid='b'*24
+    write(cap/'manifest.json',dict(capsule_id='cap',receiver='1-1',received_count=8,storage='episodic-pool-complement-v1',
+          protocol_schema='p2_min_v1',phase2_data_status='VALIDATED_ONCE'))
+    write(cap/'splits'/(sid+'.json'),dict(split_id=sid,capsule_id='cap',k=1,new_count=0,
+          registered_classes=list(range(6)),support_indices=list(range(6)),protocol_schema='p2_min_v1',phase2_data_status='VALIDATED_ONCE'))
+    (cap/'support_labels').mkdir();np.save(cap/'support_labels'/(sid+'.npy'),np.arange(6))
+    write(clean/'completion.json',dict(status='CLEAN_PAIRED_COMPLETE',parent_task_root=str(data)))
+    cc=clean/'capsules/P01/MIX01/1-1';write(cc/'manifest.json',dict(capsule_id='cap',receiver='1-1',
+                                           input_condition='clean_ground_pre_satellite_normalized'))
+    np.save(cc/'row_to_clean.npy',np.arange(8,dtype=np.int32))
+    bank=clean/'banks/1-1';bank.mkdir(parents=True);np.save(bank/'clean.npy',np.zeros((8,2,256),np.float32))
+    x,y=support_only_clean(data,clean,'capsules/P01/MIX01/1-1',sid,new_only=False)
+    assert x.shape==(6,2,256) and y.tolist()==list(range(6))
