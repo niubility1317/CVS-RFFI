@@ -19,7 +19,8 @@ from .io import activate, read, require
 
 
 def run(rt, job, k, n, device, variant, emit, *, repeats=1):
-    require(variant in ('original', 'clip1', 'clip10', 'original_uninstrumented'), 'Unsupported diagnostic variant')
+    require(variant in ('original', 'clip1', 'clip10', 'original_uninstrumented', 'affine_bridge'),
+            'Unsupported diagnostic variant')
     require(type(repeats) is int and 1 <= repeats <= 20 and
             (variant == 'original_uninstrumented' or repeats == 1), 'Invalid diagnostic repeat count')
     require(job.get('profile') == 'protonet_cda' and job.get('methods') == ['mopc_hr']
@@ -37,11 +38,27 @@ def run(rt, job, k, n, device, variant, emit, *, repeats=1):
     b_seed = seed_for(int(job['seed']), job['capsule'], k, 'B')
     c_seed = seed_for(int(job['seed']), job['capsule'], k, n, 'C')
     saved = Path(job['output']) / f'B-K{k}.pt'
-    anchor = load_b_state(saved, job, k, old[0]['split_id'], b_seed, device)['anchor']
+    payload = load_b_state(saved, job, k, old[0]['split_id'], b_seed, device)
+    anchor = payload['anchor']
+    if variant == 'affine_bridge':
+        from .group2_proto_mopc_affine import ProtoMoPCAffine, require_equivalent_b
+        old_x, old_y = support_only_clean(rt['data_root'], rt['clean_root'], job['capsule'],
+                                          old[0]['split_id'], new_only=False)
+        old_x = to_tensor(old_x, device, np.float32)
+        old_y = to_tensor(old_y, device, np.int64).long()
+        candidate = ProtoMoPCAffine(payload['model'], payload['old_prototypes']).to(device).eval()
+        with torch.no_grad():
+            baseline = anchor.model(old_x)['tx_logits']
+            alternative = candidate(old_x)['tx_logits']
+            require_equivalent_b(baseline, alternative)
+        anchor = cil.make_anchor(candidate, old_x, old_y, method='mopc_hr')
+        emit(dict(event='AFFINE_B_SUPPORT_MATCH', centered_logits_match=True, decisions_match=True,
+                  old_classes=6, query_read=False, truth_read=False))
     x, y = support_only_clean(rt['data_root'], rt['clean_root'], job['capsule'], new[0]['split_id'])
     x = to_tensor(x, device, np.float32)
     y = to_tensor(y, device, np.int64).long()
-    clip = {'original': None, 'clip1': 1.0, 'clip10': 10.0, 'original_uninstrumented': None}[variant]
+    clip = {'original': None, 'clip1': 1.0, 'clip10': 10.0, 'original_uninstrumented': None,
+            'affine_bridge': None}[variant]
     emit(dict(event='SAVED_CLEAN_B_SUPPORT_READY', variant=variant, key=job['key'], k=k, n=n,
               b_seed=b_seed, c_seed=c_seed, query_read=False, truth_read=False, predictions_written=False))
 
@@ -72,7 +89,8 @@ def run(rt, job, k, n, device, variant, emit, *, repeats=1):
     except FloatingPointError as exc:
         status, error = 'NONFINITE', str(exc)
     emit(dict(event='DIAGNOSTIC_RESULT', variant=variant, status=status, error=error,
-              optimizer_changed=clip is not None, query_read=False, truth_read=False,
+              optimizer_changed=clip is not None, adapter_changed=variant=='affine_bridge',
+              query_read=False, truth_read=False,
               predictions_written=False))
 
 

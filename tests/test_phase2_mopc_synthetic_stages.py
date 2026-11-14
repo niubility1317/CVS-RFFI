@@ -6,3 +6,8 @@ from experiments.pamf_phase2_practical.group2_mopc_synthetic_diagnostic import r
 def test_rejects_invalid_number_of_new_classes_before_gpu_allocation():
     with pytest.raises(ValueError, match='new classes'):
         run_variant(None, semantics='public_code', seed=1731, new_count=3)
+
+
+def test_rejects_unapproved_bridge_before_gpu_allocation():
+    with pytest.raises(ValueError, match='bridge'):
+        run_variant(None, semantics='public_code', seed=1731, bridge='unknown')
