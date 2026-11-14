@@ -61,3 +61,18 @@ def test_issl_rejects_unregistered_budget(monkeypatch):
     monkeypatch.setattr(worker.extra,'_issl_expand',lambda m,count:None)
     with pytest.raises(ValueError,match='Unregistered'):
         worker.direct_issl(bundle,torch.ones(1,2,256),torch.tensor([6]),1,budget=(3,3))
+
+
+@pytest.mark.parametrize('lr',[3e-5,1e-4])
+def test_issl_short_lr_changes_only_ssl_lr(monkeypatch,lr):
+    bundle=dict(profile='issl_fixed_v1',model=nn.Linear(2,6),native_state={
+        'source_replay_x':torch.ones(6,2,256),'source_replay_y':torch.arange(6)})
+    seen={}
+    monkeypatch.setattr(worker.extra,'_issl_expand',lambda m,count:None)
+    monkeypatch.setattr(worker.extra,'_issl_ssl',lambda m,x,old,spec,seed,logger:seen.update(spec=spec))
+    monkeypatch.setattr(worker.extra,'_train_ce',lambda m,x,y,epochs,batch,rate,seed,logger,**kw:seen.update(transfer_lr=rate))
+    state=worker.direct_issl(bundle,torch.ones(1,2,256),torch.tensor([6]),1,budget=(50,25),ssl_lr=lr)
+    assert seen['spec']['C_SSL_lr']==lr and seen['transfer_lr']==0.03
+    assert state['resources']['C_SSL_lr']==lr
+    with pytest.raises(ValueError,match='learning rate'):
+        worker.direct_issl(bundle,torch.ones(1,2,256),torch.tensor([6]),1,budget=(2000,300),ssl_lr=lr)

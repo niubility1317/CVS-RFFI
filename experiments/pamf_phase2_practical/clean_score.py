@@ -46,6 +46,10 @@ def verify_all(config,preparation):
         require(completion_matches(entry),'A requested prediction job is incomplete')
         job=read(entry['job']);rt=read(entry['runtime']);folder=Path(entry['completion']).parent
         done=read(folder/'complete.json');payload=read(folder/'predictions.json');rows=payload['rows']
+        if 'issl_ssl_lr' in job:
+            require(done.get('issl_ssl_lr')==job['issl_ssl_lr'] and payload.get('issl_ssl_lr')==job['issl_ssl_lr']
+                    and done.get('issl_budget')==job['issl_budget'] and payload.get('issl_budget')==job['issl_budget'],
+                    'ISSL learning rate or budget does not match prediction')
         require(payload['capsule']==job['capsule'] and payload['model_seed']==job['seed'] and len(rows)==done['rows'],
                 'Prediction index identity mismatch')
         actual=[key(row) for row in rows]

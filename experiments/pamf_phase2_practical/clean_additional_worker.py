@@ -15,9 +15,10 @@ from .io import activate, read, require, write
 
 
 ISSL_BUDGETS={(50,25),(100,50),(200,100),(400,100),(2000,300)}
+ISSL_SSL_LRS={1e-5,3e-5,1e-4}
 
 
-def direct_issl(bundle, new_x, new_y, seed, logger=None, budget=(2000,300)):
+def direct_issl(bundle, new_x, new_y, seed, logger=None, budget=(2000,300), ssl_lr=1e-5):
     """Original-source anchor to fixed-v1 C, without target-old adaptation."""
     require(bundle['profile']=='issl_fixed_v1', 'Expected repaired ISSL')
     extra._seed(seed)
@@ -29,12 +30,13 @@ def direct_issl(bundle, new_x, new_y, seed, logger=None, budget=(2000,300)):
     transfer_x=torch.cat((rx,new_x.detach().cpu())); transfer_y=torch.cat((ry,new_y.detach().cpu()))
     spec=extra.source_training_spec('issl_fixed_v1')
     require(tuple(budget) in ISSL_BUDGETS, 'Unregistered ISSL budget')
-    spec=dict(spec,C_SSL_epochs=budget[0],C_transfer_epochs=budget[1])
+    require(ssl_lr in ISSL_SSL_LRS and (ssl_lr==1e-5 or tuple(budget) in ((50,25),(100,50))), 'Unregistered ISSL learning rate')
+    spec=dict(spec,C_SSL_epochs=budget[0],C_transfer_epochs=budget[1],C_SSL_lr=ssl_lr)
     extra._issl_ssl(model,torch.cat((rx,transfer_x)),6,spec,seed,logger)
     extra._train_ce(model,transfer_x,transfer_y,spec['C_transfer_epochs'],128,spec['C_transfer_lr'],seed,logger,
                     crop=218,stage='C_transfer')
     return dict(model=model.eval(),score_fn=extra.native_logits,classes=tuple(range(count)),profile='issl_fixed_v1',
-                resources=dict(C_initialization='A_no_B',C_SSL_epochs=budget[0],C_transfer_epochs=budget[1],
+                resources=dict(C_initialization='A_no_B',C_SSL_epochs=budget[0],C_transfer_epochs=budget[1],C_SSL_lr=ssl_lr,
                                source_replay_count=len(rx),actual_target_old_labels=0,
                                actual_target_new_labels=len(new_y)))
 
@@ -43,8 +45,11 @@ def run(rt,job):
     require(rt.get('clean_root') and rt.get('data_root'), 'Clean and parent roots required')
     profile=job['profile'];require(profile in ('tweak_m1','issl_fixed_v1'), 'Unexpected method')
     budget=tuple(job.get('issl_budget',(2000,300)))
+    ssl_lr=job.get('issl_ssl_lr',1e-5)
     require(profile=='issl_fixed_v1' or 'issl_budget' not in job, 'ISSL budget on other profile')
     require(budget in ISSL_BUDGETS,'Unregistered ISSL budget')
+    require(profile=='issl_fixed_v1' or 'issl_ssl_lr' not in job,'ISSL learning rate on other profile')
+    require(ssl_lr in ISSL_SSL_LRS and (ssl_lr==1e-5 or budget in ((50,25),(100,50))), 'Unregistered ISSL learning rate')
     points=sorted(set(tuple(map(int,p)) for p in job['points']))
     require(points and all(k in (1,5,10,20) and n in (2,5,10,20) for k,n in points), 'Invalid workpoints')
     activate(rt);torch.set_num_threads(1)
@@ -87,13 +92,13 @@ def run(rt,job):
             y=torch.tensor(task['support_y'][mask].tolist(),device=device,dtype=torch.long)
             emit,stream=logger(root/f'C-K{k}-N{n}-fit.jsonl',dict(profile=profile,stage='C',k=k,new_count=n,
                                query_fit=False,truth_read=False))
-            try:state=direct_issl(bundle,x,y,seed_for(job['seed'],job['capsule'],k,n,'C'),logger=emit,budget=budget)
+            try:state=direct_issl(bundle,x,y,seed_for(job['seed'],job['capsule'],k,n,'C'),logger=emit,budget=budget,ssl_lr=ssl_lr)
             finally:stream.close()
             save(s,'C',task,state)
     require(all(torch.equal(before[k],v) for k,v in model.state_dict().items()),'A source anchor changed')
     write(root/'predictions.json',dict(capsule_id=manifest['capsule_id'],capsule=job['capsule'],
-          profile=profile,model_seed=job['seed'],issl_budget=list(budget) if profile=='issl_fixed_v1' else None,rows=rows))
+          profile=profile,model_seed=job['seed'],issl_budget=list(budget) if profile=='issl_fixed_v1' else None,issl_ssl_lr=ssl_lr if profile=='issl_fixed_v1' else None,rows=rows))
     write(root/'complete.json',dict(status='PREDICTIONS_COMPLETE',capsule_id=manifest['capsule_id'],
           profile=profile,model_seed=job['seed'],rows=len(rows),truth_read=False,query_fit=False,
-          source_weights_unchanged=True,issl_budget=list(budget) if profile=='issl_fixed_v1' else None,
+          source_weights_unchanged=True,issl_budget=list(budget) if profile=='issl_fixed_v1' else None,issl_ssl_lr=ssl_lr if profile=='issl_fixed_v1' else None,
           seconds=time.perf_counter()-start))
