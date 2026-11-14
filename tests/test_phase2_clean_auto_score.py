@@ -1,3 +1,4 @@
+import json
 import pytest
 
 from experiments.pamf_phase2_practical.clean_auto_score import expected_units, coverage, merge_rows
@@ -8,6 +9,9 @@ def test_global_barrier_requires_every_method_and_every_kn():
                 points=[[1, 2], [5, 2]])
     expected = expected_units([task])
     assert len(expected) == 17
+    proto = next(u for u in expected if u[:2] == ('hybrid', 'protonet_cda'))
+    assert ('protonet_cda__mopc_hr_affine_v1', 'C', 5, 2, 'P0') in expected[proto]
+    assert ('protonet_cda__mopc_hr', 'C', 5, 2, 'P0') not in expected[proto]
     available = {unit: set(rows) for unit, rows in expected.items()}
     assert coverage(expected, available)['ready']
     hybrid = next(unit for unit in expected if unit[0] == 'hybrid')
@@ -105,4 +109,25 @@ def test_transient_scheduler_plan_is_not_counted(tmp_path):
     assert auto.collect(tmp_path/'plans', {}, unstable) == ({}, {})
     with pytest.raises(ValueError, match='Malformed'):
         auto.collect(tmp_path/'plans', {}, unstable)
+
+
+def test_primary_matrix_excludes_legacy_proto_mopc_but_keeps_affine(tmp_path, monkeypatch):
+    from experiments.pamf_phase2_practical import clean_auto_score as auto
+    plan = tmp_path/'plans/20261115-phase2-clean-successor/scheduler.json'
+    plan.parent.mkdir(parents=True)
+    task = dict(capsule='capsules/P01/MIX01/1-1', seed=2026092701,
+                points=[[5, 20]], profile='protonet_cda', methods=['mopc_hr'])
+    entries = []
+    for name, bridge in (('old', 'original'), ('new', 'proto_affine_v1')):
+        job = tmp_path/(name+'-job.json'); job.write_text(json.dumps(dict(task, mopc_bridge=bridge)))
+        done = tmp_path/(name+'-done.json'); done.write_text('{}')
+        entries.append(dict(id=name, group='hybrid', job=str(job), runtime='unused', completion=str(done)))
+    plan.write_text(json.dumps(dict(input_condition='clean_ground_pre_satellite_normalized', jobs=entries)))
+    monkeypatch.setattr(auto, 'completion_matches', lambda entry: True)
+    expected = auto.expected_units([task])
+    available, candidates = auto.collect(tmp_path/'plans', expected)
+    u = auto.unit('hybrid', task)
+    assert [entry['id'] for entry in candidates[u]] == ['new']
+    assert ('protonet_cda__mopc_hr_affine_v1', 'C', 5, 20, 'P0') in available[u]
+    assert ('protonet_cda__mopc_hr', 'C', 5, 20, 'P0') not in available[u]
 

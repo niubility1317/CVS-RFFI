@@ -34,6 +34,8 @@ def expected_units(task_list):
                 job = dict(task, profile=profile)
                 if group == 'hybrid':
                     job['methods'] = list(CORE)
+                    if profile == 'protonet_cda':
+                        job['mopc_bridge'] = 'proto_affine_v1'
                 u = unit(group, job)
                 require(u not in result, 'Duplicate expected unit')
                 result[u] = expected_rows(group, job)
@@ -97,6 +99,10 @@ def collect(preparations, expected, unstable=None):
             job = read(entry['job'])
             u = unit(entry['group'], job)
             if u not in expected:
+                continue
+            if u[:2] == ('hybrid','protonet_cda') and job.get('mopc_bridge','original') == 'original' \
+               and 'mopc_hr' in job.get('methods',[]):
+                require(job['methods'] == ['mopc_hr'], 'Legacy MoPC is mixed with other methods in one job')
                 continue
             rows = expected_rows(entry['group'], job)
             require(rows and rows.issubset(expected[u]), 'Completed job differs from retained matrix')

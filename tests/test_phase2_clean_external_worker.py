@@ -19,5 +19,10 @@ def test_only_bound_corrected_profiles_are_accepted():
     for profile in ('issl_author_behavior',):
         with pytest.raises(ValueError):validate(rt,dict(base,profile=profile),'native_cil')
     validate(rt,dict(base,profile='dadda_sda',methods=['mopc_hr']),'hybrid')
+    validate(rt,dict(base,profile='protonet_cda',methods=['mopc_hr'],mopc_bridge='proto_affine_v1'),'hybrid')
+    with pytest.raises(ValueError,match='bridge'):
+        validate(rt,dict(base,profile='dadda_sda',methods=['mopc_hr'],mopc_bridge='proto_affine_v1'),'hybrid')
+    with pytest.raises(ValueError,match='bridge'):
+        validate(rt,dict(base,profile='protonet_cda',mopc_bridge='proto_affine_v1'),'native_da')
     with pytest.raises(ValueError):validate(rt,dict(base,profile='dadda_sda',scope='pilot_main'),'native_da')
     with pytest.raises(ValueError):validate(rt,dict(base,profile='dadda_sda',capsule='capsules/../MIX01/1-1'),'native_da')

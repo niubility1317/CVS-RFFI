@@ -27,8 +27,10 @@ def expected_rows(group,job):
         result.update((profile,'A0',k,0,path) for k in ks)
         result.update((profile,'C',k,n,path) for k,n in points)
     elif group=='hybrid':
+        from .group2_worker import method_arm
         path='S0Q0' if profile=='tweak_m1' else 'P0'
-        result.update((profile+'__'+method,'C',k,n,path) for k,n in points for method in job['methods'])
+        result.update((method_arm(profile,method,job.get('mopc_bridge','original')),'C',k,n,path)
+                      for k,n in points for method in job['methods'])
     else:raise ValueError('Unknown comparison group')
     return result
 

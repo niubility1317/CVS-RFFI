@@ -21,6 +21,10 @@ def validate(rt, job, group):
     points=job.get('points',[])
     require(points and len({tuple(p) for p in points})==len(points) and
             all(k in (1,5,10,20) and n in (2,5,10,20) for k,n in points),'Invalid workpoints')
+    bridge=job.get('mopc_bridge','original')
+    require(bridge == 'original' or (bridge == 'proto_affine_v1' and group == 'hybrid' and
+            job.get('profile') == 'protonet_cda' and job.get('methods') == ['mopc_hr']),
+            'Unsupported or ambiguous MoPC bridge')
     if group=='native_da':
         require(job.get('profile') in NATIVE_DA, 'Native DA profile unbound or excluded')
     elif group=='native_cil':

@@ -9,7 +9,11 @@ from . import group2_cil_bridge as cil
 from . import group2_lora_bridge as lora
 
 
-def prepare_b(model, profile, extractor, old_x, old_y, *, old_count=6, old_prototypes=None, b_scores=None):
+def prepare_b(model, profile, extractor, old_x, old_y, *, old_count=6, old_prototypes=None, b_scores=None,
+              mopc_bridge='original'):
+    if mopc_bridge not in ('original', 'proto_affine_v1') or \
+       (mopc_bridge == 'proto_affine_v1' and profile != 'protonet_cda'):
+        raise ValueError('Unsupported MoPC bridge for B profile')
     result = {'lora': lora.build_gallery(model, extractor, old_x, old_y, old_count=old_count)}
     if profile in ('dadda_sda', 'mrior_sda', 'twostage', 'poster_ft', 'feature_separation_hu2024', 'protonet_cda', 'radionet_ada_knn', 'tweak_m1'):
         if profile == 'protonet_cda':
@@ -23,11 +27,20 @@ def prepare_b(model, profile, extractor, old_x, old_y, *, old_count=6, old_proto
             adapter = cil.from_radionet(model, b_scores, old_count=old_count)
         else:
             adapter = cil.from_adapted_model(model, profile, old_count=old_count)
-        result['mopc_hr'] = cil.make_anchor(adapter, old_x, old_y, method='mopc_hr')
+        original_anchor = cil.make_anchor(adapter, old_x, old_y, method='mopc_hr')
+        result['mopc_hr'] = original_anchor
+        if mopc_bridge == 'proto_affine_v1':
+            from .group2_proto_mopc_affine import ProtoMoPCAffine, require_equivalent_b
+            alternative = ProtoMoPCAffine(model, old_prototypes).to(old_x.device).eval()
+            with torch.no_grad():
+                require_equivalent_b(adapter(old_x)['tx_logits'], alternative(old_x)['tx_logits'])
+            result['mopc_hr'] = cil.make_anchor(alternative, old_x, old_y, method='mopc_hr')
+            result['mopc_hr'].protocol_metadata.update(mopc_bridge='proto_affine_v1',
+                B_old_support_decisions_preserved=True, C_parameterization_changed=True)
         if profile=='tweak_m1':
             result['mopc_hr'].protocol_metadata.update(B_decision='Tweak_M1_centroid_radius',
                 score_coordinates='finite_rank_preserving_replacement_for_native_minus_1e30_sentinel')
-        orthogonal = copy.deepcopy(result['mopc_hr'])
+        orthogonal = copy.deepcopy(original_anchor)
         orthogonal.method = 'orthogonal'
         orthogonal.model.classifier_weight = torch.nn.Parameter(
             orthogonal.model.fc.weight.detach().clone(), requires_grad=False)

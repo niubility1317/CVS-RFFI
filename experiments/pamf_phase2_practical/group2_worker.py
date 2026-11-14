@@ -10,8 +10,13 @@ from pathlib import Path
 from .fast_transfer import to_tensor, to_numpy
 
 
-def require_all_rows(rows, points, profile, methods):
-    expected = {(int(k), int(n), profile + '__' + method) for k, n in points for method in methods}
+def method_arm(profile, method, mopc_bridge='original'):
+    suffix = 'mopc_hr_affine_v1' if method == 'mopc_hr' and mopc_bridge == 'proto_affine_v1' else method
+    return profile + '__' + suffix
+
+
+def require_all_rows(rows, points, profile, methods, *, mopc_bridge='original'):
+    expected = {(int(k), int(n), method_arm(profile, method, mopc_bridge)) for k, n in points for method in methods}
     actual = [(int(row['k']), int(row['new_count']), row['arm']) for row in rows]
     if len(actual) != len(expected) or set(actual) != expected:
         raise ValueError('Incomplete or duplicate requested prediction matrix')
@@ -58,6 +63,10 @@ def predict(rt, job):
     require(points and all(k in (1, 5, 10, 20) and n in (2, 5, 10, 20) for k, n in points), 'Invalid requested K/N')
     methods = tuple(job['methods'])
     require(methods and len(set(methods)) == len(methods) and set(methods) <= {'lora', 'mopc_hr', 'orthogonal'}, 'Invalid C methods')
+    mopc_bridge = job.get('mopc_bridge', 'original')
+    require(mopc_bridge == 'original' or
+            (mopc_bridge == 'proto_affine_v1' and profile == 'protonet_cda' and methods == ('mopc_hr',)),
+            'Unsupported or ambiguous MoPC bridge')
     save_b = job.get('save_B_for_mopc', False)
     require(not save_b or methods in (('orthogonal', 'lora'),('mopc_hr',)), 'Invalid saved-B method subset')
     device = rt.get('device', 'cuda:0')
@@ -104,13 +113,21 @@ def predict(rt, job):
             old_prototypes = getattr(native, 'prototypes', None) if profile == 'protonet_cda' else None
             extractor = lambda model, x: embedding(model, row(profile)['method'], x)
             prepared = prepare_b(bstate['model'], profile, extractor, old_x, old_y,
-                                 old_count=6, old_prototypes=old_prototypes, b_scores=bstate.get('score_fn'))
+                                 old_count=6, old_prototypes=old_prototypes, b_scores=bstate.get('score_fn'),
+                                 mopc_bridge=mopc_bridge)
             require(set(methods) <= set(prepared), 'Requested B/C bridge is not bound')
             with torch.no_grad():
                 original_scores = bstate['score_fn'](bstate['model'], old_x)
                 bridge_scores = prepared['mopc_hr'].model(old_x)['tx_logits']
-                require(torch.allclose(original_scores, bridge_scores, rtol=1e-4, atol=1e-4), 'B scores changed at C bridge')
-                b_bridge_max_abs_diff = float((original_scores - bridge_scores).abs().max().item())
+                if mopc_bridge == 'proto_affine_v1':
+                    from .group2_proto_mopc_affine import require_equivalent_b
+                    require_equivalent_b(original_scores, bridge_scores)
+                    difference = (original_scores-original_scores.mean(1,keepdim=True)) - \
+                                 (bridge_scores-bridge_scores.mean(1,keepdim=True))
+                else:
+                    require(torch.allclose(original_scores, bridge_scores, rtol=1e-4, atol=1e-4), 'B scores changed at C bridge')
+                    difference = original_scores - bridge_scores
+                b_bridge_max_abs_diff = float(difference.abs().max().item())
             if save_b:
                 from .group2_b_state import save_b_state
                 save_b_state(output/f'B-K{k}.pt', job, k, lookup[k, 0]['split_id'], b_seed,
@@ -135,7 +152,7 @@ def predict(rt, job):
                     name = f'C-K{k}-N{n}-{method}.npz'
                     np.savez_compressed(output / name, query_indices=split_rows(cap, spec),
                                         predicted_indices=pred, old_restricted_indices=restricted)
-                    prediction_row = dict(split_id=spec['split_id'], stage='C', arm=profile+'__'+method,
+                    prediction_row = dict(split_id=spec['split_id'], stage='C', arm=method_arm(profile,method,mopc_bridge),
                         input_path='P0', input_condition='clean_ground_pre_satellite_normalized' if clean_root else 'satellite_received',
                         prediction=name, k=k, new_count=n,
                         registered_classes=spec['registered_classes'], query_count=len(pred),
@@ -143,6 +160,8 @@ def predict(rt, job):
                         C_seconds=c_seconds, query_seconds=q_seconds, B_fit_shared_across_C=len(methods)>1,
                         target_old_labels=6*k, target_new_labels=n*k, query_fit=False,
                         B_bridge_max_abs_diff=b_bridge_max_abs_diff,
+                        B_bridge_comparison=('class_centered_logits_and_argmax' if mopc_bridge=='proto_affine_v1'
+                                             else 'raw_logits'),
                         B_native=plain(bstate.get('resources',{})), C_native=plain(getattr(state,'resource',{})),
                         C_protocol=plain(getattr(state,'protocol_metadata',{}))))
                     if save_b:
@@ -150,7 +169,7 @@ def predict(rt, job):
                     rows.append(prediction_row)
                     print('GROUP2_PREDICTED', profile, method, k, n, len(pred), flush=True)
             del prepared, bstate, old_x, old_y
-        require_all_rows(rows, points, profile, methods)
+        require_all_rows(rows, points, profile, methods, mopc_bridge=mopc_bridge)
         require(all(torch.equal(source_before[key], value) for key, value in bundle['model'].state_dict().items()), 'A source changed')
         write(output / 'predictions.json', dict(capsule=job['capsule'], capsule_id=manifest['capsule_id'],
               profile=profile, model_seed=seed, rows=rows))

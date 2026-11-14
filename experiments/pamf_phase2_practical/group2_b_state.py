@@ -22,11 +22,15 @@ def load_b_state(path, job, k, split_id, b_seed, device):
             'Saved B state binding differs')
     require(payload['anchor'].method == 'mopc_hr' and payload['anchor'].model is not None and
             payload['anchor'].prototypes is not None, 'Saved MoPC B anchor is incomplete')
+    require(payload['anchor'].protocol_metadata.get('mopc_bridge','original') == job.get('mopc_bridge','original'),
+            'Saved MoPC bridge version differs')
     return payload
 
 
 def save_b_state(path, job, k, split_id, b_seed, model, anchor, old_prototypes=None):
     path = Path(path)
+    require(anchor.protocol_metadata.get('mopc_bridge','original') == job.get('mopc_bridge','original'),
+            'Saved MoPC bridge version differs')
     require(job['profile'] != 'protonet_cda' or old_prototypes is not None,
             'ProtoNet B prototypes are missing')
     payload = dict(version=1, binding=_binding(job, k, split_id, b_seed), model=model, anchor=anchor,

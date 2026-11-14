@@ -25,6 +25,7 @@ def run(rt, job, k, n, device, variant, emit, *, repeats=1):
             (variant == 'original_uninstrumented' or repeats == 1), 'Invalid diagnostic repeat count')
     require(job.get('profile') == 'protonet_cda' and job.get('methods') == ['mopc_hr']
             and job.get('save_B_for_mopc') and [k, n] in job['points'], 'Wrong diagnostic job')
+    require(job.get('mopc_bridge', 'original') == 'original', 'Diagnostic requires original bridge B state')
     activate(rt)
     torch.set_num_threads(1)
     torch.backends.cuda.matmul.allow_tf32 = False
