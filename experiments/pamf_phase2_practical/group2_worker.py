@@ -105,12 +105,25 @@ def predict(rt, job):
             old_y = to_tensor(task['support_y'], device, np.int64).long()
             synchronize(); started = time.perf_counter()
             b_seed = seed_for(seed, job['capsule'], k, 'B')
-            bstate = fit_B(rt, bundle, old_x, old_y, b_seed, emit)
+            old_b = None
+            if job.get('reuse_original_b') is not None:
+                from .clean_affine_b_reuse import prior_b
+                old_b = prior_b(job, rt, k, lookup[k, 0]['split_id'], b_seed, device)
+            if old_b is None:
+                bstate = fit_B(rt, bundle, old_x, old_y, b_seed, emit)
+                old_prototypes = None
+            else:
+                saved = old_b['payload']
+                bstate = dict(model=saved['model'], native_state=None, resources=old_b['native'],
+                    score_fn=lambda model, x: -torch.cdist(embedding(model, row(profile)['method'], x),
+                                                           saved['old_prototypes']).square())
+                old_prototypes = saved['old_prototypes']
             synchronize()
-            b_seconds = time.perf_counter() - started
+            b_seconds = time.perf_counter() - started if old_b is None else old_b['seconds']
             old_ids = task['support_ids'].copy()
             native = bstate.get('native_state')
-            old_prototypes = getattr(native, 'prototypes', None) if profile == 'protonet_cda' else None
+            if old_b is None:
+                old_prototypes = getattr(native, 'prototypes', None) if profile == 'protonet_cda' else None
             extractor = lambda model, x: embedding(model, row(profile)['method'], x)
             prepared = prepare_b(bstate['model'], profile, extractor, old_x, old_y,
                                  old_count=6, old_prototypes=old_prototypes, b_scores=bstate.get('score_fn'),
@@ -162,6 +175,7 @@ def predict(rt, job):
                         B_bridge_max_abs_diff=b_bridge_max_abs_diff,
                         B_bridge_comparison=('class_centered_logits_and_argmax' if mopc_bridge=='proto_affine_v1'
                                              else 'raw_logits'),
+                        B_original_state_ref=old_b['path'] if old_b is not None else None,
                         B_native=plain(bstate.get('resources',{})), C_native=plain(getattr(state,'resource',{})),
                         C_protocol=plain(getattr(state,'protocol_metadata',{}))))
                     if save_b:

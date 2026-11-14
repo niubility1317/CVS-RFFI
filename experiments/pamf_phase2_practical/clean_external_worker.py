@@ -25,6 +25,9 @@ def validate(rt, job, group):
     require(bridge == 'original' or (bridge == 'proto_affine_v1' and group == 'hybrid' and
             job.get('profile') == 'protonet_cda' and job.get('methods') == ['mopc_hr']),
             'Unsupported or ambiguous MoPC bridge')
+    require(not job.get('reuse_original_b') or (bridge == 'proto_affine_v1' and
+            job.get('save_B_for_mopc') is True and set(job['reuse_original_b']) == {'job','runtime'}),
+            'Invalid original B reuse binding')
     if group=='native_da':
         require(job.get('profile') in NATIVE_DA, 'Native DA profile unbound or excluded')
     elif group=='native_cil':
