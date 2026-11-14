@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+import pytest
 from torch import nn
 
 from experiments.pamf_phase2_practical import clean_additional_worker as worker
@@ -36,3 +37,27 @@ def test_issl_fixed_v1_uses_long_budget_and_no_target_old(monkeypatch):
     assert result['resources']['actual_target_old_labels']==0
     assert result['resources']['actual_target_new_labels']==4
     assert [x['stage'] for x in events]==['C_ssl','C_transfer']
+
+
+@pytest.mark.parametrize('budget',[(50,25),(100,50),(200,100),(400,100)])
+def test_issl_short_budgets_preserve_source_and_support_contract(monkeypatch,budget):
+    model=nn.Linear(2,6);calls=[]
+    bundle=dict(profile='issl_fixed_v1',model=model,native_state={
+        'source_replay_x':torch.ones(6,2,256),'source_replay_y':torch.arange(6)})
+    monkeypatch.setattr(worker.extra,'_issl_expand',lambda m,count:None)
+    monkeypatch.setattr(worker.extra,'_issl_ssl',lambda m,x,old,spec,seed,logger:
+                        calls.append(('ssl',spec['C_SSL_epochs'],len(x))))
+    monkeypatch.setattr(worker.extra,'_train_ce',lambda m,x,y,epochs,batch,lr,seed,logger,**kw:
+                        calls.append(('transfer',epochs,y.tolist())))
+    result=worker.direct_issl(bundle,torch.ones(4,2,256),torch.tensor([6,6,7,7]),123,budget=budget)
+    assert calls==[('ssl',budget[0],16),('transfer',budget[1],[0,1,2,3,4,5,6,6,7,7])]
+    assert result['resources']['actual_target_old_labels']==0
+    assert (result['resources']['C_SSL_epochs'],result['resources']['C_transfer_epochs'])==budget
+
+
+def test_issl_rejects_unregistered_budget(monkeypatch):
+    bundle=dict(profile='issl_fixed_v1',model=nn.Linear(2,6),native_state={
+        'source_replay_x':torch.ones(6,2,256),'source_replay_y':torch.arange(6)})
+    monkeypatch.setattr(worker.extra,'_issl_expand',lambda m,count:None)
+    with pytest.raises(ValueError,match='Unregistered'):
+        worker.direct_issl(bundle,torch.ones(1,2,256),torch.tensor([6]),1,budget=(3,3))
