@@ -5,3 +5,7 @@
 启动器在 `20261114-phase2-mopc-public-clean-support-m3-r02` 三个 source/support 诊断全部完成且校验 capsule、权重、seed、K/N、语义和预算后启动；固定 pilot 身份使用原子目录保留唯一 owner。GPU 5–7，每卡最多 2 个本 run 预测进程、每次启动前空余至少 6000 MiB，避让其他 owner。每个 worker 真实源 checkpoint no-query smoke，异常停止新增派发、排空并保留结果。既定完整比较预测屏障尚未满足；不启动 truth-last 评分，不把 pilot 完成称为全部 MoPC 数值修复或完整比较。
 
 代码版本为本报告所属提交；入口 `python -m experiments.pamf_phase2_practical.clean_mopc_pilot`，runtime 来自 `preparations/20261114-phase2-clean-non-issl-full-m4-r02/runtime/native.json`，source 来自 `runs/20261101-phase2-mopc-author-group1-m4-r04`；其余精确路径由 pilot 准备目录保存。输出 `runs/20261114-phase2-mopc-public-clean-pilot-m1-r01` 不覆盖，正式完整矩阵待合法全局评分与数值处理。
+
+## 已完成预测
+
+VERIFIED：三个任务分别在物理 GPU 5、6、7 运行并产生 A0 与 C 共六行预测；三个完成标记均为 `PREDICTIONS_COMPLETE`，`truth_read=false`、`query_fit=false`，C 均为 public_code、160 次更新、各使用 100 条新类 support、未用目标旧类标签。各任务对应数据池和接收机见上。总队列 `predictions_complete.json` 为 `SELECTED_PREDICTIONS_FIXED`，全局预测屏障仍为 false。尚未评分，不能据此推断准确率或旧 r15 跨方法故障已修复。运行代码 commit `8c744f4535e436dc9e173456162840cc2a1f966f`。
