@@ -18,12 +18,13 @@ def finite_absmax(value):
     return float(value.max()) if bool(torch.isfinite(value).all()) else None
 
 
-def run_variant(clip,semantics='paper',seed=1731):
+def run_variant(clip,semantics='paper',seed=1731,new_count=10):
+    if new_count not in (2,5,10,20):raise ValueError('Invalid number of new classes')
     torch.manual_seed(seed)
     model=from_protonet(ProtoNet(6).cuda().eval(),torch.randn(6,256,device='cuda')*.001).cuda()
     old_x=torch.randn(60,2,256,device='cuda');old_y=torch.arange(6,device='cuda').repeat_interleave(10)
     anchor=make_anchor(model,old_x,old_y,method='mopc_hr')
-    x=torch.randn(100,2,256,device='cuda');y=torch.arange(6,16,device='cuda').repeat_interleave(10)
+    x=torch.randn(new_count*10,2,256,device='cuda');y=torch.arange(6,6+new_count,device='cuda').repeat_interleave(10)
     forward=ProtoClassifier.forward;features={};recent=deque(maxlen=8);peak=None
     def observe_forward(self,x):
         result=forward(self,x)
@@ -58,14 +59,15 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--semantics',choices=['paper','public_code'],default='paper')
     p.add_argument('--seed',type=int,action='append')
+    p.add_argument('--new-count',type=int,choices=[2,5,10,20],default=10)
     args=p.parse_args()
     if os.environ.get('CUBLAS_WORKSPACE_CONFIG') not in (':4096:8',':16:8'):
         raise ValueError('Deterministic CUBLAS_WORKSPACE_CONFIG is required before startup')
     torch.set_num_threads(1);torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False
     torch.use_deterministic_algorithms(True);torch.backends.cudnn.deterministic=True
     for seed in args.seed or [1731]:
-        results=[run_variant(None,args.semantics,seed),run_variant(1.,args.semantics,seed)]
-        print(json.dumps(dict(scope='synthetic_only',seed=seed,semantics=args.semantics,guard='historical_fp32',
+        results=[run_variant(None,args.semantics,seed,args.new_count),run_variant(1.,args.semantics,seed,args.new_count)]
+        print(json.dumps(dict(scope='synthetic_only',seed=seed,new_count=args.new_count,semantics=args.semantics,guard='historical_fp32',
             results=results,query_read=False,truth_read=False,predictions_written=False),allow_nan=False),flush=True)
 
 
