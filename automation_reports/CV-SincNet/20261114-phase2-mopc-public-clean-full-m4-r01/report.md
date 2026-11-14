@@ -5,3 +5,7 @@
 公开仓库版本不使用梯度裁剪，保留非有限保护。已完成六个合成种子、三项实际保存 B 的支持集检查及三池 clean pilot；旧论文语义真实故障未确定根因，不得声称历史故障已根治。新增 ProtoNet、DADDA、Tweak 三个仅源/clean 支持检查，不访问 query 或 truth；检查通过方可派发新矩阵。Tweak 保持 M1 单条 query 判决。
 
 N607 环境使用既有项目 Python 和 clean 数据配对；GPU 5、6、7 每卡最多 7 个本队列进程，启动前余量至少 6000 MiB。一个新 run、一个 owner；发生非有限或系统错误停止派发、保留在途与部分结果，不重启隔离项。输出分别置于 `preparations/20261114-phase2-mopc-public-clean-full-m4-r01` 和 `runs/20261114-phase2-mopc-public-clean-full-m4-r01`。查询预测固定后才可独立 truth-last 评分；未完成其他组和评分前不声称完整交付。
+
+2026-11-14 21:56 CST：固定执行版本 `e93004dbbf30260428d52f7ba1a703ae2229b663`，发布包本地与远端 SHA256 一致，远端编译通过。ProtoNet、DADDA、Tweak 的真实源／clean 支持集诊断各完成 160 次 MoPC 更新，未读 query 或 truth。控制器 Python PID 3693936，独立读回 CWD 为本次 release；GPU 5、6、7 各最多 7 个进程，首批真实预测增长，首个 Poster→MoPC 完成 16 个 K/N 预测并保存四个实际 B 状态。该时点调度状态 RUNNING、failed=[]。无真值访问。
+
+本队列启动配置未接自动评分：全局比较矩阵尚有 ISSL、其他方法及补齐 pilot 的任务未完成，预测屏障仍关闭。已有独立 truth-last 评分入口，但需要在所有保留组预测固定后建立并核验完整矩阵，不能将预测完成当成评分完成。
