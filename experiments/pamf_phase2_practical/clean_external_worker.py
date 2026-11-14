@@ -6,7 +6,7 @@ from .io import read, require
 
 
 NATIVE_DA = {'protonet_cda','mrior_sda','dadda_sda','twostage','poster_ft','tweak_m1'}
-NATIVE_CIL = {'orthogonal','lora_triplet_knn','issl_fixed_v1'}
+NATIVE_CIL = {'orthogonal','lora_triplet_knn','issl_fixed_v1','mopc_hr'}
 HYBRID_B = NATIVE_DA - {'tweak_m1'}
 HYBRID_C = {'orthogonal','lora'}
 

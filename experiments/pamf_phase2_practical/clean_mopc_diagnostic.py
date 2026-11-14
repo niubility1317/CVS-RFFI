@@ -65,7 +65,8 @@ def run(rt, source_root, capsule, seed, k, n, device):
     state=fit_C(rt,bundle,sx,sy,tuple(range(6,6+n)),c_seed,observe)
     require(losses and all(torch.isfinite(p).all().item() for p in state['model'].parameters()),'Nonfinite final model')
     print(json.dumps(dict(event='DIAGNOSTIC_COMPLETE',seed=seed,c_seed=c_seed,k=k,n=n,
-        semantics='public_code',updates=len(losses),loss_first=losses[0],loss_last=losses[-1],
+        capsule=capsule,source_checkpoint=bundle['source_checkpoint'],mopc_epochs=20,
+        stage_size=5,gradient_clipping=False,semantics='public_code',updates=len(losses),loss_first=losses[0],loss_last=losses[-1],
         loss_max=max(losses),query_read=False,truth_read=False,predictions_written=False),allow_nan=False),flush=True)
 
 
