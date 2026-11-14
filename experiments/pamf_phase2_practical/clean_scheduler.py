@@ -10,6 +10,7 @@ import time
 
 from .clean_external_worker import validate as validate_external
 from .clean_pairing import EPISODES,POOLS,RECEIVERS
+from .clean_comparison_plan import tasks as comparison_tasks
 from .io import atomic, read, require, write
 
 
@@ -18,19 +19,28 @@ def validate_plan(config):
     limit=config.get('max_per_gpu')
     require(jobs and limit in (2,5) and config.get('minimum_free_MiB',0)>=6000,'Wrong resource limits')
     require(config.get('input_condition')=='clean_ground_pre_satellite_normalized','Wrong input condition')
-    require(config.get('phase')=='pilot','Full matrix requires preregistered scientific thresholds and is not yet enabled')
+    phase=config.get('phase')
+    require(phase in ('pilot','full'),'Unknown comparison phase')
     require(Path(config['release_root']).is_dir(),'Missing immutable release root')
     gpus=config.get('allowed_gpus',[])
     require(gpus and len(gpus)==len(set(gpus)) and all(type(g) is int and 0<=g<=7 for g in gpus),'Wrong GPU list')
     require(limit!=5 or len(gpus) in (3,4),'Five workers per GPU require three or four configured GPUs')
     allowed_capsules={f'capsules/{p}/{e}/{r}' for p in POOLS for e in EPISODES for r in RECEIVERS}
+    full_points={(t['capsule'],t['seed']):t['points'] for t in comparison_tasks()} if phase=='full' else {}
+    identities=set()
     for entry in jobs:
         key=entry['id'];require(re.fullmatch(r'[A-Za-z0-9_-]+',key) is not None and key not in ids,'Invalid or duplicate job id');ids.add(key)
         group=entry['group'];rt=read(entry['runtime']);job=read(entry['job'])
         require(job['capsule'] in allowed_capsules and job['seed'] in (2026092701,2026092702,2026092703,2026092704),
                 'Job outside fixed capsule or seed matrix')
         capsules.add(job['capsule']);seeds.add(job['seed'])
-        require(job.get('points')==[[5,20]],'Pilot must use the fixed K5/N20 point')
+        if phase=='pilot':
+            require(job.get('points')==[[5,20]],'Pilot must use the fixed K5/N20 point')
+        else:
+            require(job.get('points')==full_points[(job['capsule'],job['seed'])],'Full task points differ from fixed matrix')
+            identity=(group,job.get('profile','R42'),job['capsule'],job['seed'])
+            require(identity not in identities,'Duplicate full task identity')
+            identities.add(identity)
         require(group in ('pamf','native_da','native_cil','hybrid'),'Unknown group')
         require(rt.get('clean_root') and rt.get('data_root'),'Missing clean input binding')
         require(Path(rt['release_root']).resolve()==Path(config['release_root']).resolve(),'Worker release mismatch')
@@ -68,7 +78,8 @@ def validate_plan(config):
         outputs.add(str(out))
         require(not out.exists(),'Output already exists; reconcile before any launch')
         require(entry.get('priority',0)>=0,'Invalid priority')
-    require(len(seeds)==1 and len(capsules)<=5,'Pilot must use one seed and at most five target tasks')
+    if phase=='pilot':
+        require(len(seeds)==1 and len(capsules)<=5,'Pilot must use one seed and at most five target tasks')
     return dict(jobs=len(jobs),groups=sorted({x['group'] for x in jobs}),prediction_only=True,truth_opened=False)
 
 

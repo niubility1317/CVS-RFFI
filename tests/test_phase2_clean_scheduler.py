@@ -42,6 +42,12 @@ def test_plan_and_completion_bind_exact_clean_task(tmp_path):
     with pytest.raises(ValueError):validate_plan(dict(config,jobs=[entry,entry]))
     with pytest.raises(ValueError):validate_plan(dict(config,minimum_free_MiB=4000))
     with pytest.raises(ValueError):validate_plan(dict(config,phase='full'))
+    full_points=[[k,n] for k in (1,5,10,20) for n in (2,5,10,20)]
+    dump(tmp_path/'job.json',dict(job,points=full_points))
+    assert validate_plan(dict(config,phase='full'))['jobs']==1
+    with pytest.raises(ValueError,match='Duplicate full task identity'):
+        other=dict(entry,id='two',completion=str(tmp_path/'run/outputs/other/complete.json'))
+        validate_plan(dict(config,phase='full',jobs=[entry,other]))
     dump(out/'complete.json',dict(status='PREDICTIONS_COMPLETE',capsule_id='cap1',model_seed=2026092701,
                                   rows=2,truth_read=False,query_fit=False))
     assert completion_matches(entry)
