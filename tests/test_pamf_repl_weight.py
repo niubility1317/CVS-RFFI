@@ -94,3 +94,33 @@ def test_extrapolation_telemetry_uses_actual_coefficient(monkeypatch):
     with installed(cfg, holder):
         ReceiverExtrapolation.loss(dummy, None, None)
         assert dummy.metrics['HPL_RXE_reallocated_CE_coefficient'] == .125
+
+
+def test_full_training_parser_counts_exposures_once(tmp_path):
+    import gzip
+    import json
+    from experiments.pamf_repl_weight.analyze_training import analyze
+    root = tmp_path/'run'; source = root/'F'/'row'/'source'
+    root.mkdir(); source.mkdir(parents=True)
+    (root/'logs').mkdir()
+    (root/'logs'/'train__row.log').write_text('training complete\n', encoding='utf-8')
+    (root/'sources.json').write_text(json.dumps({'row': {'source_output': str(source)}}), encoding='utf-8')
+    (source/'complete.json').write_text(json.dumps({'status':'SOURCE_FROZEN','target_access':False,'U_truth_read':False}), encoding='utf-8')
+    for end, count, epochs in ((30, 2220, 10), (50, 4440, 20)):
+        folder = source/f'segment{end}'; folder.mkdir()
+        (folder/'repl_state.json').write_text(json.dumps({'U_truth_read':False,'calls':count,'seen':count*10,
+            'accepted':count*8,'U_pseudo_observation':{'accepted_by_pseudo_class':{'0':count*8}}}),encoding='utf-8')
+        (folder/'source_v_pseudo_proxy.json').write_text(json.dumps({'role':'V','U_truth_read':False,
+            'used_for_training':False,'count':10,'accepted':9,'accepted_correct':8}),encoding='utf-8')
+        (folder/'metrics_epoch.jsonl').write_text(''.join(json.dumps({'epoch':i,'val_tx_acc':90})+'\n'
+            for i in range(1,epochs+1)),encoding='utf-8')
+        (folder/'metrics_epoch.csv').write_text('epoch\n'+''.join(str(i)+'\n' for i in range(1,epochs+1)),encoding='utf-8')
+        with gzip.open(folder/'step_metrics.jsonl.gz','wt',encoding='utf-8') as stream:
+            for step in range(1,count+1):
+                m = {'train/loss_tx_labeled':.5, 'HPL_component_sample':int(step%100==0)}
+                if step%100==0: m['HPL_component_joint_t2_cosine']=.25
+                stream.write(json.dumps({'step':step,'metrics':m})+'\n')
+    result = analyze(root)['rows'][0]
+    assert result['steps'] == 6660 and result['U_seen'] == 66600
+    assert result['U_accepted'] == 53280 and result['U_acceptance'] == pytest.approx(.8)
+    assert len(result['epochs']) == 30 and result['component_samples']['HPL_component_joint_t2_cosine'] == 66
