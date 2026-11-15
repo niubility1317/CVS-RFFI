@@ -105,7 +105,9 @@ def analyze(root):
         results.append(dict(row_id=rid, steps=step_count, U_seen=seen, U_accepted=accepted,
             U_acceptance=accepted/seen, pseudo_class_counts=dict(hist), confidence_bins=dict(confidence), source_v_proxy=proxies,
             epochs=per_epoch, component_means={k:sum(v)/len(v) for k,v in components.items()},
-            component_samples={k:len(v) for k,v in components.items()}, stdout_bytes=log.stat().st_size,
+            component_samples={k:len(v) for k,v in components.items()},
+            component_negative_samples={k:sum(value < 0 for value in v) for k,v in components.items() if k.endswith('_cosine')},
+            stdout_bytes=log.stat().st_size,
             stdout_marker_counts=markers))
     return dict(status='ANALYZED_COMPLETE_TRAINING_LOGS', rows=results, U_truth_read=False,
                 target_inputs_read=False, target_scores_read=False, note='V is a labeled validation proxy, not U accuracy')

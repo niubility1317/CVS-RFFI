@@ -130,6 +130,7 @@ def test_full_training_parser_counts_exposures_once(tmp_path):
     assert result['confidence_bins'] == {'below90':13320, '99plus':53280}
     assert result['epochs'][0]['means']['HPL_GP_t2_cosine_before'] == pytest.approx(0.)
     assert len(result['epochs']) == 30 and result['component_samples']['HPL_component_joint_t2_cosine'] == 66
+    assert result['component_negative_samples']['HPL_component_joint_t2_cosine'] == 0
 
 
 def test_source_v_proxy_handles_versioned_computed_sinc_coordinates(tmp_path, monkeypatch):
