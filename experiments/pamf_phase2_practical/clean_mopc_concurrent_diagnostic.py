@@ -26,7 +26,8 @@ def result_status(path, code):
 
 def run(runtime, job, output, k=10, n=20, variant='original_uninstrumented'):
     require(k in (1, 5, 10, 20) and n in (2, 5, 10, 20), 'Invalid K/N')
-    require(variant in ('original_uninstrumented', 'clip1_uninstrumented', 'clip10_uninstrumented'),
+    require(variant in ('original_uninstrumented', 'clip1_uninstrumented', 'clip10_uninstrumented',
+                        'clip1000_uninstrumented'),
             'Invalid diagnostic variant')
     root = Path(output).resolve()
     require(not root.exists(), 'Diagnostic root already exists')

@@ -20,7 +20,7 @@ from .io import activate, read, require
 
 def run(rt, job, k, n, device, variant, emit, *, repeats=1):
     require(variant in ('original', 'clip1', 'clip10', 'original_uninstrumented',
-                        'clip1_uninstrumented', 'clip10_uninstrumented', 'affine_bridge'),
+                        'clip1_uninstrumented', 'clip10_uninstrumented', 'clip1000_uninstrumented', 'affine_bridge'),
             'Unsupported diagnostic variant')
     require(type(repeats) is int and 1 <= repeats <= 20 and
             (variant.endswith('_uninstrumented') or repeats == 1), 'Invalid diagnostic repeat count')
@@ -61,7 +61,7 @@ def run(rt, job, k, n, device, variant, emit, *, repeats=1):
     x = to_tensor(x, device, np.float32)
     y = to_tensor(y, device, np.int64).long()
     clip = {'original': None, 'clip1': 1.0, 'clip10': 10.0, 'original_uninstrumented': None,
-            'clip1_uninstrumented': 1.0, 'clip10_uninstrumented': 10.0,
+            'clip1_uninstrumented': 1.0, 'clip10_uninstrumented': 10.0, 'clip1000_uninstrumented': 1000.0,
             'affine_bridge': None}[variant]
     emit(dict(event='SAVED_CLEAN_B_SUPPORT_READY', variant=variant, key=job['key'], k=k, n=n,
               b_seed=b_seed, c_seed=c_seed, query_read=False, truth_read=False, predictions_written=False))
