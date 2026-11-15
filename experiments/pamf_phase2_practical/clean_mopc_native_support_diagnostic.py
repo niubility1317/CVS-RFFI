@@ -7,6 +7,7 @@ import numpy as np
 import torch
 
 from .clean_mopc_diagnostic import support_only_clean
+from .clean_mopc_savedb_diagnostic import require_finite_registration
 from .clean_source_smoke import check
 from .external_execution import seed_for
 from .fast_transfer import to_tensor
@@ -30,7 +31,7 @@ def run(rt, job, k, n, device):
     seed=seed_for(job['seed'],job['capsule'],k,n,'C')
     result=fit_C(rt,bundle,x,y,tuple(range(6,6+n)),seed,None,mopc_max_grad_norm=1000.)
     state=result['native_state']
-    require(all(bool(torch.isfinite(v).all()) for v in state.model.state_dict().values()),'Nonfinite final state')
+    require_finite_registration(state)
     print(json.dumps(dict(event='DIAGNOSTIC_RESULT',status='COMPLETE',profile='native_mopc',k=k,n=n,
         updates=len(state.loss_trace),clipped_updates=state.protocol_metadata['gradient_clipped_updates'],
         optimizer_changed=True,query_read=False,truth_read=False,predictions_written=False)),flush=True)

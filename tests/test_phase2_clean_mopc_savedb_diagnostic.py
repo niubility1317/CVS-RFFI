@@ -36,3 +36,14 @@ def test_other_backbone_stabilization_reaches_data_validation():
     with pytest.raises(KeyError):
         run({},job,1,20,'cuda:0','clip1000_uninstrumented',lambda x: None)
 
+
+def test_completed_registration_rejects_nonfinite_post_update_state():
+    import torch
+    from types import SimpleNamespace
+    from experiments.pamf_phase2_practical.clean_mopc_savedb_diagnostic import require_finite_registration
+    state=SimpleNamespace(model=torch.nn.Linear(1,1),prototypes=torch.ones(1,1))
+    require_finite_registration(state)
+    state.prototypes[0,0]=float('inf')
+    with pytest.raises(ValueError,match='Nonfinite final'):
+        require_finite_registration(state)
+

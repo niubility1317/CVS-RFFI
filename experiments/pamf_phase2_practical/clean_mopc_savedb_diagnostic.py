@@ -18,6 +18,12 @@ from .group2_savedb_diagnostic import observe_support_forward
 from .io import activate, read, require
 
 
+def require_finite_registration(state):
+    require(all(bool(torch.isfinite(v).all()) for v in state.model.state_dict().values()) and
+            state.prototypes is not None and bool(torch.isfinite(state.prototypes).all()),
+            'Nonfinite final registration state')
+
+
 def run(rt, job, k, n, device, variant, emit, *, repeats=1):
     require(variant in ('original', 'clip1', 'clip10', 'original_uninstrumented',
                         'clip1_uninstrumented', 'clip10_uninstrumented', 'clip1000_uninstrumented', 'affine_bridge'),
@@ -78,6 +84,7 @@ def run(rt, job, k, n, device, variant, emit, *, repeats=1):
             try:
                 state = cil.register(anchor, x, y, seed=c_seed, mopc_semantics='public_code',
                                      mopc_max_grad_norm=clip)
+                require_finite_registration(state)
                 emit(dict(event='REPEAT_COMPLETE', repeat=i+1, updates=len(state.loss_trace),
                           clipped_updates=state.protocol_metadata.get('gradient_clipped_updates', 0),
                           query_read=False, truth_read=False, predictions_written=False))
@@ -92,7 +99,8 @@ def run(rt, job, k, n, device, variant, emit, *, repeats=1):
 
     try:
         with patch.object(cross, 'register_c', register), observe_support_forward(emit):
-            trace_registration({'mopc_hr': anchor}, x, y, c_seed, emit)
+            state=trace_registration({'mopc_hr': anchor}, x, y, c_seed, emit)
+            require_finite_registration(state)
         status, error = 'COMPLETE', None
     except FloatingPointError as exc:
         status, error = 'NONFINITE', str(exc)
