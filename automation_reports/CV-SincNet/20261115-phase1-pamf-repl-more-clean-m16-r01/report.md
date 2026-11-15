@@ -64,5 +64,6 @@
 |shallow0|82.5371%|−1.6623 pp|−0.0545 pp|
 |shallow025|82.6851%|−1.5144 pp|+0.0935 pp|
 |joint0|83.1313%|−1.0681 pp|+0.5397 pp|
+|extrap0|82.9110%|−1.2884 pp|+0.3195 pp|
 
 `style0` 正式训练的首步日志已核实 `HPL_MS_applied_time_down=0`、`HPL_MS_applied_t2.pool=0`；全程应用计数仍待该行完成后检查。
