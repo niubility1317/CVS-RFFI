@@ -8,7 +8,7 @@ def publish(repo,output,context,ssh_config):
     old_run,old_remote=base.RUN,base.REMOTE
     script=old_remote
     changes=[
-        ("rt=p['runtime']; project=", "rt=p['runtime']; rt['parent_seeds']=[]; rt['allowed_gpus']=[0,1,3,4]; project="),
+        ("rt=p['runtime']; project=", "rt=p['runtime']; rt['parent_seeds']=[]; rt['allowed_gpus']=[3,4,0,1]; project="),
         ("[rt['python'],rt['weak_root']+'/manifest.json',rt['weak_truth'],*rt['frozen_sources'].values()]", "[rt['python'],*rt['frozen_sources'].values()]"),
         ("h=ctx['handles']['F0']", "h=ctx['handles']['ManyRx']"),
         ("for v in ctx['caches']['F0'].values():\n d=json.loads((Path(v['path'])/'complete.json').read_text())\n if d['status']!='DURA_IQ_CACHE_COMPLETE' or d['truth_read']:raise ValueError('Frozen cache missing')",
