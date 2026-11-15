@@ -88,3 +88,5 @@
 六源 `weight45` 在累计 E47 源验证的 `direct_metric_acceptance_loss` 显存分配中 OOM（需 328 MiB，GPU 当时约余 166 MiB）。该行完整 E30 与未完成的后续日志保留，尚无 E50 冻结或目标预测。队列按系统故障规则停止新派发，其他健康 worker 自然结束；6 条已有评分不重复。恢复 run `20261115-phase1-pamf-repl-more-recovery-m10-r02` 将复用自身 E50、续训自身 E30 或启动未运行的行，具体按固定矩阵和技术状态执行，不依据目标成绩；每卡本批最多 2 worker 且预留至少 10000 MiB。
 
 原 owner 已自然结束为 `PARTIAL_TECHNICAL_FAILURE`：6 行已评分、5 行完成 E50 待预测、1 行 OOM、4 行未启动；只有上述一次失败，未停止健康进程。
+
+**矩阵收尾**：原 run 保持 `PARTIAL_TECHNICAL_FAILURE` 的历史事实；其 6 条已评分结果与恢复 run 的 10 条均已完成 raw clean 预测和独立 truth-last 评分。16 行合并分析、逐组梯度和逐样本纠错见 [恢复批次报告](../20261115-phase1-pamf-repl-more-recovery-m10-r02/report.md)。
