@@ -37,3 +37,7 @@
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 发布核验
+
+**VERIFIED / RUNNING**：执行 commit `1f2d13239f1cd7f43d1a71b6ea3314579f18557c`；一次归档传输 SHA 对比和远端编译通过，6 个真实 E20 checkpoint 无 query 冒烟全部 PASS。独立核实六个训练 worker 的 PID、CWD、命令行、GPU 0/1 和增长的逐步日志；每行首步已看到所注册的分量冲突字段和原始 U／分量处理后 U／最终 U 范数。所有 clean 预测及独立评分等待本行冻结。
