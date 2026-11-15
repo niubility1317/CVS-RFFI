@@ -8,6 +8,8 @@
 
 只允许 GPU2、6，与正在运行的 r02 owner 的 0/1/3/4/5/7 不重叠，以免独立调度器争用同一张卡而竞态；每卡仍计入其他 CUDA/待初始化进程、最多 5 个并检查可用显存。固定候选和选中的种子均为探索，目标结果不回流调参或重排；健康旧任务和历史产物保持。
 
+**VERIFIED / RUNNING**：发布 commit `1b2ec1eb9f253c9a52510ff2bd5da2ecf506c147`；归档传输和远端编译通过；16 个真实 E20、无 query 冒烟 PASS。独立核实首批 6 个训练 worker 的 PID、CWD、命令、GPU2/6 和增长中的逐步日志；另 10 个训练及 32 个预测/评分阶段队列等待。尚无新测试结果。`style0` 的正式应用计数待该行训练启动后检查。
+
 - run_id：`20261115-phase1-pamf-repl-more-clean-m16-r01`
 - group_id：`phase1-pamf-repl-weight-clean`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
