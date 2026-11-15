@@ -97,3 +97,37 @@ def test_auto_score_checks_predictions_before_scoring_and_keeps_k(tmp_path, monk
     rows = json.loads(result.read_text())['rows']
     assert {row['k'] for row in rows} == {1, 5, 10, 20}
     assert all(row['metrics']['accuracy'] == 1 for row in rows)
+
+
+def test_health_audit_detects_bad_fit_without_opening_truth(tmp_path, monkeypatch):
+    from experiments.pamf_phase2_practical.clean_health_audit import audit_entry
+    config, _ = make_case(tmp_path)
+    entry = config['jobs'][0]
+    folder = __import__('pathlib').Path(entry['completion']).parent
+    fit = folder/'native_fit.jsonl'
+    result = audit_entry(('plan', entry))
+    assert not result['valid'] and 'missing expected fit log' in result['error'].lower()
+    for k in (1, 5, 10, 20):
+        (folder/f'C-K{k}-N2-fit.json').write_text('{"loss": 0.25}')
+    fit.write_text('{"loss": NaN}\n')
+    original = np.load
+    def no_truth(path, *args, **kwargs):
+        assert 'score_only' not in str(path)
+        return original(path, *args, **kwargs)
+    monkeypatch.setattr(np, 'load', no_truth)
+    result = audit_entry(('plan', entry))
+    assert not result['valid'] and 'nonfinite' in result['error'].lower()
+    fit.write_text('{"loss": 0.5}\n')
+    (folder/'C-K1-N2-fit.json').unlink()
+    result = audit_entry(('plan', entry))
+    assert not result['valid'] and 'C-K1-N2-fit.json' in result['error']
+    (folder/'C-K1-N2-fit.json').write_text('{"loss": 0.25}')
+    result = audit_entry(('plan', entry))
+    assert result['valid'] and result['rows'] == 8 and result['fit_records'] == 5
+    measure = folder/'C-K1-N2-fit.json'
+    measure.write_text('{"loss": NaN}')
+    result = audit_entry(('plan', entry))
+    assert not result['valid'] and 'nonfinite' in result['error'].lower()
+    measure.write_text('{"loss": 0.25}')
+    result = audit_entry(('plan', entry))
+    assert result['valid'] and result['fit_records'] == 5
