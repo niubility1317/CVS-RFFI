@@ -95,6 +95,9 @@ def analyze(root):
         if step_count != 6660:
             raise ValueError('Continuation budget incomplete')
         log = root/'logs'/f'train__{rid}.log'
+        if not log.exists() and source.parents[2] != root:
+            # Recovery can point to the same row's previously frozen E50 source.
+            log = source.parents[2]/'logs'/f'train__{rid}.log'
         text = log.read_text(encoding='utf-8', errors='replace')
         lower = text.lower()
         markers = {word: lower.count(word) for word in ('traceback (most recent call last)', 'out of memory', 'killed', 'warning', 'nonfinite')}
