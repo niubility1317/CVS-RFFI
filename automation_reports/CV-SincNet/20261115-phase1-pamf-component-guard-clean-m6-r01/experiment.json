@@ -1,0 +1,330 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261115-phase1-pamf-component-guard-clean-m6-r01",
+  "group_id": "phase1-pamf-repl-weight-clean",
+  "display_name": "Tri-SIG-TIME 逐损失分量梯度保护 clean 对照",
+  "description": "十类、六源各3个逐损失梯度保护候选，E20各自续训30轮，训练后自动clean测试。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "tri-repl-clean-loss-weight"
+  ],
+  "tags": [
+    "PAMF",
+    "REPL",
+    "clean",
+    "gradient"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-paper-completion-m119-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-11-15 用户要求多发布几个实验，保留原有运行候选、每GPU最多5个进程。",
+  "code": {
+    "commit": "actual committed release identity in runtime.json",
+    "checkout": "isolated task worktree",
+    "environment": "N607 CVS-RFFI existing Python, FP32",
+    "cwd": "PROJECT/releases/20261115-phase1-pamf-component-guard-clean-m6-r01-release"
+  },
+  "data": {
+    "dataset": "original ten-class ManyRx and six-source receiver contracts",
+    "version": null,
+    "representation": null,
+    "contract_ref": "context.handles per row protocol_id",
+    "physical_ids_ref": "original fixed source/test contracts",
+    "label_map_ref": null,
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "original labeled role",
+      "U_s": "source IQ, TX hidden",
+      "V": "original source validation"
+    },
+    "train_ratio": "original fixed labeled/unlabeled/validation roles",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": "fixed clean cross-date, cross-RX and double-cross; prediction before independent scoring",
+    "leo_config_ref": "not applicable: clean-only, no new satellite observations"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "frozen raw clean prediction; independent truth-last scoring",
+    "external_method_exception": null,
+    "claim_scope": "seed selected by previously exposed clean target; exploratory, not an independent blind evaluation"
+  },
+  "checkpoint": {
+    "initialization": "matching original same-setting original Tri E20 then own E10+E20",
+    "sources": [
+      "20261027-phase1-pamf-paper-completion-m119-r03"
+    ],
+    "contract_check_ref": "experiments.pamf_repl_component_guard.plan.parent and checked_e20_parent",
+    "provenance_verdict": "same source roles, physical IDs and original source-only E20, no target-trained checkpoint",
+    "selection_rule": "all registered candidates final E50; chosen seed based on exposed target; no result feedback into candidates"
+  },
+  "execution": {
+    "host": "N607 ordinary user",
+    "launch_owner": "codex-20261115-phase1-pamf-component-guard-clean-m6-r01",
+    "gpu_policy": "GPU0 and GPU1 only, disjoint from running m16 owner; total <=5 processes/card including other owners and pending workers; check free memory",
+    "remote_run_root": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01",
+    "remote_log_root": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_component_guard_clean_20261115",
+    "launch_command": "python -m experiments.pamf_repl_component_guard.publish --repo REPO --output LOCAL_ROOT --context CONTEXT --ssh-config N607_CONFIG",
+    "stop_rule": "On protocol, nonfinite or launch failure stop new dispatch; preserve all outputs and healthy workers; no low-score stops."
+  },
+  "expected_artifacts": [
+    "6 real-checkpoint no-query smoke checks",
+    "6 E30/E50 source continuations",
+    "source V high-confidence prediction precision proxies at E30 and E50",
+    "all-step group L/U gradient and 100-step component gradient diagnostics",
+    "6 raw clean predictions and independent truth-last scores with matched original PL and Tri controls"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean accuracy and macro-F1",
+      "L CE and source validation",
+      "U acceptance and pseudo-class histogram",
+      "V high-confidence precision proxy",
+      "group L/U norms, dot, conflict and cap, sampled component norms/cosines"
+    ],
+    "dimensions": [
+      "ten-class and six-source",
+      "seed 2026092701",
+      "raw clean",
+      "TX/RX/day"
+    ],
+    "prediction_ref": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/readouts/ROW/predictions",
+    "scorer_ref": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/readouts/ROW/scores"
+  },
+  "rows": [
+    {
+      "row_id": "ten_class-repl-shallow_project-s2026092701",
+      "method": "Tri-SIG-TIME REPL component guard shallow_project",
+      "purpose": "{'project_components': ['shallow']}",
+      "config_ref": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/configs/train__ten_class-repl-shallow_project-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/F/ten_class-repl-shallow_project-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 reused; own E21-E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/F/ten_class-repl-shallow_project-s2026092701/source",
+      "log_path": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/logs/train__ten_class-repl-shallow_project-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/configs/train__ten_class-repl-shallow_project-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/source_v_pseudo_proxy.json",
+        "source/segment50/source_v_pseudo_proxy.json",
+        "readouts/ten_class-repl-shallow_project-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-shallow_project-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-extrap_project-s2026092701",
+      "method": "Tri-SIG-TIME REPL component guard extrap_project",
+      "purpose": "{'project_components': ['extrap_delta']}",
+      "config_ref": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/configs/train__ten_class-repl-extrap_project-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/F/ten_class-repl-extrap_project-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 reused; own E21-E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/F/ten_class-repl-extrap_project-s2026092701/source",
+      "log_path": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/logs/train__ten_class-repl-extrap_project-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/configs/train__ten_class-repl-extrap_project-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/source_v_pseudo_proxy.json",
+        "source/segment50/source_v_pseudo_proxy.json",
+        "readouts/ten_class-repl-extrap_project-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-extrap_project-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-both_project-s2026092701",
+      "method": "Tri-SIG-TIME REPL component guard both_project",
+      "purpose": "{'project_components': ['shallow', 'extrap_delta']}",
+      "config_ref": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/configs/train__ten_class-repl-both_project-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/F/ten_class-repl-both_project-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 reused; own E21-E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/F/ten_class-repl-both_project-s2026092701/source",
+      "log_path": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/logs/train__ten_class-repl-both_project-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/configs/train__ten_class-repl-both_project-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/source_v_pseudo_proxy.json",
+        "source/segment50/source_v_pseudo_proxy.json",
+        "readouts/ten_class-repl-both_project-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-both_project-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-shallow_project-s2026092701",
+      "method": "Tri-SIG-TIME REPL component guard shallow_project",
+      "purpose": "{'project_components': ['shallow']}",
+      "config_ref": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/configs/train__source_rx_6-repl-shallow_project-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/F/source_rx_6-repl-shallow_project-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 reused; own E21-E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/F/source_rx_6-repl-shallow_project-s2026092701/source",
+      "log_path": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/logs/train__source_rx_6-repl-shallow_project-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/configs/train__source_rx_6-repl-shallow_project-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/source_v_pseudo_proxy.json",
+        "source/segment50/source_v_pseudo_proxy.json",
+        "readouts/source_rx_6-repl-shallow_project-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-shallow_project-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-extrap_project-s2026092701",
+      "method": "Tri-SIG-TIME REPL component guard extrap_project",
+      "purpose": "{'project_components': ['extrap_delta']}",
+      "config_ref": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/configs/train__source_rx_6-repl-extrap_project-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/F/source_rx_6-repl-extrap_project-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 reused; own E21-E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/F/source_rx_6-repl-extrap_project-s2026092701/source",
+      "log_path": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/logs/train__source_rx_6-repl-extrap_project-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/configs/train__source_rx_6-repl-extrap_project-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/source_v_pseudo_proxy.json",
+        "source/segment50/source_v_pseudo_proxy.json",
+        "readouts/source_rx_6-repl-extrap_project-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-extrap_project-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-both_project-s2026092701",
+      "method": "Tri-SIG-TIME REPL component guard both_project",
+      "purpose": "{'project_components': ['shallow', 'extrap_delta']}",
+      "config_ref": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/configs/train__source_rx_6-repl-both_project-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/F/source_rx_6-repl-both_project-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 reused; own E21-E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/F/source_rx_6-repl-both_project-s2026092701/source",
+      "log_path": "PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/logs/train__source_rx_6-repl-both_project-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261115-phase1-pamf-component-guard-clean-m6-r01/configs/train__source_rx_6-repl-both_project-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/source_v_pseudo_proxy.json",
+        "source/segment50/source_v_pseudo_proxy.json",
+        "readouts/source_rx_6-repl-both_project-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-both_project-s2026092701/scores/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Seed selected from previously exposed target clean; exploratory only. Candidate matrix fixed before new target tests.",
+    "U TX truth is never read; source V confidence precision is a proxy, not U pseudo-label correctness.",
+    "Three fixed projection candidates per setting target shallow, extrapolation delta, or both based on source gradient logs; all use E20 then 30 rounds. The first batch target has already been exposed, so this is explicitly exploratory; those scores were not used to choose recipes.",
+    "Selected component gradients are individually projected against the complete current labeled objective within each parameter group, then the original total U guard and cap are applied.",
+    "All-step gradient telemetry plus 100-step loss-component gradients; raw clean only; independently truth-last scoring.",
+    "No change, stop, restart or overwrite of other experiment owners."
+  ],
+  "registered_at": "2026-11-15T13:30:17+00:00"
+}

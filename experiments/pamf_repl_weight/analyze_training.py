@@ -11,6 +11,11 @@ FIELDS = ('train/loss_tx_labeled', 'HPL_loss', 'HPL_base_loss', 'HPL_confidence'
           'HPL_RXE_ordinary_valid_CE', 'HPL_RXE_extrapolated_valid_CE')
 FIELDS += tuple(f'HPL_GP_{g}_{x}' for g in ('t2', 'cls_head', 'other')
                 for x in ('L_norm', 'U_norm', 'applied_U_norm', 'dot_before', 'dot_after', 'conflict', 'capped'))
+FIELDS += tuple(f'HPL_GP_{g}_raw_{x}' for g in ('t2', 'cls_head', 'other')
+                for x in ('U_norm', 'dot_before', 'conflict'))
+FIELDS += tuple(f'HPL_component_guard_{part}_{g}_{x}'
+                for part in ('shallow', 'extrap_delta') for g in ('t2', 'cls_head', 'other')
+                for x in ('conflict', 'dot_before', 'correction_norm'))
 
 
 def read_json(p):
