@@ -37,8 +37,16 @@ def run(rt,job):
         old=get(specs[k,0],'B');x=tensor(old['support_x'],device)
         y=torch.tensor(old['support_y'].tolist(),device=device,dtype=torch.long)
         b_seed=seed_for(job['seed'],job['capsule'],k,'B')
-        b=extra.fit_B(rt,bundle,x,y,b_seed)
-        prepared=prepare_b(b['model'],'tweak_m1',extra.native_features,x,y,old_count=6,b_scores=b)
+        prior=None
+        if job.get('reuse_saved_b'):
+            from .clean_saved_anchor_reuse import prior_anchor
+            prior=prior_anchor(job,rt,k,specs[k,0]['split_id'],b_seed,str(device))
+        if prior is None:
+            b=extra.fit_B(rt,bundle,x,y,b_seed)
+            prepared=prepare_b(b['model'],'tweak_m1',extra.native_features,x,y,old_count=6,b_scores=b)
+        else:
+            b=dict(model=prior['payload']['model'])
+            prepared={'mopc_hr':prior['payload']['anchor']}
         if job.get('save_B_for_mopc'):
             from .group2_b_state import save_b_state
             save_b_state(output/f'B-K{k}.pt',job,k,specs[k,0]['split_id'],b_seed,b['model'],prepared['mopc_hr'])
@@ -60,6 +68,7 @@ def run(rt,job):
                     claim='Tweak_M1_B_to_'+{'lora':'LoRa','orthogonal':'Orthogonal','mopc_hr':'MoPC'}[method]+'_core_transplant',
                     knn_k=state.k if method=='lora' else None,
                     resources=dict(B_state_ref=str(output/f'B-K{k}.pt') if job.get('save_B_for_mopc') else None,
+                                   B_original_state_ref=prior['path'] if prior is not None else None,
                                    C_protocol=plain(getattr(state,'protocol_metadata',{})))))
     require(all(torch.equal(before[k],v) for k,v in model.state_dict().items()),'Source state changed')
     require(len(rows)==len(points)*len(methods),'Incomplete C rows')

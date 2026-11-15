@@ -115,11 +115,18 @@ def predict(rt, job):
             old_y = to_tensor(task['support_y'], device, np.int64).long()
             synchronize(); started = time.perf_counter()
             b_seed = seed_for(seed, job['capsule'], k, 'B')
-            old_b = None
-            if job.get('reuse_original_b') is not None:
+            old_b = None; saved_anchor = None
+            if job.get('reuse_saved_b') is not None:
+                from .clean_saved_anchor_reuse import prior_anchor
+                saved_anchor=prior_anchor(job,rt,k,lookup[k,0]['split_id'],b_seed,device)
+            if saved_anchor is None and job.get('reuse_original_b') is not None:
                 from .clean_affine_b_reuse import prior_b
                 old_b = prior_b(job, rt, k, lookup[k, 0]['split_id'], b_seed, device)
-            if old_b is None:
+            if saved_anchor is not None:
+                saved=saved_anchor['payload'];old_b=saved_anchor
+                bstate=dict(model=saved['model'],native_state=None,resources=saved_anchor['native'])
+                old_prototypes=saved['old_prototypes']
+            elif old_b is None:
                 bstate = fit_B(rt, bundle, old_x, old_y, b_seed, emit)
                 old_prototypes = None
             else:
@@ -135,22 +142,26 @@ def predict(rt, job):
             if old_b is None:
                 old_prototypes = getattr(native, 'prototypes', None) if profile == 'protonet_cda' else None
             extractor = lambda model, x: embedding(model, row(profile)['method'], x)
-            prepared = prepare_b(bstate['model'], profile, extractor, old_x, old_y,
-                                 old_count=6, old_prototypes=old_prototypes, b_scores=bstate.get('score_fn'),
-                                 mopc_bridge=mopc_bridge)
+            prepared = {'mopc_hr':saved_anchor['payload']['anchor']} if saved_anchor is not None else \
+                prepare_b(bstate['model'], profile, extractor, old_x, old_y,
+                          old_count=6, old_prototypes=old_prototypes, b_scores=bstate.get('score_fn'),
+                          mopc_bridge=mopc_bridge)
             require(set(methods) <= set(prepared), 'Requested B/C bridge is not bound')
-            with torch.no_grad():
-                original_scores = bstate['score_fn'](bstate['model'], old_x)
-                bridge_scores = prepared['mopc_hr'].model(old_x)['tx_logits']
-                if mopc_bridge == 'proto_affine_v1':
-                    from .group2_proto_mopc_affine import require_equivalent_b
-                    require_equivalent_b(original_scores, bridge_scores)
-                    difference = (original_scores-original_scores.mean(1,keepdim=True)) - \
-                                 (bridge_scores-bridge_scores.mean(1,keepdim=True))
-                else:
-                    require(torch.allclose(original_scores, bridge_scores, rtol=1e-4, atol=1e-4), 'B scores changed at C bridge')
-                    difference = original_scores - bridge_scores
-                b_bridge_max_abs_diff = float(difference.abs().max().item())
+            if saved_anchor is not None:
+                b_bridge_max_abs_diff = None
+            else:
+              with torch.no_grad():
+                  original_scores = bstate['score_fn'](bstate['model'], old_x)
+                  bridge_scores = prepared['mopc_hr'].model(old_x)['tx_logits']
+                  if mopc_bridge == 'proto_affine_v1':
+                      from .group2_proto_mopc_affine import require_equivalent_b
+                      require_equivalent_b(original_scores, bridge_scores)
+                      difference = (original_scores-original_scores.mean(1,keepdim=True)) - \
+                                   (bridge_scores-bridge_scores.mean(1,keepdim=True))
+                  else:
+                      require(torch.allclose(original_scores, bridge_scores, rtol=1e-4, atol=1e-4), 'B scores changed at C bridge')
+                      difference = original_scores - bridge_scores
+                  b_bridge_max_abs_diff = float(difference.abs().max().item())
             if save_b:
                 from .group2_b_state import save_b_state
                 save_b_state(output/f'B-K{k}.pt', job, k, lookup[k, 0]['split_id'], b_seed,
@@ -184,7 +195,7 @@ def predict(rt, job):
                         C_seconds=c_seconds, query_seconds=q_seconds, B_fit_shared_across_C=len(methods)>1,
                         target_old_labels=6*k, target_new_labels=n*k, query_fit=False,
                         B_bridge_max_abs_diff=b_bridge_max_abs_diff,
-                        B_bridge_comparison=('class_centered_logits_and_argmax' if mopc_bridge=='proto_affine_v1'
+                        B_bridge_comparison=('saved_exact_anchor' if saved_anchor is not None else 'class_centered_logits_and_argmax' if mopc_bridge=='proto_affine_v1'
                                              else 'raw_logits'),
                         B_original_state_ref=old_b['path'] if old_b is not None else None,
                         B_native=plain(bstate.get('resources',{})), C_native=plain(getattr(state,'resource',{})),

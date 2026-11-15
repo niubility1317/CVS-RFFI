@@ -26,8 +26,8 @@ def test_tweak_registration_keeps_single_query_decisions(tmp_path,monkeypatch,me
     monkeypatch.setattr(worker,'split_rows',lambda cap,spec:np.arange(len(spec['registered_classes'])))
     if method in ('orthogonal','mopc_hr'):
         from experiments.pamf_phase2_practical.group2_cil_bridge import register
-        monkeypatch.setattr(worker,'register_c',lambda prepared,x,y,seed,methods:
-                            {method:register(prepared[method],x,y,seed=seed,epochs=1)})
+        monkeypatch.setattr(worker,'register_c',lambda prepared,x,y,seed,methods,**options:
+                            {method:register(prepared[method],x,y,seed=seed,epochs=1,**options)})
     actual=worker.score_fixed;observed=[]
     def score(*args,**kwargs):observed.append(kwargs['batch_size']);return actual(*args,**kwargs)
     monkeypatch.setattr(worker,'score_fixed',score)
@@ -45,3 +45,13 @@ def test_tweak_registration_keeps_single_query_decisions(tmp_path,monkeypatch,me
     else:
         assert result['knn_k'] is None and result['claim']=='Tweak_M1_B_to_MoPC_core_transplant'
         assert (tmp_path/'out/B-K1.pt').is_file()
+        from experiments.pamf_phase2_practical import clean_saved_anchor_reuse
+        saved=torch.load(tmp_path/'out/B-K1.pt',map_location='cpu',weights_only=False)
+        monkeypatch.setattr(clean_saved_anchor_reuse,'prior_anchor',lambda *args:dict(payload=saved,path='original-B'))
+        monkeypatch.setattr(worker.extra,'fit_B',lambda *args:pytest.fail('saved B was refitted'))
+        stable=dict(job,output=str(tmp_path/'stable'),mopc_stabilization='clip1000_v1',
+                    reuse_saved_b=dict(job='old-job',runtime='old-runtime'))
+        worker.run(rt,stable)
+        stable_row=json.loads((tmp_path/'stable/predictions.json').read_text())['rows'][0]
+        assert stable_row['arm']=='tweak_m1__mopc_hr_clip1000_v1'
+        assert stable_row['resources']['B_original_state_ref']=='original-B'

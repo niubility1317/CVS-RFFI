@@ -30,6 +30,14 @@ def validate(rt, job, group):
     require(not job.get('reuse_original_b') or (bridge == 'proto_affine_v1' and
             job.get('save_B_for_mopc') is True and set(job['reuse_original_b']) == {'job','runtime'}),
             'Invalid original B reuse binding')
+    require(not job.get('reuse_saved_b') or (group=='hybrid' and job.get('methods')==['mopc_hr'] and
+            job.get('mopc_stabilization')=='clip1000_v1' and job.get('save_B_for_mopc') is True and
+            set(job['reuse_saved_b'])=={'job','runtime'} and
+            (not job.get('reuse_original_b') or job.get('profile')=='protonet_cda')),
+            'Invalid saved anchor reuse binding')
+    require(not job.get('reuse_a0') or (group=='native_cil' and job.get('profile')=='mopc_hr' and
+            job.get('mopc_stabilization')=='clip1000_v1' and set(job['reuse_a0'])=={'job','runtime'} and
+            not job.get('reuse')), 'Invalid A0 reuse binding')
     if group=='native_da':
         require(job.get('profile') in NATIVE_DA, 'Native DA profile unbound or excluded')
     elif group=='native_cil':

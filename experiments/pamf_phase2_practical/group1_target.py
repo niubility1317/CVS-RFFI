@@ -162,6 +162,11 @@ def predict(rt,job):
         require(clean_root and profile=='mopc_hr','Only clean native MoPC may reuse pilot rows')
         from .clean_mopc_reuse import copy_pilot_rows
         rows.extend(copy_pilot_rows(job,rt,manifest,lookup,out))
+    if job.get('reuse_a0') is not None:
+        require(clean_root and profile=='mopc_hr' and not job.get('reuse') and
+                job.get('mopc_stabilization')=='clip1000_v1','Invalid native A0 reuse')
+        from .clean_mopc_a0_reuse import copy_a0
+        rows.extend(copy_a0(job,rt,manifest,lookup,out))
     reused={(r['stage'],r['k'],r['new_count']) for r in rows}
     if clean_root:
         require(r['method']!='pamf','Clean PAMF requires the frozen SCALR runner, not the LocalRidge runner')
