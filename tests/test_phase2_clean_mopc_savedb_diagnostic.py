@@ -24,3 +24,9 @@ def test_original_diagnostic_rejects_saved_affine_job_before_data_access():
     with pytest.raises(ValueError, match='original bridge'):
         run({}, job, 10, 20, 'cuda:0', 'original_uninstrumented', lambda x: None)
 
+
+def test_affine_diagnostic_rejects_dadda_before_data_access():
+    job = dict(profile='dadda_sda', methods=['mopc_hr'], save_B_for_mopc=True, points=[[1, 20]])
+    with pytest.raises(ValueError, match='ProtoNet'):
+        run({}, job, 1, 20, 'cuda:0', 'affine_bridge', lambda x: None)
+
