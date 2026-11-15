@@ -29,12 +29,14 @@ def analyze(root):
         per_epoch, components, states, proxies = [], defaultdict(list), [], []
         step_count = 0
         for end, offset, expected in ((30, 20, 2220), (50, 30, 4440)):
-            folder = source/f'segment{end}'
-            state = read_json(folder/'repl_state.json')
+            recovered = end == 30 and bool(done.get('recovered_e30_run'))
+            folder = Path(done['segments'][1]['folder']) if recovered else source/f'segment{end}'
+            state = read_json(source/'recovered_e30_state.json' if recovered else folder/'repl_state.json')
             if state['U_truth_read'] or state['calls'] != expected:
                 raise ValueError('Missing or invalid REPL state: '+str(folder))
             states.append(state)
-            proxy = read_json(folder/'source_v_pseudo_proxy.json')
+            proxy = read_json(source/'recovered_e30_v'/'source_v_pseudo_proxy.json' if recovered
+                              else folder/'source_v_pseudo_proxy.json')
             if proxy['role'] != 'V' or proxy['U_truth_read'] or proxy['used_for_training']:
                 raise ValueError('Source V proxy identity or permission differs')
             proxies.append(dict(epoch=end, **proxy))

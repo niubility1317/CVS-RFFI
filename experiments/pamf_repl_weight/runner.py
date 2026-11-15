@@ -32,6 +32,7 @@ def prepare(rt):
 
 def smoke(rt):
     from experiments.pamf_physics_tri.runner import smoke as check_rows
+    from .recovery import proxy_checkpoint, recover_e30_telemetry
     def check_u(state):
         if not state['accepted'] or state['U_truth_read'] or state['U_gradient_guard']['calls'] != 1:
             raise ValueError('Expected original accepted-U and guard path')
@@ -41,8 +42,17 @@ def smoke(rt):
     checks = check_rows(rt, rows=plan.candidate_rows, configure=plan.configuration, check_parent=plan.parent,
                         scope=installed, check_u=check_u, graph_check=plan.check_graph,
                         segment_output=True, write_result=False)
+    ctx = read(rt['context'])
+    recovered = []
+    for row in plan.candidate_rows():
+        c = plan.configuration(ctx, row, rt['project'], rt['code_commit'])
+        previous, payload = plan.recovered_e30(c)
+        stats = recover_e30_telemetry(previous['folder'], c['num_classes'])
+        recovered.append(dict(row=row['row_id'], prior_calls=stats['calls'], seen=stats['seen']))
+        if row['recipe'] == 'weight3':
+            proxy_checkpoint(c, payload, Path(rt['run_root'])/'smoke_e30_v'/row['setting'])
     write(Path(rt['run_root']) / 'smoke.json', dict(status='PASS', checks=checks, real_checkpoint=True,
-          optimizer_updates=0, query_reads=0, U_truth_reads=0))
+          recovered_e30=recovered, source_v_proxy_settings=2, optimizer_updates=0, query_reads=0, U_truth_reads=0))
 
 
 def worker(c, kind):
@@ -54,8 +64,8 @@ def worker(c, kind):
     if kind == 'smoke':
         return smoke(c)
     if kind == 'train':
-        from experiments.pamf_physics_tri.source import train_trajectory
-        return train_trajectory(c, plan.parent(c), installed, ssl=True, physical_L=False)
+        from .recovery import train
+        return train(c)
     if kind == 'predict':
         from experiments.pamf_physics_tri.development_evaluation import predict
         return predict(c)

@@ -3,7 +3,7 @@ import argparse
 from copy import deepcopy
 import json
 from pathlib import Path
-from .plan import RUN, RECIPES, candidate_rows
+from .plan import RUN, PREVIOUS_RUN, RECIPES, candidate_rows
 
 
 def make(template):
@@ -13,7 +13,7 @@ def make(template):
         display_name='Tri-SIG-TIME 十类与六源损失权重及梯度诊断',
         description='单种子十四个独立REPL变化；训练后自动raw clean预测与truth-last评分。',
         aliases=['tri-repl-clean-loss-weight'], tags=['PAMF','REPL','clean','gradient'],
-        parent_run_ids=['20261027-phase1-pamf-paper-completion-m119-r03'],
+        parent_run_ids=['20261027-phase1-pamf-paper-completion-m119-r03', PREVIOUS_RUN], replaces_run_id=PREVIOUS_RUN,
         authorization='2026-11-15 用户授权两设置最大clean差距种子调参，clean自动测试，每卡最多五进程。')
     result['code'].update(commit='actual committed release identity in runtime.json',
         checkout='isolated task worktree', environment='N607 CVS-RFFI existing Python, FP32',
@@ -26,10 +26,10 @@ def make(template):
         leo_config_ref='not applicable: clean-only, no new satellite observations')
     result['permissions'].update(regime='source_only', query_use='frozen raw clean prediction; independent truth-last scoring',
         claim_scope='seed selected by previously exposed clean target; exploratory, not an independent blind evaluation')
-    result['checkpoint'].update(initialization='matching original fixed-permutation Tri E20 source checkpoint; own 10+20 continuation',
-        sources=['20261027-phase1-pamf-paper-completion-m119-r03'],
-        contract_check_ref='experiments.pamf_repl_weight.plan.parent and checked_e20_parent',
-        provenance_verdict='same source roles, physical IDs, seed, source-only scratch E20; no target-trained checkpoint',
+    result['checkpoint'].update(initialization='matching original fixed-permutation Tri E20 and own r01 E30; own 20-epoch continuation',
+        sources=['20261027-phase1-pamf-paper-completion-m119-r03', PREVIOUS_RUN],
+        contract_check_ref='experiments.pamf_repl_weight.plan.parent and recovered_e30',
+        provenance_verdict='same source roles, physical IDs, seed, and recipe; source-only E20/E30; no target-trained checkpoint',
         selection_rule='all registered candidates final E50; chosen seed based on exposed target; no result feedback into candidates')
     result['execution'].update(host='N607 ordinary user', launch_owner='codex-'+RUN,
         gpu_policy='GPU 0,1,3,4,5,7; total CUDA and pending processes <=5/card; check free memory and reserve pending initialization',
@@ -53,10 +53,10 @@ def make(template):
             seed_notes='Selected using previous target clean performance; exploratory only.',
             scenario='raw clean only', config_ref=root+'/configs/train__'+rid+'.json',
             resolved_config_ref=root+'/F/'+rid+'/source/resolved_config.json',
-            budget_ref='same-contract Tri E20 reused; E21-E50 6660 steps; total 11100',
+            budget_ref='same-contract Tri E20 and own completed E30 reused; E31-E50 4440 new steps; total 11100',
             output_root=root+'/F/'+rid+'/source', log_path=root+'/logs/train__'+rid+'.log',
             command='worker --kind train --config '+root+'/configs/train__'+rid+'.json',
-            expected_artifacts=['source/complete.json','source/segment30/source_v_pseudo_proxy.json',
+            expected_artifacts=['source/complete.json','source/recovered_e30_v/source_v_pseudo_proxy.json',
                                 'source/segment50/source_v_pseudo_proxy.json','readouts/'+rid+'/predictions/complete.json',
                                 'readouts/'+rid+'/scores/complete.json'])
         result['rows'].append(item)
@@ -64,7 +64,8 @@ def make(template):
         'Full source V high-confidence precision is a proxy, not U truth; no V gradient or persistent training update.',
         'Selected seed 2026092701 has largest matched raw clean deficit in both settings; target exposed.',
         'Each candidate changes one registered factor; no target-driven candidate selection or repeated tuning.',
-        'Group gradient telemetry is every step; shallow/joint/extrap_delta versus L component cosines are every 100 steps.']
+        'Group gradient telemetry is every step; shallow/joint/extrap_delta versus L component cosines are every 100 steps.',
+        'r01 completed E30 but failed source-V proxy due to inference tensor version counters; no-grad fix and own-E30 recovery.']
     return result
 
 

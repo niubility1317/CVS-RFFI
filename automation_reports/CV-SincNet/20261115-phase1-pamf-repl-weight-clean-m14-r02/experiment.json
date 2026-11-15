@@ -1,0 +1,620 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261115-phase1-pamf-repl-weight-clean-m14-r02",
+  "group_id": "phase1-pamf-repl-weight-clean",
+  "display_name": "Tri-SIG-TIME 十类与六源损失权重及梯度诊断",
+  "description": "单种子十四个独立REPL变化；训练后自动raw clean预测与truth-last评分。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "tri-repl-clean-loss-weight"
+  ],
+  "tags": [
+    "PAMF",
+    "REPL",
+    "clean",
+    "gradient"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-paper-completion-m119-r03",
+    "20261115-phase1-pamf-repl-weight-clean-m14-r01"
+  ],
+  "replaces_run_id": "20261115-phase1-pamf-repl-weight-clean-m14-r01",
+  "authorization": "2026-11-15 用户授权两设置最大clean差距种子调参，clean自动测试，每卡最多五进程。",
+  "code": {
+    "commit": "actual committed release identity in runtime.json",
+    "checkout": "isolated task worktree",
+    "environment": "N607 CVS-RFFI existing Python, FP32",
+    "cwd": "PROJECT/releases/20261115-phase1-pamf-repl-weight-clean-m14-r02-release"
+  },
+  "data": {
+    "dataset": "original ten-class ManyRx and six-source receiver contracts",
+    "version": null,
+    "representation": null,
+    "contract_ref": "context.handles per row protocol_id",
+    "physical_ids_ref": "original fixed source/test contracts",
+    "label_map_ref": null,
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "original labeled role",
+      "U_s": "source IQ, TX hidden",
+      "V": "original source validation"
+    },
+    "train_ratio": "original fixed labeled/unlabeled/validation roles",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": "fixed clean cross-date, cross-RX and double-cross; prediction before independent scoring",
+    "leo_config_ref": "not applicable: clean-only, no new satellite observations"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "frozen raw clean prediction; independent truth-last scoring",
+    "external_method_exception": null,
+    "claim_scope": "seed selected by previously exposed clean target; exploratory, not an independent blind evaluation"
+  },
+  "checkpoint": {
+    "initialization": "matching original fixed-permutation Tri E20 and own r01 E30; own 20-epoch continuation",
+    "sources": [
+      "20261027-phase1-pamf-paper-completion-m119-r03",
+      "20261115-phase1-pamf-repl-weight-clean-m14-r01"
+    ],
+    "contract_check_ref": "experiments.pamf_repl_weight.plan.parent and recovered_e30",
+    "provenance_verdict": "same source roles, physical IDs, seed, and recipe; source-only E20/E30; no target-trained checkpoint",
+    "selection_rule": "all registered candidates final E50; chosen seed based on exposed target; no result feedback into candidates"
+  },
+  "execution": {
+    "host": "N607 ordinary user",
+    "launch_owner": "codex-20261115-phase1-pamf-repl-weight-clean-m14-r02",
+    "gpu_policy": "GPU 0,1,3,4,5,7; total CUDA and pending processes <=5/card; check free memory and reserve pending initialization",
+    "remote_run_root": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02",
+    "remote_log_root": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/logs",
+    "local_artifact_root": "local_artifacts/pamf_repl_weight_clean_20261115",
+    "launch_command": "python -m experiments.pamf_repl_weight.publish --repo REPO --output LOCAL_ROOT --context CONTEXT --ssh-config N607_CONFIG",
+    "stop_rule": "On protocol, nonfinite or launch failure stop new dispatch; preserve all outputs and healthy workers; no low-score stops."
+  },
+  "expected_artifacts": [
+    "real checkpoint no-query smoke",
+    "14 frozen E50 continuations with complete step and epoch telemetry",
+    "source V high-confidence correctness proxy at E30/E50",
+    "14 raw clean predictions and independent truth-last scores",
+    "group pre/post U gradient norms and conflict/cap; sampled component L/U gradients; matched prior PL and Tri comparisons"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean accuracy and macro-F1",
+      "L CE and source validation",
+      "U acceptance and pseudo-class histogram",
+      "V high-confidence precision proxy",
+      "group L/U norms, dot, conflict and cap, sampled component norms/cosines"
+    ],
+    "dimensions": [
+      "ten-class and six-source",
+      "seed 2026092701",
+      "raw clean",
+      "TX/RX/day"
+    ],
+    "prediction_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/readouts/ROW/predictions",
+    "scorer_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/readouts/ROW/scores"
+  },
+  "rows": [
+    {
+      "row_id": "ten_class-repl-weight3-s2026092701",
+      "method": "Tri-SIG-TIME REPL weight3",
+      "purpose": "{'weight': 3.0}",
+      "config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__ten_class-repl-weight3-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/ten_class-repl-weight3-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract Tri E20 and own completed E30 reused; E31-E50 4440 new steps; total 11100",
+      "output_root": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/ten_class-repl-weight3-s2026092701/source",
+      "log_path": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/logs/train__ten_class-repl-weight3-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__ten_class-repl-weight3-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/recovered_e30_v/source_v_pseudo_proxy.json",
+        "source/segment50/source_v_pseudo_proxy.json",
+        "readouts/ten_class-repl-weight3-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-weight3-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-weight15-s2026092701",
+      "method": "Tri-SIG-TIME REPL weight15",
+      "purpose": "{'weight': 1.5}",
+      "config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__ten_class-repl-weight15-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/ten_class-repl-weight15-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract Tri E20 and own completed E30 reused; E31-E50 4440 new steps; total 11100",
+      "output_root": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/ten_class-repl-weight15-s2026092701/source",
+      "log_path": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/logs/train__ten_class-repl-weight15-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__ten_class-repl-weight15-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/recovered_e30_v/source_v_pseudo_proxy.json",
+        "source/segment50/source_v_pseudo_proxy.json",
+        "readouts/ten_class-repl-weight15-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-weight15-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-shallow05-s2026092701",
+      "method": "Tri-SIG-TIME REPL shallow05",
+      "purpose": "{'shallow_factor': 0.5}",
+      "config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__ten_class-repl-shallow05-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/ten_class-repl-shallow05-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract Tri E20 and own completed E30 reused; E31-E50 4440 new steps; total 11100",
+      "output_root": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/ten_class-repl-shallow05-s2026092701/source",
+      "log_path": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/logs/train__ten_class-repl-shallow05-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__ten_class-repl-shallow05-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/recovered_e30_v/source_v_pseudo_proxy.json",
+        "source/segment50/source_v_pseudo_proxy.json",
+        "readouts/ten_class-repl-shallow05-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-shallow05-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-joint025-s2026092701",
+      "method": "Tri-SIG-TIME REPL joint025",
+      "purpose": "{'joint_weight': 0.025}",
+      "config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__ten_class-repl-joint025-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/ten_class-repl-joint025-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract Tri E20 and own completed E30 reused; E31-E50 4440 new steps; total 11100",
+      "output_root": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/ten_class-repl-joint025-s2026092701/source",
+      "log_path": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/logs/train__ten_class-repl-joint025-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__ten_class-repl-joint025-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/recovered_e30_v/source_v_pseudo_proxy.json",
+        "source/segment50/source_v_pseudo_proxy.json",
+        "readouts/ten_class-repl-joint025-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-joint025-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-extrap125-s2026092701",
+      "method": "Tri-SIG-TIME REPL extrap125",
+      "purpose": "{'extrap_coefficient': 0.125}",
+      "config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__ten_class-repl-extrap125-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/ten_class-repl-extrap125-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract Tri E20 and own completed E30 reused; E31-E50 4440 new steps; total 11100",
+      "output_root": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/ten_class-repl-extrap125-s2026092701/source",
+      "log_path": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/logs/train__ten_class-repl-extrap125-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__ten_class-repl-extrap125-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/recovered_e30_v/source_v_pseudo_proxy.json",
+        "source/segment50/source_v_pseudo_proxy.json",
+        "readouts/ten_class-repl-extrap125-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-extrap125-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-style025-s2026092701",
+      "method": "Tri-SIG-TIME REPL style025",
+      "purpose": "{'style_probability': 0.25}",
+      "config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__ten_class-repl-style025-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/ten_class-repl-style025-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract Tri E20 and own completed E30 reused; E31-E50 4440 new steps; total 11100",
+      "output_root": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/ten_class-repl-style025-s2026092701/source",
+      "log_path": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/logs/train__ten_class-repl-style025-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__ten_class-repl-style025-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/recovered_e30_v/source_v_pseudo_proxy.json",
+        "source/segment50/source_v_pseudo_proxy.json",
+        "readouts/ten_class-repl-style025-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-style025-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-guard05-s2026092701",
+      "method": "Tri-SIG-TIME REPL guard05",
+      "purpose": "{'guard_cap': 0.5}",
+      "config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__ten_class-repl-guard05-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/ten_class-repl-guard05-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract Tri E20 and own completed E30 reused; E31-E50 4440 new steps; total 11100",
+      "output_root": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/ten_class-repl-guard05-s2026092701/source",
+      "log_path": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/logs/train__ten_class-repl-guard05-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__ten_class-repl-guard05-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/recovered_e30_v/source_v_pseudo_proxy.json",
+        "source/segment50/source_v_pseudo_proxy.json",
+        "readouts/ten_class-repl-guard05-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-guard05-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-weight3-s2026092701",
+      "method": "Tri-SIG-TIME REPL weight3",
+      "purpose": "{'weight': 3.0}",
+      "config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__source_rx_6-repl-weight3-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/source_rx_6-repl-weight3-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract Tri E20 and own completed E30 reused; E31-E50 4440 new steps; total 11100",
+      "output_root": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/source_rx_6-repl-weight3-s2026092701/source",
+      "log_path": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/logs/train__source_rx_6-repl-weight3-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__source_rx_6-repl-weight3-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/recovered_e30_v/source_v_pseudo_proxy.json",
+        "source/segment50/source_v_pseudo_proxy.json",
+        "readouts/source_rx_6-repl-weight3-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-weight3-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-weight15-s2026092701",
+      "method": "Tri-SIG-TIME REPL weight15",
+      "purpose": "{'weight': 1.5}",
+      "config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__source_rx_6-repl-weight15-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/source_rx_6-repl-weight15-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract Tri E20 and own completed E30 reused; E31-E50 4440 new steps; total 11100",
+      "output_root": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/source_rx_6-repl-weight15-s2026092701/source",
+      "log_path": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/logs/train__source_rx_6-repl-weight15-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__source_rx_6-repl-weight15-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/recovered_e30_v/source_v_pseudo_proxy.json",
+        "source/segment50/source_v_pseudo_proxy.json",
+        "readouts/source_rx_6-repl-weight15-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-weight15-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-shallow05-s2026092701",
+      "method": "Tri-SIG-TIME REPL shallow05",
+      "purpose": "{'shallow_factor': 0.5}",
+      "config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__source_rx_6-repl-shallow05-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/source_rx_6-repl-shallow05-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract Tri E20 and own completed E30 reused; E31-E50 4440 new steps; total 11100",
+      "output_root": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/source_rx_6-repl-shallow05-s2026092701/source",
+      "log_path": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/logs/train__source_rx_6-repl-shallow05-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__source_rx_6-repl-shallow05-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/recovered_e30_v/source_v_pseudo_proxy.json",
+        "source/segment50/source_v_pseudo_proxy.json",
+        "readouts/source_rx_6-repl-shallow05-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-shallow05-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-joint025-s2026092701",
+      "method": "Tri-SIG-TIME REPL joint025",
+      "purpose": "{'joint_weight': 0.025}",
+      "config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__source_rx_6-repl-joint025-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/source_rx_6-repl-joint025-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract Tri E20 and own completed E30 reused; E31-E50 4440 new steps; total 11100",
+      "output_root": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/source_rx_6-repl-joint025-s2026092701/source",
+      "log_path": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/logs/train__source_rx_6-repl-joint025-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__source_rx_6-repl-joint025-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/recovered_e30_v/source_v_pseudo_proxy.json",
+        "source/segment50/source_v_pseudo_proxy.json",
+        "readouts/source_rx_6-repl-joint025-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-joint025-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-extrap125-s2026092701",
+      "method": "Tri-SIG-TIME REPL extrap125",
+      "purpose": "{'extrap_coefficient': 0.125}",
+      "config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__source_rx_6-repl-extrap125-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/source_rx_6-repl-extrap125-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract Tri E20 and own completed E30 reused; E31-E50 4440 new steps; total 11100",
+      "output_root": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/source_rx_6-repl-extrap125-s2026092701/source",
+      "log_path": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/logs/train__source_rx_6-repl-extrap125-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__source_rx_6-repl-extrap125-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/recovered_e30_v/source_v_pseudo_proxy.json",
+        "source/segment50/source_v_pseudo_proxy.json",
+        "readouts/source_rx_6-repl-extrap125-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-extrap125-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-style025-s2026092701",
+      "method": "Tri-SIG-TIME REPL style025",
+      "purpose": "{'style_probability': 0.25}",
+      "config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__source_rx_6-repl-style025-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/source_rx_6-repl-style025-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract Tri E20 and own completed E30 reused; E31-E50 4440 new steps; total 11100",
+      "output_root": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/source_rx_6-repl-style025-s2026092701/source",
+      "log_path": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/logs/train__source_rx_6-repl-style025-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__source_rx_6-repl-style025-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/recovered_e30_v/source_v_pseudo_proxy.json",
+        "source/segment50/source_v_pseudo_proxy.json",
+        "readouts/source_rx_6-repl-style025-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-style025-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-guard05-s2026092701",
+      "method": "Tri-SIG-TIME REPL guard05",
+      "purpose": "{'guard_cap': 0.5}",
+      "config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__source_rx_6-repl-guard05-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/source_rx_6-repl-guard05-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract Tri E20 and own completed E30 reused; E31-E50 4440 new steps; total 11100",
+      "output_root": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/F/source_rx_6-repl-guard05-s2026092701/source",
+      "log_path": "PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/logs/train__source_rx_6-repl-guard05-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261115-phase1-pamf-repl-weight-clean-m14-r02/configs/train__source_rx_6-repl-guard05-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/recovered_e30_v/source_v_pseudo_proxy.json",
+        "source/segment50/source_v_pseudo_proxy.json",
+        "readouts/source_rx_6-repl-guard05-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-guard05-s2026092701/scores/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No source U TX truth is read; direct source U pseudo-label precision is unavailable.",
+    "Full source V high-confidence precision is a proxy, not U truth; no V gradient or persistent training update.",
+    "Selected seed 2026092701 has largest matched raw clean deficit in both settings; target exposed.",
+    "Each candidate changes one registered factor; no target-driven candidate selection or repeated tuning.",
+    "Group gradient telemetry is every step; shallow/joint/extrap_delta versus L component cosines are every 100 steps.",
+    "r01 completed E30 but failed source-V proxy due to inference tensor version counters; no-grad fix and own-E30 recovery."
+  ],
+  "registered_at": "2026-11-15T12:12:27+00:00"
+}

@@ -5,7 +5,8 @@ from pathlib import Path
 from experiments.cric_dura_comparison.io import read
 from experiments.pamf_paper_completion import plan as paper
 
-RUN = '20261115-phase1-pamf-repl-weight-clean-m14-r01'
+RUN = '20261115-phase1-pamf-repl-weight-clean-m14-r02'
+PREVIOUS_RUN = '20261115-phase1-pamf-repl-weight-clean-m14-r01'
 SEED = 2026092701
 SETTINGS = {'ten_class': 'ManyRx', 'source_rx_6': 'm6-natural'}
 RECIPES = {
@@ -103,6 +104,35 @@ def parent(c):
         if c[key] != expected_c[key]:
             raise ValueError('Unexpected method or data change: ' + key)
     return evidence
+
+
+def recovered_e30(c):
+    """Reuse only this candidate's already-complete E30 after proxy failure."""
+    import torch
+    row = validate(c)
+    prefix = parent(c)
+    root = Path(c['output_root'])
+    if root.name in ('segment30', 'segment50'):
+        root = root.parent
+    previous = root.parents[3] / PREVIOUS_RUN / 'F' / row['row_id'] / 'source' / 'segment30'
+    done = read(previous / 'complete.json')
+    prior = done['config']
+    if (done['status'] != 'SOURCE_FROZEN' or done['epoch'] != 10 or done['updates'] != 2220
+            or done['target_access'] or done['U_truth_read'] or done['head_fit_updates']
+            or prior['run_id'] != PREVIOUS_RUN or prior['row_id'] != row['row_id']
+            or prior['parent_source'] != prefix['folder'] or prior['step_offset'] != 4440
+            or read(prior['source_contract']) != read(c['source_contract'])):
+        raise ValueError('Completed E30 source ancestry or permissions mismatch')
+    for key in ('tuning_recipe', 'hard_pl', 'hard_pl_mixstyle', 'hard_pl_gradient_guard',
+                'hard_pl_joint_contrast', 'hard_pl_receiver_extrapolation', 'source_cache', 'paper_row'):
+        if prior[key] != c[key]:
+            raise ValueError('E30 candidate differs: ' + key)
+    cp = torch.load(previous/'final_ssdg.pth', map_location='cpu', weights_only=False)
+    if (cp['run_id'] != PREVIOUS_RUN or cp['candidate_id'] != row['row_id'] or cp['epoch'] != 10
+            or cp['a1_ema_successful_updates'] != 2220 or cp['args']['teacher_ckpt']
+            or cp['args']['baseline_ckpt'] != str(Path(prefix['folder'])/'final_ssdg.pth')):
+        raise ValueError('E30 checkpoint does not match its source trajectory')
+    return dict(folder=str(previous), **done), cp
 
 
 def check_graph(model, c):

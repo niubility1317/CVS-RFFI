@@ -124,3 +124,61 @@ def test_full_training_parser_counts_exposures_once(tmp_path):
     assert result['steps'] == 6660 and result['U_seen'] == 66600
     assert result['U_accepted'] == 53280 and result['U_acceptance'] == pytest.approx(.8)
     assert len(result['epochs']) == 30 and result['component_samples']['HPL_component_joint_t2_cosine'] == 66
+
+
+def test_source_v_proxy_handles_versioned_computed_sinc_coordinates(tmp_path, monkeypatch):
+    import torch
+    from torch import nn
+    from experiments.cric_dura_comparison import f_data
+    from experiments.pamf_repl_weight.objective import source_validation_proxy
+
+    class TinyV(torch.utils.data.Dataset):
+        def __init__(self, root, role, contract):
+            assert role == 'V'
+        def __len__(self): return 2
+        def __getitem__(self, i): return torch.tensor([1.]), i, 0, {'rx_i': 1}
+    class CoordinateModel(nn.Module):
+        def __init__(self):
+            super().__init__(); self.p = nn.Parameter(torch.tensor(1.))
+        def forward(self, x):
+            coordinate = self.p * 25000. + 10.
+            _ = coordinate._version
+            return torch.cat((x*coordinate, -x*coordinate), 1)
+    monkeypatch.setattr(f_data, 'SourceDataset', TinyV)
+    contract = tmp_path/'contract.json'; contract.write_text('{}', encoding='utf-8')
+    c = dict(source_cache=str(tmp_path), source_contract=str(contract), output_root=str(tmp_path))
+    model = CoordinateModel().train()
+    source_validation_proxy(c, model)
+    assert model.training and (tmp_path/'source_v_pseudo_proxy.json').is_file()
+
+
+def test_recover_e30_requires_complete_and_matching_observations(tmp_path):
+    import gzip
+    import json
+    from experiments.pamf_repl_weight.recovery import recover_e30_telemetry
+    (tmp_path/'progress.json').write_text(json.dumps({'PL_seen':100, 'PL_accepted':80}),encoding='utf-8')
+    metrics = {'HPL_calls':2220, 'HPL_seen':100, 'HPL_accepted':80, 'HPL_student_views':600,
+               'HPL_EMA_updates':0, 'HPL_pseudo_class_0':45, 'HPL_pseudo_class_1':35,
+               'HPL_conf_bin_below90':10, 'HPL_conf_bin_90to95':10,
+               'HPL_conf_bin_95to99':30, 'HPL_conf_bin_99plus':50}
+    path=tmp_path/'step_metrics.jsonl.gz'
+    with gzip.open(path,'wt',encoding='utf-8') as f:
+        for step in range(1,2221): f.write(json.dumps({'step':step,'metrics':metrics})+'\n')
+    result=recover_e30_telemetry(tmp_path,2)
+    assert result['seen']==100 and result['accepted']==80 and result['recovered_from_complete_step_log']
+    (tmp_path/'progress.json').write_text(json.dumps({'PL_seen':100,'PL_accepted':79}),encoding='utf-8')
+    with pytest.raises(ValueError,match='counters'):
+        recover_e30_telemetry(tmp_path,2)
+
+
+def test_recovery_remote_preflight_compiles_and_checks_own_e30(monkeypatch):
+    from experiments.pamf_branch_training import publish as base
+    from experiments.pamf_repl_weight import publish
+    seen = {}
+    def capture(*args, **kwargs):
+        seen['script'] = base.REMOTE
+    monkeypatch.setattr(base, 'publish', capture)
+    publish.publish('repo','output','context','ssh')
+    assert plan.PREVIOUS_RUN in seen['script']
+    assert 'for recipe in' in seen['script']
+    compile(seen['script'].replace('PACKAGE', '{}'), '<remote preflight>', 'exec')

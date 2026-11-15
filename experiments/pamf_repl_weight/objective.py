@@ -85,7 +85,9 @@ def source_validation_proxy(c, model):
     was = model.training
     model.eval()
     try:
-        with torch.inference_mode():
+        # CoordinateSinc computes versioned Hz tensors on access; inference
+        # tensors do not expose version counters, while no_grad preserves them.
+        with torch.no_grad():
             for x, y, _, meta in loader:
                 logits = model(x.to(next(model.parameters()).device))
                 conf, pred = logits.softmax(1).max(1)
