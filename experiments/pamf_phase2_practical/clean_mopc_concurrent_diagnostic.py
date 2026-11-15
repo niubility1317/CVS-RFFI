@@ -24,14 +24,16 @@ def result_status(path, code):
     return results[0]['status']
 
 
-def run(runtime, job, output, k=10, n=20):
+def run(runtime, job, output, k=10, n=20, variant='original_uninstrumented'):
     require(k in (1, 5, 10, 20) and n in (2, 5, 10, 20), 'Invalid K/N')
+    require(variant in ('original_uninstrumented', 'clip1_uninstrumented', 'clip10_uninstrumented'),
+            'Invalid diagnostic variant')
     root = Path(output).resolve()
     require(not root.exists(), 'Diagnostic root already exists')
     root.mkdir(parents=True)
     (root/'logs').mkdir()
     write(root/'owner.json', dict(pid=os.getpid(), cwd=str(Path.cwd()), runtime=runtime, job=job,
-                                  gpus=[5,6,7], max_per_gpu=7, minimum_free_MiB=6000, k=k, n=n))
+                                  gpus=[5,6,7], max_per_gpu=7, minimum_free_MiB=6000, k=k, n=n, variant=variant))
     pending = [dict(id=f'diagnostic-{i:02d}') for i in range(21)]
     active = {}; finished = []; failures = []
     while pending or active:
@@ -62,7 +64,7 @@ def run(runtime, job, output, k=10, n=20):
                 path = root/'logs'/(task['id']+'.jsonl')
                 command = [sys.executable, '-u', '-m', __package__+'.clean_mopc_savedb_diagnostic',
                            '--runtime', runtime, '--job', job, '--k', str(k), '--n', str(n),
-                           '--device', 'cuda:0', '--variant', 'original_uninstrumented', '--repeats', '3']
+                           '--device', 'cuda:0', '--variant', variant, '--repeats', '3']
                 env = dict(os.environ, CUDA_VISIBLE_DEVICES=str(gpu), OMP_NUM_THREADS='1',
                            MKL_NUM_THREADS='1', OPENBLAS_NUM_THREADS='1')
                 stream = None
@@ -97,8 +99,9 @@ def main():
         p.add_argument('--'+name, required=True)
     p.add_argument('--k', type=int, default=10)
     p.add_argument('--n', type=int, default=20)
+    p.add_argument('--variant', default='original_uninstrumented')
     a = p.parse_args()
-    run(a.runtime, a.job, a.output, a.k, a.n)
+    run(a.runtime, a.job, a.output, a.k, a.n, a.variant)
 
 
 if __name__ == '__main__':
