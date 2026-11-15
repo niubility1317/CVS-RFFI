@@ -6,6 +6,8 @@
 
 原 seed `2026092701` 是按已曝光 clean 目标上最大负差选取，因此仅作探索。14 候选的各项权重、单因素矩阵、准确数据角色、梯度遥测、5 进程每卡上限与 r01 不变，不依据新目标成绩改写训练；U 真 TX 始终隐藏，源 V 阈值正确率仅是代理。原产物保留；新 run 使用独立、不可覆盖目录和 owner，已完成 E30 的阶段来源清楚保留。
 
+**VERIFIED / RUNNING**：执行 Git commit `6522307977daf9b9a15bbbd6bce4c69a66291604`；归档校验和远端编译通过。14 个候选均通过真实权重无 query smoke，并使用真实 E30 模型的原生 Sinc 路径检查两设置全部 V，验证修复。独立核实 14 个 E31–E50 worker、GPU、CWD、命令、E30 代理 artifact 和增长的 step 日志；所有预测与评分均未完成。十类 `weight3` E30 的 V 代理通过 22092 条、正确 22017 条；六源 `weight3` 为 30729 条通过、30697 条正确。二者是源 V 代理，不是训练 U 真值准确率。正式结果待各行冻结与 clean 独立评分。
+
 - run_id：`20261115-phase1-pamf-repl-weight-clean-m14-r02`
 - group_id：`phase1-pamf-repl-weight-clean`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
