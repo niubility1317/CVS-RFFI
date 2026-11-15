@@ -39,6 +39,9 @@ def diagnostic_result(path, code):
 
 
 def run(config, output):
+    gpus=config.get('allowed_gpus',[5,6,7])
+    require(gpus and len(gpus)==len(set(gpus)) and all(type(g) is int and 0<=g<=7 for g in gpus),
+            'Invalid diagnostic GPU list')
     pending=cases(config);root=Path(output).resolve();require(not root.exists(),'Diagnostic root exists')
     root.mkdir(parents=True);(root/'logs').mkdir()
     write(root/'owner.json',dict(pid=os.getpid(),cwd=str(Path.cwd()),jobs=len(pending),query_read=False,truth_read=False))
@@ -58,7 +61,7 @@ def run(config, output):
         if not fatal:
             try:
                 admitted=choose(pending,{k:dict(pid=v['process'].pid,gpu=v['gpu']) for k,v in active.items()},
-                    occupancy(),[5,6,7],6000,7,worker_reserve=3000,one_per_snapshot=True)
+                    occupancy(),gpus,6000,7,worker_reserve=3000,one_per_snapshot=True)
             except (OSError,ValueError,KeyError,subprocess.SubprocessError) as exc:
                 fatal=str(exc);admitted=[];pending.clear()
             for case,gpu in admitted:
