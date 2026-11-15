@@ -63,6 +63,15 @@ def analyze(root):
                             if not math.isfinite(float(v)):
                                 raise ValueError('Nonfinite '+key+' in '+str(folder))
                             sums[epoch][key] += float(v); counts[epoch][key] += 1
+                    for group in ('t2', 'cls_head', 'other'):
+                        prefix = f'HPL_GP_{group}_'
+                        denominator = m[prefix+'L_norm'] * m[prefix+'U_norm']
+                        if denominator > 0:
+                            cosine = m[prefix+'dot_before'] / denominator
+                            if not math.isfinite(cosine):
+                                raise ValueError('Nonfinite gradient cosine in '+str(folder))
+                            key = prefix+'cosine_before'
+                            sums[epoch][key] += cosine; counts[epoch][key] += 1
                     if m.get('HPL_component_sample') == 1:
                         component = {k: v for k, v in m.items() if k.startswith('HPL_component_') and k != 'HPL_component_sample'}
                         if not component or any(not math.isfinite(float(v)) for v in component.values()):
@@ -85,13 +94,16 @@ def analyze(root):
         lower = text.lower()
         markers = {word: lower.count(word) for word in ('traceback (most recent call last)', 'out of memory', 'killed', 'warning', 'nonfinite')}
         seen = sum(x['seen'] for x in states); accepted = sum(x['accepted'] for x in states)
-        hist = Counter()
+        hist, confidence = Counter(), Counter()
         for state in states:
             hist.update(state['U_pseudo_observation']['accepted_by_pseudo_class'])
+            confidence.update(state['U_pseudo_observation']['confidence_bins'])
         if sum(hist.values()) != accepted:
             raise ValueError('Pseudo histogram does not match acceptance')
+        if sum(confidence.values()) != seen:
+            raise ValueError('Confidence histogram does not match exposures')
         results.append(dict(row_id=rid, steps=step_count, U_seen=seen, U_accepted=accepted,
-            U_acceptance=accepted/seen, pseudo_class_counts=dict(hist), source_v_proxy=proxies,
+            U_acceptance=accepted/seen, pseudo_class_counts=dict(hist), confidence_bins=dict(confidence), source_v_proxy=proxies,
             epochs=per_epoch, component_means={k:sum(v)/len(v) for k,v in components.items()},
             component_samples={k:len(v) for k,v in components.items()}, stdout_bytes=log.stat().st_size,
             stdout_marker_counts=markers))

@@ -109,7 +109,8 @@ def test_full_training_parser_counts_exposures_once(tmp_path):
     for end, count, epochs in ((30, 2220, 10), (50, 4440, 20)):
         folder = source/f'segment{end}'; folder.mkdir()
         (folder/'repl_state.json').write_text(json.dumps({'U_truth_read':False,'calls':count,'seen':count*10,
-            'accepted':count*8,'U_pseudo_observation':{'accepted_by_pseudo_class':{'0':count*8}}}),encoding='utf-8')
+            'accepted':count*8,'U_pseudo_observation':{'accepted_by_pseudo_class':{'0':count*8},
+            'confidence_bins':{'below90':count*2,'99plus':count*8}}}),encoding='utf-8')
         (folder/'source_v_pseudo_proxy.json').write_text(json.dumps({'role':'V','U_truth_read':False,
             'used_for_training':False,'count':10,'accepted':9,'accepted_correct':8}),encoding='utf-8')
         (folder/'metrics_epoch.jsonl').write_text(''.join(json.dumps({'epoch':i,'val_tx_acc':90})+'\n'
@@ -118,11 +119,16 @@ def test_full_training_parser_counts_exposures_once(tmp_path):
         with gzip.open(folder/'step_metrics.jsonl.gz','wt',encoding='utf-8') as stream:
             for step in range(1,count+1):
                 m = {'train/loss_tx_labeled':.5, 'HPL_component_sample':int(step%100==0)}
+                for group in ('t2', 'cls_head', 'other'):
+                    m.update({f'HPL_GP_{group}_L_norm':2., f'HPL_GP_{group}_U_norm':1.,
+                              f'HPL_GP_{group}_dot_before':2. if step % 2 else -2.})
                 if step%100==0: m['HPL_component_joint_t2_cosine']=.25
                 stream.write(json.dumps({'step':step,'metrics':m})+'\n')
     result = analyze(root)['rows'][0]
     assert result['steps'] == 6660 and result['U_seen'] == 66600
     assert result['U_accepted'] == 53280 and result['U_acceptance'] == pytest.approx(.8)
+    assert result['confidence_bins'] == {'below90':13320, '99plus':53280}
+    assert result['epochs'][0]['means']['HPL_GP_t2_cosine_before'] == pytest.approx(0.)
     assert len(result['epochs']) == 30 and result['component_samples']['HPL_component_joint_t2_cosine'] == 66
 
 
