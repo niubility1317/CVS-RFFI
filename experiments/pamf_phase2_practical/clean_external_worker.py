@@ -1,8 +1,8 @@
 """Run one bound clean external task; this is not a GPU queue or scoring tool."""
 import argparse
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
 
-from .io import read, require
+from .io import read, require, write
 
 
 NATIVE_DA = {'protonet_cda','mrior_sda','dadda_sda','twostage','poster_ft','tweak_m1'}
@@ -12,6 +12,8 @@ HYBRID_C = {'orthogonal','lora','mopc_hr'}
 
 
 def validate(rt, job, group):
+    from .mopc_stabilization import policy
+    policy(job, group)
     require(rt.get('clean_root') and rt.get('data_root'), 'Clean and parent data roots required')
     require(job.get('seed') in (2026092701,2026092702,2026092703,2026092704), 'Unexpected seed')
     parts=PurePosixPath(job.get('capsule','')).parts
@@ -51,7 +53,18 @@ def run(rt,job,group):
         from .group2_worker import predict
     else:
         from .group1_target import predict
-    predict(rt,job)
+    from .vendor_native.comparison_suite.registration import MoPCNumericalError
+    try:
+        predict(rt,job)
+    except MoPCNumericalError as exc:
+        eligible = (group == 'native_cil' and job.get('profile') == 'mopc_hr') or \
+                   (group == 'hybrid' and job.get('methods') == ['mopc_hr'])
+        output = Path(job['output'])
+        if eligible and output.is_dir():
+            write(output/'numerical_failure.json', dict(status='MOPC_NUMERICAL_FAILURE',
+                profile=job['profile'],capsule=job['capsule'],seed=job['seed'],
+                error=str(exc),query_fit=False,truth_read=False))
+        raise
 
 
 def main():

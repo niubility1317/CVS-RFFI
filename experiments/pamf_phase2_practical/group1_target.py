@@ -33,7 +33,7 @@ def fit_B(rt,bundle,x,y,seed,logger):
     return native.fit_B(rt,cfg,x,y,seed,logger)
 
 
-def fit_C(rt,bundle,x,y,new_ids,seed,logger):
+def fit_C(rt,bundle,x,y,new_ids,seed,logger,*,mopc_max_grad_norm=None):
     """Every call starts at A, never a previous target-adapted checkpoint."""
     profile=bundle['profile'];method=bundle['method']
     require(row(profile)['category']=='CIL','DA has no C in Group1')
@@ -42,13 +42,19 @@ def fit_C(rt,bundle,x,y,new_ids,seed,logger):
         anchor=registration_anchor(bundle)
         cfg=dict(seed=seed,old_adaptation_epochs=0,mopc_epochs=20,mopc_stage_size=5,
             mopc_batch_size=16,mopc_lr=.01,mopc_momentum=.9,mopc_weight_decay=.0002,
-            mopc_noise_std=.05,mopc_alpha=.97,mopc_beta=1.,mopc_lambda_max=1.,mopc_semantics='public_code')
+            mopc_noise_std=.05,mopc_alpha=.97,mopc_beta=1.,mopc_lambda_max=1.,mopc_semantics='public_code',
+            mopc_max_grad_norm=mopc_max_grad_norm)
         state=cil.register_new_classes(anchor,x,y,new_ids,config=cfg,logger=logger)
         state.protocol_metadata.update(C_initialization='A_no_B',C_inherits_B_state=False,B_executed=False,
             source_base_metadata_fixed_before_B=True,actual_target_old_labels=0,actual_target_new_labels=len(y))
         state.resource.update(C_initialization='A_no_B',C_inherits_B=False,actual_target_old_labels=0,
             actual_target_new_labels=len(y),source_prototype_count=len(anchor.prototypes),
             C_epochs_per_session=20,C_new_classes_per_session=5,mopc_semantics='public_code')
+        if mopc_max_grad_norm is not None:
+            state.resource.update(mopc_stabilization='clip1000_v1' if mopc_max_grad_norm==1000.0 else 'diagnostic_clip',
+                gradient_clip_max_norm=mopc_max_grad_norm,
+                gradient_clipped_updates=state.protocol_metadata['gradient_clipped_updates'],
+                author_optimizer_unchanged=False)
         return dict(model=state.model,score_fn=lambda model,iq:state.score(iq),classes=state.classes,
                     resources=state.resource,native_state=state,profile=profile)
     if method=='orthogonal':
@@ -174,11 +180,13 @@ def predict(rt,job):
     def emit(record):
         log.write(json.dumps(dict(observed_at=time.time(),**plain(record)),allow_nan=False)+'\n');log.flush()
     def save(s,stage,path,pred,restricted=None,resources=None,**metadata):
+        from .mopc_stabilization import arm
+        label=arm(profile,job.get('mopc_stabilization','none')) if stage=='C' and profile=='mopc_hr' else profile
         name=f'{stage}-K{s["k"]}-N{s["new_count"]}-{path}.npz'
         payload=dict(query_indices=split_rows(cap,s),predicted_indices=pred)
         if restricted is not None:payload['old_restricted_indices']=restricted
         np.savez_compressed(out/name,**payload)
-        rows.append(dict(split_id=s['split_id'],stage=stage,arm=profile,input_path=path,
+        rows.append(dict(split_id=s['split_id'],stage=stage,arm=label,input_path=path,
             input_condition='clean_ground_pre_satellite_normalized' if clean_root else 'satellite_received',
             prediction=name,k=s['k'],new_count=s['new_count'],registered_classes=s['registered_classes'],
             resources=plain(resources or {}),**metadata))
@@ -288,7 +296,11 @@ def predict(rt,job):
                     sy=torch.tensor(task['support_y'][keep].tolist(),device=device,dtype=torch.long)
                     with Measure(out/f'C-K{k}-N{n}-fit.json',dict(stage='C',profile=profile,K=k,N=n,
                                  actual_target_old_labels=0,actual_target_new_labels=len(sy),initialization='A_no_B'),optimizers=True) as probe:
-                        state=fit_C(rt,bundle,sx,sy,tuple(range(6,6+n)),seed_for(seed,job['capsule'],k,n,'C'),emit)
+                        from .mopc_stabilization import policy
+                        max_grad_norm=policy(job,'native_cil')
+                        options={} if max_grad_norm is None else dict(mopc_max_grad_norm=max_grad_norm)
+                        state=fit_C(rt,bundle,sx,sy,tuple(range(6,6+n)),seed_for(seed,job['capsule'],k,n,'C'),emit,
+                                    **options)
                         probe.model=state['model'];probe.result.update(native_resources=plain(state.get('resources',{})),
                             persistent_decision_tensor_bytes=decision_bytes(state),
                             source_history_tensor_bytes=tensor_bytes(bundle.get('native_state',{})))

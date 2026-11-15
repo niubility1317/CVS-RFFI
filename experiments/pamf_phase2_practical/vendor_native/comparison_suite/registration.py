@@ -207,6 +207,10 @@ def _bytes(model: nn.Module, extra: Any = None) -> int:
     return count(dict(model.state_dict())) + count(extra)
 
 
+class MoPCNumericalError(FloatingPointError):
+    """A genuine nonfinite MoPC training term, eligible for task isolation."""
+
+
 def _record(trace: list[dict[str, Any]], model: nn.Module, terms: Mapping[str, Any],
             callback: Logger | None, start: float, **fields: Any) -> None:
     # Accumulate the observational norm in FP64. Squaring finite FP32
@@ -234,7 +238,8 @@ def _record(trace: list[dict[str, Any]], model: nn.Module, terms: Mapping[str, A
                     [value.double().norm() for _, value in named_gradients]).norm())
                 context["gradient_absmax_float64"] = float(torch.stack(
                     [value.double().abs().max() for _, value in named_gradients]).max())
-        raise FloatingPointError(f"nonfinite registration training term: {', '.join(nonfinite)}; {context}")
+        error = MoPCNumericalError if fields.get('method') == 'mopc_hr' else FloatingPointError
+        raise error(f"nonfinite registration training term: {', '.join(nonfinite)}; {context}")
     trace.append(row)
     if callback:
         callback(dict(row))

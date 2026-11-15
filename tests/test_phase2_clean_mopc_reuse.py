@@ -26,6 +26,10 @@ def test_pilot_rows_reused_without_reprediction_and_bound_to_source(tmp_path):
     copied=copy_pilot_rows(job,rt,{'capsule_id':'cap'},lookup,out)
     assert {(r['stage'],r['k'],r['new_count']) for r in copied}=={('A0',5,0),('C',5,20)}
     assert (out/'A0.npz').read_bytes()==b'A0' and (out/'C.npz').read_bytes()==b'C'
+    stable=tmp_path/'stable';stable.mkdir()
+    copied=copy_pilot_rows(dict(job,mopc_stabilization='clip1000_v1'),rt,{'capsule_id':'cap'},lookup,stable)
+    assert [(r['stage'],r['k'],r['new_count']) for r in copied]==[('A0',5,0)]
+    assert (stable/'A0.npz').read_bytes()==b'A0' and not (stable/'C.npz').exists()
     other=tmp_path/'other';other.mkdir()
     with pytest.raises(ValueError,match='source'):
         copy_pilot_rows(job,dict(rt,run_root='/different'),{'capsule_id':'cap'},lookup,other)

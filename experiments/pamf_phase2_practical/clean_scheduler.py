@@ -18,6 +18,7 @@ def validate_plan(config):
     root=Path(config['run_root']).resolve();jobs=config['jobs'];ids=set();outputs=set();capsules=set();seeds=set()
     limit=config.get('max_per_gpu')
     require(jobs and limit in (2,5,7) and config.get('minimum_free_MiB',0)>=6000,'Wrong resource limits')
+    require(config.get('numerical_policy','quarantine') in ('stop','quarantine'),'Wrong numerical policy')
     require(config.get('input_condition')=='clean_ground_pre_satellite_normalized','Wrong input condition')
     phase=config.get('phase')
     require(phase in ('pilot','full'),'Unknown comparison phase')
@@ -115,12 +116,25 @@ def completion_matches(entry):
             and done.get('model_seed')==job['seed'] and int(done.get('rows',0))>0)
 
 
+def numeric_quarantine_matches(entry):
+    """Accept only the worker's matching MoPC-only numerical failure marker."""
+    try:
+        job=read(entry['job']);marker=read(Path(entry['completion']).parent/'numerical_failure.json')
+        eligible=(entry['group']=='native_cil' and job.get('profile')=='mopc_hr') or \
+                 (entry['group']=='hybrid' and job.get('methods')==['mopc_hr'])
+        return bool(eligible and marker.get('status')=='MOPC_NUMERICAL_FAILURE' and
+            all(marker.get(k)==job.get(k) for k in ('profile','capsule','seed')) and
+            marker.get('query_fit') is False and marker.get('truth_read') is False)
+    except (FileNotFoundError, ValueError, KeyError, json.JSONDecodeError):
+        return False
+
+
 def dispatch(config):
     validate_plan(config)
     root=Path(config['run_root']).resolve();root.mkdir(parents=True,exist_ok=True)
     control=root/'scheduler';control.mkdir(exist_ok=False);(control/'logs').mkdir()
     write(control/'owner.json',dict(pid=os.getpid(),cwd=str(Path.cwd()),argv=sys.argv))
-    pending=list(config['jobs']);active={};done=[];failed=[];stopped=False
+    pending=list(config['jobs']);active={};done=[];failed=[];quarantined=[];stopped=False
     from .runner import occupancy
     while pending or active:
         if (control/'USER_STOP.json').is_file():
@@ -131,7 +145,11 @@ def dispatch(config):
             entry['stream'].close();job=entry['job'];marker=Path(job['completion'])
             try:valid=code==0 and completion_matches(job)
             except (FileNotFoundError,ValueError,KeyError,json.JSONDecodeError):valid=False
-            (done if valid else failed).append(dict(id=key,exit_code=code,marker=str(marker)))
+            result=dict(id=key,exit_code=code,marker=str(marker))
+            if valid:done.append(result)
+            elif code!=0 and config.get('numerical_policy','quarantine')=='quarantine' and numeric_quarantine_matches(job):
+                quarantined.append(result)
+            else:failed.append(result)
             del active[key]
         if failed:pending.clear()
         if not failed and not stopped:
@@ -157,12 +175,17 @@ def dispatch(config):
                     failed.append(dict(id=job['id'],error=str(exc)));break
                 active[job['id']]=dict(job=job,gpu=gpu,process=process,stream=log);pending.remove(job)
         if failed:pending.clear()
-        status='FAILED' if failed else 'STOPPED' if stopped else 'RUNNING'
+        status='FAILED' if failed else 'STOPPED' if stopped else \
+               'COMPLETED_WITH_QUARANTINE' if quarantined and not pending and not active else 'RUNNING'
         atomic(control/'state.json',dict(status=status,completed=len(done),failed=failed,pending=len(pending),
-               active=[dict(id=k,pid=v['process'].pid,gpu=v['gpu']) for k,v in active.items()],truth_opened=False))
+               quarantined=quarantined,active=[dict(id=k,pid=v['process'].pid,gpu=v['gpu']) for k,v in active.items()],truth_opened=False))
         if pending or active:time.sleep(config.get('poll_seconds',5))
     if failed:raise RuntimeError('Technical failure retained; no further jobs dispatched')
     if stopped:return
+    if quarantined:
+        write(control/'quarantined.json',dict(status='COMPLETED_WITH_QUARANTINE',jobs=quarantined,
+              complete_predictions=False,truth_read=False))
+        return
     write(control/'predictions_complete.json',dict(status='SELECTED_PREDICTIONS_FIXED',jobs=len(done),truth_read=False,
           global_prediction_barrier=False))
     if config.get('auto_score'):

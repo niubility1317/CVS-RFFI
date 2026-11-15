@@ -85,6 +85,80 @@ def test_seven_worker_mode_admits_one_per_snapshot_and_protects_memory():
     assert choose(jobs,active,devices,[1],6000,7,worker_reserve=3000,one_per_snapshot=True)==[]
 
 
+def test_numeric_quarantine_requires_matching_mopc_identity(tmp_path):
+    from experiments.pamf_phase2_practical.clean_scheduler import numeric_quarantine_matches
+    job=dict(profile='dadda_sda',capsule='capsules/P01/MIX01/1-1',seed=2026092701,methods=['mopc_hr'])
+    entry=dict(group='hybrid',job=dump(tmp_path/'job.json',job),completion=str(tmp_path/'out/complete.json'))
+    marker=tmp_path/'out/numerical_failure.json'
+    record=dict(status='MOPC_NUMERICAL_FAILURE',profile=job['profile'],capsule=job['capsule'],seed=job['seed'],
+                query_fit=False,truth_read=False)
+    dump(marker,record)
+    assert numeric_quarantine_matches(entry)
+    dump(marker,dict(record,seed=2026092702))
+    assert not numeric_quarantine_matches(entry)
+    dump(marker,record)
+    dump(tmp_path/'job.json',dict(job,methods=['mopc_hr','lora']))
+    assert not numeric_quarantine_matches(entry)
+
+
+def test_numeric_quarantine_continues_queue_without_opening_scoring(tmp_path, monkeypatch):
+    from experiments.pamf_phase2_practical import clean_scheduler as scheduler, runner
+    monkeypatch.setattr(scheduler, 'validate_plan', lambda _: None)
+    monkeypatch.setattr(runner, 'occupancy', lambda: {})
+    monkeypatch.setattr(scheduler, 'choose', lambda pending, *a, **kw: [(pending[0], 5)] if pending else [])
+    monkeypatch.setattr(scheduler, 'completion_matches', lambda entry: True)
+    monkeypatch.setattr(scheduler.time, 'sleep', lambda _: None)
+    jobs=[]
+    for name in ('bad','good'):
+        output=tmp_path/'run/tasks'/name
+        job=dict(profile='dadda_sda',capsule='capsules/P01/MIX01/1-1',seed=2026092701,
+                 methods=['mopc_hr'],output=str(output))
+        jobs.append(dict(id=name,group='hybrid',job=dump(tmp_path/(name+'.json'),job),
+                         runtime='runtime.json',completion=str(output/'complete.json')))
+    class Process:
+        pid=123
+        def __init__(self, code): self.code=code
+        def poll(self): return self.code
+    def launch(cmd, **kwargs):
+        job=json.loads(__import__('pathlib').Path(cmd[cmd.index('--job')+1]).read_text())
+        output=__import__('pathlib').Path(job['output'])
+        if output.name=='bad':
+            dump(output/'numerical_failure.json',dict(status='MOPC_NUMERICAL_FAILURE',profile=job['profile'],
+                 capsule=job['capsule'],seed=job['seed'],query_fit=False,truth_read=False))
+            return Process(1)
+        dump(output/'complete.json',{})
+        return Process(0)
+    monkeypatch.setattr(scheduler.subprocess, 'Popen', launch)
+    scheduler.dispatch(dict(run_root=str(tmp_path/'run'),release_root=str(tmp_path),jobs=jobs,
+        allowed_gpus=[5],minimum_free_MiB=6000,max_per_gpu=2,numerical_policy='quarantine'))
+    state=json.loads((tmp_path/'run/scheduler/state.json').read_text())
+    assert state['status']=='COMPLETED_WITH_QUARANTINE'
+    assert state['completed']==1 and len(state['quarantined'])==1 and not state['failed']
+    assert not (tmp_path/'run/scheduler/predictions_complete.json').exists()
+
+
+def test_unclassified_failure_still_drains_and_does_not_score(tmp_path, monkeypatch):
+    from experiments.pamf_phase2_practical import clean_scheduler as scheduler, runner
+    monkeypatch.setattr(scheduler, 'validate_plan', lambda _: None)
+    monkeypatch.setattr(runner, 'occupancy', lambda: {})
+    monkeypatch.setattr(scheduler, 'choose', lambda pending, *a, **kw: [(pending[0], 5)] if pending else [])
+    monkeypatch.setattr(scheduler.time, 'sleep', lambda _: None)
+    jobs=[dict(id=x,group='hybrid',job='job.json',runtime='rt.json',
+               completion=str(tmp_path/'run/tasks'/x/'complete.json')) for x in ('bad','good')]
+    calls=[]
+    class Process:
+        pid=123
+        def poll(self):return 1
+    monkeypatch.setattr(scheduler.subprocess, 'Popen', lambda cmd, **kw: (calls.append(cmd),Process())[1])
+    with pytest.raises(RuntimeError,match='Technical failure'):
+        scheduler.dispatch(dict(run_root=str(tmp_path/'run'),release_root=str(tmp_path),jobs=jobs,
+            allowed_gpus=[5],minimum_free_MiB=6000,max_per_gpu=2,numerical_policy='quarantine'))
+    assert len(calls)==1
+    state=json.loads((tmp_path/'run/scheduler/state.json').read_text())
+    assert state['status']=='FAILED' and not state['quarantined']
+    assert not (tmp_path/'run/scheduler/predictions_complete.json').exists()
+
+
 def test_pamf_plan_rejects_missing_restoration_cache(tmp_path):
     # The planner must not label a not-yet-produced cached run as ready.
     parent=tmp_path/'parent';parent.mkdir();clean=tmp_path/'clean'

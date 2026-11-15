@@ -29,6 +29,10 @@ def copy_pilot_rows(job,rt,manifest,lookup,output):
         checked.append((row,name))
     result=[]
     for row,name in checked:
+        # A0 uses the same frozen source. A registered C result is reusable
+        # only when its optimization version exactly matches the new job.
+        if row['stage']=='C' and job.get('mopc_stabilization','none') != prior.get('mopc_stabilization','none'):
+            continue
         dest=Path(output)/name
         with (old/name).open('rb') as source,dest.open('xb') as target:shutil.copyfileobj(source,target)
         result.append(dict(row,reused_from=str(old/name)))

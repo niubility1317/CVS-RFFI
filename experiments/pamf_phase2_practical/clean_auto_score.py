@@ -25,20 +25,26 @@ def unit(group, job):
     return group, job.get('profile', 'R42'), job['capsule'], int(job['seed'])
 
 
-def expected_units(task_list):
+def expected_units(task_list, mopc_stabilization='none'):
+    require(mopc_stabilization in ('none','clip1000_v1'), 'Unsupported MoPC scoring version')
     result = {}
     for task in task_list:
         for group, profiles in (('pamf', ('R42',)), ('native_da', DA),
                                 ('native_cil', CIL), ('hybrid', DA)):
             for profile in profiles:
                 job = dict(task, profile=profile)
+                if group=='native_cil' and profile=='mopc_hr':
+                    job['mopc_stabilization']=mopc_stabilization
                 if group == 'hybrid':
-                    job['methods'] = list(CORE)
+                    job['methods'] = ['orthogonal','lora']
                     if profile == 'protonet_cda':
                         job['mopc_bridge'] = 'proto_affine_v1'
                 u = unit(group, job)
                 require(u not in result, 'Duplicate expected unit')
                 result[u] = expected_rows(group, job)
+                if group=='hybrid':
+                    mopc_job=dict(job,methods=['mopc_hr'],mopc_stabilization=mopc_stabilization)
+                    result[u] |= expected_rows(group,mopc_job)
     return result
 
 
@@ -78,11 +84,13 @@ def mark_incomplete(path, unstable):
     require(count < 3, 'Malformed JSON remained unchanged')
 
 
-def collect(preparations, expected, unstable=None):
+def collect(preparations, expected, unstable=None, mopc_stabilization='none'):
     if unstable is None:
         unstable = {}
     available, entries = {}, {}
-    for config_path in sorted(Path(preparations).glob('*phase2*clean*/scheduler.json')):
+    configs=list(Path(preparations).glob('*phase2*clean*/scheduler.json'))
+    if mopc_stabilization!='none':configs+=list(Path(preparations).glob('mopc-stable-*/scheduler.json'))
+    for config_path in sorted(configs):
         if config_path.parent.name in EXCLUDED_PLANS:
             continue
         try:
@@ -99,6 +107,12 @@ def collect(preparations, expected, unstable=None):
             job = read(entry['job'])
             u = unit(entry['group'], job)
             if u not in expected:
+                continue
+            has_mopc=(entry['group']=='native_cil' and job.get('profile')=='mopc_hr') or \
+                     (entry['group']=='hybrid' and 'mopc_hr' in job.get('methods',[]))
+            if has_mopc and job.get('mopc_stabilization','none')!=mopc_stabilization:
+                if entry['group']=='hybrid':
+                    require(job.get('methods')==['mopc_hr'], 'Cannot skip mixed-version MoPC job')
                 continue
             if u[:2] == ('hybrid','protonet_cda') and job.get('mopc_bridge','original') == 'original' \
                and 'mopc_hr' in job.get('methods',[]):
@@ -176,19 +190,19 @@ def score_unit(payload):
     return len(sample['payload']['rows'])
 
 
-def run(preparations, output, interval, workers):
+def run(preparations, output, interval, workers, mopc_stabilization='none'):
     require(interval >= 60 and 1 <= workers <= 4, 'Wrong polling or scoring resources')
     root = Path(output).resolve()
     require(not root.exists(), 'Automatic scoring output already exists')
     root.mkdir(parents=True)
     write(root / 'owner.json', dict(pid=os.getpid(), cwd=str(Path.cwd()),
-          preparations=str(Path(preparations).resolve()), workers=workers))
+          preparations=str(Path(preparations).resolve()), workers=workers, mopc_stabilization=mopc_stabilization))
     opened = False
     try:
-        expected = expected_units(tasks())
+        expected = expected_units(tasks(),mopc_stabilization)
         unstable = {}
         while True:
-            available, entries = collect(preparations, expected, unstable)
+            available, entries = collect(preparations, expected, unstable, mopc_stabilization)
             status = coverage(expected, available)
             atomic(root / 'state.json', dict(status='READY' if status['ready'] else 'WAITING',
                    units=len(expected), covered_units=len(available), truth_opened=False, **status))
@@ -215,15 +229,16 @@ def main():
     p.add_argument('--output', required=True)
     p.add_argument('--interval', type=int, default=300)
     p.add_argument('--workers', type=int, default=4)
+    p.add_argument('--mopc-stabilization', choices=['none','clip1000_v1'], default='none')
     p.add_argument('--check-only', action='store_true', help='Inspect coverage without opening truth or starting a watcher')
     a = p.parse_args()
     if a.check_only:
-        expected = expected_units(tasks())
-        available, _ = collect(a.preparations, expected)
+        expected = expected_units(tasks(),a.mopc_stabilization)
+        available, _ = collect(a.preparations, expected, mopc_stabilization=a.mopc_stabilization)
         print(json.dumps(dict(units=len(expected), covered_units=len(available),
                               truth_opened=False, **coverage(expected, available))))
         return
-    run(a.preparations, a.output, a.interval, a.workers)
+    run(a.preparations, a.output, a.interval, a.workers, a.mopc_stabilization)
 
 
 if __name__ == '__main__':

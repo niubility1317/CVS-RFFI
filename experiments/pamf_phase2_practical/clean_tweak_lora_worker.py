@@ -12,12 +12,14 @@ from .episodic_io import load_task
 from .external_execution import seed_for,source_runtime,plain
 from .features import tensor
 from .group2_cross_fit import prepare_b,register_c
-from .group2_worker import score_fixed
+from .group2_worker import method_arm, score_fixed
 from .io import activate,read,require,write
 
 
 def run(rt,job):
     methods=job.get('methods',[])
+    from .mopc_stabilization import policy
+    max_grad_norm=policy(job,'hybrid');stabilization=job.get('mopc_stabilization','none')
     require(job.get('profile')=='tweak_m1' and methods and len(set(methods))==len(methods)
             and set(methods)<={'lora','orthogonal','mopc_hr'},'Tweak registration method is unavailable')
     require(not job.get('save_B_for_mopc') or methods==['mopc_hr'], 'Invalid saved-B method subset')
@@ -45,13 +47,14 @@ def run(rt,job):
             require(np.array_equal(old['support_ids'],task['support_ids'][mask]),'B/C old support mismatch')
             nx=tensor(task['support_x'][~mask],device)
             ny=torch.tensor(task['support_y'][~mask].tolist(),device=device,dtype=torch.long)
-            states=register_c(prepared,nx,ny,seed=seed_for(job['seed'],job['capsule'],k,n,'C'),methods=methods)
+            options={} if max_grad_norm is None else dict(mopc_max_grad_norm=max_grad_norm)
+            states=register_c(prepared,nx,ny,seed=seed_for(job['seed'],job['capsule'],k,n,'C'),methods=methods,**options)
             for method,state in states.items():
                 pred,restricted=score_fixed(state,task['query_x'],count=6+n,old_count=6,batch_size=1,device=str(device))
                 query=split_rows(cap,spec);require(len(query)==len(pred),'Wrong query complement')
                 name=f'C-K{k}-N{n}-{method}.npz'
                 np.savez_compressed(output/name,query_indices=query,predicted_indices=pred,old_restricted_indices=restricted)
-                rows.append(dict(split_id=spec['split_id'],stage='C',arm='tweak_m1__'+method,input_path='S0Q0',
+                rows.append(dict(split_id=spec['split_id'],stage='C',arm=method_arm('tweak_m1',method,mopc_stabilization=stabilization),input_path='S0Q0',
                     input_condition='clean_ground_pre_satellite_normalized',prediction=name,k=k,new_count=n,
                     registered_classes=spec['registered_classes'],query_count=len(query),query_records_per_decision=1,
                     claim='Tweak_M1_B_to_'+{'lora':'LoRa','orthogonal':'Orthogonal','mopc_hr':'MoPC'}[method]+'_core_transplant',

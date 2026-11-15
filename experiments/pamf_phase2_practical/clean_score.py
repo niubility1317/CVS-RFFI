@@ -23,13 +23,18 @@ def expected_rows(group,job):
         path='S0Q0' if profile=='tweak_m1' else 'P0'
         for k in ks:result.update((profile,stage,k,0,path) for stage in ('A0','B'))
     elif group=='native_cil':
+        from .mopc_stabilization import arm, policy
+        policy(job,group)
         path='S0Q0' if profile=='issl_fixed_v1' else 'P0'
         result.update((profile,'A0',k,0,path) for k in ks)
-        result.update((profile,'C',k,n,path) for k,n in points)
+        c_arm=arm(profile,job.get('mopc_stabilization','none')) if profile=='mopc_hr' else profile
+        result.update((c_arm,'C',k,n,path) for k,n in points)
     elif group=='hybrid':
         from .group2_worker import method_arm
+        from .mopc_stabilization import policy
+        policy(job,group)
         path='S0Q0' if profile=='tweak_m1' else 'P0'
-        result.update((method_arm(profile,method,job.get('mopc_bridge','original')),'C',k,n,path)
+        result.update((method_arm(profile,method,job.get('mopc_bridge','original'),job.get('mopc_stabilization','none')),'C',k,n,path)
                       for k,n in points for method in job['methods'])
     else:raise ValueError('Unknown comparison group')
     return result

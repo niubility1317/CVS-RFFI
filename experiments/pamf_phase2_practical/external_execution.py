@@ -102,7 +102,13 @@ def infer(state,iq,count,batch=128):
     with torch.inference_mode():
         for start in range(0,len(iq),batch):
             values=state['score_fn'](model,tensor(iq[start:start+batch],device))
-            require(values.shape==(min(batch,len(iq)-start),count) and bool(torch.isfinite(values).all()),'Invalid native query scores')
+            require(values.shape==(min(batch,len(iq)-start),count),'Invalid native query score shape')
+            if not bool(torch.isfinite(values).all()):
+                native=state.get('native_state')
+                if getattr(native,'method',None)=='mopc_hr' and len(getattr(native,'classes',()))>getattr(native,'old_count',count):
+                    from .vendor_native.comparison_suite.registration import MoPCNumericalError
+                    raise MoPCNumericalError('nonfinite native MoPC C scores')
+                raise ValueError('Invalid native query scores')
             pred[start:start+len(values)]=values.argmax(1).cpu().tolist()
             restricted[start:start+len(values)]=values[:,:6].argmax(1).cpu().tolist()
     require(all(torch.equal(before[k],v) for k,v in model.state_dict().items()),'Query inference updated model/BN')

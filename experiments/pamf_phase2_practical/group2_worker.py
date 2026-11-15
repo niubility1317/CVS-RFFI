@@ -10,13 +10,16 @@ from pathlib import Path
 from .fast_transfer import to_tensor, to_numpy
 
 
-def method_arm(profile, method, mopc_bridge='original'):
+def method_arm(profile, method, mopc_bridge='original', mopc_stabilization='none'):
     suffix = 'mopc_hr_affine_v1' if method == 'mopc_hr' and mopc_bridge == 'proto_affine_v1' else method
+    if method=='mopc_hr':
+        from .mopc_stabilization import arm
+        suffix=arm(suffix,mopc_stabilization)
     return profile + '__' + suffix
 
 
-def require_all_rows(rows, points, profile, methods, *, mopc_bridge='original'):
-    expected = {(int(k), int(n), method_arm(profile, method, mopc_bridge)) for k, n in points for method in methods}
+def require_all_rows(rows, points, profile, methods, *, mopc_bridge='original', mopc_stabilization='none'):
+    expected = {(int(k), int(n), method_arm(profile, method, mopc_bridge, mopc_stabilization)) for k, n in points for method in methods}
     actual = [(int(row['k']), int(row['new_count']), row['arm']) for row in rows]
     if len(actual) != len(expected) or set(actual) != expected:
         raise ValueError('Incomplete or duplicate requested prediction matrix')
@@ -33,7 +36,12 @@ def score_fixed(state, query, *, count: int, old_count: int, batch_size: int, de
         for start in range(0, len(query), batch_size):
             x = to_tensor(query[start:start + batch_size], device, np.float32)
             scores = state.score(x)
-            if scores.shape != (len(x), count) or not bool(torch.isfinite(scores).all()):
+            if scores.shape != (len(x), count):
+                raise ValueError('invalid fixed-state C scores')
+            if not bool(torch.isfinite(scores).all()):
+                if state.method=='mopc_hr':
+                    from .vendor_native.comparison_suite.registration import MoPCNumericalError
+                    raise MoPCNumericalError('nonfinite fixed-state MoPC C scores')
                 raise ValueError('invalid fixed-state C scores')
             pred[start:start + len(x)] = to_numpy(scores.argmax(1), np.int16)
             old[start:start + len(x)] = to_numpy(scores[:, :old_count].argmax(1), np.int16)
@@ -63,6 +71,8 @@ def predict(rt, job):
     require(points and all(k in (1, 5, 10, 20) and n in (2, 5, 10, 20) for k, n in points), 'Invalid requested K/N')
     methods = tuple(job['methods'])
     require(methods and len(set(methods)) == len(methods) and set(methods) <= {'lora', 'mopc_hr', 'orthogonal'}, 'Invalid C methods')
+    from .mopc_stabilization import policy
+    max_grad_norm=policy(job,'hybrid');stabilization=job.get('mopc_stabilization','none')
     mopc_bridge = job.get('mopc_bridge', 'original')
     require(mopc_bridge == 'original' or
             (mopc_bridge == 'proto_affine_v1' and profile == 'protonet_cda' and methods == ('mopc_hr',)),
@@ -154,8 +164,9 @@ def predict(rt, job):
                 new_y = to_tensor(current['support_y'][~mask], device, np.int64).long()
                 for method in methods:
                     synchronize(); started = time.perf_counter()
+                    options={} if max_grad_norm is None else dict(mopc_max_grad_norm=max_grad_norm)
                     state = register_c(prepared, new_x, new_y,
-                        seed=seed_for(seed, job['capsule'], k, n, 'C'), methods=(method,))[method]
+                        seed=seed_for(seed, job['capsule'], k, n, 'C'), methods=(method,), **options)[method]
                     synchronize()
                     c_seconds = time.perf_counter() - started
                     synchronize(); started = time.perf_counter()
@@ -165,7 +176,7 @@ def predict(rt, job):
                     name = f'C-K{k}-N{n}-{method}.npz'
                     np.savez_compressed(output / name, query_indices=split_rows(cap, spec),
                                         predicted_indices=pred, old_restricted_indices=restricted)
-                    prediction_row = dict(split_id=spec['split_id'], stage='C', arm=method_arm(profile,method,mopc_bridge),
+                    prediction_row = dict(split_id=spec['split_id'], stage='C', arm=method_arm(profile,method,mopc_bridge,stabilization),
                         input_path='P0', input_condition='clean_ground_pre_satellite_normalized' if clean_root else 'satellite_received',
                         prediction=name, k=k, new_count=n,
                         registered_classes=spec['registered_classes'], query_count=len(pred),
@@ -183,7 +194,7 @@ def predict(rt, job):
                     rows.append(prediction_row)
                     print('GROUP2_PREDICTED', profile, method, k, n, len(pred), flush=True)
             del prepared, bstate, old_x, old_y
-        require_all_rows(rows, points, profile, methods, mopc_bridge=mopc_bridge)
+        require_all_rows(rows, points, profile, methods, mopc_bridge=mopc_bridge, mopc_stabilization=stabilization)
         require(all(torch.equal(source_before[key], value) for key, value in bundle['model'].state_dict().items()), 'A source changed')
         write(output / 'predictions.json', dict(capsule=job['capsule'], capsule_id=manifest['capsule_id'],
               profile=profile, model_seed=seed, rows=rows))
