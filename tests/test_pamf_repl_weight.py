@@ -182,3 +182,16 @@ def test_recovery_remote_preflight_compiles_and_checks_own_e30(monkeypatch):
     assert plan.PREVIOUS_RUN in seen['script']
     assert 'for recipe in' in seen['script']
     compile(seen['script'].replace('PACKAGE', '{}'), '<remote preflight>', 'exec')
+
+
+def test_paired_clean_counts_correct_repairs_and_damage():
+    import numpy as np
+    from experiments.pamf_repl_weight.analyze_paired import compare
+    ids=np.asarray(['a','b','c'])
+    truths={'a':{'label':0,'receiver':'r1','day':'d1'},'b':{'label':1,'receiver':'r1','day':'d2'},
+            'c':{'label':1,'receiver':'r2','day':'d2'}}
+    result=compare(ids,np.asarray([0,0,1]),np.asarray([1,1,1]),truths)
+    assert result['overall']['gain']==1 and result['overall']['damage']==1 and result['overall']['net']==0
+    assert result['receiver']['r1']['gain']==1 and result['receiver']['r1']['damage']==1
+    with pytest.raises(ValueError,match='IDs'):
+        compare(np.asarray(['a','a']),np.asarray([0,0]),np.asarray([0,0]),truths)
