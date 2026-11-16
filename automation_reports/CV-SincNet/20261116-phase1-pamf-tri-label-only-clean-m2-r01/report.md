@@ -8,6 +8,10 @@
 
 独立 run/output root；N607 GPU 2/3/4/5/7，发布时核查剩余显存及其他 owner 的进程，总进程不超过每卡 5。protocol/非有限/系统技术故障停止新调度，不干扰其他健康任务。
 
+## 启动证据
+
+**VERIFIED / RUNNING**：执行 commit `40bc82f9c311d388a1f967847f37ef145fc4bccd`；归档传输和远端编译通过，真实 checkpoint 无 query smoke 通过。独立检查 controller 与两个训练 worker 的 PID、CWD、命令和 GPU，十类在 GPU 2、六源在 GPU 3；初始日志均记录 `init=scratch`、U 训练样本 0、伪标签阶段 0。两行预测与评分尚未完成，必须等待实际冻结及独立评分。
+
 - run_id：`20261116-phase1-pamf-tri-label-only-clean-m2-r01`
 - group_id：`phase1-pamf-repl-weight-clean`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
