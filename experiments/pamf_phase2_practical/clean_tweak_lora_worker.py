@@ -32,7 +32,11 @@ def run(rt,job):
     specs={(s['k'],s['new_count']):s for s in (read(p) for p in (cap/'splits').glob('*.json'))}
     require(all((k,0) in specs and (k,n) in specs for k,n in points),'Missing split')
     output=Path(job['output']);output.mkdir(parents=True,exist_ok=False);rows=[];start=time.perf_counter()
-    def get(spec,stage):return load_task(cap,spec['split_id'],stage=stage,clean_root=rt['clean_root'],task_root=rt['data_root'])
+    def get(spec,stage):
+        if rt.get('input_condition')=='satellite_received':
+            require(not rt.get('clean_root'),'Satellite task cannot use clean input')
+            return load_task(cap,spec['split_id'],stage=stage)
+        return load_task(cap,spec['split_id'],stage=stage,clean_root=rt['clean_root'],task_root=rt['data_root'])
     for k in sorted({k for k,n in points}):
         old=get(specs[k,0],'B');x=tensor(old['support_x'],device)
         y=torch.tensor(old['support_y'].tolist(),device=device,dtype=torch.long)
@@ -63,7 +67,7 @@ def run(rt,job):
                 name=f'C-K{k}-N{n}-{method}.npz'
                 np.savez_compressed(output/name,query_indices=query,predicted_indices=pred,old_restricted_indices=restricted)
                 rows.append(dict(split_id=spec['split_id'],stage='C',arm=method_arm('tweak_m1',method,mopc_stabilization=stabilization),input_path='S0Q0',
-                    input_condition='clean_ground_pre_satellite_normalized',prediction=name,k=k,new_count=n,
+                    input_condition=rt.get('input_condition','clean_ground_pre_satellite_normalized'),prediction=name,k=k,new_count=n,
                     registered_classes=spec['registered_classes'],query_count=len(query),query_records_per_decision=1,
                     claim='Tweak_M1_B_to_'+{'lora':'LoRa','orthogonal':'Orthogonal','mopc_hr':'MoPC'}[method]+'_core_transplant',
                     knn_k=state.k if method=='lora' else None,
@@ -75,4 +79,4 @@ def run(rt,job):
     write(output/'predictions.json',dict(capsule_id=manifest['capsule_id'],capsule=job['capsule'],
           profile='tweak_m1',model_seed=job['seed'],rows=rows))
     write(output/'complete.json',dict(status='PREDICTIONS_COMPLETE',capsule_id=manifest['capsule_id'],
-          model_seed=job['seed'],rows=len(rows),truth_read=False,query_fit=False,seconds=time.perf_counter()-start))
+          profile='tweak_m1',model_seed=job['seed'],rows=len(rows),truth_read=False,query_fit=False,seconds=time.perf_counter()-start))

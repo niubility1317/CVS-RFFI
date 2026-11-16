@@ -19,6 +19,15 @@ def validate_scope(job):
             parts[2] in EPISODES and parts[3] in RECEIVERS and job.get('seed') in SEEDS and
             job.get('profile') in PROFILES,'Invalid satellite registration identity')
     episode=parts[2];profile=job['profile']
+    if job.get('design')=='mix3_v1':
+        require(episode in ('MIX01','MIX02','MIX03') and job['seed'] in SEEDS[:3], 'Outside revised comparison')
+        points=[(k,n) for k in (5,10) for n in (5,10)]
+        a0=[5,10] if profile=='orthogonal' else ([] if episode=='MIX01' else [10])
+        require(job.get('satellite_c_points')==[list(p) for p in points] and job.get('satellite_a0_ks')==a0,
+                'Wrong revised C points or A0 reuse')
+        require(job.get('mopc_stabilization','none')==('clip1000_v1' if profile=='mopc_hr' else 'none'),
+                'Wrong native C version')
+        return points,a0
     points=[(k,n) for k in (1,5,10,20) for n in (2,5,10,20)] if episode.startswith('MIX') else [(5,20)]
     a0=([1,5,10,20] if episode.startswith('MIX') else [5]) if profile=='orthogonal' else \
        ([1,10,20] if episode.startswith('MIX') and episode!='MIX01' else [])
@@ -126,8 +135,10 @@ def dispatch(config,config_file):
     from .clean_scheduler import choose
     from .runner import occupancy
     mode=config.get('entry_module','satellite_native_c')
-    require(mode in ('satellite_native_c','satellite_tweak','satellite_issl'),'Invalid satellite worker module')
-    if mode=='satellite_tweak':
+    require(mode in ('satellite_native_c','satellite_tweak','satellite_issl','satellite_mix3'),'Invalid satellite worker module')
+    if mode=='satellite_mix3':
+        from .satellite_mix3 import verify_prediction as check_prediction
+    elif mode=='satellite_tweak':
         from .satellite_tweak import verify_prediction as check_prediction
     elif mode=='satellite_issl':
         from .satellite_issl import verify_prediction as check_prediction
@@ -145,7 +156,7 @@ def dispatch(config,config_file):
             try:
                 if code==0:check_prediction(job);done.append(key);queue.append(job);continue
                 marker=read(Path(job['output'])/'numerical_failure.json')
-                valid=(job['profile']=='mopc_hr' and marker.get('status')=='MOPC_NUMERICAL_FAILURE' and
+                valid=((job['profile']=='mopc_hr' or job.get('methods')==['mopc_hr']) and marker.get('status')=='MOPC_NUMERICAL_FAILURE' and
                        all(marker.get(k)==job.get(k) for k in ('profile','capsule','seed')) and
                        marker.get('truth_read') is False and marker.get('query_fit') is False)
                 if valid:quarantined.append(key);continue

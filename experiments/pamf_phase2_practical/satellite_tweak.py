@@ -12,7 +12,11 @@ def validate_scope(job):
     require(len(parts)==4 and parts[0]=='capsules' and parts[1] in ('P01','P02','P03') and
             parts[2] in EPISODES and parts[3] in RECEIVERS and job.get('seed') in SEEDS and
             job.get('profile')=='tweak_m1','Invalid Tweak M1 task identity')
-    points=[[k,n] for k in (1,5,10,20) for n in (2,5,10,20)] if parts[2].startswith('MIX') else [[5,20]]
+    if job.get('design')=='mix3_v1':
+        require(parts[2] in ('MIX01','MIX02','MIX03') and job['seed'] in SEEDS[:3], 'Outside revised comparison')
+        points=[[k,5] for k in (1,5,10,20)]
+    else:
+        points=[[k,n] for k in (1,5,10,20) for n in (2,5,10,20)] if parts[2].startswith('MIX') else [[5,20]]
     require(job.get('points')==points,'Wrong Tweak workpoints')
     return sorted({k for k,n in points})
 
