@@ -10,7 +10,7 @@ def make(template):
     with scoped():result=original.make(template)
     result.update(display_name='Tri 有标签 CE AdamW 参考主方向实验',
         description='十类和六源各比较 U 权重 6／3，CE-only 参考外的其他监督与 U 更新上限 0.25／0.5。')
-    result['execution'].update(gpu_policy='GPU2,3,4 round-robin; all owners and pending workers count toward three processes per GPU',
+    result['execution'].update(gpu_policy='GPU2,3,4 round-robin; launch only on an empty card including all owners and pending workers',
         local_artifact_root='local_artifacts/pamf_repl_ce_reference_20261116',
         launch_command='python -m experiments.pamf_repl_ce_reference.publish --repo REPO --output LOCAL --context CONTEXT --ssh-config CONFIG')
     result['expected_artifacts']=['eight actual E20 no-query smokes with CE-only AdamW reference',

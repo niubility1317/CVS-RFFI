@@ -13,7 +13,7 @@ def dispatch(runtime):
     from experiments.pamf_physics_route.runner import launch
     old=preparation.prepare,queue.admits,queue.launch,queue.analyze
     preparation.prepare=original.prepare
-    queue.admits=lambda gpu,active,mib:admits(gpu,active,mib,max_total=3)
+    queue.admits=lambda gpu,active,mib:admits(gpu,active,mib,max_total=1)
     queue.launch=partial(launch,module='experiments.pamf_repl_ce_reference.runner')
     queue.analyze=original.analyze
     try:return queue.dispatch(dict(runtime,prioritize_prediction=True))

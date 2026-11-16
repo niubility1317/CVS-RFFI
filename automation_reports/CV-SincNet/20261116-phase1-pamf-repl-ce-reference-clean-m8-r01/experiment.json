@@ -69,7 +69,7 @@
   "execution": {
     "host": "N607 ordinary user",
     "launch_owner": "codex-20261116-phase1-pamf-repl-ce-reference-clean-m8-r01",
-    "gpu_policy": "GPU2,3,4 round-robin; all owners and pending workers count toward three processes per GPU",
+    "gpu_policy": "GPU2,3,4 round-robin; launch only on an empty card including all owners and pending workers",
     "remote_run_root": "PROJECT/runs/20261116-phase1-pamf-repl-ce-reference-clean-m8-r01",
     "remote_log_root": "PROJECT/runs/20261116-phase1-pamf-repl-ce-reference-clean-m8-r01/logs",
     "local_artifact_root": "local_artifacts/pamf_repl_ce_reference_20261116",
