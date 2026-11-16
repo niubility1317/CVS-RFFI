@@ -10,10 +10,12 @@ from . import group2_lora_bridge as lora
 
 
 def prepare_b(model, profile, extractor, old_x, old_y, *, old_count=6, old_prototypes=None, b_scores=None,
-              mopc_bridge='original'):
+              mopc_bridge='original', orthogonal_bridge='original'):
     if mopc_bridge not in ('original', 'proto_affine_v1') or \
        (mopc_bridge == 'proto_affine_v1' and profile != 'protonet_cda'):
         raise ValueError('Unsupported MoPC bridge for B profile')
+    if orthogonal_bridge not in ('original', 'support_prototypes_v1'):
+        raise ValueError('Unsupported Orthogonal bridge')
     result = {'lora': lora.build_gallery(model, extractor, old_x, old_y, old_count=old_count)}
     if profile in ('dadda_sda', 'mrior_sda', 'twostage', 'poster_ft', 'feature_separation_hu2024', 'protonet_cda', 'radionet_ada_knn', 'tweak_m1'):
         if profile == 'protonet_cda':
@@ -42,8 +44,13 @@ def prepare_b(model, profile, extractor, old_x, old_y, *, old_count=6, old_proto
                 score_coordinates='finite_rank_preserving_replacement_for_native_minus_1e30_sentinel')
         orthogonal = copy.deepcopy(original_anchor)
         orthogonal.method = 'orthogonal'
-        orthogonal.model.classifier_weight = torch.nn.Parameter(
-            orthogonal.model.fc.weight.detach().clone(), requires_grad=False)
+        weights = (orthogonal.model.fc.weight if orthogonal_bridge == 'original'
+                   else orthogonal.prototypes)
+        orthogonal.model.classifier_weight = torch.nn.Parameter(weights.detach().clone(), requires_grad=False)
+        orthogonal.protocol_metadata.update(orthogonal_bridge=orthogonal_bridge,
+            C_old_weights=('B_affine_weights' if orthogonal_bridge == 'original'
+                           else 'B_encoder_old_support_prototypes'),
+            B_old_decision_preserved_at_C_entry=False)
         result['orthogonal'] = orthogonal
     return result
 

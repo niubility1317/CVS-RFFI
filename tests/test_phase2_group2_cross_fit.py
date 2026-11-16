@@ -33,3 +33,41 @@ def test_one_b_state_is_reused_for_multiple_independent_c_registrations(monkeypa
                        seed=2, methods=('lora',))
     assert again['lora'].features.data_ptr() != prepared['lora'].features.data_ptr()
     assert torch.equal(again['lora'].features[:2], prepared['lora'].features)
+
+
+def test_opt_in_orthogonal_support_prototypes_leave_other_bridges_unchanged():
+    model = DaddaLike().eval()
+    old_x = torch.tensor([[0., 0.], [1., 1.]])
+    old_y = torch.tensor([0, 1])
+    original = prepare_b(model, 'dadda_sda', feature, old_x, old_y, old_count=2)
+    candidate = prepare_b(model, 'dadda_sda', feature, old_x, old_y, old_count=2,
+                          orthogonal_bridge='support_prototypes_v1')
+    assert torch.equal(original['orthogonal'].model.classifier_weight,
+                       original['orthogonal'].model.fc.weight)
+    assert torch.equal(candidate['orthogonal'].model.classifier_weight,
+                       candidate['orthogonal'].prototypes)
+    assert torch.equal(candidate['mopc_hr'].model.fc.weight, original['mopc_hr'].model.fc.weight)
+    assert candidate['orthogonal'].protocol_metadata['orthogonal_bridge'] == 'support_prototypes_v1'
+    assert not candidate['orthogonal'].protocol_metadata['B_old_decision_preserved_at_C_entry']
+
+
+def test_unknown_orthogonal_bridge_is_rejected():
+    import pytest
+    with pytest.raises(ValueError, match='Unsupported Orthogonal bridge'):
+        prepare_b(DaddaLike().eval(), 'dadda_sda', feature, torch.zeros(2, 2),
+                  torch.tensor([0, 1]), old_count=2, orthogonal_bridge='unrecognized')
+
+
+def test_registered_support_prototype_bridge_retains_its_identity(monkeypatch):
+    from experiments.pamf_phase2_practical import group2_cil_bridge
+    real_register = group2_cil_bridge.register
+    monkeypatch.setattr(group2_cil_bridge, 'register',
+                        lambda anchor, x, y, *, seed: real_register(anchor, x, y, seed=seed, epochs=1))
+    prepared = prepare_b(DaddaLike().eval(), 'dadda_sda', feature,
+                         torch.tensor([[0., 0.], [1., 1.]]), torch.tensor([0, 1]),
+                         old_count=2, orthogonal_bridge='support_prototypes_v1')
+    registered = register_c(prepared, torch.tensor([[2., 2.], [3., 3.]]),
+                            torch.tensor([2, 3]), seed=1, methods=('orthogonal',))['orthogonal']
+    assert registered.protocol_metadata['orthogonal_bridge'] == 'support_prototypes_v1'
+    assert registered.protocol_metadata['C_entry_decision'] == 'cosine_old_support_prototypes_and_new_support_prototypes'
+    assert not registered.protocol_metadata['B_old_decision_preserved_at_C_entry']
