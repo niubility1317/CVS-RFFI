@@ -76,6 +76,12 @@ def discover(preparations,expected):
     return unique_entries(pairs),errors
 
 
+def next_pending(backlog,recent,prefer_recent):
+    if recent and (prefer_recent or not backlog):return recent.popleft(),False
+    if backlog:return backlog.popleft(),True
+    return recent.popleft(),False
+
+
 def run(preparations,output,workers,interval):
     require(1<=workers<=4 and interval>=60,'Wrong incremental scoring limits')
     root=Path(output).resolve();require(not root.exists(),'Scoring root exists')
@@ -83,7 +89,8 @@ def run(preparations,output,workers,interval):
     write(root/'owner.json',dict(pid=os.getpid(),cwd=str(Path.cwd()),workers=workers,
         preparations=str(Path(preparations).resolve()),scope='individually_fixed_jobs',truth_last=True))
     expected={v:expected_units(tasks(),v) for v in ('none','clip1000_v1')}
-    queue=deque();seen=set();active={};counts=Counter();last_scan=0;discovery_errors=[]
+    backlog=deque();recent=deque();seen=set();active={};counts=Counter();last_scan=0;discovery_errors=[]
+    scans=0;prefer_recent=True
     effective_workers=workers;pool_restarts=0;pool=ProcessPoolExecutor(max_workers=effective_workers)
     try:
         while True:
@@ -103,18 +110,19 @@ def run(preparations,output,workers,interval):
                             discovery_errors.append(dict(score_key=key,error=f'{type(exc).__name__}: {exc}'))
                     while buckets:
                         for bucket in list(buckets):
-                            queue.append(buckets[bucket].popleft())
+                            (backlog if scans==0 else recent).append(buckets[bucket].popleft())
                             if not buckets[bucket]:del buckets[bucket]
+                    scans+=1
                 except (OSError,ValueError,KeyError,TypeError,json.JSONDecodeError) as exc:
                     discovery_errors=[dict(error=f'{type(exc).__name__}: {exc}')]
                 last_scan=time.monotonic()
             broken=[];pool_broken=False
-            while queue and len(active)<effective_workers and not stopping:
-                item=queue.popleft();target=root/'jobs'/item['score_key']
+            while (backlog or recent) and len(active)<effective_workers and not stopping:
+                item,prefer_recent=next_pending(backlog,recent,prefer_recent);target=root/'jobs'/item['score_key']
                 try:
                     future=pool.submit(score_entry,(item['entry'],str(target)));active[future]=item
                 except BrokenProcessPool:
-                    queue.appendleft(item);pool_broken=True;break
+                    recent.appendleft(item);pool_broken=True;break
             done,_=wait(active,timeout=5,return_when=FIRST_COMPLETED) if active else (set(),set())
             for future in done:
                 item=active.pop(future);key=item['score_key']
@@ -133,7 +141,7 @@ def run(preparations,output,workers,interval):
                 broken.extend(active.values());active.clear();pool_restarts+=1
                 if effective_workers>1:
                     effective_workers=1
-                    queue.extendleft(reversed(broken))
+                    recent.extendleft(reversed(broken))
                 else:
                     for item in broken:
                         key=item['score_key'];counts['FAILED']+=1
@@ -141,11 +149,11 @@ def run(preparations,output,workers,interval):
                             status='FAILED',error='Scoring worker exited unexpectedly; output retained'))
                 pool=ProcessPoolExecutor(max_workers=effective_workers)
             atomic(root/'state.json',dict(status='DRAINING' if stopping and active else 'STOPPED' if stopping else 'RUNNING',
-                discovered=len(seen),queued=len(queue),active=len(active),counts=dict(counts),
+                discovered=len(seen),queued=len(backlog)+len(recent),recent_queued=len(recent),active=len(active),counts=dict(counts),
                 discovery_error_count=len(discovery_errors),discovery_errors=discovery_errors[:20],
                 workers=effective_workers,pool_restarts=pool_restarts,scope='individually_fixed_jobs',truth_last=True))
             if stopping and not active:return
-            if not active and not queue:time.sleep(5)
+            if not active and not backlog and not recent:time.sleep(5)
     finally:
         pool.shutdown(wait=True,cancel_futures=True)
 

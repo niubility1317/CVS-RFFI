@@ -100,3 +100,13 @@ def test_worker_pool_failure_retries_safely_with_one_worker(tmp_path,monkeypatch
     state=json.loads((root/'state.json').read_text())
     assert sizes==[4,1] and state['status']=='STOPPED' and state['pool_restarts']==1
     assert state['counts']['SCORED_COMPLETE']==1 and not list((root/'failures').iterdir())
+
+
+def test_new_completions_and_existing_backlog_are_both_served():
+    from collections import deque
+    from experiments.pamf_phase2_practical.clean_incremental_score import next_pending
+    backlog=deque(['old1','old2']);recent=deque(['new1','new2']);prefer=True
+    selected=[]
+    for _ in range(4):
+        value,prefer=next_pending(backlog,recent,prefer);selected.append(value)
+    assert selected==['new1','old1','new2','old2']
