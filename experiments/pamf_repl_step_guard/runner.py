@@ -66,7 +66,7 @@ def smoke(rt):
         del net,opt,loaders,cp,loss
         torch.cuda.empty_cache()
     write(Path(rt['run_root'])/'smoke.json',dict(status='PASS',checks=values,real_checkpoint=True,
-        optimizer_updates=2,all_updates_discarded=True,query_reads=0,U_truth_reads=0))
+        optimizer_updates=len(values),all_updates_discarded=True,query_reads=0,U_truth_reads=0))
 
 
 def worker(c,kind):

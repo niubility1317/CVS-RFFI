@@ -1,0 +1,32 @@
+"""Reuse the exact protected REPL trajectory with an isolated factor matrix."""
+import argparse
+from functools import partial
+from experiments.cric_dura_comparison.io import read
+from experiments.pamf_repl_step_guard import runner as original
+from .plan import scoped
+
+
+def dispatch(runtime):
+    from experiments.pamf_branch_training import runner as queue, prepare as preparation
+    from experiments.pamf_physics_branch.runner import admits
+    from experiments.pamf_physics_route.runner import launch
+    old = preparation.prepare, queue.admits, queue.launch, queue.analyze
+    preparation.prepare = original.prepare
+    queue.admits = lambda gpu, active, mib: admits(gpu, active, mib, max_total=5)
+    queue.launch = partial(launch, module='experiments.pamf_repl_step_factor.runner')
+    queue.analyze = original.analyze
+    try:
+        return queue.dispatch(dict(runtime, prioritize_prediction=True))
+    finally:
+        preparation.prepare, queue.admits, queue.launch, queue.analyze = old
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('action', choices=['dispatch', 'worker'])
+    parser.add_argument('--kind')
+    parser.add_argument('--config', required=True)
+    args = parser.parse_args()
+    config = read(args.config)
+    with scoped():
+        dispatch(config) if args.action == 'dispatch' else original.worker(config, args.kind)
