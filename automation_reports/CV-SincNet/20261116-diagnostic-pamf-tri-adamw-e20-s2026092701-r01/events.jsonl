@@ -1,1 +1,2 @@
 {"at": "2026-11-16T00:06:22+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-16T00:11:59+00:00", "status": "FAILED", "note": "Prelaunch failed: N607 Python lacks pytest; no diagnostic process started; r02 uses unittest.", "evidence": ["runs/20261116-diagnostic-pamf-tri-adamw-e20-s2026092701-r01/focused_checks.log"], "row_id": null}

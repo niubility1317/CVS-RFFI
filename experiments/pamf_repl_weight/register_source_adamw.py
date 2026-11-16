@@ -4,7 +4,7 @@ from copy import deepcopy
 import json
 from pathlib import Path
 
-RUN = '20261116-diagnostic-pamf-tri-adamw-e20-s2026092701-r01'
+RUN = '20261116-diagnostic-pamf-tri-adamw-e20-s2026092701-r02'
 
 
 def make(template):
@@ -14,7 +14,8 @@ def make(template):
                   display_name='Tri-SIG-TIME 源域 AdamW 更新方向诊断',
                   description='十类和六源各三批次，比较同一 E20 的 L-only 与原保护 L+U 实际首步。',
                   aliases=['tri-adamw-source'], tags=['PAMF', 'REPL', 'gradient', 'source-only'],
-                  parent_run_ids=['20261027-phase1-pamf-paper-completion-m119-r03'], replaces_run_id=None,
+                  parent_run_ids=['20261027-phase1-pamf-paper-completion-m119-r03'],
+                  replaces_run_id='20261116-diagnostic-pamf-tri-adamw-e20-s2026092701-r01',
                   authorization='用户要求优化 Tri 梯度冲突并详细记录；不改变当前 U 标签权限。')
     result['code'].update(commit='release HEAD commit', checkout='task worktree',
                           environment='N607 ordinary account, existing CVS-RFFI Python, CPU 2, FP32',
@@ -62,6 +63,7 @@ def make(template):
                    expected_artifacts=['diagnostic.log contains complete JSON result'])
         result['rows'].append(row)
     result['notes']=['U TX truth, V and target are never read; no formal training updates.',
+        'r01 failed before launch because the N607 Python lacks pytest; the replacement uses unittest.',
         'Optimizer moments are fresh, so do not infer the rest of the trajectory or target performance.',
         'Source inputs and E20 parents follow original paper roles; selected seed was historically target-exposed.',
         'The experiment is fixed before any new source observation; no candidate training or target prediction.']

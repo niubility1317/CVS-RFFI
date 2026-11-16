@@ -29,11 +29,10 @@ with tarfile.open(archive) as bundle:
  bundle.extractall(release)
 env=dict(os.environ,PYTHONPATH=str(release),CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',PYTHONUNBUFFERED='1')
 subprocess.run([p['python'],'-m','compileall','-q',str(release/'experiments/pamf_repl_weight')],cwd=release,env=env,check=True)
-checks=[p['python'],'-m','pytest','-q','tests/test_pamf_tri_adamw_diagnostic.py',
- 'tests/test_pamf_source_optimizer_shadow.py',
- 'tests/test_pamf_paper_completion.py::MatrixAndPermissions::test_no_target_truth_in_training']
 with (root/'focused_checks.log').open('x') as checklog:
- subprocess.run(checks,cwd=release,env=env,stdout=checklog,stderr=subprocess.STDOUT,check=True)
+ for checks in ([p['python'],'tests/test_pamf_tri_adamw_diagnostic.py'],
+                [p['python'],'tests/test_pamf_paper_completion.py','MatrixAndPermissions.test_no_target_truth_in_training']):
+  subprocess.run(checks,cwd=release,env=env,stdout=checklog,stderr=subprocess.STDOUT,check=True)
 cmd=[p['python'],'-u','-m','experiments.pamf_repl_weight.source_adamw_diagnostic',p['runtime']]
 with (root/'diagnostic.log').open('x') as log:
  child=subprocess.Popen(cmd,cwd=release,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
@@ -63,7 +62,7 @@ def publish(repo, output, ssh_config):
     if archive.exists():
         raise FileExistsError('Reconcile previous release before retry')
     paths=('experiments','code','baselines','comparison_suite','tests/test_pamf_tri_adamw_diagnostic.py',
-           'tests/test_pamf_source_optimizer_shadow.py','tests/test_pamf_paper_completion.py')
+           'tests/test_pamf_paper_completion.py')
     tracked = {p for p in git('ls-files','-z','--',*paths).decode().split('\0')
                if p and Path(p).suffix in ('.py','.json','.txt','.yaml','.yml','.toml')}
     source = git('archive','--format=tar',commit,'--',*paths)

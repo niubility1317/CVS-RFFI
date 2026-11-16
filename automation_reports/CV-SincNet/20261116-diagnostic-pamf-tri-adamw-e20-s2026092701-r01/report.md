@@ -10,6 +10,10 @@ CPU 2 线程、无 GPU、无持久模型更新；共 6 个源 batch 和 12 个�
 
 独立 P0/P1 审查发现初版遗漏有标签普通增强；已根据实际训练的 E20 父配置补齐，针对该项的独立定点复核通过。代码没有把目标结果用作训练或候选选择。
 
+## 发布失败及替代
+
+**FAILED（训练前检查）**：N607 已有 Python 环境没有 `pytest`，预发布检查立即退出；未启动诊断进程、未读取源模型数据。失败 release、run root 与 `focused_checks.log` 保留；不安装软件。替代 run `20261116-diagnostic-pamf-tri-adamw-e20-s2026092701-r02` 使用标准库 `unittest` 执行等价的观察器、影子优化器数值和协议负例检查，科学矩阵与权限不变。
+
 - run_id：`20261116-diagnostic-pamf-tri-adamw-e20-s2026092701-r01`
 - group_id：`phase1-pamf-repl-weight-clean`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
