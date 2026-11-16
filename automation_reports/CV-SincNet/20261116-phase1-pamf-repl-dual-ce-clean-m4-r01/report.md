@@ -7,3 +7,9 @@
 使用 N607 普通账号，允许 GPU 4、全卡含其他 owner 最多 5 个进程；采用源域原合同及对应原 Tri 源 E20，不改其他 owner。先做四行真实 checkpoint 无查询 smoke，再训练；每行记录完整 L、U 及有标签 CE，伪标签接受和无真值逐样本记录。E50 冻结后独立离线评分 U 真值，仅用于诊断；clean 的 cross_date、cross_rx、cross_both 预测冻结后独立 truth-last 评分，主比较合并 cross_rx 和 cross_both。不运行星地或 weak 测试。协议、非有限值或系统技术故障时停止新调度并保留已有产物。
 
 运行命令、模型与数据来源、逐行配置和产物路径见同目录 `experiment.json`。代码 commit 以发布 runtime 记录为准。独立 P0/P1 审查未发现阻断项；本地针对性测试通过，真实设备 smoke 和运行状态以发布后产物为准。
+
+## 发布后核验
+
+**VERIFIED / RUNNING**：发布代码 commit `7a5874e467161f8be652b69f6fbd7cc7778fde5c` 与远端分支独立核对一致；归档传输校验和远端编译通过。四行真实 E20 检查点 smoke 全部通过，各执行并丢弃一次实际更新，每步有一次 CE 梯度求导，未读 U 真值或目标；四个 worker 已在 GPU 4 启动，实际 PID、工作目录、命令行和显卡进程对应，启动时该卡本批 4 个进程。E50 冻结、clean 测试和 U 离线评分仍待完成，不能用 smoke 宣称性能收益。
+
+四行实际训练的逐步保护日志均已增长，首步三个参数组 `actual_parameter_check=true`，完整 L 与 CE 锚点保护后的余弦都在浮点容差 −1e−6 以上，首步无归零回退。这仅是启动核验，不能外推完整训练轨迹。
