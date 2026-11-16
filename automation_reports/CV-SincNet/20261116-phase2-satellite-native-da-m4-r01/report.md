@@ -7,3 +7,5 @@
 清点来源是旧 Group1 预测与独立评分的实际元数据和文件，执行清点 `phase2_satellite_native_reuse_inventory_20261116.py`；每个选中方法 4368 行已评分、3528 行缺失，校验对应 profile 的 1933 个评分任务且无清点错误。初始旧索引中的 ProtoNet 和 Two-stage 评分路径缺失；后来找到 20261101 恢复索引并重新逐行核实，两种方法各有 4368 行已评分、3528 行缺失，恢复索引的五种方法均无清点错误。本队列仅包含最初选中的三种方法。
 
 N607：代码以包含本报告的 commit 标识；固定 source runtime 来自 `20261113-phase2-clean-native-pilot-r01`，准备时移除 clean/restored 指针并只使用 received。`python -m experiments.pamf_phase2_practical.satellite_native_da prepare` 创建唯一预备计划，`dispatch --config <plan>/scheduler.json` 发布。新运行及准备根为 `runs/20261116-phase2-satellite-native-da-m4-r01` 与同名 preparations；发布归档和远端 CWD 为同名 release。GPU 0、1、5、6、7，每 GPU 本队列最多 7 worker、启动前至少 6000 MiB、每新 worker 预留 3000 MiB，其他 owner 不动。预测 worker 首步运行真实源 checkpoint 无 query smoke；评分进程最多 1 个。技术/资源/输入故障停止新派发，自然排空并保留输出；低分不停止或调参。任务完成产出逐任务预测、独立评分、日志和资源记录。
+
+2026-11-17 00:05 HKT 独立读回：控制器 PID 3337467；已完成 92、已评分 90、运行 29、待派发 1643、failed=[]；实际每卡 4 至 7 个 worker。首个任务日志显示星地 A0/B 预测递增，独立评分 marker `SCORED_COMPLETE`、6 行、truth_last=true、target_feedback=false。以上为运行快照，不代表本组完成。

@@ -7,3 +7,5 @@
 新运行根 `runs/20261117-phase2-satellite-native-da-m4-r02`，预备目录同名，release `releases/20261117-phase2-satellite-native-da-m4-r02-release`。代码为包含本报告的 Git commit。`satellite_native_da prepare` 必须显式提供 `--profiles protonet_cda twostage --allowed-gpus 2 3 4` 和 r01 的 `--prior-config`；逐 K 任务及 GPU 集合必须与 r01 不重叠。每 GPU 最多 7 个本任务 worker、启动时空余至少 6000 MiB，并避开其他 owner。实际无空槽时等待，不停止或干预其他任务。
 
 逐 worker 首步真实 checkpoint 的无 query source-only smoke；固定预测核对后自动独立逐任务 truth-last 评分。具体源 runtime、数据句柄、seed、运行命令和输出见 experiment.json 及 scheduler.json；系统技术故障停止派发、排空并保留产物，低分不停止或调参。此队列只代表两个原生域适应方法的缺项，其他注册和交叉组另行处理。
+
+2026-11-17 00:05 HKT 独立读回：控制器 PID 3353784，1176 项待派发、真实 worker 0、failed=[]。指定 GPU 2/3/4 均有其他 owner，当前等待空槽；不能称已开始预测。r01 的 GPU 集合与本队列不重叠，preparation 已检验任务身份不重叠。
