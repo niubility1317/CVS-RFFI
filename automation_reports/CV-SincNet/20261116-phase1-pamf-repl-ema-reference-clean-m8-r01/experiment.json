@@ -1,0 +1,426 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261116-phase1-pamf-repl-ema-reference-clean-m8-r01",
+  "group_id": "phase1-pamf-repl-weight-clean",
+  "display_name": "Tri 有标签梯度平滑参考主方向实验",
+  "description": "十类／六源各比较 U 权重 6／3、EMA 监督参考外额外更新上限 0.25／0.5。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "tri-repl-clean-loss-weight"
+  ],
+  "tags": [
+    "PAMF",
+    "REPL",
+    "clean",
+    "gradient"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-paper-completion-m119-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求解决监督与无标签冲突，并授权冻结后独立 U 真值离线诊断。",
+  "code": {
+    "commit": "actual committed release identity in runtime.json",
+    "checkout": "isolated task worktree",
+    "environment": "N607 CVS-RFFI existing Python, FP32",
+    "cwd": "PROJECT/releases/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01-release"
+  },
+  "data": {
+    "dataset": "original ten-class ManyRx and six-source receiver contracts",
+    "version": null,
+    "representation": null,
+    "contract_ref": "context.handles per row protocol_id",
+    "physical_ids_ref": "original fixed source/test contracts",
+    "label_map_ref": null,
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "labeled training",
+      "U_s": "TX blind during training; frozen offline diagnostic only",
+      "V": "source validation"
+    },
+    "train_ratio": "original fixed labeled/unlabeled/validation roles",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": "fixed clean cross-date, cross-RX and double-cross; prediction before independent scoring",
+    "leo_config_ref": "not applicable: clean-only, no new satellite observations"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "frozen raw clean prediction; independent truth-last scoring",
+    "external_method_exception": null,
+    "claim_scope": "seed selected by previously exposed clean target; exploratory, not an independent blind evaluation"
+  },
+  "checkpoint": {
+    "initialization": "original same-contract source-only E20, then own E10 and E20",
+    "sources": [
+      "20261027-phase1-pamf-paper-completion-m119-r03"
+    ],
+    "contract_check_ref": "experiments.pamf_repl_step_guard.plan.parent",
+    "provenance_verdict": "original source-only scratch E20, same source roles, physical IDs, seed and graph",
+    "selection_rule": "fixed final E50; all predeclared rows; no test feedback"
+  },
+  "execution": {
+    "host": "N607 ordinary user",
+    "launch_owner": "codex-20261116-phase1-pamf-repl-ema-reference-clean-m8-r01",
+    "gpu_policy": "GPU2,3,4 round-robin; launch only on an empty card including all owners and pending workers",
+    "remote_run_root": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01",
+    "remote_log_root": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_repl_ema_reference_20261116",
+    "launch_command": "python -m experiments.pamf_repl_ema_reference.publish --repo REPO --output LOCAL --context CONTEXT --ssh-config CONFIG",
+    "stop_rule": "Stop dispatch on protocol, nonfinite, launch or systemic technical failure; preserve healthy workers."
+  },
+  "expected_artifacts": [
+    "eight actual E20 no-query smokes with labeled-gradient EMA reference",
+    "eight own E30/E50 continuations with all-step EMA reference and parameter-step telemetry",
+    "eight blind U trajectories and independent post-freeze U diagnostic scores",
+    "eight raw clean predictions and independent truth-last scores"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean accuracy and macro-F1",
+      "L CE and source validation",
+      "full-L versus original/applied optimizer extra motion by parameter group",
+      "step retention and fallback",
+      "U pseudo acceptance and independently scored correctness by epoch and class",
+      "current full L vs EMA gradient, EMA-reference vs total step cosine, extra-step ratio and fallback"
+    ],
+    "dimensions": [
+      "ten-class and six-source",
+      "seed 2026092701",
+      "raw clean",
+      "TX/RX/day"
+    ],
+    "prediction_ref": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/readouts/ROW/predictions",
+    "scorer_ref": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/readouts/ROW/scores"
+  },
+  "rows": [
+    {
+      "row_id": "ten_class-repl-emaref_w6_c25-s2026092701",
+      "method": "Tri segment-local full-L gradient EMA AdamW reference emaref_w6_c25",
+      "purpose": "{'weight': 6.0, 'reference_cap': 0.25, 'reference_beta': 0.9}",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/configs/train__ten_class-repl-emaref_w6_c25-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/F/ten_class-repl-emaref_w6_c25-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 then own 30 epochs; all steps guarded",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/F/ten_class-repl-emaref_w6_c25-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/logs/train__ten_class-repl-emaref_w6_c25-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/configs/train__ten_class-repl-emaref_w6_c25-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/step_guard_metrics.jsonl.gz",
+        "source/segment50/step_guard_metrics.jsonl.gz",
+        "readouts/ten_class-repl-emaref_w6_c25-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-emaref_w6_c25-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-emaref_w6_c25-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-emaref_w6_c50-s2026092701",
+      "method": "Tri segment-local full-L gradient EMA AdamW reference emaref_w6_c50",
+      "purpose": "{'weight': 6.0, 'reference_cap': 0.5, 'reference_beta': 0.9}",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/configs/train__ten_class-repl-emaref_w6_c50-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/F/ten_class-repl-emaref_w6_c50-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 then own 30 epochs; all steps guarded",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/F/ten_class-repl-emaref_w6_c50-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/logs/train__ten_class-repl-emaref_w6_c50-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/configs/train__ten_class-repl-emaref_w6_c50-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/step_guard_metrics.jsonl.gz",
+        "source/segment50/step_guard_metrics.jsonl.gz",
+        "readouts/ten_class-repl-emaref_w6_c50-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-emaref_w6_c50-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-emaref_w6_c50-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-emaref_w3_c25-s2026092701",
+      "method": "Tri segment-local full-L gradient EMA AdamW reference emaref_w3_c25",
+      "purpose": "{'weight': 3.0, 'reference_cap': 0.25, 'reference_beta': 0.9}",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/configs/train__ten_class-repl-emaref_w3_c25-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/F/ten_class-repl-emaref_w3_c25-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 then own 30 epochs; all steps guarded",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/F/ten_class-repl-emaref_w3_c25-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/logs/train__ten_class-repl-emaref_w3_c25-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/configs/train__ten_class-repl-emaref_w3_c25-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/step_guard_metrics.jsonl.gz",
+        "source/segment50/step_guard_metrics.jsonl.gz",
+        "readouts/ten_class-repl-emaref_w3_c25-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-emaref_w3_c25-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-emaref_w3_c25-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-emaref_w3_c50-s2026092701",
+      "method": "Tri segment-local full-L gradient EMA AdamW reference emaref_w3_c50",
+      "purpose": "{'weight': 3.0, 'reference_cap': 0.5, 'reference_beta': 0.9}",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/configs/train__ten_class-repl-emaref_w3_c50-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/F/ten_class-repl-emaref_w3_c50-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 then own 30 epochs; all steps guarded",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/F/ten_class-repl-emaref_w3_c50-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/logs/train__ten_class-repl-emaref_w3_c50-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/configs/train__ten_class-repl-emaref_w3_c50-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/step_guard_metrics.jsonl.gz",
+        "source/segment50/step_guard_metrics.jsonl.gz",
+        "readouts/ten_class-repl-emaref_w3_c50-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-emaref_w3_c50-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-emaref_w3_c50-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-emaref_w6_c25-s2026092701",
+      "method": "Tri segment-local full-L gradient EMA AdamW reference emaref_w6_c25",
+      "purpose": "{'weight': 6.0, 'reference_cap': 0.25, 'reference_beta': 0.9}",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/configs/train__source_rx_6-repl-emaref_w6_c25-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/F/source_rx_6-repl-emaref_w6_c25-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 then own 30 epochs; all steps guarded",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/F/source_rx_6-repl-emaref_w6_c25-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/logs/train__source_rx_6-repl-emaref_w6_c25-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/configs/train__source_rx_6-repl-emaref_w6_c25-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/step_guard_metrics.jsonl.gz",
+        "source/segment50/step_guard_metrics.jsonl.gz",
+        "readouts/source_rx_6-repl-emaref_w6_c25-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-emaref_w6_c25-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-emaref_w6_c25-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-emaref_w6_c50-s2026092701",
+      "method": "Tri segment-local full-L gradient EMA AdamW reference emaref_w6_c50",
+      "purpose": "{'weight': 6.0, 'reference_cap': 0.5, 'reference_beta': 0.9}",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/configs/train__source_rx_6-repl-emaref_w6_c50-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/F/source_rx_6-repl-emaref_w6_c50-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 then own 30 epochs; all steps guarded",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/F/source_rx_6-repl-emaref_w6_c50-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/logs/train__source_rx_6-repl-emaref_w6_c50-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/configs/train__source_rx_6-repl-emaref_w6_c50-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/step_guard_metrics.jsonl.gz",
+        "source/segment50/step_guard_metrics.jsonl.gz",
+        "readouts/source_rx_6-repl-emaref_w6_c50-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-emaref_w6_c50-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-emaref_w6_c50-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-emaref_w3_c25-s2026092701",
+      "method": "Tri segment-local full-L gradient EMA AdamW reference emaref_w3_c25",
+      "purpose": "{'weight': 3.0, 'reference_cap': 0.25, 'reference_beta': 0.9}",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/configs/train__source_rx_6-repl-emaref_w3_c25-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/F/source_rx_6-repl-emaref_w3_c25-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 then own 30 epochs; all steps guarded",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/F/source_rx_6-repl-emaref_w3_c25-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/logs/train__source_rx_6-repl-emaref_w3_c25-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/configs/train__source_rx_6-repl-emaref_w3_c25-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/step_guard_metrics.jsonl.gz",
+        "source/segment50/step_guard_metrics.jsonl.gz",
+        "readouts/source_rx_6-repl-emaref_w3_c25-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-emaref_w3_c25-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-emaref_w3_c25-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-emaref_w3_c50-s2026092701",
+      "method": "Tri segment-local full-L gradient EMA AdamW reference emaref_w3_c50",
+      "purpose": "{'weight': 3.0, 'reference_cap': 0.5, 'reference_beta': 0.9}",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/configs/train__source_rx_6-repl-emaref_w3_c50-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/F/source_rx_6-repl-emaref_w3_c50-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 then own 30 epochs; all steps guarded",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/F/source_rx_6-repl-emaref_w3_c50-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/logs/train__source_rx_6-repl-emaref_w3_c50-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261116-phase1-pamf-repl-ema-reference-clean-m8-r01/configs/train__source_rx_6-repl-emaref_w3_c50-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/step_guard_metrics.jsonl.gz",
+        "source/segment50/step_guard_metrics.jsonl.gz",
+        "readouts/source_rx_6-repl-emaref_w3_c50-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-emaref_w3_c50-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-emaref_w3_c50-s2026092701/scores/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Reference gradient is beta=.9 EMA of full L gradients from the current source segment only; the first step initializes to the current full L and E31 starts a new EMA.",
+    "The actual AdamW reference step uses that EMA gradient at the current joint optimizer state; earlier optimizer moments remain.",
+    "The extra step relative to the EMA reference includes current L minus EMA and all U objectives; it is not a pure U contribution.",
+    "Both complete current L and ordinary CE anchor the extra step, which is capped at .25 or .5 of the EMA-reference actual step per group.",
+    "Only L_s gradients enter EMA; V supplies no gradients or persistent state; U truth only enters independent post-E50 diagnosis.",
+    "Source-only L-L batch variability motivates smoothing; seed and historical target outcomes were exposed, so results are exploratory."
+  ],
+  "registered_at": "2026-11-16T08:26:53+00:00"
+}
