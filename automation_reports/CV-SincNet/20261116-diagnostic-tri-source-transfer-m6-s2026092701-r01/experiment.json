@@ -1,0 +1,159 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261116-diagnostic-tri-source-transfer-m6-s2026092701-r01",
+  "group_id": "tri-gradient-settings-analysis",
+  "display_name": "Tri 六设置源接收机分项更新迁移诊断",
+  "description": "Existing E20/E30: source RX held-out true-label CE after disposable component-removal updates.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [
+    "tri-source-transfer"
+  ],
+  "tags": [
+    "PAMF",
+    "REPL",
+    "gradient",
+    "source-only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-paper-completion-m119-r03",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-11-16 user requested existing-checkpoint source component diagnosis and compute cost; no running experiment changes.",
+  "code": {
+    "commit": "release HEAD commit",
+    "checkout": "task worktree",
+    "environment": "N607 existing CVS-RFFI Python; CPU 2 threads; FP32",
+    "cwd": "PROJECT/releases/20261116-diagnostic-tri-source-transfer-m6-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Main/2/3/4/6-source ManySig and ten-class ManyRx, original immutable contracts",
+    "version": null,
+    "representation": null,
+    "contract_ref": "original paper source config source_contract",
+    "physical_ids_ref": "original paper source contract",
+    "label_map_ref": null,
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "true-label update and record-disjoint reference; held RX excluded per cell",
+      "U_s": "blind update input; held RX excluded except explicit two-RX auxiliary",
+      "V": "not read",
+      "target": "not read"
+    },
+    "train_ratio": "original fixed labeled/unlabeled/validation roles",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": "not applicable; source-only, no target query",
+    "leo_config_ref": "not applicable"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "single-step source transfer only; reference RX were seen during parent training"
+  },
+  "checkpoint": {
+    "initialization": "Disposable original Tri E20 and E30 checkpoints",
+    "sources": [
+      "20261027-phase1-pamf-paper-completion-m119-r03",
+      "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+    ],
+    "contract_check_ref": "tri_source_transfer.diagnostic.parent_config",
+    "provenance_verdict": "checked at execution: scratch, source-only, same seed and source contract",
+    "selection_rule": "One seed 2026092701; E20 and E30 native optimizer-restart boundaries; first/middle/last sorted source RX"
+  },
+  "execution": {
+    "host": "N607 ordinary user",
+    "launch_owner": "codex-tri-gradient-settings-analysis",
+    "gpu_policy": "CPU only, two CPU threads; no GPU workers",
+    "remote_run_root": "PROJECT/runs/20261116-diagnostic-tri-source-transfer-m6-s2026092701-r01",
+    "remote_log_root": "PROJECT/runs/20261116-diagnostic-tri-source-transfer-m6-s2026092701-r01/diagnostic.log",
+    "local_artifact_root": "local_artifacts/tri_source_transfer_20261116",
+    "launch_command": "python -m experiments.tri_source_transfer.diagnostic --runtime RUNTIME --output RUN_ROOT",
+    "stop_rule": "Abort on protocol, checkpoint, gradient closure, finite-value, reference overlap, or native backward mismatch. Never stop other processes."
+  },
+  "expected_artifacts": [
+    "observations.jsonl:38 snapshots and 304 disposable updates",
+    "complete.json",
+    "diagnostic.log",
+    "focused_checks.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "reference true-label CE",
+      "per-TX CE and correct count",
+      "conditional component benefit vs full U",
+      "full-U benefit vs L-only",
+      "component/reference gradient relations",
+      "native computation time and extra diagnostic time"
+    ],
+    "dimensions": [
+      "setting",
+      "checkpoint",
+      "held RX",
+      "reference mode",
+      "loss removal"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "six_settings-source-transfer-s2026092701",
+      "method": "Original Tri disposable updates",
+      "purpose": "Compare other-source-RX CE under full U and component removals",
+      "config_ref": "original paper source resolved_config",
+      "resolved_config_ref": "original paper source complete.json config",
+      "data_overrides": {
+        "settings": [
+          "main_split",
+          "source_rx_2",
+          "source_rx_3",
+          "source_rx_4",
+          "source_rx_6",
+          "ten_class"
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model2026092701; reference seed model+RX; update seed model+100*RX; same samples across checkpoint snapshots.",
+      "k": null,
+      "scenario": "source-only L and U; no target",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "E20/E30 x up to 3 held RX x 8 arms; two-source adds sample-disjoint mode",
+      "output_root": "PROJECT/runs/20261116-diagnostic-tri-source-transfer-m6-s2026092701-r01",
+      "log_path": "PROJECT/runs/20261116-diagnostic-tri-source-transfer-m6-s2026092701-r01/diagnostic.log",
+      "command": "python -m experiments.tri_source_transfer.diagnostic --runtime RUNTIME --output RUN_ROOT",
+      "expected_artifacts": [
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "CPU source-only diagnostic; no formal training and no new target evaluation.",
+    "E20/E30 use fresh AdamW moments as the original next segment does; not arbitrary mid-trajectory state.",
+    "All 5 U components reconstruct the original scalar and gradient; original cap1 guard recomputed for every removal.",
+    "Source true-label raw clean CE is an imperfect transfer proxy, not an unseen-RX or satellite performance claim.",
+    "Two-source strict leave-one-RX-out disables all cross-RX pair terms; auxiliary sample-disjoint mode measures them without a receiver-held-out claim.",
+    "Ordinary PL at Tri checkpoint is a one-step objective comparator, not a trained PL model.",
+    "Published test summaries only enter separate retrospective report; never diagnostic sampler or model update.",
+    "No source V/U truth/target inputs; all shadow models and optimizer states discarded."
+  ],
+  "registered_at": "2026-11-16T07:37:04+00:00"
+}
