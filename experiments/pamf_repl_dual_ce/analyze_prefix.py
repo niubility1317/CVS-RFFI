@@ -1,4 +1,4 @@
-"""Read the fixed E31–E35 source prefix of a live dual-anchor run."""
+"""Read fixed E31–E35/E40 source prefixes of a live dual-anchor run."""
 import argparse
 from collections import Counter,defaultdict
 import gzip
@@ -17,14 +17,16 @@ def records(path,steps):
 
 def analyze(folder,*,offset,steps):
     folder=Path(folder)
-    if offset!=30 or steps!=1110:raise ValueError('Only the fixed E31–E35 prefix is registered')
+    if offset!=30 or steps not in (1110,2220):
+        raise ValueError('Only fixed E31–E35 or E31–E40 prefixes are registered')
+    epoch_count=steps//222
     ancestor=json.loads((folder.parent/'segment30'/'complete.json').read_text(encoding='utf-8'))
     if (ancestor['status']!='SOURCE_FROZEN' or ancestor['epoch']!=10 or ancestor['updates']!=2220
             or ancestor['target_access'] or ancestor['U_truth_read']):
         raise ValueError('Matching source-only E30 ancestor required')
     epochs=[json.loads(x) for x in (folder/'metrics_epoch.jsonl').read_text(encoding='utf-8').splitlines() if x.strip()]
-    if len(epochs)<5 or [r['epoch'] for r in epochs[:5]]!=list(range(1,6)):
-        raise ValueError('All first five source validation epochs required')
+    if len(epochs)<epoch_count or [r['epoch'] for r in epochs[:epoch_count]]!=list(range(1,epoch_count+1)):
+        raise ValueError('All prefix source validation epochs required')
     sums=defaultdict(Counter);groups={g:Counter() for g in GROUPS};seen=accepted=n=0
     unique_seen=set();unique_accepted=set()
     paths=[folder/'step_metrics.jsonl.gz',folder/'step_guard_metrics.jsonl.gz',folder/'U_pseudo_observations.jsonl.gz']
@@ -63,15 +65,15 @@ def analyze(folder,*,offset,steps):
                 value=float(d[key])
                 if not math.isfinite(value):raise ValueError('Finite actual update telemetry required')
                 groups[group][key+'_sum']+=value
-    if n!=steps or any(sums[e]['steps']!=222 for e in range(31,36)):
-        raise ValueError('A complete E31–E35 aligned prefix is required')
+    if n!=steps or any(sums[e]['steps']!=222 for e in range(31,31+epoch_count)):
+        raise ValueError('A complete aligned source prefix is required')
     return dict(status='ANALYZED_LIVE_SOURCE_PREFIX_NOT_FROZEN',row_id=ancestor['config']['row_id'],
-        first_epoch=31,last_epoch=35,steps=steps,U_seen=seen,U_accepted=accepted,U_acceptance=accepted/seen,
+        first_epoch=31,last_epoch=30+epoch_count,steps=steps,U_seen=seen,U_accepted=accepted,U_acceptance=accepted/seen,
         unique_U_seen=len(unique_seen),unique_U_accepted=len(unique_accepted),
         epochs=[dict(epoch=offset+i+1,labeled_CE=sums[offset+i+1]['CE']/222,source_val_accuracy=row['val_tx_acc'])
-                for i,row in enumerate(epochs[:5])],groups={g:dict(v) for g,v in groups.items()},
+                for i,row in enumerate(epochs[:epoch_count])],groups={g:dict(v) for g,v in groups.items()},
         U_truth_read=False,target_inputs_read=False,
-        interpretation='Live E31–E35 prefix, not E50 or clean; CE is ordinary labeled CE, U counts are repeated exposures.')
+        interpretation='Live E31–E35 or E31–E40 prefix, not E50 or clean; CE is ordinary labeled CE, U counts are repeated exposures.')
 
 
 if __name__=='__main__':
