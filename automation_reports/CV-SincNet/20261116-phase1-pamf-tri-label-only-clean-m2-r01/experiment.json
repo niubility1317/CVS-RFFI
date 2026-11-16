@@ -1,0 +1,175 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261116-phase1-pamf-tri-label-only-clean-m2-r01",
+  "group_id": "phase1-pamf-repl-weight-clean",
+  "display_name": "Tri 固定重排仅有标签监督 clean 对照",
+  "description": "十类及六源各一个 seed，从零全程仅 L 训练 E50；自动 clean 测试。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "tri-label-only"
+  ],
+  "tags": [
+    "PAMF",
+    "supervised",
+    "clean"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "用户明确要求发布只使用标签样本的实验，并与普通 PL 比较。",
+  "code": {
+    "commit": "release HEAD",
+    "checkout": "task worktree",
+    "environment": "N607 existing CVS-RFFI Python",
+    "cwd": "PROJECT/releases/20261116-phase1-pamf-tri-label-only-clean-m2-r01-release"
+  },
+  "data": {
+    "dataset": "original ManyRx and m6-natural",
+    "version": null,
+    "representation": null,
+    "contract_ref": "original paper source contracts",
+    "physical_ids_ref": "original source and clean test contracts",
+    "label_map_ref": null,
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "train",
+      "U_s": "not opened",
+      "V": "validation"
+    },
+    "train_ratio": "original fixed source roles",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": "cross_date, cross_rx, cross_both; prediction before truth",
+    "leo_config_ref": "clean only; no satellite tests"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "frozen clean prediction then independent truth-last",
+    "external_method_exception": null,
+    "claim_scope": "target-exposed selected single seed; exploratory"
+  },
+  "checkpoint": {
+    "initialization": "scratch E20 followed by own E10 and own E20; no U at any epoch",
+    "sources": [],
+    "contract_check_ref": "own scratch trajectory, no inherited training checkpoint",
+    "provenance_verdict": "no inherited checkpoint; original E20 used only for disposable no-query smoke",
+    "selection_rule": "fixed final E50, both predeclared settings"
+  },
+  "execution": {
+    "host": "N607 ordinary user",
+    "launch_owner": "codex-20261116-phase1-pamf-tri-label-only-clean-m2-r01",
+    "gpu_policy": "GPU2,3,4,5,7; total <=5 processes per GPU including others and pending; reserve memory",
+    "remote_run_root": "PROJECT/runs/20261116-phase1-pamf-tri-label-only-clean-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261116-phase1-pamf-tri-label-only-clean-m2-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_tri_label_only_20261116",
+    "launch_command": "python -m experiments.pamf_tri_label_only.publish --repo REPO --output LOCAL --context CONTEXT --ssh-config CONFIG",
+    "stop_rule": "Stop dispatch on protocol, nonfinite, launch or systemic technical failure; preserve healthy jobs."
+  },
+  "expected_artifacts": [
+    "two real-checkpoint source-only no-query smokes",
+    "two scratch E50 source models",
+    "source training logs with U_actual=0",
+    "two raw clean predictions and independent truth-last scores",
+    "paired same-row comparison with existing PL and original Tri"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean accuracy",
+      "macro-F1",
+      "labeled CE",
+      "source V",
+      "U access count"
+    ],
+    "dimensions": [
+      "ten class and six source",
+      "seed 2026092701",
+      "clean cross_date/cross_rx/cross_both"
+    ],
+    "prediction_ref": "PROJECT/runs/20261116-phase1-pamf-tri-label-only-clean-m2-r01/readouts/ROW/predictions",
+    "scorer_ref": "PROJECT/runs/20261116-phase1-pamf-tri-label-only-clean-m2-r01/readouts/ROW/scores"
+  },
+  "rows": [
+    {
+      "row_id": "ten_class-tri-label-only-permuted-s2026092701",
+      "method": "Tri permuted full labeled-only supervision",
+      "purpose": "quantify clean effect of eliminating all unlabeled training",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-tri-label-only-clean-m2-r01/configs/train__ten_class-tri-label-only-permuted-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-tri-label-only-clean-m2-r01/F/ten_class-tri-label-only-permuted-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "historically selected using exposed target; exploratory",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "scratch E20+10+20, 11100 updates, no U",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-tri-label-only-clean-m2-r01/F/ten_class-tri-label-only-permuted-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-tri-label-only-clean-m2-r01/logs/train__ten_class-tri-label-only-permuted-s2026092701.log",
+      "command": "worker --kind train",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/ten_class-tri-label-only-permuted-s2026092701/predictions/complete.json",
+        "readouts/ten_class-tri-label-only-permuted-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-tri-label-only-permuted-s2026092701",
+      "method": "Tri permuted full labeled-only supervision",
+      "purpose": "quantify clean effect of eliminating all unlabeled training",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-tri-label-only-clean-m2-r01/configs/train__source_rx_6-tri-label-only-permuted-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-tri-label-only-clean-m2-r01/F/source_rx_6-tri-label-only-permuted-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "historically selected using exposed target; exploratory",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "scratch E20+10+20, 11100 updates, no U",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-tri-label-only-clean-m2-r01/F/source_rx_6-tri-label-only-permuted-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-tri-label-only-clean-m2-r01/logs/train__source_rx_6-tri-label-only-permuted-s2026092701.log",
+      "command": "worker --kind train",
+      "expected_artifacts": [
+        "source/complete.json",
+        "readouts/source_rx_6-tri-label-only-permuted-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-tri-label-only-permuted-s2026092701/scores/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No U IQ, U truth, pseudo labels or semi-supervised losses during training.",
+    "Full supervised loss backbone and channel augmentation retained; not a CE-only ablation.",
+    "Tri uses fixed permutation while historical ordinary PL uses natural order; disclose this difference.",
+    "Original checkpoint is used for no-query smoke only, never training initialization.",
+    "Seed and target already exposed; no independent blind performance claim."
+  ],
+  "registered_at": "2026-11-16T02:36:26+00:00"
+}

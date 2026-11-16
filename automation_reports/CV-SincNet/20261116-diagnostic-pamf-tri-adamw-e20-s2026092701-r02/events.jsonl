@@ -1,1 +1,3 @@
 {"at": "2026-11-16T00:12:30+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-16T02:15:48+00:00", "status": "RUNNING", "note": "CPU process, PID and CWD independently verified; focused unittest checks passed; awaiting output.", "evidence": ["runs/20261116-diagnostic-pamf-tri-adamw-e20-s2026092701-r02/submit.json"], "row_id": null}
+{"at": "2026-11-16T02:20:05+00:00", "status": "ANALYZED", "note": "Six source snapshots and twelve disposable steps complete; all 18 parameter-group incremental descent cosines negative; fresh moments only.", "evidence": ["local_artifacts/pamf_tri_adamw_source_20261116/diagnostic.log"], "row_id": null}
