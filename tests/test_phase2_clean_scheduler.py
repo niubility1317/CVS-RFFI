@@ -74,6 +74,32 @@ def test_five_worker_limit_reserves_unallocated_memory():
     assert len(choose(jobs,active,devices,[1],6000,5))==1
 
 
+def test_core_native_da_runs_only_when_both_baselines_are_missing(tmp_path):
+    parent=tmp_path/'parent';(parent/'capsules/P01/MIX01/1-1').mkdir(parents=True)
+    clean=tmp_path/'clean';dump(clean/'completion.json',{'status':'CLEAN_PAIRED_COMPLETE','parent_task_root':str(parent)})
+    cache=tmp_path/'cache';cache.mkdir();phase1=tmp_path/'phase1';phase1.mkdir()
+    source=tmp_path/'source';source.mkdir();(source/'source.pt').write_bytes(b'test')
+    rt=dict(clean_root=str(clean),data_root=str(parent),source_contract=dump(tmp_path/'contract.json',{}),
+            source_cache=str(cache),phase1_release=str(phase1),release_root=str(tmp_path),
+            additional_sources={'tweak_m1':{'2026092701':str(source)}})
+    cap='capsules/P01/MIX01/1-1';out=tmp_path/'run/task'
+    job=dict(profile='tweak_m1',seed=2026092701,capsule=cap,output=str(out),points=[[10,5]])
+    entry=dict(id='one',group='native_da',runtime=dump(tmp_path/'rt.json',rt),job=dump(tmp_path/'job.json',job),
+               completion=str(out/'complete.json'))
+    missing=[dict(capsule=cap,seed=2026092701,stage=stage,k=10,n=0) for stage in ('A0','B')]
+    proof=dump(tmp_path/'missing.json',dict(scope='MIX01-08 K5/10 N5/10',missing={'native_da/tweak_m1':missing}))
+    config=dict(run_root=str(tmp_path/'run'),jobs=[entry],max_per_gpu=2,minimum_free_MiB=6000,
+                input_condition='clean_ground_pre_satellite_normalized',phase='core_native_da',release_root=str(tmp_path),
+                allowed_gpus=[0,1],core_missing_file=proof)
+    assert validate_plan(config)['jobs']==1
+    dump(tmp_path/'missing.json',dict(scope='MIX01-08 K5/10 N5/10',missing={'native_da/tweak_m1':missing[:1]}))
+    with pytest.raises(ValueError,match='already scored or unverified'):
+        validate_plan(config)
+    dump(tmp_path/'job.json',dict(job,points=[[10,20]]))
+    with pytest.raises(ValueError,match='core'):
+        validate_plan(config)
+
+
 def test_seven_worker_mode_admits_one_per_snapshot_and_protects_memory():
     jobs=[dict(id=str(i)) for i in range(10)]
     active={str(i):dict(pid=i,gpu=1) for i in range(1,7)}

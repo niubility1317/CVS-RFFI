@@ -21,7 +21,7 @@ def validate_plan(config):
     require(config.get('numerical_policy','quarantine') in ('stop','quarantine'),'Wrong numerical policy')
     require(config.get('input_condition')=='clean_ground_pre_satellite_normalized','Wrong input condition')
     phase=config.get('phase')
-    require(phase in ('pilot','full'),'Unknown comparison phase')
+    require(phase in ('pilot','full','core_native_da'),'Unknown comparison phase')
     require(Path(config['release_root']).is_dir(),'Missing immutable release root')
     gpus=config.get('allowed_gpus',[])
     require(gpus and len(gpus)==len(set(gpus)) and all(type(g) is int and 0<=g<=7 for g in gpus),'Wrong GPU list')
@@ -32,6 +32,10 @@ def validate_plan(config):
                 'Seven-worker mode requires a 3000 MiB reservation and staggered admission')
     allowed_capsules={f'capsules/{p}/{e}/{r}' for p in POOLS for e in EPISODES for r in RECEIVERS}
     full_points={(t['capsule'],t['seed']):t['points'] for t in comparison_tasks()} if phase=='full' else {}
+    if phase=='core_native_da':
+        coverage=read(config['core_missing_file'])
+        require(coverage.get('scope')=='MIX01-08 K5/10 N5/10' and isinstance(coverage.get('missing'),dict),
+                'Invalid core missing-results inventory')
     identities=set()
     for entry in jobs:
         key=entry['id'];require(re.fullmatch(r'[A-Za-z0-9_-]+',key) is not None and key not in ids,'Invalid or duplicate job id');ids.add(key)
@@ -41,11 +45,22 @@ def validate_plan(config):
         capsules.add(job['capsule']);seeds.add(job['seed'])
         if phase=='pilot':
             require(job.get('points')==[[5,20]],'Pilot must use the fixed K5/N20 point')
-        else:
+        elif phase=='full':
             require(job.get('points')==full_points[(job['capsule'],job['seed'])],'Full task points differ from fixed matrix')
             identity=(group,job.get('profile','R42'),job['capsule'],job['seed'])
             require(identity not in identities,'Duplicate full task identity')
             identities.add(identity)
+        else:
+            points=job.get('points',[])
+            require(group=='native_da' and job['capsule'].split('/')[2].startswith('MIX') and
+                    len(points)==1 and points[0] in ([5,5],[10,5]),'Invalid core native DA scope')
+            k=points[0][0]; route='native_da/'+job.get('profile','')
+            absent={(x['capsule'],x['seed'],x['stage'],x['k'],x['n'])
+                    for x in coverage['missing'].get(route,[])}
+            require(all((job['capsule'],job['seed'],stage,k,0) in absent for stage in ('A0','B')),
+                    'Core baseline already scored or unverified')
+            identity=(group,job.get('profile'),job['capsule'],job['seed'],k)
+            require(identity not in identities,'Duplicate core task identity');identities.add(identity)
         require(group in ('pamf','native_da','native_cil','hybrid'),'Unknown group')
         require(rt.get('clean_root') and rt.get('data_root'),'Missing clean input binding')
         require(Path(rt['release_root']).resolve()==Path(config['release_root']).resolve(),'Worker release mismatch')
