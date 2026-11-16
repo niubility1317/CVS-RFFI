@@ -9,3 +9,5 @@
 独立 P0/P1 审查未发现阻断项，矩阵与 KL 只改变 U KL 的合成测试通过；真实 E20 smoke 与运行状态待发布后独立核验。
 
 **VERIFIED / SMOKE_WAITING_CAPACITY**：发布 commit `f531fc07851a3e2953019cac359cdcc99f2858b9` 的归档校验和远端编译通过。控制器 PID、工作目录、命令行和 64 个已登记任务已独立核对；现有 GPU 任务仍在运行，本批等待空闲容量，真实 E20 smoke、训练和评分尚未完成。
+
+全矩阵评分后使用 `experiments/pamf_repl_factorial_effects.py` 对全部预定行计算各 U 权重下融合对比与 U KL 的条件效应、交互项及权重效应，并对同一物理 ID 报告纠错／损伤及 TX／RX／日期分层。任何一行缺失或未独立评分均不生成完整矩阵结论；测试及 U 真值不用于训练或选模。
