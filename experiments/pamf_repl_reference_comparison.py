@@ -15,16 +15,21 @@ GROUPS=('t2','cls_head','other')
 def comparison_plan():
     return [dict(setting=s,weight=w,cap=c,comparison=name,baseline=base,candidate=candidate)
             for s in SETTINGS for w in WEIGHTS for c in CAPS
-            for name,base,candidate in (('CE_vs_full','full','CE'),('full_vs_dual','dual','full'),('CE_vs_dual','dual','CE'))]
+            for name,base,candidate in (('CE_vs_full','full','CE'),('full_vs_dual','dual','full'),('CE_vs_dual','dual','CE'),
+                ('EMA_vs_full','full','EMA'),('EMA_vs_CE','CE','EMA'),('EMA_vs_dual','dual','EMA'))]
 
 
 def read(path):return json.loads(Path(path).read_text(encoding='utf-8-sig'))
 
 
-def dominance_stats(source,cap):
+def dominance_stats(source,cap,mode=None):
     total={g:Counter() for g in GROUPS}
     for end,steps in ((30,2220),(50,4440)):
         p=Path(source)/f'segment{end}'/'step_guard_metrics.jsonl.gz';n=0
+        if mode=='EMA':
+            state=read(p.parent/'repl_state.json')['U_parameter_step_guard']
+            if state['reference_gradient_EMA_updates']!=steps or state['reference_gradient_beta']!=.9:
+                raise ValueError('Every source step must update the registered labeled-gradient EMA')
         with gzip.open(p,'rt',encoding='utf-8') as stream:
             for n,line in enumerate(stream,1):
                 value=json.loads(line)
@@ -45,15 +50,24 @@ def dominance_stats(source,cap):
                         total[group]['ratio_sum']+=ratio;total[group]['ratio_defined']+=1
                     if cosine is not None:
                         total[group]['cosine_sum']+=cosine;total[group]['cosine_defined']+=1
+                    if mode=='EMA':
+                        fact=value['reference']['current_full_L_vs_reference_gradient'][group]
+                        direction=fact['cosine']
+                        total[group]['current_L_vs_EMA_undefined']+=int(direction is None)
+                        if direction is not None:
+                            if not math.isfinite(direction):raise ValueError('Finite current L vs EMA direction required')
+                            total[group]['current_L_vs_EMA_cosine_sum']+=direction
+                            total[group]['current_L_vs_EMA_defined']+=1
+                            total[group]['current_L_vs_EMA_conflict']+=int(direction < -1e-6)
         if n!=steps:raise ValueError('All actual reference step records required')
     return {g:dict(v) for g,v in total.items()}
 
 
-def analyze(dual_root,full_root,ce_root):
+def analyze(dual_root,full_root,ce_root,ema_root):
     import numpy as np
     from experiments.pamf_repl_dual_ce.analyze_segment import analyze as segment
     from experiments.pamf_repl_weight.analyze_paired import compare,prediction
-    roots={k:Path(v) for k,v in dict(dual=dual_root,full=full_root,CE=ce_root).items()}
+    roots={k:Path(v) for k,v in dict(dual=dual_root,full=full_root,CE=ce_root,EMA=ema_root).items()}
     cells={};context=None
     for mode,root in roots.items():
         if read(root/'pipeline_state.json')['status']!='ANALYZED':
@@ -94,9 +108,10 @@ def analyze(dual_root,full_root,ce_root):
                 U=dict(seen=o['seen'],accepted=o['accepted'],accepted_correct=o['accepted_correct'],
                        acceptance=o['accepted']/o['seen'],accuracy=o['accepted_correct']/o['accepted'] if o['accepted'] else None,
                        unique_total=u['unique_U_total'],unique_accepted=u['unique_accepted']),
-                dominance=None if cap is None else dominance_stats(source,cap),
-                extra_semantics='U relative to full-L-only' if mode!='CE' else 'other L and U relative to ordinary CE-only')
-    expected={(m,s,w,c) for m in ('full','CE') for s in SETTINGS for w in WEIGHTS for c in CAPS}
+                dominance=None if cap is None else dominance_stats(source,cap,mode),
+                extra_semantics={'dual':'U relative to full-L-only','full':'U relative to full-L-only',
+                    'CE':'other L and U relative to ordinary CE-only','EMA':'current L minus EMA reference and all U'}[mode])
+    expected={(m,s,w,c) for m in ('full','CE','EMA') for s in SETTINGS for w in WEIGHTS for c in CAPS}
     expected.update(('dual',s,w,None) for s in SETTINGS for w in WEIGHTS)
     if set(cells)!=expected:raise ValueError('Complete matched reference matrices required')
     truths={}
@@ -121,10 +136,10 @@ def analyze(dual_root,full_root,ce_root):
     return dict(status='ANALYZED_MATCHED_REFERENCE_COMPARISONS',
         cells=[dict(key=list(key),**{k:v for k,v in value.items() if k!='entry'}) for key,value in sorted(cells.items(),key=lambda x:str(x[0]))],
         comparisons=comparisons,
-        interpretation='All fixed comparisons on previously exposed targets and selected seed; CE-reference extra step includes other L and U. No feedback to training or selection.')
+        interpretation='All fixed comparisons on previously exposed targets and selected seed; CE and EMA reference extra steps include supervised differences and U. No feedback to training or selection.')
 
 
 if __name__=='__main__':
     p=argparse.ArgumentParser()
-    for name in ('dual-root','full-root','ce-root'):p.add_argument('--'+name,required=True)
-    a=p.parse_args();print(json.dumps(analyze(a.dual_root,a.full_root,a.ce_root),ensure_ascii=False,allow_nan=False))
+    for name in ('dual-root','full-root','ce-root','ema-root'):p.add_argument('--'+name,required=True)
+    a=p.parse_args();print(json.dumps(analyze(a.dual_root,a.full_root,a.ce_root,a.ema_root),ensure_ascii=False,allow_nan=False))

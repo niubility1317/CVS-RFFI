@@ -7,3 +7,7 @@
 每步记录当前 L 与平滑梯度的方向、参考与实际参数更新方向及幅度、U 梯度、双锚点冲突、限幅和回退；每段记录源 V、U 接受率及无真值逐样本伪标签。E50 冻结后独立离线评分 U 真值，仅供诊断；clean cross_date、cross_rx、cross_both 预测固定后独立 truth-last 评分，主口径合并 cross_rx 与 cross_both，不跑星地或 weak。历史 target 和 seed 已曝光，全部预登记结果为探索性，测试与 U 真值不用于训练或选模。
 
 N607 普通账号，GPU 2、3、4 按空闲容量轮流选择，其他 owner 与待初始化任务均计入，只在检测为空闲的卡上启动；容量不足排队，已有健康进程不动。协议、非有限或系统技术失败停止新调度并保留已有产物。命令、数据合同、来源和输出见 `experiment.json`。独立 P0/P1 审查未发现阻断项，合成 EMA 与有历史动量实际 AdamW 测试通过；真实设备 smoke 与运行状态以发布后核验为准。
+
+**VERIFIED / SMOKE_WAITING_CAPACITY**：发布 commit `e209f9ae357cfa32fce73f5064e6b2ffc77dffd7` 的归档校验和远端编译通过；控制器 PID、工作目录、命令行及 32 个已登记任务独立核对。目标 GPU 目前被健康任务占用，本批等待空闲显卡后执行真实 E20 smoke，尚未训练或测试。
+
+四批完成后使用 `experiments/pamf_repl_reference_comparison.py` 按相同设置、U 权重、cap 和物理 ID 比较平滑参考、当前完整 L 参考、ordinary CE 参考与双锚点；完整读取当前 L 与 EMA 的梯度方向、各组实际更新限幅和回退，再报告源 V、离线 U 诊断及 clean 纠错／损伤。

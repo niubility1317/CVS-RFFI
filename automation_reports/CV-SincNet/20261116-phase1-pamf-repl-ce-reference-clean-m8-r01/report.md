@@ -10,4 +10,4 @@
 
 **VERIFIED / SMOKE_WAITING_CAPACITY**：发布 commit `11d47abbf3a39fdfb5ba1a41f844acf0b76ff3b9` 的归档校验和远端编译通过；控制器 PID、工作目录、命令行及 32 项已登记任务独立核对。目标显卡当前已有健康任务，等待空闲后执行真实 E20 smoke，尚无训练或测试结果。
 
-完成后使用 `experiments/pamf_repl_reference_comparison.py` 的固定矩阵，对同设置、种子、U 权重和 cap 的 CE 参考与完整 L 参考逐物理 ID 配对；两者还各自与无比例上限的双锚点同权重行比较。逐组验证实际参考步幅、角度、冲突和归零回退，附 clean 纠错／损伤、源 V 和独立 U 评分。任一预登记行未完成冻结与评分时不生成完整比较。
+完成后使用 `experiments/pamf_repl_reference_comparison.py` 的固定矩阵，对同设置、种子、U 权重和 cap 的 CE 参考、完整 L 参考、平滑 L 参考逐物理 ID 两两配对，并分别与无比例上限的双锚点同权重行比较。逐组验证实际参考步幅、角度、冲突和归零回退，附 clean 纠错／损伤、源 V 和独立 U 评分。任一预登记行未完成冻结与评分时不生成完整比较。
