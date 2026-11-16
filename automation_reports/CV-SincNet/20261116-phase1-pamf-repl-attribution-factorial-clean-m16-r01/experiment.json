@@ -1,0 +1,705 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01",
+  "group_id": "phase1-pamf-repl-weight-clean",
+  "display_name": "Tri 无标签损失机制与总权重完整因子归因",
+  "description": "十类、六源各按 U 权重、浅中层对比和外推增量组成 2×2×2 完整矩阵。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "tri-repl-clean-loss-weight"
+  ],
+  "tags": [
+    "PAMF",
+    "REPL",
+    "clean",
+    "gradient"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-paper-completion-m119-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-11-15 用户要求多发布几个实验，保留原有运行候选、每GPU最多5个进程。",
+  "code": {
+    "commit": "actual committed release identity in runtime.json",
+    "checkout": "isolated task worktree",
+    "environment": "N607 CVS-RFFI existing Python, FP32",
+    "cwd": "PROJECT/releases/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01-release"
+  },
+  "data": {
+    "dataset": "original ten-class ManyRx and six-source receiver contracts",
+    "version": null,
+    "representation": null,
+    "contract_ref": "context.handles per row protocol_id",
+    "physical_ids_ref": "original fixed source/test contracts",
+    "label_map_ref": null,
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "labeled training",
+      "U_s": "TX blind during training; frozen offline diagnostic only",
+      "V": "source validation"
+    },
+    "train_ratio": "original fixed labeled/unlabeled/validation roles",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": "fixed clean cross-date, cross-RX and double-cross; prediction before independent scoring",
+    "leo_config_ref": "not applicable: clean-only, no new satellite observations"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "frozen raw clean prediction; independent truth-last scoring",
+    "external_method_exception": null,
+    "claim_scope": "seed selected by previously exposed clean target; exploratory, not an independent blind evaluation"
+  },
+  "checkpoint": {
+    "initialization": "matching original same-setting original Tri E20 then own E10+E20",
+    "sources": [
+      "20261027-phase1-pamf-paper-completion-m119-r03"
+    ],
+    "contract_check_ref": "experiments.pamf_repl_component_guard.plan.parent and checked_e20_parent",
+    "provenance_verdict": "same source roles, physical IDs and original source-only E20, no target-trained checkpoint",
+    "selection_rule": "all registered candidates final E50; chosen seed based on exposed target; no result feedback into candidates"
+  },
+  "execution": {
+    "host": "N607 ordinary user",
+    "launch_owner": "codex-20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01",
+    "gpu_policy": "GPU2,3 distributed round-robin; all owners and pending workers count toward three processes per GPU",
+    "remote_run_root": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01",
+    "remote_log_root": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_repl_attribution_factorial_20261116",
+    "launch_command": "python -m experiments.pamf_repl_attribution_factorial.publish --repo REPO --output LOCAL --context CONTEXT --ssh-config CONFIG",
+    "stop_rule": "On protocol, nonfinite or launch failure stop new dispatch; preserve all outputs and healthy workers; no low-score stops."
+  },
+  "expected_artifacts": [
+    "16 real E20 checkpoint no-query smokes",
+    "16 own E30/E50 source continuations with all-step group gradients and 100-step component gradients",
+    "16 blind U observation trajectories and independent post-freeze U diagnostic scores",
+    "16 raw clean predictions and independent truth-last scores"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean accuracy and macro-F1",
+      "L CE and source validation",
+      "U pseudo acceptance, unique exposure coverage and independently scored correctness",
+      "group L/U gradients before and after native guard",
+      "sampled shallow, joint and extrapolation-increment gradients versus complete L"
+    ],
+    "dimensions": [
+      "ten-class and six-source",
+      "seed 2026092701",
+      "raw clean",
+      "TX/RX/day"
+    ],
+    "prediction_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/readouts/ROW/predictions",
+    "scorer_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/readouts/ROW/scores"
+  },
+  "rows": [
+    {
+      "row_id": "ten_class-repl-w6_s1_e1-s2026092701",
+      "method": "Tri original U guard factorial w6_s1_e1",
+      "purpose": "{'weight': 6.0, 'shallow_factor': 1.0, 'extrap_coefficient': 0.25}",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__ten_class-repl-w6_s1_e1-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/ten_class-repl-w6_s1_e1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 reused; own E21-E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/ten_class-repl-w6_s1_e1-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/logs/train__ten_class-repl-w6_s1_e1-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__ten_class-repl-w6_s1_e1-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "readouts/ten_class-repl-w6_s1_e1-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-w6_s1_e1-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-w6_s1_e1-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-w6_s1_e0-s2026092701",
+      "method": "Tri original U guard factorial w6_s1_e0",
+      "purpose": "{'weight': 6.0, 'shallow_factor': 1.0, 'extrap_coefficient': 0.0}",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__ten_class-repl-w6_s1_e0-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/ten_class-repl-w6_s1_e0-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 reused; own E21-E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/ten_class-repl-w6_s1_e0-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/logs/train__ten_class-repl-w6_s1_e0-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__ten_class-repl-w6_s1_e0-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "readouts/ten_class-repl-w6_s1_e0-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-w6_s1_e0-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-w6_s1_e0-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-w6_s0_e1-s2026092701",
+      "method": "Tri original U guard factorial w6_s0_e1",
+      "purpose": "{'weight': 6.0, 'shallow_factor': 0.0, 'extrap_coefficient': 0.25}",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__ten_class-repl-w6_s0_e1-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/ten_class-repl-w6_s0_e1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 reused; own E21-E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/ten_class-repl-w6_s0_e1-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/logs/train__ten_class-repl-w6_s0_e1-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__ten_class-repl-w6_s0_e1-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "readouts/ten_class-repl-w6_s0_e1-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-w6_s0_e1-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-w6_s0_e1-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-w6_s0_e0-s2026092701",
+      "method": "Tri original U guard factorial w6_s0_e0",
+      "purpose": "{'weight': 6.0, 'shallow_factor': 0.0, 'extrap_coefficient': 0.0}",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__ten_class-repl-w6_s0_e0-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/ten_class-repl-w6_s0_e0-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 reused; own E21-E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/ten_class-repl-w6_s0_e0-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/logs/train__ten_class-repl-w6_s0_e0-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__ten_class-repl-w6_s0_e0-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "readouts/ten_class-repl-w6_s0_e0-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-w6_s0_e0-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-w6_s0_e0-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-w3_s1_e1-s2026092701",
+      "method": "Tri original U guard factorial w3_s1_e1",
+      "purpose": "{'weight': 3.0, 'shallow_factor': 1.0, 'extrap_coefficient': 0.25}",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__ten_class-repl-w3_s1_e1-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/ten_class-repl-w3_s1_e1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 reused; own E21-E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/ten_class-repl-w3_s1_e1-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/logs/train__ten_class-repl-w3_s1_e1-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__ten_class-repl-w3_s1_e1-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "readouts/ten_class-repl-w3_s1_e1-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-w3_s1_e1-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-w3_s1_e1-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-w3_s1_e0-s2026092701",
+      "method": "Tri original U guard factorial w3_s1_e0",
+      "purpose": "{'weight': 3.0, 'shallow_factor': 1.0, 'extrap_coefficient': 0.0}",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__ten_class-repl-w3_s1_e0-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/ten_class-repl-w3_s1_e0-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 reused; own E21-E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/ten_class-repl-w3_s1_e0-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/logs/train__ten_class-repl-w3_s1_e0-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__ten_class-repl-w3_s1_e0-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "readouts/ten_class-repl-w3_s1_e0-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-w3_s1_e0-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-w3_s1_e0-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-w3_s0_e1-s2026092701",
+      "method": "Tri original U guard factorial w3_s0_e1",
+      "purpose": "{'weight': 3.0, 'shallow_factor': 0.0, 'extrap_coefficient': 0.25}",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__ten_class-repl-w3_s0_e1-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/ten_class-repl-w3_s0_e1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 reused; own E21-E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/ten_class-repl-w3_s0_e1-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/logs/train__ten_class-repl-w3_s0_e1-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__ten_class-repl-w3_s0_e1-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "readouts/ten_class-repl-w3_s0_e1-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-w3_s0_e1-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-w3_s0_e1-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-w3_s0_e0-s2026092701",
+      "method": "Tri original U guard factorial w3_s0_e0",
+      "purpose": "{'weight': 3.0, 'shallow_factor': 0.0, 'extrap_coefficient': 0.0}",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__ten_class-repl-w3_s0_e0-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/ten_class-repl-w3_s0_e0-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 reused; own E21-E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/ten_class-repl-w3_s0_e0-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/logs/train__ten_class-repl-w3_s0_e0-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__ten_class-repl-w3_s0_e0-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "readouts/ten_class-repl-w3_s0_e0-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-w3_s0_e0-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-w3_s0_e0-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-w6_s1_e1-s2026092701",
+      "method": "Tri original U guard factorial w6_s1_e1",
+      "purpose": "{'weight': 6.0, 'shallow_factor': 1.0, 'extrap_coefficient': 0.25}",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__source_rx_6-repl-w6_s1_e1-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/source_rx_6-repl-w6_s1_e1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 reused; own E21-E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/source_rx_6-repl-w6_s1_e1-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/logs/train__source_rx_6-repl-w6_s1_e1-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__source_rx_6-repl-w6_s1_e1-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "readouts/source_rx_6-repl-w6_s1_e1-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-w6_s1_e1-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-w6_s1_e1-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-w6_s1_e0-s2026092701",
+      "method": "Tri original U guard factorial w6_s1_e0",
+      "purpose": "{'weight': 6.0, 'shallow_factor': 1.0, 'extrap_coefficient': 0.0}",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__source_rx_6-repl-w6_s1_e0-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/source_rx_6-repl-w6_s1_e0-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 reused; own E21-E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/source_rx_6-repl-w6_s1_e0-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/logs/train__source_rx_6-repl-w6_s1_e0-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__source_rx_6-repl-w6_s1_e0-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "readouts/source_rx_6-repl-w6_s1_e0-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-w6_s1_e0-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-w6_s1_e0-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-w6_s0_e1-s2026092701",
+      "method": "Tri original U guard factorial w6_s0_e1",
+      "purpose": "{'weight': 6.0, 'shallow_factor': 0.0, 'extrap_coefficient': 0.25}",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__source_rx_6-repl-w6_s0_e1-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/source_rx_6-repl-w6_s0_e1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 reused; own E21-E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/source_rx_6-repl-w6_s0_e1-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/logs/train__source_rx_6-repl-w6_s0_e1-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__source_rx_6-repl-w6_s0_e1-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "readouts/source_rx_6-repl-w6_s0_e1-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-w6_s0_e1-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-w6_s0_e1-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-w6_s0_e0-s2026092701",
+      "method": "Tri original U guard factorial w6_s0_e0",
+      "purpose": "{'weight': 6.0, 'shallow_factor': 0.0, 'extrap_coefficient': 0.0}",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__source_rx_6-repl-w6_s0_e0-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/source_rx_6-repl-w6_s0_e0-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 reused; own E21-E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/source_rx_6-repl-w6_s0_e0-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/logs/train__source_rx_6-repl-w6_s0_e0-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__source_rx_6-repl-w6_s0_e0-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "readouts/source_rx_6-repl-w6_s0_e0-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-w6_s0_e0-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-w6_s0_e0-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-w3_s1_e1-s2026092701",
+      "method": "Tri original U guard factorial w3_s1_e1",
+      "purpose": "{'weight': 3.0, 'shallow_factor': 1.0, 'extrap_coefficient': 0.25}",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__source_rx_6-repl-w3_s1_e1-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/source_rx_6-repl-w3_s1_e1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 reused; own E21-E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/source_rx_6-repl-w3_s1_e1-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/logs/train__source_rx_6-repl-w3_s1_e1-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__source_rx_6-repl-w3_s1_e1-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "readouts/source_rx_6-repl-w3_s1_e1-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-w3_s1_e1-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-w3_s1_e1-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-w3_s1_e0-s2026092701",
+      "method": "Tri original U guard factorial w3_s1_e0",
+      "purpose": "{'weight': 3.0, 'shallow_factor': 1.0, 'extrap_coefficient': 0.0}",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__source_rx_6-repl-w3_s1_e0-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/source_rx_6-repl-w3_s1_e0-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 reused; own E21-E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/source_rx_6-repl-w3_s1_e0-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/logs/train__source_rx_6-repl-w3_s1_e0-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__source_rx_6-repl-w3_s1_e0-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "readouts/source_rx_6-repl-w3_s1_e0-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-w3_s1_e0-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-w3_s1_e0-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-w3_s0_e1-s2026092701",
+      "method": "Tri original U guard factorial w3_s0_e1",
+      "purpose": "{'weight': 3.0, 'shallow_factor': 0.0, 'extrap_coefficient': 0.25}",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__source_rx_6-repl-w3_s0_e1-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/source_rx_6-repl-w3_s0_e1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 reused; own E21-E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/source_rx_6-repl-w3_s0_e1-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/logs/train__source_rx_6-repl-w3_s0_e1-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__source_rx_6-repl-w3_s0_e1-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "readouts/source_rx_6-repl-w3_s0_e1-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-w3_s0_e1-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-w3_s0_e1-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-w3_s0_e0-s2026092701",
+      "method": "Tri original U guard factorial w3_s0_e0",
+      "purpose": "{'weight': 3.0, 'shallow_factor': 0.0, 'extrap_coefficient': 0.0}",
+      "config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__source_rx_6-repl-w3_s0_e0-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/source_rx_6-repl-w3_s0_e0-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "original same-contract E20 reused; own E21-E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/F/source_rx_6-repl-w3_s0_e0-s2026092701/source",
+      "log_path": "PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/logs/train__source_rx_6-repl-w3_s0_e0-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01/configs/train__source_rx_6-repl-w3_s0_e0-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "readouts/source_rx_6-repl-w3_s0_e0-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-w3_s0_e0-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-w3_s0_e0-s2026092701/scores/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Full 2×2×2 matrix per setting: U weight 6/3, shallow contrast on/off, extrapolation increment on/off.",
+    "When extrapolation is off, the replacement coefficient returns to ordinary CE so total CE allocation remains .5; it is not removal of all extrapolated CE without replacement.",
+    "The original native U gradient guard remains; no actual AdamW update projection is introduced in this matrix.",
+    "Source-only sampled component-gradient evidence motivated the factors; test and U truth are not used for training or selection.",
+    "Prior test results and the chosen seed were exposed, so all factorial effects are exploratory, not independent confirmation.",
+    "Every cell uses the same source-only E20 for its setting, own E30/E50, clean only, and post-freeze independent U scoring."
+  ],
+  "registered_at": "2026-11-16T07:09:05+00:00"
+}
