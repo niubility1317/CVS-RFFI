@@ -8,6 +8,10 @@
 
 不访问其他 owner；GPU4/5/7，总进程每卡不超过 5，按剩余显存准入。启动前独立 P0/P1 审查与定点复核、真实 E20 源数据无 query smoke（含可丢弃一次真实 AdamW clip/step 和投影）；在协议、非有限值或系统技术故障时停止新调度并保留产物。不得按低分停止。
 
+## 启动证据
+
+**VERIFIED / RUNNING**：执行 commit `c50f5f4af8bb47eca7a695d1bf90c2b18a14d075`。归档传输和远端编译通过；两设置的真实 E20 checkpoint 无 query smoke 均执行物理 clip、AdamW 步和实际参数投影并通过，副本更新丢弃。独立核实 controller 和两训练 worker 均运行在登记路径，两 worker 当前均在 GPU 4；逐步保护遥测及盲 U 伪标签记录文件均已创建并增长。训练、U 真值离线评分、clean 预测及评分均尚未完成。
+
 - run_id：`20261116-phase1-pamf-repl-adamw-guard-clean-m2-r01`
 - group_id：`phase1-pamf-repl-weight-clean`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)

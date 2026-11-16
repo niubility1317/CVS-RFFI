@@ -1,1 +1,2 @@
 {"at": "2026-11-16T02:56:24+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-16T03:01:05+00:00", "status": "RUNNING", "note": "Both real-checkpoint guarded AdamW smokes passed; two training workers verified on GPU 4 with growing guard and blind U observation files.", "evidence": ["runs/20261116-phase1-pamf-repl-adamw-guard-clean-m2-r01/pipeline_state.json"], "row_id": null}
