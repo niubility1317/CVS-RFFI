@@ -112,20 +112,25 @@ def run_score(config,job):
 
 
 def predecessor_done(config):
-    root=Path(config['wait_run'])/'scheduler'
-    if (root/'complete.json').is_file():return True
-    if not (root/'state.json').is_file():return False
-    state=read(root/'state.json')
-    return state.get('status') in ('FAILED','STOPPED') and not state.get('active')
+    roots=config.get('wait_runs') or [config['wait_run']]
+    for path in roots:
+        root=Path(path)/'scheduler'
+        if (root/'complete.json').is_file():continue
+        if not (root/'state.json').is_file():return False
+        state=read(root/'state.json')
+        if state.get('status') not in ('FAILED','STOPPED') or state.get('active'):return False
+    return True
 
 
 def dispatch(config,config_file):
     from .clean_scheduler import choose
     from .runner import occupancy
     mode=config.get('entry_module','satellite_native_c')
-    require(mode in ('satellite_native_c','satellite_tweak'),'Invalid satellite worker module')
+    require(mode in ('satellite_native_c','satellite_tweak','satellite_issl'),'Invalid satellite worker module')
     if mode=='satellite_tweak':
         from .satellite_tweak import verify_prediction as check_prediction
+    elif mode=='satellite_issl':
+        from .satellite_issl import verify_prediction as check_prediction
     else:check_prediction=verify_prediction
     root=Path(config['run_root']);require(not root.exists(),'Existing run root')
     root.mkdir(parents=True);control=root/'scheduler';control.mkdir();(control/'logs').mkdir()

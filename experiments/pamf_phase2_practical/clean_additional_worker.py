@@ -65,12 +65,13 @@ def run(rt,job):
         payload=dict(query_indices=q,predicted_indices=pred)
         if s['new_count']:payload['old_restricted_indices']=old
         np.savez_compressed(root/name,**payload)
-        label='tweak_m1_single_v1' if satellite and profile=='tweak_m1' else profile
+        label=('tweak_m1_single_v1' if profile=='tweak_m1' else 'issl_fixed_v1_long_v1') if satellite else profile
         rows.append(dict(split_id=s['split_id'],stage=stage,arm=label,input_path='S0Q0',
             input_condition='satellite_received' if satellite else 'clean_ground_pre_satellite_normalized',prediction=name,k=s['k'],
             new_count=s['new_count'],registered_classes=s['registered_classes'],query_count=len(q),
             query_records_per_decision=batch if profile=='tweak_m1' else 1))
     for k in sorted({k for k,n in points}):
+        if satellite and profile=='issl_fixed_v1' and job.get('skip_a0',False):continue
         s=specs[k,0];task=get(s,'A');save(s,'A0',task,bundle)
         if profile=='tweak_m1':
             task=get(s,'B');sx=tensor(task['support_x'],device)
