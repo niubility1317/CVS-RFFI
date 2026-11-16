@@ -36,7 +36,9 @@ def direct_issl(bundle, new_x, new_y, seed, logger=None):
 
 
 def run(rt,job):
-    require(rt.get('clean_root') and rt.get('data_root'), 'Clean and parent roots required')
+    satellite=rt.get('input_condition')=='satellite_received'
+    require(rt.get('data_root') and ((satellite and not rt.get('clean_root')) or
+            (not satellite and rt.get('clean_root'))), 'Wrong input binding')
     profile=job['profile'];require(profile in ('tweak_m1','issl_fixed_v1'), 'Unexpected method')
     points=sorted(set(tuple(map(int,p)) for p in job['points']))
     require(points and all(k in (1,5,10,20) and n in (2,5,10,20) for k,n in points), 'Invalid workpoints')
@@ -52,6 +54,7 @@ def run(rt,job):
     require(all((k,0) in specs and (k,n) in specs for k,n in points),'Missing split')
     root=Path(job['output']);root.mkdir(parents=True,exist_ok=False);rows=[];start=time.perf_counter()
     def get(s,stage):
+        if satellite:return load_task(cap,s['split_id'],stage=stage)
         return load_task(cap,s['split_id'],stage=stage,clean_root=rt['clean_root'],task_root=rt['data_root'])
     def save(s,stage,task,state):
         # M1 is a physical query decision of exactly one IQ record per call.
@@ -62,8 +65,9 @@ def run(rt,job):
         payload=dict(query_indices=q,predicted_indices=pred)
         if s['new_count']:payload['old_restricted_indices']=old
         np.savez_compressed(root/name,**payload)
-        rows.append(dict(split_id=s['split_id'],stage=stage,arm=profile,input_path='S0Q0',
-            input_condition='clean_ground_pre_satellite_normalized',prediction=name,k=s['k'],
+        label='tweak_m1_single_v1' if satellite and profile=='tweak_m1' else profile
+        rows.append(dict(split_id=s['split_id'],stage=stage,arm=label,input_path='S0Q0',
+            input_condition='satellite_received' if satellite else 'clean_ground_pre_satellite_normalized',prediction=name,k=s['k'],
             new_count=s['new_count'],registered_classes=s['registered_classes'],query_count=len(q),
             query_records_per_decision=batch if profile=='tweak_m1' else 1))
     for k in sorted({k for k,n in points}):

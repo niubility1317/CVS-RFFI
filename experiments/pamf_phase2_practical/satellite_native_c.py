@@ -122,6 +122,11 @@ def predecessor_done(config):
 def dispatch(config,config_file):
     from .clean_scheduler import choose
     from .runner import occupancy
+    mode=config.get('entry_module','satellite_native_c')
+    require(mode in ('satellite_native_c','satellite_tweak'),'Invalid satellite worker module')
+    if mode=='satellite_tweak':
+        from .satellite_tweak import verify_prediction as check_prediction
+    else:check_prediction=verify_prediction
     root=Path(config['run_root']);require(not root.exists(),'Existing run root')
     root.mkdir(parents=True);control=root/'scheduler';control.mkdir();(control/'logs').mkdir()
     write(control/'owner.json',dict(pid=os.getpid(),cwd=str(Path.cwd()),argv=sys.argv))
@@ -133,7 +138,7 @@ def dispatch(config,config_file):
             if code is None:continue
             item['log'].close();job=item['job'];del active[key]
             try:
-                if code==0:verify_prediction(job);done.append(key);queue.append(job);continue
+                if code==0:check_prediction(job);done.append(key);queue.append(job);continue
                 marker=read(Path(job['output'])/'numerical_failure.json')
                 valid=(job['profile']=='mopc_hr' and marker.get('status')=='MOPC_NUMERICAL_FAILURE' and
                        all(marker.get(k)==job.get(k) for k in ('profile','capsule','seed')) and
@@ -152,7 +157,7 @@ def dispatch(config,config_file):
             job=queue.pop(0);log=None
             try:
                 log=(control/'logs'/(job['id']+'-score.log')).open('x')
-                cmd=[sys.executable,'-u','-m',__package__+'.satellite_native_c','score','--config',config_file,'--job-id',job['id']]
+                cmd=[sys.executable,'-u','-m',__package__+'.'+mode,'score','--config',config_file,'--job-id',job['id']]
                 proc=subprocess.Popen(cmd,cwd=config['release_root'],stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT)
                 scorer=dict(job=job,log=log,proc=proc)
             except OSError as exc:
@@ -170,7 +175,7 @@ def dispatch(config,config_file):
                 job=next(j for j in pending if j['id']==entry['id']);log=None
                 try:
                     log=(control/'logs'/(job['id']+'.log')).open('x')
-                    cmd=[sys.executable,'-u','-m',__package__+'.satellite_native_c','worker','--config',config_file,'--job-id',job['id']]
+                    cmd=[sys.executable,'-u','-m',__package__+'.'+mode,'worker','--config',config_file,'--job-id',job['id']]
                     env=dict(os.environ,CUDA_VISIBLE_DEVICES=str(gpu),OMP_NUM_THREADS='1',MKL_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1')
                     proc=subprocess.Popen(cmd,cwd=config['release_root'],env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT)
                 except OSError as exc:
