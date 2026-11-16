@@ -12,6 +12,17 @@
 
 **VERIFIED / RUNNING**：执行 commit `40bc82f9c311d388a1f967847f37ef145fc4bccd`；归档传输和远端编译通过，真实 checkpoint 无 query smoke 通过。独立检查 controller 与两个训练 worker 的 PID、CWD、命令和 GPU，十类在 GPU 2、六源在 GPU 3；初始日志均记录 `init=scratch`、U 训练样本 0、伪标签阶段 0。两行预测与评分尚未完成，必须等待实际冻结及独立评分。
 
+## 既有自然顺序监督与 PL 对照
+
+读取历史 `20261024-phase1-PAMF-REPL-completion-m201-r01` 的同 seed 冻结模型与独立 truth-last clean 评分；监督和 PL 同设置分别使用相同源合同、source RX/day 和样本量，均为 E50/11100 步。监督模型的记录为 `U_enabled=false`、U seen=0。以下主指标按 cross_rx 与 cross_both 的正确数及样本数加权；cross_date 单列。这些历史模型记录 `historical_posthoc_selection_disclosed=true`，而本 seed 也根据已曝光目标选取，因此仅作探索性比较。
+
+|设置|自然顺序纯监督|普通 PL|监督减 PL|监督跨日期|PL 跨日期|
+|---|---:|---:|---:|---:|---:|
+|十类|83.9995%|84.1994%|−0.2000 pp|87.3813%|87.6403%|
+|六源|86.6764%|86.4285%|+0.2479 pp|94.1139%|94.2667%|
+
+该结果表明在所选单 seed、六源跨接收机合并口径中，普通 PL 本身已比纯监督低；不能预设只要超过 PL 就超过监督。十类自然顺序监督比 PL 低约 0.20 pp。新 run 的监督模型采用 Tri 固定重排，与历史自然顺序监督不同，待冻结评分后单列结果，不用历史分数替代其结果。原始评分、完成状态和源合同元数据副本在 `local_artifacts/pamf_tri_label_only_20261116/`。
+
 - run_id：`20261116-phase1-pamf-tri-label-only-clean-m2-r01`
 - group_id：`phase1-pamf-repl-weight-clean`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
