@@ -2,6 +2,25 @@ import unittest
 
 
 class ReferenceDominanceTests(unittest.TestCase):
+    def test_adaptive_inward_repair_retains_feasible_nonzero_extra_step(self):
+        import torch
+        from experiments.pamf_repl_reference_dominance.projection import cap_extra_to_reference
+        p=torch.nn.Parameter(torch.tensor([1e-6],dtype=torch.float32))
+        ulp=float(torch.nextafter(p.detach(),torch.tensor([float('inf')]))-p.detach())
+        before=(p.detach().clone(),);baseline=((p.detach().double()-19*ulp).float(),)
+        proposed=((baseline[0].double()-19*ulp).float(),)
+        details={'cls_head':{'raw_increment_norm':19*ulp,'quantization_fallback':False,
+                 'anchor_cosines_after':{},'constraint_dots_after':{},'near_zero_component_anchors_omitted':['L_As']}}
+        values,facts=cap_extra_to_reference([('x.cls_head.weight',p)],before,baseline,proposed,
+            (torch.tensor([1.]),),(torch.tensor([1.]),),(None,),details,.25,
+            inward_factors=(1.,.9999,.999,.99,.95,.9,.75,.5))
+        actual=float((baseline[0].double()-values[0].double()).norm())
+        ref=float((before[0].double()-baseline[0].double()).norm())
+        self.assertGreater(actual,0.)
+        self.assertLessEqual(actual,.25*ref*(1+1e-6))
+        self.assertFalse(facts['cls_head']['reference_rounding_fallback'])
+        self.assertTrue(facts['cls_head']['reference_cap_repair_used'])
+
     def test_small_nonzero_reference_never_exceeds_relative_cap(self):
         import torch
         from experiments.pamf_repl_reference_dominance.projection import cap_extra_to_reference
