@@ -9,3 +9,5 @@
 实际发布：旧 watcher PID 284205、1473723 在确认 WAITING、无子进程后以 pidfd 精确停止并核实退出；MoPC 控制器 1473542 保持运行。逐任务评分 owner PID 2726877，实际四个 CPU worker；首批扫描发现 27408 个可评分任务，初次进度已有 862 项评分完成、发现错误 0，队列持续处理，尚未完成全部评分。预测任务完成后新结果与存量结果交替入队。统计口径为每个独立来源任务及其现有 K/N，不跨方法版本合并。
 
 首个已评分的指定检查例 `20261113-phase2-clean-hybrid-pilot-r01/hybrid-dadda_sda-00`：P01/MIX01、RX1-1、seed2026092701、clean raw、K5/N20、26471 条 query。DADDA→Orthogonal 的 overall accuracy 31.63%、旧类 macro accuracy 0%、新类 macro accuracy 49.07%、macro H 0%；DADDA→LoRa 分别为 55.71%、68.74%、50.70%、58.35%。两者属于同 B 的单个 pilot 任务，不代表全部实验；该 pilot 仅 K5，common-K 无法计算。不得用这些目标结果改变正在运行的固定配方。
+
+独立复算 Orthogonal 该行 8373/26471，准确率与生成结果一致。后续实时检查已有 1197 个任务评分完成、发现错误 0；新完成预测已进入发现范围，MoPC 控制器仍运行、failed=[]、quarantined=[]。此为运行中快照，不代表剩余评分完成。
