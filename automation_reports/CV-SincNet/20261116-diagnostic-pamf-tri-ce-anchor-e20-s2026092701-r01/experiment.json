@@ -1,0 +1,142 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261116-diagnostic-pamf-tri-ce-anchor-e20-s2026092701-r01",
+  "group_id": "phase1-pamf-repl-weight-clean",
+  "display_name": "Tri 有标签 CE 与完整监督锚点源域诊断",
+  "description": "十类和六源原始 E20 各三批，测量 CE 与完整 L、U 梯度及 fresh-moment AdamW 实际增量关系。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [
+    "tri-adamw-source"
+  ],
+  "tags": [
+    "PAMF",
+    "REPL",
+    "gradient",
+    "source-only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-paper-completion-m119-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求优化 Tri 梯度冲突并详细记录；不改变当前 U 标签权限。",
+  "code": {
+    "commit": "release HEAD commit",
+    "checkout": "task worktree",
+    "environment": "N607 ordinary account, existing CVS-RFFI Python, CPU 2, FP32",
+    "cwd": "PROJECT/releases/20261116-diagnostic-pamf-tri-ce-anchor-e20-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "original ten-class ManyRx and six-source receiver contracts",
+    "version": null,
+    "representation": null,
+    "contract_ref": "original paper source config source_contract",
+    "physical_ids_ref": "original paper source contract",
+    "label_map_ref": null,
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "visible TX",
+      "U_s": "source IQ, TX hidden",
+      "V": "not read"
+    },
+    "train_ratio": "original fixed labeled/unlabeled/validation roles",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": "not applicable; source-only, no target query",
+    "leo_config_ref": "not applicable"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "six correlated source snapshots, fresh AdamW moments only"
+  },
+  "checkpoint": {
+    "initialization": "matching original paper same-setting scratch E20",
+    "sources": [
+      "20261027-phase1-pamf-paper-completion-m119-r03"
+    ],
+    "contract_check_ref": "checked_e20_parent plus paper.validate_config",
+    "provenance_verdict": "checked at execution: scratch, source-only, same seed and source contract",
+    "selection_rule": "both original user-requested settings, fixed seed and first three source batches"
+  },
+  "execution": {
+    "host": "N607 ordinary user",
+    "launch_owner": "codex-20261116-diagnostic-pamf-tri-ce-anchor-e20-s2026092701-r01",
+    "gpu_policy": "CPU only, two CPU threads; no GPU workers",
+    "remote_run_root": "PROJECT/runs/20261116-diagnostic-pamf-tri-ce-anchor-e20-s2026092701-r01",
+    "remote_log_root": "PROJECT/runs/20261116-diagnostic-pamf-tri-ce-anchor-e20-s2026092701-r01/diagnostic.log",
+    "local_artifact_root": "local_artifacts/pamf_tri_ce_anchor_20261116",
+    "launch_command": "python -m experiments.pamf_repl_weight.source_ce_anchor EXISTING_RUNTIME_JSON",
+    "stop_rule": "Stop diagnostic on identity, role, finite-value, derivative or guard-backward mismatch; do not affect other jobs."
+  },
+  "expected_artifacts": [
+    "two original E20 checkpoint no-query source smokes",
+    "six source batches, six extra CE derivatives and 24 disposable fresh-moment AdamW shadow steps",
+    "CE vs complete L, raw/protected U and actual extra descent per parameter group"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source labeled CE and complete L gradient norms and cosine",
+      "CE versus raw and protected U gradients",
+      "CE versus actual extra first-step AdamW descent"
+    ],
+    "dimensions": [
+      "ten-class and six-source",
+      "three fixed source batches",
+      "t2, cls_head, other"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "both_settings-source-ce-anchor-e20-s2026092701",
+      "method": "original Tri-SIG-TIME",
+      "purpose": "compare existing labeled CE and complete L to protected U and actual AdamW first-step increment",
+      "config_ref": "original paper source resolved_config",
+      "resolved_config_ref": "original paper source complete.json config",
+      "data_overrides": {
+        "protocol_id": [
+          "ManyRx",
+          "m6-natural"
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed offsets 0/1/2 use CPU random seeds 2026092701+offset.",
+      "k": null,
+      "scenario": "source-only L and U; no target",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "6 disposable source batches, 6 extra CE gradients, 24 disposable AdamW first steps",
+      "output_root": "PROJECT/runs/20261116-diagnostic-pamf-tri-ce-anchor-e20-s2026092701-r01",
+      "log_path": "PROJECT/runs/20261116-diagnostic-pamf-tri-ce-anchor-e20-s2026092701-r01/diagnostic.log",
+      "command": "source_ce_anchor with both fixed settings",
+      "expected_artifacts": [
+        "diagnostic.log contains complete JSON result"
+      ]
+    }
+  ],
+  "notes": [
+    "No target, source V or U TX truth is read; no training state is persisted.",
+    "Six source snapshots share two fixed E20 models; not independent seeds or a full optimizer trajectory.",
+    "All optimizer shadows use fresh moments; local directional observations cannot prove test performance.",
+    "The historically target-exposed seed is used only for the fixed source diagnostic."
+  ],
+  "registered_at": "2026-11-16T05:13:55+00:00"
+}
