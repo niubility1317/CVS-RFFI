@@ -148,7 +148,7 @@ def predict(rt,job):
     torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False
     profile,seed=job['profile'],job['seed'];r=row(profile);device='cuda:0'
     bundle=load_source(source_scope(rt),profile,seed,device)
-    if rt.get('clean_root'):
+    if rt.get('clean_root') or job.get('satellite_ks'):
         from .clean_source_smoke import check
         check(rt,bundle)
     model=bundle['model'];model.eval();before={k:v.detach().clone() for k,v in model.state_dict().items()}
@@ -158,6 +158,13 @@ def predict(rt,job):
     specs=[read(p) for p in (cap/'splits').glob('*.json')];lookup={(s['k'],s['new_count']):s for s in specs}
     Ks,Cs=workpoints(manifest['episode_id']);rows=[];B_support_features={}
     clean_root=rt.get('clean_root')
+    if job.get('satellite_ks') is not None:
+        from .satellite_native_da import validate_scope
+        Ks=validate_scope(job)
+        require(not clean_root and r['category']=='DA' and
+                manifest['episode_id']==job['capsule'].split('/')[2],
+                'Explicit satellite scope requires the matching native DA task')
+        Cs=[]
     if job.get('reuse') is not None:
         require(clean_root and profile=='mopc_hr','Only clean native MoPC may reuse pilot rows')
         from .clean_mopc_reuse import copy_pilot_rows
