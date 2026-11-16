@@ -1,0 +1,37 @@
+# Tri 完整监督目标 AdamW 增量保护 clean 对照
+
+## 固定研究方案
+
+十类和六源，seed `2026092701`，各自复用同合同 source-only 原 Tri E20，续训 E21–E50。保持原无标签权重 6、伪标签阈值、所有 REPL 分量和原梯度守卫。每步在真实更新前复制当前参数及 AdamW 动量，算一份同状态 L-only 参考；将真实 L+U 更新相对于该参考的增量按参数组投影至完整 L 梯度非负半空间。原联合 AdamW 动量保留，不另外约束监督分支；记录实际参数投影后约束、每组与全局增量保留率及数值回退。该约束不保证监督损失或目标性能必然提升，动量仍可能携带历史 U 影响。
+
+训练只记录 U 物理 ID、伪类别、置信度、接受状态及训练步，不读取 U 真值。每行完成 E50 冻结后，独立评分进程根据源 U 物理 ID 构造真实类别，只输出正确率所需聚合；结果不反馈训练或选模。逐曝光正确率和去重覆盖率分开；原先没有逐样本日志的历史训练不伪称可恢复。冻结后自动 clean 三集合预测并独立 truth-last 评分；与同 seed PL、原 Tri 和纯监督对照，目标已曝光，结果为探索性。
+
+不访问其他 owner；GPU4/5/7，总进程每卡不超过 5，按剩余显存准入。启动前独立 P0/P1 审查与定点复核、真实 E20 源数据无 query smoke（含可丢弃一次真实 AdamW clip/step 和投影）；在协议、非有限值或系统技术故障时停止新调度并保留产物。不得按低分停止。
+
+- run_id：`20261116-phase1-pamf-repl-adamw-guard-clean-m2-r01`
+- group_id：`phase1-pamf-repl-weight-clean`；类别：`cvs`；阶段：`Phase1`
+- 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
+- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+
+## 目的与对照
+
+十类与六源各一行，保护相对当前状态 L-only 的实际 AdamW 增量，并离线统计 U 真值正确率。
+
+## 数据、seed与模型来源
+
+实际数据契约、权限例外、完整seed角色、checkpoint来源和选择规则见experiment.json。
+逐行配置通过config_ref/resolved_config_ref定位；待补项必须在对应生命周期补齐。
+
+## 执行与存储
+
+命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
+实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
+
+## 结果与覆盖
+
+尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+
+## 交接
+
+记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。

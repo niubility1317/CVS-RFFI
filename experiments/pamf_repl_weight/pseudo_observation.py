@@ -49,12 +49,14 @@ class PseudoObservationMixin:
     """Opt-in mixin for future REPL objectives; no predictions alter a loss."""
     def validate_unlabeled_batch(self,batch):
         super().validate_unlabeled_batch(batch)
+        if self.c.get('hard_pl_smoke'):return
         if getattr(self,'_observation_batch',None) is not None:
             raise ValueError('Previous U observation was not consumed')
         self._observation_batch=batch
 
     def accept_pseudo(self,student,x,confidence,pseudo):
         accepted=super().accept_pseudo(student,x,confidence,pseudo)
+        if self.c.get('hard_pl_smoke'):return accepted
         batch=getattr(self,'_observation_batch',None)
         if batch is None:raise ValueError('Observed decisions require their original blind U batch')
         writer=getattr(self,'_pseudo_observation_writer',None)
