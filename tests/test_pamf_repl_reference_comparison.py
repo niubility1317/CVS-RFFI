@@ -14,7 +14,7 @@ class ReferenceComparisonTests(unittest.TestCase):
             path.parent.mkdir(parents=True,exist_ok=True)
             path.write_text(json.dumps(value),encoding='utf-8')
         with tempfile.TemporaryDirectory() as tmp:
-            project=Path(tmp);roots={m:project/'runs'/m for m in ('dual','full','CE','EMA')}
+            project=Path(tmp);roots={m:project/'runs'/m for m in ('dual','full','CE','EMA','repair')}
             truth={'a':{'label':0,'receiver':'r1','day':'d1'},'b':{'label':1,'receiver':'r2','day':'d2'}}
             handles={};predictions={}
             for setting,protocol in (('ten_class','ManyRx'),('source_rx_6','m6-natural')):
@@ -26,7 +26,7 @@ class ReferenceComparisonTests(unittest.TestCase):
                 sources={}
                 for setting,protocol in (('ten_class','ManyRx'),('source_rx_6','m6-natural')):
                     for weight in (3.,6.):
-                        for cap in ((None,) if mode=='dual' else (.25,.5)):
+                        for cap in ((None,) if mode=='dual' else ((.25,) if mode=='repair' else (.25,.5))):
                             rid=f'{setting}-{mode}-{weight}-{cap}';source=root/'F'/rid/'source';pred=root/'readouts'/rid/'predictions';score=root/'readouts'/rid/'scores';u=root/'readouts'/rid/'U_diagnostic'
                             recipe={'weight':weight}
                             if cap is not None:recipe['reference_cap']=cap
@@ -51,6 +51,25 @@ class ReferenceComparisonTests(unittest.TestCase):
             ce_full=next(r for r in result['comparisons'] if r['comparison']=='CE_vs_full')
             self.assertEqual(ce_full['delta_pp'],-50.)
             self.assertEqual(ce_full['combined']['damage'],2)
+            with patch('experiments.pamf_repl_dual_ce.analyze_segment.analyze',return_value={}), \
+                 patch('experiments.pamf_repl_reference_comparison.dominance_stats',return_value={}), \
+                 patch('experiments.pamf_repl_weight.analyze_paired.prediction',side_effect=lambda folder,task:predictions[str(folder)]):
+                repair=analyze(None,roots['full'],None,None,roots['repair'],repair_only=True)
+                combined=analyze(roots['dual'],roots['full'],roots['CE'],roots['EMA'],roots['repair'])
+            self.assertEqual(len(repair['cells']),12)
+            self.assertEqual(len(repair['comparisons']),4)
+            self.assertTrue(all(row['comparison']=='repair_vs_full' and row['delta_pp']==-50.
+                                for row in repair['comparisons']))
+            self.assertEqual(len(combined['comparisons']),52)
+            repair_pred=next(k for k in predictions if '/repair/' in k.replace('\\','/'))
+            original=predictions[repair_pred]
+            predictions[repair_pred]=(np.array(['a','wrong']),original[1])
+            with patch('experiments.pamf_repl_dual_ce.analyze_segment.analyze',return_value={}), \
+                 patch('experiments.pamf_repl_reference_comparison.dominance_stats',return_value={}), \
+                 patch('experiments.pamf_repl_weight.analyze_paired.prediction',side_effect=lambda folder,task:predictions[str(folder)]):
+                with self.assertRaisesRegex(ValueError,'physical IDs'):
+                    analyze(None,roots['full'],None,None,roots['repair'],repair_only=True)
+            predictions[repair_pred]=original
             first=next(iter(predictions));predictions[first]=(np.array(['a','wrong']),np.array([0,1]))
             with patch('experiments.pamf_repl_dual_ce.analyze_segment.analyze',return_value={}), \
                  patch('experiments.pamf_repl_reference_comparison.dominance_stats',return_value={}), \
@@ -62,7 +81,8 @@ class ReferenceComparisonTests(unittest.TestCase):
         def group(ratio):
             return dict(reference_dominance_checked=True,reference_extra_cap=.25,
                 reference_extra_ratio=ratio,reference_dominance_cosine=.99,
-                reference_zero_fallback=False,reference_rounding_fallback=False)
+                reference_zero_fallback=False,reference_rounding_fallback=False,
+                reference_cap_repair_attempts=2,reference_cap_repair_used=True,reference_cap_repair_nonzero=True)
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp)
             for end,steps in ((30,2220),(50,4440)):
@@ -79,6 +99,9 @@ class ReferenceComparisonTests(unittest.TestCase):
             self.assertEqual(facts['t2']['reference_rounding_fallback'],0)
             ema=dominance_stats(root,.25,'EMA')
             self.assertEqual(ema['t2']['current_L_vs_EMA_conflict'],6660)
+            repair=dominance_stats(root,.25,'repair')
+            self.assertEqual(repair['t2']['reference_cap_repair_attempts'],13320)
+            self.assertEqual(repair['t2']['reference_cap_repair_nonzero'],6660)
             with gzip.open(root/'segment30'/'step_guard_metrics.jsonl.gz','wt',encoding='utf-8') as stream:
                 stream.write(json.dumps(dict(step=1,groups={g:group(.3) for g in ('t2','cls_head','other')}))+'\n')
             with self.assertRaisesRegex(ValueError,'exceeds'):
@@ -92,6 +115,10 @@ class ReferenceComparisonTests(unittest.TestCase):
         self.assertEqual({r['setting'] for r in rows},{'ten_class','source_rx_6'})
         self.assertEqual({(r['weight'],r['cap']) for r in rows},{(w,c) for w in (3.,6.) for c in (.25,.5)})
         self.assertEqual(len({(r['comparison'],r['setting'],r['weight'],r['cap']) for r in rows}),48)
+        additions=comparison_plan(include_repair=True)[48:]
+        self.assertEqual(len(additions),4)
+        self.assertEqual({(r['setting'],r['weight'],r['cap']) for r in additions},
+                         {(s,w,.25) for s in ('ten_class','source_rx_6') for w in (3.,6.)})
 
 
 if __name__=='__main__':unittest.main()

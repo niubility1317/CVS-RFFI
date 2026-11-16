@@ -12,11 +12,15 @@ CAPS=(.25,.5)
 GROUPS=('t2','cls_head','other')
 
 
-def comparison_plan():
-    return [dict(setting=s,weight=w,cap=c,comparison=name,baseline=base,candidate=candidate)
+def comparison_plan(include_repair=False):
+    plans = [dict(setting=s,weight=w,cap=c,comparison=name,baseline=base,candidate=candidate)
             for s in SETTINGS for w in WEIGHTS for c in CAPS
             for name,base,candidate in (('CE_vs_full','full','CE'),('full_vs_dual','dual','full'),('CE_vs_dual','dual','CE'),
                 ('EMA_vs_full','full','EMA'),('EMA_vs_CE','CE','EMA'),('EMA_vs_dual','dual','EMA'))]
+    if include_repair:
+        plans.extend(dict(setting=s,weight=w,cap=.25,comparison='repair_vs_full',baseline='full',candidate='repair')
+                     for s in SETTINGS for w in WEIGHTS)
+    return plans
 
 
 def read(path):return json.loads(Path(path).read_text(encoding='utf-8-sig'))
@@ -46,6 +50,10 @@ def dominance_stats(source,cap,mode=None):
                     total[group]['reference_zero_fallback']+=int(d['reference_zero_fallback'])
                     total[group]['reference_rounding_fallback']+=int(d['reference_rounding_fallback'])
                     total[group]['reference_cosine_undefined']+=int(cosine is None)
+                    if mode=='repair':
+                        total[group]['reference_cap_repair_attempts']+=int(d['reference_cap_repair_attempts'])
+                        total[group]['reference_cap_repair_used']+=int(d['reference_cap_repair_used'])
+                        total[group]['reference_cap_repair_nonzero']+=int(d['reference_cap_repair_nonzero'])
                     if ratio is not None:
                         total[group]['ratio_sum']+=ratio;total[group]['ratio_defined']+=1
                     if cosine is not None:
@@ -63,11 +71,15 @@ def dominance_stats(source,cap,mode=None):
     return {g:dict(v) for g,v in total.items()}
 
 
-def analyze(dual_root,full_root,ce_root,ema_root):
+def analyze(dual_root,full_root,ce_root,ema_root,repair_root=None,repair_only=False):
     import numpy as np
     from experiments.pamf_repl_dual_ce.analyze_segment import analyze as segment
     from experiments.pamf_repl_weight.analyze_paired import compare,prediction
-    roots={k:Path(v) for k,v in dict(dual=dual_root,full=full_root,CE=ce_root,EMA=ema_root).items()}
+    if repair_only and repair_root is None:raise ValueError('Repair root required for repair-only comparison')
+    selected = dict(full=full_root) if repair_only else dict(dual=dual_root,full=full_root,CE=ce_root,EMA=ema_root)
+    if any(v is None for v in selected.values()):raise ValueError('All requested comparison roots required')
+    roots={k:Path(v) for k,v in selected.items()}
+    if repair_root is not None:roots['repair']=Path(repair_root)
     cells={};context=None
     for mode,root in roots.items():
         if read(root/'pipeline_state.json')['status']!='ANALYZED':
@@ -110,9 +122,13 @@ def analyze(dual_root,full_root,ce_root,ema_root):
                        unique_total=u['unique_U_total'],unique_accepted=u['unique_accepted']),
                 dominance=None if cap is None else dominance_stats(source,cap,mode),
                 extra_semantics={'dual':'U relative to full-L-only','full':'U relative to full-L-only',
-                    'CE':'other L and U relative to ordinary CE-only','EMA':'current L minus EMA reference and all U'}[mode])
-    expected={(m,s,w,c) for m in ('full','CE','EMA') for s in SETTINGS for w in WEIGHTS for c in CAPS}
-    expected.update(('dual',s,w,None) for s in SETTINGS for w in WEIGHTS)
+                    'CE':'other L and U relative to ordinary CE-only','EMA':'current L minus EMA reference and all U',
+                    'repair':'U relative to full-L-only, with inward rounding repair'}[mode])
+    modes=('full',) if repair_only else ('full','CE','EMA')
+    expected={(m,s,w,c) for m in modes for s in SETTINGS for w in WEIGHTS for c in CAPS}
+    if not repair_only:expected.update(('dual',s,w,None) for s in SETTINGS for w in WEIGHTS)
+    if repair_root is not None:
+        expected.update(('repair',s,w,.25) for s in SETTINGS for w in WEIGHTS)
     if set(cells)!=expected:raise ValueError('Complete matched reference matrices required')
     truths={}
     for setting in SETTINGS:
@@ -122,7 +138,9 @@ def analyze(dual_root,full_root,ce_root,ema_root):
                                                    for task in ('cross_rx','cross_both')}
     predictions={k:{task:prediction(v['entry']['predictions'],task) for task in truths[k[1]]} for k,v in cells.items()}
     comparisons=[]
-    for plan in comparison_plan():
+    plans=comparison_plan(include_repair=repair_root is not None)
+    if repair_only:plans=[p for p in plans if p['comparison']=='repair_vs_full']
+    for plan in plans:
         s,w,c=plan['setting'],plan['weight'],plan['cap']
         def key(mode):return (mode,s,w,None if mode=='dual' else c)
         base,candidate=key(plan['baseline']),key(plan['candidate']);total=Counter();per_task={}
@@ -141,5 +159,6 @@ def analyze(dual_root,full_root,ce_root,ema_root):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser()
-    for name in ('dual-root','full-root','ce-root','ema-root'):p.add_argument('--'+name,required=True)
-    a=p.parse_args();print(json.dumps(analyze(a.dual_root,a.full_root,a.ce_root,a.ema_root),ensure_ascii=False,allow_nan=False))
+    for name in ('dual-root','full-root','ce-root','ema-root','repair-root'):p.add_argument('--'+name)
+    p.add_argument('--repair-only',action='store_true')
+    a=p.parse_args();print(json.dumps(analyze(a.dual_root,a.full_root,a.ce_root,a.ema_root,a.repair_root,a.repair_only),ensure_ascii=False,allow_nan=False))
