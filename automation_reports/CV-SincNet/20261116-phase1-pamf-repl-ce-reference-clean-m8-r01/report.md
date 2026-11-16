@@ -7,3 +7,5 @@
 每行记录参考和总更新方向、各参数组额外步比例及回退、原 L/U 梯度、源 V、U 接受率；冻结 E50 后独立离线评分 U 真值，训练和选模不读取真值或评分。clean cross_date、cross_rx、cross_both 预测冻结后独立 truth-last 评分，主口径合并 cross_rx 和 cross_both，不跑星地或 weak。当前 seed 和历史 target 已曝光，全部结果仅为探索性；不根据 target 或 U 真值挑选、重排或更改候选。
 
 使用 N607 普通账号，GPU 2、3、4 按可用容量轮流调度，仅在计入其他 owner 与待初始化任务后为空闲的显卡上启动；容量不足则排队，保留健康进程。协议、非有限或系统技术失败停止新调度。命令、数据合同和输出见 `experiment.json`。独立 P0/P1 审查未发现阻断项，CE 梯度选择与既有实际 AdamW／FP32 数值边界测试通过；发布后的真实设备 smoke 和训练状态待核验。
+
+**VERIFIED / SMOKE_WAITING_CAPACITY**：发布 commit `11d47abbf3a39fdfb5ba1a41f844acf0b76ff3b9` 的归档校验和远端编译通过；控制器 PID、工作目录、命令行及 32 项已登记任务独立核对。目标显卡当前已有健康任务，等待空闲后执行真实 E20 smoke，尚无训练或测试结果。
