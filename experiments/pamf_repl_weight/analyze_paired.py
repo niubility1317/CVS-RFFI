@@ -37,11 +37,34 @@ def compare(ids, candidate, baseline, truths):
     return out
 
 
-def analyze(root):
+def supervised_controls(root):
+    root=Path(root)
+    if read(root/'pipeline_state.json')['status']!='ANALYZED':
+        raise ValueError('Wait for the complete independently scored supervised matrix')
+    output={}
+    for rid,entry in read(root/'sources.json').items():
+        setting=next((s for s in ('ten_class','source_rx_6') if rid.startswith(s+'-')),None)
+        done=read(Path(entry['source_output'])/'complete.json');cfg=done['config']
+        if (setting is None or setting in output or done['status']!='SOURCE_FROZEN'
+                or done['epoch']!=50 or done['updates']!=11100 or done['target_access']
+                or done['U_truth_read'] or cfg['model_seed']!=2026092701
+                or cfg['U_use'] is not False or cfg['regime']!='matched_sat_supervised'
+                or not rid.endswith('-tri-label-only-permuted-s2026092701')):
+            raise ValueError('Matching frozen label-only permuted control required')
+        if (read(Path(entry['scores'])/'complete.json')['status']!='SCORED_COMPLETE'
+                or not read(Path(entry['scores'])/'scores.json')['truth_last']):
+            raise ValueError('Supervised independent score missing')
+        output[setting]=dict(entry,protocol_id=cfg['protocol_id'],source_contract=cfg['source_contract'])
+    if set(output)!={'ten_class','source_rx_6'}:raise ValueError('Both supervised settings required')
+    return output
+
+
+def analyze(root,supervised_root=None):
     root=Path(root); state=read(root/'pipeline_state.json')
     if state['status']!='ANALYZED':
         raise ValueError('Wait for all registered predictions and independent scores')
     sources,controls=read(root/'sources.json'),read(root/'controls.json')
+    supervised=None if supervised_root is None else supervised_controls(supervised_root)
     runtime=read(root.parents[1]/'releases'/(root.name+'-release')/'runtime.json')
     context=read(runtime['context']); records=[]
     for rid,src in sources.items():
@@ -50,8 +73,11 @@ def analyze(root):
         cfg=read(root/'configs'/('predict__'+rid+'.json'))
         setting=next(k for k in controls if rid.startswith(k+'-'))
         out={'row_id':rid,'setting':setting,'controls':{}}
-        for control in ('pl','tri'):
-            other=controls[setting][control]
+        for control in (('pl','tri') if supervised is None else ('pl','tri','supervised')):
+            other=supervised[setting] if control=='supervised' else controls[setting][control]
+            if control=='supervised' and (other['protocol_id']!=cfg['protocol_id']
+                                          or other['source_contract']!=cfg['source_contract']):
+                raise ValueError('Supervised source and protocol contracts must match candidate')
             if read(Path(other['scores'])/'complete.json')['status']!='SCORED_COMPLETE':
                 raise ValueError('Control score missing')
             per_task={}
@@ -67,9 +93,11 @@ def analyze(root):
             out['controls'][control]={'combined':dict(total),'per_test':per_task}
         records.append(out)
     return dict(status='ANALYZED_POST_SCORE_PAIRS',rows=records,
-        claim_scope='selected seed and previously exposed test; exploratory; no training feedback')
+        claim_scope='selected seed and previously exposed test; exploratory; no training feedback',
+        comparison_notes='Supervised control is trained from scratch with fixed permutation and U off; '
+                         'candidates continue Tri E20 that already used U. PL uses natural time order.')
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--run-root',required=True);a=p.parse_args()
-    print(json.dumps(analyze(a.run_root),ensure_ascii=False,allow_nan=False))
+    p=argparse.ArgumentParser();p.add_argument('--run-root',required=True);p.add_argument('--supervised-root');a=p.parse_args()
+    print(json.dumps(analyze(a.run_root,a.supervised_root),ensure_ascii=False,allow_nan=False))
