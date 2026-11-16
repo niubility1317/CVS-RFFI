@@ -9,7 +9,7 @@ import time
 
 from .io import atomic, read, require, write
 
-PROFILES = ('mrior_sda', 'dadda_sda', 'poster_ft')
+PROFILES = ('protonet_cda', 'mrior_sda', 'dadda_sda', 'twostage', 'poster_ft')
 RECEIVERS = ('1-1', '14-7', '2-1', '20-1', '7-14', '7-7', '8-8')
 SEEDS = (2026092701, 2026092702, 2026092703, 2026092704)
 
@@ -33,7 +33,7 @@ def validate_target(job, missing):
     return ks
 
 
-def make_plan(inventory, runtime_file, run_root, release_root):
+def make_plan(inventory, runtime_file, run_root, release_root, profiles, allowed_gpus, prior_configs=()):
     require(inventory.get('status') in ('VERIFIED','INCOMPLETE') and isinstance(inventory.get('issues'),list),
             'Invalid reuse inventory')
     runtime_file=Path(runtime_file).resolve();require(runtime_file.is_file(), 'Runtime file missing')
@@ -46,8 +46,14 @@ def make_plan(inventory, runtime_file, run_root, release_root):
     require(Path(runtime['data_root']).is_dir() and Path(runtime['source_cache']).is_dir() and
             Path(runtime['source_contract']).is_file() and Path(runtime['phase1_release']).is_dir(),
             'Missing fixed data or source handles')
+    require(prior_configs, 'Prior satellite queue must be supplied for overlap checks')
+    require(profiles and len(set(profiles))==len(profiles) and all(p in PROFILES for p in profiles),
+            'Invalid native DA selection')
+    require(allowed_gpus and len(set(allowed_gpus))==len(allowed_gpus) and
+            len(allowed_gpus) in (3,5) and all(type(g) is int and 0<=g<=7 for g in allowed_gpus),
+            'Invalid GPU set')
     planned=[]
-    for profile in PROFILES:
+    for profile in profiles:
         info=inventory['counts'][profile]
         require(info['expected_rows']==7896 and info['verified_existing']==4368 and
                 info['missing']==3528 and info['score_jobs']==1933 and
@@ -65,14 +71,21 @@ def make_plan(inventory, runtime_file, run_root, release_root):
             job.update(id=ident,output=str(root/'predictions'/ident),score=str(root/'scores'/ident))
             planned.append(job)
     require(len(planned)==len({j['id'] for j in planned}) and planned, 'No jobs or duplicate identities')
-    require(len(planned)==1764 and all(j['satellite_ks']==[1,10,20] for j in planned),
+    require(len(planned)==588*len(profiles) and all(j['satellite_ks']==[1,10,20] for j in planned),
             'Selected missing matrix is incomplete')
+    wanted={(j['profile'],j['capsule'],j['seed'],k) for j in planned for k in j['satellite_ks']}
+    for name in prior_configs:
+        prior=read(name)
+        require(set(allowed_gpus).isdisjoint(prior['allowed_gpus']), 'Prior queue shares GPUs')
+        owned={(j['profile'],j['capsule'],j['seed'],k) for j in prior['jobs'] for k in j['satellite_ks']}
+        require(wanted.isdisjoint(owned), 'Prior queue already owns requested tasks')
     require(all((Path(runtime['source_run_root'])/'source'/f'{profile}-s{seed}'/'source.pt').is_file()
-                for profile in PROFILES for seed in SEEDS), 'Missing source checkpoint')
+                for profile in profiles for seed in SEEDS), 'Missing source checkpoint')
     for job in planned:
         require(not Path(job['output']).exists() and not Path(job['score']).exists(), 'Output already exists')
     return dict(input_condition='satellite_received',run_root=str(root),release_root=str(release),runtime_file=str(runtime_file),
-                allowed_gpus=[0,1,5,6,7],max_per_gpu=7,minimum_free_MiB=6000,
+                allowed_gpus=list(allowed_gpus),prior_configs=[str(Path(p).resolve()) for p in prior_configs],
+                max_per_gpu=7,minimum_free_MiB=6000,
                 worker_reserve_MiB=3000,one_per_snapshot=True,jobs=planned)
 
 
@@ -176,15 +189,18 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('action',choices=('prepare','dispatch','worker','score'))
     parser.add_argument('--config',required=True);parser.add_argument('--job-id')
     parser.add_argument('--inventory');parser.add_argument('--source-runtime')
-    parser.add_argument('--run-root');parser.add_argument('--release-root');args=parser.parse_args()
+    parser.add_argument('--run-root');parser.add_argument('--release-root');parser.add_argument('--profiles',nargs='+')
+    parser.add_argument('--allowed-gpus',nargs='+',type=int);parser.add_argument('--prior-config',action='append',default=[]);args=parser.parse_args()
     if args.action=='prepare':
-        require(all((args.inventory,args.source_runtime,args.run_root,args.release_root)),'Missing preparation argument')
+        require(all((args.inventory,args.source_runtime,args.run_root,args.release_root,args.profiles,args.allowed_gpus)),
+                'Missing preparation argument')
         path=Path(args.config).resolve();require(not path.exists() and not path.parent.exists(), 'Plan already exists')
         path.parent.mkdir(parents=True,exist_ok=False)
         runtime=read(args.source_runtime);runtime.pop('clean_root',None);runtime.pop('restored_root',None)
         runtime['release_root']=str(Path(args.release_root).resolve());runtime['runtime_file']=str(path.parent/'runtime.json')
         write(path.parent/'runtime.json',runtime)
-        config=make_plan(read(args.inventory),path.parent/'runtime.json',args.run_root,args.release_root)
+        config=make_plan(read(args.inventory),path.parent/'runtime.json',args.run_root,args.release_root,
+                         tuple(args.profiles),args.allowed_gpus,args.prior_config)
         write(path,config);print(json.dumps(dict(status='PREPARED',jobs=len(config['jobs']),truth_read=False)))
         return
     config=read(args.config)

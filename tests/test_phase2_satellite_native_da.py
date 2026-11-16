@@ -64,7 +64,13 @@ def test_planner_uses_only_missing_rows_with_matching_runtime(tmp_path):
         inventory['missing'][profile]=[dict(capsule=f'capsules/{pool}/MIX{episode:02}/{rx}',seed=seed,
             stage=stage,k=k,n=0) for pool in ('P01','P02','P03') for episode in range(2,9)
             for rx in receivers for seed in seeds for stage in ('A0','B') for k in (1,10,20)]
-    result=make_plan(inventory,runtime_file,tmp_path/'new-run',release)
+    prior=tmp_path/'prior.json';prior.write_text(json.dumps(dict(allowed_gpus=[0,1,5,6,7],jobs=[])))
+    result=make_plan(inventory,runtime_file,tmp_path/'new-run',release,profiles,[2,3,4],[prior])
     assert len(result['jobs'])==1764 and result['runtime_file']==str(runtime_file)
     inventory['issues'].append(['mrior_sda-old-row','missing'])
-    with pytest.raises(ValueError):make_plan(inventory,runtime_file,tmp_path/'new-run',release)
+    with pytest.raises(ValueError):make_plan(inventory,runtime_file,tmp_path/'new-run',release,profiles,[2,3,4],[prior])
+    inventory['issues'].pop()
+    with pytest.raises(ValueError):make_plan(inventory,runtime_file,tmp_path/'new-run',release,profiles,[0,3,4],[prior])
+    first=result['jobs'][0]
+    prior.write_text(json.dumps(dict(allowed_gpus=[0,1,5,6,7],jobs=[first])))
+    with pytest.raises(ValueError):make_plan(inventory,runtime_file,tmp_path/'new-run',release,profiles,[2,3,4],[prior])
