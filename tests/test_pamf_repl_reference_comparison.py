@@ -81,6 +81,7 @@ class ReferenceComparisonTests(unittest.TestCase):
         def group(ratio):
             return dict(reference_dominance_checked=True,reference_extra_cap=.25,
                 reference_extra_ratio=ratio,reference_dominance_cosine=.99,
+                raw_increment_norm=2.,reference_step_norm=4.,
                 reference_zero_fallback=False,reference_rounding_fallback=False,
                 reference_cap_repair_attempts=2,reference_cap_repair_used=True,reference_cap_repair_nonzero=True)
         with tempfile.TemporaryDirectory() as tmp:
@@ -91,12 +92,17 @@ class ReferenceComparisonTests(unittest.TestCase):
                     {'reference_gradient_EMA_updates':steps,'reference_gradient_beta':.9}}),encoding='utf-8')
                 with gzip.open(folder/'step_guard_metrics.jsonl.gz','wt',encoding='utf-8') as stream:
                     for step in range(1,steps+1):
-                        stream.write(json.dumps(dict(step=step,groups={g:group(.2) for g in ('t2','cls_head','other')},
+                        entries={g:group(.2) for g in ('t2','cls_head','other')}
+                        if step==1:
+                            for d in entries.values():d.update(reference_rounding_fallback=True,reference_extra_ratio=0.)
+                        stream.write(json.dumps(dict(step=step,groups=entries,
                             reference={'current_full_L_vs_reference_gradient':
                                 {g:{'cosine':-.2} for g in ('t2','cls_head','other')}}))+'\n')
             facts=dominance_stats(root,.25)
             self.assertEqual(facts['t2']['ratio_defined'],6660)
-            self.assertEqual(facts['t2']['reference_rounding_fallback'],0)
+            self.assertEqual(facts['t2']['reference_rounding_fallback'],2)
+            self.assertAlmostEqual(facts['t2']['reference_fallback_raw_norm_share'],2/6660)
+            self.assertEqual(facts['t2']['reference_fallback_capped_upper_sum'],2.)
             ema=dominance_stats(root,.25,'EMA')
             self.assertEqual(ema['t2']['current_L_vs_EMA_conflict'],6660)
             repair=dominance_stats(root,.25,'repair')

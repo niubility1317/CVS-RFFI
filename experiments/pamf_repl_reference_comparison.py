@@ -47,6 +47,15 @@ def dominance_stats(source,cap,mode=None):
                         raise ValueError('Actual extra step exceeds reference cap')
                     if cosine is not None and (not math.isfinite(cosine) or cosine<math.sqrt(1-cap*cap)-1e-6):
                         raise ValueError('Actual update is outside the registered reference cone')
+                    raw=float(d['raw_increment_norm']);reference=float(d['reference_step_norm'])
+                    if not all(math.isfinite(v) and v>=0 for v in (raw,reference)):
+                        raise ValueError('Finite nonnegative actual step norms required')
+                    upper=min(raw,cap*reference)
+                    total[group]['raw_increment_norm_sum']+=raw
+                    total[group]['capped_increment_upper_sum']+=upper
+                    if d['reference_rounding_fallback']:
+                        total[group]['reference_fallback_raw_norm_sum']+=raw
+                        total[group]['reference_fallback_capped_upper_sum']+=upper
                     total[group]['reference_zero_fallback']+=int(d['reference_zero_fallback'])
                     total[group]['reference_rounding_fallback']+=int(d['reference_rounding_fallback'])
                     total[group]['reference_cosine_undefined']+=int(cosine is None)
@@ -68,7 +77,11 @@ def dominance_stats(source,cap,mode=None):
                             total[group]['current_L_vs_EMA_defined']+=1
                             total[group]['current_L_vs_EMA_conflict']+=int(direction < -1e-6)
         if n!=steps:raise ValueError('All actual reference step records required')
-    return {g:dict(v) for g,v in total.items()}
+    result={g:dict(v) for g,v in total.items()}
+    for values in result.values():
+        raw=values.get('raw_increment_norm_sum',0.)
+        values['reference_fallback_raw_norm_share']=(values.get('reference_fallback_raw_norm_sum',0.)/raw if raw else None)
+    return result
 
 
 def analyze(dual_root,full_root,ce_root,ema_root,repair_root=None,repair_only=False):
