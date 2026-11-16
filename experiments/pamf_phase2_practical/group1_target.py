@@ -148,7 +148,7 @@ def predict(rt,job):
     torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False
     profile,seed=job['profile'],job['seed'];r=row(profile);device='cuda:0'
     bundle=load_source(source_scope(rt),profile,seed,device)
-    if rt.get('clean_root') or job.get('satellite_ks'):
+    if rt.get('clean_root') or job.get('satellite_ks') or job.get('satellite_c_points'):
         from .clean_source_smoke import check
         check(rt,bundle)
     model=bundle['model'];model.eval();before={k:v.detach().clone() for k,v in model.state_dict().items()}
@@ -165,6 +165,13 @@ def predict(rt,job):
                 manifest['episode_id']==job['capsule'].split('/')[2],
                 'Explicit satellite scope requires the matching native DA task')
         Cs=[]
+    if job.get('satellite_c_points') is not None:
+        from .satellite_native_c import validate_scope
+        Cs,a0_ks=validate_scope(job)
+        require(not clean_root and r['category']=='CIL' and
+                manifest['episode_id']==job['capsule'].split('/')[2],
+                'Explicit satellite scope requires the matching native C task')
+        Ks=sorted({k for k,n in Cs})
     if job.get('reuse') is not None:
         require(clean_root and profile=='mopc_hr','Only clean native MoPC may reuse pilot rows')
         from .clean_mopc_reuse import copy_pilot_rows
@@ -194,6 +201,9 @@ def predict(rt,job):
     def save(s,stage,path,pred,restricted=None,resources=None,**metadata):
         from .mopc_stabilization import arm
         label=arm(profile,job.get('mopc_stabilization','none')) if stage=='C' and profile=='mopc_hr' else profile
+        if job.get('satellite_c_points') is not None:
+            if profile=='lora_triplet_knn' and stage=='C':label='lora_triplet_knn_balanced_v1'
+            if profile=='orthogonal':label='orthogonal_tempered_pl_v2'
         name=f'{stage}-K{s["k"]}-N{s["new_count"]}-{path}.npz'
         payload=dict(query_indices=split_rows(cap,s),predicted_indices=pred)
         if restricted is not None:payload['old_restricted_indices']=restricted
@@ -282,6 +292,7 @@ def predict(rt,job):
             for k,n in Cs:pamf_stage(lookup[k,n],'C')
         else:
             for k in Ks:
+                if job.get('satellite_c_points') is not None and k not in a0_ks:continue
                 s=lookup[k,0]
                 if ('A0',k,0) not in reused:
                     task=task_at(s,'A')
