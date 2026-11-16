@@ -1,0 +1,141 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261116-diagnostic-pamf-repl-source-components-m6-r01",
+  "group_id": "phase1-pamf-repl-weight-clean",
+  "display_name": "Tri 无标签损失分项源域梯度诊断",
+  "description": "十类与六源原始 E20 各三批，逐组比较 U 五个损失分项与 L CE、完整 L 及完整 U。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [
+    "tri-adamw-source"
+  ],
+  "tags": [
+    "PAMF",
+    "REPL",
+    "gradient",
+    "source-only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-paper-completion-m119-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求优化 Tri 梯度冲突并详细记录；不改变当前 U 标签权限。",
+  "code": {
+    "commit": "release HEAD commit",
+    "checkout": "task worktree",
+    "environment": "N607 ordinary account, existing CVS-RFFI Python, CPU 2, FP32",
+    "cwd": "PROJECT/releases/20261116-diagnostic-pamf-repl-source-components-m6-r01-release"
+  },
+  "data": {
+    "dataset": "original ten-class ManyRx and six-source receiver contracts",
+    "version": null,
+    "representation": null,
+    "contract_ref": "original paper source config source_contract",
+    "physical_ids_ref": "original paper source contract",
+    "label_map_ref": null,
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "visible TX",
+      "U_s": "source IQ, TX hidden",
+      "V": "not read"
+    },
+    "train_ratio": "original fixed labeled/unlabeled/validation roles",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": "not applicable; source-only, no target query",
+    "leo_config_ref": "not applicable"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "six correlated source snapshots, fresh AdamW moments only"
+  },
+  "checkpoint": {
+    "initialization": "matching original paper same-setting scratch E20",
+    "sources": [
+      "20261027-phase1-pamf-paper-completion-m119-r03"
+    ],
+    "contract_check_ref": "checked_e20_parent plus paper.validate_config",
+    "provenance_verdict": "checked at execution: scratch, source-only, same seed and source contract",
+    "selection_rule": "both original user-requested settings, fixed seed and first three source batches"
+  },
+  "execution": {
+    "host": "N607 ordinary user",
+    "launch_owner": "codex-20261116-diagnostic-pamf-repl-source-components-m6-r01",
+    "gpu_policy": "CPU only, two CPU threads; no GPU workers",
+    "remote_run_root": "PROJECT/runs/20261116-diagnostic-pamf-repl-source-components-m6-r01",
+    "remote_log_root": "PROJECT/runs/20261116-diagnostic-pamf-repl-source-components-m6-r01/diagnostic.log",
+    "local_artifact_root": "local_artifacts/pamf_tri_source_components_20261116",
+    "launch_command": "python -m experiments.pamf_repl_attribution_factorial.source_component_diagnostic EXISTING_RUNTIME_JSON",
+    "stop_rule": "Stop diagnostic on identity, role, finite-value, derivative or guard-backward mismatch; do not affect other jobs."
+  },
+  "expected_artifacts": [
+    "six fixed E20 source batches including original no-query checks",
+    "actual pseudo CE, pair KL, shallow and joint contrast, extrapolation-increment gradients",
+    "per-group gradient closure, norms, dots and cosines versus labeled CE, full L and full U"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "component losses and per-parameter-group L2 gradient closure",
+      "component gradient norms and dots/cosines versus labeled CE, full L and full U"
+    ],
+    "dimensions": [
+      "ten-class and six-source",
+      "three fixed source batches",
+      "t2, cls_head, other"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "both_settings-source-component-diagnostic-e20-s2026092701",
+      "method": "original Tri-SIG-TIME",
+      "purpose": "attribute the full U gradient to the actual five original U components",
+      "config_ref": "original paper source resolved_config",
+      "resolved_config_ref": "original paper source complete.json config",
+      "data_overrides": {
+        "protocol_id": [
+          "ManyRx",
+          "m6-natural"
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed offsets 0/1/2 use CPU random seeds 2026092701+offset.",
+      "k": null,
+      "scenario": "source-only L and U; no target",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "6 source batches and disposable original source optimizer shadows",
+      "output_root": "PROJECT/runs/20261116-diagnostic-pamf-repl-source-components-m6-r01",
+      "log_path": "PROJECT/runs/20261116-diagnostic-pamf-repl-source-components-m6-r01/diagnostic.log",
+      "command": "source_component_diagnostic with both fixed settings",
+      "expected_artifacts": [
+        "diagnostic.log contains complete JSON result"
+      ]
+    }
+  ],
+  "notes": [
+    "No target, source V or U true labels are read; no training state is saved.",
+    "Five components reuse the exact current graph; check the component gradient sum against the native U gradient.",
+    "Extrapolation is new-minus-replaced ordinary CE, not the whole extrapolated CE.",
+    "Three source batches per setting at E20; no inference about later trajectory or target performance."
+  ],
+  "registered_at": "2026-11-16T07:26:50+00:00"
+}
