@@ -12,6 +12,8 @@
 
 **VERIFIED / RUNNING**：执行 commit `40bc82f9c311d388a1f967847f37ef145fc4bccd`；归档传输和远端编译通过，真实 checkpoint 无 query smoke 通过。独立检查 controller 与两个训练 worker 的 PID、CWD、命令和 GPU，十类在 GPU 2、六源在 GPU 3；初始日志均记录 `init=scratch`、U 训练样本 0、伪标签阶段 0。两行预测与评分尚未完成，必须等待实际冻结及独立评分。
 
+阶段读回：十类及六源均已完成 scratch E20/4440 步与自身 E21–E30/2220 步，两个完成记录为 `SOURCE_FROZEN`，四份 progress 均显示 `U_actual=0`、`PL_seen=0`，无目标访问。两行已进入自身 E31–E50 训练；E50 和独立 clean 评分尚未完成。
+
 ## 既有自然顺序监督与 PL 对照
 
 读取历史 `20261024-phase1-PAMF-REPL-completion-m201-r01` 的同 seed 冻结模型与独立 truth-last clean 评分；监督和 PL 同设置分别使用相同源合同、source RX/day 和样本量，均为 E50/11100 步。监督模型的记录为 `U_enabled=false`、U seen=0。以下主指标按 cross_rx 与 cross_both 的正确数及样本数加权；cross_date 单列。这些历史模型记录 `historical_posthoc_selection_disclosed=true`，而本 seed 也根据已曝光目标选取，因此仅作探索性比较。
