@@ -1,8 +1,7 @@
 """Base-class training for a disclosed, independent paper-style reproduction."""
 import copy
 import torch
-from experiments.orthogonal_paper_repro.vectorized_loss import contrastive_loss
-from experiments.pamf_phase2_practical.vendor_native.paper_reproduction.orthogonal_incremental_sei.losses import pseudo_target_cross_entropy, class_center_separation_loss
+from experiments.orthogonal_paper_repro.vectorized_loss import contrastive_loss, center_loss, pseudo_cross_entropy
 from experiments.pamf_phase2_practical.vendor_native.paper_reproduction.orthogonal_incremental_sei.pseudo_targets import make_simplex_pseudo_targets, perturb_pseudo_targets
 
 
@@ -31,9 +30,9 @@ def train_base(encoder, train_x, train_y, validation_x, validation_y, *, num_cla
 
     def objective(x, y):
         z = encoder(x)
-        return (pseudo_target_cross_entropy(z, y, assigned)
+        return (pseudo_cross_entropy(z, y, assigned)
                 + contrastive_loss(z, y, assigned, targets, perturb)
-                + class_center_separation_loss(z, y, assigned, targets))
+                + center_loss(z, y, assigned, targets))
 
     for epoch in range(1, epochs + 1):
         encoder.train()

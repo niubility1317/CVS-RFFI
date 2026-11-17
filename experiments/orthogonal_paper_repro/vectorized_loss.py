@@ -7,6 +7,18 @@ import torch
 import torch.nn.functional as F
 
 
+def pseudo_cross_entropy(features, labels, assigned_targets):
+    if features.ndim != 2 or labels.ndim != 1 or len(labels) != len(features):
+        raise ValueError('invalid feature or label shape')
+    label_ids = torch.tensor(list(assigned_targets), device=labels.device, dtype=labels.dtype)
+    if not torch.isin(labels, label_ids).all():
+        raise ValueError('labels contain classes without assigned pseudo targets')
+    weights = torch.stack([value.to(features.device) for value in assigned_targets.values()])
+    logits = F.normalize(features.float(), dim=1) @ F.normalize(weights.float(), dim=1).t()
+    indices = (labels[:, None] == label_ids[None, :]).to(torch.int64).argmax(dim=1)
+    return F.cross_entropy(logits, indices)
+
+
 def contrastive_loss(features, labels, assigned_targets, pseudo_targets, perturbed_targets, *, temperature=0.1):
     if temperature <= 0:
         raise ValueError('temperature must be positive')
@@ -45,3 +57,27 @@ def contrastive_loss(features, labels, assigned_targets, pseudo_targets, perturb
         reserved_losses = torch.logsumexp(neg_logits, dim=1) - pos_logits
         return torch.cat([sample_losses, reserved_losses]).mean()
     return sample_losses.mean()
+
+
+def center_loss(features, labels, assigned_targets, pseudo_targets, *, temperature=.1):
+    if temperature <= 0 or features.ndim != 2 or labels.ndim != 1 or len(labels) != len(features):
+        raise ValueError('invalid features, labels or temperature')
+    if pseudo_targets.ndim != 2 or pseudo_targets.size(1) != features.size(1):
+        raise ValueError('pseudo-target shape mismatch')
+    label_ids = torch.tensor(list(assigned_targets), device=labels.device, dtype=labels.dtype)
+    if len(label_ids) > len(pseudo_targets) or not torch.isin(labels, label_ids).all():
+        raise ValueError('invalid assigned targets or labels')
+    indices = (labels[:, None] == label_ids[None, :]).to(torch.int64).argmax(dim=1)
+    sums = torch.zeros((len(label_ids), features.size(1)), device=features.device, dtype=features.dtype)
+    sums = sums.index_add(0, indices, features)
+    counts = torch.bincount(indices, minlength=len(label_ids)).to(features.dtype).unsqueeze(1)
+    assigned = torch.stack([value.to(features.device) for value in assigned_targets.values()])
+    centers = torch.where(counts > 0, sums / counts.clamp_min(1), assigned)
+    centers = torch.cat([centers, pseudo_targets[len(label_ids):].to(features.device)], dim=0)
+    centers = F.normalize(centers.float(), dim=1)
+    if len(centers) <= 1:
+        return centers.new_tensor(0.)
+    similarities = centers @ centers.t()
+    mask = ~torch.eye(len(centers), dtype=torch.bool, device=features.device)
+    logits = similarities[mask].view(len(centers), len(centers) - 1) / temperature
+    return torch.logsumexp(logits, dim=1).mean()
