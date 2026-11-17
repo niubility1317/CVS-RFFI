@@ -17,7 +17,7 @@ def prepare_b(model, profile, extractor, old_x, old_y, *, old_count=6, old_proto
     if orthogonal_bridge not in ('original', 'support_prototypes_v1'):
         raise ValueError('Unsupported Orthogonal bridge')
     result = {'lora': lora.build_gallery(model, extractor, old_x, old_y, old_count=old_count)}
-    if profile in ('dadda_sda', 'mrior_sda', 'twostage', 'poster_ft', 'feature_separation_hu2024', 'protonet_cda', 'radionet_ada_knn', 'tweak_m1'):
+    if profile in ('dadda_sda', 'mrior_sda', 'twostage', 'poster_ft', 'poster_ft_paperlast_v2', 'feature_separation_hu2024', 'protonet_cda', 'radionet_ada_knn', 'tweak_m1'):
         if profile == 'protonet_cda':
             if old_prototypes is None or len(old_prototypes) != old_count:
                 raise ValueError('ProtoNet B requires its actual old-class prototypes')

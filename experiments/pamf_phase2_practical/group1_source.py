@@ -17,7 +17,7 @@ from . import external_additional as extra
 from .vendor_native.comparison_suite import models as nets
 
 
-EXTRA={'poster_ft','feature_separation_hu2024','issl_author_behavior','lora_triplet_knn'}
+EXTRA={'poster_ft','poster_ft_paperlast_v2','feature_separation_hu2024','issl_author_behavior','lora_triplet_knn'}
 
 
 def model_for(method,device):
@@ -70,6 +70,12 @@ def recipe(profile):
     if r['method']=='orthogonal':
         result.update(schema='group1_source_orthogonal_tempered_PL_v2',
             PL_score='cosine_logits_divided_by_0.1_for_confidence_and_loss')
+    if r['method']=='poster_ft_paperlast_v2':
+        result.update(schema='group1_source_poster_author_pool_paperlast_v2',
+            architecture='author_channels_first_conv_pool_filter_axis_input256',
+            B_finetuning='paper_text_last_layer_only_keep_source_head',
+            B_budget='project_extension_10_epochs',
+            author_paper_exact_replication=False)
     if r['method']=='mopc_hr':
         from .mopc_author import architecture_metadata
         result.update(architecture=architecture_metadata(),

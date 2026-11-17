@@ -24,3 +24,11 @@ called a reproduced paper result.
 The paper's five-device cross-day result uses 288 samples and 1,600 support
 examples per class. It cannot be compared directly to Phase2's 256 samples,
 K=5 or K=10, or the satellite-channel benchmark.
+
+The separate opt-in Phase2 profile `poster_ft_paperlast_v2` combines author
+pooling with the paper-text last-layer-only interpretation. Its Phase2 source
+recipe retains the project's 200-epoch satellite augmentation/PL treatment,
+and B uses the project's 10-epoch budget; it is therefore not the paper's
+training recipe. The legacy `poster_ft` and its checkpoints retain their old
+identity. The new profile does not enter catalog-generated plans automatically
+and requires newly trained, provenance-matched Phase2 source checkpoints.

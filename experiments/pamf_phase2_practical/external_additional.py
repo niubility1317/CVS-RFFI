@@ -45,6 +45,10 @@ _SPECS = {
     'poster_ft': dict(source_epochs=200, source_batch=128, source_optimizer='Adam', source_lr=.001,
         B_epochs=10, B_lr=.001, B_batch=256, native_C=False, source_U=False,
         implementation='existing_repo_POSTER_Homegrown_port', claim='author dense-layer-reset FT'),
+    'poster_ft_paperlast_v2': dict(source_epochs=200, source_batch=128, source_optimizer='Adam', source_lr=.001,
+        B_epochs=10, B_lr=.001, B_batch=256, native_C=False, source_U=False,
+        implementation='author_pooling_256iq_paper_last_layer_v2',
+        claim='author pooling, paper-text last-layer-only FT; project 256-IQ and B10 extension'),
     'radionet_df_ft': dict(source_epochs=200, source_batch=128, source_optimizer='Adam', source_lr=.001,
         B_epochs=30, B_lr=.001, B_batch=128, native_C=False, source_U=False,
         implementation='existing_repo_RadioNet_DF_port', claim='author final-layer-reset FT'),
@@ -153,6 +157,9 @@ class NativeModel(nn.Module):
             self.network = ISSLResNet18(classes)
         elif profile == 'lora_triplet_knn':
             self.network = LoRaExtractor()
+        elif profile == 'poster_ft_paperlast_v2':
+            from experiments.poster_paper_repro.model import PosterHomegrownAuthor
+            self.network = PosterHomegrownAuthor(classes, input_len=256)
         elif profile in ('poster_ft', 'radionet_df_ft', 'radionet_triplet'):
             from .vendor_extra.li_backbones import PosterHomegrown, RadioNetDF
             self.network = PosterHomegrown(classes) if profile == 'poster_ft' else RadioNetDF(64 if profile == 'radionet_triplet' else classes)
@@ -190,7 +197,7 @@ def native_features(model, x):
     p = model.profile
     if p.startswith('issl_'):
         return model.raw(x)[1]
-    if p in ('poster_ft', 'radionet_df_ft'):
+    if p in ('poster_ft', 'poster_ft_paperlast_v2', 'radionet_df_ft'):
         return model.network.embedding(_iq(x))
     out = model.raw(x)
     if p == 'feature_separation_hu2024':
@@ -258,7 +265,7 @@ def _checked_step(loss, optimizer):
 def _train_ce(model, x, y, epochs, batch, lr, seed, logger=None, optimizer_kind='Adam', crop=None, stage='B', parameters=None):
     parameters = list(model.parameters()) if parameters is None else list(parameters)
     optimizer = (torch.optim.SGD(parameters, lr=lr, momentum=.9) if optimizer_kind == 'SGD'
-                 else torch.optim.Adam(parameters, lr=lr, eps=1e-7 if model.profile in ('poster_ft','radionet_df_ft') else 1e-8))
+                 else torch.optim.Adam(parameters, lr=lr, eps=1e-7 if model.profile in ('poster_ft','poster_ft_paperlast_v2','radionet_df_ft') else 1e-8))
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 100, .5) if model.profile.startswith('issl_') else None
     gen = torch.Generator().manual_seed(seed)
     dev = _device(model)
@@ -317,7 +324,7 @@ def _source_supervised(model, data, validation, spec, seed, logger):
     p=model.profile; gen=torch.Generator().manual_seed(seed)
     parameters=list(model.parameters())
     optimizer=(torch.optim.SGD(parameters, lr=spec['source_lr'], momentum=.9) if spec['source_optimizer']=='SGD'
-        else torch.optim.Adam(parameters, lr=spec['source_lr'], eps=1e-7 if p in ('poster_ft','radionet_df_ft') else 1e-8))
+        else torch.optim.Adam(parameters, lr=spec['source_lr'], eps=1e-7 if p in ('poster_ft','poster_ft_paperlast_v2','radionet_df_ft') else 1e-8))
     mode='max' if p=='feature_separation_hu2024' else 'min'
     scheduler=(torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode=mode,
         factor=spec['source_lr_factor'], patience=spec['source_lr_patience']) if 'source_lr_patience' in spec
@@ -565,7 +572,7 @@ def load_source(rt,profile,seed,device):
 
 def _head(model):
     p=model.profile;n=model.network
-    if p in ('poster_ft','radionet_df_ft'):return n.head
+    if p in ('poster_ft','poster_ft_paperlast_v2','radionet_df_ft'):return n.head
     if p=='feature_separation_hu2024':return n.tx_classifier
     if p=='ra_collab_single_ft':return n.tx_classifier.net[-1]
     if p.startswith('issl_'):return n.fc
@@ -574,7 +581,7 @@ def _head(model):
 
 def _set_head(model,head):
     p=model.profile;n=model.network
-    if p in ('poster_ft','radionet_df_ft'):n.head=head
+    if p in ('poster_ft','poster_ft_paperlast_v2','radionet_df_ft'):n.head=head
     elif p=='feature_separation_hu2024':n.tx_classifier=head
     elif p=='ra_collab_single_ft':n.tx_classifier.net[-1]=head
     elif p.startswith('issl_'):n.fc=head
@@ -613,7 +620,7 @@ def _state(bundle,model,support_x,support_y,**resources):
     result['native_state']=dict(bundle.get('native_state',{}),support_x=support_x.detach().cpu().clone(),support_y=support_y.detach().cpu().clone())
     result['resources']=dict(bundle['resources'],target_fit=True,**resources)
     result['classes']=tuple(sorted(set(support_y.cpu().tolist())))
-    if model.profile in ('poster_ft','radionet_df_ft','feature_separation_hu2024','ra_collab_single_ft'):result['expand_head']=expand_head
+    if model.profile in ('poster_ft','poster_ft_paperlast_v2','radionet_df_ft','feature_separation_hu2024','ra_collab_single_ft'):result['expand_head']=expand_head
     return result
 
 
@@ -669,7 +676,11 @@ def fit_B(rt,bundle,support_x,support_y,seed,logger=None):
         state=_state(bundle,model,support_x,support_y,B_epochs=0,B_rule='target_support_enrollment_only')
         return _metric_state(state,_extract(model,support_x),support_y)
     parameters=None
-    if p in ('poster_ft','radionet_df_ft'):
+    if p == 'poster_ft_paperlast_v2':
+        from experiments.poster_paper_repro.model import prepare_finetune
+        model.network = prepare_finetune(model.network, mode='paper_last_layer')
+        parameters=[v for v in model.parameters() if v.requires_grad]
+    elif p in ('poster_ft','radionet_df_ft'):
         model.network.author_finetune(len(bundle['classes']))
         parameters=[v for v in model.parameters() if v.requires_grad]
     elif p=='feature_separation_hu2024':

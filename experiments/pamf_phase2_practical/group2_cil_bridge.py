@@ -134,8 +134,8 @@ def from_adapted_model(model: nn.Module, profile: str, *, old_count: int) -> Ada
             raise ValueError('B active-class order is not the compact old-class order')
         model = model.base
     base = copy.deepcopy(model).eval()
-    if profile in ('poster_ft', 'feature_separation_hu2024'):
-        name = 'head' if profile == 'poster_ft' else 'tx_classifier'
+    if profile in ('poster_ft', 'poster_ft_paperlast_v2', 'feature_separation_hu2024'):
+        name = 'head' if profile in ('poster_ft', 'poster_ft_paperlast_v2') else 'tx_classifier'
         head = getattr(base.network, name, None)
         if not isinstance(head, nn.Linear) or head.out_features != old_count:
             raise ValueError('B native classifier must be a matching linear head')

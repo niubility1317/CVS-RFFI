@@ -27,7 +27,7 @@ def decision_bytes(state):
 def fit_B(rt,bundle,x,y,seed,logger):
     profile=bundle['profile']
     require(row(profile)['category'] in ('DA','both'),'CIL cannot execute B')
-    if profile in ('poster_ft','feature_separation_hu2024'):
+    if profile in ('poster_ft','poster_ft_paperlast_v2','feature_separation_hu2024'):
         return extra.fit_B(rt,bundle,x,y,seed,logger)
     cfg=dict(bundle,profile='twostage_sda' if profile=='twostage' else profile)
     return native.fit_B(rt,cfg,x,y,seed,logger)

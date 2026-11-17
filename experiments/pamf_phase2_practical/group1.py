@@ -33,6 +33,11 @@ def catalog():
 
 
 def row(name):
+    if name=='poster_ft_paperlast_v2':
+        # Opt-in only: existing catalog-generated plans retain their original matrix.
+        return dict(id=name,category='DA',epochs=200,PL_start_epoch=101,method=name,
+                    B='native',C=None,active=True,unavailable_reason=None,
+                    native_scope='author pooling, paper-text last-layer FT; 256-IQ project adaptation')
     if name=='pamf_pl_milkr':
         return dict(catalog()[0],id=name,PL_start_epoch=26,source_method='historical_ordinary_PL_not_current_PAMF')
     return next(r for r in catalog() if r['id']==name)
