@@ -18,6 +18,16 @@ def parent_gpu_drained(state):
     return state.get('pending')==0 and state.get('active')==[]
 
 
+def native_extractor(profile):
+    if profile=='tweak_m1':
+        from .external_additional import native_features
+        return native_features
+    from .group1 import row
+    from .group1_source import embedding
+    source_method=row(profile)['method']
+    return lambda model,x: embedding(model,source_method,x)
+
+
 def orthogonal_anchor(saved,profile,old_x,old_y):
     import torch
     from . import group2_cil_bridge as cil
@@ -34,7 +44,7 @@ def orthogonal_anchor(saved,profile,old_x,old_y):
     return orth
 
 
-def make_plan(parent_config, root, release):
+def make_plan(parent_config, root, release, prior_config=None):
     parent = read(parent_config); root=Path(root).resolve(); release=Path(release).resolve()
     require(not root.exists() and release.is_dir() and parent['entry_module']=='satellite_mix3',
             'Wrong parent or existing output')
@@ -47,10 +57,32 @@ def make_plan(parent_config, root, release):
         jobs.append(dict(id=ident, profile=old['profile'], seed=old['seed'], capsule=old['capsule'],
                          parent=old, output=str(root/'predictions'/ident), score=str(root/'scores'/ident)))
     require(len(jobs)==945 and len({j['id'] for j in jobs})==945, 'Wrong saved B matrix')
+    if prior_config is not None:
+        prior=read(prior_config); state=read(Path(prior['run_root'])/'scheduler'/'state.json')
+        require(state.get('status')=='FAILED' and state.get('active')==[] and not state.get('score_active'),
+                'Prior owner not failed and drained')
+        old={j['id']:j for j in prior['jobs']}
+        require(len(old)==len(jobs) and set(old)=={j['id'] for j in jobs}, 'Prior plan differs')
+        failures={f['id'] for f in state.get('failed',[]) if f.get('stage')=='prediction'}
+        require(len(failures)==len(state.get('failed',[])), 'Unexpected prior technical failure')
+        for job in jobs:
+            before=old[job['id']]
+            require(all(before.get(k)==job.get(k) for k in ('profile','seed','capsule','parent')), 'Prior identity differs')
+            folder=Path(before['output'])
+            if (folder/'complete.json').is_file():
+                verify_prediction(before)
+                job['output']=before['output'];job['prediction_reused']=True
+            elif folder.exists():
+                require(job['id'] in failures and not list(folder.glob('*.npz')) and
+                        not (folder/'predictions.json').exists(), 'Unclassified partial output')
+            else:
+                require(job['id'] not in failures, 'Failed task has no classified output')
+        require(sum(bool(j.get('prediction_reused')) for j in jobs)==state.get('completed'),
+                'Prior complete count differs')
     return dict(run_root=str(root), release_root=str(release), parent_config=str(Path(parent_config).resolve()),
                 parent_run=parent['run_root'], runtime_file=parent['runtimes']['hybrid'],
                 allowed_gpus=list(range(8)), max_per_gpu=6, minimum_free_MiB=6000,
-                worker_reserve_MiB=3000, jobs=jobs)
+                worker_reserve_MiB=3000, prior_config=str(Path(prior_config).resolve()) if prior_config else None,jobs=jobs)
 
 
 def verify_parent(job):
@@ -74,8 +106,6 @@ def run_worker(config,job,*,smoke_only=False):
     from .episodic_experiment import split_rows
     from .external_execution import seed_for
     from .fast_transfer import to_tensor
-    from .group1 import row
-    from .group1_source import embedding
     from .group2_b_state import load_b_state
     from .group2_c_backbone_worker import support_only, score_indexed
     from .io import activate
@@ -99,12 +129,7 @@ def run_worker(config,job,*,smoke_only=False):
         bseed=seed_for(job['seed'],job['capsule'],k,'B')
         saved=load_b_state(parent/f'B-K{k}.pt',job['parent'],k,lookup[k,0]['split_id'],bseed,device)
         model=saved['model'].eval()
-        if job['profile']=='tweak_m1':
-            from .external_additional import native_features
-            extractor=native_features
-        else:
-            method=row(job['profile'])['method']
-            extractor=lambda model,x: embedding(model,method,x)
+        extractor=native_extractor(job['profile'])
         gallery=lora.build_gallery(model,extractor,old_x,old_y,old_count=6)
         orth=orthogonal_anchor(saved,job['profile'],old_x,old_y)
         with torch.no_grad():
@@ -179,7 +204,9 @@ def dispatch(config,config_file):
     root=Path(config['run_root']); require(not root.exists(),'Run root exists')
     root.mkdir(parents=True);control=root/'scheduler';control.mkdir();(control/'logs').mkdir()
     write(control/'owner.json',dict(pid=os.getpid(),cwd=str(Path.cwd()),argv=sys.argv))
-    pending=list(config['jobs']);active={};queue=[];scorers={};done=[];scored=[];failed=[];excluded=[];unscored=[];stopped=False
+    pending=[j for j in config['jobs'] if not j.get('prediction_reused')]
+    queue=[j for j in config['jobs'] if j.get('prediction_reused')]
+    active={};scorers={};done=[j['id'] for j in queue];scored=[];failed=[];excluded=[];unscored=[];stopped=False
     while pending or active or queue or scorers:
         if (control/'USER_STOP.json').is_file():stopped=True;pending.clear()
         for key,item in list(active.items()):
@@ -264,10 +291,10 @@ def dispatch(config,config_file):
 def main():
     p=argparse.ArgumentParser();p.add_argument('action',choices=('prepare','smoke','dispatch','worker','score'))
     p.add_argument('--config',required=True);p.add_argument('--parent-config')
-    p.add_argument('--run-root');p.add_argument('--release-root');p.add_argument('--job-id');a=p.parse_args()
+    p.add_argument('--run-root');p.add_argument('--release-root');p.add_argument('--job-id');p.add_argument('--prior-config');a=p.parse_args()
     if a.action=='prepare':
         path=Path(a.config).resolve();require(not path.exists() and not path.parent.exists(),'Existing configuration')
-        config=make_plan(a.parent_config,a.run_root,a.release_root)
+        config=make_plan(a.parent_config,a.run_root,a.release_root,a.prior_config)
         path.parent.mkdir(parents=True);write(path,config);print(json.dumps(dict(status='PREPARED',jobs=len(config['jobs']))));return
     config=read(a.config)
     if a.action=='smoke':
