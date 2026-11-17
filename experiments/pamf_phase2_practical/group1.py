@@ -78,7 +78,7 @@ def validate_source_config(c):
 
 def source_scope(rt):
     keys=('run_id','run_root','release_root','phase1_release','frozen_sources','source_cache','source_contract',
-          'augmentation_cache','augmentation_cpu_workers','code_commit','source_base_config','python','source_cpu_threads',
+          'augmentation_cache','augmentation_cpu_workers','reuse_source_augmentation','code_commit','source_base_config','python','source_cpu_threads',
           'PAMF_sources','PAMF_definition')
     result={k:rt[k] for k in keys if k in rt}
     validate_source_config(result)
