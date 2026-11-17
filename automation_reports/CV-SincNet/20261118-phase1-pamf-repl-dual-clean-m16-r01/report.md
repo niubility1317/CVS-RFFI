@@ -3,7 +3,7 @@
 - run_id：`20261118-phase1-pamf-repl-dual-clean-m16-r01`
 - group_id：`phase1-pamf-repl-weight-clean`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前状态：**VERIFIED / RUNNING**（2026-11-18 01:02 香港时间；以远端实际状态为准）
 
 ## 目的与对照
 
@@ -24,6 +24,10 @@
 
 命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
 实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
+
+发布代码 commit `eaa864df5ca5017b870d1aeba75f2bddf6c73a4c` 与远端分支独立读回一致；发布归档传输核验和远端编译通过。本地相关测试 15 项通过，独立 P0/P1 审查未发现直接阻断项。实际 E20 无查询 smoke 16/16 PASS。
+
+01:02 只读核验：控制器 RUNNING，16 个训练 worker 在 GPU 0–7 各 2 个，全部 PID 存活，工作目录与命令行匹配，逐步指标文件在两次读取之间全部增长；失败 0。其余 48 项预测、clean 评分和冻结后 U 评分已登记并等待对应训练完成。可使用 `E:/type10-7/local_artifacts/pamf_repl_dual_20261118/monitor.py` 和 `verify_workers.py` 只读检查；控制器状态和实际产物为准。
 
 ## 结果与覆盖
 
