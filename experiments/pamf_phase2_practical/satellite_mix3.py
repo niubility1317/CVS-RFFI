@@ -60,14 +60,13 @@ def prepare(inventory, a0_inventory, sources, root, release, config_path, wait_r
                             require(all((cap, seed, k) in available[profile] for k in (5,10) if k not in a0),
                                     'Existing native A0 unavailable')
                         extra = dict(design='mix3_v1', satellite_c_points=POINTS, satellite_a0_ks=a0)
-                        if profile == 'mopc_hr': extra['mopc_stabilization'] = 'clip1000_v1'
                         append('native', profile, cap, seed, **extra); validate_scope(jobs[-1])
                     append('tweak', 'tweak_m1', cap, seed, design='mix3_v1',
                            points=[[k,5] for k in (1,5,10,20)])
                     for profile in HYBRIDS:
                         key = f'{profile}-s{seed}-{cap.replace("/", "-")}'
                         opts = dict(key=key, points=POINTS, methods=['mopc_hr'], satellite_hybrid=True,
-                                    save_B_for_mopc=True, mopc_stabilization='clip1000_v1')
+                                    save_B_for_mopc=True, mopc_stabilization='none')
                         if profile == 'protonet_cda': opts['mopc_bridge'] = 'proto_affine_v1'
                         append('hybrid', profile, cap, seed, **opts)
     require(len({j['id'] for j in jobs}) == len(jobs), 'Duplicate jobs')
@@ -95,14 +94,16 @@ def verify_prediction(job):
         from .satellite_tweak import verify_prediction as check
     else:
         from .group2_worker import method_arm
+        from .mopc_identity import require_author_mopc_row
         folder = Path(job['output']); done = read(folder/'complete.json'); idx = read(folder/'predictions.json')
         require(done.get('status') == 'PREDICTIONS_COMPLETE' and done.get('truth_read') is False
                 and done.get('query_fit') is False and done.get('profile') == job['profile']
                 and done.get('model_seed') == job['seed'] and idx.get('capsule') == job['capsule'],
                 'Invalid hybrid completion')
-        arm = method_arm(job['profile'], 'mopc_hr', job.get('mopc_bridge','original'), 'clip1000_v1')
+        arm = method_arm(job['profile'], 'mopc_hr', job.get('mopc_bridge','original'), 'none')
         expected = {(k,n,arm) for k,n in POINTS}
         rows = idx['rows']; actual = [(r['k'],r['new_count'],r['arm']) for r in rows]
+        for row in rows: require_author_mopc_row(row)
         require(len(rows) == len(expected) == done['rows'] and set(actual) == expected
                 and all(r['stage']=='C' and r.get('input_condition')=='satellite_received'
                         and (folder/r['prediction']).is_file() for r in rows)

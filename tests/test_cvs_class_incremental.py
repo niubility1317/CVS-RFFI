@@ -63,7 +63,7 @@ def test_stage2c_manifest_rejects_receiver_and_label_overlap():
         validate_class_incremental_manifest(label_overlap)
 
 
-@pytest.mark.parametrize("method", ["csil", "mopc_hr", "orthogonal_incremental"])
+@pytest.mark.parametrize("method", ["csil", "orthogonal_incremental"])
 def test_stage2c_method_adapters_execute_without_query_in_training(method):
     torch.manual_seed(3)
     source_batch = {

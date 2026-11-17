@@ -3,8 +3,8 @@
 Only fitting functions accept support or explicitly authorized source tensors.
 Query access is confined to ``score``/``predict`` in evaluation mode. These are
 matched-protocol extensions, not claims of reproducing every original dataset:
-CSIL preserves expansion/masks/KD/source Fisher, MoPC-HR preserves paper
-prototype correction/augmentation and squared hierarchical regularization,
+CSIL preserves expansion/masks/KD/source Fisher, MoPC-HR preserves the
+public-repository prototype correction, augmentation and regularization,
 and Orthogonal SEI preserves frozen encoder/new-weight margin calibration.
 The source factories must train each method's own base mechanism separately.
 """
@@ -22,8 +22,7 @@ import torch.nn.functional as F
 
 from experiments.pamf_phase2_practical.vendor_native.paper_reproduction.CSIL.losses import compute_csil_loss
 from experiments.pamf_phase2_practical.vendor_native.paper_reproduction.mopc_hr_non_exemplar_cil_sei.algorithm import (
-    compute_class_prototypes, correct_old_prototypes, prototype_augmentation,
-    mopc_hr_incremental_objective, MoPCHRLoss,
+    compute_class_prototypes, correct_old_prototypes, prototype_augmentation, MoPCHRLoss,
 )
 from experiments.pamf_phase2_practical.vendor_native.paper_reproduction.orthogonal_incremental_sei.losses import incremental_calibration_loss
 
@@ -61,8 +60,8 @@ class RegistrationConfig:
     mopc_beta: float = 1.0
     mopc_lambda_max: float = 1.0
     mopc_stage_size: int = 5
-    mopc_semantics: str = "paper"
-    # Explicit diagnostic variant. None preserves the original optimizer path.
+    mopc_semantics: str = "public_code"
+    # Retained for explicit rejection of retired clipping configurations.
     mopc_max_grad_norm: float | None = None
     orthogonal_epochs: int = 50
     orthogonal_lr: float = 0.08
@@ -73,12 +72,10 @@ class RegistrationConfig:
     extraction_batch_size: int = 128
 
     def __post_init__(self) -> None:
-        if self.mopc_semantics not in ("paper", "public_code"):
-            raise ValueError("mopc_semantics must be paper or public_code")
-        if self.mopc_max_grad_norm is not None and (
-            not math.isfinite(self.mopc_max_grad_norm) or self.mopc_max_grad_norm <= 0
-        ):
-            raise ValueError("mopc_max_grad_norm must be finite and positive")
+        if self.mopc_semantics != "public_code":
+            raise ValueError("Only the author public_code MoPC version is retained")
+        if self.mopc_max_grad_norm is not None:
+            raise ValueError("MoPC gradient clipping versions have been retired")
         for name in ("old_adaptation_epochs", "csil_epochs", "mopc_epochs", "orthogonal_epochs"):
             if getattr(self, name) < 0:
                 raise ValueError(f"{name} must be non-negative")
@@ -103,7 +100,7 @@ def _seeded_kaiming_uniform(tensor, *, a, generator):
 
 
 def _mopc_similarity(cfg):
-    return "official_code_dot_softmax" if cfg.mopc_semantics == "public_code" else "paper_cosine"
+    return "official_code_dot_softmax"
 
 
 def _mopc_public_objective(logits, labels, proto_logits, proto_labels, parameters, previous, *, lambda_max):
@@ -114,23 +111,6 @@ def _mopc_public_objective(logits, labels, proto_logits, proto_labels, parameter
     proto_ce = F.cross_entropy(proto_logits / 2.0, proto_labels)
     cross_entropy = F.cross_entropy(logits, labels)
     return MoPCHRLoss(cross_entropy + proto_ce + hr, cross_entropy, proto_ce, hr)
-
-
-def _clip_finite_gradients(parameters, max_norm):
-    """Explicit diagnostic clipping using an FP64 norm; reject nonfinite gradients."""
-    if not math.isfinite(max_norm) or max_norm <= 0:
-        raise ValueError('max_norm must be finite and positive')
-    grads=[p.grad.detach() for p in parameters if p.grad is not None]
-    if any(g.is_sparse or not bool(torch.isfinite(g).all()) for g in grads):
-        raise FloatingPointError('Nonfinite or sparse gradient cannot be stabilized')
-    if not grads:return 0.0,False
-    norm=float(torch.stack([g.double().norm() for g in grads]).norm())
-    if not math.isfinite(norm):raise FloatingPointError('Nonfinite FP64 gradient norm')
-    clipped=norm>max_norm
-    if clipped:
-        with torch.no_grad():
-            for g in grads:g.mul_(max_norm/norm)
-    return norm,clipped
 
 
 def _method(value: str) -> str:
@@ -593,7 +573,7 @@ def _mopc_register(state: RegistrationState, x: torch.Tensor, y: torch.Tensor,
         p.requires_grad_(True)
     historical = state.prototypes.detach().clone()
     gen = torch.Generator(device=x.device).manual_seed(cfg.seed + 991)
-    stages = []; clipped_updates = 0
+    stages = []
     for stage_index, begin in enumerate(range(state.old_count, len(state.classes), cfg.mopc_stage_size), 1):
         end = min(begin + cfg.mopc_stage_size, len(state.classes))
         stage_rows = ((y >= begin) & (y < end)).nonzero().flatten()
@@ -615,14 +595,10 @@ def _mopc_register(state: RegistrationState, x: torch.Tensor, y: torch.Tensor,
                 torch.arange(begin, device=x.device), num_samples=cfg.mopc_batch_size,
                 noise_std=cfg.mopc_noise_std, generator=gen)
             proto_logits = model.fc(augmented)[:, :end]
-            if cfg.mopc_semantics == "public_code":
-                # Public MoPC_HR_trainer.stage1_distill computes KD but omits it
-                # from the optimized loss; its HR is unsquared layerwise norm.
-                terms = _mopc_public_objective(logits, y[indices], proto_logits, augmented_y,
-                    dict(model.named_parameters()), previous, lambda_max=cfg.mopc_lambda_max)
-            else:
-                terms = mopc_hr_incremental_objective(logits, y[indices], proto_logits, augmented_y,
-                    dict(model.named_parameters()), previous, beta=cfg.mopc_beta, lambda_max=cfg.mopc_lambda_max)
+            # Public MoPC_HR_trainer.stage1_distill computes KD but does not
+            # optimize it; its HR is the unsquared layerwise norm.
+            terms = _mopc_public_objective(logits, y[indices], proto_logits, augmented_y,
+                dict(model.named_parameters()), previous, lambda_max=cfg.mopc_lambda_max)
             terms.total.backward()
             _record(state.loss_trace, model,
                 {"loss": terms.total, "cross_entropy": terms.cross_entropy,
@@ -631,9 +607,6 @@ def _mopc_register(state: RegistrationState, x: torch.Tensor, y: torch.Tensor,
                 logger, start, phase="C", method="mopc_hr", stage=stage_index, epoch=epoch,
                 iteration=iteration, learning_rate=cfg.mopc_lr, beta=cfg.mopc_beta,
                 lambda_max=cfg.mopc_lambda_max, registered_count=end)
-            if cfg.mopc_max_grad_norm is not None:
-                _,clipped=_clip_finite_gradients(model.parameters(),cfg.mopc_max_grad_norm)
-                clipped_updates+=int(clipped)
             optimizer.step()
         previous_z = _features(reference, "mopc_hr", x[stage_rows], cfg.extraction_batch_size)
         current_z = _features(model, "mopc_hr", x[stage_rows], cfg.extraction_batch_size)
@@ -644,22 +617,16 @@ def _mopc_register(state: RegistrationState, x: torch.Tensor, y: torch.Tensor,
         stages.append({"new_count": end - begin, "registered_count": end,
                        "prototype_correction_applied": True})
     state.prototypes = historical
-    state.protocol_metadata.update(C_method="MoPC_HR_paper_CE_protoaugmentation_squared_layerHR",
-        mopc_version="paper_equations_7_to_22", incremental_stages=stages,
+    state.protocol_metadata.update(C_method="MoPC_HR_public_code_CE_protoCE_T2_unsquared_layerHR",
+        mopc_version="public_code_semantics_matched_IQ_extension", incremental_stages=stages,
         C_training_mode="train_current_support_only", query_BN_updates=False,
         class_order=list(state.classes[state.old_count:]), class_order_frozen_before_query=True,
         prototype_correction_consumed_by_later_stages=len(stages) > 1,
         final_decision="trained_classifier_all_registered_logits",
         claim_note="stage_size_5_ordered_arrival_matched_extension; final_prototype_correction_not_classifier_replacement")
-    if cfg.mopc_semantics == "public_code":
-        state.protocol_metadata.update(C_method="MoPC_HR_public_code_CE_protoCE_T2_unsquared_layerHR",
-            mopc_version="public_code_semantics_matched_IQ_extension",
-            prototype_correction="raw_dot_softmax", hierarchical_regularization="unsquared_layer_L2",
-            prototype_CE_temperature=2.0, computed_but_unoptimized_KD=True)
-    if cfg.mopc_max_grad_norm is not None:
-        state.protocol_metadata.update(stabilization='diagnostic_global_gradient_clipping',
-            gradient_clip_max_norm=cfg.mopc_max_grad_norm,gradient_clipped_updates=clipped_updates,
-            author_optimizer_unchanged=False)
+    state.protocol_metadata.update(prototype_correction="raw_dot_softmax",
+        hierarchical_regularization="unsquared_layer_L2", prototype_CE_temperature=2.0,
+        computed_but_unoptimized_KD=True)
 
 
 def _orthogonal_register(state: RegistrationState, x: torch.Tensor, y: torch.Tensor,

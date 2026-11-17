@@ -26,7 +26,7 @@ def unit(group, job):
 
 
 def expected_units(task_list, mopc_stabilization='none'):
-    require(mopc_stabilization in ('none','clip1000_v1'), 'Unsupported MoPC scoring version')
+    require(mopc_stabilization == 'none', 'Retired MoPC versions cannot be scored')
     result = {}
     for task in task_list:
         for group, profiles in (('pamf', ('R42',)), ('native_da', DA),
@@ -89,7 +89,6 @@ def collect(preparations, expected, unstable=None, mopc_stabilization='none'):
         unstable = {}
     available, entries = {}, {}
     configs=list(Path(preparations).glob('*phase2*clean*/scheduler.json'))
-    if mopc_stabilization!='none':configs+=list(Path(preparations).glob('mopc-stable-*/scheduler.json'))
     for config_path in sorted(configs):
         if config_path.parent.name in EXCLUDED_PLANS:
             continue
@@ -156,10 +155,12 @@ def validate_before_truth(expected, entries):
 
 
 def validate_prediction_rows(item):
+    from .mopc_identity import require_author_mopc_row
     cap = Path(item['rt']['data_root']) / item['job']['capsule']
     specs = {s['split_id']: s for s in (read(p) for p in (cap / 'splits').glob('*.json'))}
     registered = {}
     for row in item['payload']['rows']:
+        require_author_mopc_row(row)
         spec = specs[row['split_id']]
         require((spec['k'], spec['new_count']) == (row['k'], row['new_count']) and
                 spec['registered_classes'] == row['registered_classes'], 'Wrong split/K/N/classes')
@@ -229,7 +230,7 @@ def main():
     p.add_argument('--output', required=True)
     p.add_argument('--interval', type=int, default=300)
     p.add_argument('--workers', type=int, default=4)
-    p.add_argument('--mopc-stabilization', choices=['none','clip1000_v1'], default='none')
+    p.add_argument('--mopc-stabilization', choices=['none'], default='none')
     p.add_argument('--check-only', action='store_true', help='Inspect coverage without opening truth or starting a watcher')
     a = p.parse_args()
     if a.check_only:

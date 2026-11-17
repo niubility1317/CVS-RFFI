@@ -225,10 +225,12 @@ def _source_L(rt, bundle):
 
 
 def _registration_config(rt, profile, seed):
+    if profile == "mopc_paper":
+        raise ValueError("The MoPC paper-formula version has been retired")
     cfg = dict(seed=int(seed), old_adaptation_epochs=10, old_adaptation_lr=.001,
                old_adaptation_batch_size=128, csil_epochs=3, csil_old_fingerprint_trainable=True,
                mopc_epochs=20, mopc_stage_size=5, orthogonal_epochs=50,
-               mopc_semantics="public_code" if profile == "mopc_public_code" else "paper")
+               mopc_semantics="public_code")
     # Explicit recorded overrides serve focused source-only implementation tests;
     # the experiment runtime uses the complete_master_r05 defaults above.
     cfg.update(rt.get("native_registration_overrides", {}).get(profile, {}))

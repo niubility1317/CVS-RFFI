@@ -42,7 +42,6 @@ def score_entry(payload):
 def discover(preparations,expected):
     pairs=[];errors=[]
     plans=set(Path(preparations).glob('*phase2*clean*/scheduler.json'))
-    plans.update(Path(preparations).glob('mopc-stable-*/scheduler.json'))
     for plan in sorted(plans):
         if plan.parent.name in EXCLUDED_PLANS:continue
         try:
@@ -88,7 +87,7 @@ def run(preparations,output,workers,interval):
     root.mkdir(parents=True);(root/'jobs').mkdir();(root/'failures').mkdir()
     write(root/'owner.json',dict(pid=os.getpid(),cwd=str(Path.cwd()),workers=workers,
         preparations=str(Path(preparations).resolve()),scope='individually_fixed_jobs',truth_last=True))
-    expected={v:expected_units(tasks(),v) for v in ('none','clip1000_v1')}
+    expected={'none':expected_units(tasks(),'none')}
     backlog=deque();recent=deque();seen=set();active={};counts=Counter();last_scan=0;discovery_errors=[]
     scans=0;prefer_recent=True
     effective_workers=workers;pool_restarts=0;pool=ProcessPoolExecutor(max_workers=effective_workers)

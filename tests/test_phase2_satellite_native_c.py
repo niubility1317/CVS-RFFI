@@ -6,7 +6,7 @@ from experiments.pamf_phase2_practical.satellite_native_c import predecessor_don
 def test_mopc_keeps_only_unscored_a0_while_registering_every_mix_point():
     job=dict(profile='mopc_hr',capsule='capsules/P02/MIX02/1-1',seed=2026092701,
              satellite_c_points=[[k,n] for k in (1,5,10,20) for n in (2,5,10,20)],
-             satellite_a0_ks=[1,10,20],mopc_stabilization='clip1000_v1')
+             satellite_a0_ks=[1,10,20],mopc_stabilization='none')
     points,ks=validate_scope(job)
     assert len(points)==16 and ks==[1,10,20]
     job['satellite_a0_ks']=[1,5,10,20]
@@ -23,8 +23,8 @@ def test_fixed_orthogonal_needs_new_a0_and_single_scene_has_one_c():
 
 def test_satellite_c_scoring_requires_exact_points_and_received_input(tmp_path):
     job=dict(profile='mopc_hr',capsule='capsules/P01/LS01/1-1',seed=2026092701,
-             satellite_c_points=[[5,20]],satellite_a0_ks=[],mopc_stabilization='clip1000_v1',output=str(tmp_path))
-    row=dict(stage='C',k=5,new_count=20,input_path='P0',arm='mopc_hr_clip1000_v1',
+             satellite_c_points=[[5,20]],satellite_a0_ks=[],mopc_stabilization='none',output=str(tmp_path))
+    row=dict(stage='C',k=5,new_count=20,input_path='P0',arm='mopc_hr',resources={'native_resources':{'mopc_semantics':'public_code'}},
              input_condition='satellite_received',prediction='c.npz')
     (tmp_path/'c.npz').touch()
     (tmp_path/'complete.json').write_text(json.dumps(dict(status='PREDICTIONS_COMPLETE',truth_read=False,

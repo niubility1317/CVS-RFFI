@@ -21,7 +21,7 @@ def test_global_barrier_requires_every_method_and_every_kn():
     assert not coverage(expected, available)['ready']
 
 
-def test_stabilized_scoring_never_mixes_original_and_repaired_mopc(tmp_path, monkeypatch):
+def test_retired_stabilized_scoring_is_rejected(tmp_path, monkeypatch):
     from experiments.pamf_phase2_practical import clean_auto_score as auto
     task=dict(capsule='capsules/P01/MIX01/1-1',seed=2026092701,points=[[5,20]],
               profile='dadda_sda',methods=['mopc_hr'])
@@ -35,13 +35,11 @@ def test_stabilized_scoring_never_mixes_original_and_repaired_mopc(tmp_path, mon
         entries.append(entry)
     monkeypatch.setattr(auto,'completion_matches',lambda _:True)
     u=auto.unit('hybrid',task)
-    old=auto.expected_units([task]);stable=auto.expected_units([task],'clip1000_v1')
+    old=auto.expected_units([task])
     old_rows,old_entries=auto.collect(plans,old)
-    stable_rows,stable_entries=auto.collect(plans,stable,mopc_stabilization='clip1000_v1')
     assert [x['id'] for x in old_entries[u]]==['20261115-phase2-clean-original']
-    assert [x['id'] for x in stable_entries[u]]==['mopc-stable-r01']
     assert ('dadda_sda__mopc_hr','C',5,20,'P0') in old_rows[u]
-    assert ('dadda_sda__mopc_hr_clip1000_v1','C',5,20,'P0') in stable_rows[u]
+    with pytest.raises(ValueError):auto.expected_units([task],'clip1000_v1')
 
 
 def test_conflicting_duplicate_predictions_do_not_silently_score(tmp_path):

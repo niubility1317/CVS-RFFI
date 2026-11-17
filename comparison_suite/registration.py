@@ -505,66 +505,7 @@ def _csil_register(state: RegistrationState, x: torch.Tensor, y: torch.Tensor,
 
 def _mopc_register(state: RegistrationState, x: torch.Tensor, y: torch.Tensor,
                    cfg: RegistrationConfig, logger: Logger | None, start: float) -> None:
-    model = state.model
-    old = model.fc
-    expanded = nn.Linear(old.in_features, len(state.classes), bias=old.bias is not None).to(old.weight)
-    generator = torch.Generator(device=x.device).manual_seed(cfg.seed + 313)
-    with torch.no_grad():
-        nn.init.kaiming_uniform_(expanded.weight, a=5 ** 0.5, generator=generator)
-        if expanded.bias is not None:
-            bound = old.in_features ** -0.5
-            expanded.bias.uniform_(-bound, bound, generator=generator)
-        expanded.weight[:state.old_count].copy_(old.weight)
-        if old.bias is not None:
-            expanded.bias[:state.old_count].copy_(old.bias)
-    model.fc = expanded
-    for p in model.parameters():
-        p.requires_grad_(True)
-    historical = state.prototypes.detach().clone()
-    gen = torch.Generator(device=x.device).manual_seed(cfg.seed + 991)
-    stages = []
-    for stage_index, begin in enumerate(range(state.old_count, len(state.classes), cfg.mopc_stage_size), 1):
-        end = min(begin + cfg.mopc_stage_size, len(state.classes))
-        stage_rows = ((y >= begin) & (y < end)).nonzero().flatten()
-        reference = copy.deepcopy(model).eval()
-        previous = {k: p.detach().clone() for k, p in model.named_parameters()}
-        optimizer = torch.optim.SGD(model.parameters(), lr=cfg.mopc_lr,
-                                    momentum=cfg.mopc_momentum, weight_decay=cfg.mopc_weight_decay)
-        for epoch, iteration, rows in _batches(len(stage_rows), cfg.mopc_epochs, cfg.mopc_batch_size,
-                                              x.device, cfg.seed + 100003 * stage_index):
-            indices = stage_rows[rows]
-            optimizer.zero_grad(set_to_none=True)
-            logits = _logits(model, "mopc_hr", x[indices])[:, :end]
-            augmented, augmented_y = prototype_augmentation(historical,
-                torch.arange(begin, device=x.device), num_samples=cfg.mopc_batch_size,
-                noise_std=cfg.mopc_noise_std, generator=gen)
-            proto_logits = model.fc(augmented)[:, :end]
-            terms = mopc_hr_incremental_objective(logits, y[indices], proto_logits, augmented_y,
-                dict(model.named_parameters()), previous, beta=cfg.mopc_beta, lambda_max=cfg.mopc_lambda_max)
-            terms.total.backward()
-            _record(state.loss_trace, model,
-                {"loss": terms.total, "cross_entropy": terms.cross_entropy,
-                 "prototype_augmentation": terms.prototype_augmentation,
-                 "hierarchical_regularization": terms.hierarchical_regularization},
-                logger, start, phase="C", method="mopc_hr", stage=stage_index, epoch=epoch,
-                iteration=iteration, learning_rate=cfg.mopc_lr, beta=cfg.mopc_beta,
-                lambda_max=cfg.mopc_lambda_max, registered_count=end)
-            optimizer.step()
-        previous_z = _features(reference, "mopc_hr", x[stage_rows], cfg.extraction_batch_size)
-        current_z = _features(model, "mopc_hr", x[stage_rows], cfg.extraction_batch_size)
-        previous_new, _ = compute_class_prototypes(previous_z, y[stage_rows])
-        current_new, _ = compute_class_prototypes(current_z, y[stage_rows])
-        historical = torch.cat([correct_old_prototypes(historical, previous_new, current_new,
-                                   alpha=cfg.mopc_alpha, similarity_mode="paper_cosine"), current_new])
-        stages.append({"new_count": end - begin, "registered_count": end,
-                       "prototype_correction_applied": True})
-    state.prototypes = historical
-    state.protocol_metadata.update(C_method="MoPC_HR_paper_CE_protoaugmentation_squared_layerHR",
-        mopc_version="paper_equations_7_to_22", incremental_stages=stages,
-        class_order=list(state.classes[state.old_count:]), class_order_frozen_before_query=True,
-        prototype_correction_consumed_by_later_stages=len(stages) > 1,
-        final_decision="trained_classifier_all_registered_logits",
-        claim_note="stage_size_5_ordered_arrival_matched_extension; final_prototype_correction_not_classifier_replacement")
+    raise ValueError('This legacy MoPC implementation is retired; use the author repository behavior')
 
 
 def _orthogonal_register(state: RegistrationState, x: torch.Tensor, y: torch.Tensor,

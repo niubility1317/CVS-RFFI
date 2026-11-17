@@ -21,9 +21,12 @@ def metrics(labels,predicted,count):
 
 
 def run(rt,job):
+    from .mopc_identity import require_author_mopc_row
     prediction=Path(job['prediction']);root=Path(job['output']);complete=read(prediction/'complete.json')
     require(complete['status']=='PREDICTIONS_COMPLETE' and complete['truth_read'] is False,'Prediction must complete before truth')
-    root.mkdir(parents=True,exist_ok=False);payload=read(prediction/'predictions.json');cap=Path(rt['data_root'])/payload['capsule'];m=read(cap/'manifest.json')
+    payload=read(prediction/'predictions.json')
+    for row in payload['rows']: require_author_mopc_row(row)
+    root.mkdir(parents=True,exist_ok=False);cap=Path(rt['data_root'])/payload['capsule'];m=read(cap/'manifest.json')
     require(m['capsule_id']==payload['capsule_id']==complete['capsule_id'],'Wrong data/prediction binding')
     specs={s['split_id']:s for s in (read(p) for p in (cap/'splits').glob('*.json'))}
     pool,e,r=m['physical_pool'],m['episode_id'],m['receiver']

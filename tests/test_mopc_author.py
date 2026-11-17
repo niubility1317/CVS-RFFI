@@ -149,6 +149,17 @@ def test_1024_legal_author_layout_matches_unmodified_residual_attention_forward(
         torch.testing.assert_close(actual['tx_logits'], reference(layout), rtol=0, atol=0)
 
 
+def test_32_by_32_adsb_layout_matches_author_forward(monkeypatch):
+    torch.manual_seed(108)
+    adapted = MoPCAuthorWiSig256(num_classes=100).eval()
+    reference = _author_reference(monkeypatch).eval()
+    reference.load_state_dict(adapted.state_dict(), strict=True)
+    x = torch.randn(2, 3, 32, 32)
+    with torch.no_grad():
+        torch.testing.assert_close(adapted.feature_extract_stage2(x), reference.feature_extract_stage2(x), rtol=0, atol=0)
+        torch.testing.assert_close(adapted.fc(adapted.feature_extract_stage2(x)), reference(x), rtol=0, atol=0)
+
+
 def test_native_registration_uses_256_dimensional_prototypes_and_expands_the_same_fc():
     from experiments.pamf_phase2_practical.vendor_native.comparison_suite import registration as cil
     torch.manual_seed(8)

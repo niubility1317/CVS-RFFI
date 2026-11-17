@@ -67,7 +67,7 @@ def assert_same_state(before, after):
         assert torch.equal(before[key], after[key]), key
 
 
-@pytest.mark.parametrize("method", r.METHODS)
+@pytest.mark.parametrize("method", [name for name in r.METHODS if name != 'mopc_hr'])
 def test_paired_support_only_allclass_inference_is_pure(method):
     sx, sy, ox, oy, nx, ny = inputs()
     model = NativeToy(method).eval()
@@ -130,20 +130,14 @@ def test_csil_expansion_masks_source_fisher_and_distillation_executed():
     assert c.protocol_metadata["official_fingerprint_mask_corefix"]
 
 
-def test_mopc_correction_used_by_next_stage_and_native_losses_run():
+def test_legacy_mopc_registration_is_retired():
     sx, sy, ox, oy, nx, ny = inputs()
     model = NativeToy("mopc_hr").eval()
     cfg = tiny_config()
     b = r.prepare_registration_state("mopc_hr", model, ox, oy, [3, 1],
         source_x=sx, source_y=sy, config=cfg)
-    c = r.register_new_classes(b, nx, ny, [4, 5], config=cfg)
-    assert c.protocol_metadata["prototype_correction_consumed_by_later_stages"]
-    assert c.prototypes.shape == (4, 8)
-    assert c.protocol_metadata["mopc_version"] == "paper_equations_7_to_22"
-    rows = [row for row in c.loss_trace if row["phase"] == "C"]
-    assert max(row["prototype_augmentation"] for row in rows) > 0
-    assert max(row["hierarchical_regularization"] for row in rows) > 0
-    assert not torch.equal(b.model.fc.weight, c.model.fc.weight[:2])
+    with pytest.raises(ValueError, match='retired'):
+        r.register_new_classes(b, nx, ny, [4, 5], config=cfg)
 
 
 def test_orthogonal_only_new_weights_change_and_gradient_is_logged():
@@ -208,5 +202,9 @@ def test_k1_remains_valid_and_native_factory_interoperates(method):
                                orthogonal_epochs=1, mopc_stage_size=2)
     b = r.prepare_registration_state(method, model, ox, oy, [3, 1], config=cfg,
                                      source_x=source_x, source_y=source_y)
+    if method == 'mopc_hr':
+        with pytest.raises(ValueError, match='retired'):
+            r.register_new_classes(b, nx, ny, [4, 5], config=cfg)
+        return
     c = r.register_new_classes(b, nx, ny, [4, 5], config=cfg)
     assert c.score(torch.randn(3, 2, 256)).shape == (3, 4)

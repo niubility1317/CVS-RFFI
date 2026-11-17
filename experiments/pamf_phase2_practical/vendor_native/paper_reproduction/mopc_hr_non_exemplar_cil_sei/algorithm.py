@@ -1,9 +1,4 @@
-"""Core MoPC-HR equations without dataset or device-specific assumptions.
-
-The default path follows equations (7)-(22) of the paper. The optional
-``official_code_dot_softmax`` correction mode exists only to make the public
-reference implementation auditable; it is not the paper-faithful default.
-"""
+"""MoPC-HR prototype primitives for the retained author-repository behavior."""
 
 from __future__ import annotations
 
@@ -82,9 +77,9 @@ def correct_old_prototypes(
     new_prototypes_current_model: torch.Tensor,
     *,
     alpha: float = 0.97,
-    similarity_mode: str = "paper_cosine",
+    similarity_mode: str = "official_code_dot_softmax",
 ) -> torch.Tensor:
-    """Apply momentum prototype correction from paper equations (10)-(14)."""
+    """Apply the author repository's dot-product softmax correction."""
     if old_prototypes.ndim != 2:
         raise ValueError("old_prototypes must have shape [old_classes, feature_dim]")
     if new_prototypes_previous_model.shape != new_prototypes_current_model.shape:
@@ -96,12 +91,9 @@ def correct_old_prototypes(
     if not 0.0 <= alpha <= 1.0:
         raise ValueError("alpha must be in [0, 1]")
 
-    if similarity_mode == "paper_cosine":
-        similarity = F.normalize(old_prototypes, dim=1) @ F.normalize(new_prototypes_previous_model, dim=1).t()
-    elif similarity_mode == "official_code_dot_softmax":
-        similarity = torch.softmax(old_prototypes @ new_prototypes_previous_model.t(), dim=1)
-    else:
-        raise ValueError("similarity_mode must be paper_cosine or official_code_dot_softmax")
+    if similarity_mode != "official_code_dot_softmax":
+        raise ValueError("Only the author repository MoPC correction is retained")
+    similarity = torch.softmax(old_prototypes @ new_prototypes_previous_model.t(), dim=1)
 
     new_deviation = new_prototypes_current_model - new_prototypes_previous_model
     estimated_old_deviation = similarity @ new_deviation
