@@ -7,9 +7,9 @@ DATA="$ROOT/datasets/mopc_adsb_20261117_r01"
 RUN="$ROOT/runs/20261117-mopc-adsb-50plus25-m2-r01"
 RAW="$DATA/adsb_bladerf2_10M_qt0.mat"
 test -f "$RAW"
+test -f "$DATA/prepared/data_manifest.json"
 mkdir "$RUN"
 trap 'printf "FAILED line %s\n" "$LINENO" > "$RUN/FAILED"' ERR
-"$PY" -m experiments.mopc_adsb_repro.prepare --raw "$RAW" --output "$DATA/prepared" > "$RUN/prepare.log" 2>&1
 CUDA_VISIBLE_DEVICES=0 "$PY" -m experiments.mopc_adsb_repro.smoke --data "$DATA/prepared" --output "$RUN/smoke" > "$RUN/smoke.log" 2>&1
 CUDA_VISIBLE_DEVICES=0 "$PY" -m experiments.mopc_adsb_repro.run train --data "$DATA/prepared" --output "$RUN/base" --version base > "$RUN/base.log" 2>&1
 test -f "$RUN/base/train_complete.json"
