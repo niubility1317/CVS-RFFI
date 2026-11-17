@@ -3,7 +3,7 @@
 - run_id：`20261118-phase1-pamf-repl-dual-clean-m16-r01`
 - group_id：`phase1-pamf-repl-weight-clean`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前状态：**VERIFIED / RUNNING**（2026-11-18 01:02 香港时间；以远端实际状态为准）
+- 当前状态：**VERIFIED / ANALYZED**（2026-11-18 04:22 香港时间；16 行的训练、clean 预测与评分、冻结后 U 评分全部完成）
 
 ## 目的与对照
 
@@ -31,8 +31,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
-源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+完整结果和分析见 [analysis.md](analysis.md)。所有 64 项训练、预测、clean 评分、U 评分均 COMPLETE，失败 0；读取 16 行各 6660 步、30 轮源验证和 66 次 AdamW 抽样，65 份 stdout 全文无所检查的错误与警告标记。十类最佳 clean 84.0279%，距同 seed 普通 PL 低 0.1715 个百分点；六源最佳 86.1993%，距 PL 低 0.2292 个百分点。本轮均未超过普通 PL。按相同物理 ID 的 64 组配对和完整聚合保存在 `E:/type10-7/local_artifacts/pamf_repl_dual_20261118/contrasts.json` 与 `full_analysis.json`，原始日志保留远端。
 
 ## 交接
 
