@@ -46,6 +46,7 @@ def key(row):
 
 def verify_all(config,preparation):
     """Check every requested prediction before any truth file is opened."""
+    from .mopc_identity import require_author_mopc_row
     require(not preparation.get('blocked'),'Retained comparison methods remain blocked')
     jobs=config['jobs'];require(jobs and len(jobs)==preparation['jobs'],'Incomplete preregistered jobs')
     verified=[]
@@ -53,6 +54,7 @@ def verify_all(config,preparation):
         require(completion_matches(entry),'A requested prediction job is incomplete')
         job=read(entry['job']);rt=read(entry['runtime']);folder=Path(entry['completion']).parent
         done=read(folder/'complete.json');payload=read(folder/'predictions.json');rows=payload['rows']
+        for row in rows: require_author_mopc_row(row)
         require(payload['capsule']==job['capsule'] and payload['model_seed']==job['seed'] and len(rows)==done['rows'],
                 'Prediction index identity mismatch')
         actual=[key(row) for row in rows]
@@ -66,6 +68,8 @@ def verify_all(config,preparation):
 
 def score_job(item,output):
     job,rt,folder,payload=item['job'],item['rt'],item['folder'],item['payload']
+    from .mopc_identity import require_author_mopc_row
+    for row in payload['rows']: require_author_mopc_row(row)
     cap=Path(rt['data_root'])/job['capsule'];manifest=read(cap/'manifest.json')
     specs={s['split_id']:s for s in (read(p) for p in (cap/'splits').glob('*.json'))}
     pool,episode,rx=manifest['physical_pool'],manifest['episode_id'],manifest['receiver']

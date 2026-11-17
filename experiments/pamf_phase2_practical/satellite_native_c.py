@@ -25,7 +25,7 @@ def validate_scope(job):
         a0=[5,10] if profile=='orthogonal' else ([] if episode=='MIX01' else [10])
         require(job.get('satellite_c_points')==[list(p) for p in points] and job.get('satellite_a0_ks')==a0,
                 'Wrong revised C points or A0 reuse')
-        require(job.get('mopc_stabilization','none')==('clip1000_v1' if profile=='mopc_hr' else 'none'),
+        require(job.get('mopc_stabilization','none')=='none',
                 'Wrong native C version')
         return points,a0
     points=[(k,n) for k in (1,5,10,20) for n in (2,5,10,20)] if episode.startswith('MIX') else [(5,20)]
@@ -33,24 +33,26 @@ def validate_scope(job):
        ([1,10,20] if episode.startswith('MIX') and episode!='MIX01' else [])
     require(job.get('satellite_c_points')==[list(p) for p in points] and job.get('satellite_a0_ks')==a0,
             'Wrong registered rows or A0 reuse scope')
-    require(job.get('mopc_stabilization','none')==('clip1000_v1' if profile=='mopc_hr' else 'none'),
+    require(job.get('mopc_stabilization','none')=='none',
             'Wrong native C version')
     return points,a0
 
 
 def verify_prediction(job):
+    from .mopc_identity import require_author_mopc_row
     folder=Path(job['output']);done=read(folder/'complete.json');index=read(folder/'predictions.json')
     require(done.get('status')=='PREDICTIONS_COMPLETE' and done.get('truth_read') is False and
             done.get('query_fit') is False and done.get('profile')==job['profile'] and done.get('model_seed')==job['seed'] and
             index.get('capsule')==job['capsule'] and index.get('capsule_id')==done.get('capsule_id') and
             index.get('model_seed')==job['seed'],'Wrong native C identity')
     points,a0=validate_scope(job)
-    carm={'mopc_hr':'mopc_hr_clip1000_v1','lora_triplet_knn':'lora_triplet_knn_balanced_v1',
+    carm={'mopc_hr':'mopc_hr','lora_triplet_knn':'lora_triplet_knn_balanced_v1',
           'orthogonal':'orthogonal_tempered_pl_v2'}[job['profile']]
     a0arm='orthogonal_tempered_pl_v2' if job['profile']=='orthogonal' else job['profile']
     expected={('A0',k,0,'P0',a0arm) for k in a0}
     expected.update(('C',k,n,'P0',carm) for k,n in points)
     rows=index['rows'];actual=[(v['stage'],v['k'],v['new_count'],v['input_path'],v['arm']) for v in rows]
+    for row in rows: require_author_mopc_row(row)
     require(len(actual)==len(set(actual)) and set(actual)==expected and len(rows)==done['rows'] and
             all(v.get('input_condition')=='satellite_received' and (folder/v['prediction']).is_file() for v in rows),
             'Wrong satellite native C rows')
@@ -93,7 +95,6 @@ def make_plan(a0_inventory,runtime_files,run_root,release_root,prior_configs,wai
                         ident=f'{profile}-s{seed}-capsules-{pool}-{episode}-{rx}'
                         job=dict(id=ident,profile=profile,capsule=cap,seed=seed,satellite_c_points=points,
                                  satellite_a0_ks=a0,output=str(root/'predictions'/ident),score=str(root/'scores'/ident))
-                        if profile=='mopc_hr':job['mopc_stabilization']='clip1000_v1'
                         validate_scope(job);planned.append(job)
     require(len(planned)==5796 and len({j['id'] for j in planned})==5796,'Wrong native C matrix')
     return dict(input_condition='satellite_received',run_root=str(root),release_root=str(release),

@@ -1,4 +1,4 @@
-"""Controlled MoPC author-code versus paper-equation ADS-B experiment.
+"""ADS-B experiment using the retained author-repository MoPC behavior.
 
 Training reads only train arrays. Prediction reads only query features.
 Scoring is a separate command and requires frozen predictions for all stages.
@@ -21,20 +21,21 @@ from experiments.pamf_phase2_practical.mopc_author import MoPCAuthorWiSig256
 
 
 def regularization(model, previous, version):
+    if version != 'author':
+        raise ValueError('Only the author-repository MoPC version is retained')
     pairs = list(zip(model.parameters(), previous.parameters()))
     out = next(model.parameters()).new_zeros(())
     for idx, (current, old) in enumerate(pairs):
         diff = current - old
         weight = 1 - idx / len(pairs)
-        out = out + weight * (diff.norm(2) if version == 'author' else diff.square().sum())
+        out = out + weight * diff.norm(2)
     return out
 
 
 def correct(old, new_before, new_after, version):
-    if version == 'author':
-        similarity = torch.softmax(old @ new_before.T, dim=1)
-    else:  # Paper Eqs. 10--14 directly multiply cosine S; no softmax.
-        similarity = F.normalize(old, dim=1) @ F.normalize(new_before, dim=1).T
+    if version != 'author':
+        raise ValueError('Only the author-repository MoPC version is retained')
+    similarity = torch.softmax(old @ new_before.T, dim=1)
     return .97 * old + .03 * (similarity @ (new_after - new_before))
 
 
@@ -63,6 +64,12 @@ def protos(model, data, low, high, device):
 
 def write_json(path, value):
     Path(path).write_text(json.dumps(value, indent=2), encoding='utf-8')
+
+
+def require_author_training(directory):
+    marker = Path(directory) / 'train_complete.json'
+    if not marker.is_file() or json.loads(marker.read_text(encoding='utf-8')).get('version') != 'author':
+        raise ValueError('Training version must be the retained author version')
 
 
 def train(args):
@@ -101,7 +108,7 @@ def train(args):
                     noise = np.random.normal(0, .05, size=(16, 256)).astype(np.float32)
                     features = old_proto[torch.as_tensor(choices, device=dev)] + torch.from_numpy(noise).to(dev)
                     scores = model.fc(features)[:, :high]
-                    if args.version == 'author': scores = scores / 2
+                    scores = scores / 2
                     aug = F.cross_entropy(scores, torch.as_tensor(choices, device=dev))
                     reg = regularization(model, previous, args.version)  # beta = 1, explicit assumption
                 loss = ce + aug + reg
@@ -115,12 +122,9 @@ def train(args):
                    'loss': (total / steps).tolist(), 'elapsed_seconds': time.time() - before}
             history.append(row); print(json.dumps(row), flush=True)
         if stage:
-            # The repository uses its shuffled drop-last loader independently
-            # for both passes.  Paper Eqs. 8-9 average over the same full Dt.
-            proto_dl = dl if args.version == 'author' else loader(
-                x, y, (low, high), shuffle=False, drop_last=False)
-            p_before = protos(previous, proto_dl, low, high, dev)
-            p_after = protos(model, proto_dl, low, high, dev)
+            # Match the repository's two shuffled, drop-last passes.
+            p_before = protos(previous, dl, low, high, dev)
+            p_after = protos(model, dl, low, high, dev)
             old_proto = torch.cat((correct(old_proto, p_before, p_after, args.version), p_after), dim=0)
         else:
             old_proto = protos(model, dl, low, high, dev)
@@ -135,6 +139,7 @@ def predict(args):
     torch.set_num_threads(2)
     dev = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     data, out = Path(args.data), Path(args.output)
+    require_author_training(args.incremental)
     manifest = json.loads((data / 'data_manifest.json').read_text(encoding='utf-8'))
     x = np.load(data / 'query_x.npy', mmap_mode='r')
     out.mkdir(parents=True, exist_ok=False)
@@ -151,12 +156,15 @@ def predict(args):
                 if not torch.isfinite(logits).all(): raise FloatingPointError('Non-finite prediction')
                 result.append(logits.argmax(1).cpu().numpy())
         np.save(out / f'stage{stage}_pred.npy', np.concatenate(result))
-    write_json(out / 'predictions_complete.json', {'stages': [0, 1, 2]})
+    write_json(out / 'predictions_complete.json', {'stages': [0, 1, 2], 'version':'author'})
 
 
 def score(args):
     pred_dir, data, out = Path(args.predictions), Path(args.data), Path(args.output)
-    if not (pred_dir / 'predictions_complete.json').is_file(): raise ValueError('Predictions not fixed')
+    marker = pred_dir / 'predictions_complete.json'
+    if not marker.is_file(): raise ValueError('Predictions not fixed')
+    if json.loads(marker.read_text(encoding='utf-8')).get('version') != 'author':
+        raise ValueError('Prediction version must be the retained author version')
     labels = np.load(data / 'query_labels.npy')
     manifest = json.loads((data / 'data_manifest.json').read_text(encoding='utf-8'))
     groups = [(0, 50), (50, 75), (75, 100)]; table = []
@@ -178,7 +186,7 @@ def score(args):
 def main():
     p = argparse.ArgumentParser(); p.add_argument('action', choices=['train', 'predict', 'score'])
     p.add_argument('--data', required=True); p.add_argument('--output', required=True)
-    p.add_argument('--version', choices=['base', 'author', 'paper']); p.add_argument('--base')
+    p.add_argument('--version', choices=['base', 'author']); p.add_argument('--base')
     p.add_argument('--incremental'); p.add_argument('--predictions')
     a = p.parse_args()
     {'train': train, 'predict': predict, 'score': score}[a.action](a)

@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from types import SimpleNamespace
 
 from experiments.mopc_adsb_repro.prepare import csil_features, split_rows
-from experiments.mopc_adsb_repro.run import correct, regularization, score, loader
+from experiments.mopc_adsb_repro.run import correct, regularization, score
 
 
 def test_split_is_deterministic_disjoint_and_has_paper_stage_sizes():
@@ -44,34 +44,20 @@ def test_degenerate_signal_does_not_silently_create_invalid_data():
         csil_features(np.zeros((1, 1024), dtype=np.complex64))
 
 
-def test_paper_prototypes_use_identical_full_record_set():
-    x = np.arange(40, dtype=np.float32).reshape(20, 2)
-    y = np.zeros(20, dtype=np.int64)
-    batches = loader(x, y, (0, 1), shuffle=False, drop_last=False)
-    first = torch.cat([v for v, _ in batches])
-    second = torch.cat([v for v, _ in batches])
-    torch.testing.assert_close(first, torch.from_numpy(x))
-    torch.testing.assert_close(first, second)
-
-
-def test_prototype_correction_distinguishes_repository_and_paper_formula():
+def test_prototype_correction_matches_repository_formula():
     old = torch.tensor([[1., 2.], [2., 1.]])
     before = torch.tensor([[2., 3.], [4., -1.]])
     after = before + torch.tensor([[1., 0.], [0., 2.]])
     author = .97*old + .03*(torch.softmax(old @ before.T, 1) @ (after-before))
-    paper = .97*old + .03*((F.normalize(old, dim=1) @ F.normalize(before, dim=1).T) @ (after-before))
     torch.testing.assert_close(correct(old, before, after, 'author'), author)
-    torch.testing.assert_close(correct(old, before, after, 'paper'), paper)
-    assert not torch.allclose(author, paper)
 
 
-def test_hr_author_norm_and_paper_squared_norm():
+def test_hr_author_norm():
     old = torch.nn.Linear(2, 2); new = torch.nn.Linear(2, 2)
     with torch.no_grad():
         for p in old.parameters(): p.zero_()
         for p in new.parameters(): p.fill_(2.)
     assert regularization(new, old, 'author').item() == pytest.approx(4 + 0.5*np.sqrt(8))
-    assert regularization(new, old, 'paper').item() == pytest.approx(16 + 0.5*8)
 
 
 def test_truth_last_task_metrics_and_incomplete_predictions(tmp_path):
@@ -85,7 +71,9 @@ def test_truth_last_task_metrics_and_incomplete_predictions(tmp_path):
     np.save(predictions / 'stage2_pred.npy', [0, 1, 50, 51, 0, 76])
     args = SimpleNamespace(data=str(data), predictions=str(predictions), output=str(tmp_path / 'score'))
     with pytest.raises(ValueError, match='not fixed'): score(args)
-    (predictions / 'predictions_complete.json').write_text('{}')
+    (predictions / 'predictions_complete.json').write_text('{"version":"paper"}')
+    with pytest.raises(ValueError, match='version'): score(args)
+    (predictions / 'predictions_complete.json').write_text('{"version":"author"}')
     score(args)
     result = json.loads((tmp_path / 'score' / 'metrics.json').read_text())
     assert result['task_accuracy_by_stage'] == [[1.0], [1.0, .5], [1.0, 1.0, .5]]

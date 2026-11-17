@@ -34,12 +34,12 @@ def main():
     original.load_state_dict(torch.load(out / 'smoke_checkpoint.pt')); original.eval()
     with torch.no_grad(): prototype = original.feature_extract_stage2(xb).mean(0, keepdim=True).repeat(50, 1)
     results = {}
-    for version in ('author', 'paper'):
+    for version in ('author',):
         candidate = copy.deepcopy(original).train(); prev = copy.deepcopy(original).eval().requires_grad_(False)
         z = candidate.feature_extract_stage2(xb)
         logits = candidate.fc(z)[:, :75]
         p = candidate.fc(prototype[:16])[:, :75]
-        if version == 'author': p = p / 2
+        p = p / 2
         objective = F.cross_entropy(logits, yb) + F.cross_entropy(p, torch.arange(16, device='cuda')) + regularization(candidate, prev, version)
         objective.backward()
         finite = torch.stack([torch.isfinite(v.grad).all() for v in candidate.parameters() if v.grad is not None]).all()

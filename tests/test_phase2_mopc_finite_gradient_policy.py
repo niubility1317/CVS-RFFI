@@ -4,7 +4,7 @@ import time
 import pytest
 import torch
 
-from experiments.pamf_phase2_practical.vendor_native.comparison_suite.registration import _record, _clip_finite_gradients
+from experiments.pamf_phase2_practical.vendor_native.comparison_suite.registration import _record
 
 
 def test_finite_gradient_with_fp32_norm_overflow_is_recorded_without_changing_update():
@@ -28,15 +28,3 @@ def test_nonfinite_gradient_still_stops(value):
     model.weight.grad = torch.full_like(model.weight, value)
     with pytest.raises(FloatingPointError, match='gradient_norm'):
         _record([], model, {'loss': torch.tensor(1.)}, None, time.perf_counter(), method='mopc_hr')
-
-
-def test_stabilization_changes_only_updates_exceeding_threshold():
-    model=torch.nn.Linear(2,1,bias=False)
-    model.weight.grad=torch.tensor([[3.,4.]])
-    before=model.weight.grad.clone()
-    norm,clipped=_clip_finite_gradients(model.parameters(),1000.)
-    assert norm==5.0 and not clipped and torch.equal(model.weight.grad,before)
-    model.weight.grad=torch.tensor([[3000.,4000.]])
-    norm,clipped=_clip_finite_gradients(model.parameters(),1000.)
-    assert norm==5000.0 and clipped
-    torch.testing.assert_close(model.weight.grad,torch.tensor([[600.,800.]]))

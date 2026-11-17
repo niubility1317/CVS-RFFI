@@ -63,7 +63,7 @@ def test_discovery_keeps_legacy_proto_and_isolates_bad_jobs(tmp_path):
         marker=tmp_path/f'{name}-complete.json';marker.write_text('{"status":"PREDICTIONS_COMPLETE"}')
         entries.append(dict(id=name,group='hybrid',job=str(file),completion=str(marker),runtime='rt'))
     (plan/'scheduler.json').write_text(json.dumps(dict(input_condition='clean_ground_pre_satellite_normalized',jobs=entries)))
-    expected={v:expected_units([task],v) for v in ('none','clip1000_v1')}
+    expected={'none':expected_units([task],'none')}
     found,errors=incremental.discover(tmp_path,expected)
     assert [x['entry']['id'] for x in found]==['good']
     assert len(errors)==1 and errors[0]['id']=='bad'

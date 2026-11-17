@@ -1,26 +1,22 @@
 import pytest
 
 
-def test_stabilized_mopc_is_versioned_and_requires_mopc_only():
+def test_retired_stabilization_is_rejected():
     from experiments.pamf_phase2_practical.mopc_stabilization import policy, arm
     assert policy({}, 'native_cil') is None
-    assert policy(dict(profile='mopc_hr',mopc_stabilization='clip1000_v1'), 'native_cil') == 1000.0
-    assert policy(dict(profile='dadda_sda',methods=['mopc_hr'],mopc_stabilization='clip1000_v1'), 'hybrid') == 1000.0
-    assert arm('mopc_hr', 'clip1000_v1') == 'mopc_hr_clip1000_v1'
+    with pytest.raises(ValueError):policy(dict(profile='mopc_hr',mopc_stabilization='clip1000_v1'), 'native_cil')
+    with pytest.raises(ValueError):arm('mopc_hr', 'clip1000_v1')
     with pytest.raises(ValueError):
         policy(dict(profile='dadda_sda',methods=['mopc_hr','lora'],mopc_stabilization='clip1000_v1'), 'hybrid')
     with pytest.raises(ValueError):
         policy(dict(profile='mopc_hr',mopc_stabilization='unreviewed'), 'native_cil')
 
 
-def test_stabilized_rows_remain_distinct_from_original_for_scoring():
+def test_retired_stabilized_rows_cannot_be_selected_for_scoring():
     from experiments.pamf_phase2_practical.clean_score import expected_rows
     job=dict(profile='dadda_sda',methods=['mopc_hr'],points=[[1,20]],mopc_stabilization='clip1000_v1')
-    rows=expected_rows('hybrid',job)
-    assert rows == {('dadda_sda__mopc_hr_clip1000_v1','C',1,20,'P0')}
-    native=expected_rows('native_cil',dict(profile='mopc_hr',points=[[1,20]],mopc_stabilization='clip1000_v1'))
-    assert ('mopc_hr_clip1000_v1','C',1,20,'P0') in native
-    assert ('mopc_hr','A0',1,0,'P0') in native
+    with pytest.raises(ValueError):expected_rows('hybrid',job)
+    with pytest.raises(ValueError):expected_rows('native_cil',dict(profile='mopc_hr',points=[[1,20]],mopc_stabilization='clip1000_v1'))
 
 
 def test_only_real_mopc_numerical_exception_is_quarantined(tmp_path, monkeypatch):

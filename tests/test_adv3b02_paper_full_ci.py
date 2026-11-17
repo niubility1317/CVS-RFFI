@@ -1,6 +1,7 @@
 import copy
 
 import numpy as np
+import pytest
 import torch
 from torch import nn
 
@@ -127,42 +128,8 @@ def test_semantic_hr_uses_one_decay_per_module_and_squared_l2():
     assert torch.allclose(value, torch.tensor(3.5))
 
 
-def test_mopc_uses_sequential_five_class_stages_and_classifier_query():
-    torch.manual_seed(10)
-    x, y = support(12, shots=1)
-    backbone = TinyBackbone()
-    fitted = fit_mopc_hr_paper_full(
-        backbone,
-        x,
-        y,
-        feature_fn=feature_fn,
-        old_count=2,
-        seed=23,
-        epochs=1,
-        batch_size=4,
-    )
-    assert fitted.resource["incremental_stage_sizes"] == [5, 5]
-    assert fitted.resource["query_decision"] == (
-        "current_model_all_registered_classifier_logits"
-    )
-    assert len(fitted.loss_trace) == 4
-    assert fitted.after_prototypes.shape == (12, 6)
-    query = x[:3]
-    expected = fitted.current_model(query)[0][:, :12].argmax(1)
-    assert torch.equal(predict_after(fitted, query), expected)
-
-
-def test_mopc_k1_small_batch_still_runs_twenty_epochs():
-    torch.manual_seed(11)
+def test_mopc_paper_full_entrypoint_is_retired():
     x, y = support(4, shots=1)
-    fitted = fit_mopc_hr_paper_full(
-        TinyBackbone(),
-        x,
-        y,
-        feature_fn=feature_fn,
-        old_count=2,
-        seed=29,
-    )
-    assert fitted.resource["optimizer_steps"] == 20
-    assert fitted.resource["batch_size"] == 16
-    assert all(row["registered_class_count"] == 4 for row in fitted.loss_trace)
+    with pytest.raises(ValueError, match='retired'):
+        fit_mopc_hr_paper_full(TinyBackbone(), x, y, feature_fn=feature_fn,
+                               old_count=2, seed=29)
