@@ -2,7 +2,7 @@
 from contextlib import contextmanager
 from experiments.pamf_repl_component_guard import plan as base
 
-RUN = '20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r01'
+RUN = '20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02'
 PREVIOUS_RUN = '20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01'
 SEED = base.SEED
 SETTINGS = {'source_rx_6': 'm6-natural'}

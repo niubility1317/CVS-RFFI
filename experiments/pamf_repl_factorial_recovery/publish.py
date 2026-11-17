@@ -1,4 +1,4 @@
-"""Publish the recovery with all GPUs eligible and no GPU sharing."""
+"""Publish recovery on evenly separated GPUs with a shared-process cap."""
 import argparse
 from experiments.pamf_branch_training import publish as base
 from experiments.pamf_repl_attribution_factorial import publish as previous
@@ -15,7 +15,7 @@ def publish(repo, output, context, ssh_config):
     from unittest.mock import patch
     original_publish = base.publish
     def submit(*args, **kwargs):
-        base.REMOTE = base.REMOTE.replace('rt[\'allowed_gpus\']=[2,3]', 'rt[\'allowed_gpus\']=list(range(8))')
+        base.REMOTE = base.REMOTE.replace('rt[\'allowed_gpus\']=[2,3]', 'rt[\'allowed_gpus\']=[0,2,4,6]')
         base.REMOTE = base.REMOTE.replace('experiments.pamf_repl_attribution_factorial.runner',
                                           'experiments.pamf_repl_factorial_recovery.runner')
         base.REMOTE = base.REMOTE.replace("str(release/'experiments/pamf_repl_attribution_factorial')",

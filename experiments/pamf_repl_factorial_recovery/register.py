@@ -17,11 +17,12 @@ def make(template):
         base.RUN, base.PREVIOUS_RUN, base.RECIPES, base.candidate_rows = old
     result.update(display_name='六源浅层与外推因子矩阵技术补跑',
                   description='补齐中断矩阵中六源权重3的四行；复用两条已冻结E50，另两条从相同源E20按原配方训练。',
+                  replaces_run_id='20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r01',
                   authorization='2026-11-17 用户要求补齐失败实验，只测clean。')
     result['checkpoint'].update(initialization='two source-only E50 reused; failed and queued rows retrain from same source-only E20',
         contract_check_ref='factorial_recovery.runner.prepare and component_guard.plan.parent',
         selection_rule='fixed four original missing rows; no target selection or parameter changes')
-    result['execution'].update(gpu_policy='All 8 GPUs eligible; use completely idle GPU with >= 12 GiB free, one own worker per GPU',
+    result['execution'].update(gpu_policy='GPU 0,2,4,6; all owners and pending workers <=5/GPU, >=12 GiB free, one own worker/GPU',
         local_artifact_root='local_artifacts/pamf_repl_factorial_recovery_20261117',
         launch_command='python -m experiments.pamf_repl_factorial_recovery.publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG')
     result['data']['roles']['U_s'] = 'TX blind during training; independent post-freeze U truth diagnostic only'

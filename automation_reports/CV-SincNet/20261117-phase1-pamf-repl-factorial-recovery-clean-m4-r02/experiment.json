@@ -1,0 +1,254 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02",
+  "group_id": "phase1-pamf-repl-weight-clean",
+  "display_name": "六源浅层与外推因子矩阵技术补跑",
+  "description": "补齐中断矩阵中六源权重3的四行；复用两条已冻结E50，另两条从相同源E20按原配方训练。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "tri-repl-clean-loss-weight"
+  ],
+  "tags": [
+    "PAMF",
+    "REPL",
+    "clean",
+    "gradient"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-paper-completion-m119-r03",
+    "20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01"
+  ],
+  "replaces_run_id": "20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r01",
+  "authorization": "2026-11-17 用户要求补齐失败实验，只测clean。",
+  "code": {
+    "commit": "actual committed release identity in runtime.json",
+    "checkout": "isolated task worktree",
+    "environment": "N607 CVS-RFFI existing Python, FP32",
+    "cwd": "PROJECT/releases/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02-release"
+  },
+  "data": {
+    "dataset": "original ten-class ManyRx and six-source receiver contracts",
+    "version": null,
+    "representation": null,
+    "contract_ref": "context.handles per row protocol_id",
+    "physical_ids_ref": "original fixed source/test contracts",
+    "label_map_ref": null,
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "original labeled role",
+      "U_s": "TX blind during training; independent post-freeze U truth diagnostic only",
+      "V": "original source validation"
+    },
+    "train_ratio": "original fixed labeled/unlabeled/validation roles",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": "fixed clean cross-date, cross-RX and double-cross; prediction before independent scoring",
+    "leo_config_ref": "not applicable: clean-only, no new satellite observations"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "frozen raw clean prediction; independent truth-last scoring",
+    "external_method_exception": null,
+    "claim_scope": "seed selected by previously exposed clean target; exploratory, not an independent blind evaluation"
+  },
+  "checkpoint": {
+    "initialization": "two source-only E50 reused; failed and queued rows retrain from same source-only E20",
+    "sources": [
+      "20261027-phase1-pamf-paper-completion-m119-r03",
+      "20261116-phase1-pamf-repl-attribution-factorial-clean-m16-r01"
+    ],
+    "contract_check_ref": "factorial_recovery.runner.prepare and component_guard.plan.parent",
+    "provenance_verdict": "same source roles, physical IDs, seed, and recipe; source-only E20/E30; no target-trained checkpoint",
+    "selection_rule": "fixed four original missing rows; no target selection or parameter changes"
+  },
+  "execution": {
+    "host": "N607 ordinary user",
+    "launch_owner": "codex-20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02",
+    "gpu_policy": "GPU 0,2,4,6; all owners and pending workers <=5/GPU, >=12 GiB free, one own worker/GPU",
+    "remote_run_root": "PROJECT/runs/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02",
+    "remote_log_root": "PROJECT/runs/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02/logs",
+    "local_artifact_root": "local_artifacts/pamf_repl_factorial_recovery_20261117",
+    "launch_command": "python -m experiments.pamf_repl_factorial_recovery.publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+    "stop_rule": "On protocol, nonfinite or launch failure stop new dispatch; preserve all outputs and healthy workers; no low-score stops."
+  },
+  "expected_artifacts": [
+    "4 clean predictions and independent truth-last scores",
+    "4 independent post-freeze U diagnostic scores",
+    "2 matching original E50 sources reused",
+    "2 own E20 to E50 source continuations with blind U observations",
+    "real E20 no-query smoke"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean accuracy and macro-F1",
+      "L CE and source validation",
+      "U acceptance and pseudo-class histogram",
+      "V high-confidence precision proxy",
+      "group L/U norms, dot, conflict and cap, sampled component norms/cosines"
+    ],
+    "dimensions": [
+      "ten-class and six-source",
+      "seed 2026092701",
+      "raw clean",
+      "TX/RX/day"
+    ],
+    "prediction_ref": "PROJECT/runs/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02/readouts/ROW/predictions",
+    "scorer_ref": "PROJECT/runs/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02/readouts/ROW/scores"
+  },
+  "rows": [
+    {
+      "row_id": "source_rx_6-repl-w3_s1_e1-s2026092701",
+      "method": "Tri-SIG-TIME REPL w3_s1_e1",
+      "purpose": "{'weight': 3.0, 'shallow_factor': 1.0, 'extrap_coefficient': 0.25}",
+      "config_ref": "PROJECT/runs/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02/configs/train__source_rx_6-repl-w3_s1_e1-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02/F/source_rx_6-repl-w3_s1_e1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same source-only E20; own E21-E50 unless original exact row E50 already frozen",
+      "output_root": "PROJECT/runs/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02/F/source_rx_6-repl-w3_s1_e1-s2026092701/source",
+      "log_path": "PROJECT/runs/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02/logs/train__source_rx_6-repl-w3_s1_e1-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02/configs/train__source_rx_6-repl-w3_s1_e1-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json or verified original source/complete.json",
+        "readouts/source_rx_6-repl-w3_s1_e1-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-w3_s1_e1-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-w3_s1_e1-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-w3_s1_e0-s2026092701",
+      "method": "Tri-SIG-TIME REPL w3_s1_e0",
+      "purpose": "{'weight': 3.0, 'shallow_factor': 1.0, 'extrap_coefficient': 0.0}",
+      "config_ref": "PROJECT/runs/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02/configs/train__source_rx_6-repl-w3_s1_e0-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02/F/source_rx_6-repl-w3_s1_e0-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same source-only E20; own E21-E50 unless original exact row E50 already frozen",
+      "output_root": "PROJECT/runs/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02/F/source_rx_6-repl-w3_s1_e0-s2026092701/source",
+      "log_path": "PROJECT/runs/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02/logs/train__source_rx_6-repl-w3_s1_e0-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02/configs/train__source_rx_6-repl-w3_s1_e0-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json or verified original source/complete.json",
+        "readouts/source_rx_6-repl-w3_s1_e0-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-w3_s1_e0-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-w3_s1_e0-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-w3_s0_e1-s2026092701",
+      "method": "Tri-SIG-TIME REPL w3_s0_e1",
+      "purpose": "{'weight': 3.0, 'shallow_factor': 0.0, 'extrap_coefficient': 0.25}",
+      "config_ref": "PROJECT/runs/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02/configs/train__source_rx_6-repl-w3_s0_e1-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02/F/source_rx_6-repl-w3_s0_e1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same source-only E20; own E21-E50 unless original exact row E50 already frozen",
+      "output_root": "PROJECT/runs/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02/F/source_rx_6-repl-w3_s0_e1-s2026092701/source",
+      "log_path": "PROJECT/runs/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02/logs/train__source_rx_6-repl-w3_s0_e1-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02/configs/train__source_rx_6-repl-w3_s0_e1-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json or verified original source/complete.json",
+        "readouts/source_rx_6-repl-w3_s0_e1-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-w3_s0_e1-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-w3_s0_e1-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-w3_s0_e0-s2026092701",
+      "method": "Tri-SIG-TIME REPL w3_s0_e0",
+      "purpose": "{'weight': 3.0, 'shallow_factor': 0.0, 'extrap_coefficient': 0.0}",
+      "config_ref": "PROJECT/runs/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02/configs/train__source_rx_6-repl-w3_s0_e0-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02/F/source_rx_6-repl-w3_s0_e0-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same source-only E20; own E21-E50 unless original exact row E50 already frozen",
+      "output_root": "PROJECT/runs/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02/F/source_rx_6-repl-w3_s0_e0-s2026092701/source",
+      "log_path": "PROJECT/runs/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02/logs/train__source_rx_6-repl-w3_s0_e0-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261117-phase1-pamf-repl-factorial-recovery-clean-m4-r02/configs/train__source_rx_6-repl-w3_s0_e0-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json or verified original source/complete.json",
+        "readouts/source_rx_6-repl-w3_s0_e0-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-w3_s0_e0-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-w3_s0_e0-s2026092701/scores/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Original matrix and all outputs remain immutable; historical target and chosen seed are exposed.",
+    "Original failed row OOM occurred during source validation on shared GPU; use an idle GPU and 12 GiB minimum reserve.",
+    "Run failed and not-started rows from the original E20 without changing scientific recipe; retain the old failed E30 artifacts.",
+    "Source validation does not update model; U truth only independently after E50 freeze; clean only."
+  ],
+  "registered_at": "2026-11-16T04:20:21+00:00"
+}
