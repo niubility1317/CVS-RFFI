@@ -52,6 +52,8 @@ def prepare_finetune(source: PosterHomegrownAuthor, *, mode: str) -> PosterHomeg
     The author resets all three dense layers before that training.
     paper_last_layer: paper text says only the last layer is tuned; retain the
     learned head and freeze all other parameters.
+    reset_dense_freeze_conv: controlled diagnostic for the pooling change;
+    like the previous project fine-tuning, reset dense layers but freeze convs.
     """
     model = copy.deepcopy(source)
     if mode == 'repository':
@@ -61,6 +63,11 @@ def prepare_finetune(source: PosterHomegrownAuthor, *, mode: str) -> PosterHomeg
     elif mode == 'paper_last_layer':
         model.requires_grad_(False)
         model.head.requires_grad_(True)
+    elif mode == 'reset_dense_freeze_conv':
+        model.requires_grad_(False)
+        for layer in (model.dense1, model.dense2, model.head):
+            _keras_glorot(layer)
+            layer.requires_grad_(True)
     else:
         raise ValueError('unknown POSTER fine-tuning mode')
     return model

@@ -48,6 +48,15 @@ def test_paper_last_layer_only_preserves_other_weights():
             torch.testing.assert_close(p, original[name])
 
 
+def test_author_pooling_with_reset_dense_freezes_convolutions():
+    source = PosterHomegrownAuthor(5, input_len=288)
+    model = prepare_finetune(source, mode='reset_dense_freeze_conv')
+    assert {name for name, p in model.named_parameters() if p.requires_grad} == {
+        'dense1.weight', 'dense1.bias', 'dense2.weight', 'dense2.bias', 'head.weight', 'head.bias'}
+    torch.testing.assert_close(model.conv1.weight, source.conv1.weight)
+    assert not torch.equal(model.dense1.weight, source.dense1.weight)
+
+
 def test_reject_unknown_behavior():
     with pytest.raises(ValueError):
         prepare_finetune(PosterHomegrownAuthor(5), mode='unknown')

@@ -61,6 +61,7 @@ def main():
         if len(indices) != 5 * k:
             raise ValueError('support is missing a class')
         for architecture, mode in [('author', 'paper_last_layer'), ('author', 'repository'),
+                                   ('author', 'reset_dense_freeze_conv'),
                                    ('legacy', 'legacy_project')]:
             adapted, history = fit_support(sources[architecture], support_x[indices], support_y[indices],
                                            mode=mode, seed=args.seed)
@@ -68,7 +69,7 @@ def main():
             torch.save({'architecture': architecture, 'model': adapted.state_dict()}, root / f'{name}.pt')
             (root / f'{name}_history.json').write_text(json.dumps(history), encoding='utf8')
             print(f'{name} fitted', flush=True)
-    (root / 'models_fixed.json').write_text(json.dumps({'status': 'MODELS_FIXED', 'models': 8}), encoding='utf8')
+    (root / 'models_fixed.json').write_text(json.dumps({'status': 'MODELS_FIXED', 'models': 10}), encoding='utf8')
 
 
 if __name__ == '__main__':

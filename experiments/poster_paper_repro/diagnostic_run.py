@@ -22,7 +22,8 @@ def main():
         'support_per_class': [5, 10], 'target_query_per_class': 100,
         'source_and_target_receiver': '14-7', 'source_day': '2021-03-01', 'target_day': '2021-03-08',
         'seed': args.seed, 'device': args.device,
-        'models': ['author source', 'legacy source', 'paper last layer', 'repository behavior', 'legacy project'],
+        'models': ['author source', 'legacy source', 'paper last layer', 'repository behavior',
+                   'author pooling with dense reset and frozen conv', 'legacy project'],
         'caveat': 'Author Keras 2.2.4 compile-order behavior inferred statically; no paper-data claim.'}
     (root / 'config.json').write_text(json.dumps(config, indent=2), encoding='utf8')
     python = [sys.executable, '-X', 'utf8', '-m']

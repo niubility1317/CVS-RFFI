@@ -14,7 +14,7 @@ def main():
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
     marker = json.loads((Path(args.models) / 'models_fixed.json').read_text(encoding='utf8'))
-    if marker.get('status') != 'MODELS_FIXED' or marker.get('models') != 8:
+    if marker.get('status') != 'MODELS_FIXED' or marker.get('models') != 10:
         raise ValueError('models must be fixed before accessing query records')
     metadata = json.loads(Path(args.indices).read_text(encoding='utf8'))
     with zipfile.ZipFile(metadata['archive']) as z, z.open(metadata['member']) as file:

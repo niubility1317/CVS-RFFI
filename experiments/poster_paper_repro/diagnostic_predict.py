@@ -10,7 +10,8 @@ from experiments.pamf_phase2_practical.vendor_extra.li_backbones import PosterHo
 
 MODEL_NAMES = ['author_source', 'legacy_source'] + [
     f'{architecture}_{mode}_K{k}' for k in (5, 10) for architecture, mode in
-    [('author', 'paper_last_layer'), ('author', 'repository'), ('legacy', 'legacy_project')]]
+    [('author', 'paper_last_layer'), ('author', 'repository'),
+     ('author', 'reset_dense_freeze_conv'), ('legacy', 'legacy_project')]]
 
 
 def main():
