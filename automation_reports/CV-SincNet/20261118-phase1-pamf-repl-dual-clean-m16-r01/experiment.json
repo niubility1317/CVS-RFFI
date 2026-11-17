@@ -1,0 +1,771 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261118-phase1-pamf-repl-dual-clean-m16-r01",
+  "group_id": "phase1-pamf-repl-weight-clean",
+  "display_name": "十类浅层与六源 KL 双方向软协调及损失剂量",
+  "description": "十类和六源各八行；组合参考和监督方向软协调，匹配测试 U 权重与 KL 剂量，固定 E50 clean。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "tri-repl-clean-loss-weight"
+  ],
+  "tags": [
+    "PAMF",
+    "REPL",
+    "clean",
+    "gradient"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-paper-completion-m119-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-11-18 用户要求沿上一轮方式继续设计并发布优化实验；clean only；冻结后独立 U 评分。",
+  "code": {
+    "commit": "actual committed release identity in runtime.json",
+    "checkout": "isolated task worktree",
+    "environment": "N607 CVS-RFFI existing Python, FP32",
+    "cwd": "PROJECT/releases/20261118-phase1-pamf-repl-dual-clean-m16-r01-release"
+  },
+  "data": {
+    "dataset": "original ten-class ManyRx and six-source receiver contracts",
+    "version": null,
+    "representation": null,
+    "contract_ref": "context.handles per row protocol_id",
+    "physical_ids_ref": "original fixed source/test contracts",
+    "label_map_ref": null,
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "labeled training",
+      "U_s": "TX blind in training; offline diagnostic only after E50",
+      "V": "source validation without gradients"
+    },
+    "train_ratio": "original fixed labeled/unlabeled/validation roles",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": "fixed clean cross-date, cross-RX and double-cross; prediction before independent scoring",
+    "leo_config_ref": "not applicable: clean-only, no new satellite observations"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "frozen raw clean prediction; independent truth-last scoring",
+    "external_method_exception": null,
+    "claim_scope": "seed selected by previously exposed clean target; exploratory, not an independent blind evaluation"
+  },
+  "checkpoint": {
+    "initialization": "matching original same-setting source-only Tri E20 then own E21–E50",
+    "sources": [
+      "20261027-phase1-pamf-paper-completion-m119-r03"
+    ],
+    "contract_check_ref": "pamf_repl_component_guard.plan.parent with scoped priority matrix",
+    "provenance_verdict": "same source roles, physical IDs, seed and original source-only E20, no target-trained checkpoint",
+    "selection_rule": "all fixed rows E50; candidate design uses previously exposed clean, so exploration only"
+  },
+  "execution": {
+    "host": "N607 ordinary user",
+    "launch_owner": "codex-20261118-phase1-pamf-repl-dual-clean-m16-r01",
+    "gpu_policy": "GPU 0–7; account for all owners and pending workers; max five/card and reserve 12 GiB per initialization",
+    "remote_run_root": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01",
+    "remote_log_root": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_repl_dual_20261118",
+    "launch_command": "python -m experiments.pamf_repl_dual_optimization.publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+    "stop_rule": "On protocol, nonfinite or launch failure stop new dispatch; preserve all outputs and healthy workers; no low-score stops."
+  },
+  "expected_artifacts": [
+    "16 actual-checkpoint no-query optimizer-step smokes",
+    "16 E30/E50 source trajectories and per-step gradient records",
+    "16 blind U trajectories with independently scored post-freeze correctness",
+    "16 frozen clean predictions and independent truth-last scores",
+    "same-state AdamW L-only, raw joint and actual-update samples every 100 steps"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean accuracy and macro-F1",
+      "L CE and source validation",
+      "U acceptance, unique coverage and post-freeze correctness",
+      "group raw and applied gradients, reference conflicts and caps",
+      "every-100-step actual joint and same-state reference-only AdamW direction"
+    ],
+    "dimensions": [
+      "ten-class and six-source",
+      "seed 2026092701",
+      "raw clean",
+      "TX/RX/day"
+    ],
+    "prediction_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/readouts/ROW/predictions",
+    "scorer_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/readouts/ROW/scores"
+  },
+  "rows": [
+    {
+      "row_id": "ten_class-repl-ten_a05_b0p25-s2026092701",
+      "method": "Tri priority ten_a05_b0p25",
+      "purpose": "{'setting': 'ten_class', 'weight': 0.75, 'shallow_factor': 1.0, 'extrap_coefficient': 0.0, 'joint_weight': 0.0, 'kl_factor': 1.0, 'reference': 'shallow', 'mode': 'soft', 'alpha': 0.5, 'beta': 0.25}",
+      "config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__ten_class-repl-ten_a05_b0p25-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/ten_class-repl-ten_a05_b0p25-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/ten_class-repl-ten_a05_b0p25-s2026092701/source",
+      "log_path": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/logs/train__ten_class-repl-ten_a05_b0p25-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__ten_class-repl-ten_a05_b0p25-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-ten_a05_b0p25-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-ten_a05_b0p25-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-ten_a05_b0p25-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-ten_a05_b0p5-s2026092701",
+      "method": "Tri priority ten_a05_b0p5",
+      "purpose": "{'setting': 'ten_class', 'weight': 0.75, 'shallow_factor': 1.0, 'extrap_coefficient': 0.0, 'joint_weight': 0.0, 'kl_factor': 1.0, 'reference': 'shallow', 'mode': 'soft', 'alpha': 0.5, 'beta': 0.5}",
+      "config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__ten_class-repl-ten_a05_b0p5-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/ten_class-repl-ten_a05_b0p5-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/ten_class-repl-ten_a05_b0p5-s2026092701/source",
+      "log_path": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/logs/train__ten_class-repl-ten_a05_b0p5-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__ten_class-repl-ten_a05_b0p5-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-ten_a05_b0p5-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-ten_a05_b0p5-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-ten_a05_b0p5-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-ten_a05_b1p0-s2026092701",
+      "method": "Tri priority ten_a05_b1p0",
+      "purpose": "{'setting': 'ten_class', 'weight': 0.75, 'shallow_factor': 1.0, 'extrap_coefficient': 0.0, 'joint_weight': 0.0, 'kl_factor': 1.0, 'reference': 'shallow', 'mode': 'soft', 'alpha': 0.5, 'beta': 1.0}",
+      "config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__ten_class-repl-ten_a05_b1p0-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/ten_class-repl-ten_a05_b1p0-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/ten_class-repl-ten_a05_b1p0-s2026092701/source",
+      "log_path": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/logs/train__ten_class-repl-ten_a05_b1p0-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__ten_class-repl-ten_a05_b1p0-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-ten_a05_b1p0-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-ten_a05_b1p0-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-ten_a05_b1p0-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-ten_a1_b05-s2026092701",
+      "method": "Tri priority ten_a1_b05",
+      "purpose": "{'setting': 'ten_class', 'weight': 0.75, 'shallow_factor': 1.0, 'extrap_coefficient': 0.0, 'joint_weight': 0.0, 'kl_factor': 1.0, 'reference': 'shallow', 'mode': 'soft', 'alpha': 1.0, 'beta': 0.5}",
+      "config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__ten_class-repl-ten_a1_b05-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/ten_class-repl-ten_a1_b05-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/ten_class-repl-ten_a1_b05-s2026092701/source",
+      "log_path": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/logs/train__ten_class-repl-ten_a1_b05-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__ten_class-repl-ten_a1_b05-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-ten_a1_b05-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-ten_a1_b05-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-ten_a1_b05-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-ten_a05_b05_w0p5-s2026092701",
+      "method": "Tri priority ten_a05_b05_w0p5",
+      "purpose": "{'setting': 'ten_class', 'weight': 0.5, 'shallow_factor': 1.0, 'extrap_coefficient': 0.0, 'joint_weight': 0.0, 'kl_factor': 1.0, 'reference': 'shallow', 'mode': 'soft', 'alpha': 0.5, 'beta': 0.5}",
+      "config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__ten_class-repl-ten_a05_b05_w0p5-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/ten_class-repl-ten_a05_b05_w0p5-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/ten_class-repl-ten_a05_b05_w0p5-s2026092701/source",
+      "log_path": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/logs/train__ten_class-repl-ten_a05_b05_w0p5-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__ten_class-repl-ten_a05_b05_w0p5-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-ten_a05_b05_w0p5-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-ten_a05_b05_w0p5-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-ten_a05_b05_w0p5-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-ten_a05_b05_w1p0-s2026092701",
+      "method": "Tri priority ten_a05_b05_w1p0",
+      "purpose": "{'setting': 'ten_class', 'weight': 1.0, 'shallow_factor': 1.0, 'extrap_coefficient': 0.0, 'joint_weight': 0.0, 'kl_factor': 1.0, 'reference': 'shallow', 'mode': 'soft', 'alpha': 0.5, 'beta': 0.5}",
+      "config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__ten_class-repl-ten_a05_b05_w1p0-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/ten_class-repl-ten_a05_b05_w1p0-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/ten_class-repl-ten_a05_b05_w1p0-s2026092701/source",
+      "log_path": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/logs/train__ten_class-repl-ten_a05_b05_w1p0-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__ten_class-repl-ten_a05_b05_w1p0-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-ten_a05_b05_w1p0-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-ten_a05_b05_w1p0-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-ten_a05_b05_w1p0-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-ten_a05_b05_kl0p5-s2026092701",
+      "method": "Tri priority ten_a05_b05_kl0p5",
+      "purpose": "{'setting': 'ten_class', 'weight': 0.75, 'shallow_factor': 1.0, 'extrap_coefficient': 0.0, 'joint_weight': 0.0, 'kl_factor': 0.5, 'reference': 'shallow', 'mode': 'soft', 'alpha': 0.5, 'beta': 0.5}",
+      "config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__ten_class-repl-ten_a05_b05_kl0p5-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/ten_class-repl-ten_a05_b05_kl0p5-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/ten_class-repl-ten_a05_b05_kl0p5-s2026092701/source",
+      "log_path": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/logs/train__ten_class-repl-ten_a05_b05_kl0p5-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__ten_class-repl-ten_a05_b05_kl0p5-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-ten_a05_b05_kl0p5-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-ten_a05_b05_kl0p5-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-ten_a05_b05_kl0p5-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-ten_a05_b05_kl1p5-s2026092701",
+      "method": "Tri priority ten_a05_b05_kl1p5",
+      "purpose": "{'setting': 'ten_class', 'weight': 0.75, 'shallow_factor': 1.0, 'extrap_coefficient': 0.0, 'joint_weight': 0.0, 'kl_factor': 1.5, 'reference': 'shallow', 'mode': 'soft', 'alpha': 0.5, 'beta': 0.5}",
+      "config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__ten_class-repl-ten_a05_b05_kl1p5-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/ten_class-repl-ten_a05_b05_kl1p5-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/ten_class-repl-ten_a05_b05_kl1p5-s2026092701/source",
+      "log_path": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/logs/train__ten_class-repl-ten_a05_b05_kl1p5-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__ten_class-repl-ten_a05_b05_kl1p5-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-ten_a05_b05_kl1p5-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-ten_a05_b05_kl1p5-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-ten_a05_b05_kl1p5-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-six_a0p25_b1-s2026092701",
+      "method": "Tri priority six_a0p25_b1",
+      "purpose": "{'setting': 'source_rx_6', 'weight': 0.75, 'shallow_factor': 0.0, 'extrap_coefficient': 0.0, 'joint_weight': 0.05, 'kl_factor': 1.5, 'reference': 'pair_kl', 'mode': 'soft', 'alpha': 0.25, 'beta': 1.0}",
+      "config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__source_rx_6-repl-six_a0p25_b1-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/source_rx_6-repl-six_a0p25_b1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/source_rx_6-repl-six_a0p25_b1-s2026092701/source",
+      "log_path": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/logs/train__source_rx_6-repl-six_a0p25_b1-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__source_rx_6-repl-six_a0p25_b1-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/source_rx_6-repl-six_a0p25_b1-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-six_a0p25_b1-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-six_a0p25_b1-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-six_a0p5_b1-s2026092701",
+      "method": "Tri priority six_a0p5_b1",
+      "purpose": "{'setting': 'source_rx_6', 'weight': 0.75, 'shallow_factor': 0.0, 'extrap_coefficient': 0.0, 'joint_weight': 0.05, 'kl_factor': 1.5, 'reference': 'pair_kl', 'mode': 'soft', 'alpha': 0.5, 'beta': 1.0}",
+      "config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__source_rx_6-repl-six_a0p5_b1-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/source_rx_6-repl-six_a0p5_b1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/source_rx_6-repl-six_a0p5_b1-s2026092701/source",
+      "log_path": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/logs/train__source_rx_6-repl-six_a0p5_b1-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__source_rx_6-repl-six_a0p5_b1-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/source_rx_6-repl-six_a0p5_b1-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-six_a0p5_b1-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-six_a0p5_b1-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-six_a1p0_b1-s2026092701",
+      "method": "Tri priority six_a1p0_b1",
+      "purpose": "{'setting': 'source_rx_6', 'weight': 0.75, 'shallow_factor': 0.0, 'extrap_coefficient': 0.0, 'joint_weight': 0.05, 'kl_factor': 1.5, 'reference': 'pair_kl', 'mode': 'soft', 'alpha': 1.0, 'beta': 1.0}",
+      "config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__source_rx_6-repl-six_a1p0_b1-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/source_rx_6-repl-six_a1p0_b1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/source_rx_6-repl-six_a1p0_b1-s2026092701/source",
+      "log_path": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/logs/train__source_rx_6-repl-six_a1p0_b1-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__source_rx_6-repl-six_a1p0_b1-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/source_rx_6-repl-six_a1p0_b1-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-six_a1p0_b1-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-six_a1p0_b1-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-six_a05_b05-s2026092701",
+      "method": "Tri priority six_a05_b05",
+      "purpose": "{'setting': 'source_rx_6', 'weight': 0.75, 'shallow_factor': 0.0, 'extrap_coefficient': 0.0, 'joint_weight': 0.05, 'kl_factor': 1.5, 'reference': 'pair_kl', 'mode': 'soft', 'alpha': 0.5, 'beta': 0.5}",
+      "config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__source_rx_6-repl-six_a05_b05-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/source_rx_6-repl-six_a05_b05-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/source_rx_6-repl-six_a05_b05-s2026092701/source",
+      "log_path": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/logs/train__source_rx_6-repl-six_a05_b05-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__source_rx_6-repl-six_a05_b05-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/source_rx_6-repl-six_a05_b05-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-six_a05_b05-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-six_a05_b05-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-six_b1_kl1p0-s2026092701",
+      "method": "Tri priority six_b1_kl1p0",
+      "purpose": "{'setting': 'source_rx_6', 'weight': 0.75, 'shallow_factor': 0.0, 'extrap_coefficient': 0.0, 'joint_weight': 0.05, 'kl_factor': 1.0, 'reference': 'pair_kl', 'mode': 'soft', 'alpha': 0.0, 'beta': 1.0}",
+      "config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__source_rx_6-repl-six_b1_kl1p0-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/source_rx_6-repl-six_b1_kl1p0-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/source_rx_6-repl-six_b1_kl1p0-s2026092701/source",
+      "log_path": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/logs/train__source_rx_6-repl-six_b1_kl1p0-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__source_rx_6-repl-six_b1_kl1p0-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/source_rx_6-repl-six_b1_kl1p0-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-six_b1_kl1p0-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-six_b1_kl1p0-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-six_b1_kl2p0-s2026092701",
+      "method": "Tri priority six_b1_kl2p0",
+      "purpose": "{'setting': 'source_rx_6', 'weight': 0.75, 'shallow_factor': 0.0, 'extrap_coefficient': 0.0, 'joint_weight': 0.05, 'kl_factor': 2.0, 'reference': 'pair_kl', 'mode': 'soft', 'alpha': 0.0, 'beta': 1.0}",
+      "config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__source_rx_6-repl-six_b1_kl2p0-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/source_rx_6-repl-six_b1_kl2p0-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/source_rx_6-repl-six_b1_kl2p0-s2026092701/source",
+      "log_path": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/logs/train__source_rx_6-repl-six_b1_kl2p0-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__source_rx_6-repl-six_b1_kl2p0-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/source_rx_6-repl-six_b1_kl2p0-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-six_b1_kl2p0-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-six_b1_kl2p0-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-six_b1_w0p5-s2026092701",
+      "method": "Tri priority six_b1_w0p5",
+      "purpose": "{'setting': 'source_rx_6', 'weight': 0.5, 'shallow_factor': 0.0, 'extrap_coefficient': 0.0, 'joint_weight': 0.05, 'kl_factor': 1.5, 'reference': 'pair_kl', 'mode': 'soft', 'alpha': 0.0, 'beta': 1.0}",
+      "config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__source_rx_6-repl-six_b1_w0p5-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/source_rx_6-repl-six_b1_w0p5-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/source_rx_6-repl-six_b1_w0p5-s2026092701/source",
+      "log_path": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/logs/train__source_rx_6-repl-six_b1_w0p5-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__source_rx_6-repl-six_b1_w0p5-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/source_rx_6-repl-six_b1_w0p5-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-six_b1_w0p5-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-six_b1_w0p5-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-six_b1_w1p0-s2026092701",
+      "method": "Tri priority six_b1_w1p0",
+      "purpose": "{'setting': 'source_rx_6', 'weight': 1.0, 'shallow_factor': 0.0, 'extrap_coefficient': 0.0, 'joint_weight': 0.05, 'kl_factor': 1.5, 'reference': 'pair_kl', 'mode': 'soft', 'alpha': 0.0, 'beta': 1.0}",
+      "config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__source_rx_6-repl-six_b1_w1p0-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/source_rx_6-repl-six_b1_w1p0-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/F/source_rx_6-repl-six_b1_w1p0-s2026092701/source",
+      "log_path": "PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/logs/train__source_rx_6-repl-six_b1_w1p0-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261118-phase1-pamf-repl-dual-clean-m16-r01/configs/train__source_rx_6-repl-six_b1_w1p0-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/source_rx_6-repl-six_b1_w1p0-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-six_b1_w1p0-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-six_b1_w1p0-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    }
+  ],
+  "notes": [
+    "Previously exposed seed and target; exploratory results, not independent confirmation.",
+    "Auxiliary remainder is first soft projected against shallow (ten) or paired KL (six), then the total auxiliary is soft projected against L.",
+    "Supervised and base U CE summands remain intact before global clipping; direction constraints may retain residuals or interact.",
+    "Compare dual strength, U weight and KL dose with matching prior-run or within-run controls; do not treat simultaneous changes as isolated effects.",
+    "Only fixed E50 and pre-registered clean predictions; no satellite or weak.",
+    "U truth independently scored after the model is frozen, never used in training or selection.",
+    "Stop new dispatch for systemic technical or protocol failures; retain outputs and healthy workers."
+  ],
+  "registered_at": "2026-11-17T16:58:24+00:00"
+}
