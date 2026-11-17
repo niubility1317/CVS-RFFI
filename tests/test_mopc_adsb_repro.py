@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from types import SimpleNamespace
 
 from experiments.mopc_adsb_repro.prepare import csil_features, split_rows
-from experiments.mopc_adsb_repro.run import correct, regularization, score
+from experiments.mopc_adsb_repro.run import correct, regularization, score, loader
 
 
 def test_split_is_deterministic_disjoint_and_has_paper_stage_sizes():
@@ -42,6 +42,16 @@ def test_csil_preprocessing_matches_scalar_matlab_equations():
 def test_degenerate_signal_does_not_silently_create_invalid_data():
     with pytest.raises(ValueError, match='Degenerate'):
         csil_features(np.zeros((1, 1024), dtype=np.complex64))
+
+
+def test_paper_prototypes_use_identical_full_record_set():
+    x = np.arange(40, dtype=np.float32).reshape(20, 2)
+    y = np.zeros(20, dtype=np.int64)
+    batches = loader(x, y, (0, 1), shuffle=False, drop_last=False)
+    first = torch.cat([v for v, _ in batches])
+    second = torch.cat([v for v, _ in batches])
+    torch.testing.assert_close(first, torch.from_numpy(x))
+    torch.testing.assert_close(first, second)
 
 
 def test_prototype_correction_distinguishes_repository_and_paper_formula():

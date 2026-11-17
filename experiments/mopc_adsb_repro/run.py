@@ -38,12 +38,12 @@ def correct(old, new_before, new_after, version):
     return .97 * old + .03 * (similarity @ (new_after - new_before))
 
 
-def loader(x, y, classes, shuffle=True):
+def loader(x, y, classes, shuffle=True, drop_last=True):
     mask = (y >= classes[0]) & (y < classes[1])
     xx = torch.from_numpy(np.array(x[mask], copy=True))
     yy = torch.from_numpy(np.asarray(y[mask], dtype=np.int64))
     return DataLoader(TensorDataset(xx, yy), batch_size=16, shuffle=shuffle,
-                      drop_last=True, num_workers=0, pin_memory=True)
+                      drop_last=drop_last, num_workers=0, pin_memory=True)
 
 
 def protos(model, data, low, high, device):
@@ -115,8 +115,12 @@ def train(args):
                    'loss': (total / steps).tolist(), 'elapsed_seconds': time.time() - before}
             history.append(row); print(json.dumps(row), flush=True)
         if stage:
-            p_before = protos(previous, dl, low, high, dev)
-            p_after = protos(model, dl, low, high, dev)
+            # The repository uses its shuffled drop-last loader independently
+            # for both passes.  Paper Eqs. 8-9 average over the same full Dt.
+            proto_dl = dl if args.version == 'author' else loader(
+                x, y, (low, high), shuffle=False, drop_last=False)
+            p_before = protos(previous, proto_dl, low, high, dev)
+            p_after = protos(model, proto_dl, low, high, dev)
             old_proto = torch.cat((correct(old_proto, p_before, p_after, args.version), p_after), dim=0)
         else:
             old_proto = protos(model, dl, low, high, dev)

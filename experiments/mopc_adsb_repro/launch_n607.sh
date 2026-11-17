@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+cd "$(dirname "${BASH_SOURCE[0]}")/../.."
 export PYTHONUNBUFFERED=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2
 PY=/home/szu2070436088/.conda/envs/SDG-SEI/bin/python
 ROOT=/home/szu2070436088/2510044040/CV-SincNet
