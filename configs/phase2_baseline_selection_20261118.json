@@ -1,0 +1,36 @@
+{
+  "schema": "phase2_baseline_selection_v1",
+  "selection_date": "2026-11-18",
+  "selected_by": "user",
+  "lora": {
+    "method": "LoRa triplet embedding plus 15-nearest-neighbor enrollment",
+    "paper_reproduction_implementation": "experiments/lora_paper_repro/train.py",
+    "extractor": "experiments/pamf_phase2_practical/vendor_extra/metric_models.py:LoRaExtractor",
+    "paper_data_input": "8192 complex samples, author preprocessing, 102x62 spectrogram",
+    "paper_reproduction": "30 source devices; 10 unseen enrollment devices; 100 supports/class; 100 tests/class",
+    "paper_result_percent": 98.4,
+    "author_checkpoint_result_percent": 98.4,
+    "independent_source_training_result_percent": 98.7,
+    "phase2_limit": "256-IQ short-window spectrogram and source checkpoints are a project adaptation. Do not label 26x6 data or Phase2 checkpoints as the paper benchmark or reuse 102x62 checkpoint without compatibility and provenance verification."
+  },
+  "orthogonal": {
+    "method": "orthogonal space constrained incremental registration",
+    "paper_reproduction_implementation": "experiments/orthogonal_paper_repro",
+    "paper_reproduction": "WiSig single receiver, 60 base classes, seven sessions of ten new classes, K=5",
+    "paper_final_accuracy_percent": 88.62,
+    "independent_final_accuracy_percent": 89.274056,
+    "independent_incremental_mean_accuracy_percent": 89.52252,
+    "paper_incremental_mean_accuracy_percent": 91.56,
+    "registration": "new-weight SGD max 50 epochs; patience 4; top_k 60; tau_fuse 0.01",
+    "limitations": "Single seed; exact paper receiver, class order, and some loss and training details are unknown.",
+    "phase2_limit": "Existing Phase2 orthogonal entry runs fixed 50 registration epochs, not this reproduction's patience-4 stopping. Do not silently relabel its old results or assume its source training is the same; adapt and validate a separately identified Phase2 version first."
+  },
+  "poster_ft": {
+    "method": "author pooling, paper-text last-layer-only fine-tuning",
+    "phase2_candidate": "poster_ft_paperlast_v2",
+    "source": "experiments/poster_paper_repro/model.py",
+    "phase2_limit": "256-IQ and 200-epoch satellite augmentation/PL source training, B10 budget are project adaptations; source checkpoints require retraining and must not be mixed with the old 50-feature pooling architecture.",
+    "paper_data_status": "author dataset inaccessible; INFOCOM 2020 Setup 1 official collection returns 403 from local user and agent",
+    "selection_rule": "paper architecture and paper-text FT choice, not target-metric selection"
+  }
+}
