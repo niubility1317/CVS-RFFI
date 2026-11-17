@@ -80,7 +80,7 @@ def train(args):
         start_stage, previous, old_proto = 0, None, None
     else:
         if not args.base: raise ValueError('Incremental run requires frozen base')
-        checkpoint = torch.load(args.base, map_location=dev, weights_only=False)
+        checkpoint = torch.load(args.base, map_location=dev)
         model.load_state_dict(checkpoint['model']); old_proto = checkpoint['prototypes'].to(dev)
         previous = copy.deepcopy(model).eval().requires_grad_(False); start_stage = 1
     stages = [(0, 50), (50, 75), (75, 100)]
@@ -137,7 +137,7 @@ def predict(args):
     model = MoPCAuthorWiSig256(num_classes=100).to(dev).eval()
     checkpoints = [Path(args.base), Path(args.incremental) / 'stage1.pt', Path(args.incremental) / 'stage2.pt']
     for stage, (cp, count, seen) in enumerate(zip(checkpoints, manifest['query_prefix_lengths'], (50, 75, 100))):
-        state = torch.load(cp, map_location=dev, weights_only=False)
+        state = torch.load(cp, map_location=dev)
         if state['stage'] != stage or state['seen'] != seen: raise ValueError('Checkpoint/stage mismatch')
         model.load_state_dict(state['model']); result = []
         with torch.no_grad():

@@ -31,7 +31,7 @@ def main():
     loss.backward(); opt.step()
     torch.save(model.state_dict(), out / 'smoke_checkpoint.pt')
     original = MoPCAuthorWiSig256(num_classes=100).cuda()
-    original.load_state_dict(torch.load(out / 'smoke_checkpoint.pt', weights_only=True)); original.eval()
+    original.load_state_dict(torch.load(out / 'smoke_checkpoint.pt')); original.eval()
     with torch.no_grad(): prototype = original.feature_extract_stage2(xb).mean(0, keepdim=True).repeat(50, 1)
     results = {}
     for version in ('author', 'paper'):

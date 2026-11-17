@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 export PYTHONUNBUFFERED=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2
-PY=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
+PY=/home/szu2070436088/.conda/envs/SDG-SEI/bin/python
 ROOT=/home/szu2070436088/2510044040/CV-SincNet
 DATA="$ROOT/datasets/mopc_adsb_20261117_r01"
 RUN="$ROOT/runs/20261117-mopc-adsb-50plus25-m2-r01"
