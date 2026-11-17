@@ -11,7 +11,7 @@
     "paper_result_percent": 98.4,
     "author_checkpoint_result_percent": 98.4,
     "independent_source_training_result_percent": 98.7,
-    "phase2_limit": "256-IQ short-window spectrogram and source checkpoints are a project adaptation. Existing Phase2 direct C balances old/new support galleries and uses min(15, 2K-1) neighbors, rather than the paper reproduction's fixed 15; its source recipe also includes Phase2-specific augmentation/PL. Do not relabel that result as this fixed version or reuse the 102x62 checkpoint without compatibility and provenance verification."
+    "phase2_limit": "The separate opt-in lora_paper_v2 uses fixed 15-neighbor voting, short 26x6 spectrograms, and a per-class balanced old/new gallery. Phase2 source training uses stratified source-L 90/10, Torch random streams and short IQ, not the paper's exact 102x62 setting; it has not yet completed a real Phase2 run. Existing Phase2 direct C uses min(15, 2K-1) and a different augmented/PL source recipe; do not relabel those old results."
   },
   "orthogonal": {
     "method": "orthogonal space constrained incremental registration",
@@ -23,7 +23,7 @@
     "paper_incremental_mean_accuracy_percent": 91.56,
     "registration": "new-weight SGD max 50 epochs; patience 4; top_k 60; tau_fuse 0.01",
     "limitations": "Single seed; exact paper receiver, class order, and some loss and training details are unknown.",
-    "phase2_limit": "Existing Phase2 orthogonal entry runs fixed 50 registration epochs, not this reproduction's patience-4 stopping. Do not silently relabel its old results or assume its source training is the same; adapt and validate a separately identified Phase2 version first."
+    "phase2_limit": "The separate opt-in orthogonal_paper_v2 uses the reproduction's 256-dimensional encoder, source-L 90/10 validation and max-100/patience-4 training, with max-50/patience-4 registration. Six old classes and K10 are Phase2 extensions; this version has not yet completed a real Phase2 run. The older orthogonal entry uses fixed 50 registration epochs and different source training: do not relabel its results."
   },
   "poster_ft": {
     "method": "author pooling, paper-text last-layer-only fine-tuning",

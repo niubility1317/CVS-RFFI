@@ -17,13 +17,15 @@ from . import external_additional as extra
 from .vendor_native.comparison_suite import models as nets
 
 
-EXTRA={'poster_ft','poster_ft_paperlast_v2','feature_separation_hu2024','issl_author_behavior','lora_triplet_knn'}
+EXTRA={'poster_ft','poster_ft_paperlast_v2','feature_separation_hu2024','issl_author_behavior','lora_triplet_knn','lora_paper_v2'}
 
 
 def model_for(method,device):
     if method=='mopc_hr':
         from .mopc_author import MoPCAuthorWiSig256
         return MoPCAuthorWiSig256(num_classes=6).to(device)
+    if method=='orthogonal_paper_v2':
+        return nets.factory('orthogonal',6,5,embedding_dim=256,num_pseudo_targets=200).to(device)
     if method in EXTRA:return extra.NativeModel(method,6,5).to(device)
     return nets.factory(method,6,5).to(device)
 
@@ -70,6 +72,28 @@ def recipe(profile):
     if r['method']=='orthogonal':
         result.update(schema='group1_source_orthogonal_tempered_PL_v2',
             PL_score='cosine_logits_divided_by_0.1_for_confidence_and_loss')
+    if r['method']=='orthogonal_paper_v2':
+        result.update(schema='group1_source_orthogonal_paper_v2',
+            satellite_concat=False,satellite_weight=0.,satellite_on=None,source_channel=None,
+            source_channel_probabilities=None,source_channel_scenes=None,source_channel_probability_schedule=None,
+            PL_start_epoch=None,PL_threshold=None,PL_weight=0.,U_batch_ratio=0,
+            U_objective=None,source_U=False,selection='source_L_validation_loss',
+            early_stopping=True,
+            source_validation_fraction=0.1,source_validation_split='stratified_within_L_s',
+            source_epochs_max=100,source_patience=4,embedding_dim=256,pseudo_target_count=200,
+            native_supervised_objective='paper_reproduction_vectorized_mean_losses',
+            author_paper_exact_replication=False)
+    if r['method']=='lora_paper_v2':
+        result.update(schema='group1_source_lora_paper_v2',
+            satellite_concat=False,satellite_weight=0.,satellite_on=None,source_channel=None,
+            source_channel_probabilities=None,source_channel_scenes=None,source_channel_probability_schedule=None,
+            PL_start_epoch=None,PL_threshold=None,PL_weight=0.,U_batch_ratio=0,
+            U_objective=None,source_U=False,selection='final_epoch_after_source_L_validation_early_stop',
+            early_stopping=True,source_validation_fraction=0.1,source_validation_split='stratified_within_L_s',
+            source_epochs_max=1000,source_patience=20,source_lr_patience=10,
+            source_optimizer='RMSprop',source_learning_rate=.001,triplet_margin=.1,knn_k=15,
+            source_awgn_snr_db=[20,79],input_spectrogram='short_IQ_26x6_extension',
+            author_paper_exact_replication=False)
     if r['method']=='poster_ft_paperlast_v2':
         result.update(schema='group1_source_poster_author_pool_paperlast_v2',
             architecture='author_channels_first_conv_pool_filter_axis_input256',
@@ -441,7 +465,7 @@ def load_source(c,profile,seed,device):
     require(payload['source_contract']==expected and payload['seed']==seed and not payload['target_contact'] and payload['ancestors']==[],
             'CHECKPOINT_DATA_CONTRACT_MISMATCH_OR_PROVENANCE')
     model=model_for(r['method'],device);model.load_state_dict(payload['model'],strict=True);model.eval().requires_grad_(False)
-    native=payload['native_state'];score=lambda net,x:logits(net,r['method'],x);base_metadata={}
+    native=payload['native_state'];score=lambda net,x:logits(net,r['method'],x);base_metadata={};source_resources={}
     if r['method']=='mopc_hr':
         base_metadata=dict(payload['base_metadata'])
         require(base_metadata['source_role']=='L_s' and base_metadata['source_class_ids']==list(range(6))
@@ -451,13 +475,14 @@ def load_source(c,profile,seed,device):
         require(prototypes.shape==(6,model.out_dim) and bool(torch.isfinite(prototypes).all()),
                 'MoPC source prototype dimensions mismatch')
         base_metadata['old_prototypes']=prototypes.to(device)
-    if r['method']=='lora_triplet_knn':
+    if r['method'] in ('lora_triplet_knn','lora_paper_v2'):
         base=dict(model=model,profile=r['method'],native_state=native,resources={},classes=tuple(range(6)))
         base=extra._metric_state(base,native['source_enrollment_features'],native['source_enrollment_y'],source=True)
         score=base['score_fn']
+        if r['method']=='lora_paper_v2':source_resources=base['resources']
     return dict(model=model,profile=profile,method=r['method'],classes=tuple(range(6)),
         score_fn=score,features_fn=lambda net,x:embedding(net,r['method'],x),native_state=native,
-        base_metadata=base_metadata,source_contract=expected,resources={},source_path=str(folder),source_checkpoint=str(folder/'source.pt'),
+        base_metadata=base_metadata,source_contract=expected,resources=source_resources,source_path=str(folder),source_checkpoint=str(folder/'source.pt'),
         provenance=dict(recipe=saved_recipe,source_only=True))
 
 
@@ -472,6 +497,12 @@ def train(c,profile,seed,output,device='cuda:0'):
         torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False
         r=row(profile);require(r['active'],'Unbound native method cannot be trained')
         if profile=='pamf_pl_milkr':_train_pamf(c,seed,out)
+        elif profile=='orthogonal_paper_v2':
+            from experiments.orthogonal_paper_repro.phase2_source import train_source
+            train_source(c,seed,out,device)
+        elif profile=='lora_paper_v2':
+            from experiments.lora_paper_repro.phase2_source import train_source
+            train_source(c,seed,out,device)
         else:_train_native(c,profile,seed,out,device)
         bundle=load_source(c,profile,seed,device);L=source_data(c,'L_s')
         with torch.no_grad():

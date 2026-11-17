@@ -42,6 +42,11 @@ _SPECS = {
         B_epochs=0, native_C=True, source_U=False, knn_k=15,
         implementation='independent_Torch_LoRa_256IQ_STFT64_overlap32',
         claim='Torch port with short-IQ STFT extension; TF2.1 RMSprop numerical parity unverified'),
+    'lora_paper_v2': dict(source_epochs=1000, source_batch=32, source_optimizer='RMSprop', source_lr=.001,
+        source_early_patience=20, source_lr_patience=10, source_lr_factor=.2,
+        B_epochs=0, native_C=True, source_U=False, knn_k=15,
+        implementation='lora_paper_reproduction_short_IQ_phase2_v2',
+        claim='fixed 15-neighbor vote, balanced old/new gallery, 256-IQ STFT extension'),
     'poster_ft': dict(source_epochs=200, source_batch=128, source_optimizer='Adam', source_lr=.001,
         B_epochs=10, B_lr=.001, B_batch=256, native_C=False, source_U=False,
         implementation='existing_repo_POSTER_Homegrown_port', claim='author dense-layer-reset FT'),
@@ -155,7 +160,7 @@ class NativeModel(nn.Module):
         self.profile = profile
         if profile.startswith('issl_'):
             self.network = ISSLResNet18(classes)
-        elif profile == 'lora_triplet_knn':
+        elif profile in ('lora_triplet_knn','lora_paper_v2'):
             self.network = LoRaExtractor()
         elif profile == 'poster_ft_paperlast_v2':
             from experiments.poster_paper_repro.model import PosterHomegrownAuthor
@@ -177,7 +182,7 @@ class NativeModel(nn.Module):
         p = self.profile
         if p.startswith('issl_'):
             return self.network(_issl_input(x, crop))
-        if p == 'lora_triplet_knn':
+        if p in ('lora_triplet_knn','lora_paper_v2'):
             return self.network(channel_spectrogram(x))
         if p == 'feature_separation_hu2024':
             return self.network(preprocess_iq(_iq(x)))
@@ -627,7 +632,7 @@ def _state(bundle,model,support_x,support_y,**resources):
 def _metric_state(state,features,labels,source=False,knn_k=None):
     p=state['profile'];classes=tuple(sorted(set(labels.cpu().tolist())))
     f=features.detach().cpu().clone();y=labels.detach().cpu().clone()
-    if knn_k is not None and (p!='lora_triplet_knn' or not isinstance(knn_k,int) or knn_k<1):
+    if knn_k is not None and (p not in ('lora_triplet_knn','lora_paper_v2') or not isinstance(knn_k,int) or knn_k<1):
         raise ValueError('knn_k must be positive for LoRa')
     effective_k=min(15 if knn_k is None else knn_k,len(f))
     n=dict(state.get('native_state',{}),enrollment_features=f,enrollment_y=y)
@@ -664,7 +669,7 @@ def _metric_state(state,features,labels,source=False,knn_k=None):
             return torch.stack([(neighbors==c).sum(1).to(z.dtype) for c in classes],1)/k
     result=dict(state,score_fn=score,classes=classes,native_state=n)
     result['resources']=dict(state['resources'],enrollment_count=len(y),source_enrollment=source,
-        knn_k=effective_k if p=='lora_triplet_knn' else None,query_fit=False)
+        knn_k=effective_k if p in ('lora_triplet_knn','lora_paper_v2') else None,query_fit=False)
     return result
 
 

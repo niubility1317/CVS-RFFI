@@ -6,14 +6,14 @@ from experiments.pamf_phase2_practical.vendor_native.paper_reproduction.orthogon
 
 def register_session(encoder, old_weights, support_x, support_y, *, epochs=50,
                      learning_rate=.08, patience=4, top_k=60, margin=.2,
-                     tau_fuse=.01, lambda_align=1.6):
+                     tau_fuse=.01, lambda_align=1.6, shots_per_class=5, callback=None):
     if epochs <= 0 or learning_rate <= 0 or patience <= 0:
         raise ValueError('epochs, learning rate and patience must be positive')
     if support_y.ndim != 1 or support_x.size(0) != support_y.numel():
         raise ValueError('support labels must match examples')
     class_ids, class_counts = torch.unique(support_y, sorted=True, return_counts=True)
-    if class_ids.numel() == 0 or not torch.all(class_counts == 5):
-        raise ValueError('each new class must have exactly five support examples')
+    if shots_per_class <= 0 or class_ids.numel() == 0 or not torch.all(class_counts == shots_per_class):
+        raise ValueError('each new class must have the requested number of support examples')
     was_training = encoder.training
     encoder.eval()
     try:
@@ -42,6 +42,9 @@ def register_session(encoder, old_weights, support_x, support_y, *, epochs=50,
         optimizer.step()
         value = float(loss.detach())
         history.append(value)
+        if callback is not None:
+            callback(dict(phase='C', method='orthogonal_paper_v2', epoch=len(history),
+                          loss=value, learning_rate=learning_rate))
         if value < best:
             best, bad = value, 0
         else:

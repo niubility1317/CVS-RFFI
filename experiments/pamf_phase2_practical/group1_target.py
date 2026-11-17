@@ -37,6 +37,23 @@ def fit_C(rt,bundle,x,y,new_ids,seed,logger,*,mopc_max_grad_norm=None):
     """Every call starts at A, never a previous target-adapted checkpoint."""
     profile=bundle['profile'];method=bundle['method']
     require(row(profile)['category']=='CIL','DA has no C in Group1')
+    if method=='orthogonal_paper_v2':
+        from .vendor_native.comparison_suite import models as nets
+        from experiments.orthogonal_paper_repro.increment import register_session
+        ids=tuple(int(i) for i in new_ids)
+        require(ids==tuple(range(6,6+len(ids))) and bool(ids),'New classes must be contiguous')
+        require(torch.unique(y,sorted=True).tolist()==list(ids),'Support labels must match new classes')
+        counts=torch.stack([(y==i).sum() for i in ids])
+        require(bool((counts==counts[0]).all()) and int(counts[0]) in (5,10),'Expected balanced K5 or K10 support')
+        model=copy.deepcopy(bundle['model']).eval().requires_grad_(False)
+        weights,history=register_session(model.encoder,model.classifier_weight,x,y,
+            shots_per_class=int(counts[0]),callback=logger)
+        model.classifier_weight=torch.nn.Parameter(weights,requires_grad=False)
+        return dict(model=model,score_fn=lambda net,iq:nets.classifier_logits(net,'orthogonal',iq),
+            classes=tuple(range(6+len(ids))),profile=profile,native_state={},
+            resources=dict(C_initialization='A_no_B',actual_target_old_labels=0,
+                actual_target_new_labels=len(y),C_epochs=len(history),C_max_epochs=50,
+                C_patience=4,C_shots_per_class=int(counts[0]),phase2_extension=True))
     if method=='mopc_hr':
         from .vendor_native.comparison_suite import registration as cil
         anchor=registration_anchor(bundle)
@@ -64,7 +81,7 @@ def fit_C(rt,bundle,x,y,new_ids,seed,logger,*,mopc_max_grad_norm=None):
         state=cil.register_new_classes(anchor,x,y,new_ids,config=cfg,logger=logger)
         return dict(model=state.model,score_fn=lambda model,iq:state.score(iq),classes=state.classes,
                     resources=state.resource,native_state=state,profile=profile)
-    if method=='lora_triplet_knn':
+    if method in ('lora_triplet_knn','lora_paper_v2'):
         model=copy.deepcopy(bundle['model']).eval().requires_grad_(False)
         old=bundle['native_state']
         with torch.no_grad():z=embedding(model,method,x).detach().cpu()
@@ -92,13 +109,13 @@ def fit_C(rt,bundle,x,y,new_ids,seed,logger,*,mopc_max_grad_norm=None):
         labels=torch.cat((old_y[selected],new_y))
         # At most 2K-1 neighbors lets a K-sample class win a strict majority;
         # K=1 therefore does not degenerate into a many-class tie.
-        knn_k=min(15,2*counts[0]-1)
+        knn_k=15 if method=='lora_paper_v2' else min(15,2*counts[0]-1)
         state=extra._metric_state(dict(bundle,model=model),gallery,labels,knn_k=knn_k)
         state['resources'].update(actual_target_old_labels=0,actual_target_new_labels=len(y),
             source_gallery_count=len(selected),source_gallery_available=len(old_y),
             source_samples_per_class=counts[0],
             gallery_balance='seeded_equal_per_class_source_subsample_v1',
-            knn_rule='min_15_2K_minus_1',optimizer_steps=0,
+            knn_rule='fixed_15' if method=='lora_paper_v2' else 'min_15_2K_minus_1',optimizer_steps=0,
             C_initialization='A_balanced_source_gallery_no_B')
         return state
     if method=='issl_author_behavior':
@@ -143,12 +160,26 @@ def _timed(fn):
     return result,time.perf_counter()-begin
 
 
+def paper_c_points(job, profile, episode, clean_root):
+    require(profile in ('orthogonal_paper_v2','lora_paper_v2') and not clean_root and
+            episode in ('MIX01','MIX02','MIX03') and not job.get('scope') and
+            job.get('satellite_c_points') is None,
+            'Paper reproduction points require an unmixed satellite profile and scene')
+    pairs=job['paper_c_points']
+    require(isinstance(pairs,list) and pairs and
+            all(isinstance(p,list) and len(p)==2 and type(p[0]) is int and type(p[1]) is int
+                and p[0] in (5,10) and p[1] in (5,10) for p in pairs)
+            and len({tuple(p) for p in pairs})==len(pairs),
+            'Paper reproduction points must be distinct K5/10 N5/10 pairs')
+    return sorted(tuple(p) for p in pairs)
+
+
 def predict(rt,job):
     activate(rt);torch.set_num_threads(1)
     torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False
     profile,seed=job['profile'],job['seed'];r=row(profile);device='cuda:0'
     bundle=load_source(source_scope(rt),profile,seed,device)
-    if rt.get('clean_root') or job.get('satellite_ks') or job.get('satellite_c_points'):
+    if rt.get('clean_root') or job.get('satellite_ks') or job.get('satellite_c_points') or job.get('paper_c_points'):
         from .clean_source_smoke import check
         check(rt,bundle)
     model=bundle['model'];model.eval();before={k:v.detach().clone() for k,v in model.state_dict().items()}
@@ -171,6 +202,9 @@ def predict(rt,job):
         require(not clean_root and r['category']=='CIL' and
                 manifest['episode_id']==job['capsule'].split('/')[2],
                 'Explicit satellite scope requires the matching native C task')
+        Ks=sorted({k for k,n in Cs})
+    if job.get('paper_c_points') is not None:
+        Cs=paper_c_points(job,profile,manifest['episode_id'],clean_root)
         Ks=sorted({k for k,n in Cs})
     if job.get('reuse') is not None:
         require(clean_root and profile=='mopc_hr','Only clean native MoPC may reuse pilot rows')

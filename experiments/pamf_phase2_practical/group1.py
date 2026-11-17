@@ -33,6 +33,14 @@ def catalog():
 
 
 def row(name):
+    if name=='lora_paper_v2':
+        return dict(id=name,category='CIL',epochs=1000,PL_start_epoch=None,method=name,
+                    B=None,C='native',active=True,unavailable_reason=None,
+                    native_scope='author-style triplet and fixed 15-neighbor; short-IQ Phase2 extension')
+    if name=='orthogonal_paper_v2':
+        return dict(id=name,category='CIL',epochs=100,PL_start_epoch=None,method=name,
+                    B=None,C='native',active=True,unavailable_reason=None,
+                    native_scope='paper-reproduction encoder/loss/stopping; six-old-class Phase2 extension')
     if name=='poster_ft_paperlast_v2':
         # Opt-in only: existing catalog-generated plans retain their original matrix.
         return dict(id=name,category='DA',epochs=200,PL_start_epoch=101,method=name,
