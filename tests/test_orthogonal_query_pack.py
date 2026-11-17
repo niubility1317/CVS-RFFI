@@ -1,6 +1,7 @@
+import pickle
 import numpy as np
 import pytest
-from experiments.orthogonal_paper_repro.query_pack import select_query_records
+from experiments.orthogonal_paper_repro.query_pack import select_query_records, load_source
 
 
 def test_query_pack_keeps_train_indices_disjoint_and_truth_separate():
@@ -19,3 +20,10 @@ def test_rejects_overlap_with_training_records():
     train = {'base': [{'id': 'a', 'indices': [0, 1]}], 'increments': []}
     with pytest.raises(ValueError):
         select_query_records(payload, train, {'classes': {'a': [1, 2]}})
+
+
+def test_loads_a_single_extracted_receiver_file(tmp_path):
+    path = tmp_path / 'receiver.pkl'
+    with path.open('wb') as file:
+        pickle.dump({'node_list': ['a'], 'data': [[1, 2]]}, file)
+    assert load_source({'archive': str(path), 'member': None})['node_list'] == ['a']

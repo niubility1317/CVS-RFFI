@@ -7,6 +7,14 @@ from pathlib import Path
 import numpy as np
 
 
+def load_source(source):
+    if source['member'] is None:
+        with Path(source['archive']).open('rb') as file:
+            return pickle.load(file)
+    with zipfile.ZipFile(source['archive']) as archive, archive.open(source['member']) as file:
+        return pickle.load(file)
+
+
 def select_query_records(payload, train, truth):
     labels = [str(value) for value in payload['node_list']]
     if len(set(labels)) != len(labels) or len(labels) != len(payload['data']):
@@ -58,8 +66,7 @@ def main():
     if train['source'] != truth['source']:
         raise ValueError('training and truth source identities differ')
     source = train['source']
-    with zipfile.ZipFile(source['archive']) as archive, archive.open(source['member']) as file:
-        payload = pickle.load(file)
+    payload = load_source(source)
     inputs, counts, labels = select_query_records(payload, train, truth)
     root = Path(args.output)
     root.mkdir(parents=True, exist_ok=False)

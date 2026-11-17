@@ -34,10 +34,23 @@ def score_all(predictions, truths, *, base_classes=60, increment_size=10):
         seen = base_classes + stage * increment_size
         row = score_stage(prediction, truth, old_classes=0 if stage == 0 else seen - increment_size,
                           seen_classes=seen)
+        prediction, truth = np.asarray(prediction), np.asarray(truth)
+        task_accuracy = []
+        for task in range(stage + 1):
+            low = 0 if task == 0 else base_classes + (task - 1) * increment_size
+            high = base_classes if task == 0 else low + increment_size
+            mask = (truth >= low) & (truth < high)
+            task_accuracy.append(float((prediction[mask] == truth[mask]).mean()))
+        row['task_accuracy'] = task_accuracy
+        if stage:
+            differences = [max(previous['task_accuracy'][task] for previous in rows[task:stage])
+                           - task_accuracy[task] for task in range(stage)]
+            row['forgetting'] = float(np.mean(differences))
         rows.append({'stage': stage, 'seen_classes': seen, **row})
     return {'stages': rows, 'final_accuracy': rows[-1]['accuracy'],
             'mean_increment_accuracy': float(np.mean([row['accuracy'] for row in rows[1:]])),
-            'mean_increment_harmonic': float(np.mean([row['harmonic'] for row in rows[1:]]))}
+            'mean_increment_harmonic': float(np.mean([row['harmonic'] for row in rows[1:]])),
+            'mean_increment_forgetting': float(np.mean([row['forgetting'] for row in rows[1:]]))}
 
 
 def main():

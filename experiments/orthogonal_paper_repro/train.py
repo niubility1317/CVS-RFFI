@@ -28,12 +28,16 @@ def main():
               'base_epochs_max': 100, 'increment_epochs_max': 50, 'batch_size': 128,
               'base_lr': .01, 'increment_lr': .08, 'patience': 4, 'seed': args.seed,
               'validation_fraction_of_base_training': .1,
-              'unspecified_by_paper': {'encoder_channels': [32, 64, 96, 128, 160, 192],
-                  'kernel_size': 5, 'feature_dim': 256, 'noise_range': .01,
-                  'contrast_temperature': .1, 'center_temperature': .1,
-                  'top_k': 60, 'margin': .2, 'tau_fuse': .01,
+              'implementation_choices': {'encoder_channels': [32, 64, 96, 128, 160, 192],
+                  'kernel_size': 5, 'feature_dim': 256, 'contrast_temperature': .1,
+                  'center_temperature': .1, 'margin': .2,
                   'early_stop_monitor': 'base validation loss; increment support loss'},
+              'paper_sensitivity_reported_values': {'num_targets': 200, 'noise_range': .01,
+                  'top_k': 60, 'tau_fuse': .01,
+                  'note': 'Reported optimal in sensitivity analysis; main-table settings not independently established.'},
               'paper_split_exact': False, 'training_data': str(Path(args.training).resolve())}
+    config['loss_reduction'] = 'project reproduction uses mean CE and contrastive loss; paper formulas present sums'
+    config['perturbed_targets'] = 'additive perturbation is renormalized in project contrastive loss'
     (output / 'resolved_config.json').write_text(json.dumps(config, indent=2), encoding='utf8')
     with np.load(args.training, allow_pickle=False) as data:
         train_x = torch.from_numpy(data['base_train_x']).transpose(1, 2).contiguous()
