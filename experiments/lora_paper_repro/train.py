@@ -55,7 +55,9 @@ def main():
               'train_steps_per_epoch': len(train_indices) // 32,
               'validation_steps_per_epoch': len(validation_indices) // 32,
               'compatibility_note': 'Author code uses Keras, 20-epoch stopping patience and no fixed seed; '
-                                    'this port uses PyTorch and a fixed seed. Optimizer kernels may differ.'}
+                                    'this port uses PyTorch and a fixed seed. Optimizer kernels may differ. '
+                                    'Author train/validation generators share mutable data state; '
+                                    'this port keeps the two source splits separate.'}
     (root / 'resolved_config.json').write_text(json.dumps(config, indent=2), encoding='utf8')
     torch.manual_seed(args.seed)
     device = torch.device(args.device)
