@@ -67,7 +67,7 @@ def dispatch(rt):
     def admits(gpu, active, mib):
         if any(item['gpu'] == gpu for _, item in active.values()):
             return False
-        return physical_admits(gpu, active, max(mib, 12000), max_total=5)
+        return physical_admits(gpu, active, max(mib, 12288), max_total=5)
     old = preparation.prepare, queue.admits, queue.launch, queue.analyze
     preparation.prepare, queue.admits = prepare, admits
     queue.launch = partial(launch, module='experiments.pamf_repl_factorial_recovery.runner')
