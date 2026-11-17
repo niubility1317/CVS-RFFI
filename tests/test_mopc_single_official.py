@@ -23,6 +23,17 @@ def test_legacy_paper_mopc_entrypoints_are_retired():
             fn(**required)
 
 
+def test_legacy_paper_objectives_are_retired_and_correction_is_official():
+    from paper_reproduction.mopc_hr_non_exemplar_cil_sei import algorithm as legacy
+    from experiments.pamf_phase2_practical.vendor_native.paper_reproduction.mopc_hr_non_exemplar_cil_sei import algorithm as vendor
+    for module in (legacy, vendor):
+        with pytest.raises(ValueError, match='retired'):
+            module.mopc_hr_incremental_objective(None, None, None, None, None, None)
+        with pytest.raises(ValueError):
+            module.correct_old_prototypes(torch.ones(1, 2), torch.ones(1, 2), torch.ones(1, 2),
+                                          similarity_mode='paper_cosine')
+
+
 def test_registration_defaults_to_author_behavior():
     assert RegistrationConfig().mopc_semantics == 'public_code'
     assert RegistrationConfig().mopc_max_grad_norm is None

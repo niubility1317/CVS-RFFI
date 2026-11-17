@@ -82,9 +82,9 @@ def correct_old_prototypes(
     new_prototypes_current_model: torch.Tensor,
     *,
     alpha: float = 0.97,
-    similarity_mode: str = "paper_cosine",
+    similarity_mode: str = "official_code_dot_softmax",
 ) -> torch.Tensor:
-    """Apply momentum prototype correction from paper equations (10)-(14)."""
+    """Apply the author repository's dot-product softmax correction."""
     if old_prototypes.ndim != 2:
         raise ValueError("old_prototypes must have shape [old_classes, feature_dim]")
     if new_prototypes_previous_model.shape != new_prototypes_current_model.shape:
@@ -96,12 +96,9 @@ def correct_old_prototypes(
     if not 0.0 <= alpha <= 1.0:
         raise ValueError("alpha must be in [0, 1]")
 
-    if similarity_mode == "paper_cosine":
-        similarity = F.normalize(old_prototypes, dim=1) @ F.normalize(new_prototypes_previous_model, dim=1).t()
-    elif similarity_mode == "official_code_dot_softmax":
-        similarity = torch.softmax(old_prototypes @ new_prototypes_previous_model.t(), dim=1)
-    else:
-        raise ValueError("similarity_mode must be paper_cosine or official_code_dot_softmax")
+    if similarity_mode != "official_code_dot_softmax":
+        raise ValueError("Only the author repository MoPC correction is retained")
+    similarity = torch.softmax(old_prototypes @ new_prototypes_previous_model.t(), dim=1)
 
     new_deviation = new_prototypes_current_model - new_prototypes_previous_model
     estimated_old_deviation = similarity @ new_deviation
@@ -153,19 +150,4 @@ def mopc_hr_incremental_objective(
     beta: float = 1.0,
     lambda_max: float = 1.0,
 ) -> MoPCHRLoss:
-    """Paper equation (22): CE + prototype replay CE + beta * HR.
-
-    Knowledge distillation is intentionally absent: it is not part of equation
-    (22), and the official trainer computes but does not optimize its KD term.
-    """
-    if beta < 0:
-        raise ValueError("beta must be non-negative")
-    cross_entropy = F.cross_entropy(current_logits, current_labels)
-    prototype_loss = F.cross_entropy(prototype_logits, prototype_labels)
-    regularization = hierarchical_regularization(
-        current_parameters,
-        previous_parameters,
-        lambda_max=lambda_max,
-    )
-    total = cross_entropy + prototype_loss + beta * regularization
-    return MoPCHRLoss(total, cross_entropy, prototype_loss, regularization)
+    raise ValueError('This legacy MoPC paper objective is retired; use the author repository behavior')
