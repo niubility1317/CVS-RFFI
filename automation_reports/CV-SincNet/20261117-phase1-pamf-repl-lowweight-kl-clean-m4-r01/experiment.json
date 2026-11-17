@@ -1,0 +1,269 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01",
+  "group_id": "phase1-pamf-repl-weight-clean",
+  "display_name": "六源低无标签权重 KL 方向对照",
+  "description": "在现有六源 KL 矩阵以外补充 U 权重 0.75 的四个固定条件，不复制其他运行行。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "tri-repl-clean-loss-weight"
+  ],
+  "tags": [
+    "PAMF",
+    "REPL",
+    "clean",
+    "gradient"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-paper-completion-m119-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-11-17 用户要求利用其他空闲显卡、均匀优化本轮任务分配。",
+  "code": {
+    "commit": "actual committed release identity in runtime.json",
+    "checkout": "isolated task worktree",
+    "environment": "N607 CVS-RFFI existing Python, FP32",
+    "cwd": "PROJECT/releases/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01-release"
+  },
+  "data": {
+    "dataset": "original ten-class ManyRx and six-source receiver contracts",
+    "version": null,
+    "representation": null,
+    "contract_ref": "context.handles per row protocol_id",
+    "physical_ids_ref": "original fixed source/test contracts",
+    "label_map_ref": null,
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "labeled training",
+      "U_s": "TX blind in training; offline diagnostic only after E50",
+      "V": "source validation without gradients"
+    },
+    "train_ratio": "original fixed labeled/unlabeled/validation roles",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": "fixed clean cross-date, cross-RX and double-cross; prediction before independent scoring",
+    "leo_config_ref": "not applicable: clean-only, no new satellite observations"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "frozen raw clean prediction; independent truth-last scoring",
+    "external_method_exception": null,
+    "claim_scope": "seed selected by previously exposed clean target; exploratory, not an independent blind evaluation"
+  },
+  "checkpoint": {
+    "initialization": "matching original same-setting source-only Tri E20 then own E21–E50",
+    "sources": [
+      "20261027-phase1-pamf-paper-completion-m119-r03"
+    ],
+    "contract_check_ref": "pamf_repl_component_guard.plan.parent with scoped priority matrix",
+    "provenance_verdict": "same source roles, physical IDs, seed and original source-only E20, no target-trained checkpoint",
+    "selection_rule": "all fixed rows E50; candidate design uses previously exposed clean, so exploration only"
+  },
+  "execution": {
+    "host": "N607 ordinary user",
+    "launch_owner": "codex-20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01",
+    "gpu_policy": "GPU 4 and 6; all owners/pending <=5 per GPU; >=12 GiB free; one own worker per GPU",
+    "remote_run_root": "PROJECT/runs/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01",
+    "remote_log_root": "PROJECT/runs/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_repl_lowweight_kl_20261117",
+    "launch_command": "python -m experiments.pamf_repl_priority_extension.publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+    "stop_rule": "On protocol, nonfinite or launch failure stop new dispatch; preserve all outputs and healthy workers; no low-score stops."
+  },
+  "expected_artifacts": [
+    "4 real-checkpoint no-query optimizer-step smokes",
+    "4 E30/E50 source trajectories with group gradients and sampled actual AdamW reference updates",
+    "4 blind U trajectories with independent frozen U correctness diagnostics",
+    "4 raw clean predictions and independent truth-last scores"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean accuracy and macro-F1",
+      "L CE and source validation",
+      "U acceptance, unique coverage and post-freeze correctness",
+      "group raw and applied gradients, reference conflicts and caps",
+      "every-100-step actual joint and same-state reference-only AdamW direction"
+    ],
+    "dimensions": [
+      "six-source receivers",
+      "seed 2026092701",
+      "raw clean",
+      "TX/RX/day"
+    ],
+    "prediction_ref": "PROJECT/runs/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01/readouts/ROW/predictions",
+    "scorer_ref": "PROJECT/runs/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01/readouts/ROW/scores"
+  },
+  "rows": [
+    {
+      "row_id": "source_rx_6-repl-six_w0p75_k1p0_native-s2026092701",
+      "method": "Tri priority six_w0p75_k1p0_native",
+      "purpose": "{'setting': 'source_rx_6', 'weight': 0.75, 'shallow_factor': 0.0, 'extrap_coefficient': 0.0, 'joint_weight': 0.05, 'kl_factor': 1.0, 'reference': 'pair_kl', 'mode': 'native'}",
+      "config_ref": "PROJECT/runs/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01/configs/train__source_rx_6-repl-six_w0p75_k1p0_native-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01/F/source_rx_6-repl-six_w0p75_k1p0_native-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01/F/source_rx_6-repl-six_w0p75_k1p0_native-s2026092701/source",
+      "log_path": "PROJECT/runs/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01/logs/train__source_rx_6-repl-six_w0p75_k1p0_native-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01/configs/train__source_rx_6-repl-six_w0p75_k1p0_native-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/source_rx_6-repl-six_w0p75_k1p0_native-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-six_w0p75_k1p0_native-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-six_w0p75_k1p0_native-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-six_w0p75_k1p0_kl-s2026092701",
+      "method": "Tri priority six_w0p75_k1p0_kl",
+      "purpose": "{'setting': 'source_rx_6', 'weight': 0.75, 'shallow_factor': 0.0, 'extrap_coefficient': 0.0, 'joint_weight': 0.05, 'kl_factor': 1.0, 'reference': 'pair_kl', 'mode': 'kl'}",
+      "config_ref": "PROJECT/runs/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01/configs/train__source_rx_6-repl-six_w0p75_k1p0_kl-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01/F/source_rx_6-repl-six_w0p75_k1p0_kl-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01/F/source_rx_6-repl-six_w0p75_k1p0_kl-s2026092701/source",
+      "log_path": "PROJECT/runs/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01/logs/train__source_rx_6-repl-six_w0p75_k1p0_kl-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01/configs/train__source_rx_6-repl-six_w0p75_k1p0_kl-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/source_rx_6-repl-six_w0p75_k1p0_kl-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-six_w0p75_k1p0_kl-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-six_w0p75_k1p0_kl-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-six_w0p75_k1p5_native-s2026092701",
+      "method": "Tri priority six_w0p75_k1p5_native",
+      "purpose": "{'setting': 'source_rx_6', 'weight': 0.75, 'shallow_factor': 0.0, 'extrap_coefficient': 0.0, 'joint_weight': 0.05, 'kl_factor': 1.5, 'reference': 'pair_kl', 'mode': 'native'}",
+      "config_ref": "PROJECT/runs/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01/configs/train__source_rx_6-repl-six_w0p75_k1p5_native-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01/F/source_rx_6-repl-six_w0p75_k1p5_native-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01/F/source_rx_6-repl-six_w0p75_k1p5_native-s2026092701/source",
+      "log_path": "PROJECT/runs/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01/logs/train__source_rx_6-repl-six_w0p75_k1p5_native-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01/configs/train__source_rx_6-repl-six_w0p75_k1p5_native-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/source_rx_6-repl-six_w0p75_k1p5_native-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-six_w0p75_k1p5_native-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-six_w0p75_k1p5_native-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-six_w0p75_k1p5_kl-s2026092701",
+      "method": "Tri priority six_w0p75_k1p5_kl",
+      "purpose": "{'setting': 'source_rx_6', 'weight': 0.75, 'shallow_factor': 0.0, 'extrap_coefficient': 0.0, 'joint_weight': 0.05, 'kl_factor': 1.5, 'reference': 'pair_kl', 'mode': 'kl'}",
+      "config_ref": "PROJECT/runs/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01/configs/train__source_rx_6-repl-six_w0p75_k1p5_kl-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01/F/source_rx_6-repl-six_w0p75_k1p5_kl-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01/F/source_rx_6-repl-six_w0p75_k1p5_kl-s2026092701/source",
+      "log_path": "PROJECT/runs/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01/logs/train__source_rx_6-repl-six_w0p75_k1p5_kl-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261117-phase1-pamf-repl-lowweight-kl-clean-m4-r01/configs/train__source_rx_6-repl-six_w0p75_k1p5_kl-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/source_rx_6-repl-six_w0p75_k1p5_kl-s2026092701/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-six_w0p75_k1p5_kl-s2026092701/predictions/complete.json",
+        "readouts/source_rx_6-repl-six_w0p75_k1p5_kl-s2026092701/scores/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Fixed four six-source rows U weight 0.75 × KL coefficient 1 or 1.5 × native or KL-reference update.",
+    "Other U factors match the six-source priority matrix: shallow 0, joint .05, extrapolation 0 with CE reallocated.",
+    "Rows are distinct from the priority matrix at U weight 3/6; not a takeover or duplicate of existing jobs.",
+    "Prior weight-0.75 and clean target results were exposed, making this an exploratory data-dependent extension.",
+    "U truth only independently after source E50 freeze; no target or U truth is used for training or selection.",
+    "Use clean only, same E20 and seed, same-step gradients, 100-step AdamW observation and paired controls."
+  ],
+  "registered_at": "2026-11-16T04:20:21+00:00"
+}
