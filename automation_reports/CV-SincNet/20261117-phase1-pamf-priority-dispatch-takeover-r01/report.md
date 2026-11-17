@@ -5,3 +5,5 @@
 新 owner 先在停止瞬间核对原 dispatcher PID、CWD、命令、所有子进程与状态，确认没有已启动但仍标 queued 的任务；仅停止 dispatcher，不对训练、预测或评分 worker 发信号。新 dispatcher 检查原 owner 已退出，以原 PID/CWD/argv 和 completion artifact 接管原 active worker；随后用原已提交的不可变 worker release、原 config、原输出根和已有真实 checkpoint smoke 调度尚未启动的原工作。原 worker 退出码在重挂父进程后不可得，以预登记 completion artifact 判断完成并明确标注。任何 worker 失踪、未知日志、身份不一致或系统技术失败停止新增派发，保留原产物。
 
 优先实验使用 GPU 0、1、2、3、5、7，与低权重 KL 独立 owner 的 GPU 4、6 分开，避免两个本轮控制器同时对同卡做非原子的容量判定。每卡本优先实验最多两个 worker，全部 owner 与待初始化进程合计不超过 5，启动前至少 12 GiB 空闲；逐次派发前重新读取显存和其他进程。其他 owner 任务不变。全部预测先于独立 truth-last clean 评分，U 真值只在冻结后离线诊断。输出为原 run 的任务和评分，加本次 `takeover.json`、`complete.json`；无 target 数据反馈到训练或选择。发布、接管和启动须由独立运行证据核实。
+
+**VERIFIED / RUNNING（2026-11-17）**：执行 commit `a75e5af25a459fe9a8044f76f63fdb6646d11025`，归档校验及远端编译通过。旧 dispatcher 经安全快照后单独停止，4 个原训练 PID 继续运行并由新 owner 接管；8 条原待启动训练全部已启动。独立核对新 owner 的 PID/CWD/命令、12 条训练的 PID/CWD/命令及 NVIDIA 进程与登记 GPU 映射，新增 8 行的逐步梯度日志在两次核验间增长。原 run 状态为 COMPLETE 32、RUNNING 12、QUEUED 36；这些 queued 是依赖训练冻结的预测及评分，不是待启动的训练。低权重组仍在 GPU 4、6 各运行一条。当前六张优先实验显卡各两个计算进程，4、6 各一个；尚无新增训练行的最终评分。
