@@ -11,7 +11,7 @@
     "paper_result_percent": 98.4,
     "author_checkpoint_result_percent": 98.4,
     "independent_source_training_result_percent": 98.7,
-    "phase2_limit": "256-IQ short-window spectrogram and source checkpoints are a project adaptation. Do not label 26x6 data or Phase2 checkpoints as the paper benchmark or reuse 102x62 checkpoint without compatibility and provenance verification."
+    "phase2_limit": "256-IQ short-window spectrogram and source checkpoints are a project adaptation. Existing Phase2 direct C balances old/new support galleries and uses min(15, 2K-1) neighbors, rather than the paper reproduction's fixed 15; its source recipe also includes Phase2-specific augmentation/PL. Do not relabel that result as this fixed version or reuse the 102x62 checkpoint without compatibility and provenance verification."
   },
   "orthogonal": {
     "method": "orthogonal space constrained incremental registration",
