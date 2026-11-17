@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import numpy as np
 import torch
-from experiments.lora_paper_repro.checkpoint import load_author_weights
+from experiments.lora_paper_repro.checkpoint import load_author_weights, load_project_weights
 from experiments.lora_paper_repro.knn import classify
 from experiments.pamf_phase2_practical.vendor_extra.metric_models import LoRaExtractor
 
@@ -27,6 +27,7 @@ def embeddings(model, inputs, *, device, batch_size=64):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--checkpoint', required=True)
+    parser.add_argument('--checkpoint-format', choices=['author-h5', 'project-pt'], default='author-h5')
     parser.add_argument('--enrollment-input', required=True)
     parser.add_argument('--enrollment-labels', required=True)
     parser.add_argument('--query-input', required=True)
@@ -36,7 +37,10 @@ def main():
     root = Path(args.output)
     root.mkdir(parents=True, exist_ok=False)
     model = LoRaExtractor(height=102, width=62).to(args.device)
-    load_author_weights(model, args.checkpoint)
+    if args.checkpoint_format == 'author-h5':
+        load_author_weights(model, args.checkpoint)
+    else:
+        load_project_weights(model, args.checkpoint, device=args.device)
     enrollment = np.load(args.enrollment_input, mmap_mode='r', allow_pickle=False)
     enrollment_labels = np.load(args.enrollment_labels, allow_pickle=False)
     query = np.load(args.query_input, mmap_mode='r', allow_pickle=False)

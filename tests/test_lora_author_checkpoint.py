@@ -1,7 +1,7 @@
 import h5py
 import numpy as np
 import torch
-from experiments.lora_paper_repro.checkpoint import load_author_weights
+from experiments.lora_paper_repro.checkpoint import load_author_weights, load_project_weights
 from experiments.pamf_phase2_practical.vendor_extra.metric_models import LoRaExtractor
 
 
@@ -24,3 +24,13 @@ def test_loads_keras_weights_and_reorders_kernels(tmp_path):
     for i, layer in enumerate(layers):
         torch.testing.assert_close(layer.weight, torch.full_like(layer.weight, i + .25))
         torch.testing.assert_close(layer.bias, torch.full_like(layer.bias, i + .5))
+
+
+def test_retrained_torch_checkpoint_roundtrip(tmp_path):
+    original = torch.nn.Linear(4, 3)
+    checkpoint = tmp_path / 'final.pt'
+    torch.save({'model': original.state_dict(), 'final_epoch': 21}, checkpoint)
+    restored = torch.nn.Linear(4, 3)
+    load_project_weights(restored, checkpoint, device='cpu')
+    for first, second in zip(original.parameters(), restored.parameters()):
+        torch.testing.assert_close(first, second)

@@ -22,3 +22,12 @@ def load_author_weights(model, path):
             with torch.no_grad():
                 layer.weight.copy_(torch.from_numpy(weights.copy()).to(layer.weight.device))
                 layer.bias.copy_(torch.from_numpy(bias.copy()).to(layer.bias.device))
+
+
+def load_project_weights(model, path, *, device):
+    state = torch.load(path, map_location=device, weights_only=False)
+    if not isinstance(state, dict) or 'model' not in state or 'final_epoch' not in state:
+        raise ValueError('not a completed project training checkpoint')
+    model.load_state_dict(state['model'], strict=True)
+    if not all(bool(torch.isfinite(param).all()) for param in model.parameters()):
+        raise ValueError('nonfinite project checkpoint weights')
