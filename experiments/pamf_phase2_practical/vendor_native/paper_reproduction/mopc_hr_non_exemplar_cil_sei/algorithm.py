@@ -156,19 +156,4 @@ def mopc_hr_incremental_objective(
     beta: float = 1.0,
     lambda_max: float = 1.0,
 ) -> MoPCHRLoss:
-    """Paper equation (22): CE + prototype replay CE + beta * HR.
-
-    Knowledge distillation is intentionally absent: it is not part of equation
-    (22), and the official trainer computes but does not optimize its KD term.
-    """
-    if beta < 0:
-        raise ValueError("beta must be non-negative")
-    cross_entropy = F.cross_entropy(current_logits, current_labels)
-    prototype_loss = F.cross_entropy(prototype_logits, prototype_labels)
-    regularization = hierarchical_regularization(
-        current_parameters,
-        previous_parameters,
-        lambda_max=lambda_max,
-    )
-    total = cross_entropy + prototype_loss + beta * regularization
-    return MoPCHRLoss(total, cross_entropy, prototype_loss, regularization)
+    raise ValueError('This legacy MoPC paper objective is retired; use the author repository behavior')

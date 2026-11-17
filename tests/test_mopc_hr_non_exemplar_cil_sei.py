@@ -20,13 +20,13 @@ def test_class_prototypes_are_classwise_feature_means():
     assert torch.allclose(prototypes, torch.tensor([[2.0, 1.0], [0.0, 4.0]]))
 
 
-def test_paper_momentum_correction_matches_equations_10_to_14():
+def test_retired_paper_momentum_correction_is_rejected():
     old = torch.tensor([[1.0, 0.0], [0.0, 1.0]])
     new_previous = torch.tensor([[1.0, 0.0], [0.0, 1.0]])
     new_current = torch.tensor([[2.0, 0.0], [0.0, 3.0]])
-    corrected = correct_old_prototypes(old, new_previous, new_current, alpha=0.5)
-    expected = 0.5 * old + 0.5 * torch.tensor([[1.0, 0.0], [0.0, 2.0]])
-    assert torch.allclose(corrected, expected)
+    with pytest.raises(ValueError):
+        correct_old_prototypes(old, new_previous, new_current, alpha=0.5,
+                               similarity_mode='paper_cosine')
 
 
 def test_official_code_compatibility_mode_uses_dot_softmax():
@@ -52,26 +52,16 @@ def test_hierarchical_regularization_decreases_with_layer_depth_and_is_squared_l
     assert penalty.item() == pytest.approx(1.0 * 4.0 + 0.5 * 4.0)
 
 
-def test_incremental_objective_is_equation_22_without_distillation():
+def test_paper_incremental_objective_is_retired():
     logits = torch.tensor([[3.0, 0.0], [0.0, 3.0]], requires_grad=True)
     labels = torch.tensor([0, 1])
     proto_logits = torch.tensor([[2.0, 0.0]], requires_grad=True)
     proto_labels = torch.tensor([0])
     current = {"w": torch.tensor([2.0], requires_grad=True)}
     previous = {"w": torch.tensor([1.0])}
-    result = mopc_hr_incremental_objective(
-        logits,
-        labels,
-        proto_logits,
-        proto_labels,
-        current,
-        previous,
-        beta=0.4,
-    )
-    expected = F.cross_entropy(logits, labels) + F.cross_entropy(proto_logits, proto_labels) + 0.4
-    assert torch.allclose(result.total, expected)
-    result.total.backward()
-    assert current["w"].grad is not None
+    with pytest.raises(ValueError, match='retired'):
+        mopc_hr_incremental_objective(logits, labels, proto_logits, proto_labels,
+                                      current, previous, beta=0.4)
 
 
 def test_prototype_augmentation_and_protocol_defaults_match_paper():
