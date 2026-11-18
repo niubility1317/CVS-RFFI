@@ -11,7 +11,7 @@ from .objective import installed
 
 
 def main(matrix=plan, worker_module='experiments.pamf_repl_view_dose.runner',
-         *, objective=installed, max_total=5, reserve_mib=12288):
+         *, objective=installed, max_total=5, reserve_mib=12288, prepare_jobs=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('action', choices=['dispatch', 'worker'])
     parser.add_argument('--kind')
@@ -23,7 +23,8 @@ def main(matrix=plan, worker_module='experiments.pamf_repl_view_dose.runner',
         base.installed, scored.plan, priority.installed = objective, base_plan, objective
         try:
             if args.action == 'dispatch':
-                dispatch(config, worker_module=worker_module, max_total=max_total, reserve_mib=reserve_mib)
+                dispatch(config, worker_module=worker_module, max_total=max_total,
+                         reserve_mib=reserve_mib, prepare_jobs=prepare_jobs)
             else:
                 priority.worker(config, args.kind)
         finally:
