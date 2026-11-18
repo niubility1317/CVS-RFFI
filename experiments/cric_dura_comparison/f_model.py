@@ -9,13 +9,15 @@ from torch.nn import functional as F
 PREFIX = 'id_backbone.encoder.core.id_backbone.'
 
 
-def contrast(maps, labels, receivers):
+def contrast(maps, labels, receivers, *, positive_distribution=None):
     if labels.ndim != 1 or receivers.shape != labels.shape or labels.dtype != torch.long:
         raise ValueError('Current labeled batch and physical RX required')
     same = labels[:, None] == labels[None, :]
     pos = same & (receivers[:, None] != receivers[None, :])
     neg = ~same
     valid = pos.any(1) & neg.any(1)
+    if positive_distribution is not None and positive_distribution.shape != pos.shape:
+        raise ValueError('Positive distribution must align with the current RX pairs')
     results, details = [], []
     for name, h in maps.items():
         h = h if h.ndim == 2 else torch.cat((h.mean(-1), h.std(-1, unbiased=False)), 1)
@@ -24,9 +26,14 @@ def contrast(maps, labels, receivers):
         if bool(valid.any()):
             scores = (z @ z.T / .2)[valid]
             positives = pos[valid]
-            count = positives.sum(1)
-            value = (torch.logsumexp(scores.masked_fill(~(pos | neg)[valid], -torch.inf), 1)
-                - (scores * positives).sum(1) / count - count.to(z.dtype).log()).mean()
+            normalizer = torch.logsumexp(scores.masked_fill(~(pos | neg)[valid], -torch.inf), 1)
+            if positive_distribution is None:
+                count = positives.sum(1)
+                value = (normalizer - (scores * positives).sum(1) / count - count.to(z.dtype).log()).mean()
+            else:
+                target = positive_distribution[valid]
+                entropy = -(target * target.clamp_min(1e-12).log()).sum(1)
+                value = (normalizer - (scores * target).sum(1) - entropy).mean()
         else:
             value = z.sum() * 0.
         results.append(value)

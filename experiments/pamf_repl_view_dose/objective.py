@@ -58,9 +58,9 @@ class ViewDoseREPL(soft.SoftREPL):
 
 
 @contextmanager
-def installed(config, holder):
+def installed(config, holder, *, objective_class=ViewDoseREPL):
     original = soft.SoftREPL
-    soft.SoftREPL = ViewDoseREPL
+    soft.SoftREPL = objective_class
     try:
         with soft.installed(config, holder):
             priority_pair = hard.masked_pair
