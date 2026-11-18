@@ -1,6 +1,6 @@
 # 原始视图参照的定向 KL 实验
 
-**VERIFIED / RUNNING**（2026-11-18 21:31 香港时间）。逐行参数及输出见 [experiment.json](experiment.json)。
+**VERIFIED / PARTIAL_TECHNICAL_FAILURE**（2026-11-19 00:57 香港时间核实）。17 条源 E50 已冻结，4 条源验证 OOM，7 条未开始训练。无目标预测或评分完成。逐行参数及输出见 [experiment.json](experiment.json)。
 
 检验将原始视图用作稳定参照能否提高 clean。十类固定浅层跨 RX 倍数 1，六源固定融合 0.05。两个设置均关闭基础 U CE，保留无标签的原训练前向、伪标签接受规则和源 E20 起点。每设置 7 条路线，各运行半剂量和全剂量，合计 28 行。
 
