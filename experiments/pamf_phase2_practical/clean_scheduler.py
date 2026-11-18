@@ -103,19 +103,22 @@ def validate_plan(config):
     return dict(jobs=len(jobs),groups=sorted({x['group'] for x in jobs}),prediction_only=True,truth_opened=False)
 
 
-def choose(jobs,active,devices,allowed,minimum_free,max_per_gpu=2,*,worker_reserve=None,one_per_snapshot=False):
+def choose(jobs,active,devices,allowed,minimum_free,max_per_gpu=2,*,worker_reserve=None,one_per_snapshot=False,allow_shared=False):
     """Return safe (job,gpu) admissions for one resource snapshot."""
     pending=sorted(jobs,key=lambda j:(j.get('priority',0),-j.get('measured_cost_seconds',0),j['id']))
     own_pids={v['pid'] for v in active.values()};chosen=[]
     for gpu in allowed:
         if not pending:break
         device=devices[gpu];others=set(device['pids'])-own_pids
-        if device.get('blocked') or others:continue
+        if not allow_shared and (device.get('blocked') or others):continue
         admitted={v['pid'] for v in active.values() if v['gpu']==gpu}
-        own=len(admitted)
+        # Any other observed GPU process could be MoPC under a generic
+        # launcher. Count every process against the cap when sharing.
+        own=len(admitted | set(device['pids'])) if allow_shared else len(admitted)
         used_by_pid=device.get('used_by_pid',{})
         reservation=minimum_free if worker_reserve is None else worker_reserve
-        reserved=sum(max(0,reservation-used_by_pid.get(pid,0)) for pid in admitted)
+        reserved_pids=admitted | set(device['pids']) if allow_shared else admitted
+        reserved=sum(max(0,reservation-used_by_pid.get(pid,0)) for pid in reserved_pids)
         free=device['free']-reserved
         while pending and own<max_per_gpu and free>=minimum_free:
             job=pending.pop(0);chosen.append((job,gpu));own+=1;free-=reservation

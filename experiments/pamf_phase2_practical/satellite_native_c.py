@@ -167,6 +167,10 @@ def require_source_smoke_mode(config):
     flags=[j.get('source_smoke_in_dispatch') is True for j in config['jobs']]
     require(not any(flags) or (all(flags) and config.get('author_source_smoke') is True),
             'Invalid source smoke execution mode')
+    require(type(config.get('allow_shared_gpu',False)) is bool, 'Invalid GPU sharing mode')
+    if config.get('allow_shared_gpu'):
+        require(config.get('max_per_gpu')==4 and config.get('minimum_free_MiB',0)>=6000,
+                'Shared MoPC resource limit must be four per GPU with at least 6000 MiB free')
 
 
 def dispatch(config,config_file):
@@ -233,7 +237,8 @@ def dispatch(config,config_file):
             try:
                 admissions=choose([dict(id=j['id']) for j in pending],
                     {k:dict(pid=v['proc'].pid,gpu=v['gpu']) for k,v in active.items()},occupancy(),config['allowed_gpus'],
-                    config['minimum_free_MiB'],config['max_per_gpu'],worker_reserve=config['worker_reserve_MiB'],one_per_snapshot=True)
+                    config['minimum_free_MiB'],config['max_per_gpu'],worker_reserve=config['worker_reserve_MiB'],one_per_snapshot=True,
+                    allow_shared=config.get('allow_shared_gpu',False))
             except (OSError,ValueError,KeyError,subprocess.SubprocessError) as exc:
                 failed.append(dict(stage='occupancy',error=str(exc)));pending.clear();admissions=[]
             for entry,gpu in admissions:

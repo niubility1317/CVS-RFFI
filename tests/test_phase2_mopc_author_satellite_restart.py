@@ -36,6 +36,11 @@ def test_matrix_uses_author_version_and_does_not_repeat_a0():
             assert points==[tuple(p) for p in POINTS] and a0==[]
 
 
+def test_explicit_shared_gpu_plan_limits_mopc_to_four():
+    plan=make_plan(predecessor(),'/tmp/new-author-root','/tmp/new-release',allow_shared=True)
+    assert plan['allow_shared_gpu'] is True and plan['max_per_gpu']==4
+
+
 def test_rejects_missing_or_duplicate_tasks_and_wrong_proto_bridge():
     p=predecessor();p['jobs'].pop()
     with pytest.raises(ValueError):make_plan(p,'/tmp/new-author-root','/tmp/new-release')

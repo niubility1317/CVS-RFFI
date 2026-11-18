@@ -18,7 +18,7 @@ SOURCE_CACHE_USE = {
 }
 
 
-def make_plan(previous, run_root, release_root, profiles=PROFILES, pilot=False, continuation_from=None):
+def make_plan(previous, run_root, release_root, profiles=PROFILES, pilot=False, continuation_from=None, allow_shared=False):
     root = Path(run_root)
     require(PurePosixPath(run_root).is_absolute() and not root.exists(), 'Run root must be new and absolute')
     release = Path(release_root)
@@ -77,7 +77,8 @@ def make_plan(previous, run_root, release_root, profiles=PROFILES, pilot=False, 
                 job['reuse_author_runtime']=previous['runtimes']['hybrid']
     out = {k: v for k, v in previous.items() if k != 'jobs'}
     out.update(run_root=str(PurePosixPath(run_root)), release_root=str(PurePosixPath(release_root)), jobs=selected,
-               allowed_gpus=list(range(8)), max_per_gpu=6, minimum_free_MiB=6000, author_source_smoke=True,
+               allowed_gpus=list(range(8)), max_per_gpu=4 if allow_shared else 6, minimum_free_MiB=6000,
+               allow_shared_gpu=bool(allow_shared), author_source_smoke=True,
                source_cache_use={p:SOURCE_CACHE_USE[p] for p in profiles})
     if continuation_from:
         out.update(wait_run=continuation_from,require_author_pilot_scored=True)
@@ -137,6 +138,7 @@ def main():
     parser.add_argument('--profile', action='append', choices=PROFILES)
     parser.add_argument('--pilot', action='store_true')
     parser.add_argument('--continuation-from')
+    parser.add_argument('--share-gpus', action='store_true')
     parser.add_argument('--native-source-root',required=True)
     parser.add_argument('--code-commit',required=True)
     args = parser.parse_args()
@@ -147,7 +149,7 @@ def main():
     require(not Path(args.output).exists() and not native_path.exists(),'Preparation already exists')
     write(native_path,native)
     previous=dict(previous,runtimes=dict(previous['runtimes'],mopc_hr=str(native_path)))
-    write(args.output, make_plan(previous,args.run_root,args.release_root,args.profile or PROFILES,args.pilot,args.continuation_from))
+    write(args.output, make_plan(previous,args.run_root,args.release_root,args.profile or PROFILES,args.pilot,args.continuation_from,args.share_gpus))
 
 
 if __name__ == '__main__':
