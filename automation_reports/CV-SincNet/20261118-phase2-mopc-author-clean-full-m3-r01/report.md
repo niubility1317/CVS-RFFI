@@ -1,5 +1,7 @@
 # MoPC 作者仓库版 clean 对照 full
 
+**范围变更，已停止并由 `20261118-phase2-mopc-author-clean-full-mix3-m3-r02` 替代。** 用户指定 clean 对照仅保留 MIX01–MIX03；本队列停止时 completed、scored 和 active 均为 0。下方八组 MIX 为历史预登记范围，并非当前待执行矩阵。
+
 该队列覆盖三个数据池、MIX01–MIX08、七个接收机、三个模型种子、六个 MoPC 对照方法和 K5/10 × N5/10。pilot 六项各含四格；本队列 3018 项与 pilot 不重叠，合计 3024 项、12096 格。全部使用 clean support 和 clean query；逐任务固定预测后独立 truth-last 评分。只有 pilot 六项均评分且无隔离时接续。
 
 2026-11-18 06:18 UTC 独立读回：调度器 PID 791975，真实 CWD 为预登记 release；六方法、三个种子共 18 项真实源 checkpoint 无 query smoke 均通过。状态 `WAITING_PREDECESSOR`，pending 3018、active 0、completed 0、scored 0；此时 clean 预测尚未启动。
