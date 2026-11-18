@@ -40,13 +40,13 @@ def make_plan(previous,run_root,release_root,runtimes,wait_run,part):
     for entry in previous['jobs']:
         old=read(entry['job']);parts=old.get('capsule','').split('/')
         if old.get('profile') not in PROFILES or old.get('seed') not in (2026092701,2026092702,2026092703) or \
-           len(parts)!=4 or parts[2] not in tuple(f'MIX{i:02}' for i in range(1,9)):
+           len(parts)!=4 or parts[2] not in ('MIX01','MIX02','MIX03'):
             continue
         selected.append(new_job(old,run_root))
-    require(Counter(j['profile'] for j in selected)==Counter({p:504 for p in PROFILES}) and
-            len({j['id'] for j in selected})==3024, 'Incomplete clean matrix')
+    require(Counter(j['profile'] for j in selected)==Counter({p:189 for p in PROFILES}) and
+            len({j['id'] for j in selected})==1134, 'Incomplete clean matrix')
     selected=partition(selected,part)
-    require(len(selected)==(6 if part=='pilot' else 3018),'Wrong clean partition size')
+    require(len(selected)==(6 if part=='pilot' else 1128),'Wrong clean partition size')
     config=dict(entry_module='mopc_clean_author',input_condition='clean_ground_pre_satellite_normalized',
                 run_root=run_root,release_root=release_root,runtimes=runtimes,wait_run=wait_run,
                 allowed_gpus=list(range(8)),max_per_gpu=4,minimum_free_MiB=6000,worker_reserve_MiB=3000,
@@ -58,7 +58,7 @@ def make_plan(previous,run_root,release_root,runtimes,wait_run,part):
 def validate_scope(job):
     parts=job.get('capsule','').split('/')
     require(len(parts)==4 and parts[0]=='capsules' and parts[1] in ('P01','P02','P03') and
-            parts[2] in tuple(f'MIX{i:02}' for i in range(1,9)) and parts[3] in RECEIVERS and
+            parts[2] in ('MIX01','MIX02','MIX03') and parts[3] in RECEIVERS and
             job.get('profile') in PROFILES and job.get('seed') in (2026092701,2026092702,2026092703) and
             job.get('points')==POINTS and job.get('mopc_sampling_version')=='author_drop_last_v1' and
             job.get('mopc_stabilization')=='none', 'Invalid clean MoPC author scope')

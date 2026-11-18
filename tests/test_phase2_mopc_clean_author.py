@@ -6,7 +6,7 @@ from experiments.pamf_phase2_practical import mopc_clean_author
 
 
 def test_clean_scope_requires_author_version_and_exact_four_points():
-    job = dict(profile='mopc_hr', capsule='capsules/P01/MIX08/1-1', seed=2026092701,
+    job = dict(profile='mopc_hr', capsule='capsules/P01/MIX03/1-1', seed=2026092701,
                points=[[5, 5], [5, 10], [10, 5], [10, 10]],
                mopc_sampling_version='author_drop_last_v1', mopc_stabilization='none')
     mopc_clean_author.validate_scope(job)
@@ -16,10 +16,12 @@ def test_clean_scope_requires_author_version_and_exact_four_points():
         mopc_clean_author.validate_scope(dict(job, mopc_sampling_version='old'))
     with pytest.raises(ValueError):
         mopc_clean_author.validate_scope(dict(job, capsule='capsules/P01/LS01/1-1'))
+    with pytest.raises(ValueError):
+        mopc_clean_author.validate_scope(dict(job, capsule='capsules/P01/MIX08/1-1'))
 
 
 def test_clean_prediction_rejects_missing_sampling_identity(tmp_path: Path):
-    job = dict(profile='mopc_hr', capsule='capsules/P01/MIX08/1-1', seed=2026092701,
+    job = dict(profile='mopc_hr', capsule='capsules/P01/MIX03/1-1', seed=2026092701,
                points=[[5, 5], [5, 10], [10, 5], [10, 10]],
                mopc_sampling_version='author_drop_last_v1', mopc_stabilization='none',
                output=str(tmp_path))
