@@ -39,6 +39,9 @@ class AnchorKLREPL(soft.SoftREPL):
         self.anchor_pairs = []
         self.anchor_eval_logits = []
 
+    def compute_kl(self, ordinary, raw, teacher, accepted, recipe):
+        return .8 * recipe['weight'] * recipe['kl_factor'] * anchor_kl(ordinary, raw, teacher, accepted, recipe)
+
     def loss(self, student, device):
         if self.anchor_pairs or self.anchor_eval_logits:
             raise ValueError('Unconsumed source KL inputs')
@@ -62,7 +65,7 @@ class AnchorKLREPL(soft.SoftREPL):
         if teacher.shape != ordinary[0].shape or raw[0].shape != teacher.shape:
             raise ValueError('The KL teacher and students must align by U record')
         recipe = self.c['tuning_recipe']
-        kl = .8 * recipe['weight'] * recipe['kl_factor'] * anchor_kl(ordinary, raw, teacher, ordinary_mask, recipe)
+        kl = self.compute_kl(ordinary, raw, teacher, ordinary_mask, recipe)
         self.parts['pair_kl'] = kl
         effective = sum(self.parts.values())
         self.metrics.update(HPL_pre_route_U_loss=self.pending_gradient_loss.detach(),
@@ -80,9 +83,9 @@ class AnchorKLREPL(soft.SoftREPL):
 
 
 @contextmanager
-def installed(config, holder):
+def installed(config, holder, *, objective_class=AnchorKLREPL):
     original_class = soft.SoftREPL
-    soft.SoftREPL = AnchorKLREPL
+    soft.SoftREPL = objective_class
     try:
         with soft.installed(config, holder):
             priority_pair = hard.masked_pair
