@@ -177,8 +177,10 @@ def dispatch(config,config_file):
     from .clean_scheduler import choose
     from .runner import occupancy
     mode=config.get('entry_module','satellite_native_c')
-    require(mode in ('satellite_native_c','satellite_tweak','satellite_issl','satellite_mix3'),'Invalid satellite worker module')
-    if mode=='satellite_mix3':
+    require(mode in ('satellite_native_c','satellite_tweak','satellite_issl','satellite_mix3','mopc_clean_author'),'Invalid worker module')
+    if mode=='mopc_clean_author':
+        from .mopc_clean_author import verify_prediction as check_prediction
+    elif mode=='satellite_mix3':
         from .satellite_mix3 import verify_prediction as check_prediction
     elif mode=='satellite_tweak':
         from .satellite_tweak import verify_prediction as check_prediction

@@ -326,6 +326,9 @@ def predict(rt,job):
             for k,n in Cs:pamf_stage(lookup[k,n],'C')
         else:
             for k in Ks:
+                if job.get('clean_author_c_only') is True:
+                    require(clean_root and profile=='mopc_hr', 'Invalid clean author C-only task')
+                    continue
                 if job.get('satellite_c_points') is not None and k not in a0_ks:continue
                 s=lookup[k,0]
                 if ('A0',k,0) not in reused:
