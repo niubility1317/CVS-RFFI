@@ -1,0 +1,325 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261118-phase2-mopc-author-sat-pilot-s2026092701-r03",
+  "group_id": "phase2-mopc-author-satellite",
+  "display_name": "MoPC 作者仓库行为版星地小样本验证",
+  "description": "六条原生及 B→MoPC 路径，同一星地支持集 K5/N5；作者 drop-last 行为，无梯度裁剪，预测固定后逐任务独立评分。",
+  "kind": "comparison",
+  "stage": "Phase2",
+  "aliases": [],
+  "tags": [
+    "mopc",
+    "author-code",
+    "satellite",
+    "pilot"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261117-phase2-satellite-mix3-m3-r01",
+    "20261101-phase2-mopc-author-group1-m4-r04"
+  ],
+  "replaces_run_id": "20261118-phase2-mopc-author-sat-pilot-s2026092701-r02",
+  "authorization": "用户要求指定对话中的作者仓库行为版重跑；2026-11-18 明确允许对比方法使用源域训练缓存并要求报告。",
+  "code": {
+    "commit": "f6f8de585d761edd73600ccb9a9c77f9047bd74e",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03-release",
+    "environment": "N607 CVS-RFFI conda Python; FP32, TF32 off",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03-release"
+  },
+  "data": {
+    "dataset": "WiSig three-pool received IQ",
+    "version": "20261029-phase2-threepool-episodes-s2026102901-r01",
+    "representation": "satellite_received IQ 2x256",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:p2_min_v1",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/capsules/P01/MIX01/1-1/splits",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/capsules/P01/MIX01/1-1/manifest.json",
+    "source_receivers": [],
+    "target_receivers": [
+      "1-1"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": null,
+      "U_s": null,
+      "V": null
+    },
+    "train_ratio": null,
+    "capsule_id": "20261029-phase2-threepool-episodes-s2026102901-r01:P01:MIX01:1-1",
+    "split_id": "a32a28b3190fc5946a140d6e",
+    "validation_ref": "VALIDATED_ONCE",
+    "support_query_ref": "per-split opaque physical IDs; K5/N5",
+    "leo_config_ref": "MIX01 fixed received"
+  },
+  "permissions": {
+    "regime": "Phase2 source cache permitted for comparison methods; support-only target adaptation",
+    "query_use": "fixed per-record prediction; independent truth-last scorer",
+    "external_method_exception": "MRIOR and Two-stage use L_s source replay during B; Tweak source feature enrollment is checkpoint-contained",
+    "claim_scope": "author-repository behavior adapted to IQ/backbone, not unmodified author script"
+  },
+  "checkpoint": {
+    "initialization": "frozen Phase2 source checkpoint per method and model seed",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-source-prototypes-s2026092701-r01/source/mopc_hr-s2026092701/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-mopc-author-group1-m4-r04/source/mopc_hr-s2026092701/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/<method>-s2026092701/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-external-threepool-m4-r01/source/tweak_m1-s2026092701/source.pt"
+    ],
+    "contract_check_ref": "group1_source.load_source / external_additional.load_source",
+    "provenance_verdict": "checkpoint contract and no-target provenance enforced on load",
+    "selection_rule": "previously fixed source checkpoint; no target selection"
+  },
+  "execution": {
+    "host": "N607 ordinary user",
+    "launch_owner": "single satellite_mix3 dispatcher",
+    "gpu_policy": "GPUs 0–7; explicit sharing allowed; conservatively count all observed GPU processes against cap 4; >=6000 MiB free, 3000 MiB reservation per process; do not stop other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts",
+    "launch_command": "python -m experiments.pamf_phase2_practical.satellite_mix3 dispatch --config /home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler.json",
+    "stop_rule": "Nonfinite or missing-class MoPC task retained and quarantined; systemic technical failures stop dispatch and drain; low accuracy does not stop."
+  },
+  "expected_artifacts": [
+    "source-only no-query smoke logs",
+    "six fixed prediction indices",
+    "six independent truth-last score directories",
+    "scheduler state",
+    "per-row resources"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "old accuracy",
+      "new accuracy",
+      "macro H",
+      "macro F1",
+      "floor"
+    ],
+    "dimensions": [
+      "method",
+      "receiver",
+      "scenario",
+      "K",
+      "N",
+      "model seed"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/predictions",
+    "scorer_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scores"
+  },
+  "rows": [
+    {
+      "row_id": "native-mopc_hr-s2026092701-capsules-P01-MIX01-1-1",
+      "method": "mopc_hr to author MoPC",
+      "purpose": "fixed small-sample validation",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler.json",
+      "data_overrides": {
+        "source_cache_use": "source-only smoke and fixed source prototypes",
+        "capsule": "capsules/P01/MIX01/1-1"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": 2323650485907589755,
+        "evaluation": null
+      },
+      "seed_notes": "Split identity is recorded separately; augmentation and evaluation RNG are not independently supplied. C seed is deterministically derived from model seed, capsule, K and N.",
+      "k": 5,
+      "scenario": "MIX01 N5",
+      "optimizer": "MoPC SGD momentum 0.9 weight decay 0.0002",
+      "lr": 0.01,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "registration.py mopc stage size 5 batch size 16 author drop_last",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/predictions/native-mopc_hr-s2026092701-capsules-P01-MIX01-1-1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler/logs/native-mopc_hr-s2026092701-capsules-P01-MIX01-1-1.log",
+      "command": "python -m experiments.pamf_phase2_practical.satellite_mix3 dispatch --config /home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler.json",
+      "expected_artifacts": [
+        "prediction",
+        "independent score"
+      ]
+    },
+    {
+      "row_id": "hybrid-protonet_cda-s2026092701-capsules-P01-MIX01-1-1",
+      "method": "protonet_cda to author MoPC",
+      "purpose": "fixed small-sample validation",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler.json",
+      "data_overrides": {
+        "source_cache_use": "source-only smoke; target support B",
+        "capsule": "capsules/P01/MIX01/1-1"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": 2323650485907589755,
+        "evaluation": null
+      },
+      "seed_notes": "Split identity is recorded separately; augmentation and evaluation RNG are not independently supplied. C seed is deterministically derived from model seed, capsule, K and N.",
+      "k": 5,
+      "scenario": "MIX01 N5",
+      "optimizer": "MoPC SGD momentum 0.9 weight decay 0.0002",
+      "lr": 0.01,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "registration.py mopc stage size 5 batch size 16 author drop_last",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/predictions/hybrid-protonet_cda-s2026092701-capsules-P01-MIX01-1-1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler/logs/hybrid-protonet_cda-s2026092701-capsules-P01-MIX01-1-1.log",
+      "command": "python -m experiments.pamf_phase2_practical.satellite_mix3 dispatch --config /home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler.json",
+      "expected_artifacts": [
+        "prediction",
+        "independent score"
+      ]
+    },
+    {
+      "row_id": "hybrid-mrior_sda-s2026092701-capsules-P01-MIX01-1-1",
+      "method": "mrior_sda to author MoPC",
+      "purpose": "fixed small-sample validation",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler.json",
+      "data_overrides": {
+        "source_cache_use": "L_s replay in B",
+        "capsule": "capsules/P01/MIX01/1-1"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": 2323650485907589755,
+        "evaluation": null
+      },
+      "seed_notes": "Split identity is recorded separately; augmentation and evaluation RNG are not independently supplied. C seed is deterministically derived from model seed, capsule, K and N.",
+      "k": 5,
+      "scenario": "MIX01 N5",
+      "optimizer": "MoPC SGD momentum 0.9 weight decay 0.0002",
+      "lr": 0.01,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "registration.py mopc stage size 5 batch size 16 author drop_last",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/predictions/hybrid-mrior_sda-s2026092701-capsules-P01-MIX01-1-1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler/logs/hybrid-mrior_sda-s2026092701-capsules-P01-MIX01-1-1.log",
+      "command": "python -m experiments.pamf_phase2_practical.satellite_mix3 dispatch --config /home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler.json",
+      "expected_artifacts": [
+        "prediction",
+        "independent score"
+      ]
+    },
+    {
+      "row_id": "hybrid-twostage-s2026092701-capsules-P01-MIX01-1-1",
+      "method": "twostage to author MoPC",
+      "purpose": "fixed small-sample validation",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler.json",
+      "data_overrides": {
+        "source_cache_use": "L_s replay in B",
+        "capsule": "capsules/P01/MIX01/1-1"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": 2323650485907589755,
+        "evaluation": null
+      },
+      "seed_notes": "Split identity is recorded separately; augmentation and evaluation RNG are not independently supplied. C seed is deterministically derived from model seed, capsule, K and N.",
+      "k": 5,
+      "scenario": "MIX01 N5",
+      "optimizer": "MoPC SGD momentum 0.9 weight decay 0.0002",
+      "lr": 0.01,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "registration.py mopc stage size 5 batch size 16 author drop_last",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/predictions/hybrid-twostage-s2026092701-capsules-P01-MIX01-1-1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler/logs/hybrid-twostage-s2026092701-capsules-P01-MIX01-1-1.log",
+      "command": "python -m experiments.pamf_phase2_practical.satellite_mix3 dispatch --config /home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler.json",
+      "expected_artifacts": [
+        "prediction",
+        "independent score"
+      ]
+    },
+    {
+      "row_id": "hybrid-poster_ft-s2026092701-capsules-P01-MIX01-1-1",
+      "method": "poster_ft to author MoPC",
+      "purpose": "fixed small-sample validation",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler.json",
+      "data_overrides": {
+        "source_cache_use": "source-only smoke; target support B",
+        "capsule": "capsules/P01/MIX01/1-1"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": 2323650485907589755,
+        "evaluation": null
+      },
+      "seed_notes": "Split identity is recorded separately; augmentation and evaluation RNG are not independently supplied. C seed is deterministically derived from model seed, capsule, K and N.",
+      "k": 5,
+      "scenario": "MIX01 N5",
+      "optimizer": "MoPC SGD momentum 0.9 weight decay 0.0002",
+      "lr": 0.01,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "registration.py mopc stage size 5 batch size 16 author drop_last",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/predictions/hybrid-poster_ft-s2026092701-capsules-P01-MIX01-1-1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler/logs/hybrid-poster_ft-s2026092701-capsules-P01-MIX01-1-1.log",
+      "command": "python -m experiments.pamf_phase2_practical.satellite_mix3 dispatch --config /home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler.json",
+      "expected_artifacts": [
+        "prediction",
+        "independent score"
+      ]
+    },
+    {
+      "row_id": "hybrid-tweak_m1-s2026092701-capsules-P01-MIX01-1-1",
+      "method": "tweak_m1 to author MoPC",
+      "purpose": "fixed small-sample validation",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler.json",
+      "data_overrides": {
+        "source_cache_use": "checkpoint source enrollment features; target support B",
+        "capsule": "capsules/P01/MIX01/1-1"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": 2323650485907589755,
+        "evaluation": null
+      },
+      "seed_notes": "Split identity is recorded separately; augmentation and evaluation RNG are not independently supplied. C seed is deterministically derived from model seed, capsule, K and N.",
+      "k": 5,
+      "scenario": "MIX01 N5",
+      "optimizer": "MoPC SGD momentum 0.9 weight decay 0.0002",
+      "lr": 0.01,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "registration.py mopc stage size 5 batch size 16 author drop_last",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/predictions/hybrid-tweak_m1-s2026092701-capsules-P01-MIX01-1-1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler/logs/hybrid-tweak_m1-s2026092701-capsules-P01-MIX01-1-1.log",
+      "command": "python -m experiments.pamf_phase2_practical.satellite_mix3 dispatch --config /home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-sat-pilot-s2026092701-r03/scheduler.json",
+      "expected_artifacts": [
+        "prediction",
+        "independent score"
+      ]
+    }
+  ],
+  "notes": [
+    "Author reference ae6554316ad1a2175920e330133a2f103408bf78; project IQ/backbone adapter and project RNG remain disclosed.",
+    "Native MoPC uses independently derived shuffled drop-last L_s source prototypes from the original fixed A checkpoint, preserving original model weights and source contract.",
+    "Author training and prototype passes shuffle and drop incomplete batches; a missing class is explicitly quarantined.",
+    "No gradients clipped; real nonfinite values remain guarded; FP64 norm is observational only.",
+    "Previously exposed target benchmark; no target-based choice of checkpoint, sampler, hyperparameter, or scientific method.",
+    "Pilot feasibility criterion is legal complete predictions and fixed truth-last scoring for each method; low accuracy is a result, not a technical failure.",
+    "User explicitly authorized GPU sharing and at most four MoPC processes per GPU; all observed GPU processes are conservatively counted toward that cap."
+  ],
+  "registered_at": "2026-11-18T05:56:32+00:00"
+}
