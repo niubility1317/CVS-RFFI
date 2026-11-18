@@ -13,6 +13,8 @@
 
 2026-11-18 06:30 UTC 读回：新调度器 PID 809208，实际 CWD 为预登记 release；六种方法、三个模型种子共 18 项真实源 checkpoint 无 query smoke 全部通过。状态 `WAITING_PREDECESSOR`，pending 1128、active 0、completed 0、scored 0，等待 clean pilot 完成独立评分；当前尚未产生 clean 预测。
 
+结束后核实 `COMPLETED_WITH_QUARANTINE`：1128 项完整队列中 1062 项独立评分、66 项因作者 drop-last 原型提取遗漏类别隔离；clean pilot 另 6 项均已评分。合计 1068/1134 个任务、4272/4536 个 K/N 格评分，缺项保留且不按零分计算。评分汇总与 PAMF 同 split 配对结果见本机 `E:/type10-7/local_artifacts/phase2_author_comparison_summary_20261118.json`。
+
 MoPC 固定作者仓库 `ae6554316ad1a2175920e330133a2f103408bf78` 的项目 IQ/骨干与固定 RNG 移植版本，使用 shuffle/drop-last、无梯度裁剪。复用合法的源 checkpoint；MRIOR、Two-stage 的 B 阶段使用用户授权的 L_s 源缓存，Tweak 源注册特征包含于 checkpoint。每项预测固定后自动独立 truth-last 评分；每卡 MoPC 进程最多 4 个，派发前空余至少 6000 MiB。数值非有限或采样缺类的任务隔离并保留产物。
 
 ## 数据、seed与模型来源

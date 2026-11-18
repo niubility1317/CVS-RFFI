@@ -34,4 +34,6 @@ User-directed increase of R42 process concurrency across GPUs, leaving GPU7 unch
 
 VERIFIED MIX_ONLY：672/672 单元、139776 行预测冻结后独立评分完成。自然 query 同输入平均配对收益 S0Q0/S0Q1/S1Q0 均为16/16格≥5pp；S1Q1为12/16，K=1的四格未达标。共同query口径分别同为16、16、16、12格。逐单元258048条比较与384组汇总逐组核对通过；仅DURA、融合及单元达标数见 [完整对比报告](results_mix_kn/report.md)。单场景按用户要求暂停，不计为已完成。
 
+2026-11-18 重新逐项只读核实三模型种子、三池、MIX01–MIX08、七接收机的 504 个任务：A0、B 各 4 个 K，C 阶段 K=1/5/10/20 × N=2/5/10/20，raw/raw 与恢复/恢复两条路径，每配置各 504 项独立评分，合计 24192 行；数据及 score 身份、冻结预测和 truth-last 状态核对通过。先前报告只导出 K=5/10、N=5/10 四格属于报告遗漏，非实验未运行；本次复用既有评分，没有重新运行或读取 query 真值。更新后的折线及逐行汇总在本机 `E:/type10-7/local_artifacts/phase2_clean_satellite_bar_diagnosis_20261117.html`，目标测试此前已暴露，不作为独立盲测。
+
 资源profile按固定P01/MIX01/1-1/seed1/K5N20实测，GPU0采样孤立；profile查询核为CPU参考实现，不能冒充r07 CUDA实际预测延迟。MACs/FLOPs/能耗未测。MoPC及九原生独立评分已完成，但本报告仅R42与LocalRidge匹配对照。

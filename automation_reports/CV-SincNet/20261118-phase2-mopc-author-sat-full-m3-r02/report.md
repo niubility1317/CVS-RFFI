@@ -17,6 +17,8 @@
 
 2026-11-18 06:18 UTC 期间独立读回：调度器持续运行，534 项预测完成、183 项评分完成、543 项待派发、22 项运行、35 项隔离，另有评分队列；该快照不包含已独立完成的 pilot 六项。已核实部分隔离是作者 drop-last 采样遗漏类别；Tweak M1→MoPC 的 P01/MIX01/2-1、seed 2026092701 则出现真实非有限 loss、cross entropy 及梯度，保留原始部分产物，不将它等同于有限梯度范数波动。隔离项不是完成的预测，未声明根因或修复；其他合法任务继续、评分逐项接续。
 
+结束后核实 `COMPLETED_WITH_QUARANTINE`：1134 个完整队列任务中 1022 项独立评分、112 项隔离；前置 pilot 六个 K5/N5 格另已评分，与对应完整队列任务的其余 K/N 格互补。112 项包括 65 个作者 drop-last 原型提取遗漏类别和 47 个真实非有限，后者全部为 Tweak M1→MoPC。pilot 与完整队列合计 4088/4536 个 K/N 格已评分；不将隔离或 partial 计为完成。逐方法/任务、干净及星地配对汇总见本机 `E:/type10-7/local_artifacts/phase2_author_comparison_summary_20261118.json`；结果尚不具完整矩阵证据。
+
 ## 数据、seed与模型来源
 
 实际数据契约、权限例外、完整seed角色、checkpoint来源和选择规则见experiment.json。

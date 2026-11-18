@@ -1,2 +1,3 @@
 {"at": "2026-11-18T06:28:39+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-18T06:30:33+00:00", "status": "QUEUED", "note": "PID 809208, source-only smoke 18 of 18 pass; waits for six scored clean pilot tasks; 1128 pending, no active prediction workers", "evidence": ["/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-clean-full-mix3-m3-r02/scheduler/state.json"], "row_id": null}
+{"at": "2026-11-18T09:56:20+00:00", "status": "PARTIAL", "note": "Queue drained: 1062 scored, 66 sampling omissions quarantined; six pilot tasks scored; 4272 of 4536 cells complete", "evidence": ["E:/type10-7/local_artifacts/phase2_author_report_evidence_20261118.json"], "row_id": null}
