@@ -1,6 +1,8 @@
+import numpy as np
 import torch
 
 from experiments.pamf_repl_loss_dose import plan
+from experiments.pamf_repl_loss_dose.analyze import contrasts, effect_counts
 from experiments.pamf_repl_loss_dose.objective import apply_doses
 
 
@@ -22,3 +24,15 @@ def test_full_factorial_and_unique_paths():
         candidates = [r for r in plan.RECIPES.values() if r['setting'] == setting]
         assert {(r['auxiliary_dose'], r['ce_dose']) for r in candidates} == {
             (a, ce) for a in (0., 1.) for ce in (0., .25, .5, 1.)}
+
+
+def test_factorial_interaction_uses_paired_correctness():
+    correctness = {
+        (1., .5): np.array([True, False, True]),
+        (1., 1.): np.array([False, True, True]),
+        (0., .5): np.array([False, True, True]),
+        (0., 1.): np.array([True, False, True]),
+    }
+    assert effect_counts(correctness, contrasts()['interaction_ce_0.5_vs_1']) == {
+        -2: 1, 0: 1, 2: 1,
+    }
