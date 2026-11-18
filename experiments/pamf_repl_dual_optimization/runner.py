@@ -8,7 +8,7 @@ from experiments.pamf_repl_priority import runner as priority
 from experiments.pamf_repl_uaux_soft.objective import installed
 from . import plan
 
-def dispatch(rt):
+def dispatch(rt, *, worker_module='experiments.pamf_repl_dual_optimization.runner'):
     from experiments.pamf_branch_training import runner as queue, prepare as preparation
     from experiments.pamf_physics_branch.runner import admits as physical_admits
     from experiments.pamf_physics_route.runner import launch
@@ -16,7 +16,7 @@ def dispatch(rt):
         return physical_admits(gpu, active, max(mib, 12288), max_total=5)
     old = preparation.prepare, queue.admits, queue.launch, queue.analyze
     preparation.prepare, queue.admits = scored.prepare, admits
-    queue.launch = partial(launch, module='experiments.pamf_repl_dual_optimization.runner')
+    queue.launch = partial(launch, module=worker_module)
     queue.analyze = base.analyze
     try:
         return queue.dispatch(dict(rt, prioritize_prediction=True))

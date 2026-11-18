@@ -5,17 +5,18 @@ from experiments.pamf_branch_training import publish as base
 from experiments.pamf_repl_attribution_factorial import publish as previous
 from .plan import RUN
 
-def publish(repo, output, context, ssh_config):
+def publish(repo, output, context, ssh_config, *, run_id=RUN,
+            package='experiments.pamf_repl_dual_optimization'):
     old_run, old_remote = previous.RUN, base.REMOTE
     original = base.publish
     def submit(*args, **kwargs):
         base.REMOTE = base.REMOTE.replace("rt['allowed_gpus']=[2,3]", "rt['allowed_gpus']=[0,1,2,3,4,5,6,7]")
         base.REMOTE = base.REMOTE.replace('experiments.pamf_repl_attribution_factorial.runner',
-                                           'experiments.pamf_repl_dual_optimization.runner')
+                                           package + '.runner')
         base.REMOTE = base.REMOTE.replace("str(release/'experiments/pamf_repl_attribution_factorial')",
-                                           "str(release/'experiments/pamf_repl_dual_optimization')")
+                                           f"str(release/'{package.replace('.', '/')}')")
         return original(*args, **kwargs)
-    previous.RUN = RUN
+    previous.RUN = run_id
     try:
         with patch.object(base, 'publish', submit):
             return previous.publish(repo, output, context, ssh_config)
