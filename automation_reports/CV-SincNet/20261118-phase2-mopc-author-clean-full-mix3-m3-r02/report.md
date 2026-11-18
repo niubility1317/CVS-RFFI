@@ -11,6 +11,8 @@
 
 用户于 2026-11-18 将 clean 与星地对照均限定为 MIX01–MIX03。该队列共 1128 项，继承现有 clean pilot 的 6 项，合计 1134 项、4536 个 K/N 格；pilot 尚在等待星地队列并未生成预测。原 clean full r01 停止时无 worker、无预测及无评分，不重新派发其 MIX04–MIX08。原星地队列已经限定 MIX01–MIX03，继续运行。
 
+2026-11-18 06:30 UTC 读回：新调度器 PID 809208，实际 CWD 为预登记 release；六种方法、三个模型种子共 18 项真实源 checkpoint 无 query smoke 全部通过。状态 `WAITING_PREDECESSOR`，pending 1128、active 0、completed 0、scored 0，等待 clean pilot 完成独立评分；当前尚未产生 clean 预测。
+
 MoPC 固定作者仓库 `ae6554316ad1a2175920e330133a2f103408bf78` 的项目 IQ/骨干与固定 RNG 移植版本，使用 shuffle/drop-last、无梯度裁剪。复用合法的源 checkpoint；MRIOR、Two-stage 的 B 阶段使用用户授权的 L_s 源缓存，Tweak 源注册特征包含于 checkpoint。每项预测固定后自动独立 truth-last 评分；每卡 MoPC 进程最多 4 个，派发前空余至少 6000 MiB。数值非有限或采样缺类的任务隔离并保留产物。
 
 ## 数据、seed与模型来源
