@@ -182,6 +182,8 @@ def make_anchor(model: AdaptedClassifier, old_x: torch.Tensor, old_y: torch.Tens
     return RegistrationState(method, copied, ids, count, prototypes=prototypes.detach().clone(),
         protocol_metadata={'phase': 'B', 'query_fitting': False, 'B_state_inherited': True,
             'old_support_k': int(counts[0]), 'old_prototypes': 'B_encoder_old_target_support',
+            'old_prototype_samples': 'all_current_target_old_support_class_means',
+            'old_prototype_initialization_scope': 'project_B_to_C_transplant_not_author_native_B',
             'claim_boundary': 'DA_backbone_with_CIL_core_transplant_not_native_source_architecture'})
 
 

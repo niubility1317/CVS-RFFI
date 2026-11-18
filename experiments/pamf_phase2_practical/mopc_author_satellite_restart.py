@@ -68,6 +68,23 @@ def make_plan(previous, run_root, release_root, profiles=PROFILES, pilot=False):
     return out
 
 
+def require_author_source_prototypes(bundle,seed):
+    metadata=bundle.get('base_metadata') or {}
+    count=metadata.get('source_rows_used',0)
+    require(metadata.get('source_role')=='L_s' and metadata.get('source_sampling')=='author_shuffled_drop_last'
+            and metadata.get('source_sampling_seed')==seed and metadata.get('source_batch_size')==16
+            and type(count) is int and count>0 and count%16==0
+            and count<=metadata.get('source_rows',0), 'MoPC author source prototypes are missing or incompatible')
+
+
+def native_runtime_for_derived_source(previous,source_root,release_root,commit):
+    require(PurePosixPath(source_root).is_absolute() and PurePosixPath(release_root).is_absolute() and commit,
+            'Invalid derived source runtime')
+    runtime=dict(previous)
+    runtime.update(run_root=source_root,release_root=release_root,code_commit=commit)
+    return runtime
+
+
 def source_only_smoke(config):
     """Check real frozen checkpoints before target workers exist; no query access."""
     import gc
@@ -88,6 +105,7 @@ def source_only_smoke(config):
             source_rt=source_scope(rt)
             if profile!='mopc_hr':source_rt['run_root']=rt['source_run_root']
             bundle=load_source(source_rt,profile,seed,'cpu')
+            if profile=='mopc_hr':require_author_source_prototypes(bundle,seed)
         check(rt,bundle)
         print('AUTHOR_MOPC_SOURCE_SMOKE_PASS',profile,seed,flush=True)
         del bundle
@@ -102,8 +120,17 @@ def main():
     parser.add_argument('--output', required=True)
     parser.add_argument('--profile', action='append', choices=PROFILES)
     parser.add_argument('--pilot', action='store_true')
+    parser.add_argument('--native-source-root',required=True)
+    parser.add_argument('--code-commit',required=True)
     args = parser.parse_args()
-    write(args.output, make_plan(read(args.previous), args.run_root, args.release_root, args.profile or PROFILES, args.pilot))
+    previous=read(args.previous)
+    native=native_runtime_for_derived_source(read(previous['runtimes']['mopc_hr']),args.native_source_root,
+                                              args.release_root,args.code_commit)
+    native_path=Path(args.output).parent/'mopc_hr-runtime.json'
+    require(not Path(args.output).exists() and not native_path.exists(),'Preparation already exists')
+    write(native_path,native)
+    previous=dict(previous,runtimes=dict(previous['runtimes'],mopc_hr=str(native_path)))
+    write(args.output, make_plan(previous,args.run_root,args.release_root,args.profile or PROFILES,args.pilot))
 
 
 if __name__ == '__main__':

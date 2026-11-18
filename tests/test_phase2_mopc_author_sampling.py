@@ -68,3 +68,23 @@ def test_scoring_rejects_older_public_code_sampling_when_new_version_is_required
         require_author_sampling(row)
     row['resources']['C_protocol']['mopc_sampling_version']='author_drop_last_v1'
     require_author_sampling(row)
+
+
+def test_source_prototypes_use_seeded_shuffled_complete_batches(monkeypatch):
+    from experiments.pamf_phase2_practical import group1_source
+    class Model:
+        training=False
+        out_dim=2
+    x=torch.arange(60,dtype=torch.float32).reshape(30,2)
+    y=torch.arange(6).repeat_interleave(5)
+    seen=[]
+    def extract(model,method,values,device,batch=128):
+        seen.append(values.clone())
+        assert batch==16
+        return values
+    monkeypatch.setattr(group1_source,'extract',extract)
+    metadata=group1_source.mopc_source_metadata(Model(),x,y,'cpu',seed=0)
+    assert len(seen[0])==16
+    assert metadata['source_rows']==30
+    assert metadata['source_rows_used']==16
+    assert metadata['source_sampling']=='author_shuffled_drop_last'

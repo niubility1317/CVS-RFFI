@@ -119,17 +119,26 @@ def extract(model,method,x,device,batch=128):
 
 
 @torch.no_grad()
-def mopc_source_metadata(model,x,y,device):
+def mopc_source_metadata(model,x,y,device,*,seed=0):
     """Freeze only class aggregates of final-A clean L_s, without U or V."""
     from .mopc_author import architecture_metadata
     from .vendor_native.paper_reproduction.mopc_hr_non_exemplar_cil_sei.algorithm import compute_class_prototypes
     require(not model.training,'MoPC source metadata requires final A in eval mode')
     require(y.unique(sorted=True).tolist()==list(range(6)),'MoPC source L_s must cover old six classes')
-    features=extract(model,'mopc_hr',x,device)
-    prototypes,ids=compute_class_prototypes(features,y.cpu())
+    batch=16
+    kept=len(x)//batch*batch
+    require(kept>0,'MoPC source drop-last loader has no full batch')
+    gen=torch.Generator().manual_seed(int(seed))
+    indices=torch.randperm(len(x),generator=gen)[:kept]
+    selected_y=y.cpu()[indices]
+    require(selected_y.unique(sorted=True).tolist()==list(range(6)),
+            'MoPC source drop-last prototype pass omitted a source class')
+    features=extract(model,'mopc_hr',x[indices],device,batch=batch)
+    prototypes,ids=compute_class_prototypes(features,selected_y)
     require(prototypes.shape==(6,model.out_dim) and bool(torch.isfinite(prototypes).all()),
             'MoPC source prototypes are invalid')
-    return dict(source_role='L_s',source_rows=len(x),source_class_ids=ids.tolist(),
+    return dict(source_role='L_s',source_rows=len(x),source_rows_used=kept,source_sampling='author_shuffled_drop_last',
+        source_sampling_seed=int(seed),source_batch_size=batch,source_class_ids=ids.tolist(),
         computed_after_A_freeze=True,computed_before_target_adaptation=True,
         source_metadata=dict(architecture=architecture_metadata(),input_path='clean_L_s'),
         old_prototypes=prototypes.detach().clone())
@@ -309,7 +318,7 @@ def _train_native(c,profile,seed,out,device):
         if method=='lora_triplet_knn':native=dict(source_enrollment_features=extract(model,method,x,device),source_enrollment_y=y)
         if method=='issl_author_behavior':native=dict(source_replay_x=x,source_replay_y=y)
         registration={}
-        if method=='mopc_hr':registration['base_metadata']=mopc_source_metadata(model,x,y,device)
+        if method=='mopc_hr':registration['base_metadata']=mopc_source_metadata(model,x,y,device,seed=seed)
         torch.save(dict(schema='group1_A_v1',model=model.state_dict(),method=method,profile=profile,
             seed=seed,recipe=spec,source_contract=read(c['source_contract']),native_state=native,
             ancestors=[],initialization='scratch',target_contact=False,**registration),out/'source.pt')
