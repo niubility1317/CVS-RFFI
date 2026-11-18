@@ -1,0 +1,430 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261118-phase2-mopc-author-clean-pilot-m3-r01",
+  "group_id": "phase2-mopc-author-clean",
+  "display_name": "MoPC 作者仓库版 clean 对照 pilot",
+  "description": "三池、MIX01–MIX08、七接收机、三模型种子；K5/10 × N5/10；clean support 和 clean query。",
+  "kind": "comparison",
+  "stage": "Phase2",
+  "aliases": [],
+  "tags": [
+    "mopc",
+    "author-code",
+    "clean",
+    "pilot"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261114-phase2-mopc-public-clean-full-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求指定对话中的作者仓库行为版重跑；2026-11-18 明确允许对比方法使用源域训练缓存并要求报告。",
+  "code": {
+    "commit": "9a81c1ebb501b808783dadd2c63cbacb9c4bf2ae",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261118-phase2-mopc-author-clean-m3-r01-release",
+    "environment": "N607 CVS-RFFI conda Python; FP32, TF32 off",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261118-phase2-mopc-author-clean-m3-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig three-pool received IQ",
+    "version": "20261029-phase2-threepool-episodes-s2026102901-r01",
+    "representation": "paired clean ground IQ 2x256",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:p2_min_v1",
+    "physical_ids_ref": "per-task clean-paired capsule physical IDs",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/capsules/P01/MIX01/1-1/manifest.json",
+    "source_receivers": [],
+    "target_receivers": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": null,
+      "U_s": null,
+      "V": null
+    },
+    "train_ratio": null,
+    "capsule_id": "per-task capsule manifest",
+    "split_id": "per-task validated split",
+    "validation_ref": "VALIDATED_ONCE",
+    "support_query_ref": "K5/10 × N5/10; per-split physical ID separation",
+    "leo_config_ref": "none: paired clean IQ"
+  },
+  "permissions": {
+    "regime": "Phase2 paired clean support/query; comparison source cache authorized",
+    "query_use": "fixed per-record prediction; independent truth-last scorer",
+    "external_method_exception": "MRIOR and Two-stage use L_s source replay during B; Tweak source feature enrollment is checkpoint-contained",
+    "claim_scope": "author-repository behavior adapted to IQ/backbone, not unmodified author script"
+  },
+  "checkpoint": {
+    "initialization": "frozen Phase2 source checkpoint per method and model seed",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-source-prototypes-m3-r01/source/mopc_hr-s<seed>/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/<profile>-s<seed>/source.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-external-threepool-m4-r01/source/tweak_m1-s<seed>/source.pt"
+    ],
+    "contract_check_ref": "group1_source.load_source / external_additional.load_source",
+    "provenance_verdict": "checkpoint contract and no-target provenance enforced on load",
+    "selection_rule": "previously fixed source checkpoint; no target selection"
+  },
+  "execution": {
+    "host": "N607 ordinary user",
+    "launch_owner": "single mopc_clean_author dispatcher",
+    "gpu_policy": "GPUs 0–7; explicit sharing allowed; conservatively count all observed GPU processes against cap 4; >=6000 MiB free, 3000 MiB reservation per process; do not stop other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-clean-pilot-m3-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts",
+    "launch_command": "python -m experiments.pamf_phase2_practical.mopc_clean_author dispatch --config /home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler.json",
+    "stop_rule": "Nonfinite or author sampling missing-class tasks retained and quarantined; systemic technical failure drains; low accuracy does not stop."
+  },
+  "expected_artifacts": [
+    "source-only no-query smoke",
+    "per-task fixed prediction indices",
+    "independent per-task truth-last scores",
+    "scheduler state",
+    "per-row resources"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "old accuracy",
+      "new accuracy",
+      "macro H",
+      "macro F1",
+      "floor"
+    ],
+    "dimensions": [
+      "method",
+      "receiver",
+      "scenario",
+      "K",
+      "N",
+      "model seed"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-clean-pilot-m3-r01/predictions",
+    "scorer_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-clean-pilot-m3-r01/scores"
+  },
+  "rows": [
+    {
+      "row_id": "native-mopc_hr-s2026092701-capsules-P01-MIX01-1-1",
+      "method": "mopc_hr to author MoPC",
+      "purpose": "fixed paired clean comparison",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler.json",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/1-1",
+        "points": [
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ]
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Split and support seed are fixed in each validated capsule/split; C seed is derived from model seed, capsule, K and N; no independent evaluation or augmentation seed.",
+      "k": null,
+      "scenario": "MIX01",
+      "optimizer": "MoPC SGD momentum 0.9 weight decay 0.0002",
+      "lr": 0.01,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "batch16 shuffle/drop-last; stage size5",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-clean-pilot-m3-r01/predictions/native-mopc_hr-s2026092701-capsules-P01-MIX01-1-1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler/logs/native-mopc_hr-s2026092701-capsules-P01-MIX01-1-1.log",
+      "command": "python -m experiments.pamf_phase2_practical.mopc_clean_author dispatch --config /home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler.json",
+      "expected_artifacts": [
+        "fixed predictions",
+        "independent score"
+      ]
+    },
+    {
+      "row_id": "hybrid-protonet_cda-s2026092701-capsules-P01-MIX01-1-1",
+      "method": "protonet_cda to author MoPC",
+      "purpose": "fixed paired clean comparison",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler.json",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/1-1",
+        "points": [
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ]
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Split and support seed are fixed in each validated capsule/split; C seed is derived from model seed, capsule, K and N; no independent evaluation or augmentation seed.",
+      "k": null,
+      "scenario": "MIX01",
+      "optimizer": "MoPC SGD momentum 0.9 weight decay 0.0002",
+      "lr": 0.01,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "batch16 shuffle/drop-last; stage size5",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-clean-pilot-m3-r01/predictions/hybrid-protonet_cda-s2026092701-capsules-P01-MIX01-1-1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler/logs/hybrid-protonet_cda-s2026092701-capsules-P01-MIX01-1-1.log",
+      "command": "python -m experiments.pamf_phase2_practical.mopc_clean_author dispatch --config /home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler.json",
+      "expected_artifacts": [
+        "fixed predictions",
+        "independent score"
+      ]
+    },
+    {
+      "row_id": "hybrid-mrior_sda-s2026092701-capsules-P01-MIX01-1-1",
+      "method": "mrior_sda to author MoPC",
+      "purpose": "fixed paired clean comparison",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler.json",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/1-1",
+        "points": [
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ]
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Split and support seed are fixed in each validated capsule/split; C seed is derived from model seed, capsule, K and N; no independent evaluation or augmentation seed.",
+      "k": null,
+      "scenario": "MIX01",
+      "optimizer": "MoPC SGD momentum 0.9 weight decay 0.0002",
+      "lr": 0.01,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "batch16 shuffle/drop-last; stage size5",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-clean-pilot-m3-r01/predictions/hybrid-mrior_sda-s2026092701-capsules-P01-MIX01-1-1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler/logs/hybrid-mrior_sda-s2026092701-capsules-P01-MIX01-1-1.log",
+      "command": "python -m experiments.pamf_phase2_practical.mopc_clean_author dispatch --config /home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler.json",
+      "expected_artifacts": [
+        "fixed predictions",
+        "independent score"
+      ]
+    },
+    {
+      "row_id": "hybrid-twostage-s2026092701-capsules-P01-MIX01-1-1",
+      "method": "twostage to author MoPC",
+      "purpose": "fixed paired clean comparison",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler.json",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/1-1",
+        "points": [
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ]
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Split and support seed are fixed in each validated capsule/split; C seed is derived from model seed, capsule, K and N; no independent evaluation or augmentation seed.",
+      "k": null,
+      "scenario": "MIX01",
+      "optimizer": "MoPC SGD momentum 0.9 weight decay 0.0002",
+      "lr": 0.01,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "batch16 shuffle/drop-last; stage size5",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-clean-pilot-m3-r01/predictions/hybrid-twostage-s2026092701-capsules-P01-MIX01-1-1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler/logs/hybrid-twostage-s2026092701-capsules-P01-MIX01-1-1.log",
+      "command": "python -m experiments.pamf_phase2_practical.mopc_clean_author dispatch --config /home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler.json",
+      "expected_artifacts": [
+        "fixed predictions",
+        "independent score"
+      ]
+    },
+    {
+      "row_id": "hybrid-poster_ft-s2026092701-capsules-P01-MIX01-1-1",
+      "method": "poster_ft to author MoPC",
+      "purpose": "fixed paired clean comparison",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler.json",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/1-1",
+        "points": [
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ]
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Split and support seed are fixed in each validated capsule/split; C seed is derived from model seed, capsule, K and N; no independent evaluation or augmentation seed.",
+      "k": null,
+      "scenario": "MIX01",
+      "optimizer": "MoPC SGD momentum 0.9 weight decay 0.0002",
+      "lr": 0.01,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "batch16 shuffle/drop-last; stage size5",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-clean-pilot-m3-r01/predictions/hybrid-poster_ft-s2026092701-capsules-P01-MIX01-1-1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler/logs/hybrid-poster_ft-s2026092701-capsules-P01-MIX01-1-1.log",
+      "command": "python -m experiments.pamf_phase2_practical.mopc_clean_author dispatch --config /home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler.json",
+      "expected_artifacts": [
+        "fixed predictions",
+        "independent score"
+      ]
+    },
+    {
+      "row_id": "hybrid-tweak_m1-s2026092701-capsules-P01-MIX01-1-1",
+      "method": "tweak_m1 to author MoPC",
+      "purpose": "fixed paired clean comparison",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler.json",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/1-1",
+        "points": [
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            10,
+            10
+          ]
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Split and support seed are fixed in each validated capsule/split; C seed is derived from model seed, capsule, K and N; no independent evaluation or augmentation seed.",
+      "k": null,
+      "scenario": "MIX01",
+      "optimizer": "MoPC SGD momentum 0.9 weight decay 0.0002",
+      "lr": 0.01,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "batch16 shuffle/drop-last; stage size5",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-clean-pilot-m3-r01/predictions/hybrid-tweak_m1-s2026092701-capsules-P01-MIX01-1-1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler/logs/hybrid-tweak_m1-s2026092701-capsules-P01-MIX01-1-1.log",
+      "command": "python -m experiments.pamf_phase2_practical.mopc_clean_author dispatch --config /home/szu2070436088/2510044040/CV-SincNet/preparations/20261118-phase2-mopc-author-clean-pilot-m3-r01/scheduler.json",
+      "expected_artifacts": [
+        "fixed predictions",
+        "independent score"
+      ]
+    }
+  ],
+  "notes": [
+    "Author repository ae6554316ad1a2175920e330133a2f103408bf78 behavior with IQ/backbone and seeded RNG adaptations; shuffle/drop-last; no gradient clipping.",
+    "Clean paired physical samples replace satellite IQ for support and query. User allows source training cache; MRIOR and Two-stage use L_s replay; Tweak checkpoint includes source enrollment features.",
+    "Pilot has six full four-point tasks; remaining has 3018 non-overlapping tasks. Clean pilot waits until the satellite full owner drains; clean full waits for six scored pilot tasks.",
+    "Old clean MoPC predictions used earlier sampling semantics and are not reused or mixed into the author-version table. Old B states need independent compatibility evidence before reuse.",
+    "B-to-C bridge uses current target old-support means and is a project adaptation. The target set is not an independent blind holdout.",
+    "At most four MoPC processes per GPU, conservatively counting all observed GPU processes; >=6000 MiB free; no other owner is stopped."
+  ],
+  "registered_at": "2026-11-18T06:15:43+00:00"
+}
