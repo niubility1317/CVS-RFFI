@@ -1,6 +1,6 @@
 # 定向 KL 源验证显存故障恢复
 
-**VERIFIED / RUNNING**（2026-11-19 00:59 香港时间核实）。复用 [r01](../20261118-phase1-pamf-repl-anchorkl-clean-m28-r01/report.md) 原 28 行配置、数据、种子、E20 起点、E50 日程、clean 与离线 U 评分边界。逐行登记见 [experiment.json](experiment.json)。
+**VERIFIED / ANALYZED**（2026-11-19 03:53 香港时间核实）。17 个原 E50 复用、11 个补训和 28 条预测、clean 评分及 U 诊断全部完成，r02 的 95 项任务失败 0。复用 [r01](../20261118-phase1-pamf-repl-anchorkl-clean-m28-r01/report.md) 原 28 行配置、数据、种子、E20 起点、E50 日程、clean 与离线 U 评分边界。见 [分析](analysis.md) 和 [逐行登记](experiment.json)。
 
 r01 的两条 CUDA OOM 都发生于六源源验证几何分支。报错分配 468 MiB 时，同卡另外两条各使用约 8.03 GiB，剩余仅 338–391 MiB。恢复从三路实际并发回退至已在同数据成功运行的每卡最多两个总计算进程（含其他 owner），继续只用 GPU 0–6。使用 12 GiB 放行保留值和真实 E20 冒烟数据。该改动仅影响调度。
 
