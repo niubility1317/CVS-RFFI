@@ -156,12 +156,13 @@ def _classes(values: Sequence[int]) -> tuple[int, ...]:
     return result
 
 
-def _batches(rows: int, epochs: int, batch_size: int, device: torch.device, seed: int):
+def _batches(rows: int, epochs: int, batch_size: int, device: torch.device, seed: int, *, drop_last: bool = False):
     generator = torch.Generator(device=device).manual_seed(int(seed))
     iteration = 0
     for epoch in range(1, epochs + 1):
         order = torch.randperm(rows, generator=generator, device=device)
-        for start in range(0, rows, batch_size):
+        limit = rows - rows % batch_size if drop_last else rows
+        for start in range(0, limit, batch_size):
             iteration += 1
             yield epoch, iteration, order[start:start + batch_size]
 
@@ -189,6 +190,10 @@ def _bytes(model: nn.Module, extra: Any = None) -> int:
 
 class MoPCNumericalError(FloatingPointError):
     """A genuine nonfinite MoPC training term, eligible for task isolation."""
+
+
+class MoPCSamplingError(ValueError):
+    """The author's drop-last sampling omitted a class or every support batch."""
 
 
 def _record(trace: list[dict[str, Any]], model: nn.Module, terms: Mapping[str, Any],
@@ -586,8 +591,10 @@ def _mopc_register(state: RegistrationState, x: torch.Tensor, y: torch.Tensor,
         model.train()
         optimizer = torch.optim.SGD(model.parameters(), lr=cfg.mopc_lr,
                                     momentum=cfg.mopc_momentum, weight_decay=cfg.mopc_weight_decay)
+        if len(stage_rows) < cfg.mopc_batch_size:
+            raise MoPCSamplingError('MoPC author drop-last loader has no complete support batch')
         for epoch, iteration, rows in _batches(len(stage_rows), cfg.mopc_epochs, cfg.mopc_batch_size,
-                                              x.device, cfg.seed + 100003 * stage_index):
+                                              x.device, cfg.seed + 100003 * stage_index, drop_last=True):
             indices = stage_rows[rows]
             optimizer.zero_grad(set_to_none=True)
             logits = _logits(model, "mopc_hr", x[indices])[:, :end]
@@ -608,10 +615,20 @@ def _mopc_register(state: RegistrationState, x: torch.Tensor, y: torch.Tensor,
                 iteration=iteration, learning_rate=cfg.mopc_lr, beta=cfg.mopc_beta,
                 lambda_max=cfg.mopc_lambda_max, registered_count=end)
             optimizer.step()
-        previous_z = _features(reference, "mopc_hr", x[stage_rows], cfg.extraction_batch_size)
-        current_z = _features(model, "mopc_hr", x[stage_rows], cfg.extraction_batch_size)
-        previous_new, _ = compute_class_prototypes(previous_z, y[stage_rows])
-        current_new, _ = compute_class_prototypes(current_z, y[stage_rows])
+        # The author's loader is independently shuffled for both prototype
+        # passes and excludes each pass's incomplete final batch.
+        proto_gen = torch.Generator(device=x.device).manual_seed(cfg.seed + 200003 * stage_index)
+        kept = len(stage_rows) // cfg.mopc_batch_size * cfg.mopc_batch_size
+        before_rows = stage_rows[torch.randperm(len(stage_rows), generator=proto_gen, device=x.device)[:kept]]
+        after_rows = stage_rows[torch.randperm(len(stage_rows), generator=proto_gen, device=x.device)[:kept]]
+        expected = torch.arange(begin, end, device=y.device)
+        if not torch.equal(torch.unique(y[before_rows], sorted=True), expected) or not torch.equal(
+                torch.unique(y[after_rows], sorted=True), expected):
+            raise MoPCSamplingError('MoPC author drop-last prototype pass omitted a registered class')
+        previous_z = _features(reference, "mopc_hr", x[before_rows], cfg.mopc_batch_size)
+        current_z = _features(model, "mopc_hr", x[after_rows], cfg.mopc_batch_size)
+        previous_new, _ = compute_class_prototypes(previous_z, y[before_rows])
+        current_new, _ = compute_class_prototypes(current_z, y[after_rows])
         historical = torch.cat([correct_old_prototypes(historical, previous_new, current_new,
                                    alpha=cfg.mopc_alpha, similarity_mode=_mopc_similarity(cfg)), current_new])
         stages.append({"new_count": end - begin, "registered_count": end,
@@ -626,7 +643,10 @@ def _mopc_register(state: RegistrationState, x: torch.Tensor, y: torch.Tensor,
         claim_note="stage_size_5_ordered_arrival_matched_extension; final_prototype_correction_not_classifier_replacement")
     state.protocol_metadata.update(prototype_correction="raw_dot_softmax",
         hierarchical_regularization="unsquared_layer_L2", prototype_CE_temperature=2.0,
-        computed_but_unoptimized_KD=True)
+        computed_but_unoptimized_KD=True, train_loader_drop_last=True,
+        prototype_loader="independent_shuffled_drop_last_passes", rng="project_seeded_torch",
+        mopc_sampling_version="author_drop_last_v1")
+    state.resource["mopc_sampling_version"] = "author_drop_last_v1"
 
 
 def _orthogonal_register(state: RegistrationState, x: torch.Tensor, y: torch.Tensor,

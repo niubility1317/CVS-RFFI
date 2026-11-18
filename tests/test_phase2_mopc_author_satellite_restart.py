@@ -1,4 +1,5 @@
 import copy
+import json
 
 import pytest
 
@@ -50,3 +51,36 @@ def test_rejects_extra_a0_or_clipping():
     with pytest.raises(ValueError):validate_scope(job)
     job['satellite_a0_ks']=[];job['mopc_stabilization']='clip1000_v1'
     with pytest.raises(ValueError):validate_scope(job)
+
+
+def test_small_author_pilot_keeps_all_six_methods_and_one_fixed_cell():
+    plan=make_plan(predecessor(),'/tmp/new-author-pilot','/tmp/new-release',pilot=True)
+    assert len(plan['jobs'])==6
+    assert {j['profile'] for j in plan['jobs']}==set(PROFILES)
+    assert {j['capsule'] for j in plan['jobs']}=={'capsules/P01/MIX01/1-1'}
+    assert {j['seed'] for j in plan['jobs']}=={2026092701}
+    for job in plan['jobs']:
+        if job['group']=='native':
+            points,a0=validate_scope(job)
+            assert points==[(5,5)] and a0==[]
+        else:
+            assert job['points']==[[5,5]]
+
+
+def test_pilot_hybrid_verifier_accepts_one_k_and_author_sampling(tmp_path):
+    from experiments.pamf_phase2_practical.satellite_mix3 import verify_prediction
+    j=next(j for j in make_plan(predecessor(),'/tmp/new-author-pilot','/tmp/new-release',pilot=True)['jobs']
+           if j['profile']=='mrior_sda')
+    j['output']=str(tmp_path)
+    row=dict(k=5,new_count=5,stage='C',arm='mrior_sda__mopc_hr',input_condition='satellite_received',
+             prediction='p.npz',resources={'C_protocol':{'mopc_version':'public_code_semantics_matched_IQ_extension',
+             'mopc_sampling_version':'author_drop_last_v1','config':{'mopc_max_grad_norm':None}}})
+    (tmp_path/'p.npz').touch();(tmp_path/'B-K5.pt').touch()
+    (tmp_path/'predictions.json').write_text(json.dumps(dict(capsule=j['capsule'],rows=[row])))
+    (tmp_path/'complete.json').write_text(json.dumps(dict(status='PREDICTIONS_COMPLETE',truth_read=False,
+        query_fit=False,profile=j['profile'],model_seed=j['seed'],rows=1)))
+    verify_prediction(j)
+    del row['resources']['C_protocol']['mopc_sampling_version']
+    (tmp_path/'predictions.json').write_text(json.dumps(dict(capsule=j['capsule'],rows=[row])))
+    with pytest.raises(ValueError,match='sampling'):
+        verify_prediction(j)

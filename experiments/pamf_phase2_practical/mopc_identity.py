@@ -1,6 +1,13 @@
 """Keep retired MoPC results out of newly assembled comparisons."""
 
 
+def require_author_sampling(row):
+    resources = row.get('resources') or {}
+    metadata = resources.get('C_protocol') or resources.get('native_resources') or {}
+    if metadata.get('mopc_sampling_version') != 'author_drop_last_v1':
+        raise ValueError('MoPC author sampling version is missing or incompatible')
+
+
 def require_author_mopc_row(row):
     if row.get('stage') != 'C' or 'mopc_hr' not in str(row.get('arm', '')).lower():
         return

@@ -19,10 +19,13 @@ def validate_scope(job):
             parts[2] in EPISODES and parts[3] in RECEIVERS and job.get('seed') in SEEDS and
             job.get('profile') in PROFILES,'Invalid satellite registration identity')
     episode=parts[2];profile=job['profile']
-    if job.get('design')=='mix3_mopc_author_c_only_v1':
+    if job.get('design') in ('mix3_mopc_author_c_only_v1','mix3_mopc_author_pilot_v1'):
         require(profile=='mopc_hr' and episode in ('MIX01','MIX02','MIX03') and
                 job['seed'] in SEEDS[:3], 'Outside author MoPC comparison')
-        points=[(k,n) for k in (5,10) for n in (5,10)]
+        points=[(5,5)] if job['design']=='mix3_mopc_author_pilot_v1' else [(k,n) for k in (5,10) for n in (5,10)]
+        if job['design']=='mix3_mopc_author_pilot_v1':
+            require(job.get('author_pilot') is True and job['capsule']=='capsules/P01/MIX01/1-1' and
+                    job['seed']==2026092701, 'Wrong author pilot')
         require(job.get('satellite_c_points')==[list(p) for p in points] and
                 job.get('satellite_a0_ks')==[] and job.get('mopc_stabilization','none')=='none',
                 'Wrong author MoPC C-only scope')
@@ -61,6 +64,9 @@ def verify_prediction(job):
     expected.update(('C',k,n,'P0',carm) for k,n in points)
     rows=index['rows'];actual=[(v['stage'],v['k'],v['new_count'],v['input_path'],v['arm']) for v in rows]
     for row in rows: require_author_mopc_row(row)
+    if job.get('mopc_sampling_version') == 'author_drop_last_v1':
+        from .mopc_identity import require_author_sampling
+        for row in rows: require_author_sampling(row)
     require(len(actual)==len(set(actual)) and set(actual)==expected and len(rows)==done['rows'] and
             all(v.get('input_condition')=='satellite_received' and (folder/v['prediction']).is_file() for v in rows),
             'Wrong satellite native C rows')
@@ -113,13 +119,13 @@ def make_plan(a0_inventory,runtime_files,run_root,release_root,prior_configs,wai
 
 def run_worker(config,job):
     from .group1_target import predict
-    from .vendor_native.comparison_suite.registration import MoPCNumericalError
+    from .vendor_native.comparison_suite.registration import MoPCNumericalError, MoPCSamplingError
     rt=read(config['runtimes'][job['profile']]);require(not rt.get('clean_root'),'Clean input forbidden')
     validate_scope(job)
     try:predict(rt,job)
-    except MoPCNumericalError as exc:
+    except (MoPCNumericalError, MoPCSamplingError) as exc:
         if job['profile']=='mopc_hr' and Path(job['output']).is_dir():
-            write(Path(job['output'])/'numerical_failure.json',dict(status='MOPC_NUMERICAL_FAILURE',
+            write(Path(job['output'])/'numerical_failure.json',dict(status='MOPC_SAMPLING_FAILURE' if isinstance(exc, MoPCSamplingError) else 'MOPC_NUMERICAL_FAILURE',
                  profile=job['profile'],capsule=job['capsule'],seed=job['seed'],error=str(exc),truth_read=False,query_fit=False))
         raise
 
@@ -140,6 +146,12 @@ def predecessor_done(config):
     return True
 
 
+def require_source_smoke_mode(config):
+    flags=[j.get('source_smoke_in_dispatch') is True for j in config['jobs']]
+    require(not any(flags) or (all(flags) and config.get('author_source_smoke') is True),
+            'Invalid source smoke execution mode')
+
+
 def dispatch(config,config_file):
     from .clean_scheduler import choose
     from .runner import occupancy
@@ -152,7 +164,11 @@ def dispatch(config,config_file):
     elif mode=='satellite_issl':
         from .satellite_issl import verify_prediction as check_prediction
     else:check_prediction=verify_prediction
+    require_source_smoke_mode(config)
     root=Path(config['run_root']);require(not root.exists(),'Existing run root')
+    if config.get('author_source_smoke'):
+        from .mopc_author_satellite_restart import source_only_smoke
+        source_only_smoke(config)
     root.mkdir(parents=True);control=root/'scheduler';control.mkdir();(control/'logs').mkdir()
     write(control/'owner.json',dict(pid=os.getpid(),cwd=str(Path.cwd()),argv=sys.argv))
     pending=list(config['jobs']);active={};queue=[];scorer=None;done=[];scored=[];failed=[];quarantined=[];stopped=False
@@ -165,7 +181,7 @@ def dispatch(config,config_file):
             try:
                 if code==0:check_prediction(job);done.append(key);queue.append(job);continue
                 marker=read(Path(job['output'])/'numerical_failure.json')
-                valid=((job['profile']=='mopc_hr' or job.get('methods')==['mopc_hr']) and marker.get('status')=='MOPC_NUMERICAL_FAILURE' and
+                valid=((job['profile']=='mopc_hr' or job.get('methods')==['mopc_hr']) and marker.get('status') in ('MOPC_NUMERICAL_FAILURE','MOPC_SAMPLING_FAILURE') and
                        all(marker.get(k)==job.get(k) for k in ('profile','capsule','seed')) and
                        marker.get('truth_read') is False and marker.get('query_fit') is False)
                 if valid:quarantined.append(key);continue

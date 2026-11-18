@@ -180,8 +180,8 @@ def predict(rt,job):
     profile,seed=job['profile'],job['seed'];r=row(profile);device='cuda:0'
     bundle=load_source(source_scope(rt),profile,seed,device)
     if rt.get('clean_root') or job.get('satellite_ks') or job.get('satellite_c_points') or job.get('paper_c_points'):
-        from .clean_source_smoke import check
-        check(rt,bundle)
+        from .clean_source_smoke import check_worker
+        check_worker(rt,bundle,job)
     model=bundle['model'];model.eval();before={k:v.detach().clone() for k,v in model.state_dict().items()}
     out=Path(job['output']);out.mkdir(parents=True,exist_ok=False)
     cap=Path(rt['data_root'])/job['capsule'];manifest=read(cap/'manifest.json')

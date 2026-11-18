@@ -18,3 +18,10 @@ def check(rt,bundle):
     batch=1 if bundle.get('profile')=='tweak_m1' else 2
     pred,_=infer(bundle,x,6,batch=batch)
     require(pred.shape==(2,), 'Source-only forward failed')
+
+
+def check_worker(rt,bundle,job):
+    # This run's dispatcher performs source-only smoke before starting any
+    # target worker; target processes then never read the source-IQ cache.
+    if job.get('source_smoke_in_dispatch') is not True:
+        check(rt,bundle)

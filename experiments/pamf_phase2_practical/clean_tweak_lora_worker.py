@@ -6,7 +6,7 @@ import numpy as np
 import torch
 
 from . import external_additional as extra
-from .clean_source_smoke import check
+from .clean_source_smoke import check_worker
 from .episodic_experiment import split_rows
 from .episodic_io import load_task
 from .external_execution import seed_for,source_runtime,plain
@@ -26,7 +26,7 @@ def run(rt,job):
     points=sorted(set(tuple(map(int,p)) for p in job['points']))
     require(points and all(k in (1,5,10,20) and n in (2,5,10,20) for k,n in points),'Wrong workpoints')
     activate(rt);torch.set_num_threads(1);torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False
-    bundle=extra.load_source(source_runtime(rt),'tweak_m1',job['seed'],'cuda:0');check(rt,bundle)
+    bundle=extra.load_source(source_runtime(rt),'tweak_m1',job['seed'],'cuda:0');check_worker(rt,bundle,job)
     model=bundle['model'];before={k:v.detach().clone() for k,v in model.state_dict().items()};device=next(model.parameters()).device
     cap=Path(rt['data_root'])/job['capsule'];manifest=read(cap/'manifest.json')
     specs={(s['k'],s['new_count']):s for s in (read(p) for p in (cap/'splits').glob('*.json'))}

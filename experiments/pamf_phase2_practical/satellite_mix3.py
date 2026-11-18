@@ -101,13 +101,20 @@ def verify_prediction(job):
                 and done.get('model_seed') == job['seed'] and idx.get('capsule') == job['capsule'],
                 'Invalid hybrid completion')
         arm = method_arm(job['profile'], 'mopc_hr', job.get('mopc_bridge','original'), 'none')
-        expected = {(k,n,arm) for k,n in POINTS}
+        points=job.get('points',POINTS) if job.get('author_pilot') is True else POINTS
+        if job.get('author_pilot') is True:
+            require(points==[[5,5]] and job['capsule']=='capsules/P01/MIX01/1-1' and job['seed']==2026092701,
+                    'Wrong author pilot')
+        expected = {(k,n,arm) for k,n in points}
         rows = idx['rows']; actual = [(r['k'],r['new_count'],r['arm']) for r in rows]
         for row in rows: require_author_mopc_row(row)
+        if job.get('mopc_sampling_version') == 'author_drop_last_v1':
+            from .mopc_identity import require_author_sampling
+            for row in rows: require_author_sampling(row)
         require(len(rows) == len(expected) == done['rows'] and set(actual) == expected
                 and all(r['stage']=='C' and r.get('input_condition')=='satellite_received'
                         and (folder/r['prediction']).is_file() for r in rows)
-                and all((folder/f'B-K{k}.pt').is_file() for k in (5,10)), 'Invalid hybrid rows or B states')
+                and all((folder/f'B-K{k}.pt').is_file() for k in {p[0] for p in points}), 'Invalid hybrid rows or B states')
         if job['profile']=='tweak_m1':
             require(all(r.get('query_records_per_decision')==1 for r in rows), 'Tweak query not single-record')
         return
@@ -115,7 +122,7 @@ def verify_prediction(job):
 
 
 def run_worker(config, job):
-    from .vendor_native.comparison_suite.registration import MoPCNumericalError
+    from .vendor_native.comparison_suite.registration import MoPCNumericalError, MoPCSamplingError
     group = job['group']; rt = read(config['runtimes']['hybrid' if group in ('hybrid','tweak') else
                                        job['profile'] if group=='native' else 'da'])
     require(not rt.get('clean_root') and rt['input_condition']=='satellite_received', 'Wrong input')
@@ -135,11 +142,13 @@ def run_worker(config, job):
         else:
             from .group2_worker import predict
             predict(rt, job)
-    except MoPCNumericalError as exc:
+    except (MoPCNumericalError, MoPCSamplingError) as exc:
         if (job['profile']=='mopc_hr' or job.get('methods')==['mopc_hr']) and Path(job['output']).is_dir():
-            write(Path(job['output'])/'numerical_failure.json', dict(status='MOPC_NUMERICAL_FAILURE',
-                  profile=job['profile'], capsule=job['capsule'], seed=job['seed'], error=str(exc),
-                  truth_read=False, query_fit=False))
+            marker=Path(job['output'])/'numerical_failure.json'
+            if not marker.exists():
+                write(marker, dict(status='MOPC_SAMPLING_FAILURE' if isinstance(exc, MoPCSamplingError) else 'MOPC_NUMERICAL_FAILURE',
+                      profile=job['profile'], capsule=job['capsule'], seed=job['seed'], error=str(exc),
+                      truth_read=False, query_fit=False))
         raise
 
 
