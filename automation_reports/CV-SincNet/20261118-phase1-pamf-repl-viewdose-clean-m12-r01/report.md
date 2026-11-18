@@ -1,6 +1,8 @@
 # 等剂量基础 CE 与 KL 视图归因
 
-**VERIFIED / RUNNING**（2026-11-18 14:54 香港时间）。逐行配置与路径见 [experiment.json](experiment.json)。
+**VERIFIED / ANALYZED**（2026-11-18 18:24 香港时间核实）。48 项训练、预测、独立 clean 评分和冻结后 U 评分已完成，失败 0。逐行配置与路径见 [experiment.json](experiment.json)，逐物理样本结果和诊断见 [analysis.md](analysis.md)。
+
+六源仅原始视图 KL 达到 86.3819%，比匹配剂量对照高 0.0382 个百分点、比同种子普通 PL 低 0.0465 个百分点。十类仅普通视图 KL 达到本轮最高 84.0027%，比普通 PL 低 0.1967 个百分点。本轮未超过普通 PL。
 
 两种设置各六行。同源数据、同 Tri E20、种子 2026092701、固定 E50。一个组保持基础 CE 总系数 1，并复用原配对 KL，比较普通加噪、全量原始、两者各半。另一个组关闭基础 CE，保持配对 KL 总系数 0.8 及各设置原有的 KL 倍数，在同三个视图方案间分配 KL。两组分别复用 [已完成的损失剂量对照](../20261118-phase1-pamf-repl-lossdose-clean-m16-r01/analysis.md) 中相同剂量的 `aux1_ce1p0` 与 `aux1_ce0p0`。既有同设置同种子的普通 PL 用于主比较。
 
