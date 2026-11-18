@@ -101,10 +101,13 @@ def verify_prediction(job):
                 and done.get('model_seed') == job['seed'] and idx.get('capsule') == job['capsule'],
                 'Invalid hybrid completion')
         arm = method_arm(job['profile'], 'mopc_hr', job.get('mopc_bridge','original'), 'none')
-        points=job.get('points',POINTS) if job.get('author_pilot') is True else POINTS
+        points=job.get('points',POINTS) if job.get('author_pilot') is True or job.get('author_continuation') is True else POINTS
         if job.get('author_pilot') is True:
             require(points==[[5,5]] and job['capsule']=='capsules/P01/MIX01/1-1' and job['seed']==2026092701,
                     'Wrong author pilot')
+        if job.get('author_continuation') is True:
+            require(points==[[5,10],[10,5],[10,10]] and job['capsule']=='capsules/P01/MIX01/1-1' and
+                    job['seed']==2026092701, 'Wrong author continuation')
         expected = {(k,n,arm) for k,n in points}
         rows = idx['rows']; actual = [(r['k'],r['new_count'],r['arm']) for r in rows]
         for row in rows: require_author_mopc_row(row)

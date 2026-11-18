@@ -84,3 +84,31 @@ def test_pilot_hybrid_verifier_accepts_one_k_and_author_sampling(tmp_path):
     (tmp_path/'predictions.json').write_text(json.dumps(dict(capsule=j['capsule'],rows=[row])))
     with pytest.raises(ValueError,match='sampling'):
         verify_prediction(j)
+
+
+def test_full_plan_reuses_pilot_cell_without_rerunning_it():
+    pilot_root='/tmp/pilot-author'
+    plan=make_plan(predecessor(),'/tmp/new-author-full','/tmp/new-release',continuation_from=pilot_root)
+    assert len(plan['jobs'])==1134
+    assert plan['require_author_pilot_scored'] is True and plan['wait_run']==pilot_root
+    selected=[j for j in plan['jobs'] if j.get('author_continuation')]
+    assert len(selected)==6
+    assert sum(len(j.get('points',j.get('satellite_c_points'))) for j in plan['jobs'])==4530
+    for j in selected:
+        assert j['capsule']=='capsules/P01/MIX01/1-1' and j['seed']==2026092701
+        if j['group']=='native':
+            points,a0=validate_scope(j)
+            assert points==[(5,10),(10,5),(10,10)] and not a0
+        else:
+            assert j['points']==[[5,10],[10,5],[10,10]]
+            assert j['reuse_author_b'].startswith(pilot_root+'/predictions/')
+
+
+def test_full_plan_waits_for_all_six_pilot_scores(tmp_path):
+    from experiments.pamf_phase2_practical.satellite_native_c import author_pilot_status
+    root=tmp_path/'pilot';(root/'scheduler').mkdir(parents=True)
+    assert author_pilot_status(root)=='WAITING'
+    (root/'scheduler'/'complete.json').write_text(json.dumps({'status':'SCORED_COMPLETE','scored':6,'quarantined':[]}))
+    assert author_pilot_status(root)=='PASSED'
+    (root/'scheduler'/'complete.json').write_text(json.dumps({'status':'COMPLETED_WITH_QUARANTINE','scored':5,'quarantined':['x']}))
+    assert author_pilot_status(root)=='FAILED'

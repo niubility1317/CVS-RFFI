@@ -19,12 +19,15 @@ def validate_scope(job):
             parts[2] in EPISODES and parts[3] in RECEIVERS and job.get('seed') in SEEDS and
             job.get('profile') in PROFILES,'Invalid satellite registration identity')
     episode=parts[2];profile=job['profile']
-    if job.get('design') in ('mix3_mopc_author_c_only_v1','mix3_mopc_author_pilot_v1'):
+    if job.get('design') in ('mix3_mopc_author_c_only_v1','mix3_mopc_author_pilot_v1','mix3_mopc_author_continuation_v1'):
         require(profile=='mopc_hr' and episode in ('MIX01','MIX02','MIX03') and
                 job['seed'] in SEEDS[:3], 'Outside author MoPC comparison')
-        points=[(5,5)] if job['design']=='mix3_mopc_author_pilot_v1' else [(k,n) for k in (5,10) for n in (5,10)]
-        if job['design']=='mix3_mopc_author_pilot_v1':
-            require(job.get('author_pilot') is True and job['capsule']=='capsules/P01/MIX01/1-1' and
+        points=([(5,5)] if job['design']=='mix3_mopc_author_pilot_v1' else
+                [(5,10),(10,5),(10,10)] if job['design']=='mix3_mopc_author_continuation_v1' else
+                [(k,n) for k in (5,10) for n in (5,10)])
+        if job['design'] in ('mix3_mopc_author_pilot_v1','mix3_mopc_author_continuation_v1'):
+            key='author_pilot' if job['design']=='mix3_mopc_author_pilot_v1' else 'author_continuation'
+            require(job.get(key) is True and job['capsule']=='capsules/P01/MIX01/1-1' and
                     job['seed']==2026092701, 'Wrong author pilot')
         require(job.get('satellite_c_points')==[list(p) for p in points] and
                 job.get('satellite_a0_ks')==[] and job.get('mopc_stabilization','none')=='none',
@@ -146,6 +149,20 @@ def predecessor_done(config):
     return True
 
 
+def author_pilot_status(root):
+    control=Path(root)/'scheduler'
+    complete=control/'complete.json'
+    if complete.is_file():
+        done=read(complete)
+        return 'PASSED' if done.get('status')=='SCORED_COMPLETE' and done.get('scored')==6 and not done.get('quarantined') else 'FAILED'
+    state=control/'state.json'
+    if state.is_file():
+        current=read(state)
+        if current.get('status') in ('FAILED','STOPPED') and not current.get('active'):
+            return 'FAILED'
+    return 'WAITING'
+
+
 def require_source_smoke_mode(config):
     flags=[j.get('source_smoke_in_dispatch') is True for j in config['jobs']]
     require(not any(flags) or (all(flags) and config.get('author_source_smoke') is True),
@@ -204,7 +221,14 @@ def dispatch(config,config_file):
             except OSError as exc:
                 if log is not None:log.close()
                 failed.append(dict(id=job['id'],stage='score_launch',error=str(exc)));pending.clear()
-        ready=predecessor_done(config)
+        if config.get('require_author_pilot_scored'):
+            pilot=author_pilot_status(config['wait_run'])
+            if pilot=='FAILED' and not failed:
+                failed.append(dict(stage='author_pilot_gate',error='Pilot failed or has quarantined rows'))
+                pending.clear()
+            ready=pilot=='PASSED'
+        else:
+            ready=predecessor_done(config)
         if ready and not failed and not stopped and pending:
             try:
                 admissions=choose([dict(id=j['id']) for j in pending],

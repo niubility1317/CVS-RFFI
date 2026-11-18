@@ -116,7 +116,11 @@ def predict(rt, job):
             synchronize(); started = time.perf_counter()
             b_seed = seed_for(seed, job['capsule'], k, 'B')
             old_b = None; saved_anchor = None
+            if job.get('reuse_author_b') is not None:
+                from .mopc_author_b_reuse import pilot_b
+                saved_anchor=pilot_b(job,rt,k,lookup[k,0]['split_id'],lookup[5,5]['split_id'],b_seed,device)
             if job.get('reuse_saved_b') is not None:
+                require(saved_anchor is None,'Conflicting B reuse sources')
                 from .clean_saved_anchor_reuse import prior_anchor
                 saved_anchor=prior_anchor(job,rt,k,lookup[k,0]['split_id'],b_seed,device)
             if saved_anchor is None and job.get('reuse_original_b') is not None:

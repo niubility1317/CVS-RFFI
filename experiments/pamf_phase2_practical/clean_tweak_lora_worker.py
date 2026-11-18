@@ -42,7 +42,11 @@ def run(rt,job):
         y=torch.tensor(old['support_y'].tolist(),device=device,dtype=torch.long)
         b_seed=seed_for(job['seed'],job['capsule'],k,'B')
         prior=None
+        if job.get('reuse_author_b'):
+            from .mopc_author_b_reuse import pilot_b
+            prior=pilot_b(job,rt,k,specs[k,0]['split_id'],specs[5,5]['split_id'],b_seed,str(device))
         if job.get('reuse_saved_b'):
+            require(prior is None,'Conflicting B reuse sources')
             from .clean_saved_anchor_reuse import prior_anchor
             prior=prior_anchor(job,rt,k,specs[k,0]['split_id'],b_seed,str(device))
         if prior is None:

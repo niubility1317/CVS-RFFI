@@ -18,7 +18,7 @@ SOURCE_CACHE_USE = {
 }
 
 
-def make_plan(previous, run_root, release_root, profiles=PROFILES, pilot=False):
+def make_plan(previous, run_root, release_root, profiles=PROFILES, pilot=False, continuation_from=None):
     root = Path(run_root)
     require(PurePosixPath(run_root).is_absolute() and not root.exists(), 'Run root must be new and absolute')
     release = Path(release_root)
@@ -52,6 +52,7 @@ def make_plan(previous, run_root, release_root, profiles=PROFILES, pilot=False):
             'Incomplete or duplicate MoPC matrix')
     require(profiles and len(set(profiles))==len(profiles) and set(profiles)<=set(PROFILES), 'Invalid profiles')
     selected=[j for j in selected if j['profile'] in profiles]
+    require(not (pilot and continuation_from), 'Pilot and continuation are mutually exclusive')
     if pilot:
         selected=[j for j in selected if j['capsule']=='capsules/P01/MIX01/1-1' and j['seed']==2026092701]
         require(len(selected)==len(profiles),'Incomplete author pilot')
@@ -61,10 +62,25 @@ def make_plan(previous, run_root, release_root, profiles=PROFILES, pilot=False):
                 job.update(design='mix3_mopc_author_pilot_v1',satellite_c_points=[[5,5]])
             else:
                 job['points']=[[5,5]]
+    if continuation_from:
+        require(PurePosixPath(continuation_from).is_absolute(), 'Pilot root must be absolute')
+        continued=[j for j in selected if j['capsule']=='capsules/P01/MIX01/1-1' and j['seed']==2026092701]
+        require(len(continued)==len(profiles),'Incomplete pilot continuation')
+        for job in continued:
+            job['author_continuation']=True
+            job['pilot_prediction']=str(PurePosixPath(continuation_from)/'predictions'/job['id'])
+            if job['group']=='native':
+                job.update(design='mix3_mopc_author_continuation_v1',satellite_c_points=[[5,10],[10,5],[10,10]])
+            else:
+                job['points']=[[5,10],[10,5],[10,10]]
+                job['reuse_author_b']=job['pilot_prediction']
+                job['reuse_author_runtime']=previous['runtimes']['hybrid']
     out = {k: v for k, v in previous.items() if k != 'jobs'}
     out.update(run_root=str(PurePosixPath(run_root)), release_root=str(PurePosixPath(release_root)), jobs=selected,
                allowed_gpus=list(range(8)), max_per_gpu=6, minimum_free_MiB=6000, author_source_smoke=True,
                source_cache_use={p:SOURCE_CACHE_USE[p] for p in profiles})
+    if continuation_from:
+        out.update(wait_run=continuation_from,require_author_pilot_scored=True)
     return out
 
 
@@ -120,6 +136,7 @@ def main():
     parser.add_argument('--output', required=True)
     parser.add_argument('--profile', action='append', choices=PROFILES)
     parser.add_argument('--pilot', action='store_true')
+    parser.add_argument('--continuation-from')
     parser.add_argument('--native-source-root',required=True)
     parser.add_argument('--code-commit',required=True)
     args = parser.parse_args()
@@ -130,7 +147,7 @@ def main():
     require(not Path(args.output).exists() and not native_path.exists(),'Preparation already exists')
     write(native_path,native)
     previous=dict(previous,runtimes=dict(previous['runtimes'],mopc_hr=str(native_path)))
-    write(args.output, make_plan(previous,args.run_root,args.release_root,args.profile or PROFILES,args.pilot))
+    write(args.output, make_plan(previous,args.run_root,args.release_root,args.profile or PROFILES,args.pilot,args.continuation_from))
 
 
 if __name__ == '__main__':
