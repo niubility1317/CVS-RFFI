@@ -6,11 +6,11 @@ from experiments.pamf_repl_attribution_factorial import publish as previous
 from .plan import RUN
 
 def publish(repo, output, context, ssh_config, *, run_id=RUN,
-            package='experiments.pamf_repl_dual_optimization'):
+            package='experiments.pamf_repl_dual_optimization', gpus=tuple(range(8))):
     old_run, old_remote = previous.RUN, base.REMOTE
     original = base.publish
     def submit(*args, **kwargs):
-        base.REMOTE = base.REMOTE.replace("rt['allowed_gpus']=[2,3]", "rt['allowed_gpus']=[0,1,2,3,4,5,6,7]")
+        base.REMOTE = base.REMOTE.replace("rt['allowed_gpus']=[2,3]", f"rt['allowed_gpus']={list(gpus)!r}")
         base.REMOTE = base.REMOTE.replace('experiments.pamf_repl_attribution_factorial.runner',
                                            package + '.runner')
         base.REMOTE = base.REMOTE.replace("str(release/'experiments/pamf_repl_attribution_factorial')",

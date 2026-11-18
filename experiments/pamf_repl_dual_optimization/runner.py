@@ -8,12 +8,13 @@ from experiments.pamf_repl_priority import runner as priority
 from experiments.pamf_repl_uaux_soft.objective import installed
 from . import plan
 
-def dispatch(rt, *, worker_module='experiments.pamf_repl_dual_optimization.runner'):
+def dispatch(rt, *, worker_module='experiments.pamf_repl_dual_optimization.runner',
+             max_total=5, reserve_mib=12288):
     from experiments.pamf_branch_training import runner as queue, prepare as preparation
     from experiments.pamf_physics_branch.runner import admits as physical_admits
     from experiments.pamf_physics_route.runner import launch
     def admits(gpu, active, mib):
-        return physical_admits(gpu, active, max(mib, 12288), max_total=5)
+        return physical_admits(gpu, active, max(mib, reserve_mib), max_total=max_total)
     old = preparation.prepare, queue.admits, queue.launch, queue.analyze
     preparation.prepare, queue.admits = scored.prepare, admits
     queue.launch = partial(launch, module=worker_module)

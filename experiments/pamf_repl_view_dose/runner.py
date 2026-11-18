@@ -10,7 +10,8 @@ from . import plan
 from .objective import installed
 
 
-def main(matrix=plan, worker_module='experiments.pamf_repl_view_dose.runner'):
+def main(matrix=plan, worker_module='experiments.pamf_repl_view_dose.runner',
+         *, objective=installed, max_total=5, reserve_mib=12288):
     parser = argparse.ArgumentParser()
     parser.add_argument('action', choices=['dispatch', 'worker'])
     parser.add_argument('--kind')
@@ -19,10 +20,10 @@ def main(matrix=plan, worker_module='experiments.pamf_repl_view_dose.runner'):
     config = read(args.config)
     with matrix.scoped():
         original = base.installed, scored.plan, priority.installed
-        base.installed, scored.plan, priority.installed = installed, base_plan, installed
+        base.installed, scored.plan, priority.installed = objective, base_plan, objective
         try:
             if args.action == 'dispatch':
-                dispatch(config, worker_module=worker_module)
+                dispatch(config, worker_module=worker_module, max_total=max_total, reserve_mib=reserve_mib)
             else:
                 priority.worker(config, args.kind)
         finally:
