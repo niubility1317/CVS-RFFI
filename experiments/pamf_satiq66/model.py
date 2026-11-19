@@ -25,19 +25,20 @@ def reference_waveform():
 
 
 class UWResponse(nn.Module):
-    def __init__(self, representation, waveform_samples=8000):
+    def __init__(self, representation, waveform_samples=8000, grid_points=256):
         super().__init__()
         template = torch.utils.dlpack.from_dlpack(reference_waveform()[representation])
         ref = torch.complex(template[0], template[1])
-        if waveform_samples != 8000:
-            if representation != 1 or waveform_samples != 11000:
-                raise ValueError("Full-header reference alignment requires the downsampled SatIQ view")
-            # A full header places fewer grid points inside the known 8,000-point word.
-            ratio = waveform_samples / 8000
+        ratio = (waveform_samples / 8000) * (256 / grid_points)
+        if ratio != 1:
+            if representation != 1:
+                raise ValueError("Reference resampling requires the downsampled SatIQ view")
+            # Keep only grid locations supported by the known 8,000-point word.
             positions = torch.arange(int((len(ref) - 1) / ratio) + 1) * ratio
             left = positions.long()
             fraction = positions - left
-            ref = ref[left] * (1 - fraction) + ref[left + 1] * fraction
+            right = (left + 1).clamp_max(len(ref) - 1)
+            ref = ref[left] * (1 - fraction) + ref[right] * fraction
         ref = ref / ref.abs().square().mean().sqrt()
         window = torch.hann_window(len(ref))
         spectrum = torch.fft.fft(ref * window)
@@ -47,7 +48,7 @@ class UWResponse(nn.Module):
         self.register_buffer("window", window, persistent=False)
         self.register_buffer("bins", bins, persistent=False)
         self.register_buffer("ideal", spectrum[bins], persistent=False)
-        self.coherence_lag = round(16 * 8000 / waveform_samples)
+        self.coherence_lag = round(16 / ratio)
 
     def forward(self, iq):
         used = iq[:, :, :len(self.reference)]
@@ -71,7 +72,7 @@ class UWResponse(nn.Module):
         return torch.cat((bounded.real, bounded.imag, stats), dim=1)
 
 
-def build_model(runtime, seed, representation, reference_waveform_samples=8000):
+def build_model(runtime, seed, representation, reference_waveform_samples=8000, grid_points=256):
     from experiments.pamf_phase3_open_world.source_development import _activate_code
 
     _activate_code(runtime)
@@ -97,13 +98,20 @@ def build_model(runtime, seed, representation, reference_waveform_samples=8000):
             sinc.min_band_hz *= ratio
             sinc.scale_hz *= ratio
             sinc.sample_rate = 800000
+        if grid_points == 512:
+            core.input_len = grid_points
+            sinc.t_.mul_(.5)
+            sinc.sample_rate *= 2
         core.sinc = sinc
-        model.response = UWResponse(representation, reference_waveform_samples)
+        model.response = UWResponse(representation, reference_waveform_samples, grid_points)
         model.sequence_pool = CompositePool(core.t2.pw.out_channels, "SIG_TIME_X3", seed)
         model.__class__ = CompositeReference
         for view in model.sequence_pool.views:
             view.register_buffer("window_order", torch.tensor(ORDER), persistent=False)
             view.forward = MethodType(shuffled_descriptor, view)
+        if grid_points == 512:
+            # Retain the registered four windows and their eight-position order.
+            model.sequence_pool.register_forward_pre_hook(lambda _module, args: (F.avg_pool1d(args[0], 2),))
     if sum(p.numel() for p in model.parameters()) != 242593 or core.cls_head.scale != 30:
         raise ValueError("Unexpected 66-class native PAMF graph")
     return model
