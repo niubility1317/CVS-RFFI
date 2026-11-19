@@ -63,7 +63,8 @@ def score(source, predictions, truth_path, output):
     complete = read_json(predictions / "complete.json")
     if complete["records"] != n:
         raise ValueError("Incomplete prediction cohort")
-    with np.load(predictions / "predictions.npz", allow_pickle=False) as pred, +            np.load(truth_path, allow_pickle=False) as target:
+    with (np.load(predictions / "predictions.npz", allow_pickle=False) as pred,
+          np.load(truth_path, allow_pickle=False) as target):
         if len(target["ids"]) != n or not np.array_equal(pred["ids"], target["ids"]):
             raise ValueError("Prediction and independently stored truth IDs differ")
         original = target["y"]
