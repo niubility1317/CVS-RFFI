@@ -18,8 +18,9 @@ def normalize_packet(iq):
 def embeddings(model, raw, device, block=128):
     model.eval()
     features = []
+    samples = getattr(model, "waveform_samples", raw.shape[-1])
     for start in range(0, len(raw), block):
-        batch = normalize_packet(device_array(raw[start:start + block], device))
+        batch = normalize_packet(device_array(raw[start:start + block, :, :samples], device))
         features.append(np.from_dlpack(model.embed(batch).cpu()))
     return np.concatenate(features)
 

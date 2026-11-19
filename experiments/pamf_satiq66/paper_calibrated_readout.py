@@ -17,8 +17,9 @@ from .train import device_array
 @torch.no_grad()
 def encode(model, arm, raw, index, device):
     blocks = []
+    samples = getattr(model, "waveform_samples", raw.shape[-1])
     for start in range(0, len(index), 128):
-        iq = normalize_packet(device_array(raw[index[start:start + 128]], device))
+        iq = normalize_packet(device_array(raw[index[start:start + 128], :, :samples], device))
         vectors = (model.embed(iq),) if arm == "SATIQ" else model.encode_paths(iq)
         blocks.append(tuple(value.cpu() for value in vectors))
     return tuple(torch.cat(parts) for parts in zip(*blocks, strict=True))

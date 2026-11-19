@@ -1,0 +1,32 @@
+{
+  "model_seed": 2026092701,
+  "sampling_seed": 2026111906,
+  "evaluation_seed": 2026111907,
+  "epochs": 1,
+  "early_validation_updates": [
+    5000,
+    20000
+  ],
+  "validation_epochs": [
+    1
+  ],
+  "augmentation": "none",
+  "log_every": 100,
+  "pamf_lr": 0.0003,
+  "pamf_sup": {
+    "same_satellite_ce": 0.2,
+    "view_ce": 0.15,
+    "view_kl": 0.05
+  },
+  "runtime": {
+    "base_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release",
+    "frozen_sources": {
+      "F": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_supcon50_clean_20261016_r02",
+      "AF": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RDrop_AF50_20261015_r02",
+      "BASE": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02",
+      "FOLD": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_t2_locked_tailavg_sourcefold_20261015_r01",
+      "G": "/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01"
+    }
+  },
+  "branch_prototype_weight": 0.5
+}

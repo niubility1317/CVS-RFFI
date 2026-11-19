@@ -16,6 +16,7 @@ from .data import read_json, write_json
 from .paper_baseline import PaperSatIQ, angular_triplet, paper_loss
 from .paper_eval import embeddings, metrics, normalize_packet, panel
 from .paper_pamf import PaperPAMF, branch_prototype_loss, reconstruction_target, supervised_loss
+from .paper_native_pamf import EXTRA_WIDTH, PaperNativePAMF, native_supervised_loss
 from .readout import gpu_ready
 from .train import cuda_device, device_array
 
@@ -96,6 +97,10 @@ def source_inputs(source, cache):
 
 def make_model(config, arm, classes):
     torch.manual_seed(config["model_seed"])
+    if "native_expansion" in config:
+        if arm != "PAMF_SUP":
+            raise ValueError("The native expansion experiment requires the PAMF-SUP arm")
+        return PaperNativePAMF(config["runtime"], config["model_seed"], len(classes), config["native_expansion"])
     if arm == "SATIQ":
         return PaperSatIQ()
     return PaperPAMF(config["runtime"], config["model_seed"], len(classes), config["raw_time_bins"],
@@ -159,6 +164,9 @@ def train(config, source, cache, out, arm, smoke=False):
     classes, counts, roles = source_inputs(source, cache)
     device = cuda_device()
     model = make_model(config, arm, classes).to(device)
+    native_only = isinstance(model, PaperNativePAMF)
+    input_samples = model.waveform_samples if native_only else 11000
+    feature_dimensions = getattr(model, "feature_dimensions", 512 if arm == "SATIQ" else 320)
     reconstruction_weight = config.get("full_reconstruction_weight", 0)
     prototype_weight = config.get("branch_prototype_weight", 0)
     lr = 1e-5 if arm == "SATIQ" else config["pamf_lr"]
@@ -183,7 +191,7 @@ def train(config, source, cache, out, arm, smoke=False):
     satellites = device_array(classes[:, 0].astype(np.int64), device)
     out.mkdir(exist_ok=False)
     write_json(out / "resolved_config.json", dict(config, arm=arm, trained_classes=len(classes), lr=lr,
-                                                 input_samples=11000, feature_dimensions=512 if arm == "SATIQ" else 320,
+                                                 input_samples=input_samples, feature_dimensions=feature_dimensions,
                                                  source=str(source), cache=str(cache), supervised=True,
                                                  source_roles=["L", "V"], test_access=False,
                                                  steps_per_epoch=sampler.steps_per_epoch, total_updates=total))
@@ -197,12 +205,19 @@ def train(config, source, cache, out, arm, smoke=False):
         for epoch, epoch_step, idx in batches:
             step += 1
             model.train()
-            x = normalize_packet(device_array(raw[idx], device))
+            x = normalize_packet(device_array(raw[idx, :, :input_samples], device))
             y = device_array(labels[idx].astype(np.int64), device)
             optimizer.zero_grad(set_to_none=True)
             if arm == "SATIQ":
                 feature, reconstructed = model(x)
                 loss, stats = paper_loss(feature, reconstructed, x, y)
+            elif native_only:
+                _, logits, branch_logits, branches = model(x, view_logits=True)
+                loss, stats = native_supervised_loss(logits, branch_logits, y, satellites, config["pamf_sup"])
+                if prototype_weight > 0:
+                    prototype = branch_prototype_loss(branches)
+                    loss = loss + prototype_weight * prototype
+                    stats["branch_prototype_ce"] = prototype.detach()
             else:
                 outputs = model(x, view_logits=True, reconstruct=reconstruction_weight > 0,
                                 capture_branches=prototype_weight > 0)
@@ -309,12 +324,18 @@ if __name__ == "__main__":
         parser.add_argument(arg, type=Path)
     parser.add_argument("--arm", choices=ARMS)
     parser.add_argument("--gpus", nargs="+", type=int)
+    parser.add_argument("--native-expansion", choices=tuple(EXTRA_WIDTH))
     args = parser.parse_args()
     if args.mode == "launch":
         if not args.gpus:
             parser.error("launch requires physical GPUs")
+        if args.native_expansion:
+            parser.error("native expansion needs a single PAMF-SUP train or smoke row")
         launch(args.config, args.source, args.cache, args.output, args.gpus)
     else:
         if not args.arm:
             parser.error("train/smoke requires a matrix arm")
-        train(read_json(args.config), args.source, args.cache, args.output, args.arm, args.mode == "smoke")
+        config = read_json(args.config)
+        if args.native_expansion:
+            config["native_expansion"] = args.native_expansion
+        train(config, args.source, args.cache, args.output, args.arm, args.mode == "smoke")

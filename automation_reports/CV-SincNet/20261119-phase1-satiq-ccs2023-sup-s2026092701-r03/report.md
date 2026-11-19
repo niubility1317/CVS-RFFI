@@ -81,6 +81,8 @@ PAMF-Metric 的分类头 CE 首次在已登记检查点上低于源标签频率�
 
 第 28,225 步，SatIQ 同星 K16 AUC 明显高于两组 PAMF。PAMF-Metric 的分类头 CE 继续低于按源类频率预测的 7.8352。三组继续按 100 轮配置推进。[同星负例组批诊断](../20261119-diagnostic-satiq-pamf-same-sat-batches-s2026092701-r01/report.md)
 
+原 PAMF-SUP 的第 5 轮（141,125 步）同星 K1／K16 AUC 为 0.5308／0.5629，分类头 CE 7.5173、Top-1 0.3433%。原型版同一套源验证在较早的第 1 轮达到 0.5517／0.5646，另登记等预算结果。[PAMF-SUP 分支原型对照](../20261119-diagnostic-satiq-pamf-sup-branch-prototypes-s2026092701-r02/report.md)
+
 ## PAMF-SUP 训练诊断
 
 完整解析该行截至第 83,000 步的 832 条训练记录和 stdout，与同期 SatIQ、PAMF-Metric 及三个相关诊断交叉核对。训练任务仍在运行，步号及时间单调增长，各分项损失有限。按实际窗口步数加权如下。

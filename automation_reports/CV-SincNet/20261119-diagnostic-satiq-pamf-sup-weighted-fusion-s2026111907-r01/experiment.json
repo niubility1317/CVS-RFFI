@@ -1,0 +1,145 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261119-diagnostic-satiq-pamf-sup-weighted-fusion-s2026111907-r01",
+  "group_id": "phase1-satiq-ccs2023-fully-supervised",
+  "display_name": "Source-trained weighting of native and full-rate PAMF-SUP embeddings",
+  "description": "Estimate a fixed 320-dimensional two-block cosine mixture from source L, and measure both branches and fusion on known source V.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF-SUP",
+    "source-prototypes",
+    "branch-fusion"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261119-diagnostic-satiq-pamf-sup-enrolled-head-s2026111907-r02",
+    "20261119-diagnostic-satiq-pamf-sup-branch-prototypes-s2026092701-r02",
+    "20261119-diagnostic-satiq-pamf-sup-relative-full-rate-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requested PAMF-SUP adapted to SatIQ, no early augmentation, 100 epochs; all arms fully supervised.",
+  "code": {
+    "commit": "f07dfea324ccc7b97e97db45a9e6e24f2900dff1",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-diagnostic-satiq-pamf-sup-weighted-fusion-s2026111907-r01",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python N607 FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-diagnostic-satiq-pamf-sup-weighted-fusion-s2026111907-r01"
+  },
+  "data": {
+    "dataset": "Oxford SatIQ Zenodo 8220494, first 1010464 chronological packets",
+    "version": "8220494",
+    "representation": "11000 IQ samples at 25 MS/s, shared joint per-packet minmax",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/{L,V}_index.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "source_receivers": [
+      "Oxford single receiver"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2023-03-22 through part of 2023-04-14 UTC"
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 910464,
+      "V": 50000,
+      "U_s": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "satiq_oxford_ccs2023_supervised_reindexed_v1_2026111905",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/V_index.npz",
+    "support_query_ref": "Transient source V enrollment K1/16. Independent T (50000) separately staged; no training access.",
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "L-only enrollment, covariance and disjoint fusion selection. Fixed independent source V evaluation. No target test access."
+  },
+  "checkpoint": {
+    "initialization": "frozen_source_checkpoints",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-branch-prototypes-s2026092701-r02/PAMF_SUP/s0005000.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-relative-full-rate-s2026092701-r01/PAMF_SUP/s0005000.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-branch-prototypes-s2026092701-r02/PAMF_SUP/s0028225.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "provenance_verdict": "MATCHED_SOURCE_L_V_RELEASE",
+    "selection_rule": "Original-prototype versus relative-IQ prototype at 5000 matched steps, and original-prototype first epoch. All selections fixed before this run."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Single source-fusion validation process",
+    "gpu_policy": "Physical GPU 5, min 4096 MiB and no more than two incumbent processes per prior user authorization.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-weighted-fusion-s2026111907-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-weighted-fusion-s2026111907-r01",
+    "local_artifact_root": "E:/type10-7/local_data/satiq_oxford_ccs2023_supervised_20261119_r01",
+    "launch_command": "CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=5 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_sup_prototype_readout /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-weighted-fusion-s2026111907-r01/source_scores.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-branch-prototypes-s2026092701-r02/PAMF_SUP/s0005000.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-relative-full-rate-s2026092701-r01/PAMF_SUP/s0005000.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-branch-prototypes-s2026092701-r02/PAMF_SUP/s0028225.pt --fit-count 8192 --per-class 16 --fusion-fit-count 8192 --seed 2026111907 --device cuda",
+    "stop_rule": "One complete source validation JSON for all three frozen states."
+  },
+  "expected_artifacts": [
+    "owner.pid",
+    "source_scores.json",
+    "readout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "full known V Top-1 and macro Top-1",
+      "same-satellite offline oracle Top-1 and genuine-impostor AUC",
+      "predicted-class census",
+      "selected full-rate fraction",
+      "equal and source-selected fusion comparisons"
+    ],
+    "dimensions": [
+      "Known V 49814 records across 3103 eligible task classes and identical enrollment among branches."
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "SOURCE_HEAD",
+      "method": "PAMF-SUP two-block weighted cosine prototypes",
+      "purpose": "Test if L-estimated block weights improve the fused 320 without query-driven tuning.",
+      "config_ref": "experiments/pamf_satiq66/paper_sup_prototype_readout.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-weighted-fusion-s2026111907-r01/source_scores.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111907,
+        "augmentation": null,
+        "support": 2026111907,
+        "evaluation": 2026111907
+      },
+      "seed_notes": "Frozen checkpoints. Seed determines fixed L enrolment/calibration and same-satellite negative identities.",
+      "k": 16,
+      "scenario": "Source L enrolment of all 3103 trainable beams, full known source V query.",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Same L enrolment (max 16/class) and L whitening (8192 samples), plus 8192 disjoint L samples to select fusion weight.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-weighted-fusion-s2026111907-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-weighted-fusion-s2026111907-r01/readout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_sup_prototype_readout /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-weighted-fusion-s2026111907-r01/source_scores.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-branch-prototypes-s2026092701-r02/PAMF_SUP/s0005000.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-relative-full-rate-s2026092701-r01/PAMF_SUP/s0005000.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-branch-prototypes-s2026092701-r02/PAMF_SUP/s0028225.pt --fit-count 8192 --per-class 16 --fusion-fit-count 8192 --seed 2026111907 --device cuda",
+      "expected_artifacts": [
+        "source_scores.json",
+        "readout.log"
+      ],
+      "pid": 2014961,
+      "physical_gpu": 5
+    }
+  ],
+  "notes": [
+    "Five fixed candidate full-rate score fractions .10/.25/.50/.75/.90. Selection uses same-satellite pairwise AUC on the separate L-only subset; ties favor the fixed candidate order starting at .50.",
+    "The two coordinate blocks are weighted at sqrt(1-fraction) and sqrt(fraction), exact to the corresponding cosine score mixture. Both blocks retain 160 features.",
+    "Compare fixed equal score-level combination with source-fitted combination and the existing native and full-rate-only readouts. No time-varying weight, validation filtering or labels in inference."
+  ],
+  "registered_at": "2026-11-19T13:02:51+00:00"
+}
