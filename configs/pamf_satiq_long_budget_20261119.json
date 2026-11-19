@@ -1,0 +1,7 @@
+{
+  "schema": "pamf_satiq_long_budget_v1",
+  "base_config": "pamf_satiq_header_extent_20261119.json",
+  "target_accuracy_percent": 98,
+  "checkpoint_epochs": [20, 50, 100],
+  "checkpoint_period": 250
+}

@@ -1,6 +1,7 @@
 """Paired Oxford crop and full-header fits followed by frozen Thun inference."""
 
 import argparse
+from itertools import count
 import json
 from pathlib import Path
 import subprocess
@@ -36,6 +37,18 @@ def uk_summary(model, x, y, device, batch, classes):
     return result
 
 
+def reaches_threshold(correct, total, percent):
+    return 0 < total and 0 <= correct <= total and correct * 100 >= total * percent
+
+
+def save_training_state(out, epoch, steps, model, optimizer, shuffle):
+    path = out / f"training_e{epoch:07d}.pt"
+    with path.open("xb") as f:
+        torch.save(dict(epoch=epoch, updates=steps, model=model.state_dict(),
+                        optimizer=optimizer.state_dict(), shuffle_rng=shuffle.get_state(),
+                        torch_rng=torch.get_rng_state(), cuda_rng=torch.cuda.get_rng_state()), f)
+
+
 def train(arm, compact, full, cfg, out):
     architecture, mode = ARMS[arm]
     contract = source_contract(compact / "source")
@@ -66,8 +79,11 @@ def train(arm, compact, full, cfg, out):
     steps = 0
     started = time.monotonic()
     batch = cfg["batch_size"]
+    threshold = cfg.get("target_accuracy_percent")
+    epochs = range(1, cfg["epochs"] + 1) if threshold is None else count(1)
+    best_correct = 0
     with (out / "epochs.jsonl").open("x", encoding="utf-8") as log:
-        for epoch in range(1, cfg["epochs"] + 1):
+        for epoch in epochs:
             model.train()
             ce = 0.0
             for ii in torch.randperm(len(train_y), generator=shuffle).split(batch):
@@ -84,13 +100,32 @@ def train(arm, compact, full, cfg, out):
                        uk_val=validate(model, val_x, val_y, device, batch),
                        seconds=time.monotonic() - started,
                        peak_gpu_allocated_mib=torch.cuda.max_memory_allocated() / 2**20)
+            if threshold is not None:
+                total = len(val_y)
+                correct = round(row["uk_val"]["accuracy"] * total)
+                best_correct = max(best_correct, correct)
+                row["uk_val"].update(correct=correct, total=total, best_correct=best_correct)
             log.write(json.dumps(row, allow_nan=False) + "\n")
             log.flush()
             print(json.dumps(row), flush=True)
+            if threshold is not None:
+                reached = reaches_threshold(correct, total, threshold)
+                if reached or epoch in cfg["checkpoint_epochs"] or epoch % cfg["checkpoint_period"] == 0:
+                    save_training_state(out, epoch, steps, model, optimizer, shuffle)
+                if reached:
+                    break
     torch.save(model.state_dict(), out / "source_final.pt")
     uk = {role: uk_summary(model, x, y, device, batch, nclasses)
           for role, (x, y) in data.items()}
     write_json(out / "uk.json", uk)
+    if threshold is not None:
+        exact = sum(uk["val"]["confusion_matrix"][c][c] for c in range(nclasses))
+        if exact != correct or not reaches_threshold(exact, total, threshold):
+            raise ValueError("Frozen checkpoint did not reproduce the source validation threshold")
+        write_json(out / "threshold_reached.json",
+                   dict(epoch=epoch, updates=steps, correct=exact, total=total,
+                        threshold_percent=threshold, accuracy=exact / total,
+                        source_final="source_final.pt"))
 
 
 @torch.no_grad()
