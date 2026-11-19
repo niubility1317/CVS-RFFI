@@ -17,8 +17,9 @@ NOISE_HALF_BAND = 32
 
 
 class RawSymbolEncoder(nn.Module):
-    def __init__(self):
+    def __init__(self, symbol_count=SYMBOL_COUNT, bounded=True):
         super().__init__()
+        self.symbol_count = symbol_count
         self.frontend = nn.Sequential(
             nn.Conv1d(5, 16, kernel_size=9, stride=4, padding=4, bias=False),
             nn.GroupNorm(4, 16),
@@ -28,28 +29,29 @@ class RawSymbolEncoder(nn.Module):
             nn.SiLU(),
         )
         self.mix = nn.Conv1d(64, 64, kernel_size=3, padding=1, groups=64)
-        self.project = nn.Linear(SYMBOL_COUNT * 64, FEATURES)
+        self.project = nn.Linear(symbol_count * 64, FEATURES)
         self.output_norm = nn.LayerNorm(FEATURES)
-        self.gain_raw = nn.Parameter(torch.tensor(math.atanh(.05 / .2)))
+        self.gain_raw = nn.Parameter(torch.tensor(math.atanh(.05 / .2))) if bounded else None
 
     def symbol_tokens(self, raw):
-        if raw.ndim != 3 or raw.shape[1:] != (2, SYMBOL_COUNT * SAMPLES_PER_SYMBOL):
-            raise ValueError("Expected two IQ channels and the full 8000-sample common word")
+        if raw.ndim != 3 or raw.shape[1:] != (2, self.symbol_count * SAMPLES_PER_SYMBOL):
+            raise ValueError(f"Expected two IQ channels and {self.symbol_count} complete symbols")
         # Tile before convolution so the two endpoints of each symbol contribute
         # to its own token. The first difference has no preceding sample at tile start.
-        tiles = raw.reshape(len(raw), 2, SYMBOL_COUNT, SAMPLES_PER_SYMBOL).transpose(1, 2)
-        iq = tiles.reshape(len(raw) * SYMBOL_COUNT, 2, SAMPLES_PER_SYMBOL)
+        tiles = raw.reshape(len(raw), 2, self.symbol_count, SAMPLES_PER_SYMBOL).transpose(1, 2)
+        iq = tiles.reshape(len(raw) * self.symbol_count, 2, SAMPLES_PER_SYMBOL)
         differences = F.pad(iq.diff(dim=-1), (1, 0))
         power = iq.square().sum(dim=1, keepdim=True)
         encoded = self.frontend(torch.cat((iq, differences, power), dim=1))
         moments = torch.cat((encoded.mean(-1), encoded.square().mean(-1)), dim=1)
-        return moments.reshape(len(raw), SYMBOL_COUNT, -1)
+        return moments.reshape(len(raw), self.symbol_count, -1)
 
     def forward(self, raw):
         tokens = self.symbol_tokens(raw).transpose(1, 2)
         mixed = tokens + F.silu(self.mix(tokens))
         ordered = mixed.transpose(1, 2).flatten(1)
-        return .2 * self.gain_raw.tanh() * self.output_norm(self.project(ordered))
+        output = self.output_norm(self.project(ordered))
+        return output if self.gain_raw is None else .2 * self.gain_raw.tanh() * output
 
 
 class WidePAMF(nn.Module):
