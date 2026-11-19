@@ -1,0 +1,148 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261119-diagnostic-satiq-pamf-sup-branch-prototypes-s2026092701-r02",
+  "group_id": "phase1-satiq-ccs2023-fully-supervised",
+  "display_name": "SatIQ PAMF-SUP six-path leave-one-out prototypes",
+  "description": "Compare original PAMF-SUP with its own centered, bounded, supervised leave-one-out branch prototypes under the same L/V waveform and model seed.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF-SUP",
+    "supervision",
+    "beam-prototype",
+    "all-branches"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261119-phase1-satiq-ccs2023-sup-s2026092701-r03",
+    "20261119-diagnostic-satiq-pamf-sup-prior-adjusted-s2026092701-r01"
+  ],
+  "replaces_run_id": "20261119-diagnostic-satiq-pamf-sup-branch-prototypes-s2026092701-r01",
+  "authorization": "User requested PAMF-SUP adapted to SatIQ, no early augmentation, 100 epochs; all arms fully supervised.",
+  "code": {
+    "commit": "02021d1e4aaa4aa64723b7ca0fa212aa4d99e1f1",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-diagnostic-satiq-pamf-sup-branch-prototypes-s2026092701-r02",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python N607 FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-diagnostic-satiq-pamf-sup-branch-prototypes-s2026092701-r02"
+  },
+  "data": {
+    "dataset": "Oxford SatIQ Zenodo 8220494, first 1010464 chronological packets",
+    "version": "8220494",
+    "representation": "11000 IQ samples at 25 MS/s, shared joint per-packet minmax",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/{L,V}_index.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "source_receivers": [
+      "Oxford single receiver"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2023-03-22 through part of 2023-04-14 UTC"
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 910464,
+      "V": 50000,
+      "U_s": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "satiq_oxford_ccs2023_supervised_reindexed_v1_2026111905",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/V_index.npz",
+    "support_query_ref": "Transient source V enrollment K1/16. Independent T (50000) separately staged; no training access.",
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source labels and IQ only. Batch prototypes use other L packets, never validation or held-out observations. No T access."
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "provenance_verdict": "SCRATCH_ONLY",
+    "selection_rule": "Scratch with identical shared model initialization and fixed 5000/20000/28225 validations."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Single branch prototype diagnostic wrapper",
+    "gpu_policy": "Physical GPU 4, at least 4096 MiB free and no more than two incumbent processes per user SatIQ override.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-branch-prototypes-s2026092701-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-branch-prototypes-s2026092701-r02",
+    "local_artifact_root": "E:/type10-7/local_data/satiq_oxford_ccs2023_supervised_20261119_r01",
+    "launch_command": "CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=4 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train train /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-diagnostic-satiq-pamf-sup-branch-prototypes-s2026092701-r02/configs/pamf_satiq_ccs2023_branch_prototypes_sup_probe_20261119.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-branch-prototypes-s2026092701-r02/PAMF_SUP --arm PAMF_SUP",
+    "stop_rule": "One full source epoch, fixed source validation at 5000, 20000 and 28225 updates.",
+    "smoke_command": "CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=4 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train smoke /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-diagnostic-satiq-pamf-sup-branch-prototypes-s2026092701-r02/configs/pamf_satiq_ccs2023_branch_prototypes_sup_probe_20261119.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-branch-prototypes-s2026092701-r02/smoke_PAMF_SUP --arm PAMF_SUP"
+  },
+  "expected_artifacts": [
+    "smoke_PAMF_SUP/complete.json",
+    "PAMF_SUP/resolved_config.json",
+    "PAMF_SUP/steps.jsonl",
+    "PAMF_SUP/s0005000.pt",
+    "PAMF_SUP/s0020000.pt",
+    "PAMF_SUP/s0028225.pt",
+    "PAMF_SUP/complete.json",
+    "PAMF_SUP.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source V K1/K16 top1",
+      "same-satellite AUC/EER",
+      "different-satellite AUC/EER",
+      "PAMF head CE/top1",
+      "individual train CE, MSE and triplet",
+      "PAMF within-satellite CE, two view CE, and posterior KL",
+      "train branch prototype CE"
+    ],
+    "dimensions": [
+      "1375 source K1/K16 reference classes and 12785 matched queries",
+      "28225 updates and 903200 distinct sampled records per epoch; 2822500 updates in 100 epochs"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "PAMF_SUP",
+      "method": "PAMF-SUP with five native and one full-rate prototype objectives",
+      "purpose": "Direct supervision of branch-wise embedding separation using equal-frequency within-batch class prototypes.",
+      "config_ref": "configs/pamf_satiq_ccs2023_branch_prototypes_sup_probe_20261119.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-branch-prototypes-s2026092701-r02/PAMF_SUP/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111906,
+        "augmentation": null,
+        "support": 2026111907,
+        "evaluation": 2026111907
+      },
+      "seed_notes": "Shared deterministic class-pair batching and validation references. No synthetic augmentation.",
+      "k": null,
+      "scenario": "Oxford native real received, paper-style random message split",
+      "optimizer": "Adam eps=1e-7",
+      "lr": 0.0003,
+      "epochs": 1,
+      "fl_rounds": null,
+      "budget_ref": "28225 matched updates, 903200 distinct physical packets, same random order as r03.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-branch-prototypes-s2026092701-r02/PAMF_SUP",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-branch-prototypes-s2026092701-r02/PAMF_SUP.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train train /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-diagnostic-satiq-pamf-sup-branch-prototypes-s2026092701-r02/configs/pamf_satiq_ccs2023_branch_prototypes_sup_probe_20261119.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-branch-prototypes-s2026092701-r02/PAMF_SUP --arm PAMF_SUP",
+      "expected_artifacts": [],
+      "pid": 1996981,
+      "physical_gpu": 4
+    }
+  ],
+  "notes": [
+    "The original fused CE, same-satellite CE, auxiliary branch CE and view KL are unchanged. One mean 8-way supervised prototype CE with coefficient 0.5 is added.",
+    "For each anchor, its own prototype excludes the anchor. Labelled 8x4 minibatches use equal weight per within-batch class. Five original synchronized features and the full-rate feature each receive prototype supervision.",
+    "Same waveform, sample order, objective weights otherwise, first-epoch model seed, and inference 320/3103. No augmentation, triplet or frequency offsets in this comparison.",
+    "The six prototype paths are de-meaned within the L minibatch only; direction normalization uses sqrt(norm_squared + 0.1**2), including each leave-one-out mean. At coefficient .5, real L preflight showed projection-gradient ratios 12.2-18.8% for initialized full-rate weights and up to 1.009x for the collapsed native time projection."
+  ],
+  "registered_at": "2026-11-19T12:36:51+00:00"
+}
