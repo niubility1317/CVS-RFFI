@@ -16,7 +16,7 @@ from .data import read_json, write_json
 from .paper_baseline import PaperSatIQ, angular_triplet, paper_loss
 from .paper_eval import embeddings, metrics, normalize_packet, panel
 from .paper_pamf import PaperPAMF, branch_prototype_loss, reconstruction_target, supervised_loss
-from .paper_native_pamf import EXTRA_WIDTH, PaperNativePAMF, native_supervised_loss
+from .paper_native_pamf import EXTRA_WIDTH, NATIVE_PATHS, PaperNativePAMF, native_supervised_loss
 from .wide_model import FEATURES
 from .readout import gpu_ready
 from .train import cuda_device, device_array
@@ -170,6 +170,13 @@ def train(config, source, cache, out, arm, smoke=False):
     feature_dimensions = getattr(model, "feature_dimensions", 512 if arm == "SATIQ" else 320)
     reconstruction_weight = config.get("full_reconstruction_weight", 0)
     prototype_weight = config.get("branch_prototype_weight", 0)
+    prototype_path_weights = None
+    if "branch_prototype_weights" in config:
+        prototype_path_weights = torch.tensor(config["branch_prototype_weights"], dtype=torch.float32, device=device)
+        if (not native_only or prototype_weight <= 0 or prototype_path_weights.shape != (len(NATIVE_PATHS),)
+                or not torch.isfinite(prototype_path_weights).all() or (prototype_path_weights <= 0).any()):
+            raise ValueError("Expected positive weights for the five native branch prototypes")
+        prototype_path_weights = prototype_path_weights / prototype_path_weights.sum()
     expansion_prototype_weight = config.get("expansion_prototype_weight", 0)
     if expansion_prototype_weight > 0 and (not native_only or feature_dimensions <= FEATURES):
         raise ValueError("Expansion prototype supervision requires a widened native PAMF-SUP embedding")
@@ -219,7 +226,7 @@ def train(config, source, cache, out, arm, smoke=False):
                 feature, logits, branch_logits, branches = model(x, view_logits=True)
                 loss, stats = native_supervised_loss(logits, branch_logits, y, satellites, config["pamf_sup"])
                 if prototype_weight > 0:
-                    prototype = branch_prototype_loss(branches)
+                    prototype = branch_prototype_loss(branches, prototype_path_weights)
                     loss = loss + prototype_weight * prototype
                     stats["branch_prototype_ce"] = prototype.detach()
                 if expansion_prototype_weight > 0:
