@@ -77,7 +77,23 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01/logs",
     "local_artifact_root": "E:\\type10-7\\local_data\\satiq66_beam66_wide_20261119_r01",
     "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.wide_run launch /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/configs/pamf_satiq_beam66_wide_sup_20261119.json /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01 --gpus 7 6 5 4 2 3",
-    "stop_rule": "Full source V accuracy >= 0.98 for each healthy row. No hard epoch cap or plateau stop."
+    "stop_rule": "Full source V accuracy >= 0.98 for each healthy row. No hard epoch cap or plateau stop.",
+    "direct_dispatch": {
+      "authorization": "User explicitly authorized exceeding two simultaneous processes per GPU to start B0, W1 and L0.",
+      "script_commit": "f19648173a81e41af9016c8e3c5a11df1dd1a0f3",
+      "host": "N607",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01-direct/wide_direct.py /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01 /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01 --gpus 3 2 5",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01-direct",
+      "controller_log": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01-direct/controller.log",
+      "owner_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01/owner_direct.json",
+      "assigned_physical_gpus": {
+        "B0": 3,
+        "W1": 2,
+        "L0": 5
+      },
+      "gpu_policy": "One extra worker on each selected GPU, up to three observed compute processes per GPU, minimum 4 GiB free.",
+      "retained_worker": "W0 stays under its original PID and original release; only the old dispatcher is handed off."
+    }
   },
   "expected_artifacts": [
     "owner.json",
