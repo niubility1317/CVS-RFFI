@@ -46,7 +46,9 @@ def source_data(root, contract):
                 or np.bincount(y, minlength=nch).tolist()
                 != [item[f"uk_{role}"] for item in contract["classes"]]):
             raise ValueError("Source labels and class map differ")
-        datasets[role] = torch.from_numpy(iq), torch.from_numpy(y)
+        # N607's PyTorch 2.1 was compiled against NumPy 1.x. DLPack shares
+        # CPU arrays with NumPy 2.x without using the legacy C ABI.
+        datasets[role] = tuple(torch.utils.dlpack.from_dlpack(a) for a in (iq, y))
         identities[role] = set(ids.tolist())
     if identities["train"] & identities["val"]:
         raise ValueError("Source train/validation physical IDs overlap")
@@ -120,8 +122,12 @@ def packet_logits(model, raw):
 @torch.inference_mode()
 def evaluate(model, x, device, batch):
     model.eval()
-    parts = [packet_logits(model, torch.as_tensor(np.array(a), device=device)).cpu().numpy()
-             for a in np.array_split(x, range(batch, len(x), batch))]
+    parts = []
+    for offset in range(0, len(x), batch):
+        # The query memory map is read-only. DLPack needs a writable CPU view.
+        array = np.array(x[offset:offset + batch], copy=True)
+        tensor = torch.utils.dlpack.from_dlpack(array).to(device)
+        parts.append(np.from_dlpack(packet_logits(model, tensor).cpu()))
     logits = np.concatenate(parts)
     if not np.isfinite(logits).all():
         raise ValueError("Non-finite inference logits")
