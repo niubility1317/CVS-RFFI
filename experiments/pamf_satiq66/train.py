@@ -1,6 +1,7 @@
 """Scratch training and fixed-checkpoint prediction for SatIQ Oxford 66."""
 
 import argparse
+from itertools import count
 import json
 from pathlib import Path
 import time
@@ -165,6 +166,15 @@ def unlabeled_loss(model, raw_l, lmeta, u, umeta, ids, augment, rate, epoch, hyb
 
 
 def train(root, out, config, arm, representation, pilot=False, smoke=False, ssl_smoke=False):
+    configured_budget = config.get("long_budget")
+    if configured_budget is not None and arm not in {"S0", "S1"}:
+        raise ValueError("The long-budget supervised stage accepts only S0 and S1")
+    long_budget = configured_budget if not (pilot or smoke) else None
+    if long_budget is not None:
+        target = long_budget["source_v_accuracy_target"]
+        interval = long_budget["checkpoint_every"]
+        if not 0 < target <= 1 or type(interval) is not int or interval < 1:
+            raise ValueError("A valid source validation accuracy target and checkpoint interval are required")
     contract = check_contract(root, SOURCE_COUNTS)
     device = cuda_device()
     torch.manual_seed(config["model_seed"])
@@ -180,10 +190,14 @@ def train(root, out, config, arm, representation, pilot=False, smoke=False, ssl_
     model = build_model(config["runtime"], config["model_seed"], representation).to(device)
     out.mkdir(parents=True, exist_ok=False)
     rate = contract["iq_rate_hz"][representation]
-    resolved = dict(config, arm=arm, role="smoke" if smoke else "input_pilot" if pilot else "formal",
+    role = "smoke" if smoke else "input_pilot" if pilot else "long_source_only" if long_budget else "formal"
+    policy = "first_source_v_accuracy_at_or_above_target" if long_budget else "fixed_endpoint"
+    resolved = dict(config, arm=arm, role=role,
                     representation=representation, rate_hz=rate, source=str(root), output=str(out),
                     initialization="scratch", device=str(device), source_counts=contract["counts"],
-                    uses_u=uses_u, checkpoint_policy="fixed_endpoint", classes=list(CLASSES))
+                    uses_u=uses_u, checkpoint_policy=policy, classes=list(CLASSES))
+    if long_budget:
+        resolved["epochs"] = None
     write_json(out / "resolved_config.json", resolved)
     scratch = out / "scratch_e00.pt"
     torch.save(model.state_dict(), scratch)
@@ -193,7 +207,10 @@ def train(root, out, config, arm, representation, pilot=False, smoke=False, ssl_
     u_rng = np.random.default_rng(config["data_seed"] + 1)
     augment_l = torch.Generator(device=device).manual_seed(config["augmentation_seed"])
     augment_u = torch.Generator(device=device).manual_seed(config["augmentation_seed"] + 1)
-    epochs = 1 if smoke else config["input_pilot_epochs"] if pilot else config["epochs"]
+    epochs = None if long_budget else 1 if smoke else config["input_pilot_epochs"] if pilot else config["epochs"]
+    if long_budget:
+        checkpoints = out / "checkpoints"
+        checkpoints.mkdir()
     steps = 1 if smoke else config["steps_per_epoch"]
     hybrid_l = arm in {"S1", "U0", "U1"}
     if smoke:
@@ -203,7 +220,8 @@ def train(root, out, config, arm, representation, pilot=False, smoke=False, ssl_
     start = time.monotonic()
     with (out / "epochs.jsonl").open("x", encoding="utf-8") as log:
         stage_start = 21 if ssl_smoke else 1
-        for epoch in range(stage_start, stage_start + epochs):
+        schedule = count(stage_start) if long_budget else range(stage_start, stage_start + epochs)
+        for epoch in schedule:
             model.train()
             totals = {}
             for step in range(1, steps + 1):
@@ -258,16 +276,65 @@ def train(root, out, config, arm, representation, pilot=False, smoke=False, ssl_
                                                            "paired", "conflict", "cap", "zero")) else float(v) / steps
                                  for k, v in totals.items()},
                           seconds=time.monotonic() - start)
-            if not smoke and (epoch == epochs or (not pilot and epoch % 10 == 0)):
+            if long_budget or (not smoke and (epoch == epochs or (not pilot and epoch % 10 == 0))):
                 report["v"] = validate(model, vdata, device)
+            reached = False
+            if long_budget:
+                reached = report["v"]["accuracy"] >= target
+                report["target_reached"] = reached
+                if epoch % interval == 0 or reached:
+                    snapshot_path = checkpoints / f"e{epoch:08d}.pt"
+                    temporary = snapshot_path.with_suffix(".tmp")
+                    with temporary.open("xb") as snapshot:
+                        torch.save({
+                            "model": model.state_dict(), "optimizer": optimizer.state_dict(),
+                            "epoch": epoch, "updates": report["updates"], "source_validation": report["v"],
+                            "labeled_sampler": labeled_sampler.rng.bit_generator.state,
+                            "labeled_augmentation": augment_l.get_state(),
+                            "torch_rng": torch.random.get_rng_state(), "cuda_rng": torch.cuda.get_rng_state(device)
+                            if device.type == "cuda" else None,
+                        }, snapshot)
+                    temporary.rename(snapshot_path)
             if device.type == "cuda":
                 report["peak_gpu_allocated_mib"] = torch.cuda.max_memory_allocated() / 2**20
             line = json.dumps(report, allow_nan=False)
             log.write(line + "\n")
             log.flush()
             print(line, flush=True)
+            if reached:
+                break
     torch.save(model.state_dict(), out / "source_final.pt")
     write_json(out / "complete.json", report)
+
+
+def probe_source_u(root, out, config):
+    """Check the frozen S1 teacher on legal, label-hidden source U after both L rows finish."""
+    contract = check_contract(root, SOURCE_COUNTS)
+    arm_dir = out / "S1"
+    resolved = read_json(arm_dir / "resolved_config.json")
+    target = config["long_budget"]["source_v_accuracy_target"]
+    for arm in ("S0", "S1"):
+        completed = read_json(out / arm / "complete.json")
+        if completed["v"]["accuracy"] < target or not completed["target_reached"]:
+            raise ValueError(f"{arm} has not reached the supervised source validation target")
+    if (resolved["role"] != "long_source_only" or resolved["uses_u"] or resolved["arm"] != "S1"
+            or Path(resolved["source"]).resolve() != root.resolve()):
+        raise ValueError("Readiness requires the same-contract, supervised S1 endpoint")
+    device = cuda_device()
+    representation = resolved["representation"]
+    model = build_model(resolved["runtime"], resolved["model_seed"], representation).to(device)
+    model.load_state_dict(torch.load(arm_dir / "source_final.pt", map_location=device, weights_only=True), strict=True)
+    udata = row_data(root, "U", representation)
+    scores = predict(model, udata, device)
+    confidence = 1. / np.exp(scores - scores.max(axis=1, keepdims=True)).sum(axis=1)
+    accepted = int((confidence >= .95).sum())
+    write_json(out / "unlabeled_readiness.json", {
+        "source_contract": contract["schema"], "checkpoint": str(arm_dir / "source_final.pt"),
+        "u_records": len(confidence), "threshold": .95, "accepted": accepted,
+        "accepted_fraction": accepted / len(confidence),
+        "confidence": dict(zip(("median", "p95", "max"), np.quantile(confidence, [.5, .95, 1]).tolist())),
+        "status": "HAS_ELIGIBLE_PSEUDO_LABELS" if accepted else "ZERO_ELIGIBLE_PSEUDO_LABELS",
+    })
 
 
 def prediction(root, out, query, config):
@@ -286,7 +353,7 @@ def prediction(root, out, query, config):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("mode", choices=("train", "pilot", "smoke", "ssl-smoke", "predict"))
+    parser.add_argument("mode", choices=("train", "pilot", "smoke", "ssl-smoke", "predict", "probe-source-u"))
     parser.add_argument("config", type=Path)
     parser.add_argument("source", type=Path)
     parser.add_argument("out", type=Path)
@@ -299,6 +366,8 @@ if __name__ == "__main__":
         if a.query is None:
             parser.error("predict requires --query")
         prediction(a.source, a.out, a.query, c)
+    elif a.mode == "probe-source-u":
+        probe_source_u(a.source, a.out, c)
     else:
         if a.mode == "ssl-smoke" and a.arm != "U1":
             parser.error("ssl-smoke requires --arm U1")
