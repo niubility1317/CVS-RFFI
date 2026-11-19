@@ -176,12 +176,11 @@ def launch(config, source, cache, out, gpus):
         print(json.dumps(dict(event="started", arm=arm, mode=mode, gpu=gpu, pid=child.pid)), flush=True)
         return child
 
-    available = []
-    while not available:
-        available = [gpu for gpu in gpus if gpu_ready(gpu)]
-        if not available:
-            time.sleep(15)
     for arm in ("SATIQ", "PAMF_METRIC"):
+        available = [gpu for gpu in gpus if gpu_ready(gpu)]
+        while not available:
+            time.sleep(15)
+            available = [gpu for gpu in gpus if gpu_ready(gpu)]
         if start("smoke", arm, out / f"smoke_{arm}", available[0]).wait():
             raise RuntimeError(f"Real source smoke failed for {arm}")
 
