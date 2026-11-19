@@ -1,7 +1,7 @@
 # 竞争波束监督首轮结果与取舍
 
 - [配置](experiment.json) · [状态](events.jsonl) · [训练轨迹](../20261119-diagnostic-satiq-pamf-sup-native-beam-rank-s2026092701-r01/report.md)
-- 竞争版和 [普通原型监督 320 维](../20261119-diagnostic-satiq-pamf-sup-native-expansion-prototype-s2026092701-r01/report.md) 均完成固定的 28,225 步。评分核实固定 49,814 条已知类 V 包和三个配对的训练/验证检查点引用，其中普通版闭集打分复用[同轮结果](../20261119-diagnostic-satiq-pamf-sup-native-enrolled-head-s2026111907-r02/report.md)。读出控制器 PID 2080698，退出码 0。
+- 竞争版和 [普通原型监督 320 维](../20261119-diagnostic-satiq-pamf-sup-native-expansion-prototype-s2026092701-r01/report.md) 均完成固定的 28,225 步。两组使用同一训练种子，在不同 GPU 上运行。闭集评分使用固定的 49,814 条已知类 V 包，普通版闭集打分复用[同轮结果](../20261119-diagnostic-satiq-pamf-sup-native-enrolled-head-s2026111907-r02/report.md)。读出控制器 PID 2080698，退出码 0。
 
 ## 从哪方面入手
 
