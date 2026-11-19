@@ -126,7 +126,8 @@ def make_model(config, arm, classes):
                                 center_fusion=config.get("center_fusion", False),
                                 waveform_samples=config.get("native_waveform_samples", 8000),
                                 align_reference_time=config.get("align_reference_time", False),
-                                grid_points=config.get("native_grid_points", 256))
+                                grid_points=config.get("native_grid_points", 256),
+                                reflect_boundary=config.get("native_reflect_boundary", False))
     elif arm == "SATIQ":
         model = PaperSatIQ()
     else:

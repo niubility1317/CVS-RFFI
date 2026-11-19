@@ -21,7 +21,8 @@ class PaperNativePAMF(nn.Module):
     waveform_samples = 8000
 
     def __init__(self, runtime, seed, classes, expansion, satiq_sinc_init=False, center_fusion=False,
-                 waveform_samples=8000, align_reference_time=False, grid_points=256):
+                 waveform_samples=8000, align_reference_time=False, grid_points=256,
+                 reflect_boundary=False):
         super().__init__()
         if waveform_samples not in (8000, 11000):
             raise ValueError("Native PAMF expects the common word or full SatIQ header")
@@ -29,6 +30,9 @@ class PaperNativePAMF(nn.Module):
             raise ValueError("Expected a 256- or 512-point native feature grid")
         self.waveform_samples = waveform_samples
         self.grid_points = grid_points
+        self.reflect_boundary = reflect_boundary
+        extension = 2 if reflect_boundary else 1
+        self.fft_points = grid_points * extension
         self.expansion = expansion
         self.feature_dimensions = FEATURES + EXTRA_WIDTH[expansion]
         reference_samples = waveform_samples if align_reference_time else 8000
@@ -61,7 +65,7 @@ class PaperNativePAMF(nn.Module):
         self.head = nn.Linear(self.feature_dimensions, classes, bias=False)
         nn.init.xavier_uniform_(self.head.weight)
         self.register_buffer("fusion_center", torch.zeros(self.feature_dimensions) if center_fusion else None)
-        bins = torch.arange(grid_points // 2 + 1, dtype=torch.float32) * (8000 / self.waveform_samples)
+        bins = torch.arange(self.fft_points // 2 + 1, dtype=torch.float32) * (8000 / (self.waveform_samples * extension))
         cutoff = native_frequency_taper(bins)
         self.register_buffer("cutoff", cutoff, persistent=False)
 
@@ -76,9 +80,12 @@ class PaperNativePAMF(nn.Module):
         if iq.ndim != 3 or iq.shape[1] != 2 or iq.shape[-1] < self.waveform_samples:
             raise ValueError("Native PAMF requires both IQ channels of its configured header window")
         common = packet_rms(iq[:, :, :self.waveform_samples])
-        spectrum = torch.fft.rfft(common, dim=-1)[..., :self.grid_points // 2 + 1]
-        coarse = torch.fft.irfft(spectrum * self.cutoff, n=self.grid_points, dim=-1)
-        coarse = coarse * (self.grid_points / self.waveform_samples)
+        if self.reflect_boundary:
+            # The even extension keeps the burst tail from wrapping into the synchronization field.
+            common = torch.cat((common, common.flip(-1)), dim=-1)
+        spectrum = torch.fft.rfft(common, dim=-1)[..., :self.fft_points // 2 + 1]
+        coarse = torch.fft.irfft(spectrum * self.cutoff, n=self.fft_points, dim=-1)
+        coarse = coarse[..., :self.grid_points] * (self.fft_points / common.shape[-1])
         branches = None
         fusion_inputs = []
         handle = None
