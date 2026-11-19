@@ -24,19 +24,37 @@ ARMS = ("SATIQ", "PAMF_SUP", "PAMF_METRIC")
 
 
 class SourceBatches:
-    def __init__(self, labels, class_counts, seed):
+    def __init__(self, labels, class_counts, seed, satellites=None):
         ordered = np.argsort(labels, kind="stable")
         boundaries = np.r_[0, np.cumsum(class_counts)]
         self.groups = [ordered[boundaries[k]:boundaries[k + 1]] for k, n in enumerate(class_counts) if n >= 4]
         self.counts = np.array([len(g) // 4 for g in self.groups])
         self.steps_per_epoch = int(self.counts.sum() // 8)
         self.rng = np.random.default_rng(seed)
+        self.satellites = satellites
+
+    def group_by_satellite(self, order, labels):
+        satellites = self.satellites[labels[order]]
+        partition = np.argsort(satellites, kind="stable")
+        cut = np.flatnonzero(np.diff(satellites[partition])) + 1
+        blocks, leftovers = [], []
+        for rows in np.split(order[partition], cut):
+            size = len(rows) // 4 * 4
+            blocks.append(rows[:size].reshape(-1, 4))
+            leftovers.append(rows[size:])
+        blocks = np.concatenate(blocks)
+        leftovers = np.concatenate(leftovers)
+        return np.r_[blocks[self.rng.permutation(len(blocks))].ravel(), self.rng.permutation(leftovers)]
 
     def epoch(self):
         groups = np.concatenate([self.rng.permutation(g)[:4 * n].reshape(-1, 4)
                                  for g, n in zip(self.groups, self.counts, strict=True)])
         labels = np.repeat(np.arange(len(self.groups)), self.counts)
         order = self.rng.permutation(len(groups))
+        if self.satellites is not None:
+            # Half-batch satellite groups increase in-batch wrong-beam coverage.
+            # The usual duplicate repair below keeps eight distinct beams.
+            order = self.group_by_satellite(order, labels)
         usable = self.steps_per_epoch * 8
         for a in range(0, usable, 8):
             for b in range(a + 1, a + 8):
@@ -121,7 +139,8 @@ def train(config, source, cache, out, arm, smoke=False):
     lr = 1e-5 if arm == "SATIQ" else config["pamf_lr"]
     optimizer = torch.optim.Adam((p for p in model.parameters() if p.requires_grad), lr=lr, eps=1e-7)
     raw, labels, original = roles["L"]
-    sampler = SourceBatches(original, counts, config["sampling_seed"])
+    grouped_satellites = classes[:, 0] if config.get("group_same_satellite_batches", False) else None
+    sampler = SourceBatches(original, counts, config["sampling_seed"], satellites=grouped_satellites)
     epochs = 1 if smoke else config["epochs"]
     total = 2 if smoke else epochs * sampler.steps_per_epoch
     if not smoke and "diagnostic_updates" in config:
