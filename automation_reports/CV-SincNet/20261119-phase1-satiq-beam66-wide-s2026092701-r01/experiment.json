@@ -1,0 +1,258 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261119-phase1-satiq-beam66-wide-s2026092701-r01",
+  "group_id": "phase1-satiq-oxford-beam66-wide-supervision",
+  "display_name": "SatIQ Beam66 PAMF wide-window supervised comparison",
+  "description": "Transmitter beam labels with matched short, coarse long, dual-rate long and Hybrid supervised arms.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "satiq-beam66-wide"
+  ],
+  "tags": [
+    "SatIQ",
+    "PAMF",
+    "Hybrid",
+    "beam-label",
+    "waveform-length",
+    "source-only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "User requested direct release, labels at the beam transmitter level, and long budget to source V accuracy 98% before SSL.",
+  "code": {
+    "commit": "3383d35f7171162daf8c55111f05072d3c0b1bc1",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python (N607 PyTorch 2.1 CUDA FP32)",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01"
+  },
+  "data": {
+    "dataset": "SatIQ Zenodo 8220494 Oxford single receiver",
+    "version": "8220494",
+    "representation": "8000 raw samples at 25 MS/s and aligned 256 coarse samples at 0.8 MS/s over 320 us. Short control 384:640.",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/source/{L,V}_meta.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/source/contract.json",
+    "source_receivers": [
+      "Oxford single RX"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "L: 2023-03-24..31 UTC",
+      "V: 2023-04-01..03 UTC"
+    ],
+    "target_days": [],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/source/contract.json",
+    "roles": {
+      "L_s": 7920,
+      "U_s": null,
+      "V": 2376
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "oxford_beam66_2026111901",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/source/V_meta.npz",
+    "support_query_ref": "No support, U or future Q.",
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only cross-day beam validation."
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "New (ra_sat, ra_cell) classes and L/V physical records. No inherited weights or optimizer.",
+    "provenance_verdict": "SCRATCH_ONLY",
+    "selection_rule": "First full source V accuracy >= 0.98; save every 25 epochs."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "One SatIQ Beam66 wide_run controller",
+    "gpu_policy": "Physical GPUs 7, 6, 5, 4, 2, 3; one new worker and at most two total compute processes per GPU; 4 GiB minimum free.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_data\\satiq66_beam66_wide_20261119_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.wide_run launch /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/configs/pamf_satiq_beam66_wide_sup_20261119.json /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01 --gpus 7 6 5 4 2 3",
+    "stop_rule": "Full source V accuracy >= 0.98 for each healthy row. No hard epoch cap or plateau stop."
+  },
+  "expected_artifacts": [
+    "owner.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/controller.log",
+    "smoke_source/complete.json",
+    "logs/{B0,L0,W0,W1}.log",
+    "{B0,L0,W0,W1}/resolved_config.json",
+    "{B0,L0,W0,W1}/epochs.jsonl",
+    "{B0,L0,W0,W1}/checkpoints/eNNNNNNNN.pt every 25 epochs",
+    "row complete.json and source_final.pt at gate"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source V accuracy",
+      "macro F1",
+      "top 5",
+      "NLL",
+      "correct satellite wrong beam",
+      "daily accuracy"
+    ],
+    "dimensions": [
+      "66 beam transmitter pairs",
+      "22 satellites x 3 beams",
+      "3 source validation days",
+      "matched E25/E40/E50"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "B0-s2026092701",
+      "method": "PAMF-Sup",
+      "purpose": "short_window_control",
+      "config_ref": "configs/pamf_satiq_beam66_wide_sup_20261119.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01/B0/resolved_config.json",
+      "data_overrides": {
+        "representation": "25 MS/s crop 384:640, 10.24 us"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111901,
+        "data": 2026111902,
+        "augmentation": 2026111903,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed evaluation over all source V records; no target support.",
+      "k": null,
+      "scenario": "oxford_single_rx_real_leo_cross_day_beam",
+      "optimizer": "AdamW weight_decay=0.0001",
+      "lr": 0.0003,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "132 packets across days, 100 updates per epoch, full V at E1 and every 5 epochs.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01/B0",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01/logs/B0.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.wide_run train /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/configs/pamf_satiq_beam66_wide_sup_20261119.json /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01/B0 --arm B0",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "epochs.jsonl",
+        "checkpoints/",
+        "source_final.pt at gate"
+      ]
+    },
+    {
+      "row_id": "L0-s2026092701",
+      "method": "PAMF-Sup",
+      "purpose": "coarse_long_window",
+      "config_ref": "configs/pamf_satiq_beam66_wide_sup_20261119.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01/L0/resolved_config.json",
+      "data_overrides": {
+        "representation": "0.8 MS/s whole 320 us, 256 samples"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111901,
+        "data": 2026111902,
+        "augmentation": 2026111903,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed evaluation over all source V records; no target support.",
+      "k": null,
+      "scenario": "oxford_single_rx_real_leo_cross_day_beam",
+      "optimizer": "AdamW weight_decay=0.0001",
+      "lr": 0.0003,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "132 packets across days, 100 updates per epoch, full V at E1 and every 5 epochs.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01/L0",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01/logs/L0.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.wide_run train /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/configs/pamf_satiq_beam66_wide_sup_20261119.json /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01/L0 --arm L0",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "epochs.jsonl",
+        "checkpoints/",
+        "source_final.pt at gate"
+      ]
+    },
+    {
+      "row_id": "W0-s2026092701",
+      "method": "PAMF-Sup",
+      "purpose": "dual_rate_long_window",
+      "config_ref": "configs/pamf_satiq_beam66_wide_sup_20261119.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01/W0/resolved_config.json",
+      "data_overrides": {
+        "representation": "0.8 and 25 MS/s over the whole 320 us"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111901,
+        "data": 2026111902,
+        "augmentation": 2026111903,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed evaluation over all source V records; no target support.",
+      "k": null,
+      "scenario": "oxford_single_rx_real_leo_cross_day_beam",
+      "optimizer": "AdamW weight_decay=0.0001",
+      "lr": 0.0003,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "132 packets across days, 100 updates per epoch, full V at E1 and every 5 epochs.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01/W0",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01/logs/W0.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.wide_run train /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/configs/pamf_satiq_beam66_wide_sup_20261119.json /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01/W0 --arm W0",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "epochs.jsonl",
+        "checkpoints/",
+        "source_final.pt at gate"
+      ]
+    },
+    {
+      "row_id": "W1-s2026092701",
+      "method": "Hybrid-Sup",
+      "purpose": "dual_rate_long_window_hybrid",
+      "config_ref": "configs/pamf_satiq_beam66_wide_sup_20261119.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01/W1/resolved_config.json",
+      "data_overrides": {
+        "representation": "same W0 input plus same-packet contrast, cross-day relation, five branch prototypes"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111901,
+        "data": 2026111902,
+        "augmentation": 2026111903,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed evaluation over all source V records; no target support.",
+      "k": null,
+      "scenario": "oxford_single_rx_real_leo_cross_day_beam",
+      "optimizer": "AdamW weight_decay=0.0001",
+      "lr": 0.0003,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "132 packets across days, 100 updates per epoch, full V at E1 and every 5 epochs.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01/W1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01/logs/W1.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.wide_run train /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/configs/pamf_satiq_beam66_wide_sup_20261119.json /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01/W1 --arm W1",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "epochs.jsonl",
+        "checkpoints/",
+        "source_final.pt at gate"
+      ]
+    }
+  ],
+  "notes": [
+    "Labels are (ra_sat, ra_cell), fixed by the training period, with three distinct cells per satellite.",
+    "Matched IQ prefix excludes decoded RA payload. All rows are scratch-only under the new data contract.",
+    "SSL is deferred. Downstream L_s:U_s remains 1:9."
+  ],
+  "registered_at": "2026-11-19T09:28:05+00:00"
+}
