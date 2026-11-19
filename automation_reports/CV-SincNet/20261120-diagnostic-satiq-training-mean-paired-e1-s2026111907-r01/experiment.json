@@ -1,0 +1,155 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261120-diagnostic-satiq-training-mean-paired-e1-s2026111907-r01",
+  "group_id": "phase1-satiq-ccs2023-fully-supervised",
+  "display_name": "SatIQ 融合 256 训练期中心化首轮跨日对照",
+  "description": "Assess chronological performance of the one-epoch train-time center against ordinary raw/centered/whitened readout.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF-SUP",
+    "fused256",
+    "center-fusion",
+    "source-V"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01",
+    "20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01",
+    "20261120-diagnostic-satiq-training-mean-paired-5000-s2026111907-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requested PAMF-SUP adapted to SatIQ, no early augmentation, 100 epochs; all arms fully supervised.",
+  "code": {
+    "commit": "69a075b13db0527d1621c9f148488b681326ea8b",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python N607 FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01"
+  },
+  "data": {
+    "dataset": "Oxford SatIQ Zenodo 8220494, first 1010464 chronological packets",
+    "version": "8220494",
+    "representation": "Same physical source packets and split. SatIQ uses the 11000-point full preamble; PAMF-SUP native arms use the existing five branches over the 8000-sample common prefix.",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/{L,V}_index.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "source_receivers": [
+      "Oxford single receiver"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2023-03-22 through part of 2023-04-14 UTC"
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 910464,
+      "V": 50000,
+      "U_s": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "satiq_oxford_ccs2023_supervised_reindexed_v1_2026111905",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/V_index.npz",
+    "support_query_ref": "Transient source V enrollment K1/16. Independent T (50000) separately staged; no training access.",
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source L fit only, frozen source V scoring. No held-out access."
+  },
+  "checkpoint": {
+    "initialization": "frozen_source_checkpoints",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01/PAMF_SUP/s0020000.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01/PAMF_SUP/s0020000.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01/PAMF_SUP/s0028225.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01/PAMF_SUP/s0028225.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "provenance_verdict": "MATCHED_NATIVE_SOURCE_L_V",
+    "selection_rule": "Two exact 20000-step and two 28225-step frozen source checkpoints."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "One dependency controller and one matched first-epoch center readout",
+    "gpu_policy": "Physical GPU4; at least 4096 MiB free, <=2 incumbents.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-training-mean-paired-e1-s2026111907-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-training-mean-paired-e1-s2026111907-r01",
+    "local_artifact_root": "E:/type10-7/local_data/satiq_oxford_ccs2023_supervised_20261119_r01",
+    "launch_command": "cd /home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01 && test -s /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01/PAMF_SUP/s0020000.pt && test -s /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01/PAMF_SUP/s0020000.pt && test -s /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01/PAMF_SUP/s0028225.pt && mkdir /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-training-mean-paired-e1-s2026111907-r01 && (set -C; nohup bash -c \"set -C; printf 'waiting_for_centered_E1\\n'; for ((attempt=0;attempt<240;attempt++)); do if test -s /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01/PAMF_SUP/s0028225.pt && test -s /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01/PAMF_SUP/complete.json && /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -c 'from experiments.pamf_satiq66.wide_direct import gpu_inventory; f, p = gpu_inventory()[4]; print(\\\"GPU4 preflight\\\",f,p,flush=True); assert f >= 4096 and p <= 2'; then export CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=4; /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_calibrated_readout /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-training-mean-paired-e1-s2026111907-r01/source_scores.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01/PAMF_SUP/s0020000.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01/PAMF_SUP/s0020000.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01/PAMF_SUP/s0028225.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01/PAMF_SUP/s0028225.pt --seed 2026111907 --fit-count 8192 --device cuda > /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-training-mean-paired-e1-s2026111907-r01/center.log 2>&1 & worker=\\$!; printf '%s\\n' \\$worker > /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-training-mean-paired-e1-s2026111907-r01/center.pid; wait \\$worker; rc=\\$?; printf '%s\\n' \\$rc > /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-training-mean-paired-e1-s2026111907-r01/center.exit; exit \\$rc; fi; test -s /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01/PAMF_SUP/s0028225.pt || test -r /proc/2197179/cmdline || { printf 21 > /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-training-mean-paired-e1-s2026111907-r01/center.exit; exit 21; }; sleep 15; done; printf 'checkpoint_or_gpu_timeout\\n'; printf 22 > /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-training-mean-paired-e1-s2026111907-r01/center.exit; exit 22\" > /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-training-mean-paired-e1-s2026111907-r01/controller.log 2>&1 < /dev/null & printf '%s\\n' \"$!\" > /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-training-mean-paired-e1-s2026111907-r01/controller.pid)",
+    "stop_rule": "After the centered E1 completes, read all four registered source checkpoints.",
+    "controller_pid": 2206921,
+    "launch_readback": "Verified controller cwd and parent trainer still active at 23000.",
+    "readout_pid": 2209475,
+    "physical_gpu": 4,
+    "gpu_uuid": "GPU-95d925a1-7218-ca7b-adef-164241f4f491"
+  },
+  "expected_artifacts": [
+    "source_scores.json",
+    "center.log",
+    "center.pid",
+    "center.exit",
+    "controller.log",
+    "controller.pid"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "K1/K16 AUC and EER",
+      "K16 top1",
+      "raw vs centered vs partial whitening"
+    ],
+    "dimensions": [
+      "Matched 20000-step and epoch-one budgets",
+      "same L fitter and V date panel"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "BLOCK_READOUT",
+      "method": "Original and train-centered fused256, two identical source budgets",
+      "purpose": "Verify whether train-centering improves chronological readout beyond existing fixed L centering.",
+      "config_ref": "experiments/pamf_satiq66/paper_calibrated_readout.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01/experiments/pamf_satiq66/paper_calibrated_readout.py",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111907,
+        "augmentation": null,
+        "support": 2026111907,
+        "evaluation": 2026111907
+      },
+      "seed_notes": "Frozen model. Seed determines the L fit subset and fixed source V panels; no augmentation.",
+      "k": 16,
+      "scenario": "Fixed paper-style and chronological source references and queries.",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Both 20000 and 28225 updates, single source seed and physical packet match.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-training-mean-paired-e1-s2026111907-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-training-mean-paired-e1-s2026111907-r01/center.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_calibrated_readout /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-training-mean-paired-e1-s2026111907-r01/source_scores.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01/PAMF_SUP/s0020000.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01/PAMF_SUP/s0020000.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01/PAMF_SUP/s0028225.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01/PAMF_SUP/s0028225.pt --seed 2026111907 --fit-count 8192 --device cuda",
+      "expected_artifacts": [
+        "source_scores.json",
+        "center.log",
+        "center.pid",
+        "center.exit"
+      ],
+      "pid": 2209475,
+      "gpu": 4
+    }
+  ],
+  "notes": [
+    "Same four inputs and immutable release; no checkpoint chosen by score. User's four official 200-epoch runs continue.",
+    "Do not use independent T. Raw candidate uses its saved moving center. Extra post-hoc processing retains the identical source L fit subset."
+  ],
+  "registered_at": "2026-11-19T17:45:41+00:00"
+}
