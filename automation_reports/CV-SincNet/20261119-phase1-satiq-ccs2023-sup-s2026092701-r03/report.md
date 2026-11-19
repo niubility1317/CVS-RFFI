@@ -9,7 +9,7 @@ SATIQ、PAMF-SUP 和 PAMF-Metric 均使用 100 个实际数据 epoch。每轮 28
 - run_id：`20261119-phase1-satiq-ccs2023-sup-s2026092701-r03`
 - group_id：`phase1-satiq-ccs2023-fully-supervised`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -33,3 +33,15 @@ Matched SatIQ baseline and PAMF full-rate dual-path supervision, 11,000-point IQ
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## N607 live readback (Hong Kong time, 2026-11-19)
+
+21 original archives (83.28 GB) matched the official MD5. Source and scorer caches completed. SATIQ and the adapted PAMF graph both passed the real-packet training and validation smoke. Active rows independently verified via process inventory, resolved configurations, and loss files.
+
+| Row | Physical GPU | PID | Input | Identity embedding |
+|---|---:|---:|---|---:|
+| SATIQ | 7 | 1941032 | B x 2 x 11000 | 512 |
+| PAMF-SUP | 2 | 1944076 | B x 2 x 11000 | 320 |
+| PAMF-Metric | 3 | 1944077 | B x 2 x 11000 | 320 |
+
+The original controller exited after dispatching SATIQ, which retained its PID and continued training. The direct dispatcher (1944065) started only the two pending rows under the same immutable training release. Each new GPU had two incumbent processes and over 14 GiB free under the previously authorized SatIQ concurrency override. The controller log and owner file are linked by path in [experiment.json](experiment.json).

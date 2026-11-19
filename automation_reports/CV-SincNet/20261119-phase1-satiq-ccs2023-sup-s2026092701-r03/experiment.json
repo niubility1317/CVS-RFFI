@@ -70,7 +70,7 @@
   },
   "execution": {
     "host": "N607",
-    "launch_owner": "One 100-epoch paper_campaign owner waiting for existing verified caches",
+    "launch_owner": "Original paper_campaign dispatched SATIQ and exited. Direct dispatcher 1944065 owns only the two pending PAMF rows.",
     "gpu_policy": "Physical GPUs 0–7, dispatch preference 7,6,5,4,3,2,1,0; at most one new row per GPU and two visible compute processes total",
     "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03",
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/logs",
@@ -79,7 +79,25 @@
     "stop_rule": "Each row completes 100 data epochs. Full source V at 5000/20000 steps and prespecified epoch boundaries.",
     "cache_command": "Reuse the already running CPU cache construction from 20261119-phase1-satiq-ccs2023-sup-s2026092701-r01; its GPU dispatch is reserved and superseded.",
     "transfer_evidence": "E:\\type10-7\\local_data\\satiq_oxford_ccs2023_supervised_20261119_r01\\transfer.log",
-    "controller_log": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/controller.log"
+    "controller_log": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/controller.log",
+    "direct_dispatch": {
+      "control_commit": "3d6ac408505fb00bf5d78dc8d23f005d1e0157eb",
+      "control_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03-direct",
+      "train_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03",
+      "command": "PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03-direct/paper_direct.py /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03 /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01 /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03 --gpus 2 3",
+      "assignments": {
+        "PAMF_SUP": 2,
+        "PAMF_METRIC": 3
+      },
+      "retained": {
+        "SATIQ": {
+          "gpu": 7,
+          "pid": 1941032
+        }
+      },
+      "gpu_policy": "Use the prior user authorization for this SatIQ experiment to add one worker each on physical GPUs 2 and 3, with at least 4 GiB free and up to three visible compute processes. Preserve incumbent processes.",
+      "pid": 1944065
+    }
   },
   "expected_artifacts": [
     "owner.json",
@@ -92,7 +110,8 @@
     "*/s0028225.pt",
     "*/s2822500.pt",
     "*/complete.json",
-    "matrix_outcomes.json"
+    "owner_direct.json",
+    "pamf_outcomes.json"
   ],
   "metrics_plan": {
     "metric_names": [
@@ -137,7 +156,9 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/SATIQ",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/logs/SATIQ.log",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train train /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/configs/pamf_satiq_ccs2023_supervised_20261119.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/SATIQ --arm SATIQ",
-      "expected_artifacts": []
+      "expected_artifacts": [],
+      "physical_gpu": 7,
+      "pid": 1941032
     },
     {
       "row_id": "PAMF_SUP",
@@ -165,7 +186,9 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/PAMF_SUP",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/logs/PAMF_SUP.log",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train train /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/configs/pamf_satiq_ccs2023_supervised_20261119.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/PAMF_SUP --arm PAMF_SUP",
-      "expected_artifacts": []
+      "expected_artifacts": [],
+      "physical_gpu": 2,
+      "pid": 1944076
     },
     {
       "row_id": "PAMF_METRIC",
@@ -193,7 +216,9 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/PAMF_METRIC",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/logs/PAMF_METRIC.log",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train train /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/configs/pamf_satiq_ccs2023_supervised_20261119.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/PAMF_METRIC --arm PAMF_METRIC",
-      "expected_artifacts": []
+      "expected_artifacts": [],
+      "physical_gpu": 3,
+      "pid": 1944077
     }
   ],
   "notes": [
