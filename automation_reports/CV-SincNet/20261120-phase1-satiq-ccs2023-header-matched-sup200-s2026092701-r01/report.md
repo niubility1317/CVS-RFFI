@@ -24,3 +24,9 @@
 - 控制 PID 2248959
 - 运行证据 `/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-phase1-satiq-ccs2023-header-matched-sup200-s2026092701-r01/owner.json`
 - 源验证汇总预期 `/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-phase1-satiq-ccs2023-header-matched-sup200-s2026092701-r01/source_e1_closed_set.json`
+
+## 第 5,000 步源验证
+
+PAMF 的主 CE 为 8.0436，3,103 类单包 Top-1 为 0.0743%（37 / 49,814）。SatIQ 的原生训练模型输出嵌入，等两组各自完成固定首轮，再同时读单包全类 Top-1。第 5,000 步两组的辅助同星 K16 AUC 分别为 SatIQ 0.5298 和 PAMF 0.5292。此时两组都处于首轮。
+
+E200 之后的全类单包独立预测与评分已独立排队。[独立评分条目](../20261120-phase1-satiq-matched-single-packet-e200-s2026092701-r01/report.md)
