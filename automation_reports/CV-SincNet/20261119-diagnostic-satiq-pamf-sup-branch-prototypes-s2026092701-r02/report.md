@@ -3,7 +3,7 @@
 - run_id：`20261119-diagnostic-satiq-pamf-sup-branch-prototypes-s2026092701-r02`
 - group_id：`phase1-satiq-ccs2023-fully-supervised`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -37,3 +37,22 @@ N607 物理 GPU 4 的 PID 1996981 已通过真实 IQ 检查并写出各训练 CE
 | 分支留一原型 PAMF-SUP | 0.5211 | 0.5244 | 8.0800 |
 
 固定完整面板含 1,375 个波束、12,785 个查询。另在相同 4,096 个验证包上读取两组冻结向量，原型版全速率路的有效维度由 1.56 增至 5.62，不同包平均余弦仍约为 0.9999。融合分类头在这 4,096 包上只输出了一个 Top-1 波束。早期改动增强了匹配分数，分类头仍弱。第 20,000 步和首轮末用于继续核实。
+
+## 第 20,000 步源验证
+
+| 方法 | 同星 K1 AUC | 同星 K16 AUC | 分类头验证 CE |
+|---|---:|---:|---:|
+| 原 PAMF-SUP | 0.5099 | 0.5104 | 7.9060 |
+| 分支留一原型 PAMF-SUP | 0.5457 | 0.5546 | 7.6674 |
+
+匹配和分类 CE 在同一固定步数上均已改善。训练继续到首轮末。另用源 L 原型拆开核对原生 160 维、全速率 160 维和融合 320 维。[分支读出](../20261119-diagnostic-satiq-pamf-sup-enrolled-head-s2026111907-r01/report.md) · [全速率相对 I/Q 对照](../20261119-diagnostic-satiq-pamf-sup-relative-full-rate-s2026092701-r01/report.md)
+
+## 第 1 个完整数据 epoch
+
+| 方法 | 同星 K1 AUC | 同星 K16 AUC | 分类头 CE | 分类头 Top-1 |
+|---|---:|---:|---:|---:|
+| 原 PAMF-SUP | 0.5161 | 0.5186 | 7.8864 | 0.1164% |
+| 分支留一原型版 | 0.5517 | 0.5646 | 7.5440 | 0.2750% |
+| SatIQ 对照 | 0.5320 | 0.5652 | — | — |
+
+已核实 28,225 步和完整第 1 轮检查点。同期的 K1 已超过参考对照，K16 接近参考，辅助诊断仍显示全速率 160 维较弱。留出的独立测试未读取。[修复后的分支拆分](../20261119-diagnostic-satiq-pamf-sup-enrolled-head-s2026111907-r02/report.md)
