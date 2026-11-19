@@ -104,7 +104,7 @@ def make_model(config, arm, classes):
 
 
 @torch.no_grad()
-def validate(model, arm, raw, labels, val_panel, device):
+def validate(model, arm, raw, labels, val_panel, device, class_log_prior=None):
     feature = embeddings(model, raw, device)
     result = metrics(feature, val_panel, device)
     if arm != "SATIQ":
@@ -113,15 +113,36 @@ def validate(model, arm, raw, labels, val_panel, device):
         known_features = feature[mask]
         weight = F.normalize(model.head.weight, dim=1)
         block_losses, correct = [], 0
+        if class_log_prior is not None:
+            score_sum = torch.zeros_like(class_log_prior)
+            predicted_counts = torch.zeros_like(class_log_prior, dtype=torch.int64)
+            prior_losses, prior_correct = [], 0
         for start in range(0, len(target), 256):
             end = start + 256
             vec = device_array(known_features[start:end], device)
             scores = 30 * F.linear(vec, weight)
             y = target[start:end]
             block_losses.append(float(F.cross_entropy(scores, y, reduction="sum")))
-            correct += int((scores.argmax(1) == y).sum())
+            prediction = scores.argmax(1)
+            correct += int((prediction == y).sum())
+            if class_log_prior is not None:
+                adjusted = scores + class_log_prior
+                prior_losses.append(float(F.cross_entropy(adjusted, y, reduction="sum")))
+                prior_correct += int((adjusted.argmax(1) == y).sum())
+                predicted_counts += torch.bincount(prediction, minlength=len(class_log_prior))
+                score_sum += scores.sum(dim=0)
         result.update(known_class_records=len(target), head_top1=correct / len(target),
                       head_ce=sum(block_losses) / len(target))
+        if class_log_prior is not None:
+            mean_scores = score_sum / len(target)
+            correlation = F.cosine_similarity(mean_scores - mean_scores.mean(),
+                                              class_log_prior - class_log_prior.mean(), dim=0)
+            result.update(head_prior_adjusted_ce=sum(prior_losses) / len(target),
+                          head_prior_adjusted_top1=prior_correct / len(target),
+                          head_predicted_classes=int((predicted_counts > 0).sum()),
+                          head_mode_share=int(predicted_counts.max()) / len(target),
+                          head_mean_logit_ce=float(-mean_scores.log_softmax(0)[target].mean()),
+                          head_mean_logit_log_prior_correlation=float(correlation))
     return result
 
 
@@ -143,6 +164,12 @@ def train(config, source, cache, out, arm, smoke=False):
     raw, labels, original = roles["L"]
     grouped_satellites = classes[:, 0] if config.get("group_same_satellite_batches", False) else None
     sampler = SourceBatches(original, counts, config["sampling_seed"], satellites=grouped_satellites)
+    class_log_prior = None
+    if config.get("prior_adjusted_sup", False):
+        if arm != "PAMF_SUP":
+            raise ValueError("Class-frequency adjustment is enabled only for the PAMF-SUP diagnostic")
+        log_prior = np.log(sampler.counts) - np.log(sampler.counts.sum())
+        class_log_prior = device_array(log_prior.astype(np.float32), device)
     epochs = 1 if smoke else config["epochs"]
     total = 2 if smoke else epochs * sampler.steps_per_epoch
     if not smoke and "diagnostic_updates" in config:
@@ -177,7 +204,8 @@ def train(config, source, cache, out, arm, smoke=False):
             else:
                 outputs = model(x, view_logits=True, reconstruct=reconstruction_weight > 0)
                 feature, logits, common, full = outputs[:4]
-                loss, stats = supervised_loss(logits, common, full, y, satellites, config["pamf_sup"])
+                loss, stats = supervised_loss(logits, common, full, y, satellites, config["pamf_sup"],
+                                              class_log_prior)
                 if arm == "PAMF_METRIC":
                     triplet = angular_triplet(feature, y, margin=1.0)
                     loss = loss + config["pamf_triplet_weight"] * triplet
@@ -201,7 +229,8 @@ def train(config, source, cache, out, arm, smoke=False):
                         "seconds": time.monotonic() - start,
                         **{k: float(v) / n for k, v in window.items()}}
                 if validate_now:
-                    info["source_validation"] = validate(model, arm, *roles["V"][:2], val_panel, device)
+                    info["source_validation"] = validate(model, arm, *roles["V"][:2], val_panel, device,
+                                                         class_log_prior)
                     save(out / f"s{step:07d}.pt", model, optimizer, sampler, step, epoch, info["source_validation"])
                 message = json.dumps(info, allow_nan=False)
                 print(message, flush=True)
@@ -217,7 +246,8 @@ def train(config, source, cache, out, arm, smoke=False):
         eligible = np.flatnonzero(np.bincount(v_labels[v_labels >= 0]) > 16)[:4]
         rows = np.concatenate([np.flatnonzero(v_labels == label)[:18] for label in eligible])
         smoke_panel = panel(v_labels[rows], classes, config["evaluation_seed"])
-        result["source_validation"] = validate(model, arm, v_raw[rows], v_labels[rows], smoke_panel, device)
+        result["source_validation"] = validate(model, arm, v_raw[rows], v_labels[rows], smoke_panel, device,
+                                               class_log_prior)
     write_json(out / "complete.json", result)
 
 

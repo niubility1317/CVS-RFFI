@@ -71,7 +71,12 @@ class PaperPAMF(nn.Module):
         return output
 
 
-def supervised_loss(logits, common, full, target, satellites, weights):
+def supervised_loss(logits, common, full, target, satellites, weights, class_log_prior=None):
+    unadjusted = logits
+    if class_log_prior is not None:
+        logits = logits + class_log_prior
+        common = common + class_log_prior
+        full = full + class_log_prior
     ce = F.cross_entropy(logits, target)
     same_satellite = satellites[None, :] == satellites[target, None]
     within = F.cross_entropy(logits.masked_fill(~same_satellite, -torch.inf), target)
@@ -82,5 +87,9 @@ def supervised_loss(logits, common, full, target, satellites, weights):
                       + F.kl_div(full.log_softmax(1), fused_p, reduction="batchmean"))
     loss = (ce + weights["same_satellite_ce"] * within
             + weights["view_ce"] * .5 * (common_ce + full_ce) + weights["view_kl"] * agreement)
-    return loss, dict(ce=ce.detach(), within_satellite_ce=within.detach(), common_ce=common_ce.detach(),
-                      full_ce=full_ce.detach(), view_kl=agreement.detach())
+    stats = dict(ce=ce.detach(), within_satellite_ce=within.detach(), common_ce=common_ce.detach(),
+                 full_ce=full_ce.detach(), view_kl=agreement.detach())
+    if class_log_prior is not None:
+        stats["prior_adjusted_ce"] = stats["ce"]
+        stats["ce"] = F.cross_entropy(unadjusted.detach(), target)
+    return loss, stats

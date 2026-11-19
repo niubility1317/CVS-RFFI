@@ -3,7 +3,7 @@
 - run_id：`20261119-diagnostic-satiq-pamf-full-rate-recon-s2026092701-r02`
 - group_id：`phase1-satiq-ccs2023-fully-supervised`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -41,3 +41,7 @@ N607 物理 GPU 5 的 PID 1975395 已通过实包检查，固定 28,225 步开�
 ## 第 20,000 步源验证
 
 重构版同星 AUC 为 K1 0.5072、K16 0.5155，分类头 CE 为 7.8826。相同步数的原 PAMF-Metric 为 0.5170、0.5121 和 7.8161。K16 略升，K1 和 CE 较差。模型仍在执行固定一轮诊断。
+
+## 第 1 个完整数据 epoch
+
+28,225 步已完成，重构 MSE 降至 0.0116。同星 K1／K16 AUC 为 0.5092／0.5201，分类头验证 CE 7.8127。原 PAMF-Metric 为 0.5252／0.5255 和 7.7548。重构目标确实可以优化，而这一轮的身份评分没有达到原配置。
