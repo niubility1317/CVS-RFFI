@@ -9,11 +9,13 @@ from .wide_model import FEATURES, RawSymbolEncoder
 
 
 class PaperPAMF(nn.Module):
-    def __init__(self, runtime, seed, classes, raw_time_bins):
+    def __init__(self, runtime, seed, classes, raw_time_bins, feature_batch_norm=False):
         super().__init__()
         self.native = build_model(runtime, seed, 1)
         self.native.core.id_backbone.cls_head.requires_grad_(False)
         self.original_rate = RawSymbolEncoder(symbol_count=11, bounded=False, time_bins=raw_time_bins)
+        self.common_norm = nn.BatchNorm1d(FEATURES, affine=False) if feature_batch_norm else nn.Identity()
+        self.full_norm = nn.BatchNorm1d(FEATURES, affine=False) if feature_batch_norm else nn.Identity()
         self.head = nn.Linear(2 * FEATURES, classes, bias=False)
         nn.init.xavier_uniform_(self.head.weight)
         bins = torch.arange(129).float()
@@ -29,8 +31,8 @@ class PaperPAMF(nn.Module):
         common = raw[:, :, :8000]
         spectrum = torch.fft.rfft(common, dim=-1)[..., :129]
         coarse = torch.fft.irfft(spectrum * self.cutoff, n=256, dim=-1) * (256 / 8000)
-        native = F.normalize(self.native.features(coarse), dim=1)
-        feature = F.normalize(self.original_rate(raw), dim=1)
+        native = F.normalize(self.common_norm(self.native.features(coarse)), dim=1)
+        feature = F.normalize(self.full_norm(self.original_rate(raw)), dim=1)
         return native, feature
 
     def embed(self, iq):

@@ -80,7 +80,8 @@ def make_model(config, arm, classes):
     torch.manual_seed(config["model_seed"])
     if arm == "SATIQ":
         return PaperSatIQ()
-    return PaperPAMF(config["runtime"], config["model_seed"], len(classes), config["raw_time_bins"])
+    return PaperPAMF(config["runtime"], config["model_seed"], len(classes), config["raw_time_bins"],
+                     feature_batch_norm=config.get("pamf_feature_batch_norm", False))
 
 
 @torch.no_grad()
@@ -123,6 +124,11 @@ def train(config, source, cache, out, arm, smoke=False):
     sampler = SourceBatches(original, counts, config["sampling_seed"])
     epochs = 1 if smoke else config["epochs"]
     total = 2 if smoke else epochs * sampler.steps_per_epoch
+    if not smoke and "diagnostic_updates" in config:
+        limit = config["diagnostic_updates"]
+        if not 0 < limit <= total or limit not in config["early_validation_updates"]:
+            raise ValueError("Diagnostic budget must be within the epoch budget and end at a source validation")
+        total = limit
     val_panel = None if smoke else panel(roles["V"][1], classes, config["evaluation_seed"])
     satellites = device_array(classes[:, 0].astype(np.int64), device)
     out.mkdir(exist_ok=False)
@@ -178,7 +184,8 @@ def train(config, source, cache, out, arm, smoke=False):
                 window, n = {}, 0
             if step >= total:
                 break
-    result = {"arm": arm, "updates": step, "mode": "smoke" if smoke else "supervised", "epochs": epochs}
+    result = {"arm": arm, "updates": step, "mode": "smoke" if smoke else "supervised",
+              "epochs": epochs if smoke else step // sampler.steps_per_epoch}
     if smoke:
         v_raw, v_labels, _ = roles["V"]
         eligible = np.flatnonzero(np.bincount(v_labels[v_labels >= 0]) > 16)[:4]

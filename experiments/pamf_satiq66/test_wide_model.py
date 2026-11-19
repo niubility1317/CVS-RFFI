@@ -120,3 +120,28 @@ def test_wide_views_return_inputs_exactly_at_zero_strength():
     coarse = torch.randn(2, 2, 256)
     generated = wide_model.wide_views(raw, coarse, torch.Generator().manual_seed(19), 0.0)
     assert all(torch.equal(observed, original) for observed, original in zip(generated, (raw, coarse, raw, coarse)))
+
+
+def test_paper_pamf_branch_normalization_uses_fixed_source_statistics_at_inference(monkeypatch):
+    from types import SimpleNamespace
+
+    from experiments.pamf_satiq66 import paper_pamf
+
+    native = _SyntheticNative()
+    native.core = SimpleNamespace(id_backbone=SimpleNamespace(cls_head=native.head))
+    monkeypatch.setattr(paper_pamf, "build_model", lambda runtime, seed, representation: native)
+    model = paper_pamf.PaperPAMF({}, 17, classes=12, raw_time_bins=5, feature_batch_norm=True)
+    raw = torch.randn(4, 2, 11000, generator=torch.Generator().manual_seed(42))
+    fused, logits = model(raw)
+    assert fused.shape == (4, 320)
+    assert logits.shape == (4, 12)
+    F.cross_entropy(logits, torch.tensor([0, 0, 5, 5])).backward()
+    assert model.original_rate.frontend[0].weight.grad.square().sum() > 0
+    assert model.common_norm.num_batches_tracked.item() == 1
+    assert model.full_norm.num_batches_tracked.item() == 1
+
+    model.eval()
+    with torch.no_grad():
+        torch.testing.assert_close(model.embed(raw[:1]), model.embed(raw)[0:1])
+    assert model.common_norm.num_batches_tracked.item() == 1
+    assert model.full_norm.num_batches_tracked.item() == 1

@@ -45,3 +45,15 @@ Matched SatIQ baseline and PAMF full-rate dual-path supervision, 11,000-point IQ
 | PAMF-Metric | 3 | 1944077 | B x 2 x 11000 | 320 |
 
 The original controller exited after dispatching SATIQ, which retained its PID and continued training. The direct dispatcher (1944065) started only the two pending rows under the same immutable training release. Each new GPU had two incumbent processes and over 14 GiB free under the previously authorized SatIQ concurrency override. The controller log and owner file are linked by path in [experiment.json](experiment.json).
+
+## 第 5,000 步源验证
+
+三组共用 1,375 个波束和 12,785 条查询。K1 和 K16 分别用每类 1 条和 16 条有标签参考。均匀随机检索的 Top-1 为 0.0727%。
+
+| 方法 | K1 Top-1 | K16 Top-1 | 同星 AUC K1／K16 | 跨星 AUC K1／K16 | 分类头 CE |
+|---|---:|---:|---:|---:|---:|
+| SatIQ | 0.117% | 0.196% | 0.5132／0.5258 | 0.5130／0.5236 | — |
+| PAMF-SUP | 0.070% | 0.078% | 0.5018／0.4913 | 0.5039／0.4924 | 8.0230 |
+| PAMF-Metric | 0.094% | 0.063% | 0.5012／0.4908 | 0.5033／0.4921 | 8.0375 |
+
+对源验证集确定性抽取 16 颗卫星、每星 4 个波束、每波束 8 包，共 512 包。冻结抽查显示，PAMF-SUP 的不同样本融合向量平均余弦相似度由初始化的 0.931940 升至 0.999819，公共同步路为 0.999945，全速率路为 0.999693。PAMF-Metric 融合为 0.999778。SatIQ 对照在第 5,000 步为 0.048287。PAMF 的 CE 已接近 3,103 类均匀预测的 8.040，向量坍塌提供了 CE 下降而检索仍接近随机的直接证据。5,000 步约占 0.18 轮。三条正式训练继续按原配置推进；仅源域样本用于此诊断。
