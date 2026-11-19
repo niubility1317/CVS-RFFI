@@ -1,0 +1,428 @@
+{
+  "observed_time": "2026-11-19T16:27:27.470910+08:00",
+  "log_hash": "5689bec645d55da24a1bd87cf78be8b7b5b71d36d9f686d2879e436f719029da",
+  "stdout": {
+    "20261119-phase1-pamf-satiq-long-s2026111902-r01": {
+      "lines": 735,
+      "errors": [],
+      "warnings": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()"
+      ],
+      "bytes": 205165
+    },
+    "20261119-phase1-pamf-satiq-header-s2026111902-r01": {
+      "lines": 111,
+      "errors": [],
+      "warnings": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()"
+      ],
+      "bytes": 23623
+    },
+    "20261119-phase1-pamf-satiq-s2026111902-r03": {
+      "lines": 61,
+      "errors": [],
+      "warnings": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()"
+      ],
+      "bytes": 12589
+    }
+  },
+  "controller_active": true,
+  "threshold": false,
+  "has_swiss_predictions": false,
+  "config": {
+    "schema": "pamf_satiq_header_extent_v1",
+    "model_seed": 2026111902,
+    "shuffle_seed": 2026111903,
+    "epochs": null,
+    "batch_size": 32,
+    "prediction_batch_size": 64,
+    "lr": 0.0003,
+    "weight_decay": 0.0001,
+    "runtime": {
+      "base_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release",
+      "frozen_sources": {
+        "F": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_supcon50_clean_20261016_r02",
+        "AF": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RDrop_AF50_20261015_r02",
+        "BASE": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02",
+        "FOLD": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_t2_locked_tailavg_sourcefold_20261015_r01",
+        "G": "/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01"
+      }
+    },
+    "target_accuracy_percent": 98,
+    "checkpoint_epochs": [
+      20,
+      50,
+      100
+    ],
+    "checkpoint_period": 250,
+    "arm": "pamf_full",
+    "architecture": "pamf_ce",
+    "representation": "full",
+    "windows": [
+      0,
+      256,
+      512,
+      768,
+      1024,
+      1280,
+      1536,
+      1792,
+      2048,
+      2304,
+      2560,
+      2816,
+      3072,
+      3328,
+      3584,
+      3840,
+      4096,
+      4352,
+      4608,
+      4864,
+      5120,
+      5376,
+      5632,
+      5888,
+      6144,
+      6400,
+      6656,
+      6912,
+      7168,
+      7424,
+      7680,
+      7936,
+      8192,
+      8448,
+      8704,
+      8960,
+      9216,
+      9472,
+      9728,
+      9984,
+      10240,
+      10496,
+      10744
+    ],
+    "classes": 20,
+    "initialization": "scratch",
+    "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-long-s2026111902-r01/pamf_full",
+    "source_full": "/home/szu2070436088/2510044040/CV-SincNet/data/20261119-satiq-oxford-thun-full-v1/source",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/data/20261119-pamf-satiq-oxford-thun-v1/source"
+  },
+  "historical_files": {
+    "automation_reports\\CV-SincNet\\20261119-phase1-pamf-satiq-header-s2026111902-r01\\backbone_crop_epochs.jsonl": {
+      "rows": 20,
+      "e20": {
+        "arm": "backbone_crop",
+        "epoch": 20,
+        "updates": 540,
+        "uk_train_ce": 3.1123887902856295,
+        "uk_val": {
+          "accuracy": 0.08550185710191727,
+          "ce": 3.000659704208374
+        },
+        "seconds": 13.01157064596191,
+        "peak_gpu_allocated_mib": 168.17138671875
+      }
+    },
+    "automation_reports\\CV-SincNet\\20261119-phase1-pamf-satiq-header-s2026111902-r01\\backbone_full_epochs.jsonl": {
+      "rows": 20,
+      "e20": {
+        "arm": "backbone_full",
+        "epoch": 20,
+        "updates": 540,
+        "uk_train_ce": 2.909574711982718,
+        "uk_val": {
+          "accuracy": 0.07434944063425064,
+          "ce": 3.038364887237549
+        },
+        "seconds": 21.11919846595265,
+        "peak_gpu_allocated_mib": 1590.53466796875
+      }
+    },
+    "automation_reports\\CV-SincNet\\20261119-phase1-pamf-satiq-header-s2026111902-r01\\pamf_crop_epochs.jsonl": {
+      "rows": 20,
+      "e20": {
+        "arm": "pamf_crop",
+        "epoch": 20,
+        "updates": 540,
+        "uk_train_ce": 3.109450109434633,
+        "uk_val": {
+          "accuracy": 0.08178438991308212,
+          "ce": 3.0116896629333496
+        },
+        "seconds": 16.997711857780814,
+        "peak_gpu_allocated_mib": 168.8291015625
+      }
+    },
+    "automation_reports\\CV-SincNet\\20261119-phase1-pamf-satiq-header-s2026111902-r01\\pamf_full_epochs.jsonl": {
+      "rows": 20,
+      "e20": {
+        "arm": "pamf_full",
+        "epoch": 20,
+        "updates": 540,
+        "uk_train_ce": 2.903575208358405,
+        "uk_val": {
+          "accuracy": 0.06319702416658401,
+          "ce": 3.046503782272339
+        },
+        "seconds": 24.886319072917104,
+        "peak_gpu_allocated_mib": 1593.0595703125
+      }
+    },
+    "automation_reports\\CV-SincNet\\20261119-phase1-pamf-satiq-s2026111902-r03\\backbone_ce_epochs.jsonl": {
+      "rows": 20,
+      "e20": {
+        "epoch": 20,
+        "updates": 540,
+        "uk_train_ce": 3.1096278624203237,
+        "uk_val": {
+          "accuracy": 0.08921933174133301,
+          "ce": 3.000924587249756
+        },
+        "seconds": 12.997446404071525,
+        "peak_gpu_allocated_mib": 167.92138671875
+      }
+    },
+    "automation_reports\\CV-SincNet\\20261119-phase1-pamf-satiq-s2026111902-r03\\pamf_ce_epochs.jsonl": {
+      "rows": 20,
+      "e20": {
+        "epoch": 20,
+        "updates": 540,
+        "uk_train_ce": 3.111840895404524,
+        "uk_val": {
+          "accuracy": 0.07806691527366638,
+          "ce": 3.0161969661712646
+        },
+        "seconds": 20.028999048983678,
+        "peak_gpu_allocated_mib": 168.5791015625
+      }
+    }
+  },
+  "milestones": {
+    "e1": {
+      "arm": "pamf_full",
+      "epoch": 1,
+      "updates": 27,
+      "uk_train_ce": 3.1979277532710064,
+      "uk_val": {
+        "accuracy": 0.03345724940299988,
+        "ce": 3.123833179473877,
+        "correct": 9,
+        "total": 269,
+        "best_correct": 9
+      },
+      "seconds": 1.748875165823847,
+      "peak_gpu_allocated_mib": 1593.05322265625
+    },
+    "e20": {
+      "arm": "pamf_full",
+      "epoch": 20,
+      "updates": 540,
+      "uk_train_ce": 2.902500372472163,
+      "uk_val": {
+        "accuracy": 0.0706319734454155,
+        "ce": 3.0521769523620605,
+        "correct": 19,
+        "total": 269,
+        "best_correct": 25
+      },
+      "seconds": 23.537054710788652,
+      "peak_gpu_allocated_mib": 1593.0595703125
+    },
+    "e50": {
+      "arm": "pamf_full",
+      "epoch": 50,
+      "updates": 1350,
+      "uk_train_ce": 2.689210607530933,
+      "uk_val": {
+        "accuracy": 0.07806691527366638,
+        "ce": 2.9625906944274902,
+        "correct": 21,
+        "total": 269,
+        "best_correct": 28
+      },
+      "seconds": 60.42784514790401,
+      "peak_gpu_allocated_mib": 1593.0595703125
+    },
+    "e100": {
+      "arm": "pamf_full",
+      "epoch": 100,
+      "updates": 2700,
+      "uk_train_ce": 2.4102673221673503,
+      "uk_val": {
+        "accuracy": 0.11152416467666626,
+        "ce": 2.892070770263672,
+        "correct": 30,
+        "total": 269,
+        "best_correct": 38
+      },
+      "seconds": 122.5538611728698,
+      "peak_gpu_allocated_mib": 1593.0595703125
+    },
+    "e167": {
+      "arm": "pamf_full",
+      "epoch": 167,
+      "updates": 4509,
+      "uk_train_ce": 2.00399659280923,
+      "uk_val": {
+        "accuracy": 0.115241639316082,
+        "ce": 2.773393154144287,
+        "correct": 31,
+        "total": 269,
+        "best_correct": 43
+      },
+      "seconds": 208.68940297793597,
+      "peak_gpu_allocated_mib": 1593.0595703125
+    },
+    "e250": {
+      "arm": "pamf_full",
+      "epoch": 250,
+      "updates": 6750,
+      "uk_train_ce": 1.1694603606584637,
+      "uk_val": {
+        "accuracy": 0.08921933174133301,
+        "ce": 3.1245980262756348,
+        "correct": 24,
+        "total": 269,
+        "best_correct": 50
+      },
+      "seconds": 315.6127129357774,
+      "peak_gpu_allocated_mib": 1593.0595703125
+    },
+    "e400": {
+      "arm": "pamf_full",
+      "epoch": 400,
+      "updates": 10800,
+      "uk_train_ce": 0.736603431552824,
+      "uk_val": {
+        "accuracy": 0.10037174820899963,
+        "ce": 3.058201789855957,
+        "correct": 27,
+        "total": 269,
+        "best_correct": 50
+      },
+      "seconds": 506.0902716999408,
+      "peak_gpu_allocated_mib": 1593.0595703125
+    },
+    "e500": {
+      "arm": "pamf_full",
+      "epoch": 500,
+      "updates": 13500,
+      "uk_train_ce": 0.5973955787393594,
+      "uk_val": {
+        "accuracy": 0.10780669003725052,
+        "ce": 3.0698578357696533,
+        "correct": 29,
+        "total": 269,
+        "best_correct": 50
+      },
+      "seconds": 633.096140652895,
+      "peak_gpu_allocated_mib": 1593.0595703125
+    },
+    "e600": {
+      "arm": "pamf_full",
+      "epoch": 600,
+      "updates": 16200,
+      "uk_train_ce": 0.5059109896737358,
+      "uk_val": {
+        "accuracy": 0.08550185710191727,
+        "ce": 3.056682586669922,
+        "correct": 23,
+        "total": 269,
+        "best_correct": 50
+      },
+      "seconds": 757.5959984238725,
+      "peak_gpu_allocated_mib": 1593.0595703125
+    }
+  },
+  "last": {
+    "arm": "pamf_full",
+    "epoch": 732,
+    "updates": 19764,
+    "uk_train_ce": 0.39383968791635915,
+    "uk_val": {
+      "accuracy": 0.12639404833316803,
+      "ce": 3.067687749862671,
+      "correct": 34,
+      "total": 269,
+      "best_correct": 50
+    },
+    "seconds": 920.8988278869074,
+    "peak_gpu_allocated_mib": 1593.0595703125
+  },
+  "count": 732,
+  "best_validation_accuracy": {
+    "arm": "pamf_full",
+    "epoch": 180,
+    "updates": 4860,
+    "uk_train_ce": 1.7978285388193929,
+    "uk_val": {
+      "accuracy": 0.1858736127614975,
+      "ce": 2.87416672706604,
+      "correct": 50,
+      "total": 269,
+      "best_correct": 50
+    },
+    "seconds": 225.54392808489501,
+    "peak_gpu_allocated_mib": 1593.0595703125
+  },
+  "minimum_validation_loss": {
+    "arm": "pamf_full",
+    "epoch": 171,
+    "updates": 4617,
+    "uk_train_ce": 1.9231607501161394,
+    "uk_val": {
+      "accuracy": 0.14498141407966614,
+      "ce": 2.749917984008789,
+      "correct": 39,
+      "total": 269,
+      "best_correct": 43
+    },
+    "seconds": 213.82894200878218,
+    "peak_gpu_allocated_mib": 1593.0595703125
+  },
+  "intervals": [
+    {
+      "from_epoch": 1,
+      "to_epoch": 20,
+      "train_loss_mean": 2.9874723900754545,
+      "validation_loss_mean": 3.0404184818267823,
+      "validation_accuracy_mean": 0.05910780765116215,
+      "validation_accuracy_peak": 0.09293680638074875
+    },
+    {
+      "from_epoch": 21,
+      "to_epoch": 100,
+      "train_loss_mean": 2.6298733682949775,
+      "validation_loss_mean": 2.908463278412819,
+      "validation_accuracy_mean": 0.08787174830213189,
+      "validation_accuracy_peak": 0.141263946890831
+    },
+    {
+      "from_epoch": 101,
+      "to_epoch": 250,
+      "train_loss_mean": 1.807404330639826,
+      "validation_loss_mean": 2.9448445590337116,
+      "validation_accuracy_mean": 0.11499380528926849,
+      "validation_accuracy_peak": 0.1858736127614975
+    },
+    {
+      "from_epoch": 251,
+      "to_epoch": 500,
+      "train_loss_mean": 0.8042758908905046,
+      "validation_loss_mean": 3.0576368017196653,
+      "validation_accuracy_mean": 0.10428252899646759,
+      "validation_accuracy_peak": 0.141263946890831
+    },
+    {
+      "from_epoch": 501,
+      "to_epoch": 732,
+      "train_loss_mean": 0.4805717712135765,
+      "validation_loss_mean": 3.0370846976493966,
+      "validation_accuracy_mean": 0.11658761785205068,
+      "validation_accuracy_peak": 0.14869888126850128
+    }
+  ]
+}
