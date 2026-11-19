@@ -1,0 +1,15 @@
+# 同报头 SatIQ 和 PAMF 第 5 轮单包全波束对照
+
+[配置](experiment.json) · [事件](events.jsonl) · [正式训练](../20261120-phase1-satiq-ccs2023-header-matched-sup200-s2026092701-r01/report.md)
+
+两种方法都使用正式训练固定第 5 轮（141,125 步）检查点。沿用首轮评分的 46,785 个 L 注册包和 49,814 个 V 查询。每条查询面对全部 3,103 个波束。两方报告相同余弦原型的 Top-1，PAMF 另报直接分类头。源 L 白化作为辅助。两组训练继续原计划，独立 T 不进入这个进程。
+
+本地核对了不同来源退出、上游未留下检查点时退出、固定两组路径和实际调用参数，以及两份精确评分齐全才发布结果。首轮已在 N607 的真实源数据上执行过同一评分程序。调度等待两个第 5 轮检查点后才申请 GPU。
+
+## 调度状态
+
+**VERIFIED 已排队。** 2026-11-20T03:36:55+08:00 在 N607 独立读回 PID 2284803 的命令、工作目录和等待日志，确认上游正式训练控制 PID 为 2248959。等待进程未占用 GPU，结果尚未生成。
+
+- 调度日志 `/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-matched-source-e5-s2026111907-r01/dispatch.log`
+- 两组评分日志 `/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-matched-source-e5-s2026111907-r01/readout.log`
+- 两组完成后的冻结评分 `/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-matched-source-e5-s2026111907-r01/source_e5_closed_set.json`
