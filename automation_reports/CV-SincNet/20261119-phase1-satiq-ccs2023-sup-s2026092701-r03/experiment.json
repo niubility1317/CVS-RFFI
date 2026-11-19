@@ -1,0 +1,207 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261119-phase1-satiq-ccs2023-sup-s2026092701-r03",
+  "group_id": "phase1-satiq-ccs2023-fully-supervised",
+  "display_name": "SatIQ CCS 2023 supervised 100 epochs with full-rate temporal bins",
+  "description": "Matched SatIQ baseline and PAMF full-rate dual-path supervision, 11,000-point IQ with five ordered bins per raw symbol.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF",
+    "supervised",
+    "waveform-length",
+    "paper-parity",
+    "beam-label"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261119-phase1-satiq-beam66-wide-s2026092701-r01"
+  ],
+  "replaces_run_id": "20261119-phase1-satiq-ccs2023-sup-s2026092701-r02",
+  "authorization": "User requested PAMF-SUP adapted to SatIQ, no early augmentation, 100 epochs; all arms fully supervised.",
+  "code": {
+    "commit": "7da1fe31a9ea9fb2366ceba3171275071ac7d3c4",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python N607 FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03"
+  },
+  "data": {
+    "dataset": "Oxford SatIQ Zenodo 8220494, first 1010464 chronological packets",
+    "version": "8220494",
+    "representation": "11000 IQ samples at 25 MS/s, shared joint per-packet minmax",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/{L,V}_index.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "source_receivers": [
+      "Oxford single receiver"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2023-03-22 through part of 2023-04-14 UTC"
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 910464,
+      "V": 50000,
+      "U_s": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "satiq_oxford_ccs2023_supervised_reindexed_v1_2026111905",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/V_index.npz",
+    "support_query_ref": "Transient source V enrollment K1/16. Independent T (50000) separately staged; no training access.",
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source development. Nominal paper reconstruction; no hidden paper shuffle recovered."
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "provenance_verdict": "SCRATCH_ONLY",
+    "selection_rule": "Source only: fixed early observations 5000/20000 and prespecified epoch validations. Official comparison independent test after selection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "One 100-epoch paper_campaign owner waiting for existing verified caches",
+    "gpu_policy": "Physical GPUs 0–7, dispatch preference 7,6,5,4,3,2,1,0; at most one new row per GPU and two visible compute processes total",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/logs",
+    "local_artifact_root": "E:\\type10-7\\local_data\\satiq_oxford_ccs2023_supervised_20261119_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_campaign /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/configs/pamf_satiq_ccs2023_supervised_20261119.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01 /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03 --gpus 7 6 5 4 3 2 1 0 --reuse-cache",
+    "stop_rule": "Each row completes 100 data epochs. Full source V at 5000/20000 steps and prespecified epoch boundaries.",
+    "cache_command": "Reuse the already running CPU cache construction from 20261119-phase1-satiq-ccs2023-sup-s2026092701-r01; its GPU dispatch is reserved and superseded.",
+    "transfer_evidence": "E:\\type10-7\\local_data\\satiq_oxford_ccs2023_supervised_20261119_r01\\transfer.log",
+    "controller_log": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/controller.log"
+  },
+  "expected_artifacts": [
+    "owner.json",
+    "smoke_SATIQ/complete.json",
+    "smoke_PAMF_METRIC/complete.json",
+    "*/steps.jsonl",
+    "*/resolved_config.json",
+    "*/s0005000.pt",
+    "*/s0020000.pt",
+    "*/s0028225.pt",
+    "*/s2822500.pt",
+    "*/complete.json",
+    "matrix_outcomes.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source V K1/K16 top1",
+      "same-satellite AUC/EER",
+      "different-satellite AUC/EER",
+      "PAMF head CE/top1",
+      "individual train CE, MSE and triplet",
+      "PAMF within-satellite CE, two view CE, and posterior KL"
+    ],
+    "dimensions": [
+      "1375 source K1/K16 reference classes and 12785 matched queries",
+      "28225 updates and 903200 distinct sampled records per epoch; 2822500 updates in 100 epochs"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "SATIQ",
+      "method": "SatIQ v1.0.2 parity",
+      "purpose": "reference autoencoder with angular triplet",
+      "config_ref": "configs/pamf_satiq_ccs2023_supervised_20261119.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/SATIQ/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111906,
+        "augmentation": null,
+        "support": 2026111907,
+        "evaluation": 2026111907
+      },
+      "seed_notes": "Shared deterministic class-pair batching and validation references. No synthetic augmentation.",
+      "k": null,
+      "scenario": "Oxford native real received, paper-style random message split",
+      "optimizer": "Adam eps=1e-7",
+      "lr": 1e-05,
+      "epochs": 100,
+      "fl_rounds": null,
+      "budget_ref": "28225 full 8x4 batches per epoch. 100 epochs. Identical physical sampling and ordering across arms.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/SATIQ",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/logs/SATIQ.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train train /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/configs/pamf_satiq_ccs2023_supervised_20261119.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/SATIQ --arm SATIQ",
+      "expected_artifacts": []
+    },
+    {
+      "row_id": "PAMF_SUP",
+      "method": "SatIQ-adapted PAMF-SUP",
+      "purpose": "Fused CE with supervised within-satellite competing beams, two native view CEs and same-packet detached KL.",
+      "config_ref": "configs/pamf_satiq_ccs2023_supervised_20261119.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/PAMF_SUP/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111906,
+        "augmentation": null,
+        "support": 2026111907,
+        "evaluation": 2026111907
+      },
+      "seed_notes": "Shared deterministic class-pair batching and validation references. No synthetic augmentation.",
+      "k": null,
+      "scenario": "Oxford native real received, paper-style random message split",
+      "optimizer": "Adam eps=1e-7",
+      "lr": 0.0003,
+      "epochs": 100,
+      "fl_rounds": null,
+      "budget_ref": "28225 full 8x4 batches per epoch. 100 epochs. Identical physical sampling and ordering across arms.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/PAMF_SUP",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/logs/PAMF_SUP.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train train /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/configs/pamf_satiq_ccs2023_supervised_20261119.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/PAMF_SUP --arm PAMF_SUP",
+      "expected_artifacts": []
+    },
+    {
+      "row_id": "PAMF_METRIC",
+      "method": "PAMF CE+metric",
+      "purpose": "Exact PAMF-SUP with relative weight 1 angular semi-hard triplet.",
+      "config_ref": "configs/pamf_satiq_ccs2023_supervised_20261119.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/PAMF_METRIC/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111906,
+        "augmentation": null,
+        "support": 2026111907,
+        "evaluation": 2026111907
+      },
+      "seed_notes": "Shared deterministic class-pair batching and validation references. No synthetic augmentation.",
+      "k": null,
+      "scenario": "Oxford native real received, paper-style random message split",
+      "optimizer": "Adam eps=1e-7",
+      "lr": 0.0003,
+      "epochs": 100,
+      "fl_rounds": null,
+      "budget_ref": "28225 full 8x4 batches per epoch. 100 epochs. Identical physical sampling and ordering across arms.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/PAMF_METRIC",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/logs/PAMF_METRIC.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train train /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/configs/pamf_satiq_ccs2023_supervised_20261119.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/PAMF_METRIC --arm PAMF_METRIC",
+      "expected_artifacts": []
+    }
+  ],
+  "notes": [
+    "Full release reindexed and original partition indices unavailable. Collision-free (sat,beam) tuple semantics.",
+    "907716 labelled packets over 3103 pairs eligible for 4-distinct-per-class sampling. Same source L/V for all rows.",
+    "PyTorch adaptation of TensorFlow benchmark and corrected score-blind paired evaluation.",
+    "Augmentation disabled for all 100 epochs. Views are deterministic representations of one measured packet.",
+    "PAMF [B,2,11000] input, original-rate conv over 11 ordered symbols with five pooled temporal bins each. Raw and derived common representations 160 each, fused 320, logits 3103."
+  ],
+  "registered_at": "2026-11-19T11:03:53+00:00"
+}

@@ -8,6 +8,8 @@
 
 2026 年 11 月 19 日 18:50（香港时间）读回确认 N607 监督调度进程 `1925785` 已建立，工作目录为 `/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-ccs2023-sup-s2026092701-r02`。正式 GPU 训练等待已验证的完整缓存。旧 CPU 准备进程 `1920076` 继续向公共数据目录写缓存，GPU 派发入口以 `STOPPED_BEFORE_GPU.txt` 保留替代证据。[登记](experiment.json) · [状态](events.jsonl)
 
+用户要求全速率分支保留每个符号内部的时间位置，调度进程 `1925785` 已在 GPU 派发前结束，数据缓存继续供新版使用。[有序时间区间版本](../20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/report.md)
+
 - run_id：`20261119-phase1-satiq-ccs2023-sup-s2026092701-r02`
 - group_id：`phase1-satiq-ccs2023-fully-supervised`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
