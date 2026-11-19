@@ -1,0 +1,499 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261120-phase1-pamf-repl-styledose-clean-m9-r01",
+  "group_id": "phase1-pamf-repl-weight-clean",
+  "display_name": "十类 Tri 源日期风格供体与低剂量对照",
+  "description": "原供体、同日供体、跨日供体与 U 权重 0.375、0.75、1.5 的全因子矩阵。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "tri-repl-clean-loss-weight"
+  ],
+  "tags": [
+    "PAMF",
+    "REPL",
+    "clean",
+    "gradient"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-paper-completion-m119-r03",
+    "20261119-phase1-pamf-repl-adaptivekl-clean-m14-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求继续批量探索 Tri clean、自适应和更低的总 U 权重，GPU 7 除外。",
+  "code": {
+    "commit": "actual committed release identity in runtime.json",
+    "checkout": "isolated task worktree",
+    "environment": "N607 CVS-RFFI existing Python, FP32",
+    "cwd": "PROJECT/releases/20261120-phase1-pamf-repl-styledose-clean-m9-r01-release"
+  },
+  "data": {
+    "dataset": "original ten-class ManyRx and six-source receiver contracts",
+    "version": null,
+    "representation": null,
+    "contract_ref": "context.handles per row protocol_id",
+    "physical_ids_ref": "original fixed source/test contracts",
+    "label_map_ref": null,
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "labeled training",
+      "U_s": "TX blind in training; offline diagnostic only after E50",
+      "V": "source validation without gradients"
+    },
+    "train_ratio": "original fixed labeled/unlabeled/validation roles",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": "fixed clean cross-date, cross-RX and double-cross; prediction before independent scoring",
+    "leo_config_ref": "not applicable: clean-only, no new satellite observations"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "frozen raw clean prediction; independent truth-last scoring",
+    "external_method_exception": null,
+    "claim_scope": "seed selected by previously exposed clean target; exploratory, not an independent blind evaluation"
+  },
+  "checkpoint": {
+    "initialization": "matching original same-setting source-only Tri E20 then own E21–E50",
+    "sources": [
+      "20261027-phase1-pamf-paper-completion-m119-r03"
+    ],
+    "contract_check_ref": "pamf_repl_component_guard.plan.parent with scoped priority matrix",
+    "provenance_verdict": "same source roles, physical IDs, seed and original source-only E20, no target-trained checkpoint",
+    "selection_rule": "all fixed rows E50; candidate design uses previously exposed clean, so exploration only"
+  },
+  "execution": {
+    "host": "N607 ordinary user",
+    "launch_owner": "codex-20261120-phase1-pamf-repl-styledose-clean-m9-r01",
+    "gpu_policy": "GPU 0–6; balanced free capacity; 12 GiB admission reserve; two processes including other owners",
+    "remote_run_root": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01",
+    "remote_log_root": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_repl_style_dose_20261120",
+    "launch_command": "python -m experiments.pamf_repl_style_dose.publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+    "stop_rule": "On protocol, nonfinite or launch failure stop new dispatch; preserve all outputs and healthy workers; no low-score stops."
+  },
+  "expected_artifacts": [
+    "9 real E20 no-query optimizer-step smokes",
+    "9 fixed E50 clean predictions and independent same-row truth-last scores",
+    "9 frozen-only source-U pseudo-label diagnostics",
+    "stepwise donor support and use, source validation, per-group gradients and sampled AdamW updates"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean accuracy and macro-F1",
+      "L CE and source validation",
+      "U acceptance, unique coverage and post-freeze correctness",
+      "group raw and applied gradients, reference conflicts and caps",
+      "every-100-step actual joint and same-state reference-only AdamW direction",
+      "per-step original-valid, same/cross-date support, selected cross-date and donor changes"
+    ],
+    "dimensions": [
+      "ten-class and six-source",
+      "seed 2026092701",
+      "raw clean",
+      "TX/RX/day"
+    ],
+    "prediction_ref": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/readouts/ROW/predictions",
+    "scorer_ref": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/readouts/ROW/scores"
+  },
+  "rows": [
+    {
+      "row_id": "ten_class-repl-style_original_u0375-s2026092701",
+      "method": "Tri priority style_original_u0375",
+      "purpose": "{'setting': 'ten_class', 'weight': 0.375, 'shallow_factor': 2.0, 'joint_weight': 0.0, 'kl_factor': 1.5, 'extrap_coefficient': 0.0, 'ce_views': [0.0, 0.0, 0.0, 0.0], 'kl_views': [0.8, 0.0, 0.0, 0.0], 'reference': 'shallow', 'mode': 'soft', 'alpha': 0.0, 'beta': 0.0, 'adaptive_kl_view': 'ordinary', 'adaptive_signal': 'vote', 'adaptive_strength': -1.0, 'date_donor': 'original'}",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/configs/train__ten_class-repl-style_original_u0375-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/F/ten_class-repl-style_original_u0375-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/F/ten_class-repl-style_original_u0375-s2026092701/source",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/logs/train__ten_class-repl-style_original_u0375-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/configs/train__ten_class-repl-style_original_u0375-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-style_original_u0375-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-style_original_u0375-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-style_original_u0375-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz",
+        "source/segment30/step_metrics.jsonl.gz",
+        "source/segment50/step_metrics.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-style_original_u075-s2026092701",
+      "method": "Tri priority style_original_u075",
+      "purpose": "{'setting': 'ten_class', 'weight': 0.75, 'shallow_factor': 2.0, 'joint_weight': 0.0, 'kl_factor': 1.5, 'extrap_coefficient': 0.0, 'ce_views': [0.0, 0.0, 0.0, 0.0], 'kl_views': [0.8, 0.0, 0.0, 0.0], 'reference': 'shallow', 'mode': 'soft', 'alpha': 0.0, 'beta': 0.0, 'adaptive_kl_view': 'ordinary', 'adaptive_signal': 'vote', 'adaptive_strength': -1.0, 'date_donor': 'original'}",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/configs/train__ten_class-repl-style_original_u075-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/F/ten_class-repl-style_original_u075-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/F/ten_class-repl-style_original_u075-s2026092701/source",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/logs/train__ten_class-repl-style_original_u075-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/configs/train__ten_class-repl-style_original_u075-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-style_original_u075-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-style_original_u075-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-style_original_u075-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz",
+        "source/segment30/step_metrics.jsonl.gz",
+        "source/segment50/step_metrics.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-style_original_u15-s2026092701",
+      "method": "Tri priority style_original_u15",
+      "purpose": "{'setting': 'ten_class', 'weight': 1.5, 'shallow_factor': 2.0, 'joint_weight': 0.0, 'kl_factor': 1.5, 'extrap_coefficient': 0.0, 'ce_views': [0.0, 0.0, 0.0, 0.0], 'kl_views': [0.8, 0.0, 0.0, 0.0], 'reference': 'shallow', 'mode': 'soft', 'alpha': 0.0, 'beta': 0.0, 'adaptive_kl_view': 'ordinary', 'adaptive_signal': 'vote', 'adaptive_strength': -1.0, 'date_donor': 'original'}",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/configs/train__ten_class-repl-style_original_u15-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/F/ten_class-repl-style_original_u15-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/F/ten_class-repl-style_original_u15-s2026092701/source",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/logs/train__ten_class-repl-style_original_u15-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/configs/train__ten_class-repl-style_original_u15-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-style_original_u15-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-style_original_u15-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-style_original_u15-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz",
+        "source/segment30/step_metrics.jsonl.gz",
+        "source/segment50/step_metrics.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-style_same_day_u0375-s2026092701",
+      "method": "Tri priority style_same_day_u0375",
+      "purpose": "{'setting': 'ten_class', 'weight': 0.375, 'shallow_factor': 2.0, 'joint_weight': 0.0, 'kl_factor': 1.5, 'extrap_coefficient': 0.0, 'ce_views': [0.0, 0.0, 0.0, 0.0], 'kl_views': [0.8, 0.0, 0.0, 0.0], 'reference': 'shallow', 'mode': 'soft', 'alpha': 0.0, 'beta': 0.0, 'adaptive_kl_view': 'ordinary', 'adaptive_signal': 'vote', 'adaptive_strength': -1.0, 'date_donor': 'same_day'}",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/configs/train__ten_class-repl-style_same_day_u0375-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/F/ten_class-repl-style_same_day_u0375-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/F/ten_class-repl-style_same_day_u0375-s2026092701/source",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/logs/train__ten_class-repl-style_same_day_u0375-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/configs/train__ten_class-repl-style_same_day_u0375-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-style_same_day_u0375-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-style_same_day_u0375-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-style_same_day_u0375-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz",
+        "source/segment30/step_metrics.jsonl.gz",
+        "source/segment50/step_metrics.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-style_same_day_u075-s2026092701",
+      "method": "Tri priority style_same_day_u075",
+      "purpose": "{'setting': 'ten_class', 'weight': 0.75, 'shallow_factor': 2.0, 'joint_weight': 0.0, 'kl_factor': 1.5, 'extrap_coefficient': 0.0, 'ce_views': [0.0, 0.0, 0.0, 0.0], 'kl_views': [0.8, 0.0, 0.0, 0.0], 'reference': 'shallow', 'mode': 'soft', 'alpha': 0.0, 'beta': 0.0, 'adaptive_kl_view': 'ordinary', 'adaptive_signal': 'vote', 'adaptive_strength': -1.0, 'date_donor': 'same_day'}",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/configs/train__ten_class-repl-style_same_day_u075-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/F/ten_class-repl-style_same_day_u075-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/F/ten_class-repl-style_same_day_u075-s2026092701/source",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/logs/train__ten_class-repl-style_same_day_u075-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/configs/train__ten_class-repl-style_same_day_u075-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-style_same_day_u075-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-style_same_day_u075-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-style_same_day_u075-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz",
+        "source/segment30/step_metrics.jsonl.gz",
+        "source/segment50/step_metrics.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-style_same_day_u15-s2026092701",
+      "method": "Tri priority style_same_day_u15",
+      "purpose": "{'setting': 'ten_class', 'weight': 1.5, 'shallow_factor': 2.0, 'joint_weight': 0.0, 'kl_factor': 1.5, 'extrap_coefficient': 0.0, 'ce_views': [0.0, 0.0, 0.0, 0.0], 'kl_views': [0.8, 0.0, 0.0, 0.0], 'reference': 'shallow', 'mode': 'soft', 'alpha': 0.0, 'beta': 0.0, 'adaptive_kl_view': 'ordinary', 'adaptive_signal': 'vote', 'adaptive_strength': -1.0, 'date_donor': 'same_day'}",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/configs/train__ten_class-repl-style_same_day_u15-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/F/ten_class-repl-style_same_day_u15-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/F/ten_class-repl-style_same_day_u15-s2026092701/source",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/logs/train__ten_class-repl-style_same_day_u15-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/configs/train__ten_class-repl-style_same_day_u15-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-style_same_day_u15-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-style_same_day_u15-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-style_same_day_u15-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz",
+        "source/segment30/step_metrics.jsonl.gz",
+        "source/segment50/step_metrics.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-style_cross_day_u0375-s2026092701",
+      "method": "Tri priority style_cross_day_u0375",
+      "purpose": "{'setting': 'ten_class', 'weight': 0.375, 'shallow_factor': 2.0, 'joint_weight': 0.0, 'kl_factor': 1.5, 'extrap_coefficient': 0.0, 'ce_views': [0.0, 0.0, 0.0, 0.0], 'kl_views': [0.8, 0.0, 0.0, 0.0], 'reference': 'shallow', 'mode': 'soft', 'alpha': 0.0, 'beta': 0.0, 'adaptive_kl_view': 'ordinary', 'adaptive_signal': 'vote', 'adaptive_strength': -1.0, 'date_donor': 'cross_day'}",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/configs/train__ten_class-repl-style_cross_day_u0375-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/F/ten_class-repl-style_cross_day_u0375-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/F/ten_class-repl-style_cross_day_u0375-s2026092701/source",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/logs/train__ten_class-repl-style_cross_day_u0375-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/configs/train__ten_class-repl-style_cross_day_u0375-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-style_cross_day_u0375-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-style_cross_day_u0375-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-style_cross_day_u0375-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz",
+        "source/segment30/step_metrics.jsonl.gz",
+        "source/segment50/step_metrics.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-style_cross_day_u075-s2026092701",
+      "method": "Tri priority style_cross_day_u075",
+      "purpose": "{'setting': 'ten_class', 'weight': 0.75, 'shallow_factor': 2.0, 'joint_weight': 0.0, 'kl_factor': 1.5, 'extrap_coefficient': 0.0, 'ce_views': [0.0, 0.0, 0.0, 0.0], 'kl_views': [0.8, 0.0, 0.0, 0.0], 'reference': 'shallow', 'mode': 'soft', 'alpha': 0.0, 'beta': 0.0, 'adaptive_kl_view': 'ordinary', 'adaptive_signal': 'vote', 'adaptive_strength': -1.0, 'date_donor': 'cross_day'}",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/configs/train__ten_class-repl-style_cross_day_u075-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/F/ten_class-repl-style_cross_day_u075-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/F/ten_class-repl-style_cross_day_u075-s2026092701/source",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/logs/train__ten_class-repl-style_cross_day_u075-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/configs/train__ten_class-repl-style_cross_day_u075-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-style_cross_day_u075-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-style_cross_day_u075-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-style_cross_day_u075-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz",
+        "source/segment30/step_metrics.jsonl.gz",
+        "source/segment50/step_metrics.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-style_cross_day_u15-s2026092701",
+      "method": "Tri priority style_cross_day_u15",
+      "purpose": "{'setting': 'ten_class', 'weight': 1.5, 'shallow_factor': 2.0, 'joint_weight': 0.0, 'kl_factor': 1.5, 'extrap_coefficient': 0.0, 'ce_views': [0.0, 0.0, 0.0, 0.0], 'kl_views': [0.8, 0.0, 0.0, 0.0], 'reference': 'shallow', 'mode': 'soft', 'alpha': 0.0, 'beta': 0.0, 'adaptive_kl_view': 'ordinary', 'adaptive_signal': 'vote', 'adaptive_strength': -1.0, 'date_donor': 'cross_day'}",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/configs/train__ten_class-repl-style_cross_day_u15-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/F/ten_class-repl-style_cross_day_u15-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Selected using previous target clean performance; exploratory only.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/F/ten_class-repl-style_cross_day_u15-s2026092701/source",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/logs/train__ten_class-repl-style_cross_day_u15-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261120-phase1-pamf-repl-styledose-clean-m9-r01/configs/train__ten_class-repl-style_cross_day_u15-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-style_cross_day_u15-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-style_cross_day_u15-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-style_cross_day_u15-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz",
+        "source/segment30/step_metrics.jsonl.gz",
+        "source/segment50/step_metrics.jsonl.gz"
+      ]
+    }
+  ],
+  "notes": [
+    "Use the ten-class hard-vote ordinary KL anchor on the matched source-only seed 01 E20, continuing to fixed E50.",
+    "Only vary total U dose and detached style donors. Same pseudo class, different source receiver, and original acceptance and fallback are preserved.",
+    "All nine arms include the original 0.95 mask and .5 style activation. Pseudo-label CE, joint contrast and RX extrapolated CE are disabled.",
+    "Historical clean is exposed. All candidates are fixed before current inference. No target or U truth in training or checkpoint selection."
+  ]
+}
