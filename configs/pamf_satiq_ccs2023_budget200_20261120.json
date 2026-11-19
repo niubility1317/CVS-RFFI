@@ -1,0 +1,36 @@
+{
+  "parent_epoch": 100,
+  "final_epoch": 200,
+  "source": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source",
+  "cache": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source",
+  "rows": [
+    {
+      "name": "SATIQ",
+      "arm": "SATIQ",
+      "parent": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/SATIQ",
+      "parent_pid": 1941032,
+      "gpu": 7
+    },
+    {
+      "name": "NATIVE160",
+      "arm": "PAMF_SUP",
+      "parent": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-native160-sup100-s2026092701-r01/PAMF_SUP",
+      "parent_pid": 2040059,
+      "gpu": 5
+    },
+    {
+      "name": "FUSED256",
+      "arm": "PAMF_SUP",
+      "parent": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01/PAMF_SUP",
+      "parent_pid": 2041163,
+      "gpu": 6
+    },
+    {
+      "name": "PROTO320",
+      "arm": "PAMF_SUP",
+      "parent": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused320-extproto-sup100-s2026092701-r01/PAMF_SUP",
+      "parent_pid": 2054822,
+      "gpu": 1
+    }
+  ]
+}

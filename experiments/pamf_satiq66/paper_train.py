@@ -157,11 +157,46 @@ def save(path, model, optimizer, sampler, step, epoch, validation):
     temporary = path.with_suffix(".partial")
     with temporary.open("xb") as writer:
         torch.save(dict(model=model.state_dict(), optimizer=optimizer.state_dict(), updates=step, epoch=epoch,
-                        sampling_rng=sampler.rng.bit_generator.state, validation=validation), writer)
+                        sampling_rng=sampler.rng.bit_generator.state, validation=validation,
+                        torch_rng=torch.get_rng_state(),
+                        cuda_rng=torch.cuda.get_rng_state() if torch.cuda.is_initialized() else None), writer)
     temporary.rename(path)
 
 
-def train(config, source, cache, out, arm, smoke=False):
+def restore_completed_epoch(checkpoint, config, model, optimizer, sampler):
+    parent = checkpoint.parent
+    previous = read_json(parent / "resolved_config.json")
+    complete = read_json(parent / "complete.json")
+    epoch = complete["epochs"]
+    step = epoch * sampler.steps_per_epoch
+    if (complete["mode"] != "supervised" or not 0 < epoch < config["epochs"]
+            or epoch != previous["epochs"] or complete["updates"] != step or previous["total_updates"] != step
+            or checkpoint.name != f"s{step:07d}.pt" or complete["arm"] != config["arm"]):
+        raise ValueError("Resume requires a completed shorter supervised source budget")
+    budget_fields = {"epochs", "early_validation_updates", "validation_epochs", "total_updates", "resume"}
+    if ({k: v for k, v in previous.items() if k not in budget_fields}
+            != {k: v for k, v in config.items() if k not in budget_fields}
+            or previous["source_roles"] != ["L", "V"] or previous["test_access"]):
+        raise ValueError("The previous source data or model contract differs")
+    frozen = torch.load(checkpoint, map_location="cpu", weights_only=True)
+    if frozen["epoch"] != epoch or frozen["updates"] != step or not frozen["validation"]:
+        raise ValueError("Checkpoint does not match the completed source epoch")
+    model.load_state_dict(frozen["model"], strict=True)
+    optimizer.load_state_dict(frozen["optimizer"])
+    sampler.rng.bit_generator.state = frozen["sampling_rng"]
+    restart_seed = None
+    if "torch_rng" in frozen:
+        torch.set_rng_state(frozen["torch_rng"])
+        if frozen["cuda_rng"] is not None:
+            torch.cuda.set_rng_state(frozen["cuda_rng"])
+    else:
+        # The original 100-epoch runs stored NumPy batching RNG but no Torch RNG.
+        restart_seed = config["model_seed"] + epoch
+        torch.manual_seed(restart_seed)
+    return dict(checkpoint=str(checkpoint.resolve()), epoch=epoch, updates=step, restart_torch_seed=restart_seed)
+
+
+def train(config, source, cache, out, arm, smoke=False, resume=None):
     classes, counts, roles = source_inputs(source, cache)
     device = cuda_device()
     model = make_model(config, arm, classes).to(device)
@@ -200,17 +235,23 @@ def train(config, source, cache, out, arm, smoke=False):
         total = limit
     val_panel = None if smoke else panel(roles["V"][1], classes, config["evaluation_seed"])
     satellites = device_array(classes[:, 0].astype(np.int64), device)
+    resolved = dict(config, arm=arm, trained_classes=len(classes), lr=lr, input_samples=input_samples,
+                    feature_dimensions=feature_dimensions, source=str(source.resolve()), cache=str(cache.resolve()),
+                    supervised=True, source_roles=["L", "V"], test_access=False,
+                    steps_per_epoch=sampler.steps_per_epoch, total_updates=total)
+    start_epoch, step = 0, 0
+    if resume is not None:
+        if smoke or "diagnostic_updates" in config:
+            raise ValueError("Epoch continuation requires the full supervised source budget")
+        resumed = restore_completed_epoch(resume, resolved, model, optimizer, sampler)
+        resolved["resume"] = resumed
+        start_epoch, step = resumed["epoch"], resumed["updates"]
     out.mkdir(exist_ok=False)
-    write_json(out / "resolved_config.json", dict(config, arm=arm, trained_classes=len(classes), lr=lr,
-                                                 input_samples=input_samples, feature_dimensions=feature_dimensions,
-                                                 source=str(source), cache=str(cache), supervised=True,
-                                                 source_roles=["L", "V"], test_access=False,
-                                                 steps_per_epoch=sampler.steps_per_epoch, total_updates=total))
+    write_json(out / "resolved_config.json", resolved)
     start = time.monotonic()
     window = {}
     n = 0
-    step = 0
-    batches = ((epoch, i, index) for epoch in range(1, epochs + 1)
+    batches = ((epoch, i, index) for epoch in range(start_epoch + 1, epochs + 1)
                for i, index in enumerate(sampler.epoch(), 1))
     with (out / "steps.jsonl").open("x", encoding="utf-8") as journal:
         for epoch, epoch_step, idx in batches:
@@ -341,7 +382,11 @@ if __name__ == "__main__":
     parser.add_argument("--arm", choices=ARMS)
     parser.add_argument("--gpus", nargs="+", type=int)
     parser.add_argument("--native-expansion", choices=tuple(EXTRA_WIDTH))
+    parser.add_argument("--resume", type=Path)
+    parser.add_argument("--final-epoch", type=int)
     args = parser.parse_args()
+    if (args.resume is None) != (args.final_epoch is None) or (args.resume and args.mode != "train"):
+        parser.error("--resume and --final-epoch must be used together in train mode")
     if args.mode == "launch":
         if not args.gpus:
             parser.error("launch requires physical GPUs")
@@ -354,4 +399,10 @@ if __name__ == "__main__":
         config = read_json(args.config)
         if args.native_expansion:
             config["native_expansion"] = args.native_expansion
-        train(config, args.source, args.cache, args.output, args.arm, args.mode == "smoke")
+        if args.resume:
+            if args.final_epoch <= config["epochs"]:
+                parser.error("--final-epoch must be greater than the existing budget")
+            checks = range((config["epochs"] // 10 + 1) * 10, args.final_epoch + 1, 10)
+            config["validation_epochs"] = sorted(set(config["validation_epochs"]) | set(checks) | {args.final_epoch})
+            config["epochs"] = args.final_epoch
+        train(config, args.source, args.cache, args.output, args.arm, args.mode == "smoke", args.resume)
