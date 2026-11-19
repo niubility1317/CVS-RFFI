@@ -26,7 +26,7 @@ ARMS = ("SATIQ", "PAMF_SUP", "PAMF_METRIC")
 
 
 class SourceBatches:
-    def __init__(self, labels, class_counts, seed, satellites=None):
+    def __init__(self, labels, class_counts, seed, satellites=None, *, pair_same_satellite=False):
         ordered = np.argsort(labels, kind="stable")
         boundaries = np.r_[0, np.cumsum(class_counts)]
         self.groups = [ordered[boundaries[k]:boundaries[k + 1]] for k, n in enumerate(class_counts) if n >= 4]
@@ -34,6 +34,9 @@ class SourceBatches:
         self.steps_per_epoch = int(self.counts.sum() // 8)
         self.rng = np.random.default_rng(seed)
         self.satellites = satellites
+        self.pair_same_satellite = pair_same_satellite
+        if pair_same_satellite and satellites is None:
+            raise ValueError("Same-satellite pairing requires the source satellite map")
 
     def group_by_satellite(self, order, labels):
         satellites = self.satellites[labels[order]]
@@ -48,12 +51,27 @@ class SourceBatches:
         leftovers = np.concatenate(leftovers)
         return np.r_[blocks[self.rng.permutation(len(blocks))].ravel(), self.rng.permutation(leftovers)]
 
+    def add_satellite_pairs(self, order, labels):
+        for start in range(0, len(order) - 8, 8):
+            end = start + 8
+            current = labels[order[start:end]]
+            satellites = self.satellites[current]
+            if np.unique(satellites).size < 8:
+                continue
+            future = labels[order[end:end + 16 * 8]].reshape(-1, 8)
+            donor_ok = (future != current[-1]).all(axis=1, keepdims=True)
+            can_join = np.isin(self.satellites[future], satellites[:-1]) & ~np.isin(future, current)
+            candidates = np.flatnonzero(donor_ok & can_join)
+            if len(candidates):
+                donor = end + candidates[0]
+                order[end - 1], order[donor] = order[donor], order[end - 1]
+
     def epoch(self):
         groups = np.concatenate([self.rng.permutation(g)[:4 * n].reshape(-1, 4)
                                  for g, n in zip(self.groups, self.counts, strict=True)])
         labels = np.repeat(np.arange(len(self.groups)), self.counts)
         order = self.rng.permutation(len(groups))
-        if self.satellites is not None:
+        if self.satellites is not None and not self.pair_same_satellite:
             # Half-batch satellite groups increase in-batch wrong-beam coverage.
             # The usual duplicate repair below keeps eight distinct beams.
             order = self.group_by_satellite(order, labels)
@@ -71,6 +89,8 @@ class SourceBatches:
                 if swap is None:
                     raise ValueError("Unable to form a complete batch of distinct beam identities")
                 order[b], order[swap] = order[swap], order[b]
+        if self.pair_same_satellite:
+            self.add_satellite_pairs(order[:usable], labels)
         return groups[order[:usable]].reshape(self.steps_per_epoch, 32)
 
 
@@ -220,8 +240,13 @@ def train(config, source, cache, out, arm, smoke=False, resume=None):
     lr = 1e-5 if arm == "SATIQ" else config["pamf_lr"]
     optimizer = torch.optim.Adam((p for p in model.parameters() if p.requires_grad), lr=lr, eps=1e-7)
     raw, labels, original = roles["L"]
-    grouped_satellites = classes[:, 0] if config.get("group_same_satellite_batches", False) else None
-    sampler = SourceBatches(original, counts, config["sampling_seed"], satellites=grouped_satellites)
+    grouped = config.get("group_same_satellite_batches", False)
+    paired = config.get("pair_same_satellite_batches", False)
+    if grouped and paired:
+        raise ValueError("Select one same-satellite batching strategy")
+    satellites_by_beam = classes[:, 0] if grouped or paired else None
+    sampler = SourceBatches(original, counts, config["sampling_seed"], satellites=satellites_by_beam,
+                            pair_same_satellite=paired)
     class_log_prior = None
     if config.get("prior_adjusted_sup", False):
         if arm != "PAMF_SUP":
