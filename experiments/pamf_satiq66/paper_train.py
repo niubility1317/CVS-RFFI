@@ -17,6 +17,7 @@ from .paper_baseline import PaperSatIQ, angular_triplet, paper_loss
 from .paper_eval import embeddings, metrics, normalize_packet, panel
 from .paper_pamf import PaperPAMF, branch_prototype_loss, reconstruction_target, supervised_loss
 from .paper_native_pamf import EXTRA_WIDTH, PaperNativePAMF, native_supervised_loss
+from .wide_model import FEATURES
 from .readout import gpu_ready
 from .train import cuda_device, device_array
 
@@ -169,6 +170,9 @@ def train(config, source, cache, out, arm, smoke=False):
     feature_dimensions = getattr(model, "feature_dimensions", 512 if arm == "SATIQ" else 320)
     reconstruction_weight = config.get("full_reconstruction_weight", 0)
     prototype_weight = config.get("branch_prototype_weight", 0)
+    expansion_prototype_weight = config.get("expansion_prototype_weight", 0)
+    if expansion_prototype_weight > 0 and (not native_only or feature_dimensions <= FEATURES):
+        raise ValueError("Expansion prototype supervision requires a widened native PAMF-SUP embedding")
     lr = 1e-5 if arm == "SATIQ" else config["pamf_lr"]
     optimizer = torch.optim.Adam((p for p in model.parameters() if p.requires_grad), lr=lr, eps=1e-7)
     raw, labels, original = roles["L"]
@@ -212,12 +216,17 @@ def train(config, source, cache, out, arm, smoke=False):
                 feature, reconstructed = model(x)
                 loss, stats = paper_loss(feature, reconstructed, x, y)
             elif native_only:
-                _, logits, branch_logits, branches = model(x, view_logits=True)
+                feature, logits, branch_logits, branches = model(x, view_logits=True)
                 loss, stats = native_supervised_loss(logits, branch_logits, y, satellites, config["pamf_sup"])
                 if prototype_weight > 0:
                     prototype = branch_prototype_loss(branches)
                     loss = loss + prototype_weight * prototype
                     stats["branch_prototype_ce"] = prototype.detach()
+                if expansion_prototype_weight > 0:
+                    expansion = feature[:, FEATURES:].unsqueeze(0)
+                    prototype = branch_prototype_loss(expansion)
+                    loss = loss + expansion_prototype_weight * prototype
+                    stats["expansion_prototype_ce"] = prototype.detach()
             else:
                 outputs = model(x, view_logits=True, reconstruct=reconstruction_weight > 0,
                                 capture_branches=prototype_weight > 0)
