@@ -1,0 +1,144 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261119-diagnostic-satiq-pamf-same-sat-batches-s2026092701-r01",
+  "group_id": "phase1-satiq-ccs2023-fully-supervised",
+  "display_name": "SatIQ PAMF same-satellite hard-negative batching diagnostic",
+  "description": "Match PAMF-Metric architecture and objective for one full source epoch. Group half-batches by satellite so in-batch triplets encounter wrong beams of the same satellite.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF",
+    "supervised",
+    "same-satellite",
+    "batch-sampling"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261119-phase1-satiq-ccs2023-sup-s2026092701-r03",
+    "20261119-diagnostic-satiq-waveform-span-s2026111907-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requested PAMF-SUP adapted to SatIQ, no early augmentation, 100 epochs; all arms fully supervised.",
+  "code": {
+    "commit": "1127980984d1dc48286028417904e254a7262375",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-diagnostic-satiq-pamf-same-sat-batches-s2026092701-r01",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python N607 FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-diagnostic-satiq-pamf-same-sat-batches-s2026092701-r01"
+  },
+  "data": {
+    "dataset": "Oxford SatIQ Zenodo 8220494, first 1010464 chronological packets",
+    "version": "8220494",
+    "representation": "11000 IQ samples at 25 MS/s, shared joint per-packet minmax",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/{L,V}_index.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "source_receivers": [
+      "Oxford single receiver"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2023-03-22 through part of 2023-04-14 UTC"
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 910464,
+      "V": 50000,
+      "U_s": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "satiq_oxford_ccs2023_supervised_reindexed_v1_2026111905",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/V_index.npz",
+    "support_query_ref": "Transient source V enrollment K1/16. Independent T (50000) separately staged; no training access.",
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source L/V only. Matched first-epoch diagnostic, held-out T unused."
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "provenance_verdict": "SCRATCH_ONLY",
+    "selection_rule": "Scratch with same initial weights seed; fixed source checkpoints 5000, 20000 and one full epoch."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Single source probe shell performing one smoke then one epoch",
+    "gpu_policy": "Physical GPU 0, add only one task worker if at least 4 GiB free and at most one incumbent compute worker.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-same-sat-batches-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-same-sat-batches-s2026092701-r01",
+    "local_artifact_root": "E:/type10-7/local_data/satiq_oxford_ccs2023_supervised_20261119_r01",
+    "launch_command": "CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train train /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-diagnostic-satiq-pamf-same-sat-batches-s2026092701-r01/configs/pamf_satiq_ccs2023_same_satellite_batches_probe_20261119.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-same-sat-batches-s2026092701-r01/PAMF_METRIC --arm PAMF_METRIC",
+    "stop_rule": "One data epoch, 28225 updates, validating at fixed 5000, 20000 and 28225 steps.",
+    "smoke_command": "CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train smoke /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-diagnostic-satiq-pamf-same-sat-batches-s2026092701-r01/configs/pamf_satiq_ccs2023_same_satellite_batches_probe_20261119.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-same-sat-batches-s2026092701-r01/smoke_PAMF_METRIC --arm PAMF_METRIC"
+  },
+  "expected_artifacts": [
+    "smoke_PAMF_METRIC/complete.json",
+    "PAMF_METRIC/steps.jsonl",
+    "PAMF_METRIC/resolved_config.json",
+    "PAMF_METRIC/s0005000.pt",
+    "PAMF_METRIC/s0020000.pt",
+    "PAMF_METRIC/s0028225.pt",
+    "PAMF_METRIC/complete.json",
+    "PAMF_METRIC.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source V K1/K16 top1",
+      "same-satellite AUC/EER",
+      "different-satellite AUC/EER",
+      "PAMF head CE/top1",
+      "individual train CE, MSE and triplet",
+      "PAMF within-satellite CE, two view CE, and posterior KL"
+    ],
+    "dimensions": [
+      "Identical source V panel of 1375 reference classes and 12785 queries; no independent test."
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "PAMF_METRIC",
+      "method": "PAMF-Metric with same-satellite batched negatives",
+      "purpose": "Test whether same-satellite negatives improve first-epoch source beam recognition.",
+      "config_ref": "configs/pamf_satiq_ccs2023_same_satellite_batches_probe_20261119.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-same-sat-batches-s2026092701-r01/PAMF_METRIC/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111906,
+        "augmentation": null,
+        "support": 2026111907,
+        "evaluation": 2026111907
+      },
+      "seed_notes": "Shared deterministic class-pair batching and validation references. No synthetic augmentation.",
+      "k": null,
+      "scenario": "Oxford native real received, paper-style random message split",
+      "optimizer": "Adam eps=1e-7",
+      "lr": 0.0003,
+      "epochs": 1,
+      "fl_rounds": null,
+      "budget_ref": "28225 updates / 903200 distinct physical records. Grouping changes sample order and subset at intermediate updates.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-same-sat-batches-s2026092701-r01/PAMF_METRIC",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-same-sat-batches-s2026092701-r01/PAMF_METRIC.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train train /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-diagnostic-satiq-pamf-same-sat-batches-s2026092701-r01/configs/pamf_satiq_ccs2023_same_satellite_batches_probe_20261119.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-same-sat-batches-s2026092701-r01/PAMF_METRIC --arm PAMF_METRIC",
+      "expected_artifacts": [],
+      "pid": 1967567,
+      "physical_gpu": 0
+    }
+  ],
+  "notes": [
+    "Only candidate change is half-batch same-satellite groups. All labels, waveform paths, weights seed, optimizer, loss weights, and lack of augmentation match PAMF-Metric.",
+    "First epoch real manifest preflight: 903200 unique samples per arm, 903172 shared; hard-negative anchor coverage 11.04% to 93.43%; mean same-satellite wrong beams per anchor group .116 to 2.638; UTC cross-day positive pair fraction 93.42% in both."
+  ],
+  "registered_at": "2026-11-19T11:52:01+00:00"
+}
