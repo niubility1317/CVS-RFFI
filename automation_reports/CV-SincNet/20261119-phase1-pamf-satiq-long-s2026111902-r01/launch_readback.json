@@ -1,0 +1,20 @@
+{
+  "status": "VERIFIED",
+  "station_role": "Oxford only before threshold",
+  "observed_time": "2026-11-19T16:12:26+08:00",
+  "hostname": "dell-DSS8440",
+  "controller_pid": 1818441,
+  "os_parent_pid": 1,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-long-s2026111902-r01-release",
+  "gpu_index": 7,
+  "gpu_mib": 2218,
+  "archive_sha256": "1b45f1abde94c4a76f12586d6c1afce7ce81211fccad6ce6a96efcaa78204033",
+  "entry_module": "experiments.pamf_satiq.long_budget",
+  "resolved_config": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-long-s2026111902-r01/pamf_full/resolved_config.json",
+  "source_only_checkpoint_smoke": "PASS",
+  "latest_epoch_at_readback": 17,
+  "updates": 459,
+  "uk_correct": 14,
+  "uk_total": 269,
+  "best_correct": 25
+}

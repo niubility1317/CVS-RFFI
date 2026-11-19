@@ -1,0 +1,156 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261119-phase1-pamf-satiq-long-s2026111902-r01",
+  "group_id": "phase1-pamf-satiq-long-budget-oxford-98",
+  "display_name": "SatIQ full-header PAMF-CE long budget to UK validation 98%",
+  "description": "Long-budget test of the unchanged full-header PAMF-CE recipe, from scratch, with 98% UK time-block validation stop. No fixed epoch limit or plateau stop. Swiss test follows only after the first verified threshold checkpoint.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF-CE",
+    "Oxford",
+    "long-budget",
+    "UK-validation-98",
+    "full-header"
+  ],
+  "comparison_group_id": "satiq-oxford-thun-header-extent-20c-v1",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Current user authorizes starting a long-budget experiment and continued optimization until Oxford validation accuracy reaches 98%.",
+  "code": {
+    "commit": "dc21f01511afee3f47f922532750e6898f801f1e",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-long-s2026111902-r01-release",
+    "environment": "CVS-RFFI, /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-long-s2026111902-r01-release"
+  },
+  "data": {
+    "dataset": "SatIQ",
+    "version": "Dorm labpc E:/SatIQ/npy_dataset, verified 12 complete 25 MS/s NPY shards",
+    "representation": "Raw FP32 IQ [N,11000,2], cropped 4 old windows or all 43 native 256 windows with 8 tail samples repeated, packet RMS and mean logits",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/20261119-pamf-satiq-oxford-thun-v1/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/20261119-satiq-oxford-thun-full-v1/source/ids.npy and target/query/ids.npy",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/20261119-pamf-satiq-oxford-thun-v1/source/contract.json:classes",
+    "source_receivers": [
+      "Oxford, UK, USRP N210"
+    ],
+    "target_receivers": [
+      "Thun, Switzerland, USRP N210"
+    ],
+    "source_days": [
+      "2023-05-11",
+      "2023-05-12"
+    ],
+    "target_days": [
+      "2024-08-09",
+      "2024-08-10",
+      "2024-08-11"
+    ],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/20261119-pamf-satiq-oxford-thun-v1/source/contract.json:classes",
+    "roles": {
+      "L_s": 849,
+      "U_s": null,
+      "V": 269
+    },
+    "train_ratio": 0.8,
+    "capsule_id": null,
+    "split_id": "satiq_oxford_thun_v1-uk-utc15s-2026111901-held-identical",
+    "validation_ref": "automation_reports/CV-SincNet/20261119-phase1-pamf-satiq-long-s2026111902-r01/report.md",
+    "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/20261119-satiq-oxford-thun-full-v1/target/query/ids.npy (all 30000 only after threshold)",
+    "leo_config_ref": "Real satellite downlink as observed, no synthetic overlay"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Budget-only comparison against prior E20, same Oxford split, one seed. Repeated UK validation is the stopping set; Swiss untouched until checkpoint fixed."
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "automation_reports/CV-SincNet/20261119-phase1-pamf-satiq-long-s2026111902-r01/report.md",
+    "provenance_verdict": "SCRATCH_ONLY; reuse immutable code only",
+    "selection_rule": "First epoch with exact Oxford validation accuracy >=98% (at least 264/269). Train from scratch and verify the final checkpoint classification count."
+  },
+  "execution": {
+    "host": "N607 (dell-DSS8440), standard user",
+    "launch_owner": "codex-pamf-satiq-long-20261119",
+    "gpu_policy": "One serial job on physical GPU 7, UUID GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-long-s2026111902-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-long-s2026111902-r01-release/controller.log",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261119-phase1-pamf-satiq-long-s2026111902-r01",
+    "launch_command": "cwd=/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-long-s2026111902-r01-release; env CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_satiq.long_budget /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-long-s2026111902-r01-release/configs/pamf_satiq_long_budget_20261119.json /home/szu2070436088/2510044040/CV-SincNet/data/20261119-pamf-satiq-oxford-thun-v1 /home/szu2070436088/2510044040/CV-SincNet/data/20261119-satiq-oxford-thun-full-v1 /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-long-s2026111902-r01",
+    "stop_rule": "Normal cessation only after frozen UK accuracy meets 98%. No epoch or plateau stop. Fail on nonfinite metrics, data/ID/output inconsistency, filesystem, or runtime fault; preserve output."
+  },
+  "expected_artifacts": [
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-long-s2026111902-r01/pamf_full/epochs.jsonl",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-long-s2026111902-r01/pamf_full/training_e*.pt",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-long-s2026111902-r01/uk_threshold.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-long-s2026111902-r01/scores.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-long-s2026111902-r01-release/controller.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "train CE",
+      "UK validation CE",
+      "validation correct count",
+      "validation accuracy",
+      "peak GPU allocated MiB",
+      "Swiss scores after threshold"
+    ],
+    "dimensions": [
+      "UK train",
+      "UK validation",
+      "Swiss test conditional on threshold"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-long-s2026111902-r01/pamf_full/predictions.npz",
+    "scorer_ref": "experiments/pamf_satiq/score.py"
+  },
+  "rows": [
+    {
+      "row_id": "pamf_full",
+      "method": "Full-header PAMF-CE, unchanged architecture and fixed AdamW recipe with extended budget",
+      "purpose": "long-budget comparison to previous E20",
+      "config_ref": "configs/pamf_satiq_long_budget_20261119.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-long-s2026111902-r01/pamf_full/resolved_config.json",
+      "data_overrides": {
+        "representation": "full",
+        "windows_per_packet": 43
+      },
+      "seeds": {
+        "model": 2026111902,
+        "split": 2026111901,
+        "data": 2026111903,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model init/dropout, fixed UK block split and epoch permutation; no aug/support/stochastic eval.",
+      "k": null,
+      "scenario": "real_ira_oxford_to_thun",
+      "optimizer": "AdamW weight_decay=0.0001",
+      "lr": 0.0003,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Unbounded epochs (27 optimizer updates per epoch), stop after first 264/269 UK val correct. Retain epoch 20, 50, 100 and each 250 thereafter.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-long-s2026111902-r01/pamf_full",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-long-s2026111902-r01/pamf_full/epochs.jsonl",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_satiq.long_budget /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-long-s2026111902-r01-release/configs/pamf_satiq_long_budget_20261119.json /home/szu2070436088/2510044040/CV-SincNet/data/20261119-pamf-satiq-oxford-thun-v1 /home/szu2070436088/2510044040/CV-SincNet/data/20261119-satiq-oxford-thun-full-v1 /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-long-s2026111902-r01",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-long-s2026111902-r01/pamf_full/scratch_e00.pt",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-long-s2026111902-r01/pamf_full/training_e*.pt",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-long-s2026111902-r01/pamf_full/source_final.pt",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-long-s2026111902-r01/pamf_full/threshold_reached.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-long-s2026111902-r01/pamf_full/uk.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-long-s2026111902-r01/pamf_full/predictions.npz"
+      ]
+    }
+  ],
+  "notes": [
+    "Matched historical fixed E20 reference 20261119-phase1-pamf-satiq-header-s2026111902-r01. No checkpoint ancestry.",
+    "The saved milestone state contains AdamW, shuffle and torch RNG. The launcher has no automatic restart entry point if the process or host fails.",
+    "98% is the success criterion and is not an expected result. Do not stop for plateau or low accuracy. UK validation does not update model parameters."
+  ],
+  "registered_at": "2026-11-19T08:12:43+00:00"
+}
