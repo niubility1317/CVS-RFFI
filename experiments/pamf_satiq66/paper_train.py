@@ -100,7 +100,8 @@ def make_model(config, arm, classes):
         return PaperSatIQ()
     return PaperPAMF(config["runtime"], config["model_seed"], len(classes), config["raw_time_bins"],
                      feature_batch_norm=config.get("pamf_feature_batch_norm", False),
-                     full_reconstruction=config.get("full_reconstruction_weight", 0) > 0)
+                     full_reconstruction=config.get("full_reconstruction_weight", 0) > 0,
+                     phase_relative_raw=config.get("phase_relative_raw", False))
 
 
 @torch.no_grad()

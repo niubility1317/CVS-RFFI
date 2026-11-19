@@ -107,8 +107,14 @@ def compare(source, cache, checkpoints, seed, per_class, fit_count, device):
         for tag in ("raw", "centered", "partial_whiten"):
             l_vectors = readout_vectors(enrolled_paths, stats, tag)
             v_vectors = readout_vectors(v, stats, tag)
-            weight = prototype_weights(l_vectors, enrolled_labels, len(classes)).to(device)
-            scores[tag] = score_head(v_vectors, weight, target, satellites, wrong, device)
+            width = v[0].shape[1]
+            scores[tag] = {}
+            for view, columns in (("native_160", slice(0, width)), ("full_rate_160", slice(width, None)),
+                                  ("fused_320", slice(None))):
+                references = F.normalize(l_vectors[:, columns], dim=1)
+                queries_for_view = F.normalize(v_vectors[:, columns], dim=1)
+                weight = prototype_weights(references, enrolled_labels, len(classes)).to(device)
+                scores[tag][view] = score_head(queries_for_view, weight, target, satellites, wrong, device)
         results.append(dict(checkpoint=str(checkpoint), updates=updates, metrics=scores))
         print(f"Scored {checkpoint.parent.parent.name} at {updates} steps", flush=True)
     return dict(seed=seed, per_class=per_class, labeled_enrollment=len(enrolled), fit_count=fit_count,

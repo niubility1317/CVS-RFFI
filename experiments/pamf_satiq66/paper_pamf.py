@@ -25,11 +25,13 @@ def reconstruction_target(iq):
 
 
 class PaperPAMF(nn.Module):
-    def __init__(self, runtime, seed, classes, raw_time_bins, feature_batch_norm=False, full_reconstruction=False):
+    def __init__(self, runtime, seed, classes, raw_time_bins, feature_batch_norm=False,
+                 full_reconstruction=False, phase_relative_raw=False):
         super().__init__()
         self.native = build_model(runtime, seed, 1)
         self.native.core.id_backbone.cls_head.requires_grad_(False)
-        self.original_rate = RawSymbolEncoder(symbol_count=HEADER_SYMBOLS, bounded=False, time_bins=raw_time_bins)
+        self.original_rate = RawSymbolEncoder(symbol_count=HEADER_SYMBOLS, bounded=False, time_bins=raw_time_bins,
+                                              phase_relative=phase_relative_raw)
         self.common_norm = nn.BatchNorm1d(FEATURES, affine=False) if feature_batch_norm else nn.Identity()
         self.full_norm = nn.BatchNorm1d(FEATURES, affine=False) if feature_batch_norm else nn.Identity()
         self.head = nn.Linear(2 * FEATURES, classes, bias=False)

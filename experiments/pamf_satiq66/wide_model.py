@@ -16,11 +16,32 @@ FEATURES = 160
 NOISE_HALF_BAND = 32
 
 
+def relative_iq_channels(iq):
+    """Five full-rate channels invariant to a packet-wide complex gain and DC offset."""
+    centered = iq - iq.mean(dim=-1, keepdim=True)
+    power = centered.square().sum(dim=1)
+    rms = power.mean(dim=-1, keepdim=True).clamp_min(1e-8).sqrt()
+    i, q = (centered / rms[:, None, :]).unbind(dim=1)
+    power = i.square() + q.square()
+    channels = [torch.log1p(power).unsqueeze(1)]
+    # 25 samples is one microsecond at the registered 25 MS/s input rate.
+    for delay in (1, 25):
+        i0, i1 = i[:, :-delay], i[:, delay:]
+        q0, q1 = q[:, :-delay], q[:, delay:]
+        real = i1 * i0 + q1 * q0
+        imag = q1 * i0 - i1 * q0
+        scale = (power[:, delay:] * power[:, :-delay] + .02 ** 2).sqrt()
+        correlation = torch.stack((real / scale, imag / scale), dim=1)
+        channels.append(F.pad(correlation, (delay, 0)))
+    return torch.cat(channels, dim=1)
+
+
 class RawSymbolEncoder(nn.Module):
-    def __init__(self, symbol_count=SYMBOL_COUNT, bounded=True, time_bins=1):
+    def __init__(self, symbol_count=SYMBOL_COUNT, bounded=True, time_bins=1, phase_relative=False):
         super().__init__()
         self.symbol_count = symbol_count
         self.time_bins = time_bins
+        self.phase_relative = phase_relative
         self.symbol_features = 64 * time_bins
         self.frontend = nn.Sequential(
             nn.Conv1d(5, 16, kernel_size=9, stride=4, padding=4, bias=False),
@@ -39,13 +60,18 @@ class RawSymbolEncoder(nn.Module):
     def symbol_tokens(self, raw):
         if raw.ndim != 3 or raw.shape[1:] != (2, self.symbol_count * SAMPLES_PER_SYMBOL):
             raise ValueError(f"Expected two IQ channels and {self.symbol_count} complete symbols")
-        # Tile before convolution so the two endpoints of each symbol contribute
-        # to its own token. The first difference has no preceding sample at tile start.
-        tiles = raw.reshape(len(raw), 2, self.symbol_count, SAMPLES_PER_SYMBOL).transpose(1, 2)
-        iq = tiles.reshape(len(raw) * self.symbol_count, 2, SAMPLES_PER_SYMBOL)
-        differences = F.pad(iq.diff(dim=-1), (1, 0))
-        power = iq.square().sum(dim=1, keepdim=True)
-        encoded = self.frontend(torch.cat((iq, differences, power), dim=1))
+        if self.phase_relative:
+            channels = relative_iq_channels(raw)
+            tiles = channels.reshape(len(raw), 5, self.symbol_count, SAMPLES_PER_SYMBOL).transpose(1, 2)
+            frontend_input = tiles.reshape(len(raw) * self.symbol_count, 5, SAMPLES_PER_SYMBOL)
+        else:
+            # In the original view each symbol starts a new first difference.
+            tiles = raw.reshape(len(raw), 2, self.symbol_count, SAMPLES_PER_SYMBOL).transpose(1, 2)
+            iq = tiles.reshape(len(raw) * self.symbol_count, 2, SAMPLES_PER_SYMBOL)
+            differences = F.pad(iq.diff(dim=-1), (1, 0))
+            power = iq.square().sum(dim=1, keepdim=True)
+            frontend_input = torch.cat((iq, differences, power), dim=1)
+        encoded = self.frontend(frontend_input)
         if self.time_bins == 1:
             moments = torch.cat((encoded.mean(-1), encoded.square().mean(-1)), dim=1)
         else:
