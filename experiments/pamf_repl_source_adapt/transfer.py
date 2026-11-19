@@ -185,7 +185,7 @@ def analyze(rt, *, interpretation='retrospective source-rule calibration on desi
         items = dict(adaptive=sources[rid], **controls[rid])
         scores = {name: pooled(item['scores']) for name, item in items.items()}
         counts, splits = {}, {}
-        for key in ('tri', 'pl'):
+        for key in controls[rid]:
             c = Counter()
             splits[key] = {}
             for task in ('cross_rx', 'cross_both'):

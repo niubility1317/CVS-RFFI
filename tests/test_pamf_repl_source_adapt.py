@@ -129,3 +129,14 @@ def test_receiver_balance_confirmation_fixes_joint_route_and_excludes_developmen
     assert {row['model_seed'] for row in rows} == {2026092701, 2026092703}
     assert {row['setting'] for row in rows} == set(balance.SETTINGS)
     assert len({row['row_id'] for row in rows}) == 8
+
+
+def test_receiver_balance_dose_matrix_holds_fusion_and_the_compared_seed_fixed():
+    from experiments.pamf_repl_source_adapt import receiver_balance as balance
+
+    rows = balance.rows(balance.DOSE_RUN)
+    assert len({row['row_id'] for row in rows}) == 12
+    assert {row['model_seed'] for row in rows} == {balance.SEED}
+    assert {row['route'] for row in rows} == {'joint'}
+    for setting in balance.SETTINGS:
+        assert {row['weight'] for row in rows if row['setting'] == setting} == {5.25, 4.5, 3.}

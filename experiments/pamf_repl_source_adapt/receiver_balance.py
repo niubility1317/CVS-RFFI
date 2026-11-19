@@ -6,7 +6,8 @@ from pathlib import Path
 
 import torch
 
-from experiments.cric_dura_comparison.io import read
+from experiments.cric_dura_comparison.io import read, write
+from experiments.pamf_repl_weight.pseudo_observation import PseudoObservationMixin
 from experiments.pamf_ssl_research import hard_pl_joint_objective as joint, hard_pl_objective as hard
 from experiments.pamf_ssl_research.hard_pl_receiver_extrapolation_objective import GuardedReceiverExtrapolation
 from . import transfer
@@ -15,6 +16,8 @@ from .pilot import paper
 
 RUN = '20261119-phase1-pamf-repl-rxbalance-clean-m8-r01'
 CONFIRM_RUN = '20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02'
+DOSE_RUN = '20261119-phase1-pamf-repl-rxbalance-dose-clean-m12-r01'
+DOSES = (5.25, 4.5, 3.)
 MODULE = 'experiments.pamf_repl_source_adapt.receiver_balance'
 SETTINGS = ('receiver_split_1', 'receiver_split_2', 'labeled_5pct', 'source_rx_3')
 SEED = 2026092702
@@ -51,7 +54,16 @@ class BalancedREPL(GuardedReceiverExtrapolation):
         return loss
 
 
+class ObservedBalancedREPL(PseudoObservationMixin, BalancedREPL):
+    pass
+
+
 def rows(run_id=RUN):
+    if run_id == DOSE_RUN:
+        return [dict(row_id=f"{name}-tri-fusion-w{format(weight, 'g').replace('.', 'p')}-s{SEED}", setting=name,
+                     protocol_id=paper.PROTOCOLS[name][0], model_seed=SEED, weight=weight,
+                     route='joint', views=['clean'], reuses_original=False)
+                for name in SETTINGS for weight in DOSES]
     seeds, routes = {RUN: ((SEED,), tuple(ROUTES)), CONFIRM_RUN: ((2026092701, 2026092703), ('joint',))}[run_id]
     return [dict(row_id=f'{name}-tri-balance-{route}-s{seed}', setting=name, protocol_id=paper.PROTOCOLS[name][0],
                  model_seed=seed, weight=6., route=route, views=['clean'], reuses_original=False)
@@ -68,7 +80,7 @@ def validate(c):
             or root.parts[-5:] != ('runs', run_id, 'F', row['row_id'], 'source')
             or c['protocol_id'] != row['protocol_id'] or c['paper_row']['row_id'] != transfer.original_row(row)
             or c['epochs'] != 50 or c['optimizer_updates'] != 11100
-            or c['hard_pl']['weight'] != 6. or c['hard_pl_gradient_guard']['weight'] != 6.
+            or c['hard_pl']['weight'] != row['weight'] or c['hard_pl_gradient_guard']['weight'] != row['weight']
             or c['hard_pl']['threshold'] != .95
             or any(c.get(k) for k in ('tests', 'target_inputs', 'target_truth', 'truth', 'views_root', 'source_fold'))):
         raise ValueError('Expected native Tri with one registered RX balancing route')
@@ -93,9 +105,17 @@ def installed(config, holder):
         return original(maps, labels, receivers, positive_distribution=distribution)
 
     module.contrast = balance
+    objective_class = ObservedBalancedREPL if config['run_id'] == DOSE_RUN else BalancedREPL
     try:
-        with paper_scope(config, holder, ssl_enabled=True, validate=validate, objective_factory=BalancedREPL):
-            yield
+        with paper_scope(config, holder, ssl_enabled=True, validate=validate, objective_factory=objective_class):
+            try:
+                yield
+            finally:
+                obj = holder.get('objective')
+                if isinstance(obj, ObservedBalancedREPL):
+                    observed = obj.close_pseudo_observation()
+                    if not config.get('hard_pl_smoke') and (observed['calls'], observed['seen'], observed['accepted']) != (obj.calls, obj.seen, obj.accepted):
+                        raise ValueError('Blind U observation coverage must match native REPL')
     finally:
         module.contrast = original
 
@@ -114,11 +134,35 @@ def smoke(rt):
 
 def prepare(rt):
     run_id = rt['run_id']
-    return transfer.prepare_jobs(rt, rows(run_id), partial(configure, run_id=run_id))
+    configured = rows(run_id)
+    jobs = transfer.prepare_jobs(rt, configured, partial(configure, run_id=run_id))
+    if run_id != DOSE_RUN:
+        return jobs
+    from experiments.pamf_repl_step_guard.runner import add_u_scoring
+
+    root = Path(rt['run_root'])
+    prior = Path(rt['project'])/'runs'/RUN
+    if read(prior/'pipeline_state.json')['status'] != 'ANALYZED':
+        raise ValueError('Require the completed matched fusion weight-six run')
+    by_id = read(prior/'sources.json')
+    controls = read(root/'controls.json')
+    for row in configured:
+        item = by_id[f"{row['setting']}-tri-balance-joint-s{row['model_seed']}"]
+        record = read(Path(item['source_output'])/'complete.json')
+        recipe = record['config']['source_adaptation']
+        if (record['status'] != 'SOURCE_FROZEN' or record['epoch'] != 50 or record['updates'] != 11100
+                or record['target_access'] or record['U_truth_read'] or recipe['route'] != 'joint' or recipe['weight'] != 6.
+                or any(recipe[key] != row[key] for key in ('setting', 'protocol_id', 'model_seed'))):
+            raise ValueError('Need an exact frozen fusion weight-six control')
+        controls[row['row_id']]['fusion6'] = item
+    write(root/'controls.json', controls, exclusive=False)
+    return add_u_scoring(rt, configured, jobs)
 
 
 def dispatch(rt):
-    interpretation = 'fixed fusion receiver balance on two independent training seeds' if rt['run_id'] == CONFIRM_RUN else 'exploratory matched receiver balance within original loss'
+    interpretation = {RUN: 'exploratory matched receiver balance within original loss',
+        CONFIRM_RUN: 'fixed fusion receiver balance on two independent training seeds',
+        DOSE_RUN: 'matched global U dose with fusion RX balance held fixed'}[rt['run_id']]
     analyze = partial(transfer.analyze, interpretation=interpretation, source_decision_run=None)
     transfer.dispatch(rt, prepare_fn=prepare, analyze_fn=analyze, module=MODULE)
 
@@ -132,6 +176,9 @@ if __name__ == '__main__':
     c = read(args.config)
     if args.action == 'dispatch':
         dispatch(c)
+    elif args.kind == 'score' and c.get('diagnostic_type') == 'U_truth_after_freeze':
+        from experiments.pamf_repl_step_guard.u_scoring import score
+        score(c)
     elif args.kind == 'score':
         from experiments.pamf_paper_completion.evaluation import score
         score(c)

@@ -7,12 +7,14 @@ from .pilot import paper
 from .transfer import DEVELOPMENT_RUN, RUN, original_row, selected_rows
 
 
-def make(template, decisions=None, *, receiver_balance=False, confirmation=False):
+def make(template, decisions=None, *, receiver_balance=False, confirmation=False, dose=False):
     data = deepcopy(template)
     run_id = RUN
-    if receiver_balance or confirmation:
-        from .receiver_balance import RUN as balance_run, CONFIRM_RUN, rows
+    if receiver_balance or confirmation or dose:
+        from .receiver_balance import RUN as balance_run, CONFIRM_RUN, DOSE_RUN, rows
         run_id = CONFIRM_RUN if confirmation else balance_run
+        if dose:
+            run_id = DOSE_RUN
         candidates = rows(run_id)
     else:
         candidates = selected_rows(decisions)
@@ -20,6 +22,8 @@ def make(template, decisions=None, *, receiver_balance=False, confirmation=False
     cmd = 'python -m experiments.pamf_repl_source_adapt.transfer_publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG'
     if receiver_balance or confirmation:
         cmd += ' --receiver-balance-confirm' if confirmation else ' --receiver-balance'
+    if dose:
+        cmd += ' --receiver-balance-dose'
     data.update(run_id=run_id, group_id='phase1-pamf-source-adaptation', display_name='Tri 自适应源域收益 E50 校准',
                 description='四种设置×三种子。源域决策固定后按相同物理样本对照原 Tri 和普通 PL。',
                 parent_run_ids=[DEVELOPMENT_RUN, paper.RUN], authorization='用户要求在其他数据设置保留原 Tri 对普通 PL 的领先幅度。')
@@ -63,7 +67,7 @@ def make(template, decisions=None, *, receiver_balance=False, confirmation=False
         data['rows'].append(entry)
     data['notes'] = ['Seeds 2026092702 and 2026092703 did not choose the source weights. All seeds use identical decision per data setting.',
                      'Fallback rows reuse the original Tri and represent zero gain by construction. Compare activated rows separately.']
-    if receiver_balance or confirmation:
+    if receiver_balance or confirmation or dose:
         data.update(display_name='Tri 接收机正对分布自适应',
                     description='四设置两条损失通道，按当前已接受的跨 RX 正对重分配概率，总权重保持原 Tri。', parent_run_ids=[paper.RUN, RUN])
         data['permissions']['claim_scope'] = 'Matched fixed exploratory clean comparisons of receiver-balance routes'
@@ -84,6 +88,22 @@ def make(template, decisions=None, *, receiver_balance=False, confirmation=False
             data['execution']['local_artifact_root'] = 'local_artifacts/pamf_repl_source_adapt_rxbalance_seedcheck_20261119'
             data['permissions']['claim_scope'] = 'Same previously seen clean settings, two seeds excluded from mechanism choice'
             data['notes'].append('No seed-dependent or setting-dependent change to the fixed fusion rule.')
+        if dose:
+            data.update(display_name='融合 RX 均衡下的 Tri 无标签剂量',
+                        description='四设置各三档较低总 U 权重，与同种子融合均衡权重 6 比较。', parent_run_ids=[paper.RUN, balance_run])
+            data['permissions']['claim_scope'] = 'One-seed exploratory matched U-dose response; historical target'
+            data['checkpoint']['selection_rule'] = 'Fixed E50; no target feedback into this dose matrix'
+            data['execution']['local_artifact_root'] = 'local_artifacts/pamf_repl_rxbalance_dose_20261119'
+            data['expected_artifacts'] = ['12 original E20 smokes, E50 frozen raw clean predictions, independent scores',
+                 '12 independent post-freeze U diagnostics', 'paired Tri, PL, and fusion weight-six net corrections']
+            data['notes'] = ['Hold the joint RX balance mixture at .5 and the pseudo-label threshold at .95.',
+                  'Only total U weight and synchronized native gradient guard weight vary.',
+                  'Training U truth stays hidden; separate post-freeze readout only.']
+            for entry, row in zip(data['rows'], candidates, strict=True):
+                entry['method'] = f"Fusion RX balance with native Tri U weight {row['weight']}"
+                entry['purpose'] = 'Matched U-weight dose probe versus the same fusion method at 6'
+                entry['data_overrides']['U_weight'] = row['weight']
+                entry['expected_artifacts'].append('frozen U score')
     return data
 
 
@@ -95,8 +115,10 @@ if __name__ == '__main__':
     variant = parser.add_mutually_exclusive_group()
     variant.add_argument('--receiver-balance', action='store_true')
     variant.add_argument('--receiver-balance-confirm', action='store_true')
+    variant.add_argument('--receiver-balance-dose', action='store_true')
     args = parser.parse_args()
-    if not (args.receiver_balance or args.receiver_balance_confirm) and args.source_decisions is None:
+    if not (args.receiver_balance or args.receiver_balance_confirm or args.receiver_balance_dose) and args.source_decisions is None:
         parser.error('Calibration requires --source-decisions')
     write(args.output, make(read(args.template), read(args.source_decisions) if args.source_decisions else None,
-                            receiver_balance=args.receiver_balance, confirmation=args.receiver_balance_confirm))
+                            receiver_balance=args.receiver_balance, confirmation=args.receiver_balance_confirm,
+                            dose=args.receiver_balance_dose))
