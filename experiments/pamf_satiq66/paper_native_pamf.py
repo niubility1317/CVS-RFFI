@@ -13,6 +13,10 @@ NATIVE_PATHS = ("time", "frequency", "nonlinear", "sequence", "reference")
 EXTRA_WIDTH = {"native160": 0, "fused256": 96, "fused320": 160, "branches320": 160, "prefuse320": 160}
 
 
+def native_frequency_taper(bins):
+    return torch.cos(torch.pi * ((bins - 60) / 20).clamp(0, 1)) * .5 + .5
+
+
 class PaperNativePAMF(nn.Module):
     waveform_samples = 8000
 
@@ -49,8 +53,7 @@ class PaperNativePAMF(nn.Module):
         self.head = nn.Linear(self.feature_dimensions, classes, bias=False)
         nn.init.xavier_uniform_(self.head.weight)
         self.register_buffer("fusion_center", torch.zeros(self.feature_dimensions) if center_fusion else None)
-        bins = torch.arange(129).float()
-        cutoff = torch.cos(torch.pi * ((bins - 60) / 20).clamp(0, 1)) * .5 + .5
+        cutoff = native_frequency_taper(torch.arange(129, dtype=torch.float32))
         self.register_buffer("cutoff", cutoff, persistent=False)
 
     def _center_fusion(self, feature):
