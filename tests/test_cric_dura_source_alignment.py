@@ -34,6 +34,14 @@ class SourceAlignment(unittest.TestCase):
                 np.savez(root/'L_s_index.npz',ids=np.asarray(stored))
                 with self.assertRaisesRegex(ValueError,'physical ID'):
                     SourceDataset(root,'L_s',contract)
+    def test_fold_positions_use_aligned_record_order_and_keep_u_blind(self):
+        with tempfile.TemporaryDirectory(dir=ROOT) as folder:
+            root=Path(folder);contract=fixture(root,'U_s')
+            dataset=SourceDataset(root,'U_s',contract,positions=np.array([0,2]))
+            self.assertEqual(dataset.metadata['ids'].tolist(),['a','c'])
+            self.assertEqual(dataset.x[:,0,0].tolist(),[1.,3.])
+            self.assertEqual([dataset[i][1] for i in range(len(dataset))],[-1,-1])
+            self.assertEqual(dataset.iq_binding['count'],2)
     def test_identity_storage_order_does_not_change_IQ_or_metadata(self):
         with tempfile.TemporaryDirectory(dir=ROOT) as folder:
             root=Path(folder);contract=fixture(root,'L_s',stored=('a','b','c'))

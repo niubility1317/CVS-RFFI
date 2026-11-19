@@ -7,7 +7,7 @@ from .source_iq import aligned_source_iq
 
 
 class SourceDataset(torch.utils.data.Dataset):
-    def __init__(self, root, role, contract):
+    def __init__(self, root, role, contract, *, positions=None):
         if role not in ('L_s', 'U_s', 'V'):
             raise ValueError('Only source roles allowed')
         root = Path(root)
@@ -24,6 +24,10 @@ class SourceDataset(torch.utils.data.Dataset):
         x,self.iq_binding = aligned_source_iq(root,role,self.metadata['ids'])
         if x.shape != (contract['counts'][role], 2, 256):
             raise ValueError('Source role count differs')
+        if positions is not None:
+            x = x[positions]
+            self.metadata = {key: value[positions] for key, value in self.metadata.items()}
+            self.iq_binding = dict(self.iq_binding, count=len(positions), subset='source_fold')
         self.x = tensor(x)
         self.role = role
 
@@ -65,7 +69,7 @@ class FixedEpochLoader:
             yield value
 
 
-def context(c):
+def context(c, *, source_positions=None):
     from .core_groups import validate_config
     validate_config(c)
     if any(c.get(k) for k in ('target_truth', 'truth', 'dataset_path', 'target_inputs', 'views_root')):
@@ -74,19 +78,22 @@ def context(c):
     if contract['source_rxs'] != c['source_rxs'] or contract['source_days'] != c['source_days']:
         raise ValueError('Source contract mismatch')
     root = c['source_cache']
-    labeled = SourceDataset(root, 'L_s', contract)
-    validation = SourceDataset(root, 'V', contract)
+    if source_positions is not None and set(source_positions) != {'L_s', 'U_s', 'V'}:
+        raise ValueError('A source fold must explicitly select positions for every source role')
+    positions = {} if source_positions is None else source_positions
+    labeled = SourceDataset(root, 'L_s', contract, positions=positions.get('L_s'))
+    validation = SourceDataset(root, 'V', contract, positions=positions.get('V'))
     # Disabled U is never opened or iterated, including strict supervised runs.
-    unlabeled = SourceDataset(root, 'U_s', contract) if c['regime'] != 'matched_sat_supervised' and c.get('ablation') not in ('F15','F20') else None
+    unlabeled = SourceDataset(root, 'U_s', contract, positions=positions.get('U_s')) if c['regime'] != 'matched_sat_supervised' and c.get('ablation') not in ('F15','F20') else None
     train = FixedEpochLoader(labeled, 128, c['model_seed'], drop_last=True)
     unlab = FixedEpochLoader(unlabeled, 256 if c['regime'] == 'native_cric' else 128,
         c['model_seed'], drop_last=False) if unlabeled is not None else None
     val = torch.utils.data.DataLoader(validation, batch_size=256, shuffle=False, num_workers=0)
-    count_l, count_u, count_v = (contract['counts'][k] for k in ('L_s', 'U_s', 'V'))
+    count_l, count_u, count_v = len(labeled), len(unlabeled) if unlabeled is not None else contract['counts']['U_s'], len(validation)
     domains = len(c['source_rxs']) * len(c['source_days'])
     return dict(train_loader=train, unlabeled_loader=unlab, val_loader=val,
         named_test_loaders={}, domain_label_map={}, num_domains=domains,
         input_len=256, class_id_to_tx=contract['classes'],
-        split_info=dict(mode='contract_bound_existing_roles', labeled_size=count_l,
+        split_info=dict(mode='contract_bound_existing_roles' if source_positions is None else 'source_development_fold', labeled_size=count_l,
             unlabeled_size=count_u if unlabeled is not None else 0, source_val_size=count_v,
             rho_label=count_l / (count_l + count_u), named_test_meta={}), source_contract=contract)

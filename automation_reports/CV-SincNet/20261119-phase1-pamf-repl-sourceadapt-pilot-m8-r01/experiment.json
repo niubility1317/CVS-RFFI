@@ -1,0 +1,516 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01",
+  "group_id": "phase1-pamf-source-adaptation",
+  "display_name": "Tri 跨数据设置源留出自适应试点",
+  "description": "四个设置、每设置两折、每折三剂量，固定 E24 的源域配对。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-paper-completion-m119-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求把研发重点转向在其他数据设置保持或增加原 Tri 相对普通 PL 的优势。",
+  "code": {
+    "commit": "actual committed release identity in runtime.json",
+    "checkout": "current task worktree",
+    "environment": "N607 existing CVS-RFFI",
+    "cwd": "PROJECT/releases/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01-release"
+  },
+  "data": {
+    "dataset": "Original Phase1 source-only roles on four designs",
+    "version": null,
+    "representation": null,
+    "contract_ref": "context source per protocol",
+    "physical_ids_ref": "Original source roles restricted by preregistered held RX/date fold",
+    "label_map_ref": null,
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "train minus held cells",
+      "U_s": "TX-blind train minus held cells",
+      "V": "held cells excluded from training validation and used for paired scoring only after all three arms freeze"
+    },
+    "train_ratio": "original per-design within retained cells",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": "not applicable: no target prediction or scoring in source pilot",
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Prospective source-only selection pilot, not E50 performance"
+  },
+  "checkpoint": {
+    "initialization": "scratch E20 per fold then three own E21–E24 continuations",
+    "sources": [],
+    "contract_check_ref": "exact source roles and location, plus fold-bound source loader",
+    "provenance_verdict": "Original complete source E20 used only for same-contract smoke, never inherited into a fold",
+    "selection_rule": "both folds strictly improve and every held cell has nonnegative net gain, then macro gain and nearest-to-native tie break"
+  },
+  "execution": {
+    "host": "N607 ordinary user",
+    "launch_owner": "codex-20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01",
+    "gpu_policy": "GPU 0–6, admitted max two total per GPU; reserve 12 GiB",
+    "remote_run_root": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01",
+    "remote_log_root": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_repl_source_adapt_20261119",
+    "launch_command": "python -m experiments.pamf_repl_source_adapt.publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+    "stop_rule": "Stop new dispatch on first blocking technical failure; preserve healthy workers and artifacts"
+  },
+  "expected_artifacts": [
+    "actual-source checkpoint smoke",
+    "eight fold-specific initial checkpoints",
+    "24 E24 source-only candidates",
+    "eight held-source paired readouts and four decisions"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "held source paired net correction, both fold gains, worst-cell gain, activation"
+    ],
+    "dimensions": [
+      "source receiver",
+      "source date",
+      "protocol",
+      "model seed",
+      "U dose"
+    ],
+    "prediction_ref": "Source-only in memory after all three arms freeze, identical held V order",
+    "scorer_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/analysis/source_decisions.json"
+  },
+  "rows": [
+    {
+      "row_id": "train__main_split-rx_1",
+      "method": "Original Tri with three U doses 6/4.5/3",
+      "purpose": "Paired source holdout pilot",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/configs/train__main_split-rx_1.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/configs/train__main_split-rx_1.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "held_rx_date": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            3
+          ]
+        ],
+        "dose_arms": [
+          6.0,
+          4.5,
+          3.0
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original source split IDs; held cells deterministic; no separate augmentation or evaluation seed.",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 24,
+      "fl_rounds": null,
+      "budget_ref": "scratch E20 once per fold; then three matched 4x222 optimizer continuations",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/F/main_split/rx_1",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/logs/train__main_split-rx_1.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "segment20/complete.json",
+        "three weight directories",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "train__main_split-rx_8",
+      "method": "Original Tri with three U doses 6/4.5/3",
+      "purpose": "Paired source holdout pilot",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/configs/train__main_split-rx_8.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/configs/train__main_split-rx_8.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "held_rx_date": [
+          [
+            8,
+            1
+          ],
+          [
+            8,
+            2
+          ],
+          [
+            8,
+            3
+          ]
+        ],
+        "dose_arms": [
+          6.0,
+          4.5,
+          3.0
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original source split IDs; held cells deterministic; no separate augmentation or evaluation seed.",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 24,
+      "fl_rounds": null,
+      "budget_ref": "scratch E20 once per fold; then three matched 4x222 optimizer continuations",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/F/main_split/rx_8",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/logs/train__main_split-rx_8.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "segment20/complete.json",
+        "three weight directories",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "train__receiver_split_1-rx_0",
+      "method": "Original Tri with three U doses 6/4.5/3",
+      "purpose": "Paired source holdout pilot",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/configs/train__receiver_split_1-rx_0.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/configs/train__receiver_split_1-rx_0.json",
+      "data_overrides": {
+        "protocol_id": "F1_rx_repartition_r01",
+        "held_rx_date": [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            3
+          ]
+        ],
+        "dose_arms": [
+          6.0,
+          4.5,
+          3.0
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original source split IDs; held cells deterministic; no separate augmentation or evaluation seed.",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 24,
+      "fl_rounds": null,
+      "budget_ref": "scratch E20 once per fold; then three matched 4x222 optimizer continuations",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/F/receiver_split_1/rx_0",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/logs/train__receiver_split_1-rx_0.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "segment20/complete.json",
+        "three weight directories",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "train__receiver_split_1-rx_7",
+      "method": "Original Tri with three U doses 6/4.5/3",
+      "purpose": "Paired source holdout pilot",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/configs/train__receiver_split_1-rx_7.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/configs/train__receiver_split_1-rx_7.json",
+      "data_overrides": {
+        "protocol_id": "F1_rx_repartition_r01",
+        "held_rx_date": [
+          [
+            7,
+            1
+          ],
+          [
+            7,
+            2
+          ],
+          [
+            7,
+            3
+          ]
+        ],
+        "dose_arms": [
+          6.0,
+          4.5,
+          3.0
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original source split IDs; held cells deterministic; no separate augmentation or evaluation seed.",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 24,
+      "fl_rounds": null,
+      "budget_ref": "scratch E20 once per fold; then three matched 4x222 optimizer continuations",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/F/receiver_split_1/rx_7",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/logs/train__receiver_split_1-rx_7.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "segment20/complete.json",
+        "three weight directories",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "train__labeled_1pct-rx_1",
+      "method": "Original Tri with three U doses 6/4.5/3",
+      "purpose": "Paired source holdout pilot",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/configs/train__labeled_1pct-rx_1.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/configs/train__labeled_1pct-rx_1.json",
+      "data_overrides": {
+        "protocol_id": "label01",
+        "held_rx_date": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            3
+          ]
+        ],
+        "dose_arms": [
+          6.0,
+          4.5,
+          3.0
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original source split IDs; held cells deterministic; no separate augmentation or evaluation seed.",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 24,
+      "fl_rounds": null,
+      "budget_ref": "scratch E20 once per fold; then three matched 4x222 optimizer continuations",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/F/labeled_1pct/rx_1",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/logs/train__labeled_1pct-rx_1.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "segment20/complete.json",
+        "three weight directories",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "train__labeled_1pct-rx_8",
+      "method": "Original Tri with three U doses 6/4.5/3",
+      "purpose": "Paired source holdout pilot",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/configs/train__labeled_1pct-rx_8.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/configs/train__labeled_1pct-rx_8.json",
+      "data_overrides": {
+        "protocol_id": "label01",
+        "held_rx_date": [
+          [
+            8,
+            1
+          ],
+          [
+            8,
+            2
+          ],
+          [
+            8,
+            3
+          ]
+        ],
+        "dose_arms": [
+          6.0,
+          4.5,
+          3.0
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original source split IDs; held cells deterministic; no separate augmentation or evaluation seed.",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 24,
+      "fl_rounds": null,
+      "budget_ref": "scratch E20 once per fold; then three matched 4x222 optimizer continuations",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/F/labeled_1pct/rx_8",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/logs/train__labeled_1pct-rx_8.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "segment20/complete.json",
+        "three weight directories",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "train__source_rx_2-cells_0",
+      "method": "Original Tri with three U doses 6/4.5/3",
+      "purpose": "Paired source holdout pilot",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/configs/train__source_rx_2-cells_0.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/configs/train__source_rx_2-cells_0.json",
+      "data_overrides": {
+        "protocol_id": "m2-natural",
+        "held_rx_date": [
+          [
+            1,
+            1
+          ],
+          [
+            3,
+            2
+          ]
+        ],
+        "dose_arms": [
+          6.0,
+          4.5,
+          3.0
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original source split IDs; held cells deterministic; no separate augmentation or evaluation seed.",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 24,
+      "fl_rounds": null,
+      "budget_ref": "scratch E20 once per fold; then three matched 4x222 optimizer continuations",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/F/source_rx_2/cells_0",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/logs/train__source_rx_2-cells_0.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "segment20/complete.json",
+        "three weight directories",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "train__source_rx_2-cells_1",
+      "method": "Original Tri with three U doses 6/4.5/3",
+      "purpose": "Paired source holdout pilot",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/configs/train__source_rx_2-cells_1.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/configs/train__source_rx_2-cells_1.json",
+      "data_overrides": {
+        "protocol_id": "m2-natural",
+        "held_rx_date": [
+          [
+            1,
+            2
+          ],
+          [
+            3,
+            3
+          ]
+        ],
+        "dose_arms": [
+          6.0,
+          4.5,
+          3.0
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original source split IDs; held cells deterministic; no separate augmentation or evaluation seed.",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 24,
+      "fl_rounds": null,
+      "budget_ref": "scratch E20 once per fold; then three matched 4x222 optimizer continuations",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/F/source_rx_2/cells_1",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01/logs/train__source_rx_2-cells_1.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "segment20/complete.json",
+        "three weight directories",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "This E24 pilot never reads target handles or U truth. Final E50 clean validation is a separate fixed matrix.",
+    "With two RXs, hold RX-date cells to preserve both RXs in training. With at least three, hold complete source RXs."
+  ]
+}
