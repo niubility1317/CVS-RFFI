@@ -27,4 +27,4 @@ K 指每个候选波束的历史注册包数。当前实现先固定 K16 面板�
 2. 保留 PAMF 五分支、融合 256、输入与波束标签，先做一次仅改变训练损失的全源配对诊断，比较现有完整损失和只用主 CE。在相同 1,024 包、1,600 步原生 160 诊断中，只用主 CE 的训练 Top-1 为 12.40%，完整损失为 7.03%。缩小原型系数的全源首轮对照反而变差，因此先确认整套辅助监督是否影响真实验证，再决定主 CE 预热后何时接回原型损失。[小样本拟合](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-native-fit-subset-s2026092701-r01/report.md) · [全源原型减权对照](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-native160-proto25-source-e1-s2026092701-r01/report.md)
 3. 如果两组都低，再做一次只改变前端时序分辨率的配对测试。现有频带功率诊断没有显示加回 250 kHz 以上成分的收益，结论仅覆盖频谱功率形状。指纹信息是否能从更细的时序中恢复，需要继续用相同波束和同一批包验证。[截频对照](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-native-stopband-source-s2026111907-r01/report.md)
 
-四组正式 200 轮与独立测试队列在 2026-11-20T02:36:47+08:00 已独立确认在线。本文的后续对照属于建议，当次频偏诊断草案已撤回，未发布或启动。
+四组正式 200 轮与独立测试队列在 2026-11-20T02:36:47+08:00 已独立确认在线。仅主 CE 的完整首轮对照已发布，启动核实与后续结果记录在同一报告。频偏诊断草案已撤回。[仅主 CE 对照](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-fused256-main-ce-source-e1-s2026092701-r01/report.md)
