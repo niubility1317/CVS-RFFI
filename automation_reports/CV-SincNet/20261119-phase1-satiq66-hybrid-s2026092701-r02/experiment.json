@@ -1,0 +1,151 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261119-phase1-satiq66-hybrid-s2026092701-r02",
+  "group_id": "phase1-satiq-oxford-cross-time-hybrid",
+  "display_name": "SatIQ Oxford 66 Hybrid-SSL technical recovery",
+  "description": "Replace only U1 after E21 PyTorch 2.1 API failure; assemble three healthy fixed endpoints for coordinated truth-last evaluation",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF",
+    "Hybrid",
+    "source-only",
+    "cross-time"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261119-phase1-satiq66-hybrid-s2026092701-r01"
+  ],
+  "replaces_run_id": "20261119-phase1-satiq66-hybrid-s2026092701-r01",
+  "authorization": "User directed immediate launch, supervised first; source-validated continuation to PL and Hybrid-SSL, L:U=1:9.",
+  "code": {
+    "commit": "cf71105858cf61daa3f6aa3fbf04600987c8b9b7",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-hybrid-s2026092701-r02",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python torch 2.1.0+cu121, NumPy 2.2.5, FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-hybrid-s2026092701-r02"
+  },
+  "data": {
+    "dataset": "SatIQ Zenodo 8220494, Oxford",
+    "version": "8220494",
+    "representation": "Fixed by matched 300-update S0 source V pilots: 25 MS/s or 0.8 MS/s, 2x256; ties use 25 MS/s.",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-hybrid-s2026092701-r01/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-hybrid-s2026092701-r01/source/{L,U,V}_meta.npz",
+    "label_map_ref": "experiments/pamf_satiq66/data.py",
+    "source_receivers": [
+      "Oxford single RX"
+    ],
+    "target_receivers": [
+      "same Oxford RX"
+    ],
+    "source_days": [
+      "2023-03-24..2023-04-03"
+    ],
+    "target_days": [
+      "2023-04-24..2023-04-30"
+    ],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-hybrid-s2026092701-r01/source/contract.json",
+    "roles": {
+      "L_s": 10560,
+      "U_s": 95040,
+      "V": 19800
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": "oxford66_2026111901",
+    "validation_ref": "E:\\type10-7\\local_data\\satiq66_20261119_r01\\source\\public\\contract.json",
+    "support_query_ref": "No support; future Q public manifest /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-hybrid-s2026092701-r01/query/contract.json (293371 records). Separate scoring path /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-hybrid-s2026092701-r01-readout/scorer_only/truth.npz.",
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Closed-set cross-time Iridium downlink on one Oxford receiver"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "train.py scratch_e00 save/reload, no external checkpoints",
+    "provenance_verdict": "SCRATCH_U1; S0/S1/U0 copied only for common readout after fixed 5000 steps under identical source contract",
+    "selection_rule": "Fixed epoch 50 / 5000 updates"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Satiq66 U1 replacement owner",
+    "gpu_policy": "Only GPU3 for replacement training; 2,3 for paired fixed inference",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq66-hybrid-s2026092701-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq66-hybrid-s2026092701-r02/logs",
+    "local_artifact_root": "E:\\type10-7\\local_data\\satiq66_20261119_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.recovery /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-hybrid-s2026092701-r02 /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq66-hybrid-s2026092701-r01 /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq66-hybrid-s2026092701-r02 /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-hybrid-s2026092701-r01/query /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-hybrid-s2026092701-r01-readout/scorer_only/truth.npz --gpus 2 3",
+    "stop_rule": "Owned run only: worker exit, incompatible source, non-finite gradients/output, or role/coverage failure. Future performance never stops or selects training.",
+    "future_readout_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.recovery /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-hybrid-s2026092701-r02 /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq66-hybrid-s2026092701-r01 /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq66-hybrid-s2026092701-r02 /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-hybrid-s2026092701-r01/query /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-hybrid-s2026092701-r01-readout/scorer_only/truth.npz --gpus 2 3"
+  },
+  "expected_artifacts": [
+    "owner.json",
+    "replaces.json",
+    "U1_smoke/complete.json",
+    "U1/source_final.pt",
+    "S0/S1/U0 copied fixed endpoints",
+    "source_complete.json",
+    "predictions_complete.json",
+    "truth_last_metrics.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro_f1",
+      "accuracy",
+      "macro_recall"
+    ],
+    "dimensions": [
+      "satellite",
+      "UTC day",
+      "low detect proxy"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq66-hybrid-s2026092701-r02/{S0,S1,U0,U1}/predictions.npz",
+    "scorer_ref": "experiments/pamf_satiq66/score.py"
+  },
+  "rows": [
+    {
+      "row_id": "U1-s2026092701",
+      "method": "Hybrid-SSL: accepted U plus branch routing, cross-day moves, contrast, prototypes and gradient guard",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_satiq66_20261119.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq66-hybrid-s2026092701-r02/U1/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111901,
+        "data": 2026111902,
+        "augmentation": 2026111903,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No target support or evaluation randomness. U sampler and views use data+1 and augmentation+1, respectively.",
+      "k": null,
+      "scenario": "native_received_Iridium",
+      "optimizer": "AdamW, weight_decay=0.0001",
+      "lr": 0.0003,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "5000 updates, L=132, U=256 only for U0/U1 after E14",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq66-hybrid-s2026092701-r02/U1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq66-hybrid-s2026092701-r02/logs/U1.log",
+      "command": "CUDA_VISIBLE_DEVICES=3 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.train train /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-hybrid-s2026092701-r02/configs/pamf_satiq66_20261119.json /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-hybrid-s2026092701-r02/source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq66-hybrid-s2026092701-r02/U1 --arm U1 --representation 0",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "source_final.pt",
+        "complete.json",
+        "epochs.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Original split and 25 MS/s representation fixed. U1 trains from scratch for 5000 updates.",
+    "PyTorch 2.1 rejects tuple dimensions to any. Per-record flatten followed by any across columns is shape-equivalent.",
+    "N607 reproduction failed before fix and equivalent reduction passed after change. Focused review cleared. No original output is overwritten.",
+    "The healthy original U0 worker is left running. Original S0/S1/U0 checkpoints are used exclusively for scoring, not as U1 initialization."
+  ],
+  "registered_at": "2026-11-19T07:24:06+00:00"
+}
