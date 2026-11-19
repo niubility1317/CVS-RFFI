@@ -10,10 +10,16 @@ from .folds import fold_groups
 
 
 RUN = '20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01'
+SECOND_RUN = '20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r02'
 SETTINGS = ('main_split', 'receiver_split_1', 'labeled_1pct', 'source_rx_2')
+SECOND_SETTINGS = ('receiver_split_2', 'labeled_5pct', 'source_rx_3', 'source_rx_4')
 WEIGHTS = (NATIVE_WEIGHT, *ALTERNATIVES)
 SEED = 2026092701
 PILOT_EPOCHS = 4
+
+
+def settings_for(run_id):
+    return {RUN: SETTINGS, SECOND_RUN: SECOND_SETTINGS}[run_id]
 
 
 def _weight_name(weight):
@@ -23,8 +29,10 @@ def _weight_name(weight):
 def prepare(rt):
     root = Path(rt['run_root'])
     ctx = read(rt['context'])
+    run_id = rt['run_id']
+    settings = settings_for(run_id)
     rows = [row for row in paper.make_plan()['rows'] if row['family'] == 'factorial'
-            and row['method'] == 'ssl' and row['model_seed'] == SEED and row['data_setting'] in SETTINGS]
+            and row['method'] == 'ssl' and row['model_seed'] == SEED and row['data_setting'] in settings]
     jobs = []
     for row in rows:
         original = paper.configuration(ctx, row, rt['project'], rt['code_commit'])
@@ -35,12 +43,12 @@ def prepare(rt):
             job_id = f"train__{row['data_setting']}-{fold}"
             config = root / 'configs' / f'{job_id}.json'
             out = root / 'F' / row['data_setting'] / fold
-            c = dict(original, run_id=RUN, row_id=job_id, output_root=str(out), source_fold=fold,
+            c = dict(original, run_id=run_id, row_id=job_id, output_root=str(out), source_fold=fold,
                      frozen_sources=rt['frozen_sources'])
             write(config, c)
             jobs.append(dict(id=job_id, kind='train', config=str(config), completion=str(out/'complete.json'),
                              successful_statuses=['SOURCE_PILOT_SCORED']))
-    if len(jobs) != 2 * len(SETTINGS):
+    if len(jobs) != 2 * len(settings):
         raise ValueError('Incomplete first-wave source development matrix')
     write(root/'jobs.json', jobs)
     return jobs
@@ -138,24 +146,32 @@ def evaluate_fold(c, partition, device):
 
 def analyze(rt):
     root = Path(rt['run_root'])
-    folds = {name: {} for name in SETTINGS}
-    evidence = {name: {weight: {} for weight in ALTERNATIVES} for name in SETTINGS}
+    settings = settings_for(rt['run_id'])
+    noise_aware = rt['run_id'] == SECOND_RUN
+    folds = {name: {} for name in settings}
+    evidence = {name: {weight: {} for weight in ALTERNATIVES} for name in settings}
     for job in read(root/'jobs.json'):
         scores = read(job['completion'])
+        c = read(job['config'])
         if (scores['status'] != 'SOURCE_PILOT_SCORED' or scores['source_evaluation'] != 'held_V_only'
                 or scores['target_access'] or scores['U_truth_read']):
             raise ValueError('Only untouched held source V may control dose selection')
         name, fold = scores['setting'], scores['fold']
-        if fold in folds[name]:
-            raise ValueError('Duplicate source fold')
-        groups = folds[name][fold] = set()
+        if name != c['paper_row']['data_setting'] or fold != c['source_fold'] or fold in folds[name]:
+            raise ValueError('Source score does not match the registered fold')
+        folds[name][fold] = fold_groups(c['source_rxs'], c['source_days'])[fold]
         for row in scores['rows']:
             group = (row['rx'], row['date'])
-            groups.add(group)
             arms = evidence[name][row['weight']]
             if (fold, group) in arms:
                 raise ValueError('Duplicate fold scores')
             arms[fold, group] = (row['count'], row['gain'], row['damage'])
-    decisions = {name: choose_weight(folds[name], evidence[name]) for name in SETTINGS}
-    write(root/'analysis'/'source_decisions.json', dict(status='SOURCE_ADAPTATION_DECISIONS_FROZEN',
-          selected_seed=SEED, decisions=decisions, target_access=False, U_truth_read=False))
+    if any(len(group) != 2 for group in folds.values()):
+        raise ValueError('Exactly two completed folds per pilot design required')
+    decisions = {name: choose_weight(folds[name], evidence[name], noise_aware=noise_aware) for name in settings}
+    result = dict(status='SOURCE_ADAPTATION_DECISIONS_FROZEN',
+          selected_seed=SEED, policy='noise_aware' if noise_aware else 'strict', decisions=decisions,
+          target_access=False, U_truth_read=False)
+    if noise_aware:
+        result['strict_control'] = {name: choose_weight(folds[name], evidence[name]) for name in settings}
+    write(root/'analysis'/'source_decisions.json', result)

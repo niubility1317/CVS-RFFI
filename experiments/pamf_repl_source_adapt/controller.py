@@ -4,9 +4,21 @@ from fractions import Fraction
 
 NATIVE_WEIGHT = 6.0
 ALTERNATIVES = (4.5, 3.0)
+SOURCE_CELL_TOLERANCE = Fraction(1, 400)
+PAIRED_ALPHA = Fraction(1, 40)
 
 
-def choose_weight(folds, results):
+def _paired_gain_pvalue(gain, damage):
+    """Exact one-sided binomial tail conditioned on discordant decisions."""
+    discordant = gain + damage
+    term = total = 1
+    for k in range(1, damage + 1):
+        term = term * (discordant - k + 1) // k
+        total += term
+    return Fraction(total, 1 << discordant)
+
+
+def choose_weight(folds, results, *, noise_aware=False):
     """Return a dose and its exact held-out evidence, with strong native fallback.
 
     Each fold names its held-out groups. A result for each group is
@@ -37,9 +49,18 @@ def choose_weight(folds, results):
             fold_n[fold] += n
         deltas = {fold: Fraction(fold_gain[fold], n) for fold, n in fold_n.items()}
         macro = sum(deltas.values()) / len(deltas)
-        eligible = all(delta > 0 for delta in deltas.values()) and all(gain >= damage for n, gain, damage in scores.values())
+        worst_cell = min(Fraction(gain-damage, n) for n, gain, damage in scores.values())
+        consistent = all(delta > 0 for delta in deltas.values())
+        if noise_aware:
+            pvalue = _paired_gain_pvalue(sum(g for _, g, _ in scores.values()), sum(d for _, _, d in scores.values()))
+            eligible = consistent and worst_cell >= -SOURCE_CELL_TOLERANCE and pvalue <= PAIRED_ALPHA
+        else:
+            eligible = consistent and worst_cell >= 0
         candidates[weight] = dict(eligible=eligible, fold_net=fold_gain, fold_n=fold_n,
-                                  macro_delta=float(macro), worst_group_net=min(g-d for _, g, d in scores.values()))
+                                  macro_delta=float(macro), worst_group_delta=float(worst_cell),
+                                  worst_group_net=min(g-d for _, g, d in scores.values()))
+        if noise_aware:
+            candidates[weight]['paired_gain_pvalue'] = float(pvalue)
         if eligible:
             top = max(top, (macro, weight))
     return dict(weight=top[1], decision='source_improvement' if top[1] != NATIVE_WEIGHT else 'retain_native',

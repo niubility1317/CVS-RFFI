@@ -19,8 +19,9 @@ def smoke(rt):
     for job in jobs:
         pilot.registered_fold(read(job['config']))
     # This exact-contract ordinary-PL E20 smoke never enters any fold or decision.
-    h = read(rt['context'])['handles']['F1_rx_repartition_r01']
-    folder = Path(rt['project'])/'runs'/pilot.paper.RUN/'F'/f'receiver_split_1-factorial-ssl-full-permuted-s{pilot.SEED}'/'source'/'segment20'
+    setting = 'receiver_split_2' if rt['run_id'] == pilot.SECOND_RUN else 'receiver_split_1'
+    h = read(rt['context'])['handles'][pilot.paper.PROTOCOLS[setting][0]]
+    folder = Path(rt['project'])/'runs'/pilot.paper.RUN/'F'/f'{setting}-factorial-ssl-full-permuted-s{pilot.SEED}'/'source'/'segment20'
     done = read(folder/'complete.json')
     c = done['config']
     contract = read(h['source_contract'])

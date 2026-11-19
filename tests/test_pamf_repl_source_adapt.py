@@ -53,3 +53,19 @@ def test_selection_rejects_a_hurt_group_even_when_pooled_gain_is_larger():
 def test_rejects_partial_evidence_instead_of_treating_missing_arm_as_default():
     with pytest.raises(ValueError, match='complete'):
         choose_weight({'a': ('g1',), 'b': ('g2',)}, {4.5: {}})
+
+
+def test_noise_aware_screen_requires_gain_both_folds_and_limits_each_cell_loss():
+    folds = {'fold1': ('a', 'b'), 'fold2': ('c', 'd')}
+    scores = {(f, g): (1800, 24, 3) for f, groups in folds.items() for g in groups}
+    scores['fold1', 'a'] = (1800, 0, 4)
+    harmful = scores.copy()
+    harmful['fold1', 'a'] = (1800, 0, 5)
+    evidence = {4.5: scores, 3.: harmful}
+    assert choose_weight(folds, evidence)['weight'] == 6.
+    decision = choose_weight(folds, evidence, noise_aware=True)
+    assert decision['weight'] == 4.5
+    assert decision['candidates'][4.5]['paired_gain_pvalue'] <= .025
+    assert not decision['candidates'][3.]['eligible']
+    borderline = {(f, g): (1800, 2, 1) for f, groups in folds.items() for g in groups}
+    assert choose_weight(folds, {4.5: borderline, 3.: borderline}, noise_aware=True)['weight'] == 6.

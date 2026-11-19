@@ -4,12 +4,12 @@ from pathlib import Path
 
 from experiments.cric_dura_comparison.io import read, write
 from experiments.pamf_branch_training import publish as base
-from .pilot import RUN, SETTINGS, paper
+from .pilot import RUN, SECOND_RUN, paper, settings_for
 
 
-def publish(repo, output, context, ssh_config):
+def publish(repo, output, context, ssh_config, *, run_id=RUN):
     ctx = read(context)
-    protocol_ids = [paper.PROTOCOLS[setting][0] for setting in SETTINGS]
+    protocol_ids = [paper.PROTOCOLS[setting][0] for setting in settings_for(run_id)]
     source_context = dict(
         runtime={key: ctx['runtime'][key] for key in ('project', 'python', 'frozen_sources')},
         handles={pid: {key: ctx['handles'][pid][key] for key in ('source_cache', 'source_contract', 'classes')}
@@ -29,9 +29,9 @@ def publish(repo, output, context, ssh_config):
 """
     script = (script[:start] + preflight + script[end:]).replace('experiments/pamf_branch_training', 'experiments/pamf_repl_source_adapt')
     script = script.replace('experiments.pamf_branch_training.runner', 'experiments.pamf_repl_source_adapt.runner')
-    base.RUN, base.REMOTE = RUN, script
+    base.RUN, base.REMOTE = run_id, script
     try:
-        return base.publish(repo, output, path, ssh_config, launch_owner='codex-'+RUN)
+        return base.publish(repo, output, path, ssh_config, launch_owner='codex-'+run_id)
     finally:
         base.RUN, base.REMOTE = old_run, old_remote
 
@@ -40,5 +40,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     for option in ('repo', 'output', 'context', 'ssh-config'):
         parser.add_argument('--' + option, required=True)
+    parser.add_argument('--round', type=int, choices=(1, 2), default=1)
     args = parser.parse_args()
-    publish(args.repo, args.output, args.context, args.ssh_config)
+    publish(args.repo, args.output, args.context, args.ssh_config, run_id=SECOND_RUN if args.round == 2 else RUN)

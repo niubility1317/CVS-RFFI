@@ -4,19 +4,22 @@ from copy import deepcopy
 
 from experiments.cric_dura_comparison.io import read, write
 from .folds import fold_groups
-from .pilot import RUN, SEED, SETTINGS, WEIGHTS, paper
+from .pilot import RUN, SECOND_RUN, SEED, WEIGHTS, paper, settings_for
 
 
-def make(template, context):
+def make(template, context, *, run_id=RUN):
     row_template = template['rows'][0]
     data = deepcopy(template)
-    root = f'PROJECT/runs/{RUN}'
+    noise_aware = run_id == SECOND_RUN
+    root = f'PROJECT/runs/{run_id}'
     launch = 'python -m experiments.pamf_repl_source_adapt.publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG'
-    data.update(run_id=RUN, group_id='phase1-pamf-source-adaptation',
+    if noise_aware:
+        launch += ' --round 2'
+    data.update(run_id=run_id, group_id='phase1-pamf-source-adaptation',
                 display_name='Tri 跨数据设置源留出自适应试点', description='四个设置、每设置两折、每折三剂量，固定 E24 的源域配对。',
                 parent_run_ids=[paper.RUN], authorization='用户要求把研发重点转向在其他数据设置保持或增加原 Tri 相对普通 PL 的优势。')
     data['code'].update(commit='actual committed release identity in runtime.json', checkout='current task worktree',
-                        environment='N607 existing CVS-RFFI', cwd=f'PROJECT/releases/{RUN}-release')
+                        environment='N607 existing CVS-RFFI', cwd=f'PROJECT/releases/{run_id}-release')
     data['data'].update(dataset='Original Phase1 source-only roles on four designs', contract_ref='context source per protocol',
                         physical_ids_ref='Original source roles restricted by preregistered held RX/date fold',
                         roles={'L_s': 'train minus held cells', 'U_s': 'TX-blind train minus held cells',
@@ -28,7 +31,7 @@ def make(template, context):
                               contract_check_ref='exact source roles and location, plus fold-bound source loader',
                               provenance_verdict='Original complete source E20 used only for same-contract smoke, never inherited into a fold',
                               selection_rule='both folds strictly improve and every held cell has nonnegative net gain, then macro gain and nearest-to-native tie break')
-    data['execution'].update(host='N607 ordinary user', launch_owner='codex-'+RUN,
+    data['execution'].update(host='N607 ordinary user', launch_owner='codex-'+run_id,
                              gpu_policy='GPU 0–6, admitted max two total per GPU; reserve 12 GiB',
                              remote_run_root=root, remote_log_root=root+'/logs',
                              local_artifact_root='local_artifacts/pamf_repl_source_adapt_20261119',
@@ -40,7 +43,7 @@ def make(template, context):
     data['expected_artifacts'] = ['actual-source checkpoint smoke', 'eight fold-specific initial checkpoints',
                                   '24 E24 source-only candidates', 'eight held-source paired readouts and four decisions']
     data['rows'] = []
-    for setting in SETTINGS:
+    for setting in settings_for(run_id):
         pid = paper.PROTOCOLS[setting][0]
         for name, groups in fold_groups(context['protocols'][pid]['source_rxs'], (1, 2, 3)).items():
             job = f'train__{setting}-{name}'
@@ -57,6 +60,11 @@ def make(template, context):
             data['rows'].append(entry)
     data['notes'] = ['This E24 pilot never reads target handles or U truth. Final E50 clean validation is a separate fixed matrix.',
                      'With two RXs, hold RX-date cells to preserve both RXs in training. With at least three, hold complete source RXs.']
+    if noise_aware:
+        data['parent_run_ids'].append(RUN)
+        data['execution']['local_artifact_root'] = 'local_artifacts/pamf_repl_source_adapt_r02_20261119'
+        data['checkpoint']['selection_rule'] = 'Both source folds strictly improve, directional paired p <= .025, worst held cell delta >= -.25 percentage point; highest macro gain, closest-to-native tie-break.'
+        data['notes'].append('This source-only screening rule is fixed before the second cohort. The .25 point tolerance applies to the source proxy, not formal E50 clean acceptance.')
     return data
 
 
@@ -64,5 +72,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     for name in ('template', 'context', 'output'):
         parser.add_argument('--' + name, required=True)
+    parser.add_argument('--round', type=int, choices=(1, 2), default=1)
     args = parser.parse_args()
-    write(args.output, make(read(args.template), read(args.context)))
+    write(args.output, make(read(args.template), read(args.context), run_id=SECOND_RUN if args.round == 2 else RUN))
