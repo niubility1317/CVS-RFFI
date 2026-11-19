@@ -1,0 +1,162 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261120-diagnostic-satiq-native160-aux-gradient-s2026112007-r01",
+  "group_id": "phase1-satiq-ccs2023-fully-supervised",
+  "display_name": "SatIQ 原版 160 完整监督的梯度分项复核",
+  "description": "Replay exactly the same real training batches to compare weighted auxiliary gradients with the main CE at E5 and E10.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF-SUP",
+    "gradient-audit",
+    "source-only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261120-diagnostic-satiq-native160-head-e5-e10-s2026111907-r01",
+    "20261120-diagnostic-satiq-native-fit-subset-s2026092701-r01",
+    "20261119-phase1-satiq-ccs2023-native160-sup100-s2026092701-r01",
+    "20261119-diagnostic-satiq-native-source-accuracy-s2026111907-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Diagnose the authorized supervised native PAMF optimization using existing L data and frozen weights only.",
+  "code": {
+    "commit": "f0f972a83e7b56d733234b5b7a5085e762efc129",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-native160-aux-gradient-s2026112007-r01",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python N607 FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-native160-aux-gradient-s2026112007-r01"
+  },
+  "data": {
+    "dataset": "Oxford SatIQ Zenodo 8220494, first 1010464 chronological packets",
+    "version": "8220494",
+    "representation": "Only 8000-point common-word prefix, resampled to the original 256-point native view before any branch encoding. Existing 11000-point cache unchanged.",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/L_index.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "source_receivers": [
+      "Oxford single receiver"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2023-03-22 through part of 2023-04-14 UTC"
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 2048,
+      "V": null,
+      "U_s": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "satiq_oxford_ccs2023_supervised_reindexed_v1_2026111905",
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "64 fixed true source training batches. L gradients only, no weight updates, no V/T scoring."
+  },
+  "checkpoint": {
+    "initialization": "existing frozen E5/E10 diagnostic replay only",
+    "sources": [
+      {
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-native160-sup100-s2026092701-r01/PAMF_SUP/s0141125.pt",
+        "run_id": "20261119-phase1-satiq-ccs2023-native160-sup100-s2026092701-r01",
+        "training_origin": "scratch source L only",
+        "inherited_checkpoints": []
+      },
+      {
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-native160-sup100-s2026092701-r01/PAMF_SUP/s0282250.pt",
+        "run_id": "20261119-phase1-satiq-ccs2023-native160-sup100-s2026092701-r01",
+        "training_origin": "scratch source L only",
+        "inherited_checkpoints": []
+      }
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "provenance_verdict": "MATCHED_SOURCE_L_V",
+    "selection_rule": "Fixed 141125 and 282250 updates. Restore only the matched native160 network, take gradients without applying them."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Single frozen gradient diagnostic",
+    "gpu_policy": "Physical GPU4, at least 4096 MiB free with <=2 incumbents before launch.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-native160-aux-gradient-s2026112007-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-native160-aux-gradient-s2026112007-r01",
+    "local_artifact_root": "E:/type10-7/local_data/satiq_oxford_ccs2023_supervised_20261119_r01",
+    "launch_command": "CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=4 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_gradient_audit /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-native160-aux-gradient-s2026112007-r01/source_scores.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-native160-sup100-s2026092701-r01/PAMF_SUP/s0141125.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-native160-sup100-s2026092701-r01/PAMF_SUP/s0282250.pt",
+    "stop_rule": "Evaluate the exact same 64 batches in training mode for both frozen checkpoints.",
+    "readout_pid": 2177989,
+    "physical_gpu": 4,
+    "gpu_uuid": "GPU-95d925a1-7218-ca7b-adef-164241f4f491",
+    "launch_readback": "Verified PID, GPU4 and CWD, command points to the exact two native160 source snapshots."
+  },
+  "expected_artifacts": [
+    "source_scores.json",
+    "grad.log",
+    "grad.pid",
+    "grad.exit"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "weighted auxiliary norm / CE norm",
+      "inner product / CE squared norm",
+      "cosine",
+      "negative gradient alignment count"
+    ],
+    "dimensions": [
+      "encoder and head independently",
+      "64 identical 32-record source batches"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "experiments/pamf_satiq66/paper_gradient_audit.py"
+  },
+  "rows": [
+    {
+      "row_id": "GRADIENT",
+      "method": "Native160 loss gradient replay",
+      "purpose": "Identify which auxiliary contributes directional disagreement with the main beam CE.",
+      "config_ref": "experiments/pamf_satiq66/paper_gradient_audit.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-native160-aux-gradient-s2026112007-r01/experiments/pamf_satiq66/paper_gradient_audit.py",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111906,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026112007
+      },
+      "seed_notes": "Original sampler yields a whole epoch. 2026112007 selects 64 source batches and fixes dropout replay for both checkpoints.",
+      "k": null,
+      "scenario": "Oxford true received L waveform batches",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "64 gradient-only batches for each of the two actual E5/E10 checkpoints.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-native160-aux-gradient-s2026112007-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-native160-aux-gradient-s2026112007-r01/grad.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_gradient_audit /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-native160-aux-gradient-s2026112007-r01/source_scores.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-native160-sup100-s2026092701-r01/PAMF_SUP/s0141125.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-native160-sup100-s2026092701-r01/PAMF_SUP/s0282250.pt",
+      "expected_artifacts": [
+        "source_scores.json",
+        "grad.log",
+        "grad.pid",
+        "grad.exit"
+      ],
+      "pid": 2177989,
+      "gpu": 4
+    }
+  ],
+  "notes": [
+    "Use the same forward pass, activated original dropout, and the actual objective weights. Derive weighted component gradients from the production native loss.",
+    "Only four auxiliaries are included: same-satellite CE .2, mean branch CE .15, branch KL .05, leave-one-out branch prototype CE .5.",
+    "Gradients are observed before Adam scaling. Local projection measures first-order agreement only, not a causal conclusion about changing a weight."
+  ],
+  "registered_at": "2026-11-19T17:00:53+00:00"
+}
