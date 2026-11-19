@@ -24,18 +24,28 @@ def embeddings(model, raw, device, block=128):
     return np.concatenate(features)
 
 
-def panel(labels, classes, seed, reference_size=16):
+def panel(labels, classes, seed, reference_size=16, reference_period=None):
     rng = np.random.default_rng(seed)
-    eligible = [k for k in range(len(classes)) if np.count_nonzero(labels == k) > reference_size]
+    eligible, ref, query, targets = [], [], [], []
+    for label in range(len(classes)):
+        rows = np.flatnonzero(labels == label)
+        if len(rows) <= reference_size:
+            continue
+        rows = rng.permutation(rows)
+        if reference_period is None:
+            enrolment, evaluation = rows[:reference_size], rows[reference_size:]
+        else:
+            is_reference = reference_period[rows]
+            enrolment, evaluation = rows[is_reference][:reference_size], rows[~is_reference]
+        if len(enrolment) < reference_size or not len(evaluation):
+            continue
+        targets.extend([len(eligible)] * len(evaluation))
+        eligible.append(label)
+        ref.append(enrolment)
+        query.extend(evaluation)
     if len(eligible) < 2:
         raise ValueError("Validation requires at least two identities with a disjoint reference and query")
     satellites = np.asarray(classes)[eligible, 0]
-    ref, query, targets = [], [], []
-    for col, label in enumerate(eligible):
-        rows = rng.permutation(np.flatnonzero(labels == label))
-        ref.append(rows[:reference_size])
-        query.extend(rows[reference_size:])
-        targets.extend([col] * (len(rows) - reference_size))
     targets = np.asarray(targets)
     neighbor = []
     foreign = []
