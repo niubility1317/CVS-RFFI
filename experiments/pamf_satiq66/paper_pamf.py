@@ -107,13 +107,20 @@ def supervised_loss(logits, common, full, target, satellites, weights, class_log
 
 
 def branch_prototype_loss(branches):
-    """Balanced classification against the 8×4 source batch's leave-one-out prototypes."""
+    """Classify centered branch features against the source batch's leave-one-out prototypes."""
     vectors = F.normalize(branches, dim=-1)
-    sums = vectors.reshape(len(vectors), 8, 4, -1).sum(dim=2)
-    prototypes = F.normalize(sums, dim=-1)
-    scores = vectors @ prototypes.transpose(1, 2)
-    own_prototypes = F.normalize(sums.repeat_interleave(4, dim=1) - vectors, dim=-1)
-    own_scores = (vectors * own_prototypes).sum(dim=-1, keepdim=True)
+    centered = vectors - vectors.mean(dim=1, keepdim=True)
+
+    def bounded_direction(value):
+        # A floor prevents tiny centered residuals from dominating the supervised gradient.
+        return value / (value.square().sum(dim=-1, keepdim=True) + .1 ** 2).sqrt()
+
+    anchors = bounded_direction(centered)
+    sums = centered.reshape(len(centered), 8, 4, -1).sum(dim=2)
+    prototypes = bounded_direction(sums / 4)
+    scores = anchors @ prototypes.transpose(1, 2)
+    own_prototypes = bounded_direction((sums.repeat_interleave(4, dim=1) - centered) / 3)
+    own_scores = (anchors * own_prototypes).sum(dim=-1, keepdim=True)
     labels = torch.arange(8, device=vectors.device).repeat_interleave(4).expand(len(vectors), -1)
     scores = scores.scatter(2, labels.unsqueeze(-1), own_scores)
     return F.cross_entropy((30 * scores).flatten(0, 1), labels.flatten())
