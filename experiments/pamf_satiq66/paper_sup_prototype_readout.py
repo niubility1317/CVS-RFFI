@@ -134,6 +134,14 @@ def compare(source, cache, checkpoints, seed, per_class, fit_count, device, fusi
             raise ValueError(f"Unexpected PAMF-SUP checkpoint source for {checkpoint}")
         l = encode(model, "PAMF_SUP", train_iq, fit_rows, device)
         v = encode(model, "PAMF_SUP", query_iq, queries, device)
+        if len(l) == 1:
+            if fusion_fit_count:
+                raise ValueError("Fusion weight fitting requires two waveform paths")
+            views = (("native_identity", slice(None)),)
+        else:
+            width = v[0].shape[1]
+            views = (("native_160", slice(0, width)), ("full_rate_160", slice(width, None)),
+                     ("fused_320", slice(None)))
         fused = F.normalize(torch.cat(v, dim=1), dim=1)
         scores = {"native_head": score_head(fused, F.normalize(model.head.weight, dim=1), target,
                                             satellites, wrong, device)}
@@ -143,15 +151,13 @@ def compare(source, cache, checkpoints, seed, per_class, fit_count, device, fusi
         for tag in ("raw", "centered", "partial_whiten"):
             l_vectors = readout_vectors(enrolled_paths, stats, tag)
             v_vectors = readout_vectors(v, stats, tag)
-            width = v[0].shape[1]
             scores[tag] = {}
-            for view, columns in (("native_160", slice(0, width)), ("full_rate_160", slice(width, None)),
-                                  ("fused_320", slice(None))):
+            for view, columns in views:
                 references = F.normalize(l_vectors[:, columns], dim=1)
                 queries_for_view = F.normalize(v_vectors[:, columns], dim=1)
                 weight = prototype_weights(references, enrolled_labels, len(classes))
                 scores[tag][view] = score_head(queries_for_view, weight.to(device), target, satellites, wrong, device)
-                if tag == "partial_whiten" and view != "fused_320":
+                if fusion_fit_count and tag == "partial_whiten" and view != "fused_320":
                     calibrated_references.append(weight)
         if fusion_fit_count:
             fusion_paths = [F.normalize(apply_calibration(x[fusion_indices], s), dim=1)
