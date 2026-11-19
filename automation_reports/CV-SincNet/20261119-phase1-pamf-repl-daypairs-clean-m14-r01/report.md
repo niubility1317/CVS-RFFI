@@ -1,5 +1,7 @@
 # Tri 源接收机与日期联合对比
 
+**VERIFIED / ANALYZED**。发布提交 `28068e464e68f33a83eb610438dc4f1863218c44`。真实 E20 冒烟 14/14，通过 GPU、PID、命令、CWD 和逐步日志核对。56 项训练、预测与评分任务全部完成。见 [结果与完整诊断](analysis.md)。
+
 十类与六源各固定 7 个候选，优先缩小 `cross_both` 的缺口。上一轮最好的动态 KL 在相对 PL 的 `cross_rx` 中净增 18 / 289 条，在 `cross_both` 中净少 152 / 285 条。池化主指标仍是固定 E50 的 `cross_rx + cross_both`。同时逐项报告 clean 子集。[上一轮配对](../20261119-phase1-pamf-repl-adaptivekl-clean-m14-r01/analysis.md) · [执行矩阵](experiment.json)
 
 两个设置各用对应最强固定配方、合法的同种子源域 E20、6660 步续训及独立的 E50 clean 预测和 truth-last 评分。十类只重分配浅层跨 RX 正对权重，保留 ordinary KL 及浅层因子 2。六源只重分配融合特征跨 RX 正对权重，保留 raw KL 及融合系数 0.10。其余机制、视图、0.95 接受规则、U 0.75、KL 因子 1.5 和视图系数 0.8 固定。伪标签 CE 与梯度投影关闭。所有数据和训练信号限原合规源域。
