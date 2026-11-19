@@ -103,7 +103,7 @@ class PaperNativePAMF(nn.Module):
         return feature, logits
 
 
-def native_supervised_loss(logits, branch_logits, target, satellites, weights):
+def native_classification_terms(logits, branch_logits, target, satellites):
     ce = F.cross_entropy(logits, target)
     same = satellites[None, :] == satellites[target, None]
     within = F.cross_entropy(logits.masked_fill(~same, -torch.inf), target)
@@ -112,6 +112,11 @@ def native_supervised_loss(logits, branch_logits, target, satellites, weights):
     teacher = logits.detach().softmax(dim=1).expand_as(branch_logits)
     agreement = F.kl_div(branch_logits.log_softmax(dim=-1), teacher, reduction="sum")
     agreement = agreement / (len(branch_logits) * len(target))
+    return ce, within, branch_ce, agreement
+
+
+def native_supervised_loss(logits, branch_logits, target, satellites, weights):
+    ce, within, branch_ce, agreement = native_classification_terms(logits, branch_logits, target, satellites)
     loss = (ce + weights["same_satellite_ce"] * within + weights["view_ce"] * branch_ce.mean()
             + weights["view_kl"] * agreement)
     stats = dict(ce=ce.detach(), within_satellite_ce=within.detach(),
