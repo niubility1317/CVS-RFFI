@@ -1,0 +1,19 @@
+{
+  "status": "VERIFIED",
+  "n607_time": "2026-11-19T15:37:44+08:00",
+  "host": "dell-DSS8440",
+  "controller_pid": 1797411,
+  "child_pid": 1797654,
+  "worker_parent": 1797411,
+  "worker_arm": "backbone_full",
+  "worker_gpu": 7,
+  "gpu_mib": 2212,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-header-s2026111902-r01-release",
+  "launch": "experiments.pamf_satiq.header_experiment launch",
+  "controller_log": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-header-s2026111902-r01-release/controller.log",
+  "release_sha256": "4abddee75a7debc0fb3c56a26fee989b88defbb9ff840092bd1cfffedd2ff6ea",
+  "independent_check": "full arm scratch checkpoint smoke PASS and epoch 3 advances; crop arm completed",
+  "source_iq_sha_verified_shards": 6,
+  "source_raw_iq_bytes": 2640000768,
+  "source_metadata_count": 30000
+}

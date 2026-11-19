@@ -1,0 +1,70 @@
+{
+  "schema": "satiq_oxford_thun_full_header_v1",
+  "station": "Switzerland",
+  "role": "target",
+  "sample_rate_hz": 25000000,
+  "records": 30000,
+  "dtype": "float32",
+  "axes": [
+    "packet",
+    "sample",
+    "iq"
+  ],
+  "samples_per_packet": 11000,
+  "shards": [
+    {
+      "path": "iq/2024-08-12_0/iq.npy",
+      "station": "Switzerland",
+      "name": "2024-08-12_0",
+      "original_split": "test",
+      "records": 5000,
+      "sha256": "2c8dde0477359ef14ae1122e6b28a6eedd6d6cfb799f0c6af514cd2072af5eb4",
+      "size": 440000128
+    },
+    {
+      "path": "iq/2024-08-12_1/iq.npy",
+      "station": "Switzerland",
+      "name": "2024-08-12_1",
+      "original_split": "val",
+      "records": 5000,
+      "sha256": "66f4829c0633c22abd5c669aea9faf2b5b869d4870284824afcba2c1be47f6b7",
+      "size": 440000128
+    },
+    {
+      "path": "iq/2024-08-12_2/iq.npy",
+      "station": "Switzerland",
+      "name": "2024-08-12_2",
+      "original_split": "train",
+      "records": 5000,
+      "sha256": "170df685b3ca8ee503453840dd86d231d86abacffb9f268e9d08e10d668a1a35",
+      "size": 440000128
+    },
+    {
+      "path": "iq/2024-08-12_3/iq.npy",
+      "station": "Switzerland",
+      "name": "2024-08-12_3",
+      "original_split": "train",
+      "records": 5000,
+      "sha256": "aad05e149ceee71332863474acd802f7f769cb8459915cd3bc463278898daacd",
+      "size": 440000128
+    },
+    {
+      "path": "iq/2024-08-12_4/iq.npy",
+      "station": "Switzerland",
+      "name": "2024-08-12_4",
+      "original_split": "train",
+      "records": 5000,
+      "sha256": "3a618c69d1256cfc4d80c3f1f5ac5b7b4ba2f0bbc4480819d6309e9eca63809e",
+      "size": 440000128
+    },
+    {
+      "path": "iq/2024-08-12_5/iq.npy",
+      "station": "Switzerland",
+      "name": "2024-08-12_5",
+      "original_split": "train",
+      "records": 5000,
+      "sha256": "fce274b607ffc48e456ca4c29a5095b63a8a5eb7b096138b8445d6a83e980021",
+      "size": 440000128
+    }
+  ]
+}

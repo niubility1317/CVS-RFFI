@@ -1,0 +1,70 @@
+{
+  "schema": "satiq_oxford_thun_full_header_v1",
+  "station": "UK",
+  "role": "source",
+  "sample_rate_hz": 25000000,
+  "records": 30000,
+  "dtype": "float32",
+  "axes": [
+    "packet",
+    "sample",
+    "iq"
+  ],
+  "samples_per_packet": 11000,
+  "shards": [
+    {
+      "path": "iq/2023-05-12_0/iq.npy",
+      "station": "UK",
+      "name": "2023-05-12_0",
+      "original_split": "test",
+      "records": 5000,
+      "sha256": "56c582784da32c104f11efd4e4bb4fc741158f6108a593283fbdd16957a49a55",
+      "size": 440000128
+    },
+    {
+      "path": "iq/2023-05-12_1/iq.npy",
+      "station": "UK",
+      "name": "2023-05-12_1",
+      "original_split": "val",
+      "records": 5000,
+      "sha256": "3e3b5643f1cec1fa4d4144dc005b663e1b837521e56f30ef5596d1bae36e7c72",
+      "size": 440000128
+    },
+    {
+      "path": "iq/2023-05-12_2/iq.npy",
+      "station": "UK",
+      "name": "2023-05-12_2",
+      "original_split": "train",
+      "records": 5000,
+      "sha256": "6b70c52a6ed4f67aa9eaf08fc673dd8437b41d8d5168544b7427967a60bf303b",
+      "size": 440000128
+    },
+    {
+      "path": "iq/2023-05-12_3/iq.npy",
+      "station": "UK",
+      "name": "2023-05-12_3",
+      "original_split": "train",
+      "records": 5000,
+      "sha256": "d1dd238d19dc153221a81a04368f2459138cf167fcba84035158b1a2cb77052a",
+      "size": 440000128
+    },
+    {
+      "path": "iq/2023-05-12_4/iq.npy",
+      "station": "UK",
+      "name": "2023-05-12_4",
+      "original_split": "train",
+      "records": 5000,
+      "sha256": "eb999fcb6507a5b09f32d6cdd5431a2551b063122a4ee6ea4c91e3a2e3ddf09a",
+      "size": 440000128
+    },
+    {
+      "path": "iq/2023-05-12_5/iq.npy",
+      "station": "UK",
+      "name": "2023-05-12_5",
+      "original_split": "train",
+      "records": 5000,
+      "sha256": "009d16dead6abcecf3e917c4d1a3e80ba4f54f6f1b3272a9ad30b7aa2004517b",
+      "size": 440000128
+    }
+  ]
+}

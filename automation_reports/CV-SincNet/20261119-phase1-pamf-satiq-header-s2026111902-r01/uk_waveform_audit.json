@@ -1,0 +1,28 @@
+{
+  "train": {
+    "packets": 849,
+    "occupied_blocks": 286,
+    "per_class_blocks_min": 12,
+    "per_class_blocks_median": 15.5,
+    "per_class_blocks_max": 22,
+    "old_crop_energy_fraction_quantiles": [
+      0.12777824103832244,
+      0.13378703594207764,
+      0.13963789045810698
+    ],
+    "exact_previous_ids_and_labels": true
+  },
+  "val": {
+    "packets": 269,
+    "occupied_blocks": 90,
+    "per_class_blocks_min": 3,
+    "per_class_blocks_median": 5.0,
+    "per_class_blocks_max": 8,
+    "old_crop_energy_fraction_quantiles": [
+      0.12711892127990723,
+      0.13367274403572083,
+      0.1393197387456894
+    ],
+    "exact_previous_ids_and_labels": true
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "status": "VERIFIED",
+  "completed_arms": {
+    "backbone_crop": {
+      "predictions": 30000,
+      "epoch": 20,
+      "updates": 540,
+      "correct": 14,
+      "swiss_predicted_classes": 2,
+      "swiss_majority_predictions": [
+        0,
+        357
+      ],
+      "train_seconds": 13.01157064596191,
+      "peak_gpu_mib": 168.17138671875
+    },
+    "backbone_full": {
+      "predictions": 30000,
+      "epoch": 20,
+      "updates": 540,
+      "correct": 17,
+      "swiss_predicted_classes": 6,
+      "swiss_majority_predictions": [
+        8,
+        206
+      ],
+      "train_seconds": 21.11919846595265,
+      "peak_gpu_mib": 1590.53466796875
+    },
+    "pamf_crop": {
+      "predictions": 30000,
+      "epoch": 20,
+      "updates": 540,
+      "correct": 13,
+      "swiss_predicted_classes": 2,
+      "swiss_majority_predictions": [
+        0,
+        367
+      ],
+      "train_seconds": 16.997711857780814,
+      "peak_gpu_mib": 168.8291015625
+    },
+    "pamf_full": {
+      "predictions": 30000,
+      "epoch": 20,
+      "updates": 540,
+      "correct": 16,
+      "swiss_predicted_classes": 7,
+      "swiss_majority_predictions": [
+        8,
+        201
+      ],
+      "train_seconds": 24.886319072917104,
+      "peak_gpu_mib": 1593.0595703125
+    }
+  },
+  "swiss_known_packets": 369,
+  "swiss_known_classes": 19,
+  "oxford_before_swiss": true,
+  "prediction_before_truth_score": true,
+  "raw_shards": 12,
+  "raw_packets": 60000,
+  "raw_bytes": 5280001536
+}
