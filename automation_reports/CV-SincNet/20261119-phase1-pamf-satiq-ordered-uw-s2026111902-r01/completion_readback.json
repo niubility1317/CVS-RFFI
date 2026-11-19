@@ -1,0 +1,105 @@
+{
+  "status": "VERIFIED",
+  "time": "2026-11-19T18:31:09.177715+08:00",
+  "arms": {
+    "uw11": {
+      "uk_selected_epoch": 50,
+      "uk_selected_val": {
+        "accuracy": 0.07806691449814127,
+        "macro_f1": 0.07381899083971014,
+        "balanced_accuracy": 0.07875561938061938,
+        "predicted_class_count": 20,
+        "ce": 3.2357466220855713
+      },
+      "uk_e100": {
+        "ce": 7.329329490661621,
+        "accuracy": 0.07434944237918216,
+        "macro_f1": 0.07200735278226193,
+        "balanced_accuracy": 0.07540480352980353,
+        "predicted_class_count": 19
+      },
+      "train_ce_e100": 0.17631262056397887,
+      "total_updates": 2700,
+      "swiss_correct": 26,
+      "swiss_accuracy": 0.07046070460704607,
+      "swiss_macro_f1": 0.03332929850628942,
+      "swiss_balanced_accuracy": 0.048623489799960395,
+      "predicted_classes": 17,
+      "train_seconds": 243.83935311017558,
+      "gpu_peak_mib": 1730.20263671875
+    },
+    "uw8": {
+      "uk_selected_epoch": 100,
+      "uk_selected_val": {
+        "accuracy": 0.10037174721189591,
+        "macro_f1": 0.09571476598716033,
+        "balanced_accuracy": 0.09707653457653456,
+        "predicted_class_count": 20,
+        "ce": 7.085747718811035
+      },
+      "uk_e100": {
+        "ce": 7.085747718811035,
+        "accuracy": 0.10037174721189591,
+        "macro_f1": 0.09571476598716033,
+        "balanced_accuracy": 0.09707653457653456,
+        "predicted_class_count": 20
+      },
+      "train_ce_e100": 0.23267953225945695,
+      "total_updates": 2700,
+      "swiss_correct": 29,
+      "swiss_accuracy": 0.07859078590785908,
+      "swiss_macro_f1": 0.04900885124994759,
+      "swiss_balanced_accuracy": 0.05602302295800748,
+      "predicted_classes": 19,
+      "train_seconds": 190.75506022013724,
+      "gpu_peak_mib": 1280.09033203125
+    },
+    "short256": {
+      "uk_selected_epoch": 100,
+      "uk_selected_val": {
+        "accuracy": 0.08921933085501858,
+        "macro_f1": 0.08574811762311763,
+        "balanced_accuracy": 0.09237359862359862,
+        "predicted_class_count": 20,
+        "ce": 8.5008544921875
+      },
+      "uk_e100": {
+        "ce": 8.5008544921875,
+        "accuracy": 0.08921933085501858,
+        "macro_f1": 0.08574811762311763,
+        "balanced_accuracy": 0.09237359862359862,
+        "predicted_class_count": 20
+      },
+      "train_ce_e100": 0.40132055160434843,
+      "total_updates": 2700,
+      "swiss_correct": 18,
+      "swiss_accuracy": 0.04878048780487805,
+      "swiss_macro_f1": 0.04145781906805128,
+      "swiss_balanced_accuracy": 0.04442684766214178,
+      "predicted_classes": 20,
+      "train_seconds": 104.28174721915275,
+      "gpu_peak_mib": 155.80859375
+    }
+  },
+  "paired_swiss": {
+    "uw11_vs_uw8": {
+      "wrong_to_right": 15,
+      "right_to_wrong": 18
+    },
+    "uw8_vs_short256": {
+      "wrong_to_right": 27,
+      "right_to_wrong": 16
+    },
+    "uw11_vs_short256": {
+      "wrong_to_right": 24,
+      "right_to_wrong": 16
+    }
+  },
+  "swiss_rows": 30000,
+  "swiss_known": 369,
+  "known_classes": 19,
+  "start_weights_bitwise_equal": true,
+  "original_long_pid_active": true,
+  "all_oxford_models_precede_swiss_prediction": true,
+  "all_predictions_precede_truth_score": true
+}
