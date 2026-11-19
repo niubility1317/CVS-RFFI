@@ -21,10 +21,12 @@ K 指每个候选波束的历史注册包数。当前实现先固定 K16 面板�
 | IridiumRF-MR，Sensors 2026 | 自采 66 颗卫星，同一副天线分给六台 SDR。单个预处理后 3,000 点 QPSK 段。 | Mamba 六接收机内结果平均准确率 **85.67%**，ResNet34 跨接收机 **81.93% 至 84.06%**。 [原文表 5、表 8](https://www.mdpi.com/1424-8220/26/20/6418) |
 | PAST-AI，IEEE TIFS 2023 | 自采 66 颗卫星，每张输入图聚合 10,000 个 IQ 点。 | 66 类约 **82%**。论文指出，仅用单包样本构成图像的验证率明显较低。 [原文 §V-B–V-C](https://pure.tue.nl/ws/portalfiles/portal/261348390/PAST_AI_Physical_Layer_Authentication_of_Satellite_Transmitters_via_Deep_Learning.pdf) |
 
-## 下一步优化次序
+## 同数据训练与 PAMF 优化
 
-1. 以固定 3,103 类、单个查询的源 V Top-1 和主 CE 作为模型优化的主判据。K1 和 K16 用于解释注册验证性能。SatIQ 的闭集诊断可用源 L 注册原型，保留 3,103 个实际训练类，并让同一 V 查询与全部候选比较。若需要严格跨日训练泛化，对训练与验证日单独划分，报告类别和样本覆盖。
-2. 保留 PAMF 五分支、融合 256、输入与波束标签，先做一次仅改变训练损失的全源配对诊断，比较现有完整损失和只用主 CE。在相同 1,024 包、1,600 步原生 160 诊断中，只用主 CE 的训练 Top-1 为 12.40%，完整损失为 7.03%。缩小原型系数的全源首轮对照反而变差，因此先确认整套辅助监督是否影响真实验证，再决定主 CE 预热后何时接回原型损失。[小样本拟合](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-native-fit-subset-s2026092701-r01/report.md) · [全源原型减权对照](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-native160-proto25-source-e1-s2026092701-r01/report.md)
-3. 如果两组都低，再做一次只改变前端时序分辨率的配对测试。现有频带功率诊断没有显示加回 250 kHz 以上成分的收益，结论仅覆盖频谱功率形状。指纹信息是否能从更细的时序中恢复，需要继续用相同波束和同一批包验证。[截频对照](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-native-stopband-source-s2026111907-r01/report.md)
+当前正式训练使用同一份 910,464 条训练消息、50,000 条验证和 50,000 条独立测试的重建清单。PAMF 和参考 SatIQ 读取同一个 25 MS/s 的 11,000 点报头，共用 3,103 个合格波束及逐轮批次，分别按各自训练目标运行 200 轮。比较两种表示时，使用相同的源训练注册包及全类余弦原型。PAMF 另给出直接分类头，独立测试在两组固定末轮预测闭合后接真值。两组首轮同口径源 V 的原型 Top-1 为 SatIQ 0.0562%、PAMF 0.2088%，PAMF 直接分类头为 0.2007%。[同数据训练与首轮结果](../automation_reports/CV-SincNet/20261120-phase1-satiq-ccs2023-header-matched-sup200-s2026092701-r01/report.md)
 
-8,000 点模型的完整首轮复评已完成。完整损失的 L/V 单包 Top-1 为 0.2322% / 0.2509%，仅主 CE 为 0.1124% / 0.0964%。两组的源训练与验证指标都支持在当前正式配置中保留完整损失。现在对齐 11,000 点实验的原生同步模板时间轴，验证同一输入上的单包 Top-1。[仅主 CE 对照](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-fused256-main-ce-source-e1-s2026092701-r01/report.md) · [模板时间对齐](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-full-header-uw-time-source-e1-s2026092701-r01/report.md)
+8,000 点的完整首轮复评支持保留 PAMF 的完整损失。完整损失的 L/V 单包 Top-1 为 0.2322% / 0.2509%，只用主 CE 为 0.1124% / 0.0964%。后续前端实验使用已对齐原生同步模板的 11,000 点配置，保留五分支和 256 维身份表示。[损失对照](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-fused256-main-ce-source-e1-s2026092701-r01/report.md) · [模板时间对齐](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-full-header-uw-time-source-e1-s2026092701-r01/report.md)
+
+相同的 49,814 个源 V 包上，512 点内部网格在完整首轮命中 131 包，256 点对照命中 109 包。两组已分别从固定首轮检查点启动续训，将在第 5 轮复验全 3,103 波束的单包 Top-1。另验证报头 FFT 的镜像边界处理，第 5,000 步两组仅差一个正确包。前端对照继续按实际单包准确率决定是否晋级。[网格续训](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-full-header-grid256-grid512-source-e5-s2026092701-r01/report.md) · [边界处理](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-full-header-reflect-source-e1-s2026092701-r01/report.md)
+
+首轮逐包误差复核确认两组共同命中 65 条，512 点独有 66 条，256 点独有 44 条。按真实波束抽样的 95% 净差区间跨过 0。 [首轮错误配对](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-grid-paired-errors-e1-s2026111907-r01/report.md)
