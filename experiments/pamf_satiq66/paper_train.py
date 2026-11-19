@@ -80,7 +80,7 @@ def make_model(config, arm, classes):
     torch.manual_seed(config["model_seed"])
     if arm == "SATIQ":
         return PaperSatIQ()
-    return PaperPAMF(config["runtime"], config["model_seed"], len(classes))
+    return PaperPAMF(config["runtime"], config["model_seed"], len(classes), config["raw_time_bins"])
 
 
 @torch.no_grad()
@@ -127,6 +127,7 @@ def train(config, source, cache, out, arm, smoke=False):
     satellites = device_array(classes[:, 0].astype(np.int64), device)
     out.mkdir(exist_ok=False)
     write_json(out / "resolved_config.json", dict(config, arm=arm, trained_classes=len(classes), lr=lr,
+                                                 input_samples=11000, feature_dimensions=512 if arm == "SATIQ" else 320,
                                                  source=str(source), cache=str(cache), supervised=True,
                                                  source_roles=["L", "V"], test_access=False,
                                                  steps_per_epoch=sampler.steps_per_epoch, total_updates=total))

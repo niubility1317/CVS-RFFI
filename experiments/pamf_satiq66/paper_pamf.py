@@ -9,11 +9,11 @@ from .wide_model import FEATURES, RawSymbolEncoder
 
 
 class PaperPAMF(nn.Module):
-    def __init__(self, runtime, seed, classes):
+    def __init__(self, runtime, seed, classes, raw_time_bins):
         super().__init__()
         self.native = build_model(runtime, seed, 1)
         self.native.core.id_backbone.cls_head.requires_grad_(False)
-        self.original_rate = RawSymbolEncoder(symbol_count=11, bounded=False)
+        self.original_rate = RawSymbolEncoder(symbol_count=11, bounded=False, time_bins=raw_time_bins)
         self.head = nn.Linear(2 * FEATURES, classes, bias=False)
         nn.init.xavier_uniform_(self.head.weight)
         bins = torch.arange(129).float()

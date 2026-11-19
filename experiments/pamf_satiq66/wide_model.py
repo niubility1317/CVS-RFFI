@@ -17,9 +17,11 @@ NOISE_HALF_BAND = 32
 
 
 class RawSymbolEncoder(nn.Module):
-    def __init__(self, symbol_count=SYMBOL_COUNT, bounded=True):
+    def __init__(self, symbol_count=SYMBOL_COUNT, bounded=True, time_bins=1):
         super().__init__()
         self.symbol_count = symbol_count
+        self.time_bins = time_bins
+        self.symbol_features = 64 * time_bins
         self.frontend = nn.Sequential(
             nn.Conv1d(5, 16, kernel_size=9, stride=4, padding=4, bias=False),
             nn.GroupNorm(4, 16),
@@ -28,8 +30,9 @@ class RawSymbolEncoder(nn.Module):
             nn.GroupNorm(4, 32),
             nn.SiLU(),
         )
-        self.mix = nn.Conv1d(64, 64, kernel_size=3, padding=1, groups=64)
-        self.project = nn.Linear(symbol_count * 64, FEATURES)
+        self.mix = nn.Conv1d(self.symbol_features, self.symbol_features, kernel_size=3, padding=1,
+                             groups=self.symbol_features)
+        self.project = nn.Linear(symbol_count * self.symbol_features, FEATURES)
         self.output_norm = nn.LayerNorm(FEATURES)
         self.gain_raw = nn.Parameter(torch.tensor(math.atanh(.05 / .2))) if bounded else None
 
@@ -43,8 +46,13 @@ class RawSymbolEncoder(nn.Module):
         differences = F.pad(iq.diff(dim=-1), (1, 0))
         power = iq.square().sum(dim=1, keepdim=True)
         encoded = self.frontend(torch.cat((iq, differences, power), dim=1))
-        moments = torch.cat((encoded.mean(-1), encoded.square().mean(-1)), dim=1)
-        return moments.reshape(len(raw), self.symbol_count, -1)
+        if self.time_bins == 1:
+            moments = torch.cat((encoded.mean(-1), encoded.square().mean(-1)), dim=1)
+        else:
+            average = F.adaptive_avg_pool1d(encoded, self.time_bins)
+            mean_square = F.adaptive_avg_pool1d(encoded.square(), self.time_bins)
+            moments = torch.cat((average, mean_square), dim=1)
+        return moments.reshape(len(raw), self.symbol_count, self.symbol_features)
 
     def forward(self, raw):
         tokens = self.symbol_tokens(raw).transpose(1, 2)

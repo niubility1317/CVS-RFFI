@@ -27,6 +27,20 @@ def test_raw_tokens_cover_both_ends_of_each_symbol_in_order():
     assert torch.equal(affected, F.one_hot(symbols, num_classes=8).bool())
 
 
+def test_paper_raw_tokens_keep_positions_within_all_eleven_symbols():
+    encoder = wide_model.RawSymbolEncoder(symbol_count=11, bounded=False, time_bins=5)
+    raw = torch.zeros(11, 2, 11000)
+    symbols = torch.arange(11)
+    raw[symbols, 0, 1000 * symbols + 970] = 10
+    tokens = encoder.symbol_tokens(raw)
+    assert tokens.shape == (11, 11, 320)
+    assert torch.equal((tokens - encoder.symbol_tokens(torch.zeros_like(raw))).abs().amax(-1) > 1e-5,
+                       F.one_hot(symbols, num_classes=11).bool())
+    shifted = torch.roll(raw, -900, dims=2)
+    assert not torch.allclose(tokens, encoder.symbol_tokens(shifted))
+    assert encoder(raw).shape == (11, 160)
+
+
 class _SyntheticNative(nn.Module):
     def __init__(self):
         super().__init__()
