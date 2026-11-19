@@ -17,6 +17,8 @@ from .pilot import paper
 RUN = '20261119-phase1-pamf-repl-rxbalance-clean-m8-r01'
 CONFIRM_RUN = '20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02'
 DOSE_RUN = '20261119-phase1-pamf-repl-rxbalance-dose-clean-m12-r01'
+DOSE_CONFIRM_RUN = '20261119-phase1-pamf-repl-rxbalance-dose-seedcheck-clean-m2-r02'
+DOSE_RUNS = (DOSE_RUN, DOSE_CONFIRM_RUN)
 DOSES = (5.25, 4.5, 3.)
 MODULE = 'experiments.pamf_repl_source_adapt.receiver_balance'
 SETTINGS = ('receiver_split_1', 'receiver_split_2', 'labeled_5pct', 'source_rx_3')
@@ -59,11 +61,13 @@ class ObservedBalancedREPL(PseudoObservationMixin, BalancedREPL):
 
 
 def rows(run_id=RUN):
-    if run_id == DOSE_RUN:
-        return [dict(row_id=f"{name}-tri-fusion-w{format(weight, 'g').replace('.', 'p')}-s{SEED}", setting=name,
-                     protocol_id=paper.PROTOCOLS[name][0], model_seed=SEED, weight=weight,
+    if run_id in DOSE_RUNS:
+        settings, seeds, weights = (SETTINGS, (SEED,), DOSES) if run_id == DOSE_RUN else (
+            ('receiver_split_2',), (2026092701, 2026092703), (3.,))
+        return [dict(row_id=f"{name}-tri-fusion-w{format(weight, 'g').replace('.', 'p')}-s{seed}", setting=name,
+                     protocol_id=paper.PROTOCOLS[name][0], model_seed=seed, weight=weight,
                      route='joint', views=['clean'], reuses_original=False)
-                for name in SETTINGS for weight in DOSES]
+                for name in settings for weight in weights for seed in seeds]
     seeds, routes = {RUN: ((SEED,), tuple(ROUTES)), CONFIRM_RUN: ((2026092701, 2026092703), ('joint',))}[run_id]
     return [dict(row_id=f'{name}-tri-balance-{route}-s{seed}', setting=name, protocol_id=paper.PROTOCOLS[name][0],
                  model_seed=seed, weight=6., route=route, views=['clean'], reuses_original=False)
@@ -105,7 +109,7 @@ def installed(config, holder):
         return original(maps, labels, receivers, positive_distribution=distribution)
 
     module.contrast = balance
-    objective_class = ObservedBalancedREPL if config['run_id'] == DOSE_RUN else BalancedREPL
+    objective_class = ObservedBalancedREPL if config['run_id'] in DOSE_RUNS else BalancedREPL
     try:
         with paper_scope(config, holder, ssl_enabled=True, validate=validate, objective_factory=objective_class):
             try:
@@ -136,12 +140,12 @@ def prepare(rt):
     run_id = rt['run_id']
     configured = rows(run_id)
     jobs = transfer.prepare_jobs(rt, configured, partial(configure, run_id=run_id))
-    if run_id != DOSE_RUN:
+    if run_id not in DOSE_RUNS:
         return jobs
     from experiments.pamf_repl_step_guard.runner import add_u_scoring
 
     root = Path(rt['run_root'])
-    prior = Path(rt['project'])/'runs'/RUN
+    prior = Path(rt['project'])/'runs'/(RUN if run_id == DOSE_RUN else CONFIRM_RUN)
     if read(prior/'pipeline_state.json')['status'] != 'ANALYZED':
         raise ValueError('Require the completed matched fusion weight-six run')
     by_id = read(prior/'sources.json')
@@ -162,7 +166,8 @@ def prepare(rt):
 def dispatch(rt):
     interpretation = {RUN: 'exploratory matched receiver balance within original loss',
         CONFIRM_RUN: 'fixed fusion receiver balance on two independent training seeds',
-        DOSE_RUN: 'matched global U dose with fusion RX balance held fixed'}[rt['run_id']]
+        DOSE_RUN: 'matched global U dose with fusion RX balance held fixed',
+        DOSE_CONFIRM_RUN: 'fixed receiver-split-2 U weight 3 on two independent training seeds'}[rt['run_id']]
     analyze = partial(transfer.analyze, interpretation=interpretation, source_decision_run=None)
     transfer.dispatch(rt, prepare_fn=prepare, analyze_fn=analyze, module=MODULE)
 

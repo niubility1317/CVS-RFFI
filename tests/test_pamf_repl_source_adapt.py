@@ -140,3 +140,6 @@ def test_receiver_balance_dose_matrix_holds_fusion_and_the_compared_seed_fixed()
     assert {row['route'] for row in rows} == {'joint'}
     for setting in balance.SETTINGS:
         assert {row['weight'] for row in rows if row['setting'] == setting} == {5.25, 4.5, 3.}
+    verification = balance.rows(balance.DOSE_CONFIRM_RUN)
+    assert {row['model_seed'] for row in verification} == {2026092701, 2026092703}
+    assert len(verification) == 2 and all(row['setting'] == 'receiver_split_2' and row['weight'] == 3. for row in verification)

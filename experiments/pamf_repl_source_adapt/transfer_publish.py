@@ -37,13 +37,16 @@ if __name__ == '__main__':
     variant.add_argument('--receiver-balance', action='store_true')
     variant.add_argument('--receiver-balance-confirm', action='store_true')
     variant.add_argument('--receiver-balance-dose', action='store_true')
+    variant.add_argument('--receiver-balance-dose-confirm', action='store_true')
     args = parser.parse_args()
-    if args.receiver_balance or args.receiver_balance_confirm or args.receiver_balance_dose:
-        from .receiver_balance import RUN as balance_run, CONFIRM_RUN, DOSE_RUN, MODULE
+    if args.receiver_balance or args.receiver_balance_confirm or args.receiver_balance_dose or args.receiver_balance_dose_confirm:
+        from .receiver_balance import RUN as balance_run, CONFIRM_RUN, DOSE_RUN, DOSE_CONFIRM_RUN, MODULE
 
         run_id = CONFIRM_RUN if args.receiver_balance_confirm else balance_run
         if args.receiver_balance_dose:
             run_id = DOSE_RUN
+        if args.receiver_balance_dose_confirm:
+            run_id = DOSE_CONFIRM_RUN
         publish(args.repo, args.output, args.context, args.ssh_config, run_id=run_id, module=MODULE, decision_run=None)
     else:
         publish(args.repo, args.output, args.context, args.ssh_config)

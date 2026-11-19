@@ -1,0 +1,173 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261119-phase1-pamf-repl-rxbalance-dose-seedcheck-clean-m2-r02",
+  "group_id": "phase1-pamf-source-adaptation",
+  "display_name": "接收机划分二的总 U 权重 3 独立种子复核",
+  "description": "划分二固定融合均衡和权重 3，在种子 01、03 上配对同机制权重 6、原 Tri 和普通 PL。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-paper-completion-m119-r03",
+    "20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02",
+    "20261119-phase1-pamf-repl-rxbalance-dose-clean-m12-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求在其他数据设置保留原 Tri 对普通 PL 的领先幅度。",
+  "code": {
+    "commit": "actual runtime release OID",
+    "checkout": "current task worktree",
+    "environment": "N607 CVS-RFFI",
+    "cwd": "PROJECT/releases/20261119-phase1-pamf-repl-rxbalance-dose-seedcheck-clean-m2-r02-release"
+  },
+  "data": {
+    "dataset": "Four fixed source and raw clean Phase1 contracts",
+    "version": null,
+    "representation": null,
+    "contract_ref": "original per-protocol roles",
+    "physical_ids_ref": "same ordered physical IDs as both ordinary PL and original Tri",
+    "label_map_ref": null,
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "original full labeled source",
+      "U_s": "original full TX-blind source",
+      "V": "original source validation, no checkpoint selection"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": "Three existing clean subsets, frozen prediction before independent truth-last scoring",
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Frozen E50 clean only; independent truth-last scoring",
+    "external_method_exception": null,
+    "claim_scope": "Fixed choice from development seed 02; two independent training seeds on the same historical target"
+  },
+  "checkpoint": {
+    "initialization": "original full same-contract same-seed E20",
+    "sources": [],
+    "contract_check_ref": "checked_e20_parent plus original paper row matching",
+    "provenance_verdict": "No held-out pilot checkpoint or target ancestry",
+    "selection_rule": "Fixed E50; no target feedback into this dose matrix"
+  },
+  "execution": {
+    "host": "N607 ordinary user",
+    "launch_owner": "codex-20261119-phase1-pamf-repl-rxbalance-dose-seedcheck-clean-m2-r02",
+    "gpu_policy": "GPU 0–6, max two total per GPU, 12 GiB admission reserve",
+    "remote_run_root": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-dose-seedcheck-clean-m2-r02",
+    "remote_log_root": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-dose-seedcheck-clean-m2-r02/logs",
+    "local_artifact_root": "local_artifacts/pamf_repl_rxbalance_dose_seedcheck_20261119",
+    "launch_command": "python -m experiments.pamf_repl_source_adapt.transfer_publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG --receiver-balance-dose-confirm",
+    "stop_rule": "Stop new dispatch on first blocking technical failure; preserve healthy workers"
+  },
+  "expected_artifacts": [
+    "two original E20 smokes and fixed E50 raw clean independent scores",
+    "two independent frozen U diagnostics",
+    "paired net corrections versus matched fusion weight six, Tri and PL"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "cross_rx + cross_both accuracy",
+      "adaptive minus native lead",
+      "paired net corrections",
+      "eligible anchor fraction and positive distribution total variation"
+    ],
+    "dimensions": [
+      "setting",
+      "seed",
+      "clean test subset"
+    ],
+    "prediction_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-dose-seedcheck-clean-m2-r02/readouts/ROW/predictions",
+    "scorer_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-dose-seedcheck-clean-m2-r02/readouts/ROW/scores"
+  },
+  "rows": [
+    {
+      "row_id": "receiver_split_2-tri-fusion-w3-s2026092701",
+      "method": "Fusion RX balance with native Tri U weight 3.0",
+      "purpose": "Matched U-weight dose probe versus the same fusion method at 6",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-dose-seedcheck-clean-m2-r02/configs/train__receiver_split_2-tri-fusion-w3-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-dose-seedcheck-clean-m2-r02/configs/train__receiver_split_2-tri-fusion-w3-s2026092701.json",
+      "data_overrides": {
+        "protocol_id": "F2_rx_repartition_r01",
+        "route": "joint",
+        "mixture": 0.5,
+        "U_weight": 3.0
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "每个null解释为不适用或待补，不能默认为所有seed相同",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "original matched E20 plus own E21–E50",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-dose-seedcheck-clean-m2-r02/F/receiver_split_2-tri-fusion-w3-s2026092701/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-dose-seedcheck-clean-m2-r02/logs/train__receiver_split_2-tri-fusion-w3-s2026092701.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.transfer_publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG --receiver-balance-dose-confirm",
+      "expected_artifacts": [
+        "E50 final",
+        "clean prediction and independent score",
+        "frozen U score"
+      ]
+    },
+    {
+      "row_id": "receiver_split_2-tri-fusion-w3-s2026092703",
+      "method": "Fusion RX balance with native Tri U weight 3.0",
+      "purpose": "Matched U-weight dose probe versus the same fusion method at 6",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-dose-seedcheck-clean-m2-r02/configs/train__receiver_split_2-tri-fusion-w3-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-dose-seedcheck-clean-m2-r02/configs/train__receiver_split_2-tri-fusion-w3-s2026092703.json",
+      "data_overrides": {
+        "protocol_id": "F2_rx_repartition_r01",
+        "route": "joint",
+        "mixture": 0.5,
+        "U_weight": 3.0
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "每个null解释为不适用或待补，不能默认为所有seed相同",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "original matched E20 plus own E21–E50",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-dose-seedcheck-clean-m2-r02/F/receiver_split_2-tri-fusion-w3-s2026092703/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-dose-seedcheck-clean-m2-r02/logs/train__receiver_split_2-tri-fusion-w3-s2026092703.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.transfer_publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG --receiver-balance-dose-confirm",
+      "expected_artifacts": [
+        "E50 final",
+        "clean prediction and independent score",
+        "frozen U score"
+      ]
+    }
+  ],
+  "notes": [
+    "Hold the joint RX balance mixture at .5 and the pseudo-label threshold at .95.",
+    "Only total U weight and synchronized native gradient guard weight vary.",
+    "Training U truth stays hidden; separate post-freeze readout only."
+  ]
+}
