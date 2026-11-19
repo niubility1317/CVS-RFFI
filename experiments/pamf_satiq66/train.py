@@ -92,7 +92,7 @@ def metrics(matrix):
             "records": int(matrix.sum())}
 
 
-@torch.inference_mode()
+@torch.no_grad()
 def predict(model, data, device):
     model.eval()
     x = data[0]
