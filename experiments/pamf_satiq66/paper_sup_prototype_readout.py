@@ -78,8 +78,9 @@ def compare(source, cache, checkpoints, seed, per_class, fit_count, device):
     fitted = np.sort(np.random.default_rng(seed).choice(len(train_iq), fit_count, replace=False))
     queries = np.flatnonzero(query_labels >= 0)
     fit_rows = np.union1d(enrolled, fitted)
-    fit_indices = np.searchsorted(fit_rows, fitted)
-    enrollment_indices = np.searchsorted(fit_rows, enrolled)
+    cpu = torch.device("cpu")
+    fit_indices = device_array(np.searchsorted(fit_rows, fitted).astype(np.int64), cpu)
+    enrollment_indices = device_array(np.searchsorted(fit_rows, enrolled).astype(np.int64), cpu)
     targets = query_labels[queries]
     rng = np.random.default_rng(seed)
     wrong = np.full(len(queries), -1, dtype=np.int64)
@@ -91,7 +92,7 @@ def compare(source, cache, checkpoints, seed, per_class, fit_count, device):
     target = device_array(targets.astype(np.int64), device)
     satellites = device_array(classes[:, 0].astype(np.int64), device)
     wrong = device_array(wrong, device)
-    enrolled_labels = device_array(train_labels[enrolled].astype(np.int64), torch.device("cpu"))
+    enrolled_labels = device_array(train_labels[enrolled].astype(np.int64), cpu)
     results = []
     for checkpoint in checkpoints:
         model, config, updates = load_source_model(source, checkpoint, classes, device)
