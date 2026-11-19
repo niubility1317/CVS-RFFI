@@ -1,0 +1,155 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261119-diagnostic-satiq-pamf-sup-native-enrolled-head-s2026111907-r02",
+  "group_id": "phase1-satiq-ccs2023-fully-supervised",
+  "display_name": "Native PAMF beam ranking error breakdown",
+  "description": "Break mistakes down into same-satellite and other-satellite outranking of the true beam on the fixed 3103-way source task.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "PAMF-SUP",
+    "SatIQ",
+    "native-features",
+    "classifier",
+    "L-prototypes"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261119-diagnostic-satiq-pamf-sup-native-enrolled-head-s2026111907-r01",
+    "20261119-phase1-satiq-ccs2023-native160-sup100-s2026092701-r01",
+    "20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01",
+    "20261119-diagnostic-satiq-pamf-sup-native-expansion-prototype-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requested PAMF-SUP adapted to SatIQ, no early augmentation, 100 epochs; all arms fully supervised.",
+  "code": {
+    "commit": "20631a0e70801944f9ff9db48d83f07b477e59b9",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-diagnostic-satiq-pamf-sup-native-enrolled-head-s2026111907-r02",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python N607 FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-diagnostic-satiq-pamf-sup-native-enrolled-head-s2026111907-r02"
+  },
+  "data": {
+    "dataset": "Oxford SatIQ Zenodo 8220494, first 1010464 chronological packets",
+    "version": "8220494",
+    "representation": "8000-sample native common sync field. Same prepared raw cache, training and validation split as paper matched comparisons.",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/{L,V}_index.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "source_receivers": [
+      "Oxford single receiver"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2023-03-22 through part of 2023-04-14 UTC"
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 910464,
+      "V": 50000,
+      "U_s": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "satiq_oxford_ccs2023_supervised_reindexed_v1_2026111905",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/V_index.npz",
+    "support_query_ref": "Transient source V enrollment K1/16. Independent T (50000) separately staged; no training access.",
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Frozen L/V readout only. Both whole-vector and independent-block calibration estimated on shared 8192 source L packets. No T access."
+  },
+  "checkpoint": {
+    "initialization": "frozen_source_checkpoints",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-native160-sup100-s2026092701-r01/PAMF_SUP/s0028225.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01/PAMF_SUP/s0028225.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-native-expansion-prototype-s2026092701-r01/PAMF_SUP/s0028225.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "provenance_verdict": "MATCHED_NATIVE_SOURCE_L_V",
+    "selection_rule": "Use the previous preregistered 28225-step checkpoints unchanged, repeat fixed L enrollment and V queries."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Single supervised native source rank reader",
+    "gpu_policy": "Physical GPU4, >=4096 MiB free and <=2 incumbent processes.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-native-enrolled-head-s2026111907-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-native-enrolled-head-s2026111907-r02",
+    "local_artifact_root": "E:/type10-7/local_data/satiq_oxford_ccs2023_supervised_20261119_r01",
+    "launch_command": "CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=4 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_sup_prototype_readout /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-native-enrolled-head-s2026111907-r02/source_scores.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-native160-sup100-s2026092701-r01/PAMF_SUP/s0028225.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01/PAMF_SUP/s0028225.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-native-expansion-prototype-s2026092701-r01/PAMF_SUP/s0028225.pt --per-class 16 --fit-count 8192 --seed 2026111907 --device cuda",
+    "stop_rule": "Write all three fixed query rank decompositions and exit.",
+    "launch_readback": "Verified live process PID 2063719 and physical GPU 4 UUID with actual CWD. All three correct source cohort rows and exit 0 independently observed."
+  },
+  "expected_artifacts": [
+    "source_scores.json",
+    "readout.log",
+    "controller.log",
+    "readout.pid",
+    "readout.exit"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "closed-set all-way Top-1",
+      "macro Top-1",
+      "predicted class coverage and most frequent output share",
+      "source-only oracle within-satellite Top-1 diagnostic",
+      "same satellite pairwise AUC/EER",
+      "exclusive same/other-satellite and combined rank-error counts",
+      "all-class Top-5",
+      "top-ranked beam satellite matches true satellite"
+    ],
+    "dimensions": [
+      "3103 class prototypes from up to 16 labeled sources per beam; 8192 L whitening samples; 49814 known V samples."
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "BLOCK_READOUT",
+      "method": "Full-class ranking error attribution on fixed native embeddings and classifier",
+      "purpose": "Identify which candidates outrank the true beam. No true satellite input to the all-way scores.",
+      "config_ref": "experiments/pamf_satiq66/paper_sup_prototype_readout.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-native-enrolled-head-s2026111907-r02/source_scores.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111907,
+        "augmentation": null,
+        "support": 2026111907,
+        "evaluation": 2026111907
+      },
+      "seed_notes": "Frozen model. Seed determines the L fit subset and fixed source V panels; no augmentation.",
+      "k": [
+        1,
+        16
+      ],
+      "scenario": "Fixed paper-style and chronological source references and queries.",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Three same-epoch frozen embeddings on the identical whole-known V population. Calibrations only from L.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-native-enrolled-head-s2026111907-r02",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-native-enrolled-head-s2026111907-r02/readout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_sup_prototype_readout /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-native-enrolled-head-s2026111907-r02/source_scores.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-native160-sup100-s2026092701-r01/PAMF_SUP/s0028225.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01/PAMF_SUP/s0028225.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-sup-native-expansion-prototype-s2026092701-r01/PAMF_SUP/s0028225.pt --per-class 16 --fit-count 8192 --seed 2026111907 --device cuda",
+      "expected_artifacts": [
+        "source_scores.json",
+        "readout.log"
+      ],
+      "pid": 2063719,
+      "physical_gpu": 4
+    }
+  ],
+  "notes": [
+    "Use all 3103 classes for every source query. Tie handling matches classifier argmax.",
+    "The true satellite is only used for offline error attribution. No test access or oracle hierarchical scoring."
+  ],
+  "registered_at": "2026-11-19T14:07:54+00:00"
+}

@@ -109,6 +109,14 @@ def native_supervised_loss(logits, branch_logits, target, satellites, weights):
             + weights["view_kl"] * agreement)
     stats = dict(ce=ce.detach(), within_satellite_ce=within.detach(),
                  native_branch_ce=branch_ce.mean().detach(), view_kl=agreement.detach())
+    hard_fraction = weights.get("hard_rank_ce_fraction", 0.0)
+    if hard_fraction:
+        positive = logits.gather(1, target[:, None])
+        negatives = logits.scatter(1, target[:, None], -torch.inf)
+        hardest = negatives.topk(min(8, logits.shape[1] - 1), dim=1).values
+        hard_ce = F.cross_entropy(torch.cat((positive, hardest), dim=1), torch.zeros_like(target))
+        loss = loss + hard_fraction * (hard_ce - ce)
+        stats["hard_rank_ce"] = hard_ce.detach()
     for name, value in zip(NATIVE_PATHS, branch_ce.detach(), strict=True):
         stats[f"{name}_branch_ce"] = value
     return loss, stats
