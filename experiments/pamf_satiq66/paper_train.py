@@ -15,7 +15,7 @@ from torch.nn import functional as F
 from .data import read_json, write_json
 from .paper_baseline import PaperSatIQ, angular_triplet, paper_loss
 from .paper_eval import embeddings, metrics, normalize_packet, panel
-from .paper_pamf import PaperPAMF, supervised_loss
+from .paper_pamf import PaperPAMF, reconstruction_target, supervised_loss
 from .readout import gpu_ready
 from .train import cuda_device, device_array
 
@@ -99,7 +99,8 @@ def make_model(config, arm, classes):
     if arm == "SATIQ":
         return PaperSatIQ()
     return PaperPAMF(config["runtime"], config["model_seed"], len(classes), config["raw_time_bins"],
-                     feature_batch_norm=config.get("pamf_feature_batch_norm", False))
+                     feature_batch_norm=config.get("pamf_feature_batch_norm", False),
+                     full_reconstruction=config.get("full_reconstruction_weight", 0) > 0)
 
 
 @torch.no_grad()
@@ -136,6 +137,7 @@ def train(config, source, cache, out, arm, smoke=False):
     classes, counts, roles = source_inputs(source, cache)
     device = cuda_device()
     model = make_model(config, arm, classes).to(device)
+    reconstruction_weight = config.get("full_reconstruction_weight", 0)
     lr = 1e-5 if arm == "SATIQ" else config["pamf_lr"]
     optimizer = torch.optim.Adam((p for p in model.parameters() if p.requires_grad), lr=lr, eps=1e-7)
     raw, labels, original = roles["L"]
@@ -173,12 +175,17 @@ def train(config, source, cache, out, arm, smoke=False):
                 feature, reconstructed = model(x)
                 loss, stats = paper_loss(feature, reconstructed, x, y)
             else:
-                feature, logits, common, full = model(x, view_logits=True)
+                outputs = model(x, view_logits=True, reconstruct=reconstruction_weight > 0)
+                feature, logits, common, full = outputs[:4]
                 loss, stats = supervised_loss(logits, common, full, y, satellites, config["pamf_sup"])
                 if arm == "PAMF_METRIC":
                     triplet = angular_triplet(feature, y, margin=1.0)
                     loss = loss + config["pamf_triplet_weight"] * triplet
                     stats["triplet_loss"] = triplet.detach()
+                if reconstruction_weight > 0:
+                    reconstruction = F.mse_loss(outputs[4], reconstruction_target(x))
+                    loss = loss + reconstruction_weight * reconstruction
+                    stats["full_reconstruction_loss"] = reconstruction.detach()
             if not torch.isfinite(loss):
                 raise RuntimeError(f"Nonfinite {arm} training objective")
             loss.backward()

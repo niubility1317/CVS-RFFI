@@ -145,3 +145,23 @@ def test_paper_pamf_branch_normalization_uses_fixed_source_statistics_at_inferen
         torch.testing.assert_close(model.embed(raw[:1]), model.embed(raw)[0:1])
     assert model.common_norm.num_batches_tracked.item() == 1
     assert model.full_norm.num_batches_tracked.item() == 1
+
+
+def test_full_rate_reconstruction_trains_only_full_rate_encoder_and_decoder(monkeypatch):
+    from types import SimpleNamespace
+
+    from experiments.pamf_satiq66 import paper_pamf
+
+    native = _SyntheticNative()
+    native.core = SimpleNamespace(id_backbone=SimpleNamespace(cls_head=native.head))
+    monkeypatch.setattr(paper_pamf, "build_model", lambda runtime, seed, representation: native)
+    model = paper_pamf.PaperPAMF({}, 17, classes=12, raw_time_bins=5, full_reconstruction=True)
+    raw = torch.randn(4, 2, 11000, generator=torch.Generator().manual_seed(24))
+    target = paper_pamf.reconstruction_target(raw)
+    embedding, logits, _, _, reconstructed = model(raw, view_logits=True, reconstruct=True)
+    assert (embedding.shape, logits.shape, target.shape) == ((4, 320), (4, 12), (4, 704))
+    F.mse_loss(reconstructed, target).backward()
+    assert model.original_rate.frontend[0].weight.grad.square().sum() > 0
+    assert model.full_decoder[0].weight.grad.square().sum() > 0
+    assert native.projection.weight.grad is None
+    assert model.head.weight.grad is None
