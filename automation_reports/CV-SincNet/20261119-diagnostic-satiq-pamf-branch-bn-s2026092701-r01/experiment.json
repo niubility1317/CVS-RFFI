@@ -128,7 +128,9 @@
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-branch-bn-s2026092701-r01/PAMF_SUP",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-branch-bn-s2026092701-r01/PAMF_SUP.log",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train train /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-diagnostic-satiq-pamf-branch-bn-s2026092701-r01/configs/pamf_satiq_ccs2023_branch_bn_probe_20261119.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-pamf-branch-bn-s2026092701-r01/PAMF_SUP --arm PAMF_SUP",
-      "expected_artifacts": []
+      "expected_artifacts": [],
+      "pid": 1951173,
+      "physical_gpu": 5
     }
   ],
   "notes": [
