@@ -8,8 +8,10 @@ import torch
 from torch.nn import functional as F
 
 from .data import read_json, write_json
+from .paper_cache import archive_requests, load_group
 from .paper_calibrated_readout import apply_calibration, encode, fit_calibration
 from .paper_eval import embeddings, metrics, panel
+from .paper_signal_readout import source_date_cutoff
 from .paper_train import ARMS, make_model
 from .train import cuda_device, device_array
 
@@ -101,7 +103,33 @@ def predict(source, iq_index, iq_cache, checkpoint, out, calibration=None):
     write_json(out / "complete.json", complete)
 
 
-def score(source, predictions, truth_path, output):
+def stage_dates(heldout_manifest, scan, output):
+    """Recover dates by archive coordinate from the existing metadata scan."""
+    names, indices, _, _ = load_group("heldout", heldout_manifest)
+    ids = indices["T"]["ids"]
+    dates = np.empty(len(ids), dtype=np.int64)
+    for archive_number, segments in archive_requests(indices).items():
+        name = names[archive_number]
+        metadata = read_json(scan / f"{name}.json")
+        order = {int(segment): i for i, segment in enumerate(metadata["segments"])}
+        with np.load(scan / f"{name}.npz", allow_pickle=False) as archive:
+            times = archive["timestamp_global"].astype("datetime64[ns]")
+        if times.ndim != 1 or len(order) != (len(times) + 9999) // 10000:
+            raise ValueError(f"Timestamp scan has inconsistent segments for {name}")
+        for segment, roles in segments.items():
+            if segment not in order:
+                raise ValueError(f"Timestamp scan is missing {name}/{segment}")
+            rows, positions = roles["T"]
+            start = order[segment] * 10000
+            selected = times[start:start + 10000][rows]
+            if np.isnat(selected).any():
+                raise ValueError(f"Missing timestamp in {name}/{segment}")
+            dates[positions] = selected.astype(np.int64)
+    with output.open("xb") as file:
+        np.savez(file, ids=ids, timestamp_ns=dates)
+
+
+def score(source, predictions, truth_path, output, chronology=None):
     classes, remap, n = class_map(source)
     complete = read_json(predictions / "complete.json")
     if complete["records"] != n:
@@ -122,6 +150,19 @@ def score(source, predictions, truth_path, output):
         if "head_predictions" in pred.files:
             result["head_top1"] = float((pred["head_predictions"][eligible] == labels[eligible]).mean())
         result["eligible_known_records"] = int(eligible.sum())
+        if chronology is not None:
+            with np.load(chronology, allow_pickle=False) as dates:
+                if set(dates.files) != {"ids", "timestamp_ns"} or not np.array_equal(dates["ids"], pred["ids"]):
+                    raise ValueError("Held-out timestamps must match all prediction IDs in order")
+                times = dates["timestamp_ns"]
+            if times.shape != (n,) or times.dtype != np.int64 or np.isnat(times.view("datetime64[ns]")).any():
+                raise ValueError("Invalid held-out timestamps")
+            cutoff = source_date_cutoff(source)
+            dated_panel = panel(labels, classes, complete["evaluation_seed"], reference_period=times < cutoff)
+            dated = metrics(pred["features"], dated_panel, torch.device("cpu"))
+            if "calibrated_features" in pred.files:
+                dated["partial_whiten"] = metrics(pred["calibrated_features"], dated_panel, torch.device("cpu"))
+            result["chronological"] = dict(cutoff_utc=str(np.datetime64(int(cutoff), "ns")), **dated)
     write_json(output, dict(complete, **result))
 
 
@@ -132,6 +173,7 @@ if __name__ == "__main__":
         "predict": ("source", "iq_index", "iq_cache", "checkpoint", "output"),
         "score": ("source", "predictions", "truth", "output"),
         "fit_calibration": ("source", "source_cache", "checkpoint", "output"),
+        "stage_dates": ("heldout_manifest", "scan", "output"),
     }
     for mode, names in args_by_mode.items():
         action = sub.add_parser(mode)
@@ -139,6 +181,8 @@ if __name__ == "__main__":
             action.add_argument(name, type=Path)
         if mode == "predict":
             action.add_argument("--calibration", type=Path)
+        if mode == "score":
+            action.add_argument("--chronology", type=Path)
         if mode == "fit_calibration":
             action.add_argument("--fit-count", type=int, default=8192)
             action.add_argument("--seed", type=int, default=2026111907)
@@ -148,5 +192,7 @@ if __name__ == "__main__":
         export_calibration(*arguments, fit_count=options.fit_count, seed=options.seed)
     elif options.mode == "predict":
         predict(*arguments, calibration=options.calibration)
+    elif options.mode == "stage_dates":
+        stage_dates(*arguments)
     else:
-        score(*arguments)
+        score(*arguments, chronology=options.chronology)

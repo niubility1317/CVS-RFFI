@@ -65,11 +65,15 @@ def waveform_views(iq, reference):
     }
 
 
-def source_panels(source, labels, classes, seed):
+def source_date_cutoff(source):
     with np.load(source / "L_index.npz", allow_pickle=False) as index:
         train_times = index["timestamp_ns"]
     median = np.partition(train_times, len(train_times) // 2)[len(train_times) // 2]
-    cutoff = np.datetime64(int(median), "ns").astype("datetime64[D]").astype("datetime64[ns]").astype(np.int64)
+    return np.datetime64(int(median), "ns").astype("datetime64[D]").astype("datetime64[ns]").astype(np.int64)
+
+
+def source_panels(source, labels, classes, seed):
+    cutoff = source_date_cutoff(source)
     with np.load(source / "V_index.npz", allow_pickle=False) as index:
         temporary = index["timestamp_ns"] < cutoff
     panels = {"paper": panel(labels, classes, seed),
