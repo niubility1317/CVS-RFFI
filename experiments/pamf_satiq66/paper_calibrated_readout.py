@@ -12,6 +12,7 @@ from .paper_eval import metrics, normalize_packet
 from .paper_signal_readout import panel_rows, source_panels
 from .paper_train import make_model, source_inputs
 from .train import device_array
+from .wide_model import FEATURES
 
 
 @torch.no_grad()
@@ -45,8 +46,47 @@ def fit_transforms(training, validation):
     return validation, validation - stats[0], apply_calibration(validation, stats)
 
 
+def evaluate_panels(features, panels, device):
+    rows = np.from_dlpack(features)
+    return {name: metrics(rows, panel, device) for name, panel in panels.items()}
+
+
+def feature_geometry(vectors):
+    unit = F.normalize(vectors, dim=1)
+    n = len(unit)
+    off_diagonal_cosine = (unit.sum(0).square().sum() - unit.square().sum()) / (n * (n - 1))
+    centered = unit - unit.mean(0)
+    covariance = centered.T @ centered / n
+    trace_squared = covariance.diag().sum().square()
+    return {"dimensions": unit.shape[1], "mean_pair_cosine": float(off_diagonal_cosine),
+            "effective_dimensions": float(trace_squared / covariance.square().sum().clamp_min(1e-20))}
+
+
+def native_components(training, validation, panels, device):
+    columns = {"original_160": slice(0, FEATURES)}
+    if validation.shape[1] > FEATURES:
+        columns["expansion"] = slice(FEATURES, None)
+    calibrated = {}
+    result = {}
+    for name, index in columns.items():
+        fit = training[:, index]
+        vectors = validation[:, index]
+        whitened = apply_calibration(vectors, fit_calibration(fit))
+        calibrated[name] = F.normalize(whitened, dim=1)
+        result[name] = {
+            "geometry": feature_geometry(vectors),
+            "raw": evaluate_panels(vectors, panels, device),
+            "partial_whiten": evaluate_panels(calibrated[name], panels, device),
+        }
+    if "expansion" in calibrated:
+        # Keep the expansion at its training-time squared norm ratio, 0.25:1.
+        combined = torch.cat((calibrated["original_160"], .5 * calibrated["expansion"]), dim=1)
+        result["block_calibrated_fusion"] = evaluate_panels(combined, panels, device)
+    return result
+
+
 @torch.no_grad()
-def compare(source, cache, checkpoints, seed, fit_count, device):
+def compare(source, cache, checkpoints, seed, fit_count, device, analyze_native_components=False):
     classes, _, roles = source_inputs(source, cache)
     train_iq = roles["L"][0]
     raw, labels, _ = roles["V"]
@@ -71,8 +111,13 @@ def compare(source, cache, checkpoints, seed, fit_count, device):
         outcomes = {}
         for tag, paths in zip(("native", "centered", "partial_whiten"), zip(*transformed, strict=True), strict=True):
             features = torch.cat([F.normalize(x, dim=1) for x in paths], dim=1)
-            outcomes[tag] = {name: metrics(np.from_dlpack(features), p, device) for name, p in panels.items()}
+            outcomes[tag] = evaluate_panels(features, panels, device)
         result = {"arm": arm, "checkpoint": str(checkpoint), "updates": updates, "outcomes": outcomes}
+        if analyze_native_components:
+            if "native_expansion" not in config:
+                raise ValueError(f"Native component scoring requires an original-feature-only checkpoint: {checkpoint}")
+            result["native_expansion"] = config["native_expansion"]
+            result["components"] = native_components(train[0], val[0], panels, device)
         results.append(result)
         print(f"Scored source V for {arm} step {updates} ({checkpoint.parent.parent.name})", flush=True)
     return {"source_train_fit_count": fit_count, "source_validation_records": len(needed), "seed": seed,
@@ -88,7 +133,8 @@ if __name__ == "__main__":
     parser.add_argument("--seed", type=int, default=2026111907)
     parser.add_argument("--fit-count", type=int, default=8192)
     parser.add_argument("--device", choices=("cpu", "cuda"), default="cpu")
+    parser.add_argument("--native-components", action="store_true")
     args = parser.parse_args()
     torch.set_num_threads(4)
     write_json(args.output, compare(args.source, args.cache, args.checkpoint, args.seed, args.fit_count,
-                                   torch.device(args.device)))
+                                   torch.device(args.device), args.native_components))
