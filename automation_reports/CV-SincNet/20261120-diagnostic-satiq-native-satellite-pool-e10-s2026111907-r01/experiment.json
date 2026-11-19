@@ -1,0 +1,165 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261120-diagnostic-satiq-native-satellite-pool-e10-s2026111907-r01",
+  "group_id": "phase1-satiq-ccs2023-fully-supervised",
+  "display_name": "SatIQ 第 10 轮模型分数的卫星聚合消融",
+  "description": "Test whether model-only satellite evidence improves all-beam ranking across space.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF-SUP",
+    "hierarchical-rank",
+    "source-V",
+    "prototype"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261120-diagnostic-satiq-native-hierarchical-head-e1-e10-s2026111907-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Measure authorized matched supervised runs on registered source L/V only.",
+  "code": {
+    "commit": "248f7ce13654882977efc59eaf876758f14f929e",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-native-satellite-pool-e10-s2026111907-r01",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python N607 FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-native-satellite-pool-e10-s2026111907-r01"
+  },
+  "data": {
+    "dataset": "Oxford SatIQ Zenodo 8220494, first 1010464 chronological packets",
+    "version": "8220494",
+    "representation": "Only 8000-point common-word prefix, resampled to the original 256-point native view before any branch encoding. Existing 11000-point cache unchanged.",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/{L,V}_index.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "source_receivers": [
+      "Oxford single receiver"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2023-03-22 through part of 2023-04-14 UTC"
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "checkpoint ancestry and registered class map only",
+      "V": 50000,
+      "U_s": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "satiq_oxford_ccs2023_supervised_reindexed_v1_2026111905",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/V_index.npz",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "source_V_scoring_only",
+    "external_method_exception": null,
+    "claim_scope": "Source V only, no fit or updates. No true satellite or constraints on candidate sets during score transform."
+  },
+  "checkpoint": {
+    "initialization": "frozen eval only",
+    "sources": [
+      {
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-native160-sup100-s2026092701-r01/PAMF_SUP/s0282250.pt",
+        "run_id": "20261119-phase1-satiq-ccs2023-native160-sup100-s2026092701-r01",
+        "training_origin": "scratch on source L",
+        "inherited_checkpoints": []
+      },
+      {
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01/PAMF_SUP/s0282250.pt",
+        "run_id": "20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01",
+        "training_origin": "scratch on source L",
+        "inherited_checkpoints": []
+      },
+      {
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused320-extproto-sup100-s2026092701-r01/PAMF_SUP/s0282250.pt",
+        "run_id": "20261119-phase1-satiq-ccs2023-fused320-extproto-sup100-s2026092701-r01",
+        "training_origin": "scratch on source L",
+        "inherited_checkpoints": []
+      }
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "provenance_verdict": "MATCHED_SOURCE_L_V",
+    "selection_rule": "The three exact 282250-step native PAMF check points."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Single frozen E10 model-evidence scoring worker",
+    "gpu_policy": "Physical GPU4; >=4096MiB free with <=2 incumbents.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-native-satellite-pool-e10-s2026111907-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-native-satellite-pool-e10-s2026111907-r01",
+    "local_artifact_root": "E:/type10-7/local_data/satiq_oxford_ccs2023_supervised_20261119_r01",
+    "launch_command": "CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=4 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_satellite_pooling_readout /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-native-satellite-pool-e10-s2026111907-r01/source_scores.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-native160-sup100-s2026092701-r01/PAMF_SUP/s0282250.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01/PAMF_SUP/s0282250.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused320-extproto-sup100-s2026092701-r01/PAMF_SUP/s0282250.pt",
+    "stop_rule": "One matched output for three exact checkpoints.",
+    "readout_pid": 2221583,
+    "physical_gpu": 4,
+    "gpu_uuid": "GPU-95d925a1-7218-ca7b-adef-164241f4f491",
+    "launch_readback": "Verified actual GPU4 process, source paths and exact three E10 native checkpoints."
+  },
+  "expected_artifacts": [
+    "source_scores.json",
+    "pool.log",
+    "pool.pid",
+    "pool.exit"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "beam Top-1",
+      "first beam's satellite Top-1",
+      "independently pooled satellite Top-1",
+      "full-head CE"
+    ],
+    "dimensions": [
+      "49814 same known V packets and all 3103 trained beam classes"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "experiments/pamf_satiq66/paper_sup_prototype_readout.py"
+  },
+  "rows": [
+    {
+      "row_id": "HEAD",
+      "method": "Raw source class scores versus fixed satellite evidence",
+      "purpose": "Verify inference-only source class map pooling without leakage.",
+      "config_ref": "experiments/pamf_satiq66/paper_satellite_pooling_readout.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-native-satellite-pool-e10-s2026111907-r01/experiments/pamf_satiq66/paper_satellite_pooling_readout.py",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111906,
+        "augmentation": null,
+        "support": 2026111907,
+        "evaluation": 2026111907
+      },
+      "seed_notes": "Fixed source enrollment, fitting, and score-only negative sample assignment.",
+      "k": null,
+      "scenario": "Oxford real received source L and V",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Fixed E10, no weight or threshold fit.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-native-satellite-pool-e10-s2026111907-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-native-satellite-pool-e10-s2026111907-r01/pool.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_satellite_pooling_readout /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-native-satellite-pool-e10-s2026111907-r01/source_scores.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-native160-sup100-s2026092701-r01/PAMF_SUP/s0282250.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01/PAMF_SUP/s0282250.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused320-extproto-sup100-s2026092701-r01/PAMF_SUP/s0282250.pt",
+      "expected_artifacts": [
+        "source_scores.json",
+        "pool.log",
+        "pool.pid",
+        "pool.exit"
+      ],
+      "pid": 2221583,
+      "gpu": 4
+    }
+  ],
+  "notes": [
+    "For each row, compute log mean exp of the scores for each observed satellite in the fixed source class map.",
+    "Add one times the inferred satellite score to every beam within it. No pruning and no true labels in this transformation.",
+    "All original within-satellite ranks are unchanged. This source diagnostic tests whether changed cross-satellite ranking helps."
+  ],
+  "registered_at": "2026-11-19T18:08:02+00:00"
+}
