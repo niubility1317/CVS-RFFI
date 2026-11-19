@@ -51,7 +51,7 @@ python -m experiments.pamf_satiq66.paper_final_readout score \
   "$SATIQ_FINAL_SCORE"
 ```
 
-日期扫描仅含公开档案的绝对时间和分段顺序。它与独立 T 的物理行和 ID 在评分阶段联接。当前四组未达到 E200，独立预测和评分均待启动。训练期中心化等单因素验证保留为源端对照。
+日期扫描仅含公开档案的绝对时间和分段顺序。它与独立 T 的物理行和 ID 在评分阶段联接。N607 的独立评估调度已在等待四组 E200 闭合，之后依次启动无标签预测和 CPU 评分。训练期中心化等单因素验证保留为源端对照。[独立评估登记](../automation_reports/CV-SincNet/20261120-phase1-satiq-ccs2023-sup200-truthlast-s2026092701-r01/report.md)
 
 ### N607 准备核实
 
