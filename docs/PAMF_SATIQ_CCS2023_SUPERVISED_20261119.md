@@ -1,5 +1,7 @@
 # SatIQ 原论文口径的监督数据设置
 
+最新对照的 SatIQ 和 PAMF 均读取同一包的 11,000 点报头，缩放到论文给出的 [-1,1] 坐标范围，并以单包全 3,103 波束 Top-1 为主指标。下面保留首版 8,000 点 PAMF 对照及共用的重建数据清单。[新对照的发布与读回](../automation_reports/CV-SincNet/20261120-phase1-satiq-ccs2023-header-matched-sup200-s2026092701-r01/report.md)
+
 本轮以 ACM CCS 2023 的 SatIQ 为公开对照。发射端标签采用 `(ra_sat, ra_cell)`，即卫星内的波束身份。使用 Oxford 原版 25 MS/s 全报头，每包 11,000 个 I/Q 点。训练和验证只使用已有可见标签。该方案以监督学习为后续训练范围。[论文 §§4.2–4.4](https://www.cs.ox.ac.uk/files/14284/2305.06947.pdf) · [公开数据](https://zenodo.org/records/8220494) · [公开训练脚本](https://github.com/ssloxford/SatIQ/blob/v1.0.2/training/ae-triplet-conv.py)
 
 ## 已生成的清单
