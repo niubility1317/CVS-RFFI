@@ -76,7 +76,10 @@ def score_head(query, weight, target, satellites, wrong, device):
     count = torch.bincount(target, minlength=classes)
     correct = torch.zeros_like(count)
     predictions = torch.zeros_like(count)
-    within_correct = 0
+    codes = torch.arange(classes, device=device)
+    rank_outcomes = torch.zeros(4, dtype=torch.int64, device=device)
+    top5_correct = torch.zeros((), dtype=torch.int64, device=device)
+    top_satellite_correct = torch.zeros_like(top5_correct)
     genuine, impostor = [], []
     for start in range(0, len(target), 256):
         end = start + 256
@@ -85,16 +88,28 @@ def score_head(query, weight, target, satellites, wrong, device):
         top = scores.argmax(dim=1)
         predictions += torch.bincount(top, minlength=classes)
         correct += torch.bincount(labels[top == labels], minlength=classes)
+        top_satellite_correct += (satellites[top] == satellites[labels]).sum()
         same = satellites[None, :] == satellites[labels, None]
-        within_correct += int((scores.masked_fill(~same, -torch.inf).argmax(1) == labels).sum())
+        matched = scores.gather(1, labels[:, None])
+        # Match argmax's lower-class-index tie rule when counting rank errors.
+        ahead = (scores > matched) | ((scores == matched) & (codes < labels[:, None]))
+        ahead_same = (ahead & same).sum(dim=1)
+        ahead_other = (ahead & ~same).sum(dim=1)
+        bucket = (ahead_same > 0).long() + 2 * (ahead_other > 0).long()
+        rank_outcomes += torch.bincount(bucket, minlength=4)
+        top5_correct += (ahead_same + ahead_other < 5).sum()
         valid = wrong[start:end] >= 0
-        genuine.append(scores.gather(1, labels[:, None])[valid, 0].cpu())
+        genuine.append(matched[valid, 0].cpu())
         impostor.append(scores.gather(1, wrong[start:end].clamp_min(0)[:, None])[valid, 0].cpu())
     has_queries = count > 0
     return {
         "top1": float(correct.sum() / len(target)),
+        "top5": float(top5_correct / len(target)),
+        "top1_satellite_match": float(top_satellite_correct / len(target)),
         "macro_top1": float((correct[has_queries] / count[has_queries]).mean()),
-        "within_satellite_top1": within_correct / len(target),
+        "within_satellite_top1": float((rank_outcomes[0] + rank_outcomes[2]) / len(target)),
+        "rank_counts": dict(zip(("correct", "same_satellite_only", "other_satellites_only", "both"),
+                                rank_outcomes.tolist(), strict=True)),
         "predicted_classes": int((predictions > 0).sum()),
         "mode_share": float(predictions.max() / len(target)),
         "same_satellite": binary_scores(np.from_dlpack(torch.cat(genuine)), np.from_dlpack(torch.cat(impostor))),
