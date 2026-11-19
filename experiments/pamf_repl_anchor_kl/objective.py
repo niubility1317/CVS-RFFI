@@ -42,6 +42,9 @@ class AnchorKLREPL(soft.SoftREPL):
     def compute_kl(self, ordinary, raw, teacher, accepted, recipe):
         return .8 * recipe['weight'] * recipe['kl_factor'] * anchor_kl(ordinary, raw, teacher, accepted, recipe)
 
+    def compute_ce(self, raw_ce, recipe):
+        return raw_ce.detach() * 0.
+
     def loss(self, student, device):
         if self.anchor_pairs or self.anchor_eval_logits:
             raise ValueError('Unconsumed source KL inputs')
@@ -57,8 +60,8 @@ class AnchorKLREPL(soft.SoftREPL):
             handle.remove()
         if len(self.anchor_eval_logits) != 1 or len(self.anchor_pairs) != 4:
             raise ValueError('Expected one raw pseudo-label forward and four original paired losses')
-        ordinary, ordinary_mask = self.anchor_pairs[0]
-        raw, raw_mask = self.anchor_pairs[3]
+        ordinary, ordinary_mask, _ = self.anchor_pairs[0]
+        raw, raw_mask, raw_ce = self.anchor_pairs[3]
         if not torch.equal(ordinary_mask, raw_mask):
             raise ValueError('Ordinary and raw must share the original U acceptance mask')
         teacher = self.anchor_eval_logits[0]
@@ -67,11 +70,13 @@ class AnchorKLREPL(soft.SoftREPL):
         recipe = self.c['tuning_recipe']
         kl = self.compute_kl(ordinary, raw, teacher, ordinary_mask, recipe)
         self.parts['pair_kl'] = kl
-        effective = sum(self.parts.values())
+        auxiliary = sum(self.parts.values())
+        ce = self.compute_ce(raw_ce, recipe)
+        effective = auxiliary + ce
         self.metrics.update(HPL_pre_route_U_loss=self.pending_gradient_loss.detach(),
-                            HPL_effective_CE_loss=effective.detach()*0.,
+                            HPL_effective_CE_loss=ce.detach(),
                             HPL_effective_KL_loss=kl.detach(),
-                            HPL_effective_aux_loss=effective.detach(),
+                            HPL_effective_aux_loss=auxiliary.detach(),
                             HPL_anchor_population=ordinary_mask.numel(),
                             HPL_anchor_acceptance=ordinary_mask.float().mean().detach(),
                             HPL_loss=effective.detach(),
@@ -92,7 +97,7 @@ def installed(config, holder, *, objective_class=AnchorKLREPL):
 
             def capture_pair(a, b, targets, accepted, kl_weight):
                 result = priority_pair(a, b, targets, accepted, kl_weight)
-                holder['objective'].anchor_pairs.append(((a, b), accepted))
+                holder['objective'].anchor_pairs.append(((a, b), accepted, result[1]))
                 return result
 
             hard.masked_pair = capture_pair

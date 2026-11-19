@@ -1,0 +1,605 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261119-phase1-pamf-repl-twosetting-clean-m12-r01",
+  "group_id": "phase1-pamf-repl-weight-clean",
+  "display_name": "Tri 十类三因素探索与六源独立种子复核",
+  "description": "十类固定起点八格完全因子矩阵，六源两配方在两个固定独立种子上配对。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "tri-repl-clean-loss-weight"
+  ],
+  "tags": [
+    "PAMF",
+    "REPL",
+    "clean",
+    "gradient"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-paper-completion-m119-r03",
+    "20261118-phase1-pamf-repl-auxviewdose-clean-m16-r01",
+    "20261119-phase1-pamf-repl-adaptivekl-clean-m14-r01",
+    "20261119-phase1-pamf-repl-daypairs-clean-m14-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "持续目标要求十类和六源超过匹配 PL，并对固定配方使用独立种子核验。",
+  "code": {
+    "commit": "actual committed release identity in runtime.json",
+    "checkout": "isolated task worktree",
+    "environment": "N607 CVS-RFFI existing Python, FP32",
+    "cwd": "PROJECT/releases/20261119-phase1-pamf-repl-twosetting-clean-m12-r01-release"
+  },
+  "data": {
+    "dataset": "original ten-class ManyRx and six-source receiver contracts",
+    "version": null,
+    "representation": null,
+    "contract_ref": "context.handles per row protocol_id",
+    "physical_ids_ref": "original fixed source/test contracts",
+    "label_map_ref": null,
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "labeled training",
+      "U_s": "TX blind in training; offline diagnostic only after E50",
+      "V": "source validation without gradients"
+    },
+    "train_ratio": "original fixed labeled/unlabeled/validation roles",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": "fixed clean cross-date, cross-RX and double-cross; prediction before independent scoring",
+    "leo_config_ref": "not applicable: clean-only, no new satellite observations"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "frozen raw clean prediction; independent truth-last scoring",
+    "external_method_exception": null,
+    "claim_scope": "Ten-class development on exposed seed 01; fixed six-source recipes on seeds 02 and 03, historical target design"
+  },
+  "checkpoint": {
+    "initialization": "matching original same-setting source-only Tri E20 then own E21–E50",
+    "sources": [
+      "20261027-phase1-pamf-paper-completion-m119-r03"
+    ],
+    "contract_check_ref": "pamf_repl_component_guard.plan.parent with scoped priority matrix",
+    "provenance_verdict": "same source roles, physical IDs, seed and original source-only E20, no target-trained checkpoint",
+    "selection_rule": "Every row fixed E50; six-source recipes frozen before evaluating seeds 02 and 03"
+  },
+  "execution": {
+    "host": "N607 ordinary user",
+    "launch_owner": "codex-20261119-phase1-pamf-repl-twosetting-clean-m12-r01",
+    "gpu_policy": "GPU 0–6, up to two total processes per GPU including other owners, reserve 12 GiB",
+    "remote_run_root": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01",
+    "remote_log_root": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_repl_two_setting_20261119",
+    "launch_command": "python -m experiments.pamf_repl_two_setting.publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+    "stop_rule": "On protocol, nonfinite or launch failure stop new dispatch; preserve all outputs and healthy workers; no low-score stops."
+  },
+  "expected_artifacts": [
+    "12 real source E20 optimizer-step smokes",
+    "12 fixed E50 raw clean predictions and independent scores",
+    "12 frozen-only U diagnostics",
+    "gradient, optimizer, per-loss and source validation telemetry"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean accuracy and macro-F1",
+      "L CE and source validation",
+      "U acceptance, unique coverage and post-freeze correctness",
+      "group raw and applied gradients, reference conflicts and caps",
+      "every-100-step actual joint and same-state reference-only AdamW direction"
+    ],
+    "dimensions": [
+      "ten-class seed 01 and six-source seeds 02/03",
+      "three raw clean subsets",
+      "paired physical IDs"
+    ],
+    "prediction_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/readouts/ROW/predictions",
+    "scorer_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/readouts/ROW/scores"
+  },
+  "rows": [
+    {
+      "row_id": "ten_class-repl-ten_ce0_gap0_rx0-s2026092701",
+      "method": "Tri priority ten_ce0_gap0_rx0",
+      "purpose": "{'setting': 'ten_class', 'weight': 0.75, 'shallow_factor': 2.0, 'joint_weight': 0.0, 'kl_factor': 1.5, 'extrap_coefficient': 0.0, 'ce_views': [0.0, 0.0, 0.0, 0.0], 'kl_views': [0.8, 0.0, 0.0, 0.0], 'reference': 'shallow', 'mode': 'soft', 'alpha': 0.0, 'beta': 0.0, 'raw_ce_dose': 0.0, 'adaptive_kl_view': 'ordinary', 'adaptive_signal': 'view_gap', 'adaptive_strength': 0.0, 'rx_balance': False}",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/configs/train__ten_class-repl-ten_ce0_gap0_rx0-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/F/ten_class-repl-ten_ce0_gap0_rx0-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Exploratory seed selected earlier",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/F/ten_class-repl-ten_ce0_gap0_rx0-s2026092701/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/logs/train__ten_class-repl-ten_ce0_gap0_rx0-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/configs/train__ten_class-repl-ten_ce0_gap0_rx0-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-ten_ce0_gap0_rx0-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-ten_ce0_gap0_rx0-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-ten_ce0_gap0_rx0-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-ten_ce0_gap0_rx1-s2026092701",
+      "method": "Tri priority ten_ce0_gap0_rx1",
+      "purpose": "{'setting': 'ten_class', 'weight': 0.75, 'shallow_factor': 2.0, 'joint_weight': 0.0, 'kl_factor': 1.5, 'extrap_coefficient': 0.0, 'ce_views': [0.0, 0.0, 0.0, 0.0], 'kl_views': [0.8, 0.0, 0.0, 0.0], 'reference': 'shallow', 'mode': 'soft', 'alpha': 0.0, 'beta': 0.0, 'raw_ce_dose': 0.0, 'adaptive_kl_view': 'ordinary', 'adaptive_signal': 'view_gap', 'adaptive_strength': 0.0, 'rx_balance': True}",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/configs/train__ten_class-repl-ten_ce0_gap0_rx1-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/F/ten_class-repl-ten_ce0_gap0_rx1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Exploratory seed selected earlier",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/F/ten_class-repl-ten_ce0_gap0_rx1-s2026092701/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/logs/train__ten_class-repl-ten_ce0_gap0_rx1-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/configs/train__ten_class-repl-ten_ce0_gap0_rx1-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-ten_ce0_gap0_rx1-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-ten_ce0_gap0_rx1-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-ten_ce0_gap0_rx1-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-ten_ce0_gap1_rx0-s2026092701",
+      "method": "Tri priority ten_ce0_gap1_rx0",
+      "purpose": "{'setting': 'ten_class', 'weight': 0.75, 'shallow_factor': 2.0, 'joint_weight': 0.0, 'kl_factor': 1.5, 'extrap_coefficient': 0.0, 'ce_views': [0.0, 0.0, 0.0, 0.0], 'kl_views': [0.8, 0.0, 0.0, 0.0], 'reference': 'shallow', 'mode': 'soft', 'alpha': 0.0, 'beta': 0.0, 'raw_ce_dose': 0.0, 'adaptive_kl_view': 'ordinary', 'adaptive_signal': 'view_gap', 'adaptive_strength': 0.5, 'rx_balance': False}",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/configs/train__ten_class-repl-ten_ce0_gap1_rx0-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/F/ten_class-repl-ten_ce0_gap1_rx0-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Exploratory seed selected earlier",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/F/ten_class-repl-ten_ce0_gap1_rx0-s2026092701/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/logs/train__ten_class-repl-ten_ce0_gap1_rx0-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/configs/train__ten_class-repl-ten_ce0_gap1_rx0-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-ten_ce0_gap1_rx0-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-ten_ce0_gap1_rx0-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-ten_ce0_gap1_rx0-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-ten_ce0_gap1_rx1-s2026092701",
+      "method": "Tri priority ten_ce0_gap1_rx1",
+      "purpose": "{'setting': 'ten_class', 'weight': 0.75, 'shallow_factor': 2.0, 'joint_weight': 0.0, 'kl_factor': 1.5, 'extrap_coefficient': 0.0, 'ce_views': [0.0, 0.0, 0.0, 0.0], 'kl_views': [0.8, 0.0, 0.0, 0.0], 'reference': 'shallow', 'mode': 'soft', 'alpha': 0.0, 'beta': 0.0, 'raw_ce_dose': 0.0, 'adaptive_kl_view': 'ordinary', 'adaptive_signal': 'view_gap', 'adaptive_strength': 0.5, 'rx_balance': True}",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/configs/train__ten_class-repl-ten_ce0_gap1_rx1-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/F/ten_class-repl-ten_ce0_gap1_rx1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Exploratory seed selected earlier",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/F/ten_class-repl-ten_ce0_gap1_rx1-s2026092701/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/logs/train__ten_class-repl-ten_ce0_gap1_rx1-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/configs/train__ten_class-repl-ten_ce0_gap1_rx1-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-ten_ce0_gap1_rx1-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-ten_ce0_gap1_rx1-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-ten_ce0_gap1_rx1-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-ten_ce1_gap0_rx0-s2026092701",
+      "method": "Tri priority ten_ce1_gap0_rx0",
+      "purpose": "{'setting': 'ten_class', 'weight': 0.75, 'shallow_factor': 2.0, 'joint_weight': 0.0, 'kl_factor': 1.5, 'extrap_coefficient': 0.0, 'ce_views': [0.0, 0.0, 0.0, 0.0], 'kl_views': [0.8, 0.0, 0.0, 0.0], 'reference': 'shallow', 'mode': 'soft', 'alpha': 0.0, 'beta': 0.0, 'raw_ce_dose': 0.25, 'adaptive_kl_view': 'ordinary', 'adaptive_signal': 'view_gap', 'adaptive_strength': 0.0, 'rx_balance': False}",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/configs/train__ten_class-repl-ten_ce1_gap0_rx0-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/F/ten_class-repl-ten_ce1_gap0_rx0-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Exploratory seed selected earlier",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/F/ten_class-repl-ten_ce1_gap0_rx0-s2026092701/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/logs/train__ten_class-repl-ten_ce1_gap0_rx0-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/configs/train__ten_class-repl-ten_ce1_gap0_rx0-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-ten_ce1_gap0_rx0-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-ten_ce1_gap0_rx0-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-ten_ce1_gap0_rx0-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-ten_ce1_gap0_rx1-s2026092701",
+      "method": "Tri priority ten_ce1_gap0_rx1",
+      "purpose": "{'setting': 'ten_class', 'weight': 0.75, 'shallow_factor': 2.0, 'joint_weight': 0.0, 'kl_factor': 1.5, 'extrap_coefficient': 0.0, 'ce_views': [0.0, 0.0, 0.0, 0.0], 'kl_views': [0.8, 0.0, 0.0, 0.0], 'reference': 'shallow', 'mode': 'soft', 'alpha': 0.0, 'beta': 0.0, 'raw_ce_dose': 0.25, 'adaptive_kl_view': 'ordinary', 'adaptive_signal': 'view_gap', 'adaptive_strength': 0.0, 'rx_balance': True}",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/configs/train__ten_class-repl-ten_ce1_gap0_rx1-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/F/ten_class-repl-ten_ce1_gap0_rx1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Exploratory seed selected earlier",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/F/ten_class-repl-ten_ce1_gap0_rx1-s2026092701/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/logs/train__ten_class-repl-ten_ce1_gap0_rx1-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/configs/train__ten_class-repl-ten_ce1_gap0_rx1-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-ten_ce1_gap0_rx1-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-ten_ce1_gap0_rx1-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-ten_ce1_gap0_rx1-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-ten_ce1_gap1_rx0-s2026092701",
+      "method": "Tri priority ten_ce1_gap1_rx0",
+      "purpose": "{'setting': 'ten_class', 'weight': 0.75, 'shallow_factor': 2.0, 'joint_weight': 0.0, 'kl_factor': 1.5, 'extrap_coefficient': 0.0, 'ce_views': [0.0, 0.0, 0.0, 0.0], 'kl_views': [0.8, 0.0, 0.0, 0.0], 'reference': 'shallow', 'mode': 'soft', 'alpha': 0.0, 'beta': 0.0, 'raw_ce_dose': 0.25, 'adaptive_kl_view': 'ordinary', 'adaptive_signal': 'view_gap', 'adaptive_strength': 0.5, 'rx_balance': False}",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/configs/train__ten_class-repl-ten_ce1_gap1_rx0-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/F/ten_class-repl-ten_ce1_gap1_rx0-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Exploratory seed selected earlier",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/F/ten_class-repl-ten_ce1_gap1_rx0-s2026092701/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/logs/train__ten_class-repl-ten_ce1_gap1_rx0-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/configs/train__ten_class-repl-ten_ce1_gap1_rx0-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-ten_ce1_gap1_rx0-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-ten_ce1_gap1_rx0-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-ten_ce1_gap1_rx0-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "ten_class-repl-ten_ce1_gap1_rx1-s2026092701",
+      "method": "Tri priority ten_ce1_gap1_rx1",
+      "purpose": "{'setting': 'ten_class', 'weight': 0.75, 'shallow_factor': 2.0, 'joint_weight': 0.0, 'kl_factor': 1.5, 'extrap_coefficient': 0.0, 'ce_views': [0.0, 0.0, 0.0, 0.0], 'kl_views': [0.8, 0.0, 0.0, 0.0], 'reference': 'shallow', 'mode': 'soft', 'alpha': 0.0, 'beta': 0.0, 'raw_ce_dose': 0.25, 'adaptive_kl_view': 'ordinary', 'adaptive_signal': 'view_gap', 'adaptive_strength': 0.5, 'rx_balance': True}",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/configs/train__ten_class-repl-ten_ce1_gap1_rx1-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/F/ten_class-repl-ten_ce1_gap1_rx1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Exploratory seed selected earlier",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/F/ten_class-repl-ten_ce1_gap1_rx1-s2026092701/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/logs/train__ten_class-repl-ten_ce1_gap1_rx1-s2026092701.log",
+      "command": "worker --kind train --config PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/configs/train__ten_class-repl-ten_ce1_gap1_rx1-s2026092701.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/ten_class-repl-ten_ce1_gap1_rx1-s2026092701/U_diagnostic/scores.json",
+        "readouts/ten_class-repl-ten_ce1_gap1_rx1-s2026092701/predictions/complete.json",
+        "readouts/ten_class-repl-ten_ce1_gap1_rx1-s2026092701/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-six_fixed-s2026092702",
+      "method": "Tri priority six_fixed",
+      "purpose": "{'setting': 'source_rx_6', 'weight': 0.75, 'shallow_factor': 0.0, 'joint_weight': 0.1, 'kl_factor': 1.5, 'extrap_coefficient': 0.0, 'ce_views': [0.0, 0.0, 0.0, 0.0], 'kl_views': [0.0, 0.0, 0.0, 0.8], 'reference': 'pair_kl', 'mode': 'soft', 'alpha': 0.0, 'beta': 0.0}",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/configs/train__source_rx_6-repl-six_fixed-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/F/source_rx_6-repl-six_fixed-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model seed held out from these recipe choices; historical test design",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/F/source_rx_6-repl-six_fixed-s2026092702/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/logs/train__source_rx_6-repl-six_fixed-s2026092702.log",
+      "command": "worker --kind train --config PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/configs/train__source_rx_6-repl-six_fixed-s2026092702.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/source_rx_6-repl-six_fixed-s2026092702/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-six_fixed-s2026092702/predictions/complete.json",
+        "readouts/source_rx_6-repl-six_fixed-s2026092702/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-six_fixed-s2026092703",
+      "method": "Tri priority six_fixed",
+      "purpose": "{'setting': 'source_rx_6', 'weight': 0.75, 'shallow_factor': 0.0, 'joint_weight': 0.1, 'kl_factor': 1.5, 'extrap_coefficient': 0.0, 'ce_views': [0.0, 0.0, 0.0, 0.0], 'kl_views': [0.0, 0.0, 0.0, 0.8], 'reference': 'pair_kl', 'mode': 'soft', 'alpha': 0.0, 'beta': 0.0}",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/configs/train__source_rx_6-repl-six_fixed-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/F/source_rx_6-repl-six_fixed-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model seed held out from these recipe choices; historical test design",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/F/source_rx_6-repl-six_fixed-s2026092703/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/logs/train__source_rx_6-repl-six_fixed-s2026092703.log",
+      "command": "worker --kind train --config PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/configs/train__source_rx_6-repl-six_fixed-s2026092703.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/source_rx_6-repl-six_fixed-s2026092703/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-six_fixed-s2026092703/predictions/complete.json",
+        "readouts/source_rx_6-repl-six_fixed-s2026092703/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-six_same_date-s2026092702",
+      "method": "Tri priority six_same_date",
+      "purpose": "{'setting': 'source_rx_6', 'weight': 0.75, 'shallow_factor': 0.0, 'joint_weight': 0.1, 'kl_factor': 1.5, 'extrap_coefficient': 0.0, 'ce_views': [0.0, 0.0, 0.0, 0.0], 'kl_views': [0.0, 0.0, 0.0, 0.8], 'reference': 'pair_kl', 'mode': 'soft', 'alpha': 0.0, 'beta': 0.0, 'day_rule': 'same_date', 'day_strength': 0.5}",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/configs/train__source_rx_6-repl-six_same_date-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/F/source_rx_6-repl-six_same_date-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model seed held out from these recipe choices; historical test design",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/F/source_rx_6-repl-six_same_date-s2026092702/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/logs/train__source_rx_6-repl-six_same_date-s2026092702.log",
+      "command": "worker --kind train --config PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/configs/train__source_rx_6-repl-six_same_date-s2026092702.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/source_rx_6-repl-six_same_date-s2026092702/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-six_same_date-s2026092702/predictions/complete.json",
+        "readouts/source_rx_6-repl-six_same_date-s2026092702/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-repl-six_same_date-s2026092703",
+      "method": "Tri priority six_same_date",
+      "purpose": "{'setting': 'source_rx_6', 'weight': 0.75, 'shallow_factor': 0.0, 'joint_weight': 0.1, 'kl_factor': 1.5, 'extrap_coefficient': 0.0, 'ce_views': [0.0, 0.0, 0.0, 0.0], 'kl_views': [0.0, 0.0, 0.0, 0.8], 'reference': 'pair_kl', 'mode': 'soft', 'alpha': 0.0, 'beta': 0.0, 'day_rule': 'same_date', 'day_strength': 0.5}",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/configs/train__source_rx_6-repl-six_same_date-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/F/source_rx_6-repl-six_same_date-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model seed held out from these recipe choices; historical test design",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "same-contract source E20 reused; own E21–E50 6660 updates; total 11100",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/F/source_rx_6-repl-six_same_date-s2026092703/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/logs/train__source_rx_6-repl-six_same_date-s2026092703.log",
+      "command": "worker --kind train --config PROJECT/runs/20261119-phase1-pamf-repl-twosetting-clean-m12-r01/configs/train__source_rx_6-repl-six_same_date-s2026092703.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/U_pseudo_observations.jsonl.gz",
+        "source/segment50/U_pseudo_observations.jsonl.gz",
+        "source/segment30/reference_adamw_samples.jsonl.gz",
+        "source/segment50/reference_adamw_samples.jsonl.gz",
+        "readouts/source_rx_6-repl-six_same_date-s2026092703/U_diagnostic/scores.json",
+        "readouts/source_rx_6-repl-six_same_date-s2026092703/predictions/complete.json",
+        "readouts/source_rx_6-repl-six_same_date-s2026092703/scores/complete.json",
+        "source/segment30/adamw_LU_samples.jsonl.gz",
+        "source/segment50/adamw_LU_samples.jsonl.gz"
+      ]
+    }
+  ],
+  "notes": [
+    "Ten-class factorial holds U .75, shallow 2 and ordinary KL dose 1.5 constant.",
+    "Ten-class factors: raw CE .25, view-disagreement weighting .5, shallow positive RX balance .5; full switches and interactions.",
+    "Six-source: fixed raw KL + fusion .10 and the identical recipe with same-source-date preferred positives .50.",
+    "Report both six-source seeds individually before summarizing; benchmark against same-setting and same-seed ordinary PL and original Tri.",
+    "Source U truth stays isolated until independent diagnostics after E50 freeze. No target or U truth for training."
+  ]
+}

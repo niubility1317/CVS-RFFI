@@ -32,7 +32,7 @@ def apply_recipe(c, name):
 
 def configuration(ctx, row, project, commit, *, run_id=RUN):
     if run_id != RUN or row not in candidate_rows():raise ValueError('Unknown additional candidate')
-    original=f"{row['setting']}-factorial-ssl-full-permuted-s{SEED}"
+    original=f"{row['setting']}-factorial-ssl-full-permuted-s{row['model_seed']}"
     source=Path(project)/'runs'/paper.RUN/'F'/original/'source'
     done=read(source/'complete.json')
     if done['status']!='SOURCE_FROZEN' or done['target_access'] or done['U_truth_read'] or done['epoch']!=50:
@@ -55,7 +55,7 @@ def validate(c):
     root=Path(c['output_root']);root=root.parent if root.name in ('segment30','segment50') else root
     if root.parts[-5:]!=('runs',RUN,'F',row['row_id'],'source') or c['run_id']!=RUN:
         raise ValueError('Independent candidate output required')
-    if c['model_seed']!=SEED or c['protocol_id']!=row['protocol_id']:
+    if c['model_seed']!=row['model_seed'] or c['protocol_id']!=row['protocol_id']:
         raise ValueError('Seed/protocol mismatch')
     if any(c.get(k) for k in ('target_inputs','target_truth','truth','tests','views_root','checkpoint')):
         raise ValueError('Target or truth in training configuration')
@@ -65,7 +65,7 @@ def validate(c):
 def parent(c):
     from experiments.pamf_branch_training.source import checked_e20_parent
     row=validate(c);root=Path(c['output_root']);root=root.parent if root.name in ('segment30','segment50') else root
-    original=f"{row['setting']}-factorial-ssl-full-permuted-s{SEED}"
+    original=f"{row['setting']}-factorial-ssl-full-permuted-s{row['model_seed']}"
     expected=root.parents[3]/paper.RUN/'F'/original/'source'/'segment20'
     if Path(c['shared_prefix'])!=expected:raise ValueError('Exact same-contract E20 required')
     evidence=checked_e20_parent(c);prior=evidence['config'];paper.validate_config(prior)

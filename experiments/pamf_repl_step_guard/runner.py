@@ -12,8 +12,12 @@ def prepare(rt):
     previous=reference.plan;reference.plan=plan
     try:jobs=reference.prepare(rt)
     finally:reference.plan=previous
+    return add_u_scoring(rt, plan.candidate_rows(), jobs)
+
+
+def add_u_scoring(rt, rows, jobs):
     root=Path(rt['run_root']);sources=read(root/'sources.json')
-    for row in plan.candidate_rows():
+    for row in rows:
         rid=row['row_id'];source=Path(sources[rid]['source_output']);output=root/'readouts'/rid/'U_diagnostic'
         jid='u_score__'+rid;path=root/'configs'/f'{jid}.json'
         write(path,dict(diagnostic_type='U_truth_after_freeze',row_id=rid,protocol_id=row['protocol_id'],

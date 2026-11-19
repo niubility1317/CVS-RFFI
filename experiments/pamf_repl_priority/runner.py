@@ -21,10 +21,11 @@ def smoke(rt):
         cp=torch.load(Path(prefix['folder'])/'final_ssdg.pth',map_location='cpu',weights_only=False)
         cfg=dict(c,epoch_offset=20,step_offset=4440,segment_epochs=10,hard_pl_smoke=True,
                  output_root=str(Path(c['output_root'])/'segment30'))
-        holder={}; torch.manual_seed(plan.SEED); torch.cuda.reset_peak_memory_stats()
+        seed = row['model_seed']
+        holder={}; torch.manual_seed(seed); torch.cuda.reset_peak_memory_stats()
         with installed(cfg,holder):
             loaders=f_train.context(cfg)
-            with f_train.class_dimension(cfg),native_scope(f_train.original_config(plan.SEED)) as native:
+            with f_train.class_dimension(cfg),native_scope(f_train.original_config(seed)) as native:
                 a=f_train.arguments(cfg,'cuda:0'); a.input_len=256
                 net=t1_model.install(native.build_baseline_model(a,'cuda:0'),cfg).cuda()
             net.load_state_dict(cp['model'],strict=True); graph=base_plan.check_graph(net,cfg)
