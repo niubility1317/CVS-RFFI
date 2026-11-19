@@ -65,10 +65,7 @@ def waveform_views(iq, reference):
     }
 
 
-@torch.no_grad()
-def diagnose(source, cache, seed):
-    classes, _, roles = source_inputs(source, cache)
-    raw, labels, _ = roles["V"]
+def source_panels(source, labels, classes, seed):
     with np.load(source / "L_index.npz", allow_pickle=False) as index:
         train_times = index["timestamp_ns"]
     median = np.partition(train_times, len(train_times) // 2)[len(train_times) // 2]
@@ -77,10 +74,25 @@ def diagnose(source, cache, seed):
         temporary = index["timestamp_ns"] < cutoff
     panels = {"paper": panel(labels, classes, seed),
               "chronological": panel(labels, classes, seed, reference_period=temporary)}
+    return panels, str(np.datetime64(int(cutoff), "ns"))
+
+
+def panel_rows(panels, record_count):
     # Extract only the physical records used by either fixed reference/query panel.
     needed = np.unique(np.concatenate([np.r_[p[0].ravel(), p[1]] for p in panels.values()]))
-    data = np.full(len(raw), -1, dtype=np.int64)
+    data = np.full(record_count, -1, dtype=np.int64)
     data[needed] = np.arange(len(needed))
+    remapped = {name: (data[ref], data[query], *mapping)
+                for name, (ref, query, *mapping) in panels.items()}
+    return needed, remapped
+
+
+@torch.no_grad()
+def diagnose(source, cache, seed):
+    classes, _, roles = source_inputs(source, cache)
+    raw, labels, _ = roles["V"]
+    panels, cutoff = source_panels(source, labels, classes, seed)
+    needed, panels = panel_rows(panels, len(raw))
     reference = common_template()
     values = {}
     for start in range(0, len(needed), 128):
@@ -91,9 +103,9 @@ def diagnose(source, cache, seed):
     for name, parts in values.items():
         feature = np.concatenate(parts)
         outcomes[name] = {"dimensions": feature.shape[1]}
-        for label, (ref, query, *mapping) in panels.items():
-            outcomes[name][label] = metrics(feature, (data[ref], data[query], *mapping), torch.device("cpu"))
-    return {"cutoff_utc": str(np.datetime64(int(cutoff), "ns")), "seed": seed,
+        for label, indices in panels.items():
+            outcomes[name][label] = metrics(feature, indices, torch.device("cpu"))
+    return {"cutoff_utc": cutoff, "seed": seed,
             "distinct_packets": len(needed), "outcomes": outcomes}
 
 
