@@ -19,7 +19,7 @@ COMMON_SAMPLES = COMMON_SYMBOLS * SAMPLES_PER_SYMBOL
 
 def common_template():
     n = torch.arange(COMMON_SAMPLES, dtype=torch.float32)
-    symbols = torch.tensor(SYMBOLS)
+    symbols = torch.utils.dlpack.from_dlpack(SYMBOLS)
     transitions = torch.arange(COMMON_SYMBOLS - 1) * SAMPLES_PER_SYMBOL + 500
     profile = .5 + .5 * ((n[:, None] - transitions) / 140).tanh()
     return symbols[0] + (profile * symbols.diff()).sum(dim=1)
@@ -86,7 +86,7 @@ def diagnose(source, cache, seed):
     for start in range(0, len(needed), 128):
         batch = torch.utils.dlpack.from_dlpack(raw[needed[start:start + 128]])
         for name, feature in waveform_views(batch, reference).items():
-            values.setdefault(name, []).append(feature.numpy())
+            values.setdefault(name, []).append(np.from_dlpack(feature))
     outcomes = {}
     for name, parts in values.items():
         feature = np.concatenate(parts)

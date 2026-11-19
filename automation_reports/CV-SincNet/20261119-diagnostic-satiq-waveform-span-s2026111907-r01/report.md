@@ -3,7 +3,7 @@
 - run_id：`20261119-diagnostic-satiq-waveform-span-s2026111907-r01`
 - group_id：`phase1-satiq-ccs2023-fully-supervised`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：FAILED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -27,3 +27,5 @@ Compare 256/8000/11000 points and deterministic affine UW calibration on identic
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+N607 readback verified PID 1963753 terminated during NumPy complex scalar conversion. No source scores were generated. Retry will use DLPack conversion and an independent output directory.
