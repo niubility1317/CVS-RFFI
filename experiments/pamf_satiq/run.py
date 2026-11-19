@@ -119,7 +119,7 @@ def packet_logits(model, raw):
     return logits.reshape(batch, windows, -1).mean(dim=1)
 
 
-@torch.inference_mode()
+@torch.no_grad()
 def evaluate(model, x, device, batch):
     model.eval()
     parts = []
@@ -134,7 +134,7 @@ def evaluate(model, x, device, batch):
     return logits
 
 
-@torch.inference_mode()
+@torch.no_grad()
 def validate(model, x, y, device, batch):
     model.eval()
     logits = torch.cat([packet_logits(model, a.to(device)).cpu() for a in x.split(batch)])
