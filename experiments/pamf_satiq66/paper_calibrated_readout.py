@@ -24,15 +24,24 @@ def encode(model, arm, raw, index, device):
     return tuple(torch.cat(parts) for parts in zip(*blocks, strict=True))
 
 
-def fit_transforms(training, validation):
+def fit_calibration(training):
     mean = training.mean(dim=0)
     centered = training - mean
     covariance = centered.T @ centered / len(training)
     eigenvalue, basis = torch.linalg.eigh(covariance)
     eigenvalue = eigenvalue.clamp_min(0)
     scale = (eigenvalue + .2 * eigenvalue.mean() + 1e-12).pow(-.25)
-    value = validation - mean
-    return validation, value, (value @ basis) * scale
+    return mean, basis, scale
+
+
+def apply_calibration(feature, stats):
+    mean, basis, scale = stats
+    return ((feature - mean) @ basis) * scale
+
+
+def fit_transforms(training, validation):
+    stats = fit_calibration(training)
+    return validation, validation - stats[0], apply_calibration(validation, stats)
 
 
 @torch.no_grad()
