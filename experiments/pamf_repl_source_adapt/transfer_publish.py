@@ -33,11 +33,14 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     for option in ('repo', 'output', 'context', 'ssh-config'):
         parser.add_argument('--' + option, required=True)
-    parser.add_argument('--receiver-balance', action='store_true')
+    variant = parser.add_mutually_exclusive_group()
+    variant.add_argument('--receiver-balance', action='store_true')
+    variant.add_argument('--receiver-balance-confirm', action='store_true')
     args = parser.parse_args()
-    if args.receiver_balance:
-        from .receiver_balance import RUN as balance_run, MODULE
+    if args.receiver_balance or args.receiver_balance_confirm:
+        from .receiver_balance import RUN as balance_run, CONFIRM_RUN, MODULE
 
-        publish(args.repo, args.output, args.context, args.ssh_config, run_id=balance_run, module=MODULE, decision_run=None)
+        run_id = CONFIRM_RUN if args.receiver_balance_confirm else balance_run
+        publish(args.repo, args.output, args.context, args.ssh_config, run_id=run_id, module=MODULE, decision_run=None)
     else:
         publish(args.repo, args.output, args.context, args.ssh_config)

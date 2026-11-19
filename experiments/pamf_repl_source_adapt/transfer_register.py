@@ -7,18 +7,19 @@ from .pilot import paper
 from .transfer import DEVELOPMENT_RUN, RUN, original_row, selected_rows
 
 
-def make(template, decisions=None, *, receiver_balance=False):
+def make(template, decisions=None, *, receiver_balance=False, confirmation=False):
     data = deepcopy(template)
     run_id = RUN
-    if receiver_balance:
-        from .receiver_balance import RUN as run_id, rows
-        candidates = rows()
+    if receiver_balance or confirmation:
+        from .receiver_balance import RUN as balance_run, CONFIRM_RUN, rows
+        run_id = CONFIRM_RUN if confirmation else balance_run
+        candidates = rows(run_id)
     else:
         candidates = selected_rows(decisions)
     root = f'PROJECT/runs/{run_id}'
     cmd = 'python -m experiments.pamf_repl_source_adapt.transfer_publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG'
-    if receiver_balance:
-        cmd += ' --receiver-balance'
+    if receiver_balance or confirmation:
+        cmd += ' --receiver-balance-confirm' if confirmation else ' --receiver-balance'
     data.update(run_id=run_id, group_id='phase1-pamf-source-adaptation', display_name='Tri 自适应源域收益 E50 校准',
                 description='四种设置×三种子。源域决策固定后按相同物理样本对照原 Tri 和普通 PL。',
                 parent_run_ids=[DEVELOPMENT_RUN, paper.RUN], authorization='用户要求在其他数据设置保留原 Tri 对普通 PL 的领先幅度。')
@@ -62,7 +63,7 @@ def make(template, decisions=None, *, receiver_balance=False):
         data['rows'].append(entry)
     data['notes'] = ['Seeds 2026092702 and 2026092703 did not choose the source weights. All seeds use identical decision per data setting.',
                      'Fallback rows reuse the original Tri and represent zero gain by construction. Compare activated rows separately.']
-    if receiver_balance:
+    if receiver_balance or confirmation:
         data.update(display_name='Tri 接收机正对分布自适应',
                     description='四设置两条损失通道，按当前已接受的跨 RX 正对重分配概率，总权重保持原 Tri。', parent_run_ids=[paper.RUN, RUN])
         data['permissions']['claim_scope'] = 'Matched fixed exploratory clean comparisons of receiver-balance routes'
@@ -77,6 +78,12 @@ def make(template, decisions=None, *, receiver_balance=False):
             entry['method'] = f"Native Tri weight 6, RX balance of {row['route']} U contrast"
             entry['purpose'] = 'Matched loss attribution for source-only positive distribution reweighting'
             entry['data_overrides'] = dict(protocol_id=row['protocol_id'], route=row['route'], mixture=.5)
+        if confirmation:
+            data.update(display_name='Tri 融合 RX 均衡独立种子复核',
+                        description='四设置、两个独立训练种子复核同一融合机制。', parent_run_ids=[paper.RUN, balance_run])
+            data['execution']['local_artifact_root'] = 'local_artifacts/pamf_repl_source_adapt_rxbalance_seedcheck_20261119'
+            data['permissions']['claim_scope'] = 'Same previously seen clean settings, two seeds excluded from mechanism choice'
+            data['notes'].append('No seed-dependent or setting-dependent change to the fixed fusion rule.')
     return data
 
 
@@ -85,9 +92,11 @@ if __name__ == '__main__':
     for option in ('template', 'output'):
         parser.add_argument('--' + option, required=True)
     parser.add_argument('--source-decisions')
-    parser.add_argument('--receiver-balance', action='store_true')
+    variant = parser.add_mutually_exclusive_group()
+    variant.add_argument('--receiver-balance', action='store_true')
+    variant.add_argument('--receiver-balance-confirm', action='store_true')
     args = parser.parse_args()
-    if not args.receiver_balance and args.source_decisions is None:
+    if not (args.receiver_balance or args.receiver_balance_confirm) and args.source_decisions is None:
         parser.error('Calibration requires --source-decisions')
     write(args.output, make(read(args.template), read(args.source_decisions) if args.source_decisions else None,
-                            receiver_balance=args.receiver_balance))
+                            receiver_balance=args.receiver_balance, confirmation=args.receiver_balance_confirm))

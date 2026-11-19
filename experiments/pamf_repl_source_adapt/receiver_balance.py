@@ -14,6 +14,7 @@ from .pilot import paper
 
 
 RUN = '20261119-phase1-pamf-repl-rxbalance-clean-m8-r01'
+CONFIRM_RUN = '20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02'
 MODULE = 'experiments.pamf_repl_source_adapt.receiver_balance'
 SETTINGS = ('receiver_split_1', 'receiver_split_2', 'labeled_5pct', 'source_rx_3')
 SEED = 2026092702
@@ -50,19 +51,21 @@ class BalancedREPL(GuardedReceiverExtrapolation):
         return loss
 
 
-def rows():
-    return [dict(row_id=f'{name}-tri-balance-{route}-s{SEED}', setting=name, protocol_id=paper.PROTOCOLS[name][0],
-                 model_seed=SEED, weight=6., route=route, views=['clean'], reuses_original=False)
-            for name in SETTINGS for route in ROUTES]
+def rows(run_id=RUN):
+    seeds, routes = {RUN: ((SEED,), tuple(ROUTES)), CONFIRM_RUN: ((2026092701, 2026092703), ('joint',))}[run_id]
+    return [dict(row_id=f'{name}-tri-balance-{route}-s{seed}', setting=name, protocol_id=paper.PROTOCOLS[name][0],
+                 model_seed=seed, weight=6., route=route, views=['clean'], reuses_original=False)
+            for name in SETTINGS for route in routes for seed in seeds]
 
 
 def validate(c):
     row = c.get('source_adaptation')
+    run_id = c['run_id']
     root = Path(c['output_root'])
     if root.name in ('segment30', 'segment50'):
         root = root.parent
-    if (row not in rows() or c['run_id'] != RUN or c['row_id'] != row['row_id'] or c['model_seed'] != SEED
-            or root.parts[-5:] != ('runs', RUN, 'F', row['row_id'], 'source')
+    if (row not in rows(run_id) or c['row_id'] != row['row_id'] or c['model_seed'] != row['model_seed']
+            or root.parts[-5:] != ('runs', run_id, 'F', row['row_id'], 'source')
             or c['protocol_id'] != row['protocol_id'] or c['paper_row']['row_id'] != transfer.original_row(row)
             or c['epochs'] != 50 or c['optimizer_updates'] != 11100
             or c['hard_pl']['weight'] != 6. or c['hard_pl_gradient_guard']['weight'] != 6.
@@ -71,8 +74,8 @@ def validate(c):
         raise ValueError('Expected native Tri with one registered RX balancing route')
 
 
-def configure(ctx, row, project, commit):
-    cfg = transfer.source_configuration(ctx, row, project, commit, RUN)
+def configure(ctx, row, project, commit, *, run_id=RUN):
+    cfg = transfer.source_configuration(ctx, row, project, commit, run_id)
     validate(cfg)
     return cfg
 
@@ -104,16 +107,19 @@ def smoke(rt):
     from experiments.pamf_physics_tri.full_matrix_plan import check_graph
     from experiments.pamf_physics_tri.runner import smoke as standard
 
-    standard(rt, rows=rows, configure=configure, check_parent=parent, scope=installed,
+    run_id = rt['run_id']
+    standard(rt, rows=lambda: rows(run_id), configure=partial(configure, run_id=run_id), check_parent=parent, scope=installed,
              check_u=lambda state: dict(accepted=state['accepted']), graph_check=check_graph, segment_output=True)
 
 
 def prepare(rt):
-    return transfer.prepare_jobs(rt, rows(), configure)
+    run_id = rt['run_id']
+    return transfer.prepare_jobs(rt, rows(run_id), partial(configure, run_id=run_id))
 
 
 def dispatch(rt):
-    analyze = partial(transfer.analyze, interpretation='exploratory matched receiver balance within original loss', source_decision_run=None)
+    interpretation = 'fixed fusion receiver balance on two independent training seeds' if rt['run_id'] == CONFIRM_RUN else 'exploratory matched receiver balance within original loss'
+    analyze = partial(transfer.analyze, interpretation=interpretation, source_decision_run=None)
     transfer.dispatch(rt, prepare_fn=prepare, analyze_fn=analyze, module=MODULE)
 
 

@@ -119,3 +119,13 @@ def test_receiver_balance_keeps_existing_pair_support_and_avoids_single_partner_
     collapsed = receivers.clamp_max(2)
     native, stats = positive_target(labels, collapsed)
     assert native is None and stats['affected'] == 0 and stats['tv'] == 0
+
+
+def test_receiver_balance_confirmation_fixes_joint_route_and_excludes_development_seed():
+    from experiments.pamf_repl_source_adapt import receiver_balance as balance
+
+    rows = balance.rows(balance.CONFIRM_RUN)
+    assert {row['route'] for row in rows} == {'joint'}
+    assert {row['model_seed'] for row in rows} == {2026092701, 2026092703}
+    assert {row['setting'] for row in rows} == set(balance.SETTINGS)
+    assert len({row['row_id'] for row in rows}) == 8
