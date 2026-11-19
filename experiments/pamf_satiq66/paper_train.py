@@ -15,7 +15,7 @@ from torch.nn import functional as F
 from .data import read_json, write_json
 from .paper_baseline import PaperSatIQ, angular_triplet, paper_loss
 from .paper_eval import embeddings, metrics, normalize_packet, panel
-from .paper_pamf import PaperPAMF, reconstruction_target, supervised_loss
+from .paper_pamf import PaperPAMF, branch_prototype_loss, reconstruction_target, supervised_loss
 from .readout import gpu_ready
 from .train import cuda_device, device_array
 
@@ -159,6 +159,7 @@ def train(config, source, cache, out, arm, smoke=False):
     device = cuda_device()
     model = make_model(config, arm, classes).to(device)
     reconstruction_weight = config.get("full_reconstruction_weight", 0)
+    prototype_weight = config.get("branch_prototype_weight", 0)
     lr = 1e-5 if arm == "SATIQ" else config["pamf_lr"]
     optimizer = torch.optim.Adam((p for p in model.parameters() if p.requires_grad), lr=lr, eps=1e-7)
     raw, labels, original = roles["L"]
@@ -202,7 +203,8 @@ def train(config, source, cache, out, arm, smoke=False):
                 feature, reconstructed = model(x)
                 loss, stats = paper_loss(feature, reconstructed, x, y)
             else:
-                outputs = model(x, view_logits=True, reconstruct=reconstruction_weight > 0)
+                outputs = model(x, view_logits=True, reconstruct=reconstruction_weight > 0,
+                                capture_branches=prototype_weight > 0)
                 feature, logits, common, full = outputs[:4]
                 loss, stats = supervised_loss(logits, common, full, y, satellites, config["pamf_sup"],
                                               class_log_prior)
@@ -214,6 +216,10 @@ def train(config, source, cache, out, arm, smoke=False):
                     reconstruction = F.mse_loss(outputs[4], reconstruction_target(x))
                     loss = loss + reconstruction_weight * reconstruction
                     stats["full_reconstruction_loss"] = reconstruction.detach()
+                if prototype_weight > 0:
+                    prototype = branch_prototype_loss(outputs[-1])
+                    loss = loss + prototype_weight * prototype
+                    stats["branch_prototype_ce"] = prototype.detach()
             if not torch.isfinite(loss):
                 raise RuntimeError(f"Nonfinite {arm} training objective")
             loss.backward()

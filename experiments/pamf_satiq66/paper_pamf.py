@@ -4,7 +4,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from .model import build_model
+from .model import build_model, capture
 from .wide_model import FEATURES, SAMPLES_PER_SYMBOL, RawSymbolEncoder
 
 
@@ -43,22 +43,31 @@ class PaperPAMF(nn.Module):
         cutoff = torch.cos(torch.pi * ((bins - 60) / 20).clamp(0, 1)) * .5 + .5
         self.register_buffer("cutoff", cutoff, persistent=False)
 
-    def encode_paths(self, iq):
+    def _encode(self, iq, capture_branches=False):
         # Keep both paths comparable in norm. The older residual sum became
         # dominated by the original-rate path at later checkpoints.
         raw = packet_rms(iq)
         common = raw[:, :, :8000]
         spectrum = torch.fft.rfft(common, dim=-1)[..., :129]
         coarse = torch.fft.irfft(spectrum * self.cutoff, n=256, dim=-1) * (256 / 8000)
-        native = F.normalize(self.common_norm(self.native.features(coarse)), dim=1)
+        branches = None
+        if capture_branches:
+            _, native, branches = capture(self.native, coarse)
+        else:
+            native = self.native.features(coarse)
+        native = F.normalize(self.common_norm(native), dim=1)
         feature = F.normalize(self.full_norm(self.original_rate(raw)), dim=1)
+        return native, feature, branches
+
+    def encode_paths(self, iq):
+        native, feature, _ = self._encode(iq)
         return native, feature
 
     def embed(self, iq):
         return F.normalize(torch.cat(self.encode_paths(iq), dim=1), dim=1)
 
-    def forward(self, iq, view_logits=False, reconstruct=False):
-        common, full = self.encode_paths(iq)
+    def forward(self, iq, view_logits=False, reconstruct=False, capture_branches=False):
+        common, full, branches = self._encode(iq, capture_branches)
         embedding = F.normalize(torch.cat((common, full), dim=1), dim=1)
         logits = 30.0 * F.linear(embedding, F.normalize(self.head.weight, dim=1))
         output = (embedding, logits)
@@ -68,6 +77,8 @@ class PaperPAMF(nn.Module):
                        30.0 * F.linear(full, F.normalize(full_weight, dim=1)))
         if reconstruct:
             output += (self.full_decoder(full),)
+        if capture_branches:
+            output += (torch.cat((branches, full.unsqueeze(0)), dim=0),)
         return output
 
 
@@ -93,3 +104,16 @@ def supervised_loss(logits, common, full, target, satellites, weights, class_log
         stats["prior_adjusted_ce"] = stats["ce"]
         stats["ce"] = F.cross_entropy(unadjusted.detach(), target)
     return loss, stats
+
+
+def branch_prototype_loss(branches):
+    """Balanced classification against the 8×4 source batch's leave-one-out prototypes."""
+    vectors = F.normalize(branches, dim=-1)
+    sums = vectors.reshape(len(vectors), 8, 4, -1).sum(dim=2)
+    prototypes = F.normalize(sums, dim=-1)
+    scores = vectors @ prototypes.transpose(1, 2)
+    own_prototypes = F.normalize(sums.repeat_interleave(4, dim=1) - vectors, dim=-1)
+    own_scores = (vectors * own_prototypes).sum(dim=-1, keepdim=True)
+    labels = torch.arange(8, device=vectors.device).repeat_interleave(4).expand(len(vectors), -1)
+    scores = scores.scatter(2, labels.unsqueeze(-1), own_scores)
+    return F.cross_entropy((30 * scores).flatten(0, 1), labels.flatten())

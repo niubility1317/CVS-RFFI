@@ -42,3 +42,5 @@ Compare untreated, mean-centered, and partially whitened readouts for three matc
 ## 交接
 
 物理 GPU 4，PID 1981336，已验证退出及完整 JSON。三组比较均使用已登记的冻结权重和源数据角色。[正式训练](../20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/report.md)
+
+独立预测入口已支持导出绑定到指定检查点的源 L 校正统计。N607 在真实第 1 轮 PAMF-SUP 上用 256 条训练波形验证了导出与读回，两个分支分别生成 160 维均值、160×160 基底和 160 维尺度。合成数据检查覆盖原始与校正预测同时固化、独立真值评分以及不同检查点的绑定拒绝。正式 T 未读取。
