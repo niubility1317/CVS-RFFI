@@ -1,0 +1,160 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261120-diagnostic-satiq-scalr-support-fusion-e10-s2026111907-r01",
+  "group_id": "phase1-satiq-ccs2023-fully-supervised",
+  "display_name": "SatIQ 融合 256 第 10 轮的 SCALR 注册包留出融合",
+  "description": "Measure whether SCALR-style local ridge adds value to the ordinary prototype when chosen on held-out support packets.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF-SUP",
+    "prototype",
+    "SCALR",
+    "source-V"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261120-diagnostic-satiq-scalr-score-calibration-e5-s2026111907-r01",
+    "20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requested SCALR ideas in the prototype work. This frozen source-only readout uses no held-out test access.",
+  "code": {
+    "commit": "5b22e5cb00816398afd7945aa1652d9910469fed",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-scalr-support-fusion-e10-s2026111907-r01",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python N607 FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-scalr-support-fusion-e10-s2026111907-r01"
+  },
+  "data": {
+    "dataset": "Oxford SatIQ Zenodo 8220494, first 1010464 chronological packets",
+    "version": "8220494",
+    "representation": "Only 8000-point common-word prefix, resampled to the original 256-point native view before any branch encoding. Existing 11000-point cache unchanged.",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/{L,V}_index.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "source_receivers": [
+      "Oxford single receiver"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2023-03-22 through part of 2023-04-14 UTC"
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 8192,
+      "V": 50000,
+      "U_s": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "satiq_oxford_ccs2023_supervised_reindexed_v1_2026111905",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/V_index.npz",
+    "support_query_ref": "Fixed source V K16 reference/query manifests generated using existing readout rules and seed 2026111907.",
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "source_V_scoring_only",
+    "external_method_exception": null,
+    "claim_scope": "Source V diagnostic only. Weights and scale from disjoint support folds. All candidates scored, V query used for metrics only, independent T untouched."
+  },
+  "checkpoint": {
+    "initialization": "frozen checkpoints, readout only",
+    "sources": [
+      {
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01/PAMF_SUP/s0282250.pt",
+        "run_id": "20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01",
+        "training_origin": "scratch on source L",
+        "inherited_checkpoints": []
+      }
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "provenance_verdict": "MATCHED_SOURCE_ONLY_E5",
+    "selection_rule": "Use the exact FUSED256 E10 checkpoint at 282250 updates trained from scratch on source L."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Single frozen SCALR K16 support fusion readout",
+    "gpu_policy": "Physical GPU4, >= 4096 MiB free and <= 2 incumbents.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-scalr-support-fusion-e10-s2026111907-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-scalr-support-fusion-e10-s2026111907-r01",
+    "local_artifact_root": "E:/type10-7/local_data/satiq_oxford_ccs2023_supervised_20261119_r01",
+    "launch_command": "CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=4 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_scalr_readout /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-scalr-support-fusion-e10-s2026111907-r01/source_scores.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01/PAMF_SUP/s0282250.pt --seed 2026111907 --device cuda --prototype-fusion",
+    "stop_rule": "One paired source artifact with the four fixed E10 panel and transform rows.",
+    "readout_pid": 2225858,
+    "physical_gpu": 4,
+    "gpu_uuid": "GPU-95d925a1-7218-ca7b-adef-164241f4f491",
+    "release_sha256": "fe2839f74585da2e886a55c1145bb85686624dd7e395b359cb4d09833c50e275",
+    "launch_readback": "Verified PID, command, CWD, GPU UUID, checkpoint and source-only paths."
+  },
+  "expected_artifacts": [
+    "source_scores.json",
+    "scalr.log",
+    "scalr.pid",
+    "scalr.exit"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "K16 Top-1",
+      "same and different satellite AUC and EER",
+      "readout fit seconds",
+      "support conditional LOO",
+      "within-claimed-beam macro AUC",
+      "support fold candidate AUC",
+      "selected mixing weight",
+      "fold fitting seconds"
+    ],
+    "dimensions": [
+      "matched V queries",
+      "raw and L-only partial-whiten readouts"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "experiments/pamf_satiq66/paper_scalr_readout.py"
+  },
+  "rows": [
+    {
+      "row_id": "K16_READOUT",
+      "method": "Cosine prototype, isolated local ridge, support-selected prototype/local-ridge fusion",
+      "purpose": "Test support-conditioned reliability of the SCALR local score with a prototype fallback.",
+      "config_ref": "experiments/pamf_satiq66/paper_scalr_readout.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-scalr-support-fusion-e10-s2026111907-r01/experiments/pamf_satiq66/paper_scalr_readout.py",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111906,
+        "augmentation": null,
+        "support": 2026111907,
+        "evaluation": 2026111907
+      },
+      "seed_notes": "Use common V support and queries. Whitening when enabled fits the same 8192 source L waveforms for each frozen encoder.",
+      "k": 16,
+      "scenario": "Oxford source paper and time-separated registration",
+      "optimizer": "Closed form fitting, no neural updates",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Two balanced K8 support folds; global mixing weights 0, 0.25, 0.5; refit with all K16 support; no neural updates.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-scalr-support-fusion-e10-s2026111907-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-scalr-support-fusion-e10-s2026111907-r01/scalr.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_scalr_readout /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-scalr-support-fusion-e10-s2026111907-r01/source_scores.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01/PAMF_SUP/s0282250.pt --seed 2026111907 --device cuda --prototype-fusion",
+      "expected_artifacts": [
+        "source_scores.json",
+        "scalr.log",
+        "scalr.pid",
+        "scalr.exit"
+      ],
+      "pid": 2225858,
+      "gpu": 4
+    }
+  ],
+  "notes": [
+    "Both readouts use physically disjoint reference and query sets. Joint scaling fits only predictions on held-out source reference packets and is shared over all classes. Fold validation uses the nearest competing prototype from the training fold. Select maximum support AUC with ties choosing the smaller weight. Zero weight reproduces cosine prototype strictly.",
+    "Final query scoring uses all registered classes and complete K16 support. The ordinary prototype, local ridge and prototype fusion see the same query samples. The cross-day panel separates enrollment from query by time. Fold assignment within enrollment is by packet index, not day.",
+    "No query participates in fitting. This is a supervised frozen-embedding source diagnostic on V, with no independent T access."
+  ],
+  "registered_at": "2026-11-19T18:14:35+00:00"
+}
