@@ -10,7 +10,7 @@ from .wide_model import FEATURES
 
 
 NATIVE_PATHS = ("time", "frequency", "nonlinear", "sequence", "reference")
-EXTRA_WIDTH = {"native160": 0, "fused256": 96, "fused320": 160, "branches320": 160}
+EXTRA_WIDTH = {"native160": 0, "fused256": 96, "fused320": 160, "branches320": 160, "prefuse320": 160}
 
 
 class PaperNativePAMF(nn.Module):
@@ -29,8 +29,14 @@ class PaperNativePAMF(nn.Module):
                 for _ in NATIVE_PATHS
             )
         elif EXTRA_WIDTH[expansion]:
+            # Reuse the existing fusion input to test the 160-coordinate bottleneck.
+            input_width = FEATURES
+            hidden_width = 256
+            if expansion == "prefuse320":
+                input_width += self.native.core.id_backbone.fuse[0].in_features
+                hidden_width = 128
             self.expander = nn.Sequential(
-                nn.Linear(FEATURES, 256), nn.SiLU(), nn.Linear(256, EXTRA_WIDTH[expansion]),
+                nn.Linear(input_width, hidden_width), nn.SiLU(), nn.Linear(hidden_width, EXTRA_WIDTH[expansion]),
                 nn.LayerNorm(EXTRA_WIDTH[expansion]),
             )
         self.head = nn.Linear(self.feature_dimensions, classes, bias=False)
@@ -46,16 +52,28 @@ class PaperNativePAMF(nn.Module):
         spectrum = torch.fft.rfft(common, dim=-1)[..., :129]
         coarse = torch.fft.irfft(spectrum * self.cutoff, n=256, dim=-1) * (256 / self.waveform_samples)
         branches = None
-        if retain_branches or self.expansion == "branches320":
-            _, native, branches = capture(self.native, coarse)
-        else:
-            native = self.native.features(coarse)
+        fusion_inputs = []
+        handle = None
+        if self.expansion == "prefuse320":
+            handle = self.native.core.id_backbone.fuse.register_forward_pre_hook(
+                lambda _module, args: fusion_inputs.append(args[0]))
+        try:
+            if retain_branches or self.expansion == "branches320":
+                _, native, branches = capture(self.native, coarse)
+            else:
+                native = self.native.features(coarse)
+        finally:
+            if handle is not None:
+                handle.remove()
         native = F.normalize(native, dim=1)
         if self.expander is None:
             return native, branches
         if self.expansion == "branches320":
             parts = [layer(F.normalize(x, dim=1)) for layer, x in zip(self.expander, branches, strict=True)]
             extra = torch.cat(parts, dim=1)
+        elif self.expansion == "prefuse320":
+            (fuse_input,) = fusion_inputs
+            extra = self.expander(torch.cat((native, F.normalize(fuse_input, dim=1)), dim=1))
         else:
             extra = self.expander(native)
         feature = F.normalize(torch.cat((native, .5 * F.normalize(extra, dim=1)), dim=1), dim=1)
