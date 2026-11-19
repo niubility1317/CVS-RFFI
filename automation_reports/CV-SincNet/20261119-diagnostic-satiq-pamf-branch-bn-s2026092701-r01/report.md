@@ -21,8 +21,7 @@ Matched 5,000-update source diagnostic of separate affine-free branch normalizat
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
-源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+5,000 步训练和源验证均已完成。归一化使向量分开，同星识别仍接近随机。独立测试维持留出。
 
 ## 交接
 
