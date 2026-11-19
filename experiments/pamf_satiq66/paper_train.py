@@ -15,12 +15,12 @@ from torch.nn import functional as F
 from .data import read_json, write_json
 from .paper_baseline import PaperSatIQ, angular_triplet, paper_loss
 from .paper_eval import embeddings, metrics, normalize_packet, panel
-from .paper_pamf import PaperPAMF
+from .paper_pamf import PaperPAMF, supervised_loss
 from .readout import gpu_ready
 from .train import cuda_device, device_array
 
 
-ARMS = ("SATIQ", "PAMF_CE", "PAMF_METRIC")
+ARMS = ("SATIQ", "PAMF_SUP", "PAMF_METRIC")
 
 
 class SourceBatches:
@@ -28,13 +28,30 @@ class SourceBatches:
         ordered = np.argsort(labels, kind="stable")
         boundaries = np.r_[0, np.cumsum(class_counts)]
         self.groups = [ordered[boundaries[k]:boundaries[k + 1]] for k, n in enumerate(class_counts) if n >= 4]
-        self.weights = np.array([len(g) // 4 for g in self.groups], dtype=np.float64)
-        self.weights /= self.weights.sum()
+        self.counts = np.array([len(g) // 4 for g in self.groups])
+        self.steps_per_epoch = int(self.counts.sum() // 8)
         self.rng = np.random.default_rng(seed)
 
-    def next(self):
-        chosen = self.rng.choice(len(self.groups), size=8, replace=False, p=self.weights)
-        return self.rng.permutation(np.concatenate([self.rng.choice(self.groups[k], 4, replace=False) for k in chosen]))
+    def epoch(self):
+        groups = np.concatenate([self.rng.permutation(g)[:4 * n].reshape(-1, 4)
+                                 for g, n in zip(self.groups, self.counts, strict=True)])
+        labels = np.repeat(np.arange(len(self.groups)), self.counts)
+        order = self.rng.permutation(len(groups))
+        usable = self.steps_per_epoch * 8
+        for a in range(0, usable, 8):
+            for b in range(a + 1, a + 8):
+                label = labels[order[b]]
+                if label not in labels[order[a:b]]:
+                    continue
+                taken = set(labels[order[a:a + 8]])
+                swap = next((k for k in range(a + 8, len(order)) if labels[order[k]] not in taken), None)
+                if swap is None:
+                    swap = next((k for k in range(a) if labels[order[k]] not in taken
+                                 and label not in labels[order[k - k % 8:k - k % 8 + 8]]), None)
+                if swap is None:
+                    raise ValueError("Unable to form a complete batch of distinct beam identities")
+                order[b], order[swap] = order[swap], order[b]
+        return groups[order[:usable]].reshape(self.steps_per_epoch, 32)
 
 
 def source_inputs(source, cache):
@@ -88,10 +105,10 @@ def validate(model, arm, raw, labels, val_panel, device):
     return result
 
 
-def save(path, model, optimizer, sampler, step, validation):
+def save(path, model, optimizer, sampler, step, epoch, validation):
     temporary = path.with_suffix(".partial")
     with temporary.open("xb") as writer:
-        torch.save(dict(model=model.state_dict(), optimizer=optimizer.state_dict(), updates=step,
+        torch.save(dict(model=model.state_dict(), optimizer=optimizer.state_dict(), updates=step, epoch=epoch,
                         sampling_rng=sampler.rng.bit_generator.state, validation=validation), writer)
     temporary.rename(path)
 
@@ -104,20 +121,25 @@ def train(config, source, cache, out, arm, smoke=False):
     optimizer = torch.optim.Adam((p for p in model.parameters() if p.requires_grad), lr=lr, eps=1e-7)
     raw, labels, original = roles["L"]
     sampler = SourceBatches(original, counts, config["sampling_seed"])
-    milestones = () if smoke else config["milestones"]
-    total = 2 if smoke else milestones[-1]
+    epochs = 1 if smoke else config["epochs"]
+    total = 2 if smoke else epochs * sampler.steps_per_epoch
     val_panel = None if smoke else panel(roles["V"][1], classes, config["evaluation_seed"])
+    satellites = device_array(classes[:, 0].astype(np.int64), device)
     out.mkdir(exist_ok=False)
     write_json(out / "resolved_config.json", dict(config, arm=arm, trained_classes=len(classes), lr=lr,
                                                  source=str(source), cache=str(cache), supervised=True,
-                                                 source_roles=["L", "V"], test_access=False, cost_unit="optimizer_updates"))
+                                                 source_roles=["L", "V"], test_access=False,
+                                                 steps_per_epoch=sampler.steps_per_epoch, total_updates=total))
     start = time.monotonic()
     window = {}
     n = 0
+    step = 0
+    batches = ((epoch, i, index) for epoch in range(1, epochs + 1)
+               for i, index in enumerate(sampler.epoch(), 1))
     with (out / "steps.jsonl").open("x", encoding="utf-8") as journal:
-        for step in range(1, total + 1):
+        for epoch, epoch_step, idx in batches:
+            step += 1
             model.train()
-            idx = sampler.next()
             x = normalize_packet(device_array(raw[idx], device))
             y = device_array(labels[idx].astype(np.int64), device)
             optimizer.zero_grad(set_to_none=True)
@@ -125,13 +147,11 @@ def train(config, source, cache, out, arm, smoke=False):
                 feature, reconstructed = model(x)
                 loss, stats = paper_loss(feature, reconstructed, x, y)
             else:
-                feature, logits = model(x)
-                ce = F.cross_entropy(logits, y)
-                stats = {"ce": ce.detach()}
-                loss = ce
+                feature, logits, common, full = model(x, view_logits=True)
+                loss, stats = supervised_loss(logits, common, full, y, satellites, config["pamf_sup"])
                 if arm == "PAMF_METRIC":
                     triplet = angular_triplet(feature, y, margin=1.0)
-                    loss = ce * config["pamf_metric_ce_weight"] + triplet
+                    loss = loss + config["pamf_triplet_weight"] * triplet
                     stats["triplet_loss"] = triplet.detach()
             if not torch.isfinite(loss):
                 raise RuntimeError(f"Nonfinite {arm} training objective")
@@ -140,18 +160,24 @@ def train(config, source, cache, out, arm, smoke=False):
             n += 1
             for key, value in {**stats, "loss": loss.detach()}.items():
                 window[key] = window.get(key, 0) + value
-            if step in milestones or step % config["log_every"] == 0 or smoke:
-                info = {"updates": step, "seconds": time.monotonic() - start,
+            epoch_end = epoch_step == sampler.steps_per_epoch
+            validate_now = not smoke and (step in config["early_validation_updates"]
+                                          or (epoch_end and epoch in config["validation_epochs"]))
+            if validate_now or epoch_end or step % config["log_every"] == 0 or smoke:
+                info = {"updates": step, "epoch": epoch, "epoch_step": epoch_step,
+                        "seconds": time.monotonic() - start,
                         **{k: float(v) / n for k, v in window.items()}}
-                if step in milestones:
+                if validate_now:
                     info["source_validation"] = validate(model, arm, *roles["V"][:2], val_panel, device)
-                    save(out / f"s{step:07d}.pt", model, optimizer, sampler, step, info["source_validation"])
+                    save(out / f"s{step:07d}.pt", model, optimizer, sampler, step, epoch, info["source_validation"])
                 message = json.dumps(info, allow_nan=False)
                 print(message, flush=True)
                 journal.write(message + "\n")
                 journal.flush()
                 window, n = {}, 0
-    result = {"arm": arm, "updates": total, "mode": "smoke" if smoke else "supervised"}
+            if step >= total:
+                break
+    result = {"arm": arm, "updates": step, "mode": "smoke" if smoke else "supervised", "epochs": epochs}
     if smoke:
         v_raw, v_labels, _ = roles["V"]
         eligible = np.flatnonzero(np.bincount(v_labels[v_labels >= 0]) > 16)[:4]

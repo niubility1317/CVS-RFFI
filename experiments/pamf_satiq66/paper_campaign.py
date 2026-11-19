@@ -2,6 +2,7 @@
 
 import argparse
 from pathlib import Path
+import time
 
 from .paper_cache import build_cache
 from .paper_train import launch
@@ -12,13 +13,22 @@ if __name__ == "__main__":
     for name in ("config", "data", "out"):
         parser.add_argument(name, type=Path)
     parser.add_argument("--gpus", nargs="+", type=int, required=True)
+    parser.add_argument("--reuse-cache", action="store_true")
     args = parser.parse_args()
     data, out = args.data.resolve(), args.out.resolve()
     if out.exists():
         raise FileExistsError(out)
     source = data / "manifest" / "source"
     cache = data / "cache_source"
-    build_cache("source", data / "archives", source, cache, workers=4,
-                heldout_manifest=data / "manifest" / "heldout_iq", heldout_out=data / "cache_test",
-                wait_archive_seconds=5400)
+    if args.reuse_cache:
+        deadline = time.monotonic() + 5400
+        print(f"Waiting for verified source cache: {cache}", flush=True)
+        while not (cache.is_dir() and (data / "cache_test").is_dir()):
+            if time.monotonic() >= deadline:
+                raise FileNotFoundError(f"Verified cache did not appear: {cache}")
+            time.sleep(15)
+    else:
+        build_cache("source", data / "archives", source, cache, workers=4,
+                    heldout_manifest=data / "manifest" / "heldout_iq", heldout_out=data / "cache_test",
+                    wait_archive_seconds=5400)
     launch(args.config.resolve(), source, cache, out, args.gpus)

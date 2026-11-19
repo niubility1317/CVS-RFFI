@@ -20,7 +20,7 @@ class PaperPAMF(nn.Module):
         cutoff = torch.cos(torch.pi * ((bins - 60) / 20).clamp(0, 1)) * .5 + .5
         self.register_buffer("cutoff", cutoff, persistent=False)
 
-    def embed(self, iq):
+    def encode_paths(self, iq):
         # Keep both paths comparable in norm. The older residual sum became
         # dominated by the original-rate path at later checkpoints.
         centered = iq - iq.mean(dim=(1, 2), keepdim=True)
@@ -31,9 +31,33 @@ class PaperPAMF(nn.Module):
         coarse = torch.fft.irfft(spectrum * self.cutoff, n=256, dim=-1) * (256 / 8000)
         native = F.normalize(self.native.features(coarse), dim=1)
         feature = F.normalize(self.original_rate(raw), dim=1)
-        return F.normalize(torch.cat((native, feature), dim=1), dim=1)
+        return native, feature
 
-    def forward(self, iq):
-        embedding = self.embed(iq)
+    def embed(self, iq):
+        return F.normalize(torch.cat(self.encode_paths(iq), dim=1), dim=1)
+
+    def forward(self, iq, view_logits=False):
+        common, full = self.encode_paths(iq)
+        embedding = F.normalize(torch.cat((common, full), dim=1), dim=1)
         logits = 30.0 * F.linear(embedding, F.normalize(self.head.weight, dim=1))
+        if view_logits:
+            common_weight, full_weight = self.head.weight.chunk(2, dim=1)
+            return (embedding, logits,
+                    30.0 * F.linear(common, F.normalize(common_weight, dim=1)),
+                    30.0 * F.linear(full, F.normalize(full_weight, dim=1)))
         return embedding, logits
+
+
+def supervised_loss(logits, common, full, target, satellites, weights):
+    ce = F.cross_entropy(logits, target)
+    same_satellite = satellites[None, :] == satellites[target, None]
+    within = F.cross_entropy(logits.masked_fill(~same_satellite, -torch.inf), target)
+    common_ce = F.cross_entropy(common, target)
+    full_ce = F.cross_entropy(full, target)
+    fused_p = logits.detach().softmax(1)
+    agreement = .5 * (F.kl_div(common.log_softmax(1), fused_p, reduction="batchmean")
+                      + F.kl_div(full.log_softmax(1), fused_p, reduction="batchmean"))
+    loss = (ce + weights["same_satellite_ce"] * within
+            + weights["view_ce"] * .5 * (common_ce + full_ce) + weights["view_kl"] * agreement)
+    return loss, dict(ce=ce.detach(), within_satellite_ce=within.detach(), common_ce=common_ce.detach(),
+                      full_ce=full_ce.detach(), view_kl=agreement.detach())

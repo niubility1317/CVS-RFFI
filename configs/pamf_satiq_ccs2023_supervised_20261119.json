@@ -2,10 +2,18 @@
   "model_seed": 2026092701,
   "sampling_seed": 2026111906,
   "evaluation_seed": 2026111907,
-  "milestones": [5000, 20000],
+  "epochs": 100,
+  "early_validation_updates": [5000, 20000],
+  "validation_epochs": [1, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+  "augmentation": "none",
   "log_every": 100,
   "pamf_lr": 0.0003,
-  "pamf_metric_ce_weight": 0.5,
+  "pamf_triplet_weight": 1.0,
+  "pamf_sup": {
+    "same_satellite_ce": 0.2,
+    "view_ce": 0.15,
+    "view_kl": 0.05
+  },
   "runtime": {
     "base_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release",
     "frozen_sources": {
