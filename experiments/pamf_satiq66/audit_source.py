@@ -12,7 +12,7 @@ from experiments.pamf_satiq66.wide_model import build_wide_model
 from experiments.pamf_satiq66.wide_run import batch, describe, read_supervised
 
 
-@torch.inference_mode()
+@torch.no_grad()
 def score(model, role, device, short, satellites):
     pieces = []
     for first in range(0, len(role[0]), 256):
