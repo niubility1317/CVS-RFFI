@@ -8,7 +8,7 @@ import torch
 from torch.nn import functional as F
 
 from .data import read_json, write_json
-from .paper_eval import metrics, normalize_packet
+from .paper_eval import metrics, model_input
 from .paper_signal_readout import panel_rows, source_panels
 from .paper_train import make_model, source_inputs
 from .train import device_array
@@ -20,7 +20,7 @@ def encode(model, arm, raw, index, device):
     blocks = []
     samples = getattr(model, "waveform_samples", raw.shape[-1])
     for start in range(0, len(index), 128):
-        iq = normalize_packet(device_array(raw[index[start:start + 128], :, :samples], device))
+        iq = model_input(model, device_array(raw[index[start:start + 128], :, :samples], device))
         vectors = (model.embed(iq),) if arm == "SATIQ" else model.encode_paths(iq)
         blocks.append(tuple(value.cpu() for value in vectors))
     return tuple(torch.cat(parts) for parts in zip(*blocks, strict=True))

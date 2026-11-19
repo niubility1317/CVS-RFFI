@@ -11,7 +11,7 @@ CONVOLUTION = ((64, 2), (64, 4), (32, 8), (32, 16), (32, 32), (32, 32))
 
 
 class PaperSatIQ(nn.Module):
-    """Accept per-packet min-max-scaled IQ in [batch, 2, 11000] order."""
+    """Accept normalized IQ in [batch, 2, 11000] order."""
 
     def __init__(self):
         super().__init__()

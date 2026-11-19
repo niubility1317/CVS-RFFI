@@ -8,10 +8,15 @@ from torch.nn import functional as F
 from .train import device_array
 
 
-def normalize_packet(iq):
+def normalize_packet(iq, signed=False):
     low = iq.amin(dim=(1, 2), keepdim=True)
     scale = (iq.amax(dim=(1, 2), keepdim=True) - low).clamp_min(1e-8)
-    return (iq - low) / scale
+    bounded = (iq - low) / scale
+    return 2 * bounded - 1 if signed else bounded
+
+
+def model_input(model, iq):
+    return normalize_packet(iq, signed=getattr(model, "signed_input", False))
 
 
 @torch.no_grad()
@@ -20,7 +25,7 @@ def embeddings(model, raw, device, block=128):
     features = []
     samples = getattr(model, "waveform_samples", raw.shape[-1])
     for start in range(0, len(raw), block):
-        batch = normalize_packet(device_array(raw[start:start + block, :, :samples], device))
+        batch = model_input(model, device_array(raw[start:start + block, :, :samples], device))
         features.append(np.from_dlpack(model.embed(batch).cpu()))
     return np.concatenate(features)
 

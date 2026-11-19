@@ -14,7 +14,7 @@ from torch.nn import functional as F
 
 from .data import read_json, write_json
 from .paper_baseline import PaperSatIQ, angular_triplet, paper_loss
-from .paper_eval import embeddings, metrics, normalize_packet, panel
+from .paper_eval import embeddings, metrics, model_input, panel
 from .paper_pamf import PaperPAMF, branch_prototype_loss, reconstruction_target, supervised_loss
 from .paper_native_pamf import EXTRA_WIDTH, NATIVE_PATHS, PaperNativePAMF, native_supervised_loss
 from .wide_model import FEATURES
@@ -121,15 +121,19 @@ def make_model(config, arm, classes):
     if "native_expansion" in config:
         if arm != "PAMF_SUP":
             raise ValueError("The native expansion experiment requires the PAMF-SUP arm")
-        return PaperNativePAMF(config["runtime"], config["model_seed"], len(classes), config["native_expansion"],
-                               satiq_sinc_init=config.get("satiq_sinc_init", False),
-                               center_fusion=config.get("center_fusion", False))
-    if arm == "SATIQ":
-        return PaperSatIQ()
-    return PaperPAMF(config["runtime"], config["model_seed"], len(classes), config["raw_time_bins"],
-                     feature_batch_norm=config.get("pamf_feature_batch_norm", False),
-                     full_reconstruction=config.get("full_reconstruction_weight", 0) > 0,
-                     phase_relative_raw=config.get("phase_relative_raw", False))
+        model = PaperNativePAMF(config["runtime"], config["model_seed"], len(classes), config["native_expansion"],
+                                satiq_sinc_init=config.get("satiq_sinc_init", False),
+                                center_fusion=config.get("center_fusion", False),
+                                waveform_samples=config.get("native_waveform_samples", 8000))
+    elif arm == "SATIQ":
+        model = PaperSatIQ()
+    else:
+        model = PaperPAMF(config["runtime"], config["model_seed"], len(classes), config["raw_time_bins"],
+                          feature_batch_norm=config.get("pamf_feature_batch_norm", False),
+                          full_reconstruction=config.get("full_reconstruction_weight", 0) > 0,
+                          phase_relative_raw=config.get("phase_relative_raw", False))
+    model.signed_input = config.get("signed_input", False)
+    return model
 
 
 @torch.no_grad()
@@ -284,7 +288,7 @@ def train(config, source, cache, out, arm, smoke=False, resume=None):
         for epoch, epoch_step, idx in batches:
             step += 1
             model.train()
-            x = normalize_packet(device_array(raw[idx, :, :input_samples], device))
+            x = model_input(model, device_array(raw[idx, :, :input_samples], device))
             y = device_array(labels[idx].astype(np.int64), device)
             optimizer.zero_grad(set_to_none=True)
             if arm == "SATIQ":

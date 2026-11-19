@@ -1,4 +1,4 @@
-"""Diagnose PAMF-SUP's classifier with training-only beam prototypes."""
+"""Compare frozen single-packet classifiers using training-only beam prototypes."""
 
 import argparse
 import math
@@ -145,10 +145,11 @@ def compare(source, cache, checkpoints, seed, per_class, fit_count, device, fusi
     results = []
     for checkpoint in checkpoints:
         model, config, updates = load_source_model(source, checkpoint, classes, device)
-        if config["arm"] != "PAMF_SUP" or Path(config["cache"]).resolve() != cache.resolve():
-            raise ValueError(f"Unexpected PAMF-SUP checkpoint source for {checkpoint}")
-        l = encode(model, "PAMF_SUP", train_iq, fit_rows, device)
-        v = encode(model, "PAMF_SUP", query_iq, queries, device)
+        arm = config["arm"]
+        if arm not in ("PAMF_SUP", "SATIQ") or Path(config["cache"]).resolve() != cache.resolve():
+            raise ValueError(f"Unexpected supervised checkpoint source for {checkpoint}")
+        l = encode(model, arm, train_iq, fit_rows, device)
+        v = encode(model, arm, query_iq, queries, device)
         if len(l) == 1:
             if fusion_fit_count:
                 raise ValueError("Fusion weight fitting requires two waveform paths")
@@ -158,8 +159,10 @@ def compare(source, cache, checkpoints, seed, per_class, fit_count, device, fusi
             views = (("native_160", slice(0, width)), ("full_rate_160", slice(width, None)),
                      ("fused_320", slice(None)))
         fused = F.normalize(torch.cat(v, dim=1), dim=1)
-        scores = {"native_head": score_head(fused, F.normalize(model.head.weight, dim=1), target,
-                                            satellites, wrong, device)}
+        scores = {}
+        if arm == "PAMF_SUP":
+            scores["native_head"] = score_head(fused, F.normalize(model.head.weight, dim=1), target,
+                                               satellites, wrong, device)
         stats = [fit_calibration(x[fit_indices]) for x in l]
         enrolled_paths = [x[enrollment_indices] for x in l]
         calibrated_references = []

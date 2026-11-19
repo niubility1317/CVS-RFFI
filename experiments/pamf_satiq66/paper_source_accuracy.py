@@ -8,7 +8,7 @@ import torch
 from torch.nn import functional as F
 
 from .data import write_json
-from .paper_eval import normalize_packet
+from .paper_eval import model_input
 from .paper_readout import load_source_model
 from .paper_train import source_inputs
 from .train import device_array
@@ -29,7 +29,7 @@ def classifier_accuracy(model, raw, labels, device, block=256, head_diagnostics=
         score_sum = torch.zeros(classes, dtype=torch.float64, device=device)
     for start in range(0, len(labels), block):
         end = start + block
-        iq = normalize_packet(device_array(raw[start:end, :, :samples], device))
+        iq = model_input(model, device_array(raw[start:end, :, :samples], device))
         target = device_array(labels[start:end].astype(np.int64), device)
         scores = 30 * F.linear(model.embed(iq), weight)
         if logit_offset is not None:

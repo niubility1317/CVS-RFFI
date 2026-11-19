@@ -20,8 +20,12 @@ def native_frequency_taper(bins):
 class PaperNativePAMF(nn.Module):
     waveform_samples = 8000
 
-    def __init__(self, runtime, seed, classes, expansion, satiq_sinc_init=False, center_fusion=False):
+    def __init__(self, runtime, seed, classes, expansion, satiq_sinc_init=False, center_fusion=False,
+                 waveform_samples=8000):
         super().__init__()
+        if waveform_samples not in (8000, 11000):
+            raise ValueError("Native PAMF expects the common word or full SatIQ header")
+        self.waveform_samples = waveform_samples
         self.expansion = expansion
         self.feature_dimensions = FEATURES + EXTRA_WIDTH[expansion]
         self.native = build_model(runtime, seed, 1)
@@ -53,7 +57,8 @@ class PaperNativePAMF(nn.Module):
         self.head = nn.Linear(self.feature_dimensions, classes, bias=False)
         nn.init.xavier_uniform_(self.head.weight)
         self.register_buffer("fusion_center", torch.zeros(self.feature_dimensions) if center_fusion else None)
-        cutoff = native_frequency_taper(torch.arange(129, dtype=torch.float32))
+        bins = torch.arange(129, dtype=torch.float32) * (8000 / self.waveform_samples)
+        cutoff = native_frequency_taper(bins)
         self.register_buffer("cutoff", cutoff, persistent=False)
 
     def _center_fusion(self, feature):
@@ -65,7 +70,7 @@ class PaperNativePAMF(nn.Module):
 
     def _encode(self, iq, retain_branches):
         if iq.ndim != 3 or iq.shape[1] != 2 or iq.shape[-1] < self.waveform_samples:
-            raise ValueError("Native PAMF requires two IQ channels and the complete common word")
+            raise ValueError("Native PAMF requires both IQ channels of its configured header window")
         common = packet_rms(iq[:, :, :self.waveform_samples])
         spectrum = torch.fft.rfft(common, dim=-1)[..., :129]
         coarse = torch.fft.irfft(spectrum * self.cutoff, n=256, dim=-1) * (256 / self.waveform_samples)
