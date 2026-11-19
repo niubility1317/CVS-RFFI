@@ -90,7 +90,10 @@
     "launch_command": "cd /home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-native160-head-e5-e10-s2026111907-r01 && test -s /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused320-extproto-sup100-s2026092701-r01/PAMF_SUP/s0141125.pt && mkdir /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-proto320-head-e5-e10-s2026111907-r01 && (set -C; nohup bash -c \"set -C; printf 'waiting_for_proto320_E10\\n'; for ((attempt=0;attempt<240;attempt++)); do if test -s /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused320-extproto-sup100-s2026092701-r01/PAMF_SUP/s0282250.pt && /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -c 'from experiments.pamf_satiq66.wide_direct import gpu_inventory; f, p = gpu_inventory()[2]; print(\\\"GPU2 preflight\\\",f,p,flush=True); assert f >= 4096 and p <= 2'; then export CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=2; /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_source_accuracy /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-proto320-head-e5-e10-s2026111907-r01/source_scores.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused320-extproto-sup100-s2026092701-r01/PAMF_SUP/s0141125.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused320-extproto-sup100-s2026092701-r01/PAMF_SUP/s0282250.pt --head-diagnostics > /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-proto320-head-e5-e10-s2026111907-r01/head.log 2>&1 & worker=\\$!; printf '%s\\n' \\$worker > /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-proto320-head-e5-e10-s2026111907-r01/head.pid; wait \\$worker; rc=\\$?; printf '%s\\n' \\$rc > /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-proto320-head-e5-e10-s2026111907-r01/head.exit; exit \\$rc; fi; test -s /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused320-extproto-sup100-s2026092701-r01/PAMF_SUP/s0282250.pt || test -r /proc/2054822/cmdline || { printf 21 > /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-proto320-head-e5-e10-s2026111907-r01/head.exit; exit 21; }; sleep 15; done; printf 'checkpoint_or_gpu_timeout\\n'; printf 22 > /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-proto320-head-e5-e10-s2026111907-r01/head.exit; exit 22\" > /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-proto320-head-e5-e10-s2026111907-r01/controller.log 2>&1 < /dev/null & printf '%s\\n' \"$!\" > /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-proto320-head-e5-e10-s2026111907-r01/controller.pid)",
     "stop_rule": "Wait for E10 from current parent, then score the two exact frozen checkpoints.",
     "controller_pid": 2187677,
-    "launch_readback": "Verified live controller and exact training dependency PID 2054822."
+    "launch_readback": "Verified live controller and exact training dependency PID 2054822.",
+    "readout_pid": 2190756,
+    "physical_gpu": 2,
+    "worker_readback": "Verified actual cwd, argv and compute PID on physical GPU."
   },
   "expected_artifacts": [
     "source_scores.json",
@@ -147,7 +150,9 @@
         "head.log",
         "head.pid",
         "head.exit"
-      ]
+      ],
+      "pid": 2190756,
+      "gpu": 2
     }
   ],
   "notes": [
