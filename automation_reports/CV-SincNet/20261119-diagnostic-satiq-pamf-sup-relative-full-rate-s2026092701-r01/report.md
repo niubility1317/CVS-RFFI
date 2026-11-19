@@ -3,7 +3,7 @@
 - run_id：`20261119-diagnostic-satiq-pamf-sup-relative-full-rate-s2026092701-r01`
 - group_id：`phase1-satiq-ccs2023-fully-supervised`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -33,6 +33,15 @@ On branch-prototype PAMF-SUP, use packet-gain-invariant ordered five-channel rel
 | 原型版的相对 I/Q 支路 | 0.5260 | 0.5303 | 8.0442 |
 
 相对 I/Q 版本在整套验证面板上略有改善。单独检查新增支路时，4,096 个验证包的平均余弦仍为 0.999964，有效维度约 2.77，独立分类只输出了一个波束。这些观察表明目前无法把联合提升归因为新增 160 维已修复，模型继续训练。
+
+## 固定预算结束
+
+| 步数 | 绝对 I/Q K1／K16 | 相对 I/Q K1／K16 | 绝对／相对 I/Q 分类头 CE |
+|---|---:|---:|---:|
+| 20,000 | 0.5457／0.5546 | 0.5476／0.5575 | 7.6674／7.6704 |
+| 28,225 | 0.5517／0.5646 | 0.5500／0.5632 | 7.5440／7.5705 |
+
+计划的整轮已验证完成，早期收益没有延续到同预算终点。该结果作为以前的额外支路对照保留。[原生五分支扩维方案](../20261119-diagnostic-satiq-pamf-sup-native-widths-s2026092701-r01/report.md)
 
 ## 交接
 
