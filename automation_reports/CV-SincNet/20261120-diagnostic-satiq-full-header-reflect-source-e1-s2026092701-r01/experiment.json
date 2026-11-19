@@ -1,0 +1,149 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261120-diagnostic-satiq-full-header-reflect-source-e1-s2026092701-r01",
+  "group_id": "phase1-satiq-ccs2023-fully-supervised",
+  "display_name": "SatIQ 11,000 点 PAMF 的报头边界镜像延拓",
+  "description": "Change the boundary treatment of the native 256-point FFT at identical frequency taper and model.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF-SUP",
+    "single-packet",
+    "FFT-boundary"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261120-diagnostic-satiq-full-header-uw-time-source-e1-s2026092701-r01",
+    "20261120-phase1-satiq-ccs2023-header-matched-sup200-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Improve the user-prioritized all-beam single-packet classifier on matched SatIQ input.",
+  "code": {
+    "commit": "7d1bfad66ce478c246f4d8350fae397ddf8ad0ff",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-full-header-reflect-source-e1-s2026092701-r01",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python N607 FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-full-header-reflect-source-e1-s2026092701-r01"
+  },
+  "data": {
+    "dataset": "Oxford SatIQ Zenodo 8220494, first 1010464 chronological packets",
+    "version": "8220494",
+    "representation": "Signed 11000-point header, reflected boundary before native 256-point FFT. Same physical lowpass band edge.",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/{L,V}_index.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "source_receivers": [
+      "Oxford single receiver"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2023-03-22 through part of 2023-04-14 UTC"
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 910464,
+      "V": 50000,
+      "U_s": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "satiq_oxford_ccs2023_supervised_reindexed_v1_2026111905",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/V_index.npz",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source L and V only. No test access."
+  },
+  "checkpoint": {
+    "initialization": "From scratch, no inherited checkpoint",
+    "sources": [],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "provenance_verdict": "FROM_SCRATCH_SHARED_SOURCE_L",
+    "selection_rule": "Exact 5000, 20000 and 28225 source updates versus aligned256."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Single source smoke and train supervisor",
+    "local_artifact_root": "E:/type10-7/local_data/satiq_oxford_ccs2023_supervised_20261119_r01",
+    "stop_rule": "One paired complete physical epoch, failure only at technical issue.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-reflect-source-e1-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-reflect-source-e1-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train train /home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-full-header-reflect-source-e1-s2026092701-r01/configs/pamf_satiq_ccs2023_full_header_reflect_boundary_20261120.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-reflect-source-e1-s2026092701-r01/PAMF_SUP --arm PAMF_SUP --native-expansion fused256",
+    "gpu_policy": "N607 physical GPU4, floor 4096 MiB, fewer than two compute incumbents.",
+    "controller_pid": 2289619,
+    "training_pid": 2289827,
+    "gpu_uuid": "GPU-95d925a1-7218-ca7b-adef-164241f4f491",
+    "release_sha256": "80f03c4498f5d797dd951674d4efbed63a39905918a1b2385e13c63c2a5b78b8",
+    "launch_readback": "2026-11-20T03:42:53+08:00",
+    "smoke_pid": 2289620,
+    "smoke_exit": 0
+  },
+  "expected_artifacts": [
+    "train.log",
+    "train.exit",
+    "PAMF_SUP/complete.json",
+    "PAMF_SUP/s0028225.pt"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "single-packet 3103-class Top-1",
+      "training and validation main CE",
+      "same-satellite verification supplementary"
+    ],
+    "dimensions": [
+      "same 903200 L packets and all 49814 eligible V packets",
+      "aligned reference in both",
+      "all 3103 beams"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "experiments/pamf_satiq66/paper_train.py"
+  },
+  "rows": [
+    {
+      "row_id": "PAMF_SUP",
+      "method": "PAMF-SUP fused256, reflected record boundaries",
+      "purpose": "Direct all-beam Top-1 at matched budgets",
+      "config_ref": "configs/pamf_satiq_ccs2023_full_header_reflect_boundary_20261120.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-reflect-source-e1-s2026092701-r01/PAMF_SUP/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111906,
+        "augmentation": null,
+        "support": 2026111907,
+        "evaluation": 2026111907
+      },
+      "seed_notes": "Shared batch and evaluation seeds; full native scratch initialization.",
+      "k": null,
+      "scenario": "Oxford single receiver, real received IQ",
+      "optimizer": "Adam eps=1e-7, from scratch",
+      "lr": 0.0003,
+      "epochs": 1,
+      "fl_rounds": null,
+      "budget_ref": "Exact 28,225 updates with source scores at 5000, 20000 and complete E1.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-reflect-source-e1-s2026092701-r01/PAMF_SUP",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-reflect-source-e1-s2026092701-r01/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train train /home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-full-header-reflect-source-e1-s2026092701-r01/configs/pamf_satiq_ccs2023_full_header_reflect_boundary_20261120.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-reflect-source-e1-s2026092701-r01/PAMF_SUP --arm PAMF_SUP --native-expansion fused256",
+      "expected_artifacts": [
+        "steps.jsonl",
+        "s0028225.pt",
+        "complete.json"
+      ],
+      "gpu": 4,
+      "pid": 2289827
+    }
+  ],
+  "notes": [
+    "No augmentation. Reflection supplies padding from the same observed packet only.",
+    "Output still uses 256 time samples. Exact aligned reference and output dimensions shared.",
+    "Source L and V only, independent T remains held out."
+  ],
+  "registered_at": "2026-11-19T19:42:52+00:00"
+}
