@@ -128,7 +128,7 @@ def unlabeled_loss(model, raw_l, lmeta, u, umeta, ids, augment, rate, epoch, hyb
             voted = prototypes(bank, raw_eval[2], umeta["day"]).argmax(2) == pseudo[:, None]
             altered = capture(model, candidate)[2]
             voted_alt = prototypes(bank, altered, umeta["day"]).argmax(2) == pseudo[:, None]
-            nonzero = (candidate != u).any(dim=(1, 2))
+            nonzero = (candidate != u).flatten(1).any(1)
         else:
             confidence, pseudo = model(u).softmax(1).max(1)
     model.train()
@@ -164,7 +164,7 @@ def unlabeled_loss(model, raw_l, lmeta, u, umeta, ids, augment, rate, epoch, hyb
     return pl + .05 * (p_fused + p_branches + proto) + .025 * relation, out
 
 
-def train(root, out, config, arm, representation, pilot=False, smoke=False):
+def train(root, out, config, arm, representation, pilot=False, smoke=False, ssl_smoke=False):
     contract = check_contract(root, SOURCE_COUNTS)
     device = cuda_device()
     torch.manual_seed(config["model_seed"])
@@ -172,7 +172,7 @@ def train(root, out, config, arm, representation, pilot=False, smoke=False):
     vdata = row_data(root, "V", representation)
     if set(ldata[1]) & set(vdata[1]):
         raise ValueError("L and V overlap")
-    uses_u = arm.startswith("U") and not smoke
+    uses_u = arm.startswith("U") and (not smoke or ssl_smoke)
     if uses_u:
         udata = row_data(root, "U", representation)
         if set(udata[1]) & (set(ldata[1]) | set(vdata[1])):
@@ -202,7 +202,8 @@ def train(root, out, config, arm, representation, pilot=False, smoke=False):
         hybrid_l = True
     start = time.monotonic()
     with (out / "epochs.jsonl").open("x", encoding="utf-8") as log:
-        for epoch in range(1, epochs + 1):
+        stage_start = 21 if ssl_smoke else 1
+        for epoch in range(stage_start, stage_start + epochs):
             model.train()
             totals = {}
             for step in range(1, steps + 1):
@@ -252,7 +253,7 @@ def train(root, out, config, arm, representation, pilot=False, smoke=False):
                 optimizer.step()
                 for k, value in record.items():
                     totals[k] = totals.get(k, 0) + value
-            report = dict(epoch=epoch, updates=epoch * steps,
+            report = dict(epoch=epoch, updates=(epoch - stage_start + 1) * steps,
                           train={k: float(v) if k.endswith(("seen", "anchors", "accepted", "certified", "nonzero",
                                                            "paired", "conflict", "cap", "zero")) else float(v) / steps
                                  for k, v in totals.items()},
@@ -285,7 +286,7 @@ def prediction(root, out, query, config):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("mode", choices=("train", "pilot", "smoke", "predict"))
+    parser.add_argument("mode", choices=("train", "pilot", "smoke", "ssl-smoke", "predict"))
     parser.add_argument("config", type=Path)
     parser.add_argument("source", type=Path)
     parser.add_argument("out", type=Path)
@@ -299,4 +300,7 @@ if __name__ == "__main__":
             parser.error("predict requires --query")
         prediction(a.source, a.out, a.query, c)
     else:
-        train(a.source, a.out, c, a.arm, a.representation, a.mode == "pilot", a.mode == "smoke")
+        if a.mode == "ssl-smoke" and a.arm != "U1":
+            parser.error("ssl-smoke requires --arm U1")
+        train(a.source, a.out, c, a.arm, a.representation, a.mode == "pilot",
+              a.mode in {"smoke", "ssl-smoke"}, a.mode == "ssl-smoke")

@@ -37,3 +37,20 @@ Balanced physical IDs obtained from 10 original archives. Hidden-U public order 
 VERIFIED controller PID 1774733. Run path and CWD read back independently. Both code and source-public archive SHA256 values matched. The N607 raw and narrow real-checkpoint smokes each activated 132 same-packet, cross-day and prototype anchors and all five branch gradients. The launch controller owns GPUs 2 and 3 and advances input pilots to the supervised pair, then to the SSL pair after supervised artifact and source V checks.
 
 Both 300-update input pilots completed and were near chance. V macro F1 was 0.4946% for 25 MS/s and 0.2097% for 0.8 MS/s, so the short raw window won the fixed source-only selection rule. S0 and S1 launched on GPU 2 and 3 (PIDs 1776524 and 1776525). In S1 E1, same-packet, cross-day and prototype terms each had 13,200 anchor exposures. The Q builder exported 293,371 late Oxford records and verified disjoint full-IQ hashes. Future inputs are stored separately from scorer truth.
+
+The independent future readout process, PID 1779115, was verified in its release directory. It waits for all four fixed source endpoints, launches the four prediction jobs in pairs, then invokes the independent scorer. Candidate training commands received no Q or truth paths.
+
+## Supervised endpoint and SSL launch
+
+| Row | Updates | Source V accuracy | Source V macro F1 |
+|---|---:|---:|---:|
+| S0 | 5000 | 1.4899% | 1.4606% |
+| S1 | 5000 | 1.5606% | 1.5270% |
+
+S1 accumulated 646,800 same-record physical contrast exposures, 660,000 cross-day exposures, and 646,800 prototype exposures. The future test set has not been scored. End-of-training V accuracy remained around the 66-class uniform chance value of 1.5152%. The plan requires technical validation before SSL dispatch, with no performance stop rule. U0 and U1 were verified running at independently initialized warmup on GPU 2 and GPU 3, PID 1781675 and 1781676.
+
+At U0/U1 epoch 14, each run evaluated 25,600 hidden-U exposures and accepted zero pseudo-labels at 0.95. U1 physical routing, auxiliary U losses and branch protection start at epoch 21. The source-only tests confirmed the high-confidence and empty-mask U routes with finite gradients. Continued runs use the fixed threshold and endpoint.
+
+## Recorded technical failure
+
+U1 failed at the first E21 update because N607 PyTorch 2.1 does not implement Tensor.any with tuple dimensions. The failing tensor was the per-record nonzero perturbation mask. Exact behavior reproduced on the N607 runtime using synthetic inputs. R02 replaces U1 only from scratch and keeps the three healthy fixed endpoints for common future scoring. No target data were inspected as part of the repair.
