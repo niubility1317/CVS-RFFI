@@ -34,7 +34,7 @@ def metrics(y, pred, class_count):
     }
 
 
-def score(source_contract, query_ids, truth, out):
+def score(source_contract, query_ids, truth, out, arms=ARMS):
     contract = json.loads(source_contract.read_text(encoding="utf-8"))
     class_map = {(c["satellite_id"], c["beam_id"]): c["class_id"] for c in contract["classes"]}
     n = contract["target_physical_records"]
@@ -42,7 +42,7 @@ def score(source_contract, query_ids, truth, out):
     if len(ids) != n or len(set(ids.tolist())) != n:
         raise ValueError("Swiss public IDs are incomplete or duplicated")
     predictions = {}
-    for arm in ARMS:
+    for arm in arms:
         with np.load(out / arm / "predictions.npz", allow_pickle=False) as d:
             logits = d["logits"]
             if (not np.array_equal(d["ids"], ids) or logits.shape != (n, len(class_map))
@@ -88,5 +88,7 @@ if __name__ == "__main__":
     parser.add_argument("query_ids", type=Path)
     parser.add_argument("truth", type=Path)
     parser.add_argument("out", type=Path)
+    parser.add_argument("--arms", nargs="+", default=ARMS,
+                        choices=(*ARMS, "backbone_crop", "backbone_full", "pamf_crop", "pamf_full"))
     args = parser.parse_args()
-    score(args.source_contract, args.query_ids, args.truth, args.out)
+    score(args.source_contract, args.query_ids, args.truth, args.out, args.arms)

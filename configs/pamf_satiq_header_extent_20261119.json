@@ -1,0 +1,20 @@
+{
+  "schema": "pamf_satiq_header_extent_v1",
+  "model_seed": 2026111902,
+  "shuffle_seed": 2026111903,
+  "epochs": 20,
+  "batch_size": 32,
+  "prediction_batch_size": 64,
+  "lr": 0.0003,
+  "weight_decay": 0.0001,
+  "runtime": {
+    "base_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release",
+    "frozen_sources": {
+      "F": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_supcon50_clean_20261016_r02",
+      "AF": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RDrop_AF50_20261015_r02",
+      "BASE": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02",
+      "FOLD": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_t2_locked_tailavg_sourcefold_20261015_r01",
+      "G": "/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_stage2_inference_20261021_r01"
+    }
+  }
+}
