@@ -24,8 +24,8 @@ def wait_for_gpu(gpus):
         time.sleep(30)
 
 
-def run_phase(mode, inputs, log, visible_devices):
-    command = [sys.executable, "-u", "-m", "experiments.pamf_satiq66.paper_final_readout", mode]
+def run_phase(mode, inputs, log, visible_devices, module="paper_final_readout"):
+    command = [sys.executable, "-u", "-m", f"experiments.pamf_satiq66.{module}", mode]
     env = dict(os.environ, CUDA_DEVICE_ORDER="PCI_BUS_ID", CUDA_VISIBLE_DEVICES=visible_devices)
     with log.open("xb") as stream:
         subprocess.run([*command, *map(str, inputs)], env=env,
