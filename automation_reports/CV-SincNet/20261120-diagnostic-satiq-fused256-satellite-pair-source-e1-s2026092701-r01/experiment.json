@@ -1,0 +1,179 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261120-diagnostic-satiq-fused256-satellite-pair-source-e1-s2026092701-r01",
+  "group_id": "phase1-satiq-ccs2023-fully-supervised",
+  "display_name": "SatIQ 融合 256 同星负例单对组批首轮",
+  "description": "Exchange whole four-packet groups to add one same-satellite wrong beam without changing the physical epoch.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF-SUP",
+    "fused256",
+    "same-satellite",
+    "batching",
+    "source-V"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01",
+    "20261119-diagnostic-satiq-pamf-same-sat-batches-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Isolate a source-only PAMF prototype sampling adaptation with the existing axes, no features added.",
+  "code": {
+    "commit": "0a90dedc8ca84e9f1aa38989d7552f4dd60bb1d7",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-fused256-satellite-pair-source-e1-s2026092701-r01",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python N607 FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-fused256-satellite-pair-source-e1-s2026092701-r01"
+  },
+  "data": {
+    "dataset": "Oxford SatIQ Zenodo 8220494, first 1010464 chronological packets",
+    "version": "8220494",
+    "representation": "Only 8000-point common-word prefix, resampled to the original 256-point native view before any branch encoding. Existing 11000-point cache unchanged.",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/{L,V}_index.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "source_receivers": [
+      "Oxford single receiver"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2023-03-22 through part of 2023-04-14 UTC"
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 910464,
+      "V": 50000,
+      "U_s": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "satiq_oxford_ccs2023_supervised_reindexed_v1_2026111905",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/V_index.npz",
+    "support_query_ref": "Fixed source V panel for training readouts. T separate.",
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "source_V_scoring_only",
+    "external_method_exception": null,
+    "claim_scope": "Only registered L/V data and the exact same source selection. No independent T access."
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "provenance_verdict": "SCRATCH_ONLY",
+    "selection_rule": "Same initialization as ordinary fused256, fixed 5000, 20000 and 28225-step comparisons."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Single paired-satellite sampler source trainer",
+    "gpu_policy": "Physical GPU0; >=4096MiB free and <=2 incumbents before start.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-satellite-pair-source-e1-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-satellite-pair-source-e1-s2026092701-r01",
+    "local_artifact_root": "E:/type10-7/local_data/satiq_oxford_ccs2023_supervised_20261119_r01",
+    "launch_command": "CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train train /home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-fused256-satellite-pair-source-e1-s2026092701-r01/configs/pamf_satiq_ccs2023_fused256_satellite_pair_probe_20261120.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-satellite-pair-source-e1-s2026092701-r01/PAMF_SUP --arm PAMF_SUP",
+    "stop_rule": "One matched complete source epoch at 28225 steps.",
+    "train_pid": 2214498,
+    "physical_gpu": 0,
+    "gpu_uuid": "GPU-56adac86-77cd-36c9-8770-dbf002650461",
+    "launch_readback": "2026-11-20T01:56:01+08:00"
+  },
+  "expected_artifacts": [
+    "PAMF_SUP/resolved_config.json",
+    "PAMF_SUP/steps.jsonl",
+    "PAMF_SUP/s0005000.pt",
+    "PAMF_SUP/s0020000.pt",
+    "PAMF_SUP/s0028225.pt",
+    "PAMF_SUP/complete.json",
+    "train.log",
+    "train.exit"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source V head CE and top1",
+      "K1 and K16 top1/AUC/EER",
+      "training main and auxiliary losses"
+    ],
+    "dimensions": [
+      "same 28225 step epoch and 903200 labeled packets",
+      "same source V panels"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "experiments/pamf_satiq66/paper_train.py"
+  },
+  "rows": [
+    {
+      "row_id": "PAMF_SUP",
+      "method": "Original fused256 objective with moderate same-satellite pairing",
+      "purpose": "Improve native prototype exposure to wrong beams of the same satellite without past extreme grouping.",
+      "config_ref": "configs/pamf_satiq_ccs2023_fused256_satellite_pair_probe_20261120.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-satellite-pair-source-e1-s2026092701-r01/PAMF_SUP/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111906,
+        "augmentation": null,
+        "support": 2026111907,
+        "evaluation": 2026111907
+      },
+      "seed_notes": "Same source L epoch and four-packet positive groups, original sampler RNG; only bundle grouping differs.",
+      "k": null,
+      "scenario": "Oxford real received; same L/V as native160",
+      "optimizer": "Adam eps=1e-7",
+      "lr": 0.0003,
+      "epochs": 1,
+      "fl_rounds": null,
+      "budget_ref": "One actual complete epoch of 28225 updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-satellite-pair-source-e1-s2026092701-r01/PAMF_SUP",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-satellite-pair-source-e1-s2026092701-r01/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train train /home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-fused256-satellite-pair-source-e1-s2026092701-r01/configs/pamf_satiq_ccs2023_fused256_satellite_pair_probe_20261120.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-satellite-pair-source-e1-s2026092701-r01/PAMF_SUP --arm PAMF_SUP",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "steps.jsonl",
+        "s0005000.pt",
+        "s0020000.pt",
+        "s0028225.pt",
+        "complete.json"
+      ],
+      "model_overrides": {
+        "native_expansion": "fused256",
+        "pair_same_satellite_batches": true
+      },
+      "feature_dimensions": 256,
+      "pid": 2214498,
+      "gpu": 0
+    }
+  ],
+  "notes": [
+    "Only when a batch lacks same-satellite competition, exchange its last group with one compatible group in the next 16 batches.",
+    "Retain 8 distinct beam labels in both affected batches. Keep every original selected four-packet group and all original loss weights.",
+    "Real source audit: both contain the same 903200 records in 28225 batches; first 5000 batches share 159996 of 160000.",
+    "Exposure rises 11.04% to 26.61% with average same-satellite wrong beam count .1157 to .2720 per anchor.",
+    "No source running center, no Sinc change, no T during training or selection."
+  ],
+  "registered_at": "2026-11-19T17:56:49+00:00",
+  "source_batch_audit": {
+    "base": {
+      "anchors_with_same_satellite": 0.1104162976085031,
+      "same_sat_negatives": 0.11570416297608503,
+      "batches_with_pair": 0.3848715677590788,
+      "max_same_satellites": 4
+    },
+    "pair": {
+      "anchors_with_same_satellite": 0.2661293179805137,
+      "same_sat_negatives": 0.27201948627103634,
+      "batches_with_pair": 0.9999291408325952,
+      "max_same_satellites": 4
+    },
+    "paired_seconds": 2.2605045230593532,
+    "shared_first_5000": 159996,
+    "rows": 903200,
+    "batches": 28225
+  }
+}
