@@ -66,16 +66,17 @@ def train_subset(config, classes, iq, labels, original, class_count, device, ful
     return measurements
 
 
-def run(source, cache, config, device):
+def run(source, cache, config, device, full_only=False):
     classes, counts, roles = source_inputs(source, cache)
     raw, labels, original = roles["L"]
     rows = fixed_source_rows(labels, config["sampling_seed"])
     iq = raw[rows, :, :8000]
     config = {**config, "native_expansion": "native160"}
     fit_labels = labels[rows]
-    results = {}
-    for name, full in (("pamf_sup", True), ("global_ce_diagnostic", False)):
-        results[name] = train_subset(config, classes, iq, fit_labels, original[rows], len(counts), device, full)
+    args = config, classes, iq, fit_labels, original[rows], len(counts), device
+    results = {"pamf_sup": train_subset(*args, True)}
+    if not full_only:
+        results["global_ce_diagnostic"] = train_subset(*args, False)
     return dict(source_role="L", classifier_classes=len(classes), fixed_beams=64, packets_per_beam=16,
                 fixed_satellites=int(np.unique(classes[fit_labels, 0]).size), model_seed=config["model_seed"],
                 sampling_seed=config["sampling_seed"], source_rows=rows.tolist(), results=results)
@@ -86,6 +87,8 @@ if __name__ == "__main__":
     for name in ("source", "cache", "config", "output"):
         parser.add_argument(name, type=Path)
     parser.add_argument("--device", choices=("cpu", "cuda"), default="cuda")
+    parser.add_argument("--full-only", action="store_true")
     args = parser.parse_args()
     torch.set_num_threads(4)
-    write_json(args.output, run(args.source, args.cache, read_json(args.config), torch.device(args.device)))
+    write_json(args.output, run(args.source, args.cache, read_json(args.config),
+                                torch.device(args.device), args.full_only))

@@ -101,7 +101,8 @@ def make_model(config, arm, classes):
     if "native_expansion" in config:
         if arm != "PAMF_SUP":
             raise ValueError("The native expansion experiment requires the PAMF-SUP arm")
-        return PaperNativePAMF(config["runtime"], config["model_seed"], len(classes), config["native_expansion"])
+        return PaperNativePAMF(config["runtime"], config["model_seed"], len(classes), config["native_expansion"],
+                               satiq_sinc_init=config.get("satiq_sinc_init", False))
     if arm == "SATIQ":
         return PaperSatIQ()
     return PaperPAMF(config["runtime"], config["model_seed"], len(classes), config["raw_time_bins"],

@@ -16,12 +16,19 @@ EXTRA_WIDTH = {"native160": 0, "fused256": 96, "fused320": 160, "branches320": 1
 class PaperNativePAMF(nn.Module):
     waveform_samples = 8000
 
-    def __init__(self, runtime, seed, classes, expansion):
+    def __init__(self, runtime, seed, classes, expansion, satiq_sinc_init=False):
         super().__init__()
         self.expansion = expansion
         self.feature_dimensions = FEATURES + EXTRA_WIDTH[expansion]
         self.native = build_model(runtime, seed, 1)
         self.native.core.id_backbone.cls_head.requires_grad_(False)
+        if satiq_sinc_init:
+            sinc = self.native.core.id_backbone.sinc
+            # At 800 kS/s, use roughly two 79-tap resolution bins per band.
+            # Overlapping 20 kHz bands cover the occupied baseband and its shoulders.
+            low_hz = torch.arange(sinc.out_channels, dtype=sinc.low_origin_hz.dtype) * 8000
+            sinc.low_origin_hz.copy_((low_hz[:, None] - sinc.min_low_hz).clamp_min(0))
+            sinc.band_origin_hz.fill_(20_000 - sinc.min_band_hz)
         self.expander = None
         if expansion == "branches320":
             self.expander = nn.ModuleList(
