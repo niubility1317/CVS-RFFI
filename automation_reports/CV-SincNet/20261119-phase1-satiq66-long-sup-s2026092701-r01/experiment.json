@@ -1,0 +1,178 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261119-phase1-satiq66-long-sup-s2026092701-r01",
+  "group_id": "phase1-satiq-oxford-supervised-long-budget",
+  "display_name": "SatIQ66 supervised long budget to 98% source validation",
+  "description": "Matched S0/S1 source-only duration study. Disable training cap and patience; independently finish at 98% full source V accuracy.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF",
+    "Hybrid",
+    "supervised-only",
+    "long-budget",
+    "98pct-source-validation"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "User requested long budget without stopping below 98% V and directed supervised training readiness before any SSL.",
+  "code": {
+    "commit": "614143e248d13a22a043d4be87f3a19ad0d8ff03",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-long-sup-s2026092701-r01",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python FP32 on N607",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-long-sup-s2026092701-r01"
+  },
+  "data": {
+    "dataset": "SatIQ Zenodo 8220494 Oxford single receiver",
+    "version": "8220494",
+    "representation": "Existing short 25 MS/s raw common UW crop 384:640; 2x256",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-hybrid-s2026092701-r01/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-hybrid-s2026092701-r01/source/{L,V}_meta.npz",
+    "label_map_ref": "experiments/pamf_satiq66/data.py",
+    "source_receivers": [
+      "Oxford single RX"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "L: 2023-03-24..2023-03-31 UTC",
+      "V: 2023-04-01..2023-04-03 UTC"
+    ],
+    "target_days": [],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-hybrid-s2026092701-r01/source/contract.json",
+    "roles": {
+      "L_s": 10560,
+      "U_s": "95040, hidden; reserved for post-gate readiness inference only",
+      "V": 19800
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "oxford66_2026111901",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-hybrid-s2026092701-r01/source/V_meta.npz",
+    "support_query_ref": "None. No future Q in this experiment.",
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Adaptive source V stopping only; no future test result and no SSL training"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "Same fixed L/V physical IDs; run-specific optimizer and RNG",
+    "provenance_verdict": "SCRATCH_ONLY",
+    "selection_rule": "First full source validation attaining accuracy >= 0.98; checkpoint every 25 epochs and at threshold"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "SatIQ66 long supervised source-only controller",
+    "gpu_policy": "Physical GPUs 2 and 3, one task training worker per card; occupancy prechecked",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq66-long-sup-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq66-long-sup-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_data\\satiq66_long_sup_20261119_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.long_run /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-long-sup-s2026092701-r01/configs/pamf_satiq66_long_sup_20261119.json /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-hybrid-s2026092701-r01/source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq66-long-sup-s2026092701-r01 --gpus 2 3",
+    "stop_rule": "For each healthy row only full-source-V accuracy >= 0.98 ends training. No hard cap or stagnation stop. Existing technical failure rules remain."
+  },
+  "expected_artifacts": [
+    "owner.json",
+    "*/epochs.jsonl",
+    "*/resolved_config.json",
+    "*/checkpoints/eNNNNNNNN.pt",
+    "Complete/source_final only at the 98% gate",
+    "unlabeled_readiness.json after both supervised rows reach 98%"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "V accuracy",
+      "V macro F1",
+      "V macro recall",
+      "post-gate eligible hidden U count at 0.95"
+    ],
+    "dimensions": [
+      "66 fixed class IDs",
+      "single station source date split"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "S0-s2026092701",
+      "method": "PAMF-Sup",
+      "purpose": "long_supervised",
+      "config_ref": "configs/pamf_satiq66_long_sup_20261119.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq66-long-sup-s2026092701-r01/S0/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111901,
+        "data": 2026111902,
+        "augmentation": 2026111903,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Unchanged matched source sampler and seed. No target support or randomized source evaluation.",
+      "k": null,
+      "scenario": "single_rx_native_iridium",
+      "optimizer": "AdamW, fixed LR, weight_decay=0.0001",
+      "lr": 0.0003,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "No epoch maximum; 100 updates per epoch; full 19800 source validation records every epoch",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq66-long-sup-s2026092701-r01/S0",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq66-long-sup-s2026092701-r01/logs/S0.log",
+      "command": "CUDA_VISIBLE_DEVICES=2 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.train train /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-long-sup-s2026092701-r01/configs/pamf_satiq66_long_sup_20261119.json /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-hybrid-s2026092701-r01/source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq66-long-sup-s2026092701-r01/S0 --arm S0 --representation 0",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "epochs.jsonl",
+        "periodic immutable model/optimizer/RNG snapshots",
+        "threshold endpoint"
+      ]
+    },
+    {
+      "row_id": "S1-s2026092701",
+      "method": "Hybrid-Sup",
+      "purpose": "long_supervised",
+      "config_ref": "configs/pamf_satiq66_long_sup_20261119.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq66-long-sup-s2026092701-r01/S1/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111901,
+        "data": 2026111902,
+        "augmentation": 2026111903,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Unchanged matched source sampler and seed. No target support or randomized source evaluation.",
+      "k": null,
+      "scenario": "single_rx_native_iridium",
+      "optimizer": "AdamW, fixed LR, weight_decay=0.0001",
+      "lr": 0.0003,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "No epoch maximum; 100 updates per epoch; full 19800 source validation records every epoch",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq66-long-sup-s2026092701-r01/S1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq66-long-sup-s2026092701-r01/logs/S1.log",
+      "command": "CUDA_VISIBLE_DEVICES=3 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.train train /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-long-sup-s2026092701-r01/configs/pamf_satiq66_long_sup_20261119.json /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq66-hybrid-s2026092701-r01/source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq66-long-sup-s2026092701-r01/S1 --arm S1 --representation 0",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "epochs.jsonl",
+        "periodic immutable model/optimizer/RNG snapshots",
+        "threshold endpoint"
+      ]
+    }
+  ],
+  "notes": [
+    "Both arms start from scratch. Only the budget and monitoring cadence change; original view taper reaches zero at E50.",
+    "E50 and later retain the existing supervised objective and S1 across-day relation; the two nonzero-perturbation auxiliary terms follow their original masks.",
+    "Only after both S0 and S1 reach 98%, run a read-only source U confidence probe with frozen S1 over all 95040 IQ messages. U labels are unopened. Zero eligibility leaves SSL unready. No SSL optimization is launched by this run.",
+    "Full-source V monitored every epoch is a stopping/selection validation set. The 98% figure does not constitute independent future performance.",
+    "Code regression tests cover continued updates below target, exact threshold stopping, rejection of long U training even in smoke, and inability to read U before both V targets."
+  ],
+  "registered_at": "2026-11-19T08:17:22+00:00"
+}
