@@ -1,0 +1,160 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01",
+  "group_id": "phase1-satiq-ccs2023-fully-supervised",
+  "display_name": "SatIQ 融合 256 训练期中心化首轮验证",
+  "description": "Test fusion mean removal inside training using its own train-only running state.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF-SUP",
+    "fused256",
+    "center-fusion",
+    "source-V",
+    "E1"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01",
+    "20261120-diagnostic-satiq-e10-center-whiten-s2026111907-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Isolate a source-only original-feature PAMF improvement; formal four arms continue.",
+  "code": {
+    "commit": "69a075b13db0527d1621c9f148488b681326ea8b",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python N607 FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01"
+  },
+  "data": {
+    "dataset": "Oxford SatIQ Zenodo 8220494, first 1010464 chronological packets",
+    "version": "8220494",
+    "representation": "Only 8000-point common-word prefix, resampled to the original 256-point native view before any branch encoding. Existing 11000-point cache unchanged.",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/{L,V}_index.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "source_receivers": [
+      "Oxford single receiver"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2023-03-22 through part of 2023-04-14 UTC"
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 910464,
+      "V": 50000,
+      "U_s": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "satiq_oxford_ccs2023_supervised_reindexed_v1_2026111905",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/V_index.npz",
+    "support_query_ref": "Fixed source V panel for training readouts. T separate.",
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "source_V_scoring_only",
+    "external_method_exception": null,
+    "claim_scope": "Only registered L/V data and the exact same source selection. No independent T access."
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "provenance_verdict": "SCRATCH_ONLY",
+    "selection_rule": "Same model/sampler/eval seeds, fixed 5000, 20000, 28225 updates. No old checkpoint initialization."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Single fused256 geometry pilot owner",
+    "gpu_policy": "Physical GPU0, >=4096 MiB free and <=2 incumbents.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01",
+    "local_artifact_root": "E:/type10-7/local_data/satiq_oxford_ccs2023_supervised_20261119_r01",
+    "launch_command": "CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train train /home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01/configs/pamf_satiq_ccs2023_fused256_center_probe_20261120.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01/PAMF_SUP --arm PAMF_SUP",
+    "stop_rule": "One complete 28225-step epoch.",
+    "train_pid": 2197179,
+    "physical_gpu": 0,
+    "gpu_uuid": "GPU-56adac86-77cd-36c9-8770-dbf002650461",
+    "launch_readback": "2026-11-20T01:29:13+08:00"
+  },
+  "expected_artifacts": [
+    "PAMF_SUP/resolved_config.json",
+    "PAMF_SUP/steps.jsonl",
+    "PAMF_SUP/s0005000.pt",
+    "PAMF_SUP/s0020000.pt",
+    "PAMF_SUP/s0028225.pt",
+    "PAMF_SUP/complete.json",
+    "train.log",
+    "train.exit"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source V head CE and top1",
+      "K1 and K16 top1/AUC/EER",
+      "training main and auxiliary losses"
+    ],
+    "dimensions": [
+      "same 28225 step epoch and 903200 labeled packets",
+      "same source V panels"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "experiments/pamf_satiq66/paper_train.py"
+  },
+  "rows": [
+    {
+      "row_id": "PAMF_SUP",
+      "method": "Fused256 original features with train-only fusion center",
+      "purpose": "Test centering inside training against existing identical raw fused256.",
+      "config_ref": "configs/pamf_satiq_ccs2023_fused256_center_probe_20261120.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01/PAMF_SUP/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111906,
+        "augmentation": null,
+        "support": 2026111907,
+        "evaluation": 2026111907
+      },
+      "seed_notes": "Same batching and model seeds and source reference seed as the base 160 model.",
+      "k": null,
+      "scenario": "Oxford real received; same L/V as native160",
+      "optimizer": "Adam eps=1e-7",
+      "lr": 0.0003,
+      "epochs": 1,
+      "fl_rounds": null,
+      "budget_ref": "One actual complete epoch of 28225 updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01/PAMF_SUP",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train train /home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01/configs/pamf_satiq_ccs2023_fused256_center_probe_20261120.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01/PAMF_SUP --arm PAMF_SUP",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "steps.jsonl",
+        "s0005000.pt",
+        "s0020000.pt",
+        "s0028225.pt",
+        "complete.json"
+      ],
+      "model_overrides": {
+        "native_expansion": "fused256",
+        "center_fusion": true
+      },
+      "feature_dimensions": 256,
+      "pid": 2197179,
+      "gpu": 0
+    }
+  ],
+  "notes": [
+    "Center is EMA of detached unit embeddings from the true labeled-training batches, momentum .05.",
+    "The 256-coordinate difference is renormalized and then used by the original global cosine head and ordinary embedding readout.",
+    "No added feature dimensions or trainable weights. Keep all five branches, saved center buffer at eval, original early observations and no augmentation.",
+    "Compare raw source classification and same-satellite verification against matched fused256. Compare additionally with fixed source L centering applied post-training if needed to assess benefit beyond postprocessing."
+  ],
+  "registered_at": "2026-11-19T17:29:39+00:00"
+}
