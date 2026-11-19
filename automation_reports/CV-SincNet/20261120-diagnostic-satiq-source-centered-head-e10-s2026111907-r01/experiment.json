@@ -1,0 +1,160 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261120-diagnostic-satiq-source-centered-head-e10-s2026111907-r01",
+  "group_id": "phase1-satiq-ccs2023-fully-supervised",
+  "display_name": "SatIQ 第 10 轮分类头源均值扣除诊断",
+  "description": "Test if a constant source-derived logit baseline explains excessive single-beam concentration.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF-SUP",
+    "full-source-accuracy",
+    "head-diagnostics"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261120-diagnostic-satiq-native160-head-e5-e10-s2026111907-r01",
+    "20261120-diagnostic-satiq-fused256-head-e5-e10-s2026111907-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Check an isolated readout calibration on the authorized supervised source data.",
+  "code": {
+    "commit": "ecce45426216b085b4b0aa3f6af0c83ebb8ca21b",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-source-centered-head-e10-s2026111907-r01",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python N607 FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-source-centered-head-e10-s2026111907-r01"
+  },
+  "data": {
+    "dataset": "Oxford SatIQ Zenodo 8220494, first 1010464 chronological packets",
+    "version": "8220494",
+    "representation": "Only 8000-point common-word prefix, resampled to the original 256-point native view before any branch encoding. Existing 11000-point cache unchanged.",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/{L,V}_index.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "source_receivers": [
+      "Oxford single receiver"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2023-03-22 through part of 2023-04-14 UTC"
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 8192,
+      "V": 50000,
+      "U_s": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "satiq_oxford_ccs2023_supervised_reindexed_v1_2026111905",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/V_index.npz",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "source_V_scoring_only",
+    "external_method_exception": null,
+    "claim_scope": "Fixed source L fit and frozen source V eval, no target and no updates to model."
+  },
+  "checkpoint": {
+    "initialization": "frozen eval only",
+    "sources": [
+      {
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-native160-sup100-s2026092701-r01/PAMF_SUP/s0282250.pt",
+        "run_id": "20261119-phase1-satiq-ccs2023-native160-sup100-s2026092701-r01",
+        "training_origin": "from scratch on registered source L",
+        "inherited_checkpoints": []
+      },
+      {
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01/PAMF_SUP/s0282250.pt",
+        "run_id": "20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01",
+        "training_origin": "from scratch on registered source L",
+        "inherited_checkpoints": []
+      }
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "provenance_verdict": "MATCHED_SOURCE_L_V",
+    "selection_rule": "Exact E10 native160 and fused256, before looking at candidate calibration outcomes."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "One source-only head centering diagnostic",
+    "gpu_policy": "Physical GPU2 with at least 4096 MiB free and <=2 incumbents.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-source-centered-head-e10-s2026111907-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-source-centered-head-e10-s2026111907-r01",
+    "local_artifact_root": "E:/type10-7/local_data/satiq_oxford_ccs2023_supervised_20261119_r01",
+    "launch_command": "CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=2 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_center_head /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-source-centered-head-e10-s2026111907-r01/source_scores.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-native160-sup100-s2026092701-r01/PAMF_SUP/s0282250.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01/PAMF_SUP/s0282250.pt",
+    "stop_rule": "Frozen E10 comparison, fit only two 8192-packet means and score both heads on all V.",
+    "readout_pid": 2185700,
+    "physical_gpu": 2,
+    "gpu_uuid": "GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562",
+    "launch_readback": "Verified source L-only fit paths, exact E10 native model files, process PID, CWD, and GPU."
+  },
+  "expected_artifacts": [
+    "source_scores.json",
+    "center.log",
+    "center.exit",
+    "center.pid"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "micro and macro Top-1",
+      "main classification CE",
+      "constant-logit CE",
+      "known and predicted classes",
+      "most frequent prediction share"
+    ],
+    "dimensions": [
+      "Both 3103-class heads; same 49814 known V packets; 8192 shared L fitting packets."
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "experiments/pamf_satiq66/paper_source_accuracy.py"
+  },
+  "rows": [
+    {
+      "row_id": "HEAD",
+      "method": "Raw head and L-mean subtracted head at E10",
+      "purpose": "Isolate fixed class-score biases from packet-specific identity geometry.",
+      "config_ref": "experiments/pamf_satiq66/paper_center_head.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-source-centered-head-e10-s2026111907-r01/experiments/pamf_satiq66/paper_center_head.py",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111906,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026111907
+      },
+      "seed_notes": "Seed selects 8192 unlabeled-for-fit physical L rows. All V known rows are scored.",
+      "k": null,
+      "scenario": "Oxford real received source L and V",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Train updates zero; exactly the two E10 model files.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-source-centered-head-e10-s2026111907-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-source-centered-head-e10-s2026111907-r01/center.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_center_head /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-source-centered-head-e10-s2026111907-r01/source_scores.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-native160-sup100-s2026092701-r01/PAMF_SUP/s0282250.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused256-sup100-s2026092701-r01/PAMF_SUP/s0282250.pt",
+      "expected_artifacts": [
+        "source_scores.json",
+        "center.log",
+        "center.exit",
+        "center.pid"
+      ],
+      "pid": 2185700,
+      "gpu": 2
+    }
+  ],
+  "notes": [
+    "No new features; subtract an equal-size constant vector computed as the average raw 3103-class scores over the 8192 L packets.",
+    "Class labels are not needed to fit the offset. V labels only score the frozen transform; neither V nor T fits it.",
+    "Raw, centered micro/macro Top-1, CE and predicted-beam coverage all compare on identical V examples. Source diagnosis only."
+  ],
+  "registered_at": "2026-11-19T17:12:12+00:00"
+}
