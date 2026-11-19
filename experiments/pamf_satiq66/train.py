@@ -50,17 +50,17 @@ def check_contract(root, counts):
 
 
 class Batches:
-    def __init__(self, metadata, seed):
+    def __init__(self, metadata, seed, records_per_class_day=20):
         self.rng = np.random.default_rng(seed)
         self.groups = np.array([[np.flatnonzero((metadata["y"] == y) & (metadata["day"] == d))
                                  for d in range(8)] for y in range(66)])
-        if self.groups.shape != (66, 8, 20):
-            raise ValueError("Each satellite and source day must supply exactly 20 labeled records")
+        if self.groups.shape != (66, 8, records_per_class_day):
+            raise ValueError(f"Each class and source day must supply exactly {records_per_class_day} labeled records")
 
     def next(self):
         d0 = self.rng.integers(8, size=66)
         d1 = (d0 + self.rng.integers(1, 8, size=66)) % 8
-        r0, r1 = self.rng.integers(20, size=(2, 66))
+        r0, r1 = self.rng.integers(self.groups.shape[-1], size=(2, 66))
         y = np.arange(66)
         return self.rng.permutation(np.concatenate((self.groups[y, d0, r0], self.groups[y, d1, r1])))
 
