@@ -1,0 +1,135 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261119-diagnostic-satiq-beam66-sourcefit-s2026092701-r02",
+  "group_id": "phase1-satiq-oxford-beam66-sourcefit",
+  "display_name": "SatIQ Beam66 frozen source fit audit",
+  "description": "Score frozen stopped supervised checkpoints on complete clean L and V from the original source bundle. Diagnostic metrics only.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261119-phase1-satiq-beam66-wide-s2026092701-r01"
+  ],
+  "replaces_run_id": "20261119-diagnostic-satiq-beam66-sourcefit-s2026092701-r01",
+  "authorization": "User requested stop and Root Cause Analysis of chance-level validation. Inference only on original visible source roles.",
+  "code": {
+    "commit": "da88420c5db21699f47669498e056b702bc7a894",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-diagnostic-satiq-beam66-sourcefit-s2026092701-r02",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01"
+  },
+  "data": {
+    "dataset": "SatIQ Oxford Zenodo 8220494",
+    "version": "8220494",
+    "representation": null,
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/source/{L,V}_meta.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/source/contract.json",
+    "source_receivers": [
+      "Oxford"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "L: 2023-03-24..31 UTC",
+      "V: 2023-04-01..03 UTC"
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 7920,
+      "U_s": null,
+      "V": 2376
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "oxford_beam66_2026111901",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/source/V_meta.npz",
+    "support_query_ref": "None",
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Complete existing labeled source roles only. No target access or fitting."
+  },
+  "checkpoint": {
+    "initialization": "frozen inference only",
+    "sources": [
+      {
+        "run": "20261119-phase1-satiq-beam66-wide-s2026092701-r01",
+        "epochs": {
+          "B0": 75,
+          "L0": 75,
+          "W0": 125,
+          "W1": 50
+        }
+      }
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/source/contract.json",
+    "provenance_verdict": "EXACT_SOURCE_CONTRACT_MATCH",
+    "selection_rule": "Latest fully written checkpoint in each stopped row. No validation-based selection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "One foreground audit_source worker",
+    "gpu_policy": "Physical GPU 3, inference only",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-diagnostic-satiq-beam66-sourcefit-s2026092701-r02",
+    "remote_log_root": null,
+    "local_artifact_root": "E:\\type10-7\\local_data\\satiq66_beam66_wide_20261119_r01",
+    "launch_command": "CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=3 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-diagnostic-satiq-beam66-sourcefit-s2026092701-r02/audit_source.py /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01 /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/source",
+    "stop_rule": "One finite pass over all L and V once for each of four frozen checkpoints."
+  },
+  "expected_artifacts": [
+    "audit.jsonl",
+    "report.md"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "L and V accuracy",
+      "NLL",
+      "macro F1",
+      "same satellite three-class diagnostic"
+    ],
+    "dimensions": [
+      "4 fixed checkpoints",
+      "66 pairs"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "source-fit-four-checkpoints",
+      "method": "Frozen PAMF/Hybrid supervised source readback",
+      "purpose": "source-fit diagnostic",
+      "config_ref": "E:\\codex\\home\\worktrees\\pamf-satiq-design\\CVS-RFFI-repo\\automation_reports\\CV-SincNet\\20261119-phase1-satiq-beam66-wide-s2026092701-r01\\experiment.json",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111901,
+        "data": 2026111902,
+        "augmentation": 2026111903,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original provenance seeds. Inference uses fixed ordered physical records, no sampling.",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "E:/type10-7/local_data/satiq66_beam66_wide_20261119_r01/20261119-diagnostic-satiq-beam66-sourcefit-s2026092701-r02",
+      "log_path": "E:/type10-7/local_data/satiq66_beam66_wide_20261119_r01/20261119-diagnostic-satiq-beam66-sourcefit-s2026092701-r02/audit.stdout.log",
+      "command": "CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=3 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-diagnostic-satiq-beam66-sourcefit-s2026092701-r02/audit_source.py /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-beam66-wide-s2026092701-r01 /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-satiq-beam66-wide-s2026092701-r01/source",
+      "expected_artifacts": []
+    }
+  ],
+  "notes": [],
+  "registered_at": "2026-11-19T09:56:24+00:00"
+}
