@@ -16,7 +16,7 @@ EXTRA_WIDTH = {"native160": 0, "fused256": 96, "fused320": 160, "branches320": 1
 class PaperNativePAMF(nn.Module):
     waveform_samples = 8000
 
-    def __init__(self, runtime, seed, classes, expansion, satiq_sinc_init=False):
+    def __init__(self, runtime, seed, classes, expansion, satiq_sinc_init=False, center_fusion=False):
         super().__init__()
         self.expansion = expansion
         self.feature_dimensions = FEATURES + EXTRA_WIDTH[expansion]
@@ -48,9 +48,17 @@ class PaperNativePAMF(nn.Module):
             )
         self.head = nn.Linear(self.feature_dimensions, classes, bias=False)
         nn.init.xavier_uniform_(self.head.weight)
+        self.register_buffer("fusion_center", torch.zeros(self.feature_dimensions) if center_fusion else None)
         bins = torch.arange(129).float()
         cutoff = torch.cos(torch.pi * ((bins - 60) / 20).clamp(0, 1)) * .5 + .5
         self.register_buffer("cutoff", cutoff, persistent=False)
+
+    def _center_fusion(self, feature):
+        if self.fusion_center is None:
+            return feature
+        if self.training:
+            self.fusion_center.lerp_(feature.detach().mean(dim=0), .05)
+        return F.normalize(feature - self.fusion_center, dim=1, eps=1e-6)
 
     def _encode(self, iq, retain_branches):
         if iq.ndim != 3 or iq.shape[1] != 2 or iq.shape[-1] < self.waveform_samples:
@@ -74,7 +82,7 @@ class PaperNativePAMF(nn.Module):
                 handle.remove()
         native = F.normalize(native, dim=1)
         if self.expander is None:
-            return native, branches
+            return self._center_fusion(native), branches
         if self.expansion == "branches320":
             parts = [layer(F.normalize(x, dim=1)) for layer, x in zip(self.expander, branches, strict=True)]
             extra = torch.cat(parts, dim=1)
@@ -84,7 +92,7 @@ class PaperNativePAMF(nn.Module):
         else:
             extra = self.expander(native)
         feature = F.normalize(torch.cat((native, .5 * F.normalize(extra, dim=1)), dim=1), dim=1)
-        return feature, branches
+        return self._center_fusion(feature), branches
 
     def embed(self, iq):
         return self._encode(iq, False)[0]
