@@ -3,7 +3,7 @@
 - run_id：`20261119-diagnostic-satiq-pamf-sup-prior-adjusted-s2026092701-r01`
 - group_id：`phase1-satiq-ccs2023-fully-supervised`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -41,3 +41,12 @@ Matched pure-supervision comparison isolating fixed source training-frequency lo
 ## 第 20,000 步
 
 校正版同星 K1／K16 AUC 为 0.5077／0.5114，原版为 0.5099／0.5104。加回固定频率后的验证 CE 为 7.9026，与原版的 7.9060 接近。未加频率的分类 CE 为 7.9727，预测覆盖 11 个波束，单一波束占 36.9%。进程继续推进至已登记的完整一轮。
+
+## 第 1 个完整数据 epoch
+
+| 方法 | 同星 K1／K16 AUC | 原始分类头 CE | 加训练频率后的分类头 CE | 原始 Top-1 |
+|---|---:|---:|---:|---:|
+| 原 PAMF-SUP | 0.5161／0.5186 | 7.8864 | — | 0.1164% |
+| 频率校正版 | 0.5115／0.5173 | 7.9594 | 7.8889 | 0.0562% |
+
+固定 28,225 步已核实完成。在 49,814 个已知类验证包上，校正版原始分类头仅预测 12 个波束，最常见输出占 46.5%，平均原始分数与训练标签对数频率仍相关 0.9086。单独加入固定类别频率偏置未改善这一轮的身份匹配或分类，不晋级。
