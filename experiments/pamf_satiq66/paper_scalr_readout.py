@@ -54,13 +54,15 @@ def fit_local(support):
                 loss = float(((loo - parts[2]) ** 2).mean())
                 rank = (loo_top1, -loss, ridge)
                 if best is None or rank > best[0]:
-                    best = rank, alpha[:, 0], intercept[0], scales
-        rank, alpha, offset, scales = best
+                    negative = loo[local_labels != 0, 0]
+                    best = rank, alpha[:, 0], intercept[0], scales, float(negative.mean()), float(negative.std())
+        rank, alpha, offset, scales, negative_mean, negative_std = best
         alphas.append(alpha)
         offsets.append(offset)
         taus.append(tau)
         multiscale.append(scales == "multi")
-        choices.append(dict(loo_top1=rank[0], ridge=rank[2], scales=scales))
+        choices.append(dict(loo_top1=rank[0], ridge=rank[2], scales=scales,
+                            negative_mean=negative_mean, negative_std=negative_std))
     return indices, np.asarray(alphas), np.asarray(offsets), np.asarray(taus), np.asarray(multiscale), choices
 
 
@@ -90,6 +92,15 @@ def panel_metrics(scores, labels, same_satellite, other_satellite):
     for tag, negative in (("same_satellite", same_satellite), ("different_satellite", other_satellite)):
         valid = negative >= 0
         result[tag] = binary_scores(genuine[valid], scores[rows[valid], negative[valid]])
+    valid = same_satellite >= 0
+    positive_class = labels[valid]
+    negative_class = same_satellite[valid]
+    same_impostors = scores[rows[valid], negative_class]
+    same_genuine = genuine[valid]
+    classes = np.intersect1d(positive_class, negative_class)
+    aucs = [binary_scores(same_genuine[positive_class == c], same_impostors[negative_class == c])["auc"]
+            for c in classes]
+    result["within_claimed_beam"] = dict(auc=float(np.mean(aucs)) if aucs else None, beams=len(classes))
     return result
 
 
@@ -103,9 +114,16 @@ def evaluate(features, panel, device):
     fitted = fit_local(np.from_dlpack(support.cpu()))
     seconds = time.monotonic() - start
     choices = fitted[-1]
-    scores = score_all(support, features[device_array(query, device)], fitted)
+    prototype, ridge = score_all(support, features[device_array(query, device)], fitted)
+    center = np.array([r["negative_mean"] for r in choices])
+    spread = np.array([r["negative_std"] for r in choices])
+    # Give every claimed beam a comparable support-only impostor reference.
+    # Shrink noisy local standard deviations towards the median support spread.
+    scale = np.sqrt(.5 * spread ** 2 + .5 * np.median(spread) ** 2).clip(1e-4)
+    calibrated = (ridge - center) / scale
     results = {name: panel_metrics(score, labels, same_satellite, other_satellite)
-               for name, score in zip(("prototype", "support_local_ridge"), scores, strict=True)}
+               for name, score in (("prototype", prototype), ("support_local_ridge", ridge),
+                                    ("support_calibrated_ridge", calibrated))}
     return dict(reference_classes=len(ref), packets_per_class=ref.shape[1], query_records=len(query),
                 fit_seconds=seconds, mean_local_support_loo=float(np.mean([r["loo_top1"] for r in choices])),
                 selected_ridges={str(lam): sum(r["ridge"] == lam for r in choices) for lam in RIDGES},
