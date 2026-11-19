@@ -25,8 +25,19 @@ Match PAMF-Metric architecture and objective for one full source epoch. Group ha
 
 该诊断保留 PAMF-Metric 的 11,000 点输入、模型、所有损失、训练随机初值和验证面板。正式三组百轮训练继续运行。[正式实验](../20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/report.md)
 
+用正式 PAMF-Metric 的冻结第 1 轮权重，分别重放两种采样的前 96 批，各 9,216 个有序训练正对。半难负例存在率 96.94% 与 96.84%。损失选中同星错波束的比例从 1.61% 升至 36.88%。这项读回只确认组批实际改变了训练信号，模型性能仍按冻结源验证点比较。
+
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 N607 GPU 0 received the new job with no incumbent workers. PID 1967567 passed the real-packet smoke and produced a growing step log, using one source epoch and no augmentation.
+
+## 第 5,000 步源验证
+
+| 采样 | 同星 AUC K1／K16 | K1／K16 Top-1 | 分类头 CE |
+|---|---:|---:|---:|
+| 原 PAMF-Metric 随机组批 | 0.5012／0.4908 | 0.094%／0.063% | 8.0375 |
+| 同星组批 | 0.5001／0.4916 | 0.117%／0.078% | 8.0798 |
+
+两种采样的初期同星 AUC 均接近 0.50。在第 5,000 步，组批已改变早期物理样本顺序和子集，因此首轮全部数据的结果用于主要判断。诊断进程已继续训练，独立留出测试尚未使用。
