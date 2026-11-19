@@ -70,7 +70,7 @@ class Identity(nn.Module):
         self.core = core
         self.sequence_pool = sequence_pool
 
-    def forward(self, x):
+    def features(self, x):
         if self.sequence_pool is None:
             features = self.core.features(x)
         else:
@@ -82,7 +82,10 @@ class Identity(nn.Module):
             finally:
                 handle.remove()
             features = features + self.sequence_pool(t2[0])
-        return self.core.id_backbone.cls_head.classify(features)
+        return features
+
+    def forward(self, x):
+        return self.core.id_backbone.cls_head.classify(self.features(x))
 
 
 def build_model(runtime, seed, nclasses, arm):
