@@ -54,3 +54,5 @@ At U0/U1 epoch 14, each run evaluated 25,600 hidden-U exposures and accepted zer
 ## Recorded technical failure
 
 U1 failed at the first E21 update because N607 PyTorch 2.1 does not implement Tensor.any with tuple dimensions. The failing tensor was the per-record nonzero perturbation mask. Exact behavior reproduced on the N607 runtime using synthetic inputs. R02 replaces U1 only from scratch and keeps the three healthy fixed endpoints for common future scoring. No target data were inspected as part of the repair.
+
+The healthy R01 U0 completed all 5,000 updates. Across E14–E50 it recorded 947,200 U exposures and zero threshold acceptances, so its pseudo-label objective contributed zero gradient. V was 1.4505% macro F1 and 1.4848% accuracy. This endpoint is frozen for the R02 readout.

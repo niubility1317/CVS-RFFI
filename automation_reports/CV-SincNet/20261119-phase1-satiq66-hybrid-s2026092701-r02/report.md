@@ -31,3 +31,5 @@ Replace only U1 after E21 PyTorch 2.1 API failure; assemble three healthy fixed 
 ## Verified recovery launch
 
 Owner PID 1786971 launched U1 replacement PID 1787274 on GPU 3. The N607 E21 real-data smoke completed one optimizer update and processed 132 L and 256 hidden-U exposures, with zero U above confidence 0.95. The accepted and empty U routes were also exercised locally on controlled synthetic inputs. S0/S1/U0 will be reused solely as frozen prediction endpoints. The watcher invokes the independent scorer after all four predictions are fixed.
+
+The replacement crossed the original failure point and reached E22/2,200 updates. Through E22 it made 230,400 U exposures and accepted none at the fixed threshold. Controlled accepted-U branch verification also passed on the deployed PyTorch 2.1 runtime. The scheduled independent Q readout will run once the replacement reaches the fixed 5,000-update endpoint.
