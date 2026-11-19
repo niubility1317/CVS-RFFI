@@ -21,6 +21,7 @@ from .train import device_array
 
 RIDGES = (.01, .1, 1.)
 LOCAL_CLASSES = 4
+FUSION_WEIGHTS = (0., .25, .5)
 
 
 def fit_local(support):
@@ -104,7 +105,45 @@ def panel_metrics(scores, labels, same_satellite, other_satellite):
     return result
 
 
-def evaluate(features, panel, device):
+def fit_prototype_fusion(support):
+    """Select a common local-ridge weight using held-out physical support packets."""
+    classes, shots, width = support.shape
+    if shots < 4 or shots % 2:
+        raise ValueError("Prototype fusion requires two support folds of at least two packets per beam")
+    labels = np.repeat(np.arange(classes), shots // 2)
+    rows = np.arange(len(labels))
+    positive, negative = [], []
+    for parity in (0, 1):
+        training = support[:, parity::2]
+        held_out = support[:, 1 - parity::2].reshape(-1, width)
+        fitted = fit_local(np.from_dlpack(training.cpu().contiguous()))
+        # The first nearest competing beam is determined solely by the fitting fold.
+        impostors = np.repeat(fitted[0][:, shots // 2] // (shots // 2), shots // 2)
+        scores = score_all(training, held_out, fitted)
+        positive.append(np.column_stack([s[rows, labels] for s in scores]))
+        negative.append(np.column_stack([s[rows, impostors] for s in scores]))
+    positive = np.concatenate(positive)
+    negative = np.concatenate(negative)
+    centers = negative.mean(axis=0, dtype=np.float64)
+    scales = negative.std(axis=0, dtype=np.float64).clip(1e-6)
+    positive = (positive - centers) / scales
+    negative = (negative - centers) / scales
+    aucs = {w: binary_scores((1 - w) * positive[:, 0] + w * positive[:, 1],
+                             (1 - w) * negative[:, 0] + w * negative[:, 1])["auc"]
+            for w in FUSION_WEIGHTS}
+    weight = max(FUSION_WEIGHTS, key=lambda w: (aucs[w], -w))
+    return weight, centers, scales, aucs
+
+
+def fused_score(prototype, ridge, weight, centers, scales):
+    if weight == 0:
+        return prototype
+    # Place local-ridge scores in the same units as the common cosine prototype.
+    local = ((ridge - centers[1]) * (scales[0] / scales[1]) + centers[0]).astype(prototype.dtype)
+    return (1 - weight) * prototype + weight * local
+
+
+def evaluate(features, panel, device, prototype_fusion=False):
     ref, query, labels, same_satellite, other_satellite = panel
     if np.unique(ref).size != ref.size or np.intersect1d(ref, query).size:
         raise ValueError("Support requires distinct physical packets disjoint from the queries")
@@ -124,6 +163,15 @@ def evaluate(features, panel, device):
     results = {name: panel_metrics(score, labels, same_satellite, other_satellite)
                for name, score in (("prototype", prototype), ("support_local_ridge", ridge),
                                     ("support_calibrated_ridge", calibrated))}
+    if prototype_fusion:
+        start = time.monotonic()
+        weight, centers, scales, aucs = fit_prototype_fusion(support)
+        results["support_fusion"] = dict(
+            selected_weight=weight, heldout_auc=aucs,
+            seconds=time.monotonic() - start,
+            **panel_metrics(fused_score(prototype, ridge, weight, centers, scales),
+                            labels, same_satellite, other_satellite),
+        )
     return dict(reference_classes=len(ref), packets_per_class=ref.shape[1], query_records=len(query),
                 fit_seconds=seconds, mean_local_support_loo=float(np.mean([r["loo_top1"] for r in choices])),
                 selected_ridges={str(lam): sum(r["ridge"] == lam for r in choices) for lam in RIDGES},
@@ -131,7 +179,7 @@ def evaluate(features, panel, device):
 
 
 @torch.no_grad()
-def compare(source, cache, checkpoints, seed, device):
+def compare(source, cache, checkpoints, seed, device, prototype_fusion=False):
     classes, _, roles = source_inputs(source, cache)
     raw, labels, _ = roles["V"]
     panels, cutoff = source_panels(source, labels, classes, seed)
@@ -152,7 +200,7 @@ def compare(source, cache, checkpoints, seed, device):
             features = torch.cat([F.normalize(path, dim=1) for path in paths], dim=1)
             output[transform] = {}
             for name, panel in panels.items():
-                row = evaluate(features, panel, device)
+                row = evaluate(features, panel, device, prototype_fusion)
                 output[transform][name] = row
                 print(step, checkpoint.parent.parent.name, transform, name,
                       row["prototype"]["top1"], row["support_local_ridge"]["top1"], flush=True)
@@ -167,6 +215,8 @@ if __name__ == "__main__":
     parser.add_argument("checkpoint", nargs="+", type=Path)
     parser.add_argument("--seed", type=int, default=2026111907)
     parser.add_argument("--device", choices=("cpu", "cuda"), default="cuda")
+    parser.add_argument("--prototype-fusion", action="store_true")
     args = parser.parse_args()
     torch.set_num_threads(4)
-    write_json(args.output, compare(args.source, args.cache, args.checkpoint, args.seed, torch.device(args.device)))
+    write_json(args.output, compare(args.source, args.cache, args.checkpoint, args.seed,
+                                   torch.device(args.device), args.prototype_fusion))
