@@ -1,0 +1,510 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01",
+  "group_id": "phase1-pamf-source-adaptation",
+  "display_name": "Tri 自适应源域收益 E50 校准",
+  "description": "四种设置×三种子。源域决策固定后按相同物理样本对照原 Tri 和普通 PL。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01",
+    "20261027-phase1-pamf-paper-completion-m119-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求在其他数据设置保留原 Tri 对普通 PL 的领先幅度。",
+  "code": {
+    "commit": "actual runtime release OID",
+    "checkout": "current task worktree",
+    "environment": "N607 CVS-RFFI",
+    "cwd": "PROJECT/releases/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01-release"
+  },
+  "data": {
+    "dataset": "Four fixed source and raw clean Phase1 contracts",
+    "version": null,
+    "representation": null,
+    "contract_ref": "original per-protocol roles",
+    "physical_ids_ref": "same ordered physical IDs as both ordinary PL and original Tri",
+    "label_map_ref": null,
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "original full labeled source",
+      "U_s": "original full TX-blind source",
+      "V": "original source validation, no checkpoint selection"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": "Three existing clean subsets, frozen prediction before independent truth-last scoring",
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Frozen E50 clean only; independent truth-last scoring",
+    "external_method_exception": null,
+    "claim_scope": "Retrospective source-rule calibration on development settings; same decision across three matched seeds"
+  },
+  "checkpoint": {
+    "initialization": "original full same-contract same-seed E20",
+    "sources": [],
+    "contract_check_ref": "checked_e20_parent plus original paper row matching",
+    "provenance_verdict": "No held-out pilot checkpoint or target ancestry",
+    "selection_rule": "Frozen E50; use exact source-specified weight with no target feedback"
+  },
+  "execution": {
+    "host": "N607 ordinary user",
+    "launch_owner": "codex-20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01",
+    "gpu_policy": "GPU 0–6, max two total per GPU, 12 GiB admission reserve",
+    "remote_run_root": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01",
+    "remote_log_root": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_repl_source_adapt_transfer_20261119",
+    "launch_command": "python -m experiments.pamf_repl_source_adapt.transfer_publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+    "stop_rule": "Stop new dispatch on first blocking technical failure; preserve healthy workers"
+  },
+  "expected_artifacts": [
+    "real full-contract E20 smoke for each activated row",
+    "fixed E50 changed weights only",
+    "clean predictions, independent scores, and same-physical-ID paired net corrections"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "cross_rx + cross_both accuracy",
+      "adaptive minus native lead",
+      "paired net corrections"
+    ],
+    "dimensions": [
+      "setting",
+      "seed",
+      "clean test subset"
+    ],
+    "prediction_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/readouts/ROW/predictions",
+    "scorer_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/readouts/ROW/scores"
+  },
+  "rows": [
+    {
+      "row_id": "main_split-tri-source-adapt-s2026092701",
+      "method": "Tri with frozen source-selected U weight 3.0",
+      "purpose": "Source-triggered full transfer",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/configs/train__main_split-tri-source-adapt-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/configs/train__main_split-tri-source-adapt-s2026092701.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "source_selected_weight": 3.0,
+        "reuse_original": false
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "每个null解释为不适用或待补，不能默认为所有seed相同",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "original matched E20 plus own E21–E50",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/F/main_split-tri-source-adapt-s2026092701/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/logs/train__main_split-tri-source-adapt-s2026092701.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.transfer_publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "E50 final",
+        "clean prediction and independent score"
+      ]
+    },
+    {
+      "row_id": "main_split-tri-source-adapt-s2026092702",
+      "method": "Tri with frozen source-selected U weight 3.0",
+      "purpose": "Source-triggered full transfer",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/configs/train__main_split-tri-source-adapt-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/configs/train__main_split-tri-source-adapt-s2026092702.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "source_selected_weight": 3.0,
+        "reuse_original": false
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "每个null解释为不适用或待补，不能默认为所有seed相同",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "original matched E20 plus own E21–E50",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/F/main_split-tri-source-adapt-s2026092702/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/logs/train__main_split-tri-source-adapt-s2026092702.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.transfer_publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "E50 final",
+        "clean prediction and independent score"
+      ]
+    },
+    {
+      "row_id": "main_split-tri-source-adapt-s2026092703",
+      "method": "Tri with frozen source-selected U weight 3.0",
+      "purpose": "Source-triggered full transfer",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/configs/train__main_split-tri-source-adapt-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/configs/train__main_split-tri-source-adapt-s2026092703.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "source_selected_weight": 3.0,
+        "reuse_original": false
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "每个null解释为不适用或待补，不能默认为所有seed相同",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "original matched E20 plus own E21–E50",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/F/main_split-tri-source-adapt-s2026092703/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/logs/train__main_split-tri-source-adapt-s2026092703.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.transfer_publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "E50 final",
+        "clean prediction and independent score"
+      ]
+    },
+    {
+      "row_id": "receiver_split_1-tri-source-adapt-s2026092701",
+      "method": "Tri with frozen source-selected U weight 4.5",
+      "purpose": "Source-triggered full transfer",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/configs/train__receiver_split_1-tri-source-adapt-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/configs/train__receiver_split_1-tri-source-adapt-s2026092701.json",
+      "data_overrides": {
+        "protocol_id": "F1_rx_repartition_r01",
+        "source_selected_weight": 4.5,
+        "reuse_original": false
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "每个null解释为不适用或待补，不能默认为所有seed相同",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "original matched E20 plus own E21–E50",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/F/receiver_split_1-tri-source-adapt-s2026092701/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/logs/train__receiver_split_1-tri-source-adapt-s2026092701.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.transfer_publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "E50 final",
+        "clean prediction and independent score"
+      ]
+    },
+    {
+      "row_id": "receiver_split_1-tri-source-adapt-s2026092702",
+      "method": "Tri with frozen source-selected U weight 4.5",
+      "purpose": "Source-triggered full transfer",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/configs/train__receiver_split_1-tri-source-adapt-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/configs/train__receiver_split_1-tri-source-adapt-s2026092702.json",
+      "data_overrides": {
+        "protocol_id": "F1_rx_repartition_r01",
+        "source_selected_weight": 4.5,
+        "reuse_original": false
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "每个null解释为不适用或待补，不能默认为所有seed相同",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "original matched E20 plus own E21–E50",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/F/receiver_split_1-tri-source-adapt-s2026092702/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/logs/train__receiver_split_1-tri-source-adapt-s2026092702.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.transfer_publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "E50 final",
+        "clean prediction and independent score"
+      ]
+    },
+    {
+      "row_id": "receiver_split_1-tri-source-adapt-s2026092703",
+      "method": "Tri with frozen source-selected U weight 4.5",
+      "purpose": "Source-triggered full transfer",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/configs/train__receiver_split_1-tri-source-adapt-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/configs/train__receiver_split_1-tri-source-adapt-s2026092703.json",
+      "data_overrides": {
+        "protocol_id": "F1_rx_repartition_r01",
+        "source_selected_weight": 4.5,
+        "reuse_original": false
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "每个null解释为不适用或待补，不能默认为所有seed相同",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "original matched E20 plus own E21–E50",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/F/receiver_split_1-tri-source-adapt-s2026092703/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-sourceadapt-calibration-clean-m12-r01/logs/train__receiver_split_1-tri-source-adapt-s2026092703.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.transfer_publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "E50 final",
+        "clean prediction and independent score"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-tri-source-adapt-s2026092701",
+      "method": "Tri with frozen source-selected U weight 6.0",
+      "purpose": "Exact original fallback",
+      "config_ref": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/labeled_1pct-factorial-ssl-full-permuted-s2026092701/source/resolved_config.json",
+      "resolved_config_ref": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/labeled_1pct-factorial-ssl-full-permuted-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label01",
+        "source_selected_weight": 6.0,
+        "reuse_original": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "每个null解释为不适用或待补，不能默认为所有seed相同",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reuse original fixed E50",
+      "output_root": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/labeled_1pct-factorial-ssl-full-permuted-s2026092701/source",
+      "log_path": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/labeled_1pct-factorial-ssl-full-permuted-s2026092701/source/segment50/metrics_epoch.jsonl",
+      "command": "python -m experiments.pamf_repl_source_adapt.transfer_publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "same historical prediction and score"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-tri-source-adapt-s2026092702",
+      "method": "Tri with frozen source-selected U weight 6.0",
+      "purpose": "Exact original fallback",
+      "config_ref": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/labeled_1pct-factorial-ssl-full-permuted-s2026092702/source/resolved_config.json",
+      "resolved_config_ref": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/labeled_1pct-factorial-ssl-full-permuted-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label01",
+        "source_selected_weight": 6.0,
+        "reuse_original": true
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "每个null解释为不适用或待补，不能默认为所有seed相同",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reuse original fixed E50",
+      "output_root": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/labeled_1pct-factorial-ssl-full-permuted-s2026092702/source",
+      "log_path": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/labeled_1pct-factorial-ssl-full-permuted-s2026092702/source/segment50/metrics_epoch.jsonl",
+      "command": "python -m experiments.pamf_repl_source_adapt.transfer_publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "same historical prediction and score"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-tri-source-adapt-s2026092703",
+      "method": "Tri with frozen source-selected U weight 6.0",
+      "purpose": "Exact original fallback",
+      "config_ref": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/labeled_1pct-factorial-ssl-full-permuted-s2026092703/source/resolved_config.json",
+      "resolved_config_ref": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/labeled_1pct-factorial-ssl-full-permuted-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label01",
+        "source_selected_weight": 6.0,
+        "reuse_original": true
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "每个null解释为不适用或待补，不能默认为所有seed相同",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reuse original fixed E50",
+      "output_root": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/labeled_1pct-factorial-ssl-full-permuted-s2026092703/source",
+      "log_path": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/labeled_1pct-factorial-ssl-full-permuted-s2026092703/source/segment50/metrics_epoch.jsonl",
+      "command": "python -m experiments.pamf_repl_source_adapt.transfer_publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "same historical prediction and score"
+      ]
+    },
+    {
+      "row_id": "source_rx_2-tri-source-adapt-s2026092701",
+      "method": "Tri with frozen source-selected U weight 6.0",
+      "purpose": "Exact original fallback",
+      "config_ref": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_2-factorial-ssl-full-permuted-s2026092701/source/resolved_config.json",
+      "resolved_config_ref": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_2-factorial-ssl-full-permuted-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m2-natural",
+        "source_selected_weight": 6.0,
+        "reuse_original": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "每个null解释为不适用或待补，不能默认为所有seed相同",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reuse original fixed E50",
+      "output_root": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_2-factorial-ssl-full-permuted-s2026092701/source",
+      "log_path": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_2-factorial-ssl-full-permuted-s2026092701/source/segment50/metrics_epoch.jsonl",
+      "command": "python -m experiments.pamf_repl_source_adapt.transfer_publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "same historical prediction and score"
+      ]
+    },
+    {
+      "row_id": "source_rx_2-tri-source-adapt-s2026092702",
+      "method": "Tri with frozen source-selected U weight 6.0",
+      "purpose": "Exact original fallback",
+      "config_ref": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_2-factorial-ssl-full-permuted-s2026092702/source/resolved_config.json",
+      "resolved_config_ref": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_2-factorial-ssl-full-permuted-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m2-natural",
+        "source_selected_weight": 6.0,
+        "reuse_original": true
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "每个null解释为不适用或待补，不能默认为所有seed相同",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reuse original fixed E50",
+      "output_root": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_2-factorial-ssl-full-permuted-s2026092702/source",
+      "log_path": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_2-factorial-ssl-full-permuted-s2026092702/source/segment50/metrics_epoch.jsonl",
+      "command": "python -m experiments.pamf_repl_source_adapt.transfer_publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "same historical prediction and score"
+      ]
+    },
+    {
+      "row_id": "source_rx_2-tri-source-adapt-s2026092703",
+      "method": "Tri with frozen source-selected U weight 6.0",
+      "purpose": "Exact original fallback",
+      "config_ref": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_2-factorial-ssl-full-permuted-s2026092703/source/resolved_config.json",
+      "resolved_config_ref": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_2-factorial-ssl-full-permuted-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m2-natural",
+        "source_selected_weight": 6.0,
+        "reuse_original": true
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "每个null解释为不适用或待补，不能默认为所有seed相同",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reuse original fixed E50",
+      "output_root": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_2-factorial-ssl-full-permuted-s2026092703/source",
+      "log_path": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_2-factorial-ssl-full-permuted-s2026092703/source/segment50/metrics_epoch.jsonl",
+      "command": "python -m experiments.pamf_repl_source_adapt.transfer_publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "same historical prediction and score"
+      ]
+    }
+  ],
+  "notes": [
+    "Seeds 2026092702 and 2026092703 did not choose the source weights. All seeds use identical decision per data setting.",
+    "Fallback rows reuse the original Tri and represent zero gain by construction. Compare activated rows separately."
+  ]
+}

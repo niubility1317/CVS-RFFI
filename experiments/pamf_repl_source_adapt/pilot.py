@@ -144,10 +144,7 @@ def evaluate_fold(c, partition, device):
          fold=c['source_fold'], source_evaluation='held_V_only', target_access=False, U_truth_read=False, rows=result))
 
 
-def analyze(rt):
-    root = Path(rt['run_root'])
-    settings = settings_for(rt['run_id'])
-    noise_aware = rt['run_id'] == SECOND_RUN
+def collect_evidence(root, settings):
     folds = {name: {} for name in settings}
     evidence = {name: {weight: {} for weight in ALTERNATIVES} for name in settings}
     for job in read(root/'jobs.json'):
@@ -168,6 +165,14 @@ def analyze(rt):
             arms[fold, group] = (row['count'], row['gain'], row['damage'])
     if any(len(group) != 2 for group in folds.values()):
         raise ValueError('Exactly two completed folds per pilot design required')
+    return folds, evidence
+
+
+def analyze(rt):
+    root = Path(rt['run_root'])
+    settings = settings_for(rt['run_id'])
+    noise_aware = rt['run_id'] == SECOND_RUN
+    folds, evidence = collect_evidence(root, settings)
     decisions = {name: choose_weight(folds[name], evidence[name], noise_aware=noise_aware) for name in settings}
     result = dict(status='SOURCE_ADAPTATION_DECISIONS_FROZEN',
           selected_seed=SEED, policy='noise_aware' if noise_aware else 'strict', decisions=decisions,

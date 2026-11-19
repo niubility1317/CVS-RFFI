@@ -69,3 +69,39 @@ def test_noise_aware_screen_requires_gain_both_folds_and_limits_each_cell_loss()
     assert not decision['candidates'][3.]['eligible']
     borderline = {(f, g): (1800, 2, 1) for f, groups in folds.items() for g in groups}
     assert choose_weight(folds, {4.5: borderline, 3.: borderline}, noise_aware=True)['weight'] == 6.
+
+
+def test_transfer_applies_the_same_frozen_dose_to_each_seed_and_reuses_fallback():
+    from experiments.pamf_repl_source_adapt import transfer
+
+    native = dict(weight=6., decision='retain_native')
+    accepted = dict(weight=4.5, decision='source_improvement', candidates={'4.5': {'eligible': True}})
+    decisions = {setting: native for setting in transfer.SETTINGS}
+    setting = transfer.SETTINGS[0]
+    decisions[setting] = accepted
+    payload = dict(status='SOURCE_ADAPTATION_DECISIONS_FROZEN', selected_seed=transfer.SEED,
+                   target_access=False, U_truth_read=False, policy='development_calibration', decisions=decisions)
+    rows = transfer.selected_rows(payload)
+    changed = [row for row in rows if not row['reuses_original']]
+    assert {row['model_seed'] for row in changed} == set(transfer.paper.SEEDS)
+    assert len(rows) == 12 and len(changed) == 3
+    assert all(row['setting'] == setting and row['weight'] == 4.5 for row in changed)
+    with pytest.raises(ValueError, match='source decisions'):
+        transfer.selected_rows(dict(payload, target_access=True))
+
+
+def test_calibration_decisions_work_before_and_after_json_round_trip(tmp_path, monkeypatch):
+    import json
+    from experiments.cric_dura_comparison.io import write
+    from experiments.pamf_repl_source_adapt import transfer
+
+    write(tmp_path/'pipeline_state.json', {'status': 'ANALYZED'})
+    write(tmp_path/'analysis'/'source_decisions.json', dict(selected_seed=transfer.SEED, target_access=False, U_truth_read=False))
+    folds = {'f1': ('g1',), 'f2': ('g2',)}
+    positive = {('f1', 'g1'): (1800, 30, 2), ('f2', 'g2'): (1800, 30, 2)}
+    zero = {key: (1800, 0, 0) for key in positive}
+    monkeypatch.setattr(transfer, 'collect_evidence', lambda *_: (
+        dict.fromkeys(transfer.SETTINGS, folds), dict.fromkeys(transfer.SETTINGS, {4.5: positive, 3.: zero})))
+    payload = transfer.calibration_decisions(tmp_path)
+    assert transfer.selected_rows(payload) == transfer.selected_rows(json.loads(json.dumps(payload)))
+    assert all(row['weight'] == 4.5 for row in transfer.selected_rows(payload))
