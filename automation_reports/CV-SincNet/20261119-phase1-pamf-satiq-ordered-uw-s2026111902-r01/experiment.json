@@ -1,0 +1,239 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01",
+  "group_id": "phase1-pamf-satiq-ordered-uw",
+  "display_name": "SatIQ ordered PAMF 11-symbol vs 8-symbol vs 256-sample",
+  "description": "Vary visible SatIQ UW length under identical ordered PAMF architecture, matched Oxford sets and budget; freeze using only Oxford validation, then independent Thun testing.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF-CE",
+    "Oxford",
+    "Thun",
+    "ordered-UW",
+    "scale-invariant",
+    "paired"
+  ],
+  "comparison_group_id": "satiq-oxford-thun-ordered-uw-20c-v1",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Current user requests scale audit, matched 11/8/256-input experiment on N607, UK validation then automatic Swiss test. Preserve preexisting long-budget process.",
+  "code": {
+    "commit": "5ee7e03a98e7f2c58b9ad6c9622811fa49761582",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01-release",
+    "environment": "CVS-RFFI, /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01-release"
+  },
+  "data": {
+    "dataset": "SatIQ",
+    "version": "Same verified full FP32 25 MS/s headers and original UK/Swiss physical IDs",
+    "representation": "Original 11000-point FP32 IQ stored by joint min/span scaling, crop-local complex DC and unit RMS, 11 ordered symbols vs 8 vs short256",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/20261119-pamf-satiq-oxford-thun-v1/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/20261119-satiq-oxford-thun-full-v1/source/ids.npy and target/query/ids.npy",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/20261119-pamf-satiq-oxford-thun-v1/source/contract.json:classes",
+    "source_receivers": [
+      "Oxford, UK, USRP N210"
+    ],
+    "target_receivers": [
+      "Thun, Switzerland, USRP N210"
+    ],
+    "source_days": [
+      "2023-05-11",
+      "2023-05-12"
+    ],
+    "target_days": [
+      "2024-08-09",
+      "2024-08-10",
+      "2024-08-11"
+    ],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/20261119-pamf-satiq-oxford-thun-v1/source/contract.json:classes",
+    "roles": {
+      "L_s": 849,
+      "U_s": null,
+      "V": 269
+    },
+    "train_ratio": 0.8,
+    "capsule_id": null,
+    "split_id": "satiq_oxford_thun_v1-uk-utc15s-2026111901-held-identical",
+    "validation_ref": "automation_reports/CV-SincNet/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/report.md",
+    "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/20261119-satiq-oxford-thun-full-v1/target/query/ids.npy (30000 blind test after all UK checkpoints frozen)",
+    "leo_config_ref": "Real satellite downlink as observed, no synthetic overlay"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Same-source ordered UW extent pilot, single seed; Swiss test only with truth-last labels. No held-out target feedback."
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "automation_reports/CV-SincNet/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/report.md",
+    "provenance_verdict": "SCRATCH_ONLY; reuse immutable code only",
+    "selection_rule": "Oxford validation Macro-F1 of E20,E50,E100, earliest on exact tie, each arm from scratch"
+  },
+  "execution": {
+    "host": "N607 (dell-DSS8440), standard user",
+    "launch_owner": "codex-pamf-satiq-ordered-uw-20261119",
+    "gpu_policy": "One serial new worker on physical GPU 7, UUID GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9; prior owner unchanged; total up to two",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01-release/controller.log",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01",
+    "launch_command": "cwd=/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01-release; env CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_satiq.ordered launch /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01-release/configs/pamf_satiq_ordered_uw_20261119.json /home/szu2070436088/2510044040/CV-SincNet/data/20261119-pamf-satiq-oxford-thun-v1 /home/szu2070436088/2510044040/CV-SincNet/data/20261119-satiq-oxford-thun-full-v1 /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01",
+    "stop_rule": "Fixed 100 epochs per arm, no early stopping on performance; fail technical nonfinite/ID/path/output issues."
+  },
+  "expected_artifacts": [
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/uk_comparison.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/scores.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01-release/controller.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "balanced_accuracy",
+      "known coverage",
+      "train CE",
+      "GPU memory"
+    ],
+    "dimensions": [
+      "UW input extent",
+      "Oxford V at fixed E20,E50,E100 and selected",
+      "Swiss registered truth-last",
+      "raw scale verification"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/{uw11,uw8,short256}/predictions.npz",
+    "scorer_ref": "experiments/pamf_satiq/score.py"
+  },
+  "rows": [
+    {
+      "row_id": "uw11",
+      "method": "Ordered PAMF-CE, shared Tri-SIG-TIME local encoder and ordered 11-slot readout",
+      "purpose": "matched input extent",
+      "config_ref": "configs/pamf_satiq_ordered_uw_20261119.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/uw11/resolved_config.json",
+      "data_overrides": {
+        "crop": "[0,11000)",
+        "valid_symbol_tokens": 11,
+        "normalized_using_only_crop": true
+      },
+      "seeds": {
+        "model": 2026111902,
+        "split": 2026111901,
+        "data": 2026111903,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model init/dropout, fixed UK block split and epoch permutation; no aug/support/stochastic eval.",
+      "k": null,
+      "scenario": "real_ira_oxford_to_thun",
+      "optimizer": "AdamW weight_decay=0.0001",
+      "lr": 0.0003,
+      "epochs": 100,
+      "fl_rounds": null,
+      "budget_ref": "849 training records, batch 32, 27 updates/epoch, 2700 total updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/uw11",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/uw11/epochs.jsonl",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_satiq.ordered train /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01-release/configs/pamf_satiq_ordered_uw_20261119.json /home/szu2070436088/2510044040/CV-SincNet/data/20261119-pamf-satiq-oxford-thun-v1 /home/szu2070436088/2510044040/CV-SincNet/data/20261119-satiq-oxford-thun-full-v1 /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/uw11 --arm uw11",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/uw11/scratch_e00.pt",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/uw11/e020.pt",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/uw11/e050.pt",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/uw11/e100.pt",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/uw11/selection.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/uw11/epochs.jsonl",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/uw11/predictions.npz"
+      ]
+    },
+    {
+      "row_id": "uw8",
+      "method": "Ordered PAMF-CE, shared Tri-SIG-TIME local encoder and ordered 11-slot readout",
+      "purpose": "matched input extent",
+      "config_ref": "configs/pamf_satiq_ordered_uw_20261119.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/uw8/resolved_config.json",
+      "data_overrides": {
+        "crop": "[0,8000)",
+        "valid_symbol_tokens": 8,
+        "normalized_using_only_crop": true
+      },
+      "seeds": {
+        "model": 2026111902,
+        "split": 2026111901,
+        "data": 2026111903,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model init/dropout, fixed UK block split and epoch permutation; no aug/support/stochastic eval.",
+      "k": null,
+      "scenario": "real_ira_oxford_to_thun",
+      "optimizer": "AdamW weight_decay=0.0001",
+      "lr": 0.0003,
+      "epochs": 100,
+      "fl_rounds": null,
+      "budget_ref": "849 training records, batch 32, 27 updates/epoch, 2700 total updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/uw8",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/uw8/epochs.jsonl",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_satiq.ordered train /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01-release/configs/pamf_satiq_ordered_uw_20261119.json /home/szu2070436088/2510044040/CV-SincNet/data/20261119-pamf-satiq-oxford-thun-v1 /home/szu2070436088/2510044040/CV-SincNet/data/20261119-satiq-oxford-thun-full-v1 /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/uw8 --arm uw8",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/uw8/scratch_e00.pt",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/uw8/e020.pt",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/uw8/e050.pt",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/uw8/e100.pt",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/uw8/selection.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/uw8/epochs.jsonl",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/uw8/predictions.npz"
+      ]
+    },
+    {
+      "row_id": "short256",
+      "method": "Ordered PAMF-CE, shared Tri-SIG-TIME local encoder and ordered 11-slot readout",
+      "purpose": "matched input extent",
+      "config_ref": "configs/pamf_satiq_ordered_uw_20261119.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/short256/resolved_config.json",
+      "data_overrides": {
+        "crop": "[4500,4756)",
+        "valid_symbol_tokens": 1,
+        "normalized_using_only_crop": true
+      },
+      "seeds": {
+        "model": 2026111902,
+        "split": 2026111901,
+        "data": 2026111903,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model init/dropout, fixed UK block split and epoch permutation; no aug/support/stochastic eval.",
+      "k": null,
+      "scenario": "real_ira_oxford_to_thun",
+      "optimizer": "AdamW weight_decay=0.0001",
+      "lr": 0.0003,
+      "epochs": 100,
+      "fl_rounds": null,
+      "budget_ref": "849 training records, batch 32, 27 updates/epoch, 2700 total updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/short256",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/short256/epochs.jsonl",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_satiq.ordered train /home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01-release/configs/pamf_satiq_ordered_uw_20261119.json /home/szu2070436088/2510044040/CV-SincNet/data/20261119-pamf-satiq-oxford-thun-v1 /home/szu2070436088/2510044040/CV-SincNet/data/20261119-satiq-oxford-thun-full-v1 /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/short256 --arm short256",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/short256/scratch_e00.pt",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/short256/e020.pt",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/short256/e050.pt",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/short256/e100.pt",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/short256/selection.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/short256/epochs.jsonl",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01/short256/predictions.npz"
+      ]
+    }
+  ],
+  "notes": [
+    "Same RF branch, 160-d local encoding, 11-slot ordered symbol readout, CE and initialized parameter counts for all arms.",
+    "Scale is min and span, verified by publisher TFRecord code, positive sidecar spans and 192 UK numeric examples. Model input mathematically cancels scale after complex DC and RMS.",
+    "UK only until all candidates freeze, then all 30,000 Swiss holdout predictions close before scorer.",
+    "Existing long-budget PID 1818441 continues independently. No new augmentation, enrollment, simulated channels, or waveform labels in model input."
+  ],
+  "registered_at": "2026-11-19T10:20:51+00:00"
+}

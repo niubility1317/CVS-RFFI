@@ -1,0 +1,19 @@
+{
+  "status": "VERIFIED",
+  "time": "2026-11-19T18:20:30+08:00",
+  "host": "dell-DSS8440",
+  "controller_pid": 1905121,
+  "worker_pid": 1905219,
+  "worker_parent": 1905121,
+  "worker_arm": "uw11",
+  "workdir": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-ordered-uw-s2026111902-r01-release",
+  "physical_gpu": 7,
+  "gpu_worker_mib": 2318,
+  "prelaunch_free_mib": 21883,
+  "prior_long_pid": 1818441,
+  "prior_long_gpu_mib": 2218,
+  "uk_smoke": "PASS",
+  "latest_epoch": 7,
+  "release_sha256": "8a4c19d0bb9b939bd9b6fa260d088c5b841f900cc81dc2b26249bbf317a31e44",
+  "status_scope": "Detached controller, child, registry CWD, frozen launch, status and original old PID verified."
+}

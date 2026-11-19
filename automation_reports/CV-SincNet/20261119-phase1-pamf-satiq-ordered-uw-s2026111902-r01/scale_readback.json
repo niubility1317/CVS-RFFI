@@ -1,0 +1,43 @@
+{
+  "source": "https://github.com/ssloxford/SatIQ/blob/main/preprocessing/db-to-tfrecord.py#L48-L74",
+  "exported": "sample = (raw_iq - min_over_packet_and_both_components) / span",
+  "inverse": "raw_iq = sample * scale[1] + scale[0]",
+  "independently_observed_scale_fields": {
+    "Oxford": {
+      "rows": 30000,
+      "joint_min": [
+        -0.19195373356342316,
+        -0.01295578945428133
+      ],
+      "positive_span": [
+        0.028002634644508362,
+        0.3983396887779236
+      ]
+    },
+    "Thun": {
+      "rows": 30000,
+      "joint_min": [
+        -0.0048262858763337135,
+        -0.000824732065666467
+      ],
+      "positive_span": [
+        0.0017271668184548616,
+        0.009747594594955444
+      ]
+    }
+  },
+  "numerical_check": {
+    "Oxford_packets": 192,
+    "stored_range": [
+      0,
+      1
+    ],
+    "float64_max_abs_delta": {
+      "uw11": 2.220446049250313e-15,
+      "uw8": 2.886579864025407e-15,
+      "short256": 1.1102230246251565e-15
+    }
+  },
+  "metadata_scope": "Both stations checked using scale fields only. Numerical proof tested with Oxford waveforms only.",
+  "normalization": "Each arm subtracts its own selected view means of I and Q, then divides by one complex RMS. No out-of-view values, test-group aggregate or scale used as inputs."
+}
