@@ -20,3 +20,12 @@
 
 - 实际配置 `/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-reflect-source-e1-s2026092701-r01/PAMF_SUP/resolved_config.json`
 - 原始日志 `/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-reflect-source-e1-s2026092701-r01/train.log`
+
+## 第 5,000 步同预算源验证
+
+| 对齐同步模板的 256 点 PAMF | 验证主 CE | 3,103 类单包 Top-1 |
+|---|---:|---:|
+| 原周期边界 | 8.0164 | 0.0984%（49 包） |
+| 镜像延拓边界 | 8.0227 | 0.1004%（50 包） |
+
+2026-11-20T03:47:00+08:00 从 N607 读回两组相同的 49,814 个已知 V 包。镜像组多命中 1 包，验证主 CE 高 0.0063。开头波形发生了实质变化，首个检查点的预测还未显示明确改善。镜像组继续预定的第 20,000 步和完整首轮。独立 T 留出。
