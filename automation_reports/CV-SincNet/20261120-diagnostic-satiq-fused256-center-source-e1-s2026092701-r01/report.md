@@ -10,3 +10,12 @@ N607 物理 GPU0，PID 2197179，2026-11-20T01:29:13+08:00 已读回生效配置
 
 - 生效配置、训练日志：`/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01/PAMF_SUP/resolved_config.json`、`/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01/PAMF_SUP/steps.jsonl`
 - 过程日志：`/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-fused256-center-source-e1-s2026092701-r01/train.log`
+
+## 第 5,000 步
+
+| 融合 256 方案 | 前 5,000 步训练主 CE | 验证主 CE | 验证全类 Top-1 | 随机同星 K16 AUC | 跨日同星 K16 AUC |
+|---|---:|---:|---:|---:|---:|
+| 普通 | 8.3369 | 8.0351 | 0.0662% | 0.5275 | 0.5402 |
+| 训练期中心化 | 8.1693 | 7.9592 | 0.0883% | 0.5337 | 0.5359 |
+
+候选在前 5,000 步使主 CE 降低、全类命中从 33 增到 44。随机同星验证 AUC 略升，跨日略降。原模型经固定源 L 离线扣均值的跨日 AUC 为 0.5558，仍高于候选。共同拟合包、更多读出结果及保存中心证据见[5,000 步跨日配对](../20261120-diagnostic-satiq-training-mean-paired-5000-s2026111907-r01/report.md)。继续既定首轮。
