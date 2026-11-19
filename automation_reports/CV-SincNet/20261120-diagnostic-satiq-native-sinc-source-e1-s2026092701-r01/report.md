@@ -8,3 +8,12 @@ N607 GPU0，PID 2166873。2026-11-20T00:42:40+08:00 读回工作目录、命令�
 
 - 生效配置及进度：`/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-native-sinc-source-e1-s2026092701-r01/PAMF_SUP/resolved_config.json`、`/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-native-sinc-source-e1-s2026092701-r01/PAMF_SUP/steps.jsonl`
 - 运行日志：`/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-native-sinc-source-e1-s2026092701-r01/train.log`
+
+## 第 5,000 步同预算读回
+
+| 原版 160 方案 | 前 5,000 步训练主 CE | 源 V 主 CE | 源 V 全类 Top-1 | V 同星 K16 AUC |
+|---|---:|---:|---:|---:|
+| 原频带 | 8.5025 | 8.0584 | 0.0803% | 0.52945 |
+| 新频带 | 8.4861 | 8.0376 | 0.0803% | 0.52978 |
+
+前 5,000 步的源验证 CE 降 0.0208，类别准确率相同，同星 AUC 只增 0.00033。继续读回既定 20,000 步和完整首轮的结果。
