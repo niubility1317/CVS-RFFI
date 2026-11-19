@@ -1,0 +1,180 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261119-diagnostic-satiq-source-threshold-rehearsal-s2026111907-r01",
+  "group_id": "phase1-satiq-ccs2023-fully-supervised",
+  "display_name": "Source-only fixed verification threshold rehearsal on SatIQ and native PAMF-SUP",
+  "description": "Validate the full calibration and fixed source threshold export on the two model families before final held-out scoring.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF-SUP",
+    "source-threshold",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261119-phase1-satiq-ccs2023-sup-s2026092701-r03",
+    "20261119-phase1-satiq-ccs2023-fused320-extproto-sup100-s2026092701-r01",
+    "20261119-diagnostic-satiq-native-paired-satellite-e1-s2026111907-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requested PAMF-SUP adapted to SatIQ, no early augmentation, 100 epochs; all arms fully supervised.",
+  "code": {
+    "commit": "f35e50f9bb47d7a4e83d8b0a5936af4ae0d57205",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-diagnostic-satiq-source-threshold-rehearsal-s2026111907-r01",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python N607 FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-diagnostic-satiq-source-threshold-rehearsal-s2026111907-r01"
+  },
+  "data": {
+    "dataset": "Oxford SatIQ Zenodo 8220494, first 1010464 chronological packets",
+    "version": "8220494",
+    "representation": "Same physical source packets and split. SatIQ uses the 11000-point full preamble; PAMF-SUP native arms use the existing five branches over the 8000-sample common prefix.",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/{L,V}_index.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "source_receivers": [
+      "Oxford single receiver"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2023-03-22 through part of 2023-04-14 UTC"
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 910464,
+      "V": 50000,
+      "U_s": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "satiq_oxford_ccs2023_supervised_reindexed_v1_2026111905",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/V_index.npz",
+    "support_query_ref": "Transient source V enrollment K1/16. Independent T (50000) separately staged; no training access.",
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Frozen L/V readout only. Both whole-vector and independent-block calibration estimated on shared 8192 source L packets. No T access."
+  },
+  "checkpoint": {
+    "initialization": "frozen_source_checkpoints",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/SATIQ/s0028225.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused320-extproto-sup100-s2026092701-r01/PAMF_SUP/s0028225.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "provenance_verdict": "MATCHED_NATIVE_SOURCE_L_V",
+    "selection_rule": "Two existing first-epoch checkpoints are only used to verify the end-to-end source threshold path. No held-out inputs or labels."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Single sequential calibration and threshold source rehearsal worker",
+    "gpu_policy": "Physical GPU4, >=4096 MiB free and <=2 incumbent processes.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-source-threshold-rehearsal-s2026111907-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-source-threshold-rehearsal-s2026111907-r01",
+    "local_artifact_root": "E:/type10-7/local_data/satiq_oxford_ccs2023_supervised_20261119_r01",
+    "launch_command": "CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=4 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_readout fit_calibration /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/SATIQ/s0028225.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-source-threshold-rehearsal-s2026111907-r01/SATIQ/calibration.pt && /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_readout fit_thresholds /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/SATIQ/s0028225.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-source-threshold-rehearsal-s2026111907-r01/SATIQ/source_thresholds.json --calibration /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-source-threshold-rehearsal-s2026111907-r01/SATIQ/calibration.pt && /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_readout fit_calibration /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused320-extproto-sup100-s2026092701-r01/PAMF_SUP/s0028225.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-source-threshold-rehearsal-s2026111907-r01/PAMF320/calibration.pt && /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_readout fit_thresholds /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused320-extproto-sup100-s2026092701-r01/PAMF_SUP/s0028225.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-source-threshold-rehearsal-s2026111907-r01/PAMF320/source_thresholds.json --calibration /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-source-threshold-rehearsal-s2026111907-r01/PAMF320/calibration.pt",
+    "stop_rule": "Two source L calibration exports and two source V threshold exports are written. No held-out prediction.",
+    "controller_pid": 2086679,
+    "physical_gpu": 4,
+    "launch_readback": "Verified live controller PID and release working directory, verified archive digest and CUDA-device-4 admission, both source threshold files complete, exit 0."
+  },
+  "expected_artifacts": [
+    "SATIQ/calibration.pt",
+    "SATIQ/source_thresholds.json",
+    "PAMF320/calibration.pt",
+    "PAMF320/source_thresholds.json",
+    "source_fit.log",
+    "source_fit.exit",
+    "source_fit.pid"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "K1/K16 same-/cross-satellite fixed EER operating thresholds"
+    ],
+    "dimensions": [
+      "Same fixed source calibration set and verification panels; two frozen model families; 16 operating thresholds per family across modes and panels."
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "SATIQ",
+      "method": "SATIQ source verification readout",
+      "purpose": "Verify source-only artifact compatibility for the final held-out scoring pipeline.",
+      "config_ref": "experiments/pamf_satiq66/paper_readout.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-source-threshold-rehearsal-s2026111907-r01/SATIQ/source_thresholds.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111907,
+        "augmentation": null,
+        "support": 2026111907,
+        "evaluation": 2026111907
+      },
+      "seed_notes": "Frozen model. Seed determines the L fit subset and fixed source V panels; no augmentation.",
+      "k": [
+        1,
+        16
+      ],
+      "scenario": "Fixed paper-style and chronological source references and queries.",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Existing fixed source checkpoint after 28225 steps. No new training.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-source-threshold-rehearsal-s2026111907-r01/SATIQ",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-source-threshold-rehearsal-s2026111907-r01/source_fit.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_readout fit_calibration /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/SATIQ/s0028225.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-source-threshold-rehearsal-s2026111907-r01/SATIQ/calibration.pt && /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_readout fit_thresholds /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-sup-s2026092701-r03/SATIQ/s0028225.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-source-threshold-rehearsal-s2026111907-r01/SATIQ/source_thresholds.json --calibration /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-source-threshold-rehearsal-s2026111907-r01/SATIQ/calibration.pt",
+      "expected_artifacts": [
+        "source_scores.json",
+        "readout.log"
+      ]
+    },
+    {
+      "row_id": "PAMF320",
+      "method": "PAMF320 source verification readout",
+      "purpose": "Verify source-only artifact compatibility for the final held-out scoring pipeline.",
+      "config_ref": "experiments/pamf_satiq66/paper_readout.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-source-threshold-rehearsal-s2026111907-r01/PAMF320/source_thresholds.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111907,
+        "augmentation": null,
+        "support": 2026111907,
+        "evaluation": 2026111907
+      },
+      "seed_notes": "Frozen model. Seed determines the L fit subset and fixed source V panels; no augmentation.",
+      "k": [
+        1,
+        16
+      ],
+      "scenario": "Fixed paper-style and chronological source references and queries.",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Existing fixed source checkpoint after 28225 steps. No new training.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-source-threshold-rehearsal-s2026111907-r01/PAMF320",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-source-threshold-rehearsal-s2026111907-r01/source_fit.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_readout fit_calibration /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused320-extproto-sup100-s2026092701-r01/PAMF_SUP/s0028225.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-source-threshold-rehearsal-s2026111907-r01/PAMF320/calibration.pt && /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_readout fit_thresholds /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-satiq-ccs2023-fused320-extproto-sup100-s2026092701-r01/PAMF_SUP/s0028225.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-source-threshold-rehearsal-s2026111907-r01/PAMF320/source_thresholds.json --calibration /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-diagnostic-satiq-source-threshold-rehearsal-s2026111907-r01/PAMF320/calibration.pt",
+      "expected_artifacts": [
+        "source_scores.json",
+        "readout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "L supplies whitening and V supplies fixed operating points. Existing E1 checkpoint files only; do not read T. E1 artifacts serve as route verification only."
+  ],
+  "registered_at": "2026-11-19T14:42:17+00:00"
+}
