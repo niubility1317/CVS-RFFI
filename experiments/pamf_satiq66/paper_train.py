@@ -72,7 +72,7 @@ def validate(model, arm, raw, labels, val_panel, device):
     result = metrics(feature, val_panel, device)
     if arm != "SATIQ":
         mask = labels >= 0
-        target = torch.as_tensor(labels[mask].astype(np.int64), device=device)
+        target = device_array(labels[mask].astype(np.int64), device)
         known_features = feature[mask]
         weight = F.normalize(model.head.weight, dim=1)
         block_losses, correct = [], 0
@@ -151,7 +151,14 @@ def train(config, source, cache, out, arm, smoke=False):
                 journal.write(message + "\n")
                 journal.flush()
                 window, n = {}, 0
-    write_json(out / "complete.json", {"arm": arm, "updates": total, "mode": "smoke" if smoke else "supervised"})
+    result = {"arm": arm, "updates": total, "mode": "smoke" if smoke else "supervised"}
+    if smoke:
+        v_raw, v_labels, _ = roles["V"]
+        eligible = np.flatnonzero(np.bincount(v_labels[v_labels >= 0]) > 16)[:4]
+        rows = np.concatenate([np.flatnonzero(v_labels == label)[:18] for label in eligible])
+        smoke_panel = panel(v_labels[rows], classes, config["evaluation_seed"])
+        result["source_validation"] = validate(model, arm, v_raw[rows], v_labels[rows], smoke_panel, device)
+    write_json(out / "complete.json", result)
 
 
 def launch(config, source, cache, out, gpus):

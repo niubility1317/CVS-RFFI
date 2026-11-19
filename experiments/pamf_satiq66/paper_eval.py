@@ -64,8 +64,8 @@ def binary_scores(genuine, impostor):
 def metrics(features, data_panel, device):
     ref, query, labels, same_sat, other_sat = data_panel
     vectors = F.normalize(device_array(features, device), dim=1)
-    ref = torch.as_tensor(ref, device=device)
-    q = vectors[torch.as_tensor(query, device=device)]
+    ref = device_array(ref.astype(np.int64, copy=False), device)
+    q = vectors[device_array(query.astype(np.int64, copy=False), device)]
     results = {}
     for k in (1, ref.shape[1]):
         means = vectors[ref[:, :k]].mean(dim=1)
