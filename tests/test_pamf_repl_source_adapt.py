@@ -105,3 +105,17 @@ def test_calibration_decisions_work_before_and_after_json_round_trip(tmp_path, m
     payload = transfer.calibration_decisions(tmp_path)
     assert transfer.selected_rows(payload) == transfer.selected_rows(json.loads(json.dumps(payload)))
     assert all(row['weight'] == 4.5 for row in transfer.selected_rows(payload))
+
+
+def test_receiver_balance_keeps_existing_pair_support_and_avoids_single_partner_jitter():
+    import torch
+    from experiments.pamf_repl_source_adapt.receiver_balance import positive_target
+
+    labels = torch.tensor([0, 0, 0, 0, 0, 1])
+    receivers = torch.tensor([1, 2, 2, 2, 3, 4])
+    target, stats = positive_target(labels, receivers)
+    torch.testing.assert_close(target[0], torch.tensor([0., 5/24, 5/24, 5/24, 3/8, 0.]))
+    assert target[5].sum() == 0 and stats['affected'] > 0 and stats['tv'] > 0
+    collapsed = receivers.clamp_max(2)
+    native, stats = positive_target(labels, collapsed)
+    assert native is None and stats['affected'] == 0 and stats['tv'] == 0

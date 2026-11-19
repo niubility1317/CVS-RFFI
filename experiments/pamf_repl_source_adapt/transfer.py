@@ -57,11 +57,11 @@ def original_row(row):
     return f"{row['setting']}-factorial-ssl-full-permuted-s{row['model_seed']}"
 
 
-def configure(ctx, row, project, commit):
+def source_configuration(ctx, row, project, commit, run_id):
     from experiments.pamf_physics_tri.plan import continuation
 
     if row['setting'] == 'main_split':
-        cfg = continuation(ctx, row, str(project), commit, RUN)
+        cfg = continuation(ctx, row, str(project), commit, run_id)
     else:
         previous = Path(project)/'runs'/paper.RUN/'F'/original_row(row)/'source'
         done = read(previous/'complete.json')
@@ -72,10 +72,15 @@ def configure(ctx, row, project, commit):
                 or read(cfg['source_contract']) != read(ctx['handles'][row['protocol_id']]['source_contract'])):
             raise ValueError('Exactly matched historical source model required')
         cfg['shared_prefix'] = str(previous/'segment20')
-    cfg.update(run_id=RUN, row_id=row['row_id'], code_commit=commit, source_adaptation=row,
-               output_root=str(Path(project)/'runs'/RUN/'F'/row['row_id']/'source'))
+    cfg.update(run_id=run_id, row_id=row['row_id'], code_commit=commit, source_adaptation=row,
+               output_root=str(Path(project)/'runs'/run_id/'F'/row['row_id']/'source'))
     cfg['hard_pl']['weight'] = row['weight']
     cfg['hard_pl_gradient_guard']['weight'] = row['weight']
+    return cfg
+
+
+def configure(ctx, row, project, commit):
+    cfg = source_configuration(ctx, row, project, commit, RUN)
     validate(cfg)
     return cfg
 
@@ -91,11 +96,11 @@ def validate(c):
         raise ValueError('Full source continuation must use the preregistered dose alone')
 
 
-def parent(c):
+def parent(c, *, validate_config=validate):
     from experiments.pamf_branch_training.source import checked_e20_parent
     from experiments.pamf_repl_view_shuffle import plan as shuffled
 
-    validate(c)
+    validate_config(c)
     evidence = checked_e20_parent(c)
     prior = evidence['config']
     row = c['source_adaptation']
@@ -120,18 +125,15 @@ def installed(c, holder):
         yield
 
 
-def prepare(rt):
+def prepare_jobs(rt, rows, configurator):
     from experiments.pamf_physics_tri import target_tuning_runner as standard
 
     root = Path(rt['run_root'])
     project = Path(rt['project'])
     ctx = read(rt['context'])
-    decision = calibration_decisions(project/'runs'/DEVELOPMENT_RUN)
-    rows = selected_rows(decision)
-    write(root/'calibration_source_decisions.json', decision)
     changed = [row for row in rows if not row['reuses_original']]
     previous = standard.plan
-    standard.plan = SimpleNamespace(RUN=RUN, candidate_rows=lambda: changed, configuration=configure)
+    standard.plan = SimpleNamespace(RUN=rt['run_id'], candidate_rows=lambda: changed, configuration=configurator)
     try:
         jobs, sources, configs = standard.make_jobs(root, project, ctx, rt['code_commit'], rt['frozen_sources'])
     finally:
@@ -152,6 +154,12 @@ def prepare(rt):
     return jobs
 
 
+def prepare(rt):
+    decision = calibration_decisions(Path(rt['project'])/'runs'/DEVELOPMENT_RUN)
+    write(Path(rt['run_root'])/'calibration_source_decisions.json', decision)
+    return prepare_jobs(rt, selected_rows(decision), configure)
+
+
 def smoke(rt):
     from experiments.pamf_physics_tri.runner import smoke as standard
     from experiments.pamf_physics_tri.full_matrix_plan import check_graph
@@ -163,7 +171,7 @@ def smoke(rt):
              check_u=lambda state: dict(accepted=state['accepted']), graph_check=check_graph, segment_output=True)
 
 
-def analyze(rt):
+def analyze(rt, *, interpretation='retrospective source-rule calibration on design cohort', source_decision_run=DEVELOPMENT_RUN):
     import numpy as np
     from experiments.pamf_repl_weight.analyze_paired import compare, prediction
     from experiments.pamf_repl_weight.runner import pooled
@@ -196,19 +204,19 @@ def analyze(rt):
             counts[key] = dict(c)
         output.append(dict(**row, scores=scores, paired=counts, by_test=splits))
     write(root/'analysis'/'results.json', dict(status='TRANSFER_ANALYZED', rows=output,
-          source_decision_run=DEVELOPMENT_RUN, interpretation='retrospective source-rule calibration on design cohort',
+          source_decision_run=source_decision_run, interpretation=interpretation,
           target_feedback=False))
 
 
-def dispatch(rt):
+def dispatch(rt, *, prepare_fn=prepare, analyze_fn=analyze, module='experiments.pamf_repl_source_adapt.transfer'):
     from experiments.pamf_branch_training import prepare as prep, runner
     from experiments.pamf_physics_branch.runner import admits
     from experiments.pamf_physics_route.runner import launch
 
     original = prep.prepare, runner.admits, runner.launch, runner.analyze
-    prep.prepare, runner.analyze = prepare, analyze
+    prep.prepare, runner.analyze = prepare_fn, analyze_fn
     runner.admits = lambda gpu, jobs, mib: admits(gpu, jobs, max(12288, mib), max_total=2)
-    runner.launch = partial(launch, module='experiments.pamf_repl_source_adapt.transfer')
+    runner.launch = partial(launch, module=module)
     try:
         runner.dispatch(dict(rt, prioritize_prediction=True))
     finally:
