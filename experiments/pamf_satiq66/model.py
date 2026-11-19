@@ -25,12 +25,21 @@ def reference_waveform():
 
 
 class UWResponse(nn.Module):
-    def __init__(self, representation):
+    def __init__(self, representation, waveform_samples=8000):
         super().__init__()
         template = torch.utils.dlpack.from_dlpack(reference_waveform()[representation])
         ref = torch.complex(template[0], template[1])
+        if waveform_samples != 8000:
+            if representation != 1 or waveform_samples != 11000:
+                raise ValueError("Full-header reference alignment requires the downsampled SatIQ view")
+            # A full header places fewer grid points inside the known 8,000-point word.
+            ratio = waveform_samples / 8000
+            positions = torch.arange(int((len(ref) - 1) / ratio) + 1) * ratio
+            left = positions.long()
+            fraction = positions - left
+            ref = ref[left] * (1 - fraction) + ref[left + 1] * fraction
         ref = ref / ref.abs().square().mean().sqrt()
-        window = torch.hann_window(256)
+        window = torch.hann_window(len(ref))
         spectrum = torch.fft.fft(ref * window)
         # Twelve usable bins preserve the native response projection width.
         bins = spectrum.abs().topk(12).indices.sort().values
@@ -38,9 +47,11 @@ class UWResponse(nn.Module):
         self.register_buffer("window", window, persistent=False)
         self.register_buffer("bins", bins, persistent=False)
         self.register_buffer("ideal", spectrum[bins], persistent=False)
+        self.coherence_lag = round(16 * 8000 / waveform_samples)
 
     def forward(self, iq):
-        x = torch.complex(iq[:, 0], iq[:, 1])
+        used = iq[:, :, :len(self.reference)]
+        x = torch.complex(used[:, 0], used[:, 1])
         power = x.abs().square().mean(-1).clamp_min(1e-8)
         x = x / power.sqrt()[:, None]
         gain = (x * self.reference.conj()).mean(-1)
@@ -50,15 +61,17 @@ class UWResponse(nn.Module):
         relative = (transfer * gain.conj()[:, None] / (gain.abs().square()[:, None] + 1e-4)) - 1
         bounded = relative / (1 + relative.abs().square() / 16).sqrt()
         residual = x - gain[:, None] * self.reference
-        coherence = (x[:, 16:] * x[:, :-16].conj()).mean(-1).abs()
-        tail_head = torch.log((x[:, 128:].abs().square().mean(-1) + 1e-4)
-                              / (x[:, :128].abs().square().mean(-1) + 1e-4))
+        lag = self.coherence_lag
+        midpoint = x.shape[1] // 2
+        coherence = (x[:, lag:] * x[:, :-lag].conj()).mean(-1).abs()
+        tail_head = torch.log((x[:, midpoint:].abs().square().mean(-1) + 1e-4)
+                              / (x[:, :midpoint].abs().square().mean(-1) + 1e-4))
         stats = torch.stack((gain.abs().square(), coherence, residual.abs().square().mean(-1),
                              torch.zeros_like(power), tail_head), dim=1)
         return torch.cat((bounded.real, bounded.imag, stats), dim=1)
 
 
-def build_model(runtime, seed, representation):
+def build_model(runtime, seed, representation, reference_waveform_samples=8000):
     from experiments.pamf_phase3_open_world.source_development import _activate_code
 
     _activate_code(runtime)
@@ -85,7 +98,7 @@ def build_model(runtime, seed, representation):
             sinc.scale_hz *= ratio
             sinc.sample_rate = 800000
         core.sinc = sinc
-        model.response = UWResponse(representation)
+        model.response = UWResponse(representation, reference_waveform_samples)
         model.sequence_pool = CompositePool(core.t2.pw.out_channels, "SIG_TIME_X3", seed)
         model.__class__ = CompositeReference
         for view in model.sequence_pool.views:

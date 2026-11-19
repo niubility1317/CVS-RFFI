@@ -124,7 +124,8 @@ def make_model(config, arm, classes):
         model = PaperNativePAMF(config["runtime"], config["model_seed"], len(classes), config["native_expansion"],
                                 satiq_sinc_init=config.get("satiq_sinc_init", False),
                                 center_fusion=config.get("center_fusion", False),
-                                waveform_samples=config.get("native_waveform_samples", 8000))
+                                waveform_samples=config.get("native_waveform_samples", 8000),
+                                align_reference_time=config.get("align_reference_time", False))
     elif arm == "SATIQ":
         model = PaperSatIQ()
     else:
