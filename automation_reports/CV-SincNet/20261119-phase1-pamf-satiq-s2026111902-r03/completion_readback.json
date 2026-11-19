@@ -1,0 +1,65 @@
+{
+  "status": "VERIFIED",
+  "class_count": 20,
+  "swiss_total": 30000,
+  "swiss_known": 369,
+  "observed_classes": 19,
+  "checked": {
+    "backbone_ce": {
+      "epoch_final": {
+        "epoch": 20,
+        "updates": 540,
+        "uk_train_ce": 3.1096278624203237,
+        "uk_val": {
+          "accuracy": 0.08921933174133301,
+          "ce": 3.000924587249756
+        },
+        "seconds": 12.997446404071525,
+        "peak_gpu_allocated_mib": 167.92138671875
+      },
+      "epochs": 20,
+      "rows_predicted": 30000,
+      "exact_matches": 13,
+      "known_predictions_per_class": [
+        [
+          0,
+          353
+        ],
+        [
+          4,
+          16
+        ]
+      ],
+      "max_uk_val": 0.08921933174133301,
+      "verified_macro_f1": 0.007374173137762439
+    },
+    "pamf_ce": {
+      "epoch_final": {
+        "epoch": 20,
+        "updates": 540,
+        "uk_train_ce": 3.111840895404524,
+        "uk_val": {
+          "accuracy": 0.07806691527366638,
+          "ce": 3.0161969661712646
+        },
+        "seconds": 20.028999048983678,
+        "peak_gpu_allocated_mib": 168.5791015625
+      },
+      "epochs": 20,
+      "rows_predicted": 30000,
+      "exact_matches": 14,
+      "known_predictions_per_class": [
+        [
+          0,
+          362
+        ],
+        [
+          4,
+          7
+        ]
+      ],
+      "max_uk_val": 0.08921933174133301,
+      "verified_macro_f1": 0.006216516902011126
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "status": "VERIFIED",
+  "remote_time": "2026-11-19T15:06:09+08:00",
+  "hostname": "dell-DSS8440",
+  "observed_controller_pid": 1773301,
+  "observed_worker_pid": 1773446,
+  "worker_parent_pid": 1773301,
+  "observed_worker_stage": "pamf_ce train",
+  "physical_gpu": 6,
+  "gpu_memory_mib": 536,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-s2026111902-r03-release",
+  "command": "experiments.pamf_satiq.launch /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-s2026111902-r03 configs/pamf_satiq_oxford_thun_20261119.json /home/szu2070436088/2510044040/CV-SincNet/data/20261119-pamf-satiq-oxford-thun-v1",
+  "controller_log": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-s2026111902-r03-release/controller.log",
+  "release_sha256": "42f9ad61a50decf50d7e7ef29d8023e2a8632dbc5d1270027e683b223eb69d86",
+  "release_compile": "PASS",
+  "source_train_log_updates_seen": 540,
+  "second_arm_smoke": "PASS",
+  "verified_data_files": 6,
+  "verified_data_bytes": 264076962,
+  "verified_data_root": "/home/szu2070436088/2510044040/CV-SincNet/data/20261119-pamf-satiq-oxford-thun-v1"
+}

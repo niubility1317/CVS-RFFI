@@ -1,0 +1,190 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261119-phase1-pamf-satiq-s2026111902-r02",
+  "group_id": "phase1-pamf-satiq-oxford-thun-cross-station",
+  "display_name": "SatIQ Oxford to Thun cross-station PAMF-CE pilot",
+  "description": "Matched Backbone-CE versus PAMF-CE, trained from scratch on real Oxford Iridium IQ and tested on Thun. Changes only the three natural-order SIG-TIME signature branches. UK-majority and uniform chance are descriptive baselines.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF-CE",
+    "Oxford",
+    "Thun",
+    "real-downlink",
+    "cross-station"
+  ],
+  "comparison_group_id": "satiq-oxford-thun-real-header-20c-sourceonly-v1",
+  "parent_run_ids": [],
+  "replaces_run_id": "20261119-phase1-pamf-satiq-s2026111902-r01",
+  "authorization": "Current user message explicitly authorizes design, N607 release, and automatic UK-to-Switzerland scoring.",
+  "code": {
+    "commit": "82944c47899d6e573b8112c5108abcd09e5c7428",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-s2026111902-r02-release",
+    "environment": "CVS-RFFI, /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-s2026111902-r02-release"
+  },
+  "data": {
+    "dataset": "SatIQ",
+    "version": "Dorm labpc E:/SatIQ/npy_dataset, v1 Oxford/Thun compact derivative",
+    "representation": "Real IRA headers; four fixed native 25 MS/s 2x256 slices and per-message RMS, mean logits",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/20261119-pamf-satiq-oxford-thun-v1/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/20261119-pamf-satiq-oxford-thun-v1/source/{train,val}.npz:ids and target/query/ids.npy",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/20261119-pamf-satiq-oxford-thun-v1/source/contract.json:classes",
+    "source_receivers": [
+      "Oxford, UK, USRP N210"
+    ],
+    "target_receivers": [
+      "Thun, Switzerland, USRP N210"
+    ],
+    "source_days": [
+      "2023-05-11",
+      "2023-05-12"
+    ],
+    "target_days": [
+      "2024-08-09",
+      "2024-08-10",
+      "2024-08-11"
+    ],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/20261119-pamf-satiq-oxford-thun-v1/source/contract.json:classes",
+    "roles": {
+      "L_s": 849,
+      "U_s": null,
+      "V": 269
+    },
+    "train_ratio": 0.8,
+    "capsule_id": null,
+    "split_id": "satiq_oxford_thun_v1-uk-utc15s-2026111901",
+    "validation_ref": "automation_reports/CV-SincNet/20261119-phase1-pamf-satiq-s2026111902-r02/report.md",
+    "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/20261119-pamf-satiq-oxford-thun-v1/target/query/ids.npy (all 30000; no support)",
+    "leo_config_ref": "Real satellite downlink as observed, no synthetic overlay"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "External real-IQ pilot of PAMF-CE. Station/date/environment jointly shift; no full PAMF, target adaptation or open-set rejection claim."
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "automation_reports/CV-SincNet/20261119-phase1-pamf-satiq-s2026111902-r02/report.md",
+    "provenance_verdict": "SCRATCH_ONLY; existing immutable releases are code only",
+    "selection_rule": "Fixed epoch 20; UK validation is descriptive and Swiss data are inference-only"
+  },
+  "execution": {
+    "host": "N607 (dell-DSS8440), standard user",
+    "launch_owner": "codex-pamf-satiq-20261119",
+    "gpu_policy": "One serial process on physical GPU 6 (GPU-5463e082-259e-537b-603a-01575d45801c); no other processes touched",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-s2026111902-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-s2026111902-r02-release/controller.log",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261119-phase1-pamf-satiq-s2026111902-r02",
+    "launch_command": "cwd=/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-s2026111902-r02-release; env CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=GPU-5463e082-259e-537b-603a-01575d45801c /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_satiq.launch /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-s2026111902-r02 configs/pamf_satiq_oxford_thun_20261119.json /home/szu2070436088/2510044040/CV-SincNet/data/20261119-pamf-satiq-oxford-thun-v1",
+    "stop_rule": "Fail on non-finite logits/loss, source/target role or identity inconsistency, output collision, subprocess failure or incomplete prediction; preserve outputs. Low scores are not a failure."
+  },
+  "expected_artifacts": [
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-s2026111902-r02/scores.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/data/20261119-pamf-satiq-oxford-thun-v1/source/contract.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/20261119-phase1-pamf-satiq-s2026111902-r02-release/controller.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "balanced_accuracy",
+      "macro_f1",
+      "per_class_f1",
+      "confusion_matrix",
+      "coverage",
+      "UK validation accuracy",
+      "seconds",
+      "peak_gpu_allocated_mib"
+    ],
+    "dimensions": [
+      "arm",
+      "satellite-beam pair",
+      "Swiss all known",
+      "Swiss confidence >=90 known",
+      "Swiss original test shard known",
+      "single model seed"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-s2026111902-r02/{backbone_ce,pamf_ce}/predictions.npz",
+    "scorer_ref": "experiments/pamf_satiq/score.py"
+  },
+  "rows": [
+    {
+      "row_id": "backbone_ce",
+      "method": "Backbone-CE: native Sinc/time/frequency/PA with joint cosine head, no SIG-TIME",
+      "purpose": "matched control",
+      "config_ref": "configs/pamf_satiq_oxford_thun_20261119.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-s2026111902-r02/backbone_ce/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026111902,
+        "split": 2026111901,
+        "data": 2026111903,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model initialization, UK UTC block split, training epoch permutation. No random augmentation, support, or stochastic evaluation.",
+      "k": null,
+      "scenario": "real_ira_oxford_to_thun",
+      "optimizer": "AdamW weight_decay=0.0001",
+      "lr": 0.0003,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "849 packets, 32 packets per batch (4 windows per packet), 27 updates per epoch, 540 updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-s2026111902-r02/backbone_ce",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-s2026111902-r02/backbone_ce/epochs.jsonl",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_satiq.run train configs/pamf_satiq_oxford_thun_20261119.json /home/szu2070436088/2510044040/CV-SincNet/data/20261119-pamf-satiq-oxford-thun-v1/source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-s2026111902-r02/backbone_ce backbone_ce",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-s2026111902-r02/backbone_ce/scratch_e00.pt",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-s2026111902-r02/backbone_ce/source_final.pt",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-s2026111902-r02/backbone_ce/epochs.jsonl",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-s2026111902-r02/backbone_ce/predictions.npz"
+      ]
+    },
+    {
+      "row_id": "pamf_ce",
+      "method": "SatIQ PAMF-CE: add three native natural-order SIG-TIME branches to the common Backbone-CE encoder",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_satiq_oxford_thun_20261119.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-s2026111902-r02/pamf_ce/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026111902,
+        "split": 2026111901,
+        "data": 2026111903,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model initialization, UK UTC block split, training epoch permutation. No random augmentation, support, or stochastic evaluation.",
+      "k": null,
+      "scenario": "real_ira_oxford_to_thun",
+      "optimizer": "AdamW weight_decay=0.0001",
+      "lr": 0.0003,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "849 packets, 32 packets per batch (4 windows per packet), 27 updates per epoch, 540 updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-s2026111902-r02/pamf_ce",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-s2026111902-r02/pamf_ce/epochs.jsonl",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_satiq.run train configs/pamf_satiq_oxford_thun_20261119.json /home/szu2070436088/2510044040/CV-SincNet/data/20261119-pamf-satiq-oxford-thun-v1/source /home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-s2026111902-r02/pamf_ce pamf_ce",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-s2026111902-r02/pamf_ce/scratch_e00.pt",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-s2026111902-r02/pamf_ce/source_final.pt",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-s2026111902-r02/pamf_ce/epochs.jsonl",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261119-phase1-pamf-satiq-s2026111902-r02/pamf_ce/predictions.npz"
+      ]
+    }
+  ],
+  "notes": [
+    "UK and Switzerland collect different dates and use different receive chains. German records excluded.",
+    "Source train ratio is the block assignment expectation before guard and eligibility; realized class-screened counts are explicit.",
+    "No target metrics, metadata, samples or target-side statistics are used for class selection, training, or checkpoint selection. Historical aggregate overlap audit is disclosed in the report.",
+    "Both arms omit the inherited, protocol-specific Wi-Fi L-STF response branch. SatIQ does not provide an independently calibrated Iridium reference response.",
+    "Operational compatibility fix only: use DLPack in both directions to bridge CPython NumPy 2.2.5 with PyTorch 2.1.0. r01 stopped before training or target access."
+  ],
+  "registered_at": "2026-11-19T07:03:01+00:00"
+}

@@ -203,3 +203,9 @@
 - [20261019-phase1-external-dg-suite-m168-r01](../automation_reports/CV-SincNet/20261019-phase1-external-dg-suite-m168-r01/report.md)：非PAMF对比，162新增训练＋6冻结补测，三seed，仅GPU0/1。
 
 - [20261019-phase1-external-dg-cost-m69-r01](../automation_reports/CV-SincNet/20261019-phase1-external-dg-cost-m69-r01/report.md)：三seed冻结模型69行统一推理成本，性能矩阵结束后执行，零新增训练。
+
+## SatIQ Oxford to Thun
+
+- [20261119-phase1-pamf-satiq-s2026111902-r01](../automation_reports/CV-SincNet/20261119-phase1-pamf-satiq-s2026111902-r01/report.md) (REPLACED: NumPy ABI)
+- [20261119-phase1-pamf-satiq-s2026111902-r02](../automation_reports/CV-SincNet/20261119-phase1-pamf-satiq-s2026111902-r02/report.md) (REPLACED: Sinc smoke)
+- [20261119-phase1-pamf-satiq-s2026111902-r03](../automation_reports/CV-SincNet/20261119-phase1-pamf-satiq-s2026111902-r03/report.md) (ANALYZED)

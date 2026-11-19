@@ -1,0 +1,178 @@
+{
+  "schema": "satiq_oxford_thun_v1",
+  "source_station": "Oxford, UK",
+  "target_station": "Thun, Switzerland",
+  "source_physical_records": 30000,
+  "target_physical_records": 30000,
+  "sample_rate_hz": 25000000,
+  "header_samples": 11000,
+  "window_starts": [
+    4500,
+    5500,
+    6500,
+    7500
+  ],
+  "window_samples": 256,
+  "split_seed": 2026111901,
+  "utc_block_ns": 15000000000,
+  "guard_ns_each_side": 500000000,
+  "confidence_source_threshold": 90,
+  "max_classes": 20,
+  "min_train": 30,
+  "min_val": 8,
+  "eligible_classes": 32,
+  "classes": [
+    {
+      "class_id": 0,
+      "satellite_id": 99,
+      "beam_id": 19,
+      "uk_train": 64,
+      "uk_val": 22
+    },
+    {
+      "class_id": 1,
+      "satellite_id": 111,
+      "beam_id": 19,
+      "uk_train": 55,
+      "uk_val": 9
+    },
+    {
+      "class_id": 2,
+      "satellite_id": 57,
+      "beam_id": 19,
+      "uk_train": 53,
+      "uk_val": 21
+    },
+    {
+      "class_id": 3,
+      "satellite_id": 90,
+      "beam_id": 38,
+      "uk_train": 51,
+      "uk_val": 12
+    },
+    {
+      "class_id": 4,
+      "satellite_id": 88,
+      "beam_id": 9,
+      "uk_train": 46,
+      "uk_val": 8
+    },
+    {
+      "class_id": 5,
+      "satellite_id": 78,
+      "beam_id": 26,
+      "uk_train": 43,
+      "uk_val": 13
+    },
+    {
+      "class_id": 6,
+      "satellite_id": 73,
+      "beam_id": 26,
+      "uk_train": 42,
+      "uk_val": 8
+    },
+    {
+      "class_id": 7,
+      "satellite_id": 69,
+      "beam_id": 38,
+      "uk_train": 41,
+      "uk_val": 11
+    },
+    {
+      "class_id": 8,
+      "satellite_id": 99,
+      "beam_id": 38,
+      "uk_train": 41,
+      "uk_val": 16
+    },
+    {
+      "class_id": 9,
+      "satellite_id": 104,
+      "beam_id": 39,
+      "uk_train": 41,
+      "uk_val": 11
+    },
+    {
+      "class_id": 10,
+      "satellite_id": 18,
+      "beam_id": 38,
+      "uk_train": 40,
+      "uk_val": 13
+    },
+    {
+      "class_id": 11,
+      "satellite_id": 79,
+      "beam_id": 18,
+      "uk_train": 39,
+      "uk_val": 14
+    },
+    {
+      "class_id": 12,
+      "satellite_id": 85,
+      "beam_id": 9,
+      "uk_train": 38,
+      "uk_val": 9
+    },
+    {
+      "class_id": 13,
+      "satellite_id": 110,
+      "beam_id": 39,
+      "uk_train": 37,
+      "uk_val": 16
+    },
+    {
+      "class_id": 14,
+      "satellite_id": 115,
+      "beam_id": 1,
+      "uk_train": 37,
+      "uk_val": 21
+    },
+    {
+      "class_id": 15,
+      "satellite_id": 115,
+      "beam_id": 9,
+      "uk_train": 37,
+      "uk_val": 18
+    },
+    {
+      "class_id": 16,
+      "satellite_id": 36,
+      "beam_id": 27,
+      "uk_train": 36,
+      "uk_val": 12
+    },
+    {
+      "class_id": 17,
+      "satellite_id": 42,
+      "beam_id": 38,
+      "uk_train": 36,
+      "uk_val": 11
+    },
+    {
+      "class_id": 18,
+      "satellite_id": 51,
+      "beam_id": 39,
+      "uk_train": 36,
+      "uk_val": 16
+    },
+    {
+      "class_id": 19,
+      "satellite_id": 78,
+      "beam_id": 9,
+      "uk_train": 36,
+      "uk_val": 8
+    }
+  ],
+  "source_counts": {
+    "train": 849,
+    "val": 269
+  },
+  "source_shards": [
+    "2023-05-12_0.tfrecord",
+    "2023-05-12_1.tfrecord",
+    "2023-05-12_2.tfrecord",
+    "2023-05-12_3.tfrecord",
+    "2023-05-12_4.tfrecord",
+    "2023-05-12_5.tfrecord"
+  ]
+}
