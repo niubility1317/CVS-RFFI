@@ -15,7 +15,7 @@ from .train import device_array
 
 
 @torch.no_grad()
-def classifier_accuracy(model, raw, labels, device, block=256, head_diagnostics=False):
+def classifier_accuracy(model, raw, labels, device, block=256, head_diagnostics=False, logit_offset=None):
     known = int(np.count_nonzero(labels >= 0))
     weight = F.normalize(model.head.weight, dim=1)
     samples = getattr(model, "waveform_samples", raw.shape[-1])
@@ -32,6 +32,8 @@ def classifier_accuracy(model, raw, labels, device, block=256, head_diagnostics=
         iq = normalize_packet(device_array(raw[start:end, :, :samples], device))
         target = device_array(labels[start:end].astype(np.int64), device)
         scores = 30 * F.linear(model.embed(iq), weight)
+        if logit_offset is not None:
+            scores = scores - logit_offset
         prediction = scores.argmax(dim=1)
         correct = prediction == target
         hits += correct.sum()
