@@ -59,7 +59,7 @@ def panel(labels, classes, seed, reference_size=16, reference_period=None):
     return np.asarray(ref), np.asarray(query), targets, np.asarray(neighbor), np.asarray(foreign)
 
 
-def binary_scores(genuine, impostor):
+def binary_scores(genuine, impostor, threshold=None, include_eer_threshold=False):
     if not len(genuine) or not len(impostor):
         return None
     ranks = rankdata(np.concatenate((genuine, impostor)))
@@ -68,11 +68,17 @@ def binary_scores(genuine, impostor):
     miss = np.searchsorted(np.sort(genuine), thresholds) / len(genuine)
     false = 1 - np.searchsorted(np.sort(impostor), thresholds) / len(impostor)
     i = np.argmin(np.abs(miss - false))
-    return dict(auc=float(auc), eer=float((miss[i] + false[i]) / 2), pairs=len(genuine))
+    result = dict(auc=float(auc), eer=float((miss[i] + false[i]) / 2), pairs=len(genuine))
+    if include_eer_threshold:
+        result["eer_threshold"] = float(thresholds[i])
+    if threshold is not None:
+        result["fixed"] = dict(threshold=float(threshold), far=float(np.mean(impostor >= threshold)),
+                               frr=float(np.mean(genuine < threshold)))
+    return result
 
 
 @torch.no_grad()
-def metrics(features, data_panel, device):
+def metrics(features, data_panel, device, thresholds=None, include_eer_threshold=False):
     ref, query, labels, same_sat, other_sat = data_panel
     vectors = F.normalize(device_array(features, device), dim=1)
     ref = device_array(ref.astype(np.int64, copy=False), device)
@@ -84,9 +90,12 @@ def metrics(features, data_panel, device):
         p = np.arange(len(labels))
         score = np.from_dlpack(scores.cpu())
         genuine = score[p, labels]
+        cutoffs = thresholds[f"K{k}"] if thresholds is not None else {}
         results[f"K{k}"] = dict(top1=float((score.argmax(1) == labels).mean()),
                                 same_satellite=binary_scores(genuine[same_sat >= 0],
-                                                             score[p[same_sat >= 0], same_sat[same_sat >= 0]]),
+                                                             score[p[same_sat >= 0], same_sat[same_sat >= 0]],
+                                                             cutoffs.get("same_satellite"), include_eer_threshold),
                                 different_satellite=binary_scores(genuine[other_sat >= 0],
-                                                                  score[p[other_sat >= 0], other_sat[other_sat >= 0]]))
+                                                                  score[p[other_sat >= 0], other_sat[other_sat >= 0]],
+                                                                  cutoffs.get("different_satellite"), include_eer_threshold))
     return dict(reference_classes=len(ref), query_records=len(query), **results)

@@ -11,8 +11,8 @@ from .data import read_json, write_json
 from .paper_cache import archive_requests, load_group
 from .paper_calibrated_readout import apply_calibration, encode, fit_calibration
 from .paper_eval import embeddings, metrics, panel
-from .paper_signal_readout import source_date_cutoff
-from .paper_train import ARMS, make_model
+from .paper_signal_readout import source_date_cutoff, source_panels
+from .paper_train import ARMS, make_model, source_inputs
 from .train import cuda_device, device_array
 
 
@@ -59,17 +59,32 @@ def export_calibration(source, source_cache, checkpoint, out, fit_count=8192, se
         torch.save(artifact, f)
 
 
+def load_calibration(source, checkpoint, updates, arm, calibration):
+    if calibration is None:
+        return None
+    artifact = torch.load(calibration, map_location="cpu", weights_only=True)
+    if (artifact["schema"], artifact["source"], artifact["checkpoint"], artifact["updates"], artifact["arm"]) != (
+            "satiq_partial_whiten_v1", str(source.resolve()), str(checkpoint.resolve()), updates, arm):
+        raise ValueError("Calibration must belong to the exact frozen source checkpoint")
+    return artifact["stats"]
+
+
+def readout_features(model, arm, iq, device, stats):
+    if stats is None:
+        return {"features": embeddings(model, iq, device)}
+    paths = encode(model, arm, iq, np.arange(len(iq)), device)
+    calibrated = [F.normalize(apply_calibration(x, s), dim=1) for x, s in zip(paths, stats, strict=True)]
+    return {"features": np.from_dlpack(F.normalize(torch.cat(paths, dim=1), dim=1)),
+            "calibrated_features": np.from_dlpack(F.normalize(torch.cat(calibrated, dim=1), dim=1))}
+
+
 @torch.no_grad()
 def predict(source, iq_index, iq_cache, checkpoint, out, calibration=None):
     classes, _, n = class_map(source)
     device = cuda_device()
     model, config, updates = load_source_model(source, checkpoint, classes, device)
     arm = config["arm"]
-    if calibration is not None:
-        artifact = torch.load(calibration, map_location="cpu", weights_only=True)
-        if (artifact["schema"], artifact["source"], artifact["checkpoint"], artifact["updates"], artifact["arm"]) != (
-                "satiq_partial_whiten_v1", str(source.resolve()), str(checkpoint.resolve()), updates, arm):
-            raise ValueError("Calibration must belong to the exact frozen source checkpoint")
+    stats = load_calibration(source, checkpoint, updates, arm, calibration)
     cache = np.load(iq_cache / "T_raw.npy", mmap_mode="r", allow_pickle=False)
     if cache.shape != (n, 2, 11_000) or cache.dtype != np.float32:
         raise ValueError("Held-out IQ cache does not match the class contract")
@@ -77,16 +92,8 @@ def predict(source, iq_index, iq_cache, checkpoint, out, calibration=None):
         if set(f.files) != {"archive", "segment", "row", "ids"} or len(f["ids"]) != n:
             raise ValueError("Expected a label-free test IQ index")
         ids = f["ids"]
-    if calibration is None:
-        feature = embeddings(model, cache, device)
-        results = {"ids": ids, "features": feature}
-    else:
-        paths = encode(model, arm, cache, np.arange(n), device)
-        feature = np.from_dlpack(F.normalize(torch.cat(paths, dim=1), dim=1))
-        calibrated = [F.normalize(apply_calibration(x, s), dim=1)
-                      for x, s in zip(paths, artifact["stats"], strict=True)]
-        results = {"ids": ids, "features": feature,
-                   "calibrated_features": np.from_dlpack(F.normalize(torch.cat(calibrated, dim=1), dim=1))}
+    results = {"ids": ids, **readout_features(model, arm, cache, device, stats)}
+    feature = results["features"]
     if arm != "SATIQ":
         weight = F.normalize(model.head.weight, dim=1)
         predictions = []
@@ -96,11 +103,49 @@ def predict(source, iq_index, iq_cache, checkpoint, out, calibration=None):
         results["head_predictions"] = np.concatenate(predictions)
     out.mkdir(exist_ok=False)
     np.savez(out / "predictions.npz", **results)
-    complete = {"arm": arm, "updates": updates, "checkpoint": str(checkpoint),
+    complete = {"arm": arm, "updates": updates, "checkpoint": str(checkpoint.resolve()),
                 "records": n, "evaluation_seed": config["evaluation_seed"]}
     if calibration is not None:
-        complete["calibration"] = str(calibration)
+        complete["calibration"] = str(calibration.resolve())
     write_json(out / "complete.json", complete)
+
+
+@torch.no_grad()
+def fit_thresholds(source, source_cache, checkpoint, output, calibration=None):
+    classes, _, roles = source_inputs(source, source_cache)
+    raw, labels, _ = roles["V"]
+    device = cuda_device()
+    model, config, updates = load_source_model(source, checkpoint, classes, device)
+    if Path(config["cache"]).resolve() != source_cache.resolve():
+        raise ValueError("Threshold cache must match the checkpoint source")
+    arm, seed = config["arm"], config["evaluation_seed"]
+    stats = load_calibration(source, checkpoint, updates, arm, calibration)
+    panels, cutoff = source_panels(source, labels, classes, seed)
+    views = readout_features(model, arm, raw, device, stats)
+    thresholds = {}
+    for feature_name, feature in views.items():
+        thresholds[feature_name] = {}
+        for panel_name, data_panel in panels.items():
+            scores = metrics(feature, data_panel, torch.device("cpu"), include_eer_threshold=True)
+            thresholds[feature_name][panel_name] = {
+                k: {group: score["eer_threshold"] for group, score in scores[k].items()
+                    if group != "top1" and score is not None}
+                for k in ("K1", "K16")
+            }
+    write_json(output, dict(schema="satiq_source_verification_thresholds_v1", source=str(source.resolve()),
+                            checkpoint=str(checkpoint.resolve()), arm=arm, updates=updates, evaluation_seed=seed,
+                            calibration=str(calibration.resolve()) if calibration is not None else None,
+                            cutoff_utc=cutoff, thresholds=thresholds))
+
+
+def score_panel(pred, data_panel, thresholds, name):
+    device = torch.device("cpu")
+    raw = thresholds["features"][name] if thresholds is not None else None
+    result = metrics(pred["features"], data_panel, device, thresholds=raw)
+    if "calibrated_features" in pred.files:
+        white = thresholds["calibrated_features"][name] if thresholds is not None else None
+        result["partial_whiten"] = metrics(pred["calibrated_features"], data_panel, device, thresholds=white)
+    return result
 
 
 def stage_dates(heldout_manifest, scan, output):
@@ -129,11 +174,20 @@ def stage_dates(heldout_manifest, scan, output):
         np.savez(file, ids=ids, timestamp_ns=dates)
 
 
-def score(source, predictions, truth_path, output, chronology=None):
+def score(source, predictions, truth_path, output, chronology=None, thresholds=None):
     classes, remap, n = class_map(source)
     complete = read_json(predictions / "complete.json")
     if complete["records"] != n:
         raise ValueError("Incomplete prediction cohort")
+    threshold_values = None
+    if thresholds is not None:
+        cutoff_artifact = read_json(thresholds)
+        if (cutoff_artifact["schema"] != "satiq_source_verification_thresholds_v1"
+                or cutoff_artifact["source"] != str(source.resolve())
+                or any(cutoff_artifact.get(key) != complete.get(key)
+                       for key in ("checkpoint", "arm", "updates", "evaluation_seed", "calibration"))):
+            raise ValueError("Thresholds must belong to the frozen checkpoint and its readout")
+        threshold_values = cutoff_artifact["thresholds"]
     with (np.load(predictions / "predictions.npz", allow_pickle=False) as pred,
           np.load(truth_path, allow_pickle=False) as target):
         if len(target["ids"]) != n or not np.array_equal(pred["ids"], target["ids"]):
@@ -144,9 +198,7 @@ def score(source, predictions, truth_path, output, chronology=None):
         labels[seen] = remap[original[seen]]
         eligible = labels >= 0
         data_panel = panel(labels, classes, complete["evaluation_seed"])
-        result = metrics(pred["features"], data_panel, torch.device("cpu"))
-        if "calibrated_features" in pred.files:
-            result["partial_whiten"] = metrics(pred["calibrated_features"], data_panel, torch.device("cpu"))
+        result = score_panel(pred, data_panel, threshold_values, "paper")
         if "head_predictions" in pred.files:
             result["head_top1"] = float((pred["head_predictions"][eligible] == labels[eligible]).mean())
         result["eligible_known_records"] = int(eligible.sum())
@@ -158,11 +210,14 @@ def score(source, predictions, truth_path, output, chronology=None):
             if times.shape != (n,) or times.dtype != np.int64 or np.isnat(times.view("datetime64[ns]")).any():
                 raise ValueError("Invalid held-out timestamps")
             cutoff = source_date_cutoff(source)
+            cutoff_utc = str(np.datetime64(int(cutoff), "ns"))
+            if thresholds is not None and cutoff_artifact["cutoff_utc"] != cutoff_utc:
+                raise ValueError("Thresholds use a different source date cutoff")
             dated_panel = panel(labels, classes, complete["evaluation_seed"], reference_period=times < cutoff)
-            dated = metrics(pred["features"], dated_panel, torch.device("cpu"))
-            if "calibrated_features" in pred.files:
-                dated["partial_whiten"] = metrics(pred["calibrated_features"], dated_panel, torch.device("cpu"))
-            result["chronological"] = dict(cutoff_utc=str(np.datetime64(int(cutoff), "ns")), **dated)
+            dated = score_panel(pred, dated_panel, threshold_values, "chronological")
+            result["chronological"] = dict(cutoff_utc=cutoff_utc, **dated)
+    if thresholds is not None:
+        complete["source_thresholds"] = str(thresholds)
     write_json(output, dict(complete, **result))
 
 
@@ -173,26 +228,31 @@ if __name__ == "__main__":
         "predict": ("source", "iq_index", "iq_cache", "checkpoint", "output"),
         "score": ("source", "predictions", "truth", "output"),
         "fit_calibration": ("source", "source_cache", "checkpoint", "output"),
+        "fit_thresholds": ("source", "source_cache", "checkpoint", "output"),
         "stage_dates": ("heldout_manifest", "scan", "output"),
     }
     for mode, names in args_by_mode.items():
         action = sub.add_parser(mode)
         for name in names:
             action.add_argument(name, type=Path)
-        if mode == "predict":
+        if mode in ("predict", "fit_thresholds"):
             action.add_argument("--calibration", type=Path)
         if mode == "score":
             action.add_argument("--chronology", type=Path)
+            action.add_argument("--thresholds", type=Path)
         if mode == "fit_calibration":
             action.add_argument("--fit-count", type=int, default=8192)
             action.add_argument("--seed", type=int, default=2026111907)
     options = parser.parse_args()
+    torch.set_num_threads(4)
     arguments = [getattr(options, name).resolve() for name in args_by_mode[options.mode]]
     if options.mode == "fit_calibration":
         export_calibration(*arguments, fit_count=options.fit_count, seed=options.seed)
+    elif options.mode == "fit_thresholds":
+        fit_thresholds(*arguments, calibration=options.calibration)
     elif options.mode == "predict":
         predict(*arguments, calibration=options.calibration)
     elif options.mode == "stage_dates":
         stage_dates(*arguments)
     else:
-        score(*arguments, chronology=options.chronology)
+        score(*arguments, chronology=options.chronology, thresholds=options.thresholds)
