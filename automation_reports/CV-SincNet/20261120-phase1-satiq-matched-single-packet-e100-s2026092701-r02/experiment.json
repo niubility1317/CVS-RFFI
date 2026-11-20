@@ -81,7 +81,9 @@
     "upstream_pid": 2248959,
     "stop_rule": "Wait for actual E100 checkpoint and source validation journal for each arm, release only the registered worker. After both rows close, freeze predictions then score.",
     "release_sha256": "cb440c91e862a7b83768a266c3486336ed37f92f33cfd38844f36dfd1f10056a",
-    "replaced_controller_pid": 2527656
+    "replaced_controller_pid": 2527656,
+    "controller_pid": 3037257,
+    "launch_readback": "2026-11-21T01:48:26+08:00"
   },
   "expected_artifacts": [
     "budget_stops.json",

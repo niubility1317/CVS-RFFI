@@ -14,3 +14,8 @@
 
 - 安排的共同评分日志 `/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-phase1-satiq-matched-single-packet-e100-s2026092701-r01/dispatch.log`
 - 两组预算收尾证据将写到 `/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-phase1-satiq-matched-single-packet-e100-s2026092701-r01/budget_stops.json`
+
+
+## 评分队列交接
+
+**VERIFIED 已接替。** 2026-11-21T01:48:26+08:00 核对旧等待进程 2527656 已退出，旧输出根为空，旧日志继续保留。接替进程 3037257 只允许在 GPU 2 或 3 上执行第 100 轮预测。原始两条训练在交接后都继续写入步日志。 [接替队列](../20261120-phase1-satiq-matched-single-packet-e100-s2026092701-r02/report.md)
