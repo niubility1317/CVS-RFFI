@@ -1,0 +1,155 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261120-diagnostic-satiq-temporal-negative-source-e1-s2026092701-r01",
+  "group_id": "phase1-satiq-ccs2023-fully-supervised",
+  "display_name": "SatIQ PAMF 同时段同星异波束负例组批对照",
+  "description": "Use exact same four-packet positive groups with near-time same-satellite hard negatives in fixed supervised E1.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF-SUP",
+    "single-packet",
+    "satiq-temporal-negative"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261120-diagnostic-satiq-full-header-uw-time-source-e1-s2026092701-r01",
+    "20261120-diagnostic-satiq-time-gap-source-e30-s2026111923-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Improve the user-prioritized all-beam single-packet classifier on matched SatIQ input.",
+  "code": {
+    "commit": "00e3dbb7086ded3ad00b3046dfc5e6c6a2139ee0",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-temporal-negative-source-e1-s2026092701-r01",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python N607 CUDA FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-temporal-negative-source-e1-s2026092701-r01"
+  },
+  "data": {
+    "dataset": "Oxford SatIQ Zenodo 8220494, first 1010464 chronological packets",
+    "version": "8220494",
+    "representation": "Same signed 11000-point waveform. Time gap only controls training batch ordering.",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/{L,V}_index.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "source_receivers": [
+      "Oxford single receiver"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2023-03-22 through part of 2023-04-14 UTC"
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 910464,
+      "V": 50000,
+      "U_s": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "satiq_oxford_ccs2023_supervised_reindexed_v1_2026111905",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/V_index.npz",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source-only supervised batching candidate",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "All 3103 beam candidates; only L timestamps control batching; no T use."
+  },
+  "checkpoint": {
+    "initialization": "From seed, no trained state.",
+    "sources": [],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "provenance_verdict": "FRESH_SOURCE_L_V_NO_CHECKPOINT",
+    "selection_rule": "Fixed complete epoch at 28225 steps."
+  },
+  "execution": {
+    "host": "N607",
+    "local_artifact_root": "E:\\type10-7\\local_data\\satiq_oxford_ccs2023_supervised_20261119_r01",
+    "launch_owner": "One source-only GPU-availability controller",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-temporal-negative-source-e1-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-temporal-negative-source-e1-s2026092701-r01",
+    "gpu_policy": "Earlier chronological-sequence row takes first capacity; then at least 4096 MiB and fewer than two visible compute processes.",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train train /home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-temporal-negative-source-e1-s2026092701-r01/configs/pamf_satiq_ccs2023_full_header_temporal_negative_20261120.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-temporal-negative-source-e1-s2026092701-r01/PAMF_SUP --arm PAMF_SUP --native-expansion fused256",
+    "stop_rule": "Source/physical batch contract mismatch, failed real source smoke, nonzero runtime exit.",
+    "release_sha256": "60d31920475debee03d618ce1dbf15206397f2128d7d29831d58c40e946c284c",
+    "controller_pid": 2575322,
+    "launch_readback": "2026-11-20T13:21:45+08:00",
+    "eligible_gpus": [
+      1,
+      4,
+      0,
+      5,
+      6,
+      7,
+      2,
+      3
+    ]
+  },
+  "expected_artifacts": [
+    "controller.log",
+    "train.log",
+    "train.exit",
+    "PAMF_SUP/steps.jsonl",
+    "PAMF_SUP/s0028225.pt",
+    "PAMF_SUP/complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "single-packet beam Top-1",
+      "main CE"
+    ],
+    "dimensions": [
+      "3103 candidates",
+      "49814 known V",
+      "28225 updates",
+      "8 beams of 4 packets per batch"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "experiments/pamf_satiq66/paper_train.py"
+  },
+  "rows": [
+    {
+      "row_id": "PAMF_SUP",
+      "method": "Native PAMF-SUP fused256 with near-time same-satellite grouping",
+      "purpose": "Expose same-time wrong-beam negatives while keeping physical packet exposure and positive groups.",
+      "config_ref": "configs/pamf_satiq_ccs2023_full_header_temporal_negative_20261120.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-temporal-negative-source-e1-s2026092701-r01/PAMF_SUP/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111906,
+        "augmentation": null,
+        "support": 2026111907,
+        "evaluation": 2026111907
+      },
+      "seed_notes": "Shared batch and evaluation seeds; full native scratch initialization.",
+      "k": null,
+      "scenario": "Oxford single receiver, real received IQ",
+      "optimizer": "Adam eps=1e-7, from scratch",
+      "lr": 0.0003,
+      "epochs": 1,
+      "fl_rounds": null,
+      "budget_ref": "One full epoch at 28225 updates, no augmentations.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-temporal-negative-source-e1-s2026092701-r01/PAMF_SUP",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-temporal-negative-source-e1-s2026092701-r01/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train train /home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-temporal-negative-source-e1-s2026092701-r01/configs/pamf_satiq_ccs2023_full_header_temporal_negative_20261120.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-temporal-negative-source-e1-s2026092701-r01/PAMF_SUP --arm PAMF_SUP --native-expansion fused256",
+      "expected_artifacts": [
+        "steps.jsonl",
+        "s0028225.pt",
+        "complete.json"
+      ],
+      "gpu": null
+    }
+  ],
+  "notes": [
+    "Comparator differs only by enabling temporal negative batch swaps.",
+    "Timestamp used only in labeled L batches."
+  ],
+  "registered_at": "2026-11-20T05:21:33+00:00"
+}
