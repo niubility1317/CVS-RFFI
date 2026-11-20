@@ -86,7 +86,9 @@
     "gpu_resource_owner": 2989650,
     "launch_readback": "2026-11-21T00:54:48+08:00",
     "config_artifact_sha256": "ba7a8056edb5f6431bbdc2d03f80b88abf16f09033c83d68e35926c15ee2e863",
-    "wrapper_log": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261121-diagnostic-satiq-oversampled-pa250-source-e5-s2026092701-r01/launch.log"
+    "wrapper_log": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261121-diagnostic-satiq-oversampled-pa250-source-e5-s2026092701-r01/launch.log",
+    "training_pid": 3016628,
+    "training_readback": "2026-11-21T01:12:49+08:00"
   },
   "expected_artifacts": [
     "owner.json",
@@ -142,7 +144,8 @@
         "complete.json"
       ],
       "gpu": 6,
-      "gpu_uuid": "GPU-5463e082-259e-537b-603a-01575d45801c"
+      "gpu_uuid": "GPU-5463e082-259e-537b-603a-01575d45801c",
+      "pid": 3016628
     }
   ],
   "notes": [
