@@ -139,7 +139,8 @@
       "smoke_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train smoke /home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-oversampled-pa-bandwidth-source-e1-s2026092701-r01/configs/pamf_satiq_ccs2023_oversampled_pa_500khz_20261120.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-oversampled-pa-bandwidth-source-e1-s2026092701-r01/smoke_PA500 --arm PAMF_SUP --native-expansion fused256",
       "gpu_uuid": "GPU-5463e082-259e-537b-603a-01575d45801c",
       "pid": 2975431,
-      "smoke_pid": 2975228
+      "smoke_pid": 2975228,
+      "complete_readback": "2026-11-21T00:26:01+08:00"
     },
     {
       "row_id": "PA250",
@@ -174,7 +175,10 @@
       ],
       "gpu": 6,
       "smoke_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train smoke /home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-oversampled-pa-bandwidth-source-e1-s2026092701-r01/configs/pamf_satiq_ccs2023_oversampled_pa_250khz_20261120.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-oversampled-pa-bandwidth-source-e1-s2026092701-r01/smoke_PA250 --arm PAMF_SUP --native-expansion fused256",
-      "gpu_uuid": "GPU-5463e082-259e-537b-603a-01575d45801c"
+      "gpu_uuid": "GPU-5463e082-259e-537b-603a-01575d45801c",
+      "pid": 2988829,
+      "smoke_pid": 2988624,
+      "launch_readback": "2026-11-21T00:26:01+08:00"
     }
   ],
   "notes": [
