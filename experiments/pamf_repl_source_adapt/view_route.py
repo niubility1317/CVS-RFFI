@@ -80,6 +80,14 @@ def transfer_ce(m0,m1,r0,r1,pseudo,accepted,count,mode,strength):
     return delta, mass
 
 
+def labeled_cell_counts(c):
+    with np.load(Path(c['source_cache'])/'L_s_metadata.npz', allow_pickle=False) as f:
+        axes = tuple(torch.tensor(f[k].tolist(),dtype=torch.long) for k in ('rx_i','day_i','y'))
+    table = torch.zeros(max(c['source_rxs'])+1,max(c['source_days'])+1,c['num_classes'],dtype=torch.long)
+    table.index_put_(axes,torch.ones_like(axes[0]),accumulate=True)
+    return table
+
+
 class ViewRoute(PseudoObservationMixin, GuardedReceiverExtrapolation):
     def __init__(self, c):
         super().__init__(c)
@@ -88,11 +96,7 @@ class ViewRoute(PseudoObservationMixin, GuardedReceiverExtrapolation):
         self.support = None
         self.routed = 0
         if self.route['mode'] == 'adaptive':
-            with np.load(Path(c['source_cache'])/'L_s_metadata.npz', allow_pickle=False) as f:
-                axes = tuple(torch.tensor(f[k].tolist(),dtype=torch.long) for k in ('rx_i','day_i','y'))
-            table = torch.zeros(max(c['source_rxs'])+1,max(c['source_days'])+1,c['num_classes'],dtype=torch.long)
-            table.index_put_(axes,torch.ones_like(axes[0]),accumulate=True)
-            self.label_support = table
+            self.label_support = labeled_cell_counts(c)
 
     def mixed_view(self, student, x, ordinary, physical, metadata, epoch, step, pseudo, accepted):
         if self.label_support is not None:
