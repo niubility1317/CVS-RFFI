@@ -7,7 +7,7 @@ from experiments.cric_dura_comparison.io import read, write
 from . import pilot
 
 
-def smoke(rt):
+def smoke(rt, *, fold_validator=pilot.registered_fold, setting=None):
     import numpy as np
     import torch
     from experiments.cric_dura_comparison.f_data import SourceDataset
@@ -17,9 +17,9 @@ def smoke(rt):
     root = Path(rt['run_root'])
     jobs = read(root/'jobs.json')
     for job in jobs:
-        pilot.registered_fold(read(job['config']))
+        fold_validator(read(job['config']))
     # This exact-contract ordinary-PL E20 smoke never enters any fold or decision.
-    setting = 'receiver_split_2' if rt['run_id'] == pilot.SECOND_RUN else 'receiver_split_1'
+    setting = setting or ('receiver_split_2' if rt['run_id'] == pilot.SECOND_RUN else 'receiver_split_1')
     h = read(rt['context'])['handles'][pilot.paper.PROTOCOLS[setting][0]]
     folder = Path(rt['project'])/'runs'/pilot.paper.RUN/'F'/f'{setting}-factorial-ssl-full-permuted-s{pilot.SEED}'/'source'/'segment20'
     done = read(folder/'complete.json')

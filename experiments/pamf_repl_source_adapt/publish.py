@@ -7,9 +7,10 @@ from experiments.pamf_branch_training import publish as base
 from .pilot import RUN, SECOND_RUN, paper, settings_for
 
 
-def publish(repo, output, context, ssh_config, *, run_id=RUN):
+def publish(repo, output, context, ssh_config, *, run_id=RUN, settings=None,
+            module='experiments.pamf_repl_source_adapt.runner', gpus=tuple(range(7))):
     ctx = read(context)
-    protocol_ids = [paper.PROTOCOLS[setting][0] for setting in settings_for(run_id)]
+    protocol_ids = [paper.PROTOCOLS[setting][0] for setting in (settings or settings_for(run_id))]
     source_context = dict(
         runtime={key: ctx['runtime'][key] for key in ('project', 'python', 'frozen_sources')},
         handles={pid: {key: ctx['handles'][pid][key] for key in ('source_cache', 'source_contract', 'classes')}
@@ -20,7 +21,8 @@ def publish(repo, output, context, ssh_config, *, run_id=RUN):
     path = Path(output)/'source_context.json'
     write(path, source_context)
     old_run, old_remote = base.RUN, base.REMOTE
-    script = old_remote.replace("rt=p['runtime']; project=", "rt=p['runtime']; rt['allowed_gpus']=list(range(7)); rt.pop('weak_root'); rt.pop('weak_truth'); project=")
+    script = old_remote.replace("rt=p['runtime']; project=",
+        f"rt=p['runtime']; rt['allowed_gpus']={list(gpus)!r}; rt.pop('weak_root'); rt.pop('weak_truth'); project=")
     start = script.index('for path in [rt[\'python\']')
     end = script.index('gpu=subprocess', start)
     preflight = """for path in [rt['python'], *rt['frozen_sources'].values(),
@@ -28,7 +30,7 @@ def publish(repo, output, context, ssh_config, *, run_id=RUN):
  if not Path(path).exists():raise FileNotFoundError(path)
 """
     script = (script[:start] + preflight + script[end:]).replace('experiments/pamf_branch_training', 'experiments/pamf_repl_source_adapt')
-    script = script.replace('experiments.pamf_branch_training.runner', 'experiments.pamf_repl_source_adapt.runner')
+    script = script.replace('experiments.pamf_branch_training.runner', module)
     base.RUN, base.REMOTE = run_id, script
     try:
         return base.publish(repo, output, path, ssh_config, launch_owner='codex-'+run_id)

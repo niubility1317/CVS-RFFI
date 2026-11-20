@@ -105,7 +105,7 @@ def train_fold(c, device='cuda:0'):
     evaluate_fold(c, partition, device)
 
 
-def evaluate_fold(c, partition, device):
+def evaluate_fold(c, partition, device, *, final_arms=None):
     """Freeze all three models before using held V labels to compute paired net gains."""
     import numpy as np
     import torch
@@ -119,8 +119,12 @@ def evaluate_fold(c, partition, device):
     data = SourceDataset(c['source_cache'], 'V', contract, positions=np.concatenate(list(positions.values())))
     predictions = {}
     for weight in WEIGHTS:
-        folder = out/f'weight_{_weight_name(weight)}'
-        cfg = _segment(c, folder, weight, out/'segment20')
+        if final_arms is None:
+            folder = out/f'weight_{_weight_name(weight)}'
+            cfg = _segment(c, folder, weight, out/'segment20')
+        else:
+            cfg = final_arms[weight]
+            folder = Path(cfg['output_root'])
         _check_segment(folder, cfg)
         payload = torch.load(folder/'final_ssdg.pth', map_location='cpu', weights_only=False)
         with reader_scope(cfg['paper_row']):

@@ -1,0 +1,608 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261120-phase1-pamf-tri-source-dose-e50-m6-r01",
+  "group_id": "phase1-pamf-source-adaptation",
+  "display_name": "Tri 1% 与 5% 标注的 E50 源域 U 权重选择",
+  "description": "两个数据设置、三折、每折三档 U，源 RX 与日期联合留出。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-paper-completion-m119-r03",
+    "20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r01",
+    "20261119-phase1-pamf-repl-sourceadapt-pilot-m8-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户确认开展只用源域数据的 U 权重自适应，先检验低标注设置。",
+  "code": {
+    "commit": "actual runtime release commit",
+    "checkout": "current task worktree",
+    "environment": "N607 CVS-RFFI",
+    "cwd": "PROJECT/releases/20261120-phase1-pamf-tri-source-dose-e50-m6-r01-release"
+  },
+  "data": {
+    "dataset": "Existing 1% and 5% Phase1 source contracts only",
+    "version": null,
+    "representation": null,
+    "contract_ref": "Existing source role files restricted within predeclared receiver/date folds",
+    "physical_ids_ref": "Paired predictions on fixed held source V physical samples",
+    "label_map_ref": null,
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "labeled source excluding full holdout receiver and date",
+      "U_s": "TX-blind source excluding full holdout receiver and date",
+      "V": "fit-time validation excludes both axes; score original held V after all fold arms freeze"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": "Phase1 source only, no target query",
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only rule test at E50, no target performance claim"
+  },
+  "checkpoint": {
+    "initialization": "scratch E20 once per fold, then own E21–E30 and E31–E50 for each arm",
+    "sources": [
+      "20261027-phase1-pamf-paper-completion-m119-r03"
+    ],
+    "contract_check_ref": "joint_holdout.registered and fold-bound training loader",
+    "provenance_verdict": "Full-contract E20 is used only for no-query smoke, never inherited by folds",
+    "selection_rule": "At least two positive folds, mean combined gain >=0.1pp, mean joint RX+date gain >=0"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex-20261120-phase1-pamf-tri-source-dose-e50-m6-r01",
+    "gpu_policy": "GPU 0,4,5,6; total two GPU compute processes maximum; 12 GiB admission reserve",
+    "remote_run_root": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01",
+    "remote_log_root": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_tri_source_dose_e50_20261120",
+    "launch_command": "python -m experiments.pamf_repl_source_adapt.joint_holdout publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+    "stop_rule": "Stop new dispatch on blocking technical failure and preserve existing outputs",
+    "owner": "codex-20261120-phase1-pamf-tri-source-dose-e50-m6-r01"
+  },
+  "expected_artifacts": [
+    "six scratch E20 prefixes",
+    "18 E50 source models",
+    "six fold scores",
+    "two frozen source decisions"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source paired gain and damage",
+      "source cross_rx",
+      "source cross_both",
+      "dose selected"
+    ],
+    "dimensions": [
+      "source receiver",
+      "source date",
+      "data setting",
+      "U dose"
+    ],
+    "prediction_ref": "Frozen source V predictions paired in memory",
+    "scorer_ref": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/analysis/source_decisions.json"
+  },
+  "rows": [
+    {
+      "row_id": "train__labeled_1pct-rx1_day1",
+      "method": "Original Tri with U dose 6/4.5/3",
+      "purpose": "Held source receiver and date",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/configs/train__labeled_1pct-rx1_day1.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/configs/train__labeled_1pct-rx1_day1.json",
+      "data_overrides": {
+        "protocol_id": "label01",
+        "excluded_cells": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            3,
+            1
+          ],
+          [
+            4,
+            1
+          ],
+          [
+            6,
+            1
+          ],
+          [
+            8,
+            1
+          ]
+        ],
+        "scored_cells": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            3
+          ]
+        ],
+        "joint_date": 1,
+        "weights": [
+          6.0,
+          3.0,
+          4.5
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "每个null解释为不适用或待补，不能默认为所有seed相同",
+      "k": null,
+      "scenario": "held source V, same data each arm",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "4440 scratch steps then 2220+4440 for each matched arm",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/F/labeled_1pct/rx1_day1",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/logs/train__labeled_1pct-rx1_day1.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.joint_holdout publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "segment20/complete.json",
+        "three fixed E50 arm checkpoints",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "train__labeled_1pct-rx4_day2",
+      "method": "Original Tri with U dose 6/4.5/3",
+      "purpose": "Held source receiver and date",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/configs/train__labeled_1pct-rx4_day2.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/configs/train__labeled_1pct-rx4_day2.json",
+      "data_overrides": {
+        "protocol_id": "label01",
+        "excluded_cells": [
+          [
+            1,
+            2
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            4,
+            1
+          ],
+          [
+            4,
+            2
+          ],
+          [
+            4,
+            3
+          ],
+          [
+            6,
+            2
+          ],
+          [
+            8,
+            2
+          ]
+        ],
+        "scored_cells": [
+          [
+            4,
+            1
+          ],
+          [
+            4,
+            2
+          ],
+          [
+            4,
+            3
+          ]
+        ],
+        "joint_date": 2,
+        "weights": [
+          6.0,
+          3.0,
+          4.5
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "每个null解释为不适用或待补，不能默认为所有seed相同",
+      "k": null,
+      "scenario": "held source V, same data each arm",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "4440 scratch steps then 2220+4440 for each matched arm",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/F/labeled_1pct/rx4_day2",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/logs/train__labeled_1pct-rx4_day2.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.joint_holdout publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "segment20/complete.json",
+        "three fixed E50 arm checkpoints",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "train__labeled_1pct-rx8_day3",
+      "method": "Original Tri with U dose 6/4.5/3",
+      "purpose": "Held source receiver and date",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/configs/train__labeled_1pct-rx8_day3.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/configs/train__labeled_1pct-rx8_day3.json",
+      "data_overrides": {
+        "protocol_id": "label01",
+        "excluded_cells": [
+          [
+            1,
+            3
+          ],
+          [
+            3,
+            3
+          ],
+          [
+            4,
+            3
+          ],
+          [
+            6,
+            3
+          ],
+          [
+            8,
+            1
+          ],
+          [
+            8,
+            2
+          ],
+          [
+            8,
+            3
+          ]
+        ],
+        "scored_cells": [
+          [
+            8,
+            1
+          ],
+          [
+            8,
+            2
+          ],
+          [
+            8,
+            3
+          ]
+        ],
+        "joint_date": 3,
+        "weights": [
+          6.0,
+          3.0,
+          4.5
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "每个null解释为不适用或待补，不能默认为所有seed相同",
+      "k": null,
+      "scenario": "held source V, same data each arm",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "4440 scratch steps then 2220+4440 for each matched arm",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/F/labeled_1pct/rx8_day3",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/logs/train__labeled_1pct-rx8_day3.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.joint_holdout publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "segment20/complete.json",
+        "three fixed E50 arm checkpoints",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "train__labeled_5pct-rx1_day1",
+      "method": "Original Tri with U dose 6/4.5/3",
+      "purpose": "Held source receiver and date",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/configs/train__labeled_5pct-rx1_day1.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/configs/train__labeled_5pct-rx1_day1.json",
+      "data_overrides": {
+        "protocol_id": "label05",
+        "excluded_cells": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            3,
+            1
+          ],
+          [
+            4,
+            1
+          ],
+          [
+            6,
+            1
+          ],
+          [
+            8,
+            1
+          ]
+        ],
+        "scored_cells": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            3
+          ]
+        ],
+        "joint_date": 1,
+        "weights": [
+          6.0,
+          4.5,
+          3.0
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "每个null解释为不适用或待补，不能默认为所有seed相同",
+      "k": null,
+      "scenario": "held source V, same data each arm",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "4440 scratch steps then 2220+4440 for each matched arm",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/F/labeled_5pct/rx1_day1",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/logs/train__labeled_5pct-rx1_day1.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.joint_holdout publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "segment20/complete.json",
+        "three fixed E50 arm checkpoints",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "train__labeled_5pct-rx4_day2",
+      "method": "Original Tri with U dose 6/4.5/3",
+      "purpose": "Held source receiver and date",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/configs/train__labeled_5pct-rx4_day2.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/configs/train__labeled_5pct-rx4_day2.json",
+      "data_overrides": {
+        "protocol_id": "label05",
+        "excluded_cells": [
+          [
+            1,
+            2
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            4,
+            1
+          ],
+          [
+            4,
+            2
+          ],
+          [
+            4,
+            3
+          ],
+          [
+            6,
+            2
+          ],
+          [
+            8,
+            2
+          ]
+        ],
+        "scored_cells": [
+          [
+            4,
+            1
+          ],
+          [
+            4,
+            2
+          ],
+          [
+            4,
+            3
+          ]
+        ],
+        "joint_date": 2,
+        "weights": [
+          6.0,
+          4.5,
+          3.0
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "每个null解释为不适用或待补，不能默认为所有seed相同",
+      "k": null,
+      "scenario": "held source V, same data each arm",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "4440 scratch steps then 2220+4440 for each matched arm",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/F/labeled_5pct/rx4_day2",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/logs/train__labeled_5pct-rx4_day2.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.joint_holdout publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "segment20/complete.json",
+        "three fixed E50 arm checkpoints",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "train__labeled_5pct-rx8_day3",
+      "method": "Original Tri with U dose 6/4.5/3",
+      "purpose": "Held source receiver and date",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/configs/train__labeled_5pct-rx8_day3.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/configs/train__labeled_5pct-rx8_day3.json",
+      "data_overrides": {
+        "protocol_id": "label05",
+        "excluded_cells": [
+          [
+            1,
+            3
+          ],
+          [
+            3,
+            3
+          ],
+          [
+            4,
+            3
+          ],
+          [
+            6,
+            3
+          ],
+          [
+            8,
+            1
+          ],
+          [
+            8,
+            2
+          ],
+          [
+            8,
+            3
+          ]
+        ],
+        "scored_cells": [
+          [
+            8,
+            1
+          ],
+          [
+            8,
+            2
+          ],
+          [
+            8,
+            3
+          ]
+        ],
+        "joint_date": 3,
+        "weights": [
+          6.0,
+          4.5,
+          3.0
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "每个null解释为不适用或待补，不能默认为所有seed相同",
+      "k": null,
+      "scenario": "held source V, same data each arm",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "4440 scratch steps then 2220+4440 for each matched arm",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/F/labeled_5pct/rx8_day3",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-tri-source-dose-e50-m6-r01/logs/train__labeled_5pct-rx8_day3.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.joint_holdout publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "segment20/complete.json",
+        "three fixed E50 arm checkpoints",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Both label settings use the original Tri objective at all three doses.",
+    "Low label coverage changes candidate evaluation order, not the eligibility rule.",
+    "Decisions do not alter the separately frozen 11-setting plate."
+  ]
+}

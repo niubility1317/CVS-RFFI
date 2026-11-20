@@ -21,10 +21,13 @@ def fold_groups(receivers, days):
             for i in range(2)}
 
 
-def fold_positions(metadata, holdout):
+def fold_positions(metadata, holdout, *, score_groups=None):
     """Return retained L/U/V and held V indices; held L/U are never consumed."""
     if set(metadata) != set(ROLES) or not holdout:
         raise ValueError('Original source roles and a nonempty held-out cell set required')
+    score_groups = set(holdout if score_groups is None else score_groups)
+    if not score_groups or not score_groups.issubset(holdout):
+        raise ValueError('Scored source cells must be among excluded cells')
     roles = {}
     group_positions = {}
     for role in ROLES:
@@ -38,7 +41,7 @@ def fold_positions(metadata, holdout):
         for receiver, date in holdout:
             mask = (rx == receiver) & (day == date)
             held |= mask
-            if role == 'V':
+            if role == 'V' and (receiver, date) in score_groups:
                 group_positions[(receiver, date)] = np.flatnonzero(mask)
         roles[role] = np.flatnonzero(~held)
     labels = metadata['L_s']['y']

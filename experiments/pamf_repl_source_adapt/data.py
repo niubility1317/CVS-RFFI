@@ -7,14 +7,18 @@ import numpy as np
 from .folds import ROLES, fold_groups, fold_positions
 
 
-def registered_fold(config):
+def registered_fold(config, *, excluded_groups=None, scored_groups=None):
     from experiments.cric_dura_comparison.io import read
 
     contract = read(config['source_contract'])
-    groups = fold_groups(contract['source_rxs'], contract['source_days'])
     name = config['source_fold']
-    if name not in groups:
-        raise ValueError('Unknown source fold for this data contract')
+    if excluded_groups is None:
+        groups = fold_groups(contract['source_rxs'], contract['source_days'])
+        if name not in groups:
+            raise ValueError('Unknown source fold for this data contract')
+        excluded_groups = groups[name]
+    elif any(rx not in contract['source_rxs'] or day not in contract['source_days'] for rx, day in excluded_groups):
+        raise ValueError('Held cells must belong to the registered source data')
     metadata = {}
     for role in ROLES:
         with np.load(Path(config['source_cache']) / f'{role}_metadata.npz', allow_pickle=False) as values:
@@ -25,7 +29,7 @@ def registered_fold(config):
             metadata[role] = {field: values[field] for field in ('rx_i', 'day_i')}
             if role == 'L_s':
                 metadata[role]['y'] = values['y']
-    partition = fold_positions(metadata, groups[name])
+    partition = fold_positions(metadata, excluded_groups, score_groups=scored_groups)
     if partition is None:
         raise ValueError(f'Insufficient source training or validation coverage for {name}')
     return contract, partition
