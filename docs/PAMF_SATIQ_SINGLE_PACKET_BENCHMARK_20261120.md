@@ -90,3 +90,9 @@ A、B、C 使用同一份源训练和验证清单、固定批次、原 256 维�
 冻结正式第 30 轮。在原前端上分别保留至 25、50、100 kHz，并接 5 kHz 余弦过渡。相同 49,814 个已知源 V 包上，原处理命中 715 条，三组分别命中 60、77、325 条。保留至 100 kHz 在 1,024 个源 L 包上的剩余能量中位数仍为 98.88%，验证主 CE 却从 6.7478 升至 7.6383。该设置在 L 上只恢复原非线性分支投影时，首选一致数从 77/1,024 恢复至 495/1,024。单独恢复序列分支为 109/1,024，恢复参考分支仍为 77/1,024。优化现有非线性路径时需要保留并检验弱高频，不能单凭能量占比收窄前端。 [全量验证与逐路复核](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-frequency-occlusion-source-e30-s2026092701-r01/report.md)
 
 第 30 轮的频段效应在随机源划分内依赖时间距离。匹配的 208 个波束各端为 459 条等效权重。保留弱高频在 ≤5 秒组的 Top-1 增量为 +0.4835 个百分点，>30 秒组为 −0.4357 个百分点。遮蔽在两端都使 CE 升高，分别为 1.0179 和 0.7457。首轮全训练组批重放还显示，88.10% 的同波束正例已相隔超过 24 小时。高频前端的新候选需要同时报告总体与远时间样本，避免只在随机划分中获得近时段收益。 [频段与时间距离复核](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-frequency-time-source-e30-s2026111923-r01/report.md)
+
+### 正式第 40 轮及三个训练改动的取舍
+
+固定第 40 轮同报头 PAMF-SUP 全量训练准确率为 2.5020%，验证准确率为 1.6823%。验证主 CE 的下降 0.0210 由卫星边缘 CE 和同星波束条件 CE 约各一半构成。首选预测所属卫星的正确率为 4.4265%，给定真实卫星的离线波束准确率为 24.9629%。 [全量训练与验证](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-matched-head-e40-source-accuracy-s2026111907-r01/report.md) · [主 CE 分解](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-formal-hierarchical-source-e30-e40-s2026111907-r01/report.md)
+
+倍率预热第 5 轮少判对 53 条（363 → 310），验证主 CE 升 0.0237。把 0.125 的原型监督权重移给融合向量，首轮少 13 条（109 → 96），验证主 CE 升 0.1028。PA 记忆多项式输入温和放大高频首轮多 4 条（109 → 113），验证主 CE 降 0.0442；按卫星聚类的准确率增量区间跨零，最远组两对照均无正确首选。三项均归档，现阶段保留原配置，独立 T 仍留出。 [预热和 PA 的逐包复核](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-paired-warmup-e5-pa-highband-e1-s2026111907-r01/report.md) · [融合原型监督](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-fused-prototype-source-e1-s2026092701-r01/report.md)

@@ -90,7 +90,8 @@
       3
     ],
     "controller_pid": 2669948,
-    "launch_readback": "2026-11-20T15:40:27+08:00"
+    "launch_readback": "2026-11-20T15:40:27+08:00",
+    "complete_readback": "2026-11-20T18:38:42+08:00"
   },
   "expected_artifacts": [
     "controller.log",
@@ -149,7 +150,9 @@
         "steps.jsonl",
         "s0028225.pt",
         "complete.json"
-      ]
+      ],
+      "pid": 2700567,
+      "gpu": 1
     }
   ],
   "notes": [

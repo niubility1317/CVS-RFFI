@@ -1,0 +1,150 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261120-diagnostic-satiq-formal-hierarchical-source-e30-e40-s2026111907-r01",
+  "group_id": "phase1-satiq-ccs2023-fully-supervised",
+  "display_name": "SatIQ PAMF-SUP 正式 E30/E40 卫星与波束主 CE 分解",
+  "description": "Break down the verified single-packet beam CE at two fixed epochs into satellite marginal and conditional beam CE.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF-SUP",
+    "single-packet",
+    "source-only",
+    "satiq-e40-decomposition",
+    "CPU"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261120-phase1-satiq-ccs2023-header-matched-sup200-s2026092701-r01",
+    "20261120-diagnostic-satiq-matched-head-e30-source-accuracy-s2026111907-r01",
+    "20261120-diagnostic-satiq-matched-head-e40-source-accuracy-s2026111907-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Audit current matched source runs against the user's single-packet all-beam metric. No new training.",
+  "code": {
+    "commit": "8c0be44e0d7e4a8476dec1aea9b100749dab36ec",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-logit-warmup-paired-source-e1-s2026111907-r01",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python N607 FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-logit-warmup-paired-source-e1-s2026111907-r01"
+  },
+  "data": {
+    "dataset": "Oxford SatIQ Zenodo 8220494, first 1010464 chronological packets",
+    "version": "8220494",
+    "representation": "Matched 11000-point signed header, native fused256.",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/{L,V}_index.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "source_receivers": [
+      "Oxford single receiver"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2023-03-22 through part of 2023-04-14 UTC"
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 910464,
+      "V": 50000,
+      "U_s": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "satiq_oxford_ccs2023_supervised_reindexed_v1_2026111905",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/V_index.npz",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "Fixed source V only for scores and scientific attribution.",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "All-beam direct headline; conditional on true satellite is an offline diagnostic only. Target remains inaccessible."
+  },
+  "checkpoint": {
+    "initialization": "No training",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-phase1-satiq-ccs2023-header-matched-sup200-s2026092701-r01/PAMF_SUP/s0846750.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-phase1-satiq-ccs2023-header-matched-sup200-s2026092701-r01/PAMF_SUP/s1129000.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "provenance_verdict": "TWO_FIXED_L_V_FORMAL_E30_E40",
+    "selection_rule": "Official fixed E30 and E40, both verified online source checkpoints."
+  },
+  "execution": {
+    "host": "N607",
+    "local_artifact_root": "E:/type10-7/local_data/satiq_oxford_ccs2023_supervised_20261119_r01",
+    "launch_owner": "One CPU-only source accuracy owner",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-formal-hierarchical-source-e30-e40-s2026111907-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-formal-hierarchical-source-e30-e40-s2026111907-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_satellite_pooling_readout /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-formal-hierarchical-source-e30-e40-s2026111907-r01/hierarchical_e30_e40.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-phase1-satiq-ccs2023-header-matched-sup200-s2026092701-r01/PAMF_SUP/s0846750.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-phase1-satiq-ccs2023-header-matched-sup200-s2026092701-r01/PAMF_SUP/s1129000.pt --device cpu",
+    "gpu_policy": "CPU only",
+    "stop_rule": "If wrong fixed checkpoints, V count or online predictions diverge beyond ordinary floating-point tolerance, record failure.",
+    "complete_readback": "2026-11-20T18:38:42+08:00",
+    "controller_pid": 2773752,
+    "scoring_pid": 2773754
+  },
+  "expected_artifacts": [
+    "hierarchical_e30_e40.json",
+    "score.log",
+    "score.exit",
+    "score.pid"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "direct all-beam top1",
+      "raw and marginal satellite accuracies",
+      "offline conditional within-satellite beam top1",
+      "decomposition of source main CE"
+    ],
+    "dimensions": [
+      "49814 known V",
+      "3103 fixed candidate beams",
+      "official fixed E30, E40"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "experiments/pamf_satiq66/paper_satellite_pooling_readout.py"
+  },
+  "rows": [
+    {
+      "row_id": "HIERARCHY_E30_E40",
+      "method": "Exact original classifier logits grouped by the registered satellite map",
+      "purpose": "Determine which part of full classification changed with continued optimization.",
+      "config_ref": "experiments/pamf_satiq66/paper_satellite_pooling_readout.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-phase1-satiq-ccs2023-header-matched-sup200-s2026092701-r01/PAMF_SUP/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111906,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026111907
+      },
+      "seed_notes": "Inherited native training seed; inference traverses all fixed records deterministically.",
+      "k": null,
+      "scenario": "Oxford single receiver source L/V, no signal augmentation",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One frozen source V pass per exact checkpoint",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-formal-hierarchical-source-e30-e40-s2026111907-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-formal-hierarchical-source-e30-e40-s2026111907-r01/score.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_satellite_pooling_readout /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-formal-hierarchical-source-e30-e40-s2026111907-r01/hierarchical_e30_e40.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-phase1-satiq-ccs2023-header-matched-sup200-s2026092701-r01/PAMF_SUP/s0846750.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-phase1-satiq-ccs2023-header-matched-sup200-s2026092701-r01/PAMF_SUP/s1129000.pt --device cpu",
+      "expected_artifacts": [
+        "hierarchical_e30_e40.json"
+      ],
+      "feature_dimensions": 256,
+      "gpu": null,
+      "pid": 2773754
+    }
+  ],
+  "notes": [
+    "The original archived scorer lacked the conditional decomposition. Use the already verified newer source scoring release.",
+    "No weights, inference rules, source or test roles change."
+  ],
+  "registered_at": "2026-11-20T10:31:54+00:00"
+}
