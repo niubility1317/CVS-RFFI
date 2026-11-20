@@ -1,0 +1,153 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261120-diagnostic-satiq-spectral-paired-source-e5-s2026111907-r01",
+  "group_id": "phase1-satiq-ccs2023-fully-supervised",
+  "display_name": "SatIQ 温和谱整形第5轮逐包配对复核",
+  "description": "Compare frozen PAMF E5 all-beam predictions by beam and satellite, with source V-only juxtaposition.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF-SUP",
+    "single-packet",
+    "source-only",
+    "satiq-spectral-paired",
+    "CPU"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261120-diagnostic-satiq-full-header-preprocessing-source-e5-s2026092701-r01",
+    "20261120-diagnostic-satiq-full-header-grid256-grid512-source-e5-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Improve the user-prioritized all-beam single-packet classifier on matched SatIQ input.",
+  "code": {
+    "commit": "e5f127265a8dae36508ceabce2a4b1940e459693",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-spectral-paired-source-e5-s2026111907-r01",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python N607 FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-spectral-paired-source-e5-s2026111907-r01"
+  },
+  "data": {
+    "dataset": "Oxford SatIQ Zenodo 8220494, first 1010464 chronological packets",
+    "version": "8220494",
+    "representation": "Matched full 11000-point IQ and 256-point internal grid. Only in-band shaping differs.",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/{L,V}_index.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "source_receivers": [
+      "Oxford single receiver"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2023-03-22 through part of 2023-04-14 UTC"
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 910464,
+      "V": 50000,
+      "U_s": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "satiq_oxford_ccs2023_supervised_reindexed_v1_2026111905",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/V_index.npz",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source-only paired frozen scoring",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Matched full source V; no test or refit."
+  },
+  "checkpoint": {
+    "initialization": "No training.",
+    "sources": [
+      {
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-grid256-grid512-source-e5-s2026092701-r01/GRID256/s0141125.pt",
+        "upstream": "20261120-diagnostic-satiq-full-header-grid256-grid512-source-e5-s2026092701-r01"
+      },
+      {
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-preprocessing-source-e5-s2026092701-r01/SHAPING/s0141125.pt",
+        "upstream": "20261120-diagnostic-satiq-full-header-preprocessing-source-e5-s2026092701-r01"
+      }
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "provenance_verdict": "EXACT_MATCHED_PAMF_E5_SOURCE_L_V",
+    "selection_rule": "Fixed 141125-step checkpoint of each matching run."
+  },
+  "execution": {
+    "host": "N607",
+    "local_artifact_root": "E:\\type10-7\\local_data\\satiq_oxford_ccs2023_supervised_20261119_r01",
+    "launch_owner": "One CPU-only supervisor for paired scoring",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-spectral-paired-source-e5-s2026111907-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-spectral-paired-source-e5-s2026111907-r01",
+    "gpu_policy": "CPU only, at most four Torch threads",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_grid_paired_audit --epoch 5 --comparison spectral-shaping /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-spectral-paired-source-e5-s2026111907-r01/paired_spectral_e5.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-grid256-grid512-source-e5-s2026092701-r01/GRID256/s0141125.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-preprocessing-source-e5-s2026092701-r01/SHAPING/s0141125.pt",
+    "stop_rule": "Invalid source binding, budget mismatch, unsupported config difference or runtime failure.",
+    "release_sha256": "3314633ded62a12fbe680fae1bdec652eb49865e2c012e0628cf1666097cee97",
+    "controller_pid": 2589343,
+    "scoring_pid": 2589427,
+    "launch_readback": "2026-11-20T13:42:30+08:00",
+    "complete_readback": "2026-11-20T13:44:21+08:00"
+  },
+  "expected_artifacts": [
+    "paired_spectral_e5.json",
+    "score.log",
+    "score.exit"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "paired net all-beam gain",
+      "macro Top-1",
+      "beam and satellite cluster bootstrap intervals"
+    ],
+    "dimensions": [
+      "49814 V",
+      "3103 source-trained candidates",
+      "141125 updates"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "experiments/pamf_satiq66/paper_grid_paired_audit.py"
+  },
+  "rows": [
+    {
+      "row_id": "SPECTRAL_PAIRED_E5",
+      "method": "Paired frozen native classifiers",
+      "purpose": "Explain 25 net source V catches and quantify failure reversals.",
+      "config_ref": "experiments/pamf_satiq66/paper_grid_paired_audit.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-preprocessing-source-e5-s2026092701-r01/SHAPING/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111906,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026111907
+      },
+      "seed_notes": "Evaluation seed 2026111907 for cluster resampling.",
+      "k": null,
+      "scenario": "Oxford single receiver, real received IQ",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Two source V inference passes, one per E5 checkpoint.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-spectral-paired-source-e5-s2026111907-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-spectral-paired-source-e5-s2026111907-r01/score.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_grid_paired_audit --epoch 5 --comparison spectral-shaping /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-spectral-paired-source-e5-s2026111907-r01/paired_spectral_e5.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-grid256-grid512-source-e5-s2026092701-r01/GRID256/s0141125.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-preprocessing-source-e5-s2026092701-r01/SHAPING/s0141125.pt",
+      "expected_artifacts": [
+        "paired_spectral_e5.json"
+      ],
+      "gpu": null,
+      "pid": 2589427
+    }
+  ],
+  "notes": [
+    "Independent T unused. Only L-derived fixed in-band spectral gains differ; baseline resume verified from own E1."
+  ],
+  "registered_at": "2026-11-20T05:42:52+00:00"
+}
