@@ -7,7 +7,7 @@ import numpy as np
 import torch
 
 from .data import write_json
-from .paper_eval import normalize_packet
+from .paper_eval import model_input
 from .paper_native_pamf import native_classification_terms
 from .paper_pamf import branch_prototype_loss
 from .paper_readout import load_source_model
@@ -75,9 +75,10 @@ def audit(source, cache, checkpoints, device, replay_seed=2026112007):
     results = []
     for checkpoint in checkpoints:
         model, config, updates = load_source_model(source, checkpoint, classes, device)
-        if (config.get("native_expansion") != "native160" or config["arm"] != "PAMF_SUP"
+        if (config.get("native_expansion") not in ("native160", "fused256") or config["arm"] != "PAMF_SUP"
+                or config["source_roles"] != ["L", "V"] or config["test_access"] is not False
                 or Path(config["cache"]).resolve() != cache.resolve()):
-            raise ValueError("Expected a native160 PAMF-SUP checkpoint and its original source cache")
+            raise ValueError("Expected an original source PAMF-SUP checkpoint and its registered cache")
         if batch_rows is None:
             sampler = SourceBatches(original, counts, config["sampling_seed"])
             population = sampler.epoch()
@@ -87,7 +88,7 @@ def audit(source, cache, checkpoints, device, replay_seed=2026112007):
         torch.manual_seed(replay_seed)
         batches = []
         for indices in batch_rows:
-            iq = normalize_packet(device_array(raw[indices, :, :model.waveform_samples], device))
+            iq = model_input(model, device_array(raw[indices, :, :model.waveform_samples], device))
             y = device_array(labels[indices].astype(np.int64), device)
             gradients = objective_gradients(model, iq, y, satellites, config)
             main = gradients.pop("global_ce")
