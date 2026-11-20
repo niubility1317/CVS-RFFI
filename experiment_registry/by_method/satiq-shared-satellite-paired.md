@@ -7,3 +7,4 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |SatIQ PAMF-SUP 共享卫星权重首轮逐包复核|managed_run|[打开](../../automation_reports/CV-SincNet/20261120-diagnostic-satiq-shared-satellite-paired-source-e1-s2026111907-r01/report.md)|
+|SatIQ PAMF-SUP 共享卫星权重第 5 轮配对复核|managed_run|[打开](../../automation_reports/CV-SincNet/20261120-diagnostic-satiq-shared-satellite-paired-source-e5-s2026111907-r01/report.md)|

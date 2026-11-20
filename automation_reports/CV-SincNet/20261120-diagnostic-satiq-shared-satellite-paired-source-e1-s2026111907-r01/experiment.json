@@ -60,7 +60,7 @@
     "regime": "Paired frozen models on the same source V; timestamp metadata groups only completed predictions.",
     "query_use": "none",
     "external_method_exception": null,
-    "claim_scope": "Frequency reliance of the E30 frozen model by random-source-split time distance; no independent target access or future performance claim."
+    "claim_scope": "Fixed E1 paired source validation, within-beam time-distance audit and offline two-stage CE diagnostics. Independent T excluded."
   },
   "checkpoint": {
     "initialization": "No training",
@@ -110,11 +110,11 @@
     {
       "row_id": "PAIRED_E1",
       "method": "PAIRED_E1",
-      "purpose": "Verify paired effect of warmup",
+      "purpose": "Compare paired all-beam hits, primary CE and within-beam time distances.",
       "config_ref": "experiments/pamf_satiq66/paper_training_time_audit.py",
       "resolved_config_ref": [
-        "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261120-diagnostic-satiq-full-header-uw-time-source-e1-s2026092701-r01\\PAMF_SUP/resolved_config.json",
-        "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261120-diagnostic-satiq-shared-satellite-head-source-e1-s2026092701-r01\\PAMF_SUP/resolved_config.json"
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-uw-time-source-e1-s2026092701-r01/PAMF_SUP/resolved_config.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-shared-satellite-head-source-e1-s2026092701-r01/PAMF_SUP/resolved_config.json"
       ],
       "data_overrides": {},
       "seeds": {
@@ -147,11 +147,11 @@
     {
       "row_id": "HIERARCHICAL_E1",
       "method": "HIERARCHICAL_E1",
-      "purpose": "Verify paired effect of warmup",
+      "purpose": "Decompose full beam CE into marginal satellite and within-satellite beam terms.",
       "config_ref": "experiments/pamf_satiq66/paper_satellite_pooling_readout.py",
       "resolved_config_ref": [
-        "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261120-diagnostic-satiq-full-header-uw-time-source-e1-s2026092701-r01\\PAMF_SUP/resolved_config.json",
-        "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261120-diagnostic-satiq-shared-satellite-head-source-e1-s2026092701-r01\\PAMF_SUP/resolved_config.json"
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-uw-time-source-e1-s2026092701-r01/PAMF_SUP/resolved_config.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-shared-satellite-head-source-e1-s2026092701-r01/PAMF_SUP/resolved_config.json"
       ],
       "data_overrides": {},
       "seeds": {
