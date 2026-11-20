@@ -1,0 +1,3 @@
+{"at": "2026-11-20T15:15:50+00:00", "status": "PLANNED", "note": "已登记，等待两组固定首轮终点。", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-20T15:22:50+00:00", "status": "QUEUED", "note": "Verified CPU waiter; both exact frozen checkpoints must complete.", "evidence": ["/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-prototype-positive-gap-paired-source-e1-s2026111907-r01/owner.json", "report.md"], "row_id": "PAIR_E1"}
+{"at": "2026-11-20T15:22:50+00:00", "status": "QUEUED", "note": "Bound to the unique active prototype training controller.", "evidence": ["/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-prototype-positive-gap-paired-source-e1-s2026111907-r01/controller.log"], "row_id": null}
