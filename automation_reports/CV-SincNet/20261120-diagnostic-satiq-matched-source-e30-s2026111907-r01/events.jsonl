@@ -1,0 +1,2 @@
+{"at": "2026-11-20T10:55:25+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-20T11:02:47+00:00", "status": "RUNNING", "note": "Both official fixed E30 checkpoints and real CPU reader independently verified.", "evidence": {"controller_pid": 2794962, "score_pid": 2794972, "cpu": true, "both_fixed_E30": true}, "row_id": "MATCHED_E30"}
