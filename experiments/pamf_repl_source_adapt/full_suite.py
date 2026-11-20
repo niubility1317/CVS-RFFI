@@ -8,7 +8,8 @@ from experiments.cric_dura_comparison.io import read, write
 from . import receiver_balance as balance, transfer
 
 
-RUN = '20261120-phase1-pamf-tri-adaptive-clean-m33-r01'
+RUN = '20261120-phase1-pamf-tri-adaptive-clean-m33-r02'
+REPLACES = '20261120-phase1-pamf-tri-adaptive-clean-m33-r01'
 GPUS = (0, 4, 5, 6)
 MODULE = 'experiments.pamf_repl_source_adapt.full_suite'
 paper = transfer.paper
@@ -153,6 +154,9 @@ def main():
         return
     config = read(args.config)
     if args.action == 'dispatch':
+        # Preparation checks the lineage of reused pickled E20 payloads too.
+        from experiments.pamf_repl_completion.runner import activate
+        activate(config)
         transfer.dispatch(config, prepare_fn=prepare, analyze_fn=analyze, module=MODULE)
     elif args.kind == 'score':
         from experiments.pamf_paper_completion.evaluation import score

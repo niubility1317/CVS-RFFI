@@ -16,7 +16,7 @@ def make(template):
         display_name='Tri 融合正对自适应完整 11 设置 clean 对比',
         description='11 设置各 3 种子，统一融合正对 RX 均衡，与原 Tri 和普通 PL 按物理样本配对。',
         parent_run_ids=[suite.paper.RUN, balance.RUN, balance.CONFIRM_RUN],
-        replaces_run_id=None, authorization='用户要求选四张 GPU 发布 11 设置各三种子与普通 PL 的完整对比。')
+        replaces_run_id=suite.REPLACES, authorization='用户要求选四张 GPU 发布 11 设置各三种子与普通 PL 的完整对比。')
     result['code'].update(commit='actual release git OID', checkout='current task worktree',
                           environment='N607 CVS-RFFI', cwd=f'PROJECT/releases/{suite.RUN}-release')
     result['data'].update(

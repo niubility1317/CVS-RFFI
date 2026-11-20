@@ -1,4 +1,5 @@
 from copy import deepcopy
+import sys
 
 import pytest
 import torch
@@ -40,3 +41,16 @@ def test_only_registered_source_configuration_can_train():
                   {'hard_pl_gradient_guard': {'weight': 3.}}):
         with pytest.raises(ValueError, match='Only predeclared'):
             full_suite.validate(dict(deepcopy(c), **wrong))
+
+
+def test_dispatch_activates_frozen_source_runtime_before_prepare(monkeypatch):
+    from experiments.pamf_repl_completion import runner
+
+    config = {'run_id': full_suite.RUN}
+    calls = []
+    monkeypatch.setattr(sys, 'argv', ['full_suite', 'dispatch', '--config', 'runtime.json'])
+    monkeypatch.setattr(full_suite, 'read', lambda path: config)
+    monkeypatch.setattr(runner, 'activate', lambda c: calls.append(('activate', c)))
+    monkeypatch.setattr(full_suite.transfer, 'dispatch', lambda c, **kwargs: calls.append(('dispatch', c)))
+    full_suite.main()
+    assert calls == [('activate', config), ('dispatch', config)]

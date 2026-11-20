@@ -1,5 +1,7 @@
 # Tri 融合正对自适应的 11 设置 clean 对比
 
+**FAILED / PREPARATION**。发布提交 `4ea6009e512c06065f99d459cea103e0b624ec7a` 的调度器在读取历史 E20 权重元数据时缺少原生模块的运行环境初始化。已核对控制器退出，训练作业和候选输出均未创建。以同一矩阵在新编号恢复。[替代运行](../20261120-phase1-pamf-tri-adaptive-clean-m33-r02/report.md)
+
 完整矩阵为 11 种数据设置 × 三个模型种子，逐物理样本对比自适应 Tri、原 Tri 和普通 PL。主指标为固定 E50 的 `cross_rx + cross_both`，并单列 `cross_both` 和逐设置三种子均值。按已有 clean 口径进行原始接收信号识别。[机器登记与逐行矩阵](experiment.json)
 
 ## 固定方法
