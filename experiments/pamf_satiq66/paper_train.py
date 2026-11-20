@@ -17,7 +17,7 @@ from .paper_baseline import PaperSatIQ, angular_triplet, paper_loss
 from .paper_eval import embeddings, metrics, model_input, panel
 from .paper_pamf import PaperPAMF, branch_prototype_loss, reconstruction_target, supervised_loss
 from .paper_native_pamf import EXTRA_WIDTH, NATIVE_PATHS, PaperNativePAMF, native_supervised_loss
-from .paper_time_batch import nearest_temporal_negatives, pair_temporal_negatives
+from .paper_time_batch import nearest_temporal_negatives, pair_temporal_negatives, prototype_positive_slots
 from .wide_model import FEATURES
 from .readout import gpu_ready
 from .train import cuda_device, device_array
@@ -249,12 +249,12 @@ def native_scale_for_update(schedule, update):
     return initial + (30.0 - initial) * (update - 1) / (schedule["updates"] - 1)
 
 
-def native_prototype_terms(feature, branches, weight, path_weights, fused_fraction):
-    branch_ce = branch_prototype_loss(branches, path_weights)
+def native_prototype_terms(feature, branches, weight, path_weights, fused_fraction, positive_slots=None):
+    branch_ce = branch_prototype_loss(branches, path_weights, positive_slots)
     loss = weight * (1.0 - fused_fraction) * branch_ce
     stats = {"branch_prototype_ce": branch_ce.detach()}
     if fused_fraction:
-        fused_ce = branch_prototype_loss(feature.unsqueeze(0))
+        fused_ce = branch_prototype_loss(feature.unsqueeze(0), positive_slots=positive_slots)
         loss = loss + weight * fused_fraction * fused_ce
         stats["fused_prototype_ce"] = fused_ce.detach()
     return loss, stats
@@ -274,6 +274,19 @@ def train(config, source, cache, out, arm, smoke=False, resume=None):
     feature_dimensions = getattr(model, "feature_dimensions", 512 if arm == "SATIQ" else 320)
     reconstruction_weight = config.get("full_reconstruction_weight", 0)
     prototype_weight = config.get("branch_prototype_weight", 0)
+    positive_policy = config.get("native_prototype_positives")
+    positive_ticks = None
+    positive_slots = None
+    if positive_policy is not None:
+        if not native_only or prototype_weight <= 0 or positive_policy not in ("random_two", "farthest_two"):
+            raise ValueError("A two-positive policy requires native PAMF and enabled prototype supervision")
+        if positive_policy == "random_two":
+            positive_slots = device_array(prototype_positive_slots(), device)
+        else:
+            with np.load(source / "L_index.npz", allow_pickle=False) as manifest:
+                positive_ticks = manifest["timestamp_ns"]
+            if positive_ticks.shape != roles["L"][1].shape or positive_ticks.dtype != np.int64:
+                raise ValueError("Expected one signed nanosecond timestamp per source training packet")
     fused_fraction = config.get("native_fused_prototype_fraction", 0.0)
     if not 0 <= fused_fraction < 1 or (fused_fraction and (not native_only or prototype_weight <= 0)):
         raise ValueError("A partial fused prototype allocation requires native PAMF and positive prototype weight")
@@ -355,8 +368,10 @@ def train(config, source, cache, out, arm, smoke=False, resume=None):
                 if scale_warmup is not None:
                     stats["native_train_logit_scale"] = scale
                 if prototype_weight > 0:
+                    if positive_ticks is not None:
+                        positive_slots = device_array(prototype_positive_slots(positive_ticks[idx]), device)
                     proto_loss, proto_stats = native_prototype_terms(feature, branches, prototype_weight,
-                                                                    prototype_path_weights, fused_fraction)
+                                                                    prototype_path_weights, fused_fraction, positive_slots)
                     loss = loss + proto_loss
                     stats.update(proto_stats)
                 if expansion_prototype_weight > 0:

@@ -1,9 +1,23 @@
-"""Place near-time same-satellite negatives in native PAMF source batches."""
+"""Select temporal positives and negatives in native PAMF source batches."""
 
 import numpy as np
 
 
 MAX_GAP_NS = 5_000_000_000
+
+
+def prototype_positive_slots(timestamps=None):
+    """Select two other members of each batch's four-packet beam groups."""
+    positions = np.arange(4)
+    if timestamps is None:
+        # SourceBatches permutes each beam before forming the groups.
+        local = (positions[:, None] + np.array([1, 2])) % 4
+    else:
+        grouped = timestamps.reshape(8, 4)
+        gaps = np.abs(grouped[:, :, None] - grouped[:, None, :])
+        gaps[:, positions, positions] = -1
+        local = np.argsort(gaps, axis=-1, kind="stable")[..., -2:]
+    return (local + (4 * np.arange(8))[:, None, None]).reshape(32, 2)
 
 
 def nearest_temporal_negatives(timestamps, labels, satellites):

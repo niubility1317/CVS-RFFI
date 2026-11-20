@@ -108,7 +108,7 @@ def supervised_loss(logits, common, full, target, satellites, weights, class_log
     return loss, stats
 
 
-def branch_prototype_loss(branches, weights=None):
+def branch_prototype_loss(branches, weights=None, positive_slots=None):
     """Classify centered branch features against the source batch's leave-one-out prototypes."""
     vectors = F.normalize(branches, dim=-1)
     centered = vectors - vectors.mean(dim=1, keepdim=True)
@@ -121,7 +121,11 @@ def branch_prototype_loss(branches, weights=None):
     sums = centered.reshape(len(centered), 8, 4, -1).sum(dim=2)
     prototypes = bounded_direction(sums / 4)
     scores = anchors @ prototypes.transpose(1, 2)
-    own_prototypes = bounded_direction((sums.repeat_interleave(4, dim=1) - centered) / 3)
+    if positive_slots is None:
+        own_means = (sums.repeat_interleave(4, dim=1) - centered) / 3
+    else:
+        own_means = centered[:, positive_slots].mean(dim=2)
+    own_prototypes = bounded_direction(own_means)
     own_scores = (anchors * own_prototypes).sum(dim=-1, keepdim=True)
     labels = torch.arange(8, device=vectors.device).repeat_interleave(4).expand(len(vectors), -1)
     scores = scores.scatter(2, labels.unsqueeze(-1), own_scores)
