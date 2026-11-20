@@ -87,7 +87,9 @@
       7,
       2,
       3
-    ]
+    ],
+    "training_launch_readback": "2026-11-20T13:35:42+08:00",
+    "gpu_uuid": "GPU-a2d039ff-1792-4222-2b47-140429e10f94"
   },
   "expected_artifacts": [
     "controller.log",
@@ -142,7 +144,8 @@
         "s0028225.pt",
         "complete.json"
       ],
-      "gpu": null
+      "gpu": 1,
+      "pid": 2584485
     }
   ],
   "notes": [
