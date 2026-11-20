@@ -103,7 +103,7 @@
       "49814 source V",
       "3103 candidate beams",
       "up to 8 L calibration packets per beam",
-      "256-d fused plus 5 existing 32-d branch outputs"
+      "256-d fused plus five existing 160-d branch projections (common classifier coordinates)"
     ],
     "prediction_ref": null,
     "scorer_ref": "experiments/pamf_satiq66/paper_direct_branches.py"

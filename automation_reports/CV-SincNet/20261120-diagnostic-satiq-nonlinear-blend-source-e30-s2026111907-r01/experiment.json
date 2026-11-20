@@ -103,7 +103,7 @@
       "49814 source V",
       "3103 candidate beams",
       "up to 8 L calibration packets per beam",
-      "original fused256 and 32-d nonlinear logits"
+      "256-d fused and 160-d nonlinear representations scored over the same 3103 classes"
     ],
     "prediction_ref": null,
     "scorer_ref": "experiments/pamf_satiq66/paper_branch_rerank.py"
