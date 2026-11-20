@@ -79,3 +79,9 @@ python -m experiments.pamf_satiq66.paper_final_readout score \
 旧短窗取 25 MS/s 下相邻 256 点，只观察 10.24 μs。新版的 PAMF 接收整包，全速率路使用全部 11,000 点，低速支路的 256 点覆盖 320 μs。在一个包含 202 个标签的 256 条源 L 波形抽样中，前 8 个符号在符号起始采样区间均匹配公共模板，之后三个位置在该区间也一致。这个样本核对不能证明全部报头没有身份相关内容，8,000 点控制仍用于隔离内容因素。
 
 [数据构建脚本](../experiments/pamf_satiq66/paper_split.py)
+
+## 对原版模型和批处理的复核
+
+SatIQ v1.0.2 的训练脚本使用 11,000 点报头、每个标签四条包、32 条一批、512 维嵌入、Adam 学习率 0.00001、重构 MSE 和半难角距离三元组。PyTorch 复现对照保留 I/Q 两路编码、六个卷积与池化层、时间优先展平、L2 归一化和原解码结构。已按 TensorFlow Addons 的规则对 8 个标签各 4 条、共 96 个有序正对逐对验算，损失及梯度和当前向量化实现一致。这个检查验证了数学规则，框架浮点计算和原论文训练轨迹仍各自独立。 [SatIQ 训练脚本](https://github.com/ssloxford/SatIQ/blob/v1.0.2/training/ae-triplet-conv.py) · [原模型](https://github.com/ssloxford/SatIQ/blob/v1.0.2/util/models.py#L340-L435) · [半难三元组实现](https://github.com/tensorflow/addons/blob/v0.20.0/tensorflow_addons/losses/triplet.py#L121-L178)
+
+原加载器按标签分窗口后展平再组批，允许批内同一标签重复出现或末尾有不足四条的一组。为让 SatIQ 和 PAMF 每步接收相同的包，本项目固定每批 8 个不同波束，每个波束 4 条。2026-11-20T11:11:45+08:00 复核清单中的计数，每轮使用 903,200 条独立训练消息，名义源 L 共 910,464 条。其余包括 2,748 条稀有波束包、合格波束每轮 4,488 条余数，以及不足一整批的 28 条。这个口径是两种方法在同一重建数据上的公平比较，和作者的原随机顺序及余数组法有区别。 [原加载器](https://github.com/ssloxford/SatIQ/blob/v1.0.2/util/data.py#L955-L968)
