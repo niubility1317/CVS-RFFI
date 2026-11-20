@@ -100,7 +100,7 @@ def run(source, cache, config, device, full_only=False):
                 sampling_seed=config["sampling_seed"], source_rows=rows.tolist(), results=results)
 
 
-def learning_rate_study(source, cache, config, device):
+def learning_rate_study(source, cache, config, device, learning_rate):
     if (config["native_waveform_samples"] != 11000 or not config["align_reference_time"]
             or config["augmentation"] != "none" or config["pamf_lr"] != .0003):
         raise ValueError("Expected the matched aligned-header PAMF baseline")
@@ -112,15 +112,12 @@ def learning_rate_study(source, cache, config, device):
     fit, future = temporal_source_rows(labels, timestamps, config["sampling_seed"])
     args = classes, raw[fit], labels[fit], original[fit], len(counts), device, True
     holdout = (raw[future], labels[future])
-    results = []
-    for lr in (config["pamf_lr"], .001):
-        print(f"Learning rate {lr:g}; all outcomes use the matched source subsets", flush=True)
-        metrics = train_subset({**config, "pamf_lr": lr}, *args, holdout=holdout, milestones=LR_MILESTONES)
-        results.append(dict(learning_rate=lr, measurements=metrics))
+    print(f"Learning rate {learning_rate:g}; all outcomes use the matched source subsets", flush=True)
+    metrics = train_subset({**config, "pamf_lr": learning_rate}, *args, holdout=holdout, milestones=LR_MILESTONES)
     return dict(source_role="L", classifier_classes=len(classes), fixed_beams=64, packets_per_beam=16,
                 cutoff_utc="2023-04-02T00:00:00Z", model_seed=config["model_seed"],
                 sampling_seed=config["sampling_seed"], training_rows=fit.tolist(), later_rows=future.tolist(),
-                results=results)
+                learning_rate=learning_rate, measurements=metrics)
 
 
 if __name__ == "__main__":
@@ -130,9 +127,12 @@ if __name__ == "__main__":
     parser.add_argument("--device", choices=("cpu", "cuda"), default="cuda")
     modes = parser.add_mutually_exclusive_group()
     modes.add_argument("--full-only", action="store_true")
-    modes.add_argument("--learning-rate-study", action="store_true")
+    modes.add_argument("--learning-rate-study", type=float, choices=(.0003, .001))
     args = parser.parse_args()
     torch.set_num_threads(4)
     common = args.source, args.cache, read_json(args.config), torch.device(args.device)
-    result = learning_rate_study(*common) if args.learning_rate_study else run(*common, args.full_only)
+    if args.learning_rate_study is not None:
+        result = learning_rate_study(*common, args.learning_rate_study)
+    else:
+        result = run(*common, args.full_only)
     write_json(args.output, result)
