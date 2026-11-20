@@ -126,6 +126,9 @@ def source_inputs(source, cache):
 def make_model(config, arm, classes):
     torch.manual_seed(config["model_seed"])
     columns = None
+    pa_bandwidth = config.get("native_pa_oversampled_bandwidth_hz")
+    if pa_bandwidth is not None and (arm != "PAMF_SUP" or "native_expansion" not in config):
+        raise ValueError("Oversampled PA requires native PAMF-SUP")
     if config.get("native_shared_satellite_head", False):
         if arm != "PAMF_SUP" or "native_expansion" not in config:
             raise ValueError("Satellite sharing requires a native PAMF-SUP beam head")
@@ -144,7 +147,7 @@ def make_model(config, arm, classes):
                                 spectral_gains=config.get("native_spectral_gains"),
                                 chronological_sequence=config.get("native_chronological_sequence", False),
                                 pa_highband_gain=config.get("native_pa_highband_gain", 1.0),
-                                satellite_columns=columns)
+                                satellite_columns=columns, pa_oversampled_bandwidth_hz=pa_bandwidth)
     elif arm == "SATIQ":
         model = PaperSatIQ()
     else:

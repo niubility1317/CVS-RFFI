@@ -11,6 +11,7 @@ from .wide_model import FEATURES
 
 NATIVE_PATHS = ("time", "frequency", "nonlinear", "sequence", "reference")
 EXTRA_WIDTH = {"native160": 0, "fused256": 96, "fused320": 160, "branches320": 160, "prefuse320": 160}
+PA_OVERSAMPLE = 8
 
 
 def native_frequency_taper(bins):
@@ -26,6 +27,22 @@ def emphasize_pa_input(module, args):
     (iq,) = args
     spectrum = torch.fft.rfft(iq, dim=-1)
     return (torch.fft.irfft(spectrum * module.satiq_pa_response, n=iq.shape[-1], dim=-1),)
+
+
+def oversampled_pa_basis(spectrum, waveform_samples, coarse, lift):
+    """Form orders three and five before projecting to the native PA grid."""
+    points = coarse.shape[-1]
+    dense_points = PA_OVERSAMPLE * points
+    dense = torch.fft.irfft(spectrum, n=dense_points) * (dense_points / waveform_samples)
+    dense = dense.clamp(-lift.clip, lift.clip)
+    mag2 = dense.square().sum(dim=1, keepdim=True).clamp_min(1e-8)
+    nonlinear = torch.cat((dense * mag2, dense * mag2.square()), dim=1)
+    positive = torch.fft.rfft(nonlinear)[..., :points // 2 + 1]
+    # Both signed Nyquist bins coalesce into one real bin on the output grid.
+    projected = torch.cat((positive[..., :-1], 2 * positive[..., -1:]), dim=-1)
+    nonlinear = torch.fft.irfft(projected, n=points) / PA_OVERSAMPLE
+    base = torch.cat((coarse.clamp(-lift.clip, lift.clip), nonlinear), dim=1)
+    return torch.cat([lift._delay(base, lag) for lag in range(lift.memory_depth)], dim=1)
 
 
 class SharedSatelliteHead(nn.Module):
@@ -50,7 +67,7 @@ class PaperNativePAMF(nn.Module):
     def __init__(self, runtime, seed, classes, expansion, satiq_sinc_init=False, center_fusion=False,
                  waveform_samples=8000, align_reference_time=False, grid_points=256,
                  reflect_boundary=False, spectral_gains=None, chronological_sequence=False,
-                 pa_highband_gain=1.0, satellite_columns=None):
+                 pa_highband_gain=1.0, satellite_columns=None, pa_oversampled_bandwidth_hz=None):
         super().__init__()
         if waveform_samples not in (8000, 11000):
             raise ValueError("Native PAMF expects the common word or full SatIQ header")
@@ -58,6 +75,11 @@ class PaperNativePAMF(nn.Module):
             raise ValueError("Expected a 256- or 512-point native feature grid")
         if not 1 <= pa_highband_gain <= 1.5:
             raise ValueError("SatIQ PA highband amplitude gain must be between 1 and 1.5")
+        if pa_oversampled_bandwidth_hz is not None:
+            if (pa_oversampled_bandwidth_hz not in (250_000, 500_000) or waveform_samples != 11000
+                    or grid_points != 256 or not align_reference_time or reflect_boundary
+                    or spectral_gains is not None or pa_highband_gain != 1):
+                raise ValueError("Expected aligned 11000-point native PAMF with one oversampled PA taper")
         if spectral_gains is not None:
             spectral_gains = torch.as_tensor(spectral_gains, dtype=torch.float32)
             if (spectral_gains.shape != (16,)
@@ -121,6 +143,16 @@ class PaperNativePAMF(nn.Module):
         if spectral_gains is not None:
             cutoff = cutoff * inband_gain(bins * (25_000_000 / 8000), spectral_gains)
         self.register_buffer("cutoff", cutoff, persistent=False)
+        pa_cutoff = None
+        if pa_oversampled_bandwidth_hz is not None:
+            core = self.native.core.id_backbone
+            if (not core.use_pa_path or core.pa_feature_source != "raw_iq"
+                    or core.pa_lift.orders != (1, 3, 5)):
+                raise ValueError("Oversampled PA requires the native direct-IQ orders 1, 3 and 5")
+            pa_bins = torch.arange(PA_OVERSAMPLE * grid_points // 2 + 1, dtype=torch.float32)
+            pa_cutoff = native_frequency_taper(pa_bins * (8000 / waveform_samples)
+                                               * (250_000 / pa_oversampled_bandwidth_hz))
+        self.register_buffer("pa_oversampled_cutoff", pa_cutoff, persistent=False)
 
     def _center_fusion(self, feature):
         if self.fusion_center is None:
@@ -136,22 +168,26 @@ class PaperNativePAMF(nn.Module):
         if self.reflect_boundary:
             # The even extension keeps the burst tail from wrapping into the synchronization field.
             common = torch.cat((common, common.flip(-1)), dim=-1)
-        spectrum = torch.fft.rfft(common, dim=-1)[..., :self.fft_points // 2 + 1]
-        coarse = torch.fft.irfft(spectrum * self.cutoff, n=self.fft_points, dim=-1)
+        spectrum = torch.fft.rfft(common, dim=-1)
+        coarse = torch.fft.irfft(spectrum[..., :self.cutoff.numel()] * self.cutoff, n=self.fft_points, dim=-1)
         coarse = coarse[..., :self.grid_points] * (self.fft_points / common.shape[-1])
         branches = None
         fusion_inputs = []
-        handle = None
+        handles = []
         if self.expansion == "prefuse320":
-            handle = self.native.core.id_backbone.fuse.register_forward_pre_hook(
-                lambda _module, args: fusion_inputs.append(args[0]))
+            handles.append(self.native.core.id_backbone.fuse.register_forward_pre_hook(
+                lambda _module, args: fusion_inputs.append(args[0])))
+        if self.pa_oversampled_cutoff is not None:
+            pa_spectrum = spectrum[..., :self.pa_oversampled_cutoff.numel()] * self.pa_oversampled_cutoff
+            handles.append(self.native.core.id_backbone.pa_lift.register_forward_hook(
+                lambda lift, args, _output: oversampled_pa_basis(pa_spectrum, self.waveform_samples, args[0], lift)))
         try:
             if retain_branches or self.expansion == "branches320":
                 _, native, branches = capture(self.native, coarse)
             else:
                 native = self.native.features(coarse)
         finally:
-            if handle is not None:
+            for handle in handles:
                 handle.remove()
         native = F.normalize(native, dim=1)
         if self.expander is None:
