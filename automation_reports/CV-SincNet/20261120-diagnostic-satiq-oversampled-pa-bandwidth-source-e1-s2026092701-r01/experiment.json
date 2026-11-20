@@ -79,7 +79,8 @@
     "stop_rule": "Fixed E1. Stop affected row only for technical failure or wrong source contract.",
     "controller_pid": 2975212,
     "launch_readback": "2026-11-21T00:00:00+08:00",
-    "release_sha256": "39627549b5683fdf15be2d81c5c1988d91fb4350618bfcfac186e8a1d2a2b8ce"
+    "release_sha256": "39627549b5683fdf15be2d81c5c1988d91fb4350618bfcfac186e8a1d2a2b8ce",
+    "complete_readback": "2026-11-21T00:48:16+08:00"
   },
   "expected_artifacts": [
     "owner.json",
@@ -178,7 +179,8 @@
       "gpu_uuid": "GPU-5463e082-259e-537b-603a-01575d45801c",
       "pid": 2988829,
       "smoke_pid": 2988624,
-      "launch_readback": "2026-11-21T00:26:01+08:00"
+      "launch_readback": "2026-11-21T00:26:01+08:00",
+      "complete_readback": "2026-11-21T00:48:16+08:00"
     }
   ],
   "notes": [
