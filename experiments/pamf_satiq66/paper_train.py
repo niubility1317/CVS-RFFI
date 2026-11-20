@@ -242,6 +242,17 @@ def native_scale_for_update(schedule, update):
     return initial + (30.0 - initial) * (update - 1) / (schedule["updates"] - 1)
 
 
+def native_prototype_terms(feature, branches, weight, path_weights, fused_fraction):
+    branch_ce = branch_prototype_loss(branches, path_weights)
+    loss = weight * (1.0 - fused_fraction) * branch_ce
+    stats = {"branch_prototype_ce": branch_ce.detach()}
+    if fused_fraction:
+        fused_ce = branch_prototype_loss(feature.unsqueeze(0))
+        loss = loss + weight * fused_fraction * fused_ce
+        stats["fused_prototype_ce"] = fused_ce.detach()
+    return loss, stats
+
+
 def train(config, source, cache, out, arm, smoke=False, resume=None):
     classes, counts, roles = source_inputs(source, cache)
     device = cuda_device()
@@ -256,6 +267,9 @@ def train(config, source, cache, out, arm, smoke=False, resume=None):
     feature_dimensions = getattr(model, "feature_dimensions", 512 if arm == "SATIQ" else 320)
     reconstruction_weight = config.get("full_reconstruction_weight", 0)
     prototype_weight = config.get("branch_prototype_weight", 0)
+    fused_fraction = config.get("native_fused_prototype_fraction", 0.0)
+    if not 0 <= fused_fraction < 1 or (fused_fraction and (not native_only or prototype_weight <= 0)):
+        raise ValueError("A partial fused prototype allocation requires native PAMF and positive prototype weight")
     prototype_path_weights = None
     if "branch_prototype_weights" in config:
         prototype_path_weights = torch.tensor(config["branch_prototype_weights"], dtype=torch.float32, device=device)
@@ -334,9 +348,10 @@ def train(config, source, cache, out, arm, smoke=False, resume=None):
                 if scale_warmup is not None:
                     stats["native_train_logit_scale"] = scale
                 if prototype_weight > 0:
-                    prototype = branch_prototype_loss(branches, prototype_path_weights)
-                    loss = loss + prototype_weight * prototype
-                    stats["branch_prototype_ce"] = prototype.detach()
+                    proto_loss, proto_stats = native_prototype_terms(feature, branches, prototype_weight,
+                                                                    prototype_path_weights, fused_fraction)
+                    loss = loss + proto_loss
+                    stats.update(proto_stats)
                 if expansion_prototype_weight > 0:
                     expansion = feature[:, FEATURES:].unsqueeze(0)
                     prototype = branch_prototype_loss(expansion)
