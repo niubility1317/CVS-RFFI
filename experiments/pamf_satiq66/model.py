@@ -14,15 +14,25 @@ ORDER = (0, 5, 3, 6, 2, 1, 4, 7)
 PASSBAND_END_HZ = 187_500
 
 
-def reference_waveform():
+def _reference_iq(symbols, samples):
     # The downmixer returns the first UW symbol at sample zero. Smooth the
     # symbol changes at the half-symbol boundaries to reflect band limitation.
-    n = np.arange(8000)
-    signal = np.full(8000, SYMBOLS[0], dtype=np.complex64)
-    for index, delta in enumerate(np.diff(SYMBOLS)):
+    n = np.arange(samples)
+    signal = np.full(samples, symbols[0], dtype=np.complex64)
+    for index, delta in enumerate(np.diff(symbols)):
         signal += delta * (0.5 + 0.5 * np.tanh((n - 500 - 1000 * index) / 140))
-    iq = np.stack((signal.real, signal.imag), axis=-1)
-    return represent(iq[None])[0]
+    return np.stack((signal.real, signal.imag), axis=-1)
+
+
+def reference_waveform():
+    return represent(_reference_iq(SYMBOLS, 8000)[None])[0]
+
+
+def full_downlink_reference():
+    # The last of the 12 fixed symbols is outside the crop. Its leading
+    # transition lies inside, so include it when constructing the template.
+    symbols = np.concatenate((SYMBOLS, np.array([-1 - 1j, 1 + 1j, 1 + 1j, -1 - 1j], dtype=SYMBOLS.dtype)))
+    return torch.from_numpy(_reference_iq(symbols, 11000).T[None])
 
 
 def inband_gain(frequency_hz, gains):
@@ -34,26 +44,31 @@ def inband_gain(frequency_hz, gains):
 
 
 class UWResponse(nn.Module):
-    def __init__(self, representation, waveform_samples=8000, grid_points=256, spectral_gains=None):
+    def __init__(self, representation, waveform_samples=8000, grid_points=256, spectral_gains=None,
+                 *, reference_grid=None):
         super().__init__()
-        template = torch.utils.dlpack.from_dlpack(reference_waveform()[representation])
-        ref = torch.complex(template[0], template[1])
         ratio = (waveform_samples / 8000) * (256 / grid_points)
-        if ratio != 1:
-            if representation != 1:
-                raise ValueError("Reference resampling requires the downsampled SatIQ view")
-            # Keep only grid locations supported by the known 8,000-point word.
-            positions = torch.arange(int((len(ref) - 1) / ratio) + 1) * ratio
-            left = positions.long()
-            fraction = positions - left
-            right = (left + 1).clamp_max(len(ref) - 1)
-            ref = ref[left] * (1 - fraction) + ref[right] * fraction
+        if reference_grid is None:
+            template = torch.utils.dlpack.from_dlpack(reference_waveform()[representation])
+            ref = torch.complex(template[0], template[1])
+            if ratio != 1:
+                if representation != 1:
+                    raise ValueError("Reference resampling requires the downsampled SatIQ view")
+                # Keep only grid locations supported by the known 8,000-point word.
+                positions = torch.arange(int((len(ref) - 1) / ratio) + 1) * ratio
+                left = positions.long()
+                fraction = positions - left
+                right = (left + 1).clamp_max(len(ref) - 1)
+                ref = ref[left] * (1 - fraction) + ref[right] * fraction
+        else:
+            ref = torch.complex(reference_grid[0], reference_grid[1])
         ref = ref / ref.abs().square().mean().sqrt()
         window = torch.hann_window(len(ref))
         spectrum = torch.fft.fft(ref * window)
         # Twelve usable bins preserve the native response projection width.
         bins = spectrum.abs().topk(12).indices.sort().values
-        if spectral_gains is not None:
+        # A supplied grid has already received the same shaping as input IQ.
+        if spectral_gains is not None and reference_grid is None:
             period = waveform_samples / (25_000_000 * grid_points)
             frequency = torch.fft.fftfreq(len(ref), d=period, dtype=ref.real.dtype)
             ref = torch.fft.ifft(torch.fft.fft(ref) * inband_gain(frequency, spectral_gains))
@@ -88,7 +103,7 @@ class UWResponse(nn.Module):
 
 
 def build_model(runtime, seed, representation, reference_waveform_samples=8000, grid_points=256,
-                spectral_gains=None, chronological_sequence=False):
+                spectral_gains=None, chronological_sequence=False, *, reference_grid=None):
     from experiments.pamf_phase3_open_world.source_development import _activate_code
 
     _activate_code(runtime)
@@ -119,7 +134,8 @@ def build_model(runtime, seed, representation, reference_waveform_samples=8000, 
             sinc.t_.mul_(.5)
             sinc.sample_rate *= 2
         core.sinc = sinc
-        model.response = UWResponse(representation, reference_waveform_samples, grid_points, spectral_gains)
+        model.response = UWResponse(representation, reference_waveform_samples, grid_points, spectral_gains,
+                                    reference_grid=reference_grid)
         model.sequence_pool = CompositePool(core.t2.pw.out_channels, "SIG_TIME_X3", seed)
         model.__class__ = CompositeReference
         order = torch.arange(len(ORDER)) if chronological_sequence else torch.tensor(ORDER)

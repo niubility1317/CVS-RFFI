@@ -129,6 +129,9 @@ def make_model(config, arm, classes):
     pa_bandwidth = config.get("native_pa_oversampled_bandwidth_hz")
     if pa_bandwidth is not None and (arm != "PAMF_SUP" or "native_expansion" not in config):
         raise ValueError("Oversampled PA requires native PAMF-SUP")
+    full_uw_reference = config.get("native_full_uw_reference", False)
+    if full_uw_reference and (arm != "PAMF_SUP" or "native_expansion" not in config):
+        raise ValueError("The full downlink reference requires native PAMF-SUP")
     shared_head = config.get("native_shared_satellite_head", False)
     satellite_aux_weight = config.get("native_satellite_auxiliary_weight", 0.0)
     if not 0 <= satellite_aux_weight <= 1:
@@ -153,7 +156,8 @@ def make_model(config, arm, classes):
                                 pa_highband_gain=config.get("native_pa_highband_gain", 1.0),
                                 satellite_columns=columns if shared_head else None,
                                 pa_oversampled_bandwidth_hz=pa_bandwidth,
-                                satellite_aux_columns=columns if satellite_aux_weight else None)
+                                satellite_aux_columns=columns if satellite_aux_weight else None,
+                                full_uw_reference=full_uw_reference)
     elif arm == "SATIQ":
         model = PaperSatIQ()
     else:

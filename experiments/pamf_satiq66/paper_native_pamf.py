@@ -4,7 +4,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from .model import build_model, capture, inband_gain
+from .model import build_model, capture, full_downlink_reference, inband_gain
 from .paper_pamf import packet_rms
 from .wide_model import FEATURES
 
@@ -80,10 +80,14 @@ class PaperNativePAMF(nn.Module):
                  waveform_samples=8000, align_reference_time=False, grid_points=256,
                  reflect_boundary=False, spectral_gains=None, chronological_sequence=False,
                  pa_highband_gain=1.0, satellite_columns=None, pa_oversampled_bandwidth_hz=None,
-                 satellite_aux_columns=None):
+                 satellite_aux_columns=None, *, full_uw_reference=False):
         super().__init__()
         if waveform_samples not in (8000, 11000):
             raise ValueError("Native PAMF expects the common word or full SatIQ header")
+        if full_uw_reference:
+            if waveform_samples != 11000:
+                raise ValueError("The full downlink reference requires an 11,000-point input")
+            align_reference_time = True
         if grid_points not in (256, 512):
             raise ValueError("Expected a 256- or 512-point native feature grid")
         if not 1 <= pa_highband_gain <= 1.5:
@@ -107,10 +111,19 @@ class PaperNativePAMF(nn.Module):
         self.fft_points = grid_points * extension
         self.expansion = expansion
         self.feature_dimensions = FEATURES + EXTRA_WIDTH[expansion]
+        bins = torch.arange(self.fft_points // 2 + 1, dtype=torch.float32) * (8000 / (self.waveform_samples * extension))
+        cutoff = native_frequency_taper(bins)
+        if spectral_gains is not None:
+            cutoff = cutoff * inband_gain(bins * (25_000_000 / 8000), spectral_gains)
+        self.register_buffer("cutoff", cutoff, persistent=False)
+        reference_grid = None
+        if full_uw_reference:
+            _, template = self._native_grid(full_downlink_reference())
+            reference_grid = template[0]
         reference_samples = waveform_samples if align_reference_time else 8000
         self.native = build_model(runtime, seed, 1, reference_waveform_samples=reference_samples,
                                   grid_points=grid_points, spectral_gains=spectral_gains,
-                                  chronological_sequence=chronological_sequence)
+                                  chronological_sequence=chronological_sequence, reference_grid=reference_grid)
         if pa_highband_gain > 1:
             core = self.native.core.id_backbone
             if not core.use_pa_path or core.pa_feature_source != "raw_iq":
@@ -158,11 +171,6 @@ class PaperNativePAMF(nn.Module):
             with torch.random.fork_rng(devices=[]):
                 self.satellite_auxiliary = AuxiliarySatelliteHead(self.feature_dimensions, satellite_aux_columns)
         self.register_buffer("fusion_center", torch.zeros(self.feature_dimensions) if center_fusion else None)
-        bins = torch.arange(self.fft_points // 2 + 1, dtype=torch.float32) * (8000 / (self.waveform_samples * extension))
-        cutoff = native_frequency_taper(bins)
-        if spectral_gains is not None:
-            cutoff = cutoff * inband_gain(bins * (25_000_000 / 8000), spectral_gains)
-        self.register_buffer("cutoff", cutoff, persistent=False)
         pa_cutoff = None
         if pa_oversampled_bandwidth_hz is not None:
             core = self.native.core.id_backbone
@@ -181,9 +189,7 @@ class PaperNativePAMF(nn.Module):
             self.fusion_center.lerp_(feature.detach().mean(dim=0), .05)
         return F.normalize(feature - self.fusion_center, dim=1, eps=1e-6)
 
-    def _encode(self, iq, retain_branches):
-        if iq.ndim != 3 or iq.shape[1] != 2 or iq.shape[-1] < self.waveform_samples:
-            raise ValueError("Native PAMF requires both IQ channels of its configured header window")
+    def _native_grid(self, iq):
         common = packet_rms(iq[:, :, :self.waveform_samples])
         if self.reflect_boundary:
             # The even extension keeps the burst tail from wrapping into the synchronization field.
@@ -191,6 +197,12 @@ class PaperNativePAMF(nn.Module):
         spectrum = torch.fft.rfft(common, dim=-1)
         coarse = torch.fft.irfft(spectrum[..., :self.cutoff.numel()] * self.cutoff, n=self.fft_points, dim=-1)
         coarse = coarse[..., :self.grid_points] * (self.fft_points / common.shape[-1])
+        return spectrum, coarse
+
+    def _encode(self, iq, retain_branches):
+        if iq.ndim != 3 or iq.shape[1] != 2 or iq.shape[-1] < self.waveform_samples:
+            raise ValueError("Native PAMF requires both IQ channels of its configured header window")
+        spectrum, coarse = self._native_grid(iq)
         branches = None
         fusion_inputs = []
         handles = []
