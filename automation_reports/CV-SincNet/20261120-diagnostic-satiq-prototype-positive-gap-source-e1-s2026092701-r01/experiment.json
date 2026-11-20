@@ -139,7 +139,8 @@
       "smoke_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train smoke /home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-prototype-positive-gap-source-e1-s2026092701-r01/configs/pamf_satiq_ccs2023_prototype_farthest_two_20261120.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-prototype-positive-gap-source-e1-s2026092701-r01/smoke_FARTHEST_TWO --arm PAMF_SUP --native-expansion fused256",
       "gpu_uuid": "GPU-5463e082-259e-537b-603a-01575d45801c",
       "pid": 2936586,
-      "smoke_pid": 2936376
+      "smoke_pid": 2936376,
+      "complete_readback": "2026-11-20T23:09:48+08:00"
     },
     {
       "row_id": "RANDOM_TWO",
@@ -174,7 +175,10 @@
       ],
       "gpu": 6,
       "smoke_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train smoke /home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-prototype-positive-gap-source-e1-s2026092701-r01/configs/pamf_satiq_ccs2023_prototype_random_two_20261120.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-prototype-positive-gap-source-e1-s2026092701-r01/smoke_RANDOM_TWO --arm PAMF_SUP --native-expansion fused256",
-      "gpu_uuid": "GPU-5463e082-259e-537b-603a-01575d45801c"
+      "gpu_uuid": "GPU-5463e082-259e-537b-603a-01575d45801c",
+      "pid": 2948439,
+      "smoke_pid": 2948236,
+      "launch_readback": "2026-11-20T23:09:48+08:00"
     }
   ],
   "notes": [
