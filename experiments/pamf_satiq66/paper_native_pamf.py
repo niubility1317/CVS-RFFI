@@ -22,7 +22,7 @@ class PaperNativePAMF(nn.Module):
 
     def __init__(self, runtime, seed, classes, expansion, satiq_sinc_init=False, center_fusion=False,
                  waveform_samples=8000, align_reference_time=False, grid_points=256,
-                 reflect_boundary=False, spectral_gains=None):
+                 reflect_boundary=False, spectral_gains=None, chronological_sequence=False):
         super().__init__()
         if waveform_samples not in (8000, 11000):
             raise ValueError("Native PAMF expects the common word or full SatIQ header")
@@ -44,7 +44,8 @@ class PaperNativePAMF(nn.Module):
         self.feature_dimensions = FEATURES + EXTRA_WIDTH[expansion]
         reference_samples = waveform_samples if align_reference_time else 8000
         self.native = build_model(runtime, seed, 1, reference_waveform_samples=reference_samples,
-                                  grid_points=grid_points, spectral_gains=spectral_gains)
+                                  grid_points=grid_points, spectral_gains=spectral_gains,
+                                  chronological_sequence=chronological_sequence)
         self.native.core.id_backbone.cls_head.requires_grad_(False)
         if satiq_sinc_init:
             sinc = self.native.core.id_backbone.sinc

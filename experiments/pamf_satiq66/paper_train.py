@@ -128,7 +128,8 @@ def make_model(config, arm, classes):
                                 align_reference_time=config.get("align_reference_time", False),
                                 grid_points=config.get("native_grid_points", 256),
                                 reflect_boundary=config.get("native_reflect_boundary", False),
-                                spectral_gains=config.get("native_spectral_gains"))
+                                spectral_gains=config.get("native_spectral_gains"),
+                                chronological_sequence=config.get("native_chronological_sequence", False))
     elif arm == "SATIQ":
         model = PaperSatIQ()
     else:

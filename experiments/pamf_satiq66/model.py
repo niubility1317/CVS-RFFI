@@ -88,7 +88,7 @@ class UWResponse(nn.Module):
 
 
 def build_model(runtime, seed, representation, reference_waveform_samples=8000, grid_points=256,
-                spectral_gains=None):
+                spectral_gains=None, chronological_sequence=False):
     from experiments.pamf_phase3_open_world.source_development import _activate_code
 
     _activate_code(runtime)
@@ -122,8 +122,9 @@ def build_model(runtime, seed, representation, reference_waveform_samples=8000, 
         model.response = UWResponse(representation, reference_waveform_samples, grid_points, spectral_gains)
         model.sequence_pool = CompositePool(core.t2.pw.out_channels, "SIG_TIME_X3", seed)
         model.__class__ = CompositeReference
+        order = torch.arange(len(ORDER)) if chronological_sequence else torch.tensor(ORDER)
         for view in model.sequence_pool.views:
-            view.register_buffer("window_order", torch.tensor(ORDER), persistent=False)
+            view.register_buffer("window_order", order.clone(), persistent=False)
             view.forward = MethodType(shuffled_descriptor, view)
         if grid_points == 512:
             # Retain the registered four windows and their eight-position order.
