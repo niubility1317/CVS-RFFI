@@ -125,6 +125,12 @@ def source_inputs(source, cache):
 
 def make_model(config, arm, classes):
     torch.manual_seed(config["model_seed"])
+    columns = None
+    if config.get("native_shared_satellite_head", False):
+        if arm != "PAMF_SUP" or "native_expansion" not in config:
+            raise ValueError("Satellite sharing requires a native PAMF-SUP beam head")
+        _, groups = np.unique(classes[:, 0], return_inverse=True)
+        columns = torch.from_dlpack(groups.astype(np.int64))
     if "native_expansion" in config:
         if arm != "PAMF_SUP":
             raise ValueError("The native expansion experiment requires the PAMF-SUP arm")
@@ -137,7 +143,8 @@ def make_model(config, arm, classes):
                                 reflect_boundary=config.get("native_reflect_boundary", False),
                                 spectral_gains=config.get("native_spectral_gains"),
                                 chronological_sequence=config.get("native_chronological_sequence", False),
-                                pa_highband_gain=config.get("native_pa_highband_gain", 1.0))
+                                pa_highband_gain=config.get("native_pa_highband_gain", 1.0),
+                                satellite_columns=columns)
     elif arm == "SATIQ":
         model = PaperSatIQ()
     else:

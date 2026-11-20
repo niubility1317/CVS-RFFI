@@ -28,13 +28,29 @@ def emphasize_pa_input(module, args):
     return (torch.fft.irfft(spectrum * module.satiq_pa_response, n=iq.shape[-1], dim=-1),)
 
 
+class SharedSatelliteHead(nn.Module):
+    """Form the existing beam rows with a shared component for each satellite."""
+
+    def __init__(self, beam_head, columns):
+        super().__init__()
+        if columns.shape != (beam_head.out_features,) or columns.dtype != torch.long or int(columns.min()) < 0:
+            raise ValueError("Expected one satellite index per beam classifier row")
+        self.beams = beam_head.weight
+        self.shared = nn.Parameter(self.beams.new_zeros(int(columns.max()) + 1, beam_head.in_features))
+        self.register_buffer("columns", columns, persistent=False)
+
+    @property
+    def weight(self):
+        return self.beams + .5 * self.shared.index_select(0, self.columns)
+
+
 class PaperNativePAMF(nn.Module):
     waveform_samples = 8000
 
     def __init__(self, runtime, seed, classes, expansion, satiq_sinc_init=False, center_fusion=False,
                  waveform_samples=8000, align_reference_time=False, grid_points=256,
                  reflect_boundary=False, spectral_gains=None, chronological_sequence=False,
-                 pa_highband_gain=1.0):
+                 pa_highband_gain=1.0, satellite_columns=None):
         super().__init__()
         if waveform_samples not in (8000, 11000):
             raise ValueError("Native PAMF expects the common word or full SatIQ header")
@@ -97,6 +113,8 @@ class PaperNativePAMF(nn.Module):
             )
         self.head = nn.Linear(self.feature_dimensions, classes, bias=False)
         nn.init.xavier_uniform_(self.head.weight)
+        if satellite_columns is not None:
+            self.head = SharedSatelliteHead(self.head, satellite_columns)
         self.register_buffer("fusion_center", torch.zeros(self.feature_dimensions) if center_fusion else None)
         bins = torch.arange(self.fft_points // 2 + 1, dtype=torch.float32) * (8000 / (self.waveform_samples * extension))
         cutoff = native_frequency_taper(bins)
@@ -157,10 +175,10 @@ class PaperNativePAMF(nn.Module):
 
     def forward(self, iq, view_logits=False):
         feature, branches = self._encode(iq, view_logits)
-        weight = F.normalize(self.head.weight, dim=1)
-        logits = 30 * F.linear(feature, weight)
+        weight = self.head.weight
+        logits = 30 * F.linear(feature, F.normalize(weight, dim=1))
         if view_logits:
-            branch_weight = F.normalize(self.head.weight[:, :FEATURES], dim=1)
+            branch_weight = F.normalize(weight[:, :FEATURES], dim=1)
             branch_logits = 30 * F.linear(F.normalize(branches, dim=-1), branch_weight)
             return feature, logits, branch_logits, branches
         return feature, logits
