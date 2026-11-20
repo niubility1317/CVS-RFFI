@@ -1,6 +1,7 @@
 """Freeze full-candidate single-packet decisions before reading SatIQ test truth."""
 
 import argparse
+import json
 from pathlib import Path
 
 import numpy as np
@@ -16,24 +17,58 @@ from .train import cuda_device, device_array
 
 
 ARMS = ("SATIQ", "PAMF_SUP")
+STEPS_PER_EPOCH = FINAL_UPDATES // FINAL_EPOCH
+REDUCED_EPOCH = 100
 
 
-def completed_checkpoints(source, cache, training, class_count):
+def source_milestone(run, epoch):
+    updates = epoch * STEPS_PER_EPOCH
+    checkpoint = run / f"s{updates:07d}.pt"
+    if not checkpoint.is_file():
+        return None
+    with (run / "steps.jsonl").open(encoding="utf-8") as journal:
+        for line in journal:
+            if not line.endswith("\n"):
+                break
+            record = json.loads(line)
+            if record["updates"] == updates:
+                if (record["epoch"] != epoch or record["epoch_step"] != STEPS_PER_EPOCH
+                        or not record.get("source_validation")):
+                    raise ValueError(f"Unvalidated E{epoch} checkpoint in {run}")
+                return checkpoint
+            if record["updates"] > updates:
+                raise ValueError(f"Missing E{epoch} validation record in {run}")
+    return None
+
+
+def completed_checkpoints(source, cache, training, class_count, epoch=FINAL_EPOCH):
+    if epoch not in (REDUCED_EPOCH, FINAL_EPOCH):
+        raise ValueError("Expected a registered E100 or E200 budget")
+    updates = epoch * STEPS_PER_EPOCH
     checkpoints, seeds = {}, set()
     for arm in ARMS:
         run = training / arm
-        completion = read_json(run / "complete.json")
         contract = read_json(run / "resolved_config.json")
-        checkpoint = run / f"s{FINAL_UPDATES:07d}.pt"
-        if (completion != dict(arm=arm, mode="supervised", epochs=FINAL_EPOCH, updates=FINAL_UPDATES)
-                or contract["arm"] != arm or contract["epochs"] != FINAL_EPOCH
-                or contract["total_updates"] != FINAL_UPDATES or contract["trained_classes"] != class_count
+        if (contract["arm"] != arm or contract["trained_classes"] != class_count
                 or contract["input_samples"] != 11000 or contract["signed_input"] is not True
                 or contract["source_roles"] != ["L", "V"] or contract["test_access"]
-                or contract["augmentation"] != "none" or not checkpoint.is_file()
+                or contract["augmentation"] != "none" or contract["steps_per_epoch"] != STEPS_PER_EPOCH
                 or Path(contract["source"]).resolve() != source.resolve()
                 or Path(contract["cache"]).resolve() != cache.resolve()):
-            raise ValueError(f"{arm} requires its exact completed matched full-header E200 checkpoint")
+            raise ValueError(f"{arm} does not match the registered full-header source data")
+        if epoch == FINAL_EPOCH:
+            completion = read_json(run / "complete.json")
+            checkpoint = run / f"s{updates:07d}.pt"
+            if (completion != dict(arm=arm, mode="supervised", epochs=epoch, updates=updates)
+                    or contract["epochs"] != epoch or contract["total_updates"] != updates
+                    or not checkpoint.is_file()):
+                raise ValueError(f"{arm} requires its exact completed E{epoch} checkpoint")
+        else:
+            checkpoint = source_milestone(run, epoch)
+            if (checkpoint is None or contract["epochs"] not in (epoch, FINAL_EPOCH)
+                    or contract["total_updates"] != contract["epochs"] * STEPS_PER_EPOCH
+                    or epoch not in contract["validation_epochs"]):
+                raise ValueError(f"{arm} requires its fixed source-validated E{epoch} checkpoint")
         seeds.add(contract["evaluation_seed"])
         checkpoints[arm] = checkpoint
     if len(seeds) != 1:
@@ -47,9 +82,9 @@ def argmax_classes(features, weights, device):
 
 
 @torch.no_grad()
-def predict(source, source_cache, training, iq_manifest, iq_cache, output):
+def predict(source, source_cache, training, iq_manifest, iq_cache, output, epoch=FINAL_EPOCH):
     classes, remap, expected = class_map(source)
-    checkpoints, seed = completed_checkpoints(source, source_cache, training, len(classes))
+    checkpoints, seed = completed_checkpoints(source, source_cache, training, len(classes), epoch)
     with np.load(source / "L_index.npz", allow_pickle=False) as manifest:
         labels = remap[manifest["y"]]
     training_iq = np.load(source_cache / "L_raw.npy", mmap_mode="r", allow_pickle=False)
@@ -71,8 +106,8 @@ def predict(source, source_cache, training, iq_manifest, iq_cache, output):
     ref_labels = device_array(labels[refs].astype(np.int64), torch.device("cpu"))
     for arm, checkpoint in checkpoints.items():
         model, _, step = load_source_model(source, checkpoint, classes, device)
-        if step != FINAL_UPDATES:
-            raise ValueError("Stored checkpoint step does not match its frozen E200 path")
+        if step != epoch * STEPS_PER_EPOCH:
+            raise ValueError(f"Stored checkpoint step does not match its frozen E{epoch} path")
         (ref_features,) = encode(model, arm, training_iq, refs, device)
         weights = prototype_weights(F.normalize(ref_features, dim=1), ref_labels, len(classes)).to(device)
         (query_features,) = encode(model, arm, waveforms, np.arange(expected), device)
@@ -89,15 +124,17 @@ def predict(source, source_cache, training, iq_manifest, iq_cache, output):
         print(f"Frozen {expected} single-packet decisions for {arm}", flush=True)
 
 
-def score(source, predictions, truth, output):
+def score(source, predictions, truth, output, epoch=FINAL_EPOCH):
+    if epoch not in (REDUCED_EPOCH, FINAL_EPOCH):
+        raise ValueError("Expected a registered E100 or E200 budget")
     classes, remap, expected = class_map(source)
     rows, cohort, enrollment = {}, None, set()
     for arm in ARMS:
         row = predictions / arm
         metadata = read_json(row / "complete.json")
         if (metadata["arm"], metadata["updates"], metadata["records"], metadata["classes"]) != (
-                arm, FINAL_UPDATES, expected, len(classes)):
-            raise ValueError("Both methods must finish predictions for the fixed E200 test cohort")
+                arm, epoch * STEPS_PER_EPOCH, expected, len(classes)):
+            raise ValueError(f"Both methods must finish predictions for the fixed E{epoch} test cohort")
         fields = ("prototype", "native_head") if arm == "PAMF_SUP" else ("prototype",)
         with np.load(row / "predictions.npz", allow_pickle=False) as artifact:
             ids = artifact["ids"]
@@ -144,7 +181,8 @@ if __name__ == "__main__":
         command = modes.add_parser(mode)
         for key in keys:
             command.add_argument(key, type=Path)
+        command.add_argument("--epoch", type=int, choices=(REDUCED_EPOCH, FINAL_EPOCH), default=FINAL_EPOCH)
     args = parser.parse_args()
     torch.set_num_threads(4)
     action = predict if args.mode == "predict" else score
-    action(*(getattr(args, field).resolve() for field in fields[args.mode]))
+    action(*(getattr(args, field).resolve() for field in fields[args.mode]), epoch=args.epoch)

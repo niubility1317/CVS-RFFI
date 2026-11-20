@@ -23,7 +23,7 @@ K 指每个候选波束的历史注册包数。当前实现先固定 K16 面板�
 
 ## 同数据训练与 PAMF 优化
 
-当前正式训练使用同一份 910,464 条训练消息、50,000 条验证和 50,000 条独立测试的重建清单。PAMF 和参考 SatIQ 读取同一个 25 MS/s 的 11,000 点报头，共用 3,103 个合格波束及逐轮批次，分别按各自训练目标运行 200 轮。比较两种表示时，使用相同的源训练注册包及全类余弦原型。PAMF 另给出直接分类头，独立测试在两组固定末轮预测闭合后接真值。两组首轮同口径源 V 的原型 Top-1 为 SatIQ 0.0562%、PAMF 0.2088%，PAMF 直接分类头为 0.2007%。[同数据训练与首轮结果](../automation_reports/CV-SincNet/20261120-phase1-satiq-ccs2023-header-matched-sup200-s2026092701-r01/report.md)
+当前正式训练使用同一份 910,464 条训练消息、50,000 条验证和 50,000 条独立测试的重建清单。PAMF 和参考 SatIQ 读取同一个 25 MS/s 的 11,000 点报头，共用 3,103 个合格波束及逐轮批次，分别按各自训练目标运行，当前正式上限为 100 轮。比较两种表示时，使用相同的源训练注册包及全类余弦原型。PAMF 另给出直接分类头，独立测试在两组固定末轮预测闭合后接真值。两组首轮同口径源 V 的原型 Top-1 为 SatIQ 0.0562%、PAMF 0.2088%，PAMF 直接分类头为 0.2007%。[同数据训练与首轮结果](../automation_reports/CV-SincNet/20261120-phase1-satiq-ccs2023-header-matched-sup200-s2026092701-r01/report.md)
 
 8,000 点的完整首轮复评支持保留 PAMF 的完整损失。完整损失的 L/V 单包 Top-1 为 0.2322% / 0.2509%，只用主 CE 为 0.1124% / 0.0964%。后续前端实验使用已对齐原生同步模板的 11,000 点配置，保留五分支和 256 维身份表示。[损失对照](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-fused256-main-ce-source-e1-s2026092701-r01/report.md) · [模板时间对齐](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-full-header-uw-time-source-e1-s2026092701-r01/report.md)
 
