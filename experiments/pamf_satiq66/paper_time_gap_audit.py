@@ -33,7 +33,7 @@ def nearest_seconds(training_time, training_labels, query_time, query_labels):
         left = right - 1
         earlier = np.where(left >= 0, query - times[left.clip(0)], np.inf)
         later = np.where(right < len(times), times[right.clip(max=len(times) - 1)] - query, np.inf)
-        gap[selected] = np.minimum(earlier, later) * 1e-9
+        gap[selected] = np.minimum(earlier, later) / 1_000_000_000
     return gap
 
 
