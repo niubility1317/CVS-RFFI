@@ -1,0 +1,150 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261121-diagnostic-satiq-pa-bandwidth-paired-source-e1-s2026111907-r01",
+  "group_id": "phase1-satiq-ccs2023-fully-supervised",
+  "display_name": "SatIQ PAMF-SUP 250 与 500 kHz 非线性分支逐包复核",
+  "description": "Freeze the same E1 PA bandwidth pair and reconcile the effect on source single-packet Top-1 and time strata.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF-SUP",
+    "single-packet",
+    "source-only",
+    "satiq-oversampled-pa-bandwidth",
+    "CPU"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261120-diagnostic-satiq-oversampled-pa-bandwidth-source-e1-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Diagnose the existing matched model and validate a source-only readout. No backbone training.",
+  "code": {
+    "commit": "7e80e6ad72f58468fbd3c6ee77410825e4085fce",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261121-diagnostic-satiq-pa-bandwidth-paired-source-e1-s2026111907-r01",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python N607 FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261121-diagnostic-satiq-pa-bandwidth-paired-source-e1-s2026111907-r01"
+  },
+  "data": {
+    "dataset": "Oxford SatIQ Zenodo 8220494, first 1010464 chronological packets",
+    "version": "8220494",
+    "representation": "Matched 11000-point signed header, native fused256.",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/{L,V}_index.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "source_receivers": [
+      "Oxford single receiver"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2023-03-22 through part of 2023-04-14 UTC"
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 910464,
+      "V": 50000,
+      "U_s": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "satiq_oxford_ccs2023_supervised_reindexed_v1_2026111905",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/V_index.npz",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "Paired frozen models on the same source V; timestamp metadata groups only completed predictions.",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Frozen equal-budget PA250 to PA500 source comparison. Both inference arms use all 3103 beams. Source time metadata groups completed V predictions. No T."
+  },
+  "checkpoint": {
+    "initialization": "No training",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-oversampled-pa-bandwidth-source-e1-s2026092701-r01/PA250/s0028225.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-oversampled-pa-bandwidth-source-e1-s2026092701-r01/PA500/s0028225.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "provenance_verdict": "MATCHED_FIXED_PA250_PA500_E1_SOURCE_ONLY",
+    "selection_rule": "Both completed terminal 28225-step checkpoints, no selection."
+  },
+  "execution": {
+    "host": "N607",
+    "local_artifact_root": "E:\\type10-7\\local_data\\satiq_oxford_ccs2023_supervised_20261119_r01",
+    "launch_owner": "One CPU-only waiter and then one CPU scoring process.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261121-diagnostic-satiq-pa-bandwidth-paired-source-e1-s2026111907-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261121-diagnostic-satiq-pa-bandwidth-paired-source-e1-s2026111907-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_training_time_audit /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-oversampled-pa-bandwidth-source-e1-s2026092701-r01/PA250/s0028225.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-oversampled-pa-bandwidth-source-e1-s2026092701-r01/PA500/s0028225.pt pa-bandwidth 1 /home/szu2070436088/2510044040/CV-SincNet/runs/20261121-diagnostic-satiq-pa-bandwidth-paired-source-e1-s2026111907-r01/result.json",
+    "gpu_policy": "CPU only",
+    "stop_rule": "Stop on incorrect role/config/checkpoint, failed predecessor or scoring exit.",
+    "controller_pid": 2996559,
+    "upstream_pid": 2975212,
+    "launch_readback": "2026-11-21T00:39:56+08:00",
+    "release_sha256": "d131b53f8fe744e1a075d703f3daa1713f90a68289da8f8ffcc31aa134e13b50"
+  },
+  "expected_artifacts": [
+    "result.json",
+    "score.log",
+    "score.pid",
+    "score.exit",
+    "controller.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "same-V paired single-packet Top-1",
+      "main CE",
+      "same-beam near/far differences"
+    ],
+    "dimensions": [
+      "49814 known source V",
+      "all 3103 candidate beams",
+      "matched E1 28225 updates"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "experiments/pamf_satiq66/paper_training_time_audit.py"
+  },
+  "rows": [
+    {
+      "row_id": "PA_BANDWIDTH_E1",
+      "method": "PA250 to PA500",
+      "purpose": "Isolate cubic and quintic input bandwidth with the same oversampled PA workflow.",
+      "config_ref": "experiments/pamf_satiq66/paper_training_time_audit.py",
+      "resolved_config_ref": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-oversampled-pa-bandwidth-source-e1-s2026092701-r01/PA250/resolved_config.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-oversampled-pa-bandwidth-source-e1-s2026092701-r01/PA500/resolved_config.json"
+      ],
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111906,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026111907
+      },
+      "seed_notes": "Only satellite and beam bootstrap use 2026111907; inference is deterministic.",
+      "k": null,
+      "scenario": "Oxford single receiver source L/V, no signal augmentation",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Fixed E1 28225 updates, no fitting.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261121-diagnostic-satiq-pa-bandwidth-paired-source-e1-s2026111907-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261121-diagnostic-satiq-pa-bandwidth-paired-source-e1-s2026111907-r01/score.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_training_time_audit /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-oversampled-pa-bandwidth-source-e1-s2026092701-r01/PA250/s0028225.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-oversampled-pa-bandwidth-source-e1-s2026092701-r01/PA500/s0028225.pt pa-bandwidth 1 /home/szu2070436088/2510044040/CV-SincNet/runs/20261121-diagnostic-satiq-pa-bandwidth-paired-source-e1-s2026111907-r01/result.json",
+      "expected_artifacts": [
+        "result.json",
+        "score.exit",
+        "score.pid"
+      ],
+      "feature_dimensions": 256
+    }
+  ],
+  "notes": [
+    "Both new PA variants use the same 2048-point polynomial grid and exact source train budget. Original native model not used in this paired readout."
+  ]
+}
