@@ -216,3 +216,9 @@ CCS 2023 定稿的 1,705,202 条由最初 23 天的 1,010,464 条与随后 17 �
 公开 v1.0.2 的 TFRecord 转换用 `63 × ra_sat + ra_cell` 生成训练标签。当一个编号的波束 63 和下一个编号的波束 0 同时出现时会合并。将该公式应用于当前全部 4,953 个源 L 标签对，会产生 22 个重合编号，涉及 44 个标签对和 105 个 L 包。例如 `(3, 63)` 和 `(4, 0)` 会被合并。只看正式训练采用的 3,103 个波束对，未发现重合。两组实际都按原始二元组重编码，并使用同一份按波束组批的训练清单。 [TFRecord 转换源码](https://github.com/ssloxford/SatIQ/blob/v1.0.2/preprocessing/np-to-tfrecord.py#L7-L37) · [训练标签读取](https://github.com/ssloxford/SatIQ/blob/v1.0.2/util/data.py#L873-L912)
 
 SatIQ 复现保留 I/Q 双路卷积、512 维单位嵌入、重构 MSE 和半难角距离三元组损失。公开 TensorFlow 脚本先交错读取分片并缓冲洗牌，再按四包窗口聚组。本对照明确用同一采样器为两组提供整组的 8 个不同波束，每波束 4 包。定稿论文注明 100 轮，公开脚本配置 200 轮且会尝试恢复检查点。当前两组从头训练，实际正式比较按用户确定的 100 轮冻结权重。 [论文 §4.4](https://arxiv.org/html/2305.06947#S4.SS4) · [公开训练脚本](https://github.com/ssloxford/SatIQ/blob/v1.0.2/training/ae-triplet-conv.py) · [公开组批实现](https://github.com/ssloxford/SatIQ/blob/v1.0.2/util/data.py#L938-L968)
+
+## 11,000 点输入的报文边界
+
+原采集流水线安装的是 gr-iridium v1.0.1 的作者分支。其下混实现从固定下行同步字起点输出 IQ，采集端截取前 11,000 点。下行同步字共 12 个符号，符号率 25 kBd，采样率 25 MS/s，即每个符号 1,000 点。11,000 点名义上覆盖同步字的前 11 个符号，保留约一个符号的边界余量。论文图 8 展示 8 个符号，协议边界应按采集实现与下行同步字长度判断。 [采集入口](https://github.com/ssloxford/SatIQ/blob/v1.0.2/data-collection/iridium_extractor/entrypoint.sh) · [IQ 截取](https://github.com/ssloxford/SatIQ/blob/v1.0.2/data-collection/iridium_extractor/iq_out.py#L30-L43) · [下混切点](https://github.com/jsmailes/gr-iridium/blob/v1.0.1/lib/burst_downmix_impl.cc#L623-L672) · [同步字参数](https://github.com/jsmailes/gr-iridium/blob/v1.0.1/lib/iridium.h#L9-L23)
+
+**VERIFIED 源 L 抽查。** 2026-11-21T03:13:24+08:00 从 907,716 条已知 L 用固定种子 2026111907 无替换抽取 2,048 条。读取原始波形的第 `0, 1000, …, 10000` 个样点，以前 8 个同步符号的相位方向为参照，复核全部 11 个位置的相对符号。2,048 条均与固定同步字一致，包含新增的第 9 至 11 个位置。该检查与名义裁切边界一致，支持将 11,000 点理解为公共下行同步字的窗口。波束编号来自后续 IRA 解码内容。只读了源 L，未训练模型。 [报文同步字与后续内容切分](https://github.com/muccc/iridium-toolkit/blob/master/bitsparser.py#L241-L265)
