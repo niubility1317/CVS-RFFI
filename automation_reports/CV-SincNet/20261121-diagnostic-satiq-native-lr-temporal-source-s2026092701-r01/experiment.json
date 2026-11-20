@@ -1,0 +1,205 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261121-diagnostic-satiq-native-lr-temporal-source-s2026092701-r01",
+  "group_id": "phase1-satiq-ccs2023-fully-supervised",
+  "display_name": "SatIQ 原生 PAMF-SUP 两种学习率的跨时段源端对照",
+  "description": "Compare the existing and higher Adam learning rates on identical early-training and later same-beam source L cohorts.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF-SUP",
+    "source-only",
+    "single-packet",
+    "satiq-temporal-lr"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261120-diagnostic-satiq-native-fit-subset-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Supervised SatIQ development using original PAMF and no augmentation. Fixed subset diagnostic; production runs continue.",
+  "code": {
+    "commit": "4e9f5d07f635f85ef7d6e05a87c8e9dfee37719c",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261121-diagnostic-satiq-native-lr-temporal-source-s2026092701-r01",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python N607 FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261121-diagnostic-satiq-native-lr-temporal-source-s2026092701-r01"
+  },
+  "data": {
+    "dataset": "Oxford SatIQ Zenodo 8220494, first 1010464 chronological packets",
+    "version": "8220494",
+    "representation": "Same 11000-point header, signed input, aligned native fused256 and 3103 beam classifier.",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/L_index.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "source_receivers": [
+      "Oxford single receiver"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2023-03-22 through part of 2023-04-14 UTC"
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 1024,
+      "V": null,
+      "U_s": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "satiq_oxford_ccs2023_supervised_reindexed_v1_2026111905",
+    "validation_ref": "Fixed late source L only: 1024 distinct packets, same beams as fixed early source L, cutoff 2023-04-02 UTC.",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_L_small_subset_canary",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Use only a fixed source-L early fit subset and disjoint later validation subset. No V scoring and no T. No exportable model."
+  },
+  "checkpoint": {
+    "initialization": "Both from scratch. No saved model or checkpoint reuse.",
+    "sources": [],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "provenance_verdict": "FROM_SCRATCH_MATCHED_SOURCE_L_SUBSETS",
+    "selection_rule": "Exact fixed 3200 updates, with preregistered 0/100/400/800/1600/3200 readouts."
+  },
+  "execution": {
+    "host": "N607",
+    "local_artifact_root": "E:\\type10-7\\local_data\\satiq_oxford_ccs2023_supervised_20261119_r01",
+    "launch_owner": "One controller with two independent GPU rows.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261121-diagnostic-satiq-native-lr-temporal-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261121-diagnostic-satiq-native-lr-temporal-source-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_fit_subset /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/releases/20261121-diagnostic-satiq-native-lr-temporal-source-s2026092701-r01/configs/pamf_satiq_ccs2023_full_header_reference_probe_20261120.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261121-diagnostic-satiq-native-lr-temporal-source-s2026092701-r01/LR0003/result.json --device cuda --learning-rate-study 0.0003 ; /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_fit_subset /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/releases/20261121-diagnostic-satiq-native-lr-temporal-source-s2026092701-r01/configs/pamf_satiq_ccs2023_full_header_reference_probe_20261120.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261121-diagnostic-satiq-native-lr-temporal-source-s2026092701-r01/LR0010/result.json --device cuda --learning-rate-study 0.001",
+    "gpu_policy": "One project training worker each on physical GPUs 0 and 4, authorized available capacity shared with existing MATLAB workloads. At least 4096 MiB free; count other compute contexts conservatively as potential training.",
+    "stop_rule": "No scientific early stop. Stop affected row only for technical errors or wrong source membership.",
+    "controller_pid": 3024315,
+    "release_sha256": "e9583ef329206c7f15a5df95dadd05131c460d3224158645df302097c00e8a9a",
+    "stop_verified_at": "2026-11-21T01:29:03+08:00"
+  },
+  "expected_artifacts": [
+    "owner.json",
+    "controller.log",
+    "matrix_outcomes.json",
+    "LR0003/result.json",
+    "LR0010/result.json",
+    "smoke.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "early source L fit all-candidate Top-1 and CE",
+      "disjoint later source L Top-1 and CE"
+    ],
+    "dimensions": [
+      "64 shared beams; 16 fit and 16 later packets per beam",
+      "3200 updates each, all 3103 candidate scores"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "experiments/pamf_satiq66/paper_fit_subset.py"
+  },
+  "rows": [
+    {
+      "row_id": "LR0003",
+      "method": "Native PAMF-SUP Adam LR 0.0003",
+      "purpose": "Compare fit speed and same-beam transfer across a fixed UTC cutoff at equal budget.",
+      "config_ref": "configs/pamf_satiq_ccs2023_full_header_reference_probe_20261120.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261121-diagnostic-satiq-native-lr-temporal-source-s2026092701-r01/configs/pamf_satiq_ccs2023_full_header_reference_probe_20261120.json",
+      "data_overrides": {
+        "distinct_L_packets": 1024,
+        "beams": 64,
+        "packets_per_beam": 16
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111906,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Data seed determines the fixed selected packets and shuffled batch order. Evaluation uses all selected packets with no random draw.",
+      "k": null,
+      "scenario": "Oxford real received",
+      "optimizer": "Adam eps=1e-7, full original supervision",
+      "lr": 0.0003,
+      "epochs": 100,
+      "fl_rounds": null,
+      "budget_ref": "3200 updates, 32 steps per pass.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261121-diagnostic-satiq-native-lr-temporal-source-s2026092701-r01/LR0003",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261121-diagnostic-satiq-native-lr-temporal-source-s2026092701-r01/LR0003/fit.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_fit_subset /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/releases/20261121-diagnostic-satiq-native-lr-temporal-source-s2026092701-r01/configs/pamf_satiq_ccs2023_full_header_reference_probe_20261120.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261121-diagnostic-satiq-native-lr-temporal-source-s2026092701-r01/LR0003/result.json --device cuda --learning-rate-study 0.0003",
+      "expected_artifacts": [
+        "result.json",
+        "fit.log",
+        "fit.exit"
+      ],
+      "model_overrides": {
+        "native_expansion": "fused256",
+        "native_waveform_samples": 11000,
+        "objectives": [
+          "pamf_sup"
+        ]
+      },
+      "feature_dimensions": 256,
+      "gpu": 0,
+      "gpu_uuid": "GPU-56adac86-77cd-36c9-8770-dbf002650461",
+      "pid": 3024938
+    },
+    {
+      "row_id": "LR0010",
+      "method": "Native PAMF-SUP Adam LR 0.001",
+      "purpose": "Compare fit speed and same-beam transfer across a fixed UTC cutoff at equal budget.",
+      "config_ref": "configs/pamf_satiq_ccs2023_full_header_reference_probe_20261120.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261121-diagnostic-satiq-native-lr-temporal-source-s2026092701-r01/configs/pamf_satiq_ccs2023_full_header_reference_probe_20261120.json",
+      "data_overrides": {
+        "distinct_L_packets": 1024,
+        "beams": 64,
+        "packets_per_beam": 16
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111906,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Data seed determines the fixed selected packets and shuffled batch order. Evaluation uses all selected packets with no random draw.",
+      "k": null,
+      "scenario": "Oxford real received",
+      "optimizer": "Adam eps=1e-7, full original supervision",
+      "lr": 0.001,
+      "epochs": 100,
+      "fl_rounds": null,
+      "budget_ref": "3200 updates, 32 steps per pass.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261121-diagnostic-satiq-native-lr-temporal-source-s2026092701-r01/LR0010",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261121-diagnostic-satiq-native-lr-temporal-source-s2026092701-r01/LR0010/fit.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_fit_subset /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/releases/20261121-diagnostic-satiq-native-lr-temporal-source-s2026092701-r01/configs/pamf_satiq_ccs2023_full_header_reference_probe_20261120.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261121-diagnostic-satiq-native-lr-temporal-source-s2026092701-r01/LR0010/result.json --device cuda --learning-rate-study 0.001",
+      "expected_artifacts": [
+        "result.json",
+        "fit.log",
+        "fit.exit"
+      ],
+      "model_overrides": {
+        "native_expansion": "fused256",
+        "native_waveform_samples": 11000,
+        "objectives": [
+          "pamf_sup"
+        ]
+      },
+      "feature_dimensions": 256,
+      "gpu": 4,
+      "gpu_uuid": "GPU-95d925a1-7218-ca7b-adef-164241f4f491",
+      "pid": 3024943
+    }
+  ],
+  "notes": [
+    "A disjoint early/late source L split is fixed from timestamps before fitting; neither time nor true class routes inference.",
+    "User authorized use of available GPU capacity. Do not change incumbent work.",
+    "Without full dataset and time-independent heldout scoring this probe cannot replace the main comparison.",
+    "User withdrew expansion; do not restart these rows or add GPU jobs without their later instruction."
+  ]
+}
