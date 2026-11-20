@@ -6,9 +6,11 @@ from .transfer import DEVELOPMENT_RUN, RUN
 
 
 def publish(repo, output, context, ssh_config, *, run_id=RUN,
-            module='experiments.pamf_repl_source_adapt.transfer', decision_run=DEVELOPMENT_RUN):
+            module='experiments.pamf_repl_source_adapt.transfer', decision_run=DEVELOPMENT_RUN,
+            gpus=tuple(range(7))):
     old_run, old_remote = base.RUN, base.REMOTE
-    script = old_remote.replace("rt=p['runtime']; project=", "rt=p['runtime']; rt['allowed_gpus']=list(range(7)); rt.pop('weak_root'); rt.pop('weak_truth'); project=")
+    script = old_remote.replace("rt=p['runtime']; project=",
+        f"rt=p['runtime']; rt['allowed_gpus']={list(gpus)!r}; rt.pop('weak_root'); rt.pop('weak_truth'); project=")
     start = script.index("for path in [rt['python']")
     end = script.index('gpu=subprocess', start)
     preflight = """for path in [rt['python'], *rt['frozen_sources'].values()]:

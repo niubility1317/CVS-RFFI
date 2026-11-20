@@ -1,0 +1,1326 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261120-phase1-pamf-tri-adaptive-clean-m33-r01",
+  "group_id": "phase1-pamf-source-adaptation",
+  "display_name": "Tri 融合正对自适应完整 11 设置 clean 对比",
+  "description": "11 设置各 3 种子，统一融合正对 RX 均衡，与原 Tri 和普通 PL 按物理样本配对。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-paper-completion-m119-r03",
+    "20261119-phase1-pamf-repl-rxbalance-clean-m8-r01",
+    "20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求选四张 GPU 发布 11 设置各三种子与普通 PL 的完整对比。",
+  "code": {
+    "commit": "actual release git OID",
+    "checkout": "current task worktree",
+    "environment": "N607 CVS-RFFI",
+    "cwd": "PROJECT/releases/20261120-phase1-pamf-tri-adaptive-clean-m33-r01-release"
+  },
+  "data": {
+    "dataset": "11 frozen registered Phase1 data settings",
+    "version": null,
+    "representation": null,
+    "contract_ref": "original matched per-setting handles",
+    "physical_ids_ref": "exact ordered physical IDs as both matched baselines",
+    "label_map_ref": null,
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "original labeled source",
+      "U_s": "original TX-blind source",
+      "V": "original source validation"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": "Phase1 clean: cross_date, cross_rx and cross_both; only the latter two pooled",
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Same-row frozen E50 clean prediction followed by independent truth-last scoring",
+    "external_method_exception": null,
+    "claim_scope": "Fixed sample-adaptive candidate on 11 existing clean settings; no target-selected weights"
+  },
+  "checkpoint": {
+    "initialization": "same-setting, same-seed, same-contract original Tri E20 for new continuations",
+    "sources": [
+      "20261027-phase1-pamf-paper-completion-m119-r03",
+      "20261119-phase1-pamf-repl-rxbalance-clean-m8-r01",
+      "20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02"
+    ],
+    "contract_check_ref": "full_suite.prepare and transfer.parent",
+    "provenance_verdict": "explicit known source-only ancestors, matching data roles and original recipe",
+    "selection_rule": "Fixed E50. Primary common rule uses U weight 6 and positive target mixture .5 for all rows."
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex-20261120-phase1-pamf-tri-adaptive-clean-m33-r01",
+    "gpu_policy": "GPU 0,4,5,6 only; max two total per GPU; min 12 GiB admission",
+    "remote_run_root": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01",
+    "remote_log_root": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_tri_adaptive_full_20261120",
+    "launch_command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+    "stop_rule": "Stop new dispatch on blocking technical failure; retain healthy workers and all outputs.",
+    "owner": "codex-20261120-phase1-pamf-tri-adaptive-clean-m33-r01"
+  },
+  "expected_artifacts": [
+    "15 new real E20 no-query smokes and same-contract continuations",
+    "15 new frozen E50 raw clean predictions and independent scores",
+    "12 verified exact fusion-balance rows and 6 exact original-Tri identity rows",
+    "33 paired comparisons against original Tri and ordinary PL and an 11-setting summary"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "overall clean accuracy",
+      "paired gain, damage and net",
+      "cross_both accuracy and net",
+      "three-seed mean per setting",
+      "source acceptance and affected fusion anchor fraction"
+    ],
+    "dimensions": [
+      "setting",
+      "seed",
+      "clean test subset"
+    ],
+    "prediction_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/sources.json",
+    "scorer_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/analysis/results.json"
+  },
+  "rows": [
+    {
+      "row_id": "main_split-tri-adaptive-full-s2026092701",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Previously untested data design",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/configs/train__main_split-tri-adaptive-full-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/main_split-tri-adaptive-full-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": false,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "original 4440 updates + own 6660",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/main_split-tri-adaptive-full-s2026092701/source",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/logs/train__main_split-tri-adaptive-full-s2026092701.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "main_split-tri-adaptive-full-s2026092702",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Previously untested data design",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/configs/train__main_split-tri-adaptive-full-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/main_split-tri-adaptive-full-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": false,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "original 4440 updates + own 6660",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/main_split-tri-adaptive-full-s2026092702/source",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/logs/train__main_split-tri-adaptive-full-s2026092702.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "main_split-tri-adaptive-full-s2026092703",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Previously untested data design",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/configs/train__main_split-tri-adaptive-full-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/main_split-tri-adaptive-full-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": false,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "original 4440 updates + own 6660",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/main_split-tri-adaptive-full-s2026092703/source",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/logs/train__main_split-tri-adaptive-full-s2026092703.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "receiver_split_1-tri-adaptive-full-s2026092701",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Exact frozen row reuse",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/receiver_split_1-tri-balance-joint-s2026092701/source/resolved_config.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/receiver_split_1-tri-balance-joint-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F1_rx_repartition_r01",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": true,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reuse exact fixed E50",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/receiver_split_1-tri-balance-joint-s2026092701/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/receiver_split_1-tri-balance-joint-s2026092701/source/segment50/metrics_epoch.jsonl",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "existing source, prediction and score"
+      ]
+    },
+    {
+      "row_id": "receiver_split_1-tri-adaptive-full-s2026092702",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Exact frozen row reuse",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-clean-m8-r01/F/receiver_split_1-tri-balance-joint-s2026092702/source/resolved_config.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-clean-m8-r01/F/receiver_split_1-tri-balance-joint-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F1_rx_repartition_r01",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": true,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reuse exact fixed E50",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-clean-m8-r01/F/receiver_split_1-tri-balance-joint-s2026092702/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-clean-m8-r01/F/receiver_split_1-tri-balance-joint-s2026092702/source/segment50/metrics_epoch.jsonl",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "existing source, prediction and score"
+      ]
+    },
+    {
+      "row_id": "receiver_split_1-tri-adaptive-full-s2026092703",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Exact frozen row reuse",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/receiver_split_1-tri-balance-joint-s2026092703/source/resolved_config.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/receiver_split_1-tri-balance-joint-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F1_rx_repartition_r01",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": true,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reuse exact fixed E50",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/receiver_split_1-tri-balance-joint-s2026092703/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/receiver_split_1-tri-balance-joint-s2026092703/source/segment50/metrics_epoch.jsonl",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "existing source, prediction and score"
+      ]
+    },
+    {
+      "row_id": "receiver_split_2-tri-adaptive-full-s2026092701",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Exact frozen row reuse",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/receiver_split_2-tri-balance-joint-s2026092701/source/resolved_config.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/receiver_split_2-tri-balance-joint-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F2_rx_repartition_r01",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": true,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reuse exact fixed E50",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/receiver_split_2-tri-balance-joint-s2026092701/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/receiver_split_2-tri-balance-joint-s2026092701/source/segment50/metrics_epoch.jsonl",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "existing source, prediction and score"
+      ]
+    },
+    {
+      "row_id": "receiver_split_2-tri-adaptive-full-s2026092702",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Exact frozen row reuse",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-clean-m8-r01/F/receiver_split_2-tri-balance-joint-s2026092702/source/resolved_config.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-clean-m8-r01/F/receiver_split_2-tri-balance-joint-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F2_rx_repartition_r01",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": true,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reuse exact fixed E50",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-clean-m8-r01/F/receiver_split_2-tri-balance-joint-s2026092702/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-clean-m8-r01/F/receiver_split_2-tri-balance-joint-s2026092702/source/segment50/metrics_epoch.jsonl",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "existing source, prediction and score"
+      ]
+    },
+    {
+      "row_id": "receiver_split_2-tri-adaptive-full-s2026092703",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Exact frozen row reuse",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/receiver_split_2-tri-balance-joint-s2026092703/source/resolved_config.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/receiver_split_2-tri-balance-joint-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F2_rx_repartition_r01",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": true,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reuse exact fixed E50",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/receiver_split_2-tri-balance-joint-s2026092703/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/receiver_split_2-tri-balance-joint-s2026092703/source/segment50/metrics_epoch.jsonl",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "existing source, prediction and score"
+      ]
+    },
+    {
+      "row_id": "ten_class-tri-adaptive-full-s2026092701",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Previously untested data design",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/configs/train__ten_class-tri-adaptive-full-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/ten_class-tri-adaptive-full-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": false,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "original 4440 updates + own 6660",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/ten_class-tri-adaptive-full-s2026092701/source",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/logs/train__ten_class-tri-adaptive-full-s2026092701.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-tri-adaptive-full-s2026092702",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Previously untested data design",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/configs/train__ten_class-tri-adaptive-full-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/ten_class-tri-adaptive-full-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": false,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "original 4440 updates + own 6660",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/ten_class-tri-adaptive-full-s2026092702/source",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/logs/train__ten_class-tri-adaptive-full-s2026092702.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "ten_class-tri-adaptive-full-s2026092703",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Previously untested data design",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/configs/train__ten_class-tri-adaptive-full-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/ten_class-tri-adaptive-full-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": false,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "original 4440 updates + own 6660",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/ten_class-tri-adaptive-full-s2026092703/source",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/logs/train__ten_class-tri-adaptive-full-s2026092703.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-tri-adaptive-full-s2026092701",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Previously untested data design",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/configs/train__labeled_1pct-tri-adaptive-full-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/labeled_1pct-tri-adaptive-full-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label01",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": false,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "original 4440 updates + own 6660",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/labeled_1pct-tri-adaptive-full-s2026092701/source",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/logs/train__labeled_1pct-tri-adaptive-full-s2026092701.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-tri-adaptive-full-s2026092702",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Previously untested data design",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/configs/train__labeled_1pct-tri-adaptive-full-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/labeled_1pct-tri-adaptive-full-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label01",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": false,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "original 4440 updates + own 6660",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/labeled_1pct-tri-adaptive-full-s2026092702/source",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/logs/train__labeled_1pct-tri-adaptive-full-s2026092702.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-tri-adaptive-full-s2026092703",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Previously untested data design",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/configs/train__labeled_1pct-tri-adaptive-full-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/labeled_1pct-tri-adaptive-full-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label01",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": false,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "original 4440 updates + own 6660",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/labeled_1pct-tri-adaptive-full-s2026092703/source",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/logs/train__labeled_1pct-tri-adaptive-full-s2026092703.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "labeled_5pct-tri-adaptive-full-s2026092701",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Exact frozen row reuse",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/labeled_5pct-tri-balance-joint-s2026092701/source/resolved_config.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/labeled_5pct-tri-balance-joint-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label05",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": true,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reuse exact fixed E50",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/labeled_5pct-tri-balance-joint-s2026092701/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/labeled_5pct-tri-balance-joint-s2026092701/source/segment50/metrics_epoch.jsonl",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "existing source, prediction and score"
+      ]
+    },
+    {
+      "row_id": "labeled_5pct-tri-adaptive-full-s2026092702",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Exact frozen row reuse",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-clean-m8-r01/F/labeled_5pct-tri-balance-joint-s2026092702/source/resolved_config.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-clean-m8-r01/F/labeled_5pct-tri-balance-joint-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label05",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": true,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reuse exact fixed E50",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-clean-m8-r01/F/labeled_5pct-tri-balance-joint-s2026092702/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-clean-m8-r01/F/labeled_5pct-tri-balance-joint-s2026092702/source/segment50/metrics_epoch.jsonl",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "existing source, prediction and score"
+      ]
+    },
+    {
+      "row_id": "labeled_5pct-tri-adaptive-full-s2026092703",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Exact frozen row reuse",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/labeled_5pct-tri-balance-joint-s2026092703/source/resolved_config.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/labeled_5pct-tri-balance-joint-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label05",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": true,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reuse exact fixed E50",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/labeled_5pct-tri-balance-joint-s2026092703/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/labeled_5pct-tri-balance-joint-s2026092703/source/segment50/metrics_epoch.jsonl",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "existing source, prediction and score"
+      ]
+    },
+    {
+      "row_id": "source_rx_1-tri-adaptive-full-s2026092701",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Exact frozen row reuse",
+      "config_ref": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_1-factorial-ssl-full-permuted-s2026092701/source/resolved_config.json",
+      "resolved_config_ref": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_1-factorial-ssl-full-permuted-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m1-natural",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": true,
+        "native_identity": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reuse exact fixed E50",
+      "output_root": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_1-factorial-ssl-full-permuted-s2026092701/source",
+      "log_path": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_1-factorial-ssl-full-permuted-s2026092701/source/segment50/metrics_epoch.jsonl",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "existing source, prediction and score"
+      ]
+    },
+    {
+      "row_id": "source_rx_1-tri-adaptive-full-s2026092702",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Exact frozen row reuse",
+      "config_ref": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_1-factorial-ssl-full-permuted-s2026092702/source/resolved_config.json",
+      "resolved_config_ref": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_1-factorial-ssl-full-permuted-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m1-natural",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": true,
+        "native_identity": true
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reuse exact fixed E50",
+      "output_root": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_1-factorial-ssl-full-permuted-s2026092702/source",
+      "log_path": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_1-factorial-ssl-full-permuted-s2026092702/source/segment50/metrics_epoch.jsonl",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "existing source, prediction and score"
+      ]
+    },
+    {
+      "row_id": "source_rx_1-tri-adaptive-full-s2026092703",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Exact frozen row reuse",
+      "config_ref": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_1-factorial-ssl-full-permuted-s2026092703/source/resolved_config.json",
+      "resolved_config_ref": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_1-factorial-ssl-full-permuted-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m1-natural",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": true,
+        "native_identity": true
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reuse exact fixed E50",
+      "output_root": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_1-factorial-ssl-full-permuted-s2026092703/source",
+      "log_path": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_1-factorial-ssl-full-permuted-s2026092703/source/segment50/metrics_epoch.jsonl",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "existing source, prediction and score"
+      ]
+    },
+    {
+      "row_id": "source_rx_2-tri-adaptive-full-s2026092701",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Exact frozen row reuse",
+      "config_ref": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_2-factorial-ssl-full-permuted-s2026092701/source/resolved_config.json",
+      "resolved_config_ref": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_2-factorial-ssl-full-permuted-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m2-natural",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": true,
+        "native_identity": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reuse exact fixed E50",
+      "output_root": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_2-factorial-ssl-full-permuted-s2026092701/source",
+      "log_path": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_2-factorial-ssl-full-permuted-s2026092701/source/segment50/metrics_epoch.jsonl",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "existing source, prediction and score"
+      ]
+    },
+    {
+      "row_id": "source_rx_2-tri-adaptive-full-s2026092702",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Exact frozen row reuse",
+      "config_ref": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_2-factorial-ssl-full-permuted-s2026092702/source/resolved_config.json",
+      "resolved_config_ref": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_2-factorial-ssl-full-permuted-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m2-natural",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": true,
+        "native_identity": true
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reuse exact fixed E50",
+      "output_root": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_2-factorial-ssl-full-permuted-s2026092702/source",
+      "log_path": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_2-factorial-ssl-full-permuted-s2026092702/source/segment50/metrics_epoch.jsonl",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "existing source, prediction and score"
+      ]
+    },
+    {
+      "row_id": "source_rx_2-tri-adaptive-full-s2026092703",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Exact frozen row reuse",
+      "config_ref": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_2-factorial-ssl-full-permuted-s2026092703/source/resolved_config.json",
+      "resolved_config_ref": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_2-factorial-ssl-full-permuted-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m2-natural",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": true,
+        "native_identity": true
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reuse exact fixed E50",
+      "output_root": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_2-factorial-ssl-full-permuted-s2026092703/source",
+      "log_path": "PROJECT/runs/20261027-phase1-pamf-paper-completion-m119-r03/F/source_rx_2-factorial-ssl-full-permuted-s2026092703/source/segment50/metrics_epoch.jsonl",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "existing source, prediction and score"
+      ]
+    },
+    {
+      "row_id": "source_rx_3-tri-adaptive-full-s2026092701",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Exact frozen row reuse",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/source_rx_3-tri-balance-joint-s2026092701/source/resolved_config.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/source_rx_3-tri-balance-joint-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m3-natural",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": true,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reuse exact fixed E50",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/source_rx_3-tri-balance-joint-s2026092701/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/source_rx_3-tri-balance-joint-s2026092701/source/segment50/metrics_epoch.jsonl",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "existing source, prediction and score"
+      ]
+    },
+    {
+      "row_id": "source_rx_3-tri-adaptive-full-s2026092702",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Exact frozen row reuse",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-clean-m8-r01/F/source_rx_3-tri-balance-joint-s2026092702/source/resolved_config.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-clean-m8-r01/F/source_rx_3-tri-balance-joint-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m3-natural",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": true,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reuse exact fixed E50",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-clean-m8-r01/F/source_rx_3-tri-balance-joint-s2026092702/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-clean-m8-r01/F/source_rx_3-tri-balance-joint-s2026092702/source/segment50/metrics_epoch.jsonl",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "existing source, prediction and score"
+      ]
+    },
+    {
+      "row_id": "source_rx_3-tri-adaptive-full-s2026092703",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Exact frozen row reuse",
+      "config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/source_rx_3-tri-balance-joint-s2026092703/source/resolved_config.json",
+      "resolved_config_ref": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/source_rx_3-tri-balance-joint-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m3-natural",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": true,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reuse exact fixed E50",
+      "output_root": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/source_rx_3-tri-balance-joint-s2026092703/source",
+      "log_path": "PROJECT/runs/20261119-phase1-pamf-repl-rxbalance-seedcheck-clean-m8-r02/F/source_rx_3-tri-balance-joint-s2026092703/source/segment50/metrics_epoch.jsonl",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "existing source, prediction and score"
+      ]
+    },
+    {
+      "row_id": "source_rx_4-tri-adaptive-full-s2026092701",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Previously untested data design",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/configs/train__source_rx_4-tri-adaptive-full-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/source_rx_4-tri-adaptive-full-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m4-natural",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": false,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "original 4440 updates + own 6660",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/source_rx_4-tri-adaptive-full-s2026092701/source",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/logs/train__source_rx_4-tri-adaptive-full-s2026092701.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_4-tri-adaptive-full-s2026092702",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Previously untested data design",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/configs/train__source_rx_4-tri-adaptive-full-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/source_rx_4-tri-adaptive-full-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m4-natural",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": false,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "original 4440 updates + own 6660",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/source_rx_4-tri-adaptive-full-s2026092702/source",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/logs/train__source_rx_4-tri-adaptive-full-s2026092702.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_4-tri-adaptive-full-s2026092703",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Previously untested data design",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/configs/train__source_rx_4-tri-adaptive-full-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/source_rx_4-tri-adaptive-full-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m4-natural",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": false,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "original 4440 updates + own 6660",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/source_rx_4-tri-adaptive-full-s2026092703/source",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/logs/train__source_rx_4-tri-adaptive-full-s2026092703.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-tri-adaptive-full-s2026092701",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Previously untested data design",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/configs/train__source_rx_6-tri-adaptive-full-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/source_rx_6-tri-adaptive-full-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": false,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "original 4440 updates + own 6660",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/source_rx_6-tri-adaptive-full-s2026092701/source",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/logs/train__source_rx_6-tri-adaptive-full-s2026092701.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-tri-adaptive-full-s2026092702",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Previously untested data design",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/configs/train__source_rx_6-tri-adaptive-full-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/source_rx_6-tri-adaptive-full-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": false,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "original 4440 updates + own 6660",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/source_rx_6-tri-adaptive-full-s2026092702/source",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/logs/train__source_rx_6-tri-adaptive-full-s2026092702.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-tri-adaptive-full-s2026092703",
+      "method": "Tri, fusion RX positive balancing, U=6",
+      "purpose": "Previously untested data design",
+      "config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/configs/train__source_rx_6-tri-adaptive-full-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/source_rx_6-tri-adaptive-full-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural",
+        "U_weight": 6.0,
+        "mixture": 0.5,
+        "reuse_completed": false,
+        "native_identity": false
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "original 4440 updates + own 6660",
+      "output_root": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/F/source_rx_6-tri-adaptive-full-s2026092703/source",
+      "log_path": "PROJECT/runs/20261120-phase1-pamf-tri-adaptive-clean-m33-r01/logs/train__source_rx_6-tri-adaptive-full-s2026092703.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.full_suite publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Both methods use same setting, seed, physical clean records and fixed E50.",
+    "Preserve original Tri except the fusion positive target. The per-batch mix redistributes probability across supported RX.",
+    "Single- and two-source settings are exact identities: at most one alternative RX is available per anchor.",
+    "F2 U=3 is a previously replicated setting-specific reference, outside the common primary policy.",
+    "No checkpoint or coefficient selection uses target outputs. Existing clean targets are historically exposed."
+  ]
+}

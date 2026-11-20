@@ -97,8 +97,9 @@ def configure(ctx, row, project, commit, *, run_id=RUN):
 
 
 @contextmanager
-def installed(config, holder):
+def installed(config, holder, *, validate_config=validate):
     from experiments.pamf_paper_completion.model import installed as paper_scope
+    from experiments.pamf_repl_view_shuffle.source import installed as shuffled_scope
 
     module = ROUTES[config['source_adaptation']['route']]
     original = module.contrast
@@ -111,7 +112,13 @@ def installed(config, holder):
     module.contrast = balance
     objective_class = ObservedBalancedREPL if config['run_id'] in DOSE_RUNS else BalancedREPL
     try:
-        with paper_scope(config, holder, ssl_enabled=True, validate=validate, objective_factory=objective_class):
+        if config['source_adaptation']['setting'] == 'main_split':
+            validate_config(config)
+            scope = shuffled_scope(config, holder, True, objective_factory=objective_class)
+        else:
+            scope = paper_scope(config, holder, ssl_enabled=True, validate=validate_config,
+                                objective_factory=objective_class)
+        with scope:
             try:
                 yield
             finally:

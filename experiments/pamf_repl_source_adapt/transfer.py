@@ -125,13 +125,14 @@ def installed(c, holder):
         yield
 
 
-def prepare_jobs(rt, rows, configurator):
+def prepare_jobs(rt, rows, configurator, *, reused_sources=None):
     from experiments.pamf_physics_tri import target_tuning_runner as standard
 
     root = Path(rt['run_root'])
     project = Path(rt['project'])
     ctx = read(rt['context'])
-    changed = [row for row in rows if not row['reuses_original']]
+    reused_sources = reused_sources or {}
+    changed = [row for row in rows if not row['reuses_original'] and row['row_id'] not in reused_sources]
     previous = standard.plan
     standard.plan = SimpleNamespace(RUN=rt['run_id'], candidate_rows=lambda: changed, configuration=configurator)
     try:
@@ -140,6 +141,7 @@ def prepare_jobs(rt, rows, configurator):
         standard.plan = previous
     old = read(project/'runs'/paper.RUN/'sources.json')
     controls = {}
+    sources.update(reused_sources)
     for row in rows:
         rid, pid, seed = row['row_id'], row['protocol_id'], row['model_seed']
         controls[rid] = dict(tri=old[original_row(row)], pl=ctx['existing'][f'{pid}-ordinary_PL-s{seed}'])
