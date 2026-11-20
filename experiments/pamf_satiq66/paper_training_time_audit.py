@@ -18,7 +18,8 @@ from .train import device_array
 
 
 OPTIONS = {"warmup": ("native_logit_scale_warmup", None),
-           "pa-highband": ("native_pa_highband_gain", 1.)}
+           "pa-highband": ("native_pa_highband_gain", 1.),
+           "shared-satellite-head": ("native_shared_satellite_head", False)}
 
 
 def validate_pair(baseline, candidate, comparison):
