@@ -80,7 +80,10 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-shared-satellite-paired-source-e5-s2026111907-r01",
     "gpu_policy": "CPU-only scored in series by one controller",
     "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_training_time_audit /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-grid256-grid512-source-e5-s2026092701-r01/GRID256/s0141125.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-shared-satellite-head-source-e5-s2026092701-r01/SHARED/s0141125.pt shared-satellite-head 5 /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-shared-satellite-paired-source-e5-s2026111907-r01/PAIRED_E5/result.json ; /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_satellite_pooling_readout /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-shared-satellite-paired-source-e5-s2026111907-r01/HIERARCHICAL_E5/result.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-grid256-grid512-source-e5-s2026092701-r01/GRID256/s0141125.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-shared-satellite-head-source-e5-s2026092701-r01/SHARED/s0141125.pt --device cpu",
-    "stop_rule": "Invalid source contract/step, failed smoke, missing artifact, or nonzero scoring exit."
+    "stop_rule": "Invalid source contract/step, failed smoke, missing artifact, or nonzero scoring exit.",
+    "controller_pid": 2919450,
+    "launch_readback": "2026-11-20T22:10:51+08:00",
+    "complete_readback": "2026-11-20T22:15:58+08:00"
   },
   "expected_artifacts": [
     "owner.json",
@@ -138,7 +141,8 @@
         "score.exit",
         "score.pid"
       ],
-      "feature_dimensions": 256
+      "feature_dimensions": 256,
+      "pid": 2919457
     },
     {
       "row_id": "HIERARCHICAL_E5",
@@ -174,7 +178,8 @@
         "score.exit",
         "score.pid"
       ],
-      "feature_dimensions": 256
+      "feature_dimensions": 256,
+      "pid": 2920649
     }
   ],
   "notes": [
