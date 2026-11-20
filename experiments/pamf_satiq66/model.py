@@ -32,7 +32,7 @@ def full_downlink_reference():
     # The last of the 12 fixed symbols is outside the crop. Its leading
     # transition lies inside, so include it when constructing the template.
     symbols = np.concatenate((SYMBOLS, np.array([-1 - 1j, 1 + 1j, 1 + 1j, -1 - 1j], dtype=SYMBOLS.dtype)))
-    return torch.from_numpy(_reference_iq(symbols, 11000).T[None])
+    return torch.utils.dlpack.from_dlpack(_reference_iq(symbols, 11000).T[None])
 
 
 def inband_gain(frequency_hz, gains):
