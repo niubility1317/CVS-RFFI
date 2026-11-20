@@ -61,13 +61,26 @@ class SharedSatelliteHead(nn.Module):
         return self.beams + .5 * self.shared.index_select(0, self.columns)
 
 
+class AuxiliarySatelliteHead(nn.Linear):
+    """Supervise the native embedding using groups of beam labels during training."""
+
+    def __init__(self, dimensions, columns):
+        super().__init__(dimensions, int(columns.max()) + 1, bias=False)
+        nn.init.xavier_uniform_(self.weight)
+        self.register_buffer("columns", columns, persistent=False)
+
+    def forward(self, feature):
+        return 30 * F.linear(feature, F.normalize(self.weight, dim=1))
+
+
 class PaperNativePAMF(nn.Module):
     waveform_samples = 8000
 
     def __init__(self, runtime, seed, classes, expansion, satiq_sinc_init=False, center_fusion=False,
                  waveform_samples=8000, align_reference_time=False, grid_points=256,
                  reflect_boundary=False, spectral_gains=None, chronological_sequence=False,
-                 pa_highband_gain=1.0, satellite_columns=None, pa_oversampled_bandwidth_hz=None):
+                 pa_highband_gain=1.0, satellite_columns=None, pa_oversampled_bandwidth_hz=None,
+                 satellite_aux_columns=None):
         super().__init__()
         if waveform_samples not in (8000, 11000):
             raise ValueError("Native PAMF expects the common word or full SatIQ header")
@@ -137,6 +150,13 @@ class PaperNativePAMF(nn.Module):
         nn.init.xavier_uniform_(self.head.weight)
         if satellite_columns is not None:
             self.head = SharedSatelliteHead(self.head, satellite_columns)
+        self.satellite_auxiliary = None
+        if satellite_aux_columns is not None:
+            if (satellite_aux_columns.shape != (classes,) or satellite_aux_columns.dtype != torch.long
+                    or int(satellite_aux_columns.min()) < 0):
+                raise ValueError("Expected one nonnegative satellite group for each beam")
+            with torch.random.fork_rng(devices=[]):
+                self.satellite_auxiliary = AuxiliarySatelliteHead(self.feature_dimensions, satellite_aux_columns)
         self.register_buffer("fusion_center", torch.zeros(self.feature_dimensions) if center_fusion else None)
         bins = torch.arange(self.fft_points // 2 + 1, dtype=torch.float32) * (8000 / (self.waveform_samples * extension))
         cutoff = native_frequency_taper(bins)

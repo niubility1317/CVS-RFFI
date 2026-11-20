@@ -129,9 +129,13 @@ def make_model(config, arm, classes):
     pa_bandwidth = config.get("native_pa_oversampled_bandwidth_hz")
     if pa_bandwidth is not None and (arm != "PAMF_SUP" or "native_expansion" not in config):
         raise ValueError("Oversampled PA requires native PAMF-SUP")
-    if config.get("native_shared_satellite_head", False):
+    shared_head = config.get("native_shared_satellite_head", False)
+    satellite_aux_weight = config.get("native_satellite_auxiliary_weight", 0.0)
+    if not 0 <= satellite_aux_weight <= 1:
+        raise ValueError("Satellite auxiliary loss weight must be between zero and one")
+    if shared_head or satellite_aux_weight:
         if arm != "PAMF_SUP" or "native_expansion" not in config:
-            raise ValueError("Satellite sharing requires a native PAMF-SUP beam head")
+            raise ValueError("Satellite-group supervision requires a native PAMF-SUP beam head")
         _, groups = np.unique(classes[:, 0], return_inverse=True)
         columns = torch.from_dlpack(groups.astype(np.int64))
     if "native_expansion" in config:
@@ -147,7 +151,9 @@ def make_model(config, arm, classes):
                                 spectral_gains=config.get("native_spectral_gains"),
                                 chronological_sequence=config.get("native_chronological_sequence", False),
                                 pa_highband_gain=config.get("native_pa_highband_gain", 1.0),
-                                satellite_columns=columns, pa_oversampled_bandwidth_hz=pa_bandwidth)
+                                satellite_columns=columns if shared_head else None,
+                                pa_oversampled_bandwidth_hz=pa_bandwidth,
+                                satellite_aux_columns=columns if satellite_aux_weight else None)
     elif arm == "SATIQ":
         model = PaperSatIQ()
     else:
@@ -168,6 +174,8 @@ def validate(model, arm, raw, labels, val_panel, device, class_log_prior=None):
         target = device_array(labels[mask].astype(np.int64), device)
         known_features = feature[mask]
         weight = F.normalize(model.head.weight, dim=1)
+        satellite_auxiliary = getattr(model, "satellite_auxiliary", None)
+        satellite_aux_ce, satellite_aux_correct = 0.0, 0
         block_losses, correct = [], 0
         if class_log_prior is not None:
             score_sum = torch.zeros_like(class_log_prior)
@@ -181,6 +189,11 @@ def validate(model, arm, raw, labels, val_panel, device, class_log_prior=None):
             block_losses.append(float(F.cross_entropy(scores, y, reduction="sum")))
             prediction = scores.argmax(1)
             correct += int((prediction == y).sum())
+            if satellite_auxiliary is not None:
+                auxiliary_scores = satellite_auxiliary(vec)
+                satellite_labels = satellite_auxiliary.columns[y]
+                satellite_aux_ce += float(F.cross_entropy(auxiliary_scores, satellite_labels, reduction="sum"))
+                satellite_aux_correct += int((auxiliary_scores.argmax(1) == satellite_labels).sum())
             if class_log_prior is not None:
                 adjusted = scores + class_log_prior
                 prior_losses.append(float(F.cross_entropy(adjusted, y, reduction="sum")))
@@ -189,6 +202,9 @@ def validate(model, arm, raw, labels, val_panel, device, class_log_prior=None):
                 score_sum += scores.sum(dim=0)
         result.update(known_class_records=len(target), head_top1=correct / len(target),
                       head_ce=sum(block_losses) / len(target))
+        if satellite_auxiliary is not None:
+            result.update(satellite_aux_ce=satellite_aux_ce / len(target),
+                          satellite_aux_top1=satellite_aux_correct / len(target))
         if class_log_prior is not None:
             mean_scores = score_sum / len(target)
             correlation = F.cosine_similarity(mean_scores - mean_scores.mean(),
@@ -277,6 +293,7 @@ def train(config, source, cache, out, arm, smoke=False, resume=None):
     feature_dimensions = getattr(model, "feature_dimensions", 512 if arm == "SATIQ" else 320)
     reconstruction_weight = config.get("full_reconstruction_weight", 0)
     prototype_weight = config.get("branch_prototype_weight", 0)
+    satellite_aux_weight = config.get("native_satellite_auxiliary_weight", 0.0)
     positive_policy = config.get("native_prototype_positives")
     positive_ticks = None
     positive_slots = None
@@ -368,6 +385,11 @@ def train(config, source, cache, out, arm, smoke=False, resume=None):
                     logits = logits * (scale / 30.0)
                     branch_logits = branch_logits * (scale / 30.0)
                 loss, stats = native_supervised_loss(logits, branch_logits, y, satellites, config["pamf_sup"])
+                if satellite_aux_weight:
+                    satellite_auxiliary = model.satellite_auxiliary
+                    satellite_ce = F.cross_entropy(satellite_auxiliary(feature), satellite_auxiliary.columns[y])
+                    loss = loss + satellite_aux_weight * satellite_ce
+                    stats["satellite_aux_ce"] = satellite_ce.detach()
                 if scale_warmup is not None:
                     stats["native_train_logit_scale"] = scale
                 if prototype_weight > 0:
