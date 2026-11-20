@@ -1,0 +1,3 @@
+{"at": "2026-11-20T12:56:40+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-20T13:02:51+00:00", "status": "RUNNING", "note": "N607 CPU exact E40 score worker verified; independent P0/P1 review clear.", "evidence": ["experiment.json", "N607 /proc/2871386/cmdline", "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-matched-source-e40-s2026111907-r01/score.pid"], "row_id": "MATCHED_E40"}
+{"at": "2026-11-20T13:02:51+00:00", "status": "RUNNING", "note": "Exact output, working directory, matched source cohort and checkpoints verified.", "evidence": ["report.md", "N607 /proc/2871376/cmdline"], "row_id": null}
