@@ -19,7 +19,8 @@ from .train import device_array
 
 OPTIONS = {"warmup": ("native_logit_scale_warmup", None),
            "pa-highband": ("native_pa_highband_gain", 1.),
-           "shared-satellite-head": ("native_shared_satellite_head", False)}
+           "shared-satellite-head": ("native_shared_satellite_head", False),
+           "prototype-positive-gap": ("native_prototype_positives", "random_two")}
 
 
 def validate_pair(baseline, candidate, comparison):
@@ -30,6 +31,9 @@ def validate_pair(baseline, candidate, comparison):
         raise ValueError(f"Frozen configs differ beyond {option} and their resume paths")
     if baseline.get(option, default) != default or candidate.get(option, default) == default:
         raise ValueError(f"Expected default and active values of {option} in that order")
+    if comparison == "prototype-positive-gap" and (baseline.get(option) != "random_two"
+                                                     or candidate[option] != "farthest_two"):
+        raise ValueError("Expected exact random-two and farthest-two prototype policies")
     return candidate[option]
 
 
