@@ -17,17 +17,31 @@ def native_frequency_taper(bins):
     return torch.cos(torch.pi * ((bins - 60) / 20).clamp(0, 1)) * .5 + .5
 
 
+def pa_highband_response(physical_hz, gain):
+    transition = ((physical_hz - 80_000) / 40_000).clamp(0, 1)
+    return 1 + (gain - 1) * .5 * (1 - torch.cos(torch.pi * transition))
+
+
+def emphasize_pa_input(module, args):
+    (iq,) = args
+    spectrum = torch.fft.rfft(iq, dim=-1)
+    return (torch.fft.irfft(spectrum * module.satiq_pa_response, n=iq.shape[-1], dim=-1),)
+
+
 class PaperNativePAMF(nn.Module):
     waveform_samples = 8000
 
     def __init__(self, runtime, seed, classes, expansion, satiq_sinc_init=False, center_fusion=False,
                  waveform_samples=8000, align_reference_time=False, grid_points=256,
-                 reflect_boundary=False, spectral_gains=None, chronological_sequence=False):
+                 reflect_boundary=False, spectral_gains=None, chronological_sequence=False,
+                 pa_highband_gain=1.0):
         super().__init__()
         if waveform_samples not in (8000, 11000):
             raise ValueError("Native PAMF expects the common word or full SatIQ header")
         if grid_points not in (256, 512):
             raise ValueError("Expected a 256- or 512-point native feature grid")
+        if not 1 <= pa_highband_gain <= 1.5:
+            raise ValueError("SatIQ PA highband amplitude gain must be between 1 and 1.5")
         if spectral_gains is not None:
             spectral_gains = torch.as_tensor(spectral_gains, dtype=torch.float32)
             if (spectral_gains.shape != (16,)
@@ -46,6 +60,16 @@ class PaperNativePAMF(nn.Module):
         self.native = build_model(runtime, seed, 1, reference_waveform_samples=reference_samples,
                                   grid_points=grid_points, spectral_gains=spectral_gains,
                                   chronological_sequence=chronological_sequence)
+        if pa_highband_gain > 1:
+            core = self.native.core.id_backbone
+            if not core.use_pa_path or core.pa_feature_source != "raw_iq":
+                raise ValueError("PA highband emphasis requires the direct IQ polynomial path")
+            period = waveform_samples / (25_000_000 * grid_points)
+            frequency = torch.fft.rfftfreq(grid_points, d=period)
+            response = pa_highband_response(frequency, pa_highband_gain)
+            core.pa_lift.register_buffer("satiq_pa_response", response, persistent=False)
+            # Preserve the gate's original IQ side input and the parallel spectral statistics.
+            core.pa_lift.register_forward_pre_hook(emphasize_pa_input)
         self.native.core.id_backbone.cls_head.requires_grad_(False)
         if satiq_sinc_init:
             sinc = self.native.core.id_backbone.sinc
