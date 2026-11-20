@@ -17,6 +17,7 @@ from .paper_baseline import PaperSatIQ, angular_triplet, paper_loss
 from .paper_eval import embeddings, metrics, model_input, panel
 from .paper_pamf import PaperPAMF, branch_prototype_loss, reconstruction_target, supervised_loss
 from .paper_native_pamf import EXTRA_WIDTH, NATIVE_PATHS, PaperNativePAMF, native_supervised_loss
+from .paper_time_batch import nearest_temporal_negatives, pair_temporal_negatives
 from .wide_model import FEATURES
 from .readout import gpu_ready
 from .train import cuda_device, device_array
@@ -26,7 +27,8 @@ ARMS = ("SATIQ", "PAMF_SUP", "PAMF_METRIC")
 
 
 class SourceBatches:
-    def __init__(self, labels, class_counts, seed, satellites=None, *, pair_same_satellite=False):
+    def __init__(self, labels, class_counts, seed, satellites=None, *, pair_same_satellite=False,
+                 temporal_neighbors=None):
         ordered = np.argsort(labels, kind="stable")
         boundaries = np.r_[0, np.cumsum(class_counts)]
         self.groups = [ordered[boundaries[k]:boundaries[k + 1]] for k, n in enumerate(class_counts) if n >= 4]
@@ -35,6 +37,8 @@ class SourceBatches:
         self.rng = np.random.default_rng(seed)
         self.satellites = satellites
         self.pair_same_satellite = pair_same_satellite
+        self.packet_labels = labels
+        self.temporal_neighbors = temporal_neighbors
         if pair_same_satellite and satellites is None:
             raise ValueError("Same-satellite pairing requires the source satellite map")
 
@@ -91,7 +95,10 @@ class SourceBatches:
                 order[b], order[swap] = order[swap], order[b]
         if self.pair_same_satellite:
             self.add_satellite_pairs(order[:usable], labels)
-        return groups[order[:usable]].reshape(self.steps_per_epoch, 32)
+        batches = groups[order[:usable]].reshape(self.steps_per_epoch, 32)
+        if self.temporal_neighbors is not None:
+            batches = pair_temporal_negatives(batches, self.packet_labels, self.temporal_neighbors)
+        return batches
 
 
 def source_inputs(source, cache):
@@ -251,11 +258,16 @@ def train(config, source, cache, out, arm, smoke=False, resume=None):
     raw, labels, original = roles["L"]
     grouped = config.get("group_same_satellite_batches", False)
     paired = config.get("pair_same_satellite_batches", False)
-    if grouped and paired:
+    temporal = config.get("temporal_same_satellite_pairs", False)
+    if sum((grouped, paired, temporal)) > 1:
         raise ValueError("Select one same-satellite batching strategy")
+    neighbors = None
+    if temporal:
+        with np.load(source / "L_index.npz", allow_pickle=False) as manifest:
+            neighbors = nearest_temporal_negatives(manifest["timestamp_ns"], labels, classes[:, 0])
     satellites_by_beam = classes[:, 0] if grouped or paired else None
     sampler = SourceBatches(original, counts, config["sampling_seed"], satellites=satellites_by_beam,
-                            pair_same_satellite=paired)
+                            pair_same_satellite=paired, temporal_neighbors=neighbors)
     class_log_prior = None
     if config.get("prior_adjusted_sup", False):
         if arm != "PAMF_SUP":
