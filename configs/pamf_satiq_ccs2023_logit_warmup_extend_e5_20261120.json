@@ -1,0 +1,15 @@
+{
+  "parent_epoch": 1,
+  "final_epoch": 5,
+  "source": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source",
+  "cache": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source",
+  "rows": [
+    {
+      "name": "WARMUP",
+      "arm": "PAMF_SUP",
+      "gpu": 1,
+      "parent": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-logit-warmup-source-e1-s2026092701-r01/PAMF_SUP",
+      "parent_pid": 2614910
+    }
+  ]
+}
