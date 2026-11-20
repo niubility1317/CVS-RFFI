@@ -61,8 +61,9 @@ A、B、C 使用同一份源训练和验证清单、固定批次、原 256 维�
 | 温和谱整形 | 123 | 388 | 7.0279 |
 | 卫星概率辅助监督 | 135 | 353 | 7.1138 |
 | 时序分支按实际采样顺序 | 120 | — | — |
+| 同时段同星异波束负例组批 | 113 | — | — |
 
-镜像边界第 5 轮比基准多 2 条。温和谱整形第 5 轮多 25 条，但波束等权 Top-1 略低，按卫星和波束的配对重采样区间均跨零。在该种子上暂保留两项结果作比较，不将其列入正式前端。时序分支的首轮净增 11 条，同时段同星异波束负例组还在首轮内。 [两项预处理](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-full-header-preprocessing-source-e5-s2026092701-r01/report.md) · [谱整形逐包复核](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-spectral-paired-source-e5-s2026111907-r01/report.md) · [时序顺序](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-chronological-sequence-source-e1-s2026092701-r01/report.md) · [同时段负例](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-temporal-negative-source-e1-s2026092701-r01/report.md)
+镜像边界第 5 轮比基准多 2 条。温和谱整形第 5 轮多 25 条，但波束等权 Top-1 略低，按卫星和波束的配对重采样区间均跨零。在该种子上暂保留两项结果作比较，不将其列入正式前端。时序分支的首轮净增 11 条。同时段负例组的首轮净增为 4 条，验证 CE 较高。 [两项预处理](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-full-header-preprocessing-source-e5-s2026092701-r01/report.md) · [谱整形逐包复核](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-spectral-paired-source-e5-s2026111907-r01/report.md) · [时序顺序](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-chronological-sequence-source-e1-s2026092701-r01/report.md) · [同时段负例](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-temporal-negative-source-e1-s2026092701-r01/report.md)
 
 ### 相位校正和公共波形扣除的源端检查
 
