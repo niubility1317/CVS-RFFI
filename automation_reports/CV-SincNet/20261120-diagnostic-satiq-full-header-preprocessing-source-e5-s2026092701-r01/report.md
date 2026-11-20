@@ -18,3 +18,7 @@
 - 调度日志 `/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-preprocessing-source-e5-s2026092701-r01/controller.log`
 - 分组实际日志 `SHAPING.train.log`、`MIRROR.train.log`
 - 两个输出目录 `/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-preprocessing-source-e5-s2026092701-r01/SHAPING`、`/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-preprocessing-source-e5-s2026092701-r01/MIRROR`
+
+## 谱整形组已启动
+
+**VERIFIED 谱整形训练运行中。** 2026-11-20T11:55:46+08:00 读回第 20 轮共同评分完成后的 GPU 1 分配，训练 PID 2518493、CUDA 短检查退出码 0、实际配置和第 100 步。生效配置逐项匹配 16 档训练集拟合系数。原计划为固定 5 轮。镜像边界组仍在资源队列，未产生新训练分数。独立 T 留出。

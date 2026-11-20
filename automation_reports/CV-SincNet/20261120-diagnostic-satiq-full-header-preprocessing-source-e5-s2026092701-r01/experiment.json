@@ -96,7 +96,8 @@
     "stop_rule": "Fixed E5. Technical failure only. No T.",
     "controller_pid": 2515063,
     "launch_readback": "2026-11-20T11:51:27+08:00",
-    "release_sha256": "f2fba4a8ea6cf7c9d584800848467cfaf1d617498f3f19f0e0b725399a77c7ae"
+    "release_sha256": "f2fba4a8ea6cf7c9d584800848467cfaf1d617498f3f19f0e0b725399a77c7ae",
+    "training_readback": "2026-11-20T11:55:46+08:00"
   },
   "expected_artifacts": [
     "owner.json",
@@ -150,7 +151,9 @@
         "s0141125.pt",
         "complete.json"
       ],
-      "gpu": null
+      "gpu": 1,
+      "pid": 2518493,
+      "gpu_uuid": "GPU-a2d039ff-1792-4222-2b47-140429e10f94"
     },
     {
       "row_id": "MIRROR",
