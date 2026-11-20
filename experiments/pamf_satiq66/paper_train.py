@@ -234,11 +234,23 @@ def restore_completed_epoch(checkpoint, config, model, optimizer, sampler):
     return dict(checkpoint=str(checkpoint.resolve()), epoch=epoch, updates=step, restart_torch_seed=restart_seed)
 
 
+def native_scale_for_update(schedule, update):
+    if schedule is None or update >= schedule["updates"]:
+        return 30.0
+    initial = schedule["initial_scale"]
+    return initial + (30.0 - initial) * (update - 1) / (schedule["updates"] - 1)
+
+
 def train(config, source, cache, out, arm, smoke=False, resume=None):
     classes, counts, roles = source_inputs(source, cache)
     device = cuda_device()
     model = make_model(config, arm, classes).to(device)
     native_only = isinstance(model, PaperNativePAMF)
+    scale_warmup = config.get("native_logit_scale_warmup")
+    if scale_warmup is not None:
+        if (not native_only or not 0 < scale_warmup["initial_scale"] < 30
+                or type(scale_warmup["updates"]) is not int or scale_warmup["updates"] < 2):
+            raise ValueError("Expected a native PAMF head scale below 30 and at least two warmup updates")
     input_samples = model.waveform_samples if native_only else 11000
     feature_dimensions = getattr(model, "feature_dimensions", 512 if arm == "SATIQ" else 320)
     reconstruction_weight = config.get("full_reconstruction_weight", 0)
@@ -313,7 +325,13 @@ def train(config, source, cache, out, arm, smoke=False, resume=None):
                 loss, stats = paper_loss(feature, reconstructed, x, y)
             elif native_only:
                 feature, logits, branch_logits, branches = model(x, view_logits=True)
+                scale = native_scale_for_update(scale_warmup, step)
+                if scale != 30.0:
+                    logits = logits * (scale / 30.0)
+                    branch_logits = branch_logits * (scale / 30.0)
                 loss, stats = native_supervised_loss(logits, branch_logits, y, satellites, config["pamf_sup"])
+                if scale_warmup is not None:
+                    stats["native_train_logit_scale"] = scale
                 if prototype_weight > 0:
                     prototype = branch_prototype_loss(branches, prototype_path_weights)
                     loss = loss + prototype_weight * prototype
