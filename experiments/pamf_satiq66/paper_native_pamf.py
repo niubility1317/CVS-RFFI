@@ -149,6 +149,12 @@ def native_supervised_loss(logits, branch_logits, target, satellites, weights):
             + weights["view_kl"] * agreement)
     stats = dict(ce=ce.detach(), within_satellite_ce=within.detach(),
                  native_branch_ce=branch_ce.mean().detach(), view_kl=agreement.detach())
+    satellite_weight = weights.get("satellite_marginal_ce", 0.0)
+    if satellite_weight:
+        # Full beam CE decomposes into satellite mass and conditional beam CE.
+        satellite_ce = ce - within
+        loss = loss + satellite_weight * satellite_ce
+        stats["satellite_marginal_ce"] = satellite_ce.detach()
     hard_fraction = weights.get("hard_rank_ce_fraction", 0.0)
     if hard_fraction:
         positive = logits.gather(1, target[:, None])

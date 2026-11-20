@@ -13,3 +13,15 @@
 - 调度日志 `/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-matched-source-e5-s2026111907-r01/dispatch.log`
 - 两组评分日志 `/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-matched-source-e5-s2026111907-r01/readout.log`
 - 两组完成后的冻结评分 `/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-matched-source-e5-s2026111907-r01/source_e5_closed_set.json`
+
+## 共同源验证结果
+
+**VERIFIED 已完成。** 2026-11-20T11:03:45+08:00 读回调度完成日志和已生成的原子结果，核对两份检查点均为 141,125 步。两种方法使用同样的源注册包及 49,814 条验证信号，每条面对全部 3,103 个候选波束。
+
+| 表示和读出 | Top-1 | 命中数 |
+|---|---:|---:|
+| SatIQ 余弦原型 | 0.1325% | 66 |
+| PAMF 余弦原型 | 0.3975% | 198 |
+| PAMF 学得的分类头 | 0.7167% | 357 |
+
+PAMF 的原型读出多命中 132 条。PAMF 直接分类头又多命中 159 条。其全候选首选波束所属卫星匹配率为 2.9891%，源端仅在真卫星内对分数做离线排序时为 18.4446%。后者用真标签缩小了范围，只用于解释错排。独立 T 留出。
