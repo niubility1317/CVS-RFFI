@@ -11,6 +11,7 @@ from .data import represent, SYMBOLS
 
 
 ORDER = (0, 5, 3, 6, 2, 1, 4, 7)
+PASSBAND_END_HZ = 187_500
 
 
 def reference_waveform():
@@ -24,8 +25,16 @@ def reference_waveform():
     return represent(iq[None])[0]
 
 
+def inband_gain(frequency_hz, gains):
+    """Interpolate the symmetric physical response between fitted band centers."""
+    position = (frequency_hz.abs() * (len(gains) / PASSBAND_END_HZ) - .5).clamp(0, len(gains) - 1)
+    left = position.long()
+    right = (left + 1).clamp_max(len(gains) - 1)
+    return torch.lerp(gains[left], gains[right], position - left)
+
+
 class UWResponse(nn.Module):
-    def __init__(self, representation, waveform_samples=8000, grid_points=256):
+    def __init__(self, representation, waveform_samples=8000, grid_points=256, spectral_gains=None):
         super().__init__()
         template = torch.utils.dlpack.from_dlpack(reference_waveform()[representation])
         ref = torch.complex(template[0], template[1])
@@ -44,6 +53,12 @@ class UWResponse(nn.Module):
         spectrum = torch.fft.fft(ref * window)
         # Twelve usable bins preserve the native response projection width.
         bins = spectrum.abs().topk(12).indices.sort().values
+        if spectral_gains is not None:
+            period = waveform_samples / (25_000_000 * grid_points)
+            frequency = torch.fft.fftfreq(len(ref), d=period, dtype=ref.real.dtype)
+            ref = torch.fft.ifft(torch.fft.fft(ref) * inband_gain(frequency, spectral_gains))
+            ref = ref / ref.abs().square().mean().sqrt()
+            spectrum = torch.fft.fft(ref * window)
         self.register_buffer("reference", ref, persistent=False)
         self.register_buffer("window", window, persistent=False)
         self.register_buffer("bins", bins, persistent=False)
@@ -72,7 +87,8 @@ class UWResponse(nn.Module):
         return torch.cat((bounded.real, bounded.imag, stats), dim=1)
 
 
-def build_model(runtime, seed, representation, reference_waveform_samples=8000, grid_points=256):
+def build_model(runtime, seed, representation, reference_waveform_samples=8000, grid_points=256,
+                spectral_gains=None):
     from experiments.pamf_phase3_open_world.source_development import _activate_code
 
     _activate_code(runtime)
@@ -103,7 +119,7 @@ def build_model(runtime, seed, representation, reference_waveform_samples=8000, 
             sinc.t_.mul_(.5)
             sinc.sample_rate *= 2
         core.sinc = sinc
-        model.response = UWResponse(representation, reference_waveform_samples, grid_points)
+        model.response = UWResponse(representation, reference_waveform_samples, grid_points, spectral_gains)
         model.sequence_pool = CompositePool(core.t2.pw.out_channels, "SIG_TIME_X3", seed)
         model.__class__ = CompositeReference
         for view in model.sequence_pool.views:
