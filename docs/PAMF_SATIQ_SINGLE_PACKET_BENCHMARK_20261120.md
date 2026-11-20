@@ -119,3 +119,7 @@ A、B、C 使用同一份源训练和验证清单、固定批次、原 256 维�
 ### 等样本数的跨时段正原型
 
 保留五个分支和 256 维身份表示，训练四包组中给每个锚点选两条同波束正例。两组分别随机取两条和取时间最远两条，组批与其他损失相同。最远组的正例时间差中位数从 6.98 天增到 9.43 天，首轮只净增 4 条验证命中（100 → 104），低于原三正例的 109 条。最远组主 CE 较随机组增加 0.0423。最近训练包超过 30 秒的 1,308 条，两个两正例组均未命中。正式保留三正例。 [训练](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-prototype-positive-gap-source-e1-s2026092701-r01/report.md) · [逐包复核](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-prototype-positive-gap-paired-source-e1-s2026111907-r01/report.md)
+
+### 原训练损失的梯度重放
+
+在正式第 1、20、60 轮的固定权重上，用同一 64 批源 L 分解主 CE 与原辅助损失的原始梯度。第 60 轮编码器与分类头的辅助合计相对投影中位数分别为 +16.17% 和 +17.14%，三个时点的两类参数均没有出现辅助合计负投影。分支 CE 在第 60 轮分类头上数得 44/64 批轻微负投影，中位数 −0.273%。现有证据不支持整体辅助梯度抵消主 CE。 [梯度复核](../automation_reports/CV-SincNet/20261121-diagnostic-satiq-formal-loss-gradients-source-s2026112007-r01/report.md)
