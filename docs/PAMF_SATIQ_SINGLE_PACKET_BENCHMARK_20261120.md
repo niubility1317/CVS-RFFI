@@ -27,6 +27,8 @@ K 指每个候选波束的历史注册包数。当前实现先固定 K16 面板�
 
 8,000 点的完整首轮复评支持保留 PAMF 的完整损失。完整损失的 L/V 单包 Top-1 为 0.2322% / 0.2509%，只用主 CE 为 0.1124% / 0.0964%。后续前端实验使用已对齐原生同步模板的 11,000 点配置，保留五分支和 256 维身份表示。[损失对照](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-fused256-main-ce-source-e1-s2026092701-r01/report.md) · [模板时间对齐](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-full-header-uw-time-source-e1-s2026092701-r01/report.md)
 
-相同的 49,814 个源 V 包上，512 点内部网格在完整首轮命中 131 包，256 点对照命中 109 包。两组已分别从固定首轮检查点启动续训，将在第 5 轮复验全 3,103 波束的单包 Top-1。另验证报头 FFT 的镜像边界处理，第 5,000 步两组仅差一个正确包。前端对照继续按实际单包准确率决定是否晋级。[网格续训](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-full-header-grid256-grid512-source-e5-s2026092701-r01/report.md) · [边界处理](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-full-header-reflect-source-e1-s2026092701-r01/report.md)
+相同的 49,814 个源 V 包上，512 点内部网格在完整首轮命中 131 包，256 点对照命中 109 包。两组完成了同预算第 5 轮，512 点命中 339 条，256 点命中 363 条，首轮差异已反转。镜像边界在完整首轮命中 122 条，对照命中 109 条；第 20,000 步镜像组曾落后。暂用 256 点原边界与已对齐模板作为新配对基准。[网格续训](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-full-header-grid256-grid512-source-e5-s2026092701-r01/report.md) · [边界处理](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-full-header-reflect-source-e1-s2026092701-r01/report.md)
 
 首轮逐包误差复核确认两组共同命中 65 条，512 点独有 66 条，256 点独有 44 条。按真实波束抽样的 95% 净差区间跨过 0。 [首轮错误配对](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-grid-paired-errors-e1-s2026111907-r01/report.md)
+
+同数据正式第 5 轮，SatIQ 和 PAMF 用共用源注册原型命中 66 条与 198 条，PAMF 自身分类头命中 357 条。PAMF 第 20 轮单包 Top-1 为 1.3550%（675 条）。第 5 轮 PAMF 首选波束所属卫星正确率为 2.99%，真卫星内的离线诊断 Top-1 为 18.44%。已启动的卫星概率监督对照重新分配现有 0.20 辅助权重，推理仍每包面对 3,103 类。[同数据第 5 轮](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-matched-source-e5-s2026111907-r01/report.md) · [卫星概率监督](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-full-header-satellite-mass-source-e5-s2026092701-r01/report.md)
