@@ -17,24 +17,24 @@ from .paper_train import source_inputs
 from .train import device_array
 
 
-OPTIONS = {"warmup": ("native_logit_scale_warmup", None),
-           "pa-highband": ("native_pa_highband_gain", 1.),
-           "shared-satellite-head": ("native_shared_satellite_head", False),
-           "prototype-positive-gap": ("native_prototype_positives", "random_two")}
+OPTIONS = {"warmup": ("native_logit_scale_warmup", None, None),
+           "pa-highband": ("native_pa_highband_gain", 1., None),
+           "shared-satellite-head": ("native_shared_satellite_head", False, None),
+           "prototype-positive-gap": ("native_prototype_positives", "random_two", "farthest_two"),
+           "pa-bandwidth": ("native_pa_oversampled_bandwidth_hz", 250_000, 500_000)}
 
 
 def validate_pair(baseline, candidate, comparison):
-    option, default = OPTIONS[comparison]
+    option, default, required = OPTIONS[comparison]
     ignored = {option, "resume"}
     if ({k: v for k, v in baseline.items() if k not in ignored}
             != {k: v for k, v in candidate.items() if k not in ignored}):
         raise ValueError(f"Frozen configs differ beyond {option} and their resume paths")
-    if baseline.get(option, default) != default or candidate.get(option, default) == default:
-        raise ValueError(f"Expected default and active values of {option} in that order")
-    if comparison == "prototype-positive-gap" and (baseline.get(option) != "random_two"
-                                                     or candidate[option] != "farthest_two"):
-        raise ValueError("Expected exact random-two and farthest-two prototype policies")
-    return candidate[option]
+    before = baseline.get(option, default if required is None else None)
+    after = candidate.get(option, default)
+    if before != default or after == default or (required is not None and after != required):
+        raise ValueError(f"Expected the registered control and variant for {option} in that order")
+    return after
 
 
 def summarize(mask, labels, classes, baseline_ok, candidate_ok, baseline_ce, candidate_ce, seed):
