@@ -1,0 +1,193 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261120-diagnostic-satiq-pa-highband-source-e1-s2026092701-r01",
+  "group_id": "phase1-satiq-ccs2023-fully-supervised",
+  "display_name": "SatIQ PAMF-SUP 记忆多项式输入高频增强",
+  "description": "One matched E1 from-scratch source-only attempt with mild highband emphasis solely at the native memory-polynomial lift input.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF-SUP",
+    "single-packet",
+    "source-only",
+    "satiq-pa-highband"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261120-diagnostic-satiq-full-header-uw-time-source-e1-s2026092701-r01",
+    "20261120-diagnostic-satiq-frequency-occlusion-source-e30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Optimize full-header PAMF on the same data for single-packet 3103-beam Top-1.",
+  "code": {
+    "commit": "f679dec941541ca524e5de6630cf7324b7ea0a5a",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-pa-highband-source-e1-s2026092701-r01",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python N607 FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-pa-highband-source-e1-s2026092701-r01"
+  },
+  "data": {
+    "dataset": "Oxford SatIQ Zenodo 8220494, first 1010464 chronological packets",
+    "version": "8220494",
+    "representation": "Both consume the same published 11000-point 25 MS/s header. Joint per-packet I/Q min-max scaling [-1,1]. PAMF uses native five paths at 256 feature-grid samples.",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/{L,V}_index.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "source_receivers": [
+      "Oxford single receiver"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2023-03-22 through part of 2023-04-14 UTC"
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 910464,
+      "V": 50000,
+      "U_s": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "satiq_oxford_ccs2023_supervised_reindexed_v1_2026111905",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/V_index.npz",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Run only source L/V. The fixed source-only correlation audit used 2048 source V IQ packets without fitting. No T access."
+  },
+  "checkpoint": {
+    "initialization": "Fresh seeded initialization",
+    "sources": [],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "provenance_verdict": "FRESH_SOURCE_L_V_NO_CHECKPOINT",
+    "selection_rule": "Exact first epoch at 28225 updates."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Single supervision process",
+    "gpu_policy": "One worker after existing >=4096 MiB and <2 active compute process check; scoped to this row.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-pa-highband-source-e1-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-pa-highband-source-e1-s2026092701-r01",
+    "local_artifact_root": "E:/type10-7/local_data/satiq_oxford_ccs2023_supervised_20261119_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train train /home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-pa-highband-source-e1-s2026092701-r01/configs/pamf_satiq_ccs2023_full_header_pa_highband_20261120.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-pa-highband-source-e1-s2026092701-r01/PAMF_SUP --arm PAMF_SUP --native-expansion fused256",
+    "stop_rule": "One physical training epoch, only technical nonfinite failures interrupt.",
+    "training_pid": 2259408,
+    "release_sha256": "b343089fd34515306fdff2bed9edb6156717f2a948256faa7b183676764a1e2a",
+    "eligible_gpus": [
+      4,
+      5,
+      6,
+      7,
+      0,
+      1,
+      2,
+      3
+    ],
+    "controller_pid": 2645609,
+    "launch_readback": "2026-11-20T15:06:13+08:00"
+  },
+  "expected_artifacts": [
+    "controller.log",
+    "paired_source_preflight.log",
+    "smoke.exit",
+    "train.exit",
+    "train.pid",
+    "PAMF_SUP/resolved_config.json",
+    "PAMF_SUP/steps.jsonl",
+    "PAMF_SUP/s0028225.pt",
+    "PAMF_SUP/complete.json",
+    "preflight.exit"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "single-packet 3103-class Top-1",
+      "training and validation main CE",
+      "same-satellite verification supplementary"
+    ],
+    "dimensions": [
+      "same patched one branch vs original full-header E1",
+      "903200 exact source packets first epoch",
+      "all known V queries"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "experiments/pamf_satiq66/paper_train.py"
+  },
+  "rows": [
+    {
+      "row_id": "PAMF_SUP",
+      "method": "Original fused256 PAMF-SUP with a fixed PA polynomial-input-only high-band gain",
+      "purpose": "Assess whether the native polynomial path benefits from additional weight on weak high-frequency content.",
+      "config_ref": "configs/pamf_satiq_ccs2023_full_header_pa_highband_20261120.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-pa-highband-source-e1-s2026092701-r01/PAMF_SUP/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111906,
+        "augmentation": null,
+        "support": 2026111907,
+        "evaluation": 2026111907
+      },
+      "seed_notes": "Shared batch and evaluation seeds; full native scratch initialization.",
+      "k": null,
+      "scenario": "Oxford single receiver, real received IQ",
+      "optimizer": "Adam eps=1e-7, from scratch",
+      "lr": 0.0003,
+      "epochs": 1,
+      "fl_rounds": null,
+      "budget_ref": "Exact 28,225 updates with source scores at 5000, 20000 and complete E1.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-pa-highband-source-e1-s2026092701-r01/PAMF_SUP",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-pa-highband-source-e1-s2026092701-r01/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_train train /home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-pa-highband-source-e1-s2026092701-r01/configs/pamf_satiq_ccs2023_full_header_pa_highband_20261120.json /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-pa-highband-source-e1-s2026092701-r01/PAMF_SUP --arm PAMF_SUP --native-expansion fused256",
+      "expected_artifacts": [
+        "steps.jsonl",
+        "s0028225.pt",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No changes to raw input length, labels, model dimensionality, gate side input, branch stats, optimizer, sampling, reconstruction, or role access. No augmentation."
+  ],
+  "reference_timing_audit": {
+    "samples": 2048,
+    "native_clock": 800000,
+    "input_points": 11000,
+    "reference_points": 186,
+    "legacy_transitions": [
+      16,
+      144
+    ],
+    "physical_transitions": [
+      11,
+      104
+    ],
+    "quantiles": [
+      [
+        0.32846418023109436,
+        0.8159811496734619
+      ],
+      [
+        0.42774641513824463,
+        0.8589821457862854
+      ],
+      [
+        0.5128906965255737,
+        0.881805419921875
+      ]
+    ],
+    "matched_higher": 2047,
+    "paired_delta": [
+      0.3606709837913513,
+      0.4327344000339508,
+      0.49418148398399353
+    ]
+  },
+  "registered_at": "2026-11-20T07:06:28+00:00"
+}
