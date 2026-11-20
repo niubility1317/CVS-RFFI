@@ -1,0 +1,153 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261120-diagnostic-satiq-satellite-mass-decomposition-e1-s2026111907-r01",
+  "group_id": "phase1-satiq-ccs2023-fully-supervised",
+  "display_name": "SatIQ 卫星概率监督首轮的分项诊断",
+  "description": "Compare raw all-beam Top-1, probability-summed satellite ranking and conditional beam ranking.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "SatIQ",
+    "PAMF-SUP",
+    "E1",
+    "source-V",
+    "satellite-marginal"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261120-diagnostic-satiq-full-header-uw-time-source-e1-s2026092701-r01",
+    "20261120-diagnostic-satiq-full-header-satellite-mass-source-e5-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Improve the user-prioritized all-beam single-packet classifier on matched SatIQ input.",
+  "code": {
+    "commit": "6705dff21ccb0c0f01247c4680f5239a246deed7",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-satellite-mass-decomposition-e1-s2026111907-r01",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python N607 FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-satellite-mass-decomposition-e1-s2026111907-r01"
+  },
+  "data": {
+    "dataset": "Oxford SatIQ Zenodo 8220494, first 1010464 chronological packets",
+    "version": "8220494",
+    "representation": "Same 11000-point header, signed range, 256-point periodic FFT and aligned reference.",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/{L,V}_index.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "source_receivers": [
+      "Oxford single receiver"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2023-03-22 through part of 2023-04-14 UTC"
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 910464,
+      "V": 50000,
+      "U_s": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "satiq_oxford_ccs2023_supervised_reindexed_v1_2026111905",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/V_index.npz",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source L and V only. No test access."
+  },
+  "checkpoint": {
+    "initialization": "No training, exact E1 snapshots",
+    "sources": [
+      {
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-uw-time-source-e1-s2026092701-r01/PAMF_SUP/s0028225.pt",
+        "upstream": "20261120-diagnostic-satiq-full-header-uw-time-source-e1-s2026092701-r01"
+      },
+      {
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-satellite-mass-source-e5-s2026092701-r01/PAMF_SUP/s0028225.pt",
+        "upstream": "20261120-diagnostic-satiq-full-header-satellite-mass-source-e5-s2026092701-r01"
+      }
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source/contract.json",
+    "provenance_verdict": "MATCHED_SOURCE_L_V_EXACT_E1",
+    "selection_rule": "Fixed E1 28225 steps, both configs previously frozen."
+  },
+  "execution": {
+    "host": "N607",
+    "local_artifact_root": "E:/type10-7/local_data/satiq_oxford_ccs2023_supervised_20261119_r01",
+    "launch_owner": "One paired source scoring worker",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-satellite-mass-decomposition-e1-s2026111907-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-satellite-mass-decomposition-e1-s2026111907-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_satellite_pooling_readout /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-satellite-mass-decomposition-e1-s2026111907-r01/satellite_mass_e1.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-uw-time-source-e1-s2026092701-r01/PAMF_SUP/s0028225.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-satellite-mass-source-e5-s2026092701-r01/PAMF_SUP/s0028225.pt --device cuda",
+    "gpu_policy": "Physical GPU1, at least 4096 MiB free and fewer than two existing compute processes.",
+    "stop_rule": "Require both exact E1 snapshots, matching source cohort, valid output.",
+    "controller_pid": 2502464,
+    "scoring_pid": 2502468,
+    "complete_readback": "2026-11-20T11:29:04+08:00",
+    "gpu_uuid": "GPU-a2d039ff-1792-4222-2b47-140429e10f94",
+    "release_sha256": "c720fc64ed936f2ad261aa592ef83f710c98c2cfce7c8b333100be629085b751"
+  },
+  "expected_artifacts": [
+    "score.log",
+    "score.exit",
+    "satellite_mass_e1.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "raw 3103-beam Top-1",
+      "marginal satellite CE and Top-1",
+      "conditional beam CE and Top-1"
+    ],
+    "dimensions": [
+      "49814 fixed source V signals",
+      "static beam-to-satellite mapping",
+      "no candidate masking for reported beam Top-1"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "experiments/pamf_satiq66/paper_satellite_pooling_readout.py"
+  },
+  "rows": [
+    {
+      "row_id": "PAIRED_DECOMPOSE_E1",
+      "method": "PAMF-SUP aligned 256, satellite marginal supervision",
+      "purpose": "Diagnose the objective without changing the original beam prediction.",
+      "config_ref": "experiments/pamf_satiq66/paper_satellite_pooling_readout.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261120-diagnostic-satiq-satellite-mass-decomposition-e1-s2026111907-r01/experiments/pamf_satiq66/paper_satellite_pooling_readout.py",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026111905,
+        "data": 2026111906,
+        "augmentation": null,
+        "support": 2026111907,
+        "evaluation": 2026111907
+      },
+      "seed_notes": "Shared batch and evaluation seeds; full native scratch initialization.",
+      "k": null,
+      "scenario": "Oxford single receiver, real received IQ",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Fixed two 28225-step source snapshots. One forward-only evaluation.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-satellite-mass-decomposition-e1-s2026111907-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-satellite-mass-decomposition-e1-s2026111907-r01/score.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_satiq66.paper_satellite_pooling_readout /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/manifest/source /home/szu2070436088/2510044040/CV-SincNet/data/satiq_oxford_ccs2023_supervised_20261119_r01/cache_source /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-satellite-mass-decomposition-e1-s2026111907-r01/satellite_mass_e1.json /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-uw-time-source-e1-s2026092701-r01/PAMF_SUP/s0028225.pt /home/szu2070436088/2510044040/CV-SincNet/runs/20261120-diagnostic-satiq-full-header-satellite-mass-source-e5-s2026092701-r01/PAMF_SUP/s0028225.pt --device cuda",
+      "expected_artifacts": [
+        "satellite_mass_e1.json"
+      ],
+      "gpu": 1,
+      "pid": 2502468
+    }
+  ],
+  "notes": [
+    "Source V only. No probability adjustment in primary raw Top-1.",
+    "Conditional scores may use true satellite only offline."
+  ],
+  "registered_at": "2026-11-20T03:27:56+00:00"
+}
