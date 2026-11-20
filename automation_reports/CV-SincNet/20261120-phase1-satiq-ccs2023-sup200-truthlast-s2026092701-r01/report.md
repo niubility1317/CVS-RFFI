@@ -16,3 +16,7 @@
 - 预测日志 `/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-phase1-satiq-ccs2023-sup200-truthlast-s2026092701-r01/prediction.log`
 - 评分日志 `/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-phase1-satiq-ccs2023-sup200-truthlast-s2026092701-r01/scoring.log`
 - 最终矩阵 `/home/szu2070436088/2510044040/CV-SincNet/runs/20261120-phase1-satiq-ccs2023-sup200-truthlast-s2026092701-r01/scores/matrix_scores.json`
+
+## 100 轮预算调整
+
+**VERIFIED 已撤下等待任务。** 2026-11-20T12:01:02+08:00 先核对 PID 2230670 的命令、工作目录、独占输出和无子进程等待状态，再结束调度。当前步骤尚未开始训练或测试预测，原日志与已有产物保留。
