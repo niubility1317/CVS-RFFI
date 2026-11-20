@@ -115,3 +115,7 @@ A、B、C 使用同一份源训练和验证清单、固定批次、原 256 维�
 ### 共享卫星分类权重的第 5 轮验证
 
 保留 PAMF 五分支和 256 维身份输出。每个波束的分类权重由独立向量和同一解码卫星 ID 下的共享向量组成，查询仍逐包对全 3,103 类评分。固定第 5 轮判对 399/49,814（0.8010%），独立权重为 363/49,814（0.7287%）。训练主 CE 从 7.1601 降到 7.1002，验证主 CE 从 7.0429 降到 7.0327。总体增量的 95% 区间为 −0.0584 至 +0.2047 个百分点，最近同波束训练包超过 30 秒的 1,308 条中命中从 23 降至 13。正式配置保留独立权重。[第 5 轮训练](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-shared-satellite-head-source-e5-s2026092701-r01/report.md) · [逐包配对](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-shared-satellite-paired-source-e5-s2026111907-r01/report.md)
+
+### 等样本数的跨时段正原型
+
+保留五个分支和 256 维身份表示，训练四包组中给每个锚点选两条同波束正例。两组分别随机取两条和取时间最远两条，组批与其他损失相同。最远组的正例时间差中位数从 6.98 天增到 9.43 天，首轮只净增 4 条验证命中（100 → 104），低于原三正例的 109 条。最远组主 CE 较随机组增加 0.0423。最近训练包超过 30 秒的 1,308 条，两个两正例组均未命中。正式保留三正例。 [训练](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-prototype-positive-gap-source-e1-s2026092701-r01/report.md) · [逐包复核](../automation_reports/CV-SincNet/20261120-diagnostic-satiq-prototype-positive-gap-paired-source-e1-s2026111907-r01/report.md)

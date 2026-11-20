@@ -83,7 +83,9 @@
     "controller_pid": 2954180,
     "upstream_pid": 2936363,
     "release_sha256": "0c9b6ac71c9e4eca96e0286cde269cd746f8ecb1a3f580a3370e909b3bcce296",
-    "launch_readback": "2026-11-20T23:20:44+08:00"
+    "launch_readback": "2026-11-20T23:20:44+08:00",
+    "scoring_pid": 2959401,
+    "complete_readback": "2026-11-20T23:35:40+08:00"
   },
   "expected_artifacts": [
     "result.json",
@@ -141,7 +143,8 @@
         "score.exit",
         "score.pid"
       ],
-      "feature_dimensions": 256
+      "feature_dimensions": 256,
+      "pid": 2959401
     }
   ],
   "notes": [
