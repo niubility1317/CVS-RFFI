@@ -1,5 +1,7 @@
 # 1% 标注 Tri 的冻结 E20 伪标签校验
 
+**VERIFIED / ANALYZED**。发布提交 `7832aec79898f326e6e4f8eb4061feb453ec0596`。3/3 真实冒烟与 12 项作业完成。替换 .85 达 82.3464%，比原 Tri 高 0.7863 个百分点，比 PL 低 0.2101 个百分点。[全组比较](../20261121-phase1-pamf-tri-label01-earlyanchor-seedcheck-clean-m2-r01/analysis.md)
+
 原 Tri 在合法源 V 上把真类 3 高置信误判为类 1 的条数从 E20 的 104 增至 E50 的 1008。同一批 27000 条 V，E50 通过 0.95 掩码、E20 置信度至少 0.85 且两者类别分歧的 387 条中，E20 判对 375 条，E50 判对 11 条。E20 门槛为 0.95 时，对应 201 条、198 条和 3 条。源 L 真标签原型在同一融合表示上无法有效纠正高置信误判。[源 V 逐候选统计](E:/type10-7/local_artifacts/pamf_tri_label01_viewroute_20261121/source_e20_disagreement.json) · [原型对照](E:/type10-7/local_artifacts/pamf_tri_label01_viewroute_20261121/source_proto_calibration.json)
 
 复用匹配的本种子 E20 为固定参照。训练前只遍历一次合法、真值盲的源 U，按原物理索引保存 E20 类别和置信度在进程内。只对当前学生达到 0.95 且与 E20 预测分歧的样本考虑修正。E20 门槛为 `min(0.99, b+0.15*n/(n+14))`，`n` 是源 L 中对应 E20 类别、RX、日期的真标签数量。1% 中 `n=7`，两个门槛分别为 .85 和 .95。三行分别为门槛 .85 时暂缓该样本参加 U 损失，以及门槛 .85、.95 时用 E20 预测替换它的伪标签。替换保留学生原通过集合，U=6、KL 系数、视图、对比和原梯度保护不改。[逐行登记](experiment.json)
