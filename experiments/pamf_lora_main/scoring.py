@@ -11,16 +11,20 @@ from .data import CLASSES, TARGET, VIEWS, label_ids, packet_indices, recording
 from .recognition import METHODS, SEEDS
 
 
-def prediction_matrix(root):
+def readouts(extended=()):
+    return {**{method: ('raw', 'dura_lora') if method == 'pamf_adaptive' else ('raw',) for method in METHODS},
+            **{method: ('raw', 'dura_lora') for method in extended}}
+
+
+def prediction_matrix(root, methods):
     result = {}
     for seed in SEEDS:
-        for method in METHODS:
+        for method, modes in methods.items():
             path = root/f'{method}-s{seed}'
             state = read(path/'complete.json')
-            modes = ['raw', 'dura_lora'] if method == 'pamf_adaptive' else ['raw']
             if (state['status'] != 'PREDICTIONS_FROZEN' or state['target_truth_read']
                     or state['receivers'] != list(TARGET) or state['views'] != list(VIEWS)
-                    or state['modes'] != modes or state['per_receiver'] != 2000):
+                    or state['modes'] != list(modes) or state['per_receiver'] != 2000):
                 raise ValueError('Incomplete or unexpected prediction row')
             for mode in modes:
                 for view in VIEWS:
@@ -40,8 +44,9 @@ def macro_f1(y, pred):
     return float(np.mean(2 * matrix.diagonal() / np.maximum(1, count)))
 
 
-def score(predictions, dataset, output, scratch):
-    p = prediction_matrix(predictions)
+def score(predictions, dataset, output, scratch, *, extended=()):
+    methods = readouts(extended)
+    p = prediction_matrix(predictions, methods)
     truth = {}
     with zipfile.ZipFile(dataset/'multiple_receiver_test.zip') as archive:
         for i, rx in enumerate(TARGET):
@@ -51,8 +56,8 @@ def score(predictions, dataset, output, scratch):
     overall_y = np.concatenate(list(truth.values()))
     res = []
     for seed in SEEDS:
-        for method in METHODS:
-            for mode in ('raw', 'dura_lora') if method == 'pamf_adaptive' else ('raw',):
+        for method, modes in methods.items():
+            for mode in modes:
                 for view in VIEWS:
                     by_rx = {rx: p[seed, method, mode, view, rx] for rx in TARGET}
                     selected = np.concatenate(list(by_rx.values()))

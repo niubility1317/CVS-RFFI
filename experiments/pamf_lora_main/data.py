@@ -7,9 +7,7 @@ import shutil
 import tempfile
 import zipfile
 
-import h5py
 import numpy as np
-from scipy.signal import resample_poly
 
 from experiments.cric_dura_comparison.io import write
 
@@ -32,6 +30,8 @@ VIEWS = ('clean', 'practical_high', 'practical_mid', 'practical_low_suburban',
 
 @contextmanager
 def recording(archive, member, scratch):
+    import h5py
+
     with tempfile.TemporaryDirectory(prefix='lora_h5_', dir=scratch) as name:
         path = Path(name) / 'recording.h5'
         with archive.open(member) as source, path.open('wb') as dest:
@@ -41,6 +41,8 @@ def recording(archive, member, scratch):
 
 
 def iq_window(h5, order=None):
+    from scipy.signal import resample_poly
+
     data = h5['data']
     if data.ndim != 2 or data.shape[1] != 2 * 8192:
         raise ValueError('Expected official data rows with I then Q and 8192 complex samples')

@@ -21,7 +21,7 @@ if os.geteuid() == 0 or release.exists() or Path(rt['run_root']).exists():
     raise ValueError('Ordinary account and unused immutable release/run roots required')
 if shutil.disk_usage(release.parent).free < 8 * 1024**3:
     raise ValueError('Insufficient experiment disk space')
-for tool in (rt['python'], *rt['frozen_sources'].values()):
+for tool in (rt['python'], *rt['frozen_sources'].values(), *rt.get('external_releases', [])):
     if not Path(tool).exists():
         raise FileNotFoundError(tool)
 digest = hashlib.sha256()
@@ -44,7 +44,7 @@ runtime.write_text(json.dumps(rt, indent=2) + chr(10), encoding='utf-8')
 env = dict(os.environ, CUDA_VISIBLE_DEVICES='', OMP_NUM_THREADS='2', PYTHONPATH=str(release))
 subprocess.run([rt['python'], '-m', 'compileall', '-q', 'experiments/pamf_lora_main'],
                cwd=release, env=env, check=True)
-cmd = [rt['python'], '-u', '-m', 'experiments.pamf_lora_main.runner', 'dispatch', str(runtime)]
+cmd = [rt['python'], '-u', '-m', rt.get('runner', 'experiments.pamf_lora_main.runner'), 'dispatch', str(runtime)]
 with (release/'controller.log').open('x') as log:
     p = subprocess.Popen(cmd, cwd=release, env=env, stdin=subprocess.DEVNULL,
                          stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
@@ -55,40 +55,33 @@ print(json.dumps(result))
 '''
 
 
-def publish(repo, output, inputs, context, ssh_config, run_id):
+def release_commit(repo):
     def git(*args):
         return subprocess.check_output(['git', '-C', str(repo), *args])
-
     commit = git('rev-parse', 'HEAD').decode().strip()
     branch = git('branch', '--show-current').decode().strip()
     if git('ls-remote', 'origin', f'refs/heads/{branch}').decode().split()[0] != commit:
         raise ValueError('Published upstream code differs from HEAD')
-    data, output = Path(inputs), Path(output)
-    src, target = read(data/'source/contract.json'), read(data/'target/contract.json')
-    if (src['protocol'] != 'lora_rx5_main_v1' or target['truth_read']
-            or src['counts'] != dict(L_s=2800, U_s=25200, V=12000) or target['count'] != 30000
-            or set(src['receiver_names']) & set(target['receivers'])):
-        raise ValueError('LoRa dataset contract differs')
-    ctx = read(context)
-    project = ctx['project']
-    release = f'{project}/releases/{run_id}-release'
-    rt = dict(ctx, run_id=run_id, code_commit=commit, release_root=release,
-              run_root=f'{project}/runs/{run_id}', allowed_gpus=list(range(7)),
-              source_root=f'{release}/data/source', target_root=f'{release}/data/target')
+    return commit
+
+
+def release(repo, output, rt, ssh_config, data=None):
+    output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
-    package = output / f'{run_id}-release.tar.gz'
+    package = output / f"{rt['run_id']}-release.tar.gz"
     dirs = ('experiments', 'code', 'baselines', 'comparison_suite')
-    committed = git('archive', '--format=tar', commit, '--', *dirs)
+    committed = subprocess.check_output(
+        ['git', '-C', str(repo), 'archive', '--format=tar', rt['code_commit'], '--', *dirs])
     with tarfile.open(fileobj=io.BytesIO(committed)) as source, tarfile.open(package, 'x:gz', compresslevel=3) as dest:
         for member in source:
             if member.isfile() and Path(member.name).suffix in ('.py', '.json', '.txt', '.yaml', '.yml', '.toml'):
                 dest.addfile(member, source.extractfile(member))
-        for part in ('source', 'target'):
+        for part in ('source', 'target') if data else ():
             for path in sorted((data/part).iterdir()):
                 if path.suffix not in ('.npy', '.npz', '.json') or not path.is_file():
                     raise ValueError('Unexpected LoRa data packaging input')
                 dest.add(path, arcname=f'data/{part}/{path.name}', recursive=False)
-    remote = f'{project}/releases/{package.name}'
+    remote = f"{rt['project']}/releases/{package.name}"
     digest = hashlib.sha256()
     with package.open('rb') as stream:
         for block in iter(lambda: stream.read(1024 * 1024), b''):
@@ -104,6 +97,22 @@ def publish(repo, output, inputs, context, ssh_config, run_id):
     reply = json.loads(result.stdout)
     write(output/'submit.json', reply)
     print(json.dumps(reply), flush=True)
+
+
+def publish(repo, output, inputs, context, ssh_config, run_id):
+    data = Path(inputs)
+    src, target = read(data/'source/contract.json'), read(data/'target/contract.json')
+    if (src['protocol'] != 'lora_rx5_main_v1' or target['truth_read']
+            or src['counts'] != dict(L_s=2800, U_s=25200, V=12000) or target['count'] != 30000
+            or set(src['receiver_names']) & set(target['receivers'])):
+        raise ValueError('LoRa dataset contract differs')
+    ctx = read(context)
+    project = ctx['project']
+    root = f'{project}/releases/{run_id}-release'
+    rt = dict(ctx, run_id=run_id, code_commit=release_commit(repo), release_root=root,
+              run_root=f'{project}/runs/{run_id}', allowed_gpus=list(range(7)),
+              source_root=f'{root}/data/source', target_root=f'{root}/data/target')
+    return release(repo, output, rt, ssh_config, data)
 
 
 if __name__ == '__main__':

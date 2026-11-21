@@ -12,32 +12,29 @@ from experiments.cric_dura_comparison.io import read
 from .scoring import score
 
 
-def collect(submit, ssh_config, dataset, output):
-    launch = read(submit)
-    root = shlex.quote(launch['run_root'])
-    connection = ['ssh', '-F', str(ssh_config), '-T', '-o', 'BatchMode=yes', '-o',
-                  'ConnectTimeout=10', 'N607']
+def wait_for_predictions(connection, root):
     retries = 0
     while True:
         try:
             result = subprocess.check_output([*connection, f'cat {root}/state.json'],
                                              timeout=20).decode('utf-8')
-        except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
+            status = json.loads(result)
+        except (subprocess.CalledProcessError, subprocess.TimeoutExpired, json.JSONDecodeError):
             retries += 1
             if retries >= 3:
                 raise
             time.sleep(30)
             continue
         retries = 0
-        status = json.loads(result)
         if status['status'] == 'FAILED':
             raise RuntimeError(status['error'])
         if status['status'] == 'PREDICTIONS_FROZEN':
-            break
+            return
         time.sleep(60)
-    raw = subprocess.check_output([*connection, f'tar -czf - -C {root} predictions source_decision.json'],
-                                  timeout=120)
-    output.mkdir(parents=True, exist_ok=False)
+
+def receive(connection, root, output, main):
+    files = 'predictions source_decision.json' if main else 'predictions'
+    raw = subprocess.check_output([*connection, f'tar -czf - -C {root} {files}'], timeout=120)
     with tarfile.open(fileobj=BytesIO(raw), mode='r:gz') as archive:
         for entry in archive:
             name = PurePosixPath(entry.name)
@@ -52,7 +49,23 @@ def collect(submit, ssh_config, dataset, output):
             path.parent.mkdir(parents=True, exist_ok=True)
             with path.open('xb') as f:
                 f.write(archive.extractfile(entry).read())
-    score(output/'predictions', dataset, output/'scores.json', output)
+
+
+def collect(submit, ssh_config, dataset, output, supplement=None):
+    root = shlex.quote(read(submit)['run_root'])
+    connection = ['ssh', '-F', str(ssh_config), '-T', '-o', 'BatchMode=yes', '-o',
+                  'ConnectTimeout=10', 'N607']
+    extra = shlex.quote(read(supplement)['run_root']) if supplement else None
+    if extra:
+        wait_for_predictions(connection, extra)
+    wait_for_predictions(connection, root)
+    output.mkdir(parents=True, exist_ok=False)
+    receive(connection, root, output, main=True)
+    methods = ()
+    if extra:
+        from .phase1 import METHODS as methods
+        receive(connection, extra, output, main=False)
+    score(output/'predictions', dataset, output/'scores.json', output, extended=methods)
     print('LORA_SCORED', output/'scores.json', flush=True)
 
 
@@ -60,5 +73,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     for name in ('submit', 'ssh-config', 'dataset', 'output'):
         parser.add_argument('--'+name, type=Path, required=True)
+    parser.add_argument('--supplement', type=Path)
     args = parser.parse_args()
-    collect(args.submit, args.ssh_config, args.dataset, args.output)
+    collect(args.submit, args.ssh_config, args.dataset, args.output, supplement=args.supplement)

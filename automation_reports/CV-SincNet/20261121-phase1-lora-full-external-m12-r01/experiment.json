@@ -1,0 +1,172 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261121-phase1-lora-full-external-m12-r01",
+  "group_id": "phase1-pamf-lora-transfer",
+  "display_name": "LoRa Phase1 四种完整对照三种子补跑",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "parent_run_ids": [
+    "20261121-phase1-pamf-lora-rx5-main-m18-r01"
+  ],
+  "authorization": "用户要求补跑 Phase1 对比方法，继承 LoRa 主实验的三种子、数据划分和 practical 测试。",
+  "code": {
+    "commit": "actual release git OID in submit.json",
+    "environment": "N607 CVS-RFFI dispatcher and SDG-SEI external training",
+    "cwd": "PROJECT/releases/20261121-phase1-lora-full-external-m12-r01-release"
+  },
+  "data": {
+    "contract_ref": "20261121-phase1-pamf-lora-rx5-main-m18-r01/lora_rx5_main_v1",
+    "source_role_counts": {
+      "L_s": 2800,
+      "U_s": 25200,
+      "V": 12000
+    },
+    "query_count": 30000,
+    "query_rx_count": 15,
+    "split_seed": 392005,
+    "test_views": "original received and identical six practical no-EQ cached views",
+    "readouts": [
+      "raw",
+      "same-seed frozen DURA-LoRa"
+    ]
+  },
+  "checkpoint": {
+    "initialization": "scratch external Full F, own-stage IB-RFF; no prior F",
+    "selection_rule": "native last or source-validation selection, no query",
+    "G_binding": "exact same-contract G from main, no new G"
+  },
+  "execution": {
+    "host": "N607 nonprivileged",
+    "launch_owner": "codex-20261121-phase1-lora-full-external-m12-r01",
+    "gpu_policy": "one supplement GPU at a time while main source jobs run, then one own worker per available GPU 0–6, at most two GPU processes and 12 GiB free for admission",
+    "remote_run_root": "PROJECT/runs/20261121-phase1-lora-full-external-m12-r01",
+    "remote_log_root": "PROJECT/runs/20261121-phase1-lora-full-external-m12-r01/logs",
+    "launch_command": "python -m experiments.pamf_lora_main.phase1_publish --repo REPO --output OUTPUT --context CONTEXT --main-submit SUBMIT --ssh-config CONFIG",
+    "stop_rule": "Stop new supplement dispatch for technical, provenance, or protocol failure; preserve all existing workers and outputs."
+  },
+  "matrix": {
+    "shared": {
+      "training_regime": "full_plus_plain_PL",
+      "pl_threshold": 0.95,
+      "pl_weight": 1,
+      "practical_concat_ce": 0.68
+    },
+    "rows": [
+      {
+        "row_id": "riei-s2026092701",
+        "method": "riei",
+        "model_seed": 2026092701,
+        "epochs": 100,
+        "batch": 64,
+        "lr": 0.0001,
+        "stages": 1
+      },
+      {
+        "row_id": "drift-s2026092701",
+        "method": "drift",
+        "model_seed": 2026092701,
+        "epochs": 100,
+        "batch": 256,
+        "lr": 0.0001,
+        "stages": 1
+      },
+      {
+        "row_id": "ibrff-s2026092701",
+        "method": "ibrff",
+        "model_seed": 2026092701,
+        "epochs": 200,
+        "batch": 128,
+        "lr": 0.001,
+        "stages": 2
+      },
+      {
+        "row_id": "sdg-s2026092701",
+        "method": "sdg",
+        "model_seed": 2026092701,
+        "epochs": 200,
+        "batch": 32,
+        "lr": 0.001,
+        "stages": 1
+      },
+      {
+        "row_id": "riei-s2026092702",
+        "method": "riei",
+        "model_seed": 2026092702,
+        "epochs": 100,
+        "batch": 64,
+        "lr": 0.0001,
+        "stages": 1
+      },
+      {
+        "row_id": "drift-s2026092702",
+        "method": "drift",
+        "model_seed": 2026092702,
+        "epochs": 100,
+        "batch": 256,
+        "lr": 0.0001,
+        "stages": 1
+      },
+      {
+        "row_id": "ibrff-s2026092702",
+        "method": "ibrff",
+        "model_seed": 2026092702,
+        "epochs": 200,
+        "batch": 128,
+        "lr": 0.001,
+        "stages": 2
+      },
+      {
+        "row_id": "sdg-s2026092702",
+        "method": "sdg",
+        "model_seed": 2026092702,
+        "epochs": 200,
+        "batch": 32,
+        "lr": 0.001,
+        "stages": 1
+      },
+      {
+        "row_id": "riei-s2026092703",
+        "method": "riei",
+        "model_seed": 2026092703,
+        "epochs": 100,
+        "batch": 64,
+        "lr": 0.0001,
+        "stages": 1
+      },
+      {
+        "row_id": "drift-s2026092703",
+        "method": "drift",
+        "model_seed": 2026092703,
+        "epochs": 100,
+        "batch": 256,
+        "lr": 0.0001,
+        "stages": 1
+      },
+      {
+        "row_id": "ibrff-s2026092703",
+        "method": "ibrff",
+        "model_seed": 2026092703,
+        "epochs": 200,
+        "batch": 128,
+        "lr": 0.001,
+        "stages": 2
+      },
+      {
+        "row_id": "sdg-s2026092703",
+        "method": "sdg",
+        "model_seed": 2026092703,
+        "epochs": 200,
+        "batch": 32,
+        "lr": 0.001,
+        "stages": 1
+      }
+    ]
+  },
+  "expected_artifacts": [
+    "smoke/complete.json",
+    "F/*/freeze.json",
+    "predictions/*/complete.json",
+    "state.json",
+    "combined scores.json"
+  ]
+}

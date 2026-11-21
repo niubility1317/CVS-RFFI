@@ -127,15 +127,16 @@ def load_reader(folder, contract):
 
 
 @torch.no_grad()
-def predict(folder, target, target_channel, out, contract_path, dura_folder=None):
+def predict(folder, target, target_channel, out, contract_path, dura_folder=None, *, reader=None, seed=None):
     contract = read(contract_path)
-    model = load_reader(folder, contract)
+    model = load_reader(folder, contract) if reader is None else reader
     modes = {'raw': None}
     if dura_folder:
         state = read(dura_folder / 'complete.json')
+        model_seed = read(folder / 'complete.json')['config']['model_seed'] if seed is None else seed
         if (state['status'] != 'DURA_LORA_SOURCE_FROZEN' or state['source_contract'] != str(contract_path)
                 or state['TX_labels_read'] or state['F_reads'] or state['target_reads']
-                or state['model_seed'] != read(folder / 'complete.json')['config']['model_seed']):
+                or state['model_seed'] != model_seed):
             raise ValueError('DURA-LoRa and PAMF source training bindings differ')
         restorer = dura_model()
         restorer.load_state_dict(torch.load(dura_folder/'dura_lora.pt', map_location='cpu'), strict=True)
