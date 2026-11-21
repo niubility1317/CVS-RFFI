@@ -23,8 +23,9 @@ def make(template):
     data['notes']=['Compute fixed early predictions on original TX-blind U only, no V use in training.',
         'Coherent source confidence on V was used only to design this exploratory mechanism.',
         'Keep same scalar U dose, guard and six-view structure. Change only newly disagreeing existing pseudo-label decisions.']
-    data['rows']=data['rows'][:3]
-    for r,row in zip(data['rows'],plan.rows(),strict=True):
+    candidates=plan.rows()
+    data['rows']=data['rows'][:len(candidates)]
+    for r,row in zip(data['rows'],candidates,strict=True):
         rid=row['row_id']; out=f'{root}/F/{rid}/source'
         r.update(row_id=rid,method='Tri E20 pseudo-label anchor',purpose='Explicit veto vs replacement',
             data_overrides=row,output_root=out,config_ref=f'{root}/configs/train__{rid}.json',
