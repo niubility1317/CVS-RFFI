@@ -215,6 +215,8 @@ CCS 2023 定稿的 1,705,202 条由最初 23 天的 1,010,464 条与随后 17 �
 
 115 是参与训练的解码卫星编号数，3,103 是解码波束分类数。公开数据依据报文字段标注，物理射频链数与编号的映射需要独立证据。假设预测固定且只修改这 111 条 V 的真值，Top-1 的绝对改变量至多为 0.223 个百分点。删候选、修改训练标签或重新训练可能改变其他预测，需另做实验才能判断影响。正式结果按原定完整候选统计，独立 T 留出。
 
+Iridium NEXT 的主任务天线包含波束形成网络与 168 个收发模块，形成 48 个点波束。工程说明第 G、H 节还记载 L 波段载频可动态分配给这些波束。SatIQ 从 IRA 报文解码卫星和点波束编号作为任务标签，发布数据未给出编号到物理功放或完整射频链的映射。由此可以将标签解释为报文的发射波束身份。不同波束可能共享部分硬件，同一波束也可能在不同载频上工作。每个波束可分辨的硬件指纹有待实测，低 Top-1 的成因仍需结合源验证的误差分解判断。 [Iridium NEXT 主任务天线](https://investor.iridium.com/july-21-2014-first-flight-main-mission-antennas-completed-for-iridium-next-satellites) · [Iridium NEXT 工程说明](https://naic.edu/arecibo/phil/rfi/sat/IridiumNextEngineeringStatement.pdf) · [SatIQ 数据采集与解码标签](https://arxiv.org/html/2305.06947#S4.SS3)
+
 ## SatIQ 公开实现与当前复现的差异
 
 公开 v1.0.2 的 TFRecord 转换用 `63 × ra_sat + ra_cell` 生成训练标签。当一个编号的波束 63 和下一个编号的波束 0 同时出现时会合并。将该公式应用于当前全部 4,953 个源 L 标签对，会产生 22 个重合编号，涉及 44 个标签对和 105 个 L 包。例如 `(3, 63)` 和 `(4, 0)` 会被合并。只看正式训练采用的 3,103 个波束对，未发现重合。两组实际都按原始二元组重编码，并使用同一份按波束组批的训练清单。 [TFRecord 转换源码](https://github.com/ssloxford/SatIQ/blob/v1.0.2/preprocessing/np-to-tfrecord.py#L7-L37) · [训练标签读取](https://github.com/ssloxford/SatIQ/blob/v1.0.2/util/data.py#L873-L912)
