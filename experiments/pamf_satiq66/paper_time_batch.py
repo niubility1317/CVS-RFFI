@@ -20,27 +20,37 @@ def prototype_positive_slots(timestamps=None):
     return (local + (4 * np.arange(8))[:, None, None]).reshape(32, 2)
 
 
-def nearest_temporal_negatives(timestamps, labels, satellites):
-    """Map each labeled L row to its closest other beam on the same satellite."""
+def _assign_nearest_other_group(neighbors, rows, timestamps, group_ids):
+    order = np.argsort(timestamps[rows], kind="stable")
+    rows = rows[order]
+    times = timestamps[rows]
+    groups = group_ids[order]
+    cuts = np.r_[0, np.flatnonzero(groups[1:] != groups[:-1]) + 1, len(rows)]
+    # The nearest different group is immediately outside the contiguous run.
+    first = np.repeat(cuts[:-1], np.diff(cuts))
+    stop = np.repeat(cuts[1:], np.diff(cuts))
+    left = (first - 1).clip(min=0)
+    right = stop.clip(max=len(rows) - 1)
+    earlier = np.where(first > 0, times - times[left], np.inf)
+    later = np.where(stop < len(rows), times[right] - times, np.inf)
+    feasible = np.minimum(earlier, later) <= MAX_GAP_NS
+    nearest = np.where(earlier <= later, left, right)
+    neighbors[rows[feasible]] = rows[nearest[feasible]]
+
+
+def nearest_temporal_negatives(timestamps, labels, satellites, *, cross_satellite=False):
+    """Map each labeled L row to a nearby other beam or another satellite."""
     known = np.flatnonzero(labels >= 0)
-    satellite_ids = satellites[labels[known]]
     neighbors = np.full(len(labels), -1, dtype=np.int64)
-    for satellite in np.unique(satellite_ids):
-        rows = known[satellite_ids == satellite]
-        rows = rows[np.argsort(timestamps[rows], kind="stable")]
-        times = timestamps[rows]
-        beams = labels[rows]
-        cuts = np.r_[0, np.flatnonzero(beams[1:] != beams[:-1]) + 1, len(rows)]
-        # The nearest other beam must be immediately outside the contiguous run.
-        first = np.repeat(cuts[:-1], np.diff(cuts))
-        stop = np.repeat(cuts[1:], np.diff(cuts))
-        left = (first - 1).clip(min=0)
-        right = stop.clip(max=len(rows) - 1)
-        earlier = np.where(first > 0, times - times[left], np.inf)
-        later = np.where(stop < len(rows), times[right] - times, np.inf)
-        feasible = np.minimum(earlier, later) <= MAX_GAP_NS
-        nearest = np.where(earlier <= later, left, right)
-        neighbors[rows[feasible]] = rows[nearest[feasible]]
+    if not len(known):
+        return neighbors
+    satellite_ids = satellites[labels[known]]
+    if cross_satellite:
+        _assign_nearest_other_group(neighbors, known, timestamps, satellite_ids)
+    else:
+        for satellite in np.unique(satellite_ids):
+            rows = known[satellite_ids == satellite]
+            _assign_nearest_other_group(neighbors, rows, timestamps, labels[rows])
     return neighbors
 
 

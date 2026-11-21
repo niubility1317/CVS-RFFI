@@ -329,13 +329,15 @@ def train(config, source, cache, out, arm, smoke=False, resume=None):
     raw, labels, original = roles["L"]
     grouped = config.get("group_same_satellite_batches", False)
     paired = config.get("pair_same_satellite_batches", False)
-    temporal = config.get("temporal_same_satellite_pairs", False)
-    if sum((grouped, paired, temporal)) > 1:
-        raise ValueError("Select one same-satellite batching strategy")
+    temporal_same_satellite = config.get("temporal_same_satellite_pairs", False)
+    temporal_cross_satellite = config.get("temporal_cross_satellite_pairs", False)
+    if sum((grouped, paired, temporal_same_satellite, temporal_cross_satellite)) > 1:
+        raise ValueError("Select one satellite-aware batching strategy")
     neighbors = None
-    if temporal:
+    if temporal_same_satellite or temporal_cross_satellite:
         with np.load(source / "L_index.npz", allow_pickle=False) as manifest:
-            neighbors = nearest_temporal_negatives(manifest["timestamp_ns"], labels, classes[:, 0])
+            neighbors = nearest_temporal_negatives(manifest["timestamp_ns"], labels, classes[:, 0],
+                                                   cross_satellite=temporal_cross_satellite)
     satellites_by_beam = classes[:, 0] if grouped or paired else None
     sampler = SourceBatches(original, counts, config["sampling_seed"], satellites=satellites_by_beam,
                             pair_same_satellite=paired, temporal_neighbors=neighbors)
