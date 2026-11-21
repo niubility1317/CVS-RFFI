@@ -1,0 +1,188 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261121-phase1-pamf-tri-label01-earlyanchor-seedcheck-clean-m2-r01",
+  "group_id": "phase1-pamf-source-adaptation",
+  "display_name": "1% 标注 E20 替换的两个新种子复核",
+  "description": "固定源域优先的 0.60 配方，验证两个未参与候选设计的模型种子。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-paper-completion-m119-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求增强数据自适应并补齐 1% 标注对普通 PL 的缺口。",
+  "code": {
+    "commit": "actual release git OID",
+    "checkout": "current task worktree",
+    "environment": "N607 CVS-RFFI",
+    "cwd": "PROJECT/releases/20261121-phase1-pamf-tri-label01-earlyanchor-seedcheck-clean-m2-r01-release"
+  },
+  "data": {
+    "dataset": "Existing label01 source and clean evaluation contract",
+    "version": null,
+    "representation": null,
+    "contract_ref": "original matched per-setting handles",
+    "physical_ids_ref": "exact ordered physical IDs as both matched baselines",
+    "label_map_ref": null,
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "original labeled source",
+      "U_s": "original TX-blind source",
+      "V": "original source validation"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": "Phase1 clean: cross_date, cross_rx and cross_both; only the latter two pooled",
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Same-row frozen E50 clean prediction followed by independent truth-last scoring",
+    "external_method_exception": null,
+    "claim_scope": "Two training seeds held out from recipe development, historical clean target"
+  },
+  "checkpoint": {
+    "initialization": "same-setting, same-seed, same-contract original Tri E20 for new continuations",
+    "sources": [
+      "20261027-phase1-pamf-paper-completion-m119-r03"
+    ],
+    "contract_check_ref": "early_label_anchor.validate, transfer.parent and SourceDataset original U role",
+    "provenance_verdict": "explicit known source-only ancestors, matching data roles and original recipe",
+    "selection_rule": "Same-contract same-seed E20 frozen teacher and initialization; fixed E50"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex-20261121-phase1-pamf-tri-label01-earlyanchor-seedcheck-clean-m2-r01",
+    "gpu_policy": "GPU 0,4,5,6 only; max two total per GPU; min 12 GiB admission",
+    "remote_run_root": "PROJECT/runs/20261121-phase1-pamf-tri-label01-earlyanchor-seedcheck-clean-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261121-phase1-pamf-tri-label01-earlyanchor-seedcheck-clean-m2-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_tri_label01_earlyanchor_seedcheck_20261121",
+    "launch_command": "python -m experiments.pamf_repl_source_adapt.early_anchor_seedcheck publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+    "stop_rule": "Stop new dispatch on blocking technical failure; retain healthy workers and all outputs.",
+    "owner": "codex-20261121-phase1-pamf-tri-label01-earlyanchor-seedcheck-clean-m2-r01"
+  },
+  "expected_artifacts": [
+    "2 same-seed real E20 smokes",
+    "2 independent E50 clean and U scores",
+    "2 same-ID contrasts"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "paired clean",
+      "source U coverage and precision",
+      "E20 pseudo-label revisions",
+      "L/U gradients"
+    ],
+    "dimensions": [
+      "setting",
+      "seed",
+      "clean test subset"
+    ],
+    "prediction_ref": "PROJECT/runs/20261121-phase1-pamf-tri-label01-earlyanchor-seedcheck-clean-m2-r01/sources.json",
+    "scorer_ref": "PROJECT/runs/20261121-phase1-pamf-tri-label01-earlyanchor-seedcheck-clean-m2-r01/analysis/results.json"
+  },
+  "rows": [
+    {
+      "row_id": "labeled_1pct-tri-e20-repair60-s2026092702",
+      "method": "Tri E20 pseudo-label anchor",
+      "purpose": "Explicit veto vs replacement",
+      "config_ref": "PROJECT/runs/20261121-phase1-pamf-tri-label01-earlyanchor-seedcheck-clean-m2-r01/configs/train__labeled_1pct-tri-e20-repair60-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261121-phase1-pamf-tri-label01-earlyanchor-seedcheck-clean-m2-r01/F/labeled_1pct-tri-e20-repair60-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "row_id": "labeled_1pct-tri-e20-repair60-s2026092702",
+        "setting": "labeled_1pct",
+        "protocol_id": "label01",
+        "model_seed": 2026092702,
+        "weight": 6.0,
+        "views": [
+          "clean"
+        ],
+        "reuses_original": false,
+        "mode": "replace",
+        "floor": 0.55
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matched E20 and own 6660 updates",
+      "output_root": "PROJECT/runs/20261121-phase1-pamf-tri-label01-earlyanchor-seedcheck-clean-m2-r01/F/labeled_1pct-tri-e20-repair60-s2026092702/source",
+      "log_path": "PROJECT/runs/20261121-phase1-pamf-tri-label01-earlyanchor-seedcheck-clean-m2-r01/logs/train__labeled_1pct-tri-e20-repair60-s2026092702.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.early_anchor_seedcheck publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "raw clean scores",
+        "independent frozen source U diagnostic"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-tri-e20-repair60-s2026092703",
+      "method": "Tri E20 pseudo-label anchor",
+      "purpose": "Explicit veto vs replacement",
+      "config_ref": "PROJECT/runs/20261121-phase1-pamf-tri-label01-earlyanchor-seedcheck-clean-m2-r01/configs/train__labeled_1pct-tri-e20-repair60-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261121-phase1-pamf-tri-label01-earlyanchor-seedcheck-clean-m2-r01/F/labeled_1pct-tri-e20-repair60-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "row_id": "labeled_1pct-tri-e20-repair60-s2026092703",
+        "setting": "labeled_1pct",
+        "protocol_id": "label01",
+        "model_seed": 2026092703,
+        "weight": 6.0,
+        "views": [
+          "clean"
+        ],
+        "reuses_original": false,
+        "mode": "replace",
+        "floor": 0.55
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model seed varies. Source role split and other fixed seeds are bound by the matched protocol.",
+      "k": null,
+      "scenario": "raw clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "matched E20 and own 6660 updates",
+      "output_root": "PROJECT/runs/20261121-phase1-pamf-tri-label01-earlyanchor-seedcheck-clean-m2-r01/F/labeled_1pct-tri-e20-repair60-s2026092703/source",
+      "log_path": "PROJECT/runs/20261121-phase1-pamf-tri-label01-earlyanchor-seedcheck-clean-m2-r01/logs/train__labeled_1pct-tri-e20-repair60-s2026092703.log",
+      "command": "python -m experiments.pamf_repl_source_adapt.early_anchor_seedcheck publish --repo REPO --output OUTPUT --context CONTEXT --ssh-config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "raw clean scores",
+        "independent frozen source U diagnostic"
+      ]
+    }
+  ],
+  "notes": [
+    "Compute fixed early predictions on original TX-blind U only, no V use in training.",
+    "Coherent source confidence on V was used only to design this exploratory mechanism.",
+    "Keep same scalar U dose, guard and six-view structure. Change only newly disagreeing existing pseudo-label decisions."
+  ]
+}

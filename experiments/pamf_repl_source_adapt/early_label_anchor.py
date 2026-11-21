@@ -6,7 +6,7 @@ from pathlib import Path
 
 import torch
 
-from experiments.cric_dura_comparison.io import read
+from experiments.cric_dura_comparison.io import read, write
 from experiments.pamf_repl_weight.pseudo_observation import PseudoObservationMixin
 from experiments.pamf_ssl_research.hard_pl_receiver_extrapolation_objective import GuardedReceiverExtrapolation
 from . import full_suite, transfer, view_route
@@ -59,15 +59,20 @@ class Anchor(GuardedReceiverExtrapolation):
         super().__init__(c)
         self.classes,self.confidences = bank
         self.counts = view_route.labeled_cell_counts(c).to(self.classes.device)
+        self.coverage = float(self.counts[c['source_rxs']][:,c['source_days']].float().median())
         self.current = None
         self.n_revised = 0
 
     def validate_unlabeled_batch(self,batch):
         super().validate_unlabeled_batch(batch)
-        self.current = batch[3]
+        if self.coverage < 14:
+            self.current = batch[3]
 
     def accept_pseudo(self,student,x,confidence,pseudo):
         accepted = super().accept_pseudo(student,x,confidence,pseudo)
+        if self.coverage >= 14:
+            self.last_revised = 0
+            return accepted
         ids,rx,day = (self.current[k].to(x.device).long() for k in ('base_index','rx_i','day_i'))
         self.current = None
         teacher = self.classes[ids]
@@ -91,7 +96,8 @@ class Anchor(GuardedReceiverExtrapolation):
 
     def state_dict(self):
         result=super().state_dict()
-        result['U_E20_anchor']=dict(revised=self.n_revised, mode=self.c['source_adaptation']['mode'])
+        result['U_E20_anchor']=dict(revised=self.n_revised, mode=self.c['source_adaptation']['mode'],
+                                     source_median_cell_labels=self.coverage, enabled=self.coverage<14)
         return result
 
 
@@ -144,6 +150,23 @@ def prepare(rt):
     return add_u_scoring(rt,candidates,transfer.prepare_jobs(rt,candidates,configure))
 
 
+def smoke_teachers(runtime):
+    from experiments.pamf_physics_tri.full_matrix_plan import check_graph
+    from experiments.pamf_physics_tri.runner import smoke
+    ctx = read(runtime['context'])
+    checks = []
+    for seed in sorted({row['model_seed'] for row in rows()}):
+        matches = [row for row in rows() if row['model_seed'] == seed]
+        first = configure(ctx,matches[0],runtime['project'],runtime['code_commit'])
+        bank = source_teacher(first,parent(first))
+        checks.extend(smoke(runtime,rows=lambda:matches,configure=configure,check_parent=parent,
+            scope=partial(installed,bank=bank),graph_check=check_graph,check_u=lambda s:s['U_E20_anchor'],
+            segment_output=True,write_result=False))
+        del bank
+    write(Path(runtime['run_root'])/'smoke.json',dict(status='PASS',checks=checks,real_checkpoint=True,
+        optimizer_updates=0,query_reads=0,U_truth_reads=0))
+
+
 def main():
     p=argparse.ArgumentParser()
     p.add_argument('action',choices=('publish','dispatch','worker'))
@@ -167,12 +190,7 @@ def main():
         from experiments.pamf_repl_completion.runner import activate
         activate(c)
         if a.kind=='smoke':
-            from experiments.pamf_physics_tri.full_matrix_plan import check_graph
-            from experiments.pamf_physics_tri.runner import smoke
-            first=configure(read(c['context']),rows()[0],c['project'],c['code_commit'])
-            scope=partial(installed,bank=source_teacher(first,parent(first)))
-            smoke(c,rows=rows,configure=configure,check_parent=parent,scope=scope,graph_check=check_graph,
-                  check_u=lambda s:s['U_E20_anchor'],segment_output=True)
+            smoke_teachers(c)
         elif a.kind=='train':
             from experiments.pamf_physics_tri.source import train_trajectory
             prefix=parent(c)

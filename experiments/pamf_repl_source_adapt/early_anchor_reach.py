@@ -18,9 +18,9 @@ def rows():
 
 
 @contextmanager
-def registered():
+def registered(run=RUN,module=MODULE,candidates=rows):
     old=base.RUN,base.MODULE,base.rows
-    base.RUN,base.MODULE,base.rows=RUN,MODULE,rows
+    base.RUN,base.MODULE,base.rows=run,module,candidates
     try:
         yield
     finally:
