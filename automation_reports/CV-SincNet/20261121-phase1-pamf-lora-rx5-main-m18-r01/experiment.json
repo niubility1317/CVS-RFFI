@@ -1,0 +1,482 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261121-phase1-pamf-lora-rx5-main-m18-r01",
+  "group_id": "phase1-pamf-lora-transfer",
+  "display_name": "LoRa 五源接收机三种子主对比",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "authorization": "用户授权用该 LoRa 数据跑三种子主对比并指定 practical 星地信道。",
+  "code": {
+    "commit": "actual release git OID in submit.json",
+    "environment": "N607 CVS-RFFI",
+    "cwd": "PROJECT/releases/20261121-phase1-pamf-lora-rx5-main-m18-r01-release"
+  },
+  "data": {
+    "dataset": "Radio Frequency Fingerprint LoRa Dataset With Multiple Receivers",
+    "version": "10.21227/D6VX-R538",
+    "representation": "one packet, fixed center 1 ms of preamble symbol 4, 256 kHz and 256 complex samples",
+    "contract_ref": "lora_rx5_main_v1, separate source and blind target",
+    "role_counts": {
+      "L_s": 2800,
+      "U_s": 25200,
+      "V": 12000,
+      "query": 30000
+    },
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "test_views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ]
+  },
+  "checkpoint": {
+    "initialization": "scratch and own-seed same-contract PAMF E20/E30, no WiSig parameters",
+    "selection_rule": "source-only held RX dose, fixed final E50 F and E20 DURA"
+  },
+  "execution": {
+    "host": "N607 nonprivileged",
+    "launch_owner": "codex-20261121-phase1-pamf-lora-rx5-main-m18-r01",
+    "gpu_policy": "0–6, at most one current worker per GPU and at most two total, at least 12 GiB free",
+    "remote_run_root": "PROJECT/runs/20261121-phase1-pamf-lora-rx5-main-m18-r01",
+    "remote_log_root": "PROJECT/runs/20261121-phase1-pamf-lora-rx5-main-m18-r01/logs",
+    "launch_command": "python -m experiments.pamf_lora_main.publish --repo REPO --output OUTPUT --inputs INPUTS --context CONTEXT --ssh-config CONFIG --run-id 20261121-phase1-pamf-lora-rx5-main-m18-r01",
+    "stop_rule": "Stop new deployment if source/target access, practical channel, frozen checkpoint, or worker execution fails. Keep outputs and existing healthy tasks."
+  },
+  "matrix": {
+    "rows": [
+      {
+        "row_id": "pamf_sup-s2026092701",
+        "method": "pamf_sup",
+        "seeds": {
+          "model": 2026092701,
+          "split": 392005,
+          "data": 392005,
+          "augmentation": 2026112101,
+          "support": null,
+          "evaluation": 2026112101
+        },
+        "train_epochs": 50,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "readout": "direct"
+      },
+      {
+        "row_id": "pamf_pl-s2026092701",
+        "method": "pamf_pl",
+        "seeds": {
+          "model": 2026092701,
+          "split": 392005,
+          "data": 392005,
+          "augmentation": 2026112101,
+          "support": null,
+          "evaluation": 2026112101
+        },
+        "train_epochs": 50,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "readout": "direct"
+      },
+      {
+        "row_id": "tri_original-s2026092701",
+        "method": "tri_original",
+        "seeds": {
+          "model": 2026092701,
+          "split": 392005,
+          "data": 392005,
+          "augmentation": 2026112101,
+          "support": null,
+          "evaluation": 2026112101
+        },
+        "train_epochs": 50,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "readout": "direct"
+      },
+      {
+        "row_id": "pamf_adaptive-s2026092701",
+        "method": "pamf_adaptive",
+        "seeds": {
+          "model": 2026092701,
+          "split": 392005,
+          "data": 392005,
+          "augmentation": 2026112101,
+          "support": null,
+          "evaluation": 2026112101
+        },
+        "train_epochs": 50,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "readout": "direct"
+      },
+      {
+        "row_id": "resnet18-s2026092701",
+        "method": "resnet18",
+        "seeds": {
+          "model": 2026092701,
+          "split": 392005,
+          "data": 392005,
+          "augmentation": 2026112101,
+          "support": null,
+          "evaluation": 2026112101
+        },
+        "train_epochs": 50,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "readout": "direct"
+      },
+      {
+        "row_id": "dura_lora-s2026092701",
+        "method": "dura_lora",
+        "seeds": {
+          "model": 2026092701,
+          "split": 392005,
+          "data": 392005,
+          "augmentation": 2026112101,
+          "support": null,
+          "evaluation": 2026112101
+        },
+        "train_epochs": 20,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "readout": "same-seed frozen adaptive PAMF after LoRa DURA"
+      },
+      {
+        "row_id": "pamf_sup-s2026092702",
+        "method": "pamf_sup",
+        "seeds": {
+          "model": 2026092702,
+          "split": 392005,
+          "data": 392005,
+          "augmentation": 2026112101,
+          "support": null,
+          "evaluation": 2026112101
+        },
+        "train_epochs": 50,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "readout": "direct"
+      },
+      {
+        "row_id": "pamf_pl-s2026092702",
+        "method": "pamf_pl",
+        "seeds": {
+          "model": 2026092702,
+          "split": 392005,
+          "data": 392005,
+          "augmentation": 2026112101,
+          "support": null,
+          "evaluation": 2026112101
+        },
+        "train_epochs": 50,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "readout": "direct"
+      },
+      {
+        "row_id": "tri_original-s2026092702",
+        "method": "tri_original",
+        "seeds": {
+          "model": 2026092702,
+          "split": 392005,
+          "data": 392005,
+          "augmentation": 2026112101,
+          "support": null,
+          "evaluation": 2026112101
+        },
+        "train_epochs": 50,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "readout": "direct"
+      },
+      {
+        "row_id": "pamf_adaptive-s2026092702",
+        "method": "pamf_adaptive",
+        "seeds": {
+          "model": 2026092702,
+          "split": 392005,
+          "data": 392005,
+          "augmentation": 2026112101,
+          "support": null,
+          "evaluation": 2026112101
+        },
+        "train_epochs": 50,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "readout": "direct"
+      },
+      {
+        "row_id": "resnet18-s2026092702",
+        "method": "resnet18",
+        "seeds": {
+          "model": 2026092702,
+          "split": 392005,
+          "data": 392005,
+          "augmentation": 2026112101,
+          "support": null,
+          "evaluation": 2026112101
+        },
+        "train_epochs": 50,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "readout": "direct"
+      },
+      {
+        "row_id": "dura_lora-s2026092702",
+        "method": "dura_lora",
+        "seeds": {
+          "model": 2026092702,
+          "split": 392005,
+          "data": 392005,
+          "augmentation": 2026112101,
+          "support": null,
+          "evaluation": 2026112101
+        },
+        "train_epochs": 20,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "readout": "same-seed frozen adaptive PAMF after LoRa DURA"
+      },
+      {
+        "row_id": "pamf_sup-s2026092703",
+        "method": "pamf_sup",
+        "seeds": {
+          "model": 2026092703,
+          "split": 392005,
+          "data": 392005,
+          "augmentation": 2026112101,
+          "support": null,
+          "evaluation": 2026112101
+        },
+        "train_epochs": 50,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "readout": "direct"
+      },
+      {
+        "row_id": "pamf_pl-s2026092703",
+        "method": "pamf_pl",
+        "seeds": {
+          "model": 2026092703,
+          "split": 392005,
+          "data": 392005,
+          "augmentation": 2026112101,
+          "support": null,
+          "evaluation": 2026112101
+        },
+        "train_epochs": 50,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "readout": "direct"
+      },
+      {
+        "row_id": "tri_original-s2026092703",
+        "method": "tri_original",
+        "seeds": {
+          "model": 2026092703,
+          "split": 392005,
+          "data": 392005,
+          "augmentation": 2026112101,
+          "support": null,
+          "evaluation": 2026112101
+        },
+        "train_epochs": 50,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "readout": "direct"
+      },
+      {
+        "row_id": "pamf_adaptive-s2026092703",
+        "method": "pamf_adaptive",
+        "seeds": {
+          "model": 2026092703,
+          "split": 392005,
+          "data": 392005,
+          "augmentation": 2026112101,
+          "support": null,
+          "evaluation": 2026112101
+        },
+        "train_epochs": 50,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "readout": "direct"
+      },
+      {
+        "row_id": "resnet18-s2026092703",
+        "method": "resnet18",
+        "seeds": {
+          "model": 2026092703,
+          "split": 392005,
+          "data": 392005,
+          "augmentation": 2026112101,
+          "support": null,
+          "evaluation": 2026112101
+        },
+        "train_epochs": 50,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "readout": "direct"
+      },
+      {
+        "row_id": "dura_lora-s2026092703",
+        "method": "dura_lora",
+        "seeds": {
+          "model": 2026092703,
+          "split": 392005,
+          "data": 392005,
+          "augmentation": 2026112101,
+          "support": null,
+          "evaluation": 2026112101
+        },
+        "train_epochs": 20,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "readout": "same-seed frozen adaptive PAMF after LoRa DURA"
+      }
+    ]
+  },
+  "expected_artifacts": [
+    "source_decision.json",
+    "source_smoke/complete.json",
+    "F/*/complete.json",
+    "G/*/complete.json",
+    "predictions/*/complete.json",
+    "state.json",
+    "scores.json"
+  ]
+}
