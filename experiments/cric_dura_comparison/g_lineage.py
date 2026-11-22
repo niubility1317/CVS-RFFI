@@ -87,7 +87,7 @@ def trainable(model, stage):
 
 
 def objective(model, teacher, stage, received, clean, epoch, action_arrays=None, generator=None,
-              desired=None, frozen_context=None, skip_zero_spectral=False):
+              desired=None, frozen_context=None, skip_zero_spectral=False, stage_loss=None):
     from experiments.pamf_r44_pruned_refine.models import spectral_error
     energy = clean.detach().square().mean((1, 2)).clamp_min(1e-4)
     if stage == 'coarse':
@@ -116,6 +116,8 @@ def objective(model, teacher, stage, received, clean, epoch, action_arrays=None,
     else:
         values = model.stage_outputs(received)[0]
     paired = (values[-1] - clean.detach()).square().mean((1, 2)) / energy
+    if stage_loss is not None:
+        paired = paired + stage_loss(received,clean,values)
     if stage == 'r17':
         return paired
     if desired is None:

@@ -28,23 +28,26 @@ def batches(n, rng):
         yield result
 
 
-def inherit_coarse(frozen,root,contract,roles,seed):
-    """Carry forward an exact same-contract E20 coarse stage."""
+def inherit_source_stage(frozen,root,contract,roles,seed,stage):
+    """Carry forward a frozen source prefix stage without updating its weights."""
     source=Path(frozen)
     proof=read(source/'complete.json')
     _,checkpoint=load(source/'final.pt',contract,roles)
-    if (proof['status']!='SOURCE_FROZEN' or proof['stage']!='coarse' or proof['updates']!=4940
-            or checkpoint['stage']!='coarse' or checkpoint['model_seed']!=seed
-            or checkpoint['ancestors'] or any(proof[k] for k in ('TX_labels_read','F_reads','target_reads'))):
-        raise ValueError('Require the fixed source-only coarse stage for the same seed')
-    dest=root/'coarse'
+    ancestors=[str(source.parent/'coarse'/'final.pt')] if stage=='action' else []
+    if (proof['status']!='SOURCE_FROZEN' or proof['stage']!=stage or proof['updates']!=4940
+            or checkpoint['stage']!=stage or checkpoint['model_seed']!=seed
+            or checkpoint['ancestors']!=ancestors
+            or any(proof[k] for k in ('TX_labels_read','F_reads','target_reads'))):
+        raise ValueError('Require the registered source-only prefix stage for the same seed')
+    dest=root/stage
     dest.mkdir(exist_ok=False)
     for name in ('final.pt','training.jsonl','complete.json'):
         copy2(source/name,dest/name)
     return dest/'final.pt',proof['seconds']
 
 
-def train(c, device='cuda:0', *, view=None, prepare_model=None, frozen_coarse=None):
+def train(c, device='cuda:0', *, view=None, prepare_model=None, frozen_coarse=None,
+          frozen_action=None, stage_loss=None):
     if any(c.get(k) for k in ('truth', 'target_truth', 'target_inputs', 'tests', 'reader', 'F_checkpoint')):
         raise ValueError('G source training rejects F/target inputs')
     contract = read(c['cache']['source_contract'])
@@ -58,9 +61,16 @@ def train(c, device='cuda:0', *, view=None, prepare_model=None, frozen_coarse=No
     previous = None
     timings = {}
     stages=STAGES
+    if frozen_action is not None and (frozen_coarse is None or Path(frozen_coarse).parent!=Path(frozen_action).parent):
+        raise ValueError('An inherited action stage needs its original coarse parent')
     if frozen_coarse is not None:
-        previous,timings['coarse']=inherit_coarse(frozen_coarse,root,contract,roles,c['model_seed'])
+        previous,timings['coarse']=inherit_source_stage(frozen_coarse,root,contract,roles,c['model_seed'],'coarse')
         stages=STAGES[1:]
+    if frozen_action is not None:
+        previous,timings['action']=inherit_source_stage(frozen_action,root,contract,roles,c['model_seed'],'action')
+        stages=STAGES[2:]
+    if stage_loss is not None:
+        stage_loss=stage_loss.to(device)
     acceleration = c.get('training_acceleration', {})
     mode = acceleration.get('teacher_cache', 'online')
     if mode not in ('online', 'epoch', 'shared'):
@@ -125,7 +135,8 @@ def train(c, device='cuda:0', *, view=None, prepare_model=None, frozen_coarse=No
                         desired = target_cache.get(selected[take],received,epoch) if target_cache is not None else None
                         context = prefix_cache.get(selected[take],received,epoch) if prefix_cache is not None else None
                         loss = objective(model, teacher, stage, received, clean, epoch, action, generator,
-                            desired=desired,frozen_context=context,skip_zero_spectral=acceleration.get('skip_zero_spectral',False))
+                            desired=desired,frozen_context=context,skip_zero_spectral=acceleration.get('skip_zero_spectral',False),
+                            stage_loss=stage_loss)
                         if reduce_syncs:
                             finite.logical_and_(torch.isfinite(loss).all())
                         elif not bool(torch.isfinite(loss).all()):

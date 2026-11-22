@@ -15,6 +15,7 @@ from .full_dura_action_targets import ACTION_BANK, build_bank, full_teacher
 from .full_dura_detail import DETAIL_CONFIRM_RUN, DETAIL_DOSE_MODES
 from .full_dura_lineage_data import LoRaView, aligned_teacher, build, in_observed_phase, source_iq
 from .full_dura_r69_lora import R69_SEEDS, R69_TRACE_MODES, load_model, load_utility
+from .full_dura_stage_detail import DETAIL_WEIGHT, StageDetailLoss
 from .full_dura_trace_source import TRACE_RUN
 from .full_packet_data import LIMIT, PROTOCOL
 from .full_packet_views import source_role
@@ -29,9 +30,10 @@ from .runner import activate
 RUN='20261122-phase1-lora-dura-wisig-lineage-m1-r02'
 PHASE_RUN='20261122-phase1-lora-dura-wisig-observed-phase-m1-r01'
 FULL_ACTION_RUN='20261122-phase1-lora-dura-full-action-observed-phase-m1-r01'
+DETAIL_PRIOR_RUN='20261122-phase1-lora-dura-observed-detail-prior-m1-r01'
 REPLICA_RUNS={s:f'20261122-phase1-lora-dura-full-action-observed-phase-s{s}-r01'
               for s in (2026092701,2026092703)}
-RUNS=(RUN,PHASE_RUN,FULL_ACTION_RUN,*REPLICA_RUNS.values())
+RUNS=(RUN,PHASE_RUN,FULL_ACTION_RUN,DETAIL_PRIOR_RUN,*REPLICA_RUNS.values())
 LINEAGE_OUTPUTS=('lineage_native','lineage_guarded')
 MODES=(*R69_TRACE_MODES,*LINEAGE_OUTPUTS)
 REPLICA_MODES=(*DETAIL_DOSE_MODES,*LINEAGE_OUTPUTS)
@@ -71,6 +73,25 @@ def smoke(rt):
     root=Path(rt['run_root'])
     l,_,_=source_iq(cache)
     clean=np.stack([l[0,i,i] for i in range(6)])
+    if root.name==DETAIL_PRIOR_RUN:
+        observed=np.stack([l[i+1,i,i] for i in range(6)])
+        action_path=observed_coarse(rt).parent/'action'
+        action,item=load(action_path/'final.pt',c,'LU')
+        if item['model_seed']!=SEED or item['stage']!='action':
+            raise ValueError('Source detail smoke requires the observed-phase action checkpoint')
+        g=construct('r17',action)
+        phase_clean=tensor(in_observed_phase(clean,observed))
+        additional=StageDetailLoss()
+        loss=objective(g,None,'r17',tensor(observed),phase_clean,1,stage_loss=additional)
+        if not torch.isfinite(loss).all():
+            raise FloatingPointError('Nonfinite observed-detail R17 source loss')
+        loss.mean().backward()
+        grad=torch.nn.utils.clip_grad_norm_(g.prior.parameters(),1.,error_if_nonfinite=True)
+        if grad<=0 or any(p.grad is not None for p in g.frozen.parameters()):
+            raise ValueError('Source detail loss must update the prior only')
+        write(root/'smoke.json',dict(status='PASS',seed=SEED,scenes=list(VIEWS[1:]),
+              prior_gradient=float(grad),detail_weight=DETAIL_WEIGHT,F_reads=0,TX_reads=0,target_reads=0))
+        return
     full=root.name in (FULL_ACTION_RUN,*REPLICA_RUNS.values())
     if full:
         z,rx,ids,_=source_role(source,c,'L_s')
@@ -128,13 +149,16 @@ def stage_train(rt):
     root=Path(rt['run_root'])
     out=root/'G'/'lineage'
     full=root.name in (FULL_ACTION_RUN,*REPLICA_RUNS.values())
-    use_phase=root.name==PHASE_RUN or full
-    parent=observed_coarse(rt) if root.name==FULL_ACTION_RUN else None
+    detail=root.name==DETAIL_PRIOR_RUN
+    use_phase=root.name==PHASE_RUN or full or detail
+    parent=observed_coarse(rt) if root.name in (FULL_ACTION_RUN,DETAIL_PRIOR_RUN) else None
+    action=parent.parent/'action' if detail else None
     train(dict(output_root=str(out),model_seed=seed_for(root),code_commit=rt['code_commit'],
           cache=dict(source_contract=str(source/'contract.json'),roles='LU'),observed_phase=use_phase,
-          full_action_training=full,inherited_coarse=str(parent) if parent else None),
+          full_action_training=full,inherited_coarse=str(parent) if parent else None,
+          inherited_action=str(action) if action else None,detail_weight=DETAIL_WEIGHT if detail else 0.),
           view=LoRaView(rt,observed_phase=use_phase,full_action=full),prepare_model=prepare_model,
-          frozen_coarse=parent)
+          frozen_coarse=parent,frozen_action=action,stage_loss=StageDetailLoss() if detail else None)
 
 
 def frozen_g(root,c,device):
@@ -256,7 +280,7 @@ def dispatch(rt):
         wait_for(root.parent/TRACE_RUN,'PREDICTIONS_FROZEN')
         if launch(rt,'smoke','source').wait():
             raise RuntimeError('LoRa DURA lineage source smoke failed')
-        if root.name in (PHASE_RUN,FULL_ACTION_RUN) or replica:
+        if root.name in (PHASE_RUN,FULL_ACTION_RUN,DETAIL_PRIOR_RUN) or replica:
             bank=root.parent/RUN/'source_action'
             if read(bank/'complete.json')['status']!='SOURCE_ACTION_READY':
                 raise ValueError('Both LoRa curricula require the same completed action bank')
