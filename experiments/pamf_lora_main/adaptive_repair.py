@@ -32,6 +32,9 @@ PRACTICAL_LABELED_METHOD='tri_set_practical_labeled'
 PRACTICAL_CE_METHODS=(PRACTICAL_HARD_METHOD,PRACTICAL_LABELED_METHOD)
 PRACTICAL_HARD_WEIGHT=.35
 PRACTICAL_LABELED_WEIGHT=.45
+PRACTICAL_SCENE_METHOD='tri_set_scene_weight'
+PRACTICAL_CLASS_METHOD='tri_set_scene_class_weight'
+PRACTICAL_GAP_METHODS=(PRACTICAL_SCENE_METHOD,PRACTICAL_CLASS_METHOD)
 
 
 def parent_model(root,c,device):
@@ -168,15 +171,22 @@ def select_practical(usable,other_usable,ids,parity):
 
 
 def practical_hard_ce(model,practical,ids,pseudo,usable,batch_size):
-    ids,pseudo=ids[usable[ids]],pseudo[usable[ids]]
+    keep=usable[ids]
+    ids,pseudo=ids[keep],pseudo[keep]
     if len(ids)==0:
         return practical.new_zeros(()),ids,pseudo
     logits=model(practical[ids])[0]
     return F.cross_entropy(logits,pseudo,reduction='sum')/batch_size,ids,pseudo
 
 
+def practical_ce_losses(logits,labels,weights,factor):
+    base=weights[labels]
+    losses=F.cross_entropy(logits,labels,weight=weights,reduction='none')
+    return losses.sum()/base.sum(), (losses*factor).sum()/(base*factor).sum()
+
+
 def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampler,full=False,lr=1.5e-4,
-        alternate_path=None):
+        alternate_path=None,practical_weights=None):
     folder.mkdir(parents=True,exist_ok=False)
     dev='cuda:0'
     (x,y,rx),(v,vy,vr)=arrays
@@ -194,8 +204,17 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
         u,ur=load_u(source,cache,c,dev)
     pair_draws=method=='tri_set_practical'
     practical_hard=method==PRACTICAL_HARD_METHOD
-    practical_labeled_weight=PRACTICAL_LABELED_WEIGHT if method==PRACTICAL_LABELED_METHOD else .35
-    use_sets=method in ('tri_set','tri_set_practical',*PRACTICAL_CE_METHODS)
+    weighted_practical=method in PRACTICAL_GAP_METHODS
+    if weighted_practical!=(practical_weights is not None):
+        raise ValueError('Scene-weighted practical CE requires the frozen source weight table')
+    if weighted_practical:
+        if practical_weights.shape!=(len(VIEWS),len(weights)) or not practical_weights.isfinite().all():
+            raise ValueError('Invalid frozen source practical weight table')
+        write(folder/'practical_weights.json',dict(views=list(VIEWS),weights=practical_weights.tolist(),
+               source='E140_validation',target_reads=0))
+    practical_labeled_weight=(PRACTICAL_LABELED_WEIGHT
+        if weighted_practical or method==PRACTICAL_LABELED_METHOD else .35)
+    use_sets=method in ('tri_set','tri_set_practical',*PRACTICAL_CE_METHODS,*PRACTICAL_GAP_METHODS)
     tri=method in ('adaptive_tri','tri_practical') or use_sets
     if tri:
         teacher=cache_teacher(f,u,settings['hard_rules'],with_sets=use_sets)
@@ -229,6 +248,8 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
         fields=(*fields,'U_set_ce')
     if practical_hard:
         fields=(*fields,'U_practical_hard_ce')
+    if weighted_practical:
+        fields=(*fields,'practical_weighted_ce')
     with (folder/'epochs.jsonl').open('x',encoding='utf8') as log:
         for epoch in range(1,epochs+1):
             if method!='continued_sup':
@@ -248,7 +269,10 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
                 logits,z=f(torch.cat((x[0,idx],x[scene,idx])))
                 a,b=logits.chunk(2)
                 ce=F.cross_entropy(a,y[idx],weight=weights)
-                prac=F.cross_entropy(b,y[idx],weight=weights)
+                if weighted_practical:
+                    prac,prac_applied=practical_ce_losses(b,y[idx],weights,practical_weights[scene,y[idx]])
+                else:
+                    prac=prac_applied=F.cross_entropy(b,y[idx],weight=weights)
                 uce,pair,agree,u_loss=[ce.new_zeros(()) for _ in range(4)]
                 set_loss=ce.new_zeros(())
                 if method=='plain_pl':
@@ -310,7 +334,7 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
                     accepted.extend(zip([epoch]*len(yy),ids_u[selected].tolist(),yy.tolist()))
                     used_by_class+=torch.bincount(yy,minlength=10)
                 opt.zero_grad(set_to_none=True)
-                (ce+practical_labeled_weight*prac+u_loss).backward()
+                (ce+practical_labeled_weight*prac_applied+u_loss).backward()
                 torch.nn.utils.clip_grad_norm_(f.parameters(),5.,error_if_nonfinite=True)
                 opt.step();sch.step();step+=1
                 losses=(ce,prac,uce,pair,agree,u_loss)
@@ -318,6 +342,8 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
                     losses=(*losses,set_loss)
                 if practical_hard:
                     losses=(*losses,practical_ce)
+                if weighted_practical:
+                    losses=(*losses,prac_applied)
                 total+=torch.stack(losses).detach()
             if step!=epoch*steps:
                 raise ValueError('Expected exact matched labeled training budget')

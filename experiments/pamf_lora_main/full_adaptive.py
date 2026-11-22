@@ -9,8 +9,9 @@ import numpy as np
 import torch
 
 from experiments.cric_dura_comparison.io import read, tensor, write
-from .adaptive_repair import (PRACTICAL_CE_METHODS, PRACTICAL_HARD_METHOD,
-                              fit, intersect_source, practical_hard_ce)
+from .adaptive_repair import (PRACTICAL_CE_METHODS, PRACTICAL_GAP_METHODS, PRACTICAL_HARD_METHOD,
+                              PRACTICAL_SCENE_METHOD, fit, intersect_source,
+                              practical_ce_losses, practical_hard_ce)
 from .comparison import seed_all
 from .data import TARGET, VIEWS
 from .full_packet_data import LIMIT, PROTOCOL
@@ -30,8 +31,9 @@ SET_METHOD='tri_set'
 PRACTICAL_SET_RUN='20261122-phase1-lora-tri-set-practical-draw-m3-r01'
 PRACTICAL_SET_METHOD='tri_set_practical'
 PRACTICAL_CE_RUN='20261122-phase1-lora-tri-set-practical-ce-m2-r01'
-SET_METHODS=(SET_METHOD,PRACTICAL_SET_METHOD,*PRACTICAL_CE_METHODS)
-E140_SET_RUNS=(SET_RUN,PRACTICAL_SET_RUN,PRACTICAL_CE_RUN)
+PRACTICAL_GAP_RUN='20261122-phase1-lora-tri-set-practical-gap-m2-r01'
+SET_METHODS=(SET_METHOD,PRACTICAL_SET_METHOD,*PRACTICAL_CE_METHODS,*PRACTICAL_GAP_METHODS)
+E140_SET_RUNS=(SET_RUN,PRACTICAL_SET_RUN,PRACTICAL_CE_RUN,PRACTICAL_GAP_RUN)
 METHODS=('continued_sup','plain_pl','adaptive_tri','tri_practical')
 WARMUP_METHODS=('continued_sup','plain_pl','adaptive_tri')
 EPOCHS=28
@@ -44,7 +46,8 @@ def case(seed,method):
 
 
 def cases(methods=METHODS):
-    seeds=REPL_SEEDS if tuple(methods) in (REPL_METHODS,WARM_METHODS,ADAPT_METHODS,PRACTICAL_CE_METHODS) else SEEDS
+    single_seed=(REPL_METHODS,WARM_METHODS,ADAPT_METHODS,PRACTICAL_CE_METHODS,PRACTICAL_GAP_METHODS)
+    seeds=REPL_SEEDS if tuple(methods) in single_seed else SEEDS
     return [(case(s,m),s,m) for s in seeds for m in methods]
 
 
@@ -59,6 +62,8 @@ def methods_for(root):
         return (PRACTICAL_SET_METHOD,)
     if root.name==PRACTICAL_CE_RUN:
         return PRACTICAL_CE_METHODS
+    if root.name==PRACTICAL_GAP_RUN:
+        return PRACTICAL_GAP_METHODS
     if root.name==SET_RUN:
         return (SET_METHOD,)
     return WARMUP_METHODS if root.name==WARMUP_RUN else METHODS
@@ -158,6 +163,27 @@ def policy(rt,seed):
     write(root/'policy'/f'{seed}.json',record)
 
 
+def gap_weights(source_metrics, true_labels, method):
+    counts=torch.bincount(true_labels,minlength=10)
+    views=[source_metrics['V'], *(source_metrics['V_practical'][v] for v in VIEWS[1:])]
+    correct=torch.as_tensor([v['by_class'] for v in views],device=counts.device)
+    if bool((counts<=0).any()) or correct.shape!=(len(VIEWS),len(counts)):
+        raise ValueError('Incomplete source E140 validation class support')
+    if bool(((correct<0)|(correct>counts)).any()):
+        raise ValueError('Invalid source E140 validation counts')
+    acc=correct/counts
+    gap=(acc[0]-acc[1:]).clamp_min(0.)
+    if method==PRACTICAL_SCENE_METHOD:
+        gap=gap.mean(dim=1,keepdim=True).expand_as(gap)
+    factor=1.+(gap-gap.mean()).clamp(-.25,.25)
+    return torch.cat((torch.ones_like(acc[:1]),factor))
+
+
+def e140_metrics(root,c,seed):
+    parent=complete_f(root.parent/WARMUP_RUN/'warmup',c,case(seed,'continued_sup'))
+    return json.loads((parent/'epochs.jsonl').read_text().splitlines()[-1])
+
+
 def train(rt,name):
     seed,method=decode(name)
     if method in NATIVE_METHODS:
@@ -173,10 +199,13 @@ def train(rt,name):
     if settings['seed']!=seed or settings['U_reads'] or settings['target_reads']:
         raise ValueError('Full LoRa qualification policy is not source-only')
     alternate=root.parent/DRAW_RUN if method==PRACTICAL_SET_METHOD else None
+    weights=None
+    if method in PRACTICAL_GAP_METHODS:
+        weights=gap_weights(e140_metrics(root,c,seed),data[1][1],method)
     fit(root/'F'/name,f,method,src,views,c,data,settings,
         seed=seed,epochs=EPOCHS,steps=STEPS,sampler=batches,full=True,
         lr=WARMUP_LR if root.name in (WARMUP_RUN,*E140_SET_RUNS) else 1.5e-4,
-        alternate_path=alternate)
+        alternate_path=alternate,practical_weights=weights)
 
 
 def complete_f(root,c,name):
@@ -283,8 +312,9 @@ def smoke(rt):
                else teacher(root,c,seed,'cpu'))
         result,features=model(a)
         loss=torch.nn.functional.cross_entropy(result,labels)
-        if root.name==PRACTICAL_CE_RUN:
+        if root.name in (PRACTICAL_CE_RUN,PRACTICAL_GAP_RUN):
             practical=tensor(labeled[1,:8])
+        if root.name==PRACTICAL_CE_RUN:
             ids=torch.arange(len(labels))
             mask=ids%2==0
             paired,kept,_=practical_hard_ce(model,practical,ids,labels,mask,len(ids))
@@ -292,6 +322,17 @@ def smoke(rt):
             if not torch.equal(kept,ids[mask]) or len(none) or float(empty)!=0 or not torch.isfinite(paired):
                 raise ValueError('Real LoRa matched practical CE smoke failed')
             loss=loss+.35*paired
+        if root.name==PRACTICAL_GAP_RUN:
+            with np.load(src/'V_metadata.npz',allow_pickle=False) as m:
+                if m['ids'].tolist()!=c['role_ids']['V']:
+                    raise ValueError('Invalid source V in practical weight smoke')
+                true_labels=tensor(m['y'])
+            scores=model(practical)[0]
+            for method in PRACTICAL_GAP_METHODS:
+                weights=gap_weights(e140_metrics(root,c,seed),true_labels,method)
+                factor=weights[1,labels]
+                _,term=practical_ce_losses(scores,labels,torch.ones(10),factor)
+                loss=loss+.225*term
         loss.backward()
         grad=float(torch.nn.utils.clip_grad_norm_(model.parameters(),5.,error_if_nonfinite=True))
         if result.shape!=(8,10) or not grad>0 or not torch.isfinite(features).all():
@@ -327,8 +368,10 @@ def dispatch(rt):
             wait_for(root.parent/WARMUP_RUN,'PREDICTIONS_FROZEN')
         if root.name==PRACTICAL_SET_RUN:
             wait_for(root.parent/DRAW_RUN,'SOURCE_DRAW_READY')
-        if root.name in (PRACTICAL_SET_RUN,PRACTICAL_CE_RUN):
+        if root.name in (PRACTICAL_SET_RUN,PRACTICAL_CE_RUN,PRACTICAL_GAP_RUN):
             wait_for(root.parent/SET_RUN,'PREDICTIONS_FROZEN')
+        if root.name==PRACTICAL_GAP_RUN:
+            wait_for(root.parent/PRACTICAL_CE_RUN,'PREDICTIONS_FROZEN')
         write(state,dict(status='SOURCE_SMOKE'),exclusive=False)
         if launch(rt,'smoke','full').wait():
             raise RuntimeError('Actual full-parent source smoke failed')
