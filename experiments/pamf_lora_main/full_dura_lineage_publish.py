@@ -5,18 +5,36 @@ from pathlib import Path, PurePosixPath
 from experiments.cric_dura_comparison.io import read
 from .full_adaptive import SET_RUN
 from .full_dura_detail import DETAIL_CONFIRM_RUN
-from .full_dura_lineage import DETAIL_PRIOR_RUN, FULL_ACTION_RUN, PHASE_RUN, REPLICA_RUNS, RUN
+from .full_dura_lineage import (DETAIL_PRIOR_RUN, FULL_ACTION_RUN, PHASE_RUN, PREDICTION_SUFFIX,
+                                REPLICA_RUNS, RUN, RUNS)
 from .full_dura_trace_source import TRACE_RUN
 from .full_packet_publish import DATA_RUN
 from .full_restore_draw import RUN as DRAW_RUN
 from .publish import release, release_commit
 
 
-def publish(repo,output,context,ssh_config,data_submit,draw_submit,trace_submit,tri_submit,
+def publish(repo,output,context,ssh_config,data_submit=None,draw_submit=None,trace_submit=None,tri_submit=None,
             reuse_actions=None,full_action_submit=None,replica_seed=None,reuse_full_bank=None,
-            confirm_submit=None,detail_prior_submit=None):
+            confirm_submit=None,detail_prior_submit=None,replay_submit=None):
     ctx=read(context)
     p=PurePosixPath(ctx['project'])
+    data=p/'runs'/DATA_RUN
+    runtime={k:ctx[k] for k in ('project','python','frozen_sources')}
+    if replay_submit is not None:
+        r=read(replay_submit)
+        origin=PurePosixPath(r['run_root'])
+        if (r['archive_transfer']!='VERIFIED' or origin.parent!=p/'runs' or origin.name not in RUNS
+                or PurePosixPath(r['cwd'])!=p/'releases'/f'{origin.name}-release'):
+            raise ValueError('Wrong original LoRa DURA release for frozen prediction replay')
+        name=origin.name+PREDICTION_SUFFIX
+        runtime.update(run_id=name,code_commit=release_commit(repo),runner='experiments.pamf_lora_main.full_dura_lineage',
+            release_root=str(p/'releases'/f'{name}-release'),run_root=str(p/'runs'/name),
+            parent_root=str(data),source_root=str(p/'releases'/f'{DATA_RUN}-release/data/source'),
+            target_views=str(data/'target_views'),allowed_gpus=[0,3,6,2,1,4,5,7],
+            max_compute_processes=4,max_workers=1)
+        return release(repo,output,runtime,ssh_config)
+    if any(x is None for x in (data_submit,draw_submit,trace_submit,tri_submit)):
+        raise ValueError('LoRa DURA training requires the registered data, draw, trace, and Tri releases')
     handles=((data_submit,DATA_RUN),(draw_submit,DRAW_RUN),(trace_submit,TRACE_RUN),(tri_submit,SET_RUN))
     if reuse_actions is not None:
         handles=(*handles,(reuse_actions,RUN))
@@ -39,8 +57,6 @@ def publish(repo,output,context,ssh_config,data_submit,draw_submit,trace_submit,
         if (r['archive_transfer']!='VERIFIED' or PurePosixPath(r['run_root'])!=p/'runs'/name
                 or PurePosixPath(r['cwd'])!=p/'releases'/f'{name}-release'):
             raise ValueError('Wrong LoRa lineage dependency')
-    data=p/'runs'/DATA_RUN
-    runtime={k:ctx[k] for k in ('project','python','frozen_sources')}
     name=FULL_ACTION_RUN if full_action_submit else PHASE_RUN if reuse_actions else RUN
     if detail_prior_submit is not None:
         name=DETAIL_PRIOR_RUN
@@ -59,8 +75,10 @@ def publish(repo,output,context,ssh_config,data_submit,draw_submit,trace_submit,
 
 if __name__=='__main__':
     p=argparse.ArgumentParser()
-    for k in ('repo','output','context','ssh-config','data-submit','draw-submit','trace-submit','tri-submit'):
+    for k in ('repo','output','context','ssh-config'):
         p.add_argument('--'+k,type=Path,required=True)
+    for k in ('data-submit','draw-submit','trace-submit','tri-submit','replay-submit'):
+        p.add_argument('--'+k,type=Path)
     p.add_argument('--reuse-actions',type=Path)
     p.add_argument('--full-action-submit',type=Path)
     p.add_argument('--detail-prior-submit',type=Path)

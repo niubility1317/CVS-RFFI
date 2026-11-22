@@ -34,6 +34,7 @@ DETAIL_PRIOR_RUN='20261122-phase1-lora-dura-observed-detail-prior-m1-r01'
 REPLICA_RUNS={s:f'20261122-phase1-lora-dura-full-action-observed-phase-s{s}-r01'
               for s in (2026092701,2026092703)}
 RUNS=(RUN,PHASE_RUN,FULL_ACTION_RUN,DETAIL_PRIOR_RUN,*REPLICA_RUNS.values())
+PREDICTION_SUFFIX='-predict-r01'
 LINEAGE_OUTPUTS=('lineage_native','lineage_guarded')
 MODES=(*R69_TRACE_MODES,*LINEAGE_OUTPUTS)
 REPLICA_MODES=(*DETAIL_DOSE_MODES,*LINEAGE_OUTPUTS)
@@ -42,6 +43,13 @@ SEED,=R69_SEEDS
 
 def seed_for(root):
     return next((s for s,name in REPLICA_RUNS.items() if root.name==name),SEED)
+
+
+def lineage_origin(root):
+    name=root.name.removesuffix(PREDICTION_SUFFIX)
+    if name not in RUNS:
+        raise ValueError('Unknown LoRa DURA lineage for frozen prediction')
+    return root.with_name(name)
 
 
 @torch.no_grad()
@@ -201,10 +209,48 @@ def source_audit(rt):
                                                F_reads=0,TX_reads=0,target_reads=0))
 
 
+def frozen_predictors(root,c,device):
+    seed=seed_for(root)
+    g=frozen_g(root,c,device)
+    gate=load_utility(root.parent/TRACE_RUN,c,SEED,device)
+    f=recognizer(device).eval().requires_grad_(False)
+    checkpoint=complete_f(root.parent/SET_RUN,c,case(seed,SET_METHOD))/'model.pt'
+    f.load_state_dict(torch.load(checkpoint,map_location=device,weights_only=True),strict=True)
+    return g,gate,f
+
+
+def predict_batch(g,gate,f,received):
+    logits=f(predict_iq(g,received))[0]
+    if not torch.isfinite(logits).all():
+        raise ValueError('Nonfinite original DURA plus frozen Tri logits')
+    # Avoid the PyTorch–NumPy array bridge in the N607 Python environment.
+    use=np.asarray(gate.impairment(received).gt(0).tolist(),dtype=np.bool_)
+    labels=np.asarray(logits.argmax(1).tolist(),dtype=np.int16)
+    return use,labels
+
+
+@torch.no_grad()
+def replay_smoke(rt):
+    _,cache,c=handles(rt)
+    out=Path(rt['run_root'])
+    origin=lineage_origin(out)
+    if origin==out or read(origin/'state.json')['status']!='FAILED':
+        raise ValueError('Frozen prediction replay requires a failed original predictor')
+    device='cuda:0'
+    models=frozen_predictors(origin,c,device)
+    x=np.load(cache/'V.npy',allow_pickle=False,mmap_mode='r')
+    for view in (0,len(VIEWS)-1):
+        use,labels=predict_batch(*models,tensor(x[view,:8],device))
+        if use.shape!=(8,) or labels.shape!=(8,) or labels.min()<0 or labels.max()>=10:
+            raise ValueError('Frozen recovery source-only prediction smoke failed')
+    write(out/'smoke.json',dict(status='PASS',origin=origin.name,source_views=2,target_reads=0))
+
+
 @torch.no_grad()
 def predict(rt):
     _,_,c=handles(rt)
-    root=Path(rt['run_root'])
+    out_root=Path(rt['run_root'])
+    root=lineage_origin(out_root)
     target=Path(rt['target_views'])
     if (target!=Path(rt['parent_root'])/'target_views'
             or read(target/'complete.json')!=dict(status='TARGET_READY',protocol=PROTOCOL,
@@ -225,12 +271,8 @@ def predict(rt):
     if prior!=dict(expected,modes=list(control_modes)):
         raise ValueError('Frozen LoRa comparison is incomplete')
     device='cuda:0'
-    g=frozen_g(root,c,device)
-    gate=load_utility(root.parent/TRACE_RUN,c,SEED,device)
-    f=recognizer(device).eval().requires_grad_(False)
-    checkpoint=complete_f(root.parent/SET_RUN,c,case(seed,SET_METHOD))/'model.pt'
-    f.load_state_dict(torch.load(checkpoint,map_location=device,weights_only=True),strict=True)
-    out=root/'predictions'/str(seed)
+    models=frozen_predictors(root,c,device)
+    out=out_root/'predictions'/str(seed)
     out.mkdir(parents=True,exist_ok=False)
     for rx in TARGET:
         iq=np.load(target/f'{rx}.npy',allow_pickle=False,mmap_mode='r')
@@ -247,11 +289,7 @@ def predict(rt):
             accepted=0
             for offset in range(0,LIMIT,48):
                 b=tensor(iq[j,offset:offset+48],device)
-                use=gate.impairment(b).gt(0).cpu().numpy()
-                logits=f(predict_iq(g,b))[0]
-                if not torch.isfinite(logits).all():
-                    raise ValueError('Nonfinite original DURA plus frozen Tri logits')
-                labels=logits.argmax(1).cpu().numpy()
+                use,labels=predict_batch(*models,b)
                 native[offset:offset+len(b)]=labels
                 guarded[offset+np.flatnonzero(use)]=labels[use]
                 accepted+=int(use.sum())
@@ -271,10 +309,18 @@ def dispatch(rt):
     root=Path(rt['run_root'])
     root.mkdir(exist_ok=False)
     launch=partial(start,module=__spec__.name,extra_keys=('code_commit',))
+    origin=lineage_origin(root)
     replica=root.name in REPLICA_RUNS.values()
-    seed=seed_for(root)
+    seed=seed_for(origin)
     state=root/'state.json'
     try:
+        if origin!=root:
+            write(state,dict(status='SOURCE_SMOKE'))
+            schedule(rt,[('replay_smoke','source')],launch)
+            write(state,dict(status='PREDICTING'),exclusive=False)
+            schedule(rt,[('predict',str(seed))],launch)
+            write(state,dict(status='PREDICTIONS_FROZEN',target_truth_read=False),exclusive=False)
+            return
         write(state,dict(status='SOURCE_SMOKE'))
         wait_for(root.parent/DRAW_RUN,'SOURCE_DRAW_READY')
         wait_for(root.parent/TRACE_RUN,'PREDICTIONS_FROZEN')
@@ -315,12 +361,12 @@ def dispatch(rt):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser()
-    parser.add_argument('kind',choices=('dispatch','smoke','build','build_full','train','audit','predict'))
+    parser.add_argument('kind',choices=('dispatch','smoke','replay_smoke','build','build_full','train','audit','predict'))
     parser.add_argument('runtime',type=Path)
     parser.add_argument('name',nargs='?')
     args=parser.parse_args()
     runtime=read(args.runtime)
     if args.kind!='dispatch':
         activate(runtime)
-    dict(dispatch=dispatch,smoke=smoke,build=build,build_full=build_bank,train=stage_train,
+    dict(dispatch=dispatch,smoke=smoke,replay_smoke=replay_smoke,build=build,build_full=build_bank,train=stage_train,
          audit=source_audit,predict=predict)[args.kind](runtime)

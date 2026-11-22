@@ -19,7 +19,8 @@ from .full_dura_core import COVERAGE_RECIPES
 from .full_dura_detail import (CONFIRM_NEW_SEEDS, DETAIL_CONFIRM_RUN, DETAIL_DOSE_MODES, DETAIL_DOSE_RUN,
                                DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS)
 from .full_dura_lineage import FULL_ACTION_RUN, LINEAGE_OUTPUTS, REPLICA_MODES, REPLICA_RUNS, seed_for
-from .full_dura_lineage import MODES as LINEAGE_MODES, RUNS as LINEAGE_RUNS, STAGES as LINEAGE_STAGES
+from .full_dura_lineage import (MODES as LINEAGE_MODES, PREDICTION_SUFFIX, RUNS as LINEAGE_RUNS,
+                                STAGES as LINEAGE_STAGES, lineage_origin)
 from .full_dura_r69_lora import (R69_ACTION_MODES, R69_ACTION_RUN, R69_LORA_RUN,
                                  R69_MODES, R69_RETAINED_MODES, R69_SEEDS, R69_TRACE_MODES)
 from .full_dura_trace_source import RETAINED_RUN, TRACE_RUN
@@ -175,12 +176,14 @@ def scores(pred,act,truth,modes=MODES,*,seeds=None):
 def collect(submit,ssh_config,dataset,output,sweep=False):
     run=PurePosixPath(read(submit)['run_root'])
     root=shlex.quote(str(run))
+    lineage=run.name.removesuffix(PREDICTION_SUFFIX) in LINEAGE_RUNS
+    origin=lineage_origin(run) if lineage else run
     frozen=run.name in (SHAPE_RUN,SWEEP_RUN,STACK_RUN) or sweep
     cmd=['ssh','-F',str(ssh_config),'-T','-o','BatchMode=yes','-o','ConnectTimeout=10','N607']
     wait_for_predictions(cmd,root)
-    if run.name in LINEAGE_RUNS:
-        extra=' source_action/complete.json smoke.json G/lineage/complete.json'
-        if run.name in (FULL_ACTION_RUN,*REPLICA_RUNS.values()):
+    if lineage:
+        extra=' source_action/complete.json G/lineage/complete.json'
+        if origin.name in (FULL_ACTION_RUN,*REPLICA_RUNS.values()):
             extra+=' source_full_action/complete.json'
         extra+=' '+' '.join(f'G/lineage/{s}/{name}' for s in LINEAGE_STAGES
                             for name in ('training.jsonl','complete.json'))
@@ -214,8 +217,12 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
         extra=''
     else:
         extra=' G/gate/training.json '+' '.join(f'G/{s}/dose_training.json G/{s}/steps.jsonl' for s in SEEDS)
-    raw=subprocess.check_output([*cmd,f'tar -czf - -C {root} predictions source_wave{extra}'],
-                                timeout=180)
+    if lineage:
+        audit_root=shlex.quote(str(origin))
+        files=f'-C {root} predictions smoke.json -C {audit_root} source_wave{extra}'
+    else:
+        files=f'-C {root} predictions source_wave{extra}'
+    raw=subprocess.check_output([*cmd,f'tar -czf - {files}'],timeout=180)
     output.mkdir(parents=True,exist_ok=False)
     with tarfile.open(fileobj=BytesIO(raw),mode='r:gz') as ar:
         for member in ar:
@@ -232,9 +239,9 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
             out.parent.mkdir(parents=True,exist_ok=True)
             with out.open('xb') as f:
                 f.write(ar.extractfile(member).read())
-    if run.name in LINEAGE_RUNS:
-        modes=REPLICA_MODES if run.name in REPLICA_RUNS.values() else LINEAGE_MODES
-        seeds=(seed_for(run),)
+    if lineage:
+        modes=REPLICA_MODES if origin.name in REPLICA_RUNS.values() else LINEAGE_MODES
+        seeds=(seed_for(origin),)
     else:
         modes=tuple(SWEEP) if sweep else modes_for(run)
         seeds=SEEDS if run.name==DETAIL_CONFIRM_RUN else None
