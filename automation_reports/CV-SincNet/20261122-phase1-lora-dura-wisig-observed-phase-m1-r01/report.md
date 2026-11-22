@@ -38,3 +38,24 @@
 Clean 中非载波修正占修正总能量的约 91%。仅用载波修正时，clean 正确数保持，六景净多 4 次；仅用非载波修正时，几乎复现全量的识别损伤。单纯减小修正幅度能够缓解，但四分之一非载波仍损失 19 个 clean 与 23 个 practical 正确判定。该源域证据把当前粗恢复的主要识别副作用定位到非载波波形，尚需同批冻结作用和 R17 验证展开更新能否恢复这些细节。
 
 [逐景读出和修正能量](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_observed_phase_source_panel/coarse_component_readout.json) · [粗恢复与直通的完整源对照](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_observed_phase_source_panel/coarse_frozen_tri_set.json)
+
+## 冻结作用估计的配对归因
+
+观察相位版作用阶段完成 20 轮、4,940 步。继续使用原版六步软求解和相同的冻结 Tri-set。两个作用估计器的 full 探针比较使用各自训练时的参考坐标，均在同一个实际带噪观测和同一虚拟探针轨迹下评分。
+
+| 场景 | 直通正确数 | 原坐标作用后 | 观察相位作用后 | Full 学习算子 NMSE 原坐标 → 观察相位 |
+|---|---:|---:|---:|---:|
+| Clean | 94 | 80 | 68 | — |
+| 郊区高 | 85 | 73 | 65 | 1.519 → 0.010 |
+| 郊区中 | 77 | 66 | 65 | 1.630 → 0.005 |
+| 郊区低 | 56 | 49 | 59 | 1.686 → 0.011 |
+| 城区高 | 75 | 60 | 65 | 1.487 → 0.007 |
+| 城区中 | 58 | 43 | 54 | 1.424 → 0.058 |
+| 城区低 | 44 | 31 | 45 | 1.312 → 0.050 |
+| 六景总计 | 395 | 322 | 353 | — |
+
+观察相位版六景相对原坐标版净多 31 次，仍比直通少 42 次。弱城区输出能量从原坐标作用后 0.535 到观察相位作用后 0.994，识别从 31/120 到 45/120。郊区高与 clean 的正确数仍比原坐标版低。Full 弱城区对两个学习算子都额外校正整段复增益后，NMSE 从原坐标版 0.2272 到观察相位版 0.0107。改进同时涉及整体相位和其余动作误差。用相位一致的 residual 代理再次复算，弱城区探针误差从 0.5949 到 0.0384，方差平均绝对误差从 0.727 到 0.380 dB。
+
+首次 residual 代理统计对观察相位模型误用了原坐标参考。已在诊断中同步旋转参考与系数后重新计算。训练和冻结预测均按预登记运行，只有源域比较统计需要重算。
+
+[作用后的同批源识别](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_observed_phase_source_panel/action_frozen_tri_set.json) · [Full 探针复算](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_observed_phase_source_panel/full_action_probe_gauge.json) · [修正参考后的代理探针](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_observed_phase_source_panel/action_gauge_corrected.json)

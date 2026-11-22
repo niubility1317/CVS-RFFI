@@ -100,6 +100,7 @@ def audit(rt, stage, seed, device):
         raise ValueError('Source V waveform dimensions differ')
     root=Path(rt['run_root'])
     g=frozen_stage(root,c,stage,seed,device) if stage else None
+    observed_phase=bool(read(root/'G'/'lineage'/'config.json').get('observed_phase',False)) if stage else False
     observations={}
     for j,view in enumerate(VIEWS):
         records={}
@@ -124,12 +125,22 @@ def audit(rt, stage, seed, device):
                     current['restored_proxy']=summarize(waveform_error(x,g(p)))
                     if stage!='coarse':
                         estimator=g if stage=='action' else g.frozen
+                        reference=x
+                        targets=[item[1:] for item in proxy]
+                        if observed_phase:
+                            from experiments.pamf_lora_main.full_dura_lineage_data import in_observed_phase
+                            kernels,coefficients,noise=zip(*targets,strict=True)
+                            adjusted,new_coefficients=in_observed_phase(
+                                windows,np.stack([item[0] for item in proxy]),np.stack(coefficients))
+                            reference=tensor(adjusted,device)
+                            targets=list(zip(kernels,new_coefficients,noise,strict=True))
                         current['proxy_action']=summarize(proxy_action_error(
-                            estimator,p,[item[1:] for item in proxy],x))
+                            estimator,p,targets,reference))
             records[rx]=current
         observations[view]=records
     return dict(status='SOURCE_AUDIT_COMPLETE',stage=stage or 'input',n=int(ids.size),
-                repeats_per_receiver=PER_RECEIVER,split='V',F_reads=0,TX_reads=0,target_reads=0,
+                repeats_per_receiver=PER_RECEIVER,split='V',observed_phase=observed_phase,
+                F_reads=0,TX_reads=0,target_reads=0,
                 receiver_records=observations)
 
 

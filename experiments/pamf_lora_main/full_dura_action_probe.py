@@ -48,7 +48,8 @@ def chirp_nmse(x,y):
     return np.mean(np.abs(x-y)**2,axis=-1)/np.maximum(power,1e-8)
 
 
-def learned_errors(model,expected,inputs,outputs,clean_input,clean_output,observed_scale):
+def learned_errors(model,expected,inputs,outputs,clean_input,clean_output,observed_scale,
+                   observed_phase):
     import torch
     from experiments.cric_dura_comparison.io import tensor
 
@@ -58,6 +59,12 @@ def learned_errors(model,expected,inputs,outputs,clean_input,clean_output,observ
         return np.asarray(estimate.tolist())
 
     clean_scale=np.sqrt(np.mean(np.abs(clean_input)**2))
+    if observed_phase:
+        y=expected[:,0]+1j*expected[:,1]
+        cross=(y*(clean_input/clean_scale).conj()).sum(-1,keepdims=True)
+        phase=np.exp(1j*np.where(np.abs(cross)>1e-8,np.angle(cross),0.))
+        inputs=inputs*phase[None,...]
+        clean_input=clean_input*phase
     with torch.no_grad():
         _,operator,_=model.estimate(tensor(expected))
         predicted=np.stack([apply(operator,v/clean_scale) for v in inputs])
@@ -110,7 +117,7 @@ def source_probes(z,rx,physical_id,scene,expected):
     return x,y,clean_input,clean_output,noise
 
 
-def diagnose_packet(z,rx,physical_id,scene,expected,model=None):
+def diagnose_packet(z,rx,physical_id,scene,expected,model=None,observed_phase=False):
     x,y,clean_input,clean_output,noise=source_probes(z,rx,physical_id,scene,expected)
     rows={}
     for name,mirror in (('main_only',False),('main_and_image',True)):
@@ -124,7 +131,8 @@ def diagnose_packet(z,rx,physical_id,scene,expected,model=None):
         rows[name]=stats
     if model is not None:
         observed_scale=np.sqrt(np.mean(np.abs(clean_output+noise)**2))
-        rows.update(learned_errors(model,expected,x,y,clean_input,clean_output,observed_scale))
+        rows.update(learned_errors(model,expected,x,y,clean_input,clean_output,observed_scale,
+                                   observed_phase))
     if any(not np.isfinite(v).all() for stats in rows.values() for v in stats.values()):
         raise FloatingPointError('Nonfinite matched action probe')
     return rows
@@ -152,6 +160,10 @@ def frozen_action(rt,c):
 def audit(rt,read_frozen_action=False):
     source,cache,c=handles(rt)
     model=frozen_action(rt,c) if read_frozen_action else None
+    observed_phase=False
+    if read_frozen_action:
+        config=read(Path(rt['run_root'])/'G'/'lineage'/'config.json')
+        observed_phase=bool(config.get('observed_phase',False))
     raw,rx,ids,_=source_role(source,c,'V')
     v=np.load(cache/'V.npy',mmap_mode='r',allow_pickle=False)
     rng=np.random.default_rng(2026112227)
@@ -162,7 +174,7 @@ def audit(rt,read_frozen_action=False):
         for receiver,indices in chosen.items():
             by_mode={}
             for i in indices:
-                row=diagnose_packet(raw[i],receiver,ids[i],scene,v[j,i],model)
+                row=diagnose_packet(raw[i],receiver,ids[i],scene,v[j,i],model,observed_phase)
                 for mode,stats in row.items():
                     samples=by_mode.setdefault(mode,{k:[] for k in stats})
                     for k,values in stats.items():
@@ -172,7 +184,7 @@ def audit(rt,read_frozen_action=False):
     return dict(status='SOURCE_ACTION_EXPRESSIVITY_COMPLETE',source_packets=len(SOURCE)*PER_RECEIVER,
                 full_cache_replay_verified=True,fit_probes=FIT_PROBES,held_probes=TOTAL_PROBES-FIT_PROBES,
                 measured_true_waveform_unused_for_fit=True,compares_frozen_action=read_frozen_action,
-                F_reads=0,TX_reads=0,target_reads=0,views=views)
+                observed_phase=observed_phase,F_reads=0,TX_reads=0,target_reads=0,views=views)
 
 
 if __name__=='__main__':
