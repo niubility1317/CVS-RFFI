@@ -13,7 +13,8 @@ import numpy as np
 from experiments.cric_dura_comparison.io import read,write
 from .collect import wait_for_predictions
 from .data import CLASSES,TARGET,VIEWS,label_ids,packet_indices,recording
-from .full_dura import MODES, PROJECTED_RUN, SHAPE_RUN, SWEEP, SWEEP_RUN, modes_for
+from .full_dura import COVERAGE_RUN, MODES, PROJECTED_RUN, SHAPE_RUN, SWEEP, SWEEP_RUN, modes_for
+from .full_dura_core import COVERAGE_RECIPES
 from .full_packet_data import LIMIT
 from .full_supervised import SEEDS
 from .scoring import macro_f1
@@ -91,7 +92,10 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
     frozen=run.name in (SHAPE_RUN,SWEEP_RUN) or sweep
     cmd=['ssh','-F',str(ssh_config),'-T','-o','BatchMode=yes','-o','ConnectTimeout=10','N607']
     wait_for_predictions(cmd,root)
-    if run.name==PROJECTED_RUN:
+    if run.name==COVERAGE_RUN:
+        extra=' '+' '.join(f'G/{mode}/{s}/source_support.json G/{mode}/{s}/steps.jsonl'
+                           for mode in COVERAGE_RECIPES for s in SEEDS)
+    elif run.name==PROJECTED_RUN:
         extra=' '+' '.join(f'G/{s}/source_support.json G/{s}/steps.jsonl' for s in SEEDS)
     elif frozen:
         extra=''

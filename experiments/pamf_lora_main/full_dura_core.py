@@ -17,6 +17,7 @@ GATE_EPOCHS=45
 G_STEPS=1600
 BATCH=24
 DOSE_EPOCHS=50
+COVERAGE_RECIPES=('wide','wide_clean')
 
 
 def iq_arrays(cache,device):
@@ -121,12 +122,14 @@ def g_record(c,seed):
                 dose_epochs=DOSE_EPOCHS,cold_start=True,F_reads=0,TX_reads=0,target_reads=0)
 
 
-def projected_record(c,seed):
+def projected_record(c,seed,recipe='protected_shape'):
     return dict(status='SOURCE_FROZEN',source_contract=c,seed=seed,steps=G_STEPS,
-                recipe='protected_shape',cold_start=True,F_reads=0,TX_reads=0,target_reads=0)
+                recipe=recipe,cold_start=True,F_reads=0,TX_reads=0,target_reads=0)
 
 
-def train(rt,root,gate_path,seed,*,projected=False):
+def train(rt,root,gate_path,seed,*,projected=False,coverage=None):
+    if coverage is not None and (not projected or coverage not in COVERAGE_RECIPES):
+        raise ValueError('Expanded training requires the protected shape recipe')
     _,cache,c=handles(rt)
     dev='cuda:0'
     torch.manual_seed(seed)
@@ -145,6 +148,18 @@ def train(rt,root,gate_path,seed,*,projected=False):
     d_u=torch.where(eligible_U&hold)[0]
     if min(len(g_l),len(g_u),len(d_u))<64:
         raise ValueError('Insufficient recoverable candidates in G or dose split')
+    def draw(pool,count):
+        return pool[torch.randint(len(pool),(count,),device=dev,generator=rng)]
+
+    if coverage:
+        other_l=torch.where(~eligible_L)[0]
+        other_u=torch.where(~eligible_U&~hold)[0]
+        use_u=torch.where(~hold)[0]
+        use_l=torch.arange(len(l[0]),device=dev)
+        seen_l=torch.zeros_like(eligible_L)
+        seen_u=torch.zeros_like(eligible_U)
+        clean_n=4 if coverage=='wide_clean' else 0
+        broad_each=(BATCH//2-clean_n)//2
     root.mkdir(parents=True,exist_ok=False)
     opt=torch.optim.AdamW(model.net.parameters(),lr=2e-4,weight_decay=1e-4)
     sc=torch.optim.lr_scheduler.CosineAnnealingLR(opt,T_max=G_STEPS,eta_min=2e-5)
@@ -152,16 +167,39 @@ def train(rt,root,gate_path,seed,*,projected=False):
     with (root/'steps.jsonl').open('x',encoding='utf8') as log:
         for step in range(1,G_STEPS+1):
             # Oversample L views evenly with U (both are IQ-only during G fit).
-            j=g_l[torch.randint(len(g_l),(BATCH//2,),device=dev,generator=rng)]
-            i=g_u[torch.randint(len(g_u),(BATCH//2,),device=dev,generator=rng)]
+            if coverage:
+                j=torch.cat((draw(g_l,BATCH//4),draw(other_l,broad_each)))
+                i=torch.cat((draw(g_u,BATCH//4),draw(other_u,broad_each)))
+                seen_l[j]=True
+                seen_u[i]=True
+            else:
+                j=draw(g_l,BATCH//2)
+                i=draw(g_u,BATCH//2)
             y=torch.cat((l[0,j%len(l[0])],u[i]))
             x=torch.cat((l[j//len(l[0])+1,j%len(l[0])],sat[i]))
             target=complex_iq(aligned_target(y,x,model.reference,'chirp'))
-            restored=model(x)
+            if coverage:
+                if clean_n:
+                    clean=torch.cat((l[0,draw(use_l,clean_n//2)],u[draw(use_u,clean_n//2)]))
+                    proposal=model.proposal(torch.cat((x,clean)))
+                    identity=receiver_loss(complex_iq(proposal[len(x):]-clean))
+                else:
+                    proposal=model.proposal(x)
+                    identity=x.new_empty(0)
+                strength=model.strength(x)
+                # The additional support is training-only. Deployment uses original strength.
+                strength=torch.where(strength>0,strength,.60)
+                restored=model.bounded(x,proposal[:len(x)],strength)
+            else:
+                restored=model(x)
             if projected:
                 restored=protected_shapes(model,x,restored)[0]
             error=complex_iq(restored)-target
-            loss=receiver_loss(error).mean()+.025*power(complex_iq(restored-x)).mean()
+            if coverage:
+                paired=receiver_loss(error)+.025*power(complex_iq(restored-x))
+                loss=torch.cat((paired,identity)).mean()
+            else:
+                loss=receiver_loss(error).mean()+.025*power(complex_iq(restored-x)).mean()
             opt.zero_grad(set_to_none=True)
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.net.parameters(),5.,error_if_nonfinite=True)
@@ -170,13 +208,20 @@ def train(rt,root,gate_path,seed,*,projected=False):
             if step==1 or step%100==0:
                 entry=dict(step=step,aligned=float(receiver_loss(error).mean().detach()),
                            raw=float(receiver_loss(complex_iq(x)-target).mean()))
+                if coverage:
+                    entry.update(loss=float(loss.detach()),identity=float(identity.sum().detach()/max(1,clean_n)))
                 log.write(json.dumps(entry,allow_nan=False)+'\n')
                 log.flush()
                 print('FULL_DURA_STEP',seed,entry,flush=True)
     if projected:
         torch.save(model.net.state_dict(),root/'model.pt')
-        write(root/'source_support.json',dict(G_L=len(g_l),G_U=len(g_u),reserved_U=len(d_u)))
-        write(root/'complete.json',projected_record(c,seed))
+        support=dict(G_L=len(g_l),G_U=len(g_u),reserved_U=len(d_u))
+        if coverage:
+            support.update(G_extra_L=len(other_l),G_extra_U=len(other_u),
+                           visited_practical_L_views=int(seen_l.sum()),visited_practical_U=int(seen_u.sum()),
+                           extra_per_step=2*broad_each,identity_per_step=clean_n)
+        write(root/'source_support.json',support)
+        write(root/'complete.json',projected_record(c,seed,coverage or 'protected_shape'))
         return
     model.eval()
     with torch.no_grad():

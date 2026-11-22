@@ -31,13 +31,18 @@ class ActiveDura(GuardedPacketDura):
         output=x.clone()
         if bool(mask.any()):
             accepted=x[mask]
-            frames=accepted.flatten(0,1)
-            full=self.net.stage_outputs(frames)[0][-1].reshape_as(accepted)
-            residual=full-accepted
-            rms=lambda z:z.square().mean((1,2,3)).clamp_min(1e-8).sqrt()
-            scale=(.25*strength[mask]*rms(accepted)/rms(residual)).clamp_max(1.)
-            output[mask]=accepted+scale[:,None,None,None]*residual
+            output[mask]=self.bounded(accepted,self.proposal(accepted),strength[mask])
         return (output,strength) if with_gate else output
+
+    def proposal(self,x):
+        return self.net.stage_outputs(x.flatten(0,1))[0][-1].reshape_as(x)
+
+    @staticmethod
+    def bounded(x,proposal,strength):
+        residual=proposal-x
+        rms=lambda z:z.square().mean((1,2,3)).clamp_min(1e-8).sqrt()
+        scale=(.25*strength*rms(x)/rms(residual)).clamp_max(1.)
+        return x+scale[:,None,None,None]*residual
 
 
 @torch.no_grad()
