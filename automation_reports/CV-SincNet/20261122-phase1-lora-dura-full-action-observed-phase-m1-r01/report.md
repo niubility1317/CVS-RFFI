@@ -24,3 +24,24 @@
 [发布提交记录](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_full_action_observed_phase_release/submit.json)
 
 三种子补齐入口已准备，待该候选的固定证据决定复验。剩余种子为 2026092701 和 2026092703。各自从头训练 8 段、39,520 步，复用同源 IQ 和两种作用监督缓存，使用冻结的同种子 Tri-set。盲路由沿用同一个冻结的源 IQ 门控。每种子读出六条已冻结同配对对照和两条新输出，共 56 个评分单元。正式发布入口在各自独立 run 使用 `--replica-seed SEED --reuse-actions ORIGINAL_SUBMIT --reuse-full-bank FULL_ACTION_SUBMIT --confirm-submit COHERENT_CONFIRM_SUBMIT`。发布映射和完整评分解析已经用两个种子的既有控制预测与合成评分标签验证。此处仅准备代码，复验未发布。
+
+## 全量缓存与冻结作用阶段
+
+N607 已完成 L 2,800 包、U 25,200 包的两份已登记 full practical，合计 56,000 次源观测精确回放。源库确认每包 6 条 chirp、4 个固定拟合探针，TX/F/V/目标读取均为 0。GPU 6 进程继承相位粗恢复后确实完成了 20×247 次作用更新，随后进入 R17。
+
+对照均用同一批源 V 物理包。算子测试为 20 个包、每景独立留出探针的 NMSE，参考使用观察相位坐标。识别为另一固定 120 包面板和同一冻结 Tri-set。
+
+| 场景 | 直通正确数 | 原代理监督正确数 | Full 监督正确数 | 留出动作 NMSE 原代理 → Full |
+|---|---:|---:|---:|---:|
+| Clean | 94 | 68 | 65 | — |
+| 郊区高 | 85 | 65 | 68 | 0.01013 → 0.00702 |
+| 郊区中 | 77 | 65 | 71 | 0.00545 → 0.00534 |
+| 郊区低 | 56 | 59 | 51 | 0.01058 → 0.00931 |
+| 城区高 | 75 | 65 | 64 | 0.00673 → 0.00475 |
+| 城区中 | 58 | 54 | 50 | 0.05758 → 0.05236 |
+| 城区低 | 44 | 45 | 47 | 0.05023 → 0.04785 |
+| 六景总计 | 395 | 353 | 351 | — |
+
+Full 监督在所有六景降低了未经额外标量校正的 full 动作误差。固定 soft solve 和同一冻结 F 时，六景比代理监督少 2 次、城区低多 2 次、clean 少 3 次。比直通多判对 58 次，同时把 102 次原正确改错。算子监督只能解释目前一部分性能差距，剩余主要看展开阶段对精细波形的保真。两版作用冻结后均继续完整训练，正式性能由各自七景冻结评分判断。
+
+[Full 界面物理探针](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_full_action_observed_phase_source_panel/full_action_probe_gauge.json) · [冻结作用阶段读出](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_full_action_observed_phase_source_panel/action_frozen_tri_set.json)
