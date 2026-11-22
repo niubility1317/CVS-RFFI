@@ -41,13 +41,16 @@ def hardware(scene, session):
     return receiver_for_session(channel(scene), 20261016423, session)
 
 
-def aligned_view(z, scene, receiver, pid, namespace, *, trace=False, channel_override=None):
+def aligned_view(z, scene, receiver, pid, namespace, *, trace=False, channel_override=None, realization=None):
     from leo_practical.channel import ChannelStream, normalize_input, stable_seed
     z, _ = normalize_input(z)
     session = f'{namespace}/{receiver}'
     cfg = channel_override or channel(scene)
     rx = hardware(scene, session)
-    seed = stable_seed(2026112207, namespace, scene, receiver, str(pid))
+    parts=(namespace,scene,receiver,str(pid))
+    if realization is not None:
+        parts=(*parts,'draw',realization)
+    seed = stable_seed(2026112207, *parts)
     if trace:
         y, meta, _ = ChannelStream(cfg, seed, rx).process(
             z[CONTEXT:], preceding_context=z[:CONTEXT], return_traces=True)
