@@ -1,0 +1,19 @@
+{
+  "run_id": "20261122-phase1-lora-full-aligned-data-r01",
+  "role": "full_aligned_input_preparation",
+  "source": {
+    "L_s": 2800,
+    "U_s": 25200,
+    "V": 12000
+  },
+  "target": {
+    "physical_count": 30000,
+    "rx": 15,
+    "per_rx": 2000,
+    "views": 7,
+    "truth_visible": false
+  },
+  "workers_per_family": 16,
+  "source_U_practical_views": 1,
+  "Fs": 1000000
+}

@@ -65,7 +65,7 @@ def release_commit(repo):
     return commit
 
 
-def release(repo, output, rt, ssh_config, data=None):
+def release(repo, output, rt, ssh_config, data=None,*,transfer_timeout=240):
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
     package = output / f"{rt['run_id']}-release.tar.gz"
@@ -88,10 +88,10 @@ def release(repo, output, rt, ssh_config, data=None):
             digest.update(block)
     connection = ['-F', str(ssh_config), '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10']
     # The verified ordinary account and immutable destination are used once.
-    subprocess.run(['scp', *connection, str(package), 'N607:'+remote], check=True, timeout=240)
+    subprocess.run(['scp', *connection, str(package), 'N607:'+remote], check=True, timeout=transfer_timeout)
     script = RELEASE_CODE.replace('__PLAN__', repr(dict(runtime=rt, archive=remote, sha256=digest.hexdigest())))
     result = subprocess.run(['ssh', *connection, '-T', 'N607', rt['python']+' -'],
-        input=script.encode('utf-8'), capture_output=True, timeout=120)
+        input=script.encode('utf-8'), capture_output=True, timeout=max(120,transfer_timeout//2))
     if result.returncode:
         raise RuntimeError(result.stderr.decode(errors='replace'))
     reply = json.loads(result.stdout)
