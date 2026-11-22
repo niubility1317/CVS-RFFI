@@ -94,7 +94,8 @@ def score_refined_u(dataset,output,source,methods,epochs=18):
     write(output/'u_offline_scores.json',dict(status='SCORED_COMPLETE',truth_last=True,records=result))
 
 
-def collect(submit, ssh_config, dataset, output, refinement=False, source=None, adaptive=False,dura_repair=False):
+def collect(submit, ssh_config, dataset, output, refinement=False, source=None, adaptive=False,dura_repair=False,
+            dura_gate=False):
     root=shlex.quote(read(submit)['run_root'])
     conn=['ssh','-F',str(ssh_config),'-T','-o','BatchMode=yes','-o','ConnectTimeout=10','N607']
     wait_for_predictions(conn,root)
@@ -102,7 +103,10 @@ def collect(submit, ssh_config, dataset, output, refinement=False, source=None, 
     extra=''
     epochs=18
     baseline=None
-    if dura_repair:
+    if dura_gate:
+        from .dura_repair_runner import GATE_READOUTS as readouts
+        extra=' G/gate/training.json'
+    elif dura_repair:
         from .dura_repair_runner import READOUTS as readouts
         extra=' G/projection/epochs.jsonl G/coherent/epochs.jsonl'
     elif adaptive:
@@ -123,7 +127,7 @@ def collect(submit, ssh_config, dataset, output, refinement=False, source=None, 
         for member in archive:
             path=PurePosixPath(member.name)
             allowed=('predictions','source_audit.json','F','G','source_policy.json') if (
-                      refinement or adaptive or dura_repair) else ('predictions','source_audit.json')
+                      refinement or adaptive or dura_repair or dura_gate) else ('predictions','source_audit.json')
             if path.is_absolute() or '..' in path.parts or path.parts[0] not in allowed:
                 raise ValueError('Unexpected packet result archive')
             if member.isdir():
@@ -148,5 +152,6 @@ if __name__=='__main__':
     mode.add_argument('--refinement',action='store_true')
     mode.add_argument('--adaptive',action='store_true')
     mode.add_argument('--dura-repair',action='store_true')
+    mode.add_argument('--dura-gate',action='store_true')
     p.add_argument('--source',type=Path)
     collect(**vars(p.parse_args()))

@@ -1,0 +1,17 @@
+{
+  "run_id": "20261122-phase1-lora-dura-risk-gate-m1-r01",
+  "seed_gate": 721,
+  "epochs_gate": 45,
+  "fit_clean_L": 1600,
+  "fit_practical_L": 9600,
+  "calibrate_clean_U": 2560,
+  "readouts": [
+    "direct",
+    "old_chirp",
+    "risk_filter",
+    "risk_extend"
+  ],
+  "target_count": 1920,
+  "scored_rows": 28,
+  "Fs": 1000000
+}
