@@ -38,6 +38,14 @@
 
 原三种子共 12 行，每行冻结目标预测 15 台接收机、30,000 包、7 个场景和 2 种读出。独立 scorer 收齐矩阵后连接原归档真值，报告准确率、Macro-F1、S6、逐接收机与净纠错。原批目标已在前次评分中暴露，本轮为同条件复验。
 
+## 发布与启动读回
+
+发布提交 `360df1809b15794fea27774c9f4e10c0d5f5ec60`，本地 HEAD 与远端分支 OID 一致。N607 归档传输 VERIFIED、编译 PASS。控制器 PID `176226` 的工作目录、命令行和日志已核实，四种真实源 IQ 检查均 PASS。
+
+首次读回时 12 行排队，GPU 0 有 23,436 MiB 余量并已有两个 CUDA 进程，其余允许使用的 GPU 也已达到并发上限。独立评分已在本机启动，会等待训练和 12 行预测全部完成再读取原测试归档。结果写入 `local_artifacts/20261122-phase1-lora-full-external-m12-r02/readout/`。
+
+[发布凭据](../../../local_artifacts/20261122-phase1-lora-full-external-m12-r02/release/submit.json) · [启动读回](../../../local_artifacts/20261122-phase1-lora-full-external-m12-r02/launch_readback.txt)
+
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。

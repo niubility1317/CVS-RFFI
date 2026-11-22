@@ -26,7 +26,7 @@
   "replaces_run_id": null,
   "authorization": "用户要求检查四种 Phase1 对比方法训练和损失，优先修复最终结果异常的三种方法，修复后重新发布验证。",
   "code": {
-    "commit": "发布提交的 Git HEAD 和远端 upstream OID，见 release/submit.json",
+    "commit": "360df1809b15794fea27774c9f4e10c0d5f5ec60",
     "checkout": "E:/codex/home/worktrees/lora-external-training-audit/CVS-RFFI-repo",
     "environment": "N607 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python 控制器和预测，/home/szu2070436088/.conda/envs/SDG-SEI/bin/python 源训练，FP32/TF32 off",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261122-phase1-lora-full-external-m12-r02-release"
