@@ -59,3 +59,20 @@ Clean 中非载波修正占修正总能量的约 91%。仅用载波修正时，c
 首次 residual 代理统计对观察相位模型误用了原坐标参考。已在诊断中同步旋转参考与系数后重新计算。训练和冻结预测均按预登记运行，只有源域比较统计需要重算。
 
 [作用后的同批源识别](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_observed_phase_source_panel/action_frozen_tri_set.json) · [Full 探针复算](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_observed_phase_source_panel/full_action_probe_gauge.json) · [修正参考后的代理探针](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_observed_phase_source_panel/action_gauge_corrected.json)
+
+## Clean 指纹残差的额外核查
+
+在相同的 120 个 clean 源 V 包上，以原始 IQ 估计各 chirp 的载波坐标。每个版本的输出都用同一原始坐标去载波，再与原始物理包比较。保留输出残差能量、与原残差的相干性及误差，不读取 TX 或识别器。本表的识别正确数来自先前独立的冻结 Tri-set 源读出。
+
+| 冻结阶段 | 非载波残差能量比中位数 | 非载波相对 NMSE 中位数 | 残差相干系数平方中位数 | Clean 正确数 |
+|---|---:|---:|---:|---:|
+| 直通 | 1.000 | 0.000 | 1.000 | 94/120 |
+| 原坐标粗恢复 | 1.343 | 0.517 | 0.657 | 57/120 |
+| 原坐标作用与软求解 | 1.055 | 0.057 | 0.947 | 80/120 |
+| 原坐标 R17 | 1.057 | 0.057 | 0.946 | 80/120 |
+| 观察相位粗恢复 | 1.724 | 0.951 | 0.628 | 44/120 |
+| 观察相位作用与软求解 | 1.011 | 0.032 | 0.970 | 68/120 |
+
+观察相位版粗恢复的整包输出能量接近 1，其非载波残差却有明显的改写和长尾，能量比第 95 百分位为 6.72。加入软求解后，观察相位版的中位残差指标优于原坐标作用阶段，同一冻结识别器的 clean 仍少判对 12 个包。单一波形指标不足以为身份保真排序。后续保留同一 clean 测试与精确旁路对照，并按冻结后的识别结果判断实用性能。
+
+[逐接收机 clean 残差统计](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_lineage_r02_source_panel/clean_detail_retention.json)
