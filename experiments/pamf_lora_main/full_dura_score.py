@@ -17,7 +17,8 @@ from .full_dura import (COVERAGE_RUN, MODES, PROJECTED_RUN, SHAPE_RUN, STACK_RUN
                         SWEEP_RUN, modes_for)
 from .full_dura_core import COVERAGE_RECIPES
 from .full_dura_detail import (CONFIRM_NEW_SEEDS, DETAIL_CONFIRM_RUN, DETAIL_DOSE_MODES, DETAIL_DOSE_RUN,
-                               DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS)
+                               DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS, SHARED_DETAIL_DOSES,
+                               SHARED_DETAIL_MODES, SHARED_DETAIL_RUN)
 from .full_dura_lineage import FULL_ACTION_RUN, LINEAGE_OUTPUTS, REPLICA_MODES, REPLICA_RUNS, seed_for
 from .full_dura_lineage import (MODES as LINEAGE_MODES, OBSERVED_SHAPE_MODES, OBSERVED_SHAPE_RUN,
                                 PREDICTION_SUFFIX, RUNS as LINEAGE_RUNS, STAGES as LINEAGE_STAGES, lineage_origin)
@@ -35,12 +36,13 @@ PAIR_MATRICES=(JOINT_MODES,ADAPTED_MODES)
 R69_MATRICES=(R69_MODES,*PAIR_MATRICES,R69_ACTION_MODES,R69_TRACE_MODES,R69_RETAINED_MODES,
               LINEAGE_MODES,OBSERVED_SHAPE_MODES)
 LINEAGE_MATRICES=(LINEAGE_MODES,REPLICA_MODES,OBSERVED_SHAPE_MODES)
+DETAIL_MATRICES=(DETAIL_MODES,DETAIL_DOSE_MODES,SHARED_DETAIL_MODES,REPLICA_MODES,*R69_MATRICES)
 
 
 def matrix(output,modes=MODES,*,seeds=None):
     pred={}
     act={}
-    detail=modes in (DETAIL_MODES,DETAIL_DOSE_MODES,REPLICA_MODES,*R69_MATRICES)
+    detail=modes in DETAIL_MATRICES
     seeds=seeds or (DETAIL_SEEDS if detail else SEEDS)
     for s in seeds:
         p=output/'predictions'/str(s)
@@ -58,6 +60,9 @@ def matrix(output,modes=MODES,*,seeds=None):
             if detail and (not row['active']<=row['detail_active']<=LIMIT
                            or row['detail_active']-row['active']!=row['detail_extra']):
                 raise ValueError('Invalid per-mode high-coherence bookkeeping')
+            if modes==SHARED_DETAIL_MODES and (not row['active']<=row['shared_active']<=LIMIT
+                           or row['shared_active']-row['active']!=row['shared_extra']):
+                raise ValueError('Invalid packet-common activity bookkeeping')
             if modes in R69_MATRICES and not 0<=row['r69_active']<=LIMIT:
                 raise ValueError('Invalid original DURA LoRa gate count')
             if modes==R69_ACTION_MODES and not 0<=row['action_active']<=LIMIT:
@@ -85,7 +90,7 @@ def scores(pred,act,truth,modes=MODES,*,seeds=None):
     labels=np.concatenate([truth[r] for r in TARGET])
     n=len(labels)
     rows=[]
-    detail=modes in (DETAIL_MODES,DETAIL_DOSE_MODES,REPLICA_MODES,*R69_MATRICES)
+    detail=modes in DETAIL_MATRICES
     seeds=seeds or (DETAIL_SEEDS if detail else SEEDS)
     for s in seeds:
         for v in VIEWS:
@@ -139,6 +144,17 @@ def scores(pred,act,truth,modes=MODES,*,seeds=None):
                     if retained:
                         parent=pred[s,'r69_trace_half' if mode.endswith('_half') else 'r69_trace',v]==labels
                         changes.update(gained_trace=int((c&~parent).sum()),lost_trace=int((~c&parent).sum()))
+                elif modes==SHARED_DETAIL_MODES and mode in SHARED_DETAIL_DOSES:
+                    count=sum(act[s][f'{r}/{v}']['shared_active'] for r in TARGET)
+                    extra=count-active
+                    prior=pred[s,'protect_shape',v]
+                    if (p!=prior).sum()>extra:
+                        raise ValueError('Changes exceed the packet-common gate')
+                    protected=prior==labels
+                    control=pred[s,'coherent_half',v]==labels
+                    changes=dict(extra_active=extra,gained_protected=int((c&~protected).sum()),
+                        lost_protected=int((~c&protected).sum()),gained_half=int((c&~control).sum()),
+                        lost_half=int((~c&control).sum()))
                 elif detail and mode in DETAIL_DOSE_MODES[3:]:
                     count=sum(act[s][f'{r}/{v}']['detail_active'] for r in TARGET)
                     extra=count-active
@@ -204,7 +220,7 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
         extra=' '+' '.join(f'G/{s}/source_support.json G/{s}/steps.jsonl' for s in CONFIRM_NEW_SEEDS)
     elif run.name==DETAIL_DOSE_RUN:
         extra=''
-    elif run.name==DETAIL_RUN:
+    elif run.name in (DETAIL_RUN,SHARED_DETAIL_RUN):
         extra=' '+' '.join(f'G/{s}/source_support.json G/{s}/steps.jsonl' for s in DETAIL_SEEDS)
     elif run.name==COVERAGE_RUN:
         extra=' '+' '.join(f'G/{mode}/{s}/source_support.json G/{mode}/{s}/steps.jsonl'

@@ -20,14 +20,18 @@ from .full_supervised import SEEDS, handles
 DETAIL_RUN='20261122-phase1-lora-dura-coherent-detail-m1-r01'
 DETAIL_DOSE_RUN='20261122-phase1-lora-dura-coherent-dose-m2-r01'
 DETAIL_CONFIRM_RUN='20261122-phase1-lora-dura-coherent-dose-confirm-m4-r01'
+SHARED_DETAIL_RUN='20261123-phase1-lora-dura-packet-common-m1-r01'
 DETAIL_SEEDS=(SEEDS[1],)
 CONFIRM_NEW_SEEDS=(SEEDS[0],SEEDS[2])
 DETAIL_MODES=('direct','fixed','protect_shape','coherent_detail')
 DETAIL_DOSES={'coherent_quarter':.25,'coherent_half':.50}
 DETAIL_DOSE_MODES=(*DETAIL_MODES,*DETAIL_DOSES)
+SHARED_DETAIL_DOSES={'packet_common_full':1.,'packet_common_half':.5}
+SHARED_DETAIL_MODES=(*DETAIL_DOSE_MODES,*SHARED_DETAIL_DOSES)
 STEPS=1800
 CAP=.15
 QUALITY=.94
+SHARED_QUALITY=.40
 
 
 def conv_head(channels):
@@ -47,12 +51,14 @@ def strength_ratio(delta,x):
 class PacketDetail(nn.Module):
     """Predict separate common and individual shape corrections in carrier coordinates."""
 
-    def __init__(self,gate):
+    def __init__(self,gate,*,shared=False):
         super().__init__()
         self.gate=gate.requires_grad_(False)
+        self.shared=shared
         self.common=conv_head(3)
-        self.individual=conv_head(5)
-        for head in (self.common,self.individual):
+        self.individual=None if shared else conv_head(5)
+        heads=(self.common,) if shared else (self.common,self.individual)
+        for head in heads:
             nn.init.zeros_(head[-1].weight)
             nn.init.zeros_(head[-1].bias)
         self.utility=nn.Sequential(nn.Linear(13,24),nn.SiLU(),nn.Linear(24,1))
@@ -63,7 +69,8 @@ class PacketDetail(nn.Module):
     @torch.no_grad()
     def eligible(self,x):
         tracker=self.gate.tracker
-        return tracker.reference.coherence(x.flatten(0,1)).reshape(len(x),6).median(1).values>=QUALITY
+        quality=SHARED_QUALITY if self.shared else QUALITY
+        return tracker.reference.coherence(x.flatten(0,1)).reshape(len(x),6).median(1).values>=quality
 
     @torch.no_grad()
     def coordinates(self,x):
@@ -76,16 +83,18 @@ class PacketDetail(nn.Module):
         own=shape-common[:,None]
         spread=own.abs().square().mean(1).clamp_min(1e-8).sqrt()[:,None]
         shared=torch.cat((pair_channels(common),spread),dim=1)
-        individual=torch.cat((pair_channels(own),shared[:,None].expand(-1,6,-1,-1)),dim=2)
         s=self.common(shared)
-        i=self.individual(individual.flatten(0,1)).reshape(len(shape),6,2,256)
         a=no_tone(torch.complex(s[:,0],s[:,1]))
-        b=no_tone(torch.complex(i[:,:,0],i[:,:,1]))
-        b=b-b.mean(1,keepdim=True)
-        delta=(a[:,None]+b)*rms
+        step=a[:,None].expand_as(shape)
+        if self.individual is not None:
+            individual=torch.cat((pair_channels(own),shared[:,None].expand(-1,6,-1,-1)),dim=2)
+            i=self.individual(individual.flatten(0,1)).reshape(len(shape),6,2,256)
+            b=no_tone(torch.complex(i[:,:,0],i[:,:,1]))
+            step=step+(b-b.mean(1,keepdim=True))
+        delta=step*rms
         ratio=strength_ratio(delta,rms.expand_as(delta))
         shrink=(CAP/ratio).clamp_max(1.)[:,None,None]
-        return (a[:,None]+b)*shrink,real_iq(delta*shrink*rot)
+        return step*shrink,real_iq(delta*shrink*rot)
 
     def proposal(self,x):
         return self.correction(*self.coordinates(x))[1]
@@ -104,22 +113,38 @@ class PacketDetail(nn.Module):
         return self.score(self.features(x,delta))>self.threshold
 
 
-def shape_error(error):
-    return power(error)+.5*error.mean(1).abs().square().mean(-1)
+def shape_error(error,*,shared=False):
+    common=error.mean(1).abs().square().mean(-1)
+    return common if shared else power(error)+.5*common
 
 
 def training_terms(model,x,clean):
     shape,rot,rms=model.coordinates(x)
     target,_,_=model.coordinates(clean)
     step,delta=model.correction(shape,rot,rms)
-    raw=shape_error(shape-target)
-    error=shape_error(shape+step-target)
+    raw=shape_error(shape-target,shared=model.shared)
+    error=shape_error(shape+step-target,shared=model.shared)
     return raw,error,delta
 
 
-def record(c,seed):
-    return dict(status='SOURCE_FROZEN',source_contract=c,seed=seed,steps=STEPS,
+def record(c,seed,*,shared=False):
+    r=dict(status='SOURCE_FROZEN',source_contract=c,seed=seed,steps=STEPS,
                 draw_run=DRAW_RUN,quality=QUALITY,cap=CAP,F_reads=0,TX_reads=0,target_reads=0)
+    if shared:
+        r.update(quality=SHARED_QUALITY,component='chirp_common',paired_draws=True)
+    return r
+
+
+def paired_common_loss(model,first,second,clean):
+    x=torch.cat((first,second))
+    shape,rot,rms=model.coordinates(x)
+    target=model.coordinates(clean)[0].mean(1)
+    direct=shape.mean(1)
+    recovered=direct+model.correction(shape,rot,rms)[0].mean(1)
+    x0,x1=direct.chunk(2)
+    y0,y1=recovered.chunk(2)
+    scale=((x0-target).abs().square().mean(1)+(x1-target).abs().square().mean(1))*.5+.0004
+    return ((y0-y1).abs().square().mean(1)/scale).mean()
 
 
 def source_inputs(rt,device):
@@ -200,7 +225,8 @@ def train_detail(rt,seed):
     dev='cuda:0'
     torch.manual_seed(seed)
     c,(l,u,sat),(alt_l,alt_u)=source_inputs(rt,dev)
-    model=PacketDetail(tracker_gate(root,c,dev)).to(dev)
+    shared=root.name==SHARED_DETAIL_RUN
+    model=PacketDetail(tracker_gate(root,c,dev),shared=shared).to(dev)
     held=torch.arange(0,len(u),5,device=dev)
     signals=(l[1:].flatten(0,1),sat,alt_l,alt_u)
     sources=(l[0],u,l[0],u)
@@ -210,9 +236,15 @@ def train_detail(rt,seed):
     pools=[torch.where(mask)[0] for mask in masks]
     if min(map(len,pools))<24:
         raise ValueError('Insufficient high-coherence source support')
+    if shared:
+        paired=torch.where(masks[1]&masks[3])[0]
+        if len(paired)<24:
+            raise ValueError('Insufficient matched practical draws for shared correction')
     out=root/'G'/str(seed)
     out.mkdir(parents=True,exist_ok=False)
-    parameters=[*model.common.parameters(),*model.individual.parameters()]
+    parameters=list(model.common.parameters())
+    if model.individual is not None:
+        parameters.extend(model.individual.parameters())
     opt=torch.optim.AdamW(parameters,lr=.0006,weight_decay=.01)
     sch=torch.optim.lr_scheduler.CosineAnnealingLR(opt,STEPS,eta_min=.00006)
     counts=(6,8,4,6)
@@ -220,12 +252,19 @@ def train_detail(rt,seed):
     with (out/'steps.jsonl').open('x',encoding='utf-8') as log:
         for step in range(1,STEPS+1):
             ids=[pool[torch.randint(len(pool),(n,),device=dev)] for pool,n in zip(pools,counts,strict=True)]
+            if shared:
+                pairs=paired[torch.randint(len(paired),(counts[3],),device=dev)]
+                ids[1][:len(pairs)]=pairs
+                ids[3]=pairs
             observation=torch.cat([a[i] for a,i in zip(signals,ids,strict=True)])
             ground=torch.cat([a[i%len(a)] for a,i in zip(sources,ids,strict=True)])
             clean=u[allowed[torch.randint(len(allowed),(8,),device=dev)]]
             raw,error,_=training_terms(model,observation,ground)
-            clean_error=shape_error(model.correction(*model.coordinates(clean))[0])
+            clean_error=shape_error(model.correction(*model.coordinates(clean))[0],shared=shared)
             objective=(error/(raw+.0004)).mean()+.15*(clean_error/.0004).mean()
+            if shared:
+                consistency=paired_common_loss(model,sat[pairs],alt_u[pairs],u[pairs])
+                objective=objective+.15*consistency
             opt.zero_grad(set_to_none=True)
             objective.backward()
             torch.nn.utils.clip_grad_norm_(parameters,5.,error_if_nonfinite=True)
@@ -234,23 +273,27 @@ def train_detail(rt,seed):
             if step==1 or step%100==0:
                 entry=dict(step=step,loss=float(objective.detach()),raw=float(raw.mean()),
                            restored=float(error.detach().mean()),identity=float(clean_error.detach().mean()))
+                if shared:
+                    entry.update(paired_draw_consistency=float(consistency.detach()))
                 log.write(json.dumps(entry,allow_nan=False)+'\n')
                 log.flush()
                 print('LORA_COHERENT_DETAIL',seed,entry,flush=True)
     utility=fit_utility(model,l[0],u,sat,alt_u,held)
+    shared_log=dict(paired_U_pool=len(paired),pair_count=STEPS*counts[3]) if shared else {}
     write(out/'source_support.json',dict(training_pool=list(map(len,pools)),withheld_U=len(held),
-          practical_exposures=STEPS*sum(counts),clean_exposures=STEPS*8,utility=utility))
+          practical_exposures=STEPS*sum(counts),clean_exposures=STEPS*8,utility=utility,**shared_log))
     torch.save(model.state_dict(),out/'model.pt')
-    write(out/'complete.json',record(c,seed))
+    write(out/'complete.json',record(c,seed,shared=shared))
 
 
 def load_detail(root,c,seed,device):
     if root.name==DETAIL_DOSE_RUN:
         root=root.parent/DETAIL_RUN
     out=root/'G'/str(seed)
-    if read(out/'complete.json')!=record(c,seed):
+    shared=root.name==SHARED_DETAIL_RUN
+    if read(out/'complete.json')!=record(c,seed,shared=shared):
         raise ValueError('LoRa detail checkpoint source ancestry differs')
-    model=PacketDetail(tracker_gate(root,c,device)).to(device)
+    model=PacketDetail(tracker_gate(root,c,device),shared=shared).to(device)
     model.load_state_dict(torch.load(out/'model.pt',map_location=device,weights_only=True),strict=True)
     return model.eval().requires_grad_(False)
 
@@ -307,7 +350,8 @@ def detail_smoke(rt):
         write(root/'smoke.json',dict(status='PASS',seed=seed,extra_active=len(extra),F_reads=0,
                                    TX_reads=0,target_reads=0,doses=DETAIL_DOSES))
         return
-    model=PacketDetail(base.gate)
+    shared=root.name==SHARED_DETAIL_RUN
+    model=PacketDetail(base.gate,shared=shared)
     l=np.load(cache/'L_s.npy',mmap_mode='r',allow_pickle=False)[0]
     old=np.load(cache/'U_s_practical.npy',mmap_mode='r',allow_pickle=False)[::32]
     a=load_draw(root.parent/DRAW_RUN,'L_s')
@@ -319,7 +363,9 @@ def detail_smoke(rt):
     clean=tensor(l[::16][keep.tolist()])
     raw,error,_=training_terms(model,x,clean)
     error.mean().backward()
-    params=[*model.common.parameters(),*model.individual.parameters()]
+    params=list(model.common.parameters())
+    if model.individual is not None:
+        params.extend(model.individual.parameters())
     grad=float(torch.nn.utils.clip_grad_norm_(params,5.,error_if_nonfinite=True))
     if not grad>0 or not torch.equal(raw,error):
         raise ValueError('Source detail gradient or initial identity failed')
@@ -331,8 +377,9 @@ def detail_smoke(rt):
             or not torch.equal(updated,clean_sample) or not torch.isfinite(delta).all()
             or not (delta!=0).any() or not (base.strength(tensor(old))>0).any()):
         raise ValueError('Real source detail bypass, bound, or protected control failed')
+    observations=dict(source_observations=len(x),shared=True) if shared else dict(high_coherence=len(x))
     write(root/'smoke.json',dict(status='PASS',seed=seed,clean_exact=len(clean_sample),
-              high_coherence=len(x),grad=grad,F_reads=0,TX_reads=0,target_reads=0))
+              grad=grad,F_reads=0,TX_reads=0,target_reads=0,**observations))
 
 
 @torch.no_grad()
@@ -354,8 +401,8 @@ def source_wave_detail(rt,seed):
             _,output,baseline,active=restore(base,detail,x)
             high+=int(detail.eligible(x).sum())
             extra_mask=active&~baseline
-            a=shape_error(detail.coordinates(x)[0]-ref)
-            b=shape_error(detail.coordinates(output)[0]-ref)
+            a=shape_error(detail.coordinates(x)[0]-ref,shared=detail.shared)
+            b=shape_error(detail.coordinates(output)[0]-ref,shared=detail.shared)
             extra+=int(extra_mask.sum())
             better+=int((b[extra_mask]<a[extra_mask]).sum())
             raw_error+=float(a[extra_mask].sum())
@@ -373,7 +420,8 @@ def source_wave_detail(rt,seed):
 def predict_detail(root,target,c,seed,reader,device):
     from .full_dura import PROJECTED_MODES, RUN, STACK_RUN, engines
     dose=root.name==DETAIL_DOSE_RUN
-    stack=root.parent/(DETAIL_RUN if dose else STACK_RUN)
+    shared=root.name==SHARED_DETAIL_RUN
+    stack=root.parent/(DETAIL_DOSE_RUN if shared else DETAIL_RUN if dose else STACK_RUN)
     if read(stack/'state.json')['status']!='PREDICTIONS_FROZEN':
         raise ValueError('The frozen protected DURA controls are missing')
     old=stack/'predictions'/str(seed)
@@ -381,17 +429,21 @@ def predict_detail(root,target,c,seed,reader,device):
     controls=old_receipt.pop('activation')
     expected=dict(status='PREDICTIONS_FROZEN',seed=seed,target_truth_read=False,receivers=list(TARGET),
                   views=list(VIEWS),per_receiver=LIMIT)
-    if old_receipt!=dict(expected,modes=list(DETAIL_MODES if dose else PROJECTED_MODES)):
+    comparison_modes=DETAIL_DOSE_MODES if shared else DETAIL_MODES if dose else PROJECTED_MODES
+    if old_receipt!=dict(expected,modes=list(comparison_modes)):
         raise ValueError('The frozen Tri-set and DURA controls do not match')
     base,_=engines(root.parent/RUN,c,seed,device)
     detail=load_detail(root,c,seed,device)
     out=root/'predictions'/str(seed)
     out.mkdir(parents=True,exist_ok=False)
     records={}
-    old_modes=DETAIL_MODES if dose else DETAIL_MODES[:-1]
-    amounts={} if dose else {'coherent_detail':1.}
-    if dose or root.name==DETAIL_CONFIRM_RUN:
-        amounts.update(DETAIL_DOSES)
+    old_modes=DETAIL_DOSE_MODES if shared else DETAIL_MODES if dose else DETAIL_MODES[:-1]
+    if shared:
+        amounts=SHARED_DETAIL_DOSES
+    else:
+        amounts={} if dose else {'coherent_detail':1.}
+        if dose or root.name==DETAIL_CONFIRM_RUN:
+            amounts.update(DETAIL_DOSES)
     new_modes=tuple(amounts)
     for rx in TARGET:
         waves=np.load(target/f'{rx}.npy',mmap_mode='r',allow_pickle=False)
@@ -413,9 +465,9 @@ def predict_detail(root,target,c,seed,reader,device):
                     logits=reader(torch.cat(waves_to_read))[0]
                     if not torch.isfinite(logits).all():
                         raise ValueError('High-coherence DURA produced nonfinite logits')
-                    ids=extra.cpu().numpy()+step
+                    ids=np.asarray(extra.tolist(),dtype=np.int64)+step
                     for a,labels in zip(updated,logits.argmax(1).chunk(len(updated)),strict=True):
-                        a[ids]=labels.cpu().numpy()
+                        a[ids]=labels.tolist()
                     n_extra+=len(ids)
                 n_old+=int(baseline.sum())
             key=f'{rx}/{v}'
@@ -423,7 +475,10 @@ def predict_detail(root,target,c,seed,reader,device):
                 raise ValueError('The existing protected branch active count changed')
             if dose and controls[key]['detail_extra']!=n_extra:
                 raise ValueError('Frozen dose comparison changed the detail gate')
-            records[key]=dict(controls[key],detail_active=n_old+n_extra,detail_extra=n_extra)
+            if shared:
+                records[key]=dict(controls[key],shared_active=n_old+n_extra,shared_extra=n_extra)
+            else:
+                records[key]=dict(controls[key],detail_active=n_old+n_extra,detail_extra=n_extra)
             for m,a in zip((*old_modes,*new_modes),(*arrays,*updated),strict=True):
                 np.save(out/f'{rx}__{v}__{m}.npy',a)
         print('LORA_DETAIL_DURA_PREDICTED',seed,rx,flush=True)
