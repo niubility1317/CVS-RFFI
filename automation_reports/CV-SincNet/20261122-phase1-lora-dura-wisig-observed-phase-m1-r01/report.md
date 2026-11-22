@@ -14,3 +14,7 @@
 - 发布入口为 `python -m experiments.pamf_lora_main.full_dura_lineage_publish ... --reuse-actions ORIGINAL_SUBMIT`。固定根下取 `smoke.json`、训练日志、每阶段权重、源 V 波形诊断和完整盲预测。由本地 `full_dura_score` 等待并独立评分。首轮用于单种子验证，最终限差仍需三种子确认。
 
 [已冻结的粗恢复归因](E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010/automation_reports/CV-SincNet/20261122-phase1-lora-dura-wisig-lineage-m1-r02/source-stage-analysis.md)
+
+发布 **VERIFIED**。代码提交 `e0f430b587859dd48a69abcebf4466bde7a4184d`，发布归档 SHA 比对和远端编译通过。真实源 smoke 的动作梯度范数 8.0118。独立复核证明 2,048 条真实 clean chirp 和恒等系数逐字节不变，六景无噪声动作重放最大误差为 `5.44e-7`。N607 控制器、GPU 3 训练进程、工作目录和源作用缓存实际链接已校验。新 run 完成粗恢复首轮 247 步。原坐标 run 在 GPU 0 继续训练作用估计。两套诊断分别等待冻结源权重，两套正式评分分别等待七景预测冻结。
+
+[发布记录](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_observed_phase_release/submit.json)
