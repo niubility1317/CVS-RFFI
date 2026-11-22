@@ -19,7 +19,9 @@ from .full_supervised import SEEDS, handles
 
 DETAIL_RUN='20261122-phase1-lora-dura-coherent-detail-m1-r01'
 DETAIL_DOSE_RUN='20261122-phase1-lora-dura-coherent-dose-m2-r01'
+DETAIL_CONFIRM_RUN='20261122-phase1-lora-dura-coherent-dose-confirm-m4-r01'
 DETAIL_SEEDS=(SEEDS[1],)
+CONFIRM_NEW_SEEDS=(SEEDS[0],SEEDS[2])
 DETAIL_MODES=('direct','fixed','protect_shape','coherent_detail')
 DETAIL_DOSES={'coherent_quarter':.25,'coherent_half':.50}
 DETAIL_DOSE_MODES=(*DETAIL_MODES,*DETAIL_DOSES)
@@ -191,9 +193,10 @@ def fit_utility(model,l,u,sat,alt,held):
 
 
 def train_detail(rt,seed):
-    if seed not in DETAIL_SEEDS:
-        raise ValueError('Unregistered high-coherence DURA seed')
     root=Path(rt['run_root'])
+    seeds=CONFIRM_NEW_SEEDS if root.name==DETAIL_CONFIRM_RUN else DETAIL_SEEDS
+    if seed not in seeds:
+        raise ValueError('Unregistered high-coherence DURA seed')
     dev='cuda:0'
     torch.manual_seed(seed)
     c,(l,u,sat),(alt_l,alt_u)=source_inputs(rt,dev)
@@ -287,7 +290,7 @@ def detail_smoke(rt):
     from .full_dura import RUN, engines
     root=Path(rt['run_root'])
     _,cache,c=handles(rt)
-    seed=DETAIL_SEEDS[0]
+    seed=(CONFIRM_NEW_SEEDS if root.name==DETAIL_CONFIRM_RUN else DETAIL_SEEDS)[0]
     base,_=engines(root.parent/RUN,c,seed,'cpu')
     if root.name==DETAIL_DOSE_RUN:
         detail=load_detail(root,c,seed,'cpu')
@@ -386,7 +389,10 @@ def predict_detail(root,target,c,seed,reader,device):
     out.mkdir(parents=True,exist_ok=False)
     records={}
     old_modes=DETAIL_MODES if dose else DETAIL_MODES[:-1]
-    new_modes=tuple(DETAIL_DOSES) if dose else ('coherent_detail',)
+    amounts={} if dose else {'coherent_detail':1.}
+    if dose or root.name==DETAIL_CONFIRM_RUN:
+        amounts.update(DETAIL_DOSES)
+    new_modes=tuple(amounts)
     for rx in TARGET:
         waves=np.load(target/f'{rx}.npy',mmap_mode='r',allow_pickle=False)
         if waves.shape!=(7,LIMIT,6,2,256) or waves.dtype!=np.float32:
@@ -402,8 +408,8 @@ def predict_detail(root,target,c,seed,reader,device):
                 baseline=base.strength(x)>0
                 extra,result=extra_correction(detail,x,baseline)
                 if len(extra):
-                    waves_to_read=[scale_detail(x[extra],result,amount) for amount in DETAIL_DOSES.values()
-                                   ] if dose else [result]
+                    waves_to_read=[result if amount==1. else scale_detail(x[extra],result,amount)
+                                   for amount in amounts.values()]
                     logits=reader(torch.cat(waves_to_read))[0]
                     if not torch.isfinite(logits).all():
                         raise ValueError('High-coherence DURA produced nonfinite logits')

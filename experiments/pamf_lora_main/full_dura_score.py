@@ -16,17 +16,19 @@ from .data import CLASSES,TARGET,VIEWS,label_ids,packet_indices,recording
 from .full_dura import (COVERAGE_RUN, MODES, PROJECTED_RUN, SHAPE_RUN, STACK_RUN, STAGED_RUN, SWEEP,
                         SWEEP_RUN, modes_for)
 from .full_dura_core import COVERAGE_RECIPES
-from .full_dura_detail import DETAIL_DOSE_MODES, DETAIL_DOSE_RUN, DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS
+from .full_dura_detail import (CONFIRM_NEW_SEEDS, DETAIL_CONFIRM_RUN, DETAIL_DOSE_MODES, DETAIL_DOSE_RUN,
+                               DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS)
 from .full_packet_data import LIMIT
 from .full_supervised import SEEDS
 from .scoring import macro_f1
 
 
-def matrix(output,modes=MODES):
+def matrix(output,modes=MODES,*,seeds=None):
     pred={}
     act={}
     detail=modes in (DETAIL_MODES,DETAIL_DOSE_MODES)
-    for s in DETAIL_SEEDS if detail else SEEDS:
+    seeds=seeds or (DETAIL_SEEDS if detail else SEEDS)
+    for s in seeds:
         p=output/'predictions'/str(s)
         receipt=read(p/'complete.json')
         activation=receipt.pop('activation')
@@ -55,12 +57,12 @@ def matrix(output,modes=MODES):
     return pred,act
 
 
-def scores(pred,act,truth,modes=MODES):
+def scores(pred,act,truth,modes=MODES,*,seeds=None):
     labels=np.concatenate([truth[r] for r in TARGET])
     n=len(labels)
     rows=[]
     detail=modes in (DETAIL_MODES,DETAIL_DOSE_MODES)
-    seeds=DETAIL_SEEDS if detail else SEEDS
+    seeds=seeds or (DETAIL_SEEDS if detail else SEEDS)
     for s in seeds:
         for v in VIEWS:
             direct=pred[s,'direct',v]==labels
@@ -112,7 +114,9 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
     frozen=run.name in (SHAPE_RUN,SWEEP_RUN,STACK_RUN) or sweep
     cmd=['ssh','-F',str(ssh_config),'-T','-o','BatchMode=yes','-o','ConnectTimeout=10','N607']
     wait_for_predictions(cmd,root)
-    if run.name==DETAIL_DOSE_RUN:
+    if run.name==DETAIL_CONFIRM_RUN:
+        extra=' '+' '.join(f'G/{s}/source_support.json G/{s}/steps.jsonl' for s in CONFIRM_NEW_SEEDS)
+    elif run.name==DETAIL_DOSE_RUN:
         extra=''
     elif run.name==DETAIL_RUN:
         extra=' '+' '.join(f'G/{s}/source_support.json G/{s}/steps.jsonl' for s in DETAIL_SEEDS)
@@ -145,13 +149,14 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
             with out.open('xb') as f:
                 f.write(ar.extractfile(member).read())
     modes=tuple(SWEEP) if sweep else modes_for(run)
-    pred,act=matrix(output,modes)
+    seeds=SEEDS if run.name==DETAIL_CONFIRM_RUN else None
+    pred,act=matrix(output,modes,seeds=seeds)
     truth={}
     with zipfile.ZipFile(dataset/'multiple_receiver_test.zip') as ar:
         for i,n in enumerate(TARGET):
             with recording(ar,f'{n}_test.h5',output) as h5:
                 truth[n]=label_ids(h5,LIMIT)[packet_indices(LIMIT,i)]
-    write(output/'scores.json',scores(pred,act,truth,modes))
+    write(output/'scores.json',scores(pred,act,truth,modes,seeds=seeds))
     print('FULL_DURA_SCORED',output/'scores.json',flush=True)
 
 
