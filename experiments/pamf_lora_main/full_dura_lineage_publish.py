@@ -5,7 +5,7 @@ from pathlib import Path, PurePosixPath
 from experiments.cric_dura_comparison.io import read
 from .full_adaptive import SET_RUN
 from .full_dura_detail import DETAIL_CONFIRM_RUN
-from .full_dura_lineage import (DETAIL_PRIOR_RUN, FULL_ACTION_RUN, PHASE_RUN, PREDICTION_SUFFIX,
+from .full_dura_lineage import (DETAIL_PRIOR_RUN, FULL_ACTION_RUN, OBSERVED_SHAPE_RUN, PHASE_RUN, PREDICTION_SUFFIX,
                                 REPLICA_RUNS, RUN, RUNS)
 from .full_dura_trace_source import TRACE_RUN
 from .full_packet_publish import DATA_RUN
@@ -15,7 +15,7 @@ from .publish import release, release_commit
 
 def publish(repo,output,context,ssh_config,data_submit=None,draw_submit=None,trace_submit=None,tri_submit=None,
             reuse_actions=None,full_action_submit=None,replica_seed=None,reuse_full_bank=None,
-            confirm_submit=None,detail_prior_submit=None,replay_submit=None):
+            confirm_submit=None,detail_prior_submit=None,replay_submit=None,observed_shape_submit=None):
     ctx=read(context)
     p=PurePosixPath(ctx['project'])
     data=p/'runs'/DATA_RUN
@@ -44,6 +44,10 @@ def publish(repo,output,context,ssh_config,data_submit=None,draw_submit=None,tra
         if full_action_submit is not None and detail_prior_submit is not None:
             raise ValueError('Choose one LoRa matched continuation')
         handles=(*handles,(full_action_submit or detail_prior_submit,PHASE_RUN))
+    if observed_shape_submit is not None:
+        if any(x is not None for x in (full_action_submit,detail_prior_submit,replica_seed)):
+            raise ValueError('The observed-shape lineage trains all eight stages from scratch')
+        handles=(*handles,(observed_shape_submit,FULL_ACTION_RUN))
     if replica_seed is not None:
         if (replica_seed not in REPLICA_RUNS or reuse_actions is None
                 or full_action_submit is not None or detail_prior_submit is not None
@@ -60,9 +64,12 @@ def publish(repo,output,context,ssh_config,data_submit=None,draw_submit=None,tra
     name=FULL_ACTION_RUN if full_action_submit else PHASE_RUN if reuse_actions else RUN
     if detail_prior_submit is not None:
         name=DETAIL_PRIOR_RUN
+    if observed_shape_submit is not None:
+        name=OBSERVED_SHAPE_RUN
     gpu_order={RUN:list(range(8)),PHASE_RUN:[3,6,2,1,4,5,7,0],
                FULL_ACTION_RUN:[6,2,1,4,5,7,0,3],
-               DETAIL_PRIOR_RUN:[2,1,4,5,7,6,0,3]}[name]
+               DETAIL_PRIOR_RUN:[2,1,4,5,7,6,0,3],
+               OBSERVED_SHAPE_RUN:[3,0,1,4,5,6,2]}[name]
     if replica_seed is not None:
         name=REPLICA_RUNS[replica_seed]
         gpu_order={2026092701:[1,4,5,2,7,6,0,3],2026092703:[2,5,1,4,7,6,0,3]}[replica_seed]
@@ -82,6 +89,7 @@ if __name__=='__main__':
     p.add_argument('--reuse-actions',type=Path)
     p.add_argument('--full-action-submit',type=Path)
     p.add_argument('--detail-prior-submit',type=Path)
+    p.add_argument('--observed-shape-submit',type=Path)
     p.add_argument('--replica-seed',type=int,choices=tuple(REPLICA_RUNS))
     p.add_argument('--reuse-full-bank',type=Path)
     p.add_argument('--confirm-submit',type=Path)

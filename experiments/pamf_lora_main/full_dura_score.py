@@ -19,8 +19,8 @@ from .full_dura_core import COVERAGE_RECIPES
 from .full_dura_detail import (CONFIRM_NEW_SEEDS, DETAIL_CONFIRM_RUN, DETAIL_DOSE_MODES, DETAIL_DOSE_RUN,
                                DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS)
 from .full_dura_lineage import FULL_ACTION_RUN, LINEAGE_OUTPUTS, REPLICA_MODES, REPLICA_RUNS, seed_for
-from .full_dura_lineage import (MODES as LINEAGE_MODES, PREDICTION_SUFFIX, RUNS as LINEAGE_RUNS,
-                                STAGES as LINEAGE_STAGES, lineage_origin)
+from .full_dura_lineage import (MODES as LINEAGE_MODES, OBSERVED_SHAPE_MODES, OBSERVED_SHAPE_RUN,
+                                PREDICTION_SUFFIX, RUNS as LINEAGE_RUNS, STAGES as LINEAGE_STAGES, lineage_origin)
 from .full_dura_r69_lora import (R69_ACTION_MODES, R69_ACTION_RUN, R69_LORA_RUN,
                                  R69_MODES, R69_RETAINED_MODES, R69_SEEDS, R69_TRACE_MODES)
 from .full_dura_trace_source import RETAINED_RUN, TRACE_RUN
@@ -32,8 +32,9 @@ from .scoring import macro_f1
 
 
 PAIR_MATRICES=(JOINT_MODES,ADAPTED_MODES)
-R69_MATRICES=(R69_MODES,*PAIR_MATRICES,R69_ACTION_MODES,R69_TRACE_MODES,R69_RETAINED_MODES,LINEAGE_MODES)
-LINEAGE_MATRICES=(LINEAGE_MODES,REPLICA_MODES)
+R69_MATRICES=(R69_MODES,*PAIR_MATRICES,R69_ACTION_MODES,R69_TRACE_MODES,R69_RETAINED_MODES,
+              LINEAGE_MODES,OBSERVED_SHAPE_MODES)
+LINEAGE_MATRICES=(LINEAGE_MODES,REPLICA_MODES,OBSERVED_SHAPE_MODES)
 
 
 def matrix(output,modes=MODES,*,seeds=None):
@@ -97,8 +98,8 @@ def scores(pred,act,truth,modes=MODES,*,seeds=None):
                 cm=np.bincount(10*labels+p,minlength=100).reshape(10,10)
                 count=0 if mode=='direct' else active
                 method=next((m for m in (*REPL_METHODS,*ADAPT_METHODS) if mode.startswith(f'{m}_')),None)
-                if modes in LINEAGE_MATRICES and mode in LINEAGE_OUTPUTS:
-                    key='lineage_active' if mode=='lineage_native' else 'trace_active'
+                if modes in LINEAGE_MATRICES and mode in (*LINEAGE_OUTPUTS,'lineage_half'):
+                    key='trace_active' if mode=='lineage_guarded' else 'lineage_active'
                     count=sum(act[s][f'{r}/{v}'][key] for r in TARGET)
                     if (p!=pred[s,'direct',v]).sum()>count:
                         raise ValueError('Lineage changes exceed allowed IQ exposures')
@@ -183,7 +184,7 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
     wait_for_predictions(cmd,root)
     if lineage:
         extra=' source_action/complete.json G/lineage/complete.json'
-        if origin.name in (FULL_ACTION_RUN,*REPLICA_RUNS.values()):
+        if origin.name in (FULL_ACTION_RUN,OBSERVED_SHAPE_RUN,*REPLICA_RUNS.values()):
             extra+=' source_full_action/complete.json'
         extra+=' '+' '.join(f'G/lineage/{s}/{name}' for s in LINEAGE_STAGES
                             for name in ('training.jsonl','complete.json'))
@@ -240,7 +241,8 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
             with out.open('xb') as f:
                 f.write(ar.extractfile(member).read())
     if lineage:
-        modes=REPLICA_MODES if origin.name in REPLICA_RUNS.values() else LINEAGE_MODES
+        modes=(OBSERVED_SHAPE_MODES if origin.name==OBSERVED_SHAPE_RUN else
+               REPLICA_MODES if origin.name in REPLICA_RUNS.values() else LINEAGE_MODES)
         seeds=(seed_for(origin),)
     else:
         modes=tuple(SWEEP) if sweep else modes_for(run)

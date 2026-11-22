@@ -152,9 +152,10 @@ def build(rt):
 
 
 class LoRaView:
-    def __init__(self,rt,*,observed_phase=False,full_action=False):
+    def __init__(self,rt,*,observed_phase=False,full_action=False,full_coarse=False):
         self.root=Path(rt['run_root'])
         self.observed_phase=observed_phase
+        self.full_coarse=full_coarse
         src,cache,self.contract=handles(rt)
         self.l,self.u,self.u_first=source_iq(cache)
         alt=self.root.parent/DRAW_RUN
@@ -237,7 +238,7 @@ class LoRaView:
                 ground,a['coefficients']=in_observed_phase(ground,a['received'],a['coefficients'])
             return dict(clean=ground,**a)
         observed=ground.copy()
-        real=q>=.75 if coarse else ~identity
+        real=q>=.75 if coarse and not self.full_coarse else ~identity
         ls=real&labeled
         us=real&~labeled
         if epoch%2:
@@ -247,7 +248,7 @@ class LoRaView:
         else:
             observed[ls]=self.l_second[packet[ls],chirp[ls]]
             observed[us]=self.u_second[packet[us]-L_COUNT,chirp[us]]
-        if coarse:
+        if coarse and not self.full_coarse:
             residual=(q>=.15)&~real
             observed[residual]=self.actions['received'][indices[residual]]
         if self.observed_phase:

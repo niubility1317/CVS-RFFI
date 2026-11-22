@@ -47,7 +47,7 @@ def inherit_source_stage(frozen,root,contract,roles,seed,stage):
 
 
 def train(c, device='cuda:0', *, view=None, prepare_model=None, frozen_coarse=None,
-          frozen_action=None, stage_loss=None):
+          frozen_action=None, stage_loss=None, reconstruction=None):
     if any(c.get(k) for k in ('truth', 'target_truth', 'target_inputs', 'tests', 'reader', 'F_checkpoint')):
         raise ValueError('G source training rejects F/target inputs')
     contract = read(c['cache']['source_contract'])
@@ -71,6 +71,8 @@ def train(c, device='cuda:0', *, view=None, prepare_model=None, frozen_coarse=No
         stages=STAGES[2:]
     if stage_loss is not None:
         stage_loss=stage_loss.to(device)
+    if reconstruction is not None:
+        reconstruction=reconstruction.to(device)
     acceleration = c.get('training_acceleration', {})
     mode = acceleration.get('teacher_cache', 'online')
     if mode not in ('online', 'epoch', 'shared'):
@@ -136,7 +138,7 @@ def train(c, device='cuda:0', *, view=None, prepare_model=None, frozen_coarse=No
                         context = prefix_cache.get(selected[take],received,epoch) if prefix_cache is not None else None
                         loss = objective(model, teacher, stage, received, clean, epoch, action, generator,
                             desired=desired,frozen_context=context,skip_zero_spectral=acceleration.get('skip_zero_spectral',False),
-                            stage_loss=stage_loss)
+                            stage_loss=stage_loss,reconstruction=reconstruction)
                         if reduce_syncs:
                             finite.logical_and_(torch.isfinite(loss).all())
                         elif not bool(torch.isfinite(loss).all()):

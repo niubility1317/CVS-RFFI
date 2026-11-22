@@ -87,12 +87,16 @@ def trainable(model, stage):
 
 
 def objective(model, teacher, stage, received, clean, epoch, action_arrays=None, generator=None,
-              desired=None, frozen_context=None, skip_zero_spectral=False, stage_loss=None):
+              desired=None, frozen_context=None, skip_zero_spectral=False, stage_loss=None,
+              reconstruction=None):
     from experiments.pamf_r44_pruned_refine.models import spectral_error
     energy = clean.detach().square().mean((1, 2)).clamp_min(1e-4)
     if stage == 'coarse':
         from experiments.pamf_reception_restore.runner import pair_loss
-        return pair_loss(model(received), clean)[0]
+        estimate=model(received)
+        if reconstruction is not None:
+            return reconstruction(received,clean,(estimate,))
+        return pair_loss(estimate,clean)[0]
     if stage == 'action':
         from experiments.pamf_action_restore.operators import Action
         from experiments.pamf_restoration.models import complex_iq
@@ -115,6 +119,8 @@ def objective(model, teacher, stage, received, clean, epoch, action_arrays=None,
         values = r17_outputs_with_prefix(model, received, frozen_context)
     else:
         values = model.stage_outputs(received)[0]
+    if stage == 'r17' and reconstruction is not None:
+        return reconstruction(received,clean,values)
     paired = (values[-1] - clean.detach()).square().mean((1, 2)) / energy
     if stage_loss is not None:
         paired = paired + stage_loss(received,clean,values)
@@ -129,6 +135,8 @@ def objective(model, teacher, stage, received, clean, epoch, action_arrays=None,
         raise ValueError('Aligned source teacher trajectories required')
     if any(a.shape != b.shape or b.requires_grad for a, b in zip(values, desired)):
         raise ValueError('Detached, matching teacher trajectories required')
+    if reconstruction is not None:
+        return reconstruction(received,clean,values,desired)
     fidelity = torch.stack([(a - b.detach()).square().mean((1, 2)) / energy for a, b in zip(values, desired)]).mean(0)
     weight = (10. - 9. * (epoch - 1) / 19.) if stage in ('r38', 'r44') else (1. - .9 * (epoch - 1) / 19.)
     result = paired + weight * fidelity
