@@ -18,9 +18,10 @@ from .full_dura import (COVERAGE_RUN, MODES, PROJECTED_RUN, SHAPE_RUN, STACK_RUN
 from .full_dura_core import COVERAGE_RECIPES
 from .full_dura_detail import (CONFIRM_NEW_SEEDS, DETAIL_CONFIRM_RUN, DETAIL_DOSE_MODES, DETAIL_DOSE_RUN,
                                DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS)
+from .full_dura_lineage import MODES as LINEAGE_MODES, RUN as LINEAGE_RUN, STAGES as LINEAGE_STAGES
 from .full_dura_r69_lora import (R69_ACTION_MODES, R69_ACTION_RUN, R69_LORA_RUN,
-                                 R69_MODES, R69_SEEDS, R69_TRACE_MODES)
-from .full_dura_trace_source import TRACE_RUN
+                                 R69_MODES, R69_RETAINED_MODES, R69_SEEDS, R69_TRACE_MODES)
+from .full_dura_trace_source import RETAINED_RUN, TRACE_RUN
 from .full_native_joint import ADAPTED_JOINT_RUN, ADAPTED_MODES, JOINT_MODES, JOINT_RUN
 from .full_packet_data import LIMIT
 from .full_supervised import SEEDS
@@ -29,7 +30,7 @@ from .scoring import macro_f1
 
 
 PAIR_MATRICES=(JOINT_MODES,ADAPTED_MODES)
-R69_MATRICES=(R69_MODES,*PAIR_MATRICES,R69_ACTION_MODES,R69_TRACE_MODES)
+R69_MATRICES=(R69_MODES,*PAIR_MATRICES,R69_ACTION_MODES,R69_TRACE_MODES,R69_RETAINED_MODES,LINEAGE_MODES)
 
 
 def matrix(output,modes=MODES,*,seeds=None):
@@ -57,8 +58,12 @@ def matrix(output,modes=MODES,*,seeds=None):
                 raise ValueError('Invalid original DURA LoRa gate count')
             if modes==R69_ACTION_MODES and not 0<=row['action_active']<=LIMIT:
                 raise ValueError('Invalid LoRa action-corrected gate count')
-            if modes in (R69_TRACE_MODES,ADAPTED_MODES) and not 0<=row['trace_active']<=LIMIT:
+            if modes in (R69_TRACE_MODES,R69_RETAINED_MODES,ADAPTED_MODES,LINEAGE_MODES) and not 0<=row['trace_active']<=LIMIT:
                 raise ValueError('Invalid LoRa trace-trained gate count')
+            if modes==LINEAGE_MODES and row['lineage_active']!=LIMIT:
+                raise ValueError('Native DURA must run on every physical exposure')
+            if modes==R69_RETAINED_MODES and not 0<=row['retained_active']<=LIMIT:
+                raise ValueError('Invalid retained physical calibration gate count')
         act[s]=activation
         for v in VIEWS:
             for m in modes:
@@ -89,7 +94,14 @@ def scores(pred,act,truth,modes=MODES,*,seeds=None):
                 cm=np.bincount(10*labels+p,minlength=100).reshape(10,10)
                 count=0 if mode=='direct' else active
                 method=next((m for m in (*REPL_METHODS,*ADAPT_METHODS) if mode.startswith(f'{m}_')),None)
-                if modes in PAIR_MATRICES and method is not None:
+                if modes==LINEAGE_MODES and mode in LINEAGE_MODES[-2:]:
+                    key='lineage_active' if mode=='lineage_native' else 'trace_active'
+                    count=sum(act[s][f'{r}/{v}'][key] for r in TARGET)
+                    if (p!=pred[s,'direct',v]).sum()>count:
+                        raise ValueError('Lineage changes exceed allowed IQ exposures')
+                    prior=pred[s,'coherent_half',v]==labels
+                    changes=dict(gained_half=int((c&~prior).sum()),lost_half=int((~c&prior).sum()))
+                elif modes in PAIR_MATRICES and method is not None:
                     routed=mode==f'{method}_routed'
                     name='direct' if routed else f'{method}_direct'
                     reference=pred[s,name,v]
@@ -106,18 +118,23 @@ def scores(pred,act,truth,modes=MODES,*,seeds=None):
                         before=pred[s,'r69_trace_half',v]==labels
                         changes.update(gained_trace_tri_set=int((c&~before).sum()),
                                        lost_trace_tri_set=int((~c&before).sum()))
-                elif mode in (*R69_ACTION_MODES[4:],*R69_TRACE_MODES[-2:]):
+                elif mode in (*R69_ACTION_MODES[4:],*R69_RETAINED_MODES[-4:]):
                     calibrated=mode in R69_ACTION_MODES[-2:]
                     trace=mode in R69_TRACE_MODES[-2:]
-                    k='trace_active' if trace else 'action_active' if calibrated else 'r69_active'
+                    retained=mode in R69_RETAINED_MODES[-2:]
+                    k=('retained_active' if retained else 'trace_active' if trace
+                       else 'action_active' if calibrated else 'r69_active')
                     count=sum(act[s][f'{r}/{v}'][k] for r in TARGET)
                     if (p!=pred[s,'direct',v]).sum()>count:
                         raise ValueError('Original DURA LoRa changes exceed the gate')
                     ref=pred[s,'coherent_half',v]==labels
                     changes=dict(gained_half=int((c&~ref).sum()),lost_half=int((~c&ref).sum()))
-                    if calibrated or trace:
+                    if calibrated or trace or retained:
                         parent=pred[s,'r69_aligned_half' if mode.endswith('_half') else 'r69_aligned',v]==labels
                         changes.update(gained_initial=int((c&~parent).sum()),lost_initial=int((~c&parent).sum()))
+                    if retained:
+                        parent=pred[s,'r69_trace_half' if mode.endswith('_half') else 'r69_trace',v]==labels
+                        changes.update(gained_trace=int((c&~parent).sum()),lost_trace=int((~c&parent).sum()))
                 elif detail and mode in DETAIL_DOSE_MODES[3:]:
                     count=sum(act[s][f'{r}/{v}']['detail_active'] for r in TARGET)
                     extra=count-active
@@ -159,14 +176,22 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
     frozen=run.name in (SHAPE_RUN,SWEEP_RUN,STACK_RUN) or sweep
     cmd=['ssh','-F',str(ssh_config),'-T','-o','BatchMode=yes','-o','ConnectTimeout=10','N607']
     wait_for_predictions(cmd,root)
-    if run.name in (JOINT_RUN,ADAPTED_JOINT_RUN):
+    if run.name==LINEAGE_RUN:
+        extra=' source_action/complete.json smoke.json G/lineage/complete.json'
+        extra+=' '+' '.join(f'G/lineage/{s}/{name}' for s in LINEAGE_STAGES
+                            for name in ('training.jsonl','complete.json'))
+    elif run.name in (JOINT_RUN,ADAPTED_JOINT_RUN):
         extra=''
-    elif run.name in (R69_LORA_RUN,R69_ACTION_RUN,TRACE_RUN):
+    elif run.name in (R69_LORA_RUN,R69_ACTION_RUN,TRACE_RUN,RETAINED_RUN):
         extra=' '+' '.join(f'G/{stage}/{s}/source_support.json G/{stage}/{s}/steps.jsonl'
                            for stage in ('teacher','student') for s in R69_SEEDS)
         extra+=' '+' '.join(f'G/gate/{s}/training.json' for s in R69_SEEDS)
         if run.name==TRACE_RUN:
             extra+=' source_trace/complete.json'
+        if run.name==RETAINED_RUN:
+            extra+=' held_trace/complete.json'
+            for seed in R69_SEEDS:
+                extra+=f' G/teacher/{seed}/calibration G/student/{seed}/calibration'
     elif run.name==DETAIL_CONFIRM_RUN:
         extra=' '+' '.join(f'G/{s}/source_support.json G/{s}/steps.jsonl' for s in CONFIRM_NEW_SEEDS)
     elif run.name==DETAIL_DOSE_RUN:
@@ -191,7 +216,8 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
     with tarfile.open(fileobj=BytesIO(raw),mode='r:gz') as ar:
         for member in ar:
             path=PurePosixPath(member.name)
-            if path.is_absolute() or '..' in path.parts or path.parts[0] not in ('predictions','G','source_wave','source_trace'):
+            if path.is_absolute() or '..' in path.parts or path.parts[0] not in (
+                    'predictions','G','source_wave','source_trace','held_trace','source_action','smoke.json'):
                 raise ValueError('Unexpected DURA score artifact')
             if member.isdir():
                 continue
@@ -201,7 +227,7 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
             out.parent.mkdir(parents=True,exist_ok=True)
             with out.open('xb') as f:
                 f.write(ar.extractfile(member).read())
-    modes=tuple(SWEEP) if sweep else modes_for(run)
+    modes=LINEAGE_MODES if run.name==LINEAGE_RUN else tuple(SWEEP) if sweep else modes_for(run)
     seeds=SEEDS if run.name==DETAIL_CONFIRM_RUN else None
     pred,act=matrix(output,modes,seeds=seeds)
     truth={}

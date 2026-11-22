@@ -27,12 +27,12 @@ def batches(n, rng):
         yield result
 
 
-def train(c, device='cuda:0'):
+def train(c, device='cuda:0', *, view=None, prepare_model=None):
     if any(c.get(k) for k in ('truth', 'target_truth', 'target_inputs', 'tests', 'reader', 'F_checkpoint')):
         raise ValueError('G source training rejects F/target inputs')
     contract = read(c['cache']['source_contract'])
     roles = c['cache']['roles']
-    view = CacheView(c['cache'])
+    view = CacheView(c['cache']) if view is None else view
     if not view.ready():
         raise ValueError('Required source IQ observations missing')
     root = Path(c['output_root'])
@@ -56,6 +56,8 @@ def train(c, device='cuda:0'):
         else:
             parent, _ = load(previous, contract, roles)
         model = construct(stage, parent).to(device)
+        if prepare_model is not None:
+            prepare_model(model, stage)
         teacher = parent.to(device).eval().requires_grad_(False) if stage in ('r38', 'r44', 'r46', 'r65', 'r69') else None
         parameters = trainable(model, stage)
         optimizer = torch.optim.AdamW(parameters, lr=2e-4, weight_decay=1e-4)

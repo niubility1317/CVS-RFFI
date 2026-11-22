@@ -170,13 +170,13 @@ def worker(rt,kind,name):
     raise ValueError(f'Unknown LoRa refinement job {kind}')
 
 
-def start(rt,kind,name,gpu=None,*,module=None):
+def start(rt,kind,name,gpu=None,*,module=None,extra_keys=()):
     root=Path(rt['run_root'])
     cfg=root/'configs'/f'{kind}-{name}.json'
     keys=['run_root','source_root','parent_root','frozen_sources']
     if kind=='predict':
         keys.append('target_views')
-    write(cfg,{k:rt[k] for k in keys})
+    write(cfg,{k:rt[k] for k in (*keys,*extra_keys)})
     cmd=[sys.executable,'-u','-m',module or __spec__.name,kind,str(cfg),name]
     env=dict(os.environ,CUDA_VISIBLE_DEVICES='' if gpu is None else str(gpu),
              OMP_NUM_THREADS='2',OPENBLAS_NUM_THREADS='1',MKL_NUM_THREADS='1')

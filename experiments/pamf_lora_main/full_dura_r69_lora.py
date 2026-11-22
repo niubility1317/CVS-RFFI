@@ -17,7 +17,7 @@ from .full_dura_detail import CAP, DETAIL_CONFIRM_RUN, DETAIL_DOSE_MODES, DETAIL
 from .full_packet_data import LIMIT
 from .full_restore_draw import RUN as DRAW_RUN, load_draw
 from .full_supervised import handles
-from .full_dura_trace_source import TRACE_RUN, read_trace
+from .full_dura_trace_source import RETAINED_RUN, TRACE_RUN, held_indices, read_held, read_trace
 
 
 R69_LORA_RUN='20261122-phase1-lora-dura-r69-aligned-m2-r01'
@@ -25,6 +25,7 @@ R69_ACTION_RUN='20261122-phase1-lora-dura-r69-action-paired-m2-r01'
 R69_MODES=('direct','fixed','protect_shape','coherent_half','r69_aligned','r69_aligned_half')
 R69_ACTION_MODES=(*R69_MODES,'r69_action','r69_action_half')
 R69_TRACE_MODES=(*R69_MODES,'r69_trace','r69_trace_half')
+R69_RETAINED_MODES=(*R69_TRACE_MODES,'r69_retained','r69_retained_half')
 R69_SEEDS=DETAIL_SEEDS
 R69_STEPS=2400
 ACTION_ONLY_STEPS=600
@@ -134,6 +135,35 @@ def trace_objective(model,tracker,banks,phase):
     return physical_trace_loss(model,observed,clean,expected,phase)
 
 
+def measure_held_calibration(folder,mark,model,tracker,held,*,frozen):
+    """Compare identical unseen source waveforms after each optimizer phase."""
+    observed,clean,signal=held
+    was_training=model.training
+    model.eval()
+    totals=dict(trace_denoise=0.,trace_operator=0.,trace_variance=0.,prior_half=0.,raw=0.)
+    with torch.no_grad():
+        for x,z,s in zip(observed.split(32),clean.split(32),signal.split(32),strict=True):
+            y,rot,rms=carrier(tracker,x)
+            ground=carrier(tracker,z)[0]
+            expected=complex_iq(s)*rot.conj()/rms
+            _,stats=physical_trace_loss(model,y,ground,expected,'joint_iq')
+            delta=bounded_shape(y,canonical_stages(model,y)[-1],rms)
+            stats.update(raw=phase_wave_error(no_tone(y-ground)).mean(),
+                         prior_half=phase_wave_error(no_tone(y-ground)+.5*delta).mean())
+            for k,v in stats.items():
+                totals[k]+=float(v)*len(x)
+    model.train(was_training)
+    if frozen:
+        model.frozen.eval()
+    write(folder/f'{mark}.json',dict(n=len(observed),status='HELD_IQ_ONLY',frozen_context=frozen,
+          **{k:v/len(observed) for k,v in totals.items()},F_reads=0,TX_reads=0,target_reads=0))
+
+
+def lock_context(model):
+    model.frozen.eval().requires_grad_(False)
+    return {name:value.detach().clone() for name,value in model.frozen.state_dict().items()}
+
+
 def training_loss(model,teacher,y,clean,identity,rms,weight,*,action_weight=0.):
     joined=real_iq(torch.cat((y,identity)))
     values,variance,action,_=model.stage_outputs(joined.flatten(0,1))
@@ -165,7 +195,7 @@ def training_loss(model,teacher,y,clean,identity,rms,weight,*,action_weight=0.):
          action=forward,variance=uncertainty)
 
 
-def evidence(c,seed,stage,*,calibration=False,trace=False):
+def evidence(c,seed,stage,*,calibration=False,trace=False,retained=False):
     meta=dict(status='SOURCE_FROZEN',source_contract=c,seed=seed,stage=stage,steps=R69_STEPS,
                 coordinate='normalized_dechirped',cap=CAP,draw_run=DRAW_RUN,F_reads=0,TX_reads=0,target_reads=0)
     if calibration:
@@ -173,12 +203,15 @@ def evidence(c,seed,stage,*,calibration=False,trace=False):
     if trace:
         meta.update(physical_trace_parent=R69_LORA_RUN,coarse_only_steps=TRACE_STAGE_STEPS,
                     action_only_steps=TRACE_STAGE_STEPS,trace_draw=DRAW_RUN)
+    if retained:
+        meta.update(frozen_calibrated_context=True,training_trace_parent=TRACE_RUN,held_iq_audit=True)
     return meta
 
 
 def load_model(root,c,seed,stage,device):
     home=root/'G'/stage/str(seed)
-    expected=evidence(c,seed,stage,calibration=root.name==R69_ACTION_RUN,trace=root.name==TRACE_RUN)
+    expected=evidence(c,seed,stage,calibration=root.name==R69_ACTION_RUN,
+                      trace=root.name in (TRACE_RUN,RETAINED_RUN),retained=root.name==RETAINED_RUN)
     if read(home/'complete.json')!=expected:
         raise ValueError('Wrong R69 LoRa source ancestry or stage')
     model=skeleton('r65' if stage=='teacher' else 'r69').to(device)
@@ -191,7 +224,8 @@ def train_r69(rt,seed,stage):
         raise ValueError('Unregistered original DURA LoRa row')
     root=Path(rt['run_root'])
     calibrate=root.name==R69_ACTION_RUN
-    trace=root.name==TRACE_RUN
+    retained=root.name==RETAINED_RUN
+    trace=root.name in (TRACE_RUN,RETAINED_RUN)
     dev='cuda:0'
     torch.manual_seed(seed)
     c,(l,u,sat),(alt_l,alt_u)=source_inputs(rt,dev)
@@ -208,7 +242,17 @@ def train_r69(rt,seed,stage):
     out.mkdir(parents=True,exist_ok=False)
     inputs=(l[1:].flatten(0,1),sat,alt_l,alt_u)
     targets=(l[0],u,l[0],u)
-    bank=trace_bank(root,c,l,u,alt_l,alt_u,dev) if trace else None
+    traces=root.parent/TRACE_RUN if retained else root
+    bank=trace_bank(traces,c,l,u,alt_l,alt_u,dev) if trace else None
+    held_bank=frozen_context=None
+    if retained:
+        ids,signals=read_held(root,c)
+        j=tensor(ids,dev)
+        held_bank=alt_u[j],u[j],tensor(signals,dev)
+        if teacher is not None:
+            frozen_context=lock_context(model)
+        measure_held_calibration(out/'calibration','initial',model,tracker,held_bank,
+                                 frozen=frozen_context is not None)
     held=torch.arange(len(u),device=dev)%5==0
     u_pool=torch.where(~held)[0]
     pools=(torch.arange(len(inputs[0]),device=dev),u_pool,torch.arange(len(alt_l),device=dev),u_pool)
@@ -218,6 +262,8 @@ def train_r69(rt,seed,stage):
     with (out/'steps.jsonl').open('x',encoding='utf-8') as log:
         for step in range(1,R69_STEPS+1):
             if trace and teacher is None and step<=2*TRACE_STAGE_STEPS:
+                if retained and step==TRACE_STAGE_STEPS+1:
+                    model.frozen.coarse.eval().requires_grad_(False)
                 phase='coarse_only' if step<=TRACE_STAGE_STEPS else 'action_only'
                 loss,terms=trace_objective(model,tracker,bank,phase)
                 opt.zero_grad(set_to_none=True)
@@ -231,6 +277,13 @@ def train_r69(rt,seed,stage):
                     log.write(json.dumps(entry,allow_nan=False)+'\n')
                     log.flush()
                     print('LORA_R69_TRACE',seed,entry,flush=True)
+                if retained and step in (TRACE_STAGE_STEPS,2*TRACE_STAGE_STEPS):
+                    mark='after_coarse' if step==TRACE_STAGE_STEPS else 'after_action'
+                    if mark=='after_action':
+                        frozen_context=lock_context(model)
+                    measure_held_calibration(out/'calibration',mark,model,tracker,held_bank,
+                                             frozen=frozen_context is not None)
+                    torch.save(model.frozen.state_dict(),out/f'{mark}.pt')
                 continue
             ids=[p[torch.randint(len(p),(n,),device=dev)] for p,n in zip(pools,COUNTS,strict=True)]
             for flags,i in zip(seen,ids,strict=True):
@@ -248,7 +301,7 @@ def train_r69(rt,seed,stage):
                 loss,terms=training_loss(model,teacher,y,clean,id_wave,rms,weight,
                                          action_weight=(.15 if teacher is None else .1) if calibrate else 0.)
                 phase='joint_iq'
-                if trace:
+                if trace and not retained:
                     add,details=trace_objective(model,tracker,bank,phase)
                     loss=loss+.12*add
                     terms.update(details)
@@ -264,11 +317,17 @@ def train_r69(rt,seed,stage):
                 log.flush()
                 print('LORA_R69_ALIGNED',seed,entry,flush=True)
     torch.save(model.state_dict(),out/'model.pt')
+    if retained:
+        if frozen_context is None or any(not torch.equal(value,frozen_context[key])
+                                         for key,value in model.frozen.state_dict().items()):
+            raise ValueError('Original DURA context changed after physical calibration freeze')
+        measure_held_calibration(out/'calibration','final',model,tracker,held_bank,frozen=True)
     paired_steps=R69_STEPS-2*TRACE_STAGE_STEPS if trace and teacher is None else R69_STEPS
     write(out/'source_support.json',dict(stage=stage,seen=[int(v.sum()) for v in seen],
           practical_exposures=paired_steps*sum(COUNTS),clean_exposures=paired_steps*CLEAN,held_U=int(held.sum()),
-          trace_exposures=R69_STEPS*sum(TRACE_BATCH) if trace else 0))
-    write(out/'complete.json',evidence(c,seed,stage,calibration=calibrate,trace=trace))
+          trace_exposures=(2*TRACE_STAGE_STEPS*sum(TRACE_BATCH) if retained and teacher is None
+                           else R69_STEPS*sum(TRACE_BATCH) if trace and not retained else 0)))
+    write(out/'complete.json',evidence(c,seed,stage,calibration=calibrate,trace=trace,retained=retained))
 
 
 @torch.no_grad()
@@ -307,7 +366,12 @@ def utility(rt,seed):
     positives=torch.cat(candidates)
     if len(positives)<96:
         raise ValueError('Too few source practical pairs benefit from R69')
-    trace=fit_gate(gate,torch.cat((lclean,uclean[held_train])),positives,35,seed,uclean)
+    calibration=uclean
+    if root.name==RETAINED_RUN:
+        include=torch.ones(len(u),dtype=torch.bool,device=dev)
+        include[tensor(held_indices(len(u)),dev)]=False
+        calibration=uclean[include]
+    trace=fit_gate(gate,torch.cat((lclean,uclean[held_train])),positives,35,seed,calibration)
     checks=[]
     for x in signals:
         with torch.no_grad():
@@ -321,12 +385,14 @@ def utility(rt,seed):
     torch.save(gate.state_dict(),home/'model.pt')
     write(home/'training.json',dict(history=trace,positives=len(positives),held_U_fitting=len(held_train),
          held_U_probe=len(held_probe),checks=checks,clean_threshold=float(gate.clean_boundary)))
-    write(home/'complete.json',evidence(c,seed,'gate',calibration=root.name==R69_ACTION_RUN,trace=root.name==TRACE_RUN))
+    write(home/'complete.json',evidence(c,seed,'gate',calibration=root.name==R69_ACTION_RUN,
+                 trace=root.name in (TRACE_RUN,RETAINED_RUN),retained=root.name==RETAINED_RUN))
 
 
 def load_utility(root,c,seed,device):
     home=root/'G'/'gate'/str(seed)
-    expected=evidence(c,seed,'gate',calibration=root.name==R69_ACTION_RUN,trace=root.name==TRACE_RUN)
+    expected=evidence(c,seed,'gate',calibration=root.name==R69_ACTION_RUN,
+                      trace=root.name in (TRACE_RUN,RETAINED_RUN),retained=root.name==RETAINED_RUN)
     if read(home/'complete.json')!=expected:
         raise ValueError('Wrong R69 LoRa source utility ancestry')
     gate=ImpairmentGate().to(device)
@@ -365,8 +431,9 @@ def r69_smoke(rt):
         gradient=float(torch.nn.utils.clip_grad_norm_(teacher.frozen.estimator.parameters(),5.,error_if_nonfinite=True))
         if not gradient>0 or any(p.grad is not None for p in teacher.frozen.coarse.parameters()):
             raise ValueError('R69 source action calibration should update the estimator only')
-    if root.name==TRACE_RUN:
-        idx,traces=read_trace(root,c,'L_s')
+    if root.name in (TRACE_RUN,RETAINED_RUN):
+        physical=root.parent/TRACE_RUN if root.name==RETAINED_RUN else root
+        idx,traces=read_trace(physical,c,'L_s')
         if idx[:3].tolist()!=[0,1,2]:
             raise ValueError('R69 trace smoke must bind the first three physical labeled pairs')
         _,rot,_=carrier(tracker,x)
@@ -415,7 +482,8 @@ def r69_audit(rt,seed):
 def predict_r69(root,target,c,seed,reader,device):
     calibrate=root.name==R69_ACTION_RUN
     trace=root.name==TRACE_RUN
-    reference=root.parent/(R69_LORA_RUN if calibrate or trace else DETAIL_CONFIRM_RUN)
+    retained=root.name==RETAINED_RUN
+    reference=root.parent/(TRACE_RUN if retained else R69_LORA_RUN if calibrate or trace else DETAIL_CONFIRM_RUN)
     if read(reference/'state.json')['status']!='PREDICTIONS_FROZEN':
         raise ValueError('R69 LoRa comparison needs the frozen half-rate control')
     old=reference/'predictions'/str(seed)
@@ -423,14 +491,15 @@ def predict_r69(root,target,c,seed,reader,device):
     previous=receipt.pop('activation')
     expected=dict(status='PREDICTIONS_FROZEN',seed=seed,target_truth_read=False,receivers=list(TARGET),
                   views=list(VIEWS),per_receiver=LIMIT)
-    if receipt!=dict(expected,modes=list(R69_MODES if calibrate or trace else DETAIL_DOSE_MODES)):
+    control=R69_TRACE_MODES if retained else R69_MODES if calibrate or trace else DETAIL_DOSE_MODES
+    if receipt!=dict(expected,modes=list(control)):
         raise ValueError('Wrong existing R69 LoRa comparison controls')
     gate=load_utility(root,c,seed,device)
     model=load_model(root,c,seed,'student',device)
     out=root/'predictions'/str(seed)
     out.mkdir(parents=True,exist_ok=False)
     records={}
-    modes=R69_TRACE_MODES if trace else R69_ACTION_MODES if calibrate else R69_MODES
+    modes=R69_RETAINED_MODES if retained else R69_TRACE_MODES if trace else R69_ACTION_MODES if calibrate else R69_MODES
     for rx in TARGET:
         arrays=np.load(target/f'{rx}.npy',mmap_mode='r',allow_pickle=False)
         if arrays.shape!=(len(VIEWS),LIMIT,6,2,256) or arrays.dtype!=np.float32:
@@ -452,7 +521,7 @@ def predict_r69(root,target,c,seed,reader,device):
                     for values,labels in zip(current,logits.argmax(1).chunk(2),strict=True):
                         values[selected]=labels.cpu().numpy()
                     n+=len(selected)
-            key='trace_active' if trace else 'action_active' if calibrate else 'r69_active'
+            key='retained_active' if retained else 'trace_active' if trace else 'action_active' if calibrate else 'r69_active'
             records[f'{rx}/{v}']=dict(previous[f'{rx}/{v}'],**{key:n})
             for mode,values in zip(modes,(*controls,*current),strict=True):
                 np.save(out/f'{rx}__{v}__{mode}.npy',values)

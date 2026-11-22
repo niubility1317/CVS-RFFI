@@ -13,6 +13,7 @@ from .packet_physics import CONTEXT, channel, chirp_samples, chirp_windows, hard
 
 
 TRACE_RUN='20261122-phase1-lora-dura-r69-physical-trace-m2-r01'
+RETAINED_RUN='20261122-phase1-lora-dura-r69-retained-calibration-m2-r01'
 TRACE_ROLES=('L_s','U_s')
 
 
@@ -84,3 +85,41 @@ def read_trace(root,c,role):
     if a.shape!=(len(idx),6,2,256) or a.dtype!=np.float32:
         raise ValueError('Incomplete source-only LoRa physical trace')
     return idx,a
+
+
+def held_indices(n):
+    return np.arange(5,n,10,dtype=np.int64)[::6]
+
+
+def build_held(rt):
+    """Fixed diagnostic U subset, outside both G updates and utility fitting."""
+    root=Path(rt['run_root'])
+    src,_,contract=handles(rt)
+    raw,rx,pid,slot=source_role(src,contract,'U_s')
+    observed=load_draw(root.parent/DRAW_RUN,'U_s')
+    idx=held_indices(len(raw))
+    out=root/'held_trace'
+    out.mkdir(exist_ok=False)
+    signals=np.lib.format.open_memmap(out/'signals.npy',mode='w+',dtype=np.float32,shape=(len(idx),6,2,256))
+    with ProcessPoolExecutor(4) as pool:
+        jobs=(('U_s',raw[i],rx[i],pid[i],slot[i]) for i in idx)
+        for row,(r,s) in enumerate(pool.map(source_trace,jobs,chunksize=20)):
+            if not np.array_equal(r,observed[idx[row]]) or not np.isfinite(s).all():
+                raise ValueError('Held LoRa physical trace differs from the original same-packet draw')
+            signals[row]=s
+    signals.flush()
+    write(out/'complete.json',dict(status='HELD_TRACE_READY',source_contract=contract,count=len(idx),
+                draw_run=DRAW_RUN,draw=DRAW,TX_reads=0,F_reads=0,target_reads=0))
+
+
+def read_held(root,c):
+    out=root/'held_trace'
+    idx=held_indices(c['counts']['U_s'])
+    meta=read(out/'complete.json')
+    if meta!=dict(status='HELD_TRACE_READY',source_contract=c,count=len(idx),draw_run=DRAW_RUN,
+                  draw=DRAW,TX_reads=0,F_reads=0,target_reads=0):
+        raise ValueError('Held LoRa trace role differs')
+    arr=np.load(out/'signals.npy',allow_pickle=False,mmap_mode='r')
+    if arr.shape!=(len(idx),6,2,256) or arr.dtype!=np.float32:
+        raise ValueError('Incomplete held diagnostic signals')
+    return idx,arr
