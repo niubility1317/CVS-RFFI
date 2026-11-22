@@ -12,6 +12,17 @@
 
 [WiSig DURA v1.0 定义](E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010/docs/DURA_V1.md) · [LoRa 三种子评分](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_detail_confirm_readout/scores.json) · [LoRa 轨迹版评分](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_r69_trace_readout/scores.json)
 
+| Practical 场景 | LoRa 直通 | LoRa 三种子高相干半量 | 净增益 | WiSig 原 DURA |
+|---|---:|---:|---:|---:|
+| 郊区高 | 63.6900% | 63.8156% | +0.1256 个百分点 | 82.8250% |
+| 郊区中 | 59.5478% | 60.4300% | +0.8822 个百分点 | 81.5607% |
+| 郊区低 | 55.5322% | 56.8344% | +1.3022 个百分点 | 80.0583% |
+| 城区高 | 61.8444% | 62.0100% | +0.1656 个百分点 | 81.7458% |
+| 城区中 | 49.4267% | 50.2467% | +0.8200 个百分点 | 75.4863% |
+| 城区低 | 40.6667% | 41.7733% | +1.1067 个百分点 | 68.8899% |
+
+LoRa 高相干半量三种子合计纠正 16,011 次，同时改错 12,049 次，净增 3,962 次。45 个种子/RX 组合中有 42 个取得净增益，3 个下降。改善出现在多数接收机，发送机之间差别更大。TX 31 净增 2,849 次，TX 35、37 分别净少 595、323 次。这支持检查指纹保真和错误转移。TX 编号来自冻结后的单独评分，仅用于归因。
+
 ## 原训练链与前几轮的实际差异
 
 | 阶段 | WiSig 同契约保留流程 | LoRa 已测原 R69 适配的差异和影响 |
@@ -44,6 +55,10 @@ WiSig 历史 residual 观测带有 +24 点实现延迟。固定源 V 上，仅�
 
 [同包噪声反事实](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_fingerprint_audit/r69_channel_noise_oracle_source.json)
 
+另一项源 V 分解在 15,374 次满足固定高相干规则的 practical 曝光上替换已知配对差分。只替换六个 chirp 的共用波形差分净多判对 672 次，只替换各 chirp 的独立差分净多 193 次，同时替换两者的非载波分量净多 1,892 次，完整 clean 反事实净多 2,122 次。两部分会交互，单独纠正其中一项的收益远小于同时纠正。此面板采用固定源域样本和实际配对 clean，反映目标恢复方向的可用信息，数值不能外推为真实接收时可直接实现的收益。
+
+[高相干配对波形反事实](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_fingerprint_audit/coherent_shape_oracle.json)
+
 ### 覆盖受限，扩大覆盖还要求恢复方向更可靠
 
 轨迹版在种子 02 的 180,000 次目标 practical 曝光上只处理 28,720 次（15.96%），相对直通净多判对 191 次。旧门控旁路了 30,000 个 clean，旁路本身解释了 clean 保持。在另一个固定源 V 实验中，1,730 次门控内观测使用限幅全量净多判对 10 次，直接使用未限幅完整波形净少判对 54 次。在另外 5,335 次高相干曝光上，轨迹半量、完整波形和仅粗恢复分别净多判对 89、24、-529 次。现有模型的主要问题包含输出方向和粗恢复，盲目开门会放大已有破坏。需要用完整训练链重新验证输出，再决定怎样扩大处理范围。
@@ -63,6 +78,12 @@ Labeled/Unlabeled 中的 TX 真值不进入 DURA。Practical 训练与对照都�
 | 源 V 的配对波形误差持续下降，正式正确数收益仍小 | 用同包固定 F 定位幅相、RFF 频段与净纠错。下一轮保持恢复器无 TX 标签和 F-free 训练。 |
 
 这轮保持原训练损失与优化器、阶段顺序及蒸馏方式。为适配 LoRa 对齐输入，使用 28,000 个源训练包和每包三组对齐 residual 代理生成作用监督。粗恢复混合该代理、原 LoRa full 配对及 clean；R17 至 R69 使用原 LoRa full 配对及 clean。从代理删去初始八点实现延迟及负时间 FIR 尾，记录删除的能量。该代理提供 LoRa 坐标下精确可计算的训练算子，LoRa full 真实模拟路径仍可能有算子无法表达的分量，后续按上述同配对结果判断。
+
+正式续发使用 `20261122-phase1-lora-dura-wisig-lineage-m1-r02`。首发源 smoke 的输入类型错误已修复。续发冒烟使用六景真实 LoRa 源 IQ、真实同契约旧 R69 权重，验证有限作用梯度和输出。正式读出使用原版两阶段 R69 数学路径的 PyTorch 调用。本轮未重复 WiSig CUDA Graph 的时延实验。
+
+84,000 组源作用代理已生成。因果对齐丢弃的 FIR 能量中位数为 0.0028%，第 95 百分位为 0.2116%，最大值为 41.35%。多数代理只需要移除极小的一部分，少量困难条件可能有很大的前游分量。后续应特别核对这类分量是否在 LoRa full practical 中制约 R17 的软一致性更新。
+
+[正式续发登记](E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010/automation_reports/CV-SincNet/20261122-phase1-lora-dura-wisig-lineage-m1-r02/report.md)
 
 已经完成的联合读出也支持先固定识别器分析。以种子 02 为例，新的 Practical REPL 识别器配轨迹 R69 后六景 56.0122%，它自己的 clean 68.6300%，低于原 Tri-set 的 70.3633%。恢复网络相对各自直通只新增约 0.1250 个百分点；相对同种子原 Tri-set 配高相干半量的 56.0417% 仍少 0.0294 个百分点。后续 DURA 评测保持识别器与既有高相干半量对照匹配。
 
