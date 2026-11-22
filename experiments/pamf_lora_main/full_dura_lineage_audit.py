@@ -39,9 +39,15 @@ def waveform_error(x,y):
     received=complex_iq(y)
     power=ref.abs().square().mean(-1).clamp_min(1e-8)
     gain=(received*ref.conj()).mean(-1)/power
+    received_power=received.abs().square().mean(-1)
+    residual=(received-gain[:,None]*ref).abs().square().mean(-1)
+    unexplained=torch.where(received_power>1e-8,residual/received_power.clamp_min(1e-8),
+                            torch.ones_like(received_power))
     return {
         'iq_nmse': (received-ref).abs().square().mean(-1)/power,
-        'gain_removed_nmse': (received-gain[:,None]*ref).abs().square().mean(-1)/power,
+        'gain_removed_nmse': residual/power,
+        'relative_power': received_power/power,
+        'unexplained_energy_fraction': unexplained,
     }
 
 

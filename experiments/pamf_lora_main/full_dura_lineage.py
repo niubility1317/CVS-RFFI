@@ -11,7 +11,7 @@ from experiments.cric_dura_comparison.g_train import train
 from experiments.cric_dura_comparison.io import read, tensor, write
 from .data import SOURCE, TARGET, VIEWS
 from .full_adaptive import SET_METHOD, SET_RUN, case, complete_f, wait_for
-from .full_dura_lineage_data import LoRaView, aligned_teacher, build, source_iq
+from .full_dura_lineage_data import LoRaView, aligned_teacher, build, in_observed_phase, source_iq
 from .full_dura_r69_lora import R69_SEEDS, R69_TRACE_MODES, load_model, load_utility
 from .full_dura_trace_source import TRACE_RUN
 from .full_packet_data import LIMIT, PROTOCOL
@@ -24,6 +24,8 @@ from .runner import activate
 
 
 RUN='20261122-phase1-lora-dura-wisig-lineage-m1-r02'
+PHASE_RUN='20261122-phase1-lora-dura-wisig-observed-phase-m1-r01'
+RUNS=(RUN,PHASE_RUN)
 MODES=(*R69_TRACE_MODES,'lineage_native','lineage_guarded')
 SEED,=R69_SEEDS
 
@@ -50,8 +52,24 @@ def smoke(rt):
     clean=np.stack([l[0,i,i] for i in range(6)])
     examples=[aligned_teacher((x,v,SOURCE[0],f'lineage-smoke-{i}',i))[0]
               for i,(x,v) in enumerate(zip(clean,VIEWS[1:],strict=True))]
+    received,kernel,coefficients,variance=(np.stack(a) for a in zip(*examples,strict=True))
+    use_phase=root.name==PHASE_RUN
+    if use_phase:
+        from experiments.pamf_action_restore.operators import Action
+        from experiments.pamf_restoration.models import complex_iq
+
+        def simulate(ground,coef):
+            a=tensor(coef)
+            action=Action(complex_iq(tensor(kernel)),torch.complex(a[:,0],a[:,1]),
+                          torch.complex(a[:,2],a[:,3]))
+            return action(complex_iq(tensor(ground)))
+
+        raw=simulate(clean,coefficients)
+        clean,coefficients=in_observed_phase(clean,received,coefficients)
+        if not torch.allclose(raw,simulate(clean,coefficients),atol=2e-6,rtol=2e-5):
+            raise ValueError('Rotating the reference changed the source action')
     x=tensor(clean)
-    received,kernel,coefficients,variance=(tensor(np.stack(a)) for a in zip(*examples,strict=True))
+    received,kernel,coefficients,variance=(tensor(a) for a in (received,kernel,coefficients,variance))
     coarse=construct('coarse')
     action=construct('action',coarse)
     prepare_model(action,'action')
@@ -68,15 +86,17 @@ def smoke(rt):
     with torch.no_grad():
         predict_iq(previous,tensor(l[1,:2]))
     write(root/'smoke.json',dict(status='PASS',seed=SEED,scenes=list(VIEWS[1:]),
-          action_gradient=float(gradient),F_reads=0,TX_reads=0,target_reads=0))
+          action_gradient=float(gradient),observed_phase=use_phase,F_reads=0,TX_reads=0,target_reads=0))
 
 
 def stage_train(rt):
     source,_,_=handles(rt)
-    out=Path(rt['run_root'])/'G'/'lineage'
+    root=Path(rt['run_root'])
+    out=root/'G'/'lineage'
+    use_phase=root.name==PHASE_RUN
     train(dict(output_root=str(out),model_seed=SEED,code_commit=rt['code_commit'],
-          cache=dict(source_contract=str(source/'contract.json'),roles='LU')),
-          view=LoRaView(rt),prepare_model=prepare_model)
+          cache=dict(source_contract=str(source/'contract.json'),roles='LU'),observed_phase=use_phase),
+          view=LoRaView(rt,observed_phase=use_phase),prepare_model=prepare_model)
 
 
 def frozen_g(root,c,device):
@@ -186,9 +206,15 @@ def dispatch(rt):
         wait_for(root.parent/TRACE_RUN,'PREDICTIONS_FROZEN')
         if launch(rt,'smoke','source').wait():
             raise RuntimeError('LoRa DURA lineage source smoke failed')
-        write(state,dict(status='BUILDING_SOURCE_ACTION'),exclusive=False)
-        if launch(rt,'build','source').wait():
-            raise RuntimeError('LoRa source action generation failed')
+        if root.name==PHASE_RUN:
+            bank=root.parent/RUN/'source_action'
+            if read(bank/'complete.json')['status']!='SOURCE_ACTION_READY':
+                raise ValueError('Both LoRa curricula require the same completed action bank')
+            (root/'source_action').symlink_to(bank,target_is_directory=True)
+        else:
+            write(state,dict(status='BUILDING_SOURCE_ACTION'),exclusive=False)
+            if launch(rt,'build','source').wait():
+                raise RuntimeError('LoRa source action generation failed')
         write(state,dict(status='SOURCE_DURA_LINEAGE'),exclusive=False)
         schedule(rt,[('train',str(SEED))],launch)
         write(state,dict(status='SOURCE_AUDIT'),exclusive=False)

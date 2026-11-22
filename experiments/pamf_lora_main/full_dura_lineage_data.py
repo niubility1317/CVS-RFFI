@@ -32,6 +32,27 @@ def as_complex(a):
     return a[0].astype(np.float64)+1j*a[1].astype(np.float64)
 
 
+def in_observed_phase(clean,received,coefficients=None):
+    """Choose the observed phase while preserving the clean IQ amplitude and shape."""
+    x=clean[:,0]+1j*clean[:,1]
+    y=received[:,0]+1j*received[:,1]
+    cross=(y*x.conj()).sum(-1,keepdims=True)
+    move=(np.abs(cross[:,0])>1e-8)&np.any(clean!=received,axis=(1,2))
+    phase=np.exp(1j*np.angle(cross[move]))
+    ref=x[move]*phase
+    target=clean.copy()
+    target[move]=np.stack((ref.real,ref.imag),axis=1)
+    if coefficients is None:
+        return target
+    # The rotated reference must produce the same physical observation.
+    q=coefficients[move]
+    main=(q[:,0]+1j*q[:,1])*phase.conj()
+    image=(q[:,2]+1j*q[:,3])*phase
+    output=coefficients.copy()
+    output[move]=np.stack((main.real,main.imag,image.real,image.imag),axis=1)
+    return target,output
+
+
 def aligned_teacher(item):
     """Generate an exact known-action residual proxy at the zero-delay target origin."""
     from experiments.pamf_action_restore.data import teacher
@@ -131,8 +152,9 @@ def build(rt):
 
 
 class LoRaView:
-    def __init__(self,rt):
+    def __init__(self,rt,*,observed_phase=False):
         self.root=Path(rt['run_root'])
+        self.observed_phase=observed_phase
         src,cache,self.contract=handles(rt)
         self.l,self.u,self.u_first=source_iq(cache)
         alt=self.root.parent/DRAW_RUN
@@ -172,6 +194,8 @@ class LoRaView:
             a['coefficients'][identity]=0.
             a['coefficients'][identity,0]=1.
             a['variance'][identity]=1e-8
+            if self.observed_phase:
+                ground,a['coefficients']=in_observed_phase(ground,a['received'],a['coefficients'])
             return dict(clean=ground,**a)
         observed=ground.copy()
         real=q>=.75 if coarse else ~identity
@@ -187,4 +211,6 @@ class LoRaView:
         if coarse:
             residual=(q>=.15)&~real
             observed[residual]=self.actions['received'][indices[residual]]
+        if self.observed_phase:
+            ground=in_observed_phase(ground,observed)
         return dict(clean=ground,**{'coarse' if coarse else 'received':observed})

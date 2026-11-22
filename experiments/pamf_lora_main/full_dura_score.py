@@ -18,7 +18,7 @@ from .full_dura import (COVERAGE_RUN, MODES, PROJECTED_RUN, SHAPE_RUN, STACK_RUN
 from .full_dura_core import COVERAGE_RECIPES
 from .full_dura_detail import (CONFIRM_NEW_SEEDS, DETAIL_CONFIRM_RUN, DETAIL_DOSE_MODES, DETAIL_DOSE_RUN,
                                DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS)
-from .full_dura_lineage import MODES as LINEAGE_MODES, RUN as LINEAGE_RUN, STAGES as LINEAGE_STAGES
+from .full_dura_lineage import MODES as LINEAGE_MODES, RUNS as LINEAGE_RUNS, STAGES as LINEAGE_STAGES
 from .full_dura_r69_lora import (R69_ACTION_MODES, R69_ACTION_RUN, R69_LORA_RUN,
                                  R69_MODES, R69_RETAINED_MODES, R69_SEEDS, R69_TRACE_MODES)
 from .full_dura_trace_source import RETAINED_RUN, TRACE_RUN
@@ -176,7 +176,7 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
     frozen=run.name in (SHAPE_RUN,SWEEP_RUN,STACK_RUN) or sweep
     cmd=['ssh','-F',str(ssh_config),'-T','-o','BatchMode=yes','-o','ConnectTimeout=10','N607']
     wait_for_predictions(cmd,root)
-    if run.name==LINEAGE_RUN:
+    if run.name in LINEAGE_RUNS:
         extra=' source_action/complete.json smoke.json G/lineage/complete.json'
         extra+=' '+' '.join(f'G/lineage/{s}/{name}' for s in LINEAGE_STAGES
                             for name in ('training.jsonl','complete.json'))
@@ -227,7 +227,7 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
             out.parent.mkdir(parents=True,exist_ok=True)
             with out.open('xb') as f:
                 f.write(ar.extractfile(member).read())
-    modes=LINEAGE_MODES if run.name==LINEAGE_RUN else tuple(SWEEP) if sweep else modes_for(run)
+    modes=LINEAGE_MODES if run.name in LINEAGE_RUNS else tuple(SWEEP) if sweep else modes_for(run)
     seeds=SEEDS if run.name==DETAIL_CONFIRM_RUN else None
     pred,act=matrix(output,modes,seeds=seeds)
     truth={}
