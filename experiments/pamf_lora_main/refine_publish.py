@@ -9,11 +9,12 @@ from .publish import release, release_commit
 RUN='20261122-phase1-lora-packet-refine-m6-r01'
 SUPERVISED_RUN='20261122-phase1-lora-supervised-extension-m3-r01'
 HOLDOUT_RUN='20261122-phase1-lora-supervised-rxholdout-m3-r01'
+ADAPTIVE_RUN='20261122-phase1-lora-adaptive-repair-m3-r01'
 PARENT='20261122-phase1-lora-packet-aligned-pilot-m5-r02'
 DATA='20261122-phase1-lora-packet-aligned-pilot-m5-r01'
 
 
-def publish(repo,output,context,ssh_config,parent_submit,data_submit,supervised=False,holdout=False):
+def publish(repo,output,context,ssh_config,parent_submit,data_submit,supervised=False,holdout=False,adaptive=False):
     cfg=read(context)
     rt={k:cfg[k] for k in ('project','python','frozen_sources')}
     p=PurePosixPath(rt['project'])
@@ -25,7 +26,9 @@ def publish(repo,output,context,ssh_config,parent_submit,data_submit,supervised=
         if (PurePosixPath(prior['cwd'])!=cwd or PurePosixPath(prior['run_root'])!=run
                 or prior['archive_transfer']!='VERIFIED'):
             raise ValueError('Previously verified parent and data release required')
-    if holdout:
+    if adaptive:
+        run,runner=ADAPTIVE_RUN,'adaptive_repair'
+    elif holdout:
         run,runner=HOLDOUT_RUN,'holdout'
     elif supervised:
         run,runner=SUPERVISED_RUN,'supervised_extension'
@@ -47,4 +50,5 @@ if __name__=='__main__':
     mode=p.add_mutually_exclusive_group()
     mode.add_argument('--supervised',action='store_true')
     mode.add_argument('--holdout',action='store_true')
+    mode.add_argument('--adaptive',action='store_true')
     publish(**vars(p.parse_args()))

@@ -37,7 +37,7 @@ def load_matrix(root, readouts=READOUTS):
     return predictions
 
 
-def score(dataset, output, readouts=READOUTS):
+def score(dataset, output, readouts=READOUTS, *, baseline=None):
     preds=load_matrix(output/'predictions',readouts)
     truth={}
     with zipfile.ZipFile(dataset/'multiple_receiver_test.zip') as f:
@@ -52,15 +52,18 @@ def score(dataset, output, readouts=READOUTS):
                 rows={r:preds[method,mode,view,r] for r in TARGET}
                 a=np.concatenate(list(rows.values()))
                 ok=a==target
-                base=np.concatenate([preds[method,'direct',view,r] for r in TARGET])==target
+                base=np.concatenate([preds[baseline or method,'direct',view,r] for r in TARGET])==target
                 results.append(dict(method=method,readout=mode,view=view,n=len(target),
                     accuracy=float(ok.mean()),macro_f1=macro_f1(target,a),
                     by_rx={r:float((x==truth[r]).mean()) for r,x in rows.items()},
                     gained=int((ok&~base).sum()),lost=int((~ok&base).sum())))
-    write(output/'scores.json',dict(status='SCORED_COMPLETE',truth_last=True,results=results))
+    result=dict(status='SCORED_COMPLETE',truth_last=True,results=results)
+    if baseline is not None:
+        result['paired_baseline']=baseline
+    write(output/'scores.json',result)
 
 
-def score_refined_u(dataset,output,source,methods):
+def score_refined_u(dataset,output,source,methods,epochs=18):
     c=read(source/'contract.json')
     with np.load(source/'U_s_metadata.npz',allow_pickle=False) as m:
         if 'y' in m.files or m['ids'].tolist()!=c['role_ids']['U_s']:
@@ -81,34 +84,43 @@ def score_refined_u(dataset,output,source,methods):
         if p.ndim!=2 or p.shape[1]!=3 or p.dtype.kind!='i':
             raise ValueError('Invalid accepted U records')
         ep,idx,cls=p.T
-        if ((idx<0)|(idx>=len(truth))|(cls<0)|(cls>=len(CLASSES))|(ep<1)|(ep>18)).any():
+        if ((idx<0)|(idx>=len(truth))|(cls<0)|(cls>=len(CLASSES))|(ep<1)|(ep>epochs)).any():
             raise ValueError('Invalid U accepted physical index or prediction')
         good=truth[idx]==cls
         result[method]=dict(accepted=len(p),correct=int(good.sum()),unique=int(len(np.unique(idx))),
-            by_epoch=[dict(epoch=i,total=int((ep==i).sum()),correct=int((good&(ep==i)).sum())) for i in range(1,19)],
+            by_epoch=[dict(epoch=i,total=int((ep==i).sum()),correct=int((good&(ep==i)).sum())) for i in range(1,epochs+1)],
             by_predicted_class=[dict(tx=label,total=int((cls==i).sum()),correct=int((good&(cls==i)).sum()))
                                 for i,label in enumerate(CLASSES)])
     write(output/'u_offline_scores.json',dict(status='SCORED_COMPLETE',truth_last=True,records=result))
 
 
-def collect(submit, ssh_config, dataset, output, refinement=False, source=None):
+def collect(submit, ssh_config, dataset, output, refinement=False, source=None, adaptive=False):
     root=shlex.quote(read(submit)['run_root'])
     conn=['ssh','-F',str(ssh_config),'-T','-o','BatchMode=yes','-o','ConnectTimeout=10','N607']
     wait_for_predictions(conn,root)
     readouts=READOUTS
     extra=''
-    if refinement:
+    epochs=18
+    baseline=None
+    if adaptive:
+        from .adaptive_repair import EPOCHS as epochs, READOUTS as readouts
+        baseline='plain_pl'
+        extra=' source_policy.json'
+    elif refinement:
         from .refine_runner import READOUTS as readouts
+    if refinement or adaptive:
         if source is None:
             raise ValueError('Independent U scoring requires local source IDs')
-        extra=' '+ ' '.join(f'F/{m}/accepted_U.npy F/{m}/epochs.jsonl' for m in readouts)
+        extra+=' '+ ' '.join(f'F/{m}/accepted_U.npy F/{m}/epochs.jsonl' for m in readouts)
+    if refinement:
         extra+=' G/phase/epochs.jsonl G/chirp/epochs.jsonl'
     raw=subprocess.check_output([*conn,f'tar -czf - -C {root} predictions source_audit.json{extra}'],timeout=120)
     output.mkdir(parents=True,exist_ok=False)
     with tarfile.open(fileobj=BytesIO(raw),mode='r:gz') as archive:
         for member in archive:
             path=PurePosixPath(member.name)
-            allowed=('predictions','source_audit.json','F','G') if refinement else ('predictions','source_audit.json')
+            allowed=('predictions','source_audit.json','F','G','source_policy.json') if refinement or adaptive else (
+                    'predictions','source_audit.json')
             if path.is_absolute() or '..' in path.parts or path.parts[0] not in allowed:
                 raise ValueError('Unexpected packet result archive')
             if member.isdir():
@@ -119,9 +131,9 @@ def collect(submit, ssh_config, dataset, output, refinement=False, source=None):
             dest.parent.mkdir(parents=True,exist_ok=True)
             with dest.open('xb') as f:
                 f.write(archive.extractfile(member).read())
-    score(dataset,output,readouts)
-    if refinement:
-        score_refined_u(dataset,output,source,readouts)
+    score(dataset,output,readouts,baseline=baseline)
+    if refinement or adaptive:
+        score_refined_u(dataset,output,source,readouts,epochs)
     print('PACKET_SCORED',output/'scores.json',flush=True)
 
 
@@ -129,6 +141,8 @@ if __name__=='__main__':
     p=argparse.ArgumentParser()
     for k in ('submit','ssh-config','dataset','output'):
         p.add_argument('--'+k,type=Path,required=True)
-    p.add_argument('--refinement',action='store_true')
+    mode=p.add_mutually_exclusive_group()
+    mode.add_argument('--refinement',action='store_true')
+    mode.add_argument('--adaptive',action='store_true')
     p.add_argument('--source',type=Path)
     collect(**vars(p.parse_args()))

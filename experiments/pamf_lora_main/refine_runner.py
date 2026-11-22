@@ -122,15 +122,13 @@ def source_audit(root,source,parent,cache,c):
     write(root/'source_audit.json',dict(status='SOURCE_AUDIT_COMPLETE',target_reads=0,records=detail))
 
 
-def predict(root,parent,c,target,name):
+def predict_models(root,parent,target,name,model,restore,modes):
     if read(parent/'state.json')['status']!='PREDICTIONS_FROZEN':
         raise ValueError('Incomplete immutable parent packet view source')
     if target!=parent/'target_views' or read(target/'complete.json')!=dict(status='TARGET_READY',
              target_truth_read=False,receivers=list(TARGET),per_receiver=TARGET_LIMIT,views=list(VIEWS)):
         raise ValueError('Exact same blinded target rows and seven views required')
     dev='cuda:0'
-    f=load_f(root,c,name,dev)
-    gs=load_restorers(root,parent,c,dev) if name=='spectral_tri' else {}
     out=root/'predictions'/name
     out.mkdir(parents=True,exist_ok=False)
     counts={}
@@ -139,13 +137,20 @@ def predict(root,parent,c,target,name):
         if x.shape!=(len(VIEWS),TARGET_LIMIT,6,2,256):
             raise ValueError('Target view shape differs')
         for i,v in enumerate(VIEWS):
-            pred,gate=infer(f,gs,tensor(x[i],dev))
+            pred,gate=infer(model,restore,tensor(x[i],dev))
             for k,p in pred.items():
                 np.save(out/f'{rx}__{v}__{k}.npy',p)
             counts[f'{rx}/{v}']={k:sum(a==0 for a in g) for k,g in gate.items()}
     write(out/'complete.json',dict(status='PREDICTIONS_FROZEN',method=name,seed=SEED,target_truth_read=False,
-        receivers=list(TARGET),per_receiver=TARGET_LIMIT,views=list(VIEWS),modes=list(READOUTS[name]),
+        receivers=list(TARGET),per_receiver=TARGET_LIMIT,views=list(VIEWS),modes=list(modes),
         pass_through=counts))
+
+
+def predict(root,parent,c,target,name):
+    dev='cuda:0'
+    f=load_f(root,c,name,dev)
+    gs=load_restorers(root,parent,c,dev) if name=='spectral_tri' else {}
+    return predict_models(root,parent,target,name,f,gs,READOUTS[name])
 
 
 def worker(rt,kind,name):
