@@ -92,3 +92,22 @@ Clean 中非载波修正占修正总能量的约 91%。仅用载波修正时，c
 观察相位训练明显缓解了最后一次展开的强缩幅。第三步仍使六景比第二步少 13 次正确，城区低从 50/120 到 42/120；该景直通为 44/120。Clean 观察相位 R17 三步均为 68/120，原坐标各步为 80/120，直通为 94/120。这个对照支持优先保留观察相位坐标，同时继续检查弱信道动作估计和高保真先验的监督。当前证据来自源 V，R38 至 R69 继续按各自原预算完成，正式七景仍由冻结后的独立读出判断。
 
 [观察相位 R17 分级读出](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_observed_phase_source_panel/r17_prior_readout.json) · [原坐标 R17 分级读出](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_lineage_r02_source_panel/r17_prior_readout.json) · [正式三种子口径](E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010/automation_reports/CV-SincNet/20261122-phase1-lora-dura-wisig-lineage-m1-r02/report.md)
+
+## 冻结 R38 的阶段对照
+
+同一冻结 Tri-set、同一 120 个源包。固定粗恢复先验的对照保留各自 R38 已训练好的接收算子、初值和三次各两步 CG。每列 practical 为六景合计 720 次曝光。
+
+| 读出 | 原坐标 R38 | 观察相位 R38 |
+|---|---:|---:|
+| 直通 | 395 | 395 |
+| R38 自身算子与固定粗恢复先验 | 279 | 311 |
+| R38 第一步 | 296 | 355 |
+| R38 第二步 | 307 | 366 |
+| R38 第三步 | 156 | 311 |
+| 完整 R38 的 clean 正确数 | 79/120 | 78/120 |
+| 完整 R38 的城区低正确数 | 24/120 | 34/120 |
+| 完整 R38 的城区低输出能量比 | 0.103 | 0.962 |
+
+观察相位保住了城区低输出能量，并把完整 R38 六景正确数由 156 提到 311。它的第二次展开达到 366，第三次进入的恢复方向仍造成 55 次净损失，城区低从 45 下降到 34，幅度保持未能阻止识别损伤。相比观察相位 R17，R38 最终 clean 从 68/120 到 78/120，六景从 341 到 311。源 V 证据支持后续同时检查各次展开的细节保真及 clean 保护。既有完整训练链继续，正式性能按冻结七景评估。
+
+[相位 R38 分级读出](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_observed_phase_source_panel/r38_prior_readout.json) · [原坐标 R38 分级读出](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_lineage_r02_source_panel/r38_prior_readout.json)

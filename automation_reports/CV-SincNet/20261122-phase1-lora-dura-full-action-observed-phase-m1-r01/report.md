@@ -45,3 +45,21 @@ N607 已完成 L 2,800 包、U 25,200 包的两份已登记 full practical，合
 Full 监督在所有六景降低了未经额外标量校正的 full 动作误差。固定 soft solve 和同一冻结 F 时，六景比代理监督少 2 次、城区低多 2 次、clean 少 3 次。比直通多判对 58 次，同时把 102 次原正确改错。算子监督只能解释目前一部分性能差距，剩余主要看展开阶段对精细波形的保真。两版作用冻结后均继续完整训练，正式性能由各自七景冻结评分判断。
 
 [Full 界面物理探针](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_full_action_observed_phase_source_panel/full_action_probe_gauge.json) · [冻结作用阶段读出](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_full_action_observed_phase_source_panel/action_frozen_tri_set.json)
+
+## 冻结 R17 逐步读出
+
+用同一冻结 Tri-set、同一 120 个源 V 包比较 R17。两条线的 R17 前缀与各自冻结的作用阶段状态逐点一致。固定粗恢复先验和三次各两步 CG 的对照读出与各自作用阶段一致。表中 practical 统计为六景 720 次曝光。
+
+| 读出 | 观察相位原代理 | 观察相位 Full 动作监督 |
+|---|---:|---:|
+| 直通 | 395 | 395 |
+| 固定粗恢复先验 | 353 | 351 |
+| R17 第一步 | 354 | 339 |
+| R17 第二步 | 354 | 345 |
+| R17 第三步 | 341 | 355 |
+| 完整 R17 的 clean 正确数 | 68/120 | 65/120 |
+| 完整 R17 的城区低强度正确数 | 42/120 | 44/120 |
+
+Full 作用监督对照在最后一步增加 10 次六景正确判定，其 R17 完整输出比代理监督多 14 次。原代理则在第三步少 13 次。两个版本完整 R17 都低于直通，且 Full 监督 clean 略低。Full R17 的最后一步城区低输出能量为参考的 96.7%，相位代理为 96.5%。完整模型已进入 R38，以同一测试流程验证效果能否延续。
+
+[Full R17 逐步结果](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_full_action_observed_phase_source_panel/r17_prior_readout.json) · [配对观察相位 R17](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_observed_phase_source_panel/r17_prior_readout.json)
