@@ -3,6 +3,7 @@ import copy
 import torch
 from torch import nn
 from torch.nn import functional as F
+import pytest
 
 from experiments.pamf_lora_main import phase1
 from experiments.practical_full_2x2 import objectives
@@ -114,3 +115,24 @@ def test_only_the_two_registered_r03_family_options_apply():
         assert not old['riei_cosine_tail'] and old['tx_label_smoothing'] == 0.
     torch.testing.assert_close(torch.tensor([riei_tail_lr(1e-4, p) for p in (0., .5, .75, 1.)]),
                                torch.tensor([1e-4, 1e-4, 5.5e-5, 1e-5]))
+
+
+def test_long_budget_arms_match_and_supervised_cannot_open_u(monkeypatch):
+    base = dict(code_commit='commit', source_root='source', source_practical='views.npy',
+                run_root='output', ibrff_model_root='ib', sdg_model_root='sdg')
+    for family, seed in phase1.registered_rows(phase1.LONG_SUP_RUN):
+        sup = phase1.configuration(dict(base, run_id=phase1.LONG_SUP_RUN), family, seed)
+        pl = phase1.configuration(dict(base, run_id=phase1.LONG_PL_RUN), family, seed)
+        assert sup['fixed_final_budget'] and pl['fixed_final_budget']
+        assert sup['source_train_readout'] and pl['source_train_readout']
+        assert (sup['epochs'], sup['stages'], sup['lr']) == (pl['epochs'], pl['stages'], pl['lr'])
+        assert not sup['U_s_use'] and pl['U_s_use'] and pl['pl_start_fraction'] == .5
+    monkeypatch.setattr(phase1, 'read', lambda _: dict(protocol='lora_rx5_main_v1',
+                       receiver_names=list(phase1.SOURCE), classes=sup['classes'],
+                       split_seed=phase1.SPLIT_SEED, counts=dict(L_s=2800, U_s=25200, V=12000)))
+    def no_source_open(*args, **kwargs):
+        pytest.fail('Supervised scope opened a U file')
+    monkeypatch.setattr(phase1.np, 'load', no_source_open)
+    phase1.check_training(sup)
+    with pytest.raises(ValueError, match='cannot open unlabeled'):
+        phase1.array_loader(sup, 'U_s')

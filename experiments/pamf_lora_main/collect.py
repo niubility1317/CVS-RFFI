@@ -61,16 +61,26 @@ def collect(submit, ssh_config, dataset, output, supplement=None, control=None):
     extra = shlex.quote(supplement_root) if supplement_root else None
     score_options = {}
     control_root = None
+    if extra:
+        from .phase1 import LONG_PL_RUN, LONG_SUP_RUN, OPTIMIZATION_RUN, RUN, registered_rows
+        run_id = PurePosixPath(supplement_root).name
+        if run_id == LONG_SUP_RUN:
+            matched = registered_rows(run_id)
+            score_options = dict(seeds=tuple(dict.fromkeys(s for _,s in matched)))
+        if run_id == LONG_PL_RUN and not control:
+            raise ValueError('Long PL scoring requires the matched long supervised run')
     if control:
-        from .phase1 import OPTIMIZATION_RUN, RUN, registered_rows
+        if not extra:
+            raise ValueError('A comparison requires a supplement')
         control_root = read(control)['run_root']
-        if (not supplement_root or PurePosixPath(supplement_root).name != OPTIMIZATION_RUN
-                or PurePosixPath(control_root).name != RUN):
-            raise ValueError('The LoRa optimization requires its original frozen r02 control')
+        controls = {OPTIMIZATION_RUN: (RUN, 'r02'), LONG_PL_RUN: (LONG_SUP_RUN, 'sup')}
+        if run_id not in controls or PurePosixPath(control_root).name != controls[run_id][0]:
+            raise ValueError('Wrong LoRa comparison control')
+        suffix = controls[run_id][1]
         control_root = shlex.quote(control_root)
-        matched = registered_rows(OPTIMIZATION_RUN)
+        matched = registered_rows(run_id)
         score_options = dict(seeds=tuple(dict.fromkeys(s for _,s in matched)),
-                             paired_controls={family: f'{family}_r02' for family,_ in matched})
+                             paired_controls={family: f'{family}_{suffix}' for family,_ in matched})
     if extra:
         wait_for_predictions(connection, extra)
     wait_for_predictions(connection, root)
@@ -83,11 +93,11 @@ def collect(submit, ssh_config, dataset, output, supplement=None, control=None):
         receive(connection, extra, output, main=False)
         if control_root:
             rows = [f'{family}-s{seed}' for family,seed in matched]
-            control_output = output/'r02_control'
+            control_output = output/f'{suffix}_control'
             receive(connection, control_root, control_output, main=False, rows=rows)
             for family, seed in matched:
                 name = f'{family}-s{seed}'
-                dest = output/'predictions'/f'{family}_r02-s{seed}'
+                dest = output/'predictions'/f'{family}_{suffix}-s{seed}'
                 if dest.exists():
                     raise FileExistsError(dest)
                 (control_output/'predictions'/name).rename(dest)

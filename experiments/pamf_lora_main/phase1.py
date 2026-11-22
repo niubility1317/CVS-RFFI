@@ -1,4 +1,4 @@
-"""Audited Phase1 Full+PL methods on the immutable LoRa main split."""
+"""Phase1 external methods on the immutable LoRa main split."""
 import argparse
 from contextlib import contextmanager
 import os
@@ -21,9 +21,12 @@ from .runner import available
 
 RUN = '20261122-phase1-lora-full-external-m12-r02'
 OPTIMIZATION_RUN = '20261122-phase1-lora-external-loss-m2-r03'
+LONG_SUP_RUN = '20261122-phase1-lora-external-long-sup-m4-r04'
+LONG_PL_RUN = '20261122-phase1-lora-external-long-pl-m4-r05'
 METHODS = ('riei', 'drift', 'ibrff', 'sdg')
 BUDGETS = {'riei': (100, 64, .0001, 1), 'drift': (100, 256, .0001, 1),
            'ibrff': (200, 128, .001, 2), 'sdg': (200, 32, .001, 1)}
+LONG_EPOCHS = {'riei': 200, 'drift': 200, 'ibrff': 100, 'sdg': 400}
 
 
 def registered_rows(run_id):
@@ -31,6 +34,8 @@ def registered_rows(run_id):
         return [(family, seed) for seed in SEEDS for family in METHODS]
     if run_id == OPTIMIZATION_RUN:
         return [('riei', SEEDS[0]), ('drift', SEEDS[0])]
+    if run_id in (LONG_SUP_RUN, LONG_PL_RUN):
+        return [(family, SEEDS[0]) for family in METHODS]
     raise ValueError('Unknown LoRa external run')
 
 
@@ -39,19 +44,26 @@ def configuration(rt, family, seed):
     if (family, seed) not in registered_rows(run_id):
         raise ValueError('Unregistered LoRa run row')
     optimized = run_id == OPTIMIZATION_RUN
+    long_budget = run_id in (LONG_SUP_RUN, LONG_PL_RUN)
+    uses_pl = run_id != LONG_SUP_RUN
     epochs, batch, lr, stages = BUDGETS[family]
+    if long_budget:
+        epochs = LONG_EPOCHS[family]
     row = f'{family}-s{seed}'
     return dict(run_id=run_id, row_id=row, code_commit=rt['code_commit'], protocol_id='lora_rx5_main_v1',
-        family=family, variant='full', cell='D', initialization='scratch', training_regime='pl',
+        family=family, variant='full', cell='D' if uses_pl else 'C', initialization='scratch',
+        training_regime='pl' if uses_pl else 'supervised',
         model_seed=seed, split_seed=SPLIT_SEED, epochs=epochs, batch_size=batch, lr=lr,
         stages=stages, budget_kind='native', weight_decay=0., num_classes=len(CLASSES),
-        classes=list(map(str, CLASSES)), num_domains=len(SOURCE), U_s_use=True,
+        classes=list(map(str, CLASSES)), num_domains=len(SOURCE), U_s_use=uses_pl,
         satellite_train_augmentation=True, lambda_sat_cls=.68, pl_threshold=.95, pl_weight=1.,
         accepted_pl_only=True, log_native_terms=True, drift_normalized_separation=family == 'drift',
         ibrff_plateau_warmup=25 if family == 'ibrff' else 0,
         riei_adam=family == 'riei',
         riei_cosine_tail=optimized and family == 'riei',
         tx_label_smoothing=.05 if optimized and family == 'drift' else 0.,
+        pl_start_fraction=.5 if run_id == LONG_PL_RUN else 0.,
+        source_train_readout=long_budget, fixed_final_budget=long_budget,
         default_head_joint_training=True, separate_head_training=False,
         source_cache=rt['source_root'], source_contract=str(Path(rt['source_root'])/'contract.json'),
         source_practical=rt['source_practical'], output_root=str(Path(rt['run_root'])/'F'/row),
@@ -64,20 +76,25 @@ def check_training(c):
                                     'views_root', 'tests', 'truth', 'target_truth', 'dataset',
                                     'resume', 'teacher_checkpoint', 'checkpoint', 'initial_checkpoint'))):
         raise ValueError('Supplement training accepts only the registered LoRa source rows')
+    if c['U_s_use'] != (c['run_id'] != LONG_SUP_RUN):
+        raise ValueError('LoRa run and unlabeled-source permission disagree')
     contract = read(c['source_contract'])
     if (contract['protocol'] != 'lora_rx5_main_v1' or contract['receiver_names'] != list(SOURCE)
             or contract['classes'] != c['classes'] or contract['split_seed'] != SPLIT_SEED
             or contract['counts'] != dict(L_s=2800, U_s=25200, V=12000)):
         raise ValueError('Same main-LoRa source roles required')
-    with np.load(Path(c['source_cache'])/'U_s_metadata.npz', allow_pickle=False) as m:
-        if ('y' in m or m['ids'].tolist() != contract['role_ids']['U_s']
-                or set(m.files) != {'ids','rx_i','day_i','domain','eq_i','sig_i','base_index'}):
-            raise ValueError('U labels or physical IDs differ')
+    if c['U_s_use']:
+        with np.load(Path(c['source_cache'])/'U_s_metadata.npz', allow_pickle=False) as m:
+            if ('y' in m or m['ids'].tolist() != contract['role_ids']['U_s']
+                    or set(m.files) != {'ids','rx_i','day_i','domain','eq_i','sig_i','base_index'}):
+                raise ValueError('U labels or physical IDs differ')
     return dict(counts=contract['counts'], source_contract=contract)
 
 
 def array_loader(c, role, batch_size=None):
     from experiments.practical_full_2x2.compat import tensor
+    if role == 'U_s' and not c['U_s_use']:
+        raise ValueError('Supervised LoRa workers cannot open unlabeled-source arrays')
     root = Path(c['source_cache'])
     x = rms_normalize(tensor(np.load(root/f'{role}_x.npy', allow_pickle=False)))
     with np.load(root/f'{role}_metadata.npz', allow_pickle=False) as m:
@@ -153,7 +170,9 @@ def smoke(rt):
             else:
                 x,y,rx,indices = next(iter(L))
                 views = None
-            u,u_rx = next(iter(array_loader(c, 'U_s', 16)))
+            u = u_rx = None
+            if c['U_s_use']:
+                u,u_rx = next(iter(array_loader(c, 'U_s', 16)))
             fed = None
             if family == 'riei':
                 opt, fed = source.riei_optimizers(model, c)
@@ -163,10 +182,12 @@ def smoke(rt):
             aug.indices = indices.tolist()
             result = step(model, c, x, y, rx, opt, aug, .5, 0, stage=c['stages'],
                           fed_optimizer=fed, unlabeled=u, native_views=views, author=author, unlabeled_receivers=u_rx)
-            if result['pl_seen'] != len(u) or result['satellite_applied_samples'] < 1:
+            seen = len(u) if u is not None else 0
+            if result['pl_seen'] != seen or result['satellite_applied_samples'] < 1:
                 raise ValueError('LoRa Full+PL smoke did not exercise intended branches')
             checkpoint = out/f'{family}.pt'
-            source.save_checkpoint(checkpoint, model, c, meta['source_contract'], 1, 1, 0., 16, 16, 16, result['pl_accepted'])
+            source.save_checkpoint(checkpoint, model, c, meta['source_contract'], 1, c['stages'], 0.,
+                                   16, result['satellite_applied_samples'], seen, result['pl_accepted'])
             payload = source.native.load(checkpoint, c, meta['source_contract'], 'cpu')
             reader = source.build(c).eval()
             reader.load_state_dict(payload['state_dict'], strict=True)
@@ -263,7 +284,22 @@ def dispatch(rt):
     root.mkdir(exist_ok=False)
     state = root/'state.json'
     try:
-        write(state, dict(status='SOURCE_SMOKE'))
+        if rt['run_id'] == LONG_PL_RUN:
+            write(state, dict(status='WAITING_SUPERVISED'))
+            supervised = root.parent/LONG_SUP_RUN/'state.json'
+            while True:
+                if supervised.is_file():
+                    try:
+                        status = read(supervised)['status']
+                    except ValueError:
+                        time.sleep(20)
+                        continue
+                    if status == 'FAILED':
+                        raise RuntimeError('Long supervised comparison failed')
+                    if status == 'PREDICTIONS_FROZEN':
+                        break
+                time.sleep(20)
+        write(state, dict(status='SOURCE_SMOKE'), exclusive=False)
         if launch(rt, 'smoke', None).wait():
             raise RuntimeError('Native Full baseline smoke failed')
         if (read(Path(rt['main_run'])/'state.json')['status'] != 'PREDICTIONS_FROZEN'

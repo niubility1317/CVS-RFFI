@@ -131,6 +131,9 @@ def train(c):
     device = torch.device('cuda:0')
     torch.cuda.reset_peak_memory_stats()
     started = time.monotonic(); all_stages = []; total_sat = total_applied = total_u = total_accepted = 0
+    fixed_final = c.get('fixed_final_budget', False)
+    pl_start = c.get('pl_start_fraction', 0.)
+    supervised_step = dict(c, U_s_use=False) if pl_start else c
     write(out / 'resolved_config.json', dict(c, source_counts=meta['counts'], pid=os.getpid(),
         cwd=os.getcwd(), python=sys.executable, cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES'),
         target_access=False, pseudo_label_truth_access=False,
@@ -158,13 +161,16 @@ def train(c):
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=.1,
             patience=5, min_lr=1e-6) if c['family']=='ibrff' else None
         loader = array_loader(c, 'L_s'); val = array_loader(c, 'V', 256)
+        train_eval = None
+        if c.get('source_train_readout'):
+            train_eval = torch.utils.data.DataLoader(
+                torch.utils.data.TensorDataset(*loader.dataset.tensors[:3]), batch_size=256)
         author = None
         if c['family']=='sdg' and full:
             author = native.author_sdg(c)
             loader = torch.utils.data.DataLoader(SDGDataset(loader, author), batch_size=c['batch_size'],
                 shuffle=True, generator=torch.Generator().manual_seed(c['model_seed']), num_workers=0)
-        unlabeled_loader = array_loader(c, 'U_s') if c['U_s_use'] else None
-        u_iterator = iter(unlabeled_loader) if unlabeled_loader else None
+        unlabeled_loader = u_iterator = None
         balanced = c.get('balanced_sampling', False)
         data = array_loader(c, 'L_s').dataset.tensors if balanced else None
         sampling = torch.Generator().manual_seed(c['model_seed'])
@@ -203,12 +209,16 @@ def train(c):
                 augment.epoch=index//len(loader)+1
                 views = [v.to(device) for v in batch[3]] if author else None
                 u = u_rx = None
-                if unlabeled_loader:
+                pl_active = c['U_s_use'] and (stage - 1 + progress) / c['stages'] >= pl_start
+                if pl_active:
+                    if unlabeled_loader is None:
+                        unlabeled_loader = array_loader(c, 'U_s')
+                        u_iterator = iter(unlabeled_loader)
                     try: u, u_rx = next(u_iterator)
                     except StopIteration:
                         u_iterator=iter(unlabeled_loader); u, u_rx=next(u_iterator)
                     u, u_rx = u[:len(y)].to(device), u_rx[:len(y)]
-                rec = step(net, c, x, y, rx, optimizer, augment, progress, index,
+                rec = step(net, c if pl_active else supervised_step, x, y, rx, optimizer, augment, progress, index,
                     stage=stage, fed_optimizer=fed, unlabeled=u, native_views=views,
                     author=author, fishr=fishr, unlabeled_receivers=u_rx)
                 accum.append(rec); stage_exposure += len(y); stage_sat += rec['satellite_samples']
@@ -224,7 +234,8 @@ def train(c):
                     scheduler.step(val_loss)
                 if val_loss < best:
                     best=val_loss; stale=0
-                    if c['family'] in ('ibrff','sdg'):
+                    if (c['family'] == 'ibrff' and stage == 1
+                            or not fixed_final and c['family'] in ('ibrff','sdg')):
                         save_checkpoint(folder/'best.pt',net,c,meta['source_contract'],epoch,stage,val_loss,
                             total_sat+stage_sat,total_applied+stage_applied,total_u+stage_u,total_accepted+stage_accepted)
                 elif epoch > warmup:
@@ -248,6 +259,10 @@ def train(c):
                     satellite_scene_counts={str(k):sum(r['satellite_scene_counts'].get(k,0) for r in accum) for k in (-1,0,1,2)},
                     U_s_use=c['U_s_use'], pseudo_label_truth_access=False,
                     seconds=time.monotonic()-stage_started, target_access=False)
+                if train_eval is not None:
+                    train_loss, train_acc = native.validation(net, c, train_eval, device)
+                    record.update(source_train_loss=train_loss, source_train_accuracy=train_acc,
+                                  source_train_count=len(train_eval.dataset), pl_active=pl_active)
                 if c.get('log_native_terms'):
                     terms = accum[0]['native_terms']
                     record['native_terms'] = {
@@ -256,7 +271,7 @@ def train(c):
                 if c['budget_kind']=='updates': record['epoch'] = None
                 log.write(json.dumps(record, allow_nan=False)+'\n'); log.flush()
                 print('EPOCH '+json.dumps(record), flush=True); accum.clear()
-                if c['family']=='ibrff' and stale>=10: break
+                if c['family']=='ibrff' and not fixed_final and stale>=10: break
         save_checkpoint(folder/'last.pt',net,c,meta['source_contract'],
             epoch if c['budget_kind']!='updates' else None,stage,val_loss,
             total_sat+stage_sat,total_applied+stage_applied,total_u+stage_u,total_accepted+stage_accepted)
@@ -269,8 +284,9 @@ def train(c):
         del net, optimizer; torch.cuda.empty_cache()
     if not total_sat or (c['satellite_train_augmentation'] and not total_applied) or (c['U_s_use'] and not total_u):
         raise ValueError('Required concat/PL input branch never actually executed')
-    chosen = out/('stage%d'%c['stages'])/('best.pt' if c['family'] in ('ibrff','sdg') else 'last.pt')
-    selection = 'source_validation_nll' if c['family'] in ('ibrff','sdg') else 'fixed_final_budget'
+    source_selected = not fixed_final and c['family'] in ('ibrff','sdg')
+    chosen = out/('stage%d'%c['stages'])/('best.pt' if source_selected else 'last.pt')
+    selection = 'source_validation_nll' if source_selected else 'fixed_final_budget'
     write(out/'freeze.json', dict(status='SOURCE_TRAINED_FROZEN', checkpoint=str(chosen), config=c,
         source_contract=meta['source_contract'], stages=all_stages, selection=selection,
         target_access=False, target_score_used=False, default_head=True,
