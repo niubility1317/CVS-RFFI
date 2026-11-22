@@ -8,7 +8,7 @@ from torch.nn import functional as F
 
 from experiments.cric_dura_comparison.io import read, tensor, write
 from .dura_gate import ImpairmentGate, RiskDura, fit_gate
-from .dura_repair import complex_iq, power
+from .dura_repair import complex_iq, no_tone, power, real_iq
 from .full_packet_data import COUNTS
 from .full_supervised import handles
 from .refine_g import aligned_target
@@ -67,6 +67,25 @@ def receiver_loss(error):
     return power(error)+.35*error.mean(1).abs().square().mean(-1)
 
 
+def protected_shapes(model,x,z):
+    """Preserve the observed shared non-carrier residual across the six chirps."""
+    w,rot,_,_,_=model.gate.tracker.track(x)
+    scale=w.abs().square().mean(-1,keepdim=True).clamp_min(1e-8).sqrt()
+    delta=complex_iq(z-x)
+    normalized=delta*rot.conj()/scale
+    noncarrier=no_tone(normalized)
+    shared=noncarrier.mean(1,keepdim=True)
+    individual=noncarrier-shared
+    limit=power(delta.detach()).sqrt()
+    selected=[]
+    for component in (normalized-shared,individual):
+        correction=component*scale*rot
+        norm=power(correction).clamp_min(1e-12).sqrt()
+        shrink=(limit/norm).clamp_max(1.)
+        selected.append(x+real_iq(correction*shrink[:,None,None]))
+    return selected
+
+
 def dose_oracle(wanted,direction):
     prior=direction.mean(1)
     cov=(wanted.conj()*direction).real.mean((-2,-1)) + .35*(wanted.mean(1).conj()*prior).real.mean(-1)
@@ -102,7 +121,12 @@ def g_record(c,seed):
                 dose_epochs=DOSE_EPOCHS,cold_start=True,F_reads=0,TX_reads=0,target_reads=0)
 
 
-def train(rt,root,gate_path,seed):
+def projected_record(c,seed):
+    return dict(status='SOURCE_FROZEN',source_contract=c,seed=seed,steps=G_STEPS,
+                recipe='protected_shape',cold_start=True,F_reads=0,TX_reads=0,target_reads=0)
+
+
+def train(rt,root,gate_path,seed,*,projected=False):
     _,cache,c=handles(rt)
     dev='cuda:0'
     torch.manual_seed(seed)
@@ -134,6 +158,8 @@ def train(rt,root,gate_path,seed):
             x=torch.cat((l[j//len(l[0])+1,j%len(l[0])],sat[i]))
             target=complex_iq(aligned_target(y,x,model.reference,'chirp'))
             restored=model(x)
+            if projected:
+                restored=protected_shapes(model,x,restored)[0]
             error=complex_iq(restored)-target
             loss=receiver_loss(error).mean()+.025*power(complex_iq(restored-x)).mean()
             opt.zero_grad(set_to_none=True)
@@ -147,6 +173,11 @@ def train(rt,root,gate_path,seed):
                 log.write(json.dumps(entry,allow_nan=False)+'\n')
                 log.flush()
                 print('FULL_DURA_STEP',seed,entry,flush=True)
+    if projected:
+        torch.save(model.net.state_dict(),root/'model.pt')
+        write(root/'source_support.json',dict(G_L=len(g_l),G_U=len(g_u),reserved_U=len(d_u)))
+        write(root/'complete.json',projected_record(c,seed))
+        return
     model.eval()
     with torch.no_grad():
         f,a,den=[],[],[]

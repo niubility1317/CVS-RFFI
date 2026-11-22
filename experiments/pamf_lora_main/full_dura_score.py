@@ -13,7 +13,7 @@ import numpy as np
 from experiments.cric_dura_comparison.io import read,write
 from .collect import wait_for_predictions
 from .data import CLASSES,TARGET,VIEWS,label_ids,packet_indices,recording
-from .full_dura import MODES, SHAPE_RUN, SWEEP, SWEEP_RUN, modes_for
+from .full_dura import MODES, PROJECTED_RUN, SHAPE_RUN, SWEEP, SWEEP_RUN, modes_for
 from .full_packet_data import LIMIT
 from .full_supervised import SEEDS
 from .scoring import macro_f1
@@ -91,7 +91,12 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
     frozen=run.name in (SHAPE_RUN,SWEEP_RUN) or sweep
     cmd=['ssh','-F',str(ssh_config),'-T','-o','BatchMode=yes','-o','ConnectTimeout=10','N607']
     wait_for_predictions(cmd,root)
-    extra='' if frozen else ' G/gate/training.json '+' '.join(f'G/{s}/dose_training.json G/{s}/steps.jsonl' for s in SEEDS)
+    if run.name==PROJECTED_RUN:
+        extra=' '+' '.join(f'G/{s}/source_support.json G/{s}/steps.jsonl' for s in SEEDS)
+    elif frozen:
+        extra=''
+    else:
+        extra=' G/gate/training.json '+' '.join(f'G/{s}/dose_training.json G/{s}/steps.jsonl' for s in SEEDS)
     raw=subprocess.check_output([*cmd,f'tar -czf - -C {root} predictions source_wave{extra}'],
                                 timeout=180)
     output.mkdir(parents=True,exist_ok=False)

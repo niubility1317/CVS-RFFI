@@ -9,9 +9,10 @@ import torch
 from experiments.cric_dura_comparison.io import read, tensor, write
 from .data import TARGET, VIEWS
 from .dura_gate import RiskDura
-from .dura_repair import complex_iq, no_tone, power, real_iq
+from .dura_repair import complex_iq, power
 from .full_adaptive import RUN as TRI, WARMUP_RUN, case, complete_f, wait_for
-from .full_dura_core import Dose, dose_features, g_record, read_gate, receiver_loss, train, train_gate
+from .full_dura_core import (Dose, dose_features, g_record, projected_record, protected_shapes,
+                            read_gate, receiver_loss, train, train_gate)
 from .full_packet_data import LIMIT, PROTOCOL
 from .full_supervised import SEEDS, construct, handles
 from .packet_runner import schedule
@@ -25,16 +26,20 @@ SWEEP_RUN='20261122-phase1-lora-full-dura-range-m6-r01'
 SWEEP={'direct':0.,'fixed':1.,'dose_150':1.5,'dose_200':2.}
 SHAPE_RUN='20261122-phase1-lora-dura-preserve-shape-m9-r01'
 SHAPE_MODES=('direct','fixed','protect_shape','individual_only')
+PROJECTED_RUN='20261122-phase1-lora-dura-train-protected-m3-r01'
+PROJECTED_MODES=('direct','fixed','protect_shape','trained_protect')
 
 
 def modes_for(root):
+    if root.name==PROJECTED_RUN:
+        return PROJECTED_MODES
     if root.name==SHAPE_RUN:
         return SHAPE_MODES
     return tuple(SWEEP) if root.name==SWEEP_RUN else MODES
 
 
 def recognizer_run(root):
-    return WARMUP_RUN if root.name==SHAPE_RUN else TRI
+    return WARMUP_RUN if root.name in (SHAPE_RUN,PROJECTED_RUN) else TRI
 
 
 def engines(root,c,seed,dev):
@@ -55,23 +60,17 @@ def scaled(x,z,strength):
     return x+strength*(z-x)
 
 
-def protected_shapes(model,x,z):
-    """Preserve the observed shared non-carrier residual across the six chirps."""
-    w,rot,_,_,_=model.gate.tracker.track(x)
-    scale=w.abs().square().mean(-1,keepdim=True).clamp_min(1e-8).sqrt()
-    delta=complex_iq(z-x)
-    normalized=delta*rot.conj()/scale
-    noncarrier=no_tone(normalized)
-    shared=noncarrier.mean(1,keepdim=True)
-    individual=noncarrier-shared
-    limit=power(delta).sqrt()
-    selected=[]
-    for component in (normalized-shared,individual):
-        correction=component*scale*rot
-        norm=power(correction).clamp_min(1e-12).sqrt()
-        shrink=(limit/norm).clamp_max(1.)
-        selected.append(x+real_iq(correction*shrink[:,None,None]))
-    return selected
+def projected_engine(root,c,seed,gate,dev):
+    path=root/'G'/str(seed)
+    if read(path/'complete.json')!=projected_record(c,seed):
+        raise ValueError('Missing source-only projected DURA weights')
+    g=RiskDura(gate,False).to(dev).eval()
+    g.net.load_state_dict(torch.load(path/'model.pt',map_location=dev,weights_only=True),strict=True)
+    return g
+
+
+def projected_output(g,x,z):
+    return protected_shapes(g,x,z)[0]
 
 
 @torch.no_grad()
@@ -128,8 +127,10 @@ def source_wave(rt,seed):
     root=Path(rt['run_root'])
     dev='cuda:0'
     sweep=root.name==SWEEP_RUN
-    shape=root.name==SHAPE_RUN
+    projected=root.name==PROJECTED_RUN
+    shape=root.name in (SHAPE_RUN,PROJECTED_RUN)
     m,d=engines(root.parent/RUN if sweep or shape else root,c,seed,dev)
+    trained=projected_engine(root,c,seed,m.gate,dev) if projected else None
     arr=np.load(views/'V.npy',mmap_mode='r',allow_pickle=False)
     n=1000
     y=tensor(arr[0,::12],dev)
@@ -146,7 +147,11 @@ def source_wave(rt,seed):
             if shape:
                 restored=[p.clone(),p.clone()]
                 if keep.any():
-                    for result,part in zip(restored,protected_shapes(m,b[keep],p[keep]),strict=True):
+                    x_active=b[keep]
+                    parts=protected_shapes(m,x_active,p[keep])
+                    if trained is not None:
+                        parts[1]=projected_output(trained,x_active,trained(x_active))
+                    for result,part in zip(restored,parts,strict=True):
                         result[keep]=part
                 wave=(b,p,*restored)
             elif sweep:
@@ -187,9 +192,11 @@ def predict(rt,seed):
     f=construct(dev).eval()
     f.load_state_dict(torch.load(complete_f(pred,c,name)/'model.pt',map_location=dev,weights_only=True),strict=True)
     sweep=root.name==SWEEP_RUN
-    shape=root.name==SHAPE_RUN
+    projected=root.name==PROJECTED_RUN
+    shape=root.name in (SHAPE_RUN,PROJECTED_RUN)
     modes=modes_for(root)
     m,d=engines(root.parent/RUN if sweep or shape else root,c,seed,dev)
+    trained=projected_engine(root,c,seed,m.gate,dev) if projected else None
     out=root/'predictions'/str(seed)
     out.mkdir(parents=True,exist_ok=False)
     total={}
@@ -213,6 +220,8 @@ def predict(rt,seed):
                     xx,zz=x[use],z[use]
                     if shape:
                         inputs=[zz,*protected_shapes(m,xx,zz)]
+                        if trained is not None:
+                            inputs[-1]=projected_output(trained,xx,trained(xx))
                     elif sweep:
                         inputs=[zz,scaled(xx,zz,1.5),scaled(xx,zz,2.)]
                     else:
@@ -245,10 +254,13 @@ def dispatch(rt):
     launch=partial(start,module=__spec__.name)
     state=root/'state.json'
     try:
-        if root.name==SHAPE_RUN:
+        if root.name in (SHAPE_RUN,PROJECTED_RUN):
             write(state,dict(status='SOURCE_SMOKE'))
             if launch(rt,'shape_smoke','source').wait():
                 raise RuntimeError('Frozen shape-protection source smoke failed')
+            if root.name==PROJECTED_RUN:
+                write(state,dict(status='SOURCE_G_TRAINING'),exclusive=False)
+                schedule(rt,[('train_projected',str(s)) for s in SEEDS],launch)
         elif root.name==SWEEP_RUN:
             # The source G and raw F are both unchanged in this preregistered sensitivity check.
             write(state,dict(status='SOURCE_AUDIT'))
@@ -273,7 +285,7 @@ def dispatch(rt):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser()
-    p.add_argument('kind',choices=('dispatch','train_gate','smoke','shape_smoke','train','wave_audit','predict'))
+    p.add_argument('kind',choices=('dispatch','train_gate','smoke','shape_smoke','train','train_projected','wave_audit','predict'))
     p.add_argument('runtime',type=Path)
     p.add_argument('name',nargs='?')
     a=p.parse_args()
@@ -291,5 +303,7 @@ if __name__=='__main__':
             shape_smoke(rt)
         elif a.kind=='train':
             train(rt,root/'G'/a.name,root/'G'/'gate',int(a.name))
+        elif a.kind=='train_projected':
+            train(rt,root/'G'/a.name,root.parent/RUN/'G'/'gate',int(a.name),projected=True)
         else:
             {'wave_audit':source_wave,'predict':predict}[a.kind](rt,int(a.name))

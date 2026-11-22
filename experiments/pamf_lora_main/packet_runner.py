@@ -197,10 +197,11 @@ def schedule(rt,jobs,launch=start):
             print('PACKET_COMPLETED',k,n,flush=True)
             del active[gpu]
         if pending and len(active)<max_workers:
-            for gpu in available(rt['allowed_gpus'],rt.get('max_compute_processes',2)):
+            free=set(available(rt['allowed_gpus'],rt.get('max_compute_processes',2)))
+            for gpu in rt['allowed_gpus']:
                 if len(active)>=max_workers:
                     break
-                if gpu not in active and pending:
+                if gpu in free and gpu not in active and pending:
                     k,n=pending.pop(0)
                     active[gpu]=(launch(rt,k,n,gpu),k,n)
         if pending or active:
