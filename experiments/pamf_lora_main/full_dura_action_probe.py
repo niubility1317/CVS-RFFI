@@ -87,11 +87,14 @@ def learned_errors(model,expected,inputs,outputs,clean_input,clean_output,observ
     return out
 
 
-def source_probes(z,rx,physical_id,scene,expected):
+def source_probes(z,rx,physical_id,scene,expected,*,namespace='source-V',realization=None):
     from leo_practical.channel import ChannelStream, normalize_input, stable_seed
     cfg=channel(scene)
-    seed=stable_seed(2026112207,'source-V',scene,rx,str(physical_id))
-    receiver=hardware(scene,f'source-V/{rx}')
+    parts=(namespace,scene,rx,str(physical_id))
+    if realization is not None:
+        parts=(*parts,'draw',realization)
+    seed=stable_seed(2026112207,*parts)
+    receiver=hardware(scene,f'{namespace}/{rx}')
 
     def observe(w,quality=None):
         return ChannelStream(cfg,seed,receiver).process(
