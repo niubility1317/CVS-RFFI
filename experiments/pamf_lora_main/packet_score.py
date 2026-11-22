@@ -63,7 +63,7 @@ def score(dataset, output, readouts=READOUTS, *, baseline=None):
     write(output/'scores.json',result)
 
 
-def score_refined_u(dataset,output,source,methods,epochs=18,*,sets=False):
+def score_refined_u(dataset,output,source,methods,epochs=18,*,sets=False,practical_methods=()):
     c=read(source/'contract.json')
     with np.load(source/'U_s_metadata.npz',allow_pickle=False) as m:
         if 'y' in m.files or m['ids'].tolist()!=c['role_ids']['U_s']:
@@ -91,6 +91,20 @@ def score_refined_u(dataset,output,source,methods,epochs=18,*,sets=False):
             by_epoch=[dict(epoch=i,total=int((ep==i).sum()),correct=int((good&(ep==i)).sum())) for i in range(1,epochs+1)],
             by_predicted_class=[dict(tx=label,total=int((cls==i).sum()),correct=int((good&(cls==i)).sum()))
                                 for i,label in enumerate(CLASSES)])
+        if method in practical_methods:
+            q=np.load(output/'F'/method/'accepted_practical_U.npy',allow_pickle=False)
+            if q.ndim!=2 or q.shape[1]!=3 or q.dtype.kind!='i':
+                raise ValueError('Invalid practical hard-label decisions')
+            if set(map(tuple,q))-set(map(tuple,p)) or len(np.unique(q,axis=0))!=len(q):
+                raise ValueError('Practical hard labels must be unique within each epoch and match clean decisions')
+            qe,qi,qc=q.T
+            hit=truth[qi]==qc
+            result[method]['practical_hard']=dict(accepted=len(q),correct=int(hit.sum()),
+                unique=int(len(np.unique(qi))),
+                by_epoch=[dict(epoch=i,total=int((qe==i).sum()),correct=int((hit&(qe==i)).sum()))
+                          for i in range(1,epochs+1)],
+                by_predicted_class=[dict(tx=label,total=int((qc==i).sum()),correct=int((hit&(qc==i)).sum()))
+                                    for i,label in enumerate(CLASSES)])
         if sets:
             q=np.load(output/'F'/method/'accepted_sets.npy',allow_pickle=False)
             if q.ndim!=2 or q.shape[1]!=3 or q.dtype.kind!='i':

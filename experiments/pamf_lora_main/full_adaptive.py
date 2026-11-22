@@ -9,7 +9,8 @@ import numpy as np
 import torch
 
 from experiments.cric_dura_comparison.io import read, tensor, write
-from .adaptive_repair import fit, intersect_source
+from .adaptive_repair import (PRACTICAL_CE_METHODS, PRACTICAL_HARD_METHOD,
+                              fit, intersect_source, practical_hard_ce)
 from .comparison import seed_all
 from .data import TARGET, VIEWS
 from .full_packet_data import LIMIT, PROTOCOL
@@ -28,7 +29,9 @@ SET_RUN='20261122-phase1-lora-tri-label-set-m3-r01'
 SET_METHOD='tri_set'
 PRACTICAL_SET_RUN='20261122-phase1-lora-tri-set-practical-draw-m3-r01'
 PRACTICAL_SET_METHOD='tri_set_practical'
-SET_METHODS=(SET_METHOD,PRACTICAL_SET_METHOD)
+PRACTICAL_CE_RUN='20261122-phase1-lora-tri-set-practical-ce-m2-r01'
+SET_METHODS=(SET_METHOD,PRACTICAL_SET_METHOD,*PRACTICAL_CE_METHODS)
+E140_SET_RUNS=(SET_RUN,PRACTICAL_SET_RUN,PRACTICAL_CE_RUN)
 METHODS=('continued_sup','plain_pl','adaptive_tri','tri_practical')
 WARMUP_METHODS=('continued_sup','plain_pl','adaptive_tri')
 EPOCHS=28
@@ -41,7 +44,7 @@ def case(seed,method):
 
 
 def cases(methods=METHODS):
-    seeds=REPL_SEEDS if tuple(methods) in (REPL_METHODS,WARM_METHODS,ADAPT_METHODS) else SEEDS
+    seeds=REPL_SEEDS if tuple(methods) in (REPL_METHODS,WARM_METHODS,ADAPT_METHODS,PRACTICAL_CE_METHODS) else SEEDS
     return [(case(s,m),s,m) for s in seeds for m in methods]
 
 
@@ -54,6 +57,8 @@ def methods_for(root):
         return REPL_METHODS
     if root.name==PRACTICAL_SET_RUN:
         return (PRACTICAL_SET_METHOD,)
+    if root.name==PRACTICAL_CE_RUN:
+        return PRACTICAL_CE_METHODS
     if root.name==SET_RUN:
         return (SET_METHOD,)
     return WARMUP_METHODS if root.name==WARMUP_RUN else METHODS
@@ -95,7 +100,7 @@ def load_supervised_continuation(root,c,seed,device):
 
 def teacher(root,c,seed,device):
     parent,_=supervisor(root,c)
-    if root.name in (SET_RUN,PRACTICAL_SET_RUN):
+    if root.name in E140_SET_RUNS:
         return load_supervised_continuation(root.parent/WARMUP_RUN/'warmup',c,seed,device)
     if root.name==WARMUP_RUN:
         return load_supervised_continuation(root/'warmup',c,seed,device)
@@ -129,7 +134,7 @@ def warmup(rt,seed):
 def policy(rt,seed):
     src,views,c=handles(rt)
     root=Path(rt['run_root'])
-    if root.name in (SET_RUN,PRACTICAL_SET_RUN):
+    if root.name in E140_SET_RUNS:
         frozen=read(root.parent/WARMUP_RUN/'policy'/f'{seed}.json')
         if (frozen['status']!='SOURCE_POLICY_FROZEN' or frozen['seed']!=seed
                 or frozen['supervised_epochs']!=FULL_EPOCHS+2*EPOCHS
@@ -170,7 +175,7 @@ def train(rt,name):
     alternate=root.parent/DRAW_RUN if method==PRACTICAL_SET_METHOD else None
     fit(root/'F'/name,f,method,src,views,c,data,settings,
         seed=seed,epochs=EPOCHS,steps=STEPS,sampler=batches,full=True,
-        lr=WARMUP_LR if root.name in (WARMUP_RUN,SET_RUN,PRACTICAL_SET_RUN) else 1.5e-4,
+        lr=WARMUP_LR if root.name in (WARMUP_RUN,*E140_SET_RUNS) else 1.5e-4,
         alternate_path=alternate)
 
 
@@ -216,6 +221,8 @@ def audit(rt):
             results[name]['set_U_count']=sum(t['U_set_exposures'] for t in a)
         if m==PRACTICAL_SET_METHOD:
             results[name]['alternate_U_count']=sum(t['U_alternate_exposures'] for t in a)
+        if m==PRACTICAL_HARD_METHOD:
+            results[name]['practical_hard_U_count']=sum(t['U_practical_hard_exposures'] for t in a)
     write(root/'source_audit.json',dict(status='SOURCE_AUDIT_COMPLETE',target_reads=0,records=results))
 
 
@@ -264,17 +271,28 @@ def smoke(rt):
     src,views,c=handles(rt)
     root=Path(rt['run_root'])
     supervisor(root,c)
-    a=tensor(np.load(views/'L_s.npy',mmap_mode='r',allow_pickle=False)[0,:8])
+    labeled=np.load(views/'L_s.npy',mmap_mode='r',allow_pickle=False)
+    a=tensor(labeled[0,:8])
     with np.load(src/'L_s_metadata.npz',allow_pickle=False) as m:
         if m['ids'].tolist()!=c['role_ids']['L_s']:
             raise ValueError('Unbound full source smoke IQ')
         labels=tensor(m['y'][:8])
     receipt={}
-    for seed in SEEDS:
+    for seed in sorted({s for _,s,_ in cases(methods_for(root))}):
         model=(load_supervised_continuation(root.parent/RUN,c,seed,'cpu') if root.name==WARMUP_RUN
                else teacher(root,c,seed,'cpu'))
         result,features=model(a)
-        torch.nn.functional.cross_entropy(result,labels).backward()
+        loss=torch.nn.functional.cross_entropy(result,labels)
+        if root.name==PRACTICAL_CE_RUN:
+            practical=tensor(labeled[1,:8])
+            ids=torch.arange(len(labels))
+            mask=ids%2==0
+            paired,kept,_=practical_hard_ce(model,practical,ids,labels,mask,len(ids))
+            empty,none,_=practical_hard_ce(model,practical,ids,labels,torch.zeros_like(mask),len(ids))
+            if not torch.equal(kept,ids[mask]) or len(none) or float(empty)!=0 or not torch.isfinite(paired):
+                raise ValueError('Real LoRa matched practical CE smoke failed')
+            loss=loss+.35*paired
+        loss.backward()
         grad=float(torch.nn.utils.clip_grad_norm_(model.parameters(),5.,error_if_nonfinite=True))
         if result.shape!=(8,10) or not grad>0 or not torch.isfinite(features).all():
             raise ValueError('Real full LoRa supervisor source smoke failed')
@@ -305,10 +323,11 @@ def dispatch(rt):
     try:
         write(state,dict(status='WAITING_FOR_SOURCE_TEACHERS'))
         wait_for(root.parent/SUPERVISED,'SOURCE_ONLY_COMPLETE')
-        if root.name in (SET_RUN,PRACTICAL_SET_RUN,REPL_RUN,ADAPT_RUN):
+        if root.name in (*E140_SET_RUNS,REPL_RUN,ADAPT_RUN):
             wait_for(root.parent/WARMUP_RUN,'PREDICTIONS_FROZEN')
         if root.name==PRACTICAL_SET_RUN:
             wait_for(root.parent/DRAW_RUN,'SOURCE_DRAW_READY')
+        if root.name in (PRACTICAL_SET_RUN,PRACTICAL_CE_RUN):
             wait_for(root.parent/SET_RUN,'PREDICTIONS_FROZEN')
         write(state,dict(status='SOURCE_SMOKE'),exclusive=False)
         if launch(rt,'smoke','full').wait():
@@ -317,7 +336,8 @@ def dispatch(rt):
             write(state,dict(status='SUPERVISION_EXTENSION'),exclusive=False)
             schedule(rt,[('warmup',str(s)) for s in SEEDS],launch)
         if root.name not in (REPL_RUN,WARM_RUN,ADAPT_RUN):
-            schedule(rt,[('policy',str(s)) for s in SEEDS],launch)
+            seeds=sorted({s for _,s,_ in cases(methods_for(root))})
+            schedule(rt,[('policy',str(s)) for s in seeds],launch)
         write(state,dict(status='SOURCE_TRAINING'),exclusive=False)
         names=[n for n,_,_ in cases(methods_for(root))]
         schedule(rt,[('train',name) for name in names],launch)

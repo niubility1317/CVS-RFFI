@@ -27,6 +27,11 @@ READOUTS={m:('direct',) for m in METHODS}
 EPOCHS=48
 STEPS=50
 BATCH=32
+PRACTICAL_HARD_METHOD='tri_set_practical_hard'
+PRACTICAL_LABELED_METHOD='tri_set_practical_labeled'
+PRACTICAL_CE_METHODS=(PRACTICAL_HARD_METHOD,PRACTICAL_LABELED_METHOD)
+PRACTICAL_HARD_WEIGHT=.35
+PRACTICAL_LABELED_WEIGHT=.45
 
 
 def parent_model(root,c,device):
@@ -162,6 +167,14 @@ def select_practical(usable,other_usable,ids,parity):
     return use,extra&use
 
 
+def practical_hard_ce(model,practical,ids,pseudo,usable,batch_size):
+    ids,pseudo=ids[usable[ids]],pseudo[usable[ids]]
+    if len(ids)==0:
+        return practical.new_zeros(()),ids,pseudo
+    logits=model(practical[ids])[0]
+    return F.cross_entropy(logits,pseudo,reduction='sum')/batch_size,ids,pseudo
+
+
 def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampler,full=False,lr=1.5e-4,
         alternate_path=None):
     folder.mkdir(parents=True,exist_ok=False)
@@ -180,7 +193,9 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
     if method!='continued_sup':
         u,ur=load_u(source,cache,c,dev)
     pair_draws=method=='tri_set_practical'
-    use_sets=method in ('tri_set','tri_set_practical')
+    practical_hard=method==PRACTICAL_HARD_METHOD
+    practical_labeled_weight=PRACTICAL_LABELED_WEIGHT if method==PRACTICAL_LABELED_METHOD else .35
+    use_sets=method in ('tri_set','tri_set_practical',*PRACTICAL_CE_METHODS)
     tri=method in ('adaptive_tri','tri_practical') or use_sets
     if tri:
         teacher=cache_teacher(f,u,settings['hard_rules'],with_sets=use_sets)
@@ -189,7 +204,7 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
         membership=teacher[4]
         bits=2**torch.arange(10,device=dev)
         set_records=[]
-    if method=='tri_practical' or pair_draws:
+    if method=='tri_practical' or pair_draws or practical_hard:
         from .physical import ChirpResponse
         supplied=np.load(cache/'U_s_practical.npy',mmap_mode='r',allow_pickle=False)
         if supplied.shape!=tuple(u.shape) or supplied.dtype!=np.float32:
@@ -197,6 +212,8 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
         practical_u=tensor(supplied,dev)
         ref=ChirpResponse(fft_factor=8).to(dev)
         usable=practical_quality(ref,practical_u)
+        if practical_hard:
+            practical_records=[]
         if pair_draws:
             from .full_restore_draw import load_draw
             alternate_u=tensor(load_draw(alternate_path,'U_s'),dev)
@@ -210,6 +227,8 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
     fields=('clean_ce','practical_ce','U_ce','U_pair','U_agreement','U_applied')
     if use_sets:
         fields=(*fields,'U_set_ce')
+    if practical_hard:
+        fields=(*fields,'U_practical_hard_ce')
     with (folder/'epochs.jsonl').open('x',encoding='utf8') as log:
         for epoch in range(1,epochs+1):
             if method!='continued_sup':
@@ -221,6 +240,7 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
             sat_exposures=0
             alternate_exposures=0
             set_count=0
+            hard_practical_start=len(practical_records) if practical_hard else 0
             for j,ids in enumerate(sampler(y_np,r_np,lrng)):
                 idx=tensor(ids,dev); scene=tensor(scene_rng.integers(1,len(VIEWS),size=len(ids)),dev)
                 size=len(ids)
@@ -280,17 +300,24 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
                         code=(supported*bits).sum(1).tolist()
                         set_records.extend(zip([epoch]*len(code),ids_u[useful].tolist(),code))
                         u_loss=u_loss+ramp*.20*set_loss
+                    if practical_hard:
+                        practical_ce,pair_ids,pair_labels=practical_hard_ce(
+                            f,practical_u,ids_u[selected],p[selected],usable,size)
+                        practical_records.extend(zip([epoch]*len(pair_ids),pair_ids.tolist(),pair_labels.tolist()))
+                        u_loss=u_loss+ramp*PRACTICAL_HARD_WEIGHT*practical_ce
                 if method!='continued_sup' and len(selected):
                     yy=p[selected]
                     accepted.extend(zip([epoch]*len(yy),ids_u[selected].tolist(),yy.tolist()))
                     used_by_class+=torch.bincount(yy,minlength=10)
                 opt.zero_grad(set_to_none=True)
-                (ce+.35*prac+u_loss).backward()
+                (ce+practical_labeled_weight*prac+u_loss).backward()
                 torch.nn.utils.clip_grad_norm_(f.parameters(),5.,error_if_nonfinite=True)
                 opt.step();sch.step();step+=1
                 losses=(ce,prac,uce,pair,agree,u_loss)
                 if use_sets:
                     losses=(*losses,set_loss)
+                if practical_hard:
+                    losses=(*losses,practical_ce)
                 total+=torch.stack(losses).detach()
             if step!=epoch*steps:
                 raise ValueError('Expected exact matched labeled training budget')
@@ -303,6 +330,8 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
                 row['U_set_exposures']=set_count
             if pair_draws:
                 row['U_alternate_exposures']=alternate_exposures
+            if practical_hard:
+                row['U_practical_hard_exposures']=len(practical_records)-hard_practical_start
             if not full or epoch==1 or epoch%4==0 or epoch==epochs:
                 row['V']=metrics(f,v[0],vy,vr)
             if epoch in ((1,14,epochs) if full else (1,12,24,36,epochs)):
@@ -315,6 +344,8 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
     np.save(folder/'accepted_U.npy',np.asarray(accepted,dtype=np.int32).reshape(-1,3))
     if use_sets:
         np.save(folder/'accepted_sets.npy',np.asarray(set_records,dtype=np.int32).reshape(-1,3))
+    if practical_hard:
+        np.save(folder/'accepted_practical_U.npy',np.asarray(practical_records,dtype=np.int32).reshape(-1,3))
     write(folder/'complete.json',dict(status='SOURCE_FROZEN',method=method,source_contract=c,seed=seed,
           elapsed_steps=step,epochs=epochs,target_reads=0,U_truth_reads=0))
 

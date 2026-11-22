@@ -3,7 +3,7 @@ import argparse
 from pathlib import Path, PurePosixPath
 
 from experiments.cric_dura_comparison.io import read
-from .full_adaptive import PRACTICAL_SET_RUN, RUN, SET_RUN, WARMUP_RUN
+from .full_adaptive import PRACTICAL_CE_RUN, PRACTICAL_SET_RUN, RUN, SET_RUN, WARMUP_RUN
 from .full_packet_publish import DATA_RUN
 from .full_supervised import RUN as SUPERVISED
 from .full_tri_repl_lora import ADAPT_RUN, REPL_RUN, WARM_RUN
@@ -12,7 +12,8 @@ from .publish import release, release_commit
 
 
 def publish(repo,output,context,ssh_config,data_submit,supervised_submit,prior_submit=None,warmup_submit=None,
-            draw_submit=None,set_submit=None,native_repl=False,native_warm=False,native_adapt=False):
+            draw_submit=None,set_submit=None,native_repl=False,native_warm=False,native_adapt=False,
+            practical_ce=False):
     ctx=read(context)
     rt={k:ctx[k] for k in ('project','python','frozen_sources')}
     p=PurePosixPath(rt['project'])
@@ -20,7 +21,12 @@ def publish(repo,output,context,ssh_config,data_submit,supervised_submit,prior_s
     run=RUN
     if (native_repl or native_warm or native_adapt) and (warmup_submit is None or draw_submit is not None):
         raise ValueError('Native Tri requires the matched supervised continuation')
-    if draw_submit is not None:
+    if practical_ce:
+        if warmup_submit is None or set_submit is None or draw_submit is not None or prior_submit is not None:
+            raise ValueError('Practical CE requires the frozen E140 and clean-observation set references')
+        dependencies.extend(((warmup_submit,WARMUP_RUN),(set_submit,SET_RUN)))
+        run=PRACTICAL_CE_RUN
+    elif draw_submit is not None:
         if warmup_submit is None or set_submit is None or prior_submit is not None:
             raise ValueError('Independent-draw Tri requires E140, candidate-set, and source draw receipts')
         dependencies.extend(((warmup_submit,WARMUP_RUN),(draw_submit,DRAW_RUN),(set_submit,SET_RUN)))
@@ -48,6 +54,8 @@ def publish(repo,output,context,ssh_config,data_submit,supervised_submit,prior_s
         rt['max_workers']=4
     if run==PRACTICAL_SET_RUN:
         rt['allowed_gpus']=[4,1,5,6,0,2,3,7]
+    if run==PRACTICAL_CE_RUN:
+        rt.update(allowed_gpus=[1,4,5,0,6,2,3],max_workers=2)
     if run==REPL_RUN:
         rt['allowed_gpus']=[6,5,0,2,1,3,4,7]
     if run==WARM_RUN:
@@ -70,4 +78,5 @@ if __name__=='__main__':
     native.add_argument('--native-repl',action='store_true')
     native.add_argument('--native-warm',action='store_true')
     native.add_argument('--native-adapt',action='store_true')
+    native.add_argument('--practical-ce',action='store_true')
     publish(**vars(p.parse_args()))

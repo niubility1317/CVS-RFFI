@@ -13,8 +13,9 @@ import numpy as np
 from experiments.cric_dura_comparison.io import read, write
 from .collect import wait_for_predictions
 from .data import CLASSES, TARGET, VIEWS, label_ids, packet_indices, recording
-from .full_adaptive import (EPOCHS, METHODS, PRACTICAL_SET_RUN, SET_METHOD, SET_RUN, WARMUP_METHODS,
-                            WARMUP_RUN, case, cases, methods_for)
+from .full_adaptive import (E140_SET_RUNS, EPOCHS, METHODS, PRACTICAL_CE_RUN, PRACTICAL_HARD_METHOD,
+                            PRACTICAL_SET_RUN, SET_METHOD, WARMUP_METHODS, WARMUP_RUN,
+                            case, cases, methods_for)
 from .full_packet_data import LIMIT
 from .full_supervised import FULL_EPOCHS, SEEDS
 from .full_tri_repl_lora import ADAPT_RUN, REPL_RUN, WARM_RUN, total_epochs
@@ -79,8 +80,8 @@ def target_scores(preds,truth,methods=METHODS):
     return dict(status='SCORED_COMPLETE',truth_last=True,by_seed=by_seed,summary=summary)
 
 
-def verify_control_policies(controls, output):
-    for seed in SEEDS:
+def verify_control_policies(controls, output, seeds):
+    for seed in seeds:
         name=f'{seed}.json'
         old=read(controls/'policy'/name)
         new=read(output/'policy'/name)
@@ -93,9 +94,12 @@ def collect(submit,ssh_config,dataset,source,output,controls=None,set_control=No
     run_root=PurePosixPath(read(submit)['run_root'])
     root=shlex.quote(str(run_root))
     methods=methods_for(run_root)
-    names=[n for n,_,_ in cases(methods)]
-    paired=run_root.name==PRACTICAL_SET_RUN
-    sets=run_root.name in (SET_RUN,PRACTICAL_SET_RUN)
+    rows=cases(methods)
+    names=[n for n,_,_ in rows]
+    seeds=sorted({seed for _,seed,_ in rows})
+    practical_names=[name for name,_,method in rows if method==PRACTICAL_HARD_METHOD]
+    paired=run_root.name in (PRACTICAL_SET_RUN,PRACTICAL_CE_RUN)
+    sets=run_root.name in E140_SET_RUNS
     native=run_root.name in (REPL_RUN,WARM_RUN,ADAPT_RUN)
     if (sets or native)!=(controls is not None):
         raise ValueError('The frozen E168 controls are required only for the Tri set comparison')
@@ -111,6 +115,8 @@ def collect(submit,ssh_config,dataset,source,output,controls=None,set_control=No
         additions+=' '+' '.join(f'F/{n}/initial_source.json' for n in names)
     if sets:
         additions+=' '+' '.join(f'F/{n}/accepted_sets.npy' for n in names)
+    if practical_names:
+        additions+=' '+' '.join(f'F/{n}/accepted_practical_U.npy' for n in practical_names)
     if run_root.name==WARMUP_RUN:
         additions+=' '+' '.join(f'warmup/F/{case(s,"continued_sup")}/epochs.jsonl' for s in SEEDS)
     policy='' if native else 'policy'
@@ -131,9 +137,9 @@ def collect(submit,ssh_config,dataset,source,output,controls=None,set_control=No
             with dest.open('xb') as out:
                 out.write(ar.extractfile(m).read())
     if sets:
-        verify_control_policies(controls,output)
+        verify_control_policies(controls,output,seeds)
     if paired:
-        verify_control_policies(set_control,output)
+        verify_control_policies(set_control,output,seeds)
     predictions={**prior,**matrix(output,methods)}
     truth={}
     with zipfile.ZipFile(dataset/'multiple_receiver_test.zip') as ar:
@@ -142,7 +148,7 @@ def collect(submit,ssh_config,dataset,source,output,controls=None,set_control=No
                 truth[rx]=label_ids(h5,LIMIT)[packet_indices(LIMIT,i)]
     write(output/'scores.json',target_scores(predictions,truth,methods))
     epochs=total_epochs(methods[0]) if native else EPOCHS
-    score_refined_u(dataset,output,source,names,epochs,sets=sets)
+    score_refined_u(dataset,output,source,names,epochs,sets=sets,practical_methods=practical_names)
     print('FULL_LORA_SCORED',output/'scores.json',flush=True)
 
 
