@@ -136,11 +136,18 @@ def train(rt,method):
     source,_,cache,c=source_handles(rt)
     root=Path(rt['run_root'])
     folder=root/'F'/method
-    folder.mkdir(parents=True,exist_ok=False)
     dev='cuda:0'
     seed_all(SEED)
-    (x,y,rx),(v,vy,vr)=source_arrays(source,cache,dev)
+    arrays=source_arrays(source,cache,dev)
     f=parent_model(root,c,dev)
+    fit(folder,f,method,source,cache,c,arrays,read(root/'source_policy.json'),
+        seed=SEED,epochs=EPOCHS,steps=STEPS,sampler=complete_labeled_batches)
+
+
+def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampler,full=False):
+    folder.mkdir(parents=True,exist_ok=False)
+    dev='cuda:0'
+    (x,y,rx),(v,vy,vr)=arrays
     _,_,pred=measure(f,x[0],y)
     _,weights=labeled_weights(pred,y,True)
     urand=np.random.default_rng(827)
@@ -148,29 +155,43 @@ def train(rt,method):
     scene_rng=np.random.default_rng(267)
     aug=torch.Generator(device=dev).manual_seed(607)
     y_np,r_np=np.asarray(y.tolist()),np.asarray(rx.tolist())
-    settings=read(root/'source_policy.json')
     if settings['status']!='SOURCE_POLICY_FROZEN':
         raise ValueError('Teacher policy must precede U access')
     classes=[row['class_id'] for row in settings['hard_rules']]
     if method!='continued_sup':
         u,ur=load_u(source,cache,c,dev)
-    if method=='adaptive_tri':
+    tri=method in ('adaptive_tri','tri_practical')
+    if tri:
         up,uc,uq,uz=cache_teacher(f,u,settings['hard_rules'])
+    if method=='tri_practical':
+        from .physical import ChirpResponse
+        supplied=np.load(cache/'U_s_practical.npy',mmap_mode='r',allow_pickle=False)
+        if supplied.shape!=tuple(u.shape) or supplied.dtype!=np.float32:
+            raise ValueError('Matched practical U cache differs from registered U')
+        practical_u=tensor(supplied,dev)
+        ref=ChirpResponse(fft_factor=8).to(dev)
+        quality=[]
+        with torch.no_grad():
+            for batch in practical_u.split(128):
+                quality.append(ref.coherence(batch.flatten(0,1)).reshape(len(batch),6).median(1).values)
+        usable=torch.cat(quality)>=.40
     opt=torch.optim.AdamW(f.parameters(),lr=1.5e-4,weight_decay=5e-4)
-    sch=torch.optim.lr_scheduler.CosineAnnealingLR(opt,T_max=EPOCHS*STEPS,eta_min=1.5e-5)
+    sch=torch.optim.lr_scheduler.CosineAnnealingLR(opt,T_max=epochs*steps,eta_min=1.5e-5)
     accepted=[]
     step=0
     fields=('clean_ce','practical_ce','U_ce','U_pair','U_agreement','U_applied')
     with (folder/'epochs.jsonl').open('x',encoding='utf8') as log:
-        for epoch in range(1,EPOCHS+1):
+        for epoch in range(1,epochs+1):
             if method!='continued_sup':
-                uids=urand.permutation(len(u))[:BATCH*STEPS].reshape(STEPS,BATCH)
+                uids=urand.permutation(len(u))[:len(y)]
             total=torch.zeros(len(fields),device=dev)
             used_by_class=torch.zeros(10,dtype=torch.long,device=dev)
             ramp=min(1.,epoch/8.)
             anchors=0
-            for j,ids in enumerate(complete_labeled_batches(y_np,r_np,lrng)):
+            sat_exposures=0
+            for j,ids in enumerate(sampler(y_np,r_np,lrng)):
                 idx=tensor(ids,dev); scene=tensor(scene_rng.integers(1,len(VIEWS),size=len(ids)),dev)
+                size=len(ids)
                 f.train()
                 logits,z=f(torch.cat((x[0,idx],x[scene,idx])))
                 a,b=logits.chunk(2)
@@ -178,7 +199,7 @@ def train(rt,method):
                 prac=F.cross_entropy(b,y[idx],weight=weights)
                 uce,pair,agree,u_loss=[ce.new_zeros(()) for _ in range(4)]
                 if method=='plain_pl':
-                    ids_u=tensor(uids[j],dev)
+                    ids_u=tensor(uids[j*BATCH:j*BATCH+size],dev)
                     f.eval()
                     with torch.no_grad():
                         conf,p=f(u[ids_u])[0].softmax(1).max(1)
@@ -186,25 +207,31 @@ def train(rt,method):
                     selected=torch.where(conf>=.95)[0]
                     if len(selected):
                         ul=f(noise(u[ids_u[selected]],aug))[0]
-                        uce=F.cross_entropy(ul,p[selected],reduction='sum')/BATCH
+                        uce=F.cross_entropy(ul,p[selected],reduction='sum')/size
                     u_loss=ramp*uce
-                elif method=='adaptive_tri':
-                    ids_u=tensor(uids[j],dev)
+                elif tri:
+                    ids_u=tensor(uids[j*BATCH:j*BATCH+size],dev)
                     p=up[ids_u]
                     selected=choose(p,uc[ids_u],uq[ids_u],classes)
                     uv=u[ids_u]
                     parity=(epoch+j)%2
-                    aligned=uv[:,parity::2].repeat(1,2,1,1)
+                    agreement_input=uv
+                    if method=='tri_practical':
+                        alternating=(torch.arange(size,device=dev)+parity)%2==0
+                        use=(usable[ids_u]&alternating)
+                        sat_exposures+=int(use.sum())
+                        agreement_input=torch.where(use[:,None,None,None],practical_u[ids_u],uv)
+                    aligned=agreement_input[:,parity::2].repeat(1,2,1,1)
                     vz=f(noise(rotated(aligned,aug),aug))[1]
                     agree=(1.-F.cosine_similarity(vz,uz[ids_u],dim=1)).mean()
                     if len(selected):
                         ul,feat=f(noise(uv[selected],aug))
                         yy=p[selected]
-                        uce=F.cross_entropy(ul,yy,reduction='sum')/BATCH
-                        pair,n=fused_contrast(torch.cat((z[:BATCH].detach(),feat)),
-                                torch.cat((y[idx],yy)),torch.cat((rx[idx],ur[ids_u[selected]])),u_start=BATCH)
+                        uce=F.cross_entropy(ul,yy,reduction='sum')/size
+                        pair,n=fused_contrast(torch.cat((z[:size].detach(),feat)),
+                                torch.cat((y[idx],yy)),torch.cat((rx[idx],ur[ids_u[selected]])),u_start=size)
                         anchors+=n
-                    u_loss=ramp*(settings['hard_weight']*uce+.025*pair*len(selected)/BATCH+.06*agree)
+                    u_loss=ramp*(settings['hard_weight']*uce+.025*pair*len(selected)/size+.06*agree)
                 if method!='continued_sup' and len(selected):
                     yy=p[selected]
                     accepted.extend(zip([epoch]*len(yy),ids_u[selected].tolist(),yy.tolist()))
@@ -214,12 +241,16 @@ def train(rt,method):
                 torch.nn.utils.clip_grad_norm_(f.parameters(),5.,error_if_nonfinite=True)
                 opt.step();sch.step();step+=1
                 total+=torch.stack((ce,prac,uce,pair,agree,u_loss)).detach()
-            if step!=epoch*STEPS:
+            if step!=epoch*steps:
                 raise ValueError('Expected exact matched labeled training budget')
-            row=dict(epoch=epoch,step=step,loss=dict(zip(fields,(total/STEPS).tolist(),strict=True)),
-                  V=metrics(f,v[0],vy,vr),accepted=used_by_class.tolist(),anchors=anchors,
-                  U_exposures=0 if method=='continued_sup' else BATCH*STEPS)
-            if epoch in (1,12,24,36,EPOCHS):
+            row=dict(epoch=epoch,step=step,loss=dict(zip(fields,(total/steps).tolist(),strict=True)),
+                  accepted=used_by_class.tolist(),anchors=anchors,
+                  U_exposures=0 if method=='continued_sup' else len(y))
+            if full:
+                row['U_practical_exposures']=sat_exposures
+            if not full or epoch==1 or epoch%4==0 or epoch==epochs:
+                row['V']=metrics(f,v[0],vy,vr)
+            if epoch in ((1,14,epochs) if full else (1,12,24,36,epochs)):
                 row['L']=metrics(f,x[0],y,rx)
                 row['V_practical']={name:metrics(f,v[i],vy,vr) for i,name in enumerate(VIEWS) if i}
             record=json.dumps(row,allow_nan=False)
@@ -227,8 +258,8 @@ def train(rt,method):
             print('LORA_REPAIRED',method,record,flush=True)
     torch.save(f.state_dict(),folder/'model.pt')
     np.save(folder/'accepted_U.npy',np.asarray(accepted,dtype=np.int32).reshape(-1,3))
-    write(folder/'complete.json',dict(status='SOURCE_FROZEN',method=method,source_contract=c,seed=SEED,
-          elapsed_steps=step,epochs=EPOCHS,target_reads=0,U_truth_reads=0))
+    write(folder/'complete.json',dict(status='SOURCE_FROZEN',method=method,source_contract=c,seed=seed,
+          elapsed_steps=step,epochs=epochs,target_reads=0,U_truth_reads=0))
 
 
 def load_f(root,c,method,device):
