@@ -1,0 +1,198 @@
+"""Full LoRa DURA comparison, anchored to the same three frozen adaptive Tri F."""
+import argparse
+from functools import partial
+from pathlib import Path
+
+import numpy as np
+import torch
+
+from experiments.cric_dura_comparison.io import read, tensor, write
+from .data import TARGET, VIEWS
+from .dura_gate import RiskDura
+from .dura_repair import complex_iq
+from .full_adaptive import RUN as TRI, case, complete_f, wait_for
+from .full_dura_core import Dose, dose_features, g_record, read_gate, receiver_loss, train, train_gate
+from .full_packet_data import LIMIT, PROTOCOL
+from .full_supervised import SEEDS, construct, handles
+from .packet_runner import schedule
+from .refine_g import aligned_target
+from .refine_runner import start
+from .runner import activate
+
+RUN='20261122-phase1-lora-full-dura-dose-m3-r01'
+MODES=('direct','fixed','dose')
+
+
+def engines(root,c,seed,dev):
+    path=root/'G'/str(seed)
+    if read(path/'complete.json')!=g_record(c,seed):
+        raise ValueError('DURA is not frozen on the exact full source contract')
+    gate=read_gate(root/'G'/'gate',c,dev)
+    net=RiskDura(gate,False).to(dev).eval()
+    dose=Dose().to(dev).eval()
+    weights=torch.load(path/'model.pt',map_location=dev,weights_only=True)
+    net.net.load_state_dict(weights['G'],strict=True)
+    dose.load_state_dict(weights['dose'],strict=True)
+    return net,dose
+
+
+def smoke(rt):
+    _,views,c=handles(rt)
+    net=RiskDura(read_gate(Path(rt['run_root'])/'G'/'gate',c,'cpu'),False)
+    x=tensor(np.load(views/'L_s.npy',mmap_mode='r',allow_pickle=False)[0,:12])
+    y,g=net(x,with_gate=True)
+    if not torch.equal(x,y) or g.any():
+        raise ValueError('Full DURA clean bypass smoke failed')
+    sample=np.load(views/'U_s_practical.npy',mmap_mode='r',allow_pickle=False)
+    b=tensor(sample[::80])
+    elig=net.strength(b)>0
+    if not elig.any():
+        raise ValueError('DURA real source smoke has no active practical signal')
+    b=b[elig][:3]
+    r=net(b)
+    loss=(r-b).square().mean()
+    loss.backward()
+    grad=float(torch.nn.utils.clip_grad_norm_(net.net.parameters(),5.,error_if_nonfinite=True))
+    if not torch.isfinite(r).all() or not grad>0:
+        raise ValueError('DURA source-only backwards failed')
+    write(Path(rt['run_root'])/'smoke.json',dict(status='PASS',source_IQ_only=True,gradient=grad,
+          clean_exact=len(x),TX_reads=0,target_reads=0,F_reads=0))
+
+
+@torch.no_grad()
+def source_wave(rt,seed):
+    _,views,c=handles(rt)
+    root=Path(rt['run_root'])
+    dev='cuda:0'
+    m,d=engines(root,c,seed,dev)
+    arr=np.load(views/'V.npy',mmap_mode='r',allow_pickle=False)
+    n=1000
+    y=tensor(arr[0,::12],dev)
+    rows={}
+    for i,v in enumerate(VIEWS):
+        x=tensor(arr[i,::12],dev)
+        sums=torch.zeros(3,device=dev)
+        total=active=0
+        for clean,b in zip(y.split(48),x.split(48),strict=True):
+            p,g=m(b,with_gate=True)
+            keep=g>0
+            recovered=p.clone()
+            if keep.any():
+                a=d(dose_features(m,b[keep],p[keep]))
+                recovered[keep]=b[keep]+a[:,None,None,None]*(p[keep]-b[keep])
+            if not torch.equal(p[~keep],b[~keep]):
+                raise ValueError('Clean DURA bypass is not an exact copy')
+            ref=complex_iq(aligned_target(clean,b,m.reference,'chirp'))
+            sums+=torch.stack([receiver_loss(complex_iq(w)-ref).sum() for w in (b,p,recovered)])
+            active+=int(keep.sum())
+            total+=len(b)
+        if total!=n:
+            raise ValueError('Source waveform audit count differs')
+        rows[v]=dict(n=total,active=active,aligned_error=(sums/total).tolist())
+    write(root/'source_wave'/f'{seed}.json',dict(seed=seed,records=rows,target_reads=0,TX_reads=0,F_reads=0))
+
+
+@torch.no_grad()
+def predict(rt,seed):
+    _,_,c=handles(rt)
+    root=Path(rt['run_root'])
+    pred=root.parent/TRI
+    target=Path(rt['target_views'])
+    if (read(pred/'state.json')['status']!='PREDICTIONS_FROZEN'
+            or target!=Path(rt['parent_root'])/'target_views'
+            or read(target/'complete.json')!=dict(status='TARGET_READY',protocol=PROTOCOL,target_truth_read=False,
+                              receivers=list(TARGET),per_receiver=LIMIT,views=list(VIEWS))):
+        raise ValueError('Blind full pair is not ready')
+    name=case(seed,'adaptive_tri')
+    base=pred/'predictions'/name
+    if read(base/'complete.json')!=dict(status='PREDICTIONS_FROZEN',seed=seed,method='adaptive_tri',
+           target_truth_read=False,receivers=list(TARGET),per_receiver=LIMIT,views=list(VIEWS),modes=['direct']):
+        raise ValueError('Direct Tri control is not fixed')
+    dev='cuda:0'
+    f=construct(dev).eval()
+    f.load_state_dict(torch.load(complete_f(pred,c,name)/'model.pt',map_location=dev,weights_only=True),strict=True)
+    m,d=engines(root,c,seed,dev)
+    out=root/'predictions'/str(seed)
+    out.mkdir(parents=True,exist_ok=False)
+    total={}
+    for rx in TARGET:
+        a=np.load(target/f'{rx}.npy',mmap_mode='r',allow_pickle=False)
+        if a.shape!=(7,LIMIT,6,2,256) or a.dtype!=np.float32:
+            raise ValueError('DURA target IQ differs')
+        for j,v in enumerate(VIEWS):
+            raw=np.load(base/f'{rx}__{v}__direct.npy',allow_pickle=False)
+            if raw.shape!=(LIMIT,) or raw.dtype.kind not in 'iu' or raw.min()<0 or raw.max()>=10:
+                raise ValueError('Frozen raw predictions are incomplete')
+            fixed,dosed=raw.copy(),raw.copy()
+            start_at=active=0
+            gain=0.
+            for x in tensor(a[j],dev).split(32):
+                z,g=m(x,with_gate=True)
+                use=g>0
+                if not torch.equal(z[~use],x[~use]):
+                    raise ValueError('Fixed bypass changed original target IQ')
+                if use.any():
+                    xx,zz=x[use],z[use]
+                    dose=d(dose_features(m,xx,zz))
+                    zs=xx+dose[:,None,None,None]*(zz-xx)
+                    pp=f(torch.cat((zz,zs)))[0]
+                    if not torch.isfinite(pp).all() or not torch.isfinite(dose).all():
+                        raise ValueError('Nonfinite full DURA prediction')
+                    p0,p1=pp.argmax(1).chunk(2)
+                    k=torch.where(use)[0].cpu().tolist()
+                    k=np.asarray(k)+start_at
+                    fixed[k],dosed[k]=p0.tolist(),p1.tolist()
+                    active+=len(k)
+                    gain+=float(dose.sum())
+                start_at+=len(x)
+            for mode,z in zip(MODES,(raw,fixed,dosed),strict=True):
+                np.save(out/f'{rx}__{v}__{mode}.npy',z)
+            total[f'{rx}/{v}']=dict(n=LIMIT,IQ_exact=LIMIT-active,active=active,mean_dose=gain/max(active,1))
+        print('FULL_DURA_PREDICTED',seed,rx,flush=True)
+    write(out/'complete.json',dict(status='PREDICTIONS_FROZEN',seed=seed,modes=list(MODES),target_truth_read=False,
+          receivers=list(TARGET),views=list(VIEWS),per_receiver=LIMIT,activation=total))
+
+
+def dispatch(rt):
+    root=Path(rt['run_root'])
+    root.mkdir(exist_ok=False)
+    launch=partial(start,module=__spec__.name)
+    state=root/'state.json'
+    try:
+        write(state,dict(status='SOURCE_GATE'))
+        schedule(rt,[('train_gate','source')],launch)
+        if launch(rt,'smoke','source').wait():
+            raise RuntimeError('DURA source-only smoke failed')
+        write(state,dict(status='SOURCE_G_TRAINING'),exclusive=False)
+        schedule(rt,[('train',str(s)) for s in SEEDS],launch)
+        schedule(rt,[('wave_audit',str(s)) for s in SEEDS],launch)
+        write(state,dict(status='WAITING_FOR_FROZEN_TRI'),exclusive=False)
+        wait_for(root.parent/TRI,'PREDICTIONS_FROZEN')
+        write(state,dict(status='PREDICTING'),exclusive=False)
+        schedule(rt,[('predict',str(s)) for s in SEEDS],launch)
+        write(state,dict(status='PREDICTIONS_FROZEN',target_truth_read=False),exclusive=False)
+    except Exception as error:
+        write(state,dict(status='FAILED',error=str(error)),exclusive=False)
+        raise
+
+
+if __name__=='__main__':
+    p=argparse.ArgumentParser()
+    p.add_argument('kind',choices=('dispatch','train_gate','smoke','train','wave_audit','predict'))
+    p.add_argument('runtime',type=Path)
+    p.add_argument('name',nargs='?')
+    a=p.parse_args()
+    rt=read(a.runtime)
+    root=Path(rt['run_root'])
+    if a.kind=='dispatch':
+        dispatch(rt)
+    else:
+        activate(rt)
+        if a.kind=='train_gate':
+            train_gate(rt,root/'G'/'gate')
+        elif a.kind=='smoke':
+            smoke(rt)
+        elif a.kind=='train':
+            train(rt,root/'G'/a.name,root/'G'/'gate',int(a.name))
+        else:
+            {'wave_audit':source_wave,'predict':predict}[a.kind](rt,int(a.name))

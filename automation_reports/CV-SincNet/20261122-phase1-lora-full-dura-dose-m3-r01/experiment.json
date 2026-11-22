@@ -1,0 +1,46 @@
+{
+  "run_id": "20261122-phase1-lora-full-dura-dose-m3-r01",
+  "source_data": "20261122-phase1-lora-full-aligned-data-r01",
+  "recognition": "20261122-phase1-lora-full-adaptive-m12-r01",
+  "scope": "F-free source LoRa DURA",
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "L_IQ": 2800,
+  "U_IQ": 25200,
+  "gate": {
+    "seed": 721,
+    "epochs": 45
+  },
+  "G": {
+    "steps": 1600,
+    "batch": 24
+  },
+  "dose": {
+    "epochs": 50,
+    "held_U_mod": 5
+  },
+  "target": {
+    "physical": 30000,
+    "RX": 15,
+    "views": 7,
+    "rows": 63,
+    "paired_readouts": [
+      "direct",
+      "fixed",
+      "dose"
+    ],
+    "truth_last": true
+  },
+  "gpu": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ]
+}
