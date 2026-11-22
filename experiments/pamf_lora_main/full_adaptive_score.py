@@ -17,7 +17,7 @@ from .full_adaptive import (EPOCHS, METHODS, PRACTICAL_SET_RUN, SET_METHOD, SET_
                             WARMUP_RUN, case, cases, methods_for)
 from .full_packet_data import LIMIT
 from .full_supervised import FULL_EPOCHS, SEEDS
-from .full_tri_repl_lora import REPL_RUN
+from .full_tri_repl_lora import REPL_RUN, WARM_RUN, total_epochs
 from .packet_score import score_refined_u
 from .scoring import macro_f1
 
@@ -96,7 +96,7 @@ def collect(submit,ssh_config,dataset,source,output,controls=None,set_control=No
     names=[n for n,_,_ in cases(methods)]
     paired=run_root.name==PRACTICAL_SET_RUN
     sets=run_root.name in (SET_RUN,PRACTICAL_SET_RUN)
-    native=run_root.name==REPL_RUN
+    native=run_root.name in (REPL_RUN,WARM_RUN)
     if (sets or native)!=(controls is not None):
         raise ValueError('The frozen E168 controls are required only for the Tri set comparison')
     if (paired or native)!=(set_control is not None):
@@ -141,7 +141,8 @@ def collect(submit,ssh_config,dataset,source,output,controls=None,set_control=No
             with recording(ar,f'{rx}_test.h5',output) as h5:
                 truth[rx]=label_ids(h5,LIMIT)[packet_indices(LIMIT,i)]
     write(output/'scores.json',target_scores(predictions,truth,methods))
-    score_refined_u(dataset,output,source,names,EPOCHS,sets=sets)
+    epochs=total_epochs(methods[0]) if native else EPOCHS
+    score_refined_u(dataset,output,source,names,epochs,sets=sets)
     print('FULL_LORA_SCORED',output/'scores.json',flush=True)
 
 

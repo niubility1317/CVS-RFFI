@@ -6,19 +6,19 @@ from experiments.cric_dura_comparison.io import read
 from .full_adaptive import PRACTICAL_SET_RUN, RUN, SET_RUN, WARMUP_RUN
 from .full_packet_publish import DATA_RUN
 from .full_supervised import RUN as SUPERVISED
-from .full_tri_repl_lora import REPL_RUN
+from .full_tri_repl_lora import REPL_RUN, WARM_RUN
 from .full_restore_draw import RUN as DRAW_RUN
 from .publish import release, release_commit
 
 
 def publish(repo,output,context,ssh_config,data_submit,supervised_submit,prior_submit=None,warmup_submit=None,
-            draw_submit=None,set_submit=None,native_repl=False):
+            draw_submit=None,set_submit=None,native_repl=False,native_warm=False):
     ctx=read(context)
     rt={k:ctx[k] for k in ('project','python','frozen_sources')}
     p=PurePosixPath(rt['project'])
     dependencies=[(data_submit,DATA_RUN),(supervised_submit,SUPERVISED)]
     run=RUN
-    if native_repl and (warmup_submit is None or draw_submit is not None):
+    if (native_repl or native_warm) and (warmup_submit is None or draw_submit is not None):
         raise ValueError('Native Tri requires the matched supervised continuation')
     if draw_submit is not None:
         if warmup_submit is None or set_submit is None or prior_submit is not None:
@@ -27,7 +27,7 @@ def publish(repo,output,context,ssh_config,data_submit,supervised_submit,prior_s
         run=PRACTICAL_SET_RUN
     elif warmup_submit is not None:
         dependencies.append((warmup_submit,WARMUP_RUN))
-        run=REPL_RUN if native_repl else SET_RUN
+        run=WARM_RUN if native_warm else REPL_RUN if native_repl else SET_RUN
     elif prior_submit is not None:
         dependencies.append((prior_submit,RUN))
         run=WARMUP_RUN
@@ -41,12 +41,14 @@ def publish(repo,output,context,ssh_config,data_submit,supervised_submit,prior_s
               release_root=str(p/'releases'/f'{run}-release'),run_root=str(p/'runs'/run),
               parent_root=str(data),source_root=str(p/'releases'/f'{DATA_RUN}-release/data/source'),
               target_views=str(data/'target_views'),allowed_gpus=list(range(7)),max_compute_processes=4)
-    if run in (WARMUP_RUN,SET_RUN,PRACTICAL_SET_RUN,REPL_RUN):
+    if run in (WARMUP_RUN,SET_RUN,PRACTICAL_SET_RUN,REPL_RUN,WARM_RUN):
         rt['max_workers']=4
     if run==PRACTICAL_SET_RUN:
         rt['allowed_gpus']=[4,1,5,6,0,2,3,7]
     if run==REPL_RUN:
         rt['allowed_gpus']=[6,5,0,2,1,3,4,7]
+    if run==WARM_RUN:
+        rt['allowed_gpus']=[5,2,4,1,3,0,6,7]
     return release(repo,output,rt,ssh_config)
 
 
@@ -59,5 +61,7 @@ if __name__=='__main__':
     mode.add_argument('--warmup-submit',type=Path)
     p.add_argument('--draw-submit',type=Path)
     p.add_argument('--set-submit',type=Path)
-    p.add_argument('--native-repl',action='store_true')
+    native=p.add_mutually_exclusive_group()
+    native.add_argument('--native-repl',action='store_true')
+    native.add_argument('--native-warm',action='store_true')
     publish(**vars(p.parse_args()))

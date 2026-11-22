@@ -15,7 +15,7 @@ from .data import TARGET, VIEWS
 from .full_packet_data import LIMIT, PROTOCOL
 from .full_restore_draw import RUN as DRAW_RUN
 from .full_supervised import FULL_EPOCHS, RUN as SUPERVISED, SEEDS, batches, construct, handles, load_f, role
-from .full_tri_repl_lora import REPL_METHODS, REPL_RUN, REPL_SEEDS
+from .full_tri_repl_lora import NATIVE_METHODS, REPL_METHODS, REPL_RUN, REPL_SEEDS, WARM_METHODS, WARM_RUN
 from .holdout import FOLDS, summary, view_evidence
 from .packet_runner import schedule
 from .refine_runner import start
@@ -40,11 +40,13 @@ def case(seed,method):
 
 
 def cases(methods=METHODS):
-    seeds=REPL_SEEDS if tuple(methods)==REPL_METHODS else SEEDS
+    seeds=REPL_SEEDS if tuple(methods) in (REPL_METHODS,WARM_METHODS) else SEEDS
     return [(case(s,m),s,m) for s in seeds for m in methods]
 
 
 def methods_for(root):
+    if root.name==WARM_RUN:
+        return WARM_METHODS
     if root.name==REPL_RUN:
         return REPL_METHODS
     if root.name==PRACTICAL_SET_RUN:
@@ -57,7 +59,7 @@ def methods_for(root):
 def decode(name):
     value,method=name.split('-',1)
     seed=int(value.removeprefix('s'))
-    if seed not in SEEDS or method not in (*METHODS,*SET_METHODS,*REPL_METHODS):
+    if seed not in SEEDS or method not in (*METHODS,*SET_METHODS,*NATIVE_METHODS):
         raise ValueError('Unknown full LoRa row')
     return seed,method
 
@@ -150,7 +152,7 @@ def policy(rt,seed):
 
 def train(rt,name):
     seed,method=decode(name)
-    if method in REPL_METHODS:
+    if method in NATIVE_METHODS:
         from .full_tri_repl_lora import train as train_repl
         return train_repl(rt,seed,method)
     src,views,c=handles(rt)
@@ -172,7 +174,7 @@ def train(rt,name):
 def complete_f(root,c,name):
     seed,method=decode(name)
     path=root/'F'/name
-    if method in REPL_METHODS:
+    if method in NATIVE_METHODS:
         from .full_tri_repl_lora import record
         if seed not in REPL_SEEDS or read(path/'complete.json')!=record(c,seed,method):
             raise ValueError('Original LoRa Tri source freeze differs')
@@ -190,10 +192,14 @@ def audit(rt):
     for name,seed,m in cases(methods_for(root)):
         path=complete_f(root,c,name)
         a=[json.loads(l) for l in (path/'epochs.jsonl').read_text().splitlines()]
-        if [r['step'] for r in a]!=list(range(STEPS,STEPS*EPOCHS+1,STEPS)):
+        steps=read(path/'complete.json')['elapsed_steps'] if m in NATIVE_METHODS else STEPS*EPOCHS
+        if [r['step'] for r in a]!=list(range(STEPS,steps+1,STEPS)):
             raise ValueError('Incomplete full-source record')
         row=a[-1]
-        if m in REPL_METHODS:
+        if m in NATIVE_METHODS:
+            warm=read(path/'complete.json').get('additional_supervised_epochs',0)
+            if any(t['U_seen'] or t['U_accepted'] for t in a[:warm]):
+                raise ValueError('Original Tri warmup accessed U before enabling REPL')
             results[name]=dict(seed=seed,method=m,L=row['L'],V=row['V'],
                 hard_U_count=sum(t['U_accepted'] for t in a),U_total=sum(t['U_seen'] for t in a),
                 style_U_paired=sum(t['U_partners'] for t in a),forwards=sum(t['U_forwards'] for t in a))
@@ -221,9 +227,9 @@ def predict(rt,name):
     seed,method=decode(name)
     path=complete_f(root,c,name)
     dev='cuda:0'
-    if method in REPL_METHODS:
-        from .packet_models import packet_tri
-        model=packet_tri('packet_sup',dev).eval()
+    if method in NATIVE_METHODS:
+        from .full_tri_repl_lora import backbone
+        model=backbone(method,dev).eval()
     else:
         model=construct(dev).eval()
     model.load_state_dict(torch.load(path/'model.pt',map_location=dev,weights_only=True),strict=True)
@@ -248,7 +254,7 @@ def predict(rt,name):
 
 
 def smoke(rt):
-    if Path(rt['run_root']).name==REPL_RUN:
+    if Path(rt['run_root']).name in (REPL_RUN,WARM_RUN):
         from .full_tri_repl_lora import smoke as smoke_repl
         return smoke_repl(rt)
     src,views,c=handles(rt)
@@ -306,7 +312,7 @@ def dispatch(rt):
         if root.name==WARMUP_RUN:
             write(state,dict(status='SUPERVISION_EXTENSION'),exclusive=False)
             schedule(rt,[('warmup',str(s)) for s in SEEDS],launch)
-        if root.name!=REPL_RUN:
+        if root.name not in (REPL_RUN,WARM_RUN):
             schedule(rt,[('policy',str(s)) for s in SEEDS],launch)
         write(state,dict(status='SOURCE_TRAINING'),exclusive=False)
         names=[n for n,_,_ in cases(methods_for(root))]
