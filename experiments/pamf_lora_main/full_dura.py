@@ -17,7 +17,7 @@ from .full_dura_core import (COVERAGE_RECIPES, Dose, dose_features, g_record, pr
 from .full_dura_detail import (CONFIRM_NEW_SEEDS, DETAIL_CONFIRM_RUN, DETAIL_CONFIRM_RUNS, DETAIL_DOSE_MODES,
                                DETAIL_DOSE_RUN, DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS,
                                PHASE_CONFIRM_RUN, PHASE_DETAIL_MODES, PHASE_DETAIL_RUN, PHASE_RUNS,
-                               SHARED_DETAIL_MODES, SHARED_DETAIL_RUN)
+                               SHARED_DETAIL_MODES, SHARED_DETAIL_RUN, SPECTRAL_PHASE_RUN)
 from .full_dura_r69_lora import (R69_ACTION_MODES, R69_ACTION_RUN, R69_LORA_RUN, R69_MODES,
                                  R69_RETAINED_MODES, R69_SEEDS, R69_TRACE_MODES)
 from .full_dura_trace_source import RETAINED_RUN, TRACE_RUN
@@ -448,7 +448,7 @@ def dispatch(rt):
                 wait_for(root.parent/DRAW_RUN,'SOURCE_DRAW_READY')
             if root.name==DETAIL_DOSE_RUN:
                 wait_for(root.parent/DETAIL_RUN,'PREDICTIONS_FROZEN')
-            if root.name in (DETAIL_CONFIRM_RUN,SHARED_DETAIL_RUN,PHASE_DETAIL_RUN):
+            if root.name in (DETAIL_CONFIRM_RUN,SHARED_DETAIL_RUN,PHASE_DETAIL_RUN,SPECTRAL_PHASE_RUN):
                 wait_for(root.parent/DETAIL_DOSE_RUN,'PREDICTIONS_FROZEN')
             if root.name==PHASE_CONFIRM_RUN:
                 wait_for(root.parent/DETAIL_CONFIRM_RUN,'PREDICTIONS_FROZEN')

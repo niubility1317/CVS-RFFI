@@ -23,7 +23,8 @@ DETAIL_CONFIRM_RUN='20261122-phase1-lora-dura-coherent-dose-confirm-m4-r01'
 SHARED_DETAIL_RUN='20261123-phase1-lora-dura-packet-common-m1-r01'
 PHASE_DETAIL_RUN='20261123-phase1-lora-dura-half-phase-residual-m1-r01'
 PHASE_CONFIRM_RUN='20261123-phase1-lora-dura-half-phase-confirm-m4-r01'
-PHASE_RUNS=(PHASE_DETAIL_RUN,PHASE_CONFIRM_RUN)
+SPECTRAL_PHASE_RUN='20261123-phase1-lora-dura-spectral-phase-m1-r01'
+PHASE_RUNS=(PHASE_DETAIL_RUN,PHASE_CONFIRM_RUN,SPECTRAL_PHASE_RUN)
 DETAIL_CONFIRM_RUNS=(DETAIL_CONFIRM_RUN,PHASE_CONFIRM_RUN)
 DETAIL_SEEDS=(SEEDS[1],)
 CONFIRM_NEW_SEEDS=(SEEDS[0],SEEDS[2])
@@ -38,6 +39,7 @@ STEPS=1800
 CAP=.15
 QUALITY=.94
 SHARED_QUALITY=.40
+PHASE_BANDS=((1,4),(5,16),(17,48))
 
 
 def conv_head(channels,outputs=2):
@@ -124,7 +126,10 @@ class PacketDetail(nn.Module):
         return self.utility((features-self.center)/self.scale).flatten()
 
     def accepted(self,x,delta):
-        return self.score(self.features(x,delta))>self.threshold
+        return self.accepted_features(self.features(x,delta))
+
+    def accepted_features(self,features):
+        return self.score(features)>self.threshold
 
 
 class PhaseDetail(PacketDetail):
@@ -132,18 +137,67 @@ class PhaseDetail(PacketDetail):
 
     phase=True
 
-    def correction(self,shape,rot,rms):
+    def proposed_angle(self,shape):
         shared,own=self.head_inputs(no_tone(shape))
         packet=self.common(shared)[:,0]
         individual=torch.cat((pair_channels(own),shared[:,None].expand(-1,6,-1,-1)),dim=2)
         local=self.individual(individual.flatten(0,1)).reshape_as(shape.real)
-        angle=packet[:,None]+local-local.mean(1,keepdim=True)
+        return packet[:,None]+local-local.mean(1,keepdim=True)
+
+    def bounded_angle(self,angle,shape,rms):
         magnitude=shape.abs()
         angle=angle-(angle*magnitude).sum(-1,keepdim=True)/magnitude.sum(-1,keepdim=True).clamp_min(1e-8)
         upper_bound=strength_ratio(angle*magnitude*rms,rms.expand_as(magnitude))
-        angle=angle*(CAP/upper_bound).clamp_max(1.)[:,None,None]
+        return angle*(CAP/upper_bound).clamp_max(1.)[:,None,None]
+
+    def correction(self,shape,rot,rms):
+        angle=self.bounded_angle(self.proposed_angle(shape),shape,rms)
         step=shape*(torch.polar(torch.ones_like(angle),angle)-1.)
         return step,real_iq(step*rot*rms)
+
+
+class SpectralPhaseDetail(PhaseDetail):
+    """Limit the learned phase trajectory to the registered nonzero Fourier bins."""
+
+    def __init__(self,gate):
+        super().__init__(gate)
+        bins=torch.arange(129)
+        self.register_buffer('bandpass',(bins>=1)&(bins<=PHASE_BANDS[-1][1]),persistent=False)
+        self.register_buffer('clean_rms_ceiling',torch.tensor(float('inf')))
+
+    def proposed_angle(self,shape):
+        angle=super().proposed_angle(shape)
+        return torch.fft.irfft(torch.fft.rfft(angle)*self.bandpass,n=angle.shape[-1])
+
+    def bounded_angle(self,angle,shape,rms):
+        angle=super().bounded_angle(angle,shape,rms)
+        # Keep the half-dose readout on the same branch of the complex argument.
+        peak=angle.abs().amax((1,2),keepdim=True).clamp_min(1e-8)
+        return angle*((torch.pi-1e-4)/peak).clamp_max(1.)
+
+    def accepted_features(self,features):
+        return super().accepted_features(features)&(features[:,-2]>self.clean_rms_ceiling)
+
+    def band_error(self,angle):
+        power=2*torch.fft.rfft(angle,norm='ortho').abs().square()/angle.shape[-1]
+        return torch.stack([power[...,a:b+1].sum(-1).mean(1) for a,b in PHASE_BANDS],dim=1)
+
+    def training_terms(self,shape,target,rot,rms):
+        angle=self.bounded_angle(self.proposed_angle(shape),shape,rms)
+        wanted=(target*shape.conj()).angle()
+        raw=self.band_error(wanted)
+        residual=self.band_error(wanted-angle)
+        scale=raw+.0004
+        step=shape*(torch.polar(torch.ones_like(angle),angle)-1.)
+        return (raw/scale).mean(1),(residual/scale).mean(1),real_iq(step*rot*rms)
+
+
+def detail_model(root,gate):
+    if root.name==SPECTRAL_PHASE_RUN:
+        return SpectralPhaseDetail(gate)
+    if root.name in PHASE_RUNS:
+        return PhaseDetail(gate)
+    return PacketDetail(gate,shared=root.name==SHARED_DETAIL_RUN)
 
 
 def shape_error(error,*,shared=False):
@@ -154,6 +208,8 @@ def shape_error(error,*,shared=False):
 def training_terms(model,x,clean):
     shape,rot,rms=model.coordinates(x)
     target,_,_=model.coordinates(clean)
+    if isinstance(model,SpectralPhaseDetail):
+        return model.training_terms(shape,target,rot,rms)
     step,delta=model.correction(shape,rot,rms)
     if model.phase:
         target=torch.polar(shape.abs(),target.angle())
@@ -166,7 +222,7 @@ def detail_error(model,error):
     return shape_error(no_tone(error) if model.phase else error,shared=model.shared)
 
 
-def record(c,seed,*,shared=False,phase=False):
+def record(c,seed,*,shared=False,phase=False,banded=False):
     r=dict(status='SOURCE_FROZEN',source_contract=c,seed=seed,steps=STEPS,
                 draw_run=DRAW_RUN,quality=QUALITY,cap=CAP,F_reads=0,TX_reads=0,target_reads=0)
     if shared:
@@ -174,6 +230,8 @@ def record(c,seed,*,shared=False,phase=False):
     if phase:
         baseline=DETAIL_DOSE_RUN if seed in DETAIL_SEEDS else DETAIL_CONFIRM_RUN
         r.update(quality=SHARED_QUALITY,component='phase',baseline=baseline)
+    if banded:
+        r.update(component='spectral_phase',phase_bands=[list(b) for b in PHASE_BANDS],clean_rms_guard=True)
     return r
 
 
@@ -248,16 +306,21 @@ def fit_utility(model,l,u,sat,alt,held,*,bypass_reference=None):
             losses.append(float(loss.detach()))
         history.append(sum(losses)/len(losses))
     with torch.no_grad():
-        top=max(model.score(clean_features(model,a)).max() for a in (l_clean,u_clean))
+        controls=[clean_features(model,a) for a in (l_clean,u_clean)]
+        top=max(model.score(features).max() for features in controls)
         model.threshold.copy_(top+1e-4)
+        if isinstance(model,SpectralPhaseDetail):
+            ceiling=max(features[:,-2].max() for features in controls)
+            model.clean_rms_ceiling.copy_(ceiling+1e-4)
         audits=[]
         for a in (sat,alt):
             f,e=pairs_for_gate(model,u[check],a[check])
-            picked=model.score(f)>model.threshold
+            picked=model.accepted_features(f)
             audits.append(dict(high_quality=len(f),selected=int(picked.sum()),beneficial=int((e[picked]>0).sum()),
                                 relative_change_sum=float(e[picked].sum())))
+    guard=dict(clean_rms_ceiling=float(model.clean_rms_ceiling)) if isinstance(model,SpectralPhaseDetail) else {}
     return dict(loss=history,fit_n=len(x),beneficial_fit_n=int(label.sum()),threshold=float(model.threshold),
-                withheld_U_pairs=audits)
+                withheld_U_pairs=audits,**guard)
 
 
 def train_detail(rt,seed):
@@ -271,7 +334,7 @@ def train_detail(rt,seed):
     shared=root.name==SHARED_DETAIL_RUN
     phase=root.name in PHASE_RUNS
     gate=tracker_gate(root,c,dev)
-    model=(PhaseDetail(gate) if phase else PacketDetail(gate,shared=shared)).to(dev)
+    model=detail_model(root,gate).to(dev)
     held=torch.arange(0,len(u),5,device=dev)
     signals=(l[1:].flatten(0,1),sat,alt_l,alt_u)
     sources=(l[0],u,l[0],u)
@@ -339,7 +402,7 @@ def train_detail(rt,seed):
     write(out/'source_support.json',dict(training_pool=list(map(len,pools)),withheld_U=len(held),
           practical_exposures=STEPS*sum(counts),clean_exposures=STEPS*8,utility=utility,**shared_log))
     torch.save(model.state_dict(),out/'model.pt')
-    write(out/'complete.json',record(c,seed,shared=shared,phase=phase))
+    write(out/'complete.json',record(c,seed,shared=shared,phase=phase,banded=root.name==SPECTRAL_PHASE_RUN))
 
 
 def load_detail(root,c,seed,device):
@@ -348,10 +411,10 @@ def load_detail(root,c,seed,device):
     out=root/'G'/str(seed)
     shared=root.name==SHARED_DETAIL_RUN
     phase=root.name in PHASE_RUNS
-    if read(out/'complete.json')!=record(c,seed,shared=shared,phase=phase):
+    if read(out/'complete.json')!=record(c,seed,shared=shared,phase=phase,banded=root.name==SPECTRAL_PHASE_RUN):
         raise ValueError('LoRa detail checkpoint source ancestry differs')
     gate=tracker_gate(root,c,device)
-    model=(PhaseDetail(gate) if phase else PacketDetail(gate,shared=shared)).to(device)
+    model=detail_model(root,gate).to(device)
     model.load_state_dict(torch.load(out/'model.pt',map_location=device,weights_only=True),strict=True)
     return model.eval().requires_grad_(False)
 
@@ -436,7 +499,7 @@ def detail_smoke(rt):
         return
     shared=root.name==SHARED_DETAIL_RUN
     phase=root.name in PHASE_RUNS
-    model=PhaseDetail(base.gate) if phase else PacketDetail(base.gate,shared=shared)
+    model=detail_model(root,base.gate)
     l=np.load(cache/'L_s.npy',mmap_mode='r',allow_pickle=False)[0]
     old=np.load(cache/'U_s_practical.npy',mmap_mode='r',allow_pickle=False)[::32]
     a=load_draw(root.parent/DRAW_RUN,'L_s')
