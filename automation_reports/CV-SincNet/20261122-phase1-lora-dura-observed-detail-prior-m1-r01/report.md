@@ -17,3 +17,7 @@
 发布 `python -m experiments.pamf_lora_main.full_dura_lineage_publish ... --reuse-actions ORIGINAL_SUBMIT --detail-prior-submit OBSERVED_PHASE_SUBMIT`。预期产物包括运行配置、继承父证明、各阶段训练日志及冻结 checkpoint、源波形诊断、1,050 个盲预测文件及独立 `scores.json`。
 
 [源域逐片真实细节反事实](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_observed_phase_source_panel/r17_detail_oracle.json) · [逐阶段损失实现](E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010/experiments/pamf_lora_main/full_dura_stage_detail.py)
+
+发布 **VERIFIED**。代码提交 `d10646e88c31bf089fea6e6a17df76422ce64bd3` 的归档传输 SHA 比对和远端编译通过。六景实测 source-only smoke 使用既有冻结作用估计器，R17 先验梯度范数 0.001813，冻结父段未产生梯度。独立复核六个新训练阶段的每次展开均收到有限非零的新增损失梯度。GPU 2 的训练控制器、worker、实际 CWD、命令、GPU 和日志增长已核对。R17 完成首轮 247 步，联合损失 0.054873。阶段源读出和正式独立评分均在等待已登记产物。
+
+[发布产物](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_observed_detail_prior_release/submit.json)
