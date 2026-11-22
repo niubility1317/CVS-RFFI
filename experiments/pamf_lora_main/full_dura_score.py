@@ -13,7 +13,7 @@ import numpy as np
 from experiments.cric_dura_comparison.io import read,write
 from .collect import wait_for_predictions
 from .data import CLASSES,TARGET,VIEWS,label_ids,packet_indices,recording
-from .full_dura import MODES, SWEEP
+from .full_dura import MODES, SHAPE_RUN, SWEEP, SWEEP_RUN, modes_for
 from .full_packet_data import LIMIT
 from .full_supervised import SEEDS
 from .scoring import macro_f1
@@ -86,10 +86,12 @@ def scores(pred,act,truth,modes=MODES):
 
 
 def collect(submit,ssh_config,dataset,output,sweep=False):
-    root=shlex.quote(read(submit)['run_root'])
+    run=PurePosixPath(read(submit)['run_root'])
+    root=shlex.quote(str(run))
+    frozen=run.name in (SHAPE_RUN,SWEEP_RUN) or sweep
     cmd=['ssh','-F',str(ssh_config),'-T','-o','BatchMode=yes','-o','ConnectTimeout=10','N607']
     wait_for_predictions(cmd,root)
-    extra='' if sweep else ' G/gate/training.json '+' '.join(f'G/{s}/dose_training.json G/{s}/steps.jsonl' for s in SEEDS)
+    extra='' if frozen else ' G/gate/training.json '+' '.join(f'G/{s}/dose_training.json G/{s}/steps.jsonl' for s in SEEDS)
     raw=subprocess.check_output([*cmd,f'tar -czf - -C {root} predictions source_wave{extra}'],
                                 timeout=180)
     output.mkdir(parents=True,exist_ok=False)
@@ -106,7 +108,7 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
             out.parent.mkdir(parents=True,exist_ok=True)
             with out.open('xb') as f:
                 f.write(ar.extractfile(member).read())
-    modes=tuple(SWEEP) if sweep else MODES
+    modes=tuple(SWEEP) if sweep else modes_for(run)
     pred,act=matrix(output,modes)
     truth={}
     with zipfile.ZipFile(dataset/'multiple_receiver_test.zip') as ar:

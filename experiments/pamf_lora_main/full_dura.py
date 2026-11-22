@@ -9,8 +9,8 @@ import torch
 from experiments.cric_dura_comparison.io import read, tensor, write
 from .data import TARGET, VIEWS
 from .dura_gate import RiskDura
-from .dura_repair import complex_iq
-from .full_adaptive import RUN as TRI, case, complete_f, wait_for
+from .dura_repair import complex_iq, no_tone, power, real_iq
+from .full_adaptive import RUN as TRI, WARMUP_RUN, case, complete_f, wait_for
 from .full_dura_core import Dose, dose_features, g_record, read_gate, receiver_loss, train, train_gate
 from .full_packet_data import LIMIT, PROTOCOL
 from .full_supervised import SEEDS, construct, handles
@@ -23,6 +23,18 @@ RUN='20261122-phase1-lora-full-dura-dose-m3-r01'
 MODES=('direct','fixed','dose')
 SWEEP_RUN='20261122-phase1-lora-full-dura-range-m6-r01'
 SWEEP={'direct':0.,'fixed':1.,'dose_150':1.5,'dose_200':2.}
+SHAPE_RUN='20261122-phase1-lora-dura-preserve-shape-m9-r01'
+SHAPE_MODES=('direct','fixed','protect_shape','individual_only')
+
+
+def modes_for(root):
+    if root.name==SHAPE_RUN:
+        return SHAPE_MODES
+    return tuple(SWEEP) if root.name==SWEEP_RUN else MODES
+
+
+def recognizer_run(root):
+    return WARMUP_RUN if root.name==SHAPE_RUN else TRI
 
 
 def engines(root,c,seed,dev):
@@ -41,6 +53,50 @@ def engines(root,c,seed,dev):
 def scaled(x,z,strength):
     # The registered sweep never exceeds twice DURA's 25% RMS bound.
     return x+strength*(z-x)
+
+
+def protected_shapes(model,x,z):
+    """Preserve the observed shared non-carrier residual across the six chirps."""
+    w,rot,_,_,_=model.gate.tracker.track(x)
+    scale=w.abs().square().mean(-1,keepdim=True).clamp_min(1e-8).sqrt()
+    delta=complex_iq(z-x)
+    normalized=delta*rot.conj()/scale
+    noncarrier=no_tone(normalized)
+    shared=noncarrier.mean(1,keepdim=True)
+    individual=noncarrier-shared
+    limit=power(delta).sqrt()
+    selected=[]
+    for component in (normalized-shared,individual):
+        correction=component*scale*rot
+        norm=power(correction).clamp_min(1e-12).sqrt()
+        shrink=(limit/norm).clamp_max(1.)
+        selected.append(x+real_iq(correction*shrink[:,None,None]))
+    return selected
+
+
+@torch.no_grad()
+def shape_smoke(rt):
+    _,views,c=handles(rt)
+    root=Path(rt['run_root'])
+    x=tensor(np.load(views/'L_s.npy',mmap_mode='r',allow_pickle=False)[0,:12])
+    b=tensor(np.load(views/'U_s_practical.npy',mmap_mode='r',allow_pickle=False)[::80])
+    records={}
+    for seed in SEEDS:
+        g,_=engines(root.parent/RUN,c,seed,'cpu')
+        clips,mask=g(x,with_gate=True)
+        if mask.any() or not torch.equal(clips,x):
+            raise ValueError('Real source clean smoke did not bypass G')
+        active=b[g.strength(b)>0][:8]
+        if not len(active):
+            raise ValueError('Real source shape smoke has no active practical signal')
+        fixed=g(active)
+        cap=power(complex_iq(fixed-active))
+        for proposed in protected_shapes(g,active,fixed):
+            if (not torch.isfinite(proposed).all() or torch.equal(proposed,active)
+                    or (power(complex_iq(proposed-active))>cap+1e-7).any()):
+                raise ValueError('Real source shape protection violated the correction budget')
+        records[str(seed)]=len(active)
+    write(root/'smoke.json',dict(status='PASS',active=records,clean_exact=len(x),TX_reads=0,F_reads=0,target_reads=0))
 
 
 def smoke(rt):
@@ -72,21 +128,28 @@ def source_wave(rt,seed):
     root=Path(rt['run_root'])
     dev='cuda:0'
     sweep=root.name==SWEEP_RUN
-    m,d=engines(root.parent/RUN if sweep else root,c,seed,dev)
+    shape=root.name==SHAPE_RUN
+    m,d=engines(root.parent/RUN if sweep or shape else root,c,seed,dev)
     arr=np.load(views/'V.npy',mmap_mode='r',allow_pickle=False)
     n=1000
     y=tensor(arr[0,::12],dev)
     rows={}
     for i,v in enumerate(VIEWS):
         x=tensor(arr[i,::12],dev)
-        sums=torch.zeros(len(SWEEP) if sweep else len(MODES),device=dev)
+        sums=torch.zeros(len(modes_for(root)),device=dev)
         total=active=0
         for clean,b in zip(y.split(48),x.split(48),strict=True):
             p,g=m(b,with_gate=True)
             keep=g>0
             if not torch.equal(p[~keep],b[~keep]):
                 raise ValueError('Clean DURA bypass is not an exact copy')
-            if sweep:
+            if shape:
+                restored=[p.clone(),p.clone()]
+                if keep.any():
+                    for result,part in zip(restored,protected_shapes(m,b[keep],p[keep]),strict=True):
+                        result[keep]=part
+                wave=(b,p,*restored)
+            elif sweep:
                 wave=(b,p,scaled(b,p,1.5),scaled(b,p,2.))
             else:
                 recovered=p.clone()
@@ -108,7 +171,7 @@ def source_wave(rt,seed):
 def predict(rt,seed):
     _,_,c=handles(rt)
     root=Path(rt['run_root'])
-    pred=root.parent/TRI
+    pred=root.parent/recognizer_run(root)
     target=Path(rt['target_views'])
     if (read(pred/'state.json')['status']!='PREDICTIONS_FROZEN'
             or target!=Path(rt['parent_root'])/'target_views'
@@ -124,8 +187,9 @@ def predict(rt,seed):
     f=construct(dev).eval()
     f.load_state_dict(torch.load(complete_f(pred,c,name)/'model.pt',map_location=dev,weights_only=True),strict=True)
     sweep=root.name==SWEEP_RUN
-    modes=tuple(SWEEP) if sweep else MODES
-    m,d=engines(root.parent/RUN if sweep else root,c,seed,dev)
+    shape=root.name==SHAPE_RUN
+    modes=modes_for(root)
+    m,d=engines(root.parent/RUN if sweep or shape else root,c,seed,dev)
     out=root/'predictions'/str(seed)
     out.mkdir(parents=True,exist_ok=False)
     total={}
@@ -147,7 +211,9 @@ def predict(rt,seed):
                     raise ValueError('Fixed bypass changed original target IQ')
                 if use.any():
                     xx,zz=x[use],z[use]
-                    if sweep:
+                    if shape:
+                        inputs=[zz,*protected_shapes(m,xx,zz)]
+                    elif sweep:
                         inputs=[zz,scaled(xx,zz,1.5),scaled(xx,zz,2.)]
                     else:
                         dose=d(dose_features(m,xx,zz))
@@ -167,7 +233,7 @@ def predict(rt,seed):
             for mode,z in zip(modes,(raw,*altered),strict=True):
                 np.save(out/f'{rx}__{v}__{mode}.npy',z)
             total[f'{rx}/{v}']=dict(n=LIMIT,IQ_exact=LIMIT-active,active=active,
-                         mean_dose=(float(active>0) if sweep else gain/max(active,1)))
+                         mean_dose=(float(active>0) if sweep or shape else gain/max(active,1)))
         print('FULL_DURA_PREDICTED',seed,rx,flush=True)
     write(out/'complete.json',dict(status='PREDICTIONS_FROZEN',seed=seed,modes=list(modes),target_truth_read=False,
           receivers=list(TARGET),views=list(VIEWS),per_receiver=LIMIT,activation=total))
@@ -179,7 +245,11 @@ def dispatch(rt):
     launch=partial(start,module=__spec__.name)
     state=root/'state.json'
     try:
-        if root.name==SWEEP_RUN:
+        if root.name==SHAPE_RUN:
+            write(state,dict(status='SOURCE_SMOKE'))
+            if launch(rt,'shape_smoke','source').wait():
+                raise RuntimeError('Frozen shape-protection source smoke failed')
+        elif root.name==SWEEP_RUN:
             # The source G and raw F are both unchanged in this preregistered sensitivity check.
             write(state,dict(status='SOURCE_AUDIT'))
         else:
@@ -189,9 +259,10 @@ def dispatch(rt):
                 raise RuntimeError('DURA source-only smoke failed')
             write(state,dict(status='SOURCE_G_TRAINING'),exclusive=False)
             schedule(rt,[('train',str(s)) for s in SEEDS],launch)
+        write(state,dict(status='SOURCE_AUDIT'),exclusive=False)
         schedule(rt,[('wave_audit',str(s)) for s in SEEDS],launch)
         write(state,dict(status='WAITING_FOR_FROZEN_TRI'),exclusive=False)
-        wait_for(root.parent/TRI,'PREDICTIONS_FROZEN')
+        wait_for(root.parent/recognizer_run(root),'PREDICTIONS_FROZEN')
         write(state,dict(status='PREDICTING'),exclusive=False)
         schedule(rt,[('predict',str(s)) for s in SEEDS],launch)
         write(state,dict(status='PREDICTIONS_FROZEN',target_truth_read=False),exclusive=False)
@@ -202,7 +273,7 @@ def dispatch(rt):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser()
-    p.add_argument('kind',choices=('dispatch','train_gate','smoke','train','wave_audit','predict'))
+    p.add_argument('kind',choices=('dispatch','train_gate','smoke','shape_smoke','train','wave_audit','predict'))
     p.add_argument('runtime',type=Path)
     p.add_argument('name',nargs='?')
     a=p.parse_args()
@@ -216,6 +287,8 @@ if __name__=='__main__':
             train_gate(rt,root/'G'/'gate')
         elif a.kind=='smoke':
             smoke(rt)
+        elif a.kind=='shape_smoke':
+            shape_smoke(rt)
         elif a.kind=='train':
             train(rt,root/'G'/a.name,root/'G'/'gate',int(a.name))
         else:
