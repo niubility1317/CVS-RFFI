@@ -16,7 +16,9 @@ from .full_dura_core import (COVERAGE_RECIPES, Dose, dose_features, g_record, pr
                             read_gate, receiver_loss, train, train_gate)
 from .full_dura_detail import (CONFIRM_NEW_SEEDS, DETAIL_CONFIRM_RUN, DETAIL_DOSE_MODES,
                                DETAIL_DOSE_RUN, DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS)
-from .full_dura_r69_lora import R69_ACTION_MODES, R69_ACTION_RUN, R69_LORA_RUN, R69_MODES, R69_SEEDS
+from .full_dura_r69_lora import (R69_ACTION_MODES, R69_ACTION_RUN, R69_LORA_RUN, R69_MODES,
+                                 R69_SEEDS, R69_TRACE_MODES)
+from .full_dura_trace_source import TRACE_RUN
 from .full_native_joint import JOINT_MODES, JOINT_RUN, JOINT_SEEDS
 from .full_packet_data import LIMIT, PROTOCOL
 from .full_supervised import SEEDS, construct, handles
@@ -41,7 +43,7 @@ STACK_RUN='20261122-phase1-lora-tri-set-dura-stack-m9-r01'
 STAGED_RUN='20261122-phase1-lora-dura-source-distillation-m6-r01'
 STAGED_MODES=(*PROJECTED_MODES,'staged_protect')
 DETAIL_RUNS=(DETAIL_RUN,DETAIL_DOSE_RUN,DETAIL_CONFIRM_RUN)
-R69_RUNS=(R69_LORA_RUN,R69_ACTION_RUN)
+R69_RUNS=(R69_LORA_RUN,R69_ACTION_RUN,TRACE_RUN)
 
 
 def modes_for(root):
@@ -49,6 +51,8 @@ def modes_for(root):
         return JOINT_MODES
     if root.name==R69_ACTION_RUN:
         return R69_ACTION_MODES
+    if root.name==TRACE_RUN:
+        return R69_TRACE_MODES
     if root.name==R69_LORA_RUN:
         return R69_MODES
     if root.name==DETAIL_RUN:
@@ -406,8 +410,13 @@ def dispatch(rt):
         elif root.name in R69_RUNS:
             write(state,dict(status='SOURCE_SMOKE'))
             wait_for(root.parent/DRAW_RUN,'SOURCE_DRAW_READY')
-            if root.name==R69_ACTION_RUN:
+            if root.name in (R69_ACTION_RUN,TRACE_RUN):
                 wait_for(root.parent/R69_LORA_RUN,'PREDICTIONS_FROZEN')
+            if root.name==TRACE_RUN:
+                write(state,dict(status='BUILDING_SOURCE_PHYSICAL_TRACES'),exclusive=False)
+                if launch(rt,'r69_trace_source','source').wait():
+                    raise RuntimeError('LoRa physical trace source generation failed')
+                write(state,dict(status='SOURCE_SMOKE'),exclusive=False)
             if launch(rt,'r69_smoke','source').wait():
                 raise RuntimeError('Real-IQ original DURA smoke failed')
             for stage in ('teacher','student','gate'):
@@ -475,7 +484,7 @@ if __name__=='__main__':
     p.add_argument('kind',choices=('dispatch','train_gate','smoke','shape_smoke','train','train_projected',
                                    'train_coverage','stage_teacher','stage_student','wave_audit','predict',
                                    'detail_smoke','train_detail','r69_smoke','r69_teacher','r69_student','r69_gate',
-                                   'native_joint_smoke'))
+                                   'native_joint_smoke','r69_trace_source'))
     p.add_argument('runtime',type=Path)
     p.add_argument('name',nargs='?')
     a=p.parse_args()
@@ -519,5 +528,8 @@ if __name__=='__main__':
         elif a.kind=='native_joint_smoke':
             from .full_native_joint import smoke as joint_smoke
             joint_smoke(rt)
+        elif a.kind=='r69_trace_source':
+            from .full_dura_trace_source import build
+            build(rt)
         else:
             {'wave_audit':source_wave,'predict':predict}[a.kind](rt,int(a.name))

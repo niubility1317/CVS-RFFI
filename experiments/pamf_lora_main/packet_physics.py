@@ -15,12 +15,16 @@ NATIVE_RATE = 1_000_000
 CONTEXT = 128
 
 
-def chirp_windows(z, offset=0):
+def chirp_samples(z, offset=0):
     starts = np.asarray(CHIRPS) * 1024 + WINDOW_START - 125 + offset
     if starts[0] < 0 or starts[-1] + 1250 > len(z):
         raise ValueError('LoRa chirp crop needs real input context on both sides')
     x = z[starts[:, None] + np.arange(1250)]
-    values = resample_poly(x, up=32, down=125, axis=-1)[:, 32:288]
+    return resample_poly(x, up=32, down=125, axis=-1)[:, 32:288]
+
+
+def chirp_windows(z, offset=0):
+    values = chirp_samples(z, offset)
     scale = np.sqrt(np.mean(np.abs(values)**2))
     if not np.isfinite(scale) or scale <= 1e-12:
         raise ValueError('Invalid LoRa packet power')

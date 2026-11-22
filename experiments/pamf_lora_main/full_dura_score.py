@@ -18,7 +18,9 @@ from .full_dura import (COVERAGE_RUN, MODES, PROJECTED_RUN, SHAPE_RUN, STACK_RUN
 from .full_dura_core import COVERAGE_RECIPES
 from .full_dura_detail import (CONFIRM_NEW_SEEDS, DETAIL_CONFIRM_RUN, DETAIL_DOSE_MODES, DETAIL_DOSE_RUN,
                                DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS)
-from .full_dura_r69_lora import R69_ACTION_MODES, R69_ACTION_RUN, R69_LORA_RUN, R69_MODES, R69_SEEDS
+from .full_dura_r69_lora import (R69_ACTION_MODES, R69_ACTION_RUN, R69_LORA_RUN,
+                                 R69_MODES, R69_SEEDS, R69_TRACE_MODES)
+from .full_dura_trace_source import TRACE_RUN
 from .full_native_joint import JOINT_MODES, JOINT_RUN
 from .full_packet_data import LIMIT
 from .full_supervised import SEEDS
@@ -28,7 +30,7 @@ from .scoring import macro_f1
 def matrix(output,modes=MODES,*,seeds=None):
     pred={}
     act={}
-    detail=modes in (DETAIL_MODES,DETAIL_DOSE_MODES,R69_MODES,JOINT_MODES,R69_ACTION_MODES)
+    detail=modes in (DETAIL_MODES,DETAIL_DOSE_MODES,R69_MODES,JOINT_MODES,R69_ACTION_MODES,R69_TRACE_MODES)
     seeds=seeds or (DETAIL_SEEDS if detail else SEEDS)
     for s in seeds:
         p=output/'predictions'/str(s)
@@ -46,10 +48,12 @@ def matrix(output,modes=MODES,*,seeds=None):
             if detail and (not row['active']<=row['detail_active']<=LIMIT
                            or row['detail_active']-row['active']!=row['detail_extra']):
                 raise ValueError('Invalid per-mode high-coherence bookkeeping')
-            if modes in (R69_MODES,JOINT_MODES,R69_ACTION_MODES) and not 0<=row['r69_active']<=LIMIT:
+            if modes in (R69_MODES,JOINT_MODES,R69_ACTION_MODES,R69_TRACE_MODES) and not 0<=row['r69_active']<=LIMIT:
                 raise ValueError('Invalid original DURA LoRa gate count')
             if modes==R69_ACTION_MODES and not 0<=row['action_active']<=LIMIT:
                 raise ValueError('Invalid LoRa action-corrected gate count')
+            if modes==R69_TRACE_MODES and not 0<=row['trace_active']<=LIMIT:
+                raise ValueError('Invalid LoRa trace-trained gate count')
         act[s]=activation
         for v in VIEWS:
             for m in modes:
@@ -67,7 +71,7 @@ def scores(pred,act,truth,modes=MODES,*,seeds=None):
     labels=np.concatenate([truth[r] for r in TARGET])
     n=len(labels)
     rows=[]
-    detail=modes in (DETAIL_MODES,DETAIL_DOSE_MODES,R69_MODES,JOINT_MODES,R69_ACTION_MODES)
+    detail=modes in (DETAIL_MODES,DETAIL_DOSE_MODES,R69_MODES,JOINT_MODES,R69_ACTION_MODES,R69_TRACE_MODES)
     seeds=seeds or (DETAIL_SEEDS if detail else SEEDS)
     for s in seeds:
         for v in VIEWS:
@@ -90,15 +94,16 @@ def scores(pred,act,truth,modes=MODES,*,seeds=None):
                         raise ValueError('Combined LoRa DURA changes exceed the matched Tri gate')
                     right=reference==labels
                     changes=dict(gained_own_direct=int((c&~right).sum()),lost_own_direct=int((~c&right).sum()))
-                elif mode in R69_ACTION_MODES[4:]:
-                    is_calibrated=mode in R69_ACTION_MODES[-2:]
-                    k='action_active' if is_calibrated else 'r69_active'
+                elif mode in (*R69_ACTION_MODES[4:],*R69_TRACE_MODES[-2:]):
+                    calibrated=mode in R69_ACTION_MODES[-2:]
+                    trace=mode in R69_TRACE_MODES[-2:]
+                    k='trace_active' if trace else 'action_active' if calibrated else 'r69_active'
                     count=sum(act[s][f'{r}/{v}'][k] for r in TARGET)
                     if (p!=pred[s,'direct',v]).sum()>count:
                         raise ValueError('Original DURA LoRa changes exceed the gate')
                     ref=pred[s,'coherent_half',v]==labels
                     changes=dict(gained_half=int((c&~ref).sum()),lost_half=int((~c&ref).sum()))
-                    if is_calibrated:
+                    if calibrated or trace:
                         parent=pred[s,'r69_aligned_half' if mode.endswith('_half') else 'r69_aligned',v]==labels
                         changes.update(gained_initial=int((c&~parent).sum()),lost_initial=int((~c&parent).sum()))
                 elif detail and mode in DETAIL_DOSE_MODES[3:]:
@@ -144,10 +149,12 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
     wait_for_predictions(cmd,root)
     if run.name==JOINT_RUN:
         extra=''
-    elif run.name in (R69_LORA_RUN,R69_ACTION_RUN):
+    elif run.name in (R69_LORA_RUN,R69_ACTION_RUN,TRACE_RUN):
         extra=' '+' '.join(f'G/{stage}/{s}/source_support.json G/{stage}/{s}/steps.jsonl'
                            for stage in ('teacher','student') for s in R69_SEEDS)
         extra+=' '+' '.join(f'G/gate/{s}/training.json' for s in R69_SEEDS)
+        if run.name==TRACE_RUN:
+            extra+=' source_trace/complete.json'
     elif run.name==DETAIL_CONFIRM_RUN:
         extra=' '+' '.join(f'G/{s}/source_support.json G/{s}/steps.jsonl' for s in CONFIRM_NEW_SEEDS)
     elif run.name==DETAIL_DOSE_RUN:
@@ -172,7 +179,7 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
     with tarfile.open(fileobj=BytesIO(raw),mode='r:gz') as ar:
         for member in ar:
             path=PurePosixPath(member.name)
-            if path.is_absolute() or '..' in path.parts or path.parts[0] not in ('predictions','G','source_wave'):
+            if path.is_absolute() or '..' in path.parts or path.parts[0] not in ('predictions','G','source_wave','source_trace'):
                 raise ValueError('Unexpected DURA score artifact')
             if member.isdir():
                 continue
