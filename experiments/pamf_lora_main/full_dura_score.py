@@ -21,16 +21,21 @@ from .full_dura_detail import (CONFIRM_NEW_SEEDS, DETAIL_CONFIRM_RUN, DETAIL_DOS
 from .full_dura_r69_lora import (R69_ACTION_MODES, R69_ACTION_RUN, R69_LORA_RUN,
                                  R69_MODES, R69_SEEDS, R69_TRACE_MODES)
 from .full_dura_trace_source import TRACE_RUN
-from .full_native_joint import JOINT_MODES, JOINT_RUN
+from .full_native_joint import ADAPTED_JOINT_RUN, ADAPTED_MODES, JOINT_MODES, JOINT_RUN
 from .full_packet_data import LIMIT
 from .full_supervised import SEEDS
+from .full_tri_repl_lora import ADAPT_METHODS, REPL_METHODS
 from .scoring import macro_f1
+
+
+PAIR_MATRICES=(JOINT_MODES,ADAPTED_MODES)
+R69_MATRICES=(R69_MODES,*PAIR_MATRICES,R69_ACTION_MODES,R69_TRACE_MODES)
 
 
 def matrix(output,modes=MODES,*,seeds=None):
     pred={}
     act={}
-    detail=modes in (DETAIL_MODES,DETAIL_DOSE_MODES,R69_MODES,JOINT_MODES,R69_ACTION_MODES,R69_TRACE_MODES)
+    detail=modes in (DETAIL_MODES,DETAIL_DOSE_MODES,*R69_MATRICES)
     seeds=seeds or (DETAIL_SEEDS if detail else SEEDS)
     for s in seeds:
         p=output/'predictions'/str(s)
@@ -48,11 +53,11 @@ def matrix(output,modes=MODES,*,seeds=None):
             if detail and (not row['active']<=row['detail_active']<=LIMIT
                            or row['detail_active']-row['active']!=row['detail_extra']):
                 raise ValueError('Invalid per-mode high-coherence bookkeeping')
-            if modes in (R69_MODES,JOINT_MODES,R69_ACTION_MODES,R69_TRACE_MODES) and not 0<=row['r69_active']<=LIMIT:
+            if modes in R69_MATRICES and not 0<=row['r69_active']<=LIMIT:
                 raise ValueError('Invalid original DURA LoRa gate count')
             if modes==R69_ACTION_MODES and not 0<=row['action_active']<=LIMIT:
                 raise ValueError('Invalid LoRa action-corrected gate count')
-            if modes==R69_TRACE_MODES and not 0<=row['trace_active']<=LIMIT:
+            if modes in (R69_TRACE_MODES,ADAPTED_MODES) and not 0<=row['trace_active']<=LIMIT:
                 raise ValueError('Invalid LoRa trace-trained gate count')
         act[s]=activation
         for v in VIEWS:
@@ -71,7 +76,7 @@ def scores(pred,act,truth,modes=MODES,*,seeds=None):
     labels=np.concatenate([truth[r] for r in TARGET])
     n=len(labels)
     rows=[]
-    detail=modes in (DETAIL_MODES,DETAIL_DOSE_MODES,R69_MODES,JOINT_MODES,R69_ACTION_MODES,R69_TRACE_MODES)
+    detail=modes in (DETAIL_MODES,DETAIL_DOSE_MODES,*R69_MATRICES)
     seeds=seeds or (DETAIL_SEEDS if detail else SEEDS)
     for s in seeds:
         for v in VIEWS:
@@ -83,17 +88,24 @@ def scores(pred,act,truth,modes=MODES,*,seeds=None):
                 c=p==labels
                 cm=np.bincount(10*labels+p,minlength=100).reshape(10,10)
                 count=0 if mode=='direct' else active
-                if modes==JOINT_MODES and mode.startswith('native_repl'):
-                    name='_'.join(mode.split('_',2)[:2])+'_direct'
+                method=next((m for m in (*REPL_METHODS,*ADAPT_METHODS) if mode.startswith(f'{m}_')),None)
+                if modes in PAIR_MATRICES and method is not None:
+                    routed=mode==f'{method}_routed'
+                    name='direct' if routed else f'{method}_direct'
                     reference=pred[s,name,v]
                     if name==mode:
                         count=0
                     else:
-                        count=sum(act[s][f'{r}/{v}']['r69_active'] for r in TARGET)
+                        key='trace_active' if modes==ADAPTED_MODES else 'r69_active'
+                        count=sum(act[s][f'{r}/{v}'][key] for r in TARGET)
                     if (p!=reference).sum()>count:
                         raise ValueError('Combined LoRa DURA changes exceed the matched Tri gate')
                     right=reference==labels
                     changes=dict(gained_own_direct=int((c&~right).sum()),lost_own_direct=int((~c&right).sum()))
+                    if routed:
+                        before=pred[s,'r69_trace_half',v]==labels
+                        changes.update(gained_trace_tri_set=int((c&~before).sum()),
+                                       lost_trace_tri_set=int((~c&before).sum()))
                 elif mode in (*R69_ACTION_MODES[4:],*R69_TRACE_MODES[-2:]):
                     calibrated=mode in R69_ACTION_MODES[-2:]
                     trace=mode in R69_TRACE_MODES[-2:]
@@ -147,7 +159,7 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
     frozen=run.name in (SHAPE_RUN,SWEEP_RUN,STACK_RUN) or sweep
     cmd=['ssh','-F',str(ssh_config),'-T','-o','BatchMode=yes','-o','ConnectTimeout=10','N607']
     wait_for_predictions(cmd,root)
-    if run.name==JOINT_RUN:
+    if run.name in (JOINT_RUN,ADAPTED_JOINT_RUN):
         extra=''
     elif run.name in (R69_LORA_RUN,R69_ACTION_RUN,TRACE_RUN):
         extra=' '+' '.join(f'G/{stage}/{s}/source_support.json G/{stage}/{s}/steps.jsonl'

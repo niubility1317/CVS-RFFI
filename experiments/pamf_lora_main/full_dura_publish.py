@@ -8,17 +8,16 @@ from .full_dura import COVERAGE_RUN, PROJECTED_RUN, RUN, SHAPE_RUN, STACK_RUN, S
 from .full_dura_detail import DETAIL_CONFIRM_RUN, DETAIL_DOSE_RUN, DETAIL_RUN
 from .full_dura_r69_lora import R69_ACTION_RUN, R69_LORA_RUN
 from .full_dura_trace_source import TRACE_RUN
-from .full_native_joint import JOINT_RUN
+from .full_native_joint import ADAPTED_JOINT_RUN, JOINT_RUN, parents
 from .full_packet_publish import DATA_RUN
 from .full_restore_draw import RUN as DRAW_RUN
-from .full_tri_repl_lora import REPL_RUN
 from .publish import release, release_commit
 
 
 def publish(repo,output,context,ssh_config,data_submit,tri_submit,dose_submit=None,shape=False,projected=False,
             coverage_submit=None,stack=False,draw_submit=None,projected_submit=None,stack_submit=None,
             coherent_detail=False,detail_dose_submit=None,confirm_dose=False,r69_aligned=False,
-            native_tri_submit=None,r69_submit=None,r69_action=False,r69_trace=False):
+            native_tri_submit=None,r69_submit=None,r69_action=False,r69_trace=False,adapted_joint=False):
     x=read(context)
     rt={k:x[k] for k in ('project','python','frozen_sources')}
     p=PurePosixPath(x['project'])
@@ -27,6 +26,8 @@ def publish(repo,output,context,ssh_config,data_submit,tri_submit,dose_submit=No
     if (confirm_dose or r69_aligned) and detail_dose_submit is None:
         raise ValueError('Dose confirmation requires the frozen single-seed dose matrix')
     native_joint=native_tri_submit is not None
+    if adapted_joint and not native_joint:
+        raise ValueError('Adapted LoRa joint scoring requires both frozen source model releases')
     r69_source=r69_action or r69_trace
     if r69_source and (r69_submit is None or draw_submit is None or native_joint or detail_dose_submit is not None):
         raise ValueError('Original DURA action calibration needs one frozen matching R69 source run and draw')
@@ -55,7 +56,8 @@ def publish(repo,output,context,ssh_config,data_submit,tri_submit,dose_submit=No
         parent=DETAIL_CONFIRM_RUN if r69_aligned else DETAIL_DOSE_RUN if confirm_dose else DETAIL_RUN
         handles.append((detail_dose_submit,parent))
     if native_joint:
-        handles.extend(((native_tri_submit,REPL_RUN),(r69_submit,R69_LORA_RUN)))
+        g,f=parents(PurePosixPath(ADAPTED_JOINT_RUN if adapted_joint else JOINT_RUN))
+        handles.extend(((native_tri_submit,f),(r69_submit,g)))
     if r69_source:
         handles.append((r69_submit,R69_LORA_RUN))
     for path,name in handles:
@@ -69,7 +71,7 @@ def publish(repo,output,context,ssh_config,data_submit,tri_submit,dose_submit=No
     elif r69_action:
         name=R69_ACTION_RUN
     elif native_joint:
-        name=JOINT_RUN
+        name=ADAPTED_JOINT_RUN if adapted_joint else JOINT_RUN
     elif joint:
         if detail_dose_submit is not None:
             name=R69_LORA_RUN if r69_aligned else DETAIL_CONFIRM_RUN if confirm_dose else DETAIL_DOSE_RUN
@@ -113,4 +115,5 @@ if __name__=='__main__':
     extension.add_argument('--r69-trace',action='store_true')
     p.add_argument('--native-tri-submit',type=Path)
     p.add_argument('--r69-submit',type=Path)
+    p.add_argument('--adapted-joint',action='store_true')
     publish(**vars(p.parse_args()))

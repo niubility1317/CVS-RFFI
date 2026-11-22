@@ -19,7 +19,7 @@ from .full_dura_detail import (CONFIRM_NEW_SEEDS, DETAIL_CONFIRM_RUN, DETAIL_DOS
 from .full_dura_r69_lora import (R69_ACTION_MODES, R69_ACTION_RUN, R69_LORA_RUN, R69_MODES,
                                  R69_SEEDS, R69_TRACE_MODES)
 from .full_dura_trace_source import TRACE_RUN
-from .full_native_joint import JOINT_MODES, JOINT_RUN, JOINT_SEEDS
+from .full_native_joint import ADAPTED_JOINT_RUN, ADAPTED_MODES, JOINT_MODES, JOINT_RUN, JOINT_SEEDS, parents
 from .full_packet_data import LIMIT, PROTOCOL
 from .full_supervised import SEEDS, construct, handles
 from .packet_runner import schedule
@@ -27,7 +27,6 @@ from .refine_g import aligned_target
 from .refine_runner import start
 from .runner import activate
 from .full_restore_draw import RUN as DRAW_RUN
-from .full_tri_repl_lora import REPL_RUN
 
 RUN='20261122-phase1-lora-full-dura-dose-m3-r01'
 MODES=('direct','fixed','dose')
@@ -44,9 +43,12 @@ STAGED_RUN='20261122-phase1-lora-dura-source-distillation-m6-r01'
 STAGED_MODES=(*PROJECTED_MODES,'staged_protect')
 DETAIL_RUNS=(DETAIL_RUN,DETAIL_DOSE_RUN,DETAIL_CONFIRM_RUN)
 R69_RUNS=(R69_LORA_RUN,R69_ACTION_RUN,TRACE_RUN)
+JOINT_RUNS=(JOINT_RUN,ADAPTED_JOINT_RUN)
 
 
 def modes_for(root):
+    if root.name==ADAPTED_JOINT_RUN:
+        return ADAPTED_MODES
     if root.name==JOINT_RUN:
         return JOINT_MODES
     if root.name==R69_ACTION_RUN:
@@ -71,7 +73,7 @@ def modes_for(root):
 
 
 def recognizer_run(root):
-    if root.name in (STACK_RUN,STAGED_RUN,JOINT_RUN,*R69_RUNS,*DETAIL_RUNS):
+    if root.name in (STACK_RUN,STAGED_RUN,*JOINT_RUNS,*R69_RUNS,*DETAIL_RUNS):
         return SET_RUN
     return WARMUP_RUN if root.name in (SHAPE_RUN,PROJECTED_RUN,COVERAGE_RUN) else TRI
 
@@ -170,10 +172,10 @@ def smoke(rt):
 
 @torch.no_grad()
 def source_wave(rt,seed):
-    if Path(rt['run_root']).name==JOINT_RUN:
+    if Path(rt['run_root']).name in JOINT_RUNS:
         root=Path(rt['run_root'])
         name=f'{seed}.json'
-        return write(root/'source_wave'/name,read(root.parent/R69_LORA_RUN/'source_wave'/name))
+        return write(root/'source_wave'/name,read(root.parent/parents(root)[0]/'source_wave'/name))
     if Path(rt['run_root']).name in R69_RUNS:
         from .full_dura_r69_lora import r69_audit
         return r69_audit(rt,seed)
@@ -239,7 +241,7 @@ def predict(rt,seed):
             or read(target/'complete.json')!=dict(status='TARGET_READY',protocol=PROTOCOL,target_truth_read=False,
                               receivers=list(TARGET),per_receiver=LIMIT,views=list(VIEWS))):
         raise ValueError('Blind full pair is not ready')
-    if root.name==JOINT_RUN:
+    if root.name in JOINT_RUNS:
         from .full_native_joint import predict_joint
         return predict_joint(root,target,c,seed,'cuda:0')
     method=SET_METHOD if pred.name==SET_RUN else 'adaptive_tri'
@@ -395,14 +397,14 @@ def dispatch(rt):
         seeds=CONFIRM_NEW_SEEDS
     elif root.name in R69_RUNS:
         seeds=R69_SEEDS
-    elif root.name==JOINT_RUN:
+    elif root.name in JOINT_RUNS:
         seeds=JOINT_SEEDS
     else:
         seeds=DETAIL_SEEDS if root.name in DETAIL_RUNS else SEEDS
     try:
-        if root.name==JOINT_RUN:
+        if root.name in JOINT_RUNS:
             write(state,dict(status='WAITING_FOR_NATIVE_F_AND_G'))
-            for prior in (R69_LORA_RUN,REPL_RUN):
+            for prior in parents(root):
                 wait_for(root.parent/prior,'PREDICTIONS_FROZEN')
             write(state,dict(status='SOURCE_SMOKE'),exclusive=False)
             if launch(rt,'native_joint_smoke','source').wait():
