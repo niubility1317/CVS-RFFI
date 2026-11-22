@@ -21,6 +21,8 @@ from .runner import activate
 
 RUN='20261122-phase1-lora-full-dura-dose-m3-r01'
 MODES=('direct','fixed','dose')
+SWEEP_RUN='20261122-phase1-lora-full-dura-range-m6-r01'
+SWEEP={'direct':0.,'fixed':1.,'dose_150':1.5,'dose_200':2.}
 
 
 def engines(root,c,seed,dev):
@@ -34,6 +36,11 @@ def engines(root,c,seed,dev):
     net.net.load_state_dict(weights['G'],strict=True)
     dose.load_state_dict(weights['dose'],strict=True)
     return net,dose
+
+
+def scaled(x,z,strength):
+    # The registered sweep never exceeds twice DURA's 25% RMS bound.
+    return x+strength*(z-x)
 
 
 def smoke(rt):
@@ -64,26 +71,31 @@ def source_wave(rt,seed):
     _,views,c=handles(rt)
     root=Path(rt['run_root'])
     dev='cuda:0'
-    m,d=engines(root,c,seed,dev)
+    sweep=root.name==SWEEP_RUN
+    m,d=engines(root.parent/RUN if sweep else root,c,seed,dev)
     arr=np.load(views/'V.npy',mmap_mode='r',allow_pickle=False)
     n=1000
     y=tensor(arr[0,::12],dev)
     rows={}
     for i,v in enumerate(VIEWS):
         x=tensor(arr[i,::12],dev)
-        sums=torch.zeros(3,device=dev)
+        sums=torch.zeros(len(SWEEP) if sweep else len(MODES),device=dev)
         total=active=0
         for clean,b in zip(y.split(48),x.split(48),strict=True):
             p,g=m(b,with_gate=True)
             keep=g>0
-            recovered=p.clone()
-            if keep.any():
-                a=d(dose_features(m,b[keep],p[keep]))
-                recovered[keep]=b[keep]+a[:,None,None,None]*(p[keep]-b[keep])
             if not torch.equal(p[~keep],b[~keep]):
                 raise ValueError('Clean DURA bypass is not an exact copy')
+            if sweep:
+                wave=(b,p,scaled(b,p,1.5),scaled(b,p,2.))
+            else:
+                recovered=p.clone()
+                if keep.any():
+                    a=d(dose_features(m,b[keep],p[keep]))
+                    recovered[keep]=scaled(b[keep],p[keep],a[:,None,None,None])
+                wave=(b,p,recovered)
             ref=complex_iq(aligned_target(clean,b,m.reference,'chirp'))
-            sums+=torch.stack([receiver_loss(complex_iq(w)-ref).sum() for w in (b,p,recovered)])
+            sums+=torch.stack([receiver_loss(complex_iq(w)-ref).sum() for w in wave])
             active+=int(keep.sum())
             total+=len(b)
         if total!=n:
@@ -111,7 +123,9 @@ def predict(rt,seed):
     dev='cuda:0'
     f=construct(dev).eval()
     f.load_state_dict(torch.load(complete_f(pred,c,name)/'model.pt',map_location=dev,weights_only=True),strict=True)
-    m,d=engines(root,c,seed,dev)
+    sweep=root.name==SWEEP_RUN
+    modes=tuple(SWEEP) if sweep else MODES
+    m,d=engines(root.parent/RUN if sweep else root,c,seed,dev)
     out=root/'predictions'/str(seed)
     out.mkdir(parents=True,exist_ok=False)
     total={}
@@ -123,7 +137,7 @@ def predict(rt,seed):
             raw=np.load(base/f'{rx}__{v}__direct.npy',allow_pickle=False)
             if raw.shape!=(LIMIT,) or raw.dtype.kind not in 'iu' or raw.min()<0 or raw.max()>=10:
                 raise ValueError('Frozen raw predictions are incomplete')
-            fixed,dosed=raw.copy(),raw.copy()
+            altered=[raw.copy() for _ in modes[1:]]
             start_at=active=0
             gain=0.
             for x in tensor(a[j],dev).split(32):
@@ -133,23 +147,29 @@ def predict(rt,seed):
                     raise ValueError('Fixed bypass changed original target IQ')
                 if use.any():
                     xx,zz=x[use],z[use]
-                    dose=d(dose_features(m,xx,zz))
-                    zs=xx+dose[:,None,None,None]*(zz-xx)
-                    pp=f(torch.cat((zz,zs)))[0]
-                    if not torch.isfinite(pp).all() or not torch.isfinite(dose).all():
+                    if sweep:
+                        inputs=[zz,scaled(xx,zz,1.5),scaled(xx,zz,2.)]
+                    else:
+                        dose=d(dose_features(m,xx,zz))
+                        if not torch.isfinite(dose).all():
+                            raise ValueError('Nonfinite full DURA dosage')
+                        inputs=[zz,scaled(xx,zz,dose[:,None,None,None])]
+                        gain+=float(dose.sum())
+                    pp=f(torch.cat(inputs))[0]
+                    if not torch.isfinite(pp).all():
                         raise ValueError('Nonfinite full DURA prediction')
-                    p0,p1=pp.argmax(1).chunk(2)
                     k=torch.where(use)[0].cpu().tolist()
                     k=np.asarray(k)+start_at
-                    fixed[k],dosed[k]=p0.tolist(),p1.tolist()
+                    for result,labels in zip(altered,pp.argmax(1).chunk(len(altered)),strict=True):
+                        result[k]=labels.tolist()
                     active+=len(k)
-                    gain+=float(dose.sum())
                 start_at+=len(x)
-            for mode,z in zip(MODES,(raw,fixed,dosed),strict=True):
+            for mode,z in zip(modes,(raw,*altered),strict=True):
                 np.save(out/f'{rx}__{v}__{mode}.npy',z)
-            total[f'{rx}/{v}']=dict(n=LIMIT,IQ_exact=LIMIT-active,active=active,mean_dose=gain/max(active,1))
+            total[f'{rx}/{v}']=dict(n=LIMIT,IQ_exact=LIMIT-active,active=active,
+                         mean_dose=(float(active>0) if sweep else gain/max(active,1)))
         print('FULL_DURA_PREDICTED',seed,rx,flush=True)
-    write(out/'complete.json',dict(status='PREDICTIONS_FROZEN',seed=seed,modes=list(MODES),target_truth_read=False,
+    write(out/'complete.json',dict(status='PREDICTIONS_FROZEN',seed=seed,modes=list(modes),target_truth_read=False,
           receivers=list(TARGET),views=list(VIEWS),per_receiver=LIMIT,activation=total))
 
 
@@ -159,12 +179,16 @@ def dispatch(rt):
     launch=partial(start,module=__spec__.name)
     state=root/'state.json'
     try:
-        write(state,dict(status='SOURCE_GATE'))
-        schedule(rt,[('train_gate','source')],launch)
-        if launch(rt,'smoke','source').wait():
-            raise RuntimeError('DURA source-only smoke failed')
-        write(state,dict(status='SOURCE_G_TRAINING'),exclusive=False)
-        schedule(rt,[('train',str(s)) for s in SEEDS],launch)
+        if root.name==SWEEP_RUN:
+            # The source G and raw F are both unchanged in this preregistered sensitivity check.
+            write(state,dict(status='SOURCE_AUDIT'))
+        else:
+            write(state,dict(status='SOURCE_GATE'))
+            schedule(rt,[('train_gate','source')],launch)
+            if launch(rt,'smoke','source').wait():
+                raise RuntimeError('DURA source-only smoke failed')
+            write(state,dict(status='SOURCE_G_TRAINING'),exclusive=False)
+            schedule(rt,[('train',str(s)) for s in SEEDS],launch)
         schedule(rt,[('wave_audit',str(s)) for s in SEEDS],launch)
         write(state,dict(status='WAITING_FOR_FROZEN_TRI'),exclusive=False)
         wait_for(root.parent/TRI,'PREDICTIONS_FROZEN')

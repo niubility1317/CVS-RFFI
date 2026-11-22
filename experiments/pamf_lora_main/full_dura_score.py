@@ -13,20 +13,20 @@ import numpy as np
 from experiments.cric_dura_comparison.io import read,write
 from .collect import wait_for_predictions
 from .data import CLASSES,TARGET,VIEWS,label_ids,packet_indices,recording
-from .full_dura import MODES
+from .full_dura import MODES, SWEEP
 from .full_packet_data import LIMIT
 from .full_supervised import SEEDS
 from .scoring import macro_f1
 
 
-def matrix(output):
+def matrix(output,modes=MODES):
     pred={}
     act={}
     for s in SEEDS:
         p=output/'predictions'/str(s)
         receipt=read(p/'complete.json')
         activation=receipt.pop('activation')
-        if receipt!=dict(status='PREDICTIONS_FROZEN',seed=s,modes=list(MODES),target_truth_read=False,
+        if receipt!=dict(status='PREDICTIONS_FROZEN',seed=s,modes=list(modes),target_truth_read=False,
                       receivers=list(TARGET),views=list(VIEWS),per_receiver=LIMIT):
             raise ValueError('Incomplete matched DURA prediction proofs')
         if set(activation)!={f'{r}/{v}' for r in TARGET for v in VIEWS}:
@@ -37,7 +37,7 @@ def matrix(output):
                 raise ValueError('Invalid per-view dosage bookkeeping')
         act[s]=activation
         for v in VIEWS:
-            for m in MODES:
+            for m in modes:
                 values=[]
                 for r in TARGET:
                     q=np.load(p/f'{r}__{v}__{m}.npy',allow_pickle=False)
@@ -48,7 +48,7 @@ def matrix(output):
     return pred,act
 
 
-def scores(pred,act,truth):
+def scores(pred,act,truth,modes=MODES):
     labels=np.concatenate([truth[r] for r in TARGET])
     n=len(labels)
     rows=[]
@@ -57,7 +57,7 @@ def scores(pred,act,truth):
             direct=pred[s,'direct',v]==labels
             fixed=pred[s,'fixed',v]==labels
             active=sum(act[s][f'{r}/{v}']['active'] for r in TARGET)
-            for mode in MODES:
+            for mode in modes:
                 p=pred[s,mode,v]
                 c=p==labels
                 cm=np.bincount(10*labels+p,minlength=100).reshape(10,10)
@@ -69,7 +69,7 @@ def scores(pred,act,truth):
                    by_rx=dict(zip(TARGET,c.reshape(len(TARGET),LIMIT).mean(1).tolist(),strict=True)),
                    active=0 if mode=='direct' else active,IQ_exact=n if mode=='direct' else n-active))
     summary={}
-    for m in MODES:
+    for m in modes:
         by={}
         for v in (*VIEWS,'practical_mean'):
             table={}
@@ -85,12 +85,12 @@ def scores(pred,act,truth):
     return dict(status='SCORED_COMPLETE',truth_last=True,by_seed=rows,summary=summary)
 
 
-def collect(submit,ssh_config,dataset,output):
+def collect(submit,ssh_config,dataset,output,sweep=False):
     root=shlex.quote(read(submit)['run_root'])
     cmd=['ssh','-F',str(ssh_config),'-T','-o','BatchMode=yes','-o','ConnectTimeout=10','N607']
     wait_for_predictions(cmd,root)
-    traces=' '.join(f'G/{s}/dose_training.json G/{s}/steps.jsonl' for s in SEEDS)
-    raw=subprocess.check_output([*cmd,f'tar -czf - -C {root} predictions source_wave G/gate/training.json {traces}'],
+    extra='' if sweep else ' G/gate/training.json '+' '.join(f'G/{s}/dose_training.json G/{s}/steps.jsonl' for s in SEEDS)
+    raw=subprocess.check_output([*cmd,f'tar -czf - -C {root} predictions source_wave{extra}'],
                                 timeout=180)
     output.mkdir(parents=True,exist_ok=False)
     with tarfile.open(fileobj=BytesIO(raw),mode='r:gz') as ar:
@@ -106,13 +106,14 @@ def collect(submit,ssh_config,dataset,output):
             out.parent.mkdir(parents=True,exist_ok=True)
             with out.open('xb') as f:
                 f.write(ar.extractfile(member).read())
-    pred,act=matrix(output)
+    modes=tuple(SWEEP) if sweep else MODES
+    pred,act=matrix(output,modes)
     truth={}
     with zipfile.ZipFile(dataset/'multiple_receiver_test.zip') as ar:
         for i,n in enumerate(TARGET):
             with recording(ar,f'{n}_test.h5',output) as h5:
                 truth[n]=label_ids(h5,LIMIT)[packet_indices(LIMIT,i)]
-    write(output/'scores.json',scores(pred,act,truth))
+    write(output/'scores.json',scores(pred,act,truth,modes))
     print('FULL_DURA_SCORED',output/'scores.json',flush=True)
 
 
@@ -120,4 +121,5 @@ if __name__=='__main__':
     p=argparse.ArgumentParser()
     for k in ('submit','ssh-config','dataset','output'):
         p.add_argument('--'+k,type=Path,required=True)
+    p.add_argument('--sweep',action='store_true')
     collect(**vars(p.parse_args()))
