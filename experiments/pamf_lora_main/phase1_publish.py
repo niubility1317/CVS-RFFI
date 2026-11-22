@@ -3,10 +3,10 @@ import argparse
 from pathlib import PurePosixPath
 
 from experiments.cric_dura_comparison.io import read
+from .phase1 import RUN
 from .publish import release_commit, release
 
 
-RUN = '20261121-phase1-lora-full-external-m12-r01'
 MAIN = '20261121-phase1-pamf-lora-rx5-main-m18-r01'
 
 

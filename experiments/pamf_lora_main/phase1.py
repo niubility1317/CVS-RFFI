@@ -1,4 +1,4 @@
-"""Four native Phase1 Full+PL methods on the immutable LoRa main split."""
+"""Audited Phase1 Full+PL methods on the immutable LoRa main split."""
 import argparse
 from contextlib import contextmanager
 import os
@@ -19,9 +19,8 @@ from .recognition import SEEDS
 from .runner import available
 
 
-RUN = '20261121-phase1-lora-full-external-m12-r01'
+RUN = '20261122-phase1-lora-full-external-m12-r02'
 METHODS = ('riei', 'drift', 'ibrff', 'sdg')
-# Matched to the registered ten-class Full+PL Phase1 recipes.
 BUDGETS = {'riei': (100, 64, .0001, 1), 'drift': (100, 256, .0001, 1),
            'ibrff': (200, 128, .001, 2), 'sdg': (200, 32, .001, 1)}
 
@@ -35,6 +34,9 @@ def configuration(rt, family, seed):
         stages=stages, budget_kind='native', weight_decay=0., num_classes=len(CLASSES),
         classes=list(map(str, CLASSES)), num_domains=len(SOURCE), U_s_use=True,
         satellite_train_augmentation=True, lambda_sat_cls=.68, pl_threshold=.95, pl_weight=1.,
+        accepted_pl_only=True, log_native_terms=True, drift_normalized_separation=family == 'drift',
+        ibrff_plateau_warmup=25 if family == 'ibrff' else 0,
+        riei_adam=family == 'riei',
         default_head_joint_training=True, separate_head_training=False,
         source_cache=rt['source_root'], source_contract=str(Path(rt['source_root'])/'contract.json'),
         source_practical=rt['source_practical'], output_root=str(Path(rt['run_root'])/'F'/row),
@@ -43,7 +45,9 @@ def configuration(rt, family, seed):
 
 def check_training(c):
     if (c['run_id'] != RUN or c['family'] not in METHODS or c['model_seed'] not in SEEDS
-            or any(k in c for k in ('target', 'target_root', 'tests', 'truth', 'target_truth', 'checkpoint'))):
+            or any(k in c for k in ('target', 'target_root', 'target_practical', 'target_inputs',
+                                    'views_root', 'tests', 'truth', 'target_truth', 'dataset',
+                                    'resume', 'teacher_checkpoint', 'checkpoint', 'initial_checkpoint'))):
         raise ValueError('Supplement training accepts only the registered LoRa source rows')
     contract = read(c['source_contract'])
     if (contract['protocol'] != 'lora_rx5_main_v1' or contract['receiver_names'] != list(SOURCE)
@@ -136,8 +140,7 @@ def smoke(rt):
             u,u_rx = next(iter(array_loader(c, 'U_s', 16)))
             fed = None
             if family == 'riei':
-                opt = torch.optim.SGD(list(model.ec.parameters())+list(model.rc.parameters()), lr=c['lr'])
-                fed = torch.optim.SGD(model.fed.parameters(), lr=c['lr'])
+                opt, fed = source.riei_optimizers(model, c)
             else:
                 opt = torch.optim.Adam(model.parameters(), lr=c['lr'])
             aug = CachedPractical(c)
@@ -205,10 +208,12 @@ def launch(rt, kind, gpu, **fields):
     return child
 
 
-def schedule(rt, kind, rows):
-    waiting, active = list(rows), {}
+def schedule(rt, rows):
+    waiting, active = [('train', row) for row in rows], {}
+    trained = predicted = 0
+    state = Path(rt['run_root'])/'state.json'
     while waiting or active:
-        for gpu, (child, row) in list(active.items()):
+        for gpu, (child, kind, row) in list(active.items()):
             code = child.poll()
             if code is None:
                 continue
@@ -216,16 +221,23 @@ def schedule(rt, kind, rows):
                 raise RuntimeError(f'{kind} {row} failed with status {code}')
             print('LORA_PHASE1_COMPLETED', kind, row, flush=True)
             del active[gpu]
-        main_views_ready = (Path(rt['target_practical'])/'complete.json').is_file()
-        cap = len(rt['allowed_gpus']) if main_views_ready else 1
-        if waiting and len(active) < cap:
+            if kind == 'train':
+                trained += 1
+                waiting.insert(0, ('predict', row))
+            else:
+                predicted += 1
+        if waiting:
             for gpu in available(rt['allowed_gpus']):
-                if not waiting or len(active) >= cap:
+                if not waiting:
                     break
                 if gpu in active:
                     continue
-                family, seed = row = waiting.pop(0)
-                active[gpu] = launch(rt, kind, gpu, family=family, seed=seed), row
+                kind, row = waiting.pop(0)
+                family, seed = row
+                active[gpu] = launch(rt, kind, gpu, family=family, seed=seed), kind, row
+        write(state, dict(status='RUNNING', source_frozen=trained, predictions_frozen=predicted,
+            workers={str(gpu): dict(pid=child.pid, kind=kind, row_id=f'{row[0]}-s{row[1]}')
+                     for gpu, (child, kind, row) in active.items()}), exclusive=False)
         if waiting or active:
             time.sleep(20)
 
@@ -238,16 +250,11 @@ def dispatch(rt):
         write(state, dict(status='SOURCE_SMOKE'))
         if launch(rt, 'smoke', None).wait():
             raise RuntimeError('Native Full baseline smoke failed')
-        write(state, dict(status='SOURCE_TRAINING'), exclusive=False)
+        if (read(Path(rt['main_run'])/'state.json')['status'] != 'PREDICTIONS_FROZEN'
+                or not (Path(rt['target_practical'])/'complete.json').is_file()):
+            raise ValueError('The original LoRa practical views and predictions must be frozen')
         rows = [(f,s) for s in SEEDS for f in METHODS]
-        schedule(rt, 'train', rows)
-        write(state, dict(status='WAITING_MAIN_VIEWS'), exclusive=False)
-        while not (Path(rt['target_practical'])/'complete.json').is_file():
-            if read(Path(rt['main_run'])/'state.json')['status'] == 'FAILED':
-                raise RuntimeError('Main LoRa practical views failed')
-            time.sleep(30)
-        write(state, dict(status='PREDICTING'), exclusive=False)
-        schedule(rt, 'predict', rows)
+        schedule(rt, rows)
         write(state, dict(status='PREDICTIONS_FROZEN', target_truth_read=False), exclusive=False)
     except Exception as error:
         write(state, dict(status='FAILED', error=str(error)), exclusive=False)

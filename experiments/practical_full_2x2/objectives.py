@@ -31,9 +31,10 @@ def step(net, c, x, y, rx, optimizer, augment, progress, batch_index, *,
     sat_offset = sum(len(v) for v in views)
     parts = views + [satellite]
     targets = accepted = confidence = None
+    accepted_only = c.get('accepted_pl_only', False)
     if enabled:
         targets, accepted, confidence = pseudo_targets(net, lambda z: identity(net, c, z), unlabeled, c['pl_threshold'])
-        parts.append(unlabeled)
+        parts.append(unlabeled[accepted] if accepted_only else unlabeled)
     joined = torch.cat(parts, dim=0)
     net.train()
     if c['family'] == 'resnet18':
@@ -57,34 +58,46 @@ def step(net, c, x, y, rx, optimizer, augment, progress, batch_index, *,
         z, logits = net(joined)
     ce = F.cross_entropy(logits[clean_offset:clean_offset+b], y)
     sat_ce = F.cross_entropy(logits[sat_offset:sat_offset+b], y)
-    pl = logits.sum() * 0.
+    pl = ce.new_zeros(())
     if enabled:
-        pl = masked_pl_loss(logits[sat_offset+b:], targets, accepted)
+        pl_logits = logits[sat_offset+b:]
+        if accepted_only:
+            if len(pl_logits):
+                pl = F.cross_entropy(pl_logits, targets[accepted], reduction='sum') / len(unlabeled)
+        else:
+            pl = masked_pl_loss(pl_logits, targets, accepted)
     objective = ce + .68 * sat_ce + c['pl_weight'] * pl
     native_loss = ce.new_zeros(())
+    terms = {}
     if c['family'] == 'riei' and full:
         if fed_optimizer is None:
             raise ValueError('RIEI alternating feature optimizer required')
         native_loss = F.cross_entropy(net.rc(features[:b, net.emitter_feature_dim:]), rx)
+        terms['receiver_ce'] = native_loss.detach()
         objective = objective + native_loss
     elif clean_drift is not None:
         from baselines.drift.losses import compute_drift_loss
-        native_total = compute_drift_loss(clean_drift, y, rx, lambda_grl=1.,
+        drift = compute_drift_loss(clean_drift, y, rx, lambda_grl=1.,
             lambda_center=.01, lambda_mse=.02, mse_reduction='sum', mse_cap=0.,
-            normalize_features_for_mse=False, center_mode='batch')['loss']
-        native_loss = native_total - ce
+            normalize_features_for_mse=c.get('drift_normalized_separation', False), center_mode='batch')
+        native_loss = drift['loss'] - ce
+        terms = {k: v.detach() for k, v in drift.items() if k != 'loss'}
         objective = objective + native_loss
     elif c['family'] == 'ibrff' and full and stage == 2:
         from .author_imports import author_hsic
         hsic_normalized_cca=author_hsic(c)
         native_loss = .04 * hsic_normalized_cca(z[:b].flatten(1), x.flatten(1))
+        terms['weighted_hsic'] = native_loss.detach()
         objective = objective + native_loss
     elif sdg_full:
         labels = y.repeat(2)
         domain = torch.arange(2, device=y.device).repeat_interleave(b)
         contrastive = author.SupConLoss().to(y.device)
-        native_loss = contrastive(z[:2*b].unsqueeze(1), labels, adv=False)
-        native_loss = native_loss + 100. * contrastive(z[:2*b].unsqueeze(1), domain, adv=True)
+        supervised_contrast = contrastive(z[:2*b].unsqueeze(1), labels, adv=False)
+        adversarial_contrast = 100. * contrastive(z[:2*b].unsqueeze(1), domain, adv=True)
+        native_loss = supervised_contrast + adversarial_contrast
+        terms.update(supervised_contrast=supervised_contrast.detach(),
+                     weighted_adversarial_contrast=adversarial_contrast.detach())
         objective = objective + native_loss
     elif c['family'] == 'resnet18' and c['route'] == 'fishr':
         if fishr is None: raise ValueError('Fishr state is required')
@@ -113,8 +126,11 @@ def step(net, c, x, y, rx, optimizer, augment, progress, batch_index, *,
             for p in module.parameters(): p.requires_grad_(False)
         try:
             output = net(x)
-            dis = 1.2 * mutual_independence_loss(output['z_e'], output['z_r'], mode='cosine_abs', reduction='mean')
-            dis = dis - 1.2 * (entropy_from_logits(output['cross_emitter_logits']) + entropy_from_logits(output['cross_receiver_logits']))
+            mi = mutual_independence_loss(output['z_e'], output['z_r'], mode='cosine_abs', reduction='mean')
+            entropy = (entropy_from_logits(output['cross_emitter_logits'])
+                       + entropy_from_logits(output['cross_receiver_logits']))
+            dis = 1.2 * mi - 1.2 * entropy
+            terms.update(mutual_independence=mi.detach(), cross_head_entropy=entropy.detach())
             fed_optimizer.zero_grad(); dis.backward(); finite(net, dis); fed_optimizer.step()
             extra = float(dis.detach())
         finally:
@@ -136,6 +152,7 @@ def step(net, c, x, y, rx, optimizer, augment, progress, batch_index, *,
         pl_accepted=int(accepted.sum()) if enabled else 0,
         pl_confidence_sum=float(confidence.sum()) if enabled else 0.,
         pl_receiver_counts=receiver_counts,
+        native_terms={k: float(v) for k, v in terms.items()} if c.get('log_native_terms') else {},
         satellite_samples=b, satellite_applied_samples=sat_info['applied_count'],
         satellite_scene_counts=sat_info.get('scene_counts',{}),
         satellite_scenario=sat_info['scenario'], satellite_probability=sat_info['probability'],

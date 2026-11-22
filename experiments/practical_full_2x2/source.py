@@ -44,6 +44,15 @@ def save_checkpoint(path,net,c,contract,epoch,stage,val_loss,sat_seen,sat_applie
             pl_seen=u_seen,pl_accepted=u_accepted)),path)
 
 
+def riei_optimizers(net, c):
+    full = c['variant'] == 'full'
+    optimizer = torch.optim.Adam if c.get('riei_adam') else torch.optim.SGD
+    params = list(net.ec.parameters()) + list((net.rc if full else net.fed).parameters())
+    main = optimizer(params, lr=c['lr'])
+    fed = optimizer(net.fed.parameters(), lr=c['lr']) if full else None
+    return main, fed
+
+
 def check_training(c):
     forbidden = ('truth', 'target_truth', 'target_inputs', 'views_root', 'tests',
                  'dataset', 'resume', 'teacher_checkpoint', 'checkpoint', 'initial_checkpoint')
@@ -123,7 +132,9 @@ def train(c):
         satellite_implementation='leo_practical_v3 ResidualChannel; residual/post_sync/noEQ; shared FP32 L cache',
         satellite_start_adaptation='budget fractions 0/.2/.45 => p=.3/.6/.8; scenes .4/.35/.25',
         satellite_loss='identity CE only; .68; no consistency',
-        PL_implementation='current-model eval/no_grad confidence>=.95; masked hard CE / whole U batch' if c['U_s_use'] else None))
+        PL_implementation=('current-model eval/no_grad confidence>=.95; hard CE / whole U batch; '
+                           + ('accepted-only training forward' if c.get('accepted_pl_only') else 'masked loss')
+                           if c['U_s_use'] else None)))
     for stage in range(1, c['stages'] + 1):
         native.seed(c['model_seed']); net = build(c).to(device)
         folder = out / ('stage%d' % stage); folder.mkdir()
@@ -134,9 +145,7 @@ def train(c):
         full = c['variant'] == 'full'
         fed = None
         if c['family'] == 'riei':
-            params = list(net.ec.parameters()) + (list(net.rc.parameters()) if full else list(net.fed.parameters()))
-            optimizer = torch.optim.SGD(params, lr=c['lr'], momentum=0.)
-            if full: fed = torch.optim.SGD(net.fed.parameters(), lr=c['lr'], momentum=0.)
+            optimizer, fed = riei_optimizers(net, c)
         elif c['family'] in ('resnet18', 'resnet50'):
             optimizer = torch.optim.AdamW(net.parameters(), lr=c['lr'], weight_decay=c['weight_decay'])
         else:
@@ -159,6 +168,7 @@ def train(c):
         iterator = iter(loader); augment = BatchAugment(c)
         fishr = FishrVariance(c['num_domains'], c['fishr_ema']) if c.get('route')=='fishr' else None
         best = float('inf'); stale = 0; accum = []; stage_started = time.monotonic()
+        warmup = c.get('ibrff_plateau_warmup', 0) if c['family'] == 'ibrff' and stage == 1 else 0
         stage_exposure = stage_sat = stage_applied = stage_u = stage_accepted = optimizer_steps = 0
         rx_coverage = {str(k): [0, 0] for k in range(c['num_domains'])}
         epoch = 0
@@ -200,13 +210,15 @@ def train(c):
                 if not boundary: continue
                 epoch += 1
                 val_loss, val_accuracy = native.validation(net, c, val, device)
-                if scheduler: scheduler.step(val_loss)
+                if scheduler and epoch > warmup:
+                    scheduler.step(val_loss)
                 if val_loss < best:
                     best=val_loss; stale=0
                     if c['family'] in ('ibrff','sdg'):
                         save_checkpoint(folder/'best.pt',net,c,meta['source_contract'],epoch,stage,val_loss,
                             total_sat+stage_sat,total_applied+stage_applied,total_u+stage_u,total_accepted+stage_accepted)
-                else: stale += 1
+                elif epoch > warmup:
+                    stale += 1
                 record = dict(stage=stage, epoch=epoch, update=index+1, total_updates=max_updates,
                     interval=epoch, budget_kind=c['budget_kind'],
                     loss=sum(r['loss'] for r in accum)/len(accum),
@@ -226,6 +238,11 @@ def train(c):
                     satellite_scene_counts={str(k):sum(r['satellite_scene_counts'].get(k,0) for r in accum) for k in (-1,0,1,2)},
                     U_s_use=c['U_s_use'], pseudo_label_truth_access=False,
                     seconds=time.monotonic()-stage_started, target_access=False)
+                if c.get('log_native_terms'):
+                    terms = accum[0]['native_terms']
+                    record['native_terms'] = {
+                        key: sum(rec['native_terms'][key] for rec in accum) / len(accum)
+                        for key in sorted(terms)}
                 if c['budget_kind']=='updates': record['epoch'] = None
                 log.write(json.dumps(record, allow_nan=False)+'\n'); log.flush()
                 print('EPOCH '+json.dumps(record), flush=True); accum.clear()

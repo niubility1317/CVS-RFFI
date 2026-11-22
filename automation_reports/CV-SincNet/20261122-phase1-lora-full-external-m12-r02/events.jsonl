@@ -1,0 +1,2 @@
+{"at": "2026-11-22T06:44:14+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-22T06:45:20+00:00", "status": "LOCAL_VERIFIED", "note": "四种真实源 IQ 训练与 checkpoint 回读通过，定向损失、目标句柄负测及共享训练测试通过", "evidence": ["local_artifacts/lora_main_20261121/audit_20261122/external_repair_local/smoke/complete.json"], "row_id": null}

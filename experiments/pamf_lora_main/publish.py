@@ -42,7 +42,8 @@ with tarfile.open(archive) as source:
 runtime = release/'runtime.json'
 runtime.write_text(json.dumps(rt, indent=2) + chr(10), encoding='utf-8')
 env = dict(os.environ, CUDA_VISIBLE_DEVICES='', OMP_NUM_THREADS='2', PYTHONPATH=str(release))
-subprocess.run([rt['python'], '-m', 'compileall', '-q', 'experiments/pamf_lora_main'],
+subprocess.run([rt['python'], '-m', 'compileall', '-q', 'experiments/pamf_lora_main',
+                'experiments/practical_full_2x2/source.py', 'experiments/practical_full_2x2/objectives.py'],
                cwd=release, env=env, check=True)
 cmd = [rt['python'], '-u', '-m', rt.get('runner', 'experiments.pamf_lora_main.runner'), 'dispatch', str(runtime)]
 with (release/'controller.log').open('x') as log:

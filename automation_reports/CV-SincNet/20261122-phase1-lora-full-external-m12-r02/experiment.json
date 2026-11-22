@@ -1,0 +1,636 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261122-phase1-lora-full-external-m12-r02",
+  "group_id": "phase1-pamf-lora-transfer",
+  "display_name": "LoRa Phase1 四种对比方法训练修复与三种子复验",
+  "description": "排查源域欠拟合和目标接近随机水平的三种外部对照，以 SDG 为参照。修复空掩码 PL 对训练批统计的影响，稳定 DRIFT 分离损失，调整 RIEI 优化器并延后 IB-RFF 第一阶段早停判断。保持原 LoRa 物理样本、标签预算和测试视图。",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [
+    "LoRa external training audit"
+  ],
+  "tags": [
+    "lora",
+    "riei",
+    "drift",
+    "ibrff",
+    "sdg",
+    "phase1",
+    "repair"
+  ],
+  "comparison_group_id": "phase1-lora-rx5-main-external",
+  "parent_run_ids": [
+    "20261121-phase1-pamf-lora-rx5-main-m18-r01",
+    "20261121-phase1-lora-full-external-m12-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求检查四种 Phase1 对比方法训练和损失，优先修复最终结果异常的三种方法，修复后重新发布验证。",
+  "code": {
+    "commit": "发布提交的 Git HEAD 和远端 upstream OID，见 release/submit.json",
+    "checkout": "E:/codex/home/worktrees/lora-external-training-audit/CVS-RFFI-repo",
+    "environment": "N607 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python 控制器和预测，/home/szu2070436088/.conda/envs/SDG-SEI/bin/python 源训练，FP32/TF32 off",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261122-phase1-lora-full-external-m12-r02-release"
+  },
+  "data": {
+    "dataset": "Radio Frequency Fingerprint LoRa Dataset With Multiple Receivers",
+    "version": "原始多接收机官方 LoRa 归档，固定主实验的 lora_rx5_main_v1",
+    "representation": "第 4 个上扫频符号中央 1 ms，256 个复数 IQ，256 kHz",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261121-phase1-pamf-lora-rx5-main-m18-r01-release/data/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261121-phase1-pamf-lora-rx5-main-m18-r01-release/data/source/contract.json#role_ids 与原目标 contract/packet_indices",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261121-phase1-pamf-lora-rx5-main-m18-r01-release/data/source/contract.json#classes",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261121-phase1-pamf-lora-rx5-main-m18-r01-release/data/source/contract.json#classes",
+    "roles": {
+      "L_s": 2800,
+      "U_s": 25200,
+      "V": 12000
+    },
+    "train_ratio": {
+      "labeled": 0.07,
+      "unlabeled": 0.63,
+      "validation": 0.3
+    },
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "20261121-phase1-pamf-lora-rx5-main-m18-r01 的原源 V，固定 12000 包",
+    "support_query_ref": "Phase1 无 support，目标为固定的 15 台未见接收机共 30000 包",
+    "leo_config_ref": "沿用原地面及 6 个 practical，post-sync/residual/no-EQ，868.1 MHz，30 dB",
+    "validation_status": "VALIDATED_ONCE via original dataset contract"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": "L/V 可见 TX，U 没有 TX 标签。源训练配置无目标数据路径。目标进程只写预测，全部固定后在 Windows 独立 scorer 解封真值。",
+    "claim_scope": "已测目标接收机上的同批开发复验，单独评分，逐方法变更不回流调参"
+  },
+  "checkpoint": {
+    "initialization": "四种识别器从零训练，IB-RFF 第 2 阶段严格接同一行第 1 阶段最佳权重",
+    "sources": [
+      {
+        "role": "frozen paired DURA-LoRa",
+        "parent_run": "20261121-phase1-pamf-lora-rx5-main-m18-r01",
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261121-phase1-pamf-lora-rx5-main-m18-r01/G/dura-s<seed>"
+      }
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261121-phase1-pamf-lora-rx5-main-m18-r01-release/data/source/contract.json 与同 seed DURA-LoRa complete.json 训练绑定",
+    "provenance_verdict": "主实验同源契约、同 seed 的冻结 DURA，仅用于推理",
+    "selection_rule": "RIEI/DRIFT 固定末轮。IB-RFF 两阶段和 SDG 按源 V 最低 NLL。"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/20261122-phase1-lora-full-external-m12-r02",
+    "gpu_policy": "GPU0–6，每卡最多一个本任务 worker，计入其他 CUDA 进程后最多两个，剩余显存至少 12288 MiB",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261122-phase1-lora-full-external-m12-r02",
+    "launch_command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -m experiments.pamf_lora_main.phase1_publish --repo E:/codex/home/worktrees/lora-external-training-audit/CVS-RFFI-repo --output E:/type10-7/local_artifacts/20261122-phase1-lora-full-external-m12-r02/release --context E:/type10-7/local_artifacts/lora_main_20261121/phase1_runtime_source.json --main-submit E:/type10-7/local_artifacts/lora_main_20261121/release/submit.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "本 run 出现协议、输入、冻结、训练或预测技术故障则停止新派发并保留产物。低准确率保留并报告。"
+  },
+  "expected_artifacts": [
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/smoke/complete.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/*/stage*/epochs.jsonl",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/*/freeze.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/predictions/*/complete.json",
+    "E:/type10-7/local_artifacts/20261122-phase1-lora-full-external-m12-r02/readout/scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "Macro-F1",
+      "S6",
+      "paired corrections"
+    ],
+    "dimensions": [
+      "model seed",
+      "method",
+      "readout",
+      "scene",
+      "test receiver"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/predictions",
+    "scorer_ref": "experiments.pamf_lora_main.collect"
+  },
+  "rows": [
+    {
+      "row_id": "riei-s2026092701",
+      "method": "RIEI，交替解耦与两套 Adam",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/phase1.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/riei-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Phase1 无 support。模型种子也控制 L/U 顺序及 SDG 原生增强。目标包顺序固定，复用主实验信道缓存。",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "Adam",
+      "lr": 0.0001,
+      "epochs": 100,
+      "fl_rounds": null,
+      "budget_ref": "每阶段上限如 epochs 字段。IB-RFF 每阶段源验证调度和早停。",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/riei-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/logs/train-riei-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/SDG-SEI/bin/python -u -m experiments.pamf_lora_main.phase1 train /home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/configs/train-riei-s2026092701.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/riei-s2026092701/freeze.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/predictions/riei-s2026092701/complete.json"
+      ],
+      "batch": 64,
+      "stages": 1
+    },
+    {
+      "row_id": "drift-s2026092701",
+      "method": "DRIFT-v2 LoRa，有界分离项",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/phase1.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/drift-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Phase1 无 support。模型种子也控制 L/U 顺序及 SDG 原生增强。目标包顺序固定，复用主实验信道缓存。",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "Adam",
+      "lr": 0.0001,
+      "epochs": 100,
+      "fl_rounds": null,
+      "budget_ref": "每阶段上限如 epochs 字段。IB-RFF 每阶段源验证调度和早停。",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/drift-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/logs/train-drift-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/SDG-SEI/bin/python -u -m experiments.pamf_lora_main.phase1 train /home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/configs/train-drift-s2026092701.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/drift-s2026092701/freeze.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/predictions/drift-s2026092701/complete.json"
+      ],
+      "batch": 256,
+      "stages": 1
+    },
+    {
+      "row_id": "ibrff-s2026092701",
+      "method": "IB-RFF，第一阶段 E25 后启用 Plateau 与早停",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/phase1.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/ibrff-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Phase1 无 support。模型种子也控制 L/U 顺序及 SDG 原生增强。目标包顺序固定，复用主实验信道缓存。",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "Adam",
+      "lr": 0.001,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "每阶段上限如 epochs 字段。IB-RFF 每阶段源验证调度和早停。",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/ibrff-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/logs/train-ibrff-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/SDG-SEI/bin/python -u -m experiments.pamf_lora_main.phase1 train /home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/configs/train-ibrff-s2026092701.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/ibrff-s2026092701/freeze.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/predictions/ibrff-s2026092701/complete.json"
+      ],
+      "batch": 128,
+      "stages": 2
+    },
+    {
+      "row_id": "sdg-s2026092701",
+      "method": "SDG，原生双视图和对比损失",
+      "purpose": "reference",
+      "config_ref": "experiments/pamf_lora_main/phase1.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/sdg-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Phase1 无 support。模型种子也控制 L/U 顺序及 SDG 原生增强。目标包顺序固定，复用主实验信道缓存。",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "Adam",
+      "lr": 0.001,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "每阶段上限如 epochs 字段。IB-RFF 每阶段源验证调度和早停。",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/sdg-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/logs/train-sdg-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/SDG-SEI/bin/python -u -m experiments.pamf_lora_main.phase1 train /home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/configs/train-sdg-s2026092701.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/sdg-s2026092701/freeze.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/predictions/sdg-s2026092701/complete.json"
+      ],
+      "batch": 32,
+      "stages": 1
+    },
+    {
+      "row_id": "riei-s2026092702",
+      "method": "RIEI，交替解耦与两套 Adam",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/phase1.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/riei-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Phase1 无 support。模型种子也控制 L/U 顺序及 SDG 原生增强。目标包顺序固定，复用主实验信道缓存。",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "Adam",
+      "lr": 0.0001,
+      "epochs": 100,
+      "fl_rounds": null,
+      "budget_ref": "每阶段上限如 epochs 字段。IB-RFF 每阶段源验证调度和早停。",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/riei-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/logs/train-riei-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/SDG-SEI/bin/python -u -m experiments.pamf_lora_main.phase1 train /home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/configs/train-riei-s2026092702.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/riei-s2026092702/freeze.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/predictions/riei-s2026092702/complete.json"
+      ],
+      "batch": 64,
+      "stages": 1
+    },
+    {
+      "row_id": "drift-s2026092702",
+      "method": "DRIFT-v2 LoRa，有界分离项",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/phase1.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/drift-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Phase1 无 support。模型种子也控制 L/U 顺序及 SDG 原生增强。目标包顺序固定，复用主实验信道缓存。",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "Adam",
+      "lr": 0.0001,
+      "epochs": 100,
+      "fl_rounds": null,
+      "budget_ref": "每阶段上限如 epochs 字段。IB-RFF 每阶段源验证调度和早停。",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/drift-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/logs/train-drift-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/SDG-SEI/bin/python -u -m experiments.pamf_lora_main.phase1 train /home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/configs/train-drift-s2026092702.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/drift-s2026092702/freeze.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/predictions/drift-s2026092702/complete.json"
+      ],
+      "batch": 256,
+      "stages": 1
+    },
+    {
+      "row_id": "ibrff-s2026092702",
+      "method": "IB-RFF，第一阶段 E25 后启用 Plateau 与早停",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/phase1.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/ibrff-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Phase1 无 support。模型种子也控制 L/U 顺序及 SDG 原生增强。目标包顺序固定，复用主实验信道缓存。",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "Adam",
+      "lr": 0.001,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "每阶段上限如 epochs 字段。IB-RFF 每阶段源验证调度和早停。",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/ibrff-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/logs/train-ibrff-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/SDG-SEI/bin/python -u -m experiments.pamf_lora_main.phase1 train /home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/configs/train-ibrff-s2026092702.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/ibrff-s2026092702/freeze.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/predictions/ibrff-s2026092702/complete.json"
+      ],
+      "batch": 128,
+      "stages": 2
+    },
+    {
+      "row_id": "sdg-s2026092702",
+      "method": "SDG，原生双视图和对比损失",
+      "purpose": "reference",
+      "config_ref": "experiments/pamf_lora_main/phase1.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/sdg-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Phase1 无 support。模型种子也控制 L/U 顺序及 SDG 原生增强。目标包顺序固定，复用主实验信道缓存。",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "Adam",
+      "lr": 0.001,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "每阶段上限如 epochs 字段。IB-RFF 每阶段源验证调度和早停。",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/sdg-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/logs/train-sdg-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/SDG-SEI/bin/python -u -m experiments.pamf_lora_main.phase1 train /home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/configs/train-sdg-s2026092702.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/sdg-s2026092702/freeze.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/predictions/sdg-s2026092702/complete.json"
+      ],
+      "batch": 32,
+      "stages": 1
+    },
+    {
+      "row_id": "riei-s2026092703",
+      "method": "RIEI，交替解耦与两套 Adam",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/phase1.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/riei-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Phase1 无 support。模型种子也控制 L/U 顺序及 SDG 原生增强。目标包顺序固定，复用主实验信道缓存。",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "Adam",
+      "lr": 0.0001,
+      "epochs": 100,
+      "fl_rounds": null,
+      "budget_ref": "每阶段上限如 epochs 字段。IB-RFF 每阶段源验证调度和早停。",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/riei-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/logs/train-riei-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/SDG-SEI/bin/python -u -m experiments.pamf_lora_main.phase1 train /home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/configs/train-riei-s2026092703.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/riei-s2026092703/freeze.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/predictions/riei-s2026092703/complete.json"
+      ],
+      "batch": 64,
+      "stages": 1
+    },
+    {
+      "row_id": "drift-s2026092703",
+      "method": "DRIFT-v2 LoRa，有界分离项",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/phase1.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/drift-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Phase1 无 support。模型种子也控制 L/U 顺序及 SDG 原生增强。目标包顺序固定，复用主实验信道缓存。",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "Adam",
+      "lr": 0.0001,
+      "epochs": 100,
+      "fl_rounds": null,
+      "budget_ref": "每阶段上限如 epochs 字段。IB-RFF 每阶段源验证调度和早停。",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/drift-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/logs/train-drift-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/SDG-SEI/bin/python -u -m experiments.pamf_lora_main.phase1 train /home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/configs/train-drift-s2026092703.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/drift-s2026092703/freeze.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/predictions/drift-s2026092703/complete.json"
+      ],
+      "batch": 256,
+      "stages": 1
+    },
+    {
+      "row_id": "ibrff-s2026092703",
+      "method": "IB-RFF，第一阶段 E25 后启用 Plateau 与早停",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/phase1.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/ibrff-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Phase1 无 support。模型种子也控制 L/U 顺序及 SDG 原生增强。目标包顺序固定，复用主实验信道缓存。",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "Adam",
+      "lr": 0.001,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "每阶段上限如 epochs 字段。IB-RFF 每阶段源验证调度和早停。",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/ibrff-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/logs/train-ibrff-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/SDG-SEI/bin/python -u -m experiments.pamf_lora_main.phase1 train /home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/configs/train-ibrff-s2026092703.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/ibrff-s2026092703/freeze.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/predictions/ibrff-s2026092703/complete.json"
+      ],
+      "batch": 128,
+      "stages": 2
+    },
+    {
+      "row_id": "sdg-s2026092703",
+      "method": "SDG，原生双视图和对比损失",
+      "purpose": "reference",
+      "config_ref": "experiments/pamf_lora_main/phase1.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/sdg-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Phase1 无 support。模型种子也控制 L/U 顺序及 SDG 原生增强。目标包顺序固定，复用主实验信道缓存。",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "Adam",
+      "lr": 0.001,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "每阶段上限如 epochs 字段。IB-RFF 每阶段源验证调度和早停。",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/sdg-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/logs/train-sdg-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/SDG-SEI/bin/python -u -m experiments.pamf_lora_main.phase1 train /home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/configs/train-sdg-s2026092703.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/F/sdg-s2026092703/freeze.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-external-m12-r02/predictions/sdg-s2026092703/complete.json"
+      ],
+      "batch": 32,
+      "stages": 1
+    }
+  ],
+  "notes": [
+    "每行使用 0.95 阈值、PL 权重 1、clean + practical CE 0.68。源 practical 缓存种子 2026112101，配方抽样种子 2026102301。本轮复用主实验及旧补跑产物作配对参照。"
+  ],
+  "registered_at": "2026-11-22T06:44:14+00:00"
+}
