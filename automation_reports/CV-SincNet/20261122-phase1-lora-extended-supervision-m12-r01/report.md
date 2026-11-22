@@ -13,3 +13,17 @@
 N607 普通账户，沿用已验证的 LoRa 环境。CWD 为 `CV-SincNet/releases/20261122-phase1-lora-extended-supervision-m12-r01-release`，产物为 `CV-SincNet/runs/20261122-phase1-lora-extended-supervision-m12-r01`，唯一发布人为当前 Codex 任务。发布用 `python -m experiments.pamf_lora_main.full_adaptive_publish`，传入原数据、原冷启动监督和前次同预算 release 的 receipt（`--data-submit`、`--supervised-submit`、`--prior-submit`）。发布器记录实际 Git commit 和进程。监督阶段权重及日志在 `warmup/F`，三路权重和日志在 `F`，源教师门槛在 `policy`，盲结果在 `predictions`。GPU0–6，单卡最多一个本任务进程，本任务同时最多四个。正式评分用 `python -m experiments.pamf_lora_main.full_adaptive_score` 读同一 release handle，输出 `scores.json` 与 `u_offline_scores.json`。
 
 训练只使用已登记源数据。读取先前纯监督权重时核对源契约、种子、完整预算、零 U 记录和冻结状态。训练样本绑定异常、权重来源异常、迭代数错误、非有限数以及预测不完整属于技术失败。流程保留已有产物，按技术失败停止；指标低不改变已固定矩阵。
+
+## 纯监督阶段结果
+
+**VERIFIED / SOURCE_TRAINING**。代码 `7f5f23e78ee662ab15bc60fe0af746cea59ae563` 的归档校验与远程编译通过。三个真实第 112 轮 checkpoint 通过仅源 IQ 冒烟测试，训练分别在 GPU0、2、3 启动。三个纯监督阶段新增各 2464 步，逐轮日志中的 U 曝光、硬标签、跨 RX U 锚点和 U 损失一直为零。
+
+| 种子 | 第 84 轮 L / V | 第 112 轮 L / V | 第 140 轮 L / V | 第 112 → 140 轮 V CE |
+| --- | ---: | ---: | ---: | ---: |
+| 2026092701 | 84.50% / 78.31% | 88.50% / 81.17% | 90.57% / 82.15% | 0.4787 → 0.4586 |
+| 2026092702 | 75.36% / 69.98% | 77.89% / 71.92% | 80.14% / 73.51% | 0.6759 → 0.6500 |
+| 2026092703 | 82.11% / 76.47% | 85.43% / 79.11% | 87.86% / 80.23% | 0.5179 → 0.4888 |
+
+第 140 轮三个种子均通过 TX31、34、36、37、39、40 的既有源域门槛。第 84 轮种子 02 未通过 TX31。源 V 上三视图一致且最低置信度达到 0.95 的样本分别为 4710、4374、4738 条，对应精确率 99.70%、99.68%、99.66%。这些数值反映教师在源 V 上的表现。U 的实际接受量和正确率由后续训练日志及独立评分报告。种子 02 的 TX32、33、34 源 V 召回分别只有 44.08%、34.42%、39.83%，其较弱识别仍需保留。
+
+[纯监督逐轮日志与冻结策略](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/warmup_source_readout)
