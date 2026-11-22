@@ -12,6 +12,8 @@
 
 ## 入口与产物
 
+首发状态 **FAILED**。源域 smoke 将作用代理的双精度结果交给只接受 `float32` 的张量接口，在源缓存生成和训练前退出。已保留 N607 原运行目录及日志。修正入口后以独立 [r02](E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010/automation_reports/CV-SincNet/20261122-phase1-lora-dura-wisig-lineage-m1-r02/report.md) 续发。
+
 `python -m experiments.pamf_lora_main.full_dura_lineage_publish --repo REPO --output NEW_RELEASE --context LORA_CONTEXT --ssh-config N607_CONFIG --data-submit DATA --draw-submit DRAW --trace-submit TRACE --tri-submit TRI_SET`
 
 远端入口为 `python -u -m experiments.pamf_lora_main.full_dura_lineage dispatch runtime.json`，自动完成源 smoke、作用代理缓存、训练、源 V 诊断和盲测预测。记录 `smoke.json`、`source_action/complete.json`、`G/lineage/{stage}/training.jsonl`、源权重与冻结状态、`source_wave` 及 1,050 个预测文件。全部预测冻结后，本机 `python -m experiments.pamf_lora_main.full_dura_score --submit SUBMIT --ssh-config N607_CONFIG --dataset LORA_DATA --output READOUT`，独立评分 70 个单元并报告逐景、逐接收机、逐 TX 和配对正确数。

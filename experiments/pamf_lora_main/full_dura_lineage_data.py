@@ -64,8 +64,10 @@ def aligned_teacher(item):
     observed=main*observed+image*observed.conj()+after_delay(noise)
     variance=float(.5*np.mean(np.abs(noise)**2))
     variance=np.clip(variance,1e-8,1.)
-    arrays=(np.stack((observed.real,observed.imag)),np.stack((aligned_kernel.real,aligned_kernel.imag)),
-            np.stack((main.real,main.imag,image.real,image.imag)),variance)
+    arrays=(np.stack((observed.real,observed.imag)).astype(np.float32),
+            np.stack((aligned_kernel.real,aligned_kernel.imag)).astype(np.float32),
+            np.stack((main.real,main.imag,image.real,image.imag)).astype(np.float32),
+            np.float32(variance))
     if any(not np.isfinite(a).all() for a in arrays):
         raise ValueError('Nonfinite exact LoRa training action components')
     return arrays,omitted

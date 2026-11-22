@@ -23,7 +23,7 @@ from .refine_runner import start
 from .runner import activate
 
 
-RUN='20261122-phase1-lora-dura-wisig-lineage-m1-r01'
+RUN='20261122-phase1-lora-dura-wisig-lineage-m1-r02'
 MODES=(*R69_TRACE_MODES,'lineage_native','lineage_guarded')
 SEED,=R69_SEEDS
 
