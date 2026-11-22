@@ -18,8 +18,11 @@ from .full_supervised import SEEDS, handles
 
 
 DETAIL_RUN='20261122-phase1-lora-dura-coherent-detail-m1-r01'
+DETAIL_DOSE_RUN='20261122-phase1-lora-dura-coherent-dose-m2-r01'
 DETAIL_SEEDS=(SEEDS[1],)
 DETAIL_MODES=('direct','fixed','protect_shape','coherent_detail')
+DETAIL_DOSES={'coherent_quarter':.25,'coherent_half':.50}
+DETAIL_DOSE_MODES=(*DETAIL_MODES,*DETAIL_DOSES)
 STEPS=1800
 CAP=.15
 QUALITY=.94
@@ -239,6 +242,8 @@ def train_detail(rt,seed):
 
 
 def load_detail(root,c,seed,device):
+    if root.name==DETAIL_DOSE_RUN:
+        root=root.parent/DETAIL_RUN
     out=root/'G'/str(seed)
     if read(out/'complete.json')!=record(c,seed):
         raise ValueError('LoRa detail checkpoint source ancestry differs')
@@ -258,6 +263,10 @@ def extra_correction(detail,x,old):
     if not torch.isfinite(delta).all() or (strength_ratio(complex_iq(delta),complex_iq(wave))>CAP+1e-5).any():
         raise ValueError('Invalid high-coherence LoRa detail correction')
     return ids[extra],wave[extra]+delta[extra]
+
+
+def scale_detail(raw,corrected,amount):
+    return raw+amount*(corrected-raw)
 
 
 @torch.no_grad()
@@ -280,6 +289,21 @@ def detail_smoke(rt):
     _,cache,c=handles(rt)
     seed=DETAIL_SEEDS[0]
     base,_=engines(root.parent/RUN,c,seed,'cpu')
+    if root.name==DETAIL_DOSE_RUN:
+        detail=load_detail(root,c,seed,'cpu')
+        draw=load_draw(root.parent/DRAW_RUN,'L_s')
+        x=tensor(draw[::16])
+        extra,wave=extra_correction(detail,x,base.strength(x)>0)
+        if not len(extra):
+            raise ValueError('Frozen source detail smoke has no utility-gated proposals')
+        for amount in DETAIL_DOSES.values():
+            adjusted=scale_detail(x[extra],wave,amount)
+            ratio=strength_ratio(complex_iq(adjusted-x[extra]),complex_iq(x[extra]))
+            if (ratio>amount*CAP+1e-5).any() or torch.equal(adjusted,x[extra]):
+                raise ValueError('Frozen detail dose did not satisfy its RMS bound')
+        write(root/'smoke.json',dict(status='PASS',seed=seed,extra_active=len(extra),F_reads=0,
+                                   TX_reads=0,target_reads=0,doses=DETAIL_DOSES))
+        return
     model=PacketDetail(base.gate)
     l=np.load(cache/'L_s.npy',mmap_mode='r',allow_pickle=False)[0]
     old=np.load(cache/'U_s_practical.npy',mmap_mode='r',allow_pickle=False)[::32]
@@ -345,7 +369,8 @@ def source_wave_detail(rt,seed):
 @torch.no_grad()
 def predict_detail(root,target,c,seed,reader,device):
     from .full_dura import PROJECTED_MODES, RUN, STACK_RUN, engines
-    stack=root.parent/STACK_RUN
+    dose=root.name==DETAIL_DOSE_RUN
+    stack=root.parent/(DETAIL_RUN if dose else STACK_RUN)
     if read(stack/'state.json')['status']!='PREDICTIONS_FROZEN':
         raise ValueError('The frozen protected DURA controls are missing')
     old=stack/'predictions'/str(seed)
@@ -353,40 +378,47 @@ def predict_detail(root,target,c,seed,reader,device):
     controls=old_receipt.pop('activation')
     expected=dict(status='PREDICTIONS_FROZEN',seed=seed,target_truth_read=False,receivers=list(TARGET),
                   views=list(VIEWS),per_receiver=LIMIT)
-    if old_receipt!=dict(expected,modes=list(PROJECTED_MODES)):
+    if old_receipt!=dict(expected,modes=list(DETAIL_MODES if dose else PROJECTED_MODES)):
         raise ValueError('The frozen Tri-set and DURA controls do not match')
     base,_=engines(root.parent/RUN,c,seed,device)
     detail=load_detail(root,c,seed,device)
     out=root/'predictions'/str(seed)
     out.mkdir(parents=True,exist_ok=False)
     records={}
+    old_modes=DETAIL_MODES if dose else DETAIL_MODES[:-1]
+    new_modes=tuple(DETAIL_DOSES) if dose else ('coherent_detail',)
     for rx in TARGET:
         waves=np.load(target/f'{rx}.npy',mmap_mode='r',allow_pickle=False)
         if waves.shape!=(7,LIMIT,6,2,256) or waves.dtype!=np.float32:
             raise ValueError('High-coherence target IQ differs')
         for i,v in enumerate(VIEWS):
-            arrays=[np.load(old/f'{rx}__{v}__{m}.npy',allow_pickle=False) for m in DETAIL_MODES[:-1]]
+            arrays=[np.load(old/f'{rx}__{v}__{m}.npy',allow_pickle=False) for m in old_modes]
             if any(a.shape!=(LIMIT,) or a.dtype.kind not in 'iu' or a.min()<0 or a.max()>=10 for a in arrays):
                 raise ValueError('Invalid frozen protected DURA predictions')
-            updated=arrays[-1].copy()
+            updated=[arrays[2].copy() for _ in new_modes]
             n_old=n_extra=0
             for step in range(0,LIMIT,48):
                 x=tensor(waves[i,step:step+48],device)
                 baseline=base.strength(x)>0
                 extra,result=extra_correction(detail,x,baseline)
                 if len(extra):
-                    logits=reader(result)[0]
+                    waves_to_read=[scale_detail(x[extra],result,amount) for amount in DETAIL_DOSES.values()
+                                   ] if dose else [result]
+                    logits=reader(torch.cat(waves_to_read))[0]
                     if not torch.isfinite(logits).all():
                         raise ValueError('High-coherence DURA produced nonfinite logits')
                     ids=extra.cpu().numpy()+step
-                    updated[ids]=logits.argmax(1).cpu().numpy()
+                    for a,labels in zip(updated,logits.argmax(1).chunk(len(updated)),strict=True):
+                        a[ids]=labels.cpu().numpy()
                     n_extra+=len(ids)
                 n_old+=int(baseline.sum())
             key=f'{rx}/{v}'
             if controls[key]['active']!=n_old:
                 raise ValueError('The existing protected branch active count changed')
+            if dose and controls[key]['detail_extra']!=n_extra:
+                raise ValueError('Frozen dose comparison changed the detail gate')
             records[key]=dict(controls[key],detail_active=n_old+n_extra,detail_extra=n_extra)
-            for m,a in zip(DETAIL_MODES,(*arrays,updated),strict=True):
+            for m,a in zip((*old_modes,*new_modes),(*arrays,*updated),strict=True):
                 np.save(out/f'{rx}__{v}__{m}.npy',a)
         print('LORA_DETAIL_DURA_PREDICTED',seed,rx,flush=True)
-    write(out/'complete.json',dict(expected,modes=list(DETAIL_MODES),activation=records))
+    write(out/'complete.json',dict(expected,modes=[*old_modes,*new_modes],activation=records))

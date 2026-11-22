@@ -13,7 +13,7 @@ from .dura_repair import complex_iq, power
 from .full_adaptive import RUN as TRI, SET_METHOD, SET_RUN, WARMUP_RUN, case, complete_f, wait_for
 from .full_dura_core import (COVERAGE_RECIPES, Dose, dose_features, g_record, projected_record, protected_shapes,
                             read_gate, receiver_loss, train, train_gate)
-from .full_dura_detail import DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS
+from .full_dura_detail import DETAIL_DOSE_MODES, DETAIL_DOSE_RUN, DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS
 from .full_packet_data import LIMIT, PROTOCOL
 from .full_supervised import SEEDS, construct, handles
 from .packet_runner import schedule
@@ -35,11 +35,14 @@ COVERAGE_MODES=(*PROJECTED_MODES,*COVERAGE_RECIPES)
 STACK_RUN='20261122-phase1-lora-tri-set-dura-stack-m9-r01'
 STAGED_RUN='20261122-phase1-lora-dura-source-distillation-m6-r01'
 STAGED_MODES=(*PROJECTED_MODES,'staged_protect')
+DETAIL_RUNS=(DETAIL_RUN,DETAIL_DOSE_RUN)
 
 
 def modes_for(root):
     if root.name==DETAIL_RUN:
         return DETAIL_MODES
+    if root.name==DETAIL_DOSE_RUN:
+        return DETAIL_DOSE_MODES
     if root.name==STAGED_RUN:
         return STAGED_MODES
     if root.name==COVERAGE_RUN:
@@ -52,7 +55,7 @@ def modes_for(root):
 
 
 def recognizer_run(root):
-    if root.name in (STACK_RUN,STAGED_RUN,DETAIL_RUN):
+    if root.name in (STACK_RUN,STAGED_RUN,*DETAIL_RUNS):
         return SET_RUN
     return WARMUP_RUN if root.name in (SHAPE_RUN,PROJECTED_RUN,COVERAGE_RUN) else TRI
 
@@ -151,7 +154,7 @@ def smoke(rt):
 
 @torch.no_grad()
 def source_wave(rt,seed):
-    if Path(rt['run_root']).name==DETAIL_RUN:
+    if Path(rt['run_root']).name in DETAIL_RUNS:
         from .full_dura_detail import source_wave_detail
         return source_wave_detail(rt,seed)
     _,views,c=handles(rt)
@@ -222,7 +225,7 @@ def predict(rt,seed):
     dev='cuda:0'
     f=construct(dev).eval()
     f.load_state_dict(torch.load(complete_f(pred,c,name)/'model.pt',map_location=dev,weights_only=True),strict=True)
-    if root.name==DETAIL_RUN:
+    if root.name in DETAIL_RUNS:
         from .full_dura_detail import predict_detail
         predict_detail(root,target,c,seed,f,dev)
         return
@@ -343,13 +346,15 @@ def dispatch(rt):
     root.mkdir(exist_ok=False)
     launch=partial(start,module=__spec__.name)
     state=root/'state.json'
-    seeds=DETAIL_SEEDS if root.name==DETAIL_RUN else SEEDS
+    seeds=DETAIL_SEEDS if root.name in DETAIL_RUNS else SEEDS
     try:
-        if root.name in (SHAPE_RUN,PROJECTED_RUN,COVERAGE_RUN,STACK_RUN,STAGED_RUN,DETAIL_RUN):
+        if root.name in (SHAPE_RUN,PROJECTED_RUN,COVERAGE_RUN,STACK_RUN,STAGED_RUN,*DETAIL_RUNS):
             write(state,dict(status='SOURCE_SMOKE'))
             if root.name==DETAIL_RUN:
                 wait_for(root.parent/DRAW_RUN,'SOURCE_DRAW_READY')
-            check='detail_smoke' if root.name==DETAIL_RUN else 'shape_smoke'
+            if root.name==DETAIL_DOSE_RUN:
+                wait_for(root.parent/DETAIL_RUN,'PREDICTIONS_FROZEN')
+            check='detail_smoke' if root.name in DETAIL_RUNS else 'shape_smoke'
             if launch(rt,check,'source').wait():
                 raise RuntimeError('Frozen LoRa restoration source smoke failed')
             if root.name in (PROJECTED_RUN,COVERAGE_RUN):
@@ -385,7 +390,7 @@ def dispatch(rt):
         schedule(rt,[('wave_audit',str(s)) for s in seeds],launch)
         write(state,dict(status='WAITING_FOR_FROZEN_TRI'),exclusive=False)
         wait_for(root.parent/recognizer_run(root),'PREDICTIONS_FROZEN')
-        if root.name in (STAGED_RUN,DETAIL_RUN):
+        if root.name in (STAGED_RUN,*DETAIL_RUNS):
             wait_for(root.parent/STACK_RUN,'PREDICTIONS_FROZEN')
         write(state,dict(status='PREDICTING'),exclusive=False)
         schedule(rt,[('predict',str(s)) for s in seeds],launch)

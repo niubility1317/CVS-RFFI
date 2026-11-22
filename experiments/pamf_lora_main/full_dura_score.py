@@ -16,7 +16,7 @@ from .data import CLASSES,TARGET,VIEWS,label_ids,packet_indices,recording
 from .full_dura import (COVERAGE_RUN, MODES, PROJECTED_RUN, SHAPE_RUN, STACK_RUN, STAGED_RUN, SWEEP,
                         SWEEP_RUN, modes_for)
 from .full_dura_core import COVERAGE_RECIPES
-from .full_dura_detail import DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS
+from .full_dura_detail import DETAIL_DOSE_MODES, DETAIL_DOSE_RUN, DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS
 from .full_packet_data import LIMIT
 from .full_supervised import SEEDS
 from .scoring import macro_f1
@@ -25,7 +25,7 @@ from .scoring import macro_f1
 def matrix(output,modes=MODES):
     pred={}
     act={}
-    detail=modes==DETAIL_MODES
+    detail=modes in (DETAIL_MODES,DETAIL_DOSE_MODES)
     for s in DETAIL_SEEDS if detail else SEEDS:
         p=output/'predictions'/str(s)
         receipt=read(p/'complete.json')
@@ -59,7 +59,7 @@ def scores(pred,act,truth,modes=MODES):
     labels=np.concatenate([truth[r] for r in TARGET])
     n=len(labels)
     rows=[]
-    detail=modes==DETAIL_MODES
+    detail=modes in (DETAIL_MODES,DETAIL_DOSE_MODES)
     seeds=DETAIL_SEEDS if detail else SEEDS
     for s in seeds:
         for v in VIEWS:
@@ -71,7 +71,7 @@ def scores(pred,act,truth,modes=MODES):
                 c=p==labels
                 cm=np.bincount(10*labels+p,minlength=100).reshape(10,10)
                 count=0 if mode=='direct' else active
-                if detail and mode=='coherent_detail':
+                if detail and mode in DETAIL_DOSE_MODES[3:]:
                     count=sum(act[s][f'{r}/{v}']['detail_active'] for r in TARGET)
                     extra=count-active
                     unchanged=pred[s,'protect_shape',v]==labels
@@ -112,7 +112,9 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
     frozen=run.name in (SHAPE_RUN,SWEEP_RUN,STACK_RUN) or sweep
     cmd=['ssh','-F',str(ssh_config),'-T','-o','BatchMode=yes','-o','ConnectTimeout=10','N607']
     wait_for_predictions(cmd,root)
-    if run.name==DETAIL_RUN:
+    if run.name==DETAIL_DOSE_RUN:
+        extra=''
+    elif run.name==DETAIL_RUN:
         extra=' '+' '.join(f'G/{s}/source_support.json G/{s}/steps.jsonl' for s in DETAIL_SEEDS)
     elif run.name==COVERAGE_RUN:
         extra=' '+' '.join(f'G/{mode}/{s}/source_support.json G/{mode}/{s}/steps.jsonl'
