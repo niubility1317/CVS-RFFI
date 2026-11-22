@@ -7,24 +7,32 @@ import numpy as np
 from scipy.signal import resample_poly
 
 from experiments.cric_dura_comparison.io import read, write
-from .data import FC_HZ, ROLES, SOURCE, TARGET, VIEWS, WINDOW_START
+from .data import FC_HZ, FS_HZ, ROLES, SOURCE, TARGET, VIEWS, WINDOW_START
 from .packet_data import CHIRPS, PACKET_LEN, ROLE_COUNTS, TARGET_LIMIT
 
 
 NATIVE_RATE = 1_000_000
 CONTEXT = 128
+RESIDUAL_LATENCY = 8
 
 
-def chirp_samples(z, offset=0):
+def chirp_grid(z, offset=0):
     starts = np.asarray(CHIRPS) * 1024 + WINDOW_START - 125 + offset
     if starts[0] < 0 or starts[-1] + 1250 > len(z):
         raise ValueError('LoRa chirp crop needs real input context on both sides')
     x = z[starts[:, None] + np.arange(1250)]
-    return resample_poly(x, up=32, down=125, axis=-1)[:, 32:288]
+    return resample_poly(x, up=32, down=125, axis=-1)
+
+
+def chirp_samples(z, offset=0):
+    return chirp_grid(z, offset)[:, 32:288]
 
 
 def chirp_windows(z, offset=0):
-    values = chirp_samples(z, offset)
+    return pack_windows(chirp_samples(z, offset))
+
+
+def pack_windows(values):
     scale = np.sqrt(np.mean(np.abs(values)**2))
     if not np.isfinite(scale) or scale <= 1e-12:
         raise ValueError('Invalid LoRa packet power')
@@ -45,7 +53,63 @@ def hardware(scene, session):
     return receiver_for_session(channel(scene), 20261016423, session)
 
 
-def aligned_view(z, scene, receiver, pid, namespace, *, trace=False, channel_override=None, realization=None):
+@lru_cache(maxsize=None)
+def residual_channel(scene):
+    from leo_practical.channel import Config
+    return Config(fs_hz=FS_HZ, fc_hz=FC_HZ, scenario=scene,
+                  processing_route='residual', mode='post_sync',
+                  equalization_enabled=False, reference_snr_db=30.,
+                  boundary='require_context', fractional_delay_half_length=RESIDUAL_LATENCY)
+
+
+def residual_view(z, scene, receiver, pid, namespace, *, trace=False, realization=None, components=False):
+    from leo_practical.channel import normalize_input, sample_geometry, stable_seed
+    from leo_practical.residual import ResidualChannel
+
+    z, _ = normalize_input(z)
+    grid = chirp_grid(z)
+    cfg = residual_channel(scene)
+    rx = hardware(scene, f'{namespace}/{receiver}')
+    parts = (namespace, scene, receiver, str(pid))
+    if realization is not None:
+        parts = (*parts, 'draw', realization)
+    geometry = sample_geometry(cfg, np.random.default_rng(stable_seed(2026112207, *parts, 'geometry')))
+    rows, records, signals, noises = [], [], [], []
+    start = 32 + RESIDUAL_LATENCY
+    for chirp, row in zip(CHIRPS, grid, strict=True):
+        snapshot = ResidualChannel(cfg, stable_seed(2026112207, *parts, 'chirp', chirp), rx, geometry)
+        # Feed the causal FIR from the advanced input origin to preserve the
+        # registered clean window's output time grid, with physical context.
+        output = snapshot.process(row[start:start+256], preceding_context=row[:start],
+                                  return_traces=components)
+        out, meta = output[:2]
+        if (meta['processing_route'] != 'residual' or meta['full_channel_waveform_synthesized']
+                or meta['channel_equalization_applied'] or meta['boundary'] != 'provided_context'
+                or meta['numerical_filter_latency_samples'] != RESIDUAL_LATENCY):
+            raise ValueError('Aligned residual must be post-sync no-EQ with real context')
+        rows.append(out)
+        if trace:
+            records.append(meta)
+        if components:
+            scale = 10 ** (meta['agc_gain_db']/20)
+            signals.append(output[2]['pre_agc_signal']*scale)
+            noises.append(output[2]['pre_agc_noise']*scale)
+    rows = np.stack(rows)
+    result = pack_windows(rows)
+    if components:
+        scale = np.sqrt(np.mean(np.abs(rows)**2))
+        return result, np.stack(signals)/scale, np.stack(noises)/scale
+    return (result, dict(records[0], chirps=records)) if trace else result
+
+
+def aligned_view(z, scene, receiver, pid, namespace, *, trace=False, channel_override=None,
+                 realization=None, processing_route='full'):
+    if processing_route == 'residual':
+        if channel_override is not None:
+            raise ValueError('Residual LoRa uses its registered snapshot configuration')
+        return residual_view(z, scene, receiver, pid, namespace, trace=trace, realization=realization)
+    if processing_route != 'full':
+        raise ValueError('Unknown LoRa practical channel route')
     from leo_practical.channel import ChannelStream, normalize_input, stable_seed
     z, _ = normalize_input(z)
     session = f'{namespace}/{receiver}'
@@ -68,18 +132,18 @@ def aligned_view(z, scene, receiver, pid, namespace, *, trace=False, channel_ove
     return (result, meta) if trace else result
 
 
-def job(scene, namespace, item):
+def job(scene, namespace, item, *, processing_route='full'):
     z, rx, pid = item
     if scene == 'clean':
         return chirp_windows(z)
-    return aligned_view(z, scene, rx, pid, namespace)
+    return aligned_view(z, scene, rx, pid, namespace, processing_route=processing_route)
 
 
-def save_views(pool, path, packets, receivers, ids, namespace, scenes):
+def save_views(pool, path, packets, receivers, ids, namespace, scenes, *, processing_route='full'):
     shape = (len(scenes), len(packets), len(CHIRPS), 2, 256)
     output = np.lib.format.open_memmap(path, mode='w+', dtype=np.float32, shape=shape)
     for i, scene in enumerate(scenes):
-        run = partial(job, scene, namespace)
+        run = partial(job, scene, namespace, processing_route=processing_route)
         seq = zip(packets, receivers, ids, strict=True)
         for index, record in enumerate(pool.map(run, seq, chunksize=24)):
             output[i, index] = record

@@ -74,16 +74,20 @@ def build_source(data,out):
           views=list(VIEWS),U_extra_practical=True,target_read=False))
 
 
-def build_target(data,out):
+def build_target(data,out,*,processing_route='full',workers=WORKERS):
     target_contract(data)
     out.mkdir(exist_ok=False)
-    with ProcessPoolExecutor(max_workers=WORKERS) as pool:
+    with ProcessPoolExecutor(max_workers=workers) as pool:
         for rx in TARGET:
             x=native(data,rx,LIMIT)
-            save_views(pool,out/f'{rx}.npy',x,[rx]*LIMIT,range(LIMIT),'target',VIEWS)
+            save_views(pool,out/f'{rx}.npy',x,[rx]*LIMIT,range(LIMIT),'target',VIEWS,
+                       processing_route=processing_route)
             print('FULL_RX_VIEWS_BLIND',rx,LIMIT,flush=True)
-    write(out/'complete.json',dict(status='TARGET_READY',protocol=PROTOCOL,target_truth_read=False,
-          receivers=list(TARGET),per_receiver=LIMIT,views=list(VIEWS)))
+    metadata=dict(status='TARGET_READY',protocol=PROTOCOL,target_truth_read=False,
+                  receivers=list(TARGET),per_receiver=LIMIT,views=list(VIEWS))
+    if processing_route=='residual':
+        metadata['processing_route']=processing_route
+    write(out/'complete.json',metadata)
 
 
 def smoke(data,root):
