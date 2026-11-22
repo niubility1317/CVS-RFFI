@@ -56,8 +56,9 @@ def step(net, c, x, y, rx, optimizer, augment, progress, batch_index, *,
                 domain_logits=net.domain_discriminator(gradient_reverse(z_tx[:b], 1.)))
     else:
         z, logits = net(joined)
-    ce = F.cross_entropy(logits[clean_offset:clean_offset+b], y)
-    sat_ce = F.cross_entropy(logits[sat_offset:sat_offset+b], y)
+    smoothing = c.get('tx_label_smoothing', 0.)
+    ce = F.cross_entropy(logits[clean_offset:clean_offset+b], y, label_smoothing=smoothing)
+    sat_ce = F.cross_entropy(logits[sat_offset:sat_offset+b], y, label_smoothing=smoothing)
     pl = ce.new_zeros(())
     if enabled:
         pl_logits = logits[sat_offset+b:]
@@ -80,7 +81,7 @@ def step(net, c, x, y, rx, optimizer, augment, progress, batch_index, *,
         drift = compute_drift_loss(clean_drift, y, rx, lambda_grl=1.,
             lambda_center=.01, lambda_mse=.02, mse_reduction='sum', mse_cap=0.,
             normalize_features_for_mse=c.get('drift_normalized_separation', False), center_mode='batch')
-        native_loss = drift['loss'] - ce
+        native_loss = drift['loss'] - drift['loss_ce_tx']
         terms = {k: v.detach() for k, v in drift.items() if k != 'loss'}
         objective = objective + native_loss
     elif c['family'] == 'ibrff' and full and stage == 2:

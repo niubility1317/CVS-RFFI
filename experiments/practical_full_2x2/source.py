@@ -53,6 +53,11 @@ def riei_optimizers(net, c):
     return main, fed
 
 
+def riei_tail_lr(initial, progress):
+    tail = max(0., 2. * progress - 1.)
+    return initial * (.1 + .45 * (1. + math.cos(math.pi * tail)))
+
+
 def check_training(c):
     forbidden = ('truth', 'target_truth', 'target_inputs', 'views_root', 'tests',
                  'dataset', 'resume', 'teacher_checkpoint', 'checkpoint', 'initial_checkpoint')
@@ -177,6 +182,11 @@ def train(c):
                 if c.get('optimizer_reset_step') is not None and index == c['optimizer_reset_step']:
                     optimizer = torch.optim.AdamW(net.parameters(), lr=c['lr'], weight_decay=c['weight_decay'])
                 progress = index/max_updates if c['budget_kind']=='updates' else (index//len(loader))/c['epochs']
+                if c.get('riei_cosine_tail'):
+                    lr = riei_tail_lr(c['lr'], index / max_updates)
+                    for opt in (optimizer, fed):
+                        for group in opt.param_groups:
+                            group['lr'] = lr
                 if c['family'] in ('resnet18', 'resnet50'):
                     lr = c['lr_min'] + (c['lr']-c['lr_min'])*.5*(1+math.cos(math.pi*progress))
                     for g in optimizer.param_groups: g['lr'] = lr

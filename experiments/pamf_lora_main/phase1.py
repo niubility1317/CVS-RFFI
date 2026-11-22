@@ -20,15 +20,28 @@ from .runner import available
 
 
 RUN = '20261122-phase1-lora-full-external-m12-r02'
+OPTIMIZATION_RUN = '20261122-phase1-lora-external-loss-m2-r03'
 METHODS = ('riei', 'drift', 'ibrff', 'sdg')
 BUDGETS = {'riei': (100, 64, .0001, 1), 'drift': (100, 256, .0001, 1),
            'ibrff': (200, 128, .001, 2), 'sdg': (200, 32, .001, 1)}
 
 
+def registered_rows(run_id):
+    if run_id == RUN:
+        return [(family, seed) for seed in SEEDS for family in METHODS]
+    if run_id == OPTIMIZATION_RUN:
+        return [('riei', SEEDS[0]), ('drift', SEEDS[0])]
+    raise ValueError('Unknown LoRa external run')
+
+
 def configuration(rt, family, seed):
+    run_id = rt.get('run_id', RUN)
+    if (family, seed) not in registered_rows(run_id):
+        raise ValueError('Unregistered LoRa run row')
+    optimized = run_id == OPTIMIZATION_RUN
     epochs, batch, lr, stages = BUDGETS[family]
     row = f'{family}-s{seed}'
-    return dict(run_id=RUN, row_id=row, code_commit=rt['code_commit'], protocol_id='lora_rx5_main_v1',
+    return dict(run_id=run_id, row_id=row, code_commit=rt['code_commit'], protocol_id='lora_rx5_main_v1',
         family=family, variant='full', cell='D', initialization='scratch', training_regime='pl',
         model_seed=seed, split_seed=SPLIT_SEED, epochs=epochs, batch_size=batch, lr=lr,
         stages=stages, budget_kind='native', weight_decay=0., num_classes=len(CLASSES),
@@ -37,6 +50,8 @@ def configuration(rt, family, seed):
         accepted_pl_only=True, log_native_terms=True, drift_normalized_separation=family == 'drift',
         ibrff_plateau_warmup=25 if family == 'ibrff' else 0,
         riei_adam=family == 'riei',
+        riei_cosine_tail=optimized and family == 'riei',
+        tx_label_smoothing=.05 if optimized and family == 'drift' else 0.,
         default_head_joint_training=True, separate_head_training=False,
         source_cache=rt['source_root'], source_contract=str(Path(rt['source_root'])/'contract.json'),
         source_practical=rt['source_practical'], output_root=str(Path(rt['run_root'])/'F'/row),
@@ -44,7 +59,7 @@ def configuration(rt, family, seed):
 
 
 def check_training(c):
-    if (c['run_id'] != RUN or c['family'] not in METHODS or c['model_seed'] not in SEEDS
+    if ((c['family'], c['model_seed']) not in registered_rows(c['run_id'])
             or any(k in c for k in ('target', 'target_root', 'target_practical', 'target_inputs',
                                     'views_root', 'tests', 'truth', 'target_truth', 'dataset',
                                     'resume', 'teacher_checkpoint', 'checkpoint', 'initial_checkpoint'))):
@@ -123,7 +138,8 @@ def smoke(rt):
     out = Path(rt['run_root'])/'smoke'
     out.mkdir()
     with native_source() as source:
-        for family in METHODS:
+        families = [f for f, s in registered_rows(rt.get('run_id', RUN)) if s == SEEDS[0]]
+        for family in families:
             c = configuration(rt, family, SEEDS[0])
             meta = check_training(c)
             source.native.seed(c['model_seed'])
@@ -159,7 +175,7 @@ def smoke(rt):
             if logits.shape != (len(x), len(CLASSES)) or not torch.isfinite(logits).all():
                 raise ValueError('Native LoRa checkpoint did not roundtrip')
             print('LORA_EXTERNAL_SOURCE_SMOKE_PASS', family, flush=True)
-    write(out/'complete.json', dict(status='PASS', tested=list(METHODS), target_reads=0, U_truth_reads=0))
+    write(out/'complete.json', dict(status='PASS', tested=families, target_reads=0, U_truth_reads=0))
 
 
 def worker(rt, kind):
@@ -190,7 +206,7 @@ def worker(rt, kind):
 def launch(rt, kind, gpu, **fields):
     root = Path(rt['run_root'])
     row = f"{fields['family']}-s{fields['seed']}" if fields else 'all'
-    keys = ('run_root','code_commit','frozen_sources','external_releases','ibrff_model_root','sdg_model_root',
+    keys = ('run_id','run_root','code_commit','frozen_sources','external_releases','ibrff_model_root','sdg_model_root',
             'source_root','source_practical')
     if kind == 'predict':
         keys += ('target_root','target_practical','main_run')
@@ -253,7 +269,7 @@ def dispatch(rt):
         if (read(Path(rt['main_run'])/'state.json')['status'] != 'PREDICTIONS_FROZEN'
                 or not (Path(rt['target_practical'])/'complete.json').is_file()):
             raise ValueError('The original LoRa practical views and predictions must be frozen')
-        rows = [(f,s) for s in SEEDS for f in METHODS]
+        rows = registered_rows(rt['run_id'])
         schedule(rt, rows)
         write(state, dict(status='PREDICTIONS_FROZEN', target_truth_read=False), exclusive=False)
     except Exception as error:

@@ -74,11 +74,16 @@ def test_drift_separation_uses_the_unit_norm_bound():
         net.encoder[1].weight.copy_(100 * torch.eye(4))
     x = torch.tensor([[[1., 0.], [-1., 0.]], [[0., 1.], [0., -1.]]])
     config = dict(family='drift', variant='full', U_s_use=False, pl_weight=1.,
-                  lambda_sat_cls=.68, drift_normalized_separation=True, log_native_terms=True)
+                  lambda_sat_cls=.68, drift_normalized_separation=True, log_native_terms=True,
+                  tx_label_smoothing=.05)
+    labels = torch.tensor([0, 1])
+    logits = net.tx_classifier(net.encoder(x)[:, :2])
+    expected = F.cross_entropy(logits, labels, label_smoothing=.05)
     record = objectives.step(net, config, x, torch.tensor([0, 1]), torch.tensor([0, 1]),
                              torch.optim.SGD(net.parameters(), lr=.01), augment, .5, 0)
     assert record['native_terms']['loss_mse'] == -4.
     assert record['native_terms']['z_tx_norm'] == 100.
+    torch.testing.assert_close(torch.tensor(record['loss'] - record['native_penalty']), 1.68 * expected)
 
 
 def test_source_row_rejects_the_target_handle_before_opening_source():
@@ -90,3 +95,22 @@ def test_source_row_rejects_the_target_handle_before_opening_source():
         assert 'source rows' in str(error)
     else:
         raise AssertionError('Training accepted a target handle')
+
+
+def test_only_the_two_registered_r03_family_options_apply():
+    from experiments.practical_full_2x2.source import riei_tail_lr
+
+    assert phase1.registered_rows(phase1.OPTIMIZATION_RUN) == [('riei', phase1.SEEDS[0]),
+                                                             ('drift', phase1.SEEDS[0])]
+    base = dict(code_commit='commit', source_root='src', source_practical='views.npy',
+                run_root='run', ibrff_model_root='ib', sdg_model_root='sdg')
+    new = dict(base, run_id=phase1.OPTIMIZATION_RUN)
+    for name, seed in phase1.registered_rows(phase1.OPTIMIZATION_RUN):
+        old = phase1.configuration(base, name, seed)
+        row = phase1.configuration(new, name, seed)
+        assert (row['epochs'], row['lr'], row['batch_size']) == (old['epochs'], old['lr'], old['batch_size'])
+        assert row['riei_cosine_tail'] is (name == 'riei')
+        assert row['tx_label_smoothing'] == (.05 if name == 'drift' else 0.)
+        assert not old['riei_cosine_tail'] and old['tx_label_smoothing'] == 0.
+    torch.testing.assert_close(torch.tensor([riei_tail_lr(1e-4, p) for p in (0., .5, .75, 1.)]),
+                               torch.tensor([1e-4, 1e-4, 5.5e-5, 1e-5]))

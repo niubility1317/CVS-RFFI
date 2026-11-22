@@ -16,9 +16,9 @@ def readouts(extended=()):
             **{method: ('raw', 'dura_lora') for method in extended}}
 
 
-def prediction_matrix(root, methods):
+def prediction_matrix(root, methods, seeds=SEEDS):
     result = {}
-    for seed in SEEDS:
+    for seed in seeds:
         for method, modes in methods.items():
             path = root/f'{method}-s{seed}'
             state = read(path/'complete.json')
@@ -44,9 +44,9 @@ def macro_f1(y, pred):
     return float(np.mean(2 * matrix.diagonal() / np.maximum(1, count)))
 
 
-def score(predictions, dataset, output, scratch, *, extended=()):
+def score(predictions, dataset, output, scratch, *, extended=(), seeds=SEEDS, paired_controls=None):
     methods = readouts(extended)
-    p = prediction_matrix(predictions, methods)
+    p = prediction_matrix(predictions, methods, seeds)
     truth = {}
     with zipfile.ZipFile(dataset/'multiple_receiver_test.zip') as archive:
         for i, rx in enumerate(TARGET):
@@ -55,7 +55,7 @@ def score(predictions, dataset, output, scratch, *, extended=()):
 
     overall_y = np.concatenate(list(truth.values()))
     res = []
-    for seed in SEEDS:
+    for seed in seeds:
         for method, modes in methods.items():
             for mode in modes:
                 for view in VIEWS:
@@ -73,13 +73,20 @@ def score(predictions, dataset, output, scratch, *, extended=()):
                         direct = np.concatenate([p[seed, method, 'raw', view, rx] for rx in TARGET]) == overall_y
                         row.update(vs_direct_gain=int((correct & ~direct).sum()),
                                    vs_direct_damage=int((~correct & direct).sum()))
+                    if paired_controls and method in paired_controls:
+                        control = paired_controls[method]
+                        prior = np.concatenate([p[seed, control, mode, view, rx] for rx in TARGET]) == overall_y
+                        row.update(paired_control=control, vs_control_gain=int((correct & ~prior).sum()),
+                                   vs_control_damage=int((~correct & prior).sum()))
                     res.append(row)
     groups = {}
     for row in res:
         key = f"{row['method']}|{row['readout']}|{row['view']}"
         groups.setdefault(key, []).append(row['accuracy'])
-    summary = {k: dict(mean=mean(a), sample_sd=stdev(a)) for k,a in groups.items()}
-    write(output, dict(status='SCORED_COMPLETE', truth_last=True, rows=res, three_seed_accuracy=summary))
+    summary = {k: dict(mean=mean(a), sample_sd=stdev(a) if len(a) > 1 else None)
+               for k, a in groups.items()}
+    key = 'three_seed_accuracy' if tuple(seeds) == SEEDS else 'one_seed_accuracy'
+    write(output, dict(status='SCORED_COMPLETE', truth_last=True, rows=res, **{key: summary}))
 
 
 if __name__ == '__main__':
