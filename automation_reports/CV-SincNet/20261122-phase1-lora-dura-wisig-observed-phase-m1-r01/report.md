@@ -76,3 +76,19 @@ Clean 中非载波修正占修正总能量的约 91%。仅用载波修正时，c
 观察相位版粗恢复的整包输出能量接近 1，其非载波残差却有明显的改写和长尾，能量比第 95 百分位为 6.72。加入软求解后，观察相位版的中位残差指标优于原坐标作用阶段，同一冻结识别器的 clean 仍少判对 12 个包。单一波形指标不足以为身份保真排序。后续保留同一 clean 测试与精确旁路对照，并按冻结后的识别结果判断实用性能。
 
 [逐接收机 clean 残差统计](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_lineage_r02_source_panel/clean_detail_retention.json)
+
+## 冻结 R17 的三次展开对照
+
+观察相位 R17 完成 20 轮、4,940 步。核对两条链各自的冻结前缀都与其作用阶段的权重及状态逐点一致。固定原 120 个源 V 包、相同冻结 Tri-set 和三次热启动，每次 2 步 CG。下表每个正确数由六景 720 次曝光汇总，clean 同一批另计。
+
+| 读出 | 原坐标六景正确数 | 观察相位六景正确数 | 原坐标城区低能量比 | 观察相位城区低能量比 |
+|---|---:|---:|---:|---:|
+| 直通 | 395 | 395 | 1.000 | 1.000 |
+| 固定粗恢复先验，3×2 次 CG | 322 | 353 | 0.530 | 0.987 |
+| R17 第 1 次展开 | 318 | 354 | 0.543 | 1.027 |
+| R17 第 2 次展开 | 313 | 354 | 0.648 | 1.106 |
+| R17 第 3 次展开 | 176 | 341 | 0.106 | 0.965 |
+
+观察相位训练明显缓解了最后一次展开的强缩幅。第三步仍使六景比第二步少 13 次正确，城区低从 50/120 到 42/120；该景直通为 44/120。Clean 观察相位 R17 三步均为 68/120，原坐标各步为 80/120，直通为 94/120。这个对照支持优先保留观察相位坐标，同时继续检查弱信道动作估计和高保真先验的监督。当前证据来自源 V，R38 至 R69 继续按各自原预算完成，正式七景仍由冻结后的独立读出判断。
+
+[观察相位 R17 分级读出](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_observed_phase_source_panel/r17_prior_readout.json) · [原坐标 R17 分级读出](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_lineage_r02_source_panel/r17_prior_readout.json) · [正式三种子口径](E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010/automation_reports/CV-SincNet/20261122-phase1-lora-dura-wisig-lineage-m1-r02/report.md)
