@@ -8,4 +8,6 @@
 
 [提交与传输记录](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_lineage_r02_release/submit.json)
 
+最终三种子汇总可用 `python -m experiments.pamf_lora_main.full_dura_goal_readout --baseline COHERENT_CONFIRM_READOUT --candidate READOUT [--candidate READOUT ...] --mode MODE`。它仅整理已独立评分的结果，逐数组核对直通 Tri-set 对照，并按种子、场景及接收机复算正确数。结果同时报告 57% 六景、43% 城区低、clean 正确数、相距 3 个百分点和 WiSig 缺口回收比例。程序已用旧三种子结果复算，得到 clean 64,490/90,000、半量六景 55.8517%、城区低 41.7733%，并确认只有单种子的结果不足以生成全目标汇总。
+
 [训练与物理差异分析](E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010/automation_reports/CV-SincNet/20261122-phase1-lora-dura-wisig-lineage-m1-r01/diagnosis.md)
