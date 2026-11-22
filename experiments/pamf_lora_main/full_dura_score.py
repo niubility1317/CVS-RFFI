@@ -16,7 +16,7 @@ from .data import CLASSES,TARGET,VIEWS,label_ids,packet_indices,recording
 from .full_dura import (COVERAGE_RUN, MODES, PROJECTED_RUN, SHAPE_RUN, STACK_RUN, STAGED_RUN, SWEEP,
                         SWEEP_RUN, modes_for)
 from .full_dura_core import COVERAGE_RECIPES
-from .full_dura_detail import (CONFIRM_NEW_SEEDS, DETAIL_CONFIRM_RUN, DETAIL_DOSE_MODES, DETAIL_DOSE_RUN,
+from .full_dura_detail import (CONFIRM_NEW_SEEDS, DETAIL_CONFIRM_RUNS, DETAIL_DOSE_MODES, DETAIL_DOSE_RUN,
                                DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS, PHASE_DETAIL_DOSES,
                                PHASE_DETAIL_MODES, PHASE_DETAIL_RUN, SHARED_DETAIL_DOSES,
                                SHARED_DETAIL_MODES, SHARED_DETAIL_RUN)
@@ -231,7 +231,7 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
             extra+=' held_trace/complete.json'
             for seed in R69_SEEDS:
                 extra+=f' G/teacher/{seed}/calibration G/student/{seed}/calibration'
-    elif run.name==DETAIL_CONFIRM_RUN:
+    elif run.name in DETAIL_CONFIRM_RUNS:
         extra=' '+' '.join(f'G/{s}/source_support.json G/{s}/steps.jsonl' for s in CONFIRM_NEW_SEEDS)
     elif run.name==DETAIL_DOSE_RUN:
         extra=''
@@ -277,7 +277,7 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
         seeds=(seed_for(origin),)
     else:
         modes=tuple(SWEEP) if sweep else modes_for(run)
-        seeds=SEEDS if run.name==DETAIL_CONFIRM_RUN else None
+        seeds=SEEDS if run.name in DETAIL_CONFIRM_RUNS else None
     pred,act=matrix(output,modes,seeds=seeds)
     truth={}
     with zipfile.ZipFile(dataset/'multiple_receiver_test.zip') as ar:

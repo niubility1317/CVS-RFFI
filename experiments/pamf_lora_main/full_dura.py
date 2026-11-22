@@ -14,9 +14,10 @@ from .dura_repair import complex_iq, power
 from .full_adaptive import RUN as TRI, SET_METHOD, SET_RUN, WARMUP_RUN, case, complete_f, wait_for
 from .full_dura_core import (COVERAGE_RECIPES, Dose, dose_features, g_record, projected_record, protected_shapes,
                             read_gate, receiver_loss, train, train_gate)
-from .full_dura_detail import (CONFIRM_NEW_SEEDS, DETAIL_CONFIRM_RUN, DETAIL_DOSE_MODES,
+from .full_dura_detail import (CONFIRM_NEW_SEEDS, DETAIL_CONFIRM_RUN, DETAIL_CONFIRM_RUNS, DETAIL_DOSE_MODES,
                                DETAIL_DOSE_RUN, DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS,
-                               PHASE_DETAIL_MODES, PHASE_DETAIL_RUN, SHARED_DETAIL_MODES, SHARED_DETAIL_RUN)
+                               PHASE_CONFIRM_RUN, PHASE_DETAIL_MODES, PHASE_DETAIL_RUN, PHASE_RUNS,
+                               SHARED_DETAIL_MODES, SHARED_DETAIL_RUN)
 from .full_dura_r69_lora import (R69_ACTION_MODES, R69_ACTION_RUN, R69_LORA_RUN, R69_MODES,
                                  R69_RETAINED_MODES, R69_SEEDS, R69_TRACE_MODES)
 from .full_dura_trace_source import RETAINED_RUN, TRACE_RUN
@@ -42,7 +43,7 @@ COVERAGE_MODES=(*PROJECTED_MODES,*COVERAGE_RECIPES)
 STACK_RUN='20261122-phase1-lora-tri-set-dura-stack-m9-r01'
 STAGED_RUN='20261122-phase1-lora-dura-source-distillation-m6-r01'
 STAGED_MODES=(*PROJECTED_MODES,'staged_protect')
-DETAIL_TRAIN_RUNS=(DETAIL_RUN,DETAIL_CONFIRM_RUN,SHARED_DETAIL_RUN,PHASE_DETAIL_RUN)
+DETAIL_TRAIN_RUNS=(DETAIL_RUN,DETAIL_CONFIRM_RUN,SHARED_DETAIL_RUN,*PHASE_RUNS)
 DETAIL_RUNS=(*DETAIL_TRAIN_RUNS,DETAIL_DOSE_RUN)
 R69_RUNS=(R69_LORA_RUN,R69_ACTION_RUN,TRACE_RUN,RETAINED_RUN)
 JOINT_RUNS=(JOINT_RUN,ADAPTED_JOINT_RUN)
@@ -67,7 +68,7 @@ def modes_for(root):
         return DETAIL_DOSE_MODES
     if root.name==SHARED_DETAIL_RUN:
         return SHARED_DETAIL_MODES
-    if root.name==PHASE_DETAIL_RUN:
+    if root.name in PHASE_RUNS:
         return PHASE_DETAIL_MODES
     if root.name==STAGED_RUN:
         return STAGED_MODES
@@ -383,12 +384,14 @@ def predict_added(root,target,c,seed,reader,dev):
 
 def copy_detail_control(root):
     """Retain the existing seed-02 dose outcomes without opening target data."""
-    prior=root.parent/DETAIL_DOSE_RUN
+    phase=root.name==PHASE_CONFIRM_RUN
+    prior=root.parent/(PHASE_DETAIL_RUN if phase else DETAIL_DOSE_RUN)
+    modes=PHASE_DETAIL_MODES if phase else DETAIL_DOSE_MODES
     seed,=DETAIL_SEEDS
     source=prior/'predictions'/str(seed)
     receipt=read(source/'complete.json')
     if (receipt['status']!='PREDICTIONS_FROZEN' or receipt['seed']!=seed
-            or receipt['target_truth_read'] or receipt['modes']!=list(DETAIL_DOSE_MODES)
+            or receipt['target_truth_read'] or receipt['modes']!=list(modes)
             or receipt['receivers']!=list(TARGET) or receipt['views']!=list(VIEWS)
             or receipt['per_receiver']!=LIMIT):
         raise ValueError('Prior LoRa dose experiment differs from the fixed seed-02 matrix')
@@ -401,7 +404,7 @@ def dispatch(rt):
     root.mkdir(exist_ok=False)
     launch=partial(start,module=__spec__.name)
     state=root/'state.json'
-    if root.name==DETAIL_CONFIRM_RUN:
+    if root.name in DETAIL_CONFIRM_RUNS:
         seeds=CONFIRM_NEW_SEEDS
     elif root.name in R69_RUNS:
         seeds=R69_SEEDS
@@ -447,6 +450,9 @@ def dispatch(rt):
                 wait_for(root.parent/DETAIL_RUN,'PREDICTIONS_FROZEN')
             if root.name in (DETAIL_CONFIRM_RUN,SHARED_DETAIL_RUN,PHASE_DETAIL_RUN):
                 wait_for(root.parent/DETAIL_DOSE_RUN,'PREDICTIONS_FROZEN')
+            if root.name==PHASE_CONFIRM_RUN:
+                wait_for(root.parent/DETAIL_CONFIRM_RUN,'PREDICTIONS_FROZEN')
+                wait_for(root.parent/PHASE_DETAIL_RUN,'PREDICTIONS_FROZEN')
             check='detail_smoke' if root.name in DETAIL_RUNS else 'shape_smoke'
             if launch(rt,check,'source').wait():
                 raise RuntimeError('Frozen LoRa restoration source smoke failed')
@@ -486,7 +492,7 @@ def dispatch(rt):
         if root.name in (STAGED_RUN,*DETAIL_RUNS):
             wait_for(root.parent/STACK_RUN,'PREDICTIONS_FROZEN')
         write(state,dict(status='PREDICTING'),exclusive=False)
-        if root.name==DETAIL_CONFIRM_RUN:
+        if root.name in DETAIL_CONFIRM_RUNS:
             copy_detail_control(root)
         schedule(rt,[('predict',str(s)) for s in seeds],launch)
         write(state,dict(status='PREDICTIONS_FROZEN',target_truth_read=False),exclusive=False)

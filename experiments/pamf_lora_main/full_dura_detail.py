@@ -22,6 +22,9 @@ DETAIL_DOSE_RUN='20261122-phase1-lora-dura-coherent-dose-m2-r01'
 DETAIL_CONFIRM_RUN='20261122-phase1-lora-dura-coherent-dose-confirm-m4-r01'
 SHARED_DETAIL_RUN='20261123-phase1-lora-dura-packet-common-m1-r01'
 PHASE_DETAIL_RUN='20261123-phase1-lora-dura-half-phase-residual-m1-r01'
+PHASE_CONFIRM_RUN='20261123-phase1-lora-dura-half-phase-confirm-m4-r01'
+PHASE_RUNS=(PHASE_DETAIL_RUN,PHASE_CONFIRM_RUN)
+DETAIL_CONFIRM_RUNS=(DETAIL_CONFIRM_RUN,PHASE_CONFIRM_RUN)
 DETAIL_SEEDS=(SEEDS[1],)
 CONFIRM_NEW_SEEDS=(SEEDS[0],SEEDS[2])
 DETAIL_MODES=('direct','fixed','protect_shape','coherent_detail')
@@ -169,7 +172,8 @@ def record(c,seed,*,shared=False,phase=False):
     if shared:
         r.update(quality=SHARED_QUALITY,component='chirp_common',paired_draws=True)
     if phase:
-        r.update(quality=SHARED_QUALITY,component='phase',baseline=DETAIL_DOSE_RUN)
+        baseline=DETAIL_DOSE_RUN if seed in DETAIL_SEEDS else DETAIL_CONFIRM_RUN
+        r.update(quality=SHARED_QUALITY,component='phase',baseline=baseline)
     return r
 
 
@@ -258,14 +262,14 @@ def fit_utility(model,l,u,sat,alt,held,*,bypass_reference=None):
 
 def train_detail(rt,seed):
     root=Path(rt['run_root'])
-    seeds=CONFIRM_NEW_SEEDS if root.name==DETAIL_CONFIRM_RUN else DETAIL_SEEDS
+    seeds=CONFIRM_NEW_SEEDS if root.name in DETAIL_CONFIRM_RUNS else DETAIL_SEEDS
     if seed not in seeds:
         raise ValueError('Unregistered high-coherence DURA seed')
     dev='cuda:0'
     torch.manual_seed(seed)
     c,(l,u,sat),(alt_l,alt_u)=source_inputs(rt,dev)
     shared=root.name==SHARED_DETAIL_RUN
-    phase=root.name==PHASE_DETAIL_RUN
+    phase=root.name in PHASE_RUNS
     gate=tracker_gate(root,c,dev)
     model=(PhaseDetail(gate) if phase else PacketDetail(gate,shared=shared)).to(dev)
     held=torch.arange(0,len(u),5,device=dev)
@@ -343,7 +347,7 @@ def load_detail(root,c,seed,device):
         root=root.parent/DETAIL_RUN
     out=root/'G'/str(seed)
     shared=root.name==SHARED_DETAIL_RUN
-    phase=root.name==PHASE_DETAIL_RUN
+    phase=root.name in PHASE_RUNS
     if read(out/'complete.json')!=record(c,seed,shared=shared,phase=phase):
         raise ValueError('LoRa detail checkpoint source ancestry differs')
     gate=tracker_gate(root,c,device)
@@ -386,8 +390,13 @@ def restore(base,detail,x):
 def phase_baseline_models(root,c,seed,device):
     from .full_dura import RUN, engines
     base,_=engines(root.parent/RUN,c,seed,device)
-    prior=load_detail(root.parent/DETAIL_RUN,c,seed,device)
+    prior=phase_baseline_detail(root,c,seed,device)
     return base.requires_grad_(False),prior
+
+
+def phase_baseline_detail(root,c,seed,device):
+    name=DETAIL_RUN if seed in DETAIL_SEEDS else DETAIL_CONFIRM_RUN
+    return load_detail(root.parent/name,c,seed,device)
 
 
 @torch.no_grad()
@@ -408,7 +417,7 @@ def detail_smoke(rt):
     from .full_dura import RUN, engines
     root=Path(rt['run_root'])
     _,cache,c=handles(rt)
-    seed=(CONFIRM_NEW_SEEDS if root.name==DETAIL_CONFIRM_RUN else DETAIL_SEEDS)[0]
+    seed=(CONFIRM_NEW_SEEDS if root.name in DETAIL_CONFIRM_RUNS else DETAIL_SEEDS)[0]
     base,_=engines(root.parent/RUN,c,seed,'cpu')
     if root.name==DETAIL_DOSE_RUN:
         detail=load_detail(root,c,seed,'cpu')
@@ -426,14 +435,14 @@ def detail_smoke(rt):
                                    TX_reads=0,target_reads=0,doses=DETAIL_DOSES))
         return
     shared=root.name==SHARED_DETAIL_RUN
-    phase=root.name==PHASE_DETAIL_RUN
+    phase=root.name in PHASE_RUNS
     model=PhaseDetail(base.gate) if phase else PacketDetail(base.gate,shared=shared)
     l=np.load(cache/'L_s.npy',mmap_mode='r',allow_pickle=False)[0]
     old=np.load(cache/'U_s_practical.npy',mmap_mode='r',allow_pickle=False)[::32]
     a=load_draw(root.parent/DRAW_RUN,'L_s')
     x=tensor(a[::16])
     if phase:
-        prior=load_detail(root.parent/DETAIL_RUN,c,seed,'cpu')
+        prior=phase_baseline_detail(root,c,seed,'cpu')
         x=half_baseline(base,prior,x)[0]
     keep=torch.where(model.eligible(x))[0][:8]
     if len(keep)<8:
@@ -477,7 +486,7 @@ def source_wave_detail(rt,seed):
     arr=np.load(cache/'V.npy',mmap_mode='r',allow_pickle=False)
     clean=tensor(arr[0,::4],dev)
     if detail.phase:
-        prior=load_detail(root.parent/DETAIL_RUN,c,seed,dev)
+        prior=phase_baseline_detail(root,c,seed,dev)
         rows={}
         for i,v in enumerate(VIEWS):
             old_count=count=beneficial=0
@@ -525,9 +534,11 @@ def predict_detail(root,target,c,seed,reader,device):
     from .full_dura import PROJECTED_MODES, RUN, STACK_RUN, engines
     dose=root.name==DETAIL_DOSE_RUN
     shared=root.name==SHARED_DETAIL_RUN
-    phase=root.name==PHASE_DETAIL_RUN
+    phase=root.name in PHASE_RUNS
     extended=shared or phase
     stack=root.parent/(DETAIL_DOSE_RUN if extended else DETAIL_RUN if dose else STACK_RUN)
+    if root.name==PHASE_CONFIRM_RUN:
+        stack=root.parent/DETAIL_CONFIRM_RUN
     if read(stack/'state.json')['status']!='PREDICTIONS_FROZEN':
         raise ValueError('The frozen protected DURA controls are missing')
     old=stack/'predictions'/str(seed)
@@ -540,7 +551,7 @@ def predict_detail(root,target,c,seed,reader,device):
         raise ValueError('The frozen Tri-set and DURA controls do not match')
     base,_=engines(root.parent/RUN,c,seed,device)
     detail=load_detail(root,c,seed,device)
-    prior=load_detail(root.parent/DETAIL_RUN,c,seed,device) if phase else None
+    prior=phase_baseline_detail(root,c,seed,device) if phase else None
     out=root/'predictions'/str(seed)
     out.mkdir(parents=True,exist_ok=False)
     records={}
