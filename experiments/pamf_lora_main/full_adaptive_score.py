@@ -17,7 +17,7 @@ from .full_adaptive import (EPOCHS, METHODS, PRACTICAL_SET_RUN, SET_METHOD, SET_
                             WARMUP_RUN, case, cases, methods_for)
 from .full_packet_data import LIMIT
 from .full_supervised import FULL_EPOCHS, SEEDS
-from .full_tri_repl_lora import REPL_RUN, WARM_RUN, total_epochs
+from .full_tri_repl_lora import ADAPT_RUN, REPL_RUN, WARM_RUN, total_epochs
 from .packet_score import score_refined_u
 from .scoring import macro_f1
 
@@ -96,7 +96,7 @@ def collect(submit,ssh_config,dataset,source,output,controls=None,set_control=No
     names=[n for n,_,_ in cases(methods)]
     paired=run_root.name==PRACTICAL_SET_RUN
     sets=run_root.name in (SET_RUN,PRACTICAL_SET_RUN)
-    native=run_root.name in (REPL_RUN,WARM_RUN)
+    native=run_root.name in (REPL_RUN,WARM_RUN,ADAPT_RUN)
     if (sets or native)!=(controls is not None):
         raise ValueError('The frozen E168 controls are required only for the Tri set comparison')
     if (paired or native)!=(set_control is not None):

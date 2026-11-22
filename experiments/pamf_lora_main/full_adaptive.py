@@ -15,7 +15,8 @@ from .data import TARGET, VIEWS
 from .full_packet_data import LIMIT, PROTOCOL
 from .full_restore_draw import RUN as DRAW_RUN
 from .full_supervised import FULL_EPOCHS, RUN as SUPERVISED, SEEDS, batches, construct, handles, load_f, role
-from .full_tri_repl_lora import NATIVE_METHODS, REPL_METHODS, REPL_RUN, REPL_SEEDS, WARM_METHODS, WARM_RUN
+from .full_tri_repl_lora import (ADAPT_METHODS, ADAPT_RUN, NATIVE_METHODS, REPL_METHODS, REPL_RUN,
+                                REPL_SEEDS, WARM_METHODS, WARM_RUN)
 from .holdout import FOLDS, summary, view_evidence
 from .packet_runner import schedule
 from .refine_runner import start
@@ -40,11 +41,13 @@ def case(seed,method):
 
 
 def cases(methods=METHODS):
-    seeds=REPL_SEEDS if tuple(methods) in (REPL_METHODS,WARM_METHODS) else SEEDS
+    seeds=REPL_SEEDS if tuple(methods) in (REPL_METHODS,WARM_METHODS,ADAPT_METHODS) else SEEDS
     return [(case(s,m),s,m) for s in seeds for m in methods]
 
 
 def methods_for(root):
+    if root.name==ADAPT_RUN:
+        return ADAPT_METHODS
     if root.name==WARM_RUN:
         return WARM_METHODS
     if root.name==REPL_RUN:
@@ -202,7 +205,8 @@ def audit(rt):
                 raise ValueError('Original Tri warmup accessed U before enabling REPL')
             results[name]=dict(seed=seed,method=m,L=row['L'],V=row['V'],
                 hard_U_count=sum(t['U_accepted'] for t in a),U_total=sum(t['U_seen'] for t in a),
-                style_U_paired=sum(t['U_partners'] for t in a),forwards=sum(t['U_forwards'] for t in a))
+                style_U_paired=sum(t['U_partners'] for t in a),forwards=sum(t['U_forwards'] for t in a),
+                practical_U_seen=sum(t.get('U_practical',0) for t in a))
             continue
         results[name]=dict(seed=seed,method=m,L=row['L'],V={'clean':row['V'],**row['V_practical']},
               hard_U_count=sum(sum(t['accepted']) for t in a),
@@ -254,7 +258,7 @@ def predict(rt,name):
 
 
 def smoke(rt):
-    if Path(rt['run_root']).name in (REPL_RUN,WARM_RUN):
+    if Path(rt['run_root']).name in (REPL_RUN,WARM_RUN,ADAPT_RUN):
         from .full_tri_repl_lora import smoke as smoke_repl
         return smoke_repl(rt)
     src,views,c=handles(rt)
@@ -301,7 +305,7 @@ def dispatch(rt):
     try:
         write(state,dict(status='WAITING_FOR_SOURCE_TEACHERS'))
         wait_for(root.parent/SUPERVISED,'SOURCE_ONLY_COMPLETE')
-        if root.name in (SET_RUN,PRACTICAL_SET_RUN,REPL_RUN):
+        if root.name in (SET_RUN,PRACTICAL_SET_RUN,REPL_RUN,ADAPT_RUN):
             wait_for(root.parent/WARMUP_RUN,'PREDICTIONS_FROZEN')
         if root.name==PRACTICAL_SET_RUN:
             wait_for(root.parent/DRAW_RUN,'SOURCE_DRAW_READY')
@@ -312,7 +316,7 @@ def dispatch(rt):
         if root.name==WARMUP_RUN:
             write(state,dict(status='SUPERVISION_EXTENSION'),exclusive=False)
             schedule(rt,[('warmup',str(s)) for s in SEEDS],launch)
-        if root.name not in (REPL_RUN,WARM_RUN):
+        if root.name not in (REPL_RUN,WARM_RUN,ADAPT_RUN):
             schedule(rt,[('policy',str(s)) for s in SEEDS],launch)
         write(state,dict(status='SOURCE_TRAINING'),exclusive=False)
         names=[n for n,_,_ in cases(methods_for(root))]
