@@ -20,7 +20,7 @@ from .data import SOURCE, VIEWS
 from .full_supervised import SEEDS, batches, handles
 
 
-REPL_RUN='20261122-phase1-lora-native-tri-repl-m2-r01'
+REPL_RUN='20261122-phase1-lora-native-tri-repl-m2-r02'
 REPL_SEEDS=(SEEDS[1],)
 REPL_METHODS=('native_repl6','native_repl3')
 U_WEIGHTS=dict(zip(REPL_METHODS,(6.,3.),strict=True))
@@ -194,7 +194,8 @@ def train(rt,seed,method):
                 accepted+=int(keep.sum())
                 paired+=extra['partners']
                 forward+=extra['forwards']
-                accepted_rows.append(torch.stack((torch.full_like(pos[keep],epoch),pos[keep],py[keep])).T.cpu().numpy())
+                values=torch.stack((torch.full_like(pos[keep],epoch),pos[keep],py[keep]),dim=1)
+                accepted_rows.append(np.asarray(values.tolist(),dtype=np.int64).reshape(-1,3))
                 gradients.append(docket)
             validation=None
             if epoch==1 or epoch%4==0:
@@ -224,9 +225,10 @@ def smoke(rt):
     model=initialized(root,c,seed,'cpu').train()
     x,y,rx,_=role(source,views,c,'L_s','cpu')
     idx=next(batches(y,rx,np.random.default_rng(721)))[:8]
-    lab,_=labeled_loss(model,x[0,idx],x[1,idx],tensor(y[idx]),tensor(rx[idx]),1)
-    unlab,pseudo,accepted,terms=unlabeled_loss(model,x[0,idx],tensor(rx[idx]),1,6.,
-                                              forced_pseudo=tensor(y[idx]))
+    row=tensor(idx)
+    labels,receivers=tensor(y[idx]),tensor(rx[idx])
+    lab,_=labeled_loss(model,x[0,row],x[1,row],labels,receivers,1)
+    unlab,_,accepted,terms=unlabeled_loss(model,x[0,row],receivers,1,6.,forced_pseudo=labels)
     optimizer=torch.optim.Adam(model.parameters(),lr=6e-5)
     named=[(k,p) for k,p in model.named_parameters() if p.requires_grad]
     guarded,groups,_=protected_loss(lab,unlab,named)
