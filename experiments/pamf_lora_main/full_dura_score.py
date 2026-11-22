@@ -17,7 +17,7 @@ from .full_dura import (COVERAGE_RUN, MODES, PROJECTED_RUN, SHAPE_RUN, STACK_RUN
                         SWEEP_RUN, modes_for)
 from .full_dura_core import COVERAGE_RECIPES
 from .full_dura_detail import (CONFIRM_NEW_SEEDS, DETAIL_CONFIRM_RUNS, DETAIL_DOSE_MODES, DETAIL_DOSE_RUN,
-                               DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS, PHASE_DETAIL_DOSES,
+                               DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS, END_PHASE_RUN, PHASE_DETAIL_DOSES,
                                PHASE_DETAIL_MODES, PHASE_DETAIL_RUN, SHARED_DETAIL_DOSES,
                                SHARED_DETAIL_MODES, SHARED_DETAIL_RUN, SPECTRAL_PHASE_RUN)
 from .full_dura_lineage import FULL_ACTION_RUN, LINEAGE_OUTPUTS, REPLICA_MODES, REPLICA_RUNS, seed_for
@@ -235,7 +235,7 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
         extra=' '+' '.join(f'G/{s}/source_support.json G/{s}/steps.jsonl' for s in CONFIRM_NEW_SEEDS)
     elif run.name==DETAIL_DOSE_RUN:
         extra=''
-    elif run.name in (DETAIL_RUN,SHARED_DETAIL_RUN,PHASE_DETAIL_RUN,SPECTRAL_PHASE_RUN):
+    elif run.name in (DETAIL_RUN,SHARED_DETAIL_RUN,PHASE_DETAIL_RUN,SPECTRAL_PHASE_RUN,END_PHASE_RUN):
         extra=' '+' '.join(f'G/{s}/source_support.json G/{s}/steps.jsonl' for s in DETAIL_SEEDS)
     elif run.name==COVERAGE_RUN:
         extra=' '+' '.join(f'G/{mode}/{s}/source_support.json G/{mode}/{s}/steps.jsonl'

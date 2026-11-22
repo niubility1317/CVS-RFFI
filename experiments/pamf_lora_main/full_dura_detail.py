@@ -24,7 +24,8 @@ SHARED_DETAIL_RUN='20261123-phase1-lora-dura-packet-common-m1-r01'
 PHASE_DETAIL_RUN='20261123-phase1-lora-dura-half-phase-residual-m1-r01'
 PHASE_CONFIRM_RUN='20261123-phase1-lora-dura-half-phase-confirm-m4-r01'
 SPECTRAL_PHASE_RUN='20261123-phase1-lora-dura-spectral-phase-m1-r01'
-PHASE_RUNS=(PHASE_DETAIL_RUN,PHASE_CONFIRM_RUN,SPECTRAL_PHASE_RUN)
+END_PHASE_RUN='20261123-phase1-lora-dura-chirp-ends-phase-m1-r01'
+PHASE_RUNS=(PHASE_DETAIL_RUN,PHASE_CONFIRM_RUN,SPECTRAL_PHASE_RUN,END_PHASE_RUN)
 DETAIL_CONFIRM_RUNS=(DETAIL_CONFIRM_RUN,PHASE_CONFIRM_RUN)
 DETAIL_SEEDS=(SEEDS[1],)
 CONFIRM_NEW_SEEDS=(SEEDS[0],SEEDS[2])
@@ -192,7 +193,40 @@ class SpectralPhaseDetail(PhaseDetail):
         return (raw/scale).mean(1),(residual/scale).mean(1),real_iq(step*rot*rms)
 
 
+class EndPhaseDetail(SpectralPhaseDetail):
+    """Learn the source-paired phase residual at the two ends of each chirp."""
+
+    def __init__(self,gate):
+        super().__init__(gate)
+        n=torch.arange(256)
+        distance=torch.minimum(n-64,191-n).clamp(0,15)
+        window=.5+.5*torch.cos(torch.pi*distance/15)
+        self.register_buffer('ends',window,persistent=False)
+
+    def bounded_angle(self,angle,shape,rms):
+        magnitude=shape.abs()
+        selected=magnitude*self.ends
+        mean=(angle*selected).sum(-1,keepdim=True)/selected.sum(-1,keepdim=True).clamp_min(1e-8)
+        local=(angle-mean)*self.ends
+        upper_bound=strength_ratio(local*magnitude*rms,rms.expand_as(magnitude))
+        peak=local.abs().amax((1,2),keepdim=True).clamp_min(1e-8)
+        return local*torch.minimum((CAP/upper_bound).clamp_max(1.)[:,None,None],(torch.pi-1e-4)/peak)
+
+    def training_terms(self,shape,target,rot,rms):
+        magnitude=shape.abs()
+        wanted=(target*shape.conj()).angle()
+        filtered=torch.fft.irfft(torch.fft.rfft(wanted)*self.bandpass,n=wanted.shape[-1])
+        expected=self.bounded_angle(filtered,shape,rms)
+        actual=self.bounded_angle(self.proposed_angle(shape),shape,rms)
+        raw=power(expected*magnitude)
+        error=power((expected-actual)*magnitude)
+        step=shape*(torch.polar(torch.ones_like(actual),actual)-1.)
+        return raw,error,real_iq(step*rot*rms)
+
+
 def detail_model(root,gate):
+    if root.name==END_PHASE_RUN:
+        return EndPhaseDetail(gate)
     if root.name==SPECTRAL_PHASE_RUN:
         return SpectralPhaseDetail(gate)
     if root.name in PHASE_RUNS:
@@ -222,7 +256,7 @@ def detail_error(model,error):
     return shape_error(no_tone(error) if model.phase else error,shared=model.shared)
 
 
-def record(c,seed,*,shared=False,phase=False,banded=False):
+def record(c,seed,*,shared=False,phase=False,banded=False,ends=False):
     r=dict(status='SOURCE_FROZEN',source_contract=c,seed=seed,steps=STEPS,
                 draw_run=DRAW_RUN,quality=QUALITY,cap=CAP,F_reads=0,TX_reads=0,target_reads=0)
     if shared:
@@ -232,6 +266,9 @@ def record(c,seed,*,shared=False,phase=False,banded=False):
         r.update(quality=SHARED_QUALITY,component='phase',baseline=baseline)
     if banded:
         r.update(component='spectral_phase',phase_bands=[list(b) for b in PHASE_BANDS],clean_rms_guard=True)
+    if ends:
+        r.update(component='chirp_ends_phase',phase_bands=[list(b) for b in PHASE_BANDS],
+                 center=[64,192],taper=15,clean_rms_guard=True)
     return r
 
 
@@ -402,7 +439,8 @@ def train_detail(rt,seed):
     write(out/'source_support.json',dict(training_pool=list(map(len,pools)),withheld_U=len(held),
           practical_exposures=STEPS*sum(counts),clean_exposures=STEPS*8,utility=utility,**shared_log))
     torch.save(model.state_dict(),out/'model.pt')
-    write(out/'complete.json',record(c,seed,shared=shared,phase=phase,banded=root.name==SPECTRAL_PHASE_RUN))
+    write(out/'complete.json',record(c,seed,shared=shared,phase=phase,
+                                    banded=root.name==SPECTRAL_PHASE_RUN,ends=root.name==END_PHASE_RUN))
 
 
 def load_detail(root,c,seed,device):
@@ -411,7 +449,8 @@ def load_detail(root,c,seed,device):
     out=root/'G'/str(seed)
     shared=root.name==SHARED_DETAIL_RUN
     phase=root.name in PHASE_RUNS
-    if read(out/'complete.json')!=record(c,seed,shared=shared,phase=phase,banded=root.name==SPECTRAL_PHASE_RUN):
+    if read(out/'complete.json')!=record(c,seed,shared=shared,phase=phase,
+                                        banded=root.name==SPECTRAL_PHASE_RUN,ends=root.name==END_PHASE_RUN):
         raise ValueError('LoRa detail checkpoint source ancestry differs')
     gate=tracker_gate(root,c,device)
     model=detail_model(root,gate).to(device)

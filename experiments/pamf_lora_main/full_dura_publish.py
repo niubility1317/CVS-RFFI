@@ -5,7 +5,7 @@ from pathlib import Path, PurePosixPath
 from experiments.cric_dura_comparison.io import read
 from .full_adaptive import RUN as TRI, SET_RUN, WARMUP_RUN
 from .full_dura import COVERAGE_RUN, PROJECTED_RUN, RUN, SHAPE_RUN, STACK_RUN, STAGED_RUN, SWEEP_RUN
-from .full_dura_detail import (DETAIL_CONFIRM_RUN, DETAIL_DOSE_RUN, DETAIL_RUN, PHASE_CONFIRM_RUN,
+from .full_dura_detail import (DETAIL_CONFIRM_RUN, DETAIL_DOSE_RUN, DETAIL_RUN, END_PHASE_RUN, PHASE_CONFIRM_RUN,
                                PHASE_DETAIL_RUN, SHARED_DETAIL_RUN, SPECTRAL_PHASE_RUN)
 from .full_dura_r69_lora import R69_ACTION_RUN, R69_LORA_RUN
 from .full_dura_trace_source import RETAINED_RUN, TRACE_RUN
@@ -20,13 +20,14 @@ def publish(repo,output,context,ssh_config,data_submit,tri_submit,dose_submit=No
             coherent_detail=False,detail_dose_submit=None,confirm_dose=False,r69_aligned=False,
             native_tri_submit=None,r69_submit=None,r69_action=False,r69_trace=False,
             adapted_joint=False,r69_retain=False,shared_detail=False,phase_detail=False,
-            phase_confirm=False,phase_submit=None,spectral_phase=False):
+            phase_confirm=False,phase_submit=None,spectral_phase=False,ends_phase=False):
     x=read(context)
     rt={k:x[k] for k in ('project','python','frozen_sources')}
     p=PurePosixPath(x['project'])
     if (coherent_detail or detail_dose_submit is not None) and draw_submit is None:
         raise ValueError('High-coherence detail requires the frozen independent source draw')
-    if (confirm_dose or r69_aligned or shared_detail or phase_detail or phase_confirm or spectral_phase) and detail_dose_submit is None:
+    single_phase=phase_detail or spectral_phase or ends_phase
+    if (confirm_dose or r69_aligned or shared_detail or single_phase or phase_confirm) and detail_dose_submit is None:
         raise ValueError('Dose confirmation requires the frozen single-seed dose matrix')
     if phase_confirm!=(phase_submit is not None):
         raise ValueError('Three-seed phase requires the frozen seed-02 phase run')
@@ -59,7 +60,7 @@ def publish(repo,output,context,ssh_config,data_submit,tri_submit,dose_submit=No
         handles.extend(((draw_submit,DRAW_RUN),(stack_submit,STACK_RUN)))
     if detail_dose_submit is not None:
         parent=(DETAIL_CONFIRM_RUN if (r69_aligned or phase_confirm) else
-                DETAIL_DOSE_RUN if (confirm_dose or shared_detail or phase_detail or spectral_phase) else DETAIL_RUN)
+                DETAIL_DOSE_RUN if (confirm_dose or shared_detail or single_phase) else DETAIL_RUN)
         handles.append((detail_dose_submit,parent))
     if phase_confirm:
         handles.append((phase_submit,PHASE_DETAIL_RUN))
@@ -84,7 +85,8 @@ def publish(repo,output,context,ssh_config,data_submit,tri_submit,dose_submit=No
         name=ADAPTED_JOINT_RUN if adapted_joint else JOINT_RUN
     elif joint:
         if detail_dose_submit is not None:
-            name=(SPECTRAL_PHASE_RUN if spectral_phase else PHASE_CONFIRM_RUN if phase_confirm else PHASE_DETAIL_RUN if phase_detail else
+            name=(END_PHASE_RUN if ends_phase else SPECTRAL_PHASE_RUN if spectral_phase else
+                  PHASE_CONFIRM_RUN if phase_confirm else PHASE_DETAIL_RUN if phase_detail else
                   SHARED_DETAIL_RUN if shared_detail else R69_LORA_RUN if r69_aligned else
                   DETAIL_CONFIRM_RUN if confirm_dose else DETAIL_DOSE_RUN)
         else:
@@ -103,7 +105,7 @@ def publish(repo,output,context,ssh_config,data_submit,tri_submit,dose_submit=No
         rt['max_workers']=4
     if r69_retain:
         rt['allowed_gpus']=[5,6,2,0,4,1,3,7]
-    if shared_detail or phase_detail or phase_confirm or spectral_phase:
+    if shared_detail or single_phase or phase_confirm:
         rt.update(allowed_gpus=[0,6,2,1,4,5,3],max_workers=2 if phase_confirm else 1)
     return release(repo,output,rt,ssh_config)
 
@@ -134,6 +136,7 @@ if __name__=='__main__':
     extension.add_argument('--phase-detail',action='store_true')
     extension.add_argument('--phase-confirm',action='store_true')
     extension.add_argument('--spectral-phase',action='store_true')
+    extension.add_argument('--ends-phase',action='store_true')
     p.add_argument('--phase-submit',type=Path)
     p.add_argument('--native-tri-submit',type=Path)
     p.add_argument('--r69-submit',type=Path)
