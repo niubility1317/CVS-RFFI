@@ -15,3 +15,11 @@ G 权重冻结后才生成 residual 盲测视图，再接同种子冻结 LoRa Tr
 在 N607 普通账户的独立运行目录 `CV-SincNet/runs/20261123-phase1-lora-dura-residual-practical-m1-r01` 执行。使用现有 LoRa 普通账户 Python 和冻结依赖，工作目录是同名 release。用 `python -m experiments.pamf_lora_main.residual_dura publish` 传入 repo、输出目录、普通账户运行环境、SSH 配置、现有物理数据和 Tri-set 发布回执。GPU 优先序为 3、0、1、4、5、6、2，源训练和预测各自最多一张卡。源配对或盲视图生成用 16 个 CPU 工作者。源真实数据 smoke 核对对齐、快照重放、无噪成分重构以及粗恢复、作用和 R17 梯度。运行中遇到输入、观测、非有限、checkpoint 或矩阵错误时停止本 run 并保留产物。
 
 独立评分入口为 `python -m experiments.pamf_lora_main.residual_dura_score`，输入为新发布回执、SSH 配置、原数据集、独立输出根及已有复响应三种子结果。训练日志位于 `G/lineage/<stage>/training.jsonl`，盲预测位于 `predictions/`，正式读出为 `scores.json`。本次先完成单种子重训验证，三种子总体性能另外计入。
+
+## 发布状态
+
+**VERIFIED**。发布代码为 `fd67669f3a3186a12a528f1f662fdca865a4fdde`。远端通过传输校验和模块编译。真实源包验证了六个 residual 快照、两套可重放观测及粗恢复、作用估计、R17 的有限非零梯度。源配对完成 28,000 个物理包、两套 residual 观测，F、TX 真值及目标读取均为零。
+
+GPU 3 的训练首轮已完成 247 步，粗恢复损失为 16.9294，累计 6,338 次 L 和 56,894 次 U 曝光。源训练本身继续运行。独立评分在本机等待 420 份预测全部冻结。
+
+[从输入到识别的逐项归因](failure-attribution.md)
