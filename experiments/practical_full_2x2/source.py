@@ -110,12 +110,14 @@ def array_loader(c, role, batch_size=None):
 
 
 class SDGDataset(torch.utils.data.Dataset):
-    def __init__(self, loader, author):
+    def __init__(self, loader, author, depths=None):
         from .author_imports import compatible_sdg_author
         compatible_sdg_author(author)
         self.x, self.y, self.rx, self.indices = loader.dataset.tensors
         self.random_state=(random.getstate(),np.random.get_state(),torch.get_rng_state())
-        self.augmented = author.AugDataset(np.asarray(self.x.tolist(),np.float32), np.asarray(self.y.tolist(),np.int64), author.transforms.ToTensor(), [2], [1])
+        main_depth, auxiliary_depth = depths if depths is not None else (2, 1)
+        self.augmented = author.AugDataset(np.asarray(self.x.tolist(),np.float32),
+            np.asarray(self.y.tolist(),np.int64), author.transforms.ToTensor(), [main_depth], [auxiliary_depth])
 
     def __len__(self): return len(self.y)
 
@@ -132,6 +134,7 @@ def train(c):
     torch.cuda.reset_peak_memory_stats()
     started = time.monotonic(); all_stages = []; total_sat = total_applied = total_u = total_accepted = 0
     fixed_final = c.get('fixed_final_budget', False)
+    select_accuracy = c.get('source_accuracy_checkpoint', False)
     pl_start = c.get('pl_start_fraction', 0.)
     supervised_step = dict(c, U_s_use=False) if pl_start else c
     write(out / 'resolved_config.json', dict(c, source_counts=meta['counts'], pid=os.getpid(),
@@ -168,7 +171,7 @@ def train(c):
         author = None
         if c['family']=='sdg' and full:
             author = native.author_sdg(c)
-            loader = torch.utils.data.DataLoader(SDGDataset(loader, author), batch_size=c['batch_size'],
+            loader = torch.utils.data.DataLoader(SDGDataset(loader, author, c.get('sdg_view_depths')), batch_size=c['batch_size'],
                 shuffle=True, generator=torch.Generator().manual_seed(c['model_seed']), num_workers=0)
         unlabeled_loader = u_iterator = None
         balanced = c.get('balanced_sampling', False)
@@ -178,7 +181,8 @@ def train(c):
         report_every = 100 if c['budget_kind']=='updates' else len(loader)
         iterator = iter(loader); augment = BatchAugment(c)
         fishr = FishrVariance(c['num_domains'], c['fishr_ema']) if c.get('route')=='fishr' else None
-        best = float('inf'); stale = 0; accum = []; stage_started = time.monotonic()
+        best = (float('inf'),); stale = 0; accum = []; stage_started = time.monotonic()
+        accuracy_selection = select_accuracy and stage == c['stages']
         warmup = c.get('ibrff_plateau_warmup', 0) if c['family'] == 'ibrff' and stage == 1 else 0
         stage_exposure = stage_sat = stage_applied = stage_u = stage_accepted = optimizer_steps = 0
         rx_coverage = {str(k): [0, 0] for k in range(c['num_domains'])}
@@ -232,9 +236,10 @@ def train(c):
                 val_loss, val_accuracy = native.validation(net, c, val, device)
                 if scheduler and epoch > warmup:
                     scheduler.step(val_loss)
-                if val_loss < best:
-                    best=val_loss; stale=0
-                    if (c['family'] == 'ibrff' and stage == 1
+                selection_metric = (-val_accuracy, val_loss) if accuracy_selection else (val_loss,)
+                if selection_metric < best:
+                    best=selection_metric; stale=0
+                    if (accuracy_selection or c['family'] == 'ibrff' and stage == 1
                             or not fixed_final and c['family'] in ('ibrff','sdg')):
                         save_checkpoint(folder/'best.pt',net,c,meta['source_contract'],epoch,stage,val_loss,
                             total_sat+stage_sat,total_applied+stage_applied,total_u+stage_u,total_accepted+stage_accepted)
@@ -284,9 +289,10 @@ def train(c):
         del net, optimizer; torch.cuda.empty_cache()
     if not total_sat or (c['satellite_train_augmentation'] and not total_applied) or (c['U_s_use'] and not total_u):
         raise ValueError('Required concat/PL input branch never actually executed')
-    source_selected = not fixed_final and c['family'] in ('ibrff','sdg')
+    source_selected = select_accuracy or not fixed_final and c['family'] in ('ibrff','sdg')
     chosen = out/('stage%d'%c['stages'])/('best.pt' if source_selected else 'last.pt')
-    selection = 'source_validation_nll' if source_selected else 'fixed_final_budget'
+    selection = ('source_validation_accuracy_then_nll' if select_accuracy else
+                 'source_validation_nll' if source_selected else 'fixed_final_budget')
     write(out/'freeze.json', dict(status='SOURCE_TRAINED_FROZEN', checkpoint=str(chosen), config=c,
         source_contract=meta['source_contract'], stages=all_stages, selection=selection,
         target_access=False, target_score_used=False, default_head=True,

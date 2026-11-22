@@ -60,6 +60,18 @@ class ChirpResponse(nn.Module):
         return dict(template_correlation_mean=float(self.components(x)['quality'].sqrt().mean()))
 
 
+class FixedDechirp(nn.Module):
+    """Apply a fixed unit-modulus LoRa reference to each IQ window."""
+
+    def __init__(self):
+        super().__init__()
+        self.register_buffer('reference', ChirpResponse().chirp.conj(), persistent=False)
+
+    def forward(self, x):
+        dechirped = torch.complex(x[:, 0], x[:, 1]) * self.reference
+        return torch.stack((dechirped.real, dechirped.imag), dim=1)
+
+
 @lru_cache(maxsize=None)
 def channel_config(scene):
     from leo_practical.channel import Config

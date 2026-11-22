@@ -62,18 +62,19 @@ def collect(submit, ssh_config, dataset, output, supplement=None, control=None):
     score_options = {}
     control_root = None
     if extra:
-        from .phase1 import LONG_PL_RUN, LONG_SUP_RUN, OPTIMIZATION_RUN, RUN, registered_rows
+        from .phase1 import LONG_PL_RUN, LONG_SUP_RUN, OPTIMIZATION_RUN, RUN, SOURCE_OPT_RUN, registered_rows
         run_id = PurePosixPath(supplement_root).name
         if run_id == LONG_SUP_RUN:
             matched = registered_rows(run_id)
             score_options = dict(seeds=tuple(dict.fromkeys(s for _,s in matched)))
-        if run_id == LONG_PL_RUN and not control:
-            raise ValueError('Long PL scoring requires the matched long supervised run')
+        if run_id in (LONG_PL_RUN, SOURCE_OPT_RUN) and not control:
+            raise ValueError('LoRa comparison requires the matched long supervised run')
     if control:
         if not extra:
             raise ValueError('A comparison requires a supplement')
         control_root = read(control)['run_root']
-        controls = {OPTIMIZATION_RUN: (RUN, 'r02'), LONG_PL_RUN: (LONG_SUP_RUN, 'sup')}
+        controls = {OPTIMIZATION_RUN: (RUN, 'r02'), LONG_PL_RUN: (LONG_SUP_RUN, 'sup'),
+                    SOURCE_OPT_RUN: (LONG_SUP_RUN, 'sup')}
         if run_id not in controls or PurePosixPath(control_root).name != controls[run_id][0]:
             raise ValueError('Wrong LoRa comparison control')
         suffix = controls[run_id][1]

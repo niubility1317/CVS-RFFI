@@ -3,7 +3,7 @@ import argparse
 from pathlib import PurePosixPath
 
 from experiments.cric_dura_comparison.io import read
-from .phase1 import LONG_PL_RUN, LONG_SUP_RUN, OPTIMIZATION_RUN, RUN
+from .phase1 import LONG_PL_RUN, LONG_SUP_RUN, OPTIMIZATION_RUN, RUN, SOURCE_OPT_RUN
 from .publish import release_commit, release
 
 
@@ -11,7 +11,7 @@ MAIN = '20261121-phase1-pamf-lora-rx5-main-m18-r01'
 
 
 def publish(repo, output, context, main_submit, ssh_config, optimization=False,
-            long_supervised=False, long_pl=False):
+            long_supervised=False, long_pl=False, source_optimized=False):
     ctx = read(context)
     main = read(main_submit)
     project = PurePosixPath(ctx['project'])
@@ -23,7 +23,9 @@ def publish(repo, output, context, main_submit, ssh_config, optimization=False,
     wanted = ('project','python','external_python','frozen_sources','external_releases',
               'ibrff_model_root','sdg_model_root')
     rt = {key: ctx[key] for key in wanted}
-    if long_supervised or long_pl:
+    if source_optimized:
+        run_id, gpus = SOURCE_OPT_RUN, list(range(8))
+    elif long_supervised or long_pl:
         run_id, gpus = (LONG_SUP_RUN if long_supervised else LONG_PL_RUN), [3, 7]
     elif optimization:
         run_id, gpus = OPTIMIZATION_RUN, [7]
@@ -46,4 +48,5 @@ if __name__ == '__main__':
     modes.add_argument('--optimization', action='store_true')
     modes.add_argument('--long-supervised', action='store_true')
     modes.add_argument('--long-pl', action='store_true')
+    modes.add_argument('--source-optimized', action='store_true')
     publish(**vars(parser.parse_args()))

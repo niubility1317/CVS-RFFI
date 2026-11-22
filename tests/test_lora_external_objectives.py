@@ -136,3 +136,31 @@ def test_long_budget_arms_match_and_supervised_cannot_open_u(monkeypatch):
     phase1.check_training(sup)
     with pytest.raises(ValueError, match='cannot open unlabeled'):
         phase1.array_loader(sup, 'U_s')
+
+
+def test_source_optimization_uses_the_same_supervised_budget_and_source_selection():
+    assert phase1.registered_rows(phase1.SOURCE_OPT_RUN) == phase1.registered_rows(phase1.LONG_SUP_RUN)
+    base = dict(code_commit='commit', source_root='source', source_practical='views.npy',
+                run_root='output', ibrff_model_root='ib', sdg_model_root='sdg')
+    for family, seed in phase1.registered_rows(phase1.SOURCE_OPT_RUN):
+        control = phase1.configuration(dict(base, run_id=phase1.LONG_SUP_RUN), family, seed)
+        tuned = phase1.configuration(dict(base, run_id=phase1.SOURCE_OPT_RUN), family, seed)
+        for key in ('model_seed', 'split_seed', 'epochs', 'batch_size', 'lr', 'stages',
+                    'U_s_use', 'lambda_sat_cls', 'separate_head_training'):
+            assert control[key] == tuned[key]
+        assert tuned['source_accuracy_checkpoint'] and not control['source_accuracy_checkpoint']
+        assert tuned['riei_dechirp'] is (family == 'riei')
+        assert tuned['ibrff_dropout'] == (.1 if family == 'ibrff' else None)
+        assert tuned['sdg_view_depths'] == ([1, 0] if family == 'sdg' else None)
+
+
+def test_fixed_dechirp_preserves_each_iq_sample_magnitude_and_is_invertible():
+    from experiments.pamf_lora_main.physical import FixedDechirp
+
+    x = torch.randn(3, 2, 256)
+    transform = FixedDechirp()
+    result = transform(x)
+    torch.testing.assert_close(result.square().sum(dim=1), x.square().sum(dim=1))
+    restored = torch.complex(result[:, 0], result[:, 1]) * transform.reference.conj()
+    torch.testing.assert_close(restored, torch.complex(x[:, 0], x[:, 1]))
+    assert not transform.state_dict()

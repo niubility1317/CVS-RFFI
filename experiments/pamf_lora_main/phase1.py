@@ -14,7 +14,7 @@ from experiments.cric_dura_comparison.io import read, write
 from experiments.practical_full_2x2.plan import SCENES, SCENE_PROBABILITIES
 from .comparison import predict
 from .data import CLASSES, SOURCE, SPLIT_SEED, VIEWS
-from .physical import rms_normalize
+from .physical import FixedDechirp, rms_normalize
 from .recognition import SEEDS
 from .runner import available
 
@@ -23,6 +23,7 @@ RUN = '20261122-phase1-lora-full-external-m12-r02'
 OPTIMIZATION_RUN = '20261122-phase1-lora-external-loss-m2-r03'
 LONG_SUP_RUN = '20261122-phase1-lora-external-long-sup-m4-r04'
 LONG_PL_RUN = '20261122-phase1-lora-external-long-pl-m4-r05'
+SOURCE_OPT_RUN = '20261122-phase1-lora-external-source-opt-m4-r06'
 METHODS = ('riei', 'drift', 'ibrff', 'sdg')
 BUDGETS = {'riei': (100, 64, .0001, 1), 'drift': (100, 256, .0001, 1),
            'ibrff': (200, 128, .001, 2), 'sdg': (200, 32, .001, 1)}
@@ -34,7 +35,7 @@ def registered_rows(run_id):
         return [(family, seed) for seed in SEEDS for family in METHODS]
     if run_id == OPTIMIZATION_RUN:
         return [('riei', SEEDS[0]), ('drift', SEEDS[0])]
-    if run_id in (LONG_SUP_RUN, LONG_PL_RUN):
+    if run_id in (LONG_SUP_RUN, LONG_PL_RUN, SOURCE_OPT_RUN):
         return [(family, SEEDS[0]) for family in METHODS]
     raise ValueError('Unknown LoRa external run')
 
@@ -44,8 +45,9 @@ def configuration(rt, family, seed):
     if (family, seed) not in registered_rows(run_id):
         raise ValueError('Unregistered LoRa run row')
     optimized = run_id == OPTIMIZATION_RUN
-    long_budget = run_id in (LONG_SUP_RUN, LONG_PL_RUN)
-    uses_pl = run_id != LONG_SUP_RUN
+    source_optimized = run_id == SOURCE_OPT_RUN
+    long_budget = run_id in (LONG_SUP_RUN, LONG_PL_RUN, SOURCE_OPT_RUN)
+    uses_pl = run_id not in (LONG_SUP_RUN, SOURCE_OPT_RUN)
     epochs, batch, lr, stages = BUDGETS[family]
     if long_budget:
         epochs = LONG_EPOCHS[family]
@@ -64,6 +66,10 @@ def configuration(rt, family, seed):
         tx_label_smoothing=.05 if optimized and family == 'drift' else 0.,
         pl_start_fraction=.5 if run_id == LONG_PL_RUN else 0.,
         source_train_readout=long_budget, fixed_final_budget=long_budget,
+        source_accuracy_checkpoint=source_optimized,
+        riei_dechirp=source_optimized and family == 'riei',
+        ibrff_dropout=.1 if source_optimized and family == 'ibrff' else None,
+        sdg_view_depths=[1, 0] if source_optimized and family == 'sdg' else None,
         default_head_joint_training=True, separate_head_training=False,
         source_cache=rt['source_root'], source_contract=str(Path(rt['source_root'])/'contract.json'),
         source_practical=rt['source_practical'], output_root=str(Path(rt['run_root'])/'F'/row),
@@ -76,7 +82,7 @@ def check_training(c):
                                     'views_root', 'tests', 'truth', 'target_truth', 'dataset',
                                     'resume', 'teacher_checkpoint', 'checkpoint', 'initial_checkpoint'))):
         raise ValueError('Supplement training accepts only the registered LoRa source rows')
-    if c['U_s_use'] != (c['run_id'] != LONG_SUP_RUN):
+    if c['U_s_use'] != (c['run_id'] not in (LONG_SUP_RUN, SOURCE_OPT_RUN)):
         raise ValueError('LoRa run and unlabeled-source permission disagree')
     contract = read(c['source_contract'])
     if (contract['protocol'] != 'lora_rx5_main_v1' or contract['receiver_names'] != list(SOURCE)
@@ -142,12 +148,25 @@ class CachedPractical:
 @contextmanager
 def native_source():
     from experiments.practical_full_2x2 import source
-    old = source.check_training, source.array_loader, source.BatchAugment
+    old = source.check_training, source.array_loader, source.BatchAugment, source.build
+    original_build = source.build
+
+    def build(c):
+        model = original_build(c)
+        if c.get('riei_dechirp'):
+            model.fed = torch.nn.Sequential(FixedDechirp(), model.fed)
+        if c.get('ibrff_dropout') is not None:
+            for module in model.modules():
+                if isinstance(module, torch.nn.Dropout):
+                    module.p = c['ibrff_dropout']
+        return model
+
     source.check_training, source.array_loader, source.BatchAugment = check_training, array_loader, CachedPractical
+    source.build = build
     try:
         yield source
     finally:
-        source.check_training, source.array_loader, source.BatchAugment = old
+        source.check_training, source.array_loader, source.BatchAugment, source.build = old
 
 
 def smoke(rt):
@@ -164,7 +183,7 @@ def smoke(rt):
             L = array_loader(c, 'L_s', 16)
             author = source.native.author_sdg(c) if family == 'sdg' else None
             if author:
-                ds = source.SDGDataset(L, author)
+                ds = source.SDGDataset(L, author, c.get('sdg_view_depths'))
                 batch = next(iter(torch.utils.data.DataLoader(ds, batch_size=16)))
                 x,y,rx,views,indices = batch
             else:
