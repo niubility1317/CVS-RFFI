@@ -14,7 +14,8 @@ from .dura_repair import complex_iq, power
 from .full_adaptive import RUN as TRI, SET_METHOD, SET_RUN, WARMUP_RUN, case, complete_f, wait_for
 from .full_dura_core import (COVERAGE_RECIPES, Dose, dose_features, g_record, projected_record, protected_shapes,
                             read_gate, receiver_loss, train, train_gate)
-from .full_dura_detail import (COMPLEX_RESPONSE_MODES, COMPLEX_RESPONSE_RUN, CONFIRM_NEW_SEEDS,
+from .full_dura_detail import (COMPLEX_RESPONSE_CONFIRM_RUN, COMPLEX_RESPONSE_MODES, COMPLEX_RESPONSE_RUN,
+                               COMPLEX_RESPONSE_RUNS, CONFIRM_NEW_SEEDS,
                                DETAIL_CONFIRM_RUN, DETAIL_CONFIRM_RUNS, DETAIL_DOSE_MODES,
                                DETAIL_DOSE_RUN, DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS, END_PHASE_RUN,
                                PHASE_CONFIRM_RUN, PHASE_DETAIL_MODES, PHASE_DETAIL_RUN, PHASE_RUNS, POST_HALF_RUNS,
@@ -69,7 +70,7 @@ def modes_for(root):
         return DETAIL_DOSE_MODES
     if root.name==SHARED_DETAIL_RUN:
         return SHARED_DETAIL_MODES
-    if root.name==COMPLEX_RESPONSE_RUN:
+    if root.name in COMPLEX_RESPONSE_RUNS:
         return COMPLEX_RESPONSE_MODES
     if root.name in PHASE_RUNS:
         return PHASE_DETAIL_MODES
@@ -387,9 +388,9 @@ def predict_added(root,target,c,seed,reader,dev):
 
 def copy_detail_control(root):
     """Retain the existing seed-02 dose outcomes without opening target data."""
-    phase=root.name==PHASE_CONFIRM_RUN
-    prior=root.parent/(PHASE_DETAIL_RUN if phase else DETAIL_DOSE_RUN)
-    modes=PHASE_DETAIL_MODES if phase else DETAIL_DOSE_MODES
+    parent={PHASE_CONFIRM_RUN:PHASE_DETAIL_RUN,COMPLEX_RESPONSE_CONFIRM_RUN:COMPLEX_RESPONSE_RUN}
+    prior=root.parent/parent.get(root.name,DETAIL_DOSE_RUN)
+    modes=modes_for(root)
     seed,=DETAIL_SEEDS
     source=prior/'predictions'/str(seed)
     receipt=read(source/'complete.json')
@@ -457,6 +458,9 @@ def dispatch(rt):
             if root.name==PHASE_CONFIRM_RUN:
                 wait_for(root.parent/DETAIL_CONFIRM_RUN,'PREDICTIONS_FROZEN')
                 wait_for(root.parent/PHASE_DETAIL_RUN,'PREDICTIONS_FROZEN')
+            if root.name==COMPLEX_RESPONSE_CONFIRM_RUN:
+                wait_for(root.parent/DETAIL_CONFIRM_RUN,'PREDICTIONS_FROZEN')
+                wait_for(root.parent/COMPLEX_RESPONSE_RUN,'PREDICTIONS_FROZEN')
             check='detail_smoke' if root.name in DETAIL_RUNS else 'shape_smoke'
             if launch(rt,check,'source').wait():
                 raise RuntimeError('Frozen LoRa restoration source smoke failed')

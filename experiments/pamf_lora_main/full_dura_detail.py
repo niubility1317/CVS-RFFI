@@ -26,9 +26,11 @@ PHASE_CONFIRM_RUN='20261123-phase1-lora-dura-half-phase-confirm-m4-r01'
 SPECTRAL_PHASE_RUN='20261123-phase1-lora-dura-spectral-phase-m1-r01'
 END_PHASE_RUN='20261123-phase1-lora-dura-chirp-ends-phase-m1-r01'
 COMPLEX_RESPONSE_RUN='20261123-phase1-lora-dura-complex-response-m1-r01'
+COMPLEX_RESPONSE_CONFIRM_RUN='20261123-phase1-lora-dura-complex-response-confirm-m4-r01'
+COMPLEX_RESPONSE_RUNS=(COMPLEX_RESPONSE_RUN,COMPLEX_RESPONSE_CONFIRM_RUN)
 PHASE_RUNS=(PHASE_DETAIL_RUN,PHASE_CONFIRM_RUN,SPECTRAL_PHASE_RUN,END_PHASE_RUN)
-POST_HALF_RUNS=(*PHASE_RUNS,COMPLEX_RESPONSE_RUN)
-DETAIL_CONFIRM_RUNS=(DETAIL_CONFIRM_RUN,PHASE_CONFIRM_RUN)
+POST_HALF_RUNS=(*PHASE_RUNS,*COMPLEX_RESPONSE_RUNS)
+DETAIL_CONFIRM_RUNS=(DETAIL_CONFIRM_RUN,PHASE_CONFIRM_RUN,COMPLEX_RESPONSE_CONFIRM_RUN)
 DETAIL_SEEDS=(SEEDS[1],)
 CONFIRM_NEW_SEEDS=(SEEDS[0],SEEDS[2])
 DETAIL_MODES=('direct','fixed','protect_shape','coherent_detail')
@@ -274,7 +276,7 @@ class ComplexResponseDetail(SpectralPhaseDetail):
 
 
 def detail_model(root,gate):
-    if root.name==COMPLEX_RESPONSE_RUN:
+    if root.name in COMPLEX_RESPONSE_RUNS:
         return ComplexResponseDetail(gate)
     if root.name==END_PHASE_RUN:
         return EndPhaseDetail(gate)
@@ -498,7 +500,7 @@ def train_detail(rt,seed):
     torch.save(model.state_dict(),out/'model.pt')
     write(out/'complete.json',record(c,seed,shared=shared,phase=phase,
                                     banded=root.name==SPECTRAL_PHASE_RUN,ends=root.name==END_PHASE_RUN,
-                                    response=root.name==COMPLEX_RESPONSE_RUN))
+                                    response=root.name in COMPLEX_RESPONSE_RUNS))
 
 
 def load_detail(root,c,seed,device):
@@ -509,7 +511,7 @@ def load_detail(root,c,seed,device):
     phase=root.name in POST_HALF_RUNS
     if read(out/'complete.json')!=record(c,seed,shared=shared,phase=phase,
                                         banded=root.name==SPECTRAL_PHASE_RUN,ends=root.name==END_PHASE_RUN,
-                                        response=root.name==COMPLEX_RESPONSE_RUN):
+                                        response=root.name in COMPLEX_RESPONSE_RUNS):
         raise ValueError('LoRa detail checkpoint source ancestry differs')
     gate=tracker_gate(root,c,device)
     model=detail_model(root,gate).to(device)
@@ -706,7 +708,7 @@ def predict_detail(root,target,c,seed,reader,device):
     phase=root.name in POST_HALF_RUNS
     extended=shared or phase
     stack=root.parent/(DETAIL_DOSE_RUN if extended else DETAIL_RUN if dose else STACK_RUN)
-    if root.name==PHASE_CONFIRM_RUN:
+    if root.name in (PHASE_CONFIRM_RUN,COMPLEX_RESPONSE_CONFIRM_RUN):
         stack=root.parent/DETAIL_CONFIRM_RUN
     if read(stack/'state.json')['status']!='PREDICTIONS_FROZEN':
         raise ValueError('The frozen protected DURA controls are missing')
@@ -725,7 +727,7 @@ def predict_detail(root,target,c,seed,reader,device):
     out.mkdir(parents=True,exist_ok=False)
     records={}
     old_modes=DETAIL_DOSE_MODES if extended else DETAIL_MODES if dose else DETAIL_MODES[:-1]
-    if root.name==COMPLEX_RESPONSE_RUN:
+    if root.name in COMPLEX_RESPONSE_RUNS:
         amounts=COMPLEX_RESPONSE_DOSES
     elif phase:
         amounts=PHASE_DETAIL_DOSES
