@@ -5,7 +5,7 @@ from pathlib import Path, PurePosixPath
 from experiments.cric_dura_comparison.io import read
 from .full_adaptive import RUN as TRI, SET_RUN, WARMUP_RUN
 from .full_dura import COVERAGE_RUN, PROJECTED_RUN, RUN, SHAPE_RUN, STACK_RUN, STAGED_RUN, SWEEP_RUN
-from .full_dura_detail import DETAIL_CONFIRM_RUN, DETAIL_DOSE_RUN, DETAIL_RUN, SHARED_DETAIL_RUN
+from .full_dura_detail import DETAIL_CONFIRM_RUN, DETAIL_DOSE_RUN, DETAIL_RUN, PHASE_DETAIL_RUN, SHARED_DETAIL_RUN
 from .full_dura_r69_lora import R69_ACTION_RUN, R69_LORA_RUN
 from .full_dura_trace_source import RETAINED_RUN, TRACE_RUN
 from .full_native_joint import ADAPTED_JOINT_RUN, JOINT_RUN, parents
@@ -18,13 +18,13 @@ def publish(repo,output,context,ssh_config,data_submit,tri_submit,dose_submit=No
             coverage_submit=None,stack=False,draw_submit=None,projected_submit=None,stack_submit=None,
             coherent_detail=False,detail_dose_submit=None,confirm_dose=False,r69_aligned=False,
             native_tri_submit=None,r69_submit=None,r69_action=False,r69_trace=False,
-            adapted_joint=False,r69_retain=False,shared_detail=False):
+            adapted_joint=False,r69_retain=False,shared_detail=False,phase_detail=False):
     x=read(context)
     rt={k:x[k] for k in ('project','python','frozen_sources')}
     p=PurePosixPath(x['project'])
     if (coherent_detail or detail_dose_submit is not None) and draw_submit is None:
         raise ValueError('High-coherence detail requires the frozen independent source draw')
-    if (confirm_dose or r69_aligned or shared_detail) and detail_dose_submit is None:
+    if (confirm_dose or r69_aligned or shared_detail or phase_detail) and detail_dose_submit is None:
         raise ValueError('Dose confirmation requires the frozen single-seed dose matrix')
     native_joint=native_tri_submit is not None
     if adapted_joint and not native_joint:
@@ -54,7 +54,8 @@ def publish(repo,output,context,ssh_config,data_submit,tri_submit,dose_submit=No
             raise ValueError('Staged DURA requires the joint frozen Tri control experiment')
         handles.extend(((draw_submit,DRAW_RUN),(stack_submit,STACK_RUN)))
     if detail_dose_submit is not None:
-        parent=DETAIL_CONFIRM_RUN if r69_aligned else DETAIL_DOSE_RUN if (confirm_dose or shared_detail) else DETAIL_RUN
+        parent=(DETAIL_CONFIRM_RUN if r69_aligned else
+                DETAIL_DOSE_RUN if (confirm_dose or shared_detail or phase_detail) else DETAIL_RUN)
         handles.append((detail_dose_submit,parent))
     if native_joint:
         g,f=parents(PurePosixPath(ADAPTED_JOINT_RUN if adapted_joint else JOINT_RUN))
@@ -77,7 +78,7 @@ def publish(repo,output,context,ssh_config,data_submit,tri_submit,dose_submit=No
         name=ADAPTED_JOINT_RUN if adapted_joint else JOINT_RUN
     elif joint:
         if detail_dose_submit is not None:
-            name=(SHARED_DETAIL_RUN if shared_detail else R69_LORA_RUN if r69_aligned else
+            name=(PHASE_DETAIL_RUN if phase_detail else SHARED_DETAIL_RUN if shared_detail else R69_LORA_RUN if r69_aligned else
                   DETAIL_CONFIRM_RUN if confirm_dose else DETAIL_DOSE_RUN)
         else:
             name=DETAIL_RUN if coherent_detail else STAGED_RUN if draw_submit is not None else STACK_RUN
@@ -95,7 +96,7 @@ def publish(repo,output,context,ssh_config,data_submit,tri_submit,dose_submit=No
         rt['max_workers']=4
     if r69_retain:
         rt['allowed_gpus']=[5,6,2,0,4,1,3,7]
-    if shared_detail:
+    if shared_detail or phase_detail:
         rt.update(allowed_gpus=[0,6,2,1,4,5,3],max_workers=1)
     return release(repo,output,rt,ssh_config)
 
@@ -123,6 +124,7 @@ if __name__=='__main__':
     extension.add_argument('--r69-trace',action='store_true')
     extension.add_argument('--r69-retain',action='store_true')
     extension.add_argument('--shared-detail',action='store_true')
+    extension.add_argument('--phase-detail',action='store_true')
     p.add_argument('--native-tri-submit',type=Path)
     p.add_argument('--r69-submit',type=Path)
     p.add_argument('--adapted-joint',action='store_true')

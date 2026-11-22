@@ -17,7 +17,8 @@ from .full_dura import (COVERAGE_RUN, MODES, PROJECTED_RUN, SHAPE_RUN, STACK_RUN
                         SWEEP_RUN, modes_for)
 from .full_dura_core import COVERAGE_RECIPES
 from .full_dura_detail import (CONFIRM_NEW_SEEDS, DETAIL_CONFIRM_RUN, DETAIL_DOSE_MODES, DETAIL_DOSE_RUN,
-                               DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS, SHARED_DETAIL_DOSES,
+                               DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS, PHASE_DETAIL_DOSES,
+                               PHASE_DETAIL_MODES, PHASE_DETAIL_RUN, SHARED_DETAIL_DOSES,
                                SHARED_DETAIL_MODES, SHARED_DETAIL_RUN)
 from .full_dura_lineage import FULL_ACTION_RUN, LINEAGE_OUTPUTS, REPLICA_MODES, REPLICA_RUNS, seed_for
 from .full_dura_lineage import (MODES as LINEAGE_MODES, OBSERVED_SHAPE_MODES, OBSERVED_SHAPE_RUN,
@@ -36,7 +37,7 @@ PAIR_MATRICES=(JOINT_MODES,ADAPTED_MODES)
 R69_MATRICES=(R69_MODES,*PAIR_MATRICES,R69_ACTION_MODES,R69_TRACE_MODES,R69_RETAINED_MODES,
               LINEAGE_MODES,OBSERVED_SHAPE_MODES)
 LINEAGE_MATRICES=(LINEAGE_MODES,REPLICA_MODES,OBSERVED_SHAPE_MODES)
-DETAIL_MATRICES=(DETAIL_MODES,DETAIL_DOSE_MODES,SHARED_DETAIL_MODES,REPLICA_MODES,*R69_MATRICES)
+DETAIL_MATRICES=(DETAIL_MODES,DETAIL_DOSE_MODES,SHARED_DETAIL_MODES,PHASE_DETAIL_MODES,REPLICA_MODES,*R69_MATRICES)
 
 
 def matrix(output,modes=MODES,*,seeds=None):
@@ -63,6 +64,12 @@ def matrix(output,modes=MODES,*,seeds=None):
             if modes==SHARED_DETAIL_MODES and (not row['active']<=row['shared_active']<=LIMIT
                            or row['shared_active']-row['active']!=row['shared_extra']):
                 raise ValueError('Invalid packet-common activity bookkeeping')
+            if modes==PHASE_DETAIL_MODES:
+                count,added,overlap=(row[k] for k in ('phase_active','phase_extra','phase_overlap'))
+                if (not row['detail_active']<=count<=LIMIT or not 0<=added<=LIMIT
+                        or not 0<=overlap<=min(added,row['detail_active'])
+                        or count!=row['detail_active']+added-overlap):
+                    raise ValueError('Invalid phase-residual activity bookkeeping')
             if modes in R69_MATRICES and not 0<=row['r69_active']<=LIMIT:
                 raise ValueError('Invalid original DURA LoRa gate count')
             if modes==R69_ACTION_MODES and not 0<=row['action_active']<=LIMIT:
@@ -144,6 +151,14 @@ def scores(pred,act,truth,modes=MODES,*,seeds=None):
                     if retained:
                         parent=pred[s,'r69_trace_half' if mode.endswith('_half') else 'r69_trace',v]==labels
                         changes.update(gained_trace=int((c&~parent).sum()),lost_trace=int((~c&parent).sum()))
+                elif modes==PHASE_DETAIL_MODES and mode in PHASE_DETAIL_DOSES:
+                    count=sum(act[s][f'{r}/{v}']['phase_active'] for r in TARGET)
+                    extra=sum(act[s][f'{r}/{v}']['phase_extra'] for r in TARGET)
+                    prior=pred[s,'coherent_half',v]
+                    if (p!=prior).sum()>extra:
+                        raise ValueError('Changes exceed phase-residual gate coverage')
+                    bound=prior==labels
+                    changes=dict(extra_active=extra,gained_half=int((c&~bound).sum()),lost_half=int((~c&bound).sum()))
                 elif modes==SHARED_DETAIL_MODES and mode in SHARED_DETAIL_DOSES:
                     count=sum(act[s][f'{r}/{v}']['shared_active'] for r in TARGET)
                     extra=count-active
@@ -220,7 +235,7 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
         extra=' '+' '.join(f'G/{s}/source_support.json G/{s}/steps.jsonl' for s in CONFIRM_NEW_SEEDS)
     elif run.name==DETAIL_DOSE_RUN:
         extra=''
-    elif run.name in (DETAIL_RUN,SHARED_DETAIL_RUN):
+    elif run.name in (DETAIL_RUN,SHARED_DETAIL_RUN,PHASE_DETAIL_RUN):
         extra=' '+' '.join(f'G/{s}/source_support.json G/{s}/steps.jsonl' for s in DETAIL_SEEDS)
     elif run.name==COVERAGE_RUN:
         extra=' '+' '.join(f'G/{mode}/{s}/source_support.json G/{mode}/{s}/steps.jsonl'

@@ -16,7 +16,7 @@ from .full_dura_core import (COVERAGE_RECIPES, Dose, dose_features, g_record, pr
                             read_gate, receiver_loss, train, train_gate)
 from .full_dura_detail import (CONFIRM_NEW_SEEDS, DETAIL_CONFIRM_RUN, DETAIL_DOSE_MODES,
                                DETAIL_DOSE_RUN, DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS,
-                               SHARED_DETAIL_MODES, SHARED_DETAIL_RUN)
+                               PHASE_DETAIL_MODES, PHASE_DETAIL_RUN, SHARED_DETAIL_MODES, SHARED_DETAIL_RUN)
 from .full_dura_r69_lora import (R69_ACTION_MODES, R69_ACTION_RUN, R69_LORA_RUN, R69_MODES,
                                  R69_RETAINED_MODES, R69_SEEDS, R69_TRACE_MODES)
 from .full_dura_trace_source import RETAINED_RUN, TRACE_RUN
@@ -42,7 +42,7 @@ COVERAGE_MODES=(*PROJECTED_MODES,*COVERAGE_RECIPES)
 STACK_RUN='20261122-phase1-lora-tri-set-dura-stack-m9-r01'
 STAGED_RUN='20261122-phase1-lora-dura-source-distillation-m6-r01'
 STAGED_MODES=(*PROJECTED_MODES,'staged_protect')
-DETAIL_TRAIN_RUNS=(DETAIL_RUN,DETAIL_CONFIRM_RUN,SHARED_DETAIL_RUN)
+DETAIL_TRAIN_RUNS=(DETAIL_RUN,DETAIL_CONFIRM_RUN,SHARED_DETAIL_RUN,PHASE_DETAIL_RUN)
 DETAIL_RUNS=(*DETAIL_TRAIN_RUNS,DETAIL_DOSE_RUN)
 R69_RUNS=(R69_LORA_RUN,R69_ACTION_RUN,TRACE_RUN,RETAINED_RUN)
 JOINT_RUNS=(JOINT_RUN,ADAPTED_JOINT_RUN)
@@ -67,6 +67,8 @@ def modes_for(root):
         return DETAIL_DOSE_MODES
     if root.name==SHARED_DETAIL_RUN:
         return SHARED_DETAIL_MODES
+    if root.name==PHASE_DETAIL_RUN:
+        return PHASE_DETAIL_MODES
     if root.name==STAGED_RUN:
         return STAGED_MODES
     if root.name==COVERAGE_RUN:
@@ -443,7 +445,7 @@ def dispatch(rt):
                 wait_for(root.parent/DRAW_RUN,'SOURCE_DRAW_READY')
             if root.name==DETAIL_DOSE_RUN:
                 wait_for(root.parent/DETAIL_RUN,'PREDICTIONS_FROZEN')
-            if root.name in (DETAIL_CONFIRM_RUN,SHARED_DETAIL_RUN):
+            if root.name in (DETAIL_CONFIRM_RUN,SHARED_DETAIL_RUN,PHASE_DETAIL_RUN):
                 wait_for(root.parent/DETAIL_DOSE_RUN,'PREDICTIONS_FROZEN')
             check='detail_smoke' if root.name in DETAIL_RUNS else 'shape_smoke'
             if launch(rt,check,'source').wait():

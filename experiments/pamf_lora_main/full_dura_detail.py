@@ -21,6 +21,7 @@ DETAIL_RUN='20261122-phase1-lora-dura-coherent-detail-m1-r01'
 DETAIL_DOSE_RUN='20261122-phase1-lora-dura-coherent-dose-m2-r01'
 DETAIL_CONFIRM_RUN='20261122-phase1-lora-dura-coherent-dose-confirm-m4-r01'
 SHARED_DETAIL_RUN='20261123-phase1-lora-dura-packet-common-m1-r01'
+PHASE_DETAIL_RUN='20261123-phase1-lora-dura-half-phase-residual-m1-r01'
 DETAIL_SEEDS=(SEEDS[1],)
 CONFIRM_NEW_SEEDS=(SEEDS[0],SEEDS[2])
 DETAIL_MODES=('direct','fixed','protect_shape','coherent_detail')
@@ -28,16 +29,18 @@ DETAIL_DOSES={'coherent_quarter':.25,'coherent_half':.50}
 DETAIL_DOSE_MODES=(*DETAIL_MODES,*DETAIL_DOSES)
 SHARED_DETAIL_DOSES={'packet_common_full':1.,'packet_common_half':.5}
 SHARED_DETAIL_MODES=(*DETAIL_DOSE_MODES,*SHARED_DETAIL_DOSES)
+PHASE_DETAIL_DOSES={'phase_residual_full':1.,'phase_residual_half':.5}
+PHASE_DETAIL_MODES=(*DETAIL_DOSE_MODES,*PHASE_DETAIL_DOSES)
 STEPS=1800
 CAP=.15
 QUALITY=.94
 SHARED_QUALITY=.40
 
 
-def conv_head(channels):
+def conv_head(channels,outputs=2):
     return nn.Sequential(nn.Conv1d(channels,32,9,padding=4,padding_mode='reflect'),nn.SiLU(),
         nn.Conv1d(32,32,9,padding=8,dilation=2,padding_mode='reflect'),nn.SiLU(),
-        nn.Conv1d(32,2,9,padding=4,padding_mode='reflect'))
+        nn.Conv1d(32,outputs,9,padding=4,padding_mode='reflect'))
 
 
 def pair_channels(z):
@@ -51,12 +54,15 @@ def strength_ratio(delta,x):
 class PacketDetail(nn.Module):
     """Predict separate common and individual shape corrections in carrier coordinates."""
 
+    phase=False
+
     def __init__(self,gate,*,shared=False):
         super().__init__()
         self.gate=gate.requires_grad_(False)
         self.shared=shared
-        self.common=conv_head(3)
-        self.individual=None if shared else conv_head(5)
+        outputs=1 if self.phase else 2
+        self.common=conv_head(3,outputs)
+        self.individual=None if shared else conv_head(5,outputs)
         heads=(self.common,) if shared else (self.common,self.individual)
         for head in heads:
             nn.init.zeros_(head[-1].weight)
@@ -69,20 +75,25 @@ class PacketDetail(nn.Module):
     @torch.no_grad()
     def eligible(self,x):
         tracker=self.gate.tracker
-        quality=SHARED_QUALITY if self.shared else QUALITY
+        quality=SHARED_QUALITY if self.shared or self.phase else QUALITY
         return tracker.reference.coherence(x.flatten(0,1)).reshape(len(x),6).median(1).values>=quality
 
     @torch.no_grad()
     def coordinates(self,x):
         w,rot,_,_,_=self.gate.tracker.track(x)
         rms=w.abs().square().mean(-1,keepdim=True).clamp_min(1e-8).sqrt()
-        return no_tone(w/rms),rot,rms
+        normalized=w/rms
+        return (normalized if self.phase else no_tone(normalized)),rot,rms
 
-    def correction(self,shape,rot,rms):
+    def head_inputs(self,shape):
         common=shape.mean(1)
         own=shape-common[:,None]
         spread=own.abs().square().mean(1).clamp_min(1e-8).sqrt()[:,None]
         shared=torch.cat((pair_channels(common),spread),dim=1)
+        return shared,own
+
+    def correction(self,shape,rot,rms):
+        shared,own=self.head_inputs(shape)
         s=self.common(shared)
         a=no_tone(torch.complex(s[:,0],s[:,1]))
         step=a[:,None].expand_as(shape)
@@ -113,6 +124,25 @@ class PacketDetail(nn.Module):
         return self.score(self.features(x,delta))>self.threshold
 
 
+class PhaseDetail(PacketDetail):
+    """Correct residual phase on a frozen half-dose waveform at fixed amplitude."""
+
+    phase=True
+
+    def correction(self,shape,rot,rms):
+        shared,own=self.head_inputs(no_tone(shape))
+        packet=self.common(shared)[:,0]
+        individual=torch.cat((pair_channels(own),shared[:,None].expand(-1,6,-1,-1)),dim=2)
+        local=self.individual(individual.flatten(0,1)).reshape_as(shape.real)
+        angle=packet[:,None]+local-local.mean(1,keepdim=True)
+        magnitude=shape.abs()
+        angle=angle-(angle*magnitude).sum(-1,keepdim=True)/magnitude.sum(-1,keepdim=True).clamp_min(1e-8)
+        upper_bound=strength_ratio(angle*magnitude*rms,rms.expand_as(magnitude))
+        angle=angle*(CAP/upper_bound).clamp_max(1.)[:,None,None]
+        step=shape*(torch.polar(torch.ones_like(angle),angle)-1.)
+        return step,real_iq(step*rot*rms)
+
+
 def shape_error(error,*,shared=False):
     common=error.mean(1).abs().square().mean(-1)
     return common if shared else power(error)+.5*common
@@ -122,16 +152,24 @@ def training_terms(model,x,clean):
     shape,rot,rms=model.coordinates(x)
     target,_,_=model.coordinates(clean)
     step,delta=model.correction(shape,rot,rms)
-    raw=shape_error(shape-target,shared=model.shared)
-    error=shape_error(shape+step-target,shared=model.shared)
+    if model.phase:
+        target=torch.polar(shape.abs(),target.angle())
+    raw=detail_error(model,shape-target)
+    error=detail_error(model,shape+step-target)
     return raw,error,delta
 
 
-def record(c,seed,*,shared=False):
+def detail_error(model,error):
+    return shape_error(no_tone(error) if model.phase else error,shared=model.shared)
+
+
+def record(c,seed,*,shared=False,phase=False):
     r=dict(status='SOURCE_FROZEN',source_contract=c,seed=seed,steps=STEPS,
                 draw_run=DRAW_RUN,quality=QUALITY,cap=CAP,F_reads=0,TX_reads=0,target_reads=0)
     if shared:
         r.update(quality=SHARED_QUALITY,component='chirp_common',paired_draws=True)
+    if phase:
+        r.update(quality=SHARED_QUALITY,component='phase',baseline=DETAIL_DOSE_RUN)
     return r
 
 
@@ -183,11 +221,12 @@ def clean_features(model,clean):
     return torch.cat(features)
 
 
-def fit_utility(model,l,u,sat,alt,held):
+def fit_utility(model,l,u,sat,alt,held,*,bypass_reference=None):
     fit=held[::2]
     check=held[1::2]
+    l_clean,u_clean=(l,u) if bypass_reference is None else bypass_reference
     observations=[pairs_for_gate(model,u[fit],a[fit]) for a in (sat,alt)]
-    clean_fit=clean_features(model,u[fit])
+    clean_fit=clean_features(model,u_clean[fit])
     x=torch.cat((clean_fit,*(f for f,_ in observations)))
     label=torch.cat((x.new_zeros(len(clean_fit)),*((e>.05).float() for _,e in observations)))
     model.center.copy_(x.mean(0))
@@ -205,7 +244,7 @@ def fit_utility(model,l,u,sat,alt,held):
             losses.append(float(loss.detach()))
         history.append(sum(losses)/len(losses))
     with torch.no_grad():
-        top=max(model.score(clean_features(model,a)).max() for a in (l,u))
+        top=max(model.score(clean_features(model,a)).max() for a in (l_clean,u_clean))
         model.threshold.copy_(top+1e-4)
         audits=[]
         for a in (sat,alt):
@@ -226,10 +265,22 @@ def train_detail(rt,seed):
     torch.manual_seed(seed)
     c,(l,u,sat),(alt_l,alt_u)=source_inputs(rt,dev)
     shared=root.name==SHARED_DETAIL_RUN
-    model=PacketDetail(tracker_gate(root,c,dev),shared=shared).to(dev)
+    phase=root.name==PHASE_DETAIL_RUN
+    gate=tracker_gate(root,c,dev)
+    model=(PhaseDetail(gate) if phase else PacketDetail(gate,shared=shared)).to(dev)
     held=torch.arange(0,len(u),5,device=dev)
     signals=(l[1:].flatten(0,1),sat,alt_l,alt_u)
     sources=(l[0],u,l[0],u)
+    identity=None
+    if phase:
+        base,prior=phase_baseline_models(root,c,seed,dev)
+
+        def previous(array):
+            return torch.cat([half_baseline(base,prior,x)[0] for x in array.split(96)])
+
+        signals=tuple(previous(array) for array in signals)
+        identity=(previous(l[0]),previous(u))
+        del base,prior
     masks=[torch.cat([model.eligible(x) for x in data.split(256)]) for data in signals]
     for i in (1,3):
         masks[i][held]=False
@@ -249,6 +300,7 @@ def train_detail(rt,seed):
     sch=torch.optim.lr_scheduler.CosineAnnealingLR(opt,STEPS,eta_min=.00006)
     counts=(6,8,4,6)
     allowed=torch.where(torch.arange(len(u),device=dev)%5!=0)[0]
+    identity_pool=u if identity is None else identity[1]
     with (out/'steps.jsonl').open('x',encoding='utf-8') as log:
         for step in range(1,STEPS+1):
             ids=[pool[torch.randint(len(pool),(n,),device=dev)] for pool,n in zip(pools,counts,strict=True)]
@@ -258,9 +310,9 @@ def train_detail(rt,seed):
                 ids[3]=pairs
             observation=torch.cat([a[i] for a,i in zip(signals,ids,strict=True)])
             ground=torch.cat([a[i%len(a)] for a,i in zip(sources,ids,strict=True)])
-            clean=u[allowed[torch.randint(len(allowed),(8,),device=dev)]]
+            clean=identity_pool[allowed[torch.randint(len(allowed),(8,),device=dev)]]
             raw,error,_=training_terms(model,observation,ground)
-            clean_error=shape_error(model.correction(*model.coordinates(clean))[0],shared=shared)
+            clean_error=detail_error(model,model.correction(*model.coordinates(clean))[0])
             objective=(error/(raw+.0004)).mean()+.15*(clean_error/.0004).mean()
             if shared:
                 consistency=paired_common_loss(model,sat[pairs],alt_u[pairs],u[pairs])
@@ -278,12 +330,12 @@ def train_detail(rt,seed):
                 log.write(json.dumps(entry,allow_nan=False)+'\n')
                 log.flush()
                 print('LORA_COHERENT_DETAIL',seed,entry,flush=True)
-    utility=fit_utility(model,l[0],u,sat,alt_u,held)
+    utility=fit_utility(model,l[0],u,signals[1],signals[3],held,bypass_reference=identity)
     shared_log=dict(paired_U_pool=len(paired),pair_count=STEPS*counts[3]) if shared else {}
     write(out/'source_support.json',dict(training_pool=list(map(len,pools)),withheld_U=len(held),
           practical_exposures=STEPS*sum(counts),clean_exposures=STEPS*8,utility=utility,**shared_log))
     torch.save(model.state_dict(),out/'model.pt')
-    write(out/'complete.json',record(c,seed,shared=shared))
+    write(out/'complete.json',record(c,seed,shared=shared,phase=phase))
 
 
 def load_detail(root,c,seed,device):
@@ -291,9 +343,11 @@ def load_detail(root,c,seed,device):
         root=root.parent/DETAIL_RUN
     out=root/'G'/str(seed)
     shared=root.name==SHARED_DETAIL_RUN
-    if read(out/'complete.json')!=record(c,seed,shared=shared):
+    phase=root.name==PHASE_DETAIL_RUN
+    if read(out/'complete.json')!=record(c,seed,shared=shared,phase=phase):
         raise ValueError('LoRa detail checkpoint source ancestry differs')
-    model=PacketDetail(tracker_gate(root,c,device),shared=shared).to(device)
+    gate=tracker_gate(root,c,device)
+    model=(PhaseDetail(gate) if phase else PacketDetail(gate,shared=shared)).to(device)
     model.load_state_dict(torch.load(out/'model.pt',map_location=device,weights_only=True),strict=True)
     return model.eval().requires_grad_(False)
 
@@ -329,6 +383,27 @@ def restore(base,detail,x):
     return fixed,restored,old,active
 
 
+def phase_baseline_models(root,c,seed,device):
+    from .full_dura import RUN, engines
+    base,_=engines(root.parent/RUN,c,seed,device)
+    prior=load_detail(root.parent/DETAIL_RUN,c,seed,device)
+    return base.requires_grad_(False),prior
+
+
+@torch.no_grad()
+def half_baseline(base,prior,x):
+    _,restored,protected,active=restore(base,prior,x)
+    extra=active&~protected
+    restored[extra]=scale_detail(x[extra],restored[extra],.5)
+    return restored,active
+
+
+def phase_dose(x,adjusted,amount):
+    observed=complex_iq(x)
+    angle=(complex_iq(adjusted)*observed.conj()).angle()
+    return real_iq(observed*torch.polar(torch.ones_like(angle),amount*angle))
+
+
 def detail_smoke(rt):
     from .full_dura import RUN, engines
     root=Path(rt['run_root'])
@@ -351,11 +426,15 @@ def detail_smoke(rt):
                                    TX_reads=0,target_reads=0,doses=DETAIL_DOSES))
         return
     shared=root.name==SHARED_DETAIL_RUN
-    model=PacketDetail(base.gate,shared=shared)
+    phase=root.name==PHASE_DETAIL_RUN
+    model=PhaseDetail(base.gate) if phase else PacketDetail(base.gate,shared=shared)
     l=np.load(cache/'L_s.npy',mmap_mode='r',allow_pickle=False)[0]
     old=np.load(cache/'U_s_practical.npy',mmap_mode='r',allow_pickle=False)[::32]
     a=load_draw(root.parent/DRAW_RUN,'L_s')
     x=tensor(a[::16])
+    if phase:
+        prior=load_detail(root.parent/DETAIL_RUN,c,seed,'cpu')
+        x=half_baseline(base,prior,x)[0]
     keep=torch.where(model.eligible(x))[0][:8]
     if len(keep)<8:
         raise ValueError('Real high-coherence source data are missing')
@@ -377,7 +456,12 @@ def detail_smoke(rt):
             or not torch.equal(updated,clean_sample) or not torch.isfinite(delta).all()
             or not (delta!=0).any() or not (base.strength(tensor(old))>0).any()):
         raise ValueError('Real source detail bypass, bound, or protected control failed')
-    observations=dict(source_observations=len(x),shared=True) if shared else dict(high_coherence=len(x))
+    if phase:
+        adjusted=phase_dose(x,x+delta,.5)
+        if not torch.allclose(complex_iq(adjusted).abs(),complex_iq(x).abs(),atol=3e-6,rtol=1e-5):
+            raise ValueError('Phase-only source correction changed amplitude')
+    observations=(dict(source_observations=len(x),shared=shared,phase=phase) if shared or phase
+                  else dict(high_coherence=len(x)))
     write(root/'smoke.json',dict(status='PASS',seed=seed,clean_exact=len(clean_sample),
               grad=grad,F_reads=0,TX_reads=0,target_reads=0,**observations))
 
@@ -392,6 +476,26 @@ def source_wave_detail(rt,seed):
     detail=load_detail(root,c,seed,dev)
     arr=np.load(cache/'V.npy',mmap_mode='r',allow_pickle=False)
     clean=tensor(arr[0,::4],dev)
+    if detail.phase:
+        prior=load_detail(root.parent/DETAIL_RUN,c,seed,dev)
+        rows={}
+        for i,v in enumerate(VIEWS):
+            old_count=count=beneficial=0
+            before=after=0.
+            for x,target in zip(tensor(arr[i,::4],dev).split(48),clean.split(48),strict=True):
+                half,old=half_baseline(base,prior,x)
+                selected,_=extra_correction(detail,half,torch.zeros_like(old))
+                old_count+=int(old.sum())
+                if len(selected):
+                    raw,restored,_=training_terms(detail,half[selected],target[selected])
+                    count+=len(selected)
+                    beneficial+=int((restored<raw).sum())
+                    before+=float(raw.sum())
+                    after+=float(restored.sum())
+            rows[v]=dict(n=len(clean),prior_active=old_count,phase_selected=count,
+                         phase_improved=beneficial,phase_before=before,phase_after=after)
+        write(root/'source_wave'/f'{seed}.json',dict(seed=seed,records=rows,target_reads=0,TX_reads=0,F_reads=0))
+        return
     refs=[detail.coordinates(y)[0] for y in clean.split(48)]
     rows={}
     for i,v in enumerate(VIEWS):
@@ -421,7 +525,9 @@ def predict_detail(root,target,c,seed,reader,device):
     from .full_dura import PROJECTED_MODES, RUN, STACK_RUN, engines
     dose=root.name==DETAIL_DOSE_RUN
     shared=root.name==SHARED_DETAIL_RUN
-    stack=root.parent/(DETAIL_DOSE_RUN if shared else DETAIL_RUN if dose else STACK_RUN)
+    phase=root.name==PHASE_DETAIL_RUN
+    extended=shared or phase
+    stack=root.parent/(DETAIL_DOSE_RUN if extended else DETAIL_RUN if dose else STACK_RUN)
     if read(stack/'state.json')['status']!='PREDICTIONS_FROZEN':
         raise ValueError('The frozen protected DURA controls are missing')
     old=stack/'predictions'/str(seed)
@@ -429,16 +535,19 @@ def predict_detail(root,target,c,seed,reader,device):
     controls=old_receipt.pop('activation')
     expected=dict(status='PREDICTIONS_FROZEN',seed=seed,target_truth_read=False,receivers=list(TARGET),
                   views=list(VIEWS),per_receiver=LIMIT)
-    comparison_modes=DETAIL_DOSE_MODES if shared else DETAIL_MODES if dose else PROJECTED_MODES
+    comparison_modes=DETAIL_DOSE_MODES if extended else DETAIL_MODES if dose else PROJECTED_MODES
     if old_receipt!=dict(expected,modes=list(comparison_modes)):
         raise ValueError('The frozen Tri-set and DURA controls do not match')
     base,_=engines(root.parent/RUN,c,seed,device)
     detail=load_detail(root,c,seed,device)
+    prior=load_detail(root.parent/DETAIL_RUN,c,seed,device) if phase else None
     out=root/'predictions'/str(seed)
     out.mkdir(parents=True,exist_ok=False)
     records={}
-    old_modes=DETAIL_DOSE_MODES if shared else DETAIL_MODES if dose else DETAIL_MODES[:-1]
-    if shared:
+    old_modes=DETAIL_DOSE_MODES if extended else DETAIL_MODES if dose else DETAIL_MODES[:-1]
+    if phase:
+        amounts=PHASE_DETAIL_DOSES
+    elif shared:
         amounts=SHARED_DETAIL_DOSES
     else:
         amounts={} if dose else {'coherent_detail':1.}
@@ -453,14 +562,21 @@ def predict_detail(root,target,c,seed,reader,device):
             arrays=[np.load(old/f'{rx}__{v}__{m}.npy',allow_pickle=False) for m in old_modes]
             if any(a.shape!=(LIMIT,) or a.dtype.kind not in 'iu' or a.min()<0 or a.max()>=10 for a in arrays):
                 raise ValueError('Invalid frozen protected DURA predictions')
-            updated=[arrays[2].copy() for _ in new_modes]
-            n_old=n_extra=0
+            fallback='coherent_half' if phase else 'protect_shape'
+            updated=[arrays[old_modes.index(fallback)].copy() for _ in new_modes]
+            n_old=n_extra=n_overlap=0
             for step in range(0,LIMIT,48):
                 x=tensor(waves[i,step:step+48],device)
-                baseline=base.strength(x)>0
-                extra,result=extra_correction(detail,x,baseline)
+                if phase:
+                    x,baseline=half_baseline(base,prior,x)
+                    extra,result=extra_correction(detail,x,torch.zeros_like(baseline))
+                    n_overlap+=int(baseline[extra].sum())
+                else:
+                    baseline=base.strength(x)>0
+                    extra,result=extra_correction(detail,x,baseline)
                 if len(extra):
-                    waves_to_read=[result if amount==1. else scale_detail(x[extra],result,amount)
+                    apply_dose=phase_dose if phase else scale_detail
+                    waves_to_read=[result if amount==1. else apply_dose(x[extra],result,amount)
                                    for amount in amounts.values()]
                     logits=reader(torch.cat(waves_to_read))[0]
                     if not torch.isfinite(logits).all():
@@ -471,11 +587,15 @@ def predict_detail(root,target,c,seed,reader,device):
                     n_extra+=len(ids)
                 n_old+=int(baseline.sum())
             key=f'{rx}/{v}'
-            if controls[key]['active']!=n_old:
+            active_key='detail_active' if phase else 'active'
+            if controls[key][active_key]!=n_old:
                 raise ValueError('The existing protected branch active count changed')
             if dose and controls[key]['detail_extra']!=n_extra:
                 raise ValueError('Frozen dose comparison changed the detail gate')
-            if shared:
+            if phase:
+                records[key]=dict(controls[key],phase_active=n_old+n_extra-n_overlap,
+                                  phase_extra=n_extra,phase_overlap=n_overlap)
+            elif shared:
                 records[key]=dict(controls[key],shared_active=n_old+n_extra,shared_extra=n_extra)
             else:
                 records[key]=dict(controls[key],detail_active=n_old+n_extra,detail_extra=n_extra)
