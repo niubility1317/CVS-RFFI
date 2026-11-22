@@ -80,7 +80,7 @@ def learned_errors(model,expected,inputs,outputs,clean_input,clean_output,observ
     return out
 
 
-def diagnose_packet(z,rx,physical_id,scene,expected,model=None):
+def source_probes(z,rx,physical_id,scene,expected):
     from leo_practical.channel import ChannelStream, normalize_input, stable_seed
     cfg=channel(scene)
     seed=stable_seed(2026112207,'source-V',scene,rx,str(physical_id))
@@ -106,6 +106,12 @@ def diagnose_packet(z,rx,physical_id,scene,expected,model=None):
             raise ValueError('Full comparator changed the frozen receiver/noise trajectory')
         outputs.append(chirp_samples(p['pre_agc_signal'],offset=offset))
     y=np.stack(outputs)
+    noise=chirp_samples(ref['pre_agc_noise'],offset=offset)
+    return x,y,clean_input,clean_output,noise
+
+
+def diagnose_packet(z,rx,physical_id,scene,expected,model=None):
+    x,y,clean_input,clean_output,noise=source_probes(z,rx,physical_id,scene,expected)
     rows={}
     for name,mirror in (('main_only',False),('main_and_image',True)):
         coef=fit_action(x[:FIT_PROBES],y[:FIT_PROBES],mirror)
@@ -117,8 +123,7 @@ def diagnose_packet(z,rx,physical_id,scene,expected,model=None):
                    actual_packet_nmse=chirp_nmse(clean_hat,clean_output).tolist())
         rows[name]=stats
     if model is not None:
-        pair=chirp_samples(ref['pre_agc_signal']+ref['pre_agc_noise'],offset=offset)
-        observed_scale=np.sqrt(np.mean(np.abs(pair)**2))
+        observed_scale=np.sqrt(np.mean(np.abs(clean_output+noise)**2))
         rows.update(learned_errors(model,expected,x,y,clean_input,clean_output,observed_scale))
     if any(not np.isfinite(v).all() for stats in rows.values() for v in stats.values()):
         raise FloatingPointError('Nonfinite matched action probe')

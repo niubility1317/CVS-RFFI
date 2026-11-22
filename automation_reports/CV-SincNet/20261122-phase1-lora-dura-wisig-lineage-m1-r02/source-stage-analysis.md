@@ -91,3 +91,21 @@ Full 与代理的主要差异集中在整段复增益。去掉这一项后，在
 关键差异在系数如何得到。在这 20 个包上，原有算子形式的一个简化子集可以拟合 full practical。原坐标学习算子在全部场景存在很大的整体相位误差。即使借助独立拟合探针校正整体复增益，弱城区的动作 NMSE 仍为 0.227，实测候选还存在细节或时变误差。当前证据只支持优先检查 residual 代理监督到 full 观测的迁移，以及弱城区的动作拟合。现场只有受扰 IQ，表内理想拟合系数用于诊断。部分深衰落样本的拟合误差有较长尾部，且当前固定样本仅 20 包，数值不构成目标识别提升的估计。
 
 [独立物理回放和探针结果](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_lineage_r02_source_panel/full_action_probe_gauge.json) · [可表达性复算程序](E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010/experiments/pamf_lora_main/full_dura_action_probe.py)
+
+## 在原版软求解中替换作用与方差
+
+另固定五台源接收机各 8 个 V 包。直接使用原有带噪 full practical IQ、同一冻结作用阶段的粗恢复、原 DURA 软数据一致性求解及六次共轭梯度更新。只在后两行以同一物理轨迹的四组虚拟探针拟合主系数，再替换原预测作用。第四行另从物理轨迹取噪声方差。整个诊断没有修改模型、输入观测或优化器。冻结 Tri-set 只用于独立读出。
+
+| Practical 场景 | 直通 | 学习作用与方差 | 已知作用 | 已知作用和方差 |
+|---|---:|---:|---:|---:|
+| 郊区高 | 26 | 20 | 26 | 27 |
+| 郊区中 | 28 | 23 | 26 | 26 |
+| 郊区低 | 20 | 19 | 20 | 19 |
+| 城区高 | 28 | 19 | 30 | 30 |
+| 城区中 | 18 | 18 | 23 | 21 |
+| 城区低 | 19 | 15 | 20 | 21 |
+| 六景正确数（共 240 次曝光） | 139 | 114 | 145 | 144 |
+
+仅替换作用后，相对原学习作用挽回 31 次正确判定（12.92 个百分点），相对直通净增 6 次（2.50 个百分点）。再替换方差少 1 次。这组结果直接支持优先解决作用估计，同时表明只在当前软求解中更换作用的收益仍有限。输入、粗恢复先验和冻结识别器已控制一致，后面的展开先验仍可能改变结果。已知系数需要额外的模拟器探针，只用于源诊断。
+
+[物理作用替换与配对正确数](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_lineage_r02_source_panel/full_action_solver_oracle.json) · [复算入口](E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010/experiments/pamf_lora_main/full_dura_action_oracle.py)
