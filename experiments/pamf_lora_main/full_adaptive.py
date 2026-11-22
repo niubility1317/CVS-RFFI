@@ -10,7 +10,7 @@ import torch
 
 from experiments.cric_dura_comparison.io import read, tensor, write
 from .adaptive_repair import (PRACTICAL_CE_METHODS, PRACTICAL_GAP_METHODS, PRACTICAL_HARD_METHOD,
-                              PRACTICAL_SCENE_METHOD, fit, intersect_source,
+                              PRACTICAL_LABELED_METHOD, PRACTICAL_SCENE_METHOD, fit, intersect_source,
                               practical_ce_losses, practical_hard_ce)
 from .comparison import seed_all
 from .data import TARGET, VIEWS
@@ -32,8 +32,11 @@ PRACTICAL_SET_RUN='20261122-phase1-lora-tri-set-practical-draw-m3-r01'
 PRACTICAL_SET_METHOD='tri_set_practical'
 PRACTICAL_CE_RUN='20261122-phase1-lora-tri-set-practical-ce-m2-r01'
 PRACTICAL_GAP_RUN='20261122-phase1-lora-tri-set-practical-gap-m2-r01'
+PRACTICAL_CONFIRM_RUN='20261122-phase1-lora-tri-practical-confirm-m6-r01'
+PRACTICAL_CONFIRM_METHODS=(PRACTICAL_LABELED_METHOD,*PRACTICAL_GAP_METHODS)
+GAP_RUNS=(PRACTICAL_GAP_RUN,PRACTICAL_CONFIRM_RUN)
 SET_METHODS=(SET_METHOD,PRACTICAL_SET_METHOD,*PRACTICAL_CE_METHODS,*PRACTICAL_GAP_METHODS)
-E140_SET_RUNS=(SET_RUN,PRACTICAL_SET_RUN,PRACTICAL_CE_RUN,PRACTICAL_GAP_RUN)
+E140_SET_RUNS=(SET_RUN,PRACTICAL_SET_RUN,PRACTICAL_CE_RUN,*GAP_RUNS)
 METHODS=('continued_sup','plain_pl','adaptive_tri','tri_practical')
 WARMUP_METHODS=('continued_sup','plain_pl','adaptive_tri')
 EPOCHS=28
@@ -48,6 +51,8 @@ def case(seed,method):
 def cases(methods=METHODS):
     single_seed=(REPL_METHODS,WARM_METHODS,ADAPT_METHODS,PRACTICAL_CE_METHODS,PRACTICAL_GAP_METHODS)
     seeds=REPL_SEEDS if tuple(methods) in single_seed else SEEDS
+    if tuple(methods)==PRACTICAL_CONFIRM_METHODS:
+        seeds=tuple(seed for seed in SEEDS if seed not in REPL_SEEDS)
     return [(case(s,m),s,m) for s in seeds for m in methods]
 
 
@@ -64,6 +69,8 @@ def methods_for(root):
         return PRACTICAL_CE_METHODS
     if root.name==PRACTICAL_GAP_RUN:
         return PRACTICAL_GAP_METHODS
+    if root.name==PRACTICAL_CONFIRM_RUN:
+        return PRACTICAL_CONFIRM_METHODS
     if root.name==SET_RUN:
         return (SET_METHOD,)
     return WARMUP_METHODS if root.name==WARMUP_RUN else METHODS
@@ -312,7 +319,7 @@ def smoke(rt):
                else teacher(root,c,seed,'cpu'))
         result,features=model(a)
         loss=torch.nn.functional.cross_entropy(result,labels)
-        if root.name in (PRACTICAL_CE_RUN,PRACTICAL_GAP_RUN):
+        if root.name in (PRACTICAL_CE_RUN,*GAP_RUNS):
             practical=tensor(labeled[1,:8])
         if root.name==PRACTICAL_CE_RUN:
             ids=torch.arange(len(labels))
@@ -322,7 +329,7 @@ def smoke(rt):
             if not torch.equal(kept,ids[mask]) or len(none) or float(empty)!=0 or not torch.isfinite(paired):
                 raise ValueError('Real LoRa matched practical CE smoke failed')
             loss=loss+.35*paired
-        if root.name==PRACTICAL_GAP_RUN:
+        if root.name in GAP_RUNS:
             with np.load(src/'V_metadata.npz',allow_pickle=False) as m:
                 if m['ids'].tolist()!=c['role_ids']['V']:
                     raise ValueError('Invalid source V in practical weight smoke')
@@ -368,7 +375,7 @@ def dispatch(rt):
             wait_for(root.parent/WARMUP_RUN,'PREDICTIONS_FROZEN')
         if root.name==PRACTICAL_SET_RUN:
             wait_for(root.parent/DRAW_RUN,'SOURCE_DRAW_READY')
-        if root.name in (PRACTICAL_SET_RUN,PRACTICAL_CE_RUN,PRACTICAL_GAP_RUN):
+        if root.name in (PRACTICAL_SET_RUN,PRACTICAL_CE_RUN,*GAP_RUNS):
             wait_for(root.parent/SET_RUN,'PREDICTIONS_FROZEN')
         if root.name==PRACTICAL_GAP_RUN:
             wait_for(root.parent/PRACTICAL_CE_RUN,'PREDICTIONS_FROZEN')

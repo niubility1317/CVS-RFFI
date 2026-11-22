@@ -11,10 +11,10 @@ import zipfile
 import numpy as np
 
 from experiments.cric_dura_comparison.io import read, write
-from .adaptive_repair import PRACTICAL_CE_METHODS, PRACTICAL_LABELED_METHOD
+from .adaptive_repair import PRACTICAL_CE_METHODS, PRACTICAL_GAP_METHODS, PRACTICAL_LABELED_METHOD
 from .collect import wait_for_predictions
 from .data import CLASSES, TARGET, VIEWS, label_ids, packet_indices, recording
-from .full_adaptive import (E140_SET_RUNS, EPOCHS, METHODS, PRACTICAL_CE_RUN, PRACTICAL_GAP_RUN,
+from .full_adaptive import (E140_SET_RUNS, EPOCHS, GAP_RUNS, METHODS, PRACTICAL_CE_RUN, PRACTICAL_GAP_RUN,
                             PRACTICAL_HARD_METHOD, PRACTICAL_SET_RUN, SET_METHOD, WARMUP_METHODS, WARMUP_RUN,
                             case, cases, methods_for)
 from .full_packet_data import LIMIT
@@ -104,7 +104,7 @@ def collect(submit,ssh_config,dataset,source,output,controls=None,set_control=No
     seeds=sorted({seed for _,seed,_ in rows})
     practical_names=[name for name,_,method in rows if method==PRACTICAL_HARD_METHOD]
     gaps=run_root.name==PRACTICAL_GAP_RUN
-    paired=run_root.name in (PRACTICAL_SET_RUN,PRACTICAL_CE_RUN,PRACTICAL_GAP_RUN)
+    paired=run_root.name in (PRACTICAL_SET_RUN,PRACTICAL_CE_RUN,*GAP_RUNS)
     sets=run_root.name in E140_SET_RUNS
     native=run_root.name in (REPL_RUN,WARM_RUN,ADAPT_RUN)
     if (sets or native)!=(controls is not None):
@@ -127,8 +127,8 @@ def collect(submit,ssh_config,dataset,source,output,controls=None,set_control=No
         additions+=' '+' '.join(f'F/{n}/accepted_sets.npy' for n in names)
     if practical_names:
         additions+=' '+' '.join(f'F/{n}/accepted_practical_U.npy' for n in practical_names)
-    if gaps:
-        additions+=' '+' '.join(f'F/{n}/practical_weights.json' for n in names)
+    if run_root.name in GAP_RUNS:
+        additions+=' '+' '.join(f'F/{n}/practical_weights.json' for n,_,m in rows if m in PRACTICAL_GAP_METHODS)
     if run_root.name==WARMUP_RUN:
         additions+=' '+' '.join(f'warmup/F/{case(s,"continued_sup")}/epochs.jsonl' for s in SEEDS)
     policy='' if native else 'policy'
