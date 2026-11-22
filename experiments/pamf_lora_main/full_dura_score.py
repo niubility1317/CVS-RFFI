@@ -18,7 +18,7 @@ from .full_dura import (COVERAGE_RUN, MODES, PROJECTED_RUN, SHAPE_RUN, STACK_RUN
 from .full_dura_core import COVERAGE_RECIPES
 from .full_dura_detail import (CONFIRM_NEW_SEEDS, DETAIL_CONFIRM_RUN, DETAIL_DOSE_MODES, DETAIL_DOSE_RUN,
                                DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS)
-from .full_dura_lineage import FULL_ACTION_RUN
+from .full_dura_lineage import FULL_ACTION_RUN, LINEAGE_OUTPUTS, REPLICA_MODES, REPLICA_RUNS, seed_for
 from .full_dura_lineage import MODES as LINEAGE_MODES, RUNS as LINEAGE_RUNS, STAGES as LINEAGE_STAGES
 from .full_dura_r69_lora import (R69_ACTION_MODES, R69_ACTION_RUN, R69_LORA_RUN,
                                  R69_MODES, R69_RETAINED_MODES, R69_SEEDS, R69_TRACE_MODES)
@@ -32,12 +32,13 @@ from .scoring import macro_f1
 
 PAIR_MATRICES=(JOINT_MODES,ADAPTED_MODES)
 R69_MATRICES=(R69_MODES,*PAIR_MATRICES,R69_ACTION_MODES,R69_TRACE_MODES,R69_RETAINED_MODES,LINEAGE_MODES)
+LINEAGE_MATRICES=(LINEAGE_MODES,REPLICA_MODES)
 
 
 def matrix(output,modes=MODES,*,seeds=None):
     pred={}
     act={}
-    detail=modes in (DETAIL_MODES,DETAIL_DOSE_MODES,*R69_MATRICES)
+    detail=modes in (DETAIL_MODES,DETAIL_DOSE_MODES,REPLICA_MODES,*R69_MATRICES)
     seeds=seeds or (DETAIL_SEEDS if detail else SEEDS)
     for s in seeds:
         p=output/'predictions'/str(s)
@@ -59,9 +60,9 @@ def matrix(output,modes=MODES,*,seeds=None):
                 raise ValueError('Invalid original DURA LoRa gate count')
             if modes==R69_ACTION_MODES and not 0<=row['action_active']<=LIMIT:
                 raise ValueError('Invalid LoRa action-corrected gate count')
-            if modes in (R69_TRACE_MODES,R69_RETAINED_MODES,ADAPTED_MODES,LINEAGE_MODES) and not 0<=row['trace_active']<=LIMIT:
+            if modes in (R69_TRACE_MODES,R69_RETAINED_MODES,ADAPTED_MODES,*LINEAGE_MATRICES) and not 0<=row['trace_active']<=LIMIT:
                 raise ValueError('Invalid LoRa trace-trained gate count')
-            if modes==LINEAGE_MODES and row['lineage_active']!=LIMIT:
+            if modes in LINEAGE_MATRICES and row['lineage_active']!=LIMIT:
                 raise ValueError('Native DURA must run on every physical exposure')
             if modes==R69_RETAINED_MODES and not 0<=row['retained_active']<=LIMIT:
                 raise ValueError('Invalid retained physical calibration gate count')
@@ -82,7 +83,7 @@ def scores(pred,act,truth,modes=MODES,*,seeds=None):
     labels=np.concatenate([truth[r] for r in TARGET])
     n=len(labels)
     rows=[]
-    detail=modes in (DETAIL_MODES,DETAIL_DOSE_MODES,*R69_MATRICES)
+    detail=modes in (DETAIL_MODES,DETAIL_DOSE_MODES,REPLICA_MODES,*R69_MATRICES)
     seeds=seeds or (DETAIL_SEEDS if detail else SEEDS)
     for s in seeds:
         for v in VIEWS:
@@ -95,7 +96,7 @@ def scores(pred,act,truth,modes=MODES,*,seeds=None):
                 cm=np.bincount(10*labels+p,minlength=100).reshape(10,10)
                 count=0 if mode=='direct' else active
                 method=next((m for m in (*REPL_METHODS,*ADAPT_METHODS) if mode.startswith(f'{m}_')),None)
-                if modes==LINEAGE_MODES and mode in LINEAGE_MODES[-2:]:
+                if modes in LINEAGE_MATRICES and mode in LINEAGE_OUTPUTS:
                     key='lineage_active' if mode=='lineage_native' else 'trace_active'
                     count=sum(act[s][f'{r}/{v}'][key] for r in TARGET)
                     if (p!=pred[s,'direct',v]).sum()>count:
@@ -179,7 +180,7 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
     wait_for_predictions(cmd,root)
     if run.name in LINEAGE_RUNS:
         extra=' source_action/complete.json smoke.json G/lineage/complete.json'
-        if run.name==FULL_ACTION_RUN:
+        if run.name in (FULL_ACTION_RUN,*REPLICA_RUNS.values()):
             extra+=' source_full_action/complete.json'
         extra+=' '+' '.join(f'G/lineage/{s}/{name}' for s in LINEAGE_STAGES
                             for name in ('training.jsonl','complete.json'))
@@ -231,8 +232,12 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
             out.parent.mkdir(parents=True,exist_ok=True)
             with out.open('xb') as f:
                 f.write(ar.extractfile(member).read())
-    modes=LINEAGE_MODES if run.name in LINEAGE_RUNS else tuple(SWEEP) if sweep else modes_for(run)
-    seeds=SEEDS if run.name==DETAIL_CONFIRM_RUN else None
+    if run.name in LINEAGE_RUNS:
+        modes=REPLICA_MODES if run.name in REPLICA_RUNS.values() else LINEAGE_MODES
+        seeds=(seed_for(run),)
+    else:
+        modes=tuple(SWEEP) if sweep else modes_for(run)
+        seeds=SEEDS if run.name==DETAIL_CONFIRM_RUN else None
     pred,act=matrix(output,modes,seeds=seeds)
     truth={}
     with zipfile.ZipFile(dataset/'multiple_receiver_test.zip') as ar:

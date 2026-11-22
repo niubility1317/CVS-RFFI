@@ -22,3 +22,5 @@
 发布 **VERIFIED**。代码提交 `4c65520e63424882c1d160ceeedfd5145c9ff267` 的归档传输 SHA 比对及远端编译通过。六景实测源输入和父粗恢复冒烟通过，作用梯度范数为 8.2724。独立复核真实 L/U 两种观测的逐值复放、训练/试制探针一致性和源角色索引。已核实控制器与 CPU 建库进程的工作目录、命令和日志增长。已见主 L 观测完成 2,000/2,800 包。候选在构建 56,000 份源观测的动作监督，随后自动调度训练。冻结源读出与正式七景评分的等待进程已经启动。
 
 [发布提交记录](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_full_action_observed_phase_release/submit.json)
+
+三种子补齐入口已准备，待该候选的固定证据决定复验。剩余种子为 2026092701 和 2026092703。各自从头训练 8 段、39,520 步，复用同源 IQ 和两种作用监督缓存，使用冻结的同种子 Tri-set。盲路由沿用同一个冻结的源 IQ 门控。每种子读出六条已冻结同配对对照和两条新输出，共 56 个评分单元。正式发布入口在各自独立 run 使用 `--replica-seed SEED --reuse-actions ORIGINAL_SUBMIT --reuse-full-bank FULL_ACTION_SUBMIT --confirm-submit COHERENT_CONFIRM_SUBMIT`。发布映射和完整评分解析已经用两个种子的既有控制预测与合成评分标签验证。此处仅准备代码，复验未发布。
