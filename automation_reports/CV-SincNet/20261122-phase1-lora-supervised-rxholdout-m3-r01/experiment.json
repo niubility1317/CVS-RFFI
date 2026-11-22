@@ -1,0 +1,27 @@
+{
+  "run_id": "20261122-phase1-lora-supervised-rxholdout-m3-r01",
+  "scope": "labeled_source_receiver_holdout",
+  "folds": [
+    2,
+    3,
+    4
+  ],
+  "L_per_fold": 1280,
+  "V_per_fold": 160,
+  "seed": 2026092701,
+  "epochs": 180,
+  "steps": 7200,
+  "clean_steps": 2160,
+  "cold_start": true,
+  "allow_gpus": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "U_reads": 0,
+  "target_reads": 0
+}
