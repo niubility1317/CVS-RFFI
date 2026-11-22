@@ -7,14 +7,17 @@ from .full_adaptive import RUN as TRI, SET_RUN, WARMUP_RUN
 from .full_dura import COVERAGE_RUN, PROJECTED_RUN, RUN, SHAPE_RUN, STACK_RUN, STAGED_RUN, SWEEP_RUN
 from .full_dura_detail import DETAIL_CONFIRM_RUN, DETAIL_DOSE_RUN, DETAIL_RUN
 from .full_dura_r69_lora import R69_LORA_RUN
+from .full_native_joint import JOINT_RUN
 from .full_packet_publish import DATA_RUN
 from .full_restore_draw import RUN as DRAW_RUN
+from .full_tri_repl_lora import REPL_RUN
 from .publish import release, release_commit
 
 
 def publish(repo,output,context,ssh_config,data_submit,tri_submit,dose_submit=None,shape=False,projected=False,
             coverage_submit=None,stack=False,draw_submit=None,projected_submit=None,stack_submit=None,
-            coherent_detail=False,detail_dose_submit=None,confirm_dose=False,r69_aligned=False):
+            coherent_detail=False,detail_dose_submit=None,confirm_dose=False,r69_aligned=False,
+            native_tri_submit=None,r69_submit=None):
     x=read(context)
     rt={k:x[k] for k in ('project','python','frozen_sources')}
     p=PurePosixPath(x['project'])
@@ -22,16 +25,21 @@ def publish(repo,output,context,ssh_config,data_submit,tri_submit,dose_submit=No
         raise ValueError('High-coherence detail requires the frozen independent source draw')
     if (confirm_dose or r69_aligned) and detail_dose_submit is None:
         raise ValueError('Dose confirmation requires the frozen single-seed dose matrix')
-    joint=stack or draw_submit is not None
+    native_joint=native_tri_submit is not None
+    if native_joint!=(r69_submit is not None):
+        raise ValueError('Joint LoRa inference requires both native releases')
+    if native_joint and (confirm_dose or r69_aligned or coherent_detail):
+        raise ValueError('Joint LoRa inference uses already released models')
+    joint=stack or draw_submit is not None or native_joint
     new_run=shape or projected or coverage_submit is not None or joint
-    if new_run and dose_submit is None:
+    if new_run and dose_submit is None and not native_joint:
         raise ValueError('Shape protection requires the frozen full LoRa G')
     handles=[(data_submit,DATA_RUN),(tri_submit,SET_RUN if joint else WARMUP_RUN if new_run else TRI)]
     if dose_submit is not None:
         handles.append((dose_submit,RUN))
     if coverage_submit is not None:
         handles.append((coverage_submit,PROJECTED_RUN))
-    if joint:
+    if joint and not native_joint:
         if projected_submit is None:
             raise ValueError('Joint LoRa comparisons require the same frozen projected G control')
         handles.append((projected_submit,PROJECTED_RUN))
@@ -42,13 +50,17 @@ def publish(repo,output,context,ssh_config,data_submit,tri_submit,dose_submit=No
     if detail_dose_submit is not None:
         parent=DETAIL_CONFIRM_RUN if r69_aligned else DETAIL_DOSE_RUN if confirm_dose else DETAIL_RUN
         handles.append((detail_dose_submit,parent))
+    if native_joint:
+        handles.extend(((native_tri_submit,REPL_RUN),(r69_submit,R69_LORA_RUN)))
     for path,name in handles:
         o=read(path)
         if (o['archive_transfer']!='VERIFIED' or PurePosixPath(o['run_root'])!=p/'runs'/name
                 or PurePosixPath(o['cwd'])!=p/'releases'/f'{name}-release'):
             raise ValueError('The full LoRa release receipts differ')
     data=p/'runs'/DATA_RUN
-    if joint:
+    if native_joint:
+        name=JOINT_RUN
+    elif joint:
         if detail_dose_submit is not None:
             name=R69_LORA_RUN if r69_aligned else DETAIL_CONFIRM_RUN if confirm_dose else DETAIL_DOSE_RUN
         else:
@@ -87,4 +99,6 @@ if __name__=='__main__':
     extension=p.add_mutually_exclusive_group()
     extension.add_argument('--confirm-dose',action='store_true')
     extension.add_argument('--r69-aligned',action='store_true')
+    p.add_argument('--native-tri-submit',type=Path)
+    p.add_argument('--r69-submit',type=Path)
     publish(**vars(p.parse_args()))

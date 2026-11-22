@@ -17,6 +17,7 @@ from .full_dura_core import (COVERAGE_RECIPES, Dose, dose_features, g_record, pr
 from .full_dura_detail import (CONFIRM_NEW_SEEDS, DETAIL_CONFIRM_RUN, DETAIL_DOSE_MODES,
                                DETAIL_DOSE_RUN, DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS)
 from .full_dura_r69_lora import R69_LORA_RUN, R69_MODES, R69_SEEDS
+from .full_native_joint import JOINT_MODES, JOINT_RUN, JOINT_SEEDS
 from .full_packet_data import LIMIT, PROTOCOL
 from .full_supervised import SEEDS, construct, handles
 from .packet_runner import schedule
@@ -24,6 +25,7 @@ from .refine_g import aligned_target
 from .refine_runner import start
 from .runner import activate
 from .full_restore_draw import RUN as DRAW_RUN
+from .full_tri_repl_lora import REPL_RUN
 
 RUN='20261122-phase1-lora-full-dura-dose-m3-r01'
 MODES=('direct','fixed','dose')
@@ -42,6 +44,8 @@ DETAIL_RUNS=(DETAIL_RUN,DETAIL_DOSE_RUN,DETAIL_CONFIRM_RUN)
 
 
 def modes_for(root):
+    if root.name==JOINT_RUN:
+        return JOINT_MODES
     if root.name==R69_LORA_RUN:
         return R69_MODES
     if root.name==DETAIL_RUN:
@@ -60,7 +64,7 @@ def modes_for(root):
 
 
 def recognizer_run(root):
-    if root.name in (STACK_RUN,STAGED_RUN,R69_LORA_RUN,*DETAIL_RUNS):
+    if root.name in (STACK_RUN,STAGED_RUN,R69_LORA_RUN,JOINT_RUN,*DETAIL_RUNS):
         return SET_RUN
     return WARMUP_RUN if root.name in (SHAPE_RUN,PROJECTED_RUN,COVERAGE_RUN) else TRI
 
@@ -159,6 +163,10 @@ def smoke(rt):
 
 @torch.no_grad()
 def source_wave(rt,seed):
+    if Path(rt['run_root']).name==JOINT_RUN:
+        root=Path(rt['run_root'])
+        name=f'{seed}.json'
+        return write(root/'source_wave'/name,read(root.parent/R69_LORA_RUN/'source_wave'/name))
     if Path(rt['run_root']).name==R69_LORA_RUN:
         from .full_dura_r69_lora import r69_audit
         return r69_audit(rt,seed)
@@ -224,6 +232,9 @@ def predict(rt,seed):
             or read(target/'complete.json')!=dict(status='TARGET_READY',protocol=PROTOCOL,target_truth_read=False,
                               receivers=list(TARGET),per_receiver=LIMIT,views=list(VIEWS))):
         raise ValueError('Blind full pair is not ready')
+    if root.name==JOINT_RUN:
+        from .full_native_joint import predict_joint
+        return predict_joint(root,target,c,seed,'cuda:0')
     method=SET_METHOD if pred.name==SET_RUN else 'adaptive_tri'
     name=case(seed,method)
     base=pred/'predictions'/name
@@ -377,10 +388,19 @@ def dispatch(rt):
         seeds=CONFIRM_NEW_SEEDS
     elif root.name==R69_LORA_RUN:
         seeds=R69_SEEDS
+    elif root.name==JOINT_RUN:
+        seeds=JOINT_SEEDS
     else:
         seeds=DETAIL_SEEDS if root.name in DETAIL_RUNS else SEEDS
     try:
-        if root.name==R69_LORA_RUN:
+        if root.name==JOINT_RUN:
+            write(state,dict(status='WAITING_FOR_NATIVE_F_AND_G'))
+            for prior in (R69_LORA_RUN,REPL_RUN):
+                wait_for(root.parent/prior,'PREDICTIONS_FROZEN')
+            write(state,dict(status='SOURCE_SMOKE'),exclusive=False)
+            if launch(rt,'native_joint_smoke','source').wait():
+                raise RuntimeError('Frozen LoRa native joint source smoke failed')
+        elif root.name==R69_LORA_RUN:
             write(state,dict(status='SOURCE_SMOKE'))
             wait_for(root.parent/DRAW_RUN,'SOURCE_DRAW_READY')
             if launch(rt,'r69_smoke','source').wait():
@@ -449,7 +469,8 @@ if __name__=='__main__':
     p=argparse.ArgumentParser()
     p.add_argument('kind',choices=('dispatch','train_gate','smoke','shape_smoke','train','train_projected',
                                    'train_coverage','stage_teacher','stage_student','wave_audit','predict',
-                                   'detail_smoke','train_detail','r69_smoke','r69_teacher','r69_student','r69_gate'))
+                                   'detail_smoke','train_detail','r69_smoke','r69_teacher','r69_student','r69_gate',
+                                   'native_joint_smoke'))
     p.add_argument('runtime',type=Path)
     p.add_argument('name',nargs='?')
     a=p.parse_args()
@@ -490,5 +511,8 @@ if __name__=='__main__':
         elif a.kind=='r69_gate':
             from .full_dura_r69_lora import utility
             utility(rt,int(a.name))
+        elif a.kind=='native_joint_smoke':
+            from .full_native_joint import smoke as joint_smoke
+            joint_smoke(rt)
         else:
             {'wave_audit':source_wave,'predict':predict}[a.kind](rt,int(a.name))

@@ -19,6 +19,7 @@ from .full_dura_core import COVERAGE_RECIPES
 from .full_dura_detail import (CONFIRM_NEW_SEEDS, DETAIL_CONFIRM_RUN, DETAIL_DOSE_MODES, DETAIL_DOSE_RUN,
                                DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS)
 from .full_dura_r69_lora import R69_LORA_RUN, R69_MODES, R69_SEEDS
+from .full_native_joint import JOINT_MODES, JOINT_RUN
 from .full_packet_data import LIMIT
 from .full_supervised import SEEDS
 from .scoring import macro_f1
@@ -27,7 +28,7 @@ from .scoring import macro_f1
 def matrix(output,modes=MODES,*,seeds=None):
     pred={}
     act={}
-    detail=modes in (DETAIL_MODES,DETAIL_DOSE_MODES,R69_MODES)
+    detail=modes in (DETAIL_MODES,DETAIL_DOSE_MODES,R69_MODES,JOINT_MODES)
     seeds=seeds or (DETAIL_SEEDS if detail else SEEDS)
     for s in seeds:
         p=output/'predictions'/str(s)
@@ -45,7 +46,7 @@ def matrix(output,modes=MODES,*,seeds=None):
             if detail and (not row['active']<=row['detail_active']<=LIMIT
                            or row['detail_active']-row['active']!=row['detail_extra']):
                 raise ValueError('Invalid per-mode high-coherence bookkeeping')
-            if modes==R69_MODES and not 0<=row['r69_active']<=LIMIT:
+            if modes in (R69_MODES,JOINT_MODES) and not 0<=row['r69_active']<=LIMIT:
                 raise ValueError('Invalid original DURA LoRa gate count')
         act[s]=activation
         for v in VIEWS:
@@ -64,7 +65,7 @@ def scores(pred,act,truth,modes=MODES,*,seeds=None):
     labels=np.concatenate([truth[r] for r in TARGET])
     n=len(labels)
     rows=[]
-    detail=modes in (DETAIL_MODES,DETAIL_DOSE_MODES,R69_MODES)
+    detail=modes in (DETAIL_MODES,DETAIL_DOSE_MODES,R69_MODES,JOINT_MODES)
     seeds=seeds or (DETAIL_SEEDS if detail else SEEDS)
     for s in seeds:
         for v in VIEWS:
@@ -76,7 +77,18 @@ def scores(pred,act,truth,modes=MODES,*,seeds=None):
                 c=p==labels
                 cm=np.bincount(10*labels+p,minlength=100).reshape(10,10)
                 count=0 if mode=='direct' else active
-                if modes==R69_MODES and mode in R69_MODES[-2:]:
+                if modes==JOINT_MODES and mode.startswith('native_repl'):
+                    name='_'.join(mode.split('_',2)[:2])+'_direct'
+                    reference=pred[s,name,v]
+                    if name==mode:
+                        count=0
+                    else:
+                        count=sum(act[s][f'{r}/{v}']['r69_active'] for r in TARGET)
+                    if (p!=reference).sum()>count:
+                        raise ValueError('Combined LoRa DURA changes exceed the matched Tri gate')
+                    right=reference==labels
+                    changes=dict(gained_own_direct=int((c&~right).sum()),lost_own_direct=int((~c&right).sum()))
+                elif modes in (R69_MODES,JOINT_MODES) and mode in R69_MODES[-2:]:
                     count=sum(act[s][f'{r}/{v}']['r69_active'] for r in TARGET)
                     if (p!=pred[s,'direct',v]).sum()>count:
                         raise ValueError('Original DURA LoRa changes exceed the gate')
@@ -123,7 +135,9 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
     frozen=run.name in (SHAPE_RUN,SWEEP_RUN,STACK_RUN) or sweep
     cmd=['ssh','-F',str(ssh_config),'-T','-o','BatchMode=yes','-o','ConnectTimeout=10','N607']
     wait_for_predictions(cmd,root)
-    if run.name==R69_LORA_RUN:
+    if run.name==JOINT_RUN:
+        extra=''
+    elif run.name==R69_LORA_RUN:
         extra=' '+' '.join(f'G/{stage}/{s}/source_support.json G/{stage}/{s}/steps.jsonl'
                            for stage in ('teacher','student') for s in R69_SEEDS)
         extra+=' '+' '.join(f'G/gate/{s}/training.json' for s in R69_SEEDS)
