@@ -2,7 +2,6 @@
 import json
 from pathlib import Path
 
-import numpy as np
 import torch
 
 from experiments.cric_dura_comparison.g_lineage import skeleton
@@ -12,9 +11,7 @@ from experiments.pamf_r65_four_route.stage_polyphase import StageDistilled
 from .dura_gate import RiskDura
 from .dura_repair import complex_iq, power
 from .full_dura_core import BATCH, iq_arrays, protected_shapes, read_gate, receiver_loss
-from .full_packet_data import COUNTS, PROTOCOL
-from .full_packet_publish import DATA_RUN
-from .full_restore_draw import DRAW, RUN as DRAW_RUN
+from .full_restore_draw import RUN as DRAW_RUN, load_draw
 from .full_supervised import SEEDS, handles
 from .refine_g import aligned_target
 
@@ -44,18 +41,7 @@ def load_stage(root,c,seed,gate,device,stage):
 
 
 def alternate_arrays(root,device):
-    handle=root.parent/DRAW_RUN
-    proof=read(handle/'complete.json')
-    if (proof['status']!='SOURCE_DRAW_READY' or proof['protocol']!=PROTOCOL or proof['parent']!=DATA_RUN
-            or proof['draw']!=DRAW or proof['TX_reads'] or proof['target_reads']):
-        raise ValueError('The alternate IQ is not tied to the same source contract')
-    arrays=[]
-    for role in ('L_s','U_s'):
-        a=np.load(handle/f'{role}_practical.npy',mmap_mode='r',allow_pickle=False)
-        if a.shape!=(COUNTS[role],6,2,256) or a.dtype!=np.float32 or proof['rows'][role]['n']!=len(a):
-            raise ValueError('Incomplete alternate source IQ views')
-        arrays.append(tensor(a,device))
-    return arrays
+    return [tensor(load_draw(root.parent/DRAW_RUN,role),device) for role in ('L_s','U_s')]
 
 
 def corrected(model,x,proposal,strength):

@@ -150,7 +150,20 @@ def train(rt,method):
         seed=SEED,epochs=EPOCHS,steps=STEPS,sampler=complete_labeled_batches)
 
 
-def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampler,full=False,lr=1.5e-4):
+@torch.no_grad()
+def practical_quality(reference, values):
+    return torch.cat([reference.coherence(b.flatten(0,1)).reshape(len(b),6).median(1).values
+                      for b in values.split(128)])>=.40
+
+
+def select_practical(usable,other_usable,ids,parity):
+    extra=other_usable[ids]&(((ids+parity)%2==0)|~usable[ids])
+    use=(usable[ids]|other_usable[ids])&((torch.arange(len(ids),device=ids.device)+parity)%2==0)
+    return use,extra&use
+
+
+def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampler,full=False,lr=1.5e-4,
+        alternate_path=None):
     folder.mkdir(parents=True,exist_ok=False)
     dev='cuda:0'
     (x,y,rx),(v,vy,vr)=arrays
@@ -166,8 +179,9 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
     classes=[row['class_id'] for row in settings['hard_rules']]
     if method!='continued_sup':
         u,ur=load_u(source,cache,c,dev)
-    use_sets=method=='tri_set'
-    tri=method in ('adaptive_tri','tri_practical','tri_set')
+    pair_draws=method=='tri_set_practical'
+    use_sets=method in ('tri_set','tri_set_practical')
+    tri=method in ('adaptive_tri','tri_practical') or use_sets
     if tri:
         teacher=cache_teacher(f,u,settings['hard_rules'],with_sets=use_sets)
         up,uc,uq,uz=teacher[:4]
@@ -175,18 +189,20 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
         membership=teacher[4]
         bits=2**torch.arange(10,device=dev)
         set_records=[]
-    if method=='tri_practical':
+    if method=='tri_practical' or pair_draws:
         from .physical import ChirpResponse
         supplied=np.load(cache/'U_s_practical.npy',mmap_mode='r',allow_pickle=False)
         if supplied.shape!=tuple(u.shape) or supplied.dtype!=np.float32:
             raise ValueError('Matched practical U cache differs from registered U')
         practical_u=tensor(supplied,dev)
         ref=ChirpResponse(fft_factor=8).to(dev)
-        quality=[]
-        with torch.no_grad():
-            for batch in practical_u.split(128):
-                quality.append(ref.coherence(batch.flatten(0,1)).reshape(len(batch),6).median(1).values)
-        usable=torch.cat(quality)>=.40
+        usable=practical_quality(ref,practical_u)
+        if pair_draws:
+            from .full_restore_draw import load_draw
+            alternate_u=tensor(load_draw(alternate_path,'U_s'),dev)
+            if alternate_u.shape!=u.shape:
+                raise ValueError('Independent practical draw differs from blind source U')
+            other_usable=practical_quality(ref,alternate_u)
     opt=torch.optim.AdamW(f.parameters(),lr=lr,weight_decay=5e-4)
     sch=torch.optim.lr_scheduler.CosineAnnealingLR(opt,T_max=epochs*steps,eta_min=1.5e-5)
     accepted=[]
@@ -203,6 +219,7 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
             ramp=min(1.,epoch/8.)
             anchors=0
             sat_exposures=0
+            alternate_exposures=0
             set_count=0
             for j,ids in enumerate(sampler(y_np,r_np,lrng)):
                 idx=tensor(ids,dev); scene=tensor(scene_rng.integers(1,len(VIEWS),size=len(ids)),dev)
@@ -237,6 +254,12 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
                         use=(usable[ids_u]&alternating)
                         sat_exposures+=int(use.sum())
                         agreement_input=torch.where(use[:,None,None,None],practical_u[ids_u],uv)
+                    elif pair_draws:
+                        use,extra=select_practical(usable,other_usable,ids_u,parity)
+                        practical=torch.where(extra[:,None,None,None],alternate_u[ids_u],practical_u[ids_u])
+                        agreement_input=torch.where(use[:,None,None,None],practical,uv)
+                        sat_exposures+=int(use.sum())
+                        alternate_exposures+=int(extra.sum())
                     aligned=agreement_input[:,parity::2].repeat(1,2,1,1)
                     consistency_logits,vz=f(noise(rotated(aligned,aug),aug))
                     agree=(1.-F.cosine_similarity(vz,uz[ids_u],dim=1)).mean()
@@ -278,6 +301,8 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
                 row['U_practical_exposures']=sat_exposures
             if use_sets:
                 row['U_set_exposures']=set_count
+            if pair_draws:
+                row['U_alternate_exposures']=alternate_exposures
             if not full or epoch==1 or epoch%4==0 or epoch==epochs:
                 row['V']=metrics(f,v[0],vy,vr)
             if epoch in ((1,14,epochs) if full else (1,12,24,36,epochs)):

@@ -42,6 +42,21 @@ def handles(rt):
     return source,original,source_contract(source)
 
 
+def load_draw(root,role):
+    if root.name!=RUN or role not in ROLES:
+        raise ValueError('Expected the registered source training draw')
+    proof=read(root/'complete.json')
+    if (proof['status']!='SOURCE_DRAW_READY' or proof['protocol']!=PROTOCOL or proof['parent']!=DATA_RUN
+            or proof['draw']!=DRAW or proof.get('views')!=list(VIEWS[1:])
+            or proof['TX_reads'] or proof['target_reads']):
+        raise ValueError('The alternate IQ is not tied to the same source contract')
+    array=np.load(root/f'{role}_practical.npy',mmap_mode='r',allow_pickle=False)
+    if (array.shape!=(COUNTS[role],len(CHIRPS),2,256) or array.dtype!=np.float32
+            or proof['rows'][role]['n']!=len(array)):
+        raise ValueError('Incomplete alternate source IQ views')
+    return array
+
+
 def smoke(rt):
     src,original,c=handles(rt)
     x,rx,ids,base=source_role(src,c,'U_s')

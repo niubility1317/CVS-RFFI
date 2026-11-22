@@ -3,19 +3,26 @@ import argparse
 from pathlib import Path, PurePosixPath
 
 from experiments.cric_dura_comparison.io import read
-from .full_adaptive import RUN, SET_RUN, WARMUP_RUN
+from .full_adaptive import PRACTICAL_SET_RUN, RUN, SET_RUN, WARMUP_RUN
 from .full_packet_publish import DATA_RUN
 from .full_supervised import RUN as SUPERVISED
+from .full_restore_draw import RUN as DRAW_RUN
 from .publish import release, release_commit
 
 
-def publish(repo,output,context,ssh_config,data_submit,supervised_submit,prior_submit=None,warmup_submit=None):
+def publish(repo,output,context,ssh_config,data_submit,supervised_submit,prior_submit=None,warmup_submit=None,
+            draw_submit=None,set_submit=None):
     ctx=read(context)
     rt={k:ctx[k] for k in ('project','python','frozen_sources')}
     p=PurePosixPath(rt['project'])
     dependencies=[(data_submit,DATA_RUN),(supervised_submit,SUPERVISED)]
     run=RUN
-    if warmup_submit is not None:
+    if draw_submit is not None:
+        if warmup_submit is None or set_submit is None or prior_submit is not None:
+            raise ValueError('Independent-draw Tri requires E140, candidate-set, and source draw receipts')
+        dependencies.extend(((warmup_submit,WARMUP_RUN),(draw_submit,DRAW_RUN),(set_submit,SET_RUN)))
+        run=PRACTICAL_SET_RUN
+    elif warmup_submit is not None:
         dependencies.append((warmup_submit,WARMUP_RUN))
         run=SET_RUN
     elif prior_submit is not None:
@@ -31,8 +38,10 @@ def publish(repo,output,context,ssh_config,data_submit,supervised_submit,prior_s
               release_root=str(p/'releases'/f'{run}-release'),run_root=str(p/'runs'/run),
               parent_root=str(data),source_root=str(p/'releases'/f'{DATA_RUN}-release/data/source'),
               target_views=str(data/'target_views'),allowed_gpus=list(range(7)),max_compute_processes=4)
-    if run in (WARMUP_RUN,SET_RUN):
+    if run in (WARMUP_RUN,SET_RUN,PRACTICAL_SET_RUN):
         rt['max_workers']=4
+    if run==PRACTICAL_SET_RUN:
+        rt['allowed_gpus']=[4,1,5,6,0,2,3,7]
     return release(repo,output,rt,ssh_config)
 
 
@@ -43,4 +52,6 @@ if __name__=='__main__':
     mode=p.add_mutually_exclusive_group()
     mode.add_argument('--prior-submit',type=Path)
     mode.add_argument('--warmup-submit',type=Path)
+    p.add_argument('--draw-submit',type=Path)
+    p.add_argument('--set-submit',type=Path)
     publish(**vars(p.parse_args()))

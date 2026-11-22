@@ -13,6 +13,7 @@ from .adaptive_repair import fit, intersect_source
 from .comparison import seed_all
 from .data import TARGET, VIEWS
 from .full_packet_data import LIMIT, PROTOCOL
+from .full_restore_draw import RUN as DRAW_RUN
 from .full_supervised import FULL_EPOCHS, RUN as SUPERVISED, SEEDS, batches, construct, handles, load_f, role
 from .holdout import FOLDS, summary, view_evidence
 from .packet_runner import schedule
@@ -23,6 +24,9 @@ RUN='20261122-phase1-lora-full-adaptive-m12-r01'
 WARMUP_RUN='20261122-phase1-lora-extended-supervision-m12-r01'
 SET_RUN='20261122-phase1-lora-tri-label-set-m3-r01'
 SET_METHOD='tri_set'
+PRACTICAL_SET_RUN='20261122-phase1-lora-tri-set-practical-draw-m3-r01'
+PRACTICAL_SET_METHOD='tri_set_practical'
+SET_METHODS=(SET_METHOD,PRACTICAL_SET_METHOD)
 METHODS=('continued_sup','plain_pl','adaptive_tri','tri_practical')
 WARMUP_METHODS=('continued_sup','plain_pl','adaptive_tri')
 EPOCHS=28
@@ -39,6 +43,8 @@ def cases(methods=METHODS):
 
 
 def methods_for(root):
+    if root.name==PRACTICAL_SET_RUN:
+        return (PRACTICAL_SET_METHOD,)
     if root.name==SET_RUN:
         return (SET_METHOD,)
     return WARMUP_METHODS if root.name==WARMUP_RUN else METHODS
@@ -47,7 +53,7 @@ def methods_for(root):
 def decode(name):
     value,method=name.split('-',1)
     seed=int(value.removeprefix('s'))
-    if seed not in SEEDS or method not in (*METHODS,SET_METHOD):
+    if seed not in SEEDS or method not in (*METHODS,*SET_METHODS):
         raise ValueError('Unknown full LoRa row')
     return seed,method
 
@@ -80,7 +86,7 @@ def load_supervised_continuation(root,c,seed,device):
 
 def teacher(root,c,seed,device):
     parent,_=supervisor(root,c)
-    if root.name==SET_RUN:
+    if root.name in (SET_RUN,PRACTICAL_SET_RUN):
         return load_supervised_continuation(root.parent/WARMUP_RUN/'warmup',c,seed,device)
     if root.name==WARMUP_RUN:
         return load_supervised_continuation(root/'warmup',c,seed,device)
@@ -114,7 +120,7 @@ def warmup(rt,seed):
 def policy(rt,seed):
     src,views,c=handles(rt)
     root=Path(rt['run_root'])
-    if root.name==SET_RUN:
+    if root.name in (SET_RUN,PRACTICAL_SET_RUN):
         frozen=read(root.parent/WARMUP_RUN/'policy'/f'{seed}.json')
         if (frozen['status']!='SOURCE_POLICY_FROZEN' or frozen['seed']!=seed
                 or frozen['supervised_epochs']!=FULL_EPOCHS+2*EPOCHS
@@ -149,9 +155,11 @@ def train(rt,name):
     settings=read(root/'policy'/f'{seed}.json')
     if settings['seed']!=seed or settings['U_reads'] or settings['target_reads']:
         raise ValueError('Full LoRa qualification policy is not source-only')
+    alternate=root.parent/DRAW_RUN if method==PRACTICAL_SET_METHOD else None
     fit(root/'F'/name,f,method,src,views,c,data,settings,
         seed=seed,epochs=EPOCHS,steps=STEPS,sampler=batches,full=True,
-        lr=WARMUP_LR if root.name in (WARMUP_RUN,SET_RUN) else 1.5e-4)
+        lr=WARMUP_LR if root.name in (WARMUP_RUN,SET_RUN,PRACTICAL_SET_RUN) else 1.5e-4,
+        alternate_path=alternate)
 
 
 def complete_f(root,c,name):
@@ -177,8 +185,10 @@ def audit(rt):
               hard_U_count=sum(sum(t['accepted']) for t in a),
               cross_rx_anchors=sum(t['anchors'] for t in a),
               practical_U_uses=sum(t['U_practical_exposures'] for t in a))
-        if m==SET_METHOD:
+        if m in SET_METHODS:
             results[name]['set_U_count']=sum(t['U_set_exposures'] for t in a)
+        if m==PRACTICAL_SET_METHOD:
+            results[name]['alternate_U_count']=sum(t['U_alternate_exposures'] for t in a)
     write(root/'source_audit.json',dict(status='SOURCE_AUDIT_COMPLETE',target_reads=0,records=results))
 
 
@@ -261,8 +271,11 @@ def dispatch(rt):
     try:
         write(state,dict(status='WAITING_FOR_SOURCE_TEACHERS'))
         wait_for(root.parent/SUPERVISED,'SOURCE_ONLY_COMPLETE')
-        if root.name==SET_RUN:
+        if root.name in (SET_RUN,PRACTICAL_SET_RUN):
             wait_for(root.parent/WARMUP_RUN,'PREDICTIONS_FROZEN')
+        if root.name==PRACTICAL_SET_RUN:
+            wait_for(root.parent/DRAW_RUN,'SOURCE_DRAW_READY')
+            wait_for(root.parent/SET_RUN,'PREDICTIONS_FROZEN')
         write(state,dict(status='SOURCE_SMOKE'),exclusive=False)
         if launch(rt,'smoke','full').wait():
             raise RuntimeError('Actual full-parent source smoke failed')

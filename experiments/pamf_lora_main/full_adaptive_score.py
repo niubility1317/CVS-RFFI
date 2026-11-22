@@ -13,7 +13,8 @@ import numpy as np
 from experiments.cric_dura_comparison.io import read, write
 from .collect import wait_for_predictions
 from .data import CLASSES, TARGET, VIEWS, label_ids, packet_indices, recording
-from .full_adaptive import EPOCHS, METHODS, SET_RUN, WARMUP_METHODS, WARMUP_RUN, case, cases, methods_for
+from .full_adaptive import (EPOCHS, METHODS, PRACTICAL_SET_RUN, SET_METHOD, SET_RUN, WARMUP_METHODS,
+                            WARMUP_RUN, case, cases, methods_for)
 from .full_packet_data import LIMIT
 from .full_supervised import FULL_EPOCHS, SEEDS
 from .packet_score import score_refined_u
@@ -60,6 +61,10 @@ def target_scores(preds,truth,methods=METHODS):
             if base is not None:
                 ref=base==answer
                 by_seed[-1].update(gained_tri=int((ok&~ref).sum()),lost_tri=int((~ok&ref).sum()))
+            candidate=preds.get((case(seed,SET_METHOD),v))
+            if candidate is not None:
+                ref=candidate==answer
+                by_seed[-1].update(gained_set=int((ok&~ref).sum()),lost_set=int((~ok&ref).sum()))
     summary=[]
     for m in methods:
         for which in (*VIEWS,'practical_mean'):
@@ -83,15 +88,20 @@ def verify_control_policies(controls, output):
             raise ValueError('Tri set comparisons require the same frozen E140 teacher policy')
 
 
-def collect(submit,ssh_config,dataset,source,output,controls=None):
+def collect(submit,ssh_config,dataset,source,output,controls=None,set_control=None):
     run_root=PurePosixPath(read(submit)['run_root'])
     root=shlex.quote(str(run_root))
     methods=methods_for(run_root)
     names=[n for n,_,_ in cases(methods)]
-    sets=run_root.name==SET_RUN
+    paired=run_root.name==PRACTICAL_SET_RUN
+    sets=run_root.name in (SET_RUN,PRACTICAL_SET_RUN)
     if sets!=(controls is not None):
         raise ValueError('The frozen E168 controls are required only for the Tri set comparison')
+    if paired!=(set_control is not None):
+        raise ValueError('The frozen clean-observation set control is required for the practical set comparison')
     prior=matrix(controls,WARMUP_METHODS) if controls is not None else {}
+    if paired:
+        prior.update(matrix(set_control,(SET_METHOD,)))
     conn=['ssh','-F',str(ssh_config),'-T','-o','BatchMode=yes','-o','ConnectTimeout=10','N607']
     wait_for_predictions(conn,root)
     additions=' '.join(f'F/{n}/epochs.jsonl F/{n}/accepted_U.npy' for n in names)
@@ -117,6 +127,8 @@ def collect(submit,ssh_config,dataset,source,output,controls=None):
                 out.write(ar.extractfile(m).read())
     if sets:
         verify_control_policies(controls,output)
+    if paired:
+        verify_control_policies(set_control,output)
     predictions={**prior,**matrix(output,methods)}
     truth={}
     with zipfile.ZipFile(dataset/'multiple_receiver_test.zip') as ar:
@@ -133,4 +145,5 @@ if __name__=='__main__':
     for k in ('submit','ssh-config','dataset','source','output'):
         p.add_argument('--'+k,type=Path,required=True)
     p.add_argument('--controls',type=Path)
+    p.add_argument('--set-control',type=Path)
     collect(**vars(p.parse_args()))
