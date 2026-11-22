@@ -1,0 +1,107 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261122-phase1-lora-packet-aligned-pilot-m5-r02",
+  "group_id": "phase1-pamf-lora-transfer",
+  "display_name": "LoRa 前导输入、Tri 与 DURA 单种子配对验证",
+  "stage": "Phase1",
+  "kind": "cvs",
+  "parent_run_ids": [
+    "20261121-phase1-pamf-lora-rx5-main-m18-r01"
+  ],
+  "authorization": "用户要求优先修正输入并发布自适应 Tri 和 DURA 优化实验。",
+  "data": {
+    "contract": "lora_packet_pilot_v1",
+    "source_counts": {
+      "L_s": 1600,
+      "U_s": 2560,
+      "V": 800
+    },
+    "source_receivers": 5,
+    "class_count": 10,
+    "test_receivers": 15,
+    "packets_per_receiver": 128,
+    "sample_rate_hz": 1000000,
+    "source_only_until_frozen": true,
+    "split_seed": 2026112207,
+    "test_scope": "raw ground and six practical full/post_sync/no-EQ, historically exposed development receivers",
+    "native_iq_release": "20261122-phase1-lora-packet-aligned-pilot-m5-r01-release"
+  },
+  "matrix": {
+    "model_seed": 2026092701,
+    "rows": [
+      {
+        "row_id": "single_sup",
+        "F": "PAMF-Tri joint labeled",
+        "chirps": 1,
+        "epochs": 30,
+        "readouts": [
+          "direct"
+        ]
+      },
+      {
+        "row_id": "packet_sup",
+        "F": "PAMF-Tri joint labeled",
+        "chirps": 6,
+        "epochs": 30,
+        "readouts": [
+          "direct"
+        ]
+      },
+      {
+        "row_id": "packet_pl",
+        "F": "same plus PL(.95)",
+        "chirps": 6,
+        "epochs": 30,
+        "readouts": [
+          "direct",
+          "dura"
+        ]
+      },
+      {
+        "row_id": "packet_tri",
+        "F": "same plus source-calibrated PL and RX-balanced fused contrast",
+        "chirps": 6,
+        "epochs": 30,
+        "readouts": [
+          "direct",
+          "dura"
+        ]
+      },
+      {
+        "row_id": "G",
+        "G": "scratch bounded two-stage DURA, paired source L/U IQ only",
+        "epochs": 15
+      }
+    ]
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "selection": "fixed final F E30, G E15",
+    "source_policy": "only frozen-eval V calibrates U",
+    "target_feedback": false
+  },
+  "code": {
+    "commit": "actual git OID from submit.json",
+    "cwd": "PROJECT/releases/20261122-phase1-lora-packet-aligned-pilot-m5-r02-release",
+    "environment": "N607 CVS-RFFI"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "gpu_policy": "GPU 0–6, at most one current worker per GPU, two total, 12 GiB admission",
+    "launch_owner": "codex-20261122-phase1-lora-packet-aligned-pilot-m5-r02",
+    "remote_run_root": "PROJECT/runs/20261122-phase1-lora-packet-aligned-pilot-m5-r02",
+    "launch_command": "python -m experiments.pamf_lora_main.packet_publish --repo REPO --output OUTPUT --inputs INPUTS --context CONTEXT --ssh-config CONFIG --data-submit FIRST_RELEASE_SUBMIT",
+    "stop_rule": "Stop new dispatch on source protocol, alignment or execution failure and preserve outputs."
+  },
+  "expected_artifacts": [
+    "source_views/complete.json",
+    "smoke.json",
+    "F/*/complete.json",
+    "G/complete.json",
+    "source_audit.json",
+    "target_views/complete.json",
+    "predictions/*/complete.json",
+    "scores.json"
+  ],
+  "replaces_run_id": "20261122-phase1-lora-packet-aligned-pilot-m5-r01"
+}

@@ -17,7 +17,7 @@ from .packet_physics import aligned_view, chirp_windows, make_source, make_targe
 from .runner import activate, available
 
 
-RUN = '20261122-phase1-lora-packet-aligned-pilot-m5-r01'
+RUN = '20261122-phase1-lora-packet-aligned-pilot-m5-r02'
 READOUTS = {m: ('direct','dura') if m in ('packet_pl','packet_tri') else ('direct',) for m in METHODS}
 
 

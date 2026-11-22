@@ -7,10 +7,11 @@ from .packet_data import CHIRPS, ROLE_COUNTS, TARGET_LIMIT
 from .publish import release, release_commit
 
 
-RUN = '20261122-phase1-lora-packet-aligned-pilot-m5-r01'
+RUN = '20261122-phase1-lora-packet-aligned-pilot-m5-r02'
+DATA_RELEASE = '20261122-phase1-lora-packet-aligned-pilot-m5-r01'
 
 
-def publish(repo, output, inputs, context, ssh_config):
+def publish(repo, output, inputs, context, ssh_config, data_submit):
     inputs = Path(inputs)
     a, b = [read(inputs/p/'contract.json') for p in ('source','target')]
     if (a['protocol'] != 'lora_packet_pilot_v1' or b['protocol'] != a['protocol']
@@ -21,15 +22,19 @@ def publish(repo, output, inputs, context, ssh_config):
     ctx = read(context)
     project = PurePosixPath(ctx['project'])
     folder = project/'releases'/f'{RUN}-release'
+    data_folder = project/'releases'/f'{DATA_RELEASE}-release'
+    original = read(data_submit)
+    if PurePosixPath(original['cwd']) != data_folder or original['archive_transfer'] != 'VERIFIED':
+        raise ValueError('Expected packet data transfer from first release')
     runtime = {k:ctx[k] for k in ('project','python','frozen_sources')}
     runtime.update(run_id=RUN,code_commit=release_commit(repo),runner='experiments.pamf_lora_main.packet_runner',
-        run_root=str(project/'runs'/RUN),release_root=str(folder),source_root=str(folder/'data/source'),
-        target_root=str(folder/'data/target'),allowed_gpus=list(range(7)))
-    return release(repo,output,runtime,ssh_config,inputs)
+        run_root=str(project/'runs'/RUN),release_root=str(folder),source_root=str(data_folder/'data/source'),
+        target_root=str(data_folder/'data/target'),allowed_gpus=list(range(7)))
+    return release(repo,output,runtime,ssh_config)
 
 
 if __name__=='__main__':
     p=argparse.ArgumentParser()
-    for key in ('repo','output','inputs','context','ssh-config'):
+    for key in ('repo','output','inputs','context','ssh-config','data-submit'):
         p.add_argument('--'+key,required=True)
     publish(**vars(p.parse_args()))

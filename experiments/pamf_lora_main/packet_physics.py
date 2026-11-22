@@ -24,7 +24,7 @@ def chirp_windows(z, offset=0):
     scale = np.sqrt(np.mean(np.abs(values)**2))
     if not np.isfinite(scale) or scale <= 1e-12:
         raise ValueError('Invalid LoRa packet power')
-    return np.stack((values.real, values.imag), axis=1).astype(np.float32) / scale
+    return np.asarray(np.stack((values.real, values.imag), axis=1) / scale, dtype=np.float32)
 
 
 @lru_cache(maxsize=None)
