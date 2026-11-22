@@ -13,24 +13,31 @@ from .adaptive_repair import fit, intersect_source
 from .comparison import seed_all
 from .data import TARGET, VIEWS
 from .full_packet_data import LIMIT, PROTOCOL
-from .full_supervised import RUN as SUPERVISED, SEEDS, batches, construct, handles, load_f, role
-from .holdout import FOLDS, view_evidence
+from .full_supervised import FULL_EPOCHS, RUN as SUPERVISED, SEEDS, batches, construct, handles, load_f, role
+from .holdout import FOLDS, summary, view_evidence
 from .packet_runner import schedule
 from .refine_runner import start
 from .runner import activate
 
 RUN='20261122-phase1-lora-full-adaptive-m12-r01'
+WARMUP_RUN='20261122-phase1-lora-extended-supervision-m12-r01'
 METHODS=('continued_sup','plain_pl','adaptive_tri','tri_practical')
+WARMUP_METHODS=('continued_sup','plain_pl','adaptive_tri')
 EPOCHS=28
 STEPS=88
+WARMUP_LR=6e-5
 
 
 def case(seed,method):
     return f's{seed}-{method}'
 
 
-def cases():
-    return [(case(s,m),s,m) for s in SEEDS for m in METHODS]
+def cases(methods=METHODS):
+    return [(case(s,m),s,m) for s in SEEDS for m in methods]
+
+
+def methods_for(root):
+    return WARMUP_METHODS if root.name==WARMUP_RUN else METHODS
 
 
 def decode(name):
@@ -52,37 +59,85 @@ def supervisor(root,c):
     return path,a
 
 
+def load_supervised_continuation(root,c,seed,device):
+    name=case(seed,'continued_sup')
+    path=complete_f(root,c,name)
+    rows=[json.loads(line) for line in (path/'epochs.jsonl').read_text().splitlines()]
+    if ([r['step'] for r in rows]!=list(range(STEPS,EPOCHS*STEPS+1,STEPS))
+            or any(r['U_exposures'] or r['anchors'] or any(r['accepted']) for r in rows)):
+        raise ValueError('The teacher ancestor must be purely supervised')
+    with (path/'accepted_U.npy').open('rb') as fp:
+        if np.load(fp,allow_pickle=False).shape!=(0,3):
+            raise ValueError('The teacher ancestor has saved U decisions')
+    model=construct(device).eval()
+    model.load_state_dict(torch.load(path/'model.pt',map_location=device,weights_only=True),strict=True)
+    return model
+
+
+def teacher(root,c,seed,device):
+    parent,_=supervisor(root,c)
+    if root.name==WARMUP_RUN:
+        return load_supervised_continuation(root/'warmup',c,seed,device)
+    return load_f(parent,c,f'seed{seed}',device)
+
+
+def source_arrays(src,views,c,dev):
+    data=[]
+    for key in ('L_s','V'):
+        x,y,rx,_=role(src,views,c,key,dev)
+        data.append((x,tensor(y,dev),tensor(rx,dev)))
+    return data
+
+
+def warmup(rt,seed):
+    src,views,c=handles(rt)
+    root=Path(rt['run_root'])
+    supervisor(root,c)
+    previous=root.parent/RUN
+    if read(previous/'source_audit.json')['status']!='SOURCE_AUDIT_COMPLETE':
+        raise ValueError('The matched supervised ancestor has no completed source audit')
+    seed_all(seed)
+    dev='cuda:0'
+    f=load_supervised_continuation(previous,c,seed,dev)
+    settings=dict(status='SOURCE_POLICY_FROZEN',hard_rules=[],hard_weight=0.)
+    fit(root/'warmup'/'F'/case(seed,'continued_sup'),f,'continued_sup',src,views,c,
+        source_arrays(src,views,c,dev),settings,seed=seed,epochs=EPOCHS,steps=STEPS,
+        sampler=batches,full=True,lr=WARMUP_LR)
+
+
 def policy(rt,seed):
     src,views,c=handles(rt)
     root=Path(rt['run_root'])
-    path,a=supervisor(root,c)
+    _,a=supervisor(root,c)
     dev='cuda:0'
-    f=load_f(path,c,f'seed{seed}',dev)
+    f=teacher(root,c,seed,dev)
     x,y,rx,_=role(src,views,c,'V',dev)
     y,rx=tensor(y,dev),tensor(rx,dev)
-    _,p,g,agree=(torch.cat(q) for q in zip(*(view_evidence(f,b) for b in x[0].split(64)),strict=True))
+    conf,p,g,agree=(torch.cat(q) for q in zip(*(view_evidence(f,b) for b in x[0].split(64)),strict=True))
     rules=intersect_source(a['rules'],p,g,agree,y,rx)
-    write(root/'policy'/f'{seed}.json',dict(status='SOURCE_POLICY_FROZEN',hard_rules=rules,
-          hard_weight=min(.40,.08*len(rules)),heldout_rules=a['rules'],seed=seed,U_reads=0,target_reads=0))
+    record=dict(status='SOURCE_POLICY_FROZEN',hard_rules=rules,hard_weight=min(.40,.08*len(rules)),
+                heldout_rules=a['rules'],seed=seed,U_reads=0,target_reads=0)
+    if root.name==WARMUP_RUN:
+        supervised_epochs=FULL_EPOCHS+2*EPOCHS
+        record.update(supervised_epochs=supervised_epochs,supervised_steps=supervised_epochs*STEPS,
+                      teacher_clean_confidence=summary(conf,p,g,agree,y))
+    write(root/'policy'/f'{seed}.json',record)
 
 
 def train(rt,name):
     seed,method=decode(name)
     src,views,c=handles(rt)
     root=Path(rt['run_root'])
-    parent,_=supervisor(root,c)
     dev='cuda:0'
     seed_all(seed)
-    f=load_f(parent,c,f'seed{seed}',dev)
-    data=[]
-    for key in ('L_s','V'):
-        x,y,rx,_=role(src,views,c,key,dev)
-        data.append((x,tensor(y,dev),tensor(rx,dev)))
+    f=teacher(root,c,seed,dev)
+    data=source_arrays(src,views,c,dev)
     settings=read(root/'policy'/f'{seed}.json')
     if settings['seed']!=seed or settings['U_reads'] or settings['target_reads']:
         raise ValueError('Full LoRa qualification policy is not source-only')
     fit(root/'F'/name,f,method,src,views,c,data,settings,
-        seed=seed,epochs=EPOCHS,steps=STEPS,sampler=batches,full=True)
+        seed=seed,epochs=EPOCHS,steps=STEPS,sampler=batches,full=True,
+        lr=WARMUP_LR if root.name==WARMUP_RUN else 1.5e-4)
 
 
 def complete_f(root,c,name):
@@ -98,7 +153,7 @@ def audit(rt):
     _,_,c=handles(rt)
     root=Path(rt['run_root'])
     results={}
-    for name,seed,m in cases():
+    for name,seed,m in cases(methods_for(root)):
         path=complete_f(root,c,name)
         a=[json.loads(l) for l in (path/'epochs.jsonl').read_text().splitlines()]
         if [r['step'] for r in a]!=list(range(STEPS,STEPS*EPOCHS+1,STEPS)):
@@ -156,7 +211,8 @@ def smoke(rt):
         labels=tensor(m['y'][:8])
     receipt={}
     for seed in SEEDS:
-        model=load_f(path,c,f'seed{seed}','cpu')
+        model=(load_supervised_continuation(root.parent/RUN,c,seed,'cpu') if root.name==WARMUP_RUN
+               else load_f(path,c,f'seed{seed}','cpu'))
         result,features=model(a)
         torch.nn.functional.cross_entropy(result,labels).backward()
         grad=float(torch.nn.utils.clip_grad_norm_(model.parameters(),5.,error_if_nonfinite=True))
@@ -192,9 +248,12 @@ def dispatch(rt):
         write(state,dict(status='SOURCE_SMOKE'),exclusive=False)
         if launch(rt,'smoke','full').wait():
             raise RuntimeError('Actual full-parent source smoke failed')
+        if root.name==WARMUP_RUN:
+            write(state,dict(status='SUPERVISION_EXTENSION'),exclusive=False)
+            schedule(rt,[('warmup',str(s)) for s in SEEDS],launch)
         schedule(rt,[('policy',str(s)) for s in SEEDS],launch)
         write(state,dict(status='SOURCE_TRAINING'),exclusive=False)
-        names=[n for n,_,_ in cases()]
+        names=[n for n,_,_ in cases(methods_for(root))]
         schedule(rt,[('train',name) for name in names],launch)
         if launch(rt,'audit','full').wait():
             raise RuntimeError('Full source log audit failed')
@@ -210,7 +269,7 @@ def dispatch(rt):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser()
-    p.add_argument('kind',choices=('dispatch','smoke','policy','train','audit','predict'))
+    p.add_argument('kind',choices=('dispatch','smoke','warmup','policy','train','audit','predict'))
     p.add_argument('runtime',type=Path)
     p.add_argument('name',nargs='?')
     a=p.parse_args()
@@ -221,6 +280,8 @@ if __name__=='__main__':
         activate(rt)
         if a.kind=='policy':
             policy(rt,int(a.name))
+        elif a.kind=='warmup':
+            warmup(rt,int(a.name))
         elif a.kind in ('train','predict'):
             {'train':train,'predict':predict}[a.kind](rt,a.name)
         else:

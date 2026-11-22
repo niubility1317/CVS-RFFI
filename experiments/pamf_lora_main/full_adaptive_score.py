@@ -13,16 +13,16 @@ import numpy as np
 from experiments.cric_dura_comparison.io import read, write
 from .collect import wait_for_predictions
 from .data import CLASSES, TARGET, VIEWS, label_ids, packet_indices, recording
-from .full_adaptive import EPOCHS, METHODS, case, cases
+from .full_adaptive import EPOCHS, METHODS, WARMUP_RUN, case, cases, methods_for
 from .full_packet_data import LIMIT
 from .full_supervised import SEEDS
 from .packet_score import score_refined_u
 from .scoring import macro_f1
 
 
-def matrix(root):
+def matrix(root,methods=METHODS):
     preds={}
-    for name,seed,method in cases():
+    for name,seed,method in cases(methods):
         p=root/'predictions'/name
         if read(p/'complete.json')!=dict(status='PREDICTIONS_FROZEN',seed=seed,method=method,
                     target_truth_read=False,receivers=list(TARGET),per_receiver=LIMIT,
@@ -39,10 +39,10 @@ def matrix(root):
     return preds
 
 
-def target_scores(preds,truth):
+def target_scores(preds,truth,methods=METHODS):
     answer=np.concatenate([truth[r] for r in TARGET])
     by_seed=[]
-    for name,seed,m in cases():
+    for name,seed,m in cases(methods):
         for v in VIEWS:
             p=preds[name,v]
             ok=p==answer
@@ -57,7 +57,7 @@ def target_scores(preds,truth):
                 gained_PL=int((ok&~pl).sum()),lost_PL=int((~ok&pl).sum()),
                 gained_sup=int((ok&~sup).sum()),lost_sup=int((~ok&sup).sum())))
     summary=[]
-    for m in METHODS:
+    for m in methods:
         for which in (*VIEWS,'practical_mean'):
             chosen=[r for r in by_seed if r['method']==m
                     and (r['view']==which or (which=='practical_mean' and r['view']!='clean'))]
@@ -70,17 +70,22 @@ def target_scores(preds,truth):
 
 
 def collect(submit,ssh_config,dataset,source,output):
-    root=shlex.quote(read(submit)['run_root'])
+    run_root=PurePosixPath(read(submit)['run_root'])
+    root=shlex.quote(str(run_root))
+    methods=methods_for(run_root)
+    names=[n for n,_,_ in cases(methods)]
     conn=['ssh','-F',str(ssh_config),'-T','-o','BatchMode=yes','-o','ConnectTimeout=10','N607']
     wait_for_predictions(conn,root)
-    additions=' '.join(f'F/{n}/epochs.jsonl F/{n}/accepted_U.npy' for n,_,_ in cases())
+    additions=' '.join(f'F/{n}/epochs.jsonl F/{n}/accepted_U.npy' for n in names)
+    if run_root.name==WARMUP_RUN:
+        additions+=' '+' '.join(f'warmup/F/{case(s,"continued_sup")}/epochs.jsonl' for s in SEEDS)
     raw=subprocess.check_output([*conn,f'tar -czf - -C {root} predictions source_audit.json policy {additions}'],
                                timeout=180)
     output.mkdir(parents=True,exist_ok=False)
     with tarfile.open(fileobj=BytesIO(raw),mode='r:gz') as ar:
         for m in ar:
             p=PurePosixPath(m.name)
-            if p.is_absolute() or '..' in p.parts or p.parts[0] not in ('predictions','source_audit.json','policy','F'):
+            if p.is_absolute() or '..' in p.parts or p.parts[0] not in ('predictions','source_audit.json','policy','F','warmup'):
                 raise ValueError('Unexpected full LoRa artifact')
             if m.isdir():
                 continue
@@ -90,14 +95,14 @@ def collect(submit,ssh_config,dataset,source,output):
             dest.parent.mkdir(parents=True,exist_ok=True)
             with dest.open('xb') as out:
                 out.write(ar.extractfile(m).read())
-    predictions=matrix(output)
+    predictions=matrix(output,methods)
     truth={}
     with zipfile.ZipFile(dataset/'multiple_receiver_test.zip') as ar:
         for i,rx in enumerate(TARGET):
             with recording(ar,f'{rx}_test.h5',output) as h5:
                 truth[rx]=label_ids(h5,LIMIT)[packet_indices(LIMIT,i)]
-    write(output/'scores.json',target_scores(predictions,truth))
-    score_refined_u(dataset,output,source,[name for name,_,_ in cases()],EPOCHS)
+    write(output/'scores.json',target_scores(predictions,truth,methods))
+    score_refined_u(dataset,output,source,names,EPOCHS)
     print('FULL_LORA_SCORED',output/'scores.json',flush=True)
 
 

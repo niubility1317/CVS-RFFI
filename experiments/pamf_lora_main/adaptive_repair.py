@@ -144,7 +144,7 @@ def train(rt,method):
         seed=SEED,epochs=EPOCHS,steps=STEPS,sampler=complete_labeled_batches)
 
 
-def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampler,full=False):
+def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampler,full=False,lr=1.5e-4):
     folder.mkdir(parents=True,exist_ok=False)
     dev='cuda:0'
     (x,y,rx),(v,vy,vr)=arrays
@@ -175,7 +175,7 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
             for batch in practical_u.split(128):
                 quality.append(ref.coherence(batch.flatten(0,1)).reshape(len(batch),6).median(1).values)
         usable=torch.cat(quality)>=.40
-    opt=torch.optim.AdamW(f.parameters(),lr=1.5e-4,weight_decay=5e-4)
+    opt=torch.optim.AdamW(f.parameters(),lr=lr,weight_decay=5e-4)
     sch=torch.optim.lr_scheduler.CosineAnnealingLR(opt,T_max=epochs*steps,eta_min=1.5e-5)
     accepted=[]
     step=0
@@ -245,7 +245,7 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
                 raise ValueError('Expected exact matched labeled training budget')
             row=dict(epoch=epoch,step=step,loss=dict(zip(fields,(total/steps).tolist(),strict=True)),
                   accepted=used_by_class.tolist(),anchors=anchors,
-                  U_exposures=0 if method=='continued_sup' else len(y))
+                  U_exposures=0 if method=='continued_sup' else len(y),lr=sch.get_last_lr()[0])
             if full:
                 row['U_practical_exposures']=sat_exposures
             if not full or epoch==1 or epoch%4==0 or epoch==epochs:

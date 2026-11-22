@@ -186,6 +186,7 @@ def start(rt, kind, name, gpu=None):
 def schedule(rt,jobs,launch=start):
     pending=list(jobs)
     active={}
+    max_workers=rt.get('max_workers',len(rt['allowed_gpus']))
     while pending or active:
         for gpu,(p,k,n) in list(active.items()):
             code=p.poll()
@@ -195,8 +196,10 @@ def schedule(rt,jobs,launch=start):
                 raise RuntimeError(f'{k} {n} exited {code}')
             print('PACKET_COMPLETED',k,n,flush=True)
             del active[gpu]
-        if pending:
+        if pending and len(active)<max_workers:
             for gpu in available(rt['allowed_gpus'],rt.get('max_compute_processes',2)):
+                if len(active)>=max_workers:
+                    break
                 if gpu not in active and pending:
                     k,n=pending.pop(0)
                     active[gpu]=(launch(rt,k,n,gpu),k,n)
