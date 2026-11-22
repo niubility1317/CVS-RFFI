@@ -1,0 +1,38 @@
+{
+  "run_id": "20261122-phase1-lora-full-supervised-m6-r01",
+  "source_data_run": "20261122-phase1-lora-full-aligned-data-r01",
+  "source_scope": "source_supervised_cold_only",
+  "supervised_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "train": {
+    "L": 2800,
+    "V": 12000,
+    "epochs": 84,
+    "steps": 7392
+  },
+  "holdout": {
+    "rx_indices": [
+      2,
+      3,
+      4
+    ],
+    "L": 2240,
+    "V": 2400,
+    "epochs": 104,
+    "steps": 7280
+  },
+  "gpus": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "U_reads": 0,
+  "target_reads": 0
+}
