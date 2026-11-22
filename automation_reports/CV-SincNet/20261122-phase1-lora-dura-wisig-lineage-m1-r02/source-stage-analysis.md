@@ -146,7 +146,7 @@ R17 完整输出相对原作用阶段少 146 次。固定粗恢复先验仍是 3
 
 ## 冻结 R38 的第三步复核
 
-原坐标版 R38 完成完整的 20 轮、4,940 步蒸馏。保持同一 120 个源 V 包和同一冻结 Tri-set。R38 的固定粗恢复先验对照与三级学习先验共享 R38 自己的接收算子和同样的三轮热启动积分，每次 2 次 CG。另保留较早作用估计器的既有输出作参照。
+原坐标版 R38 完成完整的 20 轮、4,940 步蒸馏。保持同一 120 个源 V 包和同一冻结 Tri-set。R38 的固定粗恢复先验对照与三级学习先验共享 R38 自己的接收算子和同样的三轮热启动求解，每轮 2 次 CG。另保留较早作用估计器的既有输出作参照。
 
 | 读出 | Clean 正确数 | Practical 六景正确数 | 城区低正确数 | 城区低输出能量比 |
 |---|---:|---:|---:|---:|
@@ -159,4 +159,4 @@ R17 完整输出相对原作用阶段少 146 次。固定粗恢复先验仍是 3
 
 R38 前两次展开对自身固定先验带来净回收，最后一次学习更新使六景净损失 151 次正确，城区低强度伴随显著缩幅。完整 R38 的正确数还低于其 R17 教师的 176/720。R38 的紧凑接收前缀相对早期作用阶段也有差距，但最后一级仍是最终输出退化的主要位置。该固定源对照表明蒸馏未自动校正原坐标教师的末级退化。正式测试继续按预定原版架构和完整训练链执行。
 
-[源逐步与固定先验读出](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_lineage_r02_source_panel/r38_prior_readout.json) · [冻结 R38 源载波与波形统计](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_lineage_r02_source_panel/r38.json)
+[源逐步与固定先验读出](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_lineage_r02_source_panel/r38_prior_readout.json) · [冻结 R38 源波形统计](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_lineage_r02_source_panel/r38.json)
