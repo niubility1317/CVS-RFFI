@@ -63,7 +63,7 @@ def score(dataset, output, readouts=READOUTS, *, baseline=None):
     write(output/'scores.json',result)
 
 
-def score_refined_u(dataset,output,source,methods,epochs=18):
+def score_refined_u(dataset,output,source,methods,epochs=18,*,sets=False):
     c=read(source/'contract.json')
     with np.load(source/'U_s_metadata.npz',allow_pickle=False) as m:
         if 'y' in m.files or m['ids'].tolist()!=c['role_ids']['U_s']:
@@ -91,6 +91,20 @@ def score_refined_u(dataset,output,source,methods,epochs=18):
             by_epoch=[dict(epoch=i,total=int((ep==i).sum()),correct=int((good&(ep==i)).sum())) for i in range(1,epochs+1)],
             by_predicted_class=[dict(tx=label,total=int((cls==i).sum()),correct=int((good&(cls==i)).sum()))
                                 for i,label in enumerate(CLASSES)])
+        if sets:
+            q=np.load(output/'F'/method/'accepted_sets.npy',allow_pickle=False)
+            if q.ndim!=2 or q.shape[1]!=3 or q.dtype.kind!='i':
+                raise ValueError('Invalid ambiguous U decisions')
+            se,si,code=q.T
+            if ((si<0)|(si>=len(truth))|(se<1)|(se>epochs)|(code<0)|(code>=2**len(CLASSES))).any():
+                raise ValueError('Invalid candidate set source indices or membership')
+            extent=((code[:,None]>>np.arange(len(CLASSES)))&1).sum(1)
+            if ((extent<2)|(extent>3)).any() or np.intersect1d(se*len(truth)+si,ep*len(truth)+idx).size:
+                raise ValueError('Ambiguous U sets have invalid sizes or overlap hard U labels')
+            hit=((code>>truth[si])&1)>0
+            result[method]['candidate_sets']=dict(accepted=len(si),contains_true=int(hit.sum()),
+                unique=int(len(np.unique(si))),by_true_class=[dict(tx=tx,total=int((truth[si]==i).sum()),
+                contains_true=int((hit&(truth[si]==i)).sum())) for i,tx in enumerate(CLASSES)])
     write(output/'u_offline_scores.json',dict(status='SCORED_COMPLETE',truth_last=True,records=result))
 
 

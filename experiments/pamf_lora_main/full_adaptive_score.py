@@ -13,9 +13,9 @@ import numpy as np
 from experiments.cric_dura_comparison.io import read, write
 from .collect import wait_for_predictions
 from .data import CLASSES, TARGET, VIEWS, label_ids, packet_indices, recording
-from .full_adaptive import EPOCHS, METHODS, WARMUP_RUN, case, cases, methods_for
+from .full_adaptive import EPOCHS, METHODS, SET_RUN, WARMUP_METHODS, WARMUP_RUN, case, cases, methods_for
 from .full_packet_data import LIMIT
-from .full_supervised import SEEDS
+from .full_supervised import FULL_EPOCHS, SEEDS
 from .packet_score import score_refined_u
 from .scoring import macro_f1
 
@@ -56,6 +56,10 @@ def target_scores(preds,truth,methods=METHODS):
                 by_class=[dict(tx=tx,n=int(cm[i].sum()),correct=int(cm[i,i])) for i,tx in enumerate(CLASSES)],
                 gained_PL=int((ok&~pl).sum()),lost_PL=int((~ok&pl).sum()),
                 gained_sup=int((ok&~sup).sum()),lost_sup=int((~ok&sup).sum())))
+            base=preds.get((case(seed,'adaptive_tri'),v))
+            if base is not None:
+                ref=base==answer
+                by_seed[-1].update(gained_tri=int((ok&~ref).sum()),lost_tri=int((~ok&ref).sum()))
     summary=[]
     for m in methods:
         for which in (*VIEWS,'practical_mean'):
@@ -69,14 +73,30 @@ def target_scores(preds,truth,methods=METHODS):
     return dict(status='SCORED_COMPLETE',truth_last=True,by_seed=by_seed,summary=summary)
 
 
-def collect(submit,ssh_config,dataset,source,output):
+def verify_control_policies(controls, output):
+    for seed in SEEDS:
+        name=f'{seed}.json'
+        old=read(controls/'policy'/name)
+        new=read(output/'policy'/name)
+        if (old!=new or old.get('supervised_epochs')!=FULL_EPOCHS+2*EPOCHS
+                or old.get('seed')!=seed):
+            raise ValueError('Tri set comparisons require the same frozen E140 teacher policy')
+
+
+def collect(submit,ssh_config,dataset,source,output,controls=None):
     run_root=PurePosixPath(read(submit)['run_root'])
     root=shlex.quote(str(run_root))
     methods=methods_for(run_root)
     names=[n for n,_,_ in cases(methods)]
+    sets=run_root.name==SET_RUN
+    if sets!=(controls is not None):
+        raise ValueError('The frozen E168 controls are required only for the Tri set comparison')
+    prior=matrix(controls,WARMUP_METHODS) if controls is not None else {}
     conn=['ssh','-F',str(ssh_config),'-T','-o','BatchMode=yes','-o','ConnectTimeout=10','N607']
     wait_for_predictions(conn,root)
     additions=' '.join(f'F/{n}/epochs.jsonl F/{n}/accepted_U.npy' for n in names)
+    if sets:
+        additions+=' '+' '.join(f'F/{n}/accepted_sets.npy' for n in names)
     if run_root.name==WARMUP_RUN:
         additions+=' '+' '.join(f'warmup/F/{case(s,"continued_sup")}/epochs.jsonl' for s in SEEDS)
     raw=subprocess.check_output([*conn,f'tar -czf - -C {root} predictions source_audit.json policy {additions}'],
@@ -95,14 +115,16 @@ def collect(submit,ssh_config,dataset,source,output):
             dest.parent.mkdir(parents=True,exist_ok=True)
             with dest.open('xb') as out:
                 out.write(ar.extractfile(m).read())
-    predictions=matrix(output,methods)
+    if sets:
+        verify_control_policies(controls,output)
+    predictions={**prior,**matrix(output,methods)}
     truth={}
     with zipfile.ZipFile(dataset/'multiple_receiver_test.zip') as ar:
         for i,rx in enumerate(TARGET):
             with recording(ar,f'{rx}_test.h5',output) as h5:
                 truth[rx]=label_ids(h5,LIMIT)[packet_indices(LIMIT,i)]
     write(output/'scores.json',target_scores(predictions,truth,methods))
-    score_refined_u(dataset,output,source,names,EPOCHS)
+    score_refined_u(dataset,output,source,names,EPOCHS,sets=sets)
     print('FULL_LORA_SCORED',output/'scores.json',flush=True)
 
 
@@ -110,4 +132,5 @@ if __name__=='__main__':
     p=argparse.ArgumentParser()
     for k in ('submit','ssh-config','dataset','source','output'):
         p.add_argument('--'+k,type=Path,required=True)
+    p.add_argument('--controls',type=Path)
     collect(**vars(p.parse_args()))

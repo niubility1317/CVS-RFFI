@@ -9,9 +9,10 @@ import torch
 from torch.nn import functional as F
 
 from experiments.cric_dura_comparison.io import read, tensor, write
+from .candidate_sets import candidate_sets, set_ce
 from .comparison import seed_all
 from .data import VIEWS
-from .holdout import FOLDS, construct, view_evidence
+from .holdout import FOLDS, construct, probability_evidence, view_evidence, view_probability
 from .packet_models import SEED
 from .packet_runner import schedule
 from .refine_f import fused_contrast, labeled_weights, measure
@@ -98,16 +99,21 @@ def load_u(source, cache,c,dev):
 
 
 @torch.no_grad()
-def cache_teacher(f,u,rules):
+def cache_teacher(f,u,rules,*,with_sets=False):
     f.eval()
     series=[]
     for b in u.split(48):
-        _,p,g,agree=view_evidence(f,b)
+        probability=view_probability(f,b)
+        _,p,g,agree=probability_evidence(probability)
         z=f(b)[1]
         kept=torch.zeros_like(agree)
         for r in rules:
             kept|=agree&(p==r['class_id'])&(g>=r['threshold'])
-        series.append((p,g,kept,z))
+        values=(p,g,kept,z)
+        if with_sets:
+            members=candidate_sets(torch.stack(probability,dim=1),[r['class_id'] for r in rules])
+            values=(*values,members&~kept[:,None])
+        series.append(values)
     return tuple(torch.cat(x) for x in zip(*series,strict=True))
 
 
@@ -160,9 +166,15 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
     classes=[row['class_id'] for row in settings['hard_rules']]
     if method!='continued_sup':
         u,ur=load_u(source,cache,c,dev)
-    tri=method in ('adaptive_tri','tri_practical')
+    use_sets=method=='tri_set'
+    tri=method in ('adaptive_tri','tri_practical','tri_set')
     if tri:
-        up,uc,uq,uz=cache_teacher(f,u,settings['hard_rules'])
+        teacher=cache_teacher(f,u,settings['hard_rules'],with_sets=use_sets)
+        up,uc,uq,uz=teacher[:4]
+    if use_sets:
+        membership=teacher[4]
+        bits=2**torch.arange(10,device=dev)
+        set_records=[]
     if method=='tri_practical':
         from .physical import ChirpResponse
         supplied=np.load(cache/'U_s_practical.npy',mmap_mode='r',allow_pickle=False)
@@ -180,6 +192,8 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
     accepted=[]
     step=0
     fields=('clean_ce','practical_ce','U_ce','U_pair','U_agreement','U_applied')
+    if use_sets:
+        fields=(*fields,'U_set_ce')
     with (folder/'epochs.jsonl').open('x',encoding='utf8') as log:
         for epoch in range(1,epochs+1):
             if method!='continued_sup':
@@ -189,6 +203,7 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
             ramp=min(1.,epoch/8.)
             anchors=0
             sat_exposures=0
+            set_count=0
             for j,ids in enumerate(sampler(y_np,r_np,lrng)):
                 idx=tensor(ids,dev); scene=tensor(scene_rng.integers(1,len(VIEWS),size=len(ids)),dev)
                 size=len(ids)
@@ -198,6 +213,7 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
                 ce=F.cross_entropy(a,y[idx],weight=weights)
                 prac=F.cross_entropy(b,y[idx],weight=weights)
                 uce,pair,agree,u_loss=[ce.new_zeros(()) for _ in range(4)]
+                set_loss=ce.new_zeros(())
                 if method=='plain_pl':
                     ids_u=tensor(uids[j*BATCH:j*BATCH+size],dev)
                     f.eval()
@@ -222,7 +238,7 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
                         sat_exposures+=int(use.sum())
                         agreement_input=torch.where(use[:,None,None,None],practical_u[ids_u],uv)
                     aligned=agreement_input[:,parity::2].repeat(1,2,1,1)
-                    vz=f(noise(rotated(aligned,aug),aug))[1]
+                    consistency_logits,vz=f(noise(rotated(aligned,aug),aug))
                     agree=(1.-F.cosine_similarity(vz,uz[ids_u],dim=1)).mean()
                     if len(selected):
                         ul,feat=f(noise(uv[selected],aug))
@@ -232,6 +248,15 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
                                 torch.cat((y[idx],yy)),torch.cat((rx[idx],ur[ids_u[selected]])),u_start=size)
                         anchors+=n
                     u_loss=ramp*(settings['hard_weight']*uce+.025*pair*len(selected)/size+.06*agree)
+                    if use_sets:
+                        mask=membership[ids_u]
+                        useful=mask.any(1)
+                        supported=mask[useful]
+                        set_loss=set_ce(consistency_logits[useful],supported,size)
+                        set_count+=len(supported)
+                        code=(supported*bits).sum(1).tolist()
+                        set_records.extend(zip([epoch]*len(code),ids_u[useful].tolist(),code))
+                        u_loss=u_loss+ramp*.20*set_loss
                 if method!='continued_sup' and len(selected):
                     yy=p[selected]
                     accepted.extend(zip([epoch]*len(yy),ids_u[selected].tolist(),yy.tolist()))
@@ -240,7 +265,10 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
                 (ce+.35*prac+u_loss).backward()
                 torch.nn.utils.clip_grad_norm_(f.parameters(),5.,error_if_nonfinite=True)
                 opt.step();sch.step();step+=1
-                total+=torch.stack((ce,prac,uce,pair,agree,u_loss)).detach()
+                losses=(ce,prac,uce,pair,agree,u_loss)
+                if use_sets:
+                    losses=(*losses,set_loss)
+                total+=torch.stack(losses).detach()
             if step!=epoch*steps:
                 raise ValueError('Expected exact matched labeled training budget')
             row=dict(epoch=epoch,step=step,loss=dict(zip(fields,(total/steps).tolist(),strict=True)),
@@ -248,6 +276,8 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
                   U_exposures=0 if method=='continued_sup' else len(y),lr=sch.get_last_lr()[0])
             if full:
                 row['U_practical_exposures']=sat_exposures
+            if use_sets:
+                row['U_set_exposures']=set_count
             if not full or epoch==1 or epoch%4==0 or epoch==epochs:
                 row['V']=metrics(f,v[0],vy,vr)
             if epoch in ((1,14,epochs) if full else (1,12,24,36,epochs)):
@@ -258,6 +288,8 @@ def fit(folder,f,method,source,cache,c,arrays,settings,*,seed,epochs,steps,sampl
             print('LORA_REPAIRED',method,record,flush=True)
     torch.save(f.state_dict(),folder/'model.pt')
     np.save(folder/'accepted_U.npy',np.asarray(accepted,dtype=np.int32).reshape(-1,3))
+    if use_sets:
+        np.save(folder/'accepted_sets.npy',np.asarray(set_records,dtype=np.int32).reshape(-1,3))
     write(folder/'complete.json',dict(status='SOURCE_FROZEN',method=method,source_contract=c,seed=seed,
           elapsed_steps=step,epochs=epochs,target_reads=0,U_truth_reads=0))
 

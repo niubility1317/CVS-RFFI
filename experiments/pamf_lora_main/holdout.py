@@ -117,10 +117,17 @@ def train(rt, held):
 
 
 @torch.no_grad()
+def view_probability(model,x):
+    return [model(v)[0].softmax(1) for v in (x,x[:,::2].repeat(1,2,1,1),x[:,1::2].repeat(1,2,1,1))]
+
+
 def view_evidence(model,x):
     """Three estimates from the packet and its disjoint chirp subsets."""
-    all_prob,odd,even=[model(v)[0].softmax(1) for v in
-                      (x,x[:,::2].repeat(1,2,1,1),x[:,1::2].repeat(1,2,1,1))]
+    return probability_evidence(view_probability(model,x))
+
+
+def probability_evidence(probability):
+    all_prob,odd,even=probability
     c,p=all_prob.max(1)
     a,i=odd.max(1)
     b,j=even.max(1)

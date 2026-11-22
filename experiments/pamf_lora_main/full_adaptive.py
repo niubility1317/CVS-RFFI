@@ -21,6 +21,8 @@ from .runner import activate
 
 RUN='20261122-phase1-lora-full-adaptive-m12-r01'
 WARMUP_RUN='20261122-phase1-lora-extended-supervision-m12-r01'
+SET_RUN='20261122-phase1-lora-tri-label-set-m3-r01'
+SET_METHOD='tri_set'
 METHODS=('continued_sup','plain_pl','adaptive_tri','tri_practical')
 WARMUP_METHODS=('continued_sup','plain_pl','adaptive_tri')
 EPOCHS=28
@@ -37,13 +39,15 @@ def cases(methods=METHODS):
 
 
 def methods_for(root):
+    if root.name==SET_RUN:
+        return (SET_METHOD,)
     return WARMUP_METHODS if root.name==WARMUP_RUN else METHODS
 
 
 def decode(name):
     value,method=name.split('-',1)
     seed=int(value.removeprefix('s'))
-    if seed not in SEEDS or method not in METHODS:
+    if seed not in SEEDS or method not in (*METHODS,SET_METHOD):
         raise ValueError('Unknown full LoRa row')
     return seed,method
 
@@ -76,6 +80,8 @@ def load_supervised_continuation(root,c,seed,device):
 
 def teacher(root,c,seed,device):
     parent,_=supervisor(root,c)
+    if root.name==SET_RUN:
+        return load_supervised_continuation(root.parent/WARMUP_RUN/'warmup',c,seed,device)
     if root.name==WARMUP_RUN:
         return load_supervised_continuation(root/'warmup',c,seed,device)
     return load_f(parent,c,f'seed{seed}',device)
@@ -108,6 +114,14 @@ def warmup(rt,seed):
 def policy(rt,seed):
     src,views,c=handles(rt)
     root=Path(rt['run_root'])
+    if root.name==SET_RUN:
+        frozen=read(root.parent/WARMUP_RUN/'policy'/f'{seed}.json')
+        if (frozen['status']!='SOURCE_POLICY_FROZEN' or frozen['seed']!=seed
+                or frozen['supervised_epochs']!=FULL_EPOCHS+2*EPOCHS
+                or frozen['U_reads'] or frozen['target_reads']):
+            raise ValueError('Set comparison requires the same frozen E140 hard policy')
+        write(root/'policy'/f'{seed}.json',frozen)
+        return
     _,a=supervisor(root,c)
     dev='cuda:0'
     f=teacher(root,c,seed,dev)
@@ -137,7 +151,7 @@ def train(rt,name):
         raise ValueError('Full LoRa qualification policy is not source-only')
     fit(root/'F'/name,f,method,src,views,c,data,settings,
         seed=seed,epochs=EPOCHS,steps=STEPS,sampler=batches,full=True,
-        lr=WARMUP_LR if root.name==WARMUP_RUN else 1.5e-4)
+        lr=WARMUP_LR if root.name in (WARMUP_RUN,SET_RUN) else 1.5e-4)
 
 
 def complete_f(root,c,name):
@@ -163,6 +177,8 @@ def audit(rt):
               hard_U_count=sum(sum(t['accepted']) for t in a),
               cross_rx_anchors=sum(t['anchors'] for t in a),
               practical_U_uses=sum(t['U_practical_exposures'] for t in a))
+        if m==SET_METHOD:
+            results[name]['set_U_count']=sum(t['U_set_exposures'] for t in a)
     write(root/'source_audit.json',dict(status='SOURCE_AUDIT_COMPLETE',target_reads=0,records=results))
 
 
@@ -203,7 +219,7 @@ def predict(rt,name):
 def smoke(rt):
     src,views,c=handles(rt)
     root=Path(rt['run_root'])
-    path,_=supervisor(root,c)
+    supervisor(root,c)
     a=tensor(np.load(views/'L_s.npy',mmap_mode='r',allow_pickle=False)[0,:8])
     with np.load(src/'L_s_metadata.npz',allow_pickle=False) as m:
         if m['ids'].tolist()!=c['role_ids']['L_s']:
@@ -212,7 +228,7 @@ def smoke(rt):
     receipt={}
     for seed in SEEDS:
         model=(load_supervised_continuation(root.parent/RUN,c,seed,'cpu') if root.name==WARMUP_RUN
-               else load_f(path,c,f'seed{seed}','cpu'))
+               else teacher(root,c,seed,'cpu'))
         result,features=model(a)
         torch.nn.functional.cross_entropy(result,labels).backward()
         grad=float(torch.nn.utils.clip_grad_norm_(model.parameters(),5.,error_if_nonfinite=True))
@@ -245,6 +261,8 @@ def dispatch(rt):
     try:
         write(state,dict(status='WAITING_FOR_SOURCE_TEACHERS'))
         wait_for(root.parent/SUPERVISED,'SOURCE_ONLY_COMPLETE')
+        if root.name==SET_RUN:
+            wait_for(root.parent/WARMUP_RUN,'PREDICTIONS_FROZEN')
         write(state,dict(status='SOURCE_SMOKE'),exclusive=False)
         if launch(rt,'smoke','full').wait():
             raise RuntimeError('Actual full-parent source smoke failed')
