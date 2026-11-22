@@ -16,6 +16,7 @@ from .data import CLASSES,TARGET,VIEWS,label_ids,packet_indices,recording
 from .full_dura import (COVERAGE_RUN, MODES, PROJECTED_RUN, SHAPE_RUN, STACK_RUN, STAGED_RUN, SWEEP,
                         SWEEP_RUN, modes_for)
 from .full_dura_core import COVERAGE_RECIPES
+from .full_dura_detail import DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS
 from .full_packet_data import LIMIT
 from .full_supervised import SEEDS
 from .scoring import macro_f1
@@ -24,7 +25,8 @@ from .scoring import macro_f1
 def matrix(output,modes=MODES):
     pred={}
     act={}
-    for s in SEEDS:
+    detail=modes==DETAIL_MODES
+    for s in DETAIL_SEEDS if detail else SEEDS:
         p=output/'predictions'/str(s)
         receipt=read(p/'complete.json')
         activation=receipt.pop('activation')
@@ -37,6 +39,9 @@ def matrix(output,modes=MODES):
             if (row['n']!=LIMIT or not 0<=row['active']<=LIMIT or row['IQ_exact']+row['active']!=LIMIT
                     or not 0<=row['mean_dose']<=1.):
                 raise ValueError('Invalid per-view dosage bookkeeping')
+            if detail and (not row['active']<=row['detail_active']<=LIMIT
+                           or row['detail_active']-row['active']!=row['detail_extra']):
+                raise ValueError('Invalid per-mode high-coherence bookkeeping')
         act[s]=activation
         for v in VIEWS:
             for m in modes:
@@ -54,7 +59,9 @@ def scores(pred,act,truth,modes=MODES):
     labels=np.concatenate([truth[r] for r in TARGET])
     n=len(labels)
     rows=[]
-    for s in SEEDS:
+    detail=modes==DETAIL_MODES
+    seeds=DETAIL_SEEDS if detail else SEEDS
+    for s in seeds:
         for v in VIEWS:
             direct=pred[s,'direct',v]==labels
             fixed=pred[s,'fixed',v]==labels
@@ -63,26 +70,38 @@ def scores(pred,act,truth,modes=MODES):
                 p=pred[s,mode,v]
                 c=p==labels
                 cm=np.bincount(10*labels+p,minlength=100).reshape(10,10)
+                count=0 if mode=='direct' else active
+                if detail and mode=='coherent_detail':
+                    count=sum(act[s][f'{r}/{v}']['detail_active'] for r in TARGET)
+                    extra=count-active
+                    unchanged=pred[s,'protect_shape',v]==labels
+                    if (p!=pred[s,'protect_shape',v]).sum()>extra:
+                        raise ValueError('Changes exceed the high-coherence gate')
+                    changes=dict(extra_active=extra,gained_protected=int((c&~unchanged).sum()),
+                                 lost_protected=int((~c&unchanged).sum()))
+                else:
+                    changes={}
                 rows.append(dict(seed=s,mode=mode,view=v,n=n,accuracy=float(c.mean()),macro_f1=macro_f1(labels,p),
                    changed_vs_direct=int((p!=pred[s,'direct',v]).sum()),
                    gained_direct=int((c&~direct).sum()),lost_direct=int((~c&direct).sum()),
                    gained_fixed=int((c&~fixed).sum()),lost_fixed=int((~c&fixed).sum()),
                    by_class={str(k):[int(cm[i,i]),int(cm[i].sum())] for i,k in enumerate(CLASSES)},
                    by_rx=dict(zip(TARGET,c.reshape(len(TARGET),LIMIT).mean(1).tolist(),strict=True)),
-                   active=0 if mode=='direct' else active,IQ_exact=n if mode=='direct' else n-active))
+                   active=count,IQ_exact=n-count,**changes))
     summary={}
     for m in modes:
         by={}
         for v in (*VIEWS,'practical_mean'):
             table={}
-            for s in SEEDS:
+            for s in seeds:
                 q=[x for x in rows if x['mode']==m and x['seed']==s
                    and (x['view']==v or (v=='practical_mean' and x['view']!='clean'))]
                 table[s]=dict(accuracy=statistics.mean(x['accuracy'] for x in q),
                     delta=statistics.mean((x['gained_direct']-x['lost_direct'])/x['n'] for x in q),
                     vs_fixed=statistics.mean((x['gained_fixed']-x['lost_fixed'])/x['n'] for x in q))
             by[v]=dict(mean=statistics.mean(x['accuracy'] for x in table.values()),
-                sample_std=statistics.stdev(x['accuracy'] for x in table.values()),seed=table)
+                sample_std=statistics.stdev(x['accuracy'] for x in table.values()) if len(seeds)>1 else None,
+                seed=table)
         summary[m]=by
     return dict(status='SCORED_COMPLETE',truth_last=True,by_seed=rows,summary=summary)
 
@@ -93,7 +112,9 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
     frozen=run.name in (SHAPE_RUN,SWEEP_RUN,STACK_RUN) or sweep
     cmd=['ssh','-F',str(ssh_config),'-T','-o','BatchMode=yes','-o','ConnectTimeout=10','N607']
     wait_for_predictions(cmd,root)
-    if run.name==COVERAGE_RUN:
+    if run.name==DETAIL_RUN:
+        extra=' '+' '.join(f'G/{s}/source_support.json G/{s}/steps.jsonl' for s in DETAIL_SEEDS)
+    elif run.name==COVERAGE_RUN:
         extra=' '+' '.join(f'G/{mode}/{s}/source_support.json G/{mode}/{s}/steps.jsonl'
                            for mode in COVERAGE_RECIPES for s in SEEDS)
     elif run.name==PROJECTED_RUN:

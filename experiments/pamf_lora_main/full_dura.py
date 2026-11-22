@@ -13,6 +13,7 @@ from .dura_repair import complex_iq, power
 from .full_adaptive import RUN as TRI, SET_METHOD, SET_RUN, WARMUP_RUN, case, complete_f, wait_for
 from .full_dura_core import (COVERAGE_RECIPES, Dose, dose_features, g_record, projected_record, protected_shapes,
                             read_gate, receiver_loss, train, train_gate)
+from .full_dura_detail import DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS
 from .full_packet_data import LIMIT, PROTOCOL
 from .full_supervised import SEEDS, construct, handles
 from .packet_runner import schedule
@@ -37,6 +38,8 @@ STAGED_MODES=(*PROJECTED_MODES,'staged_protect')
 
 
 def modes_for(root):
+    if root.name==DETAIL_RUN:
+        return DETAIL_MODES
     if root.name==STAGED_RUN:
         return STAGED_MODES
     if root.name==COVERAGE_RUN:
@@ -49,7 +52,7 @@ def modes_for(root):
 
 
 def recognizer_run(root):
-    if root.name in (STACK_RUN,STAGED_RUN):
+    if root.name in (STACK_RUN,STAGED_RUN,DETAIL_RUN):
         return SET_RUN
     return WARMUP_RUN if root.name in (SHAPE_RUN,PROJECTED_RUN,COVERAGE_RUN) else TRI
 
@@ -148,6 +151,9 @@ def smoke(rt):
 
 @torch.no_grad()
 def source_wave(rt,seed):
+    if Path(rt['run_root']).name==DETAIL_RUN:
+        from .full_dura_detail import source_wave_detail
+        return source_wave_detail(rt,seed)
     _,views,c=handles(rt)
     root=Path(rt['run_root'])
     dev='cuda:0'
@@ -216,6 +222,10 @@ def predict(rt,seed):
     dev='cuda:0'
     f=construct(dev).eval()
     f.load_state_dict(torch.load(complete_f(pred,c,name)/'model.pt',map_location=dev,weights_only=True),strict=True)
+    if root.name==DETAIL_RUN:
+        from .full_dura_detail import predict_detail
+        predict_detail(root,target,c,seed,f,dev)
+        return
     if root.name in (COVERAGE_RUN,STAGED_RUN):
         predict_added(root,target,c,seed,f,dev)
         return
@@ -333,11 +343,15 @@ def dispatch(rt):
     root.mkdir(exist_ok=False)
     launch=partial(start,module=__spec__.name)
     state=root/'state.json'
+    seeds=DETAIL_SEEDS if root.name==DETAIL_RUN else SEEDS
     try:
-        if root.name in (SHAPE_RUN,PROJECTED_RUN,COVERAGE_RUN,STACK_RUN,STAGED_RUN):
+        if root.name in (SHAPE_RUN,PROJECTED_RUN,COVERAGE_RUN,STACK_RUN,STAGED_RUN,DETAIL_RUN):
             write(state,dict(status='SOURCE_SMOKE'))
-            if launch(rt,'shape_smoke','source').wait():
-                raise RuntimeError('Frozen shape-protection source smoke failed')
+            if root.name==DETAIL_RUN:
+                wait_for(root.parent/DRAW_RUN,'SOURCE_DRAW_READY')
+            check='detail_smoke' if root.name==DETAIL_RUN else 'shape_smoke'
+            if launch(rt,check,'source').wait():
+                raise RuntimeError('Frozen LoRa restoration source smoke failed')
             if root.name in (PROJECTED_RUN,COVERAGE_RUN):
                 write(state,dict(status='SOURCE_G_TRAINING'),exclusive=False)
                 if root.name==PROJECTED_RUN:
@@ -351,6 +365,9 @@ def dispatch(rt):
                 schedule(rt,[('stage_teacher',str(s)) for s in SEEDS],launch)
                 write(state,dict(status='SOURCE_G_STUDENT_TRAINING'),exclusive=False)
                 schedule(rt,[('stage_student',str(s)) for s in SEEDS],launch)
+            if root.name==DETAIL_RUN:
+                write(state,dict(status='SOURCE_DETAIL_TRAINING'),exclusive=False)
+                schedule(rt,[('train_detail',str(s)) for s in seeds],launch)
         elif root.name==SWEEP_RUN:
             # The source G and raw F are both unchanged in this preregistered sensitivity check.
             write(state,dict(status='SOURCE_AUDIT'))
@@ -365,13 +382,13 @@ def dispatch(rt):
             write(state,dict(status='WAITING_FOR_FROZEN_CONTROLS'),exclusive=False)
             wait_for(root.parent/PROJECTED_RUN,'PREDICTIONS_FROZEN')
         write(state,dict(status='SOURCE_AUDIT'),exclusive=False)
-        schedule(rt,[('wave_audit',str(s)) for s in SEEDS],launch)
+        schedule(rt,[('wave_audit',str(s)) for s in seeds],launch)
         write(state,dict(status='WAITING_FOR_FROZEN_TRI'),exclusive=False)
         wait_for(root.parent/recognizer_run(root),'PREDICTIONS_FROZEN')
-        if root.name==STAGED_RUN:
+        if root.name in (STAGED_RUN,DETAIL_RUN):
             wait_for(root.parent/STACK_RUN,'PREDICTIONS_FROZEN')
         write(state,dict(status='PREDICTING'),exclusive=False)
-        schedule(rt,[('predict',str(s)) for s in SEEDS],launch)
+        schedule(rt,[('predict',str(s)) for s in seeds],launch)
         write(state,dict(status='PREDICTIONS_FROZEN',target_truth_read=False),exclusive=False)
     except Exception as error:
         write(state,dict(status='FAILED',error=str(error)),exclusive=False)
@@ -381,7 +398,8 @@ def dispatch(rt):
 if __name__=='__main__':
     p=argparse.ArgumentParser()
     p.add_argument('kind',choices=('dispatch','train_gate','smoke','shape_smoke','train','train_projected',
-                                   'train_coverage','stage_teacher','stage_student','wave_audit','predict'))
+                                   'train_coverage','stage_teacher','stage_student','wave_audit','predict',
+                                   'detail_smoke','train_detail'))
     p.add_argument('runtime',type=Path)
     p.add_argument('name',nargs='?')
     a=p.parse_args()
@@ -407,5 +425,11 @@ if __name__=='__main__':
         elif a.kind in ('stage_teacher','stage_student'):
             from .full_dura_stage import train_stage
             train_stage(rt,int(a.name),a.kind.removeprefix('stage_'))
+        elif a.kind=='detail_smoke':
+            from .full_dura_detail import detail_smoke
+            detail_smoke(rt)
+        elif a.kind=='train_detail':
+            from .full_dura_detail import train_detail
+            train_detail(rt,int(a.name))
         else:
             {'wave_audit':source_wave,'predict':predict}[a.kind](rt,int(a.name))

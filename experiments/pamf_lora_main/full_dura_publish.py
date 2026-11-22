@@ -5,16 +5,20 @@ from pathlib import Path, PurePosixPath
 from experiments.cric_dura_comparison.io import read
 from .full_adaptive import RUN as TRI, SET_RUN, WARMUP_RUN
 from .full_dura import COVERAGE_RUN, PROJECTED_RUN, RUN, SHAPE_RUN, STACK_RUN, STAGED_RUN, SWEEP_RUN
+from .full_dura_detail import DETAIL_RUN
 from .full_packet_publish import DATA_RUN
 from .full_restore_draw import RUN as DRAW_RUN
 from .publish import release, release_commit
 
 
 def publish(repo,output,context,ssh_config,data_submit,tri_submit,dose_submit=None,shape=False,projected=False,
-            coverage_submit=None,stack=False,draw_submit=None,projected_submit=None,stack_submit=None):
+            coverage_submit=None,stack=False,draw_submit=None,projected_submit=None,stack_submit=None,
+            coherent_detail=False):
     x=read(context)
     rt={k:x[k] for k in ('project','python','frozen_sources')}
     p=PurePosixPath(x['project'])
+    if coherent_detail and draw_submit is None:
+        raise ValueError('High-coherence detail needs the frozen independent source draw')
     joint=stack or draw_submit is not None
     new_run=shape or projected or coverage_submit is not None or joint
     if new_run and dose_submit is None:
@@ -39,7 +43,7 @@ def publish(repo,output,context,ssh_config,data_submit,tri_submit,dose_submit=No
             raise ValueError('The full LoRa release receipts differ')
     data=p/'runs'/DATA_RUN
     if joint:
-        name=STAGED_RUN if draw_submit is not None else STACK_RUN
+        name=DETAIL_RUN if coherent_detail else STAGED_RUN if draw_submit is not None else STACK_RUN
     elif coverage_submit is not None:
         name=COVERAGE_RUN
     else:
@@ -68,4 +72,5 @@ if __name__=='__main__':
     mode.add_argument('--coverage-submit',type=Path)
     mode.add_argument('--stack',action='store_true')
     mode.add_argument('--draw-submit',type=Path)
+    p.add_argument('--coherent-detail',action='store_true')
     publish(**vars(p.parse_args()))
