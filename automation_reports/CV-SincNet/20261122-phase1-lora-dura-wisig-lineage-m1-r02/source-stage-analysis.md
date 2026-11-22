@@ -109,3 +109,20 @@ Full 与代理的主要差异集中在整段复增益。去掉这一项后，在
 仅替换作用后，相对原学习作用挽回 31 次正确判定（12.92 个百分点），相对直通净增 6 次（2.50 个百分点）。再替换方差少 1 次。这组结果直接支持优先解决作用估计，同时表明只在当前软求解中更换作用的收益仍有限。输入、粗恢复先验和冻结识别器已控制一致，后面的展开先验仍可能改变结果。已知系数需要额外的模拟器探针，只用于源诊断。
 
 [物理作用替换与配对正确数](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_lineage_r02_source_panel/full_action_solver_oracle.json) · [复算入口](E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010/experiments/pamf_lora_main/full_dura_action_oracle.py)
+
+## 冻结 R17 分级消融
+
+原坐标 R17 完成 20 轮、4,940 步。独立比较 R17 内部冻结的粗恢复和作用估计器与原作用阶段 checkpoint，所有状态张量逐点相同。固定同一源 V、同一冻结 Tri-set、同一接收 IQ，读出 R17 每次展开后的 IQ。另将各次学习先验替换为同一冻结粗恢复，保留原三轮热启求解、每轮两次 CG、接收作用和噪声方差。
+
+| 读出 | Clean 正确数（共 120） | Practical 正确数（共 720） | 城区低正确数（共 120） | 城区低包均方能量比 |
+|---|---:|---:|---:|---:|
+| 直通 | 94 | 395 | 44 | 1.000 |
+| 原作用阶段软求解 | 80 | 322 | 31 | 0.530 |
+| R17 固定粗恢复先验，3×2 次 CG | 80 | 322 | 31 | 0.530 |
+| R17 第 1 次展开 | 80 | 318 | 31 | 0.543 |
+| R17 第 2 次展开 | 80 | 313 | 31 | 0.648 |
+| R17 第 3 次展开 | 80 | 176 | 15 | 0.106 |
+
+R17 完整输出相对原作用阶段少 146 次。固定粗恢复先验仍是 322 次，第 1、2 次展开只小幅下降，主要损失出现在第三次学习先验和相应的软更新。城区低阶段 2 到阶段 3 的能量从 0.648 下降到 0.106。原 R17 仅监督最终原坐标 IQ NMSE，训练时得到更小的点对点误差仍可能伴随强烈缩幅及身份细节损伤。该因果对照隔离了学习先验，并维持求解预算。观察相位 R17 冻结后按相同方法复核。R38 默认蒸馏原 R17 完整轨迹，正式候选继续按各自预登记链运行，冻结读出独立于训练。
+
+[R17 各步与固定先验消融](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_lineage_r02_source_panel/r17_prior_readout.json) · [冻结原坐标 R17 逐接收机读出](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_lineage_r02_source_panel/r17_frozen_tri_set.json)
