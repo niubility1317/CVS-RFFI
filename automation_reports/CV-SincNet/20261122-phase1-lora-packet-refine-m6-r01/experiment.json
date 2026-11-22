@@ -1,0 +1,55 @@
+{
+  "run_id": "20261122-phase1-lora-packet-refine-m6-r01",
+  "parent": "20261122-phase1-lora-packet-aligned-pilot-m5-r02",
+  "phase": 1,
+  "source_contract": "lora_packet_pilot_v1",
+  "seed": 2026092701,
+  "counts": {
+    "L_s": 1600,
+    "U_s": 2560,
+    "V": 800
+  },
+  "F": [
+    "raw_pl",
+    "spectral_pl",
+    "spectral_focus",
+    "spectral_tri"
+  ],
+  "F_epochs": 18,
+  "G": [
+    "phase",
+    "chirp"
+  ],
+  "G_epochs": 10,
+  "restorer_readouts": [
+    "parent_dura",
+    "phase",
+    "chirp"
+  ],
+  "restorer_recognizer": "spectral_tri",
+  "target_receivers": 15,
+  "target_per_receiver": 128,
+  "target_views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "target_score_rows": 49,
+  "gpu": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "truth_last": true,
+  "release_module": "experiments.pamf_lora_main.refine_publish",
+  "scoring_module": "experiments.pamf_lora_main.packet_score",
+  "mode": "single_seed_development_attribution"
+}

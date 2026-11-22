@@ -183,7 +183,7 @@ def start(rt, kind, name, gpu=None):
     return c
 
 
-def schedule(rt,jobs):
+def schedule(rt,jobs,launch=start):
     pending=list(jobs)
     active={}
     while pending or active:
@@ -196,10 +196,10 @@ def schedule(rt,jobs):
             print('PACKET_COMPLETED',k,n,flush=True)
             del active[gpu]
         if pending:
-            for gpu in available(rt['allowed_gpus']):
+            for gpu in available(rt['allowed_gpus'],rt.get('max_compute_processes',2)):
                 if gpu not in active and pending:
                     k,n=pending.pop(0)
-                    active[gpu]=(start(rt,k,n,gpu),k,n)
+                    active[gpu]=(launch(rt,k,n,gpu),k,n)
         if pending or active:
             time.sleep(15)
 
