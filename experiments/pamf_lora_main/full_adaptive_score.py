@@ -17,6 +17,7 @@ from .full_adaptive import (EPOCHS, METHODS, PRACTICAL_SET_RUN, SET_METHOD, SET_
                             WARMUP_RUN, case, cases, methods_for)
 from .full_packet_data import LIMIT
 from .full_supervised import FULL_EPOCHS, SEEDS
+from .full_tri_repl_lora import REPL_RUN
 from .packet_score import score_refined_u
 from .scoring import macro_f1
 
@@ -70,10 +71,10 @@ def target_scores(preds,truth,methods=METHODS):
         for which in (*VIEWS,'practical_mean'):
             chosen=[r for r in by_seed if r['method']==m
                     and (r['view']==which or (which=='practical_mean' and r['view']!='clean'))]
-            buckets=[[r for r in chosen if r['seed']==s] for s in SEEDS]
+            buckets=[[r for r in chosen if r['seed']==s] for s in sorted({r['seed'] for r in chosen})]
             values=[mean(r['accuracy'] for r in x) for x in buckets]
             delta=[mean((r['gained_PL']-r['lost_PL'])/r['n'] for r in x) for x in buckets]
-            summary.append(dict(method=m,view=which,mean=mean(values),sample_std=stdev(values),
+            summary.append(dict(method=m,view=which,mean=mean(values),sample_std=stdev(values) if len(values)>1 else None,
                   mean_vs_PL=mean(delta),seed_values=values,seed_deltas_PL=delta))
     return dict(status='SCORED_COMPLETE',truth_last=True,by_seed=by_seed,summary=summary)
 
@@ -95,21 +96,25 @@ def collect(submit,ssh_config,dataset,source,output,controls=None,set_control=No
     names=[n for n,_,_ in cases(methods)]
     paired=run_root.name==PRACTICAL_SET_RUN
     sets=run_root.name in (SET_RUN,PRACTICAL_SET_RUN)
-    if sets!=(controls is not None):
+    native=run_root.name==REPL_RUN
+    if (sets or native)!=(controls is not None):
         raise ValueError('The frozen E168 controls are required only for the Tri set comparison')
-    if paired!=(set_control is not None):
+    if (paired or native)!=(set_control is not None):
         raise ValueError('The frozen clean-observation set control is required for the practical set comparison')
     prior=matrix(controls,WARMUP_METHODS) if controls is not None else {}
-    if paired:
+    if paired or native:
         prior.update(matrix(set_control,(SET_METHOD,)))
     conn=['ssh','-F',str(ssh_config),'-T','-o','BatchMode=yes','-o','ConnectTimeout=10','N607']
     wait_for_predictions(conn,root)
     additions=' '.join(f'F/{n}/epochs.jsonl F/{n}/accepted_U.npy' for n in names)
+    if native:
+        additions+=' '+' '.join(f'F/{n}/initial_source.json' for n in names)
     if sets:
         additions+=' '+' '.join(f'F/{n}/accepted_sets.npy' for n in names)
     if run_root.name==WARMUP_RUN:
         additions+=' '+' '.join(f'warmup/F/{case(s,"continued_sup")}/epochs.jsonl' for s in SEEDS)
-    raw=subprocess.check_output([*conn,f'tar -czf - -C {root} predictions source_audit.json policy {additions}'],
+    policy='' if native else 'policy'
+    raw=subprocess.check_output([*conn,f'tar -czf - -C {root} predictions source_audit.json {policy} {additions}'],
                                timeout=180)
     output.mkdir(parents=True,exist_ok=False)
     with tarfile.open(fileobj=BytesIO(raw),mode='r:gz') as ar:
