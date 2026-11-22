@@ -15,8 +15,9 @@ def rms_normalize(x):
 
 class ChirpResponse(nn.Module):
     """Make the 29-feature PAMF response on public LoRa preamble excitation."""
-    def __init__(self):
+    def __init__(self, fft_factor=1):
         super().__init__()
+        self.fft_size = 256 * fft_factor
         t = torch.arange(256, dtype=torch.float64) / FS_HZ + WINDOW_START / 1e6
         chirp = torch.exp(2j * torch.pi * BANDWIDTH_HZ * (t.square() / (2 * .001024) - t / 2))
         self.register_buffer('chirp', chirp.to(torch.complex64), persistent=False)
@@ -32,9 +33,9 @@ class ChirpResponse(nn.Module):
         w = z * chirp.conj()
         # Integer dechirped peak alignment is per-packet and introduces no
         # fitted state or explicit carrier-offset coordinate.
-        peak = torch.fft.fft(w)
+        peak = torch.fft.fft(w, n=self.fft_size)
         best = peak.abs().argmax(dim=-1)
-        phase = -2j * torch.pi * best[:, None] * torch.arange(256, device=x.device) / 256
+        phase = -2j * torch.pi * best[:, None] * torch.arange(256, device=x.device) / self.fft_size
         correction = phase.exp().to(z.dtype)
         gain = (w * correction).mean(dim=-1)
         nrg = z.abs().square().mean(dim=-1).clamp_min(1e-12)
@@ -51,6 +52,12 @@ class ChirpResponse(nn.Module):
         features = torch.cat((bounded.real, bounded.imag,
             torch.stack((quality, c, concentration, torch.zeros_like(c), center_power), dim=1)), dim=1)
         return dict(features=features, quality=quality, relative_transfer=relative)
+
+    def coherence(self, x):
+        z = torch.complex(x[:, 0], x[:, 1])
+        w = z * self.chirp.to(z.dtype).conj()
+        peak = torch.fft.fft(w, n=self.fft_size).abs().amax(dim=-1)
+        return (peak / 256).square() / z.abs().square().mean(dim=-1).clamp_min(1e-12)
 
     def forward(self, x):
         return self.components(x)['features']
