@@ -11,10 +11,12 @@ from experiments.cric_dura_comparison.g_train import train
 from experiments.cric_dura_comparison.io import read, tensor, write
 from .data import SOURCE, TARGET, VIEWS
 from .full_adaptive import SET_METHOD, SET_RUN, case, complete_f, wait_for
+from .full_dura_action_targets import build_bank, full_teacher
 from .full_dura_lineage_data import LoRaView, aligned_teacher, build, in_observed_phase, source_iq
 from .full_dura_r69_lora import R69_SEEDS, R69_TRACE_MODES, load_model, load_utility
 from .full_dura_trace_source import TRACE_RUN
 from .full_packet_data import LIMIT, PROTOCOL
+from .full_packet_views import source_role
 from .full_restore_draw import RUN as DRAW_RUN
 from .full_supervised import construct as recognizer
 from .full_supervised import handles
@@ -25,7 +27,8 @@ from .runner import activate
 
 RUN='20261122-phase1-lora-dura-wisig-lineage-m1-r02'
 PHASE_RUN='20261122-phase1-lora-dura-wisig-observed-phase-m1-r01'
-RUNS=(RUN,PHASE_RUN)
+FULL_ACTION_RUN='20261122-phase1-lora-dura-full-action-observed-phase-m1-r01'
+RUNS=(RUN,PHASE_RUN,FULL_ACTION_RUN)
 MODES=(*R69_TRACE_MODES,'lineage_native','lineage_guarded')
 SEED,=R69_SEEDS
 
@@ -45,15 +48,35 @@ def predict_iq(g,b):
     return z
 
 
+def observed_coarse(rt):
+    root=Path(rt['run_root']).parent/PHASE_RUN/'G'/'lineage'
+    c=read(root/'config.json')
+    if (c['observed_phase'] is not True or c['model_seed']!=SEED
+            or c['cache']!=dict(source_contract=str(Path(rt['source_root'])/'contract.json'),roles='LU')):
+        raise ValueError('Expected the same observed-phase source coarse curriculum')
+    return root/'coarse'
+
+
 def smoke(rt):
-    _,cache,c=handles(rt)
+    source,cache,c=handles(rt)
     root=Path(rt['run_root'])
     l,_,_=source_iq(cache)
     clean=np.stack([l[0,i,i] for i in range(6)])
-    examples=[aligned_teacher((x,v,SOURCE[0],f'lineage-smoke-{i}',i))[0]
-              for i,(x,v) in enumerate(zip(clean,VIEWS[1:],strict=True))]
+    if root.name==FULL_ACTION_RUN:
+        z,rx,ids,_=source_role(source,c,'L_s')
+        examples=[]
+        for i,v in enumerate(VIEWS[1:]):
+            target,_=full_teacher(z[i],rx[i],ids[i],v,l[i+1,i],'source',None,assess=False)
+            examples.append(tuple(a[i] for a in target.values()))
+        coarse,item=load(observed_coarse(rt)/'final.pt',c,'LU')
+        if item['model_seed']!=SEED or item['stage']!='coarse' or item['ancestors']:
+            raise ValueError('Source smoke received an incompatible coarse checkpoint')
+    else:
+        examples=[aligned_teacher((x,v,SOURCE[0],f'lineage-smoke-{i}',i))[0]
+                  for i,(x,v) in enumerate(zip(clean,VIEWS[1:],strict=True))]
+        coarse=construct('coarse')
     received,kernel,coefficients,variance=(np.stack(a) for a in zip(*examples,strict=True))
-    use_phase=root.name==PHASE_RUN
+    use_phase=root.name in (PHASE_RUN,FULL_ACTION_RUN)
     if use_phase:
         from experiments.pamf_action_restore.operators import Action
         from experiments.pamf_restoration.models import complex_iq
@@ -70,7 +93,6 @@ def smoke(rt):
             raise ValueError('Rotating the reference changed the source action')
     x=tensor(clean)
     received,kernel,coefficients,variance=(tensor(a) for a in (received,kernel,coefficients,variance))
-    coarse=construct('coarse')
     action=construct('action',coarse)
     prepare_model(action,'action')
     loss=objective(action,None,'action',received,x,1,(kernel,coefficients,variance),
@@ -93,10 +115,14 @@ def stage_train(rt):
     source,_,_=handles(rt)
     root=Path(rt['run_root'])
     out=root/'G'/'lineage'
-    use_phase=root.name==PHASE_RUN
+    use_phase=root.name in (PHASE_RUN,FULL_ACTION_RUN)
+    full=root.name==FULL_ACTION_RUN
+    parent=observed_coarse(rt) if full else None
     train(dict(output_root=str(out),model_seed=SEED,code_commit=rt['code_commit'],
-          cache=dict(source_contract=str(source/'contract.json'),roles='LU'),observed_phase=use_phase),
-          view=LoRaView(rt,observed_phase=use_phase),prepare_model=prepare_model)
+          cache=dict(source_contract=str(source/'contract.json'),roles='LU'),observed_phase=use_phase,
+          full_action_training=full,inherited_coarse=str(parent) if parent else None),
+          view=LoRaView(rt,observed_phase=use_phase,full_action=full),prepare_model=prepare_model,
+          frozen_coarse=parent)
 
 
 def frozen_g(root,c,device):
@@ -206,7 +232,7 @@ def dispatch(rt):
         wait_for(root.parent/TRACE_RUN,'PREDICTIONS_FROZEN')
         if launch(rt,'smoke','source').wait():
             raise RuntimeError('LoRa DURA lineage source smoke failed')
-        if root.name==PHASE_RUN:
+        if root.name in (PHASE_RUN,FULL_ACTION_RUN):
             bank=root.parent/RUN/'source_action'
             if read(bank/'complete.json')['status']!='SOURCE_ACTION_READY':
                 raise ValueError('Both LoRa curricula require the same completed action bank')
@@ -215,6 +241,10 @@ def dispatch(rt):
             write(state,dict(status='BUILDING_SOURCE_ACTION'),exclusive=False)
             if launch(rt,'build','source').wait():
                 raise RuntimeError('LoRa source action generation failed')
+        if root.name==FULL_ACTION_RUN:
+            write(state,dict(status='BUILDING_SOURCE_FULL_ACTION'),exclusive=False)
+            if launch(rt,'build_full','source').wait():
+                raise RuntimeError('LoRa full action generation failed')
         write(state,dict(status='SOURCE_DURA_LINEAGE'),exclusive=False)
         schedule(rt,[('train',str(SEED))],launch)
         write(state,dict(status='SOURCE_AUDIT'),exclusive=False)
@@ -230,11 +260,12 @@ def dispatch(rt):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser()
-    parser.add_argument('kind',choices=('dispatch','smoke','build','train','audit','predict'))
+    parser.add_argument('kind',choices=('dispatch','smoke','build','build_full','train','audit','predict'))
     parser.add_argument('runtime',type=Path)
     parser.add_argument('name',nargs='?')
     args=parser.parse_args()
     runtime=read(args.runtime)
     if args.kind!='dispatch':
         activate(runtime)
-    dict(dispatch=dispatch,smoke=smoke,build=build,train=stage_train,audit=source_audit,predict=predict)[args.kind](runtime)
+    dict(dispatch=dispatch,smoke=smoke,build=build,build_full=build_bank,train=stage_train,
+         audit=source_audit,predict=predict)[args.kind](runtime)

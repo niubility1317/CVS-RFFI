@@ -19,11 +19,11 @@ PER_RECEIVER=4
 CENTER=slice(32,224)
 
 
-def bandlimited_probes(n,seed):
+def bandlimited_probes(n,seed,count=TOTAL_PROBES):
     rng=np.random.default_rng(seed)
     f=np.fft.fftfreq(n,d=1/NATIVE_RATE)
     keep=np.abs(f)<=62_500
-    samples=rng.normal(size=(TOTAL_PROBES,n))+1j*rng.normal(size=(TOTAL_PROBES,n))
+    samples=(rng.normal(size=(TOTAL_PROBES,n))+1j*rng.normal(size=(TOTAL_PROBES,n)))[:count]
     samples=np.fft.ifft(samples*keep,axis=-1)
     return samples/np.sqrt(np.mean(np.abs(samples)**2,axis=-1,keepdims=True))
 
@@ -87,7 +87,8 @@ def learned_errors(model,expected,inputs,outputs,clean_input,clean_output,observ
     return out
 
 
-def source_probes(z,rx,physical_id,scene,expected,*,namespace='source-V',realization=None):
+def source_probes(z,rx,physical_id,scene,expected,*,namespace='source-V',realization=None,
+                  probe_count=TOTAL_PROBES):
     from leo_practical.channel import ChannelStream, normalize_input, stable_seed
     cfg=channel(scene)
     parts=(namespace,scene,rx,str(physical_id))
@@ -107,7 +108,7 @@ def source_probes(z,rx,physical_id,scene,expected,*,namespace='source-V',realiza
         raise ValueError('Replay differs from the registered full practical observation')
     clean_input=chirp_samples(original)
     clean_output=chirp_samples(ref['pre_agc_signal'],offset=offset)
-    probes=bandlimited_probes(len(original),stable_seed(2026112227,str(physical_id),'action-probe'))
+    probes=bandlimited_probes(len(original),stable_seed(2026112227,str(physical_id),'action-probe'),probe_count)
     x=np.stack([chirp_samples(w) for w in probes])
     outputs=[]
     for w in probes:

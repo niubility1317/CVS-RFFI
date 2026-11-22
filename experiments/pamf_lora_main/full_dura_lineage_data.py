@@ -152,7 +152,7 @@ def build(rt):
 
 
 class LoRaView:
-    def __init__(self,rt,*,observed_phase=False):
+    def __init__(self,rt,*,observed_phase=False,full_action=False):
         self.root=Path(rt['run_root'])
         self.observed_phase=observed_phase
         src,cache,self.contract=handles(rt)
@@ -168,6 +168,7 @@ class LoRaView:
             raise ValueError('Wrong LoRa action bank source contract')
         self.actions={k:np.load(p/f'{k}.npy',allow_pickle=False,mmap_mode='r')
                       for k in ('received','kernel','coefficients','variance')}
+        self.full_bank=self.read_full_action() if full_action else None
         self.is_L=np.tile(np.arange(COUNT)<L_COUNT,DRAWS)
         self.quantile=np.random.default_rng(2026112219).random((20,len(self)),dtype=np.float32)
 
@@ -176,6 +177,41 @@ class LoRaView:
 
     def ready(self):
         return all(len(a)==len(self) and a.dtype==np.float32 for a in self.actions.values())
+
+    def read_full_action(self):
+        from .full_dura_action_targets import ACTION_BANK
+        root=self.root/ACTION_BANK
+        proof=read(root/'complete.json')
+        if proof!=dict(status='SOURCE_FULL_ACTION_READY',source_contract=self.contract,n=COUNT,
+                       draws=2,chirps=6,exact_noisy_view_replay=True,fit_probes=4,roles=list(ROLES),
+                       TX_reads=0,F_reads=0,V_reads=0,target_reads=0):
+            raise ValueError('Full action bank does not match the LoRa source contract')
+        scene,main,variance=(np.load(root/f'{k}.npy',mmap_mode='r',allow_pickle=False)
+                             for k in ('L_scene','main','variance'))
+        if (scene.shape!=(L_COUNT,) or scene.dtype!=np.int64 or scene.min()<1 or scene.max()>6
+                or main.shape!=(2,COUNT,6,2,256) or main.dtype!=np.float32
+                or variance.shape!=(2,COUNT,6) or variance.dtype!=np.float32):
+            raise ValueError('Full action bank dimensions differ from the source chirps')
+        return scene,main,variance
+
+    def full_action_batch(self,packet,chirp,labeled,epoch):
+        scenes,main,variance=self.full_bank
+        draw=(epoch+1)%2
+        l=packet[labeled]
+        u=packet[~labeled]-L_COUNT
+        observed=np.empty((len(packet),2,256),np.float32)
+        if draw:
+            observed[labeled]=self.l_second[l,chirp[labeled]]
+            observed[~labeled]=self.u_second[u,chirp[~labeled]]
+        else:
+            observed[labeled]=self.l[scenes[l],l,chirp[labeled]]
+            observed[~labeled]=self.u_first[u,chirp[~labeled]]
+        kernel=np.zeros((len(packet),2,64),np.float32)
+        kernel[:,0,0]=1.
+        coef=np.zeros((len(packet),4,256),np.float32)
+        coef[:,:2]=main[draw,packet,chirp]
+        return dict(received=observed,kernel=kernel,coefficients=coef,
+                    variance=variance[draw,packet,chirp].copy())
 
     def batch(self,indices,epoch,coarse=False,action=False):
         packet=indices%COUNT
@@ -187,7 +223,10 @@ class LoRaView:
         q=self.quantile[epoch-1,indices]
         identity=q<.15
         if action:
-            a={k:v[indices].copy() for k,v in self.actions.items()}
+            if self.full_bank is None:
+                a={k:v[indices].copy() for k,v in self.actions.items()}
+            else:
+                a=self.full_action_batch(packet,chirp,labeled,epoch)
             a['received'][identity]=ground[identity]
             a['kernel'][identity]=0.
             a['kernel'][identity,0,0]=1.

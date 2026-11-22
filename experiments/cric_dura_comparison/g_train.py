@@ -2,6 +2,7 @@
 import json
 import math
 from pathlib import Path
+from shutil import copy2
 import time
 import numpy as np
 import torch
@@ -27,7 +28,23 @@ def batches(n, rng):
         yield result
 
 
-def train(c, device='cuda:0', *, view=None, prepare_model=None):
+def inherit_coarse(frozen,root,contract,roles,seed):
+    """Carry forward an exact same-contract E20 coarse stage."""
+    source=Path(frozen)
+    proof=read(source/'complete.json')
+    _,checkpoint=load(source/'final.pt',contract,roles)
+    if (proof['status']!='SOURCE_FROZEN' or proof['stage']!='coarse' or proof['updates']!=4940
+            or checkpoint['stage']!='coarse' or checkpoint['model_seed']!=seed
+            or checkpoint['ancestors'] or any(proof[k] for k in ('TX_labels_read','F_reads','target_reads'))):
+        raise ValueError('Require the fixed source-only coarse stage for the same seed')
+    dest=root/'coarse'
+    dest.mkdir(exist_ok=False)
+    for name in ('final.pt','training.jsonl','complete.json'):
+        copy2(source/name,dest/name)
+    return dest/'final.pt',proof['seconds']
+
+
+def train(c, device='cuda:0', *, view=None, prepare_model=None, frozen_coarse=None):
     if any(c.get(k) for k in ('truth', 'target_truth', 'target_inputs', 'tests', 'reader', 'F_checkpoint')):
         raise ValueError('G source training rejects F/target inputs')
     contract = read(c['cache']['source_contract'])
@@ -40,12 +57,16 @@ def train(c, device='cuda:0', *, view=None, prepare_model=None):
     write(root / 'config.json', c)
     previous = None
     timings = {}
+    stages=STAGES
+    if frozen_coarse is not None:
+        previous,timings['coarse']=inherit_coarse(frozen_coarse,root,contract,roles,c['model_seed'])
+        stages=STAGES[1:]
     acceleration = c.get('training_acceleration', {})
     mode = acceleration.get('teacher_cache', 'online')
     if mode not in ('online', 'epoch', 'shared'):
         raise ValueError('Unknown teacher acceleration mode')
     reduce_syncs = acceleration.get('reduce_syncs', False)
-    for stage in STAGES:
+    for stage in stages:
         folder = root / stage
         folder.mkdir()
         torch.manual_seed(c['model_seed'])

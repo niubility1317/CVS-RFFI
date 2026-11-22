@@ -18,6 +18,7 @@ from .full_dura import (COVERAGE_RUN, MODES, PROJECTED_RUN, SHAPE_RUN, STACK_RUN
 from .full_dura_core import COVERAGE_RECIPES
 from .full_dura_detail import (CONFIRM_NEW_SEEDS, DETAIL_CONFIRM_RUN, DETAIL_DOSE_MODES, DETAIL_DOSE_RUN,
                                DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS)
+from .full_dura_lineage import FULL_ACTION_RUN
 from .full_dura_lineage import MODES as LINEAGE_MODES, RUNS as LINEAGE_RUNS, STAGES as LINEAGE_STAGES
 from .full_dura_r69_lora import (R69_ACTION_MODES, R69_ACTION_RUN, R69_LORA_RUN,
                                  R69_MODES, R69_RETAINED_MODES, R69_SEEDS, R69_TRACE_MODES)
@@ -178,6 +179,8 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
     wait_for_predictions(cmd,root)
     if run.name in LINEAGE_RUNS:
         extra=' source_action/complete.json smoke.json G/lineage/complete.json'
+        if run.name==FULL_ACTION_RUN:
+            extra+=' source_full_action/complete.json'
         extra+=' '+' '.join(f'G/lineage/{s}/{name}' for s in LINEAGE_STAGES
                             for name in ('training.jsonl','complete.json'))
     elif run.name in (JOINT_RUN,ADAPTED_JOINT_RUN):
@@ -217,7 +220,8 @@ def collect(submit,ssh_config,dataset,output,sweep=False):
         for member in ar:
             path=PurePosixPath(member.name)
             if path.is_absolute() or '..' in path.parts or path.parts[0] not in (
-                    'predictions','G','source_wave','source_trace','held_trace','source_action','smoke.json'):
+                    'predictions','G','source_wave','source_trace','held_trace','source_action',
+                    'source_full_action','smoke.json'):
                 raise ValueError('Unexpected DURA score artifact')
             if member.isdir():
                 continue
