@@ -7,11 +7,12 @@ from .publish import release, release_commit
 
 
 RUN='20261122-phase1-lora-packet-refine-m6-r01'
+SUPERVISED_RUN='20261122-phase1-lora-supervised-extension-m3-r01'
 PARENT='20261122-phase1-lora-packet-aligned-pilot-m5-r02'
 DATA='20261122-phase1-lora-packet-aligned-pilot-m5-r01'
 
 
-def publish(repo,output,context,ssh_config,parent_submit,data_submit):
+def publish(repo,output,context,ssh_config,parent_submit,data_submit,supervised=False):
     cfg=read(context)
     rt={k:cfg[k] for k in ('project','python','frozen_sources')}
     p=PurePosixPath(rt['project'])
@@ -23,10 +24,14 @@ def publish(repo,output,context,ssh_config,parent_submit,data_submit):
         if (PurePosixPath(prior['cwd'])!=cwd or PurePosixPath(prior['run_root'])!=run
                 or prior['archive_transfer']!='VERIFIED'):
             raise ValueError('Previously verified parent and data release required')
-    rt.update(run_id=RUN,code_commit=release_commit(repo),runner='experiments.pamf_lora_main.refine_runner',
-              run_root=str(p/'runs'/RUN),release_root=str(p/'releases'/f'{RUN}-release'),
-              parent_root=str(parent),source_root=str(data/'data/source'),target_views=str(parent/'target_views'),
+    run = SUPERVISED_RUN if supervised else RUN
+    runner = 'supervised_extension' if supervised else 'refine_runner'
+    rt.update(run_id=run,code_commit=release_commit(repo),runner=f'experiments.pamf_lora_main.{runner}',
+              run_root=str(p/'runs'/run),release_root=str(p/'releases'/f'{run}-release'),
+              parent_root=str(parent),source_root=str(data/'data/source'),
               allowed_gpus=list(range(7)),max_compute_processes=4)
+    if not supervised:
+        rt['target_views']=str(parent/'target_views')
     return release(repo,output,rt,ssh_config)
 
 
@@ -34,4 +39,5 @@ if __name__=='__main__':
     p=argparse.ArgumentParser()
     for k in ('repo','output','context','ssh-config','parent-submit','data-submit'):
         p.add_argument('--'+k,type=Path,required=True)
+    p.add_argument('--supervised',action='store_true')
     publish(**vars(p.parse_args()))
