@@ -18,3 +18,7 @@
 - 发布入口 `python -m experiments.pamf_lora_main.full_dura_lineage_publish ... --reuse-actions ORIGINAL_SUBMIT --full-action-submit OBSERVED_PHASE_SUBMIT`。产物包括源库元数据、源 smoke、八阶段冻结权重与日志、源 V 诊断和 1,050 份盲预测。七景预测冻结后依旧由本地 `full_dura_score` 做独立评分。最后完成三种子时使用既定汇总方式。
 
 [源动作监督试制](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_wisig_lineage_r02_source_panel/full_action_targets_LU_pilot_noise.json) · [源软求解归因](E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010/automation_reports/CV-SincNet/20261122-phase1-lora-dura-wisig-lineage-m1-r02/source-stage-analysis.md)
+
+发布 **VERIFIED**。代码提交 `4c65520e63424882c1d160ceeedfd5145c9ff267` 的归档传输 SHA 比对及远端编译通过。六景实测源输入和父粗恢复冒烟通过，作用梯度范数为 8.2724。独立复核真实 L/U 两种观测的逐值复放、训练/试制探针一致性和源角色索引。已核实控制器与 CPU 建库进程的工作目录、命令和日志增长。已见主 L 观测完成 2,000/2,800 包。候选在构建 56,000 份源观测的动作监督，随后自动调度训练。冻结源读出与正式七景评分的等待进程已经启动。
+
+[发布提交记录](E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_full_action_observed_phase_release/submit.json)
