@@ -16,7 +16,7 @@ from .full_dura_core import (COVERAGE_RECIPES, Dose, dose_features, g_record, pr
                             read_gate, receiver_loss, train, train_gate)
 from .full_dura_detail import (CONFIRM_NEW_SEEDS, DETAIL_CONFIRM_RUN, DETAIL_DOSE_MODES,
                                DETAIL_DOSE_RUN, DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS)
-from .full_dura_r69_lora import R69_LORA_RUN, R69_MODES, R69_SEEDS
+from .full_dura_r69_lora import R69_ACTION_MODES, R69_ACTION_RUN, R69_LORA_RUN, R69_MODES, R69_SEEDS
 from .full_native_joint import JOINT_MODES, JOINT_RUN, JOINT_SEEDS
 from .full_packet_data import LIMIT, PROTOCOL
 from .full_supervised import SEEDS, construct, handles
@@ -41,11 +41,14 @@ STACK_RUN='20261122-phase1-lora-tri-set-dura-stack-m9-r01'
 STAGED_RUN='20261122-phase1-lora-dura-source-distillation-m6-r01'
 STAGED_MODES=(*PROJECTED_MODES,'staged_protect')
 DETAIL_RUNS=(DETAIL_RUN,DETAIL_DOSE_RUN,DETAIL_CONFIRM_RUN)
+R69_RUNS=(R69_LORA_RUN,R69_ACTION_RUN)
 
 
 def modes_for(root):
     if root.name==JOINT_RUN:
         return JOINT_MODES
+    if root.name==R69_ACTION_RUN:
+        return R69_ACTION_MODES
     if root.name==R69_LORA_RUN:
         return R69_MODES
     if root.name==DETAIL_RUN:
@@ -64,7 +67,7 @@ def modes_for(root):
 
 
 def recognizer_run(root):
-    if root.name in (STACK_RUN,STAGED_RUN,R69_LORA_RUN,JOINT_RUN,*DETAIL_RUNS):
+    if root.name in (STACK_RUN,STAGED_RUN,JOINT_RUN,*R69_RUNS,*DETAIL_RUNS):
         return SET_RUN
     return WARMUP_RUN if root.name in (SHAPE_RUN,PROJECTED_RUN,COVERAGE_RUN) else TRI
 
@@ -167,7 +170,7 @@ def source_wave(rt,seed):
         root=Path(rt['run_root'])
         name=f'{seed}.json'
         return write(root/'source_wave'/name,read(root.parent/R69_LORA_RUN/'source_wave'/name))
-    if Path(rt['run_root']).name==R69_LORA_RUN:
+    if Path(rt['run_root']).name in R69_RUNS:
         from .full_dura_r69_lora import r69_audit
         return r69_audit(rt,seed)
     if Path(rt['run_root']).name in DETAIL_RUNS:
@@ -244,7 +247,7 @@ def predict(rt,seed):
     dev='cuda:0'
     f=construct(dev).eval()
     f.load_state_dict(torch.load(complete_f(pred,c,name)/'model.pt',map_location=dev,weights_only=True),strict=True)
-    if root.name==R69_LORA_RUN:
+    if root.name in R69_RUNS:
         from .full_dura_r69_lora import predict_r69
         predict_r69(root,target,c,seed,f,dev)
         return
@@ -386,7 +389,7 @@ def dispatch(rt):
     state=root/'state.json'
     if root.name==DETAIL_CONFIRM_RUN:
         seeds=CONFIRM_NEW_SEEDS
-    elif root.name==R69_LORA_RUN:
+    elif root.name in R69_RUNS:
         seeds=R69_SEEDS
     elif root.name==JOINT_RUN:
         seeds=JOINT_SEEDS
@@ -400,9 +403,11 @@ def dispatch(rt):
             write(state,dict(status='SOURCE_SMOKE'),exclusive=False)
             if launch(rt,'native_joint_smoke','source').wait():
                 raise RuntimeError('Frozen LoRa native joint source smoke failed')
-        elif root.name==R69_LORA_RUN:
+        elif root.name in R69_RUNS:
             write(state,dict(status='SOURCE_SMOKE'))
             wait_for(root.parent/DRAW_RUN,'SOURCE_DRAW_READY')
+            if root.name==R69_ACTION_RUN:
+                wait_for(root.parent/R69_LORA_RUN,'PREDICTIONS_FROZEN')
             if launch(rt,'r69_smoke','source').wait():
                 raise RuntimeError('Real-IQ original DURA smoke failed')
             for stage in ('teacher','student','gate'):
