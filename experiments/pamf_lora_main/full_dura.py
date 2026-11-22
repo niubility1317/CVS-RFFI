@@ -16,6 +16,7 @@ from .full_dura_core import (COVERAGE_RECIPES, Dose, dose_features, g_record, pr
                             read_gate, receiver_loss, train, train_gate)
 from .full_dura_detail import (CONFIRM_NEW_SEEDS, DETAIL_CONFIRM_RUN, DETAIL_DOSE_MODES,
                                DETAIL_DOSE_RUN, DETAIL_MODES, DETAIL_RUN, DETAIL_SEEDS)
+from .full_dura_r69_lora import R69_LORA_RUN, R69_MODES, R69_SEEDS
 from .full_packet_data import LIMIT, PROTOCOL
 from .full_supervised import SEEDS, construct, handles
 from .packet_runner import schedule
@@ -41,6 +42,8 @@ DETAIL_RUNS=(DETAIL_RUN,DETAIL_DOSE_RUN,DETAIL_CONFIRM_RUN)
 
 
 def modes_for(root):
+    if root.name==R69_LORA_RUN:
+        return R69_MODES
     if root.name==DETAIL_RUN:
         return DETAIL_MODES
     if root.name in (DETAIL_DOSE_RUN,DETAIL_CONFIRM_RUN):
@@ -57,7 +60,7 @@ def modes_for(root):
 
 
 def recognizer_run(root):
-    if root.name in (STACK_RUN,STAGED_RUN,*DETAIL_RUNS):
+    if root.name in (STACK_RUN,STAGED_RUN,R69_LORA_RUN,*DETAIL_RUNS):
         return SET_RUN
     return WARMUP_RUN if root.name in (SHAPE_RUN,PROJECTED_RUN,COVERAGE_RUN) else TRI
 
@@ -156,6 +159,9 @@ def smoke(rt):
 
 @torch.no_grad()
 def source_wave(rt,seed):
+    if Path(rt['run_root']).name==R69_LORA_RUN:
+        from .full_dura_r69_lora import r69_audit
+        return r69_audit(rt,seed)
     if Path(rt['run_root']).name in DETAIL_RUNS:
         from .full_dura_detail import source_wave_detail
         return source_wave_detail(rt,seed)
@@ -227,6 +233,10 @@ def predict(rt,seed):
     dev='cuda:0'
     f=construct(dev).eval()
     f.load_state_dict(torch.load(complete_f(pred,c,name)/'model.pt',map_location=dev,weights_only=True),strict=True)
+    if root.name==R69_LORA_RUN:
+        from .full_dura_r69_lora import predict_r69
+        predict_r69(root,target,c,seed,f,dev)
+        return
     if root.name in DETAIL_RUNS:
         from .full_dura_detail import predict_detail
         predict_detail(root,target,c,seed,f,dev)
@@ -365,10 +375,21 @@ def dispatch(rt):
     state=root/'state.json'
     if root.name==DETAIL_CONFIRM_RUN:
         seeds=CONFIRM_NEW_SEEDS
+    elif root.name==R69_LORA_RUN:
+        seeds=R69_SEEDS
     else:
         seeds=DETAIL_SEEDS if root.name in DETAIL_RUNS else SEEDS
     try:
-        if root.name in (SHAPE_RUN,PROJECTED_RUN,COVERAGE_RUN,STACK_RUN,STAGED_RUN,*DETAIL_RUNS):
+        if root.name==R69_LORA_RUN:
+            write(state,dict(status='SOURCE_SMOKE'))
+            wait_for(root.parent/DRAW_RUN,'SOURCE_DRAW_READY')
+            if launch(rt,'r69_smoke','source').wait():
+                raise RuntimeError('Real-IQ original DURA smoke failed')
+            for stage in ('teacher','student','gate'):
+                write(state,dict(status=f'SOURCE_R69_{stage.upper()}'),exclusive=False)
+                schedule(rt,[(f'r69_{stage}',str(s)) for s in seeds],launch)
+            wait_for(root.parent/DETAIL_CONFIRM_RUN,'PREDICTIONS_FROZEN')
+        elif root.name in (SHAPE_RUN,PROJECTED_RUN,COVERAGE_RUN,STACK_RUN,STAGED_RUN,*DETAIL_RUNS):
             write(state,dict(status='SOURCE_SMOKE'))
             if root.name in (DETAIL_RUN,DETAIL_CONFIRM_RUN):
                 wait_for(root.parent/DRAW_RUN,'SOURCE_DRAW_READY')
@@ -428,7 +449,7 @@ if __name__=='__main__':
     p=argparse.ArgumentParser()
     p.add_argument('kind',choices=('dispatch','train_gate','smoke','shape_smoke','train','train_projected',
                                    'train_coverage','stage_teacher','stage_student','wave_audit','predict',
-                                   'detail_smoke','train_detail'))
+                                   'detail_smoke','train_detail','r69_smoke','r69_teacher','r69_student','r69_gate'))
     p.add_argument('runtime',type=Path)
     p.add_argument('name',nargs='?')
     a=p.parse_args()
@@ -460,5 +481,14 @@ if __name__=='__main__':
         elif a.kind=='train_detail':
             from .full_dura_detail import train_detail
             train_detail(rt,int(a.name))
+        elif a.kind=='r69_smoke':
+            from .full_dura_r69_lora import r69_smoke
+            r69_smoke(rt)
+        elif a.kind in ('r69_teacher','r69_student'):
+            from .full_dura_r69_lora import train_r69
+            train_r69(rt,int(a.name),a.kind.removeprefix('r69_'))
+        elif a.kind=='r69_gate':
+            from .full_dura_r69_lora import utility
+            utility(rt,int(a.name))
         else:
             {'wave_audit':source_wave,'predict':predict}[a.kind](rt,int(a.name))

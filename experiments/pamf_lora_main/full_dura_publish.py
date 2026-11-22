@@ -6,6 +6,7 @@ from experiments.cric_dura_comparison.io import read
 from .full_adaptive import RUN as TRI, SET_RUN, WARMUP_RUN
 from .full_dura import COVERAGE_RUN, PROJECTED_RUN, RUN, SHAPE_RUN, STACK_RUN, STAGED_RUN, SWEEP_RUN
 from .full_dura_detail import DETAIL_CONFIRM_RUN, DETAIL_DOSE_RUN, DETAIL_RUN
+from .full_dura_r69_lora import R69_LORA_RUN
 from .full_packet_publish import DATA_RUN
 from .full_restore_draw import RUN as DRAW_RUN
 from .publish import release, release_commit
@@ -13,13 +14,13 @@ from .publish import release, release_commit
 
 def publish(repo,output,context,ssh_config,data_submit,tri_submit,dose_submit=None,shape=False,projected=False,
             coverage_submit=None,stack=False,draw_submit=None,projected_submit=None,stack_submit=None,
-            coherent_detail=False,detail_dose_submit=None,confirm_dose=False):
+            coherent_detail=False,detail_dose_submit=None,confirm_dose=False,r69_aligned=False):
     x=read(context)
     rt={k:x[k] for k in ('project','python','frozen_sources')}
     p=PurePosixPath(x['project'])
     if (coherent_detail or detail_dose_submit is not None) and draw_submit is None:
         raise ValueError('High-coherence detail requires the frozen independent source draw')
-    if confirm_dose and detail_dose_submit is None:
+    if (confirm_dose or r69_aligned) and detail_dose_submit is None:
         raise ValueError('Dose confirmation requires the frozen single-seed dose matrix')
     joint=stack or draw_submit is not None
     new_run=shape or projected or coverage_submit is not None or joint
@@ -39,7 +40,8 @@ def publish(repo,output,context,ssh_config,data_submit,tri_submit,dose_submit=No
             raise ValueError('Staged DURA requires the joint frozen Tri control experiment')
         handles.extend(((draw_submit,DRAW_RUN),(stack_submit,STACK_RUN)))
     if detail_dose_submit is not None:
-        handles.append((detail_dose_submit,DETAIL_DOSE_RUN if confirm_dose else DETAIL_RUN))
+        parent=DETAIL_CONFIRM_RUN if r69_aligned else DETAIL_DOSE_RUN if confirm_dose else DETAIL_RUN
+        handles.append((detail_dose_submit,parent))
     for path,name in handles:
         o=read(path)
         if (o['archive_transfer']!='VERIFIED' or PurePosixPath(o['run_root'])!=p/'runs'/name
@@ -48,7 +50,7 @@ def publish(repo,output,context,ssh_config,data_submit,tri_submit,dose_submit=No
     data=p/'runs'/DATA_RUN
     if joint:
         if detail_dose_submit is not None:
-            name=DETAIL_CONFIRM_RUN if confirm_dose else DETAIL_DOSE_RUN
+            name=R69_LORA_RUN if r69_aligned else DETAIL_CONFIRM_RUN if confirm_dose else DETAIL_DOSE_RUN
         else:
             name=DETAIL_RUN if coherent_detail else STAGED_RUN if draw_submit is not None else STACK_RUN
     elif coverage_submit is not None:
@@ -82,5 +84,7 @@ if __name__=='__main__':
     detail=p.add_mutually_exclusive_group()
     detail.add_argument('--coherent-detail',action='store_true')
     detail.add_argument('--detail-dose-submit',type=Path)
-    p.add_argument('--confirm-dose',action='store_true')
+    extension=p.add_mutually_exclusive_group()
+    extension.add_argument('--confirm-dose',action='store_true')
+    extension.add_argument('--r69-aligned',action='store_true')
     publish(**vars(p.parse_args()))
