@@ -10,7 +10,7 @@ from experiments.cric_dura_comparison.io import read, tensor, write
 from .data import TARGET, VIEWS
 from .dura_gate import RiskDura
 from .dura_repair import complex_iq, power
-from .full_adaptive import RUN as TRI, WARMUP_RUN, case, complete_f, wait_for
+from .full_adaptive import RUN as TRI, SET_METHOD, SET_RUN, WARMUP_RUN, case, complete_f, wait_for
 from .full_dura_core import (COVERAGE_RECIPES, Dose, dose_features, g_record, projected_record, protected_shapes,
                             read_gate, receiver_loss, train, train_gate)
 from .full_packet_data import LIMIT, PROTOCOL
@@ -19,6 +19,7 @@ from .packet_runner import schedule
 from .refine_g import aligned_target
 from .refine_runner import start
 from .runner import activate
+from .full_restore_draw import RUN as DRAW_RUN
 
 RUN='20261122-phase1-lora-full-dura-dose-m3-r01'
 MODES=('direct','fixed','dose')
@@ -30,12 +31,17 @@ PROJECTED_RUN='20261122-phase1-lora-dura-train-protected-m3-r01'
 PROJECTED_MODES=('direct','fixed','protect_shape','trained_protect')
 COVERAGE_RUN='20261122-phase1-lora-dura-source-coverage-m6-r01'
 COVERAGE_MODES=(*PROJECTED_MODES,*COVERAGE_RECIPES)
+STACK_RUN='20261122-phase1-lora-tri-set-dura-stack-m9-r01'
+STAGED_RUN='20261122-phase1-lora-dura-source-distillation-m6-r01'
+STAGED_MODES=(*PROJECTED_MODES,'staged_protect')
 
 
 def modes_for(root):
+    if root.name==STAGED_RUN:
+        return STAGED_MODES
     if root.name==COVERAGE_RUN:
         return COVERAGE_MODES
-    if root.name==PROJECTED_RUN:
+    if root.name in (PROJECTED_RUN,STACK_RUN):
         return PROJECTED_MODES
     if root.name==SHAPE_RUN:
         return SHAPE_MODES
@@ -43,6 +49,8 @@ def modes_for(root):
 
 
 def recognizer_run(root):
+    if root.name in (STACK_RUN,STAGED_RUN):
+        return SET_RUN
     return WARMUP_RUN if root.name in (SHAPE_RUN,PROJECTED_RUN,COVERAGE_RUN) else TRI
 
 
@@ -75,6 +83,19 @@ def projected_engine(root,c,seed,gate,dev,recipe='protected_shape'):
 
 def projected_output(g,x,z):
     return protected_shapes(g,x,z)[0]
+
+
+def learned_engines(root,c,seed,gate,dev):
+    if root.name not in (PROJECTED_RUN,COVERAGE_RUN,STACK_RUN,STAGED_RUN):
+        return []
+    prior=root if root.name==PROJECTED_RUN else root.parent/PROJECTED_RUN
+    nets=[projected_engine(prior,c,seed,gate,dev)]
+    if root.name==COVERAGE_RUN:
+        nets.extend(projected_engine(root,c,seed,gate,dev,recipe) for recipe in COVERAGE_RECIPES)
+    if root.name==STAGED_RUN:
+        from .full_dura_stage import load_stage
+        nets.append(load_stage(root,c,seed,gate,dev,'student'))
+    return nets
 
 
 @torch.no_grad()
@@ -131,13 +152,9 @@ def source_wave(rt,seed):
     root=Path(rt['run_root'])
     dev='cuda:0'
     sweep=root.name==SWEEP_RUN
-    coverage=root.name==COVERAGE_RUN
-    projected=root.name==PROJECTED_RUN or coverage
-    shape=root.name in (SHAPE_RUN,PROJECTED_RUN,COVERAGE_RUN)
+    shape=root.name in (SHAPE_RUN,PROJECTED_RUN,COVERAGE_RUN,STACK_RUN,STAGED_RUN)
     m,d=engines(root.parent/RUN if sweep or shape else root,c,seed,dev)
-    learned=[projected_engine(root.parent/PROJECTED_RUN if coverage else root,c,seed,m.gate,dev)] if projected else []
-    if coverage:
-        learned.extend(projected_engine(root,c,seed,m.gate,dev,recipe) for recipe in COVERAGE_RECIPES)
+    learned=learned_engines(root,c,seed,m.gate,dev)
     arr=np.load(views/'V.npy',mmap_mode='r',allow_pickle=False)
     n=1000
     y=tensor(arr[0,::12],dev)
@@ -190,23 +207,23 @@ def predict(rt,seed):
             or read(target/'complete.json')!=dict(status='TARGET_READY',protocol=PROTOCOL,target_truth_read=False,
                               receivers=list(TARGET),per_receiver=LIMIT,views=list(VIEWS))):
         raise ValueError('Blind full pair is not ready')
-    name=case(seed,'adaptive_tri')
+    method=SET_METHOD if pred.name==SET_RUN else 'adaptive_tri'
+    name=case(seed,method)
     base=pred/'predictions'/name
-    if read(base/'complete.json')!=dict(status='PREDICTIONS_FROZEN',seed=seed,method='adaptive_tri',
+    if read(base/'complete.json')!=dict(status='PREDICTIONS_FROZEN',seed=seed,method=method,
            target_truth_read=False,receivers=list(TARGET),per_receiver=LIMIT,views=list(VIEWS),modes=['direct']):
         raise ValueError('Direct Tri control is not fixed')
     dev='cuda:0'
     f=construct(dev).eval()
     f.load_state_dict(torch.load(complete_f(pred,c,name)/'model.pt',map_location=dev,weights_only=True),strict=True)
-    if root.name==COVERAGE_RUN:
-        predict_coverage(root,target,c,seed,f,dev)
+    if root.name in (COVERAGE_RUN,STAGED_RUN):
+        predict_added(root,target,c,seed,f,dev)
         return
     sweep=root.name==SWEEP_RUN
-    projected=root.name==PROJECTED_RUN
-    shape=root.name in (SHAPE_RUN,PROJECTED_RUN)
+    shape=root.name in (SHAPE_RUN,PROJECTED_RUN,STACK_RUN,STAGED_RUN)
     modes=modes_for(root)
     m,d=engines(root.parent/RUN if sweep or shape else root,c,seed,dev)
-    trained=projected_engine(root,c,seed,m.gate,dev) if projected else None
+    learned=learned_engines(root,c,seed,m.gate,dev)
     out=root/'predictions'/str(seed)
     out.mkdir(parents=True,exist_ok=False)
     total={}
@@ -230,8 +247,8 @@ def predict(rt,seed):
                     xx,zz=x[use],z[use]
                     if shape:
                         inputs=[zz,*protected_shapes(m,xx,zz)]
-                        if trained is not None:
-                            inputs[-1]=projected_output(trained,xx,trained(xx))
+                        if learned:
+                            inputs=[*inputs[:2],*(projected_output(g,xx,g(xx)) for g in learned)]
                     elif sweep:
                         inputs=[zz,scaled(xx,zz,1.5),scaled(xx,zz,2.)]
                     else:
@@ -258,8 +275,9 @@ def predict(rt,seed):
           receivers=list(TARGET),views=list(VIEWS),per_receiver=LIMIT,activation=total))
 
 
-def predict_coverage(root,target,c,seed,reader,dev):
-    parent=root.parent/PROJECTED_RUN
+def predict_added(root,target,c,seed,reader,dev):
+    coverage=root.name==COVERAGE_RUN
+    parent=root.parent/(PROJECTED_RUN if coverage else STACK_RUN)
     if read(parent/'state.json')['status']!='PREDICTIONS_FROZEN':
         raise ValueError('Matched protected DURA controls must be frozen')
     base=parent/'predictions'/str(seed)
@@ -270,7 +288,12 @@ def predict_coverage(root,target,c,seed,reader,dev):
     if proof!=expected or set(activation)!={f'{rx}/{v}' for rx in TARGET for v in VIEWS}:
         raise ValueError('Mismatch in the frozen protected DURA control matrix')
     base_model,_=engines(root.parent/RUN,c,seed,dev)
-    learners=[projected_engine(root,c,seed,base_model.gate,dev,recipe) for recipe in COVERAGE_RECIPES]
+    if coverage:
+        learners=[projected_engine(root,c,seed,base_model.gate,dev,recipe) for recipe in COVERAGE_RECIPES]
+    else:
+        from .full_dura_stage import load_stage
+        learners=[load_stage(root,c,seed,base_model.gate,dev,'student')]
+    modes=modes_for(root)
     out=root/'predictions'/str(seed)
     out.mkdir(parents=True,exist_ok=False)
     for rx in TARGET:
@@ -299,10 +322,10 @@ def predict_coverage(root,target,c,seed,reader,dev):
                     active+=len(ids)
             if activation[f'{rx}/{v}']['active']!=active:
                 raise ValueError('Training coverage changed the deployed DURA gate')
-            for mode,values in zip(COVERAGE_MODES,(*existing,*results),strict=True):
+            for mode,values in zip(modes,(*existing,*results),strict=True):
                 np.save(out/f'{rx}__{v}__{mode}.npy',values)
-        print('FULL_DURA_COVERAGE_PREDICTED',seed,rx,flush=True)
-    write(out/'complete.json',dict(expected,modes=list(COVERAGE_MODES),activation=activation))
+        print('FULL_DURA_ADDED_PREDICTED',seed,rx,flush=True)
+    write(out/'complete.json',dict(expected,modes=list(modes),activation=activation))
 
 
 def dispatch(rt):
@@ -311,7 +334,7 @@ def dispatch(rt):
     launch=partial(start,module=__spec__.name)
     state=root/'state.json'
     try:
-        if root.name in (SHAPE_RUN,PROJECTED_RUN,COVERAGE_RUN):
+        if root.name in (SHAPE_RUN,PROJECTED_RUN,COVERAGE_RUN,STACK_RUN,STAGED_RUN):
             write(state,dict(status='SOURCE_SMOKE'))
             if launch(rt,'shape_smoke','source').wait():
                 raise RuntimeError('Frozen shape-protection source smoke failed')
@@ -321,6 +344,13 @@ def dispatch(rt):
                     schedule(rt,[('train_projected',str(s)) for s in SEEDS],launch)
                 else:
                     schedule(rt,[('train_coverage',f'{mode}-{s}') for s in SEEDS for mode in COVERAGE_RECIPES],launch)
+            if root.name==STAGED_RUN:
+                write(state,dict(status='WAITING_FOR_SOURCE_DRAW'),exclusive=False)
+                wait_for(root.parent/DRAW_RUN,'SOURCE_DRAW_READY')
+                write(state,dict(status='SOURCE_G_TEACHER_TRAINING'),exclusive=False)
+                schedule(rt,[('stage_teacher',str(s)) for s in SEEDS],launch)
+                write(state,dict(status='SOURCE_G_STUDENT_TRAINING'),exclusive=False)
+                schedule(rt,[('stage_student',str(s)) for s in SEEDS],launch)
         elif root.name==SWEEP_RUN:
             # The source G and raw F are both unchanged in this preregistered sensitivity check.
             write(state,dict(status='SOURCE_AUDIT'))
@@ -331,13 +361,15 @@ def dispatch(rt):
                 raise RuntimeError('DURA source-only smoke failed')
             write(state,dict(status='SOURCE_G_TRAINING'),exclusive=False)
             schedule(rt,[('train',str(s)) for s in SEEDS],launch)
-        if root.name==COVERAGE_RUN:
+        if root.name in (COVERAGE_RUN,STACK_RUN,STAGED_RUN):
             write(state,dict(status='WAITING_FOR_FROZEN_CONTROLS'),exclusive=False)
             wait_for(root.parent/PROJECTED_RUN,'PREDICTIONS_FROZEN')
         write(state,dict(status='SOURCE_AUDIT'),exclusive=False)
         schedule(rt,[('wave_audit',str(s)) for s in SEEDS],launch)
         write(state,dict(status='WAITING_FOR_FROZEN_TRI'),exclusive=False)
         wait_for(root.parent/recognizer_run(root),'PREDICTIONS_FROZEN')
+        if root.name==STAGED_RUN:
+            wait_for(root.parent/STACK_RUN,'PREDICTIONS_FROZEN')
         write(state,dict(status='PREDICTING'),exclusive=False)
         schedule(rt,[('predict',str(s)) for s in SEEDS],launch)
         write(state,dict(status='PREDICTIONS_FROZEN',target_truth_read=False),exclusive=False)
@@ -349,7 +381,7 @@ def dispatch(rt):
 if __name__=='__main__':
     p=argparse.ArgumentParser()
     p.add_argument('kind',choices=('dispatch','train_gate','smoke','shape_smoke','train','train_projected',
-                                   'train_coverage','wave_audit','predict'))
+                                   'train_coverage','stage_teacher','stage_student','wave_audit','predict'))
     p.add_argument('runtime',type=Path)
     p.add_argument('name',nargs='?')
     a=p.parse_args()
@@ -372,5 +404,8 @@ if __name__=='__main__':
         elif a.kind=='train_coverage':
             mode,seed=a.name.split('-')
             train(rt,root/'G'/mode/seed,root.parent/RUN/'G'/'gate',int(seed),projected=True,coverage=mode)
+        elif a.kind in ('stage_teacher','stage_student'):
+            from .full_dura_stage import train_stage
+            train_stage(rt,int(a.name),a.kind.removeprefix('stage_'))
         else:
             {'wave_audit':source_wave,'predict':predict}[a.kind](rt,int(a.name))
