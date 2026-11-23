@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 冻结复数修正的频带析因](../automation_reports/CV-SincNet/20261124-phase1-lora-tail-frequency-factorial-source-m2-r01/report.md)
 - [LoRa 实收扰动分层的复波形尾部损失](../automation_reports/CV-SincNet/20261124-phase1-lora-tail-pilot-source-m4-r01/report.md)
 - [LoRa 同包时间窗噪声谱置信收缩](../automation_reports/CV-SincNet/20261124-phase1-lora-rf-noise-confidence-source-m4-r01/report.md)
 - [LoRa 原接收频率噪声谱与去扫坐标传递](../automation_reports/CV-SincNet/20261124-phase1-lora-rf-noise-transport-source-m4-r01/report.md)
