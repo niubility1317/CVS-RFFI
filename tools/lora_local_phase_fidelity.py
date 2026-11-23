@@ -13,6 +13,7 @@ import torch
 from experiments.cric_dura_comparison.io import read, tensor
 from experiments.pamf_lora_main import held_chirp_precision_source, lapped_posterior_source, local_phase_source
 from experiments.pamf_lora_main import packet_relation_source, reference_cancel_source, spectral_block_source, split_shrink_source
+from experiments.pamf_lora_main import variance_transport_source
 from experiments.pamf_lora_main.channel_blind import corruption_score
 from experiments.pamf_lora_main.channel_blind_source import panel, receive_only
 from experiments.pamf_lora_main.data import SOURCE, VIEWS
@@ -204,6 +205,36 @@ def cancellation_evidence(model, tracked, frame, epsilon, clean):
     return np.asarray(torch.cat(values, dim=1).tolist(), dtype=np.float32)
 
 
+TRANSPORT_FIELDS = ('centered_power_ratio', 'signed_source_gain', 'centered_complex_correlation')
+
+
+def transport_evidence(model, waves, source, frame):
+    known = torch.view_as_complex(model.center)
+    restored = model.analysis(torch.stack(waves).flatten(0, 1) / frame.repeat(len(waves), 1, 1))
+    restored = restored[..., model.weak].unflatten(0, (len(waves), len(frame))) - known
+    reference = model.analysis(source / frame)[..., model.weak] - known
+    bin_number = torch.arange(256, device=frame.device)[model.weak]
+    distance = torch.minimum(bin_number, 256 - bin_number)
+    results = []
+    for selected in (distance <= 8, distance > 8):
+        value, truth = restored[..., selected], reference[..., selected]
+        for mode in (slice(0, 1), slice(1, None)):
+            a, b = value[..., mode, :], truth[..., mode, :]
+            p = b.abs().square().sum((-1, -2)).clamp_min(1e-8)
+            q = a.abs().square().sum((-1, -2)).clamp_min(1e-8)
+            cross = (a * b.conj()).sum((-1, -2)).real
+            results.append(torch.stack((q / p, cross / p, cross / (p * q).sqrt()), dim=-1))
+    return np.asarray(torch.stack(results, dim=-2).tolist(), dtype=np.float32)
+
+
+def transport_noise_bias(model, tracked, frame, epsilon):
+    estimated = model.observation_noise(model.analysis(tracked))[:, :2]
+    power = .5 * model.analysis(complex_iq(epsilon) / frame)[..., model.outer].abs().square()
+    measured = torch.stack((power[:, 0].mean(-1), power[:, 1:].mean((1, 2))), dim=1)
+    bias = 10 * (estimated.clamp_min(1e-10) / measured.clamp_min(1e-10)).log10()
+    return np.asarray(bias.tolist(), dtype=np.float32)
+
+
 RELATION_FIELDS = ('log_distance_rmse', 'neighbor_recall_at_5', 'paired_source_retrieval_at_1')
 
 
@@ -259,7 +290,13 @@ def diagnose(rt, route, device):
     is_held = rt['run_id']==held_chirp_precision_source.RUN
     is_relation = rt['run_id']==packet_relation_source.RUN
     is_cancel = rt['run_id']==reference_cancel_source.RUN
-    if is_cancel:
+    is_transport = rt['run_id']==variance_transport_source.RUN
+    if is_transport:
+        study = variance_transport_source
+        recover = lambda iq, tracker, models, threshold: study.recover(iq, tracker, models[0], threshold)
+        readouts = ('direct', *study.MODES[2:])
+        indices = range(len(study.MODES) - 2)
+    elif is_cancel:
         study = reference_cancel_source
         recipes = study.RECIPES
         recover = partial(study.recovery, controls=True)
@@ -298,7 +335,11 @@ def diagnose(rt, route, device):
     cache = root.parent/DATA_RUN/'source_views'
     contract = source_contract(data)
     rows, registered, clean, selected, marks = paired_source(data,cache,contract,root,route,study.MODES)
-    models, threshold = spectral_block_source.load_models(root,contract,device,recipes)
+    if is_transport:
+        threshold = study.load_gate(root)
+        models = (study.load(root, contract, threshold, device),)
+    else:
+        models, threshold = spectral_block_source.load_models(root,contract,device,recipes)
     if is_split:
         models = (*models, split_shrink_source.ScalarReadout(models[-1]).eval())
     elif is_lapped:
@@ -328,6 +369,7 @@ def diagnose(rt, route, device):
             held_stats = []
             relation_stats = []
             cancellation_stats = []
+            transport_stats = []
             batches = zip(tensor(capture,device).split(18),tensor(noise,device).split(18),truth.split(18),strict=True)
             for batch,(received, epsilon, source) in enumerate(batches):
                 recoveries, count = recover(received,tracker,models,threshold)[:2]
@@ -354,6 +396,10 @@ def diagnose(rt, route, device):
                     relation_stats.append(fingerprint(torch.stack(waves)/source_frames[batch]))
                 if is_cancel:
                     cancellation_stats.append(cancellation_evidence(models[1],tracked,frame,epsilon,view=='clean'))
+                if is_transport:
+                    transport_stats.append(transport_evidence(models[0], waves, target, frame))
+                    if view != 'clean':
+                        noise_stats.append(transport_noise_bias(models[0], tracked, frame, epsilon))
                 for reference, group in ((target,bands_from_ground),(noiseless,bands_from_noiseless)):
                     compared = waves
                     if is_geometry:
@@ -402,6 +448,19 @@ def diagnose(rt, route, device):
                     median=np.median(values,axis=0).tolist(), mean=np.mean(values,axis=0).tolist(),
                     by_receiver={name:np.median(part,axis=0).tolist()
                                  for name,part in zip(SOURCE,np.split(values,len(SOURCE),axis=0),strict=True)})
+            if is_transport:
+                values = np.concatenate(transport_stats, axis=1)
+                output[view]['transport'] = dict(fields=TRANSPORT_FIELDS,
+                    groups=['near_shared', 'near_private', 'middle_shared', 'middle_private'],
+                    median=np.median(values, axis=1).tolist(),
+                    by_receiver={name:np.median(part, axis=1).tolist()
+                                 for name,part in zip(SOURCE,np.split(values,len(SOURCE),axis=1),strict=True)})
+                if noise_stats:
+                    error = np.concatenate(noise_stats)
+                    output[view]['outer_noise_bias_db'] = dict(order=['shared', 'private'],
+                        median=np.median(error, axis=0).tolist(),
+                        by_receiver={name:np.median(part, axis=0).tolist()
+                                     for name,part in zip(SOURCE,np.split(error,len(SOURCE)),strict=True)})
             if is_relation:
                 estimates = [torch.cat(parts,dim=1) for parts in zip(*relation_stats,strict=True)]
                 reference_groups = zip(*(value.chunk(len(SOURCE),dim=0) for value in source_features),strict=True)
@@ -426,7 +485,7 @@ def main():
     root = Path(rt['run_root'])
     analyzed_runs = (local_phase_source.RUN, GEOMETRY_RUN, TANGENT_RUN, split_shrink_source.RUN,
                      lapped_posterior_source.RUN, held_chirp_precision_source.RUN, packet_relation_source.RUN,
-                     reference_cancel_source.RUN)
+                     reference_cancel_source.RUN, variance_transport_source.RUN)
     if rt.get('run_id') not in analyzed_runs or read(root/'state.json')['status']!='SOURCE_SCORED':
         raise ValueError('The full dual-route truth-last scoring must already be complete')
     activate(rt)
