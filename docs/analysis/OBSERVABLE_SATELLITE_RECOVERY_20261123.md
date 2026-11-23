@@ -36,7 +36,7 @@ R69 v1.0 有 266,951 个参数。历史两阶段学生由 R65 固定父版初始
 
 - WiSig 的直接前导均衡和绝对 CFO 校正使 clean 与受损识别均下降。两路短训练重复残差可反映观测失配，估计方差含相位变化和硬件失配。 [接收量及工程对照](../../automation_reports/CV-SincNet/20261123-phase1-wisig-stf-engineering-source-s2026092701-r02/report.md)
 - 与历史 F50 配对时，接收端时标检测和协议后缀外推在源 V 把两路线六景提高到 7,121/10,800，同时保持 1,773/1,800 clean。换成正式对比所用的 Tri-SIG-TIME 单种子后，同一方法的两路线六景分别净减 66 和 67 次正确。拟合一个短长前导共享复响应也下降，其中标量法净减 176 和 172，三抽头法净减 204 和 206。Tri-SIG-TIME 的 R69 同包基线为 10,194 和 10,195/10,800。两条路线的 clean 正确数均为 1,775/1,800，时标方法未晋级。 [F50 时标对照](../../automation_reports/CV-SincNet/20261123-phase1-wisig-timing-engineering-source-s2026092701-r01/report.md) · [Tri-SIG-TIME 联合前导对照](../../automation_reports/CV-SincNet/20261123-phase1-wisig-joint-preamble-source-s2026092701-r01/report.md)
-- 新的源 U 训练使用通用波形扰动，粗恢复、观测约束和细化联合训练。匹配弱复谱损失消融带来源域增益，仍低于 R69。把接收端时标加入训练和推理可改善匹配训练对照，但联合细化仍低于只做时标校正。每模型 227,268 参数、1,200 步，训练秒数与逐景、逐 RX 指标留存。 [弱复谱消融](../../automation_reports/CV-SincNet/20261123-phase1-wisig-uncertain-prior-source-s2026092701-m2-r01/report.md) · [时标联合训练消融](../../automation_reports/CV-SincNet/20261123-phase1-wisig-aligned-recovery-source-s2026092701-m2-r01/report.md)
+- 合法源 U 训练使用通用波形扰动，粗恢复、观测约束和细化联合训练。与匹配波形损失组相比，弱复谱约束在冻结 Tri-SIG-TIME 单种子的无门联合源读出中，两路线六景分别多判对 1,524 和 1,526 次，全部场景和源接收机方向一致。复评沿用原 227,268 参数、1,200 步权重。该读出仍低于直通与 R69，固定门在两条路线各净少 2 次六景正确与 1 次 clean 正确。此前把接收端时标放进训练和推理可改善历史 F50 的匹配训练对照，联合细化仍低于只做时标校正。 [Tri-SIG-TIME 弱复谱权重复评](../../automation_reports/CV-SincNet/20261123-phase1-wisig-tri-learned-replay-s2026092701-r01/report.md) · [F50 弱复谱消融](../../automation_reports/CV-SincNet/20261123-phase1-wisig-uncertain-prior-source-s2026092701-m2-r01/report.md) · [时标联合训练消融](../../automation_reports/CV-SincNet/20261123-phase1-wisig-aligned-recovery-source-s2026092701-m2-r01/report.md)
 - 配对 clean 只进隔离源诊断。依次归因时标、缺失样点和整体复增益后，最强的诊断仍低于原 R69。该读出不纳入可部署候选。 [配对隔离归因](../../automation_reports/CV-SincNet/20261123-diagnostic-wisig-source-paired-time-edge-s2026092701-r01/report.md)
 
 ## 相关工作与本轮验证口径
@@ -51,4 +51,4 @@ R69 v1.0 有 266,951 个参数。历史两阶段学生由 R65 固定父版初始
 | Yin 等，扩散射频指纹降噪 | 以逐点合成高斯噪声监督训练噪声预测器，把接收 SNR 映射到反向扩散步，并以生成的降噪信号训练分类器。验证使用 6 台 Wi-Fi 设备和一台 N210。 | 本轮用实际接收估计控制单次恢复，训练目标是实测源波形的保真与配对差异，不向候选提供逐点噪声或模拟信道监督。多接收机、两 practical 路线与同一冻结识别器构成独立验收条件。 [作者论文](https://livrepository.liverpool.ac.uk/3190640/1/WCNC2025_RFFI_WiFi.pdf) |
 | Lehtinen 等，Noise2Noise | 用独立受扰的成对观测训练同潜在信号恢复。 | 本轮借鉴同物理包跨扰动的一致性，并对共享扰动下的真实源 IQ 弱复谱差异增加传递约束。同包短训练残差同时包含失配，方差读出按有效残差解释。实验只支持当前匹配消融的源域结论。 [原论文](https://proceedings.mlr.press/v80/lehtinen18a.html) |
 
-接收端时标校正的源域收益依赖所用冻结识别器。匹配训练中弱复谱约束改善联合恢复的同包识别，目前覆盖历史 F50 的合法源域对照。两套数据的正式新方法收益及跨设置通用性仍待验证。
+接收端时标校正的源域收益依赖所用冻结识别器。弱复谱约束的正向匹配消融已在历史 F50 和正式所用的 Tri-SIG-TIME 单种子上复现。两套数据的新方法正式准确率及跨设置通用性仍待验证。
