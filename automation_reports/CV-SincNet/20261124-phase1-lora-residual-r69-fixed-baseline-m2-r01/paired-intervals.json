@@ -1,0 +1,29 @@
+{
+  "bootstrap_seed": 2026112420,
+  "bootstrap_draws": 1600,
+  "pairing": "Stratified by fixed receiver; keep each physical packet together across seeds and views",
+  "compares": "frozen residual R69 gated half vs matched residual direct",
+  "metrics": {
+    "clean": {
+      "net": 0,
+      "interval": [
+        0.0,
+        0.0
+      ]
+    },
+    "six": {
+      "net": 3360,
+      "interval": [
+        2679.0,
+        4001.0499999999997
+      ]
+    },
+    "low_urban": {
+      "net": 1351,
+      "interval": [
+        1154.975,
+        1548.0249999999999
+      ]
+    }
+  }
+}
