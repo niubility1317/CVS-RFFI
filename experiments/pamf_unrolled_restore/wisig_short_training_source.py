@@ -55,7 +55,7 @@ def quantiles(values):
 
 
 @torch.no_grad()
-def predict(rt, *, smoke=False):
+def predict(rt, *, smoke=False, transform=readouts, readout_names=READOUTS):
     cache, parent, source, reader, ids, _, _ = handles(rt)
     f = load_reader(reader, source, 'cuda:0').eval().requires_grad_(False)
     r69, proof = load_checkpoint(parent.parent / R69_RUN / 'stage2' / KIND / 'final.pt', 'cuda:0')
@@ -63,6 +63,7 @@ def predict(rt, *, smoke=False):
         raise ValueError('Expected original frozen R69 checkpoint')
     engine = InferenceEngine(r69.eval().requires_grad_(False), reuse=True, graph=True, native=False)
     root = Path(rt['run_root'])
+    modes = (*readout_names, 'r69')
     numbers = {}
     for route, folder in ROUTES.items():
         numbers[route] = {}
@@ -77,7 +78,7 @@ def predict(rt, *, smoke=False):
             started = perf_counter()
             for i in range(0, BATCH if smoke else len(ids), BATCH):
                 x = observed[i:i + BATCH]
-                variants, est = readouts(x)
+                variants, est = transform(x)
                 for key, values in zip(measures, (
                     est.coarse_coherence, est.long_coherence, est.effective_variance,
                     est.effective_variance / np.maximum(est.effective_variance + est.signal_power, 1e-12),
@@ -87,9 +88,9 @@ def predict(rt, *, smoke=False):
                     measures[key].append(values)
                 y = tensor(x, 'cuda:0')
                 restored, = engine(y)
-                inputs = (y, *(tensor(variants[m], 'cuda:0') for m in READOUTS[1:]), restored)
+                inputs = (y, *(tensor(variants[m], 'cuda:0') for m in readout_names[1:]), restored)
                 logits = torch.stack([f(z) for z in inputs])
-                if logits.shape != (len(MODES), len(x), 6) or not torch.isfinite(logits).all():
+                if logits.shape != (len(modes), len(x), 6) or not torch.isfinite(logits).all():
                     raise ValueError('Incomplete or nonfinite frozen source decisions')
                 predictions.append(logits.argmax(dim=-1).tolist())
             numbers[route][scene] = dict(seconds=perf_counter() - started,
@@ -102,7 +103,7 @@ def predict(rt, *, smoke=False):
                 print('WISIG_STF_FROZEN', route, scene, len(ids), flush=True)
     write(root / ('smoke.json' if smoke else 'predictions/complete.json'),
           dict(status='PASS' if smoke else 'FROZEN', summaries=numbers, count=BATCH if smoke else len(ids),
-               modes=list(MODES), views=list(VIEWS), source_truth_reads=0, target_reads=0))
+               modes=list(modes), views=list(VIEWS), source_truth_reads=0, target_reads=0))
 
 
 def score(rt, modes=MODES):
