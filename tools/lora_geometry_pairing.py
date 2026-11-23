@@ -1,4 +1,4 @@
-"""Reconcile frozen LoRa geometry predictions with source truth by scene and receiver."""
+"""Reconcile frozen LoRa predictions with source truth by scene and receiver."""
 
 import json
 import os
@@ -25,8 +25,8 @@ def with_six(value):
     return np.concatenate((value,value[:,1:].sum(axis=1,keepdims=True)),axis=1).astype(np.int16)
 
 
-def compare(hits, pairs, groups):
-    indices = [(MODES.index(a),MODES.index(b)) for a,b in pairs]
+def compare(hits, pairs, groups, modes=MODES):
+    indices = [(modes.index(a),modes.index(b)) for a,b in pairs]
     candidate, base = (hits[list(col)] for col in zip(*indices,strict=True))
     before, after = with_six(base),with_six(candidate)
     repairs, harms = with_six(candidate & ~base),with_six(base & ~candidate)
@@ -57,9 +57,16 @@ def compare(hits, pairs, groups):
 
 def collect(rt):
     root, source = Path(rt['run_root']),Path(rt['source_root'])
-    if rt.get('run_id')!=RUN or read(root/'state.json')['status']!='SOURCE_SCORED':
-        raise ValueError('Expected the complete dual-route geometry source score')
-    pieces = {route:read_frozen(root,route,MODES) for route in ROUTES}
+    if read(root/'state.json')['status']!='SOURCE_SCORED':
+        raise ValueError('Expected the complete dual-route source score')
+    if rt.get('run_id')==RUN:
+        modes, pairs = MODES, PAIRS
+    else:
+        from experiments.pamf_lora_main import empirical_tangent_source as tangent
+        if rt.get('run_id')!=tangent.RUN:
+            raise ValueError('Expected a registered LoRa recovery study')
+        modes, pairs = tangent.MODES, (*tangent.COMPARISONS,('direct','reference'))
+    pieces = {route:read_frozen(root,route,modes) for route in ROUTES}
     ids = pieces[ROUTES[0]][0]
     if any(item[0]!=ids for item in pieces.values()):
         raise ValueError('Frozen source physical rows differ across routes')
@@ -78,7 +85,7 @@ def collect(rt):
         official = read(root/f'{route}-source-scores.json')
         if any(hits[:,i].sum(-1).tolist()!=official['metrics'][view]['correct'] for i,view in enumerate(VIEWS)):
             raise ValueError('Reconciled counts differ from the independent frozen source score')
-        result[route] = compare(hits,PAIRS,groups)
+        result[route] = compare(hits,pairs,groups,modes)
     return dict(reader_seed=2026092702,bootstrap_replicates=REPEATS,target_reads=0,routes=result)
 
 
