@@ -1,0 +1,2351 @@
+{
+  "parent": "20261124-phase1-lora-clean-pilot-protected-source-m4-r01",
+  "n_packets": 900,
+  "observed_noise_rms_thresholds": [
+    0.045941177755594254,
+    0.15,
+    0.4
+  ],
+  "scopes": [
+    "bypass",
+    "active_to_0.15",
+    "active_0.15_to_0.40",
+    "active_above_0.40"
+  ],
+  "uses_actual_added_noise": false,
+  "target_reads": 0,
+  "by_route": {
+    "full": {
+      "pooled": {
+        "bypass": {
+          "exposures": 3771,
+          "comparisons": {
+            "protected_engineering__vs__engineering": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 2449,
+              "control_correct": 2449
+            },
+            "protected_engineering__vs__direct": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 2449,
+              "control_correct": 2449
+            },
+            "protected_half__vs__crossfit_half": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 2449,
+              "control_correct": 2449
+            },
+            "anchored_half__vs__protected_half": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 2449,
+              "control_correct": 2449
+            },
+            "protected_half__vs__reference": {
+              "better": 52,
+              "worse": 65,
+              "variant_correct": 2449,
+              "control_correct": 2462
+            },
+            "anchored_half__vs__reference": {
+              "better": 52,
+              "worse": 65,
+              "variant_correct": 2449,
+              "control_correct": 2462
+            }
+          }
+        },
+        "active_to_0.15": {
+          "exposures": 653,
+          "comparisons": {
+            "protected_engineering__vs__engineering": {
+              "better": 34,
+              "worse": 16,
+              "variant_correct": 316,
+              "control_correct": 298
+            },
+            "protected_engineering__vs__direct": {
+              "better": 5,
+              "worse": 8,
+              "variant_correct": 316,
+              "control_correct": 319
+            },
+            "protected_half__vs__crossfit_half": {
+              "better": 20,
+              "worse": 20,
+              "variant_correct": 322,
+              "control_correct": 322
+            },
+            "anchored_half__vs__protected_half": {
+              "better": 5,
+              "worse": 5,
+              "variant_correct": 322,
+              "control_correct": 322
+            },
+            "protected_half__vs__reference": {
+              "better": 35,
+              "worse": 59,
+              "variant_correct": 322,
+              "control_correct": 346
+            },
+            "anchored_half__vs__reference": {
+              "better": 34,
+              "worse": 58,
+              "variant_correct": 322,
+              "control_correct": 346
+            }
+          }
+        },
+        "active_0.15_to_0.40": {
+          "exposures": 629,
+          "comparisons": {
+            "protected_engineering__vs__engineering": {
+              "better": 4,
+              "worse": 3,
+              "variant_correct": 195,
+              "control_correct": 194
+            },
+            "protected_engineering__vs__direct": {
+              "better": 4,
+              "worse": 2,
+              "variant_correct": 195,
+              "control_correct": 193
+            },
+            "protected_half__vs__crossfit_half": {
+              "better": 8,
+              "worse": 17,
+              "variant_correct": 198,
+              "control_correct": 207
+            },
+            "anchored_half__vs__protected_half": {
+              "better": 5,
+              "worse": 4,
+              "variant_correct": 199,
+              "control_correct": 198
+            },
+            "protected_half__vs__reference": {
+              "better": 31,
+              "worse": 37,
+              "variant_correct": 198,
+              "control_correct": 204
+            },
+            "anchored_half__vs__reference": {
+              "better": 31,
+              "worse": 36,
+              "variant_correct": 199,
+              "control_correct": 204
+            }
+          }
+        },
+        "active_above_0.40": {
+          "exposures": 347,
+          "comparisons": {
+            "protected_engineering__vs__engineering": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 67,
+              "control_correct": 67
+            },
+            "protected_engineering__vs__direct": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 67,
+              "control_correct": 67
+            },
+            "protected_half__vs__crossfit_half": {
+              "better": 3,
+              "worse": 6,
+              "variant_correct": 86,
+              "control_correct": 89
+            },
+            "anchored_half__vs__protected_half": {
+              "better": 1,
+              "worse": 5,
+              "variant_correct": 82,
+              "control_correct": 86
+            },
+            "protected_half__vs__reference": {
+              "better": 17,
+              "worse": 13,
+              "variant_correct": 86,
+              "control_correct": 82
+            },
+            "anchored_half__vs__reference": {
+              "better": 13,
+              "worse": 13,
+              "variant_correct": 82,
+              "control_correct": 82
+            }
+          }
+        }
+      },
+      "by_scene": {
+        "practical_high": {
+          "bypass": {
+            "exposures": 879,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 582,
+                "control_correct": 582
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 582,
+                "control_correct": 582
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 582,
+                "control_correct": 582
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 582,
+                "control_correct": 582
+              },
+              "protected_half__vs__reference": {
+                "better": 3,
+                "worse": 1,
+                "variant_correct": 582,
+                "control_correct": 580
+              },
+              "anchored_half__vs__reference": {
+                "better": 3,
+                "worse": 1,
+                "variant_correct": 582,
+                "control_correct": 580
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 13,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 7,
+                "control_correct": 8
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 7,
+                "control_correct": 8
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 2,
+                "worse": 1,
+                "variant_correct": 8,
+                "control_correct": 7
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 7,
+                "control_correct": 8
+              },
+              "protected_half__vs__reference": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 8,
+                "control_correct": 7
+              },
+              "anchored_half__vs__reference": {
+                "better": 1,
+                "worse": 1,
+                "variant_correct": 7,
+                "control_correct": 7
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 7,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 4,
+                "control_correct": 4
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 4,
+                "control_correct": 4
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 3,
+                "control_correct": 3
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 3,
+                "control_correct": 3
+              },
+              "protected_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 3,
+                "control_correct": 3
+              },
+              "anchored_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 3,
+                "control_correct": 3
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 1,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "protected_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "anchored_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              }
+            }
+          }
+        },
+        "practical_mid": {
+          "bypass": {
+            "exposures": 741,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 480,
+                "control_correct": 480
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 480,
+                "control_correct": 480
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 480,
+                "control_correct": 480
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 480,
+                "control_correct": 480
+              },
+              "protected_half__vs__reference": {
+                "better": 13,
+                "worse": 16,
+                "variant_correct": 480,
+                "control_correct": 483
+              },
+              "anchored_half__vs__reference": {
+                "better": 13,
+                "worse": 16,
+                "variant_correct": 480,
+                "control_correct": 483
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 119,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 10,
+                "worse": 3,
+                "variant_correct": 59,
+                "control_correct": 52
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 2,
+                "variant_correct": 59,
+                "control_correct": 61
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 2,
+                "worse": 5,
+                "variant_correct": 64,
+                "control_correct": 67
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 2,
+                "worse": 1,
+                "variant_correct": 65,
+                "control_correct": 64
+              },
+              "protected_half__vs__reference": {
+                "better": 12,
+                "worse": 5,
+                "variant_correct": 64,
+                "control_correct": 57
+              },
+              "anchored_half__vs__reference": {
+                "better": 12,
+                "worse": 4,
+                "variant_correct": 65,
+                "control_correct": 57
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 31,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 15,
+                "control_correct": 14
+              },
+              "protected_engineering__vs__direct": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 15,
+                "control_correct": 14
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 16,
+                "control_correct": 15
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 16,
+                "control_correct": 16
+              },
+              "protected_half__vs__reference": {
+                "better": 4,
+                "worse": 1,
+                "variant_correct": 16,
+                "control_correct": 13
+              },
+              "anchored_half__vs__reference": {
+                "better": 4,
+                "worse": 1,
+                "variant_correct": 16,
+                "control_correct": 13
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 9,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 2
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 2
+              },
+              "protected_half__vs__reference": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 1
+              },
+              "anchored_half__vs__reference": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 1
+              }
+            }
+          }
+        },
+        "practical_low_suburban": {
+          "bypass": {
+            "exposures": 580,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 349,
+                "control_correct": 349
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 349,
+                "control_correct": 349
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 349,
+                "control_correct": 349
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 349,
+                "control_correct": 349
+              },
+              "protected_half__vs__reference": {
+                "better": 17,
+                "worse": 29,
+                "variant_correct": 349,
+                "control_correct": 361
+              },
+              "anchored_half__vs__reference": {
+                "better": 17,
+                "worse": 29,
+                "variant_correct": 349,
+                "control_correct": 361
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 257,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 11,
+                "worse": 6,
+                "variant_correct": 121,
+                "control_correct": 116
+              },
+              "protected_engineering__vs__direct": {
+                "better": 2,
+                "worse": 2,
+                "variant_correct": 121,
+                "control_correct": 121
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 9,
+                "worse": 9,
+                "variant_correct": 121,
+                "control_correct": 121
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 2,
+                "worse": 2,
+                "variant_correct": 121,
+                "control_correct": 121
+              },
+              "protected_half__vs__reference": {
+                "better": 8,
+                "worse": 26,
+                "variant_correct": 121,
+                "control_correct": 139
+              },
+              "anchored_half__vs__reference": {
+                "better": 7,
+                "worse": 25,
+                "variant_correct": 121,
+                "control_correct": 139
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 50,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 19,
+                "control_correct": 19
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 19,
+                "control_correct": 20
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 5,
+                "variant_correct": 19,
+                "control_correct": 24
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 18,
+                "control_correct": 19
+              },
+              "protected_half__vs__reference": {
+                "better": 0,
+                "worse": 4,
+                "variant_correct": 19,
+                "control_correct": 23
+              },
+              "anchored_half__vs__reference": {
+                "better": 0,
+                "worse": 5,
+                "variant_correct": 18,
+                "control_correct": 23
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 13,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 3,
+                "control_correct": 3
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 3,
+                "control_correct": 3
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 5,
+                "control_correct": 5
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 5,
+                "control_correct": 5
+              },
+              "protected_half__vs__reference": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 5,
+                "control_correct": 4
+              },
+              "anchored_half__vs__reference": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 5,
+                "control_correct": 4
+              }
+            }
+          }
+        },
+        "practical_high_urban": {
+          "bypass": {
+            "exposures": 808,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 543,
+                "control_correct": 543
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 543,
+                "control_correct": 543
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 543,
+                "control_correct": 543
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 543,
+                "control_correct": 543
+              },
+              "protected_half__vs__reference": {
+                "better": 2,
+                "worse": 2,
+                "variant_correct": 543,
+                "control_correct": 543
+              },
+              "anchored_half__vs__reference": {
+                "better": 2,
+                "worse": 2,
+                "variant_correct": 543,
+                "control_correct": 543
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 29,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 15,
+                "control_correct": 15
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 15,
+                "control_correct": 15
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 16,
+                "control_correct": 15
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 16,
+                "control_correct": 16
+              },
+              "protected_half__vs__reference": {
+                "better": 1,
+                "worse": 3,
+                "variant_correct": 16,
+                "control_correct": 18
+              },
+              "anchored_half__vs__reference": {
+                "better": 1,
+                "worse": 3,
+                "variant_correct": 16,
+                "control_correct": 18
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 51,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 1,
+                "worse": 1,
+                "variant_correct": 21,
+                "control_correct": 21
+              },
+              "protected_engineering__vs__direct": {
+                "better": 1,
+                "worse": 1,
+                "variant_correct": 21,
+                "control_correct": 21
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 1,
+                "worse": 2,
+                "variant_correct": 20,
+                "control_correct": 21
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 1,
+                "worse": 1,
+                "variant_correct": 20,
+                "control_correct": 20
+              },
+              "protected_half__vs__reference": {
+                "better": 5,
+                "worse": 3,
+                "variant_correct": 20,
+                "control_correct": 18
+              },
+              "anchored_half__vs__reference": {
+                "better": 5,
+                "worse": 3,
+                "variant_correct": 20,
+                "control_correct": 18
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 12,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 2
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 2
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 4,
+                "control_correct": 4
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 4,
+                "control_correct": 4
+              },
+              "protected_half__vs__reference": {
+                "better": 2,
+                "worse": 0,
+                "variant_correct": 4,
+                "control_correct": 2
+              },
+              "anchored_half__vs__reference": {
+                "better": 2,
+                "worse": 0,
+                "variant_correct": 4,
+                "control_correct": 2
+              }
+            }
+          }
+        },
+        "practical_mid_urban": {
+          "bypass": {
+            "exposures": 504,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 326,
+                "control_correct": 326
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 326,
+                "control_correct": 326
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 326,
+                "control_correct": 326
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 326,
+                "control_correct": 326
+              },
+              "protected_half__vs__reference": {
+                "better": 10,
+                "worse": 12,
+                "variant_correct": 326,
+                "control_correct": 328
+              },
+              "anchored_half__vs__reference": {
+                "better": 10,
+                "worse": 12,
+                "variant_correct": 326,
+                "control_correct": 328
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 102,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 6,
+                "worse": 2,
+                "variant_correct": 49,
+                "control_correct": 45
+              },
+              "protected_engineering__vs__direct": {
+                "better": 2,
+                "worse": 1,
+                "variant_correct": 49,
+                "control_correct": 48
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 2,
+                "worse": 2,
+                "variant_correct": 48,
+                "control_correct": 48
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 1,
+                "worse": 1,
+                "variant_correct": 48,
+                "control_correct": 48
+              },
+              "protected_half__vs__reference": {
+                "better": 2,
+                "worse": 12,
+                "variant_correct": 48,
+                "control_correct": 58
+              },
+              "anchored_half__vs__reference": {
+                "better": 2,
+                "worse": 12,
+                "variant_correct": 48,
+                "control_correct": 58
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 211,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 1,
+                "worse": 2,
+                "variant_correct": 57,
+                "control_correct": 58
+              },
+              "protected_engineering__vs__direct": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 57,
+                "control_correct": 56
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 2,
+                "worse": 5,
+                "variant_correct": 58,
+                "control_correct": 61
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 59,
+                "control_correct": 58
+              },
+              "protected_half__vs__reference": {
+                "better": 10,
+                "worse": 15,
+                "variant_correct": 58,
+                "control_correct": 63
+              },
+              "anchored_half__vs__reference": {
+                "better": 10,
+                "worse": 14,
+                "variant_correct": 59,
+                "control_correct": 63
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 83,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 14,
+                "control_correct": 14
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 14,
+                "control_correct": 14
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 1,
+                "worse": 2,
+                "variant_correct": 20,
+                "control_correct": 21
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 19,
+                "control_correct": 20
+              },
+              "protected_half__vs__reference": {
+                "better": 6,
+                "worse": 4,
+                "variant_correct": 20,
+                "control_correct": 18
+              },
+              "anchored_half__vs__reference": {
+                "better": 5,
+                "worse": 4,
+                "variant_correct": 19,
+                "control_correct": 18
+              }
+            }
+          }
+        },
+        "practical_low_urban": {
+          "bypass": {
+            "exposures": 259,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 169,
+                "control_correct": 169
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 169,
+                "control_correct": 169
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 169,
+                "control_correct": 169
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 169,
+                "control_correct": 169
+              },
+              "protected_half__vs__reference": {
+                "better": 7,
+                "worse": 5,
+                "variant_correct": 169,
+                "control_correct": 167
+              },
+              "anchored_half__vs__reference": {
+                "better": 7,
+                "worse": 5,
+                "variant_correct": 169,
+                "control_correct": 167
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 133,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 7,
+                "worse": 4,
+                "variant_correct": 65,
+                "control_correct": 62
+              },
+              "protected_engineering__vs__direct": {
+                "better": 1,
+                "worse": 2,
+                "variant_correct": 65,
+                "control_correct": 66
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 4,
+                "worse": 3,
+                "variant_correct": 65,
+                "control_correct": 64
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 65,
+                "control_correct": 65
+              },
+              "protected_half__vs__reference": {
+                "better": 11,
+                "worse": 13,
+                "variant_correct": 65,
+                "control_correct": 67
+              },
+              "anchored_half__vs__reference": {
+                "better": 11,
+                "worse": 13,
+                "variant_correct": 65,
+                "control_correct": 67
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 279,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 79,
+                "control_correct": 78
+              },
+              "protected_engineering__vs__direct": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 79,
+                "control_correct": 78
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 4,
+                "worse": 5,
+                "variant_correct": 82,
+                "control_correct": 83
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 3,
+                "worse": 2,
+                "variant_correct": 83,
+                "control_correct": 82
+              },
+              "protected_half__vs__reference": {
+                "better": 12,
+                "worse": 14,
+                "variant_correct": 82,
+                "control_correct": 84
+              },
+              "anchored_half__vs__reference": {
+                "better": 12,
+                "worse": 13,
+                "variant_correct": 83,
+                "control_correct": 84
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 229,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 47,
+                "control_correct": 47
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 47,
+                "control_correct": 47
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 2,
+                "worse": 4,
+                "variant_correct": 54,
+                "control_correct": 56
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 1,
+                "worse": 4,
+                "variant_correct": 51,
+                "control_correct": 54
+              },
+              "protected_half__vs__reference": {
+                "better": 7,
+                "worse": 9,
+                "variant_correct": 54,
+                "control_correct": 56
+              },
+              "anchored_half__vs__reference": {
+                "better": 4,
+                "worse": 9,
+                "variant_correct": 51,
+                "control_correct": 56
+              }
+            }
+          }
+        }
+      }
+    },
+    "residual": {
+      "pooled": {
+        "bypass": {
+          "exposures": 1975,
+          "comparisons": {
+            "protected_engineering__vs__engineering": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 1237,
+              "control_correct": 1237
+            },
+            "protected_engineering__vs__direct": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 1237,
+              "control_correct": 1237
+            },
+            "protected_half__vs__crossfit_half": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 1237,
+              "control_correct": 1237
+            },
+            "anchored_half__vs__protected_half": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 1237,
+              "control_correct": 1237
+            },
+            "protected_half__vs__reference": {
+              "better": 71,
+              "worse": 93,
+              "variant_correct": 1237,
+              "control_correct": 1259
+            },
+            "anchored_half__vs__reference": {
+              "better": 71,
+              "worse": 93,
+              "variant_correct": 1237,
+              "control_correct": 1259
+            }
+          }
+        },
+        "active_to_0.15": {
+          "exposures": 2631,
+          "comparisons": {
+            "protected_engineering__vs__engineering": {
+              "better": 92,
+              "worse": 39,
+              "variant_correct": 1303,
+              "control_correct": 1250
+            },
+            "protected_engineering__vs__direct": {
+              "better": 21,
+              "worse": 23,
+              "variant_correct": 1303,
+              "control_correct": 1305
+            },
+            "protected_half__vs__crossfit_half": {
+              "better": 61,
+              "worse": 65,
+              "variant_correct": 1323,
+              "control_correct": 1327
+            },
+            "anchored_half__vs__protected_half": {
+              "better": 14,
+              "worse": 12,
+              "variant_correct": 1325,
+              "control_correct": 1323
+            },
+            "protected_half__vs__reference": {
+              "better": 99,
+              "worse": 156,
+              "variant_correct": 1323,
+              "control_correct": 1380
+            },
+            "anchored_half__vs__reference": {
+              "better": 97,
+              "worse": 152,
+              "variant_correct": 1325,
+              "control_correct": 1380
+            }
+          }
+        },
+        "active_0.15_to_0.40": {
+          "exposures": 354,
+          "comparisons": {
+            "protected_engineering__vs__engineering": {
+              "better": 1,
+              "worse": 0,
+              "variant_correct": 155,
+              "control_correct": 154
+            },
+            "protected_engineering__vs__direct": {
+              "better": 1,
+              "worse": 0,
+              "variant_correct": 155,
+              "control_correct": 154
+            },
+            "protected_half__vs__crossfit_half": {
+              "better": 8,
+              "worse": 5,
+              "variant_correct": 156,
+              "control_correct": 153
+            },
+            "anchored_half__vs__protected_half": {
+              "better": 2,
+              "worse": 3,
+              "variant_correct": 155,
+              "control_correct": 156
+            },
+            "protected_half__vs__reference": {
+              "better": 14,
+              "worse": 21,
+              "variant_correct": 156,
+              "control_correct": 163
+            },
+            "anchored_half__vs__reference": {
+              "better": 14,
+              "worse": 22,
+              "variant_correct": 155,
+              "control_correct": 163
+            }
+          }
+        },
+        "active_above_0.40": {
+          "exposures": 440,
+          "comparisons": {
+            "protected_engineering__vs__engineering": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 152,
+              "control_correct": 152
+            },
+            "protected_engineering__vs__direct": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 152,
+              "control_correct": 152
+            },
+            "protected_half__vs__crossfit_half": {
+              "better": 7,
+              "worse": 10,
+              "variant_correct": 164,
+              "control_correct": 167
+            },
+            "anchored_half__vs__protected_half": {
+              "better": 3,
+              "worse": 2,
+              "variant_correct": 165,
+              "control_correct": 164
+            },
+            "protected_half__vs__reference": {
+              "better": 28,
+              "worse": 22,
+              "variant_correct": 164,
+              "control_correct": 158
+            },
+            "anchored_half__vs__reference": {
+              "better": 27,
+              "worse": 20,
+              "variant_correct": 165,
+              "control_correct": 158
+            }
+          }
+        }
+      },
+      "by_scene": {
+        "practical_high": {
+          "bypass": {
+            "exposures": 861,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 524,
+                "control_correct": 524
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 524,
+                "control_correct": 524
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 524,
+                "control_correct": 524
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 524,
+                "control_correct": 524
+              },
+              "protected_half__vs__reference": {
+                "better": 31,
+                "worse": 41,
+                "variant_correct": 524,
+                "control_correct": 534
+              },
+              "anchored_half__vs__reference": {
+                "better": 31,
+                "worse": 41,
+                "variant_correct": 524,
+                "control_correct": 534
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 39,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 1,
+                "worse": 2,
+                "variant_correct": 14,
+                "control_correct": 15
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 14,
+                "control_correct": 15
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 16,
+                "control_correct": 15
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 16,
+                "control_correct": 16
+              },
+              "protected_half__vs__reference": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 16,
+                "control_correct": 17
+              },
+              "anchored_half__vs__reference": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 16,
+                "control_correct": 17
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 0,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "protected_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "anchored_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 0,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "protected_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "anchored_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              }
+            }
+          }
+        },
+        "practical_mid": {
+          "bypass": {
+            "exposures": 183,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 118,
+                "control_correct": 118
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 118,
+                "control_correct": 118
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 118,
+                "control_correct": 118
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 118,
+                "control_correct": 118
+              },
+              "protected_half__vs__reference": {
+                "better": 3,
+                "worse": 7,
+                "variant_correct": 118,
+                "control_correct": 122
+              },
+              "anchored_half__vs__reference": {
+                "better": 3,
+                "worse": 7,
+                "variant_correct": 118,
+                "control_correct": 122
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 715,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 42,
+                "worse": 17,
+                "variant_correct": 345,
+                "control_correct": 320
+              },
+              "protected_engineering__vs__direct": {
+                "better": 7,
+                "worse": 9,
+                "variant_correct": 345,
+                "control_correct": 347
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 13,
+                "worse": 24,
+                "variant_correct": 350,
+                "control_correct": 361
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 1,
+                "worse": 2,
+                "variant_correct": 349,
+                "control_correct": 350
+              },
+              "protected_half__vs__reference": {
+                "better": 25,
+                "worse": 46,
+                "variant_correct": 350,
+                "control_correct": 371
+              },
+              "anchored_half__vs__reference": {
+                "better": 25,
+                "worse": 47,
+                "variant_correct": 349,
+                "control_correct": 371
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 2,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "protected_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "anchored_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 0,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "protected_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "anchored_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              }
+            }
+          }
+        },
+        "practical_low_suburban": {
+          "bypass": {
+            "exposures": 0,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "protected_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "anchored_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 881,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 32,
+                "worse": 17,
+                "variant_correct": 451,
+                "control_correct": 436
+              },
+              "protected_engineering__vs__direct": {
+                "better": 6,
+                "worse": 10,
+                "variant_correct": 451,
+                "control_correct": 455
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 24,
+                "worse": 21,
+                "variant_correct": 455,
+                "control_correct": 452
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 6,
+                "worse": 6,
+                "variant_correct": 455,
+                "control_correct": 455
+              },
+              "protected_half__vs__reference": {
+                "better": 44,
+                "worse": 63,
+                "variant_correct": 455,
+                "control_correct": 474
+              },
+              "anchored_half__vs__reference": {
+                "better": 41,
+                "worse": 60,
+                "variant_correct": 455,
+                "control_correct": 474
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 19,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 12,
+                "control_correct": 11
+              },
+              "protected_engineering__vs__direct": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 12,
+                "control_correct": 11
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 8,
+                "control_correct": 7
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 1,
+                "worse": 1,
+                "variant_correct": 8,
+                "control_correct": 8
+              },
+              "protected_half__vs__reference": {
+                "better": 0,
+                "worse": 2,
+                "variant_correct": 8,
+                "control_correct": 10
+              },
+              "anchored_half__vs__reference": {
+                "better": 1,
+                "worse": 3,
+                "variant_correct": 8,
+                "control_correct": 10
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 0,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "protected_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "anchored_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              }
+            }
+          }
+        },
+        "practical_high_urban": {
+          "bypass": {
+            "exposures": 833,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 530,
+                "control_correct": 530
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 530,
+                "control_correct": 530
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 530,
+                "control_correct": 530
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 530,
+                "control_correct": 530
+              },
+              "protected_half__vs__reference": {
+                "better": 32,
+                "worse": 39,
+                "variant_correct": 530,
+                "control_correct": 537
+              },
+              "anchored_half__vs__reference": {
+                "better": 32,
+                "worse": 39,
+                "variant_correct": 530,
+                "control_correct": 537
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 64,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 26,
+                "control_correct": 26
+              },
+              "protected_engineering__vs__direct": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 26,
+                "control_correct": 25
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 2,
+                "variant_correct": 29,
+                "control_correct": 31
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 30,
+                "control_correct": 29
+              },
+              "protected_half__vs__reference": {
+                "better": 3,
+                "worse": 1,
+                "variant_correct": 29,
+                "control_correct": 27
+              },
+              "anchored_half__vs__reference": {
+                "better": 4,
+                "worse": 1,
+                "variant_correct": 30,
+                "control_correct": 27
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 3,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 3,
+                "control_correct": 3
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 3,
+                "control_correct": 3
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 2
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 2
+              },
+              "protected_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 2
+              },
+              "anchored_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 2
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 0,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "protected_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "anchored_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              }
+            }
+          }
+        },
+        "practical_mid_urban": {
+          "bypass": {
+            "exposures": 97,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 64,
+                "control_correct": 64
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 64,
+                "control_correct": 64
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 64,
+                "control_correct": 64
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 64,
+                "control_correct": 64
+              },
+              "protected_half__vs__reference": {
+                "better": 4,
+                "worse": 6,
+                "variant_correct": 64,
+                "control_correct": 66
+              },
+              "anchored_half__vs__reference": {
+                "better": 4,
+                "worse": 6,
+                "variant_correct": 64,
+                "control_correct": 66
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 592,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 11,
+                "worse": 3,
+                "variant_correct": 284,
+                "control_correct": 276
+              },
+              "protected_engineering__vs__direct": {
+                "better": 4,
+                "worse": 2,
+                "variant_correct": 284,
+                "control_correct": 282
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 15,
+                "worse": 10,
+                "variant_correct": 297,
+                "control_correct": 292
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 3,
+                "worse": 2,
+                "variant_correct": 298,
+                "control_correct": 297
+              },
+              "protected_half__vs__reference": {
+                "better": 16,
+                "worse": 25,
+                "variant_correct": 297,
+                "control_correct": 306
+              },
+              "anchored_half__vs__reference": {
+                "better": 16,
+                "worse": 24,
+                "variant_correct": 298,
+                "control_correct": 306
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 138,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 64,
+                "control_correct": 64
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 64,
+                "control_correct": 64
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 3,
+                "worse": 2,
+                "variant_correct": 65,
+                "control_correct": 64
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 65,
+                "control_correct": 65
+              },
+              "protected_half__vs__reference": {
+                "better": 6,
+                "worse": 8,
+                "variant_correct": 65,
+                "control_correct": 67
+              },
+              "anchored_half__vs__reference": {
+                "better": 6,
+                "worse": 8,
+                "variant_correct": 65,
+                "control_correct": 67
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 73,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 23,
+                "control_correct": 23
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 23,
+                "control_correct": 23
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 26,
+                "control_correct": 25
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 27,
+                "control_correct": 26
+              },
+              "protected_half__vs__reference": {
+                "better": 4,
+                "worse": 1,
+                "variant_correct": 26,
+                "control_correct": 23
+              },
+              "anchored_half__vs__reference": {
+                "better": 4,
+                "worse": 0,
+                "variant_correct": 27,
+                "control_correct": 23
+              }
+            }
+          }
+        },
+        "practical_low_urban": {
+          "bypass": {
+            "exposures": 1,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "protected_half__vs__reference": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 0
+              },
+              "anchored_half__vs__reference": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 0
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 340,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 6,
+                "worse": 0,
+                "variant_correct": 183,
+                "control_correct": 177
+              },
+              "protected_engineering__vs__direct": {
+                "better": 3,
+                "worse": 1,
+                "variant_correct": 183,
+                "control_correct": 181
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 8,
+                "worse": 8,
+                "variant_correct": 176,
+                "control_correct": 176
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 3,
+                "worse": 2,
+                "variant_correct": 177,
+                "control_correct": 176
+              },
+              "protected_half__vs__reference": {
+                "better": 11,
+                "worse": 20,
+                "variant_correct": 176,
+                "control_correct": 185
+              },
+              "anchored_half__vs__reference": {
+                "better": 11,
+                "worse": 19,
+                "variant_correct": 177,
+                "control_correct": 185
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 192,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 76,
+                "control_correct": 76
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 76,
+                "control_correct": 76
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 4,
+                "worse": 3,
+                "variant_correct": 80,
+                "control_correct": 79
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 1,
+                "worse": 2,
+                "variant_correct": 79,
+                "control_correct": 80
+              },
+              "protected_half__vs__reference": {
+                "better": 8,
+                "worse": 11,
+                "variant_correct": 80,
+                "control_correct": 83
+              },
+              "anchored_half__vs__reference": {
+                "better": 7,
+                "worse": 11,
+                "variant_correct": 79,
+                "control_correct": 83
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 367,
+            "comparisons": {
+              "protected_engineering__vs__engineering": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 129,
+                "control_correct": 129
+              },
+              "protected_engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 129,
+                "control_correct": 129
+              },
+              "protected_half__vs__crossfit_half": {
+                "better": 6,
+                "worse": 10,
+                "variant_correct": 138,
+                "control_correct": 142
+              },
+              "anchored_half__vs__protected_half": {
+                "better": 2,
+                "worse": 2,
+                "variant_correct": 138,
+                "control_correct": 138
+              },
+              "protected_half__vs__reference": {
+                "better": 24,
+                "worse": 21,
+                "variant_correct": 138,
+                "control_correct": 135
+              },
+              "anchored_half__vs__reference": {
+                "better": 23,
+                "worse": 20,
+                "variant_correct": 138,
+                "control_correct": 135
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
