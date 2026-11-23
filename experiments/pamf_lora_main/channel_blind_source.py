@@ -43,6 +43,7 @@ class FitRecipe:
     perturb: Callable
     restore: Callable
     coarse_first: bool = False
+    initialize: Callable | None = None
 
     def loss_weights(self, step):
         if not self.coarse_first:
@@ -131,6 +132,11 @@ def fit(rt, *, smoke=False, recipe=DEFAULT, calculate=objective, receiver_batche
     (training,calibration,held), contract = setup(rt,device,smoke=smoke)
     tracker = PacketRestorer('consensus').to(device).eval()
     model = recipe.model().to(device)
+    if recipe.initialize is not None:
+        init_start = time.perf_counter()
+        recipe.initialize(model, tracker, training)
+        torch.cuda.synchronize()
+        init_seconds = time.perf_counter() - init_start
     opt = torch.optim.AdamW(model.parameters(),lr=2e-4,weight_decay=1e-4)
     steps = 1 if smoke else recipe.steps
     lr = torch.optim.lr_scheduler.CosineAnnealingLR(opt,steps,eta_min=2e-5)
@@ -176,6 +182,8 @@ def fit(rt, *, smoke=False, recipe=DEFAULT, calculate=objective, receiver_batche
                    n_fit=len(training),n_calibration=len(calibration),n_held=len(held),
                    worker_seconds=worker_seconds,
                    bf16_training_convolutions=recipe.name!='blind' and torch.cuda.is_bf16_supported())
+    if recipe.initialize is not None:
+        summary['initializer_seconds'] = init_seconds
     if smoke:
         write(root/f'smoke-{recipe.name}.json',dict(summary,status='PASS',steps=1))
     else:
