@@ -164,7 +164,8 @@ def publish(repo, output, context, ssh_config, *, run=RUN, runner=None):
     release(repo, output, rt, ssh_config)
 
 
-def main(*, run=RUN, runner=None, recipes=RECIPES, modes=MODES, comparisons=COMPARISONS):
+def main(*, run=RUN, runner=None, recipes=RECIPES, modes=MODES, comparisons=COMPARISONS,
+         calculate=partial(natural_objective, preserve=DETAIL_WEIGHT), run_smoke=smoke, run_evaluate=evaluate):
     parser = argparse.ArgumentParser(description=__doc__)
     actions = parser.add_subparsers(dest='action',required=True)
     pub = actions.add_parser('publish')
@@ -189,11 +190,11 @@ def main(*, run=RUN, runner=None, recipes=RECIPES, modes=MODES, comparisons=COMP
         activate(rt)
         if action in ('fit','fit_smoke'):
             fit(rt, smoke=action=='fit_smoke', recipe=recipes[args['name']], receiver_batches=True,
-                calculate=partial(natural_objective, preserve=DETAIL_WEIGHT))
+                calculate=calculate)
         elif action=='smoke':
-            smoke(rt, recipes, modes)
+            run_smoke(rt, recipes, modes)
         else:
-            evaluate(rt,args['name'],recipes,modes)
+            run_evaluate(rt,args['name'],recipes,modes)
 
 
 if __name__=='__main__':

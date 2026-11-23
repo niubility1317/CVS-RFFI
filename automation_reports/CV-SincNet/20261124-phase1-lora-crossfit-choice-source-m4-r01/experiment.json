@@ -1,0 +1,184 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261124-phase1-lora-crossfit-choice-source-m4-r01",
+  "group_id": "lora-observable-satellite-recovery",
+  "display_name": "LoRa 包内交叉留出与复数修正方向",
+  "description": "将六条 chirp 分为三组，比较留出实收复谱对修正方向的带符号证据与等成本幅值对照。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "LoRa",
+    "DURA",
+    "crossfit",
+    "source_V",
+    "full",
+    "residual"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261122-phase1-lora-full-aligned-data-r01",
+    "20261122-phase1-lora-tri-label-set-m3-r01",
+    "20261123-phase1-lora-dura-residual-practical-m1-r01",
+    "20261123-phase1-lora-dura-direct-detail-source-m2-r01",
+    "20261123-phase1-lora-local-wiener-source-m2-r01",
+    "20261123-phase1-lora-spectral-block-source-m4-r01",
+    "20261123-phase1-lora-repeat-protection-source-m4-r01",
+    "20261124-phase1-lora-empirical-chirp-source-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-11-23 LoRa 与 WiSig 可部署星地恢复目标及空闲显卡多进程授权",
+  "code": {
+    "commit": "启动命令从已推送分支 HEAD 固定，实际 OID 写入 submit.json",
+    "checkout": "E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo",
+    "environment": "${N607_PYTHON}",
+    "cwd": "${N607_PROJECT}/releases/20261124-phase1-lora-crossfit-choice-source-m4-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa 多接收机 IEEE DataPort",
+    "version": "lora_full_packets_v1 源 7/63/30 固定划分",
+    "representation": "1 MS/s 采集及既有构造，冻结读出为 256 kS/s 六条 256 点窄窗复 IQ",
+    "contract_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json role_ids.V",
+    "label_map_ref": "experiments/pamf_lora_main/data.py CLASSES (31 至 40)，仅评分读取 V_metadata.npz y",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "10 个登记发射机的固定源分配，拟合不可见",
+    "roles": {
+      "L_s": 0,
+      "U_s": 8000,
+      "V": 900
+    },
+    "train_ratio": "原 7%/63%/30% 固定分配。本轮仅用 5000 源 U 拟合、2500 源 U 门限、500 源 U 留出和 900 源 V 固定预测。",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "${N607_PROJECT}/runs/20261122-phase1-lora-full-aligned-data-r01/source_views/complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": "沿用 full 1 MHz 对齐及 residual 256 kHz post-sync/noEQ 原视图"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "not_applicable",
+    "external_method_exception": null,
+    "claim_scope": "拟合和冻结隔离 F、V、TX 真值、注册 practical 轨迹和目标。仅当前实收 IQ 与本包估计输入。"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [
+      "20261122-phase1-lora-tri-label-set-m3-r01 / tri_set 2026092702",
+      "20261123-phase1-lora-dura-direct-detail-source-m2-r01 及冻结 full 复响应半量",
+      "20261123-phase1-lora-dura-residual-practical-m1-r01 原 R69 及固定 residual 门控投影半量"
+    ],
+    "contract_check_ref": "source_contract 与 complete_f/source_control 核对各自源物理角色",
+    "provenance_verdict": "仅继承旧结构和数据契约，新模型不继承权重。原 DURA 和 Tri-set 只在候选冻结后用于评估。",
+    "selection_rule": "两臂从零各训练 1800 步，各自权重和同一源 U 门限跨路线固定。仅双路线全六景皆超过成熟 DURA 且两路线 clean 不减的固定读出进入扩大评估。按双路线较小的六景净收益排序，同分比 clean 后比 B1。"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "当前目标 LoRa 包内交叉留出",
+    "gpu_policy": "训练臂和后续路线各两张不同物理卡，按实时利用率和显存余量选卡，可与其他进程共卡。",
+    "remote_run_root": "${N607_PROJECT}/runs/20261124-phase1-lora-crossfit-choice-source-m4-r01",
+    "remote_log_root": "${N607_PROJECT}/runs/20261124-phase1-lora-crossfit-choice-source-m4-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261124-phase1-lora-crossfit-choice-source-m4-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.crossfit_choice_source publish --repo \"E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo\" --output \"E:/type10-7/local_artifacts/20261124-phase1-lora-crossfit-choice-source-m4-r01/release\" --context E:/type10-7/local_artifacts/lora_main_20261121/runtime_source.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "仅数据角色、非有限值、真实权重 smoke 或冻结输出/评分契约失败才停止后续派发，保留已完成训练和预测。"
+  },
+  "expected_artifacts": [
+    "smoke-magnitude.json",
+    "smoke-signed.json",
+    "smoke.json",
+    "magnitude-model.pt",
+    "magnitude-complete.json",
+    "signed-model.pt",
+    "signed-complete.json",
+    "full-predictions.json",
+    "full-choices.json",
+    "full-source-scores.json",
+    "residual-predictions.json",
+    "residual-choices.json",
+    "residual-source-scores.json",
+    "logs/"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "正确数与 clean",
+      "源 U 留出误差",
+      "同包纠错与改错",
+      "分层配对区间",
+      "门限触发",
+      "B1 墙钟",
+      "优化圈墙钟",
+      "参数量",
+      "激活包的硬选择频数"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "mode",
+      "seed"
+    ],
+    "prediction_ref": "${N607_PROJECT}/runs/20261124-phase1-lora-crossfit-choice-source-m4-r01/<route>-predictions.json",
+    "scorer_ref": "experiments.pamf_lora_main.crossfit_choice_source score"
+  },
+  "rows": [
+    {
+      "row_id": "dual-route-crossfit-choice-s2026092702",
+      "method": "直通、成熟 DURA、两臂硬选与软混合、方向臂四个固定提议。",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/crossfit_choice_source.py",
+      "resolved_config_ref": "${N607_PROJECT}/releases/20261124-phase1-lora-crossfit-choice-source-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026112620
+      },
+      "seed_notes": "冻结识别器用 2026092702，两个模型初始化、规定 U 分区、拟合扰动都用 2026112991。原 split 完全复用，评估 bootstrap 独立固定。零目标访问。",
+      "k": null,
+      "scenario": "clean 和六景，分别评估 full/residual",
+      "optimizer": "AdamW，步级余弦，权重衰减 1e-4，梯度范数上界 1.0",
+      "lr": 0.0002,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "两臂匹配 36,233 参数、1,800 步、batch 12、U 数据及扰动。900 个源 V 包 × 两路线 × 七景 × 十读出。",
+      "output_root": "${N607_PROJECT}/runs/20261124-phase1-lora-crossfit-choice-source-m4-r01",
+      "log_path": "${N607_PROJECT}/runs/20261124-phase1-lora-crossfit-choice-source-m4-r01/logs",
+      "command": "${N607_PYTHON} -u -m experiments.pamf_lora_main.crossfit_choice_source dispatch ${N607_PROJECT}/releases/20261124-phase1-lora-crossfit-choice-source-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "smoke-magnitude.json",
+        "smoke-signed.json",
+        "smoke.json",
+        "magnitude-model.pt",
+        "magnitude-complete.json",
+        "signed-model.pt",
+        "signed-complete.json",
+        "full-predictions.json",
+        "full-choices.json",
+        "full-source-scores.json",
+        "residual-predictions.json",
+        "residual-choices.json",
+        "residual-source-scores.json",
+        "logs/"
+      ]
+    }
+  ],
+  "notes": [
+    "三组非相邻 chirp 取两组构造待检验提议，第三组仅提供当前观测的独立留出坐标。两臂唯一代码差异是保留或去掉留出风险证据的符号；共同干扰仍能跨组相关。",
+    "复谱按 1–8、9–32、33–128 kHz 三带保留实收相位坐标。模型从零联合训练粗先验、复数观测约束、细化和排序；回写保留时间坐标及载波。",
+    "激活阈值为 1.05 倍 2500 条源 U 未加扰动样本中接收统计量的最大值。输入仅为当前包实收 IQ 及其派生量。",
+    "训练目标仅含合法源 U 的本次未加扰动接收 IQ 及弱复数差异，无 F、TX 真值、目标、注册轨迹或模拟真值。两路线固定预测后独立 CPU 评分。"
+  ],
+  "registered_at": "2026-11-23T16:20:08+00:00"
+}
