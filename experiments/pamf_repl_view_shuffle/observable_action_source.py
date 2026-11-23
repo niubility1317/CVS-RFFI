@@ -40,8 +40,8 @@ def received(values, device):
     return torch.complex(iq[:, 0], iq[:, 1])
 
 
-def proof(name):
-    return dict(run_id=RUN, arm=name, steps=STEPS, batch=BATCH, seed=SEED,
+def proof(name, run=RUN):
+    return dict(run_id=run, arm=name, steps=STEPS, batch=BATCH, seed=SEED,
                 target_reads=0, source_truth_reads=0, recognizer_reads=0,
                 source_V_reads=0, practical_training_reads=0)
 
@@ -58,10 +58,10 @@ def checkpoint_smoke(rt):
     print('WISIG_ACTION_REAL_CHECKPOINT_PASS', flush=True)
 
 
-def fit(rt, name, *, smoke=False):
+def fit(rt, name, *, smoke=False, model_factory=None, run=RUN):
     device = 'cuda:0'
     torch.manual_seed(SEED)
-    model = ObservableAction(ARMS[name]).to(device)
+    model = (ObservableAction(ARMS[name]) if model_factory is None else model_factory()).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=3e-4, weight_decay=1e-4)
     schedule_lr = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, STEPS, eta_min=3e-5)
     rd = np.random.default_rng(SEED + 1)
@@ -94,7 +94,7 @@ def fit(rt, name, *, smoke=False):
         hold_rng = torch.Generator(device=device).manual_seed(SEED + 3)
         held = torch.stack([objective(model, received(source[ids], device), hold_rng)[1]
                             for ids in np.split(hold, HOLD // BATCH)]).mean(dim=0)
-    report = dict(proof(name), status='SOURCE_FROZEN', held=held.tolist(), worker_seconds=seconds,
+    report = dict(proof(name, run), status='SOURCE_FROZEN', held=held.tolist(), worker_seconds=seconds,
                   parameter_count=sum(p.numel() for p in model.parameters()),
                   n_fit=len(fit_ids), n_hold=HOLD, bf16_training=torch.cuda.is_bf16_supported())
     with (root / f'{name}.pt').open('xb') as f:
@@ -127,12 +127,13 @@ def calibrate(rt):
     print('WISIG_ACTION_SOURCE_GUARD', limits, flush=True)
 
 
-def load_arm(root, name, device):
+def load_arm(root, name, device, *, model_factory=None, run=RUN):
     state = torch.load(root / f'{name}.pt', map_location=device, weights_only=True)
     if state['meta'] != read(root / f'{name}-complete.json') or any(
-            state['meta'][k] != v for k, v in proof(name).items()):
+            state['meta'][k] != v for k, v in proof(name, run).items()):
         raise ValueError('Expected immutable WiSig source fit')
-    model = ObservableAction(ARMS[name]).to(device).eval().requires_grad_(False)
+    model = (ObservableAction(ARMS[name]) if model_factory is None else model_factory())
+    model = model.to(device).eval().requires_grad_(False)
     model.load_state_dict(state['weights'], strict=True)
     return model
 
@@ -189,11 +190,11 @@ def evaluate(rt, route):
 
 
 @torch.no_grad()
-def measure(rt):
+def measure(rt, *, name='fitted', model_factory=None, run=RUN, guard_root=None):
     device = 'cuda:0'
     root = Path(rt['run_root'])
-    model = load_arm(root, 'fitted', device)
-    guard, limit = guard_for(root, device)
+    model = load_arm(root, name, device, model_factory=model_factory, run=run)
+    guard, limit = guard_for(root if guard_root is None else guard_root, device)
     source = received(source_u(rt)[:32], device)
     perturbed = generic_observation(source[:, None], torch.Generator(device=device).manual_seed(SEED + 8))[:, 0]
     margin = (guard.measures(perturbed) - limit).amax(dim=1)

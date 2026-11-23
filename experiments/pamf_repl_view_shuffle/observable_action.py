@@ -66,10 +66,30 @@ def iq_channels(x):
     return torch.stack((x.real, x.imag), dim=1)
 
 
+def amplitude_evidence(received, noise):
+    spectrum = torch.fft.fft(received, norm='ortho')
+    energy = power(spectrum)
+    neighborhood = sum(energy.roll(offset, dims=-1) for offset in (-2, -1, 0, 1, 2)) / 5
+    signal = (neighborhood - noise).clamp_min(0)
+    confidence = .75 * signal / (signal + noise + 1e-8)
+    return spectrum, confidence
+
+
+def preserve_spectral_amplitude(proposal, observed_spectrum, confidence):
+    hypothesis = torch.fft.fft(proposal, norm='ortho')
+    magnitude = hypothesis.abs()
+    stable = magnitude > 1e-8
+    unit = torch.where(stable, hypothesis / magnitude.clamp_min(1e-8),
+                       observed_spectrum / observed_spectrum.abs().clamp_min(1e-8))
+    envelope = torch.lerp(magnitude, observed_spectrum.abs(), confidence)
+    return torch.fft.ifft(envelope * unit, norm='ortho')
+
+
 class ObservableAction(nn.Module):
-    def __init__(self, fitted):
+    def __init__(self, fitted, *, protect_amplitude=False):
         super().__init__()
         self.fitted = fitted
+        self.protect_amplitude = protect_amplitude
         self.coarse = Core(incoming=5, widths=(24, 36, 52, 64))
         self.fine = Core(incoming=9, widths=(24, 36, 52, 64))
         self.register_buffer('index', torch.arange(256), persistent=False)
@@ -93,6 +113,10 @@ class ObservableAction(nn.Module):
         with torch.autocast('cuda', dtype=torch.bfloat16, enabled=mixed):
             change = self.coarse(inputs)
         coarse = x + torch.complex(change[:, 0].float(), change[:, 1].float())
+        if self.protect_amplitude:
+            observed_spectrum, confidence = amplitude_evidence(y / rms, obs.noise_power[:, None] / rms.square())
+            coarse = preserve_spectral_amplitude(coarse * obs.rotation, observed_spectrum,
+                                                 confidence) * obs.rotation.conj()
         delay = estimate_delay(coarse.detach(), x, self.delays)
         h, variance = fit_action(coarse, x, delay, self.index, self.ramp, self.regularizer, self.center)
         if self.fitted:
@@ -112,6 +136,9 @@ class ObservableAction(nn.Module):
         else:
             update = .5 * (x - prior)
         fine = prior + .8 * trust * update
+        if self.protect_amplitude:
+            fine = preserve_spectral_amplitude(fine * obs.rotation, observed_spectrum,
+                                               confidence) * obs.rotation.conj()
         basis = rms * obs.rotation
         info = dict(action_delay=delay, held_residual=variance[:, 0], coherence=obs.coherence,
                     action_gain=h[:, LAGS.index(0)].abs(), image_gain=h[:, -1].abs())
