@@ -1,0 +1,260 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261123-phase1-wisig-phase-magnitude-source-m4-r01",
+  "group_id": "phase1-wisig-observable-recovery",
+  "display_name": "WiSig 固定权重的频谱幅度与相位交换对照",
+  "description": "Source-only factorial exchange of received/fitted FFT magnitude and phase, with observation-weighted phase and isolated paired clean substitutions.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source_only",
+    "restoration",
+    "dual_path"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02",
+    "20261123-phase1-wisig-preamble-receiver-source-m2-r02",
+    "20261123-phase1-wisig-joint-preamble-timing-source-m2-r01",
+    "20261123-phase1-wisig-observable-action-source-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa/WiSig observable-recovery goal, source-only engineering controls.",
+  "code": {
+    "commit": "97005ca3e0e72f3a5d9aa440c13841c4f419f17c",
+    "checkout": "E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-phase-magnitude-source-m4-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig ManySig",
+    "version": "Main split F0",
+    "representation": "Registered Paired Source V, float32 [2,256] at 25 Msps",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/validation/physical_ids.npy",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": 32,
+      "V": 1800
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json"
+  },
+  "permissions": {
+    "regime": "source_frozen_eval",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Fixed source-only readouts with a separately executed clean reference diagnostic, no target inference."
+  },
+  "checkpoint": {
+    "initialization": "No new fit; frozen IQ-only fitted arm and common U guard",
+    "sources": [
+      {
+        "ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F",
+        "role": "Frozen Tri-SIG-TIME SSL seed 2026092701"
+      },
+      {
+        "ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt",
+        "role": "Original matched R69 reference"
+      },
+      {
+        "ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-observable-action-source-m4-r01/fitted.pt",
+        "role": "Frozen fitted proposal for all candidate readouts"
+      }
+    ],
+    "contract_check_ref": "report.md and observable_action_source.py",
+    "provenance_verdict": "Frozen fitted source arm trained on generic U-only perturbations. Direct/R69 and one frozen Tri-SIG-TIME old head evaluate; paired clean used only by isolated diagnostic.",
+    "selection_rule": "Fixed incoming weights, frozen guard thresholds and predetermined swaps. No new fit, calibration or target selection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex goal 01a208a9-57df-7f82-a078-cd9477adf998",
+    "gpu_policy": "Two eligible distinct physical GPUs, prefer GPU3 and GPU6, live free capacity and process counts checked",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-phase-magnitude-source-m4-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-phase-magnitude-source-m4-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/wisig_phase_magnitude_source_20261123_r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_repl_view_shuffle.phase_magnitude_source publish --repo E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010 --output E:/type10-7/local_artifacts/wisig_phase_magnitude_source_20261123_r01 --local-context E:/type10-7/local_artifacts/pamf_repl_view_shuffle_20261027/runtime.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "Stop subsequent stages for binding, calibration, numerical, artifact collision or row-closure failure."
+  },
+  "expected_artifacts": [
+    "checkpoint_smoke.json",
+    "b1.json",
+    "{full,residual}/predictions.npz",
+    "{full,residual}/complete.json",
+    "source_scores.json",
+    "paired_reference_diagnostic/{full,residual}/predictions.npz",
+    "paired_reference_diagnostic/source_scores.json",
+    "state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "correct",
+      "paired gains and losses",
+      "NMSE",
+      "timing margins, integer shifts and changed packet counts",
+      "held action residual",
+      "complex spectral correlation, magnitude error by band",
+      "B1 latency",
+      "same-packet factorial interaction"
+    ],
+    "dimensions": [
+      "route",
+      "view",
+      "receiver",
+      "mode"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-phase-magnitude-source-m4-r01/{full,residual}/predictions.npz",
+    "scorer_ref": "experiments.pamf_repl_view_shuffle.phase_magnitude_source.score"
+  },
+  "rows": [
+    {
+      "row_id": "full",
+      "method": "Frozen fitted proposal, raw/fit Fourier swaps, RMS normalization and bounded phase with the same source U gate",
+      "purpose": "source_screen",
+      "config_ref": "experiments/pamf_repl_view_shuffle/observable_action_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-phase-magnitude-source-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": 2026112307
+      },
+      "seed_notes": "Existing paired source views. Source recognition and physical IDs unchanged; evaluation seed 2026112307 is for paired bootstrap.",
+      "k": null,
+      "scenario": "full existing seven source V views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "No optimization or calibration updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-phase-magnitude-source-m4-r01/full",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-phase-magnitude-source-m4-r01/logs/predict-full.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_view_shuffle.phase_magnitude_source predict /home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-phase-magnitude-source-m4-r01-release/runtime.json full",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-phase-magnitude-source-m4-r01/full/predictions.npz"
+      ]
+    },
+    {
+      "row_id": "residual",
+      "method": "Frozen fitted proposal, raw/fit Fourier swaps, RMS normalization and bounded phase with the same source U gate",
+      "purpose": "source_screen",
+      "config_ref": "experiments/pamf_repl_view_shuffle/observable_action_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-phase-magnitude-source-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": 2026112307
+      },
+      "seed_notes": "Existing paired source views. Source recognition and physical IDs unchanged; evaluation seed 2026112307 is for paired bootstrap.",
+      "k": null,
+      "scenario": "residual existing seven source V views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "No optimization or calibration updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-phase-magnitude-source-m4-r01/residual",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-phase-magnitude-source-m4-r01/logs/predict-residual.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_view_shuffle.phase_magnitude_source predict /home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-phase-magnitude-source-m4-r01-release/runtime.json residual",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-phase-magnitude-source-m4-r01/residual/predictions.npz"
+      ]
+    },
+    {
+      "row_id": "diagnostic-full",
+      "method": "Isolated reference phase only, reference magnitude only, and paired clean endpoint",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments/pamf_repl_view_shuffle/observable_action_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-phase-magnitude-source-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": 2026112307
+      },
+      "seed_notes": "Existing paired source views. Source recognition and physical IDs unchanged; evaluation seed 2026112307 is for paired bootstrap.",
+      "k": null,
+      "scenario": "full existing seven source V views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "No optimization; isolated wave-reference endpoint",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-phase-magnitude-source-m4-r01/paired_reference_diagnostic/full",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-phase-magnitude-source-m4-r01/logs/diagnostic_predict-full.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_view_shuffle.phase_magnitude_source diagnostic_predict /home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-phase-magnitude-source-m4-r01-release/runtime.json full",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-phase-magnitude-source-m4-r01/paired_reference_diagnostic/full/predictions.npz"
+      ]
+    },
+    {
+      "row_id": "diagnostic-residual",
+      "method": "Isolated reference phase only, reference magnitude only, and paired clean endpoint",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments/pamf_repl_view_shuffle/observable_action_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-phase-magnitude-source-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": 2026112307
+      },
+      "seed_notes": "Existing paired source views. Source recognition and physical IDs unchanged; evaluation seed 2026112307 is for paired bootstrap.",
+      "k": null,
+      "scenario": "residual existing seven source V views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "No optimization; isolated wave-reference endpoint",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-phase-magnitude-source-m4-r01/paired_reference_diagnostic/residual",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-phase-magnitude-source-m4-r01/logs/diagnostic_predict-residual.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_view_shuffle.phase_magnitude_source diagnostic_predict /home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-phase-magnitude-source-m4-r01-release/runtime.json residual",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-phase-magnitude-source-m4-r01/paired_reference_diagnostic/residual/predictions.npz"
+      ]
+    }
+  ],
+  "notes": [
+    "One paired reference isolation root. No Phase2 support/query or target input.",
+    "Same per-route data, same frozen reader and same original fitted-model weights. 32 U source IQ only for checkpoint/timing diagnostics; previous guard calibration reused."
+  ],
+  "registered_at": "2026-11-23T15:45:02+00:00"
+}

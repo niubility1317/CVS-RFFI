@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [WiSig 冻结恢复的幅相交换](../automation_reports/CV-SincNet/20261123-phase1-wisig-phase-magnitude-source-m4-r01/report.md)
 - [WiSig 实收 IQ 拟合前向算子](../automation_reports/CV-SincNet/20261123-phase1-wisig-observable-action-source-m4-r01/report.md)
 - [LoRa 实测弱复谱的复增益约束](../automation_reports/CV-SincNet/20261123-phase1-lora-complex-transport-source-m4-r01/report.md)
 - [LoRa 公共和独有复谱分开降噪](../automation_reports/CV-SincNet/20261123-phase1-lora-chirp-spectrum-recovery-source-m4-r01/report.md)
