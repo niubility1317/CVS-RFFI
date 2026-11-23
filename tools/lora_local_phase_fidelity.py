@@ -4,13 +4,14 @@ import argparse
 from concurrent.futures import ProcessPoolExecutor
 from functools import partial
 import json
+from math import log
 from pathlib import Path
 
 import numpy as np
 import torch
 
 from experiments.cric_dura_comparison.io import read, tensor
-from experiments.pamf_lora_main import local_phase_source, spectral_block_source
+from experiments.pamf_lora_main import local_phase_source, spectral_block_source, split_shrink_source
 from experiments.pamf_lora_main.channel_blind import corruption_score
 from experiments.pamf_lora_main.channel_blind_source import panel, receive_only
 from experiments.pamf_lora_main.data import SOURCE, VIEWS
@@ -21,6 +22,7 @@ from experiments.pamf_lora_main.full_packet_views import source_contract, source
 from experiments.pamf_lora_main.joint_unroll_source import coordinates
 from experiments.pamf_lora_main.local_wiener_source import ROUTES, read_frozen
 from experiments.pamf_lora_main.runner import activate
+from experiments.pamf_lora_main.split_shrink import spectrum as split_spectrum
 
 
 BANDS = ((1, 8), (9, 32), (33, 64), (65, 128))
@@ -76,6 +78,37 @@ def direction_fraction(model, tracked, frame, waves):
     return np.asarray(torch.stack((ratio,dose),dim=-1).tolist(),dtype=np.float32)
 
 
+def outer_noise_error(outer, tracked, frame, epsilon, clean):
+    observed = split_spectrum(tracked)[..., outer]
+    actual = split_spectrum(complex_iq(epsilon) / frame)[..., outer]
+    estimate = observed.abs().square().flatten(1).median(dim=1).values / log(2.)
+    reference = actual.abs().square().mean(dim=(-1,-2))
+    if clean:
+        return estimate.cpu().numpy()[:, None]
+    error_db = 10. * (estimate.clamp_min(1e-12) / reference.clamp_min(1e-12)).log10()
+    return torch.stack((estimate, reference, error_db, error_db.abs()), dim=1).cpu().numpy()
+
+
+def split_shrink_doses(waves, tracked, frame):
+    received = split_spectrum(tracked)
+    mean = received.mean(dim=1, keepdim=True)
+    common = mean.expand_as(received)
+    unique = received - common
+    edits = split_spectrum((torch.stack(waves[1:]) - waves[0]) / frame)
+    bin_number = torch.fft.fftshift(torch.fft.fftfreq(tracked.shape[-1], device=tracked.device)).abs() * tracked.shape[-1]
+    bands = []
+    for low, high in BANDS:
+        selected = (bin_number >= low) & (bin_number <= high)
+        component_gains = []
+        for component in (common, unique):
+            basis = component[..., selected]
+            energy = basis.abs().square().sum((-1,-2)).clamp_min(1e-10)
+            overlap = (basis.conj() * edits[..., selected]).sum((-1,-2)).real
+            component_gains.append(-overlap / energy)
+        bands.append(torch.stack(component_gains, dim=-1))
+    return torch.stack(bands, dim=2).cpu().numpy()
+
+
 def paired_source(data, cache, contract, root, route, modes):
     raw, receivers, ids, _ = source_role(data,contract,'V')
     selected = panel(receivers)
@@ -92,10 +125,14 @@ def paired_source(data, cache, contract, root, route, modes):
 def diagnose(rt, route, device):
     is_geometry = rt['run_id']==GEOMETRY_RUN
     is_tangent = rt['run_id']==TANGENT_RUN
-    if is_geometry or is_tangent:
+    is_split = rt['run_id']==split_shrink_source.RUN
+    if is_geometry or is_tangent or is_split:
         if is_tangent:
             from experiments.pamf_lora_main import empirical_tangent_source as study
             recipes = study.recipes(rt)
+        elif is_split:
+            study = split_shrink_source
+            recipes = study.RECIPES
         else:
             from experiments.pamf_lora_main import complex_geometry_source as study
             recipes = study.RECIPES
@@ -114,6 +151,8 @@ def diagnose(rt, route, device):
     contract = source_contract(data)
     rows, registered, clean, selected, marks = paired_source(data,cache,contract,root,route,study.MODES)
     models, threshold = spectral_block_source.load_models(root,contract,device,recipes)
+    if is_split:
+        models = (*models, split_shrink_source.ScalarReadout(models[-1]).eval())
     tracker = PacketRestorer('consensus').to(device).eval()
     truth = tensor(clean,device)
     output = {}
@@ -128,6 +167,8 @@ def diagnose(rt, route, device):
                         raise ValueError('Residual source trace replay changed sampled registered IQ')
             active, bands_from_ground, bands_from_noiseless = 0, [], []
             direction = []
+            noise_stats = []
+            attenuation = []
             for received, epsilon, source in zip(tensor(capture,device).split(18),tensor(noise,device).split(18),truth.split(18),strict=True):
                 recoveries, count = recover(received,tracker,models,threshold)[:2]
                 active += count
@@ -137,6 +178,9 @@ def diagnose(rt, route, device):
                 frame = phase*rms
                 if is_tangent:
                     direction.append(direction_fraction(models[-1],tracked,frame,waves))
+                if is_split:
+                    noise_stats.append(outer_noise_error(models[1].outer,tracked,frame,epsilon,view=='clean'))
+                    attenuation.append(split_shrink_doses(waves,tracked,frame))
                 # One fit against the direct readout is shared by all diagnostic comparisons.
                 ground = complex_iq(source)
                 gain = (y*ground.conj()).mean(-1,keepdim=True)/ground.abs().square().mean(-1,keepdim=True).clamp_min(1e-6)
@@ -162,6 +206,17 @@ def diagnose(rt, route, device):
                     median=np.median(values,axis=1).tolist(),
                     by_receiver={name:np.median(group,axis=1).tolist()
                                  for name,group in zip(SOURCE,np.split(values,len(SOURCE),axis=1),strict=True)})
+            if is_split:
+                values = np.concatenate(noise_stats)
+                fields = ['estimate'] if view=='clean' else ['estimate','actual','estimate_minus_actual_db','absolute_error_db']
+                output[view]['outer_noise'] = dict(fields=fields, median=np.median(values,axis=0).tolist(),
+                    by_receiver={name:np.median(part,axis=0).tolist()
+                                 for name,part in zip(SOURCE,np.split(values,len(SOURCE)),strict=True)})
+                gains = np.concatenate(attenuation,axis=1)
+                output[view]['attenuation'] = dict(readouts=readouts[1:],fields=['common_gain','unique_gain'],
+                    median=np.median(gains,axis=1).tolist(),
+                    by_receiver={name:np.median(part,axis=1).tolist()
+                                 for name,part in zip(SOURCE,np.split(gains,len(SOURCE),axis=1),strict=True)})
     if is_geometry:
         readouts = (*readouts,'bounded_pair_projection')
     return dict(route=route,n=len(rows),bands=BANDS,metrics=METRICS,readouts=readouts,scenes=output)
@@ -175,7 +230,7 @@ def main():
     args = parser.parse_args()
     rt = read(args.runtime)
     root = Path(rt['run_root'])
-    if rt.get('run_id') not in (local_phase_source.RUN,GEOMETRY_RUN,TANGENT_RUN) or read(root/'state.json')['status']!='SOURCE_SCORED':
+    if rt.get('run_id') not in (local_phase_source.RUN,GEOMETRY_RUN,TANGENT_RUN,split_shrink_source.RUN) or read(root/'state.json')['status']!='SOURCE_SCORED':
         raise ValueError('The full dual-route truth-last scoring must already be complete')
     activate(rt)
     print(json.dumps(diagnose(rt,args.route,args.device),allow_nan=False))
