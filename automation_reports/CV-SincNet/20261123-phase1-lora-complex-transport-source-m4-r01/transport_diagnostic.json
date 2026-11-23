@@ -1,0 +1,101 @@
+{
+  "source_U_holdout": 500,
+  "seed": 2026112315,
+  "median_power_proxy": 0.16989955306053162,
+  "source_truth_reads": 0,
+  "target_reads": 0,
+  "recognizer_reads": 0,
+  "ungated": true,
+  "metrics": {
+    "direct": {
+      "weaker": {
+        "1-8 kHz": {
+          "in_phase": 1.0026658773422241,
+          "quadrature": -0.008678862825036049,
+          "complex_nmse": 0.017142191529273987,
+          "n": 250
+        },
+        "9-32 kHz": {
+          "in_phase": 1.0115344524383545,
+          "quadrature": -0.0009638794581405818,
+          "complex_nmse": 0.025420011952519417,
+          "n": 250
+        }
+      },
+      "stronger": {
+        "1-8 kHz": {
+          "in_phase": 1.005800485610962,
+          "quadrature": -0.0006722257239744067,
+          "complex_nmse": 0.013497489504516125,
+          "n": 250
+        },
+        "9-32 kHz": {
+          "in_phase": 0.9997066855430603,
+          "quadrature": -0.0034351092763245106,
+          "complex_nmse": 0.022922223433852196,
+          "n": 250
+        }
+      }
+    },
+    "waveform_transport": {
+      "weaker": {
+        "1-8 kHz": {
+          "in_phase": 0.8897005319595337,
+          "quadrature": -0.011877215467393398,
+          "complex_nmse": 0.051895756274461746,
+          "n": 250
+        },
+        "9-32 kHz": {
+          "in_phase": 0.7212551832199097,
+          "quadrature": 0.005158019717782736,
+          "complex_nmse": 0.19257114827632904,
+          "n": 250
+        }
+      },
+      "stronger": {
+        "1-8 kHz": {
+          "in_phase": 0.8187656998634338,
+          "quadrature": -0.007984764873981476,
+          "complex_nmse": 0.07464996725320816,
+          "n": 250
+        },
+        "9-32 kHz": {
+          "in_phase": 0.5581265091896057,
+          "quadrature": 0.007405400276184082,
+          "complex_nmse": 0.3049178719520569,
+          "n": 250
+        }
+      }
+    },
+    "complex_transport": {
+      "weaker": {
+        "1-8 kHz": {
+          "in_phase": 0.9410640597343445,
+          "quadrature": -0.008464490994811058,
+          "complex_nmse": 0.03453066200017929,
+          "n": 250
+        },
+        "9-32 kHz": {
+          "in_phase": 0.839866042137146,
+          "quadrature": -0.002894449746236205,
+          "complex_nmse": 0.13183161616325378,
+          "n": 250
+        }
+      },
+      "stronger": {
+        "1-8 kHz": {
+          "in_phase": 0.9106544256210327,
+          "quadrature": -0.007191967219114304,
+          "complex_nmse": 0.03878191113471985,
+          "n": 250
+        },
+        "9-32 kHz": {
+          "in_phase": 0.7401338815689087,
+          "quadrature": 0.0019287469331175089,
+          "complex_nmse": 0.18894845247268677,
+          "n": 250
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,257 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261123-phase1-lora-complex-transport-source-m4-r01",
+  "group_id": "phase1-lora-observable-recovery",
+  "display_name": "LoRa 实测弱复谱投影增益保真匹配消融",
+  "description": "Matched recovered finite differences. Add signed in-phase and quadrature projection constraints on the natural weak difference.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "source_only",
+    "dual_path"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261122-phase1-lora-full-aligned-data-r01",
+    "20261122-phase1-lora-tri-label-set-m3-r01",
+    "20261123-phase1-lora-dura-residual-practical-m1-r01",
+    "20261123-phase1-lora-dura-natural-detail-echo-source-m4-r01",
+    "20261123-phase1-lora-chirp-spectrum-recovery-source-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User handoff from 01a1dedc-e242-78a2-8064-20079b2070eb and active LoRa/WiSig observable recovery goal. Source screen only.",
+  "code": {
+    "commit": "c579dfddb3b613fd6d19e885194e3144b3068ec7",
+    "checkout": "E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-lora-complex-transport-source-m4-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa registered main data",
+    "version": "lora_full_packets_v1",
+    "representation": "Phase-aligned six chirps, float32 [6,2,256] plus replay of registered full and residual received views in frozen source scoring",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/U_s_metadata.npz and /home/szu2070436088/2510044040/CV-SincNet/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/V_metadata.npz; fixed per-RX panel",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/V_metadata.npz; source scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": {
+        "fit": 5000,
+        "clean_calibration": 2500,
+        "generic_diagnostic_only": 500
+      },
+      "V": {
+        "paired_frozen_score": 900
+      }
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": "experiments/pamf_lora_main/joint_unroll_source.py and channel_blind_source.py"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Single-seed source screen. No held-out target receivers. Fit uses U_s clean IQ only."
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [
+      {
+        "role": "frozen score only",
+        "ref": "20261122-phase1-lora-tri-label-set-m3-r01, final frozen Tri-set 2026092702"
+      },
+      {
+        "role": "matched reference only",
+        "ref": "20261123-phase1-lora-dura-residual-practical-m1-r01; exact registered baseline from source_control"
+      }
+    ],
+    "contract_check_ref": "report.md and runtime proof in channel_blind_source.py and joint_unroll_source.py",
+    "provenance_verdict": "From scratch for both recovery candidates. Existing recognizer and reference only used by post-freeze readout.",
+    "selection_rule": "Matched scratch PilotJoint; one additional complex transport projection loss. Fixed 1200 steps, matched gain choices, identical U-only gates."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex handoff thread 01a208a9-57df-7f82-a078-cd9477adf998",
+    "gpu_policy": "Up to two simultaneous workers on different eligible GPUs; capacity checked by existing scheduler with all compute PIDs and max 4 per GPU",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-complex-transport-source-m4-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-complex-transport-source-m4-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/complex_transport_source_v1",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.phase_transport_source publish --repo E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010 --output E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/complex_transport_source_v1 --context E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_calibration_source_r01_context.json --ssh-config E:/type10-7/tools/n607_ssh_config --parent-submit E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_residual_practical_release/submit.json",
+    "stop_rule": "Stop new run-owned jobs on source contract, nonfinite gradients, calibration or reporting/closure failure."
+  },
+  "expected_artifacts": [
+    "checkpoint_smoke.json",
+    "smoke-{waveform_transport,complex_transport}.json",
+    "{waveform_transport,complex_transport}-model.pt",
+    "{waveform_transport,complex_transport}-complete.json",
+    "b1.json",
+    "{full,residual}-predictions.json",
+    "{full,residual}-source-scores.json",
+    "state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "paired changed-correct",
+      "per-RX net change",
+      "clean correct count",
+      "gate triggers",
+      "fit seconds",
+      "parameter count",
+      "B1 recovery latency",
+      "held U complex gain projection error"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "readout"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-complex-transport-source-m4-r01/{full,residual}-predictions.json",
+    "scorer_ref": "experiments.pamf_lora_main.chirp_spectrum_source.score_frozen (invoked by phase_transport_source)"
+  },
+  "rows": [
+    {
+      "row_id": "fit-waveform_transport",
+      "method": "PilotJoint with original waveform transfer",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/phase_transport_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-complex-transport-source-m4-r01/configs/fit-waveform_transport.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026112991,
+        "split": 2026112991,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No support or scoring for recovery fit.",
+      "k": null,
+      "scenario": null,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "1200 optimizer steps, batch 12",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-complex-transport-source-m4-r01/waveform_transport-model.pt",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-complex-transport-source-m4-r01/logs/fit-waveform_transport.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.phase_transport_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-complex-transport-source-m4-r01/configs/fit-waveform_transport.json waveform_transport",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-complex-transport-source-m4-r01/waveform_transport-model.pt"
+      ]
+    },
+    {
+      "row_id": "fit-complex_transport",
+      "method": "PilotJoint with additional complex-projection transfer",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/phase_transport_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-complex-transport-source-m4-r01/configs/fit-complex_transport.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026112991,
+        "split": 2026112991,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No support or scoring for recovery fit.",
+      "k": null,
+      "scenario": null,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "1200 optimizer steps, batch 12",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-complex-transport-source-m4-r01/complex_transport-model.pt",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-complex-transport-source-m4-r01/logs/fit-complex_transport.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.phase_transport_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-complex-transport-source-m4-r01/configs/fit-complex_transport.json complex_transport",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-complex-transport-source-m4-r01/complex_transport-model.pt"
+      ]
+    },
+    {
+      "row_id": "evaluate-full",
+      "method": "Direct, matched mature DURA, original transport and projected complex transport at matched full and half doses",
+      "purpose": "source_screen",
+      "config_ref": "experiments/pamf_lora_main/phase_transport_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-complex-transport-source-m4-r01/configs/evaluate-full.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026112992
+      },
+      "seed_notes": "Recognizer has fixed historical split. Panel seed recorded; received channels replay existing package derivation, no new process-level augmentation seed.",
+      "k": null,
+      "scenario": "full clean plus six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "900 frozen source V packages per view",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-complex-transport-source-m4-r01/full-predictions.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-complex-transport-source-m4-r01/logs/evaluate-full.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.phase_transport_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-complex-transport-source-m4-r01/configs/evaluate-full.json full",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-complex-transport-source-m4-r01/full-predictions.json"
+      ]
+    },
+    {
+      "row_id": "evaluate-residual",
+      "method": "Direct, matched mature DURA, original transport and projected complex transport at matched full and half doses",
+      "purpose": "source_screen",
+      "config_ref": "experiments/pamf_lora_main/phase_transport_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-complex-transport-source-m4-r01/configs/evaluate-residual.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026112992
+      },
+      "seed_notes": "Recognizer has fixed historical split. Panel seed recorded; received channels replay existing package derivation, no new process-level augmentation seed.",
+      "k": null,
+      "scenario": "residual clean plus six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "900 frozen source V packages per view",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-complex-transport-source-m4-r01/residual-predictions.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-complex-transport-source-m4-r01/logs/evaluate-residual.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.phase_transport_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-complex-transport-source-m4-r01/configs/evaluate-residual.json residual",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-complex-transport-source-m4-r01/residual-predictions.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Matched source-only screen with the same U and V selections as the prior matched bench. Recoverer and gain use no receiver identity.",
+    "One isolated real checkpoint smoke precedes fits. Two routes use one frozen model and one U-only threshold per candidate."
+  ],
+  "registered_at": "2026-11-23T15:17:15+00:00"
+}

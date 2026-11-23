@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 实测弱复谱的复增益约束](../automation_reports/CV-SincNet/20261123-phase1-lora-complex-transport-source-m4-r01/report.md)
 - [LoRa 公共和独有复谱分开降噪](../automation_reports/CV-SincNet/20261123-phase1-lora-chirp-spectrum-recovery-source-m4-r01/report.md)
 - [WiSig 短长前导共享五抽头定时](../automation_reports/CV-SincNet/20261123-phase1-wisig-joint-preamble-timing-source-m2-r01/report.md)
 - [WiSig 短前导工程对照](../automation_reports/CV-SincNet/20261123-phase1-wisig-preamble-receiver-source-m2-r02/report.md)
