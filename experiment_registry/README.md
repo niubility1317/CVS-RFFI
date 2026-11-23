@@ -10,6 +10,8 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 实收噪声方差与私有复谱修正风险](../automation_reports/CV-SincNet/20261124-phase1-lora-private-band-risk-source-cpu-r02/report.md)
+- [LoRa 实收噪声方差与私有复谱修正风险（首次兼容失败）](../automation_reports/CV-SincNet/20261124-phase1-lora-private-band-risk-source-cpu-r01/report.md)
 - [LoRa 私有谱全量恢复的三频带析因](../automation_reports/CV-SincNet/20261124-phase1-lora-private-band-factorial-source-m2-r01/report.md)
 - [LoRa 私有谱方差保持收缩与冻结识别](../automation_reports/CV-SincNet/20261124-phase1-lora-private-variance-transport-source-m2-r01/report.md)
 - [LoRa 包内顺序特征的实收噪声修正](../automation_reports/CV-SincNet/20261124-phase1-lora-order-noise-prior-source-cpu-r01/report.md)

@@ -1,0 +1,96 @@
+{
+  "submit": {
+    "pid": 2336199,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-private-band-risk-source-cpu-r02-release",
+    "code_commit": "c5464264a15870f9ff633b4215aa4b12ae460931",
+    "archive_transfer": "VERIFIED",
+    "remote_compile": "PASS",
+    "status": "SUBMITTED_NOT_YET_VERIFIED",
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-private-band-risk-source-cpu-r02"
+  },
+  "live": {
+    "pid": 2336199,
+    "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.private_band_risk_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-private-band-risk-source-cpu-r02-release/runtime.json",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-private-band-risk-source-cpu-r02-release",
+    "cuda": [
+      "CUDA_VISIBLE_DEVICES="
+    ]
+  },
+  "stages": {
+    "smoke": {
+      "pid": 2336210,
+      "live": null,
+      "bytes": 456,
+      "last": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+        "  return self.fget.__get__(instance, owner)()",
+        "LORA_PRIVATE_RISK_CHECKPOINT_PASS"
+      ]
+    },
+    "probe": {
+      "pid": 2336276,
+      "live": {
+        "pid": 2336276,
+        "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.private_band_risk_source probe /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-private-band-risk-source-cpu-r02/configs/probe-source.json source",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-private-band-risk-source-cpu-r02-release",
+        "cuda": [
+          "CUDA_VISIBLE_DEVICES="
+        ]
+      },
+      "bytes": 508,
+      "last": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+        "  return self.fget.__get__(instance, owner)()",
+        "LORA_PRIVATE_RISK_READY generic_white 150",
+        "LORA_PRIVATE_RISK_READY generic_colored 140"
+      ]
+    }
+  },
+  "state": null,
+  "files": {
+    "smoke.json": 171
+  },
+  "terminal": {
+    "submit": {
+      "pid": 2336199,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-private-band-risk-source-cpu-r02-release",
+      "code_commit": "c5464264a15870f9ff633b4215aa4b12ae460931",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-private-band-risk-source-cpu-r02"
+    },
+    "live": null,
+    "stages": {
+      "smoke": {
+        "pid": 2336210,
+        "live": null,
+        "bytes": 456,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_PRIVATE_RISK_CHECKPOINT_PASS"
+        ]
+      },
+      "probe": {
+        "pid": 2336276,
+        "live": null,
+        "bytes": 733,
+        "last": [
+          "LORA_PRIVATE_RISK_READY full practical_low_suburban 53",
+          "LORA_PRIVATE_RISK_READY full practical_low_urban 101",
+          "LORA_PRIVATE_RISK_READY residual practical_low_suburban 150",
+          "LORA_PRIVATE_RISK_READY residual practical_low_urban 150"
+        ]
+      }
+    },
+    "state": {
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
+    },
+    "files": {
+      "smoke.json": 171,
+      "source-u-private-risk.json": 204549
+    }
+  },
+  "verification": "VERIFIED"
+}

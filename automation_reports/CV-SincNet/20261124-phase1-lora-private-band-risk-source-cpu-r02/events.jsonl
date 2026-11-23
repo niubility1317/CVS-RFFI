@@ -1,0 +1,5 @@
+{"at": "2026-11-23T23:50:47+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-23T23:50:47+00:00", "status": "LOCAL_VERIFIED", "note": "Five focused tests passed; one P0/P1 review passed.", "evidence": "private_band_risk_source.py", "row_id": null}
+{"at": "2026-11-23T23:51:58+00:00", "status": "RUNNING", "note": "Verified live CPU controller, real-weight smoke, PID/CWD/argv, and two generic waveform log milestones.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-23T23:53:10+00:00", "status": "ANALYZED", "note": "Verified held U waveform-only diagnostic; eligible=False, clean_bypassed=150.", "evidence": "source-u-private-risk.json", "row_id": "probe-source"}
+{"at": "2026-11-23T23:53:10+00:00", "status": "ANALYZED", "note": "Source-only waveform diagnostic complete, candidate eligible=False.", "evidence": "report.md", "row_id": null}

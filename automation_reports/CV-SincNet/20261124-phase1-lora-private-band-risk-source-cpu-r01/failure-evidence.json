@@ -1,0 +1,42 @@
+{
+  "submit": {
+    "pid": 2334228,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-private-band-risk-source-cpu-r01-release",
+    "code_commit": "ccdc0defe65deb64d7aa65efca5f026d8d96695f",
+    "archive_transfer": "VERIFIED",
+    "remote_compile": "PASS",
+    "status": "SUBMITTED_NOT_YET_VERIFIED",
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-private-band-risk-source-cpu-r01"
+  },
+  "live": null,
+  "stages": {
+    "smoke": {
+      "pid": 2334299,
+      "live": null,
+      "bytes": 456,
+      "last": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+        "  return self.fget.__get__(instance, owner)()",
+        "LORA_PRIVATE_RISK_CHECKPOINT_PASS"
+      ]
+    },
+    "probe": {
+      "pid": 2334376,
+      "live": null,
+      "bytes": 2502,
+      "last": [
+        "    partition.update({name: torch.as_tensor(groups == name, device=mid.device) for name in SOURCE})",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-private-band-risk-source-cpu-r01-release/experiments/pamf_lora_main/private_band_risk_source.py\", line 124, in <dictcomp>",
+        "    partition.update({name: torch.as_tensor(groups == name, device=mid.device) for name in SOURCE})",
+        "RuntimeError: Could not infer dtype of numpy.bool"
+      ]
+    }
+  },
+  "state": {
+    "status": "FAILED",
+    "error": "Private-band risk probe failed"
+  },
+  "files": {
+    "smoke.json": 171
+  }
+}
