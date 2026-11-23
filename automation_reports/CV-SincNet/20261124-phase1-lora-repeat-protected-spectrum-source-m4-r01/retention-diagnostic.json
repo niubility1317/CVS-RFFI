@@ -1,0 +1,359 @@
+{
+  "status": "VERIFIED",
+  "held_U": 50,
+  "seed": 2026112417,
+  "target_reads": 0,
+  "TX_reads": 0,
+  "metrics": {
+    "direct": {
+      "noncarrier_retention": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "maximum_observed_edit": 0.0,
+      "maximum_angle_deg": 0.0,
+      "by_observed_disturbance": {
+        "lower_half": {
+          "1-8": {
+            "complex_nmse": 4.213048458099365,
+            "magnitude_nmse": 2.6787679195404053,
+            "real_correlation": 0.37752094864845276
+          },
+          "9-32": {
+            "complex_nmse": 47.09834671020508,
+            "magnitude_nmse": 39.895748138427734,
+            "real_correlation": 0.09323767572641373
+          },
+          "33-64": {
+            "complex_nmse": 152.16160583496094,
+            "magnitude_nmse": 137.7219696044922,
+            "real_correlation": 0.06175526976585388
+          },
+          "65-128": {
+            "complex_nmse": 388.0177001953125,
+            "magnitude_nmse": 368.92889404296875,
+            "real_correlation": 0.04850059375166893
+          }
+        },
+        "upper_half": {
+          "1-8": {
+            "complex_nmse": 7.07023286819458,
+            "magnitude_nmse": 4.719141960144043,
+            "real_correlation": 0.33754560351371765
+          },
+          "9-32": {
+            "complex_nmse": 94.4849624633789,
+            "magnitude_nmse": 84.07015991210938,
+            "real_correlation": 0.07590682804584503
+          },
+          "33-64": {
+            "complex_nmse": 311.39373779296875,
+            "magnitude_nmse": 287.4474182128906,
+            "real_correlation": 0.04778680577874184
+          },
+          "65-128": {
+            "complex_nmse": 809.261962890625,
+            "magnitude_nmse": 776.6587524414062,
+            "real_correlation": 0.034742921590805054
+          }
+        }
+      }
+    },
+    "diagonal_coarse": {
+      "noncarrier_retention": [
+        0.6010367274284363,
+        0.6507189273834229,
+        0.6962875723838806
+      ],
+      "maximum_observed_edit": 0.34935250878334045,
+      "maximum_angle_deg": 19.94564477277088,
+      "by_observed_disturbance": {
+        "lower_half": {
+          "1-8": {
+            "complex_nmse": 2.703486680984497,
+            "magnitude_nmse": 1.5363727807998657,
+            "real_correlation": 0.40713560581207275
+          },
+          "9-32": {
+            "complex_nmse": 30.97551155090332,
+            "magnitude_nmse": 24.55327606201172,
+            "real_correlation": 0.0938526839017868
+          },
+          "33-64": {
+            "complex_nmse": 100.31350708007812,
+            "magnitude_nmse": 89.19011688232422,
+            "real_correlation": 0.06522014737129211
+          },
+          "65-128": {
+            "complex_nmse": 254.55235290527344,
+            "magnitude_nmse": 235.17190551757812,
+            "real_correlation": 0.04799288138747215
+          }
+        },
+        "upper_half": {
+          "1-8": {
+            "complex_nmse": 4.4956769943237305,
+            "magnitude_nmse": 2.6088571548461914,
+            "real_correlation": 0.3477286696434021
+          },
+          "9-32": {
+            "complex_nmse": 59.364280700683594,
+            "magnitude_nmse": 49.918701171875,
+            "real_correlation": 0.07631155103445053
+          },
+          "33-64": {
+            "complex_nmse": 187.9221649169922,
+            "magnitude_nmse": 169.3069610595703,
+            "real_correlation": 0.04629168286919594
+          },
+          "65-128": {
+            "complex_nmse": 488.8355407714844,
+            "magnitude_nmse": 463.4225769042969,
+            "real_correlation": 0.03353612869977951
+          }
+        }
+      }
+    },
+    "diagonal": {
+      "noncarrier_retention": [
+        0.6011238694190979,
+        0.6510988473892212,
+        0.6962519288063049
+      ],
+      "maximum_observed_edit": 0.3493628203868866,
+      "maximum_angle_deg": 19.946163867147803,
+      "by_observed_disturbance": {
+        "lower_half": {
+          "1-8": {
+            "complex_nmse": 2.7035813331604004,
+            "magnitude_nmse": 1.5363849401474,
+            "real_correlation": 0.40709611773490906
+          },
+          "9-32": {
+            "complex_nmse": 30.976421356201172,
+            "magnitude_nmse": 24.560836791992188,
+            "real_correlation": 0.09380209445953369
+          },
+          "33-64": {
+            "complex_nmse": 100.31295013427734,
+            "magnitude_nmse": 89.1899185180664,
+            "real_correlation": 0.06519102305173874
+          },
+          "65-128": {
+            "complex_nmse": 254.5826416015625,
+            "magnitude_nmse": 235.19952392578125,
+            "real_correlation": 0.047949377447366714
+          }
+        },
+        "upper_half": {
+          "1-8": {
+            "complex_nmse": 4.49823522567749,
+            "magnitude_nmse": 2.6112060546875,
+            "real_correlation": 0.34770622849464417
+          },
+          "9-32": {
+            "complex_nmse": 59.36283874511719,
+            "magnitude_nmse": 49.917396545410156,
+            "real_correlation": 0.07631823420524597
+          },
+          "33-64": {
+            "complex_nmse": 187.97259521484375,
+            "magnitude_nmse": 169.35641479492188,
+            "real_correlation": 0.04628794640302658
+          },
+          "65-128": {
+            "complex_nmse": 488.9730224609375,
+            "magnitude_nmse": 463.558349609375,
+            "real_correlation": 0.03357428312301636
+          }
+        }
+      }
+    },
+    "covariance_coarse": {
+      "noncarrier_retention": [
+        0.6004154682159424,
+        0.6160820722579956,
+        0.6743390560150146
+      ],
+      "maximum_observed_edit": 0.3490516245365143,
+      "maximum_angle_deg": 20.13608581475647,
+      "by_observed_disturbance": {
+        "lower_half": {
+          "1-8": {
+            "complex_nmse": 2.700784921646118,
+            "magnitude_nmse": 1.5329725742340088,
+            "real_correlation": 0.41006532311439514
+          },
+          "9-32": {
+            "complex_nmse": 30.96725845336914,
+            "magnitude_nmse": 23.879867553710938,
+            "real_correlation": 0.09450636059045792
+          },
+          "33-64": {
+            "complex_nmse": 92.90924835205078,
+            "magnitude_nmse": 82.20487976074219,
+            "real_correlation": 0.06604784727096558
+          },
+          "65-128": {
+            "complex_nmse": 254.74301147460938,
+            "magnitude_nmse": 235.4164581298828,
+            "real_correlation": 0.049086593091487885
+          }
+        },
+        "upper_half": {
+          "1-8": {
+            "complex_nmse": 4.4911298751831055,
+            "magnitude_nmse": 2.607053279876709,
+            "real_correlation": 0.34548452496528625
+          },
+          "9-32": {
+            "complex_nmse": 57.04582214355469,
+            "magnitude_nmse": 49.005653381347656,
+            "real_correlation": 0.07985799759626389
+          },
+          "33-64": {
+            "complex_nmse": 188.39842224121094,
+            "magnitude_nmse": 169.7460174560547,
+            "real_correlation": 0.04801775515079498
+          },
+          "65-128": {
+            "complex_nmse": 488.56353759765625,
+            "magnitude_nmse": 463.11541748046875,
+            "real_correlation": 0.03315797448158264
+          }
+        }
+      }
+    },
+    "covariance": {
+      "noncarrier_retention": [
+        0.6005470156669617,
+        0.6162645816802979,
+        0.6748382449150085
+      ],
+      "maximum_observed_edit": 0.34894871711730957,
+      "maximum_angle_deg": 20.153984325476486,
+      "by_observed_disturbance": {
+        "lower_half": {
+          "1-8": {
+            "complex_nmse": 2.7009623050689697,
+            "magnitude_nmse": 1.5329679250717163,
+            "real_correlation": 0.41000452637672424
+          },
+          "9-32": {
+            "complex_nmse": 30.96974754333496,
+            "magnitude_nmse": 23.917102813720703,
+            "real_correlation": 0.09441828727722168
+          },
+          "33-64": {
+            "complex_nmse": 92.91226196289062,
+            "magnitude_nmse": 82.20701599121094,
+            "real_correlation": 0.06598664075136185
+          },
+          "65-128": {
+            "complex_nmse": 254.76361083984375,
+            "magnitude_nmse": 235.43240356445312,
+            "real_correlation": 0.04905033856630325
+          }
+        },
+        "upper_half": {
+          "1-8": {
+            "complex_nmse": 4.494280815124512,
+            "magnitude_nmse": 2.6100776195526123,
+            "real_correlation": 0.34546902775764465
+          },
+          "9-32": {
+            "complex_nmse": 57.049983978271484,
+            "magnitude_nmse": 49.01615905761719,
+            "real_correlation": 0.07975783944129944
+          },
+          "33-64": {
+            "complex_nmse": 188.46798706054688,
+            "magnitude_nmse": 169.81439208984375,
+            "real_correlation": 0.04786371439695358
+          },
+          "65-128": {
+            "complex_nmse": 488.7178039550781,
+            "magnitude_nmse": 463.2693176269531,
+            "real_correlation": 0.033160965889692307
+          }
+        }
+      }
+    },
+    "covariance_radial": {
+      "noncarrier_retention": [
+        0.5985970497131348,
+        0.6132770776748657,
+        0.6692730188369751
+      ],
+      "maximum_observed_edit": 0.348956823348999,
+      "maximum_angle_deg": 0.015343586413503908,
+      "by_observed_disturbance": {
+        "lower_half": {
+          "1-8": {
+            "complex_nmse": 2.698857307434082,
+            "magnitude_nmse": 1.5145320892333984,
+            "real_correlation": 0.3955972194671631
+          },
+          "9-32": {
+            "complex_nmse": 30.854482650756836,
+            "magnitude_nmse": 23.739849090576172,
+            "real_correlation": 0.09357461333274841
+          },
+          "33-64": {
+            "complex_nmse": 92.60919189453125,
+            "magnitude_nmse": 81.90108489990234,
+            "real_correlation": 0.06307632476091385
+          },
+          "65-128": {
+            "complex_nmse": 253.09786987304688,
+            "magnitude_nmse": 233.9076690673828,
+            "real_correlation": 0.048667795956134796
+          }
+        },
+        "upper_half": {
+          "1-8": {
+            "complex_nmse": 4.472409725189209,
+            "magnitude_nmse": 2.5884106159210205,
+            "real_correlation": 0.34237000346183777
+          },
+          "9-32": {
+            "complex_nmse": 56.75951385498047,
+            "magnitude_nmse": 48.740501403808594,
+            "real_correlation": 0.07736383378505707
+          },
+          "33-64": {
+            "complex_nmse": 187.91627502441406,
+            "magnitude_nmse": 169.33424377441406,
+            "real_correlation": 0.04879222437739372
+          },
+          "65-128": {
+            "complex_nmse": 487.4660339355469,
+            "magnitude_nmse": 462.12994384765625,
+            "real_correlation": 0.03384712338447571
+          }
+        }
+      }
+    }
+  },
+  "frozen_decision_differences": {
+    "full": {
+      "covariance_coarse_vs_diagonal_coarse": 41,
+      "covariance_vs_diagonal": 38,
+      "covariance_half_vs_diagonal_half": 15,
+      "covariance_vs_covariance_radial": 101
+    },
+    "residual": {
+      "covariance_coarse_vs_diagonal_coarse": 62,
+      "covariance_vs_diagonal": 59,
+      "covariance_half_vs_diagonal_half": 32,
+      "covariance_vs_covariance_radial": 294
+    }
+  },
+  "max_equal_dose_absolute_error": 1.0044313967227936e-06,
+  "relative_final_iq_distance": [
+    7.631933112861589e-05,
+    0.0005109272315166891,
+    0.004009698983281851
+  ]
+}
