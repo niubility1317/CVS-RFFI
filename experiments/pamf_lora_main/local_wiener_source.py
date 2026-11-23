@@ -188,12 +188,12 @@ def dispatch(rt):
         raise
 
 
-def publish(repo, output, context, ssh_config):
+def publish(repo, output, context, ssh_config, *, run=RUN, runner=None):
     cfg = read(context)
     rt = {key: cfg[key] for key in ('project', 'python', 'frozen_sources')}
     project = PurePosixPath(rt['project'])
-    rt.update(run_id=RUN, runner=__spec__.name, code_commit=release_commit(repo),
-              run_root=str(project/'runs'/RUN), release_root=str(project/'releases'/f'{RUN}-release'),
+    rt.update(run_id=run, runner=runner or __spec__.name, code_commit=release_commit(repo),
+              run_root=str(project/'runs'/run), release_root=str(project/'releases'/f'{run}-release'),
               source_root=str(project/'releases'/f'{DATA_RUN}-release'/'data'/'source'),
               parent_root=str(project/'runs'/RESIDUAL_RUN))
     release(repo, output, rt, ssh_config)

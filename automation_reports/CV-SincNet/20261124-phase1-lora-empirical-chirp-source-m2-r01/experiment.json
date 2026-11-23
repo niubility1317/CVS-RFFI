@@ -1,0 +1,168 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261124-phase1-lora-empirical-chirp-source-m2-r01",
+  "group_id": "lora-observable-satellite-recovery",
+  "display_name": "LoRa 经验复谱库与包内两组独立匹配",
+  "description": "检验合法源 U 复谱模板、跨 chirp 留出查询和两半组的预测一致性对双路线同包冻结识别的影响。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "LoRa",
+    "DURA",
+    "empirical_prior",
+    "disjoint_chirps",
+    "full",
+    "residual",
+    "source_V"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261122-phase1-lora-full-aligned-data-r01",
+    "20261122-phase1-lora-tri-label-set-m3-r01",
+    "20261123-phase1-lora-dura-residual-practical-m1-r01",
+    "20261123-phase1-lora-dura-direct-detail-source-m2-r01",
+    "20261123-phase1-lora-local-wiener-source-m2-r01",
+    "20261123-phase1-lora-repeat-protection-source-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-11-23 LoRa 与 WiSig 可部署星地恢复目标及空闲显卡多进程授权",
+  "code": {
+    "commit": "启动命令从已推送分支 HEAD 固定，实际 OID 写入 submit.json",
+    "checkout": "E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo",
+    "environment": "${N607_PYTHON}",
+    "cwd": "${N607_PROJECT}/releases/20261124-phase1-lora-empirical-chirp-source-m2-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa 多接收机 IEEE DataPort",
+    "version": "lora_full_packets_v1 源 7/63/30 固定划分",
+    "representation": "1 MS/s 采集及既有构造，冻结读出为 256 kS/s 六条 256 点窄窗复 IQ",
+    "contract_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json role_ids.V",
+    "label_map_ref": "experiments/pamf_lora_main/data.py CLASSES (31 至 40)，仅评分读取 V_metadata.npz y",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "10 个登记发射机的固定源分配，拟合不可见",
+    "roles": {
+      "L_s": 0,
+      "U_s": 7500,
+      "V": 900
+    },
+    "train_ratio": "既有分配。固定 5000 合法 U 模板和分离 2500 U 校准，900 源 V 包独立评估。",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "${N607_PROJECT}/runs/20261122-phase1-lora-full-aligned-data-r01/source_views/complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": "沿用 full 1 MHz 对齐及 residual 256 kHz post-sync/noEQ 原视图"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "not_applicable",
+    "external_method_exception": null,
+    "claim_scope": "仅源域工程对照，实际 practical V 输入按原注册视图再现，候选无法读取模拟参数或分解"
+  },
+  "checkpoint": {
+    "initialization": "source_empirical_prior",
+    "sources": [
+      "20261122-phase1-lora-tri-label-set-m3-r01 / tri_set 2026092702",
+      "20261123-phase1-lora-dura-direct-detail-source-m2-r01 及冻结 full 复响应半量",
+      "20261123-phase1-lora-dura-residual-practical-m1-r01 原 R69 及固定 residual 门控投影半量"
+    ],
+    "contract_check_ref": "source_contract 与 complete_f/source_control 核对各自源物理角色",
+    "provenance_verdict": "模板从无标签 U 的实收 IQ 生成，不用其他权重、F、目标或模拟真值。",
+    "selection_rule": "四个固定输出。同一库和源 U 门跨路线。只有同一读出两路线均超过匹配 DURA 且 clean 持平时才扩大矩阵。",
+    "usage": "库与阈值冻结后比较原 Tri-set 与 DURA"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "当前目标 LoRa 源 U 经验复谱库",
+    "gpu_policy": "按实时负载和可用显存择卡，双路线各一张卡，可与其他 owner 共卡。",
+    "remote_run_root": "${N607_PROJECT}/runs/20261124-phase1-lora-empirical-chirp-source-m2-r01",
+    "remote_log_root": "${N607_PROJECT}/runs/20261124-phase1-lora-empirical-chirp-source-m2-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261124-phase1-lora-empirical-chirp-source-m2-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.empirical_chirp_source publish --repo \"E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo\" --output \"E:/type10-7/local_artifacts/20261124-phase1-lora-empirical-chirp-source-m2-r01/release\" --context E:/type10-7/local_artifacts/lora_main_20261121/runtime_source.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "契约、数值、真实权重 smoke 或冻结预测完整性失败时停止后续本 run 派发。两条健康预测保留直至完毕。"
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "full-predictions.json",
+    "residual-predictions.json",
+    "full-source-scores.json",
+    "residual-source-scores.json",
+    "logs/",
+    "library.pt",
+    "library.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "正确数",
+      "clean",
+      "逐 RX 纠错与改错",
+      "配对物理包分层区间",
+      "门限触发",
+      "库构建和 B1 墙钟",
+      "存储"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "mode",
+      "seed"
+    ],
+    "prediction_ref": "${N607_PROJECT}/runs/20261124-phase1-lora-empirical-chirp-source-m2-r01/<route>-predictions.json",
+    "scorer_ref": "experiments.pamf_lora_main.empirical_chirp_source score"
+  },
+  "rows": [
+    {
+      "row_id": "matched-empirical-chirp-source-s2026092702",
+      "method": "同包直通与原 DURA，加全六条查询、交叉三条查询、交叉一致性半量以及全量。",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/empirical_chirp_prior.py",
+      "resolved_config_ref": "${N607_PROJECT}/releases/20261124-phase1-lora-empirical-chirp-source-m2-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026112403,
+        "support": null,
+        "evaluation": 2026112620
+      },
+      "seed_notes": "单一冻结 Tri-set 2026092702；既有 source split；库选取与门沿用固定 U 分区；augmentation 只用于 B1 和真实权重冒烟，独立 bootstrap 不参与晋级以外处理。",
+      "k": null,
+      "scenario": "clean 和六景，分别评估 full/residual",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "5000 个模板、2500 个 U 门校准、0 优化参数/步数，900×两路线×七景×六读出。",
+      "output_root": "${N607_PROJECT}/runs/20261124-phase1-lora-empirical-chirp-source-m2-r01",
+      "log_path": "${N607_PROJECT}/runs/20261124-phase1-lora-empirical-chirp-source-m2-r01/logs",
+      "command": "${N607_PYTHON} -u -m experiments.pamf_lora_main.empirical_chirp_source dispatch ${N607_PROJECT}/releases/20261124-phase1-lora-empirical-chirp-source-m2-r01-release/runtime.json",
+      "expected_artifacts": [
+        "smoke.json",
+        "full-predictions.json",
+        "residual-predictions.json",
+        "full-source-scores.json",
+        "residual-source-scores.json",
+        "logs/",
+        "library.pt",
+        "library.json"
+      ]
+    }
+  ],
+  "notes": [
+    "无真实信道或噪声输入。模板张量只含无标签 U 频谱，数据契约中的 ID 仅用于加载核对。",
+    "每路沿用同一套库、匹配距离、噪声估计和门限。全部同包预测完成后独立 CPU 才使用源 V TX 标签。"
+  ],
+  "registered_at": "2026-11-23T16:06:18+00:00"
+}
