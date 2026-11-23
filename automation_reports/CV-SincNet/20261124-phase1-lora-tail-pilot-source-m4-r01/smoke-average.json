@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "seed": 2026112991,
+  "steps": 1,
+  "fit_per_rx": 1000,
+  "calibration_per_rx": 500,
+  "held_per_rx": 100,
+  "F_reads": 0,
+  "TX_reads": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "practical_reads": 0,
+  "trace_reads": 0,
+  "estimator": "average",
+  "threshold": 0.028310418128967285,
+  "held_waveform": [
+    2.9908509254455566,
+    2.9905905723571777,
+    0.7768211960792542,
+    0.008953292854130268,
+    4.1423258781433105,
+    4.1420063972473145
+  ],
+  "n_fit": 25,
+  "n_calibration": 20,
+  "n_held": 15,
+  "worker_seconds": 1.7754518720321357,
+  "bf16_training_convolutions": true
+}
