@@ -1,0 +1,164 @@
+{
+  "each_route_records": 1800,
+  "views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "archived_runs": [
+    "20261123-phase1-wisig-preamble-receiver-source-m2-r02",
+    "20261123-phase1-wisig-joint-preamble-timing-source-m2-r01",
+    "20261123-phase1-wisig-observable-action-source-m4-r01",
+    "20261123-phase1-wisig-phase-magnitude-source-m4-r01",
+    "20261123-phase1-wisig-repeat-block-source-m3-r01"
+  ],
+  "added_run": "20261123-phase1-wisig-observed-amplitude-source-m3-r01",
+  "target_reads": 0,
+  "diagnostic_only": true,
+  "routes": {
+    "full": {
+      "raw": {
+        "six": 9057,
+        "per_view": {
+          "clean": 1775,
+          "practical_high": 1726,
+          "practical_mid": 1655,
+          "practical_low_suburban": 1628,
+          "practical_high_urban": 1650,
+          "practical_mid_urban": 1317,
+          "practical_low_urban": 1081
+        },
+        "vs_R69": -1137,
+        "ci_vs_R69": [
+          -1215.025,
+          -1057.9750000000001
+        ]
+      },
+      "R69": {
+        "six": 10194,
+        "per_view": {
+          "clean": 1775,
+          "practical_high": 1767,
+          "practical_mid": 1751,
+          "practical_low_suburban": 1730,
+          "practical_high_urban": 1748,
+          "practical_mid_urban": 1655,
+          "practical_low_urban": 1543
+        },
+        "vs_R69": 0,
+        "ci_vs_R69": [
+          0.0,
+          0.0
+        ]
+      },
+      "archived_union": {
+        "six": 10558,
+        "per_view": {
+          "clean": 1796,
+          "practical_high": 1794,
+          "practical_mid": 1786,
+          "practical_low_suburban": 1785,
+          "practical_high_urban": 1783,
+          "practical_mid_urban": 1733,
+          "practical_low_urban": 1677
+        },
+        "vs_R69": 364,
+        "ci_vs_R69": [
+          292.975,
+          437.02499999999986
+        ]
+      },
+      "with_new_union": {
+        "six": 10606,
+        "per_view": {
+          "clean": 1797,
+          "practical_high": 1794,
+          "practical_mid": 1787,
+          "practical_low_suburban": 1788,
+          "practical_high_urban": 1785,
+          "practical_mid_urban": 1742,
+          "practical_low_urban": 1710
+        },
+        "vs_R69": 412,
+        "ci_vs_R69": [
+          340.975,
+          483.0
+        ]
+      }
+    },
+    "residual": {
+      "raw": {
+        "six": 9062,
+        "per_view": {
+          "clean": 1775,
+          "practical_high": 1726,
+          "practical_mid": 1654,
+          "practical_low_suburban": 1630,
+          "practical_high_urban": 1650,
+          "practical_mid_urban": 1317,
+          "practical_low_urban": 1085
+        },
+        "vs_R69": -1133,
+        "ci_vs_R69": [
+          -1214.0,
+          -1054.0
+        ]
+      },
+      "R69": {
+        "six": 10195,
+        "per_view": {
+          "clean": 1775,
+          "practical_high": 1767,
+          "practical_mid": 1751,
+          "practical_low_suburban": 1730,
+          "practical_high_urban": 1748,
+          "practical_mid_urban": 1655,
+          "practical_low_urban": 1544
+        },
+        "vs_R69": 0,
+        "ci_vs_R69": [
+          0.0,
+          0.0
+        ]
+      },
+      "archived_union": {
+        "six": 10563,
+        "per_view": {
+          "clean": 1796,
+          "practical_high": 1794,
+          "practical_mid": 1786,
+          "practical_low_suburban": 1785,
+          "practical_high_urban": 1783,
+          "practical_mid_urban": 1736,
+          "practical_low_urban": 1679
+        },
+        "vs_R69": 368,
+        "ci_vs_R69": [
+          298.0,
+          440.0
+        ]
+      },
+      "with_new_union": {
+        "six": 10610,
+        "per_view": {
+          "clean": 1797,
+          "practical_high": 1794,
+          "practical_mid": 1787,
+          "practical_low_suburban": 1788,
+          "practical_high_urban": 1785,
+          "practical_mid_urban": 1744,
+          "practical_low_urban": 1712
+        },
+        "vs_R69": 415,
+        "ci_vs_R69": [
+          344.0,
+          485.0
+        ]
+      }
+    }
+  }
+}

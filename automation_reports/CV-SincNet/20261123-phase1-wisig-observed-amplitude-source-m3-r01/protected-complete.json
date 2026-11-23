@@ -1,0 +1,24 @@
+{
+  "run_id": "20261123-phase1-wisig-observed-amplitude-source-m3-r01",
+  "arm": "protected",
+  "steps": 1200,
+  "batch": 48,
+  "seed": 2026112321,
+  "target_reads": 0,
+  "source_truth_reads": 0,
+  "recognizer_reads": 0,
+  "source_V_reads": 0,
+  "practical_training_reads": 0,
+  "status": "SOURCE_FROZEN",
+  "held": [
+    0.959991455078125,
+    0.8194177150726318,
+    1.2007659673690796,
+    0.6643937826156616
+  ],
+  "worker_seconds": 113.55697908112779,
+  "parameter_count": 501508,
+  "n_fit": 51836,
+  "n_hold": 768,
+  "bf16_training": true
+}
