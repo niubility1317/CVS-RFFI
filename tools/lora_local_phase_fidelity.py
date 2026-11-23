@@ -11,7 +11,7 @@ import numpy as np
 import torch
 
 from experiments.cric_dura_comparison.io import read, tensor
-from experiments.pamf_lora_main import local_phase_source, spectral_block_source, split_shrink_source
+from experiments.pamf_lora_main import lapped_posterior_source, local_phase_source, spectral_block_source, split_shrink_source
 from experiments.pamf_lora_main.channel_blind import corruption_score
 from experiments.pamf_lora_main.channel_blind_source import panel, receive_only
 from experiments.pamf_lora_main.data import SOURCE, VIEWS
@@ -20,6 +20,7 @@ from experiments.pamf_lora_main.dura_repair import PacketRestorer, complex_iq
 from experiments.pamf_lora_main.full_packet_publish import DATA_RUN
 from experiments.pamf_lora_main.full_packet_views import source_contract, source_role
 from experiments.pamf_lora_main.joint_unroll_source import coordinates
+from experiments.pamf_lora_main.lapped_posterior import analysis as lapped_analysis
 from experiments.pamf_lora_main.local_wiener_source import ROUTES, read_frozen
 from experiments.pamf_lora_main.runner import activate
 from experiments.pamf_lora_main.split_shrink import spectrum as split_spectrum
@@ -109,6 +110,33 @@ def split_shrink_doses(waves, tracked, frame):
     return torch.stack(bands, dim=2).cpu().numpy()
 
 
+LAPPED_VARIANCE_FIELDS = ('local_power', 'pooled_power', 'prior_variance', 'prior_normalized_error',
+                          'local_log_bias_db', 'pooled_log_bias_db', 'local_abs_log_error_db',
+                          'pooled_abs_log_error_db', 'local_temporal_rmse_db', 'pooled_temporal_rmse_db')
+
+
+def lapped_variance(model, tracked, quality, frame, source, epsilon, *, clean):
+    coefficients = lapped_analysis(tracked, model.window)
+    measured = model.estimate_power(coefficients)
+    pooled = measured.mean(dim=-2, keepdim=True).expand_as(measured)
+    local = .75 * measured + .25 * pooled
+    prior, variance = model.restore(tracked, quality)[2:]
+    error = (lapped_analysis(source / frame, model.window) - prior).abs().square()
+    noncarrier = model.noncarrier
+    normalize = (error / variance)[..., noncarrier].flatten(1).mean(-1)
+    results = [local.flatten(1).mean(-1), pooled.flatten(1).mean(-1),
+               variance[..., noncarrier].flatten(1).mean(-1), normalize]
+    if not clean:
+        actual_spec = lapped_analysis(complex_iq(epsilon) / frame, model.window)
+        actual = actual_spec[..., model.outer].abs().square().mean(-1, keepdim=True)
+        errors = 10. * (torch.stack((local, pooled)).clamp_min(1e-10).log10() - actual.clamp_min(1e-10).log10())
+        results.extend(errors.flatten(2).mean(-1).unbind(0))
+        results.extend(errors.abs().flatten(2).mean(-1).unbind(0))
+        variation = errors - errors.mean(dim=-2, keepdim=True)
+        results.extend(variation.square().flatten(2).mean(-1).sqrt().unbind(0))
+    return torch.stack(results, dim=-1).cpu().numpy()
+
+
 def paired_source(data, cache, contract, root, route, modes):
     raw, receivers, ids, _ = source_role(data,contract,'V')
     selected = panel(receivers)
@@ -126,12 +154,16 @@ def diagnose(rt, route, device):
     is_geometry = rt['run_id']==GEOMETRY_RUN
     is_tangent = rt['run_id']==TANGENT_RUN
     is_split = rt['run_id']==split_shrink_source.RUN
-    if is_geometry or is_tangent or is_split:
+    is_lapped = rt['run_id']==lapped_posterior_source.RUN
+    if is_geometry or is_tangent or is_split or is_lapped:
         if is_tangent:
             from experiments.pamf_lora_main import empirical_tangent_source as study
             recipes = study.recipes(rt)
         elif is_split:
             study = split_shrink_source
+            recipes = study.RECIPES
+        elif is_lapped:
+            study = lapped_posterior_source
             recipes = study.RECIPES
         else:
             from experiments.pamf_lora_main import complex_geometry_source as study
@@ -153,6 +185,8 @@ def diagnose(rt, route, device):
     models, threshold = spectral_block_source.load_models(root,contract,device,recipes)
     if is_split:
         models = (*models, split_shrink_source.ScalarReadout(models[-1]).eval())
+    elif is_lapped:
+        models = (*models, lapped_posterior_source.PooledReadout(models[-1]).eval())
     tracker = PacketRestorer('consensus').to(device).eval()
     truth = tensor(clean,device)
     output = {}
@@ -174,7 +208,7 @@ def diagnose(rt, route, device):
                 active += count
                 y = complex_iq(received)
                 waves = [y,*(complex_iq(recoveries[k]) for k in indices)]
-                tracked, phase, _, rms = coordinates(tracker,received)
+                tracked, phase, quality, rms = coordinates(tracker,received)
                 frame = phase*rms
                 if is_tangent:
                     direction.append(direction_fraction(models[-1],tracked,frame,waves))
@@ -186,6 +220,8 @@ def diagnose(rt, route, device):
                 gain = (y*ground.conj()).mean(-1,keepdim=True)/ground.abs().square().mean(-1,keepdim=True).clamp_min(1e-6)
                 target = ground*gain
                 noiseless = y-complex_iq(epsilon)
+                if is_lapped:
+                    noise_stats.append(lapped_variance(models[1],tracked,quality,frame,ground,epsilon,clean=view=='clean'))
                 for reference, group in ((target,bands_from_ground),(noiseless,bands_from_noiseless)):
                     compared = waves
                     if is_geometry:
@@ -217,6 +253,12 @@ def diagnose(rt, route, device):
                     median=np.median(gains,axis=1).tolist(),
                     by_receiver={name:np.median(part,axis=1).tolist()
                                  for name,part in zip(SOURCE,np.split(gains,len(SOURCE),axis=1),strict=True)})
+            if is_lapped:
+                values = np.concatenate(noise_stats)
+                output[view]['lapped_variance'] = dict(fields=LAPPED_VARIANCE_FIELDS[:values.shape[1]],
+                    median=np.median(values,axis=0).tolist(),
+                    by_receiver={name:np.median(part,axis=0).tolist()
+                                 for name,part in zip(SOURCE,np.split(values,len(SOURCE)),strict=True)})
     if is_geometry:
         readouts = (*readouts,'bounded_pair_projection')
     return dict(route=route,n=len(rows),bands=BANDS,metrics=METRICS,readouts=readouts,scenes=output)
@@ -230,7 +272,9 @@ def main():
     args = parser.parse_args()
     rt = read(args.runtime)
     root = Path(rt['run_root'])
-    if rt.get('run_id') not in (local_phase_source.RUN,GEOMETRY_RUN,TANGENT_RUN,split_shrink_source.RUN) or read(root/'state.json')['status']!='SOURCE_SCORED':
+    analyzed_runs = (local_phase_source.RUN, GEOMETRY_RUN, TANGENT_RUN, split_shrink_source.RUN,
+                     lapped_posterior_source.RUN)
+    if rt.get('run_id') not in analyzed_runs or read(root/'state.json')['status']!='SOURCE_SCORED':
         raise ValueError('The full dual-route truth-last scoring must already be complete')
     activate(rt)
     print(json.dumps(diagnose(rt,args.route,args.device),allow_nan=False))

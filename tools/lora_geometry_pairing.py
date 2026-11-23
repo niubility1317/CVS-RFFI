@@ -8,7 +8,7 @@ import sys
 import numpy as np
 
 from experiments.cric_dura_comparison.io import read
-from experiments.pamf_lora_main import split_shrink_source
+from experiments.pamf_lora_main import lapped_posterior_source, split_shrink_source
 from experiments.pamf_lora_main.channel_blind_source import panel
 from experiments.pamf_lora_main.complex_geometry_source import COMPARISONS, MODES, RUN
 from experiments.pamf_lora_main.data import SOURCE, VIEWS
@@ -65,6 +65,9 @@ def collect(rt):
     elif rt.get('run_id')==split_shrink_source.RUN:
         modes = split_shrink_source.MODES
         pairs = (*split_shrink_source.COMPARISONS, ('direct','reference'))
+    elif rt.get('run_id')==lapped_posterior_source.RUN:
+        modes = lapped_posterior_source.MODES
+        pairs = (*lapped_posterior_source.COMPARISONS, ('direct','reference'))
     else:
         from experiments.pamf_lora_main import empirical_tangent_source as tangent
         if rt.get('run_id')!=tangent.RUN:
