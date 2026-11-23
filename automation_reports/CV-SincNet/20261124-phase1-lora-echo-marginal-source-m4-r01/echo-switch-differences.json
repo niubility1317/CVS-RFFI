@@ -1,0 +1,26 @@
+{
+  "packets": 900,
+  "targets_read": 0,
+  "F_reads": 0,
+  "truth_reads": 0,
+  "changed_predictions": {
+    "full": {
+      "clean": 0,
+      "practical_high": 0,
+      "practical_mid": 1,
+      "practical_low_suburban": 1,
+      "practical_high_urban": 0,
+      "practical_mid_urban": 1,
+      "practical_low_urban": 1
+    },
+    "residual": {
+      "clean": 0,
+      "practical_high": 0,
+      "practical_mid": 1,
+      "practical_low_suburban": 0,
+      "practical_high_urban": 0,
+      "practical_mid_urban": 0,
+      "practical_low_urban": 2
+    }
+  }
+}

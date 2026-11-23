@@ -1,0 +1,5 @@
+{"at": "2026-11-23T19:51:42+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-23T19:51:42+00:00", "status": "LOCAL_VERIFIED", "note": "Dense posterior and evidence agreement, protected band/common edit, noiseless-fallback and generic mixture pairing checks.", "evidence": "7 focused tests, local compile and independent P0/P1 PASS", "row_id": null}
+{"at": "2026-11-23T19:53:50+00:00", "status": "RUNNING", "note": "Archive, compile, true-checkpoint and one-step smokes passed. Independent CWD, command, GPU and growing logs verified.", "evidence": "N607 controller PID 2159359, additive 2160001/GPU3 and marginal 2160002/GPU6", "row_id": null}
+{"at": "2026-11-23T20:03:47+00:00", "status": "TRAINING_COMPLETE", "note": "Both source-only matched weights frozen after 3600 steps.", "evidence": "additive-complete.json and marginal-complete.json", "row_id": null}
+{"at": "2026-11-23T20:03:47+00:00", "status": "ANALYZED", "note": "Both source-only seven-view matrices independently scored. 两种训练候选均未达到预登记的双路线源域门槛，本轮无正式目标预测。", "evidence": "full-source-scores.json and residual-source-scores.json", "row_id": null}
