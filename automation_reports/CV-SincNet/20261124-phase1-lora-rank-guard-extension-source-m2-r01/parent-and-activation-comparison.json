@@ -1,0 +1,208 @@
+{
+  "packets": 900,
+  "F_reads": 0,
+  "target_reads": 0,
+  "truth_reads": 0,
+  "by_route": {
+    "full": {
+      "clean": {
+        "old_active": 0,
+        "additional_trigger": 1,
+        "parent_top1_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_own_old": {
+          "guard_quarter": 0,
+          "guard_half": 0,
+          "guard_variance": 0
+        }
+      },
+      "practical_high": {
+        "old_active": 21,
+        "additional_trigger": 879,
+        "parent_top1_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_own_old": {
+          "guard_quarter": 33,
+          "guard_half": 72,
+          "guard_variance": 28
+        }
+      },
+      "practical_mid": {
+        "old_active": 159,
+        "additional_trigger": 741,
+        "parent_top1_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_own_old": {
+          "guard_quarter": 35,
+          "guard_half": 68,
+          "guard_variance": 38
+        }
+      },
+      "practical_low_suburban": {
+        "old_active": 320,
+        "additional_trigger": 580,
+        "parent_top1_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_own_old": {
+          "guard_quarter": 39,
+          "guard_half": 73,
+          "guard_variance": 52
+        }
+      },
+      "practical_high_urban": {
+        "old_active": 92,
+        "additional_trigger": 808,
+        "parent_top1_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_own_old": {
+          "guard_quarter": 43,
+          "guard_half": 79,
+          "guard_variance": 35
+        }
+      },
+      "practical_mid_urban": {
+        "old_active": 396,
+        "additional_trigger": 504,
+        "parent_top1_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_own_old": {
+          "guard_quarter": 29,
+          "guard_half": 50,
+          "guard_variance": 33
+        }
+      },
+      "practical_low_urban": {
+        "old_active": 641,
+        "additional_trigger": 259,
+        "parent_top1_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_own_old": {
+          "guard_quarter": 11,
+          "guard_half": 23,
+          "guard_variance": 17
+        }
+      }
+    },
+    "residual": {
+      "clean": {
+        "old_active": 0,
+        "additional_trigger": 1,
+        "parent_top1_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_own_old": {
+          "guard_quarter": 0,
+          "guard_half": 0,
+          "guard_variance": 0
+        }
+      },
+      "practical_high": {
+        "old_active": 39,
+        "additional_trigger": 861,
+        "parent_top1_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_own_old": {
+          "guard_quarter": 61,
+          "guard_half": 117,
+          "guard_variance": 87
+        }
+      },
+      "practical_mid": {
+        "old_active": 717,
+        "additional_trigger": 183,
+        "parent_top1_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_own_old": {
+          "guard_quarter": 7,
+          "guard_half": 18,
+          "guard_variance": 17
+        }
+      },
+      "practical_low_suburban": {
+        "old_active": 900,
+        "additional_trigger": 0,
+        "parent_top1_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_own_old": {
+          "guard_quarter": 0,
+          "guard_half": 0,
+          "guard_variance": 0
+        }
+      },
+      "practical_high_urban": {
+        "old_active": 67,
+        "additional_trigger": 833,
+        "parent_top1_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_own_old": {
+          "guard_quarter": 45,
+          "guard_half": 97,
+          "guard_variance": 68
+        }
+      },
+      "practical_mid_urban": {
+        "old_active": 803,
+        "additional_trigger": 97,
+        "parent_top1_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_own_old": {
+          "guard_quarter": 10,
+          "guard_half": 15,
+          "guard_variance": 14
+        }
+      },
+      "practical_low_urban": {
+        "old_active": 899,
+        "additional_trigger": 1,
+        "parent_top1_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_own_old": {
+          "guard_quarter": 0,
+          "guard_half": 0,
+          "guard_variance": 0
+        }
+      }
+    }
+  }
+}

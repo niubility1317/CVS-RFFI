@@ -1,0 +1,524 @@
+{
+  "source_only": true,
+  "n_fit_per_fold": 4000,
+  "n_cal_per_fold": 2000,
+  "held_per_fold": 100,
+  "panel_per_view": 225,
+  "fit_seed": 2026113107,
+  "held_seed": 2026113137,
+  "target_reads": 0,
+  "F_reads": 0,
+  "V_reads": 0,
+  "TX_reads": 0,
+  "counts": {
+    "b200_1": {
+      "clean": {
+        "guard_floor": 0,
+        "guard_flatness": 0,
+        "guard_all": 0,
+        "repeat_floor": 0,
+        "repeat_flatness": 0,
+        "repeat_all": 0,
+        "joint": 0,
+        "guard_and_repeat": 0,
+        "guard_flatness_and_repeat": 0
+      },
+      "amplitude_0.0075": {
+        "guard_floor": 5,
+        "guard_flatness": 2,
+        "guard_all": 54,
+        "repeat_floor": 0,
+        "repeat_flatness": 0,
+        "repeat_all": 0,
+        "joint": 35,
+        "guard_and_repeat": 0,
+        "guard_flatness_and_repeat": 0
+      },
+      "amplitude_0.015": {
+        "guard_floor": 98,
+        "guard_flatness": 2,
+        "guard_all": 100,
+        "repeat_floor": 0,
+        "repeat_flatness": 0,
+        "repeat_all": 0,
+        "joint": 100,
+        "guard_and_repeat": 0,
+        "guard_flatness_and_repeat": 0
+      }
+    },
+    "b200_mini_1": {
+      "clean": {
+        "guard_floor": 0,
+        "guard_flatness": 0,
+        "guard_all": 0,
+        "repeat_floor": 0,
+        "repeat_flatness": 0,
+        "repeat_all": 0,
+        "joint": 0,
+        "guard_and_repeat": 0,
+        "guard_flatness_and_repeat": 0
+      },
+      "amplitude_0.0075": {
+        "guard_floor": 5,
+        "guard_flatness": 0,
+        "guard_all": 42,
+        "repeat_floor": 0,
+        "repeat_flatness": 0,
+        "repeat_all": 0,
+        "joint": 26,
+        "guard_and_repeat": 0,
+        "guard_flatness_and_repeat": 0
+      },
+      "amplitude_0.015": {
+        "guard_floor": 98,
+        "guard_flatness": 4,
+        "guard_all": 100,
+        "repeat_floor": 0,
+        "repeat_flatness": 0,
+        "repeat_all": 1,
+        "joint": 100,
+        "guard_and_repeat": 1,
+        "guard_flatness_and_repeat": 0
+      }
+    },
+    "b210_1": {
+      "clean": {
+        "guard_floor": 0,
+        "guard_flatness": 0,
+        "guard_all": 0,
+        "repeat_floor": 0,
+        "repeat_flatness": 0,
+        "repeat_all": 0,
+        "joint": 0,
+        "guard_and_repeat": 0,
+        "guard_flatness_and_repeat": 0
+      },
+      "amplitude_0.0075": {
+        "guard_floor": 13,
+        "guard_flatness": 0,
+        "guard_all": 85,
+        "repeat_floor": 0,
+        "repeat_flatness": 0,
+        "repeat_all": 0,
+        "joint": 75,
+        "guard_and_repeat": 0,
+        "guard_flatness_and_repeat": 0
+      },
+      "amplitude_0.015": {
+        "guard_floor": 99,
+        "guard_flatness": 3,
+        "guard_all": 100,
+        "repeat_floor": 0,
+        "repeat_flatness": 0,
+        "repeat_all": 0,
+        "joint": 100,
+        "guard_and_repeat": 0,
+        "guard_flatness_and_repeat": 0
+      }
+    },
+    "pluto_1": {
+      "clean": {
+        "guard_floor": 0,
+        "guard_flatness": 0,
+        "guard_all": 0,
+        "repeat_floor": 0,
+        "repeat_flatness": 0,
+        "repeat_all": 0,
+        "joint": 0,
+        "guard_and_repeat": 0,
+        "guard_flatness_and_repeat": 0
+      },
+      "amplitude_0.0075": {
+        "guard_floor": 2,
+        "guard_flatness": 0,
+        "guard_all": 35,
+        "repeat_floor": 0,
+        "repeat_flatness": 0,
+        "repeat_all": 0,
+        "joint": 27,
+        "guard_and_repeat": 0,
+        "guard_flatness_and_repeat": 0
+      },
+      "amplitude_0.015": {
+        "guard_floor": 98,
+        "guard_flatness": 3,
+        "guard_all": 100,
+        "repeat_floor": 0,
+        "repeat_flatness": 0,
+        "repeat_all": 0,
+        "joint": 100,
+        "guard_and_repeat": 0,
+        "guard_flatness_and_repeat": 0
+      }
+    },
+    "rtl_1": {
+      "clean": {
+        "guard_floor": 80,
+        "guard_flatness": 10,
+        "guard_all": 99,
+        "repeat_floor": 75,
+        "repeat_flatness": 0,
+        "repeat_all": 75,
+        "joint": 100,
+        "guard_and_repeat": 75,
+        "guard_flatness_and_repeat": 8
+      },
+      "amplitude_0.0075": {
+        "guard_floor": 100,
+        "guard_flatness": 10,
+        "guard_all": 100,
+        "repeat_floor": 98,
+        "repeat_flatness": 0,
+        "repeat_all": 98,
+        "joint": 100,
+        "guard_and_repeat": 98,
+        "guard_flatness_and_repeat": 10
+      },
+      "amplitude_0.015": {
+        "guard_floor": 100,
+        "guard_flatness": 5,
+        "guard_all": 100,
+        "repeat_floor": 100,
+        "repeat_flatness": 0,
+        "repeat_all": 100,
+        "joint": 100,
+        "guard_and_repeat": 100,
+        "guard_flatness_and_repeat": 5
+      }
+    }
+  },
+  "by_route": {
+    "full": {
+      "practical_high": {
+        "old": 6,
+        "gates": {
+          "guard_floor": {
+            "active": 224,
+            "additional": 218
+          },
+          "guard_flatness": {
+            "active": 3,
+            "additional": 3
+          },
+          "guard_all": {
+            "active": 225,
+            "additional": 219
+          },
+          "repeat_floor": {
+            "active": 71,
+            "additional": 65
+          },
+          "repeat_flatness": {
+            "active": 0,
+            "additional": 0
+          },
+          "repeat_all": {
+            "active": 45,
+            "additional": 39
+          },
+          "joint": {
+            "active": 225,
+            "additional": 219
+          },
+          "guard_and_repeat": {
+            "active": 45,
+            "additional": 39
+          },
+          "guard_flatness_and_repeat": {
+            "active": 0,
+            "additional": 0
+          }
+        }
+      },
+      "practical_low_suburban": {
+        "old": 81,
+        "gates": {
+          "guard_floor": {
+            "active": 225,
+            "additional": 144
+          },
+          "guard_flatness": {
+            "active": 14,
+            "additional": 10
+          },
+          "guard_all": {
+            "active": 225,
+            "additional": 144
+          },
+          "repeat_floor": {
+            "active": 224,
+            "additional": 143
+          },
+          "repeat_flatness": {
+            "active": 0,
+            "additional": 0
+          },
+          "repeat_all": {
+            "active": 217,
+            "additional": 136
+          },
+          "joint": {
+            "active": 225,
+            "additional": 144
+          },
+          "guard_and_repeat": {
+            "active": 217,
+            "additional": 136
+          },
+          "guard_flatness_and_repeat": {
+            "active": 14,
+            "additional": 10
+          }
+        }
+      },
+      "practical_high_urban": {
+        "old": 26,
+        "gates": {
+          "guard_floor": {
+            "active": 225,
+            "additional": 199
+          },
+          "guard_flatness": {
+            "active": 7,
+            "additional": 5
+          },
+          "guard_all": {
+            "active": 225,
+            "additional": 199
+          },
+          "repeat_floor": {
+            "active": 79,
+            "additional": 53
+          },
+          "repeat_flatness": {
+            "active": 0,
+            "additional": 0
+          },
+          "repeat_all": {
+            "active": 61,
+            "additional": 35
+          },
+          "joint": {
+            "active": 225,
+            "additional": 199
+          },
+          "guard_and_repeat": {
+            "active": 61,
+            "additional": 35
+          },
+          "guard_flatness_and_repeat": {
+            "active": 2,
+            "additional": 0
+          }
+        }
+      },
+      "practical_low_urban": {
+        "old": 153,
+        "gates": {
+          "guard_floor": {
+            "active": 225,
+            "additional": 72
+          },
+          "guard_flatness": {
+            "active": 21,
+            "additional": 8
+          },
+          "guard_all": {
+            "active": 225,
+            "additional": 72
+          },
+          "repeat_floor": {
+            "active": 225,
+            "additional": 72
+          },
+          "repeat_flatness": {
+            "active": 0,
+            "additional": 0
+          },
+          "repeat_all": {
+            "active": 219,
+            "additional": 66
+          },
+          "joint": {
+            "active": 225,
+            "additional": 72
+          },
+          "guard_and_repeat": {
+            "active": 219,
+            "additional": 66
+          },
+          "guard_flatness_and_repeat": {
+            "active": 20,
+            "additional": 7
+          }
+        }
+      }
+    },
+    "residual": {
+      "practical_high": {
+        "old": 5,
+        "gates": {
+          "guard_floor": {
+            "active": 225,
+            "additional": 220
+          },
+          "guard_flatness": {
+            "active": 20,
+            "additional": 19
+          },
+          "guard_all": {
+            "active": 225,
+            "additional": 220
+          },
+          "repeat_floor": {
+            "active": 225,
+            "additional": 220
+          },
+          "repeat_flatness": {
+            "active": 0,
+            "additional": 0
+          },
+          "repeat_all": {
+            "active": 224,
+            "additional": 219
+          },
+          "joint": {
+            "active": 225,
+            "additional": 220
+          },
+          "guard_and_repeat": {
+            "active": 224,
+            "additional": 219
+          },
+          "guard_flatness_and_repeat": {
+            "active": 20,
+            "additional": 19
+          }
+        }
+      },
+      "practical_low_suburban": {
+        "old": 225,
+        "gates": {
+          "guard_floor": {
+            "active": 225,
+            "additional": 0
+          },
+          "guard_flatness": {
+            "active": 22,
+            "additional": 0
+          },
+          "guard_all": {
+            "active": 225,
+            "additional": 0
+          },
+          "repeat_floor": {
+            "active": 225,
+            "additional": 0
+          },
+          "repeat_flatness": {
+            "active": 0,
+            "additional": 0
+          },
+          "repeat_all": {
+            "active": 225,
+            "additional": 0
+          },
+          "joint": {
+            "active": 225,
+            "additional": 0
+          },
+          "guard_and_repeat": {
+            "active": 225,
+            "additional": 0
+          },
+          "guard_flatness_and_repeat": {
+            "active": 22,
+            "additional": 0
+          }
+        }
+      },
+      "practical_high_urban": {
+        "old": 13,
+        "gates": {
+          "guard_floor": {
+            "active": 225,
+            "additional": 212
+          },
+          "guard_flatness": {
+            "active": 11,
+            "additional": 9
+          },
+          "guard_all": {
+            "active": 225,
+            "additional": 212
+          },
+          "repeat_floor": {
+            "active": 225,
+            "additional": 212
+          },
+          "repeat_flatness": {
+            "active": 0,
+            "additional": 0
+          },
+          "repeat_all": {
+            "active": 221,
+            "additional": 208
+          },
+          "joint": {
+            "active": 225,
+            "additional": 212
+          },
+          "guard_and_repeat": {
+            "active": 221,
+            "additional": 208
+          },
+          "guard_flatness_and_repeat": {
+            "active": 11,
+            "additional": 9
+          }
+        }
+      },
+      "practical_low_urban": {
+        "old": 225,
+        "gates": {
+          "guard_floor": {
+            "active": 225,
+            "additional": 0
+          },
+          "guard_flatness": {
+            "active": 9,
+            "additional": 0
+          },
+          "guard_all": {
+            "active": 225,
+            "additional": 0
+          },
+          "repeat_floor": {
+            "active": 225,
+            "additional": 0
+          },
+          "repeat_flatness": {
+            "active": 0,
+            "additional": 0
+          },
+          "repeat_all": {
+            "active": 225,
+            "additional": 0
+          },
+          "joint": {
+            "active": 225,
+            "additional": 0
+          },
+          "guard_and_repeat": {
+            "active": 225,
+            "additional": 0
+          },
+          "guard_flatness_and_repeat": {
+            "active": 9,
+            "additional": 0
+          }
+        }
+      }
+    }
+  }
+}

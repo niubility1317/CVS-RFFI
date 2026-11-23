@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 保护带弱扰动触发与秩四恢复剂量消融](../automation_reports/CV-SincNet/20261124-phase1-lora-rank-guard-extension-source-m2-r01/report.md)
 - [LoRa 公共谱秩四 I/Q 协方差](../automation_reports/CV-SincNet/20261124-phase1-lora-shared-spectrum-covariance-source-m4-r01/report.md)
 - [LoRa 公共、独有与短回波联合后验](../automation_reports/CV-SincNet/20261124-phase1-lora-coupled-echo-source-m4-r01/report.md)
 - [LoRa 公共复谱与逐 chirp 独有谱联合恢复](../automation_reports/CV-SincNet/20261124-phase1-lora-factorized-chirps-source-m4-r01/report.md)

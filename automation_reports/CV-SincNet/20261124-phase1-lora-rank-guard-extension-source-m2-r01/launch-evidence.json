@@ -1,0 +1,24 @@
+{
+  "pid": 2235328,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-rank-guard-extension-source-m2-r01-release",
+  "code_commit": "0789ee3329648db6ee348c7fea56adf3a2171237",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "status": "SUBMITTED_NOT_YET_VERIFIED",
+  "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-rank-guard-extension-source-m2-r01",
+  "state": "RUNNING_VERIFIED",
+  "fit_pid": 2235652,
+  "smoke_pid": 2235344,
+  "workers": [
+    {
+      "route": "full",
+      "pid": 2236546,
+      "gpu": 3
+    },
+    {
+      "route": "residual",
+      "pid": 2236547,
+      "gpu": 2
+    }
+  ]
+}
