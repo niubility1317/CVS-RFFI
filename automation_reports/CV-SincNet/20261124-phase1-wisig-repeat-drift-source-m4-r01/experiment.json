@@ -1,0 +1,187 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261124-phase1-wisig-repeat-drift-source-m4-r01",
+  "group_id": "wisig-observable-satellite-recovery",
+  "display_name": "WiSig 短训练重复观测约束的幅相联合恢复",
+  "description": "两个分组的实收短训练估计非线性幅相漂移，匹配比较显式粗补偿及等预算极坐标学习。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "WiSig",
+    "DURA",
+    "L-STF",
+    "repeat_drift",
+    "full",
+    "residual",
+    "source_V"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261123-phase1-wisig-uncertain-prior-source-s2026092701-m2-r01",
+    "20261123-phase1-wisig-joint-preamble-source-s2026092701-r01",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261123-phase1-wisig-tri-learned-replay-s2026092701-r01",
+    "20261123-phase1-wisig-repeat-block-source-m3-r01",
+    "20261124-phase1-wisig-anchored-window-source-m4-r01",
+    "20261124-diagnostic-wisig-main-overlap-source-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-11-23 LoRa 与 WiSig 可部署星地恢复目标及空闲显卡多进程授权",
+  "code": {
+    "commit": "启动命令从已推送分支 HEAD 固定，实际 OID 写入 submit.json",
+    "checkout": "E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo",
+    "environment": "${N607_PYTHON}",
+    "cwd": "${N607_PROJECT}/releases/20261124-phase1-wisig-repeat-drift-source-m4-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig ManySig",
+    "version": "Main split F0 源域固定 7/63/30。只使用已登记的 1800 个 V 包",
+    "representation": "equalized=1，25 MS/s，256 点规范化复 IQ；full/residual post-sync/noEQ",
+    "contract_ref": "${N607_PROJECT}/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json",
+    "physical_ids_ref": "${N607_PROJECT}/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/validation/physical_ids.npy",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": 56700,
+      "V": 1800
+    },
+    "train_ratio": "源 U 52,092 个拟合抽样、512 个固定留出和4,096 个旁路校准。源 V 固定同一1,800 个物理包。",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/validation 与 validation_full，原封不变"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "not_applicable",
+    "external_method_exception": null,
+    "claim_scope": "源 U 端到端训练，拟合和冻结仅读合法 IQ；同冻结 Tri-SIG-TIME 单种子验证，不访问目标。"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [
+      "20261027-phase1-pamf-repl-shuffled-views-m16-r02/configs/predict__main_split-repl-shuffled_time-3view-s2026092701.json",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt (R69 E20/4940)"
+    ],
+    "contract_check_ref": "${N607_PROJECT}/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json + source_reference",
+    "provenance_verdict": "新候选不继承旧权重、精确算子或噪声记录。只在冻结后加载同源主对比 Tri-SIG-TIME，复用同 reader 原直通与 R69 决策。",
+    "selection_rule": "两臂固定40,000步末步，门限由4,096个U的受扰代理最大值乘1.02加1e-6。预登记主读出drift_gated须在两路线六景超过同口径R69并保持各自clean，才进入多种子目标。"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "当前 LoRa 与 WiSig 恢复目标",
+    "gpu_policy": "不同物理 GPU 各一训练臂，按读回实时负载和显存择卡，可与既有其他进程共卡。",
+    "remote_run_root": "${N607_PROJECT}/runs/20261124-phase1-wisig-repeat-drift-source-m4-r01",
+    "remote_log_root": "${N607_PROJECT}/runs/20261124-phase1-wisig-repeat-drift-source-m4-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261124-phase1-wisig-repeat-drift-source-m4-r01",
+    "launch_command": "python -m experiments.pamf_unrolled_restore.wisig_repeat_drift_source publish --repo \"E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo\" --output \"E:/type10-7/local_artifacts/20261124-phase1-wisig-repeat-drift-source-m4-r01/release\" --context E:/type10-7/local_artifacts/lora_main_20261121/runtime_source.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "固定数据角色、不可覆盖目录、真实 checkpoint、数值或完整预测屏障失效时仅停止本 run，保留已写产物"
+  },
+  "expected_artifacts": [
+    "smoke-polar.json",
+    "smoke-drift.json",
+    "polar.pt",
+    "drift.pt",
+    "polar-complete.json",
+    "drift-complete.json",
+    "smoke.json",
+    "predictions/complete.json",
+    "predictions/<route>_<scene>.npz",
+    "source-scores.json",
+    "logs/",
+    "predictions/full-complete.json",
+    "predictions/residual-complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "逐景和逐 RX 正确数",
+      "纠错",
+      "改错",
+      "按 RX 分层物理包配对区间",
+      "clean",
+      "门触发",
+      "训练和 B1 墙钟",
+      "参数量",
+      "短训练组间一致性",
+      "实收非线性幅相幅度",
+      "时标改动量"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "mode",
+      "seed"
+    ],
+    "prediction_ref": "${N607_PROJECT}/runs/20261124-phase1-wisig-repeat-drift-source-m4-r01/predictions",
+    "scorer_ref": "experiments.pamf_unrolled_restore.wisig_repeat_drift_source score"
+  },
+  "rows": [
+    {
+      "row_id": "dual-route-wisig-repeat-drift-s2026092701",
+      "method": "直通、原R69，两臂的时标/粗/联合/旁路及漂移臂的仅物理、仅相位、同权关闭粗补偿。",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_unrolled_restore/wisig_repeat_drift.py",
+      "resolved_config_ref": "${N607_PROJECT}/releases/20261124-phase1-wisig-repeat-drift-source-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": 2026112331
+      },
+      "seed_notes": "原 source split/data/augmentation 登记固定。两臂模型 seed2026092701，U 扰动种子 2026092702，抽包 2026092703；独立配对重抽 2026112331，通用烟测 2026112332。",
+      "k": null,
+      "scenario": "clean 和六景，分别评估 full/residual",
+      "optimizer": "AdamW，每步余弦，权重衰减 1e-4，梯度范数上界 1",
+      "lr": 0.0003,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "每臂18,757参数，40,000步，batch24，52,092 U拟合、4,096校准、512留出，两路线各1,800包×七景×13读出。",
+      "output_root": "${N607_PROJECT}/runs/20261124-phase1-wisig-repeat-drift-source-m4-r01",
+      "log_path": "${N607_PROJECT}/runs/20261124-phase1-wisig-repeat-drift-source-m4-r01/logs",
+      "command": "${N607_PYTHON} -u -m experiments.pamf_unrolled_restore.wisig_repeat_drift_source dispatch ${N607_PROJECT}/releases/20261124-phase1-wisig-repeat-drift-source-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "smoke-polar.json",
+        "smoke-drift.json",
+        "polar.pt",
+        "drift.pt",
+        "polar-complete.json",
+        "drift-complete.json",
+        "smoke.json",
+        "predictions/complete.json",
+        "predictions/<route>_<scene>.npz",
+        "source-scores.json",
+        "logs/",
+        "predictions/full-complete.json",
+        "predictions/residual-complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "两臂的参数、波形锚定时标、观测特征、合法源U和通用扰动都匹配；漂移臂显式把实收估计用于粗恢复起点。",
+    "在40到159的120个实收短训练样点上，按每20点周期的奇偶位置分成两套滞后观测。组间核验后估计幅相的二阶变化，投影去掉常数和线性项，边缘渐变回零。没有实收支持的位置不启用该解析修正。",
+    "固定相同的极坐标损失和学习参数规模。源U每步两次独立通用扰动，末三行干净身份映射。源拟合和门限时冻结识别器、V、TX、目标、登记信道及精确噪声全隔离。",
+    "固定所有预测后双路线独立CPU真值接入。已有同冻结F的直通和R69按物理ID精确复用。"
+  ],
+  "registered_at": "2026-11-23T22:39:04+00:00"
+}

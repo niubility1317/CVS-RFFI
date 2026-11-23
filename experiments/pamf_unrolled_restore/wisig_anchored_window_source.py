@@ -30,12 +30,16 @@ CHECKS = (1800, 6000, 12000, 20000, 30000)
 ROUTES = core.baseline.ROUTES
 
 
+def default_model(arm):
+    return AnchoredWindow(arm=='preamble')
+
+
 def proof(arm):
     return dict(status='SOURCE_FROZEN', arm=arm, steps=STEPS, seed=SEED, batch=BATCH,
                 target_reads=0, F_reads=0, V_reads=0, TX_truth_reads=0, trace_reads=0)
 
 
-def fit(rt, arm, *, smoke):
+def fit(rt, arm, *, smoke, build=default_model, calculate=objective):
     if set(rt) != {'run_root','source_root'}:
         raise ValueError('Only the source IQ and output roots are open to fitting')
     torch.set_num_threads(2)
@@ -45,7 +49,7 @@ def fit(rt, arm, *, smoke):
     training, held = ids[HELD:], ids[:HELD]
     device = 'cuda:0'
     torch.manual_seed(SEED)
-    model = AnchoredWindow(arm=='preamble').to(device)
+    model = build(arm).to(device)
     opt = torch.optim.AdamW(model.parameters(),lr=3e-4,weight_decay=1e-4)
     schedule = torch.optim.lr_scheduler.CosineAnnealingLR(opt,STEPS,eta_min=3e-5)
     rng = np.random.default_rng(SEED+2)
@@ -54,7 +58,7 @@ def fit(rt, arm, *, smoke):
     @torch.no_grad()
     def held_costs():
         fixed = torch.Generator(device=device).manual_seed(SEED+5)
-        per_batch = [objective(model,as_complex(tensor(source[chunk],device)),fixed,identity=False)[1]*len(chunk)
+        per_batch = [calculate(model,as_complex(tensor(source[chunk],device)),fixed,identity=False)[1]*len(chunk)
                      for chunk in np.array_split(held,HELD//BATCH)]
         return (torch.stack(per_batch).sum(0)/HELD).tolist()
 
@@ -62,7 +66,7 @@ def fit(rt, arm, *, smoke):
     started = perf_counter()
     for step in range(1,(1 if smoke else STEPS)+1):
         batch = as_complex(tensor(source[rng.choice(training,BATCH,replace=False)],device))
-        loss, values = objective(model,batch,generator,identity=True)
+        loss, values = calculate(model,batch,generator,identity=True)
         if not torch.isfinite(values).all():
             raise FloatingPointError('Nonfinite WiSig source objective')
         opt.zero_grad(set_to_none=True)
@@ -100,9 +104,9 @@ def fit(rt, arm, *, smoke):
     write(root/f'{arm}-complete.json',evidence)
 
 
-def load_models(rt):
+def load_models(rt, *, arms=ARMS, build=default_model):
     root = Path(rt['run_root'])
-    for arm in ARMS:
+    for arm in arms:
         checkpoint = torch.load(root/f'{arm}.pt',map_location='cuda:0',weights_only=True)
         metadata = read(root/f'{arm}-complete.json')
         if checkpoint['evidence'] != metadata or any(metadata[k]!=v for k,v in proof(arm).items()):
@@ -110,7 +114,7 @@ def load_models(rt):
         gate = metadata['gate']
         if len(gate)!=2 or not np.isfinite(gate).all() or min(gate)<=0:
             raise ValueError('Invalid source-only frozen guard')
-        model = AnchoredWindow(arm=='preamble').cuda().eval().requires_grad_(False)
+        model = build(arm).cuda().eval().requires_grad_(False)
         model.load_state_dict(checkpoint['weights'],strict=True)
         yield model,gate
 
@@ -142,19 +146,19 @@ def classify(reader,y):
 
 
 @torch.no_grad()
-def smoke(rt):
+def smoke(rt, *, models_from=load_models, variants=proposals, disturb=generic_crop):
     source,_, calibration = core.source_iq(Path(rt['source_root']))
     y = as_complex(tensor(source[calibration[:16]],'cuda:0'))
     reader = tri.reader_factory(rt).eval().requires_grad_(False)
-    models = tuple(load_models(rt))
+    models = tuple(models_from(rt))
     restored, = core.baseline.original_r69(Path(rt['parent_root']))(as_iq(y[:4]))
     classify(reader, y[:4])
     classify(reader, as_complex(restored))
     for model, gate in models:
-        for variant in proposals(model,gate,y[:4])[0]:
+        for variant in variants(model,gate,y[:4])[0]:
             classify(reader,variant)
     model, gate = models[-1]
-    disturbed = generic_crop(y,torch.Generator(device=y.device).manual_seed(SEED+12),model)
+    disturbed = disturb(y,torch.Generator(device=y.device).manual_seed(SEED+12),model)
     index = model(disturbed)[2].argmax().view(1)
     timings = {}
     for label, sample in (('source_clean',y[:1]),('generic_disturbed',disturbed[index])):
@@ -171,14 +175,14 @@ def smoke(rt):
 
 
 @torch.no_grad()
-def evaluate(rt, route):
+def evaluate(rt, route, *, arms=ARMS, models_from=load_models, variants=proposals, auxiliary=None):
     old = parent(rt,tri.RUN,BASELINE_COMMIT)/'predictions'
     ref = read(old/'complete.json')
     cache,_,_,_,ids,_,_ = core.baseline.handles(rt)
     if (ref['status'],ref['modes'],ref['count'],ref['target_reads'],ref['source_truth_reads']) != (
             'FROZEN',list(tri.MODES),len(ids),0,0):
         raise ValueError('Frozen same-reader comparator is required')
-    models = tuple(load_models(rt))
+    models = tuple(models_from(rt))
     reader = tri.reader_factory(rt).eval().requires_grad_(False)
     root = Path(rt['run_root'])/'predictions'
     measures = {}
@@ -192,12 +196,14 @@ def evaluate(rt, route):
         iq = np.load(cache/ROUTES[route]/f'{view}.npy',mmap_mode='r',allow_pickle=False)
         if iq.shape!=(len(ids),2,256) or iq.dtype!=np.float32:
             raise ValueError('Unexpected WiSig source prediction view')
-        decisions,activity,shifts = [],[0,0],[[],[]]
+        decisions,activity,shifts,estimates = [],[0,0],[[],[]],[]
         for start in range(0,len(iq),48):
             y = as_complex(tensor(iq[start:start+48],'cuda:0'))
+            if auxiliary is not None:
+                estimates.append(auxiliary(models[-1][0],y))
             options = []
             for i,(model,gate) in enumerate(models):
-                values,active,shift = proposals(model,gate,y)
+                values,active,shift = variants(model,gate,y)
                 options.extend(classify(reader,value).argmax(-1) for value in values)
                 activity[i] += int(active.sum())
                 shifts[i].append(shift.cpu())
@@ -206,15 +212,21 @@ def evaluate(rt, route):
         matrix = np.concatenate((paired,candidate))
         with (root/f'{key}.npz').open('xb') as stream:
             np.savez(stream,ids=ids,decision=matrix)
-        offsets = {arm:torch.cat(delta).abs() for arm,delta in zip(ARMS,shifts,strict=True)}
-        measures[key] = dict(count=len(ids),active=dict(zip(ARMS,activity,strict=True)),
+        offsets = {arm:torch.cat(delta).abs() for arm,delta in zip(arms,shifts,strict=True)}
+        measures[key] = dict(count=len(ids),active=dict(zip(arms,activity,strict=True)),
                              moves={arm:int((delta!=0).sum()) for arm,delta in offsets.items()},
                              mean_boundary_filled={arm:delta.float().mean().item() for arm,delta in offsets.items()})
+        if estimates:
+            names = tuple(estimates[0])
+            measures[key]['receiver_estimates'] = {
+                name:torch.cat([item[name] for item in estimates]).quantile(
+                    torch.tensor([.1,.5,.9],device='cuda:0')).tolist() for name in names
+            }
         print('WISIG_ANCHORED_FROZEN',key,len(ids),*activity,flush=True)
     write(root/f'{route}-complete.json',measures)
 
 
-def dispatch(rt):
+def dispatch(rt, *, arms=ARMS, modes=MODES):
     root = Path(rt['run_root'])
     root.mkdir(exist_ok=False)
     status = root/'state.json'
@@ -235,7 +247,7 @@ def dispatch(rt):
 
     try:
         for action in ('fit_smoke','fit'):
-            pair(action,ARMS,lambda kind,name,gpu:core.train_worker(rt,kind,name,gpu))
+            pair(action,arms,lambda kind,name,gpu:core.train_worker(rt,kind,name,gpu))
         state('SMOKE')
         if start('smoke','source',core.baseline.select_gpu()).wait():
             raise RuntimeError('Real checkpoint smoke failed')
@@ -246,7 +258,7 @@ def dispatch(rt):
         expected = {f'{route}_{view}' for route in ROUTES for view in core.baseline.VIEWS}
         if set(measures)!=expected or any(x['count']!=1800 for x in measures.values()):
             raise ValueError('Each route must finish every frozen source prediction before scoring')
-        write(predictions/'complete.json',dict(status='FROZEN',count=1800,modes=list(MODES),
+        write(predictions/'complete.json',dict(status='FROZEN',count=1800,modes=list(modes),
               views=list(core.baseline.VIEWS),source_truth_reads=0,target_reads=0,summaries=measures))
         state('SCORE')
         if start('score','source').wait():
@@ -257,19 +269,20 @@ def dispatch(rt):
         raise
 
 
-def publish(repo, output, context, ssh_config):
+def publish(repo, output, context, ssh_config, *, run=RUN, runner=None):
     cfg = read(context)
     rt = {key:cfg[key] for key in ('project','python','frozen_sources')}
     p = PurePosixPath(rt['project'])
     runs = p/'runs'
-    rt.update(run_id=RUN,runner=__spec__.name,code_commit=release_commit(repo),
-              run_root=str(runs/RUN),release_root=str(p/'releases'/f'{RUN}-release'),
+    rt.update(run_id=run,runner=runner or __spec__.name,code_commit=release_commit(repo),
+              run_root=str(runs/run),release_root=str(p/'releases'/f'{run}-release'),
               source_root=str(runs/core.baseline.CACHE_RUN/'cache'),parent_root=str(runs/core.baseline.R17_RUN),
               recognizer_run=str(runs/tri.tri_plan.RUN))
     release(repo,output,rt,ssh_config,archive_extras=('tools/r17_activation_factorization.py',))
 
 
-def main():
+def main(*, run=RUN, runner=None, arms=ARMS, modes=MODES, comparisons=COMPARISONS, fit_arm=fit,
+         run_smoke=smoke, run_evaluation=evaluate):
     parser = argparse.ArgumentParser(description=__doc__)
     actions = parser.add_subparsers(dest='action',required=True)
     pub = actions.add_parser('publish')
@@ -279,25 +292,25 @@ def main():
         worker = actions.add_parser(action)
         worker.add_argument('runtime',type=Path)
         if action!='dispatch':
-            worker.add_argument('name',choices=ARMS if action in ('fit_smoke','fit') else ROUTES if action=='evaluate' else ('source',))
+            worker.add_argument('name',choices=arms if action in ('fit_smoke','fit') else ROUTES if action=='evaluate' else ('source',))
     args = vars(parser.parse_args())
     action = args.pop('action')
     if action=='publish':
-        publish(**args)
+        publish(**args, run=run, runner=runner)
         return
     rt = read(args['runtime'])
     if action=='dispatch':
-        dispatch(rt)
+        dispatch(rt, arms=arms, modes=modes)
     elif action in ('fit_smoke','fit'):
-        fit(rt,args['name'],smoke=action=='fit_smoke')
+        fit_arm(rt,args['name'],smoke=action=='fit_smoke')
     elif action=='score':
-        core.baseline.score(rt,MODES,comparisons=COMPARISONS)
+        core.baseline.score(rt,modes,comparisons=comparisons)
     else:
         activate(rt)
         if action=='smoke':
-            smoke(rt)
+            run_smoke(rt)
         else:
-            evaluate(rt,args['name'])
+            run_evaluation(rt,args['name'])
 
 
 if __name__=='__main__':
