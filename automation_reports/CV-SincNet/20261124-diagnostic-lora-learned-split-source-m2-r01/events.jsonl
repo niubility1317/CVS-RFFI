@@ -1,1 +1,3 @@
 {"at": "2026-11-23T23:48:11+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-23T23:49:35+00:00", "status": "RUNNING", "note": "VERIFIED frozen real-weight smoke, controller and route switch PID/CWD/argv/GPU, archive/compile and prediction log growth.", "evidence": ["readback_2026-11-23T234802.json"], "row_id": null}
+{"at": "2026-11-23T23:55:56+00:00", "status": "ANALYZED", "note": "VERIFIED both seven-view predictions and independent CPU source truth-last, all four original comparators equal archived records, per-scene and per-receiver paired counts reconciled.", "evidence": ["readout/learned-paired.json"], "row_id": null}

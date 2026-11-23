@@ -29,6 +29,12 @@ NOISE_INTERACTIONS = {
     'common_private': ('exact_noncarrier','direct','exact_common','exact_private'),
     'phase_amplitude': ('exact_noncarrier','direct','noncarrier_phase','noncarrier_amplitude'),
 }
+LEARNED_INTERACTIONS = {
+    'common_private': ('exchange_full','direct','common_only','private_only'),
+    'phase_amplitude': ('exchange_full','common_only','common_with_phase','common_with_magnitude'),
+}
+LEARNED_RUN = '20261124-diagnostic-lora-learned-split-source-m2-r01'
+ANCHOR_RUN = '20261124-phase1-lora-common-anchor-source-m4-r01'
 
 
 def with_six(value):
@@ -65,12 +71,12 @@ def compare(hits, pairs, groups, modes=MODES):
     return table
 
 
-def noise_interactions(hits, groups, modes):
+def factor_interactions(hits, groups, modes, contrasts):
     rng = np.random.default_rng(KEY+3)
     samples = {name:indices[rng.integers(0,len(indices),(REPEATS,len(indices)))]
                for name,indices in groups.items()}
     result = {}
-    for name, contrast in NOISE_INTERACTIONS.items():
+    for name, contrast in contrasts.items():
         joint, raw, first, second = (hits[modes.index(mode)].astype(np.int16) for mode in contrast)
         value = joint + raw - first - second
         outcomes = dict(zip(ALL_VIEWS, (*value,value[1:].sum(0)), strict=True))
@@ -115,6 +121,15 @@ def collect(rt):
     elif rt.get('run_id')==joint_spectrum_source.RUN:
         modes = joint_spectrum_source.MODES
         pairs = (*joint_spectrum_source.COMPARISONS, ('direct','reference'))
+    elif rt.get('run_id')==LEARNED_RUN:
+        from experiments.pamf_lora_main import learned_split_diagnostic
+        modes = learned_split_diagnostic.MODES
+        pairs = (*learned_split_diagnostic.COMPARISONS, ('direct','reference'),('exchange_full','reference'),
+                 ('exchange_half','reference'),('common_only','private_only'))
+    elif rt.get('run_id')==ANCHOR_RUN:
+        from experiments.pamf_lora_main import common_anchor_source
+        modes = common_anchor_source.MODES
+        pairs = (*common_anchor_source.COMPARISONS, ('direct','reference'))
     else:
         from experiments.pamf_lora_main import empirical_tangent_source as tangent
         if rt.get('run_id')!=tangent.RUN:
@@ -141,10 +156,13 @@ def collect(rt):
             raise ValueError('Reconciled counts differ from the independent frozen source score')
         result[route] = compare(hits,pairs,groups,modes)
         if rt.get('run_id')==noise_split_diagnostic.RUN:
-            interactions[route] = noise_interactions(hits,groups,modes)
+            interactions[route] = factor_interactions(hits,groups,modes,NOISE_INTERACTIONS)
+        elif rt.get('run_id')==LEARNED_RUN:
+            interactions[route] = factor_interactions(hits,groups,modes,LEARNED_INTERACTIONS)
     artifact = dict(reader_seed=2026092702,bootstrap_replicates=REPEATS,target_reads=0,routes=result)
     if interactions:
-        artifact['noise_interactions'] = interactions
+        key = 'learned_interactions' if rt.get('run_id')==LEARNED_RUN else 'noise_interactions'
+        artifact[key] = interactions
     return artifact
 
 
