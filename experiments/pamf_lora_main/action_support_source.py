@@ -157,6 +157,16 @@ def reserve_indices(rx):
 
 @torch.no_grad()
 def evaluate_reserve(rt, *, modes=MODES, renderer=render, load_limits=limits):
+    def bind(root, contract, device, control, tracker):
+        model, original = parent_model(root,contract,device)
+        thresholds = load_limits(root,device,original)
+        return partial(renderer, _unused=None, baseline=control, tracker=tracker, models=(model,),
+                       original=original, thresholds=thresholds)
+    predict_clean_reserve(rt, modes=modes, bind=bind)
+
+
+@torch.no_grad()
+def predict_clean_reserve(rt, *, modes, bind):
     root, device = Path(rt['run_root']), 'cuda:0'
     source, cache, contract, control, tracker = source_control(rt,'full',device)
     _, rx, ids, _ = source_role(source,contract,'V')
@@ -164,13 +174,12 @@ def evaluate_reserve(rt, *, modes=MODES, renderer=render, load_limits=limits):
     recorded = np.load(cache/'V.npy',mmap_mode='r',allow_pickle=False)
     if recorded.shape[1:] != (len(rx),6,2,256) or len(index) != 11100:
         raise ValueError('Clean reserve must be the 11100 packets outside the fixed 900 source panel')
-    model, original = parent_model(root,contract,device)
-    thresholds = load_limits(root,device,original)
+    recover = bind(root,contract,device,control,tracker)
     reader=load_reader(root,contract,device)
     parts=[]
     for ids_chunk in np.array_split(index,1+len(index)//48):
         iq=tensor(recorded[0,ids_chunk],device)
-        rows,_=renderer(iq,None,control,tracker,(model,),original=original,thresholds=thresholds)
+        rows,_=recover(iq)
         base=reader(iq)[0]
         if not torch.isfinite(base).all():
             raise ValueError('Nonfinite clean reserve direct logits')

@@ -23,6 +23,27 @@ def weak_difference(framed):
     return torch.fft.ifft(spectrum * (near | middle), norm='ortho')
 
 
+def private_difference(framed):
+    delta = weak_difference(framed)
+    return delta - delta.mean(1, keepdim=True)
+
+
+def private_gain_error(prediction, expected):
+    """Complex gain error along the clean zero-sum chirp difference in each band."""
+    expected = expected - expected.mean(1, keepdim=True)
+    error = prediction - expected
+    error = error - error.mean(1, keepdim=True)
+    ref = torch.fft.fft(expected, norm='ortho')
+    delta = torch.fft.fft(error, norm='ortho')
+    gains = []
+    for band in detail_bands(expected):
+        reference = ref[..., band]
+        power = reference.abs().square().sum((1, 2))
+        cross = (delta[..., band] * reference.conj()).sum((1, 2))
+        gains.append(cross / power.clamp_min(1e-7))
+    return torch.stack(gains, dim=-1)
+
+
 def transfer_risk(prediction, expected):
     error = torch.fft.fft(prediction - expected, norm='ortho').abs().square()
     energy = torch.fft.fft(expected, norm='ortho').abs().square()
@@ -67,11 +88,12 @@ def paired_echo_inputs(clean, perturb, rng, change, *, with_identity):
 
 
 def natural_objective(model, tracker, iq, rng, *, with_identity, recipe, step, preserve,
-                      make_pair=paired_inputs, projection_weight=None, tail_weight=None):
+                      make_pair=paired_inputs, projection_weight=None, tail_weight=None,
+                      difference=weak_difference, half_private_weight=None):
     clean = complex_iq(iq)
     framed, rotation, _, rms = coordinates(tracker, iq)
     clean_basis = rotation * rms
-    delta = weak_difference(framed)
+    delta = difference(framed)
     change = delta * clean_basis
     wave = make_pair(clean, recipe.perturb, rng, change, with_identity=with_identity)
     observed, rotation, quality, rms = coordinates(tracker, real_iq(wave.flatten(0, 1)))
@@ -103,4 +125,12 @@ def natural_objective(model, tracker, iq, rng, *, with_identity, recipe, step, p
         projected = projection_risk(transport, delta)
         loss = loss + projection_weight * projected
         values = torch.cat((values, projected[None]))
+    if half_private_weight is not None:
+        # Match the half-strength deployment readout in physical IQ.
+        readout = torch.lerp(wave, refined_iq, .5)
+        half_difference = (readout[:, 2] - readout[:, 0]) / clean_basis
+        error = private_gain_error(half_difference, delta)
+        loss = loss + half_private_weight * error.abs().square().log1p().mean()
+        values = torch.cat((values, error.real.mean(0), error.imag.abs().mean(0),
+                            error.abs().square().log1p().mean(0)))
     return loss,values
