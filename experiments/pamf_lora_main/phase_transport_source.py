@@ -48,7 +48,7 @@ def render(iq, _unused, baseline, tracker, models, *, threshold):
     return torch.stack((iq, reference, ordinary, ordinary_half, projected, projected_half)), active
 
 
-@torch.inference_mode()
+@torch.no_grad()
 def checkpoint_smoke(rt):
     root = Path(rt['run_root'])
     device = 'cuda:0'
