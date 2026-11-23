@@ -1,0 +1,96 @@
+{
+  "seed": 2026112451,
+  "packets": 500,
+  "target_reads": 0,
+  "V_reads": 0,
+  "F_reads": 0,
+  "TX_reads": 0,
+  "scope": "Source U, generic known transfer only for evaluation; relative shape removes per-packet scalar",
+  "measurements": {
+    "clean": {
+      "n": 500,
+      "positive_support": 499,
+      "mean_support": 0.7168508172035217,
+      "quantiles": {
+        "support": [
+          0.7565758228302002,
+          0.8815213441848755
+        ],
+        "would_edit_noncarrier_rms": [
+          0.016917306929826736,
+          0.03212687000632286
+        ]
+      }
+    },
+    "light": {
+      "n": 500,
+      "positive_support": 457,
+      "mean_support": 0.15389326214790344,
+      "quantiles": {
+        "support": [
+          0.07183286547660828,
+          0.4387943744659424
+        ],
+        "observed_disturbance": [
+          0.06728257238864899,
+          0.1445281058549881
+        ],
+        "identity_relative_H_error": [
+          0.0018744590925052762,
+          0.02140028588473797
+        ],
+        "old_three_tap_relative_H_error": [
+          0.0011434336192905903,
+          0.011779598891735077
+        ],
+        "crossfit_relative_H_error": [
+          0.0014052242040634155,
+          0.006487022619694471
+        ],
+        "raw_noncarrier_error": [
+          0.025299549102783203,
+          0.04767002537846565
+        ],
+        "equalized_noncarrier_error": [
+          0.02313803881406784,
+          0.0405876561999321
+        ]
+      }
+    },
+    "broad": {
+      "n": 500,
+      "positive_support": 316,
+      "mean_support": 0.03041130118072033,
+      "quantiles": {
+        "support": [
+          0.007841497659683228,
+          0.08984901756048203
+        ],
+        "observed_disturbance": [
+          0.20891506969928741,
+          0.44408950209617615
+        ],
+        "identity_relative_H_error": [
+          0.0018744590925052762,
+          0.02140028588473797
+        ],
+        "old_three_tap_relative_H_error": [
+          0.0037190509028732777,
+          0.015233109705150127
+        ],
+        "crossfit_relative_H_error": [
+          0.0023047910071909428,
+          0.0132145956158638
+        ],
+        "raw_noncarrier_error": [
+          0.1644752025604248,
+          0.2613951861858368
+        ],
+        "equalized_noncarrier_error": [
+          0.16360002756118774,
+          0.2608891725540161
+        ]
+      }
+    }
+  }
+}

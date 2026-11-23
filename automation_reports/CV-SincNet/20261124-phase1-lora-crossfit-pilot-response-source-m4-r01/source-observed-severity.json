@@ -1,0 +1,1679 @@
+{
+  "parent": "20261124-phase1-lora-crossfit-pilot-response-source-m4-r01",
+  "n_packets": 900,
+  "observed_noise_rms_thresholds": [
+    0.045941177755594254,
+    0.15,
+    0.4
+  ],
+  "scopes": [
+    "bypass",
+    "active_to_0.15",
+    "active_0.15_to_0.40",
+    "active_above_0.40"
+  ],
+  "uses_actual_added_noise": false,
+  "target_reads": 0,
+  "by_route": {
+    "full": {
+      "pooled": {
+        "bypass": {
+          "exposures": 3771,
+          "comparisons": {
+            "engineering__vs__direct": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 2449,
+              "control_correct": 2449
+            },
+            "identity_half__vs__reference": {
+              "better": 52,
+              "worse": 65,
+              "variant_correct": 2449,
+              "control_correct": 2462
+            },
+            "crossfit_half__vs__identity_half": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 2449,
+              "control_correct": 2449
+            },
+            "crossfit_half__vs__reference": {
+              "better": 52,
+              "worse": 65,
+              "variant_correct": 2449,
+              "control_correct": 2462
+            }
+          }
+        },
+        "active_to_0.15": {
+          "exposures": 653,
+          "comparisons": {
+            "engineering__vs__direct": {
+              "better": 17,
+              "worse": 38,
+              "variant_correct": 298,
+              "control_correct": 319
+            },
+            "identity_half__vs__reference": {
+              "better": 32,
+              "worse": 57,
+              "variant_correct": 321,
+              "control_correct": 346
+            },
+            "crossfit_half__vs__identity_half": {
+              "better": 23,
+              "worse": 22,
+              "variant_correct": 322,
+              "control_correct": 321
+            },
+            "crossfit_half__vs__reference": {
+              "better": 47,
+              "worse": 71,
+              "variant_correct": 322,
+              "control_correct": 346
+            }
+          }
+        },
+        "active_0.15_to_0.40": {
+          "exposures": 629,
+          "comparisons": {
+            "engineering__vs__direct": {
+              "better": 3,
+              "worse": 2,
+              "variant_correct": 194,
+              "control_correct": 193
+            },
+            "identity_half__vs__reference": {
+              "better": 32,
+              "worse": 36,
+              "variant_correct": 200,
+              "control_correct": 204
+            },
+            "crossfit_half__vs__identity_half": {
+              "better": 15,
+              "worse": 8,
+              "variant_correct": 207,
+              "control_correct": 200
+            },
+            "crossfit_half__vs__reference": {
+              "better": 41,
+              "worse": 38,
+              "variant_correct": 207,
+              "control_correct": 204
+            }
+          }
+        },
+        "active_above_0.40": {
+          "exposures": 347,
+          "comparisons": {
+            "engineering__vs__direct": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 67,
+              "control_correct": 67
+            },
+            "identity_half__vs__reference": {
+              "better": 16,
+              "worse": 12,
+              "variant_correct": 86,
+              "control_correct": 82
+            },
+            "crossfit_half__vs__identity_half": {
+              "better": 8,
+              "worse": 5,
+              "variant_correct": 89,
+              "control_correct": 86
+            },
+            "crossfit_half__vs__reference": {
+              "better": 20,
+              "worse": 13,
+              "variant_correct": 89,
+              "control_correct": 82
+            }
+          }
+        }
+      },
+      "by_scene": {
+        "practical_high": {
+          "bypass": {
+            "exposures": 879,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 582,
+                "control_correct": 582
+              },
+              "identity_half__vs__reference": {
+                "better": 3,
+                "worse": 1,
+                "variant_correct": 582,
+                "control_correct": 580
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 582,
+                "control_correct": 582
+              },
+              "crossfit_half__vs__reference": {
+                "better": 3,
+                "worse": 1,
+                "variant_correct": 582,
+                "control_correct": 580
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 13,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 1,
+                "worse": 1,
+                "variant_correct": 8,
+                "control_correct": 8
+              },
+              "identity_half__vs__reference": {
+                "better": 2,
+                "worse": 0,
+                "variant_correct": 9,
+                "control_correct": 7
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 1,
+                "worse": 3,
+                "variant_correct": 7,
+                "control_correct": 9
+              },
+              "crossfit_half__vs__reference": {
+                "better": 2,
+                "worse": 2,
+                "variant_correct": 7,
+                "control_correct": 7
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 7,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 4,
+                "control_correct": 4
+              },
+              "identity_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 3,
+                "control_correct": 3
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 3,
+                "control_correct": 3
+              },
+              "crossfit_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 3,
+                "control_correct": 3
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 1,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "identity_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "crossfit_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              }
+            }
+          }
+        },
+        "practical_mid": {
+          "bypass": {
+            "exposures": 741,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 480,
+                "control_correct": 480
+              },
+              "identity_half__vs__reference": {
+                "better": 13,
+                "worse": 16,
+                "variant_correct": 480,
+                "control_correct": 483
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 480,
+                "control_correct": 480
+              },
+              "crossfit_half__vs__reference": {
+                "better": 13,
+                "worse": 16,
+                "variant_correct": 480,
+                "control_correct": 483
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 119,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 3,
+                "worse": 12,
+                "variant_correct": 52,
+                "control_correct": 61
+              },
+              "identity_half__vs__reference": {
+                "better": 9,
+                "worse": 5,
+                "variant_correct": 61,
+                "control_correct": 57
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 7,
+                "worse": 1,
+                "variant_correct": 67,
+                "control_correct": 61
+              },
+              "crossfit_half__vs__reference": {
+                "better": 15,
+                "worse": 5,
+                "variant_correct": 67,
+                "control_correct": 57
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 31,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 1,
+                "worse": 1,
+                "variant_correct": 14,
+                "control_correct": 14
+              },
+              "identity_half__vs__reference": {
+                "better": 5,
+                "worse": 1,
+                "variant_correct": 17,
+                "control_correct": 13
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 2,
+                "variant_correct": 15,
+                "control_correct": 17
+              },
+              "crossfit_half__vs__reference": {
+                "better": 4,
+                "worse": 2,
+                "variant_correct": 15,
+                "control_correct": 13
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 9,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "identity_half__vs__reference": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 1
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 2
+              },
+              "crossfit_half__vs__reference": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 1
+              }
+            }
+          }
+        },
+        "practical_low_suburban": {
+          "bypass": {
+            "exposures": 580,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 349,
+                "control_correct": 349
+              },
+              "identity_half__vs__reference": {
+                "better": 17,
+                "worse": 29,
+                "variant_correct": 349,
+                "control_correct": 361
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 349,
+                "control_correct": 349
+              },
+              "crossfit_half__vs__reference": {
+                "better": 17,
+                "worse": 29,
+                "variant_correct": 349,
+                "control_correct": 361
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 257,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 7,
+                "worse": 12,
+                "variant_correct": 116,
+                "control_correct": 121
+              },
+              "identity_half__vs__reference": {
+                "better": 7,
+                "worse": 24,
+                "variant_correct": 122,
+                "control_correct": 139
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 9,
+                "worse": 10,
+                "variant_correct": 121,
+                "control_correct": 122
+              },
+              "crossfit_half__vs__reference": {
+                "better": 12,
+                "worse": 30,
+                "variant_correct": 121,
+                "control_correct": 139
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 50,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 19,
+                "control_correct": 20
+              },
+              "identity_half__vs__reference": {
+                "better": 1,
+                "worse": 4,
+                "variant_correct": 20,
+                "control_correct": 23
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 4,
+                "worse": 0,
+                "variant_correct": 24,
+                "control_correct": 20
+              },
+              "crossfit_half__vs__reference": {
+                "better": 3,
+                "worse": 2,
+                "variant_correct": 24,
+                "control_correct": 23
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 13,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 3,
+                "control_correct": 3
+              },
+              "identity_half__vs__reference": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 5,
+                "control_correct": 4
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 5,
+                "control_correct": 5
+              },
+              "crossfit_half__vs__reference": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 5,
+                "control_correct": 4
+              }
+            }
+          }
+        },
+        "practical_high_urban": {
+          "bypass": {
+            "exposures": 808,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 543,
+                "control_correct": 543
+              },
+              "identity_half__vs__reference": {
+                "better": 2,
+                "worse": 2,
+                "variant_correct": 543,
+                "control_correct": 543
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 543,
+                "control_correct": 543
+              },
+              "crossfit_half__vs__reference": {
+                "better": 2,
+                "worse": 2,
+                "variant_correct": 543,
+                "control_correct": 543
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 29,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 15,
+                "control_correct": 15
+              },
+              "identity_half__vs__reference": {
+                "better": 1,
+                "worse": 3,
+                "variant_correct": 16,
+                "control_correct": 18
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 15,
+                "control_correct": 16
+              },
+              "crossfit_half__vs__reference": {
+                "better": 1,
+                "worse": 4,
+                "variant_correct": 15,
+                "control_correct": 18
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 51,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 21,
+                "control_correct": 21
+              },
+              "identity_half__vs__reference": {
+                "better": 5,
+                "worse": 3,
+                "variant_correct": 20,
+                "control_correct": 18
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 21,
+                "control_correct": 20
+              },
+              "crossfit_half__vs__reference": {
+                "better": 6,
+                "worse": 3,
+                "variant_correct": 21,
+                "control_correct": 18
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 12,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 2
+              },
+              "identity_half__vs__reference": {
+                "better": 3,
+                "worse": 0,
+                "variant_correct": 5,
+                "control_correct": 2
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 4,
+                "control_correct": 5
+              },
+              "crossfit_half__vs__reference": {
+                "better": 2,
+                "worse": 0,
+                "variant_correct": 4,
+                "control_correct": 2
+              }
+            }
+          }
+        },
+        "practical_mid_urban": {
+          "bypass": {
+            "exposures": 504,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 326,
+                "control_correct": 326
+              },
+              "identity_half__vs__reference": {
+                "better": 10,
+                "worse": 12,
+                "variant_correct": 326,
+                "control_correct": 328
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 326,
+                "control_correct": 326
+              },
+              "crossfit_half__vs__reference": {
+                "better": 10,
+                "worse": 12,
+                "variant_correct": 326,
+                "control_correct": 328
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 102,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 2,
+                "worse": 5,
+                "variant_correct": 45,
+                "control_correct": 48
+              },
+              "identity_half__vs__reference": {
+                "better": 2,
+                "worse": 12,
+                "variant_correct": 48,
+                "control_correct": 58
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 4,
+                "worse": 4,
+                "variant_correct": 48,
+                "control_correct": 48
+              },
+              "crossfit_half__vs__reference": {
+                "better": 4,
+                "worse": 14,
+                "variant_correct": 48,
+                "control_correct": 58
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 211,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 2,
+                "worse": 0,
+                "variant_correct": 58,
+                "control_correct": 56
+              },
+              "identity_half__vs__reference": {
+                "better": 10,
+                "worse": 14,
+                "variant_correct": 59,
+                "control_correct": 63
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 5,
+                "worse": 3,
+                "variant_correct": 61,
+                "control_correct": 59
+              },
+              "crossfit_half__vs__reference": {
+                "better": 12,
+                "worse": 14,
+                "variant_correct": 61,
+                "control_correct": 63
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 83,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 14,
+                "control_correct": 14
+              },
+              "identity_half__vs__reference": {
+                "better": 6,
+                "worse": 5,
+                "variant_correct": 19,
+                "control_correct": 18
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 2,
+                "worse": 0,
+                "variant_correct": 21,
+                "control_correct": 19
+              },
+              "crossfit_half__vs__reference": {
+                "better": 7,
+                "worse": 4,
+                "variant_correct": 21,
+                "control_correct": 18
+              }
+            }
+          }
+        },
+        "practical_low_urban": {
+          "bypass": {
+            "exposures": 259,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 169,
+                "control_correct": 169
+              },
+              "identity_half__vs__reference": {
+                "better": 7,
+                "worse": 5,
+                "variant_correct": 169,
+                "control_correct": 167
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 169,
+                "control_correct": 169
+              },
+              "crossfit_half__vs__reference": {
+                "better": 7,
+                "worse": 5,
+                "variant_correct": 169,
+                "control_correct": 167
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 133,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 4,
+                "worse": 8,
+                "variant_correct": 62,
+                "control_correct": 66
+              },
+              "identity_half__vs__reference": {
+                "better": 11,
+                "worse": 13,
+                "variant_correct": 65,
+                "control_correct": 67
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 2,
+                "worse": 3,
+                "variant_correct": 64,
+                "control_correct": 65
+              },
+              "crossfit_half__vs__reference": {
+                "better": 13,
+                "worse": 16,
+                "variant_correct": 64,
+                "control_correct": 67
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 279,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 78,
+                "control_correct": 78
+              },
+              "identity_half__vs__reference": {
+                "better": 11,
+                "worse": 14,
+                "variant_correct": 81,
+                "control_correct": 84
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 5,
+                "worse": 3,
+                "variant_correct": 83,
+                "control_correct": 81
+              },
+              "crossfit_half__vs__reference": {
+                "better": 16,
+                "worse": 17,
+                "variant_correct": 83,
+                "control_correct": 84
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 229,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 47,
+                "control_correct": 47
+              },
+              "identity_half__vs__reference": {
+                "better": 5,
+                "worse": 7,
+                "variant_correct": 54,
+                "control_correct": 56
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 6,
+                "worse": 4,
+                "variant_correct": 56,
+                "control_correct": 54
+              },
+              "crossfit_half__vs__reference": {
+                "better": 9,
+                "worse": 9,
+                "variant_correct": 56,
+                "control_correct": 56
+              }
+            }
+          }
+        }
+      }
+    },
+    "residual": {
+      "pooled": {
+        "bypass": {
+          "exposures": 1975,
+          "comparisons": {
+            "engineering__vs__direct": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 1237,
+              "control_correct": 1237
+            },
+            "identity_half__vs__reference": {
+              "better": 71,
+              "worse": 93,
+              "variant_correct": 1237,
+              "control_correct": 1259
+            },
+            "crossfit_half__vs__identity_half": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 1237,
+              "control_correct": 1237
+            },
+            "crossfit_half__vs__reference": {
+              "better": 71,
+              "worse": 93,
+              "variant_correct": 1237,
+              "control_correct": 1259
+            }
+          }
+        },
+        "active_to_0.15": {
+          "exposures": 2631,
+          "comparisons": {
+            "engineering__vs__direct": {
+              "better": 43,
+              "worse": 98,
+              "variant_correct": 1250,
+              "control_correct": 1305
+            },
+            "identity_half__vs__reference": {
+              "better": 89,
+              "worse": 126,
+              "variant_correct": 1343,
+              "control_correct": 1380
+            },
+            "crossfit_half__vs__identity_half": {
+              "better": 68,
+              "worse": 84,
+              "variant_correct": 1327,
+              "control_correct": 1343
+            },
+            "crossfit_half__vs__reference": {
+              "better": 105,
+              "worse": 158,
+              "variant_correct": 1327,
+              "control_correct": 1380
+            }
+          }
+        },
+        "active_0.15_to_0.40": {
+          "exposures": 354,
+          "comparisons": {
+            "engineering__vs__direct": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 154,
+              "control_correct": 154
+            },
+            "identity_half__vs__reference": {
+              "better": 12,
+              "worse": 22,
+              "variant_correct": 153,
+              "control_correct": 163
+            },
+            "crossfit_half__vs__identity_half": {
+              "better": 7,
+              "worse": 7,
+              "variant_correct": 153,
+              "control_correct": 153
+            },
+            "crossfit_half__vs__reference": {
+              "better": 16,
+              "worse": 26,
+              "variant_correct": 153,
+              "control_correct": 163
+            }
+          }
+        },
+        "active_above_0.40": {
+          "exposures": 440,
+          "comparisons": {
+            "engineering__vs__direct": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 152,
+              "control_correct": 152
+            },
+            "identity_half__vs__reference": {
+              "better": 25,
+              "worse": 19,
+              "variant_correct": 164,
+              "control_correct": 158
+            },
+            "crossfit_half__vs__identity_half": {
+              "better": 10,
+              "worse": 7,
+              "variant_correct": 167,
+              "control_correct": 164
+            },
+            "crossfit_half__vs__reference": {
+              "better": 30,
+              "worse": 21,
+              "variant_correct": 167,
+              "control_correct": 158
+            }
+          }
+        }
+      },
+      "by_scene": {
+        "practical_high": {
+          "bypass": {
+            "exposures": 861,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 524,
+                "control_correct": 524
+              },
+              "identity_half__vs__reference": {
+                "better": 31,
+                "worse": 41,
+                "variant_correct": 524,
+                "control_correct": 534
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 524,
+                "control_correct": 524
+              },
+              "crossfit_half__vs__reference": {
+                "better": 31,
+                "worse": 41,
+                "variant_correct": 524,
+                "control_correct": 534
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 39,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 2,
+                "worse": 2,
+                "variant_correct": 15,
+                "control_correct": 15
+              },
+              "identity_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 17,
+                "control_correct": 17
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 2,
+                "variant_correct": 15,
+                "control_correct": 17
+              },
+              "crossfit_half__vs__reference": {
+                "better": 0,
+                "worse": 2,
+                "variant_correct": 15,
+                "control_correct": 17
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 0,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "identity_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "crossfit_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 0,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "identity_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "crossfit_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              }
+            }
+          }
+        },
+        "practical_mid": {
+          "bypass": {
+            "exposures": 183,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 118,
+                "control_correct": 118
+              },
+              "identity_half__vs__reference": {
+                "better": 3,
+                "worse": 7,
+                "variant_correct": 118,
+                "control_correct": 122
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 118,
+                "control_correct": 118
+              },
+              "crossfit_half__vs__reference": {
+                "better": 3,
+                "worse": 7,
+                "variant_correct": 118,
+                "control_correct": 122
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 715,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 16,
+                "worse": 43,
+                "variant_correct": 320,
+                "control_correct": 347
+              },
+              "identity_half__vs__reference": {
+                "better": 26,
+                "worse": 43,
+                "variant_correct": 354,
+                "control_correct": 371
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 26,
+                "worse": 19,
+                "variant_correct": 361,
+                "control_correct": 354
+              },
+              "crossfit_half__vs__reference": {
+                "better": 36,
+                "worse": 46,
+                "variant_correct": 361,
+                "control_correct": 371
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 2,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "identity_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "crossfit_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 0,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "identity_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "crossfit_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              }
+            }
+          }
+        },
+        "practical_low_suburban": {
+          "bypass": {
+            "exposures": 0,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "identity_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "crossfit_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 881,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 18,
+                "worse": 37,
+                "variant_correct": 436,
+                "control_correct": 455
+              },
+              "identity_half__vs__reference": {
+                "better": 38,
+                "worse": 45,
+                "variant_correct": 467,
+                "control_correct": 474
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 15,
+                "worse": 30,
+                "variant_correct": 452,
+                "control_correct": 467
+              },
+              "crossfit_half__vs__reference": {
+                "better": 40,
+                "worse": 62,
+                "variant_correct": 452,
+                "control_correct": 474
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 19,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 11,
+                "control_correct": 11
+              },
+              "identity_half__vs__reference": {
+                "better": 0,
+                "worse": 2,
+                "variant_correct": 8,
+                "control_correct": 10
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 7,
+                "control_correct": 8
+              },
+              "crossfit_half__vs__reference": {
+                "better": 0,
+                "worse": 3,
+                "variant_correct": 7,
+                "control_correct": 10
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 0,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "identity_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "crossfit_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              }
+            }
+          }
+        },
+        "practical_high_urban": {
+          "bypass": {
+            "exposures": 833,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 530,
+                "control_correct": 530
+              },
+              "identity_half__vs__reference": {
+                "better": 32,
+                "worse": 39,
+                "variant_correct": 530,
+                "control_correct": 537
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 530,
+                "control_correct": 530
+              },
+              "crossfit_half__vs__reference": {
+                "better": 32,
+                "worse": 39,
+                "variant_correct": 530,
+                "control_correct": 537
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 64,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 26,
+                "control_correct": 25
+              },
+              "identity_half__vs__reference": {
+                "better": 4,
+                "worse": 1,
+                "variant_correct": 30,
+                "control_correct": 27
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 2,
+                "worse": 1,
+                "variant_correct": 31,
+                "control_correct": 30
+              },
+              "crossfit_half__vs__reference": {
+                "better": 4,
+                "worse": 0,
+                "variant_correct": 31,
+                "control_correct": 27
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 3,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 3,
+                "control_correct": 3
+              },
+              "identity_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 2
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 2
+              },
+              "crossfit_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 2
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 0,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "identity_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "crossfit_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              }
+            }
+          }
+        },
+        "practical_mid_urban": {
+          "bypass": {
+            "exposures": 97,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 64,
+                "control_correct": 64
+              },
+              "identity_half__vs__reference": {
+                "better": 4,
+                "worse": 6,
+                "variant_correct": 64,
+                "control_correct": 66
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 64,
+                "control_correct": 64
+              },
+              "crossfit_half__vs__reference": {
+                "better": 4,
+                "worse": 6,
+                "variant_correct": 64,
+                "control_correct": 66
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 592,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 5,
+                "worse": 11,
+                "variant_correct": 276,
+                "control_correct": 282
+              },
+              "identity_half__vs__reference": {
+                "better": 10,
+                "worse": 23,
+                "variant_correct": 293,
+                "control_correct": 306
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 17,
+                "worse": 18,
+                "variant_correct": 292,
+                "control_correct": 293
+              },
+              "crossfit_half__vs__reference": {
+                "better": 15,
+                "worse": 29,
+                "variant_correct": 292,
+                "control_correct": 306
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 138,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 64,
+                "control_correct": 64
+              },
+              "identity_half__vs__reference": {
+                "better": 7,
+                "worse": 9,
+                "variant_correct": 65,
+                "control_correct": 67
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 2,
+                "worse": 3,
+                "variant_correct": 64,
+                "control_correct": 65
+              },
+              "crossfit_half__vs__reference": {
+                "better": 6,
+                "worse": 9,
+                "variant_correct": 64,
+                "control_correct": 67
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 73,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 23,
+                "control_correct": 23
+              },
+              "identity_half__vs__reference": {
+                "better": 3,
+                "worse": 0,
+                "variant_correct": 26,
+                "control_correct": 23
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 1,
+                "worse": 2,
+                "variant_correct": 25,
+                "control_correct": 26
+              },
+              "crossfit_half__vs__reference": {
+                "better": 4,
+                "worse": 2,
+                "variant_correct": 25,
+                "control_correct": 23
+              }
+            }
+          }
+        },
+        "practical_low_urban": {
+          "bypass": {
+            "exposures": 1,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "identity_half__vs__reference": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 0
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "crossfit_half__vs__reference": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 0
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 340,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 1,
+                "worse": 5,
+                "variant_correct": 177,
+                "control_correct": 181
+              },
+              "identity_half__vs__reference": {
+                "better": 11,
+                "worse": 14,
+                "variant_correct": 182,
+                "control_correct": 185
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 8,
+                "worse": 14,
+                "variant_correct": 176,
+                "control_correct": 182
+              },
+              "crossfit_half__vs__reference": {
+                "better": 10,
+                "worse": 19,
+                "variant_correct": 176,
+                "control_correct": 185
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 192,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 76,
+                "control_correct": 76
+              },
+              "identity_half__vs__reference": {
+                "better": 5,
+                "worse": 11,
+                "variant_correct": 77,
+                "control_correct": 83
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 5,
+                "worse": 3,
+                "variant_correct": 79,
+                "control_correct": 77
+              },
+              "crossfit_half__vs__reference": {
+                "better": 10,
+                "worse": 14,
+                "variant_correct": 79,
+                "control_correct": 83
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 367,
+            "comparisons": {
+              "engineering__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 129,
+                "control_correct": 129
+              },
+              "identity_half__vs__reference": {
+                "better": 22,
+                "worse": 19,
+                "variant_correct": 138,
+                "control_correct": 135
+              },
+              "crossfit_half__vs__identity_half": {
+                "better": 9,
+                "worse": 5,
+                "variant_correct": 142,
+                "control_correct": 138
+              },
+              "crossfit_half__vs__reference": {
+                "better": 26,
+                "worse": 19,
+                "variant_correct": 142,
+                "control_correct": 135
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
