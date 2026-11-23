@@ -14,12 +14,12 @@ from .plan import RUN as READER_RUN
 from .receiver_pilot import READOUTS
 
 RUN = '20261123-phase1-wisig-preamble-receiver-source-m2-r02'
+TIMING_RUN = '20261123-phase1-wisig-joint-preamble-timing-source-m2-r01'
 SOURCE_RUN = '20261021-phase1-CRIC-DURA-comparison-m153-r02'
 PAIR_RUN = '20261019-phase1-reception-restoration-selfsup-manysig-m6-r02'
 N = 1800
 SOURCE_RECEIVERS = (1, 3, 4, 6, 8)
 ROUTES = ('full', 'residual')
-MODES = ('raw', 'R69', *READOUTS)
 SEED = 2026112307
 
 
@@ -45,6 +45,14 @@ def activate(rt):
     activate_packages(rt)
 
 
+def readouts(rt):
+    if rt.get('timing'):
+        from .receiver_timing import READOUTS as timing_readouts
+
+        return timing_readouts
+    return READOUTS
+
+
 def calibrate(rt):
     """Freeze one clean disturbance floor before the recognizer or V are opened."""
     import torch
@@ -54,6 +62,19 @@ def calibrate(rt):
     ix = np.sort(np.random.default_rng(SEED).choice(len(train_u), 4096, replace=False))
     x = tensor(np.ascontiguousarray(train_u[ix]), 'cpu')
     with torch.no_grad():
+        if rt.get('timing'):
+            from .receiver_timing import QUANTILE, Timing
+
+            timing = Timing('cpu')
+            margins = torch.cat([timing.margins(torch.complex(b[:, 0], b[:, 1])) for b in x.split(64)])
+            floors = torch.quantile(margins, QUANTILE, dim=0).clamp_min(0)
+            if not torch.isfinite(margins).all():
+                raise ValueError('Nonfinite preamble timing estimate')
+            thresholds = dict(zip(('boundary', 'joint'), floors.tolist()))
+            write(Path(rt['run_root']) / 'timing_thresholds.json',
+                  dict(clean_u_only=True, seed=SEED, n=len(ix), thresholds=thresholds, quantile=QUANTILE))
+            print('TIMING_SOURCE_THRESHOLDS', thresholds, flush=True)
+            return
         q = estimate(torch.complex(x[:, 0], x[:, 1])).disturbance
     floor = torch.quantile(q, .95).item()
     if not np.isfinite(floor) or floor <= 0:
@@ -69,19 +90,34 @@ def clean_floor(rt):
     return meta['floor']
 
 
-def smoke(rt):
-    import torch
+def restorer(rt, device):
+    if rt.get('timing'):
+        from .receiver_timing import Timing
+
+        meta = read(Path(rt['run_root']) / 'timing_thresholds.json')
+        if not meta['clean_u_only'] or meta['n'] != 4096 or meta['seed'] != SEED:
+            raise ValueError('Expected frozen source U timing margins')
+        timing = Timing(device)
+        return lambda iq: timing.restore(iq, meta['thresholds'])
     from .receiver_pilot import restore
 
     floor = clean_floor(rt)
+    return lambda iq: restore(iq, clean_floor=floor)
+
+
+def smoke(rt):
+    import torch
+
+    modes = ('raw', 'R69', *readouts(rt))
+    restore = restorer(rt, 'cuda:0')
     cfg = historical(rt, 'predict', SEEDS[0])
     reader, r69 = model_pair(rt, cfg, 'cuda:0')
     clean = iq_array(source_root(rt) / 'U_s_x.npy', 56700)
     x = tensor(np.ascontiguousarray(clean[:4]), 'cuda:0')
     with torch.inference_mode():
-        variants, diagnostics = restore(torch.complex(x[:, 0], x[:, 1]), clean_floor=floor)
+        variants, diagnostics = restore(torch.complex(x[:, 0], x[:, 1]))
         logits, _ = read_logits(reader, r69, x, variants)
-    if set(logits) != set(MODES) or any(v.shape != (4, 6) or not torch.isfinite(v).all() for v in logits.values()):
+    if set(logits) != set(modes) or any(v.shape != (4, 6) or not torch.isfinite(v).all() for v in logits.values()):
         raise ValueError('Real-checkpoint source smoke failed')
     if not all(torch.isfinite(v).all() for v in diagnostics.values()):
         raise ValueError('Nonfinite source pilot estimate')
@@ -111,10 +147,11 @@ def percentile(values):
 
 def predict(rt, route):
     import torch
-    from .receiver_pilot import restore
 
     root = Path(rt['run_root'])
-    floor = clean_floor(rt)
+    alternatives = readouts(rt)
+    modes = ('raw', 'R69', *alternatives)
+    restore = restorer(rt, 'cuda:0')
     ref = panels(rt)[route]
     ids = np.load(ref / 'physical_ids.npy', allow_pickle=False)
     if len(ids) != N or len(np.unique(ids)) != N or set(np.load(ref / 'roles.npy', allow_pickle=False)) != {'V'}:
@@ -129,15 +166,15 @@ def predict(rt, route):
     predictions = {}
     for view in VIEWS:
         observations = iq_array(ref / (view + '.npy'), N)
-        logits = {m: [] for m in MODES}
+        logits = {m: [] for m in modes}
         telemetry = {}
-        errors = {m: [] for m in ('raw', 'R69', *READOUTS)}
-        changes = {m: [] for m in READOUTS}
+        errors = {m: [] for m in modes}
+        changes = {m: [] for m in alternatives}
         for at in range(0, N, 128):
             x = tensor(np.ascontiguousarray(observations[at:at + 128]), 'cuda:0')
             target = tensor(np.ascontiguousarray(clean[at:at + 128]), 'cuda:0')
             with torch.inference_mode():
-                variants, diag = restore(torch.complex(x[:, 0], x[:, 1]), clean_floor=floor)
+                variants, diag = restore(torch.complex(x[:, 0], x[:, 1]))
                 ds, recovered = read_logits(reader, r69, x, variants)
                 for mode, value in ds.items():
                     if value.shape != (len(x), 6) or not torch.isfinite(value).all():
@@ -148,11 +185,11 @@ def predict(rt, route):
                 for mode, z in wave.items():
                     error = (z - target).square().sum(dim=(1, 2)) / scale
                     errors[mode].append(np.asarray(error.tolist(), dtype=np.float32))
-                for mode in READOUTS:
+                for mode in alternatives:
                     changes[mode].append(np.asarray((wave[mode] != x).flatten(1).any(dim=1).tolist(), dtype=bool))
                 for key, vector in diag.items():
                     telemetry.setdefault(key, []).append(np.asarray(vector.tolist()))
-        for mode in MODES:
+        for mode in modes:
             predictions[f'{mode}__{view}'] = np.concatenate(logits[mode])
         evidence[view] = dict(estimate_quantiles={k: percentile(v) for k, v in telemetry.items()},
                               nmse_quantiles={k: percentile(v) for k, v in errors.items()},
@@ -160,18 +197,19 @@ def predict(rt, route):
         print('PILOT_SOURCE_VIEW', route, view, N, flush=True)
     np.savez(row / 'predictions.npz', ids=ids, **predictions)
     write(row / 'complete.json', dict(status='PREDICTIONS_COMPLETE', n=N,
-          route=route, seed=SEEDS[0], modes=MODES, views=VIEWS, telemetry=evidence,
+          route=route, seed=SEEDS[0], modes=modes, views=VIEWS, telemetry=evidence,
           predictor_reads_truth=False, elapsed_seconds=time.perf_counter()-elapsed))
 
 
 def load_predictions(rt, route):
+    modes = ('raw', 'R69', *readouts(rt))
     output = Path(rt['run_root']) / route
     done = read(output / 'complete.json')
     if (done['status'], done['route'], done['seed'], done['n'], done['views'], done['modes']) != (
-            'PREDICTIONS_COMPLETE', route, SEEDS[0], N, list(VIEWS), list(MODES)):
+            'PREDICTIONS_COMPLETE', route, SEEDS[0], N, list(VIEWS), list(modes)):
         raise ValueError('Incomplete frozen source prediction row')
     with np.load(output / 'predictions.npz', allow_pickle=False) as data:
-        if set(data.files) != {'ids', *(f'{mode}__{view}' for mode in MODES for view in VIEWS)}:
+        if set(data.files) != {'ids', *(f'{mode}__{view}' for mode in modes for view in VIEWS)}:
             raise ValueError('Unexpected source prediction keys')
         ids = data['ids']
         decisions = {key: data[key] for key in data.files if key != 'ids'}
@@ -184,6 +222,7 @@ def load_predictions(rt, route):
 def cpu_score(rt):
     from experiments.cric_dura_comparison.evaluation import metrics
 
+    modes = ('raw', 'R69', *readouts(rt))
     loaded = {r: load_predictions(rt, r) for r in ROUTES}
     ids, _, _ = loaded['full']
     source_panels = panels(rt)
@@ -218,7 +257,7 @@ def cpu_score(rt):
         control = {v: predictions[f'raw__{v}'] == truth for v in VIEWS}
         for view in VIEWS:
             metrics_by_view[view] = {}
-            for mode in MODES:
+            for mode in modes:
                 pred = predictions[f'{mode}__{view}']
                 hit = pred == truth
                 item = metrics(truth, pred, 6)
@@ -228,7 +267,7 @@ def cpu_score(rt):
                                     for i in SOURCE_RECEIVERS})
                 metrics_by_view[view][mode] = item
         six = {}
-        for mode in MODES:
+        for mode in modes:
             hit = sum((predictions[f'{mode}__{v}'] == truth).astype(np.int16) for v in VIEWS[1:])
             inner = {}
             for name in ('raw', 'R69'):
@@ -276,14 +315,15 @@ def dispatch(rt):
         raise
 
 
-def publish(repo, output, local_context, ssh_config):
+def publish(repo, output, local_context, ssh_config, timing=False):
     from experiments.pamf_lora_main.publish import release, release_commit
 
     old = read(local_context)
     project = old['project']
     rt = {k: old[k] for k in ('project', 'python', 'frozen_sources')}
-    rt.update(run_id=RUN, run_root=f'{project}/runs/{RUN}',
-              release_root=f'{project}/releases/{RUN}-release', runner=__spec__.name,
+    run = TIMING_RUN if timing else RUN
+    rt.update(run_id=run, run_root=f'{project}/runs/{run}',
+              release_root=f'{project}/releases/{run}-release', runner=__spec__.name, timing=timing,
               code_commit=release_commit(repo), allowed_gpus=[3, 6, 2, 7, 0, 1, 4, 5],
               max_workers=2, max_compute_processes=4,
               recognizer_run=f'{project}/runs/{READER_RUN}',
@@ -297,6 +337,7 @@ if __name__ == '__main__':
     pub = commands.add_parser('publish')
     for key in ('repo', 'output', 'local-context', 'ssh-config'):
         pub.add_argument('--' + key, required=True, type=Path)
+    pub.add_argument('--timing', action='store_true')
     for kind in ('dispatch', 'calibrate', 'smoke', 'predict', 'cpu_score'):
         entry = commands.add_parser(kind)
         entry.add_argument('runtime', type=Path)
