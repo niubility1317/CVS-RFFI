@@ -10,6 +10,7 @@ import numpy as np
 from experiments.cric_dura_comparison.io import read
 from experiments.pamf_lora_main import held_chirp_precision_source, lapped_posterior_source
 from experiments.pamf_lora_main import coherent_interval_source
+from experiments.pamf_lora_main import joint_spectrum_source
 from experiments.pamf_lora_main import noise_split_diagnostic
 from experiments.pamf_lora_main import packet_relation_source, reference_cancel_source, split_shrink_source
 from experiments.pamf_lora_main import variance_transport_source
@@ -111,6 +112,9 @@ def collect(rt):
     elif rt.get('run_id')==noise_split_diagnostic.RUN:
         modes = noise_split_diagnostic.MODES
         pairs = (*noise_split_diagnostic.COMPARISONS, ('direct','reference'))
+    elif rt.get('run_id')==joint_spectrum_source.RUN:
+        modes = joint_spectrum_source.MODES
+        pairs = (*joint_spectrum_source.COMPARISONS, ('direct','reference'))
     else:
         from experiments.pamf_lora_main import empirical_tangent_source as tangent
         if rt.get('run_id')!=tangent.RUN:
