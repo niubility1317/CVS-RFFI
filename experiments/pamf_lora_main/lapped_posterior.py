@@ -71,13 +71,18 @@ class LappedPosterior(nn.Module):
             out = net(values)
         return out.float().unflatten(0, source[0].shape[:2]).unbind(2)
 
-    def restore(self, observed, quality, *, stationary_readout=False, scalar_readout=False):
+    def restore(self, observed, quality, *, stationary_readout=False, scalar_readout=False,
+                reference_action=None, noise_override=None, observation_edit=None):
         value = self.transformed(observed)
         reference = other_mean(value)
         spread = (other_mean(value.abs().square()) - reference.abs().square()).clamp_min(0.)
+        if reference_action is not None:
+            reference = reference * reference_action.unsqueeze(-1)
         measured = self.estimate_power(value)
         pooled = measured.mean(dim=-2, keepdim=True).expand_as(measured)
         noise = .75 * measured + .25 * pooled if self.local and not stationary_readout else pooled
+        if noise_override is not None:
+            noise = noise_override.expand_as(noise)
         support_noise = other_mean(noise).clamp_min(0.)
         f = self.frequency.expand_as(spread)
         t = torch.linspace(-1., 1., value.shape[-2], device=value.device)[None, None, :, None].expand_as(spread)
@@ -93,6 +98,8 @@ class LappedPosterior(nn.Module):
         first = weight * innovation
         if companion is not None:
             first = first + companion * innovation.conj()
+        if observation_edit is not None:
+            first = first + self.transformed(observation_edit)
         current = value + first
         q = quality[..., None].expand_as(spread)
         c, d = self.fields(self.refine, (value.real, value.imag, current.real, current.imag,

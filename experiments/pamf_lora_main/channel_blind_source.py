@@ -47,6 +47,7 @@ class FitRecipe:
     fit_per_rx: int = FIT
     validation_steps: tuple[int, ...] = ()
     bank_per_rx: int = 0
+    initialize: Callable | None = None
 
     def loss_weights(self, step):
         if not self.coarse_first:
@@ -114,6 +115,12 @@ def waveform_risk(output, target):
     return (error.abs().square()/(power+.03*power.mean(-1,keepdim=True)+.001)).log1p().mean()
 
 
+@torch.no_grad()
+def clean_threshold(tracker, calibration):
+    scores = [corruption_score(coordinates(tracker, batch)[0]) for batch in calibration.split(32)]
+    return 1.05 * torch.cat(scores).max()
+
+
 def costs(model, tracker, iq, generator, *, with_identity, recipe=DEFAULT):
     clean = complex_iq(iq)
     y = torch.stack((recipe.perturb(clean,generator),recipe.perturb(clean,generator)),dim=1)
@@ -156,6 +163,8 @@ def fit(rt, *, smoke=False, recipe=DEFAULT, calculate=objective, receiver_batche
                                                    bank_per_rx=recipe.bank_per_rx)
     tracker = PacketRestorer('consensus').to(device).eval()
     model = recipe.model().to(device)
+    if recipe.initialize is not None:
+        recipe.initialize(model, tracker, training, calibration)
     opt = torch.optim.AdamW(model.parameters(),lr=2e-4,weight_decay=1e-4)
     steps = 1 if smoke else recipe.steps
     lr = torch.optim.lr_scheduler.CosineAnnealingLR(opt,steps,eta_min=2e-5)
@@ -191,9 +200,7 @@ def fit(rt, *, smoke=False, recipe=DEFAULT, calculate=objective, receiver_batche
     worker_seconds = time.perf_counter()-start_time
     with torch.no_grad():
         model.eval()
-        clean_scores = torch.cat([corruption_score(coordinates(tracker,v)[0])
-                                  for v in calibration.split(32)])
-        threshold = float(1.05*clean_scores.max())
+        threshold = float(clean_threshold(tracker, calibration))
         result = held_waveform(model,tracker,held,calculate,recipe,steps,receiver_batches)
     root = Path(rt['run_root'])
     meta = proof(contract,recipe)
