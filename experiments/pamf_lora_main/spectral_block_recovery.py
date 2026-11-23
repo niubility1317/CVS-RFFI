@@ -12,12 +12,34 @@ def head(inputs, outputs):
                          nn.Conv1d(48, 32, 5, padding=2), nn.SiLU(), nn.Conv1d(32, outputs, 1))
 
 
+def repeat_confidence(spectrum):
+    """Estimate repeatable complex spectrum power from same-packet cross products."""
+    common = spectrum.mean(dim=1, keepdim=True)
+    residual_power = (spectrum-common).abs().square().mean(dim=1, keepdim=True)
+    variance = residual_power/(spectrum.shape[1]-1)
+    shared_power = (common.abs().square()-variance).clamp_min(0.)
+    return shared_power/(shared_power+variance+1e-6)
+
+
+def constrain_update(change, confidence, *, protect):
+    protected = change-confidence*change.mean(dim=1, keepdim=True)
+    if protect:
+        return protected
+    # The control uses the same correction norm at each packet frequency.
+    # Keep its original complex direction across the chirps.
+    norm = torch.linalg.vector_norm(change, dim=1, keepdim=True)
+    amount = torch.linalg.vector_norm(protected, dim=1, keepdim=True)
+    scale = (amount/torch.where(norm>0,norm,1.)).clamp_max(1.)
+    return change*scale
+
+
 class SpectralBlockRecovery(nn.Module):
     """Predict a complex prior in interleaved blocks, then constrain it with IQ."""
 
-    def __init__(self, *, masked):
+    def __init__(self, *, masked, protection=None):
         super().__init__()
         self.masked = masked
+        self.protection = protection
         n = 256
         groups = torch.arange(n).div(2, rounding_mode='floor') % 4
         self.register_buffer('hidden', groups == torch.arange(4)[:, None], persistent=False)
@@ -49,8 +71,13 @@ class SpectralBlockRecovery(nn.Module):
             prior = self.predict_prior(spec)
         innovation = prior-spec
         noncarrier = self.frequency != 0
-        coarse = spec + .5*confidence*innovation*noncarrier
-        fields = torch.stack((spec.real, spec.imag, prior.real, prior.imag,
+        coarse_change = .5*confidence*innovation*noncarrier
+        repeat_evidence = repeat_confidence(spec) if self.protection is not None else None
+        if repeat_evidence is not None:
+            coarse_change = constrain_update(coarse_change, repeat_evidence, protect=self.protection)
+        coarse = spec + coarse_change
+        context = coarse if repeat_evidence is not None else prior
+        fields = torch.stack((spec.real, spec.imag, context.real, context.imag,
                               (spec-repeat).abs().log1p(), innovation.abs().log1p(),
                               quality.expand_as(spec.real), level.log1p().expand_as(spec.real),
                               self.frequency.expand_as(spec.real)), dim=2)
@@ -58,7 +85,10 @@ class SpectralBlockRecovery(nn.Module):
             prediction = self.refine(fields.flatten(0,1))
         logit, a, b = prediction.float().unflatten(0, spec.shape[:2]).unbind(2)
         extra = .15*torch.complex(a.tanh(), b.tanh())
-        final = spec+confidence*(logit.sigmoid()*innovation + extra)*noncarrier
+        fine_change = confidence*(logit.sigmoid()*innovation + extra)*noncarrier
+        if repeat_evidence is not None:
+            fine_change = constrain_update(fine_change, repeat_evidence, protect=self.protection)
+        final = spec+fine_change
         return tuple(torch.fft.ifft(torch.fft.ifftshift(s, dim=-1), norm='ortho') for s in (coarse, final))
 
 

@@ -30,6 +30,9 @@ STEPS = 1600
 DETAIL_WEIGHT = .35
 MODES = ('direct','reference','unmasked_coarse','unmasked_full','unmasked_half',
          'masked_coarse','masked_full','masked_half')
+COMPARISONS = (('masked_coarse','unmasked_coarse'), ('masked_full','unmasked_full'),
+               ('masked_half','unmasked_half'), ('masked_full','masked_coarse'),
+               ('masked_half','direct'), ('unmasked_half','direct'))
 
 
 def restore(model, y, quality, _rotation):
@@ -41,9 +44,9 @@ RECIPES = {arm: FitRecipe(arm, STEPS, partial(SpectralBlockRecovery, masked=mask
            for arm, masked in (('unmasked', False), ('masked', True))}
 
 
-def load_models(root, contract, device):
+def load_models(root, contract, device, recipes=RECIPES):
     models, thresholds = [], []
-    for arm, recipe in RECIPES.items():
+    for arm, recipe in recipes.items():
         cp = torch.load(root/f'{arm}-model.pt', map_location=device, weights_only=True)
         if cp['proof'] != proof(contract, recipe):
             raise ValueError('Need the frozen same-contract U-only recovery arm')
@@ -79,11 +82,11 @@ def render(iq, _unused, baseline, tracker, models, *, threshold):
 
 
 @torch.no_grad()
-def smoke(rt):
+def smoke(rt, recipes=RECIPES, modes=MODES):
     device = 'cuda:0'
     root = Path(rt['run_root'])
     (_, source, _), contract = setup(rt, device, smoke=True)
-    models, threshold = load_models(root, contract, device)
+    models, threshold = load_models(root, contract, device, recipes)
     model = models[1]
     _, _, expected, baseline, tracker = source_control(rt, 'full', device)
     if contract != expected:
@@ -95,7 +98,7 @@ def smoke(rt):
     x = disturbed[ratio.argmax().view(1)]
     waves, active = render(torch.cat((source[:1],x)), None, baseline, tracker, models, threshold=threshold)
     logits = reader(waves.flatten(0,1))[0]
-    if logits.shape != (2*len(MODES),10) or not torch.isfinite(logits).all() or not active:
+    if logits.shape != (2*len(modes),10) or not torch.isfinite(logits).all() or not active:
         raise ValueError('Expected real frozen Tri-set, recovery and DURA outputs')
     times = {}
     for name, sample in (('source_clean', source[:1]), ('generic_disturbed', x)):
@@ -109,14 +112,14 @@ def smoke(rt):
                 records.append(1000*(perf_counter()-begun))
         times[name] = dict(active=bool(enable), median_ms=float(np.median(records)))
     write(root/'smoke.json', dict(status='PASS', target_reads=0, V_reads=0,
-          parameters={name:sum(p.numel() for p in m.parameters()) for name,m in zip(RECIPES,models,strict=True)},
+          parameters={name:sum(p.numel() for p in m.parameters()) for name,m in zip(recipes,models,strict=True)},
           b1=times, device=torch.cuda.get_device_name()))
 
 
-def evaluate(rt, route):
+def evaluate(rt, route, recipes=RECIPES, modes=MODES):
     binding = source_control(rt, route, 'cuda:0')
-    models, threshold = load_models(Path(rt['run_root']), binding[2], 'cuda:0')
-    score(rt, route, panel=panel, modes=MODES, render=partial(render, threshold=threshold),
+    models, threshold = load_models(Path(rt['run_root']), binding[2], 'cuda:0', recipes)
+    score(rt, route, panel=panel, modes=modes, render=partial(render, threshold=threshold),
           binding=binding, frozen_models=models, require_clean_bypass=False, replay_fn=receive_only, finalize=freeze)
 
 
@@ -129,13 +132,13 @@ def paired_tasks(rt, kind, names):
         raise RuntimeError(f'LoRa matched spectral-block {kind} failed')
 
 
-def dispatch(rt):
+def dispatch(rt, recipes=RECIPES):
     root = Path(rt['run_root'])
     root.mkdir(exist_ok=False)
     status = root/'state.json'
     try:
-        paired_tasks(rt, 'fit_smoke', RECIPES)
-        paired_tasks(rt, 'fit', RECIPES)
+        paired_tasks(rt, 'fit_smoke', recipes)
+        paired_tasks(rt, 'fit', recipes)
         gpu = select_gpu()
         write(status, dict(status='SMOKE', gpu=gpu), exclusive=False)
         if start(rt,'smoke','source',gpu,module=rt['runner']).wait():
@@ -150,18 +153,18 @@ def dispatch(rt):
         raise
 
 
-def publish(repo, output, context, ssh_config):
+def publish(repo, output, context, ssh_config, *, run=RUN, runner=None):
     cfg = read(context)
     rt = {key:cfg[key] for key in ('project','python','frozen_sources')}
     p = PurePosixPath(rt['project'])
-    rt.update(run_id=RUN, runner=__spec__.name, code_commit=release_commit(repo),
-              release_root=str(p/'releases'/f'{RUN}-release'), run_root=str(p/'runs'/RUN),
+    rt.update(run_id=run, runner=runner or __spec__.name, code_commit=release_commit(repo),
+              release_root=str(p/'releases'/f'{run}-release'), run_root=str(p/'runs'/run),
               source_root=str(p/'releases'/f'{DATA_RUN}-release'/'data'/'source'),
               parent_root=str(p/'runs'/RESIDUAL_RUN))
     release(repo, output, rt, ssh_config)
 
 
-def main():
+def main(*, run=RUN, runner=None, recipes=RECIPES, modes=MODES, comparisons=COMPARISONS):
     parser = argparse.ArgumentParser(description=__doc__)
     actions = parser.add_subparsers(dest='action',required=True)
     pub = actions.add_parser('publish')
@@ -171,28 +174,26 @@ def main():
         c = actions.add_parser(action)
         c.add_argument('runtime',type=Path)
         if action!='dispatch':
-            c.add_argument('name',choices=RECIPES if action in ('fit','fit_smoke') else ROUTES if action=='evaluate' else ('source',))
+            c.add_argument('name',choices=recipes if action in ('fit','fit_smoke') else ROUTES if action=='evaluate' else ('source',))
     args = vars(parser.parse_args())
     action = args.pop('action')
     if action=='publish':
-        publish(**args)
+        publish(**args, run=run, runner=runner)
         return
     rt = read(args['runtime'])
     if action=='dispatch':
-        dispatch(rt)
+        dispatch(rt, recipes)
     elif action=='score':
-        score_frozen(rt, MODES, comparisons=(('masked_coarse','unmasked_coarse'), ('masked_full','unmasked_full'),
-                                            ('masked_half','unmasked_half'), ('masked_full','masked_coarse'),
-                                            ('masked_half','direct'), ('unmasked_half','direct')))
+        score_frozen(rt, modes, comparisons=comparisons)
     else:
         activate(rt)
         if action in ('fit','fit_smoke'):
-            fit(rt, smoke=action=='fit_smoke', recipe=RECIPES[args['name']], receiver_batches=True,
+            fit(rt, smoke=action=='fit_smoke', recipe=recipes[args['name']], receiver_batches=True,
                 calculate=partial(natural_objective, preserve=DETAIL_WEIGHT))
         elif action=='smoke':
-            smoke(rt)
+            smoke(rt, recipes, modes)
         else:
-            evaluate(rt,args['name'])
+            evaluate(rt,args['name'],recipes,modes)
 
 
 if __name__=='__main__':
