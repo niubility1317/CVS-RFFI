@@ -190,7 +190,7 @@ def waveform_risk(output, clean):
     return (error / power(clean).mean(dim=-1).clamp_min(.01)).log1p().mean()
 
 
-def objective(model, clean, generator):
+def objective(model, clean, generator, *, relation=None):
     difference = weak_probe(clean)
     target = torch.stack((clean, clean, clean + difference), dim=1)
     pair = generic_observation(target[:, (0, 2)], generator)
@@ -203,4 +203,9 @@ def objective(model, clean, generator):
     transport = (power(delta - difference).mean(-1) / (.002 + power(difference).mean(-1))).log1p().mean()
     risks = torch.stack((waveform_risk(coarse, target.flatten(0, 1)), waveform_risk(refined, target.flatten(0, 1)),
                          waveform_risk(output[:, 0], output[:, 1]), transport))
-    return (risks * risks.new_tensor((.35, 1., .08, .35))).sum(), risks
+    loss = (risks * risks.new_tensor((.35, 1., .08, .35))).sum()
+    if relation is not None:
+        structure = relation(output[:, :2], clean)
+        loss = loss + .35 * structure
+        risks = torch.cat((risks, structure[None]))
+    return loss, risks
