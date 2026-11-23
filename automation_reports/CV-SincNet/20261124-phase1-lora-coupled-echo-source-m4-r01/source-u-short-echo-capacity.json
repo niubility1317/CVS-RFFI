@@ -1,0 +1,214 @@
+{
+  "packets": 150,
+  "source_role": "held_U_s",
+  "trace_is_diagnostic_only": true,
+  "target_reads": 0,
+  "V_reads": 0,
+  "F_reads": 0,
+  "TX_reads": 0,
+  "min_clean_carrier": 0.1,
+  "by_route": {
+    "full": {
+      "practical_low_suburban": {
+        "supported_chirps": 900,
+        "bands": {
+          "1_to_8": {
+            "restricted_all_band_fit": {
+              "unexplained_energy_fraction": 0.0448029525578022,
+              "packet_p50": 0.006743810139596462
+            },
+            "best_shared_fit_in_band": {
+              "unexplained_energy_fraction": 0.044316936284303665,
+              "packet_p50": 0.006531350780278444
+            },
+            "best_separate_fit_in_band": {
+              "unexplained_energy_fraction": 0.00015724473632872105,
+              "packet_p50": 0.00038228172343224287
+            }
+          },
+          "9_to_32": {
+            "restricted_all_band_fit": {
+              "unexplained_energy_fraction": 0.022283894941210747,
+              "packet_p50": 0.018131613731384277
+            },
+            "best_shared_fit_in_band": {
+              "unexplained_energy_fraction": 0.007324732840061188,
+              "packet_p50": 0.010178031399846077
+            },
+            "best_separate_fit_in_band": {
+              "unexplained_energy_fraction": 0.0038101081736385822,
+              "packet_p50": 0.006826208438724279
+            }
+          }
+        }
+      },
+      "practical_high_urban": {
+        "supported_chirps": 899,
+        "bands": {
+          "1_to_8": {
+            "restricted_all_band_fit": {
+              "unexplained_energy_fraction": 0.003273148788139224,
+              "packet_p50": 0.004452412948012352
+            },
+            "best_shared_fit_in_band": {
+              "unexplained_energy_fraction": 0.0030717155896127224,
+              "packet_p50": 0.004331022966653109
+            },
+            "best_separate_fit_in_band": {
+              "unexplained_energy_fraction": 0.00010983679385390133,
+              "packet_p50": 0.00031152082374319434
+            }
+          },
+          "9_to_32": {
+            "restricted_all_band_fit": {
+              "unexplained_energy_fraction": 0.012652141973376274,
+              "packet_p50": 0.0160677507519722
+            },
+            "best_shared_fit_in_band": {
+              "unexplained_energy_fraction": 0.0035557374358177185,
+              "packet_p50": 0.007067433558404446
+            },
+            "best_separate_fit_in_band": {
+              "unexplained_energy_fraction": 0.00218912772834301,
+              "packet_p50": 0.005317064467817545
+            }
+          }
+        }
+      },
+      "practical_low_urban": {
+        "supported_chirps": 870,
+        "bands": {
+          "1_to_8": {
+            "restricted_all_band_fit": {
+              "unexplained_energy_fraction": 0.014611893333494663,
+              "packet_p50": 0.008539505302906036
+            },
+            "best_shared_fit_in_band": {
+              "unexplained_energy_fraction": 0.014469278044998646,
+              "packet_p50": 0.00843154639005661
+            },
+            "best_separate_fit_in_band": {
+              "unexplained_energy_fraction": 2.527213109715376e-05,
+              "packet_p50": 0.00025244386051781476
+            }
+          },
+          "9_to_32": {
+            "restricted_all_band_fit": {
+              "unexplained_energy_fraction": 0.03258692845702171,
+              "packet_p50": 0.02155977301299572
+            },
+            "best_shared_fit_in_band": {
+              "unexplained_energy_fraction": 0.007935043424367905,
+              "packet_p50": 0.008337676525115967
+            },
+            "best_separate_fit_in_band": {
+              "unexplained_energy_fraction": 0.00420471653342247,
+              "packet_p50": 0.004695408511906862
+            }
+          }
+        }
+      }
+    },
+    "residual": {
+      "practical_low_suburban": {
+        "supported_chirps": 897,
+        "bands": {
+          "1_to_8": {
+            "restricted_all_band_fit": {
+              "unexplained_energy_fraction": 0.8691483736038208,
+              "packet_p50": 0.8791971802711487
+            },
+            "best_shared_fit_in_band": {
+              "unexplained_energy_fraction": 0.8673670291900635,
+              "packet_p50": 0.8790212869644165
+            },
+            "best_separate_fit_in_band": {
+              "unexplained_energy_fraction": 3.99416167056188e-05,
+              "packet_p50": 0.0001619960821699351
+            }
+          },
+          "9_to_32": {
+            "restricted_all_band_fit": {
+              "unexplained_energy_fraction": 0.8769611120223999,
+              "packet_p50": 0.8945425152778625
+            },
+            "best_shared_fit_in_band": {
+              "unexplained_energy_fraction": 0.43299245834350586,
+              "packet_p50": 0.4046337902545929
+            },
+            "best_separate_fit_in_band": {
+              "unexplained_energy_fraction": 0.0024959626607596874,
+              "packet_p50": 0.003120963927358389
+            }
+          }
+        }
+      },
+      "practical_high_urban": {
+        "supported_chirps": 900,
+        "bands": {
+          "1_to_8": {
+            "restricted_all_band_fit": {
+              "unexplained_energy_fraction": 0.8411169052124023,
+              "packet_p50": 0.8867521286010742
+            },
+            "best_shared_fit_in_band": {
+              "unexplained_energy_fraction": 0.8390085697174072,
+              "packet_p50": 0.8866371512413025
+            },
+            "best_separate_fit_in_band": {
+              "unexplained_energy_fraction": 7.708541670581326e-05,
+              "packet_p50": 0.00017254563863389194
+            }
+          },
+          "9_to_32": {
+            "restricted_all_band_fit": {
+              "unexplained_energy_fraction": 0.8575083017349243,
+              "packet_p50": 0.8952412009239197
+            },
+            "best_shared_fit_in_band": {
+              "unexplained_energy_fraction": 0.4110648036003113,
+              "packet_p50": 0.40238645672798157
+            },
+            "best_separate_fit_in_band": {
+              "unexplained_energy_fraction": 0.0030888875480741262,
+              "packet_p50": 0.003620102535933256
+            }
+          }
+        }
+      },
+      "practical_low_urban": {
+        "supported_chirps": 862,
+        "bands": {
+          "1_to_8": {
+            "restricted_all_band_fit": {
+              "unexplained_energy_fraction": 0.8121045231819153,
+              "packet_p50": 0.8494805097579956
+            },
+            "best_shared_fit_in_band": {
+              "unexplained_energy_fraction": 0.8094043731689453,
+              "packet_p50": 0.8471013307571411
+            },
+            "best_separate_fit_in_band": {
+              "unexplained_energy_fraction": 2.6224761313642375e-05,
+              "packet_p50": 6.395937089109793e-05
+            }
+          },
+          "9_to_32": {
+            "restricted_all_band_fit": {
+              "unexplained_energy_fraction": 0.8709924817085266,
+              "packet_p50": 0.9100409746170044
+            },
+            "best_shared_fit_in_band": {
+              "unexplained_energy_fraction": 0.4362330734729767,
+              "packet_p50": 0.4604407548904419
+            },
+            "best_separate_fit_in_band": {
+              "unexplained_energy_fraction": 0.0021889605559408665,
+              "packet_p50": 0.002030828269198537
+            }
+          }
+        }
+      }
+    }
+  }
+}

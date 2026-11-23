@@ -1,0 +1,1017 @@
+{
+  "parent": "20261124-phase1-lora-coupled-echo-source-m4-r01",
+  "n_packets": 900,
+  "observed_noise_rms_thresholds": [
+    0.045941177755594254,
+    0.15,
+    0.4
+  ],
+  "scopes": [
+    "bypass",
+    "active_to_0.15",
+    "active_0.15_to_0.40",
+    "active_above_0.40"
+  ],
+  "uses_actual_added_noise": false,
+  "target_reads": 0,
+  "by_route": {
+    "full": {
+      "pooled": {
+        "bypass": {
+          "exposures": 3771,
+          "comparisons": {
+            "echo_half__vs__linked_half": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 2449,
+              "control_correct": 2449
+            },
+            "echo_half__vs__echo_off_half": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 2449,
+              "control_correct": 2449
+            },
+            "echo_half__vs__reference": {
+              "better": 52,
+              "worse": 65,
+              "variant_correct": 2449,
+              "control_correct": 2462
+            },
+            "echo_common_half__vs__direct": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 2449,
+              "control_correct": 2449
+            },
+            "echo_private_half__vs__direct": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 2449,
+              "control_correct": 2449
+            }
+          }
+        },
+        "active_to_0.15": {
+          "exposures": 653,
+          "comparisons": {
+            "echo_half__vs__linked_half": {
+              "better": 23,
+              "worse": 25,
+              "variant_correct": 329,
+              "control_correct": 331
+            },
+            "echo_half__vs__echo_off_half": {
+              "better": 4,
+              "worse": 13,
+              "variant_correct": 329,
+              "control_correct": 338
+            },
+            "echo_half__vs__reference": {
+              "better": 33,
+              "worse": 50,
+              "variant_correct": 329,
+              "control_correct": 346
+            },
+            "echo_common_half__vs__direct": {
+              "better": 20,
+              "worse": 23,
+              "variant_correct": 316,
+              "control_correct": 319
+            },
+            "echo_private_half__vs__direct": {
+              "better": 36,
+              "worse": 25,
+              "variant_correct": 330,
+              "control_correct": 319
+            }
+          }
+        },
+        "active_0.15_to_0.40": {
+          "exposures": 629,
+          "comparisons": {
+            "echo_half__vs__linked_half": {
+              "better": 22,
+              "worse": 12,
+              "variant_correct": 204,
+              "control_correct": 194
+            },
+            "echo_half__vs__echo_off_half": {
+              "better": 2,
+              "worse": 3,
+              "variant_correct": 204,
+              "control_correct": 205
+            },
+            "echo_half__vs__reference": {
+              "better": 33,
+              "worse": 33,
+              "variant_correct": 204,
+              "control_correct": 204
+            },
+            "echo_common_half__vs__direct": {
+              "better": 32,
+              "worse": 24,
+              "variant_correct": 201,
+              "control_correct": 193
+            },
+            "echo_private_half__vs__direct": {
+              "better": 56,
+              "worse": 34,
+              "variant_correct": 215,
+              "control_correct": 193
+            }
+          }
+        },
+        "active_above_0.40": {
+          "exposures": 347,
+          "comparisons": {
+            "echo_half__vs__linked_half": {
+              "better": 15,
+              "worse": 7,
+              "variant_correct": 89,
+              "control_correct": 81
+            },
+            "echo_half__vs__echo_off_half": {
+              "better": 0,
+              "worse": 1,
+              "variant_correct": 89,
+              "control_correct": 90
+            },
+            "echo_half__vs__reference": {
+              "better": 16,
+              "worse": 9,
+              "variant_correct": 89,
+              "control_correct": 82
+            },
+            "echo_common_half__vs__direct": {
+              "better": 13,
+              "worse": 16,
+              "variant_correct": 64,
+              "control_correct": 67
+            },
+            "echo_private_half__vs__direct": {
+              "better": 31,
+              "worse": 17,
+              "variant_correct": 81,
+              "control_correct": 67
+            }
+          }
+        }
+      },
+      "by_scene": {
+        "practical_high": {
+          "bypass": {
+            "exposures": 879,
+            "comparisons": {
+              "echo_half__vs__linked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 582,
+                "control_correct": 582
+              },
+              "echo_half__vs__echo_off_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 582,
+                "control_correct": 582
+              },
+              "echo_half__vs__reference": {
+                "better": 3,
+                "worse": 1,
+                "variant_correct": 582,
+                "control_correct": 580
+              },
+              "echo_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 582,
+                "control_correct": 582
+              },
+              "echo_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 582,
+                "control_correct": 582
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 13,
+            "comparisons": {
+              "echo_half__vs__linked_half": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 8,
+                "control_correct": 7
+              },
+              "echo_half__vs__echo_off_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 8,
+                "control_correct": 8
+              },
+              "echo_half__vs__reference": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 8,
+                "control_correct": 7
+              },
+              "echo_common_half__vs__direct": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 7,
+                "control_correct": 8
+              },
+              "echo_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 8,
+                "control_correct": 8
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 7,
+            "comparisons": {
+              "echo_half__vs__linked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 2
+              },
+              "echo_half__vs__echo_off_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 2
+              },
+              "echo_half__vs__reference": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 2,
+                "control_correct": 3
+              },
+              "echo_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 4,
+                "control_correct": 4
+              },
+              "echo_private_half__vs__direct": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 3,
+                "control_correct": 4
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 1,
+            "comparisons": {
+              "echo_half__vs__linked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "echo_half__vs__echo_off_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "echo_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "echo_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "echo_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              }
+            }
+          }
+        },
+        "practical_mid": {
+          "bypass": {
+            "exposures": 741,
+            "comparisons": {
+              "echo_half__vs__linked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 480,
+                "control_correct": 480
+              },
+              "echo_half__vs__echo_off_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 480,
+                "control_correct": 480
+              },
+              "echo_half__vs__reference": {
+                "better": 13,
+                "worse": 16,
+                "variant_correct": 480,
+                "control_correct": 483
+              },
+              "echo_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 480,
+                "control_correct": 480
+              },
+              "echo_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 480,
+                "control_correct": 480
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 119,
+            "comparisons": {
+              "echo_half__vs__linked_half": {
+                "better": 5,
+                "worse": 4,
+                "variant_correct": 59,
+                "control_correct": 58
+              },
+              "echo_half__vs__echo_off_half": {
+                "better": 0,
+                "worse": 2,
+                "variant_correct": 59,
+                "control_correct": 61
+              },
+              "echo_half__vs__reference": {
+                "better": 10,
+                "worse": 8,
+                "variant_correct": 59,
+                "control_correct": 57
+              },
+              "echo_common_half__vs__direct": {
+                "better": 2,
+                "worse": 5,
+                "variant_correct": 58,
+                "control_correct": 61
+              },
+              "echo_private_half__vs__direct": {
+                "better": 4,
+                "worse": 4,
+                "variant_correct": 61,
+                "control_correct": 61
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 31,
+            "comparisons": {
+              "echo_half__vs__linked_half": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 13,
+                "control_correct": 12
+              },
+              "echo_half__vs__echo_off_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 13,
+                "control_correct": 13
+              },
+              "echo_half__vs__reference": {
+                "better": 2,
+                "worse": 2,
+                "variant_correct": 13,
+                "control_correct": 13
+              },
+              "echo_common_half__vs__direct": {
+                "better": 2,
+                "worse": 1,
+                "variant_correct": 15,
+                "control_correct": 14
+              },
+              "echo_private_half__vs__direct": {
+                "better": 2,
+                "worse": 2,
+                "variant_correct": 14,
+                "control_correct": 14
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 9,
+            "comparisons": {
+              "echo_half__vs__linked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 2
+              },
+              "echo_half__vs__echo_off_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 2
+              },
+              "echo_half__vs__reference": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 1
+              },
+              "echo_common_half__vs__direct": {
+                "better": 2,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 0
+              },
+              "echo_private_half__vs__direct": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 0
+              }
+            }
+          }
+        },
+        "practical_low_suburban": {
+          "bypass": {
+            "exposures": 580,
+            "comparisons": {
+              "echo_half__vs__linked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 349,
+                "control_correct": 349
+              },
+              "echo_half__vs__echo_off_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 349,
+                "control_correct": 349
+              },
+              "echo_half__vs__reference": {
+                "better": 17,
+                "worse": 29,
+                "variant_correct": 349,
+                "control_correct": 361
+              },
+              "echo_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 349,
+                "control_correct": 349
+              },
+              "echo_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 349,
+                "control_correct": 349
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 257,
+            "comparisons": {
+              "echo_half__vs__linked_half": {
+                "better": 8,
+                "worse": 10,
+                "variant_correct": 131,
+                "control_correct": 133
+              },
+              "echo_half__vs__echo_off_half": {
+                "better": 3,
+                "worse": 6,
+                "variant_correct": 131,
+                "control_correct": 134
+              },
+              "echo_half__vs__reference": {
+                "better": 10,
+                "worse": 18,
+                "variant_correct": 131,
+                "control_correct": 139
+              },
+              "echo_common_half__vs__direct": {
+                "better": 11,
+                "worse": 8,
+                "variant_correct": 124,
+                "control_correct": 121
+              },
+              "echo_private_half__vs__direct": {
+                "better": 15,
+                "worse": 7,
+                "variant_correct": 129,
+                "control_correct": 121
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 50,
+            "comparisons": {
+              "echo_half__vs__linked_half": {
+                "better": 6,
+                "worse": 1,
+                "variant_correct": 25,
+                "control_correct": 20
+              },
+              "echo_half__vs__echo_off_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 25,
+                "control_correct": 25
+              },
+              "echo_half__vs__reference": {
+                "better": 3,
+                "worse": 1,
+                "variant_correct": 25,
+                "control_correct": 23
+              },
+              "echo_common_half__vs__direct": {
+                "better": 4,
+                "worse": 3,
+                "variant_correct": 21,
+                "control_correct": 20
+              },
+              "echo_private_half__vs__direct": {
+                "better": 5,
+                "worse": 3,
+                "variant_correct": 22,
+                "control_correct": 20
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 13,
+            "comparisons": {
+              "echo_half__vs__linked_half": {
+                "better": 3,
+                "worse": 0,
+                "variant_correct": 5,
+                "control_correct": 2
+              },
+              "echo_half__vs__echo_off_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 5,
+                "control_correct": 5
+              },
+              "echo_half__vs__reference": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 5,
+                "control_correct": 4
+              },
+              "echo_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 3,
+                "control_correct": 3
+              },
+              "echo_private_half__vs__direct": {
+                "better": 1,
+                "worse": 2,
+                "variant_correct": 2,
+                "control_correct": 3
+              }
+            }
+          }
+        },
+        "practical_high_urban": {
+          "bypass": {
+            "exposures": 808,
+            "comparisons": {
+              "echo_half__vs__linked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 543,
+                "control_correct": 543
+              },
+              "echo_half__vs__echo_off_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 543,
+                "control_correct": 543
+              },
+              "echo_half__vs__reference": {
+                "better": 2,
+                "worse": 2,
+                "variant_correct": 543,
+                "control_correct": 543
+              },
+              "echo_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 543,
+                "control_correct": 543
+              },
+              "echo_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 543,
+                "control_correct": 543
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 29,
+            "comparisons": {
+              "echo_half__vs__linked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 17,
+                "control_correct": 17
+              },
+              "echo_half__vs__echo_off_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 17,
+                "control_correct": 17
+              },
+              "echo_half__vs__reference": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 17,
+                "control_correct": 18
+              },
+              "echo_common_half__vs__direct": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 16,
+                "control_correct": 15
+              },
+              "echo_private_half__vs__direct": {
+                "better": 3,
+                "worse": 0,
+                "variant_correct": 18,
+                "control_correct": 15
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 51,
+            "comparisons": {
+              "echo_half__vs__linked_half": {
+                "better": 3,
+                "worse": 3,
+                "variant_correct": 18,
+                "control_correct": 18
+              },
+              "echo_half__vs__echo_off_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 18,
+                "control_correct": 18
+              },
+              "echo_half__vs__reference": {
+                "better": 4,
+                "worse": 4,
+                "variant_correct": 18,
+                "control_correct": 18
+              },
+              "echo_common_half__vs__direct": {
+                "better": 3,
+                "worse": 3,
+                "variant_correct": 21,
+                "control_correct": 21
+              },
+              "echo_private_half__vs__direct": {
+                "better": 4,
+                "worse": 5,
+                "variant_correct": 20,
+                "control_correct": 21
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 12,
+            "comparisons": {
+              "echo_half__vs__linked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 5,
+                "control_correct": 5
+              },
+              "echo_half__vs__echo_off_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 5,
+                "control_correct": 5
+              },
+              "echo_half__vs__reference": {
+                "better": 3,
+                "worse": 0,
+                "variant_correct": 5,
+                "control_correct": 2
+              },
+              "echo_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 2
+              },
+              "echo_private_half__vs__direct": {
+                "better": 3,
+                "worse": 0,
+                "variant_correct": 5,
+                "control_correct": 2
+              }
+            }
+          }
+        },
+        "practical_mid_urban": {
+          "bypass": {
+            "exposures": 504,
+            "comparisons": {
+              "echo_half__vs__linked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 326,
+                "control_correct": 326
+              },
+              "echo_half__vs__echo_off_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 326,
+                "control_correct": 326
+              },
+              "echo_half__vs__reference": {
+                "better": 10,
+                "worse": 12,
+                "variant_correct": 326,
+                "control_correct": 328
+              },
+              "echo_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 326,
+                "control_correct": 326
+              },
+              "echo_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 326,
+                "control_correct": 326
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 102,
+            "comparisons": {
+              "echo_half__vs__linked_half": {
+                "better": 1,
+                "worse": 5,
+                "variant_correct": 51,
+                "control_correct": 55
+              },
+              "echo_half__vs__echo_off_half": {
+                "better": 0,
+                "worse": 3,
+                "variant_correct": 51,
+                "control_correct": 54
+              },
+              "echo_half__vs__reference": {
+                "better": 2,
+                "worse": 9,
+                "variant_correct": 51,
+                "control_correct": 58
+              },
+              "echo_common_half__vs__direct": {
+                "better": 2,
+                "worse": 3,
+                "variant_correct": 47,
+                "control_correct": 48
+              },
+              "echo_private_half__vs__direct": {
+                "better": 7,
+                "worse": 4,
+                "variant_correct": 51,
+                "control_correct": 48
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 211,
+            "comparisons": {
+              "echo_half__vs__linked_half": {
+                "better": 5,
+                "worse": 3,
+                "variant_correct": 58,
+                "control_correct": 56
+              },
+              "echo_half__vs__echo_off_half": {
+                "better": 2,
+                "worse": 2,
+                "variant_correct": 58,
+                "control_correct": 58
+              },
+              "echo_half__vs__reference": {
+                "better": 7,
+                "worse": 12,
+                "variant_correct": 58,
+                "control_correct": 63
+              },
+              "echo_common_half__vs__direct": {
+                "better": 11,
+                "worse": 6,
+                "variant_correct": 61,
+                "control_correct": 56
+              },
+              "echo_private_half__vs__direct": {
+                "better": 20,
+                "worse": 11,
+                "variant_correct": 65,
+                "control_correct": 56
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 83,
+            "comparisons": {
+              "echo_half__vs__linked_half": {
+                "better": 4,
+                "worse": 1,
+                "variant_correct": 22,
+                "control_correct": 19
+              },
+              "echo_half__vs__echo_off_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 22,
+                "control_correct": 22
+              },
+              "echo_half__vs__reference": {
+                "better": 6,
+                "worse": 2,
+                "variant_correct": 22,
+                "control_correct": 18
+              },
+              "echo_common_half__vs__direct": {
+                "better": 6,
+                "worse": 6,
+                "variant_correct": 14,
+                "control_correct": 14
+              },
+              "echo_private_half__vs__direct": {
+                "better": 9,
+                "worse": 4,
+                "variant_correct": 19,
+                "control_correct": 14
+              }
+            }
+          }
+        },
+        "practical_low_urban": {
+          "bypass": {
+            "exposures": 259,
+            "comparisons": {
+              "echo_half__vs__linked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 169,
+                "control_correct": 169
+              },
+              "echo_half__vs__echo_off_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 169,
+                "control_correct": 169
+              },
+              "echo_half__vs__reference": {
+                "better": 7,
+                "worse": 5,
+                "variant_correct": 169,
+                "control_correct": 167
+              },
+              "echo_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 169,
+                "control_correct": 169
+              },
+              "echo_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 169,
+                "control_correct": 169
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 133,
+            "comparisons": {
+              "echo_half__vs__linked_half": {
+                "better": 8,
+                "worse": 6,
+                "variant_correct": 63,
+                "control_correct": 61
+              },
+              "echo_half__vs__echo_off_half": {
+                "better": 1,
+                "worse": 2,
+                "variant_correct": 63,
+                "control_correct": 64
+              },
+              "echo_half__vs__reference": {
+                "better": 10,
+                "worse": 14,
+                "variant_correct": 63,
+                "control_correct": 67
+              },
+              "echo_common_half__vs__direct": {
+                "better": 4,
+                "worse": 6,
+                "variant_correct": 64,
+                "control_correct": 66
+              },
+              "echo_private_half__vs__direct": {
+                "better": 7,
+                "worse": 10,
+                "variant_correct": 63,
+                "control_correct": 66
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 279,
+            "comparisons": {
+              "echo_half__vs__linked_half": {
+                "better": 7,
+                "worse": 5,
+                "variant_correct": 88,
+                "control_correct": 86
+              },
+              "echo_half__vs__echo_off_half": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 88,
+                "control_correct": 89
+              },
+              "echo_half__vs__reference": {
+                "better": 17,
+                "worse": 13,
+                "variant_correct": 88,
+                "control_correct": 84
+              },
+              "echo_common_half__vs__direct": {
+                "better": 12,
+                "worse": 11,
+                "variant_correct": 79,
+                "control_correct": 78
+              },
+              "echo_private_half__vs__direct": {
+                "better": 25,
+                "worse": 12,
+                "variant_correct": 91,
+                "control_correct": 78
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 229,
+            "comparisons": {
+              "echo_half__vs__linked_half": {
+                "better": 8,
+                "worse": 6,
+                "variant_correct": 54,
+                "control_correct": 52
+              },
+              "echo_half__vs__echo_off_half": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 54,
+                "control_correct": 55
+              },
+              "echo_half__vs__reference": {
+                "better": 5,
+                "worse": 7,
+                "variant_correct": 54,
+                "control_correct": 56
+              },
+              "echo_common_half__vs__direct": {
+                "better": 5,
+                "worse": 10,
+                "variant_correct": 42,
+                "control_correct": 47
+              },
+              "echo_private_half__vs__direct": {
+                "better": 17,
+                "worse": 11,
+                "variant_correct": 53,
+                "control_correct": 47
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

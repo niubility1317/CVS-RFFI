@@ -1,0 +1,839 @@
+{
+  "packets": 150,
+  "source_role": "held_U_s",
+  "trace_is_diagnostic_only": true,
+  "target_reads": 0,
+  "V_reads": 0,
+  "F_reads": 0,
+  "TX_reads": 0,
+  "min_clean_carrier": 0.1,
+  "validation": "ridge diagnostic, either complementary parity inside each band, or entire complementary band",
+  "by_route": {
+    "full": {
+      "practical_low_suburban": {
+        "supported_chirps": 900,
+        "bands": {
+          "1_to_8": {
+            "within_band_shared_1e-06": {
+              "unexplained_energy_fraction": 36.739383697509766,
+              "packet_p50": 8.295723915100098
+            },
+            "within_band_shared_0.0001": {
+              "unexplained_energy_fraction": 0.9527327418327332,
+              "packet_p50": 0.9074894785881042
+            },
+            "within_band_shared_0.01": {
+              "unexplained_energy_fraction": 0.6713387966156006,
+              "packet_p50": 0.31899455189704895
+            },
+            "within_band_shared_0.1": {
+              "unexplained_energy_fraction": 0.7343152761459351,
+              "packet_p50": 0.4419309198856354
+            },
+            "within_band_per_chirp_1e-06": {
+              "unexplained_energy_fraction": 14.2288818359375,
+              "packet_p50": 23.1385440826416
+            },
+            "within_band_per_chirp_0.0001": {
+              "unexplained_energy_fraction": 1.088577151298523,
+              "packet_p50": 1.6390913724899292
+            },
+            "within_band_per_chirp_0.01": {
+              "unexplained_energy_fraction": 0.6759966611862183,
+              "packet_p50": 0.32958918809890747
+            },
+            "within_band_per_chirp_0.1": {
+              "unexplained_energy_fraction": 0.7368156909942627,
+              "packet_p50": 0.4410533308982849
+            },
+            "cross_band_shared_1e-06": {
+              "unexplained_energy_fraction": 63.27702331542969,
+              "packet_p50": 66.505859375
+            },
+            "cross_band_shared_0.0001": {
+              "unexplained_energy_fraction": 5.813786506652832,
+              "packet_p50": 3.456048011779785
+            },
+            "cross_band_shared_0.01": {
+              "unexplained_energy_fraction": 0.7361127734184265,
+              "packet_p50": 0.6908847093582153
+            },
+            "cross_band_shared_0.1": {
+              "unexplained_energy_fraction": 0.6282607316970825,
+              "packet_p50": 0.5543165802955627
+            },
+            "cross_band_per_chirp_1e-06": {
+              "unexplained_energy_fraction": 48.5655632019043,
+              "packet_p50": 203.0572967529297
+            },
+            "cross_band_per_chirp_0.0001": {
+              "unexplained_energy_fraction": 1.787096619606018,
+              "packet_p50": 4.13224458694458
+            },
+            "cross_band_per_chirp_0.01": {
+              "unexplained_energy_fraction": 0.692638099193573,
+              "packet_p50": 0.7472088932991028
+            },
+            "cross_band_per_chirp_0.1": {
+              "unexplained_energy_fraction": 0.6203246712684631,
+              "packet_p50": 0.5524172782897949
+            }
+          },
+          "9_to_32": {
+            "within_band_shared_1e-06": {
+              "unexplained_energy_fraction": 0.0076967934146523476,
+              "packet_p50": 0.010906938463449478
+            },
+            "within_band_shared_0.0001": {
+              "unexplained_energy_fraction": 0.008099010214209557,
+              "packet_p50": 0.011475032195448875
+            },
+            "within_band_shared_0.01": {
+              "unexplained_energy_fraction": 0.009770546108484268,
+              "packet_p50": 0.01189749501645565
+            },
+            "within_band_shared_0.1": {
+              "unexplained_energy_fraction": 0.011745763942599297,
+              "packet_p50": 0.013666987419128418
+            },
+            "within_band_per_chirp_1e-06": {
+              "unexplained_energy_fraction": 0.0060755726881325245,
+              "packet_p50": 0.011257519014179707
+            },
+            "within_band_per_chirp_0.0001": {
+              "unexplained_energy_fraction": 0.005485048517584801,
+              "packet_p50": 0.010526161640882492
+            },
+            "within_band_per_chirp_0.01": {
+              "unexplained_energy_fraction": 0.0055657061748206615,
+              "packet_p50": 0.009559398517012596
+            },
+            "within_band_per_chirp_0.1": {
+              "unexplained_energy_fraction": 0.007156169041991234,
+              "packet_p50": 0.011434642598032951
+            },
+            "cross_band_shared_1e-06": {
+              "unexplained_energy_fraction": 0.17149227857589722,
+              "packet_p50": 0.0591585710644722
+            },
+            "cross_band_shared_0.0001": {
+              "unexplained_energy_fraction": 0.08432770520448685,
+              "packet_p50": 0.05983125418424606
+            },
+            "cross_band_shared_0.01": {
+              "unexplained_energy_fraction": 0.10460101813077927,
+              "packet_p50": 0.09903702884912491
+            },
+            "cross_band_shared_0.1": {
+              "unexplained_energy_fraction": 0.17267480492591858,
+              "packet_p50": 0.17401710152626038
+            },
+            "cross_band_per_chirp_1e-06": {
+              "unexplained_energy_fraction": 0.060815565288066864,
+              "packet_p50": 0.06876832991838455
+            },
+            "cross_band_per_chirp_0.0001": {
+              "unexplained_energy_fraction": 0.06572756916284561,
+              "packet_p50": 0.06333929300308228
+            },
+            "cross_band_per_chirp_0.01": {
+              "unexplained_energy_fraction": 0.10025546699762344,
+              "packet_p50": 0.09756893664598465
+            },
+            "cross_band_per_chirp_0.1": {
+              "unexplained_energy_fraction": 0.1701810508966446,
+              "packet_p50": 0.17310281097888947
+            }
+          }
+        }
+      },
+      "practical_high_urban": {
+        "supported_chirps": 899,
+        "bands": {
+          "1_to_8": {
+            "within_band_shared_1e-06": {
+              "unexplained_energy_fraction": 4.672451496124268,
+              "packet_p50": 6.324069023132324
+            },
+            "within_band_shared_0.0001": {
+              "unexplained_energy_fraction": 0.9997696876525879,
+              "packet_p50": 0.8850215673446655
+            },
+            "within_band_shared_0.01": {
+              "unexplained_energy_fraction": 0.5542096495628357,
+              "packet_p50": 0.3194692134857178
+            },
+            "within_band_shared_0.1": {
+              "unexplained_energy_fraction": 0.6308020353317261,
+              "packet_p50": 0.4431476294994354
+            },
+            "within_band_per_chirp_1e-06": {
+              "unexplained_energy_fraction": 7.050387382507324,
+              "packet_p50": 18.680198669433594
+            },
+            "within_band_per_chirp_0.0001": {
+              "unexplained_energy_fraction": 1.1097722053527832,
+              "packet_p50": 1.529594898223877
+            },
+            "within_band_per_chirp_0.01": {
+              "unexplained_energy_fraction": 0.5552167296409607,
+              "packet_p50": 0.32816681265830994
+            },
+            "within_band_per_chirp_0.1": {
+              "unexplained_energy_fraction": 0.6307535767555237,
+              "packet_p50": 0.44227853417396545
+            },
+            "cross_band_shared_1e-06": {
+              "unexplained_energy_fraction": 34.38823318481445,
+              "packet_p50": 66.80728149414062
+            },
+            "cross_band_shared_0.0001": {
+              "unexplained_energy_fraction": 2.5517685413360596,
+              "packet_p50": 2.443573236465454
+            },
+            "cross_band_shared_0.01": {
+              "unexplained_energy_fraction": 0.6585118770599365,
+              "packet_p50": 0.6701899170875549
+            },
+            "cross_band_shared_0.1": {
+              "unexplained_energy_fraction": 0.5398407578468323,
+              "packet_p50": 0.5539038777351379
+            },
+            "cross_band_per_chirp_1e-06": {
+              "unexplained_energy_fraction": 39.94342803955078,
+              "packet_p50": 132.9542236328125
+            },
+            "cross_band_per_chirp_0.0001": {
+              "unexplained_energy_fraction": 2.2332000732421875,
+              "packet_p50": 3.3179430961608887
+            },
+            "cross_band_per_chirp_0.01": {
+              "unexplained_energy_fraction": 0.6640856266021729,
+              "packet_p50": 0.7464615106582642
+            },
+            "cross_band_per_chirp_0.1": {
+              "unexplained_energy_fraction": 0.5401998162269592,
+              "packet_p50": 0.5573738217353821
+            }
+          },
+          "9_to_32": {
+            "within_band_shared_1e-06": {
+              "unexplained_energy_fraction": 0.003955361433327198,
+              "packet_p50": 0.008626386523246765
+            },
+            "within_band_shared_0.0001": {
+              "unexplained_energy_fraction": 0.0041000074706971645,
+              "packet_p50": 0.008827859535813332
+            },
+            "within_band_shared_0.01": {
+              "unexplained_energy_fraction": 0.004768880549818277,
+              "packet_p50": 0.00922459363937378
+            },
+            "within_band_shared_0.1": {
+              "unexplained_energy_fraction": 0.006395779084414244,
+              "packet_p50": 0.010938589461147785
+            },
+            "within_band_per_chirp_1e-06": {
+              "unexplained_energy_fraction": 0.004620293155312538,
+              "packet_p50": 0.013273091055452824
+            },
+            "within_band_per_chirp_0.0001": {
+              "unexplained_energy_fraction": 0.004254013765603304,
+              "packet_p50": 0.011989139951765537
+            },
+            "within_band_per_chirp_0.01": {
+              "unexplained_energy_fraction": 0.004385128151625395,
+              "packet_p50": 0.011092079803347588
+            },
+            "within_band_per_chirp_0.1": {
+              "unexplained_energy_fraction": 0.005816907621920109,
+              "packet_p50": 0.011992322281002998
+            },
+            "cross_band_shared_1e-06": {
+              "unexplained_energy_fraction": 0.05379096418619156,
+              "packet_p50": 0.05534566938877106
+            },
+            "cross_band_shared_0.0001": {
+              "unexplained_energy_fraction": 0.07366682589054108,
+              "packet_p50": 0.05567694827914238
+            },
+            "cross_band_shared_0.01": {
+              "unexplained_energy_fraction": 0.10286346822977066,
+              "packet_p50": 0.09577152878046036
+            },
+            "cross_band_shared_0.1": {
+              "unexplained_energy_fraction": 0.16544830799102783,
+              "packet_p50": 0.17381910979747772
+            },
+            "cross_band_per_chirp_1e-06": {
+              "unexplained_energy_fraction": 0.05995836481451988,
+              "packet_p50": 0.06578999757766724
+            },
+            "cross_band_per_chirp_0.0001": {
+              "unexplained_energy_fraction": 0.07494556903839111,
+              "packet_p50": 0.06186938285827637
+            },
+            "cross_band_per_chirp_0.01": {
+              "unexplained_energy_fraction": 0.10216604918241501,
+              "packet_p50": 0.09501050412654877
+            },
+            "cross_band_per_chirp_0.1": {
+              "unexplained_energy_fraction": 0.16467724740505219,
+              "packet_p50": 0.1716914176940918
+            }
+          }
+        }
+      },
+      "practical_low_urban": {
+        "supported_chirps": 870,
+        "bands": {
+          "1_to_8": {
+            "within_band_shared_1e-06": {
+              "unexplained_energy_fraction": 11.906900405883789,
+              "packet_p50": 11.673537254333496
+            },
+            "within_band_shared_0.0001": {
+              "unexplained_energy_fraction": 1.0618692636489868,
+              "packet_p50": 1.0042330026626587
+            },
+            "within_band_shared_0.01": {
+              "unexplained_energy_fraction": 0.816731870174408,
+              "packet_p50": 0.36843013763427734
+            },
+            "within_band_shared_0.1": {
+              "unexplained_energy_fraction": 0.8441078662872314,
+              "packet_p50": 0.4750698506832123
+            },
+            "within_band_per_chirp_1e-06": {
+              "unexplained_energy_fraction": 2.301638126373291,
+              "packet_p50": 17.32347869873047
+            },
+            "within_band_per_chirp_0.0001": {
+              "unexplained_energy_fraction": 1.1126220226287842,
+              "packet_p50": 1.3631298542022705
+            },
+            "within_band_per_chirp_0.01": {
+              "unexplained_energy_fraction": 0.8178530335426331,
+              "packet_p50": 0.3784729242324829
+            },
+            "within_band_per_chirp_0.1": {
+              "unexplained_energy_fraction": 0.8448141813278198,
+              "packet_p50": 0.4711120128631592
+            },
+            "cross_band_shared_1e-06": {
+              "unexplained_energy_fraction": 21.420759201049805,
+              "packet_p50": 52.244869232177734
+            },
+            "cross_band_shared_0.0001": {
+              "unexplained_energy_fraction": 2.775590419769287,
+              "packet_p50": 3.260648012161255
+            },
+            "cross_band_shared_0.01": {
+              "unexplained_energy_fraction": 0.9427733421325684,
+              "packet_p50": 0.7054590582847595
+            },
+            "cross_band_shared_0.1": {
+              "unexplained_energy_fraction": 0.890587329864502,
+              "packet_p50": 0.5499197244644165
+            },
+            "cross_band_per_chirp_1e-06": {
+              "unexplained_energy_fraction": 31.647254943847656,
+              "packet_p50": 98.13172149658203
+            },
+            "cross_band_per_chirp_0.0001": {
+              "unexplained_energy_fraction": 1.8947174549102783,
+              "packet_p50": 2.695496082305908
+            },
+            "cross_band_per_chirp_0.01": {
+              "unexplained_energy_fraction": 0.9395224452018738,
+              "packet_p50": 0.7138769030570984
+            },
+            "cross_band_per_chirp_0.1": {
+              "unexplained_energy_fraction": 0.8900752067565918,
+              "packet_p50": 0.5517397522926331
+            }
+          },
+          "9_to_32": {
+            "within_band_shared_1e-06": {
+              "unexplained_energy_fraction": 0.008408674970269203,
+              "packet_p50": 0.008941280655562878
+            },
+            "within_band_shared_0.0001": {
+              "unexplained_energy_fraction": 0.00865201186388731,
+              "packet_p50": 0.008991094306111336
+            },
+            "within_band_shared_0.01": {
+              "unexplained_energy_fraction": 0.010317740961909294,
+              "packet_p50": 0.010018967092037201
+            },
+            "within_band_shared_0.1": {
+              "unexplained_energy_fraction": 0.012617837637662888,
+              "packet_p50": 0.012331254780292511
+            },
+            "within_band_per_chirp_1e-06": {
+              "unexplained_energy_fraction": 0.006617709994316101,
+              "packet_p50": 0.008991521783173084
+            },
+            "within_band_per_chirp_0.0001": {
+              "unexplained_energy_fraction": 0.0063217575661838055,
+              "packet_p50": 0.007857532240450382
+            },
+            "within_band_per_chirp_0.01": {
+              "unexplained_energy_fraction": 0.007091129198670387,
+              "packet_p50": 0.007563271094113588
+            },
+            "within_band_per_chirp_0.1": {
+              "unexplained_energy_fraction": 0.009258277714252472,
+              "packet_p50": 0.009775101207196712
+            },
+            "cross_band_shared_1e-06": {
+              "unexplained_energy_fraction": 0.1558319479227066,
+              "packet_p50": 0.06101859360933304
+            },
+            "cross_band_shared_0.0001": {
+              "unexplained_energy_fraction": 0.1364498883485794,
+              "packet_p50": 0.06609373539686203
+            },
+            "cross_band_shared_0.01": {
+              "unexplained_energy_fraction": 0.22383898496627808,
+              "packet_p50": 0.10642389953136444
+            },
+            "cross_band_shared_0.1": {
+              "unexplained_energy_fraction": 0.3172820806503296,
+              "packet_p50": 0.17885321378707886
+            },
+            "cross_band_per_chirp_1e-06": {
+              "unexplained_energy_fraction": 0.13050666451454163,
+              "packet_p50": 0.08167175203561783
+            },
+            "cross_band_per_chirp_0.0001": {
+              "unexplained_energy_fraction": 0.13325916230678558,
+              "packet_p50": 0.06902924925088882
+            },
+            "cross_band_per_chirp_0.01": {
+              "unexplained_energy_fraction": 0.22338250279426575,
+              "packet_p50": 0.10326661169528961
+            },
+            "cross_band_per_chirp_0.1": {
+              "unexplained_energy_fraction": 0.31768256425857544,
+              "packet_p50": 0.17541806399822235
+            }
+          }
+        }
+      }
+    },
+    "residual": {
+      "practical_low_suburban": {
+        "supported_chirps": 897,
+        "bands": {
+          "1_to_8": {
+            "within_band_shared_1e-06": {
+              "unexplained_energy_fraction": 3474.114501953125,
+              "packet_p50": 14416.439453125
+            },
+            "within_band_shared_0.0001": {
+              "unexplained_energy_fraction": 39.64224624633789,
+              "packet_p50": 42.183677673339844
+            },
+            "within_band_shared_0.01": {
+              "unexplained_energy_fraction": 1.0118805170059204,
+              "packet_p50": 0.9811395406723022
+            },
+            "within_band_shared_0.1": {
+              "unexplained_energy_fraction": 0.9810802340507507,
+              "packet_p50": 0.952974259853363
+            },
+            "within_band_per_chirp_1e-06": {
+              "unexplained_energy_fraction": 3.4893929958343506,
+              "packet_p50": 9.861051559448242
+            },
+            "within_band_per_chirp_0.0001": {
+              "unexplained_energy_fraction": 1.0686163902282715,
+              "packet_p50": 1.0444483757019043
+            },
+            "within_band_per_chirp_0.01": {
+              "unexplained_energy_fraction": 0.7721669673919678,
+              "packet_p50": 0.3477795422077179
+            },
+            "within_band_per_chirp_0.1": {
+              "unexplained_energy_fraction": 0.818821907043457,
+              "packet_p50": 0.4570208191871643
+            },
+            "cross_band_shared_1e-06": {
+              "unexplained_energy_fraction": 406.6485290527344,
+              "packet_p50": 1951.755615234375
+            },
+            "cross_band_shared_0.0001": {
+              "unexplained_energy_fraction": 270.3835144042969,
+              "packet_p50": 1242.7979736328125
+            },
+            "cross_band_shared_0.01": {
+              "unexplained_energy_fraction": 7.6363019943237305,
+              "packet_p50": 19.392295837402344
+            },
+            "cross_band_shared_0.1": {
+              "unexplained_energy_fraction": 1.2304185628890991,
+              "packet_p50": 1.5665277242660522
+            },
+            "cross_band_per_chirp_1e-06": {
+              "unexplained_energy_fraction": 22.62484359741211,
+              "packet_p50": 75.73456573486328
+            },
+            "cross_band_per_chirp_0.0001": {
+              "unexplained_energy_fraction": 1.5594713687896729,
+              "packet_p50": 2.2057926654815674
+            },
+            "cross_band_per_chirp_0.01": {
+              "unexplained_energy_fraction": 0.8655463457107544,
+              "packet_p50": 0.7191205620765686
+            },
+            "cross_band_per_chirp_0.1": {
+              "unexplained_energy_fraction": 0.8214232921600342,
+              "packet_p50": 0.5380124449729919
+            }
+          },
+          "9_to_32": {
+            "within_band_shared_1e-06": {
+              "unexplained_energy_fraction": 0.45728832483291626,
+              "packet_p50": 0.42588043212890625
+            },
+            "within_band_shared_0.0001": {
+              "unexplained_energy_fraction": 0.45738908648490906,
+              "packet_p50": 0.4375683069229126
+            },
+            "within_band_shared_0.01": {
+              "unexplained_energy_fraction": 0.6861389875411987,
+              "packet_p50": 0.7150645852088928
+            },
+            "within_band_shared_0.1": {
+              "unexplained_energy_fraction": 0.7983270883560181,
+              "packet_p50": 0.8322140574455261
+            },
+            "within_band_per_chirp_1e-06": {
+              "unexplained_energy_fraction": 0.0042074755765497684,
+              "packet_p50": 0.005364326294511557
+            },
+            "within_band_per_chirp_0.0001": {
+              "unexplained_energy_fraction": 0.003916711546480656,
+              "packet_p50": 0.004959781188517809
+            },
+            "within_band_per_chirp_0.01": {
+              "unexplained_energy_fraction": 0.004583247471600771,
+              "packet_p50": 0.004967543296515942
+            },
+            "within_band_per_chirp_0.1": {
+              "unexplained_energy_fraction": 0.006842474918812513,
+              "packet_p50": 0.0067650326527655125
+            },
+            "cross_band_shared_1e-06": {
+              "unexplained_energy_fraction": 2.0452771186828613,
+              "packet_p50": 1.0258889198303223
+            },
+            "cross_band_shared_0.0001": {
+              "unexplained_energy_fraction": 1.3513537645339966,
+              "packet_p50": 0.9412643313407898
+            },
+            "cross_band_shared_0.01": {
+              "unexplained_energy_fraction": 0.8942427039146423,
+              "packet_p50": 0.902361273765564
+            },
+            "cross_band_shared_0.1": {
+              "unexplained_energy_fraction": 0.8984273672103882,
+              "packet_p50": 0.9060810208320618
+            },
+            "cross_band_per_chirp_1e-06": {
+              "unexplained_energy_fraction": 0.08708424121141434,
+              "packet_p50": 0.05078932270407677
+            },
+            "cross_band_per_chirp_0.0001": {
+              "unexplained_energy_fraction": 0.10815217345952988,
+              "packet_p50": 0.05043017864227295
+            },
+            "cross_band_per_chirp_0.01": {
+              "unexplained_energy_fraction": 0.17690497636795044,
+              "packet_p50": 0.09338913857936859
+            },
+            "cross_band_per_chirp_0.1": {
+              "unexplained_energy_fraction": 0.2535385191440582,
+              "packet_p50": 0.1679401397705078
+            }
+          }
+        }
+      },
+      "practical_high_urban": {
+        "supported_chirps": 900,
+        "bands": {
+          "1_to_8": {
+            "within_band_shared_1e-06": {
+              "unexplained_energy_fraction": 5859.734375,
+              "packet_p50": 16140.9140625
+            },
+            "within_band_shared_0.0001": {
+              "unexplained_energy_fraction": 98.28601837158203,
+              "packet_p50": 44.122989654541016
+            },
+            "within_band_shared_0.01": {
+              "unexplained_energy_fraction": 1.034384846687317,
+              "packet_p50": 0.9800023436546326
+            },
+            "within_band_shared_0.1": {
+              "unexplained_energy_fraction": 0.9523970484733582,
+              "packet_p50": 0.9538607001304626
+            },
+            "within_band_per_chirp_1e-06": {
+              "unexplained_energy_fraction": 5.1206464767456055,
+              "packet_p50": 10.660062789916992
+            },
+            "within_band_per_chirp_0.0001": {
+              "unexplained_energy_fraction": 1.1461127996444702,
+              "packet_p50": 1.1187421083450317
+            },
+            "within_band_per_chirp_0.01": {
+              "unexplained_energy_fraction": 0.6034435629844666,
+              "packet_p50": 0.34371307492256165
+            },
+            "within_band_per_chirp_0.1": {
+              "unexplained_energy_fraction": 0.6587555408477783,
+              "packet_p50": 0.45384034514427185
+            },
+            "cross_band_shared_1e-06": {
+              "unexplained_energy_fraction": 788.6902465820312,
+              "packet_p50": 2581.567138671875
+            },
+            "cross_band_shared_0.0001": {
+              "unexplained_energy_fraction": 484.795166015625,
+              "packet_p50": 1471.4178466796875
+            },
+            "cross_band_shared_0.01": {
+              "unexplained_energy_fraction": 12.059309005737305,
+              "packet_p50": 21.485750198364258
+            },
+            "cross_band_shared_0.1": {
+              "unexplained_energy_fraction": 1.3864390850067139,
+              "packet_p50": 1.6448343992233276
+            },
+            "cross_band_per_chirp_1e-06": {
+              "unexplained_energy_fraction": 54.39375686645508,
+              "packet_p50": 79.91632843017578
+            },
+            "cross_band_per_chirp_0.0001": {
+              "unexplained_energy_fraction": 1.9009792804718018,
+              "packet_p50": 2.4076430797576904
+            },
+            "cross_band_per_chirp_0.01": {
+              "unexplained_energy_fraction": 0.7896287441253662,
+              "packet_p50": 0.691608726978302
+            },
+            "cross_band_per_chirp_0.1": {
+              "unexplained_energy_fraction": 0.7222141027450562,
+              "packet_p50": 0.5443029999732971
+            }
+          },
+          "9_to_32": {
+            "within_band_shared_1e-06": {
+              "unexplained_energy_fraction": 0.4314928650856018,
+              "packet_p50": 0.416714072227478
+            },
+            "within_band_shared_0.0001": {
+              "unexplained_energy_fraction": 0.4339168965816498,
+              "packet_p50": 0.42726844549179077
+            },
+            "within_band_shared_0.01": {
+              "unexplained_energy_fraction": 0.6710779666900635,
+              "packet_p50": 0.738163948059082
+            },
+            "within_band_shared_0.1": {
+              "unexplained_energy_fraction": 0.7818408012390137,
+              "packet_p50": 0.8381063342094421
+            },
+            "within_band_per_chirp_1e-06": {
+              "unexplained_energy_fraction": 0.006288575939834118,
+              "packet_p50": 0.007954814471304417
+            },
+            "within_band_per_chirp_0.0001": {
+              "unexplained_energy_fraction": 0.005875328555703163,
+              "packet_p50": 0.007097610272467136
+            },
+            "within_band_per_chirp_0.01": {
+              "unexplained_energy_fraction": 0.005935073364526033,
+              "packet_p50": 0.006899518892168999
+            },
+            "within_band_per_chirp_0.1": {
+              "unexplained_energy_fraction": 0.007428515236824751,
+              "packet_p50": 0.00863540917634964
+            },
+            "cross_band_shared_1e-06": {
+              "unexplained_energy_fraction": 1.7630345821380615,
+              "packet_p50": 1.0216269493103027
+            },
+            "cross_band_shared_0.0001": {
+              "unexplained_energy_fraction": 1.2235162258148193,
+              "packet_p50": 0.9419055581092834
+            },
+            "cross_band_shared_0.01": {
+              "unexplained_energy_fraction": 0.8655287623405457,
+              "packet_p50": 0.9029859900474548
+            },
+            "cross_band_shared_0.1": {
+              "unexplained_energy_fraction": 0.8741444945335388,
+              "packet_p50": 0.9126362204551697
+            },
+            "cross_band_per_chirp_1e-06": {
+              "unexplained_energy_fraction": 0.0943174809217453,
+              "packet_p50": 0.05346246063709259
+            },
+            "cross_band_per_chirp_0.0001": {
+              "unexplained_energy_fraction": 0.09295115619897842,
+              "packet_p50": 0.05015459284186363
+            },
+            "cross_band_per_chirp_0.01": {
+              "unexplained_energy_fraction": 0.1275007128715515,
+              "packet_p50": 0.09042122215032578
+            },
+            "cross_band_per_chirp_0.1": {
+              "unexplained_energy_fraction": 0.19724783301353455,
+              "packet_p50": 0.16847345232963562
+            }
+          }
+        }
+      },
+      "practical_low_urban": {
+        "supported_chirps": 862,
+        "bands": {
+          "1_to_8": {
+            "within_band_shared_1e-06": {
+              "unexplained_energy_fraction": 1763.84716796875,
+              "packet_p50": 1916.576416015625
+            },
+            "within_band_shared_0.0001": {
+              "unexplained_energy_fraction": 22.74024200439453,
+              "packet_p50": 26.474092483520508
+            },
+            "within_band_shared_0.01": {
+              "unexplained_energy_fraction": 1.0195724964141846,
+              "packet_p50": 1.0161763429641724
+            },
+            "within_band_shared_0.1": {
+              "unexplained_energy_fraction": 0.9904605746269226,
+              "packet_p50": 0.9852844476699829
+            },
+            "within_band_per_chirp_1e-06": {
+              "unexplained_energy_fraction": 2.344967842102051,
+              "packet_p50": 3.8650474548339844
+            },
+            "within_band_per_chirp_0.0001": {
+              "unexplained_energy_fraction": 1.0106570720672607,
+              "packet_p50": 1.078405737876892
+            },
+            "within_band_per_chirp_0.01": {
+              "unexplained_energy_fraction": 0.8654186129570007,
+              "packet_p50": 0.6747837662696838
+            },
+            "within_band_per_chirp_0.1": {
+              "unexplained_energy_fraction": 0.8990616798400879,
+              "packet_p50": 0.7223826050758362
+            },
+            "cross_band_shared_1e-06": {
+              "unexplained_energy_fraction": 154.44325256347656,
+              "packet_p50": 423.97869873046875
+            },
+            "cross_band_shared_0.0001": {
+              "unexplained_energy_fraction": 124.04246520996094,
+              "packet_p50": 292.3108825683594
+            },
+            "cross_band_shared_0.01": {
+              "unexplained_energy_fraction": 5.077399730682373,
+              "packet_p50": 9.39073657989502
+            },
+            "cross_band_shared_0.1": {
+              "unexplained_energy_fraction": 1.1084716320037842,
+              "packet_p50": 1.2405580282211304
+            },
+            "cross_band_per_chirp_1e-06": {
+              "unexplained_energy_fraction": 17.3942813873291,
+              "packet_p50": 22.795551300048828
+            },
+            "cross_band_per_chirp_0.0001": {
+              "unexplained_energy_fraction": 1.5129843950271606,
+              "packet_p50": 1.612493872642517
+            },
+            "cross_band_per_chirp_0.01": {
+              "unexplained_energy_fraction": 0.8773475289344788,
+              "packet_p50": 0.7394192218780518
+            },
+            "cross_band_per_chirp_0.1": {
+              "unexplained_energy_fraction": 0.8364607095718384,
+              "packet_p50": 0.5970105528831482
+            }
+          },
+          "9_to_32": {
+            "within_band_shared_1e-06": {
+              "unexplained_energy_fraction": 0.4601835012435913,
+              "packet_p50": 0.48361191153526306
+            },
+            "within_band_shared_0.0001": {
+              "unexplained_energy_fraction": 0.45751169323921204,
+              "packet_p50": 0.4857255816459656
+            },
+            "within_band_shared_0.01": {
+              "unexplained_energy_fraction": 0.666905403137207,
+              "packet_p50": 0.7222257852554321
+            },
+            "within_band_shared_0.1": {
+              "unexplained_energy_fraction": 0.7682188153266907,
+              "packet_p50": 0.8132356405258179
+            },
+            "within_band_per_chirp_1e-06": {
+              "unexplained_energy_fraction": 0.0034438949078321457,
+              "packet_p50": 0.00333400908857584
+            },
+            "within_band_per_chirp_0.0001": {
+              "unexplained_energy_fraction": 0.0033059786073863506,
+              "packet_p50": 0.0031917740125209093
+            },
+            "within_band_per_chirp_0.01": {
+              "unexplained_energy_fraction": 0.004180006682872772,
+              "packet_p50": 0.0040644388645887375
+            },
+            "within_band_per_chirp_0.1": {
+              "unexplained_energy_fraction": 0.006357577163726091,
+              "packet_p50": 0.005640990100800991
+            },
+            "cross_band_shared_1e-06": {
+              "unexplained_energy_fraction": 3.378296375274658,
+              "packet_p50": 1.55652916431427
+            },
+            "cross_band_shared_0.0001": {
+              "unexplained_energy_fraction": 1.8882834911346436,
+              "packet_p50": 1.1418356895446777
+            },
+            "cross_band_shared_0.01": {
+              "unexplained_energy_fraction": 0.8854377269744873,
+              "packet_p50": 0.9285554885864258
+            },
+            "cross_band_shared_0.1": {
+              "unexplained_energy_fraction": 0.8837882280349731,
+              "packet_p50": 0.9298517107963562
+            },
+            "cross_band_per_chirp_1e-06": {
+              "unexplained_energy_fraction": 0.10547878593206406,
+              "packet_p50": 0.047224611043930054
+            },
+            "cross_band_per_chirp_0.0001": {
+              "unexplained_energy_fraction": 0.12232997268438339,
+              "packet_p50": 0.06760235130786896
+            },
+            "cross_band_per_chirp_0.01": {
+              "unexplained_energy_fraction": 0.1962059736251831,
+              "packet_p50": 0.10899204760789871
+            },
+            "cross_band_per_chirp_0.1": {
+              "unexplained_energy_fraction": 0.28519320487976074,
+              "packet_p50": 0.17308107018470764
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "packets": 150,
+  "source_role": "held_U_s",
+  "trace_is_diagnostic_only": true,
+  "target_reads": 0,
+  "V_reads": 0,
+  "F_reads": 0,
+  "TX_reads": 0,
+  "min_clean_carrier": 0.1,
+  "validation": "complementary absolute-bin parity",
+  "by_route": {
+    "full": {
+      "practical_low_suburban": {
+        "supported_chirps": 900,
+        "bands": {
+          "1_to_8": {
+            "shared": {
+              "unexplained_energy_fraction": 1.3916904926300049,
+              "packet_p50": 3.9960246086120605
+            },
+            "per_chirp": {
+              "unexplained_energy_fraction": 1.7396396398544312,
+              "packet_p50": 5.716211795806885
+            }
+          },
+          "9_to_32": {
+            "shared": {
+              "unexplained_energy_fraction": 0.022788427770137787,
+              "packet_p50": 0.013443351723253727
+            },
+            "per_chirp": {
+              "unexplained_energy_fraction": 0.006149234250187874,
+              "packet_p50": 0.01134579349309206
+            }
+          }
+        }
+      },
+      "practical_high_urban": {
+        "supported_chirps": 899,
+        "bands": {
+          "1_to_8": {
+            "shared": {
+              "unexplained_energy_fraction": 1.575715184211731,
+              "packet_p50": 4.121095180511475
+            },
+            "per_chirp": {
+              "unexplained_energy_fraction": 1.8607040643692017,
+              "packet_p50": 5.864529132843018
+            }
+          },
+          "9_to_32": {
+            "shared": {
+              "unexplained_energy_fraction": 0.005646745208650827,
+              "packet_p50": 0.011270036920905113
+            },
+            "per_chirp": {
+              "unexplained_energy_fraction": 0.004917191341519356,
+              "packet_p50": 0.01219141948968172
+            }
+          }
+        }
+      },
+      "practical_low_urban": {
+        "supported_chirps": 870,
+        "bands": {
+          "1_to_8": {
+            "shared": {
+              "unexplained_energy_fraction": 1.725874423980713,
+              "packet_p50": 2.6882693767547607
+            },
+            "per_chirp": {
+              "unexplained_energy_fraction": 1.9663060903549194,
+              "packet_p50": 3.8759026527404785
+            }
+          },
+          "9_to_32": {
+            "shared": {
+              "unexplained_energy_fraction": 0.016064800322055817,
+              "packet_p50": 0.011414232663810253
+            },
+            "per_chirp": {
+              "unexplained_energy_fraction": 0.009883124381303787,
+              "packet_p50": 0.008662673644721508
+            }
+          }
+        }
+      }
+    },
+    "residual": {
+      "practical_low_suburban": {
+        "supported_chirps": 897,
+        "bands": {
+          "1_to_8": {
+            "shared": {
+              "unexplained_energy_fraction": 23.971513748168945,
+              "packet_p50": 92.80180358886719
+            },
+            "per_chirp": {
+              "unexplained_energy_fraction": 1.6743628978729248,
+              "packet_p50": 3.151067018508911
+            }
+          },
+          "9_to_32": {
+            "shared": {
+              "unexplained_energy_fraction": 0.9193739891052246,
+              "packet_p50": 0.7736377120018005
+            },
+            "per_chirp": {
+              "unexplained_energy_fraction": 0.006206281017512083,
+              "packet_p50": 0.00573342852294445
+            }
+          }
+        }
+      },
+      "practical_high_urban": {
+        "supported_chirps": 900,
+        "bands": {
+          "1_to_8": {
+            "shared": {
+              "unexplained_energy_fraction": 38.209625244140625,
+              "packet_p50": 108.75961303710938
+            },
+            "per_chirp": {
+              "unexplained_energy_fraction": 2.340421199798584,
+              "packet_p50": 3.3020033836364746
+            }
+          },
+          "9_to_32": {
+            "shared": {
+              "unexplained_energy_fraction": 0.8600438833236694,
+              "packet_p50": 0.7739113569259644
+            },
+            "per_chirp": {
+              "unexplained_energy_fraction": 0.006541617680341005,
+              "packet_p50": 0.007546945475041866
+            }
+          }
+        }
+      },
+      "practical_low_urban": {
+        "supported_chirps": 862,
+        "bands": {
+          "1_to_8": {
+            "shared": {
+              "unexplained_energy_fraction": 12.895574569702148,
+              "packet_p50": 16.28078269958496
+            },
+            "per_chirp": {
+              "unexplained_energy_fraction": 1.450431227684021,
+              "packet_p50": 1.392968773841858
+            }
+          },
+          "9_to_32": {
+            "shared": {
+              "unexplained_energy_fraction": 1.0168684720993042,
+              "packet_p50": 0.8850794434547424
+            },
+            "per_chirp": {
+              "unexplained_energy_fraction": 0.006649344228208065,
+              "packet_p50": 0.004645886365324259
+            }
+          }
+        }
+      }
+    }
+  }
+}
