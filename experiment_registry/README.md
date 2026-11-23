@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [WiSig 实测源包频谱关系保真](../automation_reports/CV-SincNet/20261124-phase1-wisig-instance-geometry-source-m3-r01/report.md)
 - [WiSig 联合恢复与波形质量选择](../automation_reports/CV-SincNet/20261124-phase1-wisig-waveform-choice-source-m3-r01/report.md)
 - [WiSig 端到端实收谱幅度保护](../automation_reports/CV-SincNet/20261123-phase1-wisig-observed-amplitude-source-m3-r01/report.md)
 - [WiSig 冻结恢复的幅相交换](../automation_reports/CV-SincNet/20261123-phase1-wisig-phase-magnitude-source-m4-r01/report.md)
