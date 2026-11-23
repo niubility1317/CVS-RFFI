@@ -12,6 +12,7 @@ import torch
 
 from experiments.cric_dura_comparison.io import read, tensor
 from experiments.pamf_lora_main import held_chirp_precision_source, lapped_posterior_source, local_phase_source
+from experiments.pamf_lora_main import coherent_interval_source
 from experiments.pamf_lora_main import packet_relation_source, reference_cancel_source, spectral_block_source, split_shrink_source
 from experiments.pamf_lora_main import variance_transport_source
 from experiments.pamf_lora_main.channel_blind import corruption_score
@@ -235,6 +236,37 @@ def transport_noise_bias(model, tracked, frame, epsilon):
     return np.asarray(bias.tolist(), dtype=np.float32)
 
 
+def shared_interval_evidence(model, observed, quality, waves, source, frame):
+    (_, _, _, confidence), _ = model.spectral_evidence(observed, quality)
+    confidence = confidence.squeeze(1)
+    estimate = torch.fft.fft((torch.stack(waves) / frame).mean(-2), norm='ortho')
+    expected = torch.fft.fft((source / frame).mean(-2), norm='ortho')
+    cross = (estimate * expected.conj()).real
+    ref_power = expected.abs().square()
+    estimate_power = estimate.abs().square()
+    f = torch.fft.fftfreq(frame.shape[-1], device=frame.device).abs() * frame.shape[-1]
+    outputs = []
+    for band in ((f>0.) & (f<=8.), (f>8.) & (f<=32.)):
+        for confirmed in (confidence >= .10, confidence < .10):
+            selection = confirmed & band
+            weight = selection * ref_power
+            predicted = (selection * estimate_power).sum(-1)
+            true = weight.sum(-1)
+            overlap = (selection * cross).sum(-1)
+            counts = selection.sum(-1).expand_as(overlap)
+            outputs.append(torch.stack((counts, true.expand_as(overlap), predicted, overlap), dim=-1))
+    return np.asarray(torch.stack(outputs, dim=-2).tolist(), dtype=np.float64)
+
+
+def report_interval(values):
+    count, reference, estimated, dot = values.sum(axis=1).transpose(2, 0, 1)
+    covariance = dot / np.maximum((reference * estimated)**.5, 1e-12)
+    ratio = estimated / np.maximum(reference, 1e-12)
+    signed = dot / np.maximum(reference, 1e-12)
+    result = np.stack((count, ratio, signed, covariance), axis=-1)
+    return [[list(row) if row[0] > 0. else [0, None, None, None] for row in mode] for mode in result.tolist()]
+
+
 RELATION_FIELDS = ('log_distance_rmse', 'neighbor_recall_at_5', 'paired_source_retrieval_at_1')
 
 
@@ -291,7 +323,15 @@ def diagnose(rt, route, device):
     is_relation = rt['run_id']==packet_relation_source.RUN
     is_cancel = rt['run_id']==reference_cancel_source.RUN
     is_transport = rt['run_id']==variance_transport_source.RUN
-    if is_transport:
+    is_interval = rt['run_id']==coherent_interval_source.RUN
+    if is_interval:
+        study = coherent_interval_source
+        recipes = study.RECIPES
+        recover = partial(study.recovery, ablate=True)
+        readouts = ('direct', 'scalar_full', 'interval_full', 'interval_matched',
+                    'scalar_matched', 'interval_off')
+        indices = tuple(study.MODES.index(name) - 2 for name in readouts[1:])
+    elif is_transport:
         study = variance_transport_source
         recover = lambda iq, tracker, models, threshold: study.recover(iq, tracker, models[0], threshold)
         readouts = ('direct', *study.MODES[2:])
@@ -370,6 +410,7 @@ def diagnose(rt, route, device):
             relation_stats = []
             cancellation_stats = []
             transport_stats = []
+            interval_stats = []
             batches = zip(tensor(capture,device).split(18),tensor(noise,device).split(18),truth.split(18),strict=True)
             for batch,(received, epsilon, source) in enumerate(batches):
                 recoveries, count = recover(received,tracker,models,threshold)[:2]
@@ -400,6 +441,8 @@ def diagnose(rt, route, device):
                     transport_stats.append(transport_evidence(models[0], waves, target, frame))
                     if view != 'clean':
                         noise_stats.append(transport_noise_bias(models[0], tracked, frame, epsilon))
+                if is_interval:
+                    interval_stats.append(shared_interval_evidence(models[1],tracked,quality,waves,target,frame))
                 for reference, group in ((target,bands_from_ground),(noiseless,bands_from_noiseless)):
                     compared = waves
                     if is_geometry:
@@ -461,6 +504,14 @@ def diagnose(rt, route, device):
                         median=np.median(error, axis=0).tolist(),
                         by_receiver={name:np.median(part, axis=0).tolist()
                                      for name,part in zip(SOURCE,np.split(error,len(SOURCE)),strict=True)})
+            if is_interval:
+                values = np.concatenate(interval_stats, axis=1)
+                output[view]['interval_support'] = dict(
+                    order=['near_supported','near_other','middle_supported','middle_other'],
+                    fields=['bins','power_ratio','signed_gain','complex_correlation'],
+                    pooled=report_interval(values),
+                    by_receiver={name:report_interval(part) for name,part in
+                                 zip(SOURCE,np.split(values,len(SOURCE),axis=1),strict=True)})
             if is_relation:
                 estimates = [torch.cat(parts,dim=1) for parts in zip(*relation_stats,strict=True)]
                 reference_groups = zip(*(value.chunk(len(SOURCE),dim=0) for value in source_features),strict=True)
@@ -485,7 +536,7 @@ def main():
     root = Path(rt['run_root'])
     analyzed_runs = (local_phase_source.RUN, GEOMETRY_RUN, TANGENT_RUN, split_shrink_source.RUN,
                      lapped_posterior_source.RUN, held_chirp_precision_source.RUN, packet_relation_source.RUN,
-                     reference_cancel_source.RUN, variance_transport_source.RUN)
+                     reference_cancel_source.RUN, variance_transport_source.RUN, coherent_interval_source.RUN)
     if rt.get('run_id') not in analyzed_runs or read(root/'state.json')['status']!='SOURCE_SCORED':
         raise ValueError('The full dual-route truth-last scoring must already be complete')
     activate(rt)

@@ -9,6 +9,7 @@ import numpy as np
 
 from experiments.cric_dura_comparison.io import read
 from experiments.pamf_lora_main import held_chirp_precision_source, lapped_posterior_source
+from experiments.pamf_lora_main import coherent_interval_source
 from experiments.pamf_lora_main import packet_relation_source, reference_cancel_source, split_shrink_source
 from experiments.pamf_lora_main import variance_transport_source
 from experiments.pamf_lora_main.channel_blind_source import panel
@@ -82,6 +83,9 @@ def collect(rt):
     elif rt.get('run_id')==variance_transport_source.RUN:
         modes = variance_transport_source.MODES
         pairs = (*variance_transport_source.COMPARISONS, ('direct','reference'))
+    elif rt.get('run_id')==coherent_interval_source.RUN:
+        modes = coherent_interval_source.MODES
+        pairs = (*coherent_interval_source.COMPARISONS, ('direct','reference'))
     else:
         from experiments.pamf_lora_main import empirical_tangent_source as tangent
         if rt.get('run_id')!=tangent.RUN:
