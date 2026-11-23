@@ -1,0 +1,68 @@
+{
+  "pid": 2275958,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-private-secant-source-m4-r01-release",
+  "code_commit": "3d04a0ad7f0debb472f97bf181f0d4d1c64979d9",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "status": "VERIFIED",
+  "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-private-secant-source-m4-r01",
+  "state": "SOURCE_SCORED",
+  "checkpoint_smoke": {
+    "pid": 2275978,
+    "physical_gpu": 3,
+    "status": "PASS"
+  },
+  "fit_smoke": [
+    {
+      "pid": 2277635,
+      "arm": "paired",
+      "physical_gpu": 3
+    },
+    {
+      "pid": 2277636,
+      "arm": "private_gain",
+      "physical_gpu": 2
+    }
+  ],
+  "fit_workers": [
+    {
+      "pid": 2277921,
+      "arm": "paired",
+      "physical_gpu": 3,
+      "device_memory_mib": 1346
+    },
+    {
+      "pid": 2277922,
+      "arm": "private_gain",
+      "physical_gpu": 2,
+      "device_memory_mib": 1346
+    }
+  ],
+  "timing": {
+    "pid": 2282607,
+    "gpu": 3
+  },
+  "prediction_workers": [
+    {
+      "route": "full",
+      "pid": 2282964,
+      "gpu": 3
+    },
+    {
+      "route": "residual",
+      "pid": 2282965,
+      "gpu": 6
+    }
+  ],
+  "reserve": {
+    "pid": 2284449,
+    "gpu": 3,
+    "frozen_n": 11100
+  },
+  "scorer": {
+    "pid": 2284990,
+    "device": "CPU",
+    "scored_clean_n": 12000,
+    "truth_after_complete_predictions": true
+  }
+}
