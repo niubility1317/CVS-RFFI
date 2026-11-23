@@ -123,7 +123,7 @@ def smoke(rt):
 
 
 @torch.no_grad()
-def timing(rt):
+def timing(rt, *, reader=readouts, timing_scope=None):
     root,device=Path(rt['run_root']),'cuda:0'
     (_,cal,_),contract=setup(rt,device,smoke=True)
     model,threshold=parent_model(root,contract,device)
@@ -137,13 +137,13 @@ def timing(rt):
         for _ in range(32):
             torch.cuda.synchronize()
             t0=perf_counter()
-            _,n=readouts(iq,tracker,model,threshold)
+            _,n=reader(iq,tracker,model,threshold)
             torch.cuda.synchronize()
             elapsed.append(1000*(perf_counter()-t0))
         periods[label]=dict(active=n,median_ms=float(np.median(elapsed[8:])))
     write(root/'b1.json',dict(gpu=torch.cuda.get_device_name(),n_measurements=24,timing=periods,
           restoration_weights=sum(v.numel() for v in model.parameters()),
-          scope='shared rank parent and four private engineering readouts; excludes classifier and DURA'))
+          scope=timing_scope or 'shared rank parent and four private engineering readouts; excludes classifier and DURA'))
 
 
 def dispatch(rt):
