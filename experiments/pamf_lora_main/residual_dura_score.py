@@ -25,20 +25,27 @@ def prediction(path):
     return a
 
 
-def collect(submit, ssh_config, dataset, output, full_control):
+def collect(submit, ssh_config, dataset, output, full_control, disturbance_gate=False):
+    run_id, modes = RUN, MODES
+    if disturbance_gate:
+        from .residual_dura_gate_run import MODES as gate_modes, RUN as gate_run
+        run_id, modes = gate_run, gate_modes
     receipt = read(submit)
     run = PurePosixPath(receipt['run_root'])
-    if run.name != RUN or receipt['archive_transfer'] != 'VERIFIED':
+    if run.name != run_id or receipt['archive_transfer'] != 'VERIFIED':
         raise ValueError('Wrong residual DURA receipt')
     root = shlex.quote(str(run))
     conn = ['ssh', '-F', str(ssh_config), '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', 'N607']
     wait_for_predictions(conn, root)
-    payload = subprocess.check_output([*conn, f'tar -czf - -C {root} predictions smoke.json'], timeout=180)
+    extra = ' activity.json' if disturbance_gate else ''
+    payload = subprocess.check_output([*conn, f'tar -czf - -C {root} predictions smoke.json{extra}'], timeout=180)
     output.mkdir(parents=True, exist_ok=False)
     p = output / 'predictions'
     p.mkdir()
-    matrix = {f'{r}__{v}__{m}.npy' for r in TARGET for v in VIEWS for m in MODES}
+    matrix = {f'{r}__{v}__{m}.npy' for r in TARGET for v in VIEWS for m in modes}
     allowed = {'smoke.json', 'predictions/complete.json', *('predictions/'+x for x in matrix)}
+    if disturbance_gate:
+        allowed.add('activity.json')
     with tarfile.open(fileobj=BytesIO(payload), mode='r:gz') as archive:
         for member in archive:
             if member.isdir() and member.name == 'predictions':
@@ -48,11 +55,29 @@ def collect(submit, ssh_config, dataset, output, full_control):
             with archive.extractfile(member) as src, (output / member.name).open('xb') as dst:
                 dst.write(src.read())
     if read(p / 'complete.json') != dict(status='PREDICTIONS_FROZEN', seed=SEED,
-            receivers=list(TARGET), per_receiver=LIMIT, views=list(VIEWS), modes=list(MODES),
+            receivers=list(TARGET), per_receiver=LIMIT, views=list(VIEWS), modes=list(modes),
             practical=ROUTE, target_truth_read=False) or {f.name for f in p.glob('*.npy')} != matrix:
         raise ValueError('Residual LoRa predictions were not all frozen before scoring')
     rows = {(r, v, m): prediction(p / f'{r}__{v}__{m}.npy')
-            for r in TARGET for v in VIEWS for m in MODES}
+            for r in TARGET for v in VIEWS for m in modes}
+    coverage = {}
+    if disturbance_gate:
+        smoke = read(output / 'smoke.json')
+        if (smoke['status'] != 'PASS' or smoke['stage'] != 'r69' or smoke['seed'] != SEED
+                or smoke['F_reads'] or smoke['TX_labels_read'] or smoke['target_reads']):
+            raise ValueError('Mismatched independent gate source smoke')
+        coverage = read(output / 'activity.json')
+        if set(coverage) != set(TARGET) or any(set(item) != set(VIEWS) for item in coverage.values()):
+            raise ValueError('Incomplete residual disturbance gate activity')
+        for r in TARGET:
+            for v in VIEWS:
+                count = coverage[r][v]
+                if type(count) is not int or not 0 <= count <= LIMIT:
+                    raise ValueError('Invalid residual gate activity count')
+                if count in (0, LIMIT):
+                    reference = 'dura_half' if count else 'direct'
+                    if not np.array_equal(rows[r, v, 'dura_gated_half'], rows[r, v, reference]):
+                        raise ValueError('Gated predictions disagree with uniform gate activity')
     full = full_control / 'predictions' / str(SEED)
     control = read(full / 'complete.json')
     if (control['status'] != 'PREDICTIONS_FROZEN' or control['seed'] != SEED
@@ -71,7 +96,7 @@ def collect(submit, ssh_config, dataset, output, full_control):
                 truth[rx] = label_ids(h5, LIMIT)[packet_indices(LIMIT, i)]
     answer = np.concatenate([truth[r] for r in TARGET])
     metrics = {}
-    for m, source_rows in [*((m, rows) for m in MODES),
+    for m, source_rows in [*((m, rows) for m in modes),
                            *((f'full_{m}', full_rows) for m in full_modes)]:
         key = m.removeprefix('full_') if source_rows is full_rows else m
         views = {}
@@ -88,9 +113,12 @@ def collect(submit, ssh_config, dataset, output, full_control):
         average = practical / (len(VIEWS[1:])*len(answer))
         metrics[m] = dict(views=views, practical_correct=practical, practical_mean=average,
                           clean_gap=views['clean']['accuracy']-average)
-    write(output / 'scores.json', dict(status='SCORED_COMPLETE', truth_last=True,
-          seed=SEED, practical=ROUTE, clean_control_prediction_changes=clean_control_changes,
-          matrix_arrays=len(rows), metrics=metrics))
+    summary = dict(status='SCORED_COMPLETE', truth_last=True, seed=SEED, practical=ROUTE,
+                   clean_control_prediction_changes=clean_control_changes,
+                   matrix_arrays=len(rows), metrics=metrics)
+    if disturbance_gate:
+        summary['gate_activity'] = coverage
+    write(output / 'scores.json', summary)
     print('RESIDUAL_DURA_SCORED', output / 'scores.json', flush=True)
 
 
@@ -98,4 +126,5 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ('submit', 'ssh-config', 'dataset', 'output', 'full-control'):
         parser.add_argument('--'+name, type=Path, required=True)
+    parser.add_argument('--disturbance-gate', action='store_true')
     collect(**vars(parser.parse_args()))
