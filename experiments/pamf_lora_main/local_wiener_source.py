@@ -199,7 +199,9 @@ def publish(repo, output, context, ssh_config, *, run=RUN, runner=None):
     release(repo, output, rt, ssh_config)
 
 
-def main():
+def main(*, run=RUN, runner=None, modes=MODES, comparisons=(('covariance_half', 'diagonal_half'),
+                                                              ('covariance_half', 'direct')),
+         fit=calibrate, load_gate=threshold, check=smoke, evaluate=predict):
     parser = argparse.ArgumentParser(description=__doc__)
     actions = parser.add_subparsers(dest='action', required=True)
     pub = actions.add_parser('publish')
@@ -213,23 +215,23 @@ def main():
     args = vars(parser.parse_args())
     action = args.pop('action')
     if action == 'publish':
-        publish(**args)
+        publish(**args, run=run, runner=runner)
         return
     rt = read(args['runtime'])
     if action == 'dispatch':
         dispatch(rt)
     elif action == 'score':
-        score_frozen(rt)
+        score_frozen(rt, modes, comparisons=comparisons)
     else:
         activate(rt)
         if action == 'calibrate':
-            calibrate(rt)
+            fit(rt)
         else:
-            gate = threshold(Path(rt['run_root']))
+            gate = load_gate(Path(rt['run_root']))
             if action == 'smoke':
-                smoke(rt, gate)
+                check(rt, gate)
             else:
-                predict(rt, args['name'], gate)
+                evaluate(rt, args['name'], gate)
 
 
 if __name__ == '__main__':
