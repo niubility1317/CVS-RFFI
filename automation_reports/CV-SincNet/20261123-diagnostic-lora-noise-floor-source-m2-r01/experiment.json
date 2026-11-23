@@ -1,0 +1,165 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261123-diagnostic-lora-noise-floor-source-m2-r01",
+  "group_id": "lora-observable-satellite-recovery",
+  "display_name": "LoRa 源域噪声估计与复谱收缩归因",
+  "description": "固定原前端、门限、物理包和冻结识别器，隔离对比外带估计、精确总功率、精确逐频点功率及精确扣噪。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "LoRa",
+    "isolated_diagnostic",
+    "noise_floor",
+    "Wiener",
+    "source_V",
+    "full",
+    "residual"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261122-phase1-lora-full-aligned-data-r01",
+    "20261122-phase1-lora-tri-label-set-m3-r01",
+    "20261123-phase1-lora-dura-residual-practical-m1-r01",
+    "20261123-phase1-lora-dura-direct-detail-source-m2-r01",
+    "20261123-phase1-lora-local-wiener-source-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-11-23 LoRa 与 WiSig 可部署星地恢复目标及空闲显卡多进程授权",
+  "code": {
+    "commit": "启动命令从已推送分支 HEAD 固定，实际 OID 写入 submit.json",
+    "checkout": "E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo",
+    "environment": "${N607_PYTHON}",
+    "cwd": "${N607_PROJECT}/releases/20261123-diagnostic-lora-noise-floor-source-m2-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa 多接收机 IEEE DataPort",
+    "version": "lora_full_packets_v1 源 7/63/30 固定划分",
+    "representation": "1 MS/s 采集及既有构造，冻结读出为 256 kS/s 六条 256 点窄窗复 IQ",
+    "contract_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json role_ids.V",
+    "label_map_ref": "experiments/pamf_lora_main/data.py CLASSES (31 至 40)，仅评分读取 V_metadata.npz y",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "10 个登记发射机的固定源分配，拟合不可见",
+    "roles": {
+      "L_s": 0,
+      "U_s": 2,
+      "V": 900
+    },
+    "train_ratio": "原 7%/63%/30% 固定分配。此次仅用源 U 2 包无查询 smoke，沿用 900 包源 V。",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "${N607_PROJECT}/runs/20261122-phase1-lora-full-aligned-data-r01/source_views/complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": "沿用注册 full 与 residual，并在独立诊断侧复现逐点噪声；full 与 V 缓存逐值核对，residual 每景逐源 RX 取 1 包与收包路径逐值核对"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "not_applicable",
+    "external_method_exception": null,
+    "claim_scope": "隔离归因，无新候选、训练、拟合、校准或选模。真值分解只在隔离程序内部计算诊断波形，目标数据零读取。"
+  },
+  "checkpoint": {
+    "initialization": "none",
+    "sources": [
+      "20261122-phase1-lora-tri-label-set-m3-r01 / tri_set 2026092702",
+      "20261123-phase1-lora-dura-direct-detail-source-m2-r01 及冻结 full 复响应半量",
+      "20261123-phase1-lora-dura-residual-practical-m1-r01 原 R69 及固定 residual 门控投影半量",
+      "20261123-phase1-lora-local-wiener-source-m2-r01/threshold.json + <route>-predictions.json"
+    ],
+    "contract_check_ref": "noise_floor_diagnostic.parent / source_contract / observed.read_frozen / load_reader",
+    "provenance_verdict": "原观测对照与冻结 Tri-set 同源角色、同 ID、同模型 seed。DURA 决策复用，不加载对照恢复器训练状态。",
+    "selection_rule": "诊断固定四个 oracle 读出，直接复用上一轮接收端纯观测门与五路同包决策，无模型、阈值搜索和晋级。"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "当前目标 LoRa 噪声归因",
+    "gpu_policy": "按实际利用率与剩余显存排序择卡，当前 run 的 full/residual 各用一张卡，可与其他 owner 共卡。",
+    "remote_run_root": "${N607_PROJECT}/runs/20261123-diagnostic-lora-noise-floor-source-m2-r01",
+    "remote_log_root": "${N607_PROJECT}/runs/20261123-diagnostic-lora-noise-floor-source-m2-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261123-diagnostic-lora-noise-floor-source-m2-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.noise_floor_diagnostic publish --repo \"E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo\" --output \"E:/type10-7/local_artifacts/20261123-diagnostic-lora-noise-floor-source-m2-r01/release\" --context E:/type10-7/local_artifacts/lora_main_20261121/runtime_source.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "实际权重 smoke、注册波形重放、同包映射或独立预测屏障失效时停止后续本 run 派发。保留两路日志和已写产物。"
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "full-predictions.json",
+    "residual-predictions.json",
+    "full-source-scores.json",
+    "residual-source-scores.json",
+    "logs/",
+    "full-isolated-estimates.json",
+    "residual-isolated-estimates.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "逐景正确数",
+      "纠错与改错",
+      "物理包分层配对区间",
+      "外带估计误差",
+      "逐频带复数误差与归一化幅相一致性"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "mode",
+      "seed"
+    ],
+    "prediction_ref": "${N607_PROJECT}/runs/20261123-diagnostic-lora-noise-floor-source-m2-r01/<route>-predictions.json",
+    "scorer_ref": "experiments.pamf_lora_main.noise_floor_diagnostic score"
+  },
+  "rows": [
+    {
+      "row_id": "dual-route-noise-attribution-s2026092702",
+      "method": "复用直通、成熟 DURA 及原三工程读出，新增隔离精确总功率、逐频点功率、保载波扣噪和逐点扣噪。",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/noise_floor_diagnostic.py",
+      "resolved_config_ref": "${N607_PROJECT}/releases/20261123-diagnostic-lora-noise-floor-source-m2-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026112319,
+        "support": null,
+        "evaluation": 2026112620
+      },
+      "seed_notes": "只有原 split、冻结识别器种子、1 条通用扰动 smoke 和收包重抽。实际信道视图完全登记复用，无本轮数据生成或 support 种子。",
+      "k": null,
+      "scenario": "clean 和六景，分别评估 full/residual",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "900 包×两路线×七景×九读出（旧五行复用），2 个源 U 做无查询烟测，零训练及校准。",
+      "output_root": "${N607_PROJECT}/runs/20261123-diagnostic-lora-noise-floor-source-m2-r01",
+      "log_path": "${N607_PROJECT}/runs/20261123-diagnostic-lora-noise-floor-source-m2-r01/logs",
+      "command": "${N607_PYTHON} -u -m experiments.pamf_lora_main.noise_floor_diagnostic dispatch ${N607_PROJECT}/releases/20261123-diagnostic-lora-noise-floor-source-m2-r01-release/runtime.json",
+      "expected_artifacts": [
+        "smoke.json",
+        "full-predictions.json",
+        "residual-predictions.json",
+        "full-source-scores.json",
+        "residual-source-scores.json",
+        "logs/",
+        "full-isolated-estimates.json",
+        "residual-isolated-estimates.json"
+      ]
+    }
+  ],
+  "notes": [
+    "上一轮 900 包的固定预测矩阵作为配对基准；使用原观测阈值控制全部工程诊断读出。",
+    "真实噪声仅内部隔离，不保存逐包噪声或把真值诊断接入可部署候选。预测冻结后独立 CPU 才连接源 V 标签。"
+  ],
+  "registered_at": "2026-11-23T15:25:04+00:00"
+}
