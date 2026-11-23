@@ -32,6 +32,19 @@ def transfer_risk(prediction, expected):
     ]).mean()
 
 
+def projection_risk(prediction, expected):
+    """Penalize gain loss and quadrature leakage of measured weak differences."""
+    restored = torch.fft.fft(prediction, norm='ortho')
+    reference = torch.fft.fft(expected, norm='ortho')
+    cross = (restored - reference) * reference.conj()
+    losses = []
+    for band in detail_bands(expected):
+        energy = reference[..., band].abs().square().mean(-1)
+        deviation = cross[..., band].mean(-1) / (energy + 1e-4)
+        losses.append(deviation.abs().square().log1p().mean())
+    return torch.stack(losses).mean()
+
+
 def paired_inputs(clean, perturb, rng, change, *, with_identity):
     a,b = perturb(clean, rng),perturb(clean, rng)
     if with_identity:
@@ -52,7 +65,7 @@ def paired_echo_inputs(clean, perturb, rng, change, *, with_identity):
 
 
 def natural_objective(model, tracker, iq, rng, *, with_identity, recipe, step, preserve,
-                      make_pair=paired_inputs):
+                      make_pair=paired_inputs, projection_weight=None):
     clean = complex_iq(iq)
     framed, rotation, _, rms = coordinates(tracker, iq)
     clean_basis = rotation * rms
@@ -72,4 +85,8 @@ def natural_objective(model, tracker, iq, rng, *, with_identity, recipe, step, p
                           consistent, measured))
     first,second,paired = recipe.loss_weights(step)
     loss = first*values[0] + second*values[1] + paired*values[2] + preserve*values[3]
+    if projection_weight is not None:
+        projected = projection_risk(transport, delta)
+        loss = loss + projection_weight * projected
+        values = torch.cat((values, projected[None]))
     return loss,values

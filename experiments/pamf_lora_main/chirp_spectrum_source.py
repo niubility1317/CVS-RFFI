@@ -73,43 +73,43 @@ def freeze(root, route, _source, chosen, ids, predictions, metrics, modes):
           rows={k: v.tolist() for k, v in predictions.items()}, metrics=metrics, modes=list(modes)))
 
 
-def evaluate(rt, route):
+def evaluate(rt, route, recipes=RECIPES, modes=MODES, renderer=render):
     root = Path(rt['run_root'])
     device = 'cuda:0'
     binding = source_control(rt, route, device)
     models, thresholds = [], []
-    for arm, recipe in RECIPES.items():
+    for arm, recipe in recipes.items():
         saved = torch.load(root / f'{arm}-model.pt', map_location=device, weights_only=True)
         if saved['proof'] != proof(binding[2], recipe):
-            raise ValueError('Unexpected source shrinkage checkpoint')
+            raise ValueError('Unexpected source restoration checkpoint')
         model = recipe.model().to(device).eval().requires_grad_(False)
         model.load_state_dict(saved['weights'], strict=True)
         models.append(model)
         thresholds.append(saved['threshold'])
     if thresholds[0] != thresholds[1] or not np.isfinite(thresholds[0]):
-        raise ValueError('Both shrinkage arms require the same source U threshold')
-    score(rt, route, panel=panel, modes=MODES, render=partial(render, threshold=thresholds[0]),
+        raise ValueError('Both restoration arms require the same source U threshold')
+    score(rt, route, panel=panel, modes=modes, render=partial(renderer, threshold=thresholds[0]),
           binding=binding, frozen_models=models, require_clean_bypass=False, replay_fn=receive_only,
           finalize=freeze)
 
 
-def read_frozen(root, route):
+def read_frozen(root, route, modes):
     stored = read(root / f'{route}-predictions.json')
     count = len(SOURCE) * EVAL_PER_RX
     ids = stored['ids']
     rows = {view: np.asarray(value) for view, value in stored['rows'].items()}
-    if (len(ids) != count or len(set(ids)) != count or stored['modes'] != list(MODES)
+    if (len(ids) != count or len(set(ids)) != count or stored['modes'] != list(modes)
             or set(rows) != set(VIEWS) or set(stored['metrics']) != set(VIEWS)
-            or any(value.shape != (len(MODES), count) or value.dtype.kind not in 'iu'
+            or any(value.shape != (len(modes), count) or value.dtype.kind not in 'iu'
                    or (value < 0).any() or (value >= 10).any() for value in rows.values())):
         raise ValueError('Incomplete source V prediction matrix')
     return ids, rows, stored['metrics']
 
 
-def score_frozen(rt):
+def score_frozen(rt, modes=MODES, comparisons=(('separate', 'shared'), ('separate_half', 'direct'))):
     root = Path(rt['run_root'])
     source = Path(rt['source_root'])
-    frozen = {route: read_frozen(root, route) for route in ROUTES}
+    frozen = {route: read_frozen(root, route, modes) for route in ROUTES}
     if frozen['full'][0] != frozen['residual'][0]:
         raise ValueError('Source prediction packets differ between routes')
     ids = np.asarray(source_contract(source)['role_ids']['V'])
@@ -119,17 +119,16 @@ def score_frozen(rt):
         if not np.array_equal(panel(np.asarray(SOURCE)[labels['rx_i']]), chosen):
             raise ValueError('Frozen packets differ from the registered source V selection')
     for route, (_, rows, metrics) in frozen.items():
-        summarize(root, route, source, chosen, ids, rows, metrics, MODES, predictions_written=True,
-                  comparisons=(('separate', 'shared'), ('separate_half', 'direct')))
-    print('LORA_SHRINKAGE_SOURCE_SCORED', flush=True)
+        summarize(root, route, source, chosen, ids, rows, metrics, modes, predictions_written=True,
+                  comparisons=comparisons)
+    print('LORA_RESTORATION_SOURCE_SCORED', flush=True)
 
 
 @torch.no_grad()
-def measure(rt):
+def measure(rt, recipe=RECIPES['separate']):
     root = Path(rt['run_root'])
     (_, calibration, _), contract = setup(rt, 'cuda:0', smoke=True)
-    recipe = RECIPES['separate']
-    saved = torch.load(root / 'separate-model.pt', map_location='cuda:0', weights_only=True)
+    saved = torch.load(root / f'{recipe.name}-model.pt', map_location='cuda:0', weights_only=True)
     if saved['proof'] != proof(contract, recipe):
         raise ValueError('Cannot time a different restoration')
     model = recipe.model().cuda().eval()
@@ -149,7 +148,7 @@ def measure(rt):
     logits = reader(torch.cat((corrupt, reference, *proposal)))[0]
     if logits.shape != (3, 10) or not torch.isfinite(logits).all():
         raise ValueError('Real frozen LoRa checkpoint smoke failed')
-    print('LORA_SHRINKAGE_REAL_CHECKPOINT_PASS', flush=True)
+    print('LORA_RESTORATION_REAL_CHECKPOINT_PASS', flush=True)
     results = {}
     for name, value in (('source_clean', clean), ('generic_disturbed', corrupt)):
         start_ms = []
@@ -165,12 +164,12 @@ def measure(rt):
           timing=results, torch=torch.__version__, gpu=torch.cuda.get_device_name()))
 
 
-def dispatch(rt):
+def dispatch(rt, recipes=RECIPES):
     root = Path(rt['run_root'])
     root.mkdir()
     launch = partial(start, module=rt['runner'])
     try:
-        for action, names in (('smoke', RECIPES), ('fit', RECIPES), ('timing', ('source',)),
+        for action, names in (('smoke', recipes), ('fit', recipes), ('timing', ('source',)),
                               ('evaluate', ROUTES)):
             schedule(rt, [(action, name) for name in names], launch)
         if launch(rt, 'score', 'source').wait():
