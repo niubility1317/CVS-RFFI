@@ -1,6 +1,6 @@
 import torch
 
-from experiments.pamf_lora_main.repeat_covariance import RepeatCovariance, repeated_noise
+from experiments.pamf_lora_main.repeat_covariance import MAX_EDIT, RepeatCovariance, radial_at_same_dose, repeated_noise
 
 
 def test_repeat_covariance_has_diagonal_match_and_preserves_tracked_carrier():
@@ -33,3 +33,33 @@ def test_matched_training_gets_finite_stage_gradients():
         for head in (model.coarse, model.fine):
             grad = head[-1].weight.grad
             assert torch.isfinite(grad).all() and grad.norm() > 0
+
+def test_protected_edits_stay_in_complex_disks_under_saturated_updates():
+    generator = torch.Generator().manual_seed(159)
+    samples = torch.randn(2, 6, 256, dtype=torch.complex64, generator=generator)
+    quality = torch.full((2, 6, 1), .7)
+    model = RepeatCovariance(True, protected=True)
+    with torch.no_grad():
+        for head in (model.coarse, model.fine):
+            head[-1].bias.fill_(80.)
+        values = model(samples, quality)
+    spectrum = torch.fft.fft(samples, norm='ortho')
+    for output in values:
+        restored = torch.fft.fft(output, norm='ortho')
+        allowance = MAX_EDIT * spectrum.abs()
+        assert ((restored - spectrum).abs() <= allowance + 2e-6).all()
+        retained = restored[..., 1:].abs().square().sum()
+        received = spectrum[..., 1:].abs().square().sum()
+        assert (1 - MAX_EDIT) ** 2 * received <= retained
+        torch.testing.assert_close(restored[..., 0], spectrum[..., 0])
+
+def test_radial_control_matches_protected_edit_magnitude():
+    rng = torch.Generator().manual_seed(251)
+    y = torch.randn(3, 6, 256, dtype=torch.complex64, generator=rng)
+    q = torch.ones(3, 6, 1)
+    restored = RepeatCovariance(True, protected=True)(y, q)[1]
+    control = radial_at_same_dose(y, restored)
+    transform = torch.fft.fft
+    torch.testing.assert_close(transform(restored - y, norm='ortho').abs(),
+                               transform(control - y, norm='ortho').abs(),
+                               atol=1e-6, rtol=1e-4)

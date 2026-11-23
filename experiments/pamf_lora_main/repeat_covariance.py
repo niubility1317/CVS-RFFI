@@ -8,6 +8,8 @@ from .chirp_spectrum_recovery import power
 
 REPEATS = 6
 BLOCK = 8
+MAX_EDIT = .35
+MAX_LOGIT_SHIFT = .75
 
 
 def shrinkage_head(incoming):
@@ -40,10 +42,21 @@ def repeated_noise(clean, rng):
     return clean + mixed * dose * norm
 
 
+def radial_at_same_dose(observed, restored):
+    """Match the per-bin edit length and remove only along the received complex ray."""
+    spectrum = torch.fft.fft(observed, norm='ortho')
+    corrected = torch.fft.fft(restored, norm='ortho')
+    amplitude = spectrum.abs()
+    length = (corrected - spectrum).abs()
+    shrinkage = length / amplitude.clamp_min(1e-12)
+    return torch.fft.ifft(spectrum * (1 - shrinkage), norm='ortho')
+
+
 class RepeatCovariance(nn.Module):
-    def __init__(self, correlated):
+    def __init__(self, correlated, *, protected=False):
         super().__init__()
         self.correlated = correlated
+        self.protected = protected
         self.coarse = shrinkage_head(2 * REPEATS + 3)
         self.fine = shrinkage_head(3 * REPEATS + 3)
         freq = torch.fft.fftshift(torch.fft.fftfreq(256)).abs()
@@ -76,7 +89,10 @@ class RepeatCovariance(nn.Module):
         transformed = axes.mH @ blocks
         representation = power(transformed).transpose(1, 2).flatten(2)
         level = levels.clamp_min(0).transpose(1, 2).repeat_interleave(BLOCK, dim=-1)
-        prior = level.clamp_min(1).reciprocal().clamp(.02, .98).logit()
+        if self.protected:
+            prior = -level.clamp_min(.05).log()  # Removal fraction: 1 / (1 + level).
+        else:
+            prior = level.clamp_min(1).reciprocal().clamp(.02, .98).logit()
         scalar = torch.stack((noise.log1p(), quality.mean(dim=(1, 2))), dim=1)
         side = torch.cat((scalar[:, :, None].expand(-1, -1, y.shape[-1]),
                           self.frequency.expand(len(y), 1, -1)), dim=1)
@@ -84,17 +100,31 @@ class RepeatCovariance(nn.Module):
         mixed = self.training and y.is_cuda and torch.cuda.is_bf16_supported()
         with torch.autocast('cuda', dtype=torch.bfloat16, enabled=mixed):
             coarse_change = self.coarse(features)
-        coarse = prior + coarse_change.float()
-        rejection = coarse.sigmoid()
+        coarse_change = coarse_change.float()
+
+        def removal(update):
+            if self.protected:
+                update = MAX_LOGIT_SHIFT * update.tanh()
+            return (prior + update).sigmoid()
+
+        rejection = removal(coarse_change)
         with torch.autocast('cuda', dtype=torch.bfloat16, enabled=mixed):
             fine_change = self.fine(torch.cat((features, (representation * rejection.square()).log1p()), dim=1))
-        refined = (coarse + fine_change.float()).sigmoid()
+        if self.protected:
+            refined = removal(coarse_change + fine_change.float())
+        else:
+            refined = (prior + coarse_change + fine_change.float()).sigmoid()
         strength = noise[:, None, None] / (noise[:, None, None] + .006)
         basis = lower[:, None] @ axes
 
         def restore(shrink):
             weights = (strength * shrink).unflatten(-1, (-1, BLOCK)).transpose(1, 2)
             delta = (basis @ (transformed * weights)).transpose(1, 2).flatten(2)
+            if self.protected:
+                # The complex edit disk guarantees amplitude retention and limits
+                # angular deviation in every original tracked bin.
+                radius = MAX_EDIT * spectrum.abs()
+                delta = delta * (radius / (radius + delta.abs()).clamp_min(1e-12))
             return torch.fft.ifft(torch.fft.ifftshift(spectrum - delta, dim=-1), norm='ortho')
 
         return restore(rejection), restore(refined)
