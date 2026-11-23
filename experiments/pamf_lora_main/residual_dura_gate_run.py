@@ -28,6 +28,8 @@ from .runner import activate
 
 
 RUN = '20261123-phase1-lora-dura-residual-gate-m1-r01'
+FIXED_BASELINE = '20261124-phase1-lora-residual-r69-fixed-baseline-m2-r01'
+ADDITIONAL_READERS = (2026092701, 2026092703)
 MODES = ('direct', 'dura_half', 'dura_gated_half')
 SEED_RUNS = {
     2026092701: '20261123-phase1-lora-dura-residual-gate-s2026092701-r01',
@@ -58,11 +60,11 @@ def wait_for_parent(rt, artifact):
         time.sleep(30)
 
 
-def frozen_models(rt, device):
+def frozen_models(rt, device, *, restoration_seed=None):
     source = source_contract(Path(rt['source_root']))
     root = Path(rt['run_root'])
     parent = Path(rt['parent_root'])
-    seed = rt.get('model_seed', SEED)
+    seed = rt.get('model_seed', SEED) if restoration_seed is None else restoration_seed
     residual = read(parent / 'source_pairs' / 'contract.json')
     lineage = (parent if seed == SEED else root) / 'G' / 'lineage'
     ready = read(lineage / 'complete.json')
@@ -96,8 +98,8 @@ def train_replica(rt):
 
 
 @torch.no_grad()
-def smoke(rt):
-    model, gate, contract = frozen_models(rt, 'cuda:0')
+def smoke(rt, *, restoration_seed=None):
+    model, gate, contract = frozen_models(rt, 'cuda:0', restoration_seed=restoration_seed)
     projector = ObservedShape().to('cuda:0').eval()
     iq, receiver, pid, _ = source_role(Path(rt['source_root']), contract, 'L_s')
     rows = [int(np.flatnonzero(receiver == rx)[0]) for rx in SOURCE]
@@ -119,8 +121,13 @@ def smoke(rt):
     print('DISTURBANCE_GATE_R69_SOURCE_SMOKE_PASS', flush=True)
 
 
+def reader_checkpoint(rt, contract, seed):
+    runs = Path(rt['parent_root']).parent
+    return complete_f(runs / SET_RUN, contract, case(seed, SET_METHOD)) / 'model.pt'
+
+
 @torch.no_grad()
-def predict(rt):
+def predict(rt, *, restoration_seed=None):
     root = Path(rt['run_root'])
     seed = rt.get('model_seed', SEED)
     check = read(root / 'smoke.json')
@@ -132,9 +139,9 @@ def predict(rt):
             views=list(VIEWS), processing_route='residual'):
         raise ValueError('Matched residual blind target IQ required')
     device = 'cuda:0'
-    g, gate, source = frozen_models(rt, device)
+    g, gate, source = frozen_models(rt, device, restoration_seed=restoration_seed)
     f = recognizer(device).eval().requires_grad_(False)
-    weight = complete_f(root.parent / SET_RUN, source, case(seed, SET_METHOD)) / 'model.pt'
+    weight = reader_checkpoint(rt, source, seed)
     f.load_state_dict(torch.load(weight, map_location=device, weights_only=True), strict=True)
     projector = ObservedShape().to(device).eval()
     output = root / 'predictions'
@@ -172,6 +179,35 @@ def predict(rt):
           practical=ROUTE, target_truth_read=False))
 
 
+def dispatch_fixed_baseline(rt):
+    root = Path(rt['run_root'])
+    root.mkdir(exist_ok=False)
+    state = root / 'state.json'
+    launch = partial(start, module=__spec__.name, extra_keys=('gate_path',))
+    try:
+        write(state, dict(status='SOURCE_R69_SMOKE'))
+        schedule(rt, [('smoke', str(seed)) for seed in ADDITIONAL_READERS], launch)
+        write(state, dict(status='PREDICTING'), exclusive=False)
+        schedule(rt, [('predict', str(seed)) for seed in ADDITIONAL_READERS], launch)
+        write(state, dict(status='PREDICTIONS_FROZEN', target_truth_read=False), exclusive=False)
+    except Exception as exc:
+        write(state, dict(status='FAILED', error=str(exc)), exclusive=False)
+        raise
+
+
+def fixed_baseline_worker(rt, kind, name):
+    seed = int(name)
+    if seed not in ADDITIONAL_READERS or kind not in ('smoke', 'predict'):
+        raise ValueError('Expected a registered read-only scorer-seed replica')
+    root = Path(rt['run_root']) / name
+    worker = dict(rt, run_root=str(root), model_seed=seed)
+    if kind == 'smoke':
+        root.mkdir(exist_ok=False)
+        smoke(worker, restoration_seed=SEED)
+        return
+    predict(worker, restoration_seed=SEED)
+
+
 def dispatch(rt):
     root = Path(rt['run_root'])
     root.mkdir(exist_ok=False)
@@ -204,7 +240,7 @@ def dispatch(rt):
         raise
 
 
-def publish(repo, output, context, ssh_config, parent_submit, model_seed=SEED):
+def publish(repo, output, context, ssh_config, parent_submit, model_seed=SEED, fixed_baseline=False):
     ctx = read(context)
     rt = {key: ctx[key] for key in ('project', 'python', 'frozen_sources')}
     project = PurePosixPath(rt['project'])
@@ -213,7 +249,9 @@ def publish(repo, output, context, ssh_config, parent_submit, model_seed=SEED):
     if (receipt['archive_transfer'] != 'VERIFIED' or PurePosixPath(receipt['run_root']) != parent
             or PurePosixPath(receipt['cwd']) != project / 'releases' / f'{PARENT_RUN}-release'):
         raise ValueError('Invalid residual DURA parent release receipt')
-    run = SEED_RUNS[model_seed]
+    if fixed_baseline and model_seed != SEED:
+        raise ValueError('Fixed baseline controls the two recognizer seeds itself')
+    run = FIXED_BASELINE if fixed_baseline else SEED_RUNS[model_seed]
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(repo), model_seed=model_seed,
               run_root=str(project / 'runs' / run), release_root=str(project / 'releases' / f'{run}-release'),
               source_root=str(project / 'releases' / f'{DATA_RUN}-release' / 'data' / 'source'),
@@ -224,6 +262,9 @@ def publish(repo, output, context, ssh_config, parent_submit, model_seed=SEED):
         rt['gate_path'] = str(project / 'runs' / RUN / 'gate.json')
         if model_seed == 2026092703:
             rt['allowed_gpus'] = [5, 6, 1, 4, 2, 0, 3]
+    if fixed_baseline:
+        rt.update(gate_path=str(project / 'runs' / RUN / 'gate.json'),
+                  allowed_gpus=[6, 3, 2, 0, 4, 1, 5], max_workers=2)
     return release(repo, output, rt, ssh_config)
 
 
@@ -234,6 +275,7 @@ if __name__ == '__main__':
     for key in ('repo', 'output', 'context', 'ssh-config', 'parent-submit'):
         pub.add_argument('--' + key, type=Path, required=True)
     pub.add_argument('--model-seed', type=int, choices=tuple(SEED_RUNS), default=SEED)
+    pub.add_argument('--fixed-baseline', action='store_true')
     for key in ('dispatch', 'fit', 'train', 'smoke', 'predict'):
         stage = commands.add_parser(key)
         stage.add_argument('runtime', type=Path)
@@ -244,8 +286,12 @@ if __name__ == '__main__':
         publish(**args)
     else:
         runtime = read(args['runtime'])
+        fixed = Path(runtime['run_root']).name == FIXED_BASELINE
         if kind == 'dispatch':
-            dispatch(runtime)
+            (dispatch_fixed_baseline if fixed else dispatch)(runtime)
         else:
             activate(runtime)
-            {'fit': fit_source, 'train': train_replica, 'smoke': smoke, 'predict': predict}[kind](runtime)
+            if fixed:
+                fixed_baseline_worker(runtime, kind, args['name'])
+            else:
+                {'fit': fit_source, 'train': train_replica, 'smoke': smoke, 'predict': predict}[kind](runtime)

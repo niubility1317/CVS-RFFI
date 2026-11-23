@@ -25,19 +25,29 @@ def prediction(path):
     return a
 
 
-def collect(submit, ssh_config, dataset, output, full_control, disturbance_gate=False):
+def collect(submit, ssh_config, dataset, output, full_control, disturbance_gate=False,
+            fixed_reader_seed=None):
     receipt = read(submit)
     run = PurePosixPath(receipt['run_root'])
     allowed, modes = {RUN: SEED}, MODES
     if disturbance_gate:
         from .residual_dura_gate_run import MODES as gate_modes, SEED_RUNS
         allowed, modes = {name: seed for seed, name in SEED_RUNS.items()}, gate_modes
-    if run.name not in allowed or receipt['archive_transfer'] != 'VERIFIED':
-        raise ValueError('Wrong residual DURA receipt')
-    seed = allowed[run.name]
-    root = shlex.quote(str(run))
+    if receipt['archive_transfer'] != 'VERIFIED':
+        raise ValueError('Unverified residual DURA receipt')
+    if fixed_reader_seed is not None:
+        from .residual_dura_gate_run import ADDITIONAL_READERS, FIXED_BASELINE
+        if run.name != FIXED_BASELINE or not disturbance_gate or fixed_reader_seed not in ADDITIONAL_READERS:
+            raise ValueError('Wrong fixed DURA baseline or reader seed')
+        seed = fixed_reader_seed
+        root = shlex.quote(str(run / str(seed)))
+    else:
+        if run.name not in allowed:
+            raise ValueError('Wrong residual DURA receipt')
+        seed = allowed[run.name]
+        root = shlex.quote(str(run))
     conn = ['ssh', '-F', str(ssh_config), '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', 'N607']
-    wait_for_predictions(conn, root)
+    wait_for_predictions(conn, shlex.quote(str(run)))
     extra = ' activity.json' if disturbance_gate else ''
     payload = subprocess.check_output([*conn, f'tar -czf - -C {root} predictions smoke.json{extra}'], timeout=180)
     output.mkdir(parents=True, exist_ok=False)
@@ -119,6 +129,9 @@ def collect(submit, ssh_config, dataset, output, full_control, disturbance_gate=
                    matrix_arrays=len(rows), metrics=metrics)
     if disturbance_gate:
         summary['gate_activity'] = coverage
+    if fixed_reader_seed is not None:
+        summary['restoration_seed'] = SEED
+        summary['restoration_method'] = 'frozen_residual_r69_gated_half'
     write(output / 'scores.json', summary)
     print('RESIDUAL_DURA_SCORED', output / 'scores.json', flush=True)
 
@@ -128,4 +141,5 @@ if __name__ == '__main__':
     for name in ('submit', 'ssh-config', 'dataset', 'output', 'full-control'):
         parser.add_argument('--'+name, type=Path, required=True)
     parser.add_argument('--disturbance-gate', action='store_true')
+    parser.add_argument('--fixed-reader-seed', type=int)
     collect(**vars(parser.parse_args()))
