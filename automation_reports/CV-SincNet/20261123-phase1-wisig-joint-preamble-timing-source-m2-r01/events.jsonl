@@ -1,0 +1,4 @@
+{"at": "2026-11-23T14:58:07+00:00", "status": "PLANNED", "note": "Registered receiver-only timing comparisons on two existing paired source V routes.", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-23T14:58:07+00:00", "status": "LOCAL_VERIFIED", "note": "Four focused tests passed and independent launch P0/P1 review passed.", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-11-23T15:00:48+00:00", "status": "RUNNING", "note": "Verified controller and scorer process binding, checkpoint smoke and both row logs.", "evidence": ["report.md", "N607:20261123-phase1-wisig-joint-preamble-timing-source-m2-r01/logs"], "row_id": null}
+{"at": "2026-11-23T15:00:48+00:00", "status": "ANALYZED", "note": "Independent paired source V scores complete. Protocol fill improves its matched reflected edge control and neither route meets promotion criteria.", "evidence": ["report.md", "source_scores.json", "timing_thresholds.json"], "row_id": null}

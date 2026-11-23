@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [WiSig 短长前导共享五抽头定时](../automation_reports/CV-SincNet/20261123-phase1-wisig-joint-preamble-timing-source-m2-r01/report.md)
 - [WiSig 短前导工程对照](../automation_reports/CV-SincNet/20261123-phase1-wisig-preamble-receiver-source-m2-r02/report.md)
 - [LoRa 通用复回波作用下的自然弱指纹保真消融](../automation_reports/CV-SincNet/20261123-phase1-lora-dura-natural-detail-echo-source-m4-r01/report.md)
 - [LoRa 自然弱复谱差异保真源域对照](../automation_reports/CV-SincNet/20261123-phase1-lora-dura-natural-detail-source-m4-r01/report.md)
