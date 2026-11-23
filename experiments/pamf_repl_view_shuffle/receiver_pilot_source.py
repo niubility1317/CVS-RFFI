@@ -142,16 +142,16 @@ def predict(rt, route):
                 for mode, value in ds.items():
                     if value.shape != (len(x), 6) or not torch.isfinite(value).all():
                         raise ValueError('Invalid frozen default-head prediction')
-                    logits[mode].append(value.argmax(1).cpu().numpy())
+                    logits[mode].append(np.asarray(value.argmax(1).tolist(), dtype=np.int64))
                 wave = dict(raw=x, R69=recovered, **{m: as_iq(v) for m, v in variants.items()})
                 scale = target.square().sum(dim=(1, 2)).clamp_min(1e-8)
                 for mode, z in wave.items():
                     error = (z - target).square().sum(dim=(1, 2)) / scale
-                    errors[mode].append(error.cpu().numpy())
+                    errors[mode].append(np.asarray(error.tolist(), dtype=np.float32))
                 for mode in READOUTS:
-                    changes[mode].append((wave[mode] != x).any(dim=(1, 2)).cpu().numpy())
+                    changes[mode].append(np.asarray((wave[mode] != x).any(dim=(1, 2)).tolist(), dtype=bool))
                 for key, vector in diag.items():
-                    telemetry.setdefault(key, []).append(vector.cpu().numpy())
+                    telemetry.setdefault(key, []).append(np.asarray(vector.tolist()))
         for mode in MODES:
             predictions[f'{mode}__{view}'] = np.concatenate(logits[mode])
         evidence[view] = dict(estimate_quantiles={k: percentile(v) for k, v in telemetry.items()},
