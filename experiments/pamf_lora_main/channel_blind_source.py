@@ -43,6 +43,9 @@ class FitRecipe:
     perturb: Callable
     restore: Callable
     coarse_first: bool = False
+    batch: int = BATCH
+    fit_per_rx: int = FIT
+    validation_steps: tuple[int, ...] = ()
 
     def loss_weights(self, step):
         if not self.coarse_first:
@@ -75,7 +78,9 @@ def panel(rx):
 
 def proof(contract, recipe=DEFAULT):
     metadata = dict(status='SOURCE_FROZEN',contract=contract,seed=SEED,steps=recipe.steps,
-                fit_per_rx=FIT,calibration_per_rx=CAL,held_per_rx=HELD,**ISOLATION)
+                fit_per_rx=recipe.fit_per_rx,calibration_per_rx=CAL,held_per_rx=HELD,**ISOLATION)
+    if recipe.batch != BATCH:
+        metadata['batch'] = recipe.batch
     if recipe.name!='blind':
         metadata['estimator'] = recipe.name
     if recipe.coarse_first:
@@ -83,7 +88,7 @@ def proof(contract, recipe=DEFAULT):
     return metadata
 
 
-def setup(rt, device, *, smoke=False):
+def setup(rt, device, *, smoke=False, fit_per_rx=FIT):
     source = Path(rt['source_root'])
     contract = source_contract(source)
     _,rx,_,_ = source_role(source,contract,'U_s')
@@ -91,7 +96,7 @@ def setup(rt, device, *, smoke=False):
     values = np.load(raw,mmap_mode='r',allow_pickle=False)
     if values.shape!=(1,len(rx),6,2,256) or values.dtype!=np.float32:
         raise ValueError('Blind training requires the single clean source U view')
-    indices = partition(rx,5,4,3) if smoke else partition(rx)
+    indices = partition(rx,5,4,3) if smoke else partition(rx,fit=fit_per_rx)
     return tuple(tensor(values[0,i],device) for i in indices),contract
 
 
@@ -124,10 +129,23 @@ def objective(model, tracker, iq, rng, *, with_identity, recipe, step):
     return loss, values
 
 
+@torch.no_grad()
+def held_waveform(model, tracker, held, calculate, recipe, step, receiver_batches):
+    rng = torch.Generator(device=held.device).manual_seed(SEED+5)
+    groups = held.chunk(len(SOURCE)) if receiver_batches else (held,)
+    model.eval()
+    values = [len(x)*calculate(model,tracker,x,rng,with_identity=False,recipe=recipe,step=step)[1]
+              for group in groups for x in group.split(recipe.batch)]
+    result = torch.stack(values).sum(0)/len(held)
+    if not torch.isfinite(result).all():
+        raise FloatingPointError('Nonfinite held source waveform risk')
+    return result.tolist()
+
+
 def fit(rt, *, smoke=False, recipe=DEFAULT, calculate=objective, receiver_batches=False):
     device = 'cuda:0'
     torch.manual_seed(SEED)
-    (training,calibration,held), contract = setup(rt,device,smoke=smoke)
+    (training,calibration,held), contract = setup(rt,device,smoke=smoke,fit_per_rx=recipe.fit_per_rx)
     tracker = PacketRestorer('consensus').to(device).eval()
     model = recipe.model().to(device)
     opt = torch.optim.AdamW(model.parameters(),lr=2e-4,weight_decay=1e-4)
@@ -135,13 +153,14 @@ def fit(rt, *, smoke=False, recipe=DEFAULT, calculate=objective, receiver_batche
     lr = torch.optim.lr_scheduler.CosineAnnealingLR(opt,steps,eta_min=2e-5)
     rng = torch.Generator(device=device).manual_seed(SEED)
     start_time = time.perf_counter()
+    progress = {}
     for step in range(1,steps+1):
         if receiver_batches:
             count = len(training) // len(SOURCE)
             receiver = torch.randint(len(SOURCE),(1,),device=device,generator=rng)
-            ix = receiver*count + torch.randint(count,(BATCH,),device=device,generator=rng)
+            ix = receiver*count + torch.randint(count,(recipe.batch,),device=device,generator=rng)
         else:
-            ix = torch.randint(len(training),(BATCH,),device=device,generator=rng)
+            ix = torch.randint(len(training),(recipe.batch,),device=device,generator=rng)
         loss,values = calculate(model,tracker,training[ix],rng,with_identity=True,
                                 recipe=recipe,step=step)
         if not torch.isfinite(values).all():
@@ -155,6 +174,11 @@ def fit(rt, *, smoke=False, recipe=DEFAULT, calculate=objective, receiver_batche
         lr.step()
         if step==1 or step%50==0:
             print('CHANNEL_BLIND_FIT',step,*values.detach().tolist(),flush=True)
+        if not smoke and step in recipe.validation_steps:
+            result = held_waveform(model,tracker,held,calculate,recipe,step,receiver_batches)
+            progress[str(step)] = result
+            print('CHANNEL_BLIND_HELD',step,*result,flush=True)
+            model.train()
     torch.cuda.synchronize()
     worker_seconds = time.perf_counter()-start_time
     with torch.no_grad():
@@ -162,12 +186,7 @@ def fit(rt, *, smoke=False, recipe=DEFAULT, calculate=objective, receiver_batche
         clean_scores = torch.cat([corruption_score(coordinates(tracker,v)[0])
                                   for v in calibration.split(32)])
         threshold = float(1.05*clean_scores.max())
-        eval_rng = torch.Generator(device=device).manual_seed(SEED+5)
-        groups = held.chunk(len(SOURCE)) if receiver_batches else (held,)
-        validation = [len(v)*calculate(model,tracker,v,eval_rng,with_identity=False,
-                                        recipe=recipe,step=steps)[1]
-                      for group in groups for v in group.split(BATCH)]
-        result = (torch.stack(validation).sum(0)/len(held)).tolist()
+        result = held_waveform(model,tracker,held,calculate,recipe,steps,receiver_batches)
     root = Path(rt['run_root'])
     meta = proof(contract,recipe)
     summary = {k:v for k,v in meta.items() if k!='contract'}
@@ -175,6 +194,8 @@ def fit(rt, *, smoke=False, recipe=DEFAULT, calculate=objective, receiver_batche
                    n_fit=len(training),n_calibration=len(calibration),n_held=len(held),
                    worker_seconds=worker_seconds,
                    bf16_training_convolutions=recipe.name!='blind' and torch.cuda.is_bf16_supported())
+    if progress:
+        summary['held_trajectory'] = progress
     if smoke:
         write(root/f'smoke-{recipe.name}.json',dict(summary,status='PASS',steps=1))
     else:
