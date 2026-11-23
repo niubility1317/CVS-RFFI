@@ -3,8 +3,7 @@
 import argparse
 import os
 from pathlib import Path, PurePosixPath
-import subprocess
-from time import perf_counter, sleep
+from time import perf_counter
 
 import numpy as np
 import torch
@@ -13,7 +12,7 @@ from experiments.cric_dura_comparison.io import read, tensor, write
 from experiments.pamf_fcrossrx_readout.frozen import load_reader
 from experiments.pamf_fcrossrx_readout.source_diagnostic import VIEWS, source_reference
 from experiments.pamf_lora_main.publish import release, release_commit
-from experiments.pamf_lora_main.refine_runner import start
+from experiments.pamf_lora_main.refine_runner import select_gpu, start
 from experiments.pamf_lora_main.runner import activate
 from experiments.pamf_r65_four_route.runtime import load_checkpoint
 from experiments.pamf_stage2_inference.engine import InferenceEngine
@@ -147,17 +146,6 @@ def score(rt, modes=MODES):
                     repaired=(hit & ~baseline).sum(axis=-1).tolist(), damaged=(~hit & baseline).sum(axis=-1).tolist())
     write(root.parent / 'source-scores.json', dict(status='SOURCE_SCORED', scores=scores, views=list(VIEWS),
            modes=list(modes), reader_seed=2026092701, target_reads=0, truth_last=True))
-
-
-def select_gpu(exclude=()):
-    query = ['nvidia-smi', '--query-gpu=index,utilization.gpu,memory.free', '--format=csv,noheader,nounits']
-    for _ in range(30):
-        rows = (tuple(map(int, line.split(','))) for line in subprocess.check_output(query, text=True).splitlines())
-        available = [(load, -free, gpu) for gpu, load, free in rows if free >= 12_288 and gpu not in exclude]
-        if available:
-            return min(available)[-1]
-        sleep(20)
-    raise RuntimeError('No GPU has 12 GiB free')
 
 
 def dispatch(rt):

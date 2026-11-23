@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+from time import sleep
 
 import numpy as np
 import torch
@@ -21,6 +22,17 @@ from .runner import activate
 
 RUN='20261122-phase1-lora-packet-refine-m6-r01'
 READOUTS={m: ('direct','parent_dura',*METHODS_G) if m=='spectral_tri' else ('direct',) for m in METHODS}
+
+
+def select_gpu(exclude=()):
+    query = ['nvidia-smi', '--query-gpu=index,utilization.gpu,memory.free', '--format=csv,noheader,nounits']
+    for _ in range(30):
+        rows = (tuple(map(int, line.split(','))) for line in subprocess.check_output(query, text=True).splitlines())
+        available = [(load, -free, gpu) for gpu, load, free in rows if free >= 12_288 and gpu not in exclude]
+        if available:
+            return min(available)[-1]
+        sleep(20)
+    raise RuntimeError('No GPU has 12 GiB free')
 
 
 def source_handles(rt):

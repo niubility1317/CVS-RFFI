@@ -170,10 +170,17 @@ def load_models(root, route, contract, recipe, device):
     return models
 
 
+def load_reader(root, contract, device):
+    f = recognizer(device).eval().requires_grad_(False)
+    weights = complete_f(root.parent/SET_RUN, contract, case(SEED, SET_METHOD))/'model.pt'
+    f.load_state_dict(torch.load(weights, map_location=device, weights_only=True), strict=True)
+    return f
+
+
 @torch.no_grad()
 def score(rt, route, *, recipe=DEFAULT, panel=result_panel, modes=MODES, render=readouts,
           checkpoint_run=None, binding=None, frozen_models=None, require_clean_bypass=True,
-          replay_fn=replay):
+          replay_fn=replay, finalize=summarize):
     device = 'cuda:0'
     root = Path(rt['run_root'])
     source, cache, contract, baseline, tracker = binding or source_control(rt, route, device)
@@ -181,9 +188,7 @@ def score(rt, route, *, recipe=DEFAULT, panel=result_panel, modes=MODES, render=
     if checkpoint_run is not None and read(parent/'state.json')['status'] != 'SOURCE_SCORED':
         raise ValueError('Expected complete source-selected vector checkpoints')
     models = load_models(parent, route, contract, recipe, device) if frozen_models is None else frozen_models
-    f = recognizer(device).eval().requires_grad_(False)
-    weights = complete_f(root.parent/SET_RUN, contract, case(SEED, SET_METHOD))/'model.pt'
-    f.load_state_dict(torch.load(weights, map_location=device, weights_only=True), strict=True)
+    f = load_reader(root, contract, device)
     raw, rx, ids, _ = source_role(source, contract, 'V')
     chosen = panel(rx)
     rows = list(zip(raw[chosen], rx[chosen], ids[chosen], strict=True))
@@ -206,7 +211,7 @@ def score(rt, route, *, recipe=DEFAULT, panel=result_panel, modes=MODES, render=
             pred[view] = np.concatenate(parts, axis=1)
             metrics[view] = dict(active=n_active)
             print('COMPLEX_VECTOR_SOURCE', route, view, n_active, flush=True)
-    summarize(root, route, source, chosen, ids, pred, metrics, modes)
+    finalize(root, route, source, chosen, ids, pred, metrics, modes)
 
 
 def dispatch(rt):
