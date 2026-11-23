@@ -101,7 +101,7 @@ class ObservableAction(nn.Module):
         center[LAGS.index(0)] = penalties[LAGS.index(0)]
         self.register_buffer('center', center, persistent=False)
 
-    def forward(self, y):
+    def forward(self, y, *, return_unprotected=False):
         obs = estimate(y)
         rms = power(y).mean(dim=-1, keepdim=True).clamp_min(1e-8).sqrt()
         x = obs.aligned / rms
@@ -136,12 +136,15 @@ class ObservableAction(nn.Module):
         else:
             update = .5 * (x - prior)
         fine = prior + .8 * trust * update
+        unrestricted = fine
         if self.protect_amplitude:
             fine = preserve_spectral_amplitude(fine * obs.rotation, observed_spectrum,
                                                confidence) * obs.rotation.conj()
         basis = rms * obs.rotation
         info = dict(action_delay=delay, held_residual=variance[:, 0], coherence=obs.coherence,
                     action_gain=h[:, LAGS.index(0)].abs(), image_gain=h[:, -1].abs())
+        if return_unprotected:
+            return coarse * basis, fine * basis, info, unrestricted * basis
         return coarse * basis, fine * basis, info
 
 

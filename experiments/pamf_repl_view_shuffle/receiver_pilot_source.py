@@ -145,7 +145,7 @@ def percentile(values):
     return [float(x) for x in np.quantile(a, (.1, .5, .9))]
 
 
-def predict(rt, route, *, alternatives=None, restore=None, diagnose=None, diagnostic_restore=None):
+def predict(rt, route, *, alternatives=None, restore=None, diagnose=None, diagnostic_restore=None, count_diagnostics=()):
     import torch
 
     root = Path(rt['run_root'])
@@ -204,6 +204,9 @@ def predict(rt, route, *, alternatives=None, restore=None, diagnose=None, diagno
         evidence[view] = dict(estimate_quantiles={k: percentile(v) for k, v in telemetry.items()},
                               nmse_quantiles={k: percentile(v) for k, v in errors.items()},
                               changed={k: int(np.concatenate(v).sum()) for k, v in changes.items()})
+        if count_diagnostics:
+            evidence[view]['estimate_counts'] = {key: int(np.concatenate(telemetry[key]).sum())
+                                                for key in count_diagnostics}
         print('PILOT_SOURCE_VIEW', route, view, N, flush=True)
     np.savez(row / 'predictions.npz', ids=ids, **predictions)
     write(row / 'complete.json', dict(status='PREDICTIONS_COMPLETE', n=N,

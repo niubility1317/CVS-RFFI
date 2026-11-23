@@ -58,7 +58,7 @@ def checkpoint_smoke(rt):
     print('WISIG_ACTION_REAL_CHECKPOINT_PASS', flush=True)
 
 
-def fit(rt, name, *, smoke=False, model_factory=None, run=RUN):
+def fit(rt, name, *, smoke=False, model_factory=None, run=RUN, criterion=objective):
     device = 'cuda:0'
     torch.manual_seed(SEED)
     model = (ObservableAction(ARMS[name]) if model_factory is None else model_factory()).to(device)
@@ -72,7 +72,7 @@ def fit(rt, name, *, smoke=False, model_factory=None, run=RUN):
     for step in range(1, 2 if smoke else STEPS + 1):
         sample = received(source[rd.choice(fit_ids, BATCH, replace=False)], device)
         optimizer.zero_grad(set_to_none=True)
-        loss, parts = objective(model, sample, generator)
+        loss, parts = criterion(model, sample, generator)
         if not torch.isfinite(parts).all():
             raise FloatingPointError('Unstable source-only WiSig action objective')
         loss.backward()
@@ -92,7 +92,7 @@ def fit(rt, name, *, smoke=False, model_factory=None, run=RUN):
     model.eval()
     with torch.no_grad():
         hold_rng = torch.Generator(device=device).manual_seed(SEED + 3)
-        held = torch.stack([objective(model, received(source[ids], device), hold_rng)[1]
+        held = torch.stack([criterion(model, received(source[ids], device), hold_rng)[1]
                             for ids in np.split(hold, HOLD // BATCH)]).mean(dim=0)
     report = dict(proof(name, run), status='SOURCE_FROZEN', held=held.tolist(), worker_seconds=seconds,
                   parameter_count=sum(p.numel() for p in model.parameters()),
