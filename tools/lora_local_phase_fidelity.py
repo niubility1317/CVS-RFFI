@@ -12,7 +12,7 @@ import torch
 
 from experiments.cric_dura_comparison.io import read, tensor
 from experiments.pamf_lora_main import held_chirp_precision_source, lapped_posterior_source, local_phase_source
-from experiments.pamf_lora_main import spectral_block_source, split_shrink_source
+from experiments.pamf_lora_main import packet_relation_source, spectral_block_source, split_shrink_source
 from experiments.pamf_lora_main.channel_blind import corruption_score
 from experiments.pamf_lora_main.channel_blind_source import panel, receive_only
 from experiments.pamf_lora_main.data import SOURCE, VIEWS
@@ -24,6 +24,7 @@ from experiments.pamf_lora_main.held_chirp_precision import held_eigenvalues
 from experiments.pamf_lora_main.joint_unroll_source import coordinates
 from experiments.pamf_lora_main.lapped_posterior import other_mean
 from experiments.pamf_lora_main.local_wiener_source import ROUTES, read_frozen
+from experiments.pamf_lora_main.packet_relation import fingerprint
 from experiments.pamf_lora_main.runner import activate
 from experiments.pamf_lora_main.split_shrink import spectrum as split_spectrum
 
@@ -167,6 +168,40 @@ def held_risk(model, tracked, quality, frame, source):
     return torch.stack(ratios, dim=-1).cpu().numpy()
 
 
+RELATION_FIELDS = ('log_distance_rmse', 'neighbor_recall_at_5', 'paired_source_retrieval_at_1')
+
+
+def distance_matrix(left, right):
+    cross = left @ right.transpose(-2,-1) / left.shape[-1]
+    return (left.square().mean(-1)[...,None] + right.square().mean(-1)[...,None,:] - 2*cross).clamp_min(0.)
+
+
+def relation_summary(clean_features, output_features):
+    n = clean_features[0].shape[0]
+    device = clean_features[0].device
+    diagonal = torch.eye(n,dtype=torch.bool,device=device)
+    source_pairs, restored_pairs, cross_pairs, log_risks = [], [], [], []
+    for clean, output in zip(clean_features,output_features,strict=True):
+        center = clean.mean(0)
+        variance = clean.var(0,unbiased=False)
+        scale = (variance + .05*variance.mean() + 1e-5).sqrt()
+        reference, restored = (clean-center)/scale, (output-center)/scale
+        true = distance_matrix(reference,reference)
+        estimate = distance_matrix(restored,restored)
+        error = estimate[...,~diagonal].log1p()-true[~diagonal].log1p()
+        log_risks.append(error.square().mean(-1).sqrt())
+        source_pairs.append(true.log1p())
+        restored_pairs.append(estimate.log1p())
+        cross_pairs.append(distance_matrix(restored,reference).log1p())
+    true = torch.stack(source_pairs).mean(0).masked_fill_(diagonal,torch.inf)
+    estimate = torch.stack(restored_pairs).mean(0).masked_fill_(diagonal,torch.inf)
+    expected = true.argsort(dim=-1,stable=True)[...,:5]
+    selected = estimate.argsort(dim=-1,stable=True)[...,:5]
+    recall = (selected[..., :, None]==expected[:,None,:]).any(-1).float().mean(dim=(-2,-1))
+    retrieval = (torch.stack(cross_pairs).mean(0).argmin(-1)==torch.arange(n,device=device)).float().mean(-1)
+    return torch.stack((torch.stack(log_risks).mean(0),recall,retrieval),dim=-1)
+
+
 def paired_source(data, cache, contract, root, route, modes):
     raw, receivers, ids, _ = source_role(data,contract,'V')
     selected = panel(receivers)
@@ -186,7 +221,8 @@ def diagnose(rt, route, device):
     is_split = rt['run_id']==split_shrink_source.RUN
     is_lapped = rt['run_id']==lapped_posterior_source.RUN
     is_held = rt['run_id']==held_chirp_precision_source.RUN
-    if is_geometry or is_tangent or is_split or is_lapped or is_held:
+    is_relation = rt['run_id']==packet_relation_source.RUN
+    if is_geometry or is_tangent or is_split or is_lapped or is_held or is_relation:
         if is_tangent:
             from experiments.pamf_lora_main import empirical_tangent_source as study
             recipes = study.recipes(rt)
@@ -198,6 +234,9 @@ def diagnose(rt, route, device):
             recipes = study.RECIPES
         elif is_held:
             study = held_chirp_precision_source
+            recipes = study.RECIPES
+        elif is_relation:
+            study = packet_relation_source
             recipes = study.RECIPES
         else:
             from experiments.pamf_lora_main import complex_geometry_source as study
@@ -225,6 +264,10 @@ def diagnose(rt, route, device):
         models = (*models, held_chirp_precision_source.ScalarReadout(models[-1]).eval())
     tracker = PacketRestorer('consensus').to(device).eval()
     truth = tensor(clean,device)
+    if is_relation:
+        canonical,rotation,_,scale = coordinates(tracker,truth)
+        source_frames = (rotation*scale).split(18)
+        source_features = fingerprint(canonical)
     output = {}
     with ProcessPoolExecutor(max_workers=8) as pool:
         for i, view in enumerate(VIEWS):
@@ -240,7 +283,9 @@ def diagnose(rt, route, device):
             noise_stats = []
             attenuation = []
             held_stats = []
-            for received, epsilon, source in zip(tensor(capture,device).split(18),tensor(noise,device).split(18),truth.split(18),strict=True):
+            relation_stats = []
+            batches = zip(tensor(capture,device).split(18),tensor(noise,device).split(18),truth.split(18),strict=True)
+            for batch,(received, epsilon, source) in enumerate(batches):
                 recoveries, count = recover(received,tracker,models,threshold)[:2]
                 active += count
                 y = complex_iq(received)
@@ -261,6 +306,8 @@ def diagnose(rt, route, device):
                     noise_stats.append(lapped_variance(models[1],tracked,quality,frame,ground,epsilon,clean=view=='clean'))
                 if is_held:
                     held_stats.append(held_risk(models[1],tracked,quality,frame,ground))
+                if is_relation:
+                    relation_stats.append(fingerprint(torch.stack(waves)/source_frames[batch]))
                 for reference, group in ((target,bands_from_ground),(noiseless,bands_from_noiseless)):
                     compared = waves
                     if is_geometry:
@@ -303,6 +350,15 @@ def diagnose(rt, route, device):
                 output[view]['held_risk'] = dict(fields=HELD_RISK_FIELDS, median=np.median(values,axis=0).tolist(),
                     by_receiver={name:np.median(part,axis=0).tolist()
                                  for name,part in zip(SOURCE,np.split(values,len(SOURCE)),strict=True)})
+            if is_relation:
+                estimates = [torch.cat(parts,dim=1) for parts in zip(*relation_stats,strict=True)]
+                reference_groups = zip(*(value.chunk(len(SOURCE),dim=0) for value in source_features),strict=True)
+                estimate_groups = zip(*(value.chunk(len(SOURCE),dim=1) for value in estimates),strict=True)
+                by_receiver = {name:relation_summary(reference,estimate)
+                               for name,reference,estimate in zip(SOURCE,reference_groups,estimate_groups,strict=True)}
+                output[view]['packet_relation'] = dict(fields=RELATION_FIELDS,readouts=readouts,
+                    mean=torch.stack(tuple(by_receiver.values())).mean(0).tolist(),
+                    by_receiver={name:value.tolist() for name,value in by_receiver.items()})
     if is_geometry:
         readouts = (*readouts,'bounded_pair_projection')
     return dict(route=route,n=len(rows),bands=BANDS,metrics=METRICS,readouts=readouts,scenes=output)
@@ -317,7 +373,7 @@ def main():
     rt = read(args.runtime)
     root = Path(rt['run_root'])
     analyzed_runs = (local_phase_source.RUN, GEOMETRY_RUN, TANGENT_RUN, split_shrink_source.RUN,
-                     lapped_posterior_source.RUN, held_chirp_precision_source.RUN)
+                     lapped_posterior_source.RUN, held_chirp_precision_source.RUN, packet_relation_source.RUN)
     if rt.get('run_id') not in analyzed_runs or read(root/'state.json')['status']!='SOURCE_SCORED':
         raise ValueError('The full dual-route truth-last scoring must already be complete')
     activate(rt)
