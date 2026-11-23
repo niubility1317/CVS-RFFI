@@ -1,0 +1,421 @@
+{
+  "threshold": 0.045941177755594254,
+  "views": {
+    "clean": {
+      "active": 0,
+      "max_matched_band_rms_error": 0.0,
+      "shared": {
+        "1_to_8": {
+          "supported": 0
+        },
+        "9_to_32": {
+          "supported": 0
+        },
+        "33_to_64": {
+          "supported": 0
+        },
+        "65_to_128": {
+          "supported": 0
+        }
+      },
+      "private": {
+        "1_to_8": {
+          "supported": 0
+        },
+        "9_to_32": {
+          "supported": 0
+        },
+        "33_to_64": {
+          "supported": 0
+        },
+        "65_to_128": {
+          "supported": 0
+        }
+      }
+    },
+    "practical_high": {
+      "active": 21,
+      "max_matched_band_rms_error": 4.76837158203125e-07,
+      "shared": {
+        "1_to_8": {
+          "supported": 21,
+          "paired_rms_median": 0.19405284523963928,
+          "gain_rms_median": 0.20280684530735016,
+          "ratio_median": 1.0116388567555195,
+          "direction_cosine_median": 0.9277758002281189
+        },
+        "9_to_32": {
+          "supported": 21,
+          "paired_rms_median": 0.48790574073791504,
+          "gain_rms_median": 0.462504118680954,
+          "ratio_median": 0.9479374396813957,
+          "direction_cosine_median": 0.9973021745681763
+        },
+        "33_to_64": {
+          "supported": 21,
+          "paired_rms_median": 0.5791488885879517,
+          "gain_rms_median": 0.5777854919433594,
+          "ratio_median": 0.9976458615885175,
+          "direction_cosine_median": 0.9997172951698303
+        },
+        "65_to_128": {
+          "supported": 21,
+          "paired_rms_median": 0.7670060992240906,
+          "gain_rms_median": 0.7661694288253784,
+          "ratio_median": 0.9989091737346567,
+          "direction_cosine_median": 0.9998358488082886
+        }
+      },
+      "private": {
+        "1_to_8": {
+          "supported": 21,
+          "paired_rms_median": 0.6741754412651062,
+          "gain_rms_median": 0.5990148186683655,
+          "ratio_median": 0.8765580813204501,
+          "direction_cosine_median": 0.8960356116294861
+        },
+        "9_to_32": {
+          "supported": 21,
+          "paired_rms_median": 1.0810627937316895,
+          "gain_rms_median": 1.0295214653015137,
+          "ratio_median": 0.9523234647154383,
+          "direction_cosine_median": 0.9983881115913391
+        },
+        "33_to_64": {
+          "supported": 21,
+          "paired_rms_median": 1.291786789894104,
+          "gain_rms_median": 1.2886587381362915,
+          "ratio_median": 0.9977442198404751,
+          "direction_cosine_median": 0.9999437928199768
+        },
+        "65_to_128": {
+          "supported": 21,
+          "paired_rms_median": 1.7931396961212158,
+          "gain_rms_median": 1.7926924228668213,
+          "ratio_median": 0.9991455873765445,
+          "direction_cosine_median": 0.9999817609786987
+        }
+      }
+    },
+    "practical_mid": {
+      "active": 159,
+      "max_matched_band_rms_error": 9.5367431640625e-07,
+      "shared": {
+        "1_to_8": {
+          "supported": 159,
+          "paired_rms_median": 0.09677749872207642,
+          "gain_rms_median": 0.09651120752096176,
+          "ratio_median": 0.9793262808198444,
+          "direction_cosine_median": 0.9295737147331238
+        },
+        "9_to_32": {
+          "supported": 159,
+          "paired_rms_median": 0.22255675494670868,
+          "gain_rms_median": 0.20119310915470123,
+          "ratio_median": 0.8976237804428857,
+          "direction_cosine_median": 0.9882331490516663
+        },
+        "33_to_64": {
+          "supported": 159,
+          "paired_rms_median": 0.29277223348617554,
+          "gain_rms_median": 0.2902807593345642,
+          "ratio_median": 0.99617228803952,
+          "direction_cosine_median": 0.9990533590316772
+        },
+        "65_to_128": {
+          "supported": 159,
+          "paired_rms_median": 0.39851540327072144,
+          "gain_rms_median": 0.3944978713989258,
+          "ratio_median": 0.9973426304845318,
+          "direction_cosine_median": 0.9990934133529663
+        }
+      },
+      "private": {
+        "1_to_8": {
+          "supported": 159,
+          "paired_rms_median": 0.32480335235595703,
+          "gain_rms_median": 0.2770161032676697,
+          "ratio_median": 0.8576311862133484,
+          "direction_cosine_median": 0.890837550163269
+        },
+        "9_to_32": {
+          "supported": 159,
+          "paired_rms_median": 0.5873592495918274,
+          "gain_rms_median": 0.5123164057731628,
+          "ratio_median": 0.8876868726191393,
+          "direction_cosine_median": 0.9913977384567261
+        },
+        "33_to_64": {
+          "supported": 159,
+          "paired_rms_median": 0.6645129919052124,
+          "gain_rms_median": 0.6610875725746155,
+          "ratio_median": 0.9949429188338026,
+          "direction_cosine_median": 0.9998253583908081
+        },
+        "65_to_128": {
+          "supported": 159,
+          "paired_rms_median": 0.8962873816490173,
+          "gain_rms_median": 0.8944705724716187,
+          "ratio_median": 0.9979213735517369,
+          "direction_cosine_median": 0.9999642372131348
+        }
+      }
+    },
+    "practical_low_suburban": {
+      "active": 320,
+      "max_matched_band_rms_error": 9.5367431640625e-07,
+      "shared": {
+        "1_to_8": {
+          "supported": 320,
+          "paired_rms_median": 0.08631055802106857,
+          "gain_rms_median": 0.0840468779206276,
+          "ratio_median": 0.9583754281077472,
+          "direction_cosine_median": 0.9282679259777069
+        },
+        "9_to_32": {
+          "supported": 320,
+          "paired_rms_median": 0.2142053321003914,
+          "gain_rms_median": 0.1872394010424614,
+          "ratio_median": 0.890579702516618,
+          "direction_cosine_median": 0.9861552119255066
+        },
+        "33_to_64": {
+          "supported": 320,
+          "paired_rms_median": 0.2946207821369171,
+          "gain_rms_median": 0.2939106822013855,
+          "ratio_median": 0.9965044381415676,
+          "direction_cosine_median": 0.9987974464893341
+        },
+        "65_to_128": {
+          "supported": 320,
+          "paired_rms_median": 0.38748905062675476,
+          "gain_rms_median": 0.3857104629278183,
+          "ratio_median": 0.9970699252580666,
+          "direction_cosine_median": 0.9991005659103394
+        }
+      },
+      "private": {
+        "1_to_8": {
+          "supported": 320,
+          "paired_rms_median": 0.3247430771589279,
+          "gain_rms_median": 0.27388469874858856,
+          "ratio_median": 0.8446153825943317,
+          "direction_cosine_median": 0.8867858648300171
+        },
+        "9_to_32": {
+          "supported": 320,
+          "paired_rms_median": 0.5897654592990875,
+          "gain_rms_median": 0.5193420350551605,
+          "ratio_median": 0.8808228993960692,
+          "direction_cosine_median": 0.9893016517162323
+        },
+        "33_to_64": {
+          "supported": 320,
+          "paired_rms_median": 0.6810203194618225,
+          "gain_rms_median": 0.6770302057266235,
+          "ratio_median": 0.9947114557565795,
+          "direction_cosine_median": 0.9997733235359192
+        },
+        "65_to_128": {
+          "supported": 320,
+          "paired_rms_median": 0.9305172264575958,
+          "gain_rms_median": 0.9289747476577759,
+          "ratio_median": 0.9979775821559445,
+          "direction_cosine_median": 0.9999603629112244
+        }
+      }
+    },
+    "practical_high_urban": {
+      "active": 92,
+      "max_matched_band_rms_error": 9.5367431640625e-07,
+      "shared": {
+        "1_to_8": {
+          "supported": 92,
+          "paired_rms_median": 0.28248120844364166,
+          "gain_rms_median": 0.28548020124435425,
+          "ratio_median": 0.9804928025961119,
+          "direction_cosine_median": 0.9428245425224304
+        },
+        "9_to_32": {
+          "supported": 92,
+          "paired_rms_median": 0.6326742768287659,
+          "gain_rms_median": 0.6203141510486603,
+          "ratio_median": 0.9699231294826511,
+          "direction_cosine_median": 0.9979634284973145
+        },
+        "33_to_64": {
+          "supported": 92,
+          "paired_rms_median": 0.7218620181083679,
+          "gain_rms_median": 0.7215298116207123,
+          "ratio_median": 0.9990923354813459,
+          "direction_cosine_median": 0.9998655915260315
+        },
+        "65_to_128": {
+          "supported": 92,
+          "paired_rms_median": 1.0031197667121887,
+          "gain_rms_median": 1.002770721912384,
+          "ratio_median": 0.9996336941472659,
+          "direction_cosine_median": 0.9999445676803589
+        }
+      },
+      "private": {
+        "1_to_8": {
+          "supported": 92,
+          "paired_rms_median": 0.8400557935237885,
+          "gain_rms_median": 0.7527022957801819,
+          "ratio_median": 0.8889155890524869,
+          "direction_cosine_median": 0.9101475179195404
+        },
+        "9_to_32": {
+          "supported": 92,
+          "paired_rms_median": 1.4249532222747803,
+          "gain_rms_median": 1.3759272694587708,
+          "ratio_median": 0.9697499861485169,
+          "direction_cosine_median": 0.9993515610694885
+        },
+        "33_to_64": {
+          "supported": 92,
+          "paired_rms_median": 1.6568039059638977,
+          "gain_rms_median": 1.6551169753074646,
+          "ratio_median": 0.9993720820400263,
+          "direction_cosine_median": 0.9999658763408661
+        },
+        "65_to_128": {
+          "supported": 92,
+          "paired_rms_median": 2.2574875354766846,
+          "gain_rms_median": 2.255180597305298,
+          "ratio_median": 0.9994998508217801,
+          "direction_cosine_median": 0.9999872446060181
+        }
+      }
+    },
+    "practical_mid_urban": {
+      "active": 396,
+      "max_matched_band_rms_error": 9.5367431640625e-07,
+      "shared": {
+        "1_to_8": {
+          "supported": 396,
+          "paired_rms_median": 0.4418419748544693,
+          "gain_rms_median": 0.4246365427970886,
+          "ratio_median": 0.9766523847850688,
+          "direction_cosine_median": 0.949582040309906
+        },
+        "9_to_32": {
+          "supported": 396,
+          "paired_rms_median": 0.8520312905311584,
+          "gain_rms_median": 0.8413749635219574,
+          "ratio_median": 0.9844525579429015,
+          "direction_cosine_median": 0.9987711012363434
+        },
+        "33_to_64": {
+          "supported": 396,
+          "paired_rms_median": 1.0428761839866638,
+          "gain_rms_median": 1.041608989238739,
+          "ratio_median": 0.9999682252070219,
+          "direction_cosine_median": 0.9998945593833923
+        },
+        "65_to_128": {
+          "supported": 396,
+          "paired_rms_median": 1.4284186959266663,
+          "gain_rms_median": 1.429024577140808,
+          "ratio_median": 0.9998986269101513,
+          "direction_cosine_median": 0.9999752938747406
+        }
+      },
+      "private": {
+        "1_to_8": {
+          "supported": 396,
+          "paired_rms_median": 1.191088616847992,
+          "gain_rms_median": 1.0654484629631042,
+          "ratio_median": 0.897430691514879,
+          "direction_cosine_median": 0.9084459245204926
+        },
+        "9_to_32": {
+          "supported": 396,
+          "paired_rms_median": 2.0416007041931152,
+          "gain_rms_median": 2.0037362575531006,
+          "ratio_median": 0.9820910173087561,
+          "direction_cosine_median": 0.9996799528598785
+        },
+        "33_to_64": {
+          "supported": 396,
+          "paired_rms_median": 2.3523237705230713,
+          "gain_rms_median": 2.352633237838745,
+          "ratio_median": 0.9998617255539971,
+          "direction_cosine_median": 0.9999770522117615
+        },
+        "65_to_128": {
+          "supported": 396,
+          "paired_rms_median": 3.163927674293518,
+          "gain_rms_median": 3.162535548210144,
+          "ratio_median": 0.9999961137288145,
+          "direction_cosine_median": 0.999989241361618
+        }
+      }
+    },
+    "practical_low_urban": {
+      "active": 641,
+      "max_matched_band_rms_error": 1.9073486328125e-06,
+      "shared": {
+        "1_to_8": {
+          "supported": 641,
+          "paired_rms_median": 0.5806710720062256,
+          "gain_rms_median": 0.5721122622489929,
+          "ratio_median": 0.9731424434226149,
+          "direction_cosine_median": 0.9510548114776611
+        },
+        "9_to_32": {
+          "supported": 641,
+          "paired_rms_median": 1.137219786643982,
+          "gain_rms_median": 1.1289383172988892,
+          "ratio_median": 0.990798611372782,
+          "direction_cosine_median": 0.9991348385810852
+        },
+        "33_to_64": {
+          "supported": 641,
+          "paired_rms_median": 1.3218108415603638,
+          "gain_rms_median": 1.3233808279037476,
+          "ratio_median": 1.0000155424022297,
+          "direction_cosine_median": 0.9999099373817444
+        },
+        "65_to_128": {
+          "supported": 641,
+          "paired_rms_median": 1.8242019414901733,
+          "gain_rms_median": 1.8251842260360718,
+          "ratio_median": 1.000129765361042,
+          "direction_cosine_median": 0.9999798536300659
+        }
+      },
+      "private": {
+        "1_to_8": {
+          "supported": 641,
+          "paired_rms_median": 1.4711415767669678,
+          "gain_rms_median": 1.3479492664337158,
+          "ratio_median": 0.9085913802920006,
+          "direction_cosine_median": 0.9147254824638367
+        },
+        "9_to_32": {
+          "supported": 641,
+          "paired_rms_median": 2.6270177364349365,
+          "gain_rms_median": 2.595024585723877,
+          "ratio_median": 0.9891534026606487,
+          "direction_cosine_median": 0.9998161196708679
+        },
+        "33_to_64": {
+          "supported": 641,
+          "paired_rms_median": 2.9859566688537598,
+          "gain_rms_median": 2.9874677658081055,
+          "ratio_median": 0.9999099396135442,
+          "direction_cosine_median": 0.9999812245368958
+        },
+        "65_to_128": {
+          "supported": 641,
+          "paired_rms_median": 4.087357044219971,
+          "gain_rms_median": 4.088212490081787,
+          "ratio_median": 1.0000453734353394,
+          "direction_cosine_median": 0.9999901652336121
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,4 @@
+{"at": "2026-11-23T22:48:41+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-23T22:48:41+00:00", "status": "LOCAL_VERIFIED", "note": "Ten focused tests, compile and one independent P0/P1 review passed.", "evidence": "tests/test_lora_private_dose.py", "row_id": null}
+{"at": "2026-11-23T22:50:24+00:00", "status": "RUNNING", "note": "Archive transfer and compile verified. Both genuine frozen models and reader smoke PASS. Independently verified controller and route worker PIDs, CWD, argv, GPUs and growing predictions.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-23T22:53:19+00:00", "status": "FAILED", "note": "Both route prediction finalizers failed NumPy mixed ndarray dispatch; no frozen source V scoring. Exact root preserved.", "evidence": "state.json", "row_id": null}

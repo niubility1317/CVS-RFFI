@@ -1,0 +1,37 @@
+{
+  "pid": 2289995,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-private-dose-direction-source-m2-r01-release",
+  "code_commit": "4985c2578becf67cd2c63c839d476c32378d4cf3",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "status": "FAILED",
+  "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-private-dose-direction-source-m2-r01",
+  "state": "FAILED",
+  "smoke": {
+    "pid": 2290011,
+    "gpu": 3,
+    "status": "PASS"
+  },
+  "timing": {
+    "pid": 2290083,
+    "gpu": 3
+  },
+  "prediction_workers": [
+    {
+      "route": "full",
+      "pid": 2290565,
+      "gpu": 3,
+      "memory_mib": 1570
+    },
+    {
+      "route": "residual",
+      "pid": 2290566,
+      "gpu": 6,
+      "memory_mib": 1374
+    }
+  ],
+  "failure": "mixed ndarray NumPy telemetry aggregation of active and bypass batches",
+  "controller_and_workers_terminal": true,
+  "independent_score_started": false,
+  "target_reads": 0
+}

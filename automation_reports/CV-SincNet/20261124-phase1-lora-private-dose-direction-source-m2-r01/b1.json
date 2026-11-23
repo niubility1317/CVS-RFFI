@@ -1,0 +1,19 @@
+{
+  "timing": {
+    "clean": {
+      "active": 0,
+      "median_ms": 1.9809524528682232
+    },
+    "generic": {
+      "active": 1,
+      "median_ms": 94.73689645528793
+    }
+  },
+  "n_measurements": 24,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "parameters_each": [
+    254735,
+    254735
+  ],
+  "scope": "combined six readouts with two frozen parents; excludes classifier and mature DURA"
+}

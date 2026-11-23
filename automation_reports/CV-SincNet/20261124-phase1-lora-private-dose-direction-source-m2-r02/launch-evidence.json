@@ -1,0 +1,45 @@
+{
+  "pid": 2294112,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-private-dose-direction-source-m2-r02-release",
+  "code_commit": "d1bf1576b43aed0278a966d9d270b0849acf47f5",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "status": "VERIFIED",
+  "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-private-dose-direction-source-m2-r02",
+  "state": "SOURCE_SCORED",
+  "smoke": {
+    "pid": 2294187,
+    "gpu": 3,
+    "status": "PASS",
+    "mixed_telemetry": true
+  },
+  "timing": {
+    "pid": 2294262,
+    "gpu": 3
+  },
+  "prediction_workers": [
+    {
+      "route": "full",
+      "pid": 2294749,
+      "gpu": 3,
+      "memory_mib": 1570
+    },
+    {
+      "route": "residual",
+      "pid": 2294750,
+      "gpu": 6,
+      "memory_mib": 1374
+    }
+  ],
+  "reserve": {
+    "pid": 2296108,
+    "gpu": 3,
+    "frozen_n": 11100
+  },
+  "scorer": {
+    "pid": 2296239,
+    "device": "CPU",
+    "scored_clean_n": 12000,
+    "truth_after_complete_predictions": true
+  }
+}

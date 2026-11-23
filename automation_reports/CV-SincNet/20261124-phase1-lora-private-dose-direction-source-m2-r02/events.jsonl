@@ -1,0 +1,7 @@
+{"at": "2026-11-23T22:53:47+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-23T22:53:47+00:00", "status": "LOCAL_VERIFIED", "note": "RED reproduced mixed telemetry fault; 11 focused tests and one targeted review pass.", "evidence": "tests/test_lora_private_dose.py", "row_id": null}
+{"at": "2026-11-23T22:55:25+00:00", "status": "RUNNING", "note": "New immutable r02, transfer/compile verified, real mixed-telemetry smoke PASS. Both live workers, devices, argv, CWD and prediction log growth independently confirmed.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-23T22:57:34+00:00", "status": "ANALYZED", "note": "Seven fixed views; independent truth-last source score complete.", "evidence": "full-source-scores.json", "row_id": "evaluate-full"}
+{"at": "2026-11-23T22:57:34+00:00", "status": "ANALYZED", "note": "Seven fixed views; independent truth-last source score complete.", "evidence": "residual-source-scores.json", "row_id": "evaluate-residual"}
+{"at": "2026-11-23T22:57:34+00:00", "status": "ANALYZED", "note": "Disjoint clean reserve and total 12000 reconciled.", "evidence": "clean-complete-scores.json", "row_id": "evaluate-reserve"}
+{"at": "2026-11-23T22:57:34+00:00", "status": "ANALYZED", "note": "Verified two-route same-dose source-only diagnostic; no target access.", "evidence": "full-source-scores.json, residual-source-scores.json and clean-complete-scores.json", "row_id": null}

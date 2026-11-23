@@ -10,6 +10,8 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 独有复谱约束的同剂量方向消融](../automation_reports/CV-SincNet/20261124-phase1-lora-private-dose-direction-source-m2-r02/report.md)
+- [LoRa 同剂量方向消融 r01 技术失败](../automation_reports/CV-SincNet/20261124-phase1-lora-private-dose-direction-source-m2-r01/report.md)
 - [LoRa 半量恢复的独有复谱差异方向约束](../automation_reports/CV-SincNet/20261124-phase1-lora-private-secant-source-m4-r01/report.md)
 - [LoRa 逐频带互检、恢复剂量及 clean 风险](../automation_reports/CV-SincNet/20261124-phase1-lora-rank-spectral-action-source-m2-r01/report.md)
 - [LoRa 恢复改动的奇偶验证与全源域 clean 压测](../automation_reports/CV-SincNet/20261124-phase1-lora-rank-split-action-source-m2-r01/report.md)
