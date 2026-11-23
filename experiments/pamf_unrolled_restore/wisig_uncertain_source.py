@@ -20,11 +20,14 @@ from .wisig_uncertain_prior import UncertaintyPrior, as_complex, as_iq, fit_loss
 
 RUN = '20261123-phase1-wisig-uncertain-prior-source-s2026092701-m2-r01'
 RECIPE = {'waveform': 0., 'weak_detail': .20}
-MODES = ('direct', 'r69', *(f'{arm}_{mode}' for arm in RECIPE for mode in ('coarse', 'joint', 'gated')))
 SEED = 2026092701
 BATCH = 64
 STEPS = 1200
 CAL_COUNT = 4096
+
+
+def modes_for(recipe):
+    return ('direct', 'r69', *(f'{arm}_{mode}' for arm in recipe for mode in ('coarse', 'joint', 'gated')))
 
 
 def source_iq(cache):
@@ -44,13 +47,13 @@ def source_iq(cache):
     return x, indices[CAL_COUNT:], indices[:CAL_COUNT]
 
 
-def proof(arm):
-    return dict(status='SOURCE_FROZEN', steps=STEPS, seed=SEED, weak_weight=RECIPE[arm],
+def proof(arm, recipe):
+    return dict(status='SOURCE_FROZEN', steps=STEPS, seed=SEED, weak_weight=recipe[arm],
                 target_reads=0, TX_truth_reads=0, F_reads=0, V_reads=0)
 
 
-def fit(rt, arm, *, smoke=False):
-    if set(rt) != {'run_root', 'source_root'} or arm not in RECIPE:
+def fit(rt, arm, *, smoke=False, recipe=RECIPE, observe=None):
+    if set(rt) != {'run_root', 'source_root'} or arm not in recipe:
         raise ValueError('Fit accepts only a source root, output root and registered recipe')
     torch.set_num_threads(2)
     torch.backends.cuda.matmul.allow_tf32 = False
@@ -69,7 +72,7 @@ def fit(rt, arm, *, smoke=False):
         indices = rng.choice(fit_ids, BATCH, replace=False)
         x = as_complex(tensor(source[indices], device))
         optimizer.zero_grad(set_to_none=True)
-        value, logs = fit_loss(model, x, generator, RECIPE[arm])
+        value, logs = fit_loss(model, x, generator, recipe[arm], observe=observe)
         if not torch.isfinite(value):
             raise FloatingPointError('Nonfinite source waveform objective')
         value.backward()
@@ -87,7 +90,7 @@ def fit(rt, arm, *, smoke=False):
     if smoke:
         write(root / f'smoke-{arm}.json', dict(status='PASS', real_source_U_batch=BATCH, target_reads=0, F_reads=0))
         return
-    evidence = dict(proof(arm), optimizer_seconds=seconds,
+    evidence = dict(proof(arm, recipe), optimizer_seconds=seconds,
                     params=sum(p.numel() for p in model.parameters()), batch=BATCH)
     with torch.no_grad():
         measures = [received_features(as_complex(tensor(source[chunk], device)))[0]
@@ -99,7 +102,7 @@ def fit(rt, arm, *, smoke=False):
 
 
 @torch.no_grad()
-def evaluate(rt):
+def evaluate(rt, recipe=RECIPE, prepare=None):
     cache, _, source, reader, ids, _, _ = baseline.handles(rt)
     f = baseline.load_reader(reader, source, 'cuda:0').eval().requires_grad_(False)
     root = Path(rt['run_root'])
@@ -108,10 +111,11 @@ def evaluate(rt):
     if (done['status'], done['count'], done['target_reads'], done['source_truth_reads']) != ('FROZEN', len(ids), 0, 0):
         raise ValueError('Expected fixed same-panel truth-blind direct/R69 evidence')
     models = {}
-    for arm in RECIPE:
+    modes = modes_for(recipe)
+    for arm in recipe:
         checkpoint = torch.load(root / f'{arm}.pt', map_location='cuda:0', weights_only=True)
         evidence = read(root / f'{arm}-complete.json')
-        if checkpoint['evidence'] != evidence or any(evidence[k] != v for k, v in proof(arm).items()):
+        if checkpoint['evidence'] != evidence or any(evidence[k] != v for k, v in proof(arm, recipe).items()):
             raise ValueError('Fixed source-only candidate required')
         model = UncertaintyPrior().to('cuda:0').eval()
         model.load_state_dict(checkpoint['state'], strict=True)
@@ -134,12 +138,15 @@ def evaluate(rt):
                 x = as_complex(tensor(observed[start:start + BATCH], 'cuda:0'))
                 variants = []
                 for arm, (model, threshold) in models.items():
-                    coarse, joint, power = model(x)
+                    y, shifted = (x, None) if prepare is None else prepare(x, arm)
+                    coarse, joint, power = model(y)
                     active = power >= threshold
+                    if shifted is not None:
+                        active = active | shifted
                     activity[key][arm] += int(active.sum())
                     variants.extend((coarse, joint, torch.where(active[:, None], joint, x)))
                 logits = torch.stack([f(as_iq(value)) for value in variants])
-                if logits.shape != (len(MODES) - 2, len(x), 6) or not torch.isfinite(logits).all():
+                if logits.shape != (len(modes) - 2, len(x), 6) or not torch.isfinite(logits).all():
                     raise ValueError('Incomplete source predictions')
                 rows.append(logits.argmax(dim=-1).tolist())
             out = root / 'predictions' / f'{key}.npz'
@@ -147,7 +154,7 @@ def evaluate(rt):
             with out.open('xb') as stream:
                 np.savez(stream, ids=ids, decision=np.concatenate((decisions, np.concatenate(rows, axis=1))).astype(np.uint8))
             print('WISIG_UNCERTAIN_FROZEN', key, len(ids), flush=True)
-    write(root / 'predictions' / 'complete.json', dict(status='FROZEN', modes=list(MODES), views=list(baseline.VIEWS),
+    write(root / 'predictions' / 'complete.json', dict(status='FROZEN', modes=list(modes), views=list(baseline.VIEWS),
           count=len(ids), source_truth_reads=0, target_reads=0, gate_activity=activity, readouts_reused=['direct', 'r69']))
 
 
@@ -165,16 +172,18 @@ def train_worker(rt, action, arm, gpu):
     return proc
 
 
-def dispatch(rt):
+def dispatch(rt, recipe=RECIPE, timing=None):
     root = Path(rt['run_root'])
     root.mkdir(exist_ok=False)
     status = root / 'state.json'
     try:
+        if timing is not None:
+            write(root / 'timing.json', timing)
         for action in ('smoke', 'fit'):
             write(status, dict(status=action.upper()), exclusive=False)
             gpus = [baseline.select_gpu()]
             gpus.append(baseline.select_gpu(exclude=gpus))
-            procs = [train_worker(rt, action, arm, gpu) for arm, gpu in zip(RECIPE, gpus)]
+            procs = [train_worker(rt, action, arm, gpu) for arm, gpu in zip(recipe, gpus, strict=True)]
             codes = [p.wait() for p in procs]
             if any(codes):
                 raise RuntimeError(f'WiSig {action} failed with codes {codes}')
@@ -218,7 +227,7 @@ def main():
     elif cmd.action in ('smoke', 'fit'):
         fit(read(cmd.runtime), cmd.name, smoke=cmd.action == 'smoke')
     elif cmd.action == 'score':
-        baseline.score(read(cmd.runtime), MODES)
+        baseline.score(read(cmd.runtime), modes_for(RECIPE))
     else:
         rt = read(cmd.runtime)
         activate(rt)
