@@ -11,15 +11,18 @@ def private_spectrum(spectrum):
     return spectrum - spectrum.mean(dim=1, keepdim=True)
 
 
-def ordered_context(spectrum):
-    """Predict an ordered contrast using the straight-line fit on other chirps."""
-    n = spectrum.shape[1]
-    steps = torch.arange(n, dtype=spectrum.real.dtype, device=spectrum.device)
+def order_weights(n, dtype, device):
+    steps = torch.arange(n, dtype=dtype, device=device)
     position = steps - steps.mean()
-    available = ~torch.eye(n, dtype=torch.bool, device=spectrum.device)
+    available = ~torch.eye(n, dtype=torch.bool, device=device)
     offset = (available * position[None, :]).sum(-1, keepdim=True) / (n - 1)
     regressors = available * (position[None, :] - offset)
-    weights = position[:, None] * regressors / regressors.square().sum(-1, keepdim=True)
+    return position[:, None] * regressors / regressors.square().sum(-1, keepdim=True)
+
+
+def ordered_context(spectrum):
+    """Predict an ordered contrast using the straight-line fit on other chirps."""
+    weights = order_weights(spectrum.shape[1], spectrum.real.dtype, spectrum.device)
     return weights.to(spectrum.dtype) @ spectrum
 
 
@@ -64,6 +67,18 @@ def context_center(predictor, features):
     # Center each held-out prior independently. The recovered packet is
     # projected to zero-sum only at the final joint reconstruction.
     return torch.complex(re,im)
+
+
+def shrink_order_features(features, predictor, noise, *, order_width):
+    """Shrink the held-out trend toward its clean mean using measured variance."""
+    weights = order_weights(features.shape[1], features.dtype, features.device)
+    # Each proper complex noise variance contributes half to I and half to Q.
+    projected_noise = .5 * (weights.square() @ noise)
+    order = features[..., -order_width:]
+    center = predictor.center[:, -order_width:]
+    signal = predictor.scale[:, -order_width:].square()
+    gain = signal / (signal + projected_noise)
+    return torch.cat((features[..., :-order_width], center + gain * (order-center)), dim=-1)
 
 
 def contextual_private(measured, base, bins, prior_mean, gain):

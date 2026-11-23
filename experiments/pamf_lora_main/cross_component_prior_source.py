@@ -13,7 +13,7 @@ from experiments.cric_dura_comparison.io import read, tensor, write
 from .channel_blind_source import partition, setup
 from .complex_vector_source import publish
 from .cross_component_prior import (component_features, context_center, contextual_private,
-                                    fit_regression, private_spectrum)
+                                    fit_regression, private_spectrum, shrink_order_features)
 from .data import SOURCE, VIEWS
 from .dura_repair import PacketRestorer, complex_iq, real_iq
 from .factorized_chirps import FactorizedChirps
@@ -28,6 +28,7 @@ from .weak_signal_probe import observed_noise_rms
 
 
 RUN = '20261124-phase1-lora-cross-component-prior-source-cpu-r02'
+SHRINK_RUN = '20261124-phase1-lora-order-noise-prior-source-cpu-r01'
 N_FIT_RX = 200
 N_REPLAY_RX = 30
 SEED = 2026113551
@@ -96,10 +97,11 @@ def clean_result(spectrum, learned):
     return summary
 
 
-def condition_on_observation(measured, spec, q, learned, prior, geometry):
+def condition_on_observation(measured, spec, q, learned, prior, geometry, *, shrink_order=False):
     _,near,_=masks()
     moment,weight=spectral_contrast(spec,q)
-    band_noise,_=variance_interval(observed_noise_rms(measured).square(),moment,weight,geometry.selectors)
+    outer_noise=observed_noise_rms(measured).square()
+    band_noise,_=variance_interval(outer_noise,moment,weight,geometry.selectors)
     noise=band_noise @ geometry.bands
     ordinary=prior.mean + prior.innovation(spec-prior.mean,noise,True)
     valid_variance=learned[1]
@@ -113,12 +115,18 @@ def condition_on_observation(measured, spec, q, learned, prior, geometry):
         candidates[name]=contextual_private(spec,ordinary,near,center,gain)
     for name in INPUTS:
         candidates[f'{name}_raw_context']=contextual_private(spec,ordinary,near,raw[name],gain)
+    if shrink_order:
+        shared,_,_=masks()
+        _,ordered=component_features(ordinary,shared,near,order_spectrum=spec)
+        predictor=learned[2]['public_order']
+        features=shrink_order_features(ordered,predictor,outer_noise,order_width=2*int(near.sum()))
+        candidates['noise_shrunk_order']=contextual_private(spec,ordinary,near,context_center(predictor,features),gain)
     return candidates
 
 
-def noisy_result(measured,rotation,rms,q,reference, learned, prior, geometry):
+def noisy_result(measured,rotation,rms,q,reference, learned, prior, geometry, *, shrink_order=False):
     spec=fourier(measured)
-    candidates=condition_on_observation(measured,spec,q,learned,prior,geometry)
+    candidates=condition_on_observation(measured,spec,q,learned,prior,geometry,shrink_order=shrink_order)
     wanted=fourier(reference*rotation.conj()/rms)
     _,_,parts=masks()
     results={}
@@ -151,6 +159,15 @@ def smoke(rt):
     result=clean_result(fourier(frame(tracker,held)[0]),learned)['1_to_8']['public_order']
     if not np.isfinite(result['relative_error']):
         raise ValueError('Receiver clean source regression produced an invalid estimate')
+    if root.name==SHRINK_RUN:
+        prior=SharedSpectralPrior()
+        prior.fit(clean)
+        changed=independent_white(held[:2],torch.Generator().manual_seed(SEED))
+        y,rot,q,rms=frame(tracker,changed)
+        shape=FactorizedChirps((8,8,8,8),coupled=True)
+        wave=noisy_result(y,rot,rms,q,complex_iq(held[:2]),learned,prior,shape,shrink_order=True)
+        if not np.isfinite(wave['1_to_8']['noise_shrunk_order_half']['relative_error']):
+            raise ValueError('Noisy order uncertainty failed the real source smoke')
     write(root/'smoke.json',dict(status='PASS',fit_packets=len(fit),hold_packets=len(held),**SCOPE))
 
 
@@ -158,6 +175,7 @@ def smoke(rt):
 def probe(rt):
     start_time=perf_counter()
     out=Path(rt['run_root'])
+    shrink_order=out.name==SHRINK_RUN
     (training,_,held),contract=setup(rt,'cpu')
     tracker=PacketRestorer('consensus').eval()
     geometry=FactorizedChirps((8,8,8,8),coupled=True).eval()
@@ -175,7 +193,7 @@ def probe(rt):
         fixed[rx]=clean_result(clean_spectrum,learned)
         noise=independent_white(clean,torch.Generator().manual_seed(SEED+index))
         y,rot,q,rms=frame(tracker,noise)
-        generic[rx]=noisy_result(y,rot,rms,q,complex_iq(clean),learned,prior,geometry)
+        generic[rx]=noisy_result(y,rot,rms,q,complex_iq(clean),learned,prior,geometry,shrink_order=shrink_order)
         print('CROSS_COMPONENT_GENERIC_READY',rx,len(clean),flush=True)
     source=Path(rt['source_root'])
     raw,rxs,ids,_=source_role(source,contract,'U_s')
@@ -196,7 +214,7 @@ def probe(rt):
                     span=slice(idx*N_REPLAY_RX,(idx+1)*N_REPLAY_RX)
                     encoder,native=fitted[rx]
                     folds[rx]=noisy_result(x[span],rot[span],rms[span],q[span],reference[span],
-                                           encoder,native,geometry)
+                                           encoder,native,geometry,shrink_order=shrink_order)
                 by_view[view]=folds
                 print('CROSS_COMPONENT_REGISTERED_READY',route,view,len(capture),flush=True)
             registered[route]=by_view
@@ -227,6 +245,7 @@ def main():
     pub=commands.add_parser('publish')
     for key in ('repo','output','context','ssh-config','parent-submit'):
         pub.add_argument('--'+key,type=Path,required=True)
+    pub.add_argument('--shrink-order',action='store_true')
     for action in ('dispatch','smoke','probe'):
         entry=commands.add_parser(action)
         entry.add_argument('runtime',type=Path)
@@ -235,7 +254,8 @@ def main():
     options=vars(parser.parse_args())
     action=options.pop('action')
     if action=='publish':
-        publish(**options,run=RUN,runner=__spec__.name)
+        run=SHRINK_RUN if options.pop('shrink_order') else RUN
+        publish(**options,run=run,runner=__spec__.name)
     else:
         rt=read(options['runtime'])
         if action=='dispatch':

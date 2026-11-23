@@ -2,7 +2,7 @@ import torch
 
 from experiments.pamf_lora_main.cross_component_prior import (
     Regression, component_features, context_center, contextual_private,
-    fit_regression, ordered_context, private_spectrum,
+    fit_regression, ordered_context, private_spectrum, shrink_order_features,
 )
 
 
@@ -72,3 +72,17 @@ def test_rank_deficient_wide_ridge_does_not_require_batched_lu(monkeypatch):
     prediction=estimator.predict(x)
     assert torch.isfinite(prediction).all()
     assert (prediction-y).square().mean()<.001
+
+
+def test_order_confidence_uses_other_chirp_noise_and_preserves_public_context():
+    features=torch.ones((3,6,10))
+    estimator=Regression(torch.zeros((6,10)),torch.ones((6,10)),torch.zeros((6,4)),torch.empty((6,10,4)))
+    quiet=torch.zeros((3,6,1))
+    torch.testing.assert_close(shrink_order_features(features,estimator,quiet,order_width=4),features)
+    noisy=quiet.clone()
+    noisy[:,2]=2.
+    result=shrink_order_features(features,estimator,noisy,order_width=4)
+    torch.testing.assert_close(result[:,:,:6],features[:,:,:6])
+    torch.testing.assert_close(result[:,2],features[:,2])
+    assert result[:,0,6:].max()<1.
+    assert result.min()>=0.
