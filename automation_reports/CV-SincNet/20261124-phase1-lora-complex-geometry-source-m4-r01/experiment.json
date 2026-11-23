@@ -1,0 +1,180 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261124-phase1-lora-complex-geometry-source-m4-r01",
+  "group_id": "lora-observable-satellite-recovery",
+  "display_name": "LoRa 联合幅相与弱复谱关系长训",
+  "description": "一次端到端约束复谱粗恢复和时域细化，匹配对照跨 chirp 弱复谱关系损失。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "LoRa",
+    "DURA",
+    "source_V",
+    "complex_geometry",
+    "full",
+    "residual"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261122-phase1-lora-full-aligned-data-r01",
+    "20261122-phase1-lora-tri-label-set-m3-r01",
+    "20261123-phase1-lora-dura-residual-practical-m1-r01",
+    "20261123-phase1-lora-dura-direct-detail-source-m2-r01",
+    "20261123-phase1-lora-local-wiener-source-m2-r01",
+    "20261123-phase1-lora-spectral-block-source-m4-r01",
+    "20261123-phase1-lora-repeat-protection-source-m4-r01",
+    "20261124-phase1-lora-crossfit-choice-source-m4-r01",
+    "20261123-phase1-lora-dura-chirp-ends-phase-m1-r01",
+    "20261124-phase1-lora-local-phase-source-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "LoRa 与 WiSig 可部署恢复目标及用户本轮扩大训练预算和按实时余量并行的要求",
+  "code": {
+    "commit": "启动命令从已推送分支 HEAD 固定，实际 OID 写入 submit.json",
+    "checkout": "E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo",
+    "environment": "${N607_PYTHON}",
+    "cwd": "${N607_PROJECT}/releases/20261124-phase1-lora-complex-geometry-source-m4-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa 多接收机 IEEE DataPort",
+    "version": "lora_full_packets_v1 源 7/63/30 固定划分",
+    "representation": "1 MS/s 采集及既有构造，冻结读出为 256 kS/s 六条 256 点窄窗复 IQ",
+    "contract_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json role_ids.V",
+    "label_map_ref": "experiments/pamf_lora_main/data.py CLASSES (31 至 40)，仅评分读取 V_metadata.npz y",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "10 个登记发射机的固定源分配，拟合不可见",
+    "roles": {
+      "L_s": 0,
+      "U_s": 23000,
+      "V": 900
+    },
+    "train_ratio": "匹配的 20,000 个原始源 U 拟合，2,500 个互斥源 U 门限，500 个互斥源 U 固定留出。仍沿用 900 个同包源 V 物理 ID。",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "${N607_PROJECT}/runs/20261122-phase1-lora-full-aligned-data-r01/source_views/complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": "沿用 full 1 MHz 对齐及 residual 256 kHz post-sync/noEQ 原视图"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "not_applicable",
+    "external_method_exception": null,
+    "claim_scope": "拟合和冻结隔离 F、V、TX 真值、注册 practical 轨迹和目标。仅当前实收 IQ 与本包估计输入。"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [
+      "20261122-phase1-lora-tri-label-set-m3-r01 / tri_set 2026092702",
+      "20261123-phase1-lora-dura-direct-detail-source-m2-r01 及冻结 full 复响应半量",
+      "20261123-phase1-lora-dura-residual-practical-m1-r01 原 R69 及固定 residual 门控投影半量"
+    ],
+    "contract_check_ref": "source_contract 与 complete_f/source_control 核对各自源物理角色",
+    "provenance_verdict": "仅继承旧结构和数据契约，新模型不继承权重。原 DURA 和 Tri-set 只在候选冻结后用于评估。",
+    "selection_rule": "两组从零训练到固定 40,000 步。只评分固定终步候选。同一个读出在两路均超过成熟 DURA 六景且各自保持 clean 时晋级；两路较小的净收益优先，同分依次比较低城区、clean 与 B1。"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "当前 LoRa 联合幅相恢复目标",
+    "gpu_policy": "训练臂和后续路线各两张不同物理卡，按实时利用率和显存余量选卡，可与其他进程共卡。",
+    "remote_run_root": "${N607_PROJECT}/runs/20261124-phase1-lora-complex-geometry-source-m4-r01",
+    "remote_log_root": "${N607_PROJECT}/runs/20261124-phase1-lora-complex-geometry-source-m4-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261124-phase1-lora-complex-geometry-source-m4-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.complex_geometry_source publish --repo \"E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo\" --output \"E:/type10-7/local_artifacts/20261124-phase1-lora-complex-geometry-source-m4-r01/release\" --context E:/type10-7/local_artifacts/lora_main_20261121/runtime_source.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "源角色、训练非有限、真实权重无查询检查、固定预测或独立 CPU 评分出现系统性失败时才停止本 run 后续派发。保留已完成产物。"
+  },
+  "expected_artifacts": [
+    "smoke-waveform.json",
+    "smoke-geometry.json",
+    "smoke.json",
+    "waveform-model.pt",
+    "waveform-complete.json",
+    "geometry-model.pt",
+    "geometry-complete.json",
+    "full-predictions.json",
+    "full-source-scores.json",
+    "residual-predictions.json",
+    "residual-source-scores.json",
+    "logs/"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "正确数与 clean",
+      "逐景逐 RX",
+      "源 U 固定留出上的两阶段复谱风险、差异传递及几何误差",
+      "配对纠错、改错与区间",
+      "B1",
+      "训练墙钟",
+      "参数及峰值 CUDA 显存"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "mode",
+      "seed"
+    ],
+    "prediction_ref": "${N607_PROJECT}/runs/20261124-phase1-lora-complex-geometry-source-m4-r01/<route>-predictions.json",
+    "scorer_ref": "experiments.pamf_lora_main.complex_geometry_source score"
+  },
+  "rows": [
+    {
+      "row_id": "dual-route-complex-geometry-s2026092702",
+      "method": "直通、成熟半量 DURA、波形与关系两臂的粗恢复、细化全量及半量。",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/complex_geometry_source.py",
+      "resolved_config_ref": "${N607_PROJECT}/releases/20261124-phase1-lora-complex-geometry-source-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026112620
+      },
+      "seed_notes": "冻结识别器用 2026092702，两个模型初始化、规定 U 分区、拟合扰动都用 2026112991。原 split 完全复用，评估 bootstrap 独立固定。零目标访问。",
+      "k": null,
+      "scenario": "clean 和六景，分别评估 full/residual",
+      "optimizer": "AdamW，步级余弦，权重衰减 1e-4，梯度范数上界 1.0",
+      "lr": 0.0002,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "每臂 35,332 参数、40,000 步、batch24；20,000 源 U 裁窗拟合、2,500 校准、500 留出；两路线 900×7×8 固定源 V 预测。",
+      "output_root": "${N607_PROJECT}/runs/20261124-phase1-lora-complex-geometry-source-m4-r01",
+      "log_path": "${N607_PROJECT}/runs/20261124-phase1-lora-complex-geometry-source-m4-r01/logs",
+      "command": "${N607_PYTHON} -u -m experiments.pamf_lora_main.complex_geometry_source dispatch ${N607_PROJECT}/releases/20261124-phase1-lora-complex-geometry-source-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "smoke-waveform.json",
+        "smoke-geometry.json",
+        "smoke.json",
+        "waveform-model.pt",
+        "waveform-complete.json",
+        "geometry-model.pt",
+        "geometry-complete.json",
+        "full-predictions.json",
+        "full-source-scores.json",
+        "residual-predictions.json",
+        "residual-source-scores.json",
+        "logs/"
+      ]
+    }
+  ],
+  "notes": [
+    "两臂匹配源读取、通用扰动、参数、搜索日程、初始化和候选空间，唯一训练差异是弱复谱 Gram 关系损失权重。",
+    "粗层在去扫复谱中读取本条、其他 chirp 的复均值，以及总外带与去均值外带功率。细化在时域读取粗波形和残差。恢复编辑逐频点限幅、载波不改动，半量使用原复数修正的一半。",
+    "Gram 来自未加扰合法源 U 的 1–8、9–32 kHz 去均值复谱。两臂都保留同受扰条件的实际弱复谱差异。训练条件与披露的接收估计均与注册信道生成独立。",
+    "固定留出指标只用于解释收敛。40,000 步结束前不读取或利用 F、V、TX 真值、目标、真实算子或逐点噪声。两路预测完整后独立 CPU 确认固定 ID 与标签顺序。"
+  ],
+  "registered_at": "2026-11-23T17:07:51+00:00"
+}
