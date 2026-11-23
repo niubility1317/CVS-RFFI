@@ -41,7 +41,7 @@ ISOLATION = dict(F_reads=0, TX_reads=0, V_reads=0, target_reads=0)
 
 
 @torch.no_grad()
-def build_arrays(rt, route, model, count, hold):
+def build_arrays(rt, route, model, count, hold, *, baseline=None):
     parent = Path(rt['parent_root'])
     source, cache, contract = handles(dict(rt, parent_root=str(parent.parent / DATA_RUN)))
     raw, rx, ids, slots = source_role(source, contract, 'U_s')
@@ -74,7 +74,6 @@ def build_arrays(rt, route, model, count, hold):
             basis = rot * rms
             foreground = background[:, None] / basis
             to_first = basis / basis[:, :1]
-            clean_frame, _, clean_q, _ = coordinates(model, tensor(clean[cohort], 'cuda:0'))
             epsilon = received-foreground
             numerator = (epsilon[:, 0].conj()*epsilon[:, 1]*to_first[:, 1]).sum().abs()
             denom = (epsilon[:, 0].abs().square().sum() *
@@ -82,7 +81,14 @@ def build_arrays(rt, route, model, count, hold):
             correlation = float(numerator/denom)
             if correlation > .10:
                 raise ValueError('Independent re-noising has excessive aggregate correlation')
-            parts.append((received, q, foreground, to_first, clean_frame, clean_q))
+            clean_frame, _, clean_q, _ = coordinates(model, tensor(clean[cohort], 'cuda:0'))
+            if baseline is None:
+                parts.append((received, q, foreground, to_first, clean_frame, clean_q))
+            else:
+                estimates, active = zip(*(baseline(group) for group in wave.flatten(0, 1).split(40)), strict=True)
+                supported = torch.cat(active).unflatten(0, (len(cohort), 2))
+                base = complex_iq(torch.cat(estimates)).unflatten(0, (len(cohort), 2)) / basis
+                parts.append((received, q, foreground, base, supported, clean_frame, clean_q))
             print('RETENTION_NOISE_REPLAYS', route, len(cohort), correlation, flush=True)
     return (*parts, contract)
 
