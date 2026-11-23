@@ -10,6 +10,7 @@ import numpy as np
 from experiments.cric_dura_comparison.io import read
 from experiments.pamf_lora_main import held_chirp_precision_source, lapped_posterior_source
 from experiments.pamf_lora_main import coherent_interval_source
+from experiments.pamf_lora_main import noise_split_diagnostic
 from experiments.pamf_lora_main import packet_relation_source, reference_cancel_source, split_shrink_source
 from experiments.pamf_lora_main import variance_transport_source
 from experiments.pamf_lora_main.channel_blind_source import panel
@@ -23,6 +24,10 @@ from experiments.pamf_lora_main.local_wiener_source import ROUTES, read_frozen
 ALL_VIEWS = (*VIEWS,'six_scene')
 REPEATS = 1600
 PAIRS = (*COMPARISONS,('direct','reference'))
+NOISE_INTERACTIONS = {
+    'common_private': ('exact_noncarrier','direct','exact_common','exact_private'),
+    'phase_amplitude': ('exact_noncarrier','direct','noncarrier_phase','noncarrier_amplitude'),
+}
 
 
 def with_six(value):
@@ -59,6 +64,23 @@ def compare(hits, pairs, groups, modes=MODES):
     return table
 
 
+def noise_interactions(hits, groups, modes):
+    rng = np.random.default_rng(KEY+3)
+    samples = {name:indices[rng.integers(0,len(indices),(REPEATS,len(indices)))]
+               for name,indices in groups.items()}
+    result = {}
+    for name, contrast in NOISE_INTERACTIONS.items():
+        joint, raw, first, second = (hits[modes.index(mode)].astype(np.int16) for mode in contrast)
+        value = joint + raw - first - second
+        outcomes = dict(zip(ALL_VIEWS, (*value,value[1:].sum(0)), strict=True))
+        result[name] = {}
+        for view, row in outcomes.items():
+            simulated = sum(row[draws].sum(-1) for draws in samples.values())
+            result[name][view] = dict(net=int(row.sum()),paired_ci=np.quantile(simulated,(.025,.975)).tolist(),
+                by_rx={rx:int(row[indices].sum()) for rx,indices in groups.items()})
+    return result
+
+
 def collect(rt):
     root, source = Path(rt['run_root']),Path(rt['source_root'])
     if read(root/'state.json')['status']!='SOURCE_SCORED':
@@ -86,6 +108,9 @@ def collect(rt):
     elif rt.get('run_id')==coherent_interval_source.RUN:
         modes = coherent_interval_source.MODES
         pairs = (*coherent_interval_source.COMPARISONS, ('direct','reference'))
+    elif rt.get('run_id')==noise_split_diagnostic.RUN:
+        modes = noise_split_diagnostic.MODES
+        pairs = (*noise_split_diagnostic.COMPARISONS, ('direct','reference'))
     else:
         from experiments.pamf_lora_main import empirical_tangent_source as tangent
         if rt.get('run_id')!=tangent.RUN:
@@ -104,14 +129,19 @@ def collect(rt):
             raise ValueError('The registered source V order changed')
         truth = meta['y'][selected]
     groups = {name:np.flatnonzero(receivers[selected]==name) for name in SOURCE}
-    result = {}
+    result, interactions = {}, {}
     for route, (_, predictions, _) in pieces.items():
         hits = np.stack([predictions[view]==truth for view in VIEWS],axis=1)
         official = read(root/f'{route}-source-scores.json')
         if any(hits[:,i].sum(-1).tolist()!=official['metrics'][view]['correct'] for i,view in enumerate(VIEWS)):
             raise ValueError('Reconciled counts differ from the independent frozen source score')
         result[route] = compare(hits,pairs,groups,modes)
-    return dict(reader_seed=2026092702,bootstrap_replicates=REPEATS,target_reads=0,routes=result)
+        if rt.get('run_id')==noise_split_diagnostic.RUN:
+            interactions[route] = noise_interactions(hits,groups,modes)
+    artifact = dict(reader_seed=2026092702,bootstrap_replicates=REPEATS,target_reads=0,routes=result)
+    if interactions:
+        artifact['noise_interactions'] = interactions
+    return artifact
 
 
 if __name__=='__main__':
