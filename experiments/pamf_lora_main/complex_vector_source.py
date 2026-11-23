@@ -180,7 +180,7 @@ def load_reader(root, contract, device):
 @torch.no_grad()
 def score(rt, route, *, recipe=DEFAULT, panel=result_panel, modes=MODES, render=readouts,
           checkpoint_run=None, binding=None, frozen_models=None, require_clean_bypass=True,
-          replay_fn=replay, finalize=summarize):
+          replay_fn=replay, finalize=summarize, reader_chunk=None):
     device = 'cuda:0'
     root = Path(rt['run_root'])
     source, cache, contract, baseline, tracker = binding or source_control(rt, route, device)
@@ -203,7 +203,9 @@ def score(rt, route, *, recipe=DEFAULT, panel=result_panel, modes=MODES, render=
             n_active, parts = 0, []
             for y, epsilon in zip(tensor(capture, device).split(18), tensor(noise, device).split(18), strict=True):
                 x, active = render(y, epsilon, baseline, tracker, models)
-                logits = f(x.flatten(0, 1))[0]
+                inputs = x.flatten(0, 1)
+                logits = (f(inputs)[0] if reader_chunk is None else
+                          torch.cat([f(batch)[0] for batch in inputs.split(reader_chunk)]))
                 if not torch.isfinite(logits).all() or (require_clean_bypass and view=='clean' and active):
                     raise ValueError('Invalid clean guard or nonfinite frozen classification')
                 n_active += active
