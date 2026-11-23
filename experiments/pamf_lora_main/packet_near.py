@@ -28,7 +28,7 @@ class PacketContext(nn.Module):
         self.value = nn.Linear(24, 2)
         self.out = zero_output(nn.Linear(6, 2))
 
-    def forward(self, observed, current, quality, *, packet):
+    def forward(self, observed, current, quality, *, packet, transport=None):
         a, b = bands(observed.shape[-1], observed.device)
         select = a | b
         y, z = (fft(x)[..., select] for x in (observed, current))
@@ -43,15 +43,19 @@ class PacketContext(nn.Module):
         token = self.token(feat)
         keys, queries = self.key_query(token).chunk(2, dim=-1)
         logits = (queries @ keys.transpose(-1, -2)) * .25
-        align, reliability = phase_transfer(z)
+        if transport is None:
+            align, reliability = (value[:, None] for value in phase_transfer(z))
+        else:
+            align, reliability = transport
         distance = (time[:, None]-time[None]).abs()
-        log_prior = (reliability+.05).log() + .25*(quality[..., 0]+.05).log()[:, None, :] - .13*distance
-        logits = logits+log_prior[:, None]
+        quality_prior = .25*(quality[..., 0]+.05).log()[:, None, :]
+        log_prior = (reliability+.05).log()+quality_prior[:, None]-.13*distance
+        logits = logits+log_prior
         if not packet:
             logits = logits.masked_fill(~torch.eye(count, dtype=torch.bool, device=z.device), -torch.inf)
         values = self.value(token)
         values = z.transpose(1, 2) + .1*torch.complex(values[..., 0], values[..., 1])
-        transported = align[:, None] * values[:, :, None, :]
+        transported = align * values[:, :, None, :]
         context = (logits.softmax(-1)*transported).sum(-1).transpose(1, 2)
         residual = context-z
         fields = torch.stack((context.real, context.imag, z.real, z.imag, residual.real, residual.imag), dim=-1)

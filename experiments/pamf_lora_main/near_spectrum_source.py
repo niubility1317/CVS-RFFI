@@ -60,7 +60,8 @@ def losses(model, arrays, indexes):
     return torch.stack((near_error(prediction, b, signal), same_signal(prediction, b, signal, common)))
 
 
-def fit(rt, route, *, smoke=False, recipe=RECIPE, pair_weights=(0., PAIR_WEIGHT)):
+def fit(rt, route, *, smoke=False, recipe=RECIPE, pair_weights=(0., PAIR_WEIGHT),
+        risk=losses, auxiliary_weights=None):
     torch.manual_seed(recipe.seed)
     device = 'cuda:0'
     root = Path(rt['run_root'])
@@ -82,13 +83,17 @@ def fit(rt, route, *, smoke=False, recipe=RECIPE, pair_weights=(0., PAIR_WEIGHT)
     lr = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, steps, eta_min=2e-5)
     generator = torch.Generator(device=device).manual_seed(recipe.seed)
     weights = torch.tensor(pair_weights, device=device)
+    auxiliary = None if auxiliary_weights is None else torch.tensor(auxiliary_weights, device=device)
     for step in range(1, steps+1):
         ix = torch.randint(len(samples[0]), (BATCH,), generator=generator, device=device)
-        values = torch.stack([losses(model, samples, ix) for model in arms.values()])
+        values = torch.stack([risk(model, samples, ix) for model in arms.values()])
         if not torch.isfinite(values).all():
             raise FloatingPointError('Nonfinite near-carrier reconstruction')
         optimizer.zero_grad(set_to_none=True)
-        (values[:, 0].sum()+(weights*values[:, 1]).sum()).backward()
+        objective = values[:, 0].sum()+(weights*values[:, 1]).sum()
+        if auxiliary is not None:
+            objective = objective+(auxiliary*values[:, 2]).sum()
+        objective.backward()
         for model in arms.values():
             norm = torch.nn.utils.clip_grad_norm_(model.parameters(), 1., error_if_nonfinite=True)
             if step == 1 and (norm <= 0 or any(x.out.weight.grad.norm() <= 0
@@ -98,13 +103,13 @@ def fit(rt, route, *, smoke=False, recipe=RECIPE, pair_weights=(0., PAIR_WEIGHT)
         lr.step()
         if step == 1 or step % 50 == 0:
             print('NEAR_SPECTRUM_FIT', route, step, *values.flatten().detach().tolist(), flush=True)
-    ys, base, q, signal, common, prior = evaluation
+    ys, base, _, signal, common, prior = evaluation
     with torch.no_grad():
         held_loss = {}
         for k, model in arms.items():
             model.eval()
             indices = torch.arange(len(ys), device=device).split(BATCH)
-            measured = torch.stack([len(i)*losses(model, evaluation, i) for i in indices]).sum(0)
+            measured = torch.stack([len(i)*risk(model, evaluation, i) for i in indices]).sum(0)
             held_loss[k] = (measured/len(ys)).tolist()
         frozen_loss = [float(near_error(prior, base, signal)), float(same_signal(prior, base, signal, common))]
     proof = record(contract, route, recipe)
@@ -112,6 +117,8 @@ def fit(rt, route, *, smoke=False, recipe=RECIPE, pair_weights=(0., PAIR_WEIGHT)
     report.update(fit_pairs=len(samples[0]), held_pairs=len(ys), held_loss=held_loss,
                   frozen_loss=frozen_loss, broadband_parent=PARENT, paired_weight=pair_weights[1],
                   pair_weights=list(pair_weights))
+    if auxiliary_weights is not None:
+        report['auxiliary_weights'] = list(auxiliary_weights)
     if smoke:
         write(root/f'smoke-{route}.json', dict(report, status='PASS', steps=1,
                                                train_per_rx=count, held_per_rx=held))
