@@ -23,6 +23,7 @@ from .weak_signal_probe import observed_noise_rms
 
 
 RUN = '20261123-phase1-lora-dura-pilot-joint-source-m4-r01'
+STAGED_RUN = '20261123-phase1-lora-dura-pilot-stage-schedule-source-m4-r01'
 ARMS = ('identity','pilot')
 MODES = ('direct','reference','pilot_only','identity_coarse','identity_joint',
          'pilot_coarse','pilot_joint','pilot_joint_half')
@@ -32,8 +33,10 @@ def restore(model,y,q,template):
     return model(y,q,template)
 
 
-RECIPES = {a:FitRecipe(a,1400,partial(PilotJoint,equalize=a=='pilot'),generic_distortion,restore)
-           for a in ARMS}
+def recipes(rt):
+    staged = rt['run_id'] == STAGED_RUN
+    return {a: FitRecipe(a, 1400, partial(PilotJoint, equalize=a=='pilot'),
+                        generic_distortion, restore, coarse_first=staged) for a in ARMS}
 
 
 @torch.no_grad()
@@ -57,7 +60,7 @@ def evaluate(rt, route):
     binding = source_control(rt,route,device)
     root = Path(rt['run_root'])
     models, thresholds = [], []
-    for recipe in RECIPES.values():
+    for recipe in recipes(rt).values():
         saved = torch.load(root/f'{recipe.name}-model.pt',map_location=device,weights_only=True)
         if saved['proof']!=proof(binding[2],recipe):
             raise ValueError('The matched joint raw source models must be frozen')
@@ -74,7 +77,7 @@ def dispatch(rt):
     root = Path(rt['run_root'])
     root.mkdir(exist_ok=False)
     state = root/'state.json'
-    runner = partial(start,module=rt['runner'])
+    runner = partial(start,module=rt['runner'],extra_keys=('run_id',))
     training = dict(rt,allowed_gpus=[0,4,5,1,2,3,6])
     try:
         for action in ('smoke','fit'):
@@ -94,6 +97,7 @@ if __name__ == '__main__':
     pub = commands.add_parser('publish')
     for k in ('repo','output','context','ssh-config','parent-submit'):
         pub.add_argument('--'+k,type=Path,required=True)
+    pub.add_argument('--staged',action='store_true')
     for action in ('dispatch','smoke','fit','score'):
         entry = commands.add_parser(action)
         entry.add_argument('runtime',type=Path)
@@ -102,7 +106,8 @@ if __name__ == '__main__':
     args = vars(cli.parse_args())
     action = args.pop('action')
     if action=='publish':
-        publish(**args,run=RUN,runner=__spec__.name)
+        run = STAGED_RUN if args.pop('staged') else RUN
+        publish(**args,run=run,runner=__spec__.name)
     else:
         rt = read(args['runtime'])
         if action=='dispatch':
@@ -112,4 +117,4 @@ if __name__ == '__main__':
             if action=='score':
                 evaluate(rt,args['name'])
             else:
-                fit(rt,smoke=action=='smoke',recipe=RECIPES[args['name']])
+                fit(rt,smoke=action=='smoke',recipe=recipes(rt)[args['name']])

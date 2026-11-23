@@ -32,6 +32,7 @@ SEED, STEPS, BATCH = 2026112991, 1900, 12
 FIT, CAL, HELD = 1000, 500, 100
 MODES = ('direct','reference','blind_coarse','blind_refined','blind_half')
 ISOLATION = dict(F_reads=0,TX_reads=0,V_reads=0,target_reads=0,practical_reads=0,trace_reads=0)
+JOINT_WEIGHTS = (.35, .65, .10)
 
 
 @dataclass(frozen=True)
@@ -41,6 +42,16 @@ class FitRecipe:
     model: Callable
     perturb: Callable
     restore: Callable
+    coarse_first: bool = False
+
+    def loss_weights(self, step):
+        if not self.coarse_first:
+            return JOINT_WEIGHTS
+        start, end = self.steps // 5, self.steps // 2
+        progress = max(0., min(1., (step - start) / max(1, end - start)))
+        initial = (.80, .20, .02)
+        return tuple((1. - progress) * low + progress * high
+                     for low, high in zip(initial, JOINT_WEIGHTS, strict=True))
 
 
 DEFAULT = FitRecipe('blind',STEPS,ChannelBlind,generic_observation,
@@ -67,6 +78,8 @@ def proof(contract, recipe=DEFAULT):
                 fit_per_rx=FIT,calibration_per_rx=CAL,held_per_rx=HELD,**ISOLATION)
     if recipe.name!='blind':
         metadata['estimator'] = recipe.name
+    if recipe.coarse_first:
+        metadata['loss_schedule'] = 'coarse_first'
     return metadata
 
 
@@ -121,7 +134,8 @@ def fit(rt, *, smoke=False, recipe=DEFAULT):
         if not torch.isfinite(values).all():
             raise FloatingPointError('Nonfinite channel-blind source fit')
         opt.zero_grad(set_to_none=True)
-        (.35*values[0]+.65*values[1]+.10*values[2]).backward()
+        coarse, refined, paired = recipe.loss_weights(step)
+        (coarse * values[0] + refined * values[1] + paired * values[2]).backward()
         grad = torch.nn.utils.clip_grad_norm_(model.parameters(),1.,error_if_nonfinite=True)
         if step==1 and grad<=0:
             raise ValueError('No gradient on raw source IQ')

@@ -1,6 +1,8 @@
 import torch
+import pytest
 
 from experiments.pamf_lora_main.pilot_joint import PilotJoint, estimate_pilot, pilot_inverse
+from experiments.pamf_lora_main.pilot_joint_source import RUN, STAGED_RUN, recipes
 
 
 def test_receive_pilot_fit_uses_the_correct_delay_sign():
@@ -29,3 +31,13 @@ def test_both_stages_train_together_with_finite_gradients():
     (-1.+coarse).abs().square().mean().add((refined-1.).abs().square().mean()).backward()
     for parameter in (model.coarse.spectral.out.weight,model.coarse.temporal.out.weight,model.prior.out.weight):
         assert torch.isfinite(parameter.grad).all() and parameter.grad.norm()>0
+
+
+@pytest.mark.parametrize('arm', ('identity', 'pilot'))
+def test_stage_schedule_preserves_final_joint_objective(arm):
+    joint = recipes({'run_id': RUN})[arm]
+    staged = recipes({'run_id': STAGED_RUN})[arm]
+    assert joint.loss_weights(1) == joint.loss_weights(staged.steps) == (.35, .65, .10)
+    assert staged.loss_weights(1) == staged.loss_weights(280) == (.80, .20, .02)
+    assert staged.loss_weights(490) == pytest.approx((.575, .425, .06))
+    assert staged.loss_weights(700) == staged.loss_weights(staged.steps) == joint.loss_weights(1)
