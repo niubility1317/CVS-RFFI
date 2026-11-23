@@ -32,14 +32,14 @@ def band_windows(wave, offset):
     return np.asarray(np.stack((translated.real, translated.imag), axis=2) / scale, dtype=np.float32)
 
 
-def native_pair(row):
+def native_pair(row, *, sidebands=True):
     """Source simulator truth is returned separately and never supplied to the head."""
     from leo_practical.channel import ChannelStream, normalize_input, stable_seed
 
     raw, rx, pid, scene, namespace, draw = row
     if scene == 'clean':
         y = chirp_windows(raw)
-        return y, band_windows(raw, 0), np.zeros_like(y)
+        return y, band_windows(raw, 0) if sidebands else None, np.zeros_like(y)
     tx, _ = normalize_input(raw)
     pieces = (namespace, scene, rx, str(pid))
     if draw is not None:
@@ -61,7 +61,8 @@ def native_pair(row):
     scale = np.sqrt(np.mean(np.abs(received_band)**2))
     if not np.isfinite(scale) or scale <= 1e-12:
         raise ValueError('Invalid native trace scale')
-    return chirp_windows(observed, offset), band_windows(observed, offset), np.asarray(
+    adjacent = band_windows(observed, offset) if sidebands else None
+    return chirp_windows(observed, offset), adjacent, np.asarray(
         np.stack((noise.real, noise.imag), axis=1) / scale, dtype=np.float32)
 
 
