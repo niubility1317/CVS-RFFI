@@ -39,7 +39,13 @@ def proof(arm):
                 target_reads=0, F_reads=0, V_reads=0, TX_truth_reads=0, trace_reads=0)
 
 
-def fit(rt, arm, *, smoke, build=default_model, calculate=objective):
+def guard_scores(analysis):
+    noise,logits = analysis[3:5]
+    margin = logits.max(-1).values-logits[:,logits.shape[-1]//2]
+    return margin,noise
+
+
+def fit(rt, arm, *, smoke, build=default_model, calculate=objective, gate_features=None):
     if set(rt) != {'run_root','source_root'}:
         raise ValueError('Only the source IQ and output roots are open to fitting')
     torch.set_num_threads(2)
@@ -93,8 +99,9 @@ def fit(rt, arm, *, smoke, build=default_model, calculate=objective):
         model.eval()
         metrics = []
         for chunk in np.array_split(calibration,len(calibration)//BATCH):
-            _,_,_,noise,logits,_,_ = model.analyze(as_complex(tensor(source[chunk],device)))
-            metrics.append(torch.stack((logits.max(-1).values-logits[:,logits.shape[-1]//2],noise)))
+            analysis = model.analyze(as_complex(tensor(source[chunk],device)))
+            values = guard_scores(analysis) if gate_features is None else gate_features(model,analysis)
+            metrics.append(torch.stack(values))
         gate = (1.02*torch.cat(metrics,dim=1).amax(1)+1e-6).tolist()
         evidence = dict(proof(arm),gate=gate,optimizer_seconds=seconds,fit_count=len(training),
                         calibration_count=len(calibration),held_count=HELD,held=held_costs(),held_trajectory=history,
@@ -125,10 +132,9 @@ def proposals(model, gate, y):
     return (*stages,torch.where(active[:,None],stages[-1],y)),active,shift
 
 
-def guarded(model, gate, y):
+def guarded(model, gate, y, *, gate_features=None):
     analysis = model.analyze(y)
-    noise,logits = analysis[3:5]
-    margin = logits.max(-1).values-logits[:,logits.shape[-1]//2]
+    margin,noise = guard_scores(analysis) if gate_features is None else gate_features(model,analysis)
     active = (margin>gate[0]) | (noise>gate[1])
     if not active.any():
         return y, active
@@ -146,7 +152,7 @@ def classify(reader,y):
 
 
 @torch.no_grad()
-def smoke(rt, *, models_from=load_models, variants=proposals, disturb=generic_crop):
+def smoke(rt, *, models_from=load_models, variants=proposals, disturb=generic_crop, gate_features=None):
     source,_, calibration = core.source_iq(Path(rt['source_root']))
     y = as_complex(tensor(source[calibration[:16]],'cuda:0'))
     reader = tri.reader_factory(rt).eval().requires_grad_(False)
@@ -159,14 +165,18 @@ def smoke(rt, *, models_from=load_models, variants=proposals, disturb=generic_cr
             classify(reader,variant)
     model, gate = models[-1]
     disturbed = disturb(y,torch.Generator(device=y.device).manual_seed(SEED+12),model)
-    index = model(disturbed)[2].argmax().view(1)
+    if gate_features is None:
+        index = model(disturbed)[2].argmax().view(1)
+    else:
+        scores = gate_features(model,model.analyze(disturbed))
+        index = torch.maximum(scores[0]/gate[0],scores[1]/gate[1]).argmax().view(1)
     timings = {}
     for label, sample in (('source_clean',y[:1]),('generic_disturbed',disturbed[index])):
         elapsed = []
         for i in range(28):
             torch.cuda.synchronize()
             started = perf_counter()
-            _, active = guarded(model,gate,sample)
+            _, active = guarded(model,gate,sample,gate_features=gate_features)
             torch.cuda.synchronize()
             if i>=8:
                 elapsed.append(1000*(perf_counter()-started))
