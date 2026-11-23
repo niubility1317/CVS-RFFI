@@ -172,14 +172,15 @@ def load_models(root, route, contract, recipe, device):
 
 @torch.no_grad()
 def score(rt, route, *, recipe=DEFAULT, panel=result_panel, modes=MODES, render=readouts,
-          checkpoint_run=None, binding=None):
+          checkpoint_run=None, binding=None, frozen_models=None, require_clean_bypass=True,
+          replay_fn=replay):
     device = 'cuda:0'
     root = Path(rt['run_root'])
     source, cache, contract, baseline, tracker = binding or source_control(rt, route, device)
     parent = root if checkpoint_run is None else root.parent/checkpoint_run
     if checkpoint_run is not None and read(parent/'state.json')['status'] != 'SOURCE_SCORED':
         raise ValueError('Expected complete source-selected vector checkpoints')
-    models = load_models(parent, route, contract, recipe, device)
+    models = load_models(parent, route, contract, recipe, device) if frozen_models is None else frozen_models
     f = recognizer(device).eval().requires_grad_(False)
     weights = complete_f(root.parent/SET_RUN, contract, case(SEED, SET_METHOD))/'model.pt'
     f.load_state_dict(torch.load(weights, map_location=device, weights_only=True), strict=True)
@@ -190,7 +191,7 @@ def score(rt, route, *, recipe=DEFAULT, panel=result_panel, modes=MODES, render=
     pred, metrics = {}, {}
     with ProcessPoolExecutor(max_workers=8) as pool:
         for index, view in enumerate(VIEWS):
-            capture, noise = (np.stack(v) for v in zip(*pool.map(partial(replay, route, view), rows,
+            capture, noise = (np.stack(v) for v in zip(*pool.map(partial(replay_fn, route, view), rows,
                                                                 chunksize=8), strict=True))
             if official is not None and not np.array_equal(capture, official[index, chosen]):
                 raise ValueError('Full source view mismatch')
@@ -198,7 +199,7 @@ def score(rt, route, *, recipe=DEFAULT, panel=result_panel, modes=MODES, render=
             for y, epsilon in zip(tensor(capture, device).split(18), tensor(noise, device).split(18), strict=True):
                 x, active = render(y, epsilon, baseline, tracker, models)
                 logits = f(x.flatten(0, 1))[0]
-                if not torch.isfinite(logits).all() or (view=='clean' and active):
+                if not torch.isfinite(logits).all() or (require_clean_bypass and view=='clean' and active):
                     raise ValueError('Invalid clean guard or nonfinite frozen classification')
                 n_active += active
                 parts.append(logits.argmax(1).reshape(len(modes), len(y)).cpu().tolist())
