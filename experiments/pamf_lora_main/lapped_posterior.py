@@ -58,6 +58,12 @@ class LappedPosterior(nn.Module):
         values = coefficients[..., self.outer].abs().square()
         return values.median(dim=-1, keepdim=True).values / log(2.)
 
+    def transformed(self, observed):
+        return analysis(observed, self.window)
+
+    def precision(self, value, reference, spread, noise, support_noise, variance, *, scalar_readout):
+        return .85 * noise / (.02 + noise + variance), None
+
     @staticmethod
     def fields(net, source, mixed):
         values = torch.stack(source, dim=2).flatten(0, 1)
@@ -65,8 +71,8 @@ class LappedPosterior(nn.Module):
             out = net(values)
         return out.float().unflatten(0, source[0].shape[:2]).unbind(2)
 
-    def restore(self, observed, quality, *, stationary_readout=False):
-        value = analysis(observed, self.window)
+    def restore(self, observed, quality, *, stationary_readout=False, scalar_readout=False):
+        value = self.transformed(observed)
         reference = other_mean(value)
         spread = (other_mean(value.abs().square()) - reference.abs().square()).clamp_min(0.)
         measured = self.estimate_power(value)
@@ -81,15 +87,22 @@ class LappedPosterior(nn.Module):
         power = spread + .002
         prior = reference + .50 * power.sqrt() * torch.complex(a.tanh(), b.tanh())
         variance = .002 + (.006 + power) * F.softplus(scale)
-        weight = .85 * noise / (.02 + noise + variance)
+        weight, companion = self.precision(value, reference, spread, noise, support_noise, variance,
+                                           scalar_readout=scalar_readout)
         innovation = prior - value
         first = weight * innovation
+        if companion is not None:
+            first = first + companion * innovation.conj()
         current = value + first
         q = quality[..., None].expand_as(spread)
         c, d = self.fields(self.refine, (value.real, value.imag, current.real, current.imag,
                            innovation.real, innovation.imag, scale.clamp(-4., 4.),
                            spread.log1p(), noise.log1p().expand_as(spread), weight, f, q), mixed)
-        second = first + .50 * weight * (noise+.002).sqrt() * torch.complex(c.tanh(), d.tanh())
+        amplitude = (noise+.002).sqrt()
+        correction = torch.complex(c.tanh(), d.tanh())
+        second = first + .50 * weight * amplitude * correction
+        if companion is not None:
+            second = second + .50 * companion * amplitude * correction.conj()
         outputs = []
         for edit in (first, second):
             # The overlap-add frame retains the original time grid and mean.
@@ -113,7 +126,7 @@ def objective(model, tracker, iq, rng, *, with_identity, recipe, step):
     frame = phase * level
     target = torch.stack((source, source, source + delta), dim=1).flatten(0, 1) / frame
     coarse, fine, prior, variance = model.restore(observed, quality)
-    error = (analysis(target, model.window) - prior).abs().square()
+    error = (model.transformed(target) - prior).abs().square()
     risk = (error / variance + variance.log())[..., model.noncarrier].mean()
     physical = (fine * frame).unflatten(0, inputs.shape[:2])
     consistency = ((physical[:, 0] - physical[:, 1]) / clean_frame).abs().square().mean()
