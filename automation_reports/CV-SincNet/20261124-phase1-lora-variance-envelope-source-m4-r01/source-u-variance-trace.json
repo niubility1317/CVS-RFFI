@@ -1,0 +1,519 @@
+{
+  "packets": 150,
+  "source_role": "held_U_s",
+  "trace_is_diagnostic_only": true,
+  "target_reads": 0,
+  "V_reads": 0,
+  "F_reads": 0,
+  "TX_reads": 0,
+  "quantiles": [
+    0.1,
+    0.5,
+    0.9
+  ],
+  "calibration_packets": 500,
+  "band_floor": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "by_route": {
+    "full": {
+      "practical_low_suburban": {
+        "1_to_8": {
+          "proxy_over_actual_mean": 1.0996067523956299,
+          "contrast_over_actual_mean": 1.1926383972167969,
+          "actual_over_independent_mean": 0.8750004768371582,
+          "proxy_abs_log_error_q": [
+            0.04964490979909897,
+            0.2566167712211609,
+            0.6945334076881409
+          ],
+          "contrast_abs_log_error_q": [
+            0.10946255922317505,
+            0.3774309754371643,
+            0.8297761082649231
+          ],
+          "measured_contrast_multiplier": [
+            1.0288282632827759,
+            1.294670820236206,
+            1.908681035041809
+          ]
+        },
+        "9_to_32": {
+          "proxy_over_actual_mean": 0.9234493970870972,
+          "contrast_over_actual_mean": 0.9648791551589966,
+          "actual_over_independent_mean": 1.0001293420791626,
+          "proxy_abs_log_error_q": [
+            0.05204715207219124,
+            0.2494901418685913,
+            0.5703886151313782
+          ],
+          "contrast_abs_log_error_q": [
+            0.03766315430402756,
+            0.1839316189289093,
+            0.4039492905139923
+          ],
+          "measured_contrast_multiplier": [
+            0.7030680179595947,
+            0.923136830329895,
+            1.122357964515686
+          ]
+        },
+        "33_to_64": {
+          "proxy_over_actual_mean": 0.9667343497276306,
+          "contrast_over_actual_mean": 0.9793348908424377,
+          "actual_over_independent_mean": 1.0045140981674194,
+          "proxy_abs_log_error_q": [
+            0.03272252529859543,
+            0.2418622076511383,
+            0.6663276553153992
+          ],
+          "contrast_abs_log_error_q": [
+            0.030811145901679993,
+            0.17988204956054688,
+            0.4880135953426361
+          ],
+          "measured_contrast_multiplier": [
+            0.672903299331665,
+            0.9011261463165283,
+            1.088934063911438
+          ]
+        },
+        "above_64": {
+          "proxy_over_actual_mean": 0.9800053238868713,
+          "contrast_over_actual_mean": 0.9621132016181946,
+          "actual_over_independent_mean": 1.0469520092010498,
+          "proxy_abs_log_error_q": [
+            0.04156089946627617,
+            0.2726925015449524,
+            0.6427685022354126
+          ],
+          "contrast_abs_log_error_q": [
+            0.03019210696220398,
+            0.18626704812049866,
+            0.45867177844047546
+          ],
+          "measured_contrast_multiplier": [
+            0.6260924935340881,
+            0.8655563592910767,
+            0.9956358075141907
+          ]
+        }
+      },
+      "practical_high_urban": {
+        "1_to_8": {
+          "proxy_over_actual_mean": 0.9792557954788208,
+          "contrast_over_actual_mean": 1.0290100574493408,
+          "actual_over_independent_mean": 1.027991533279419,
+          "proxy_abs_log_error_q": [
+            0.23551714420318604,
+            0.9398658275604248,
+            1.5932884216308594
+          ],
+          "contrast_abs_log_error_q": [
+            0.3924211263656616,
+            1.1624789237976074,
+            1.6817047595977783
+          ],
+          "measured_contrast_multiplier": [
+            0.9844890236854553,
+            1.4562511444091797,
+            2.666464328765869
+          ]
+        },
+        "9_to_32": {
+          "proxy_over_actual_mean": 0.9164313077926636,
+          "contrast_over_actual_mean": 0.9067931771278381,
+          "actual_over_independent_mean": 1.0902034044265747,
+          "proxy_abs_log_error_q": [
+            0.14489991962909698,
+            0.8823648691177368,
+            1.4591586589813232
+          ],
+          "contrast_abs_log_error_q": [
+            0.14812390506267548,
+            0.5519493818283081,
+            1.100003957748413
+          ],
+          "measured_contrast_multiplier": [
+            0.33971714973449707,
+            0.6188644170761108,
+            0.9923861622810364
+          ]
+        },
+        "33_to_64": {
+          "proxy_over_actual_mean": 0.9323632121086121,
+          "contrast_over_actual_mean": 0.954138994216919,
+          "actual_over_independent_mean": 1.0131802558898926,
+          "proxy_abs_log_error_q": [
+            0.1425238847732544,
+            0.8954346179962158,
+            1.4249203205108643
+          ],
+          "contrast_abs_log_error_q": [
+            0.10589436441659927,
+            0.6159309148788452,
+            1.073573112487793
+          ],
+          "measured_contrast_multiplier": [
+            0.347118616104126,
+            0.5764524936676025,
+            0.9942600727081299
+          ]
+        },
+        "above_64": {
+          "proxy_over_actual_mean": 1.1650171279907227,
+          "contrast_over_actual_mean": 1.1501766443252563,
+          "actual_over_independent_mean": 0.9031885862350464,
+          "proxy_abs_log_error_q": [
+            0.19022899866104126,
+            0.9559298157691956,
+            1.4689451456069946
+          ],
+          "contrast_abs_log_error_q": [
+            0.16472041606903076,
+            0.6198515892028809,
+            1.1052274703979492
+          ],
+          "measured_contrast_multiplier": [
+            0.33182835578918457,
+            0.545612096786499,
+            0.9254565834999084
+          ]
+        }
+      },
+      "practical_low_urban": {
+        "1_to_8": {
+          "proxy_over_actual_mean": 0.958262026309967,
+          "contrast_over_actual_mean": 1.026235818862915,
+          "actual_over_independent_mean": 1.0023818016052246,
+          "proxy_abs_log_error_q": [
+            0.04874756559729576,
+            0.20297464728355408,
+            0.5728722214698792
+          ],
+          "contrast_abs_log_error_q": [
+            0.05790674313902855,
+            0.24506278336048126,
+            0.7121645212173462
+          ],
+          "measured_contrast_multiplier": [
+            0.9808563590049744,
+            1.231360673904419,
+            1.6432909965515137
+          ]
+        },
+        "9_to_32": {
+          "proxy_over_actual_mean": 0.9353264570236206,
+          "contrast_over_actual_mean": 0.9685062170028687,
+          "actual_over_independent_mean": 1.001676082611084,
+          "proxy_abs_log_error_q": [
+            0.03183949738740921,
+            0.1336698979139328,
+            0.5167120695114136
+          ],
+          "contrast_abs_log_error_q": [
+            0.02334316074848175,
+            0.12454016506671906,
+            0.40661007165908813
+          ],
+          "measured_contrast_multiplier": [
+            0.773605227470398,
+            1.0129990577697754,
+            1.1644141674041748
+          ]
+        },
+        "33_to_64": {
+          "proxy_over_actual_mean": 0.9578054547309875,
+          "contrast_over_actual_mean": 0.9871940016746521,
+          "actual_over_independent_mean": 0.989378035068512,
+          "proxy_abs_log_error_q": [
+            0.023773806169629097,
+            0.11606265604496002,
+            0.49290183186531067
+          ],
+          "contrast_abs_log_error_q": [
+            0.019513199105858803,
+            0.10567550361156464,
+            0.3704828917980194
+          ],
+          "measured_contrast_multiplier": [
+            0.7643448114395142,
+            1.0251939296722412,
+            1.1502928733825684
+          ]
+        },
+        "above_64": {
+          "proxy_over_actual_mean": 1.0233895778656006,
+          "contrast_over_actual_mean": 1.0168424844741821,
+          "actual_over_independent_mean": 0.9938178062438965,
+          "proxy_abs_log_error_q": [
+            0.01541876420378685,
+            0.10474077612161636,
+            0.5355762839317322
+          ],
+          "contrast_abs_log_error_q": [
+            0.017100095748901367,
+            0.09394116699695587,
+            0.38207870721817017
+          ],
+          "measured_contrast_multiplier": [
+            0.7098551392555237,
+            0.9572571516036987,
+            1.0274534225463867
+          ]
+        }
+      }
+    },
+    "residual": {
+      "practical_low_suburban": {
+        "1_to_8": {
+          "proxy_over_actual_mean": 1.0062165260314941,
+          "contrast_over_actual_mean": 1.0599632263183594,
+          "actual_over_independent_mean": 1.0020474195480347,
+          "proxy_abs_log_error_q": [
+            0.033948082476854324,
+            0.18432854115962982,
+            0.4206814765930176
+          ],
+          "contrast_abs_log_error_q": [
+            0.046209126710891724,
+            0.17420180141925812,
+            0.4483058452606201
+          ],
+          "measured_contrast_multiplier": [
+            0.8935730457305908,
+            1.095988154411316,
+            1.3914133310317993
+          ]
+        },
+        "9_to_32": {
+          "proxy_over_actual_mean": 1.019020676612854,
+          "contrast_over_actual_mean": 1.0161901712417603,
+          "actual_over_independent_mean": 0.9970980882644653,
+          "proxy_abs_log_error_q": [
+            0.01780279353260994,
+            0.11458779871463776,
+            0.3026791512966156
+          ],
+          "contrast_abs_log_error_q": [
+            0.021640699356794357,
+            0.1022261530160904,
+            0.2477443367242813
+          ],
+          "measured_contrast_multiplier": [
+            0.8441151976585388,
+            0.9909484386444092,
+            1.1437351703643799
+          ]
+        },
+        "33_to_64": {
+          "proxy_over_actual_mean": 1.0183942317962646,
+          "contrast_over_actual_mean": 1.0032418966293335,
+          "actual_over_independent_mean": 1.0165959596633911,
+          "proxy_abs_log_error_q": [
+            0.025799471884965897,
+            0.10706406086683273,
+            0.24284610152244568
+          ],
+          "contrast_abs_log_error_q": [
+            0.017024721950292587,
+            0.09165312349796295,
+            0.2074572592973709
+          ],
+          "measured_contrast_multiplier": [
+            0.8342753052711487,
+            0.971703052520752,
+            1.1110833883285522
+          ]
+        },
+        "above_64": {
+          "proxy_over_actual_mean": 1.0349645614624023,
+          "contrast_over_actual_mean": 1.0228362083435059,
+          "actual_over_independent_mean": 0.9980690479278564,
+          "proxy_abs_log_error_q": [
+            0.013388081453740597,
+            0.08504688739776611,
+            0.18499356508255005
+          ],
+          "contrast_abs_log_error_q": [
+            0.016033954918384552,
+            0.06663766503334045,
+            0.14976145327091217
+          ],
+          "measured_contrast_multiplier": [
+            0.8966540098190308,
+            0.9631185531616211,
+            1.0397741794586182
+          ]
+        }
+      },
+      "practical_high_urban": {
+        "1_to_8": {
+          "proxy_over_actual_mean": 1.0511986017227173,
+          "contrast_over_actual_mean": 1.1156319379806519,
+          "actual_over_independent_mean": 1.0272678136825562,
+          "proxy_abs_log_error_q": [
+            0.040021881461143494,
+            0.2726680636405945,
+            0.7485197186470032
+          ],
+          "contrast_abs_log_error_q": [
+            0.043831486254930496,
+            0.32591545581817627,
+            0.784126341342926
+          ],
+          "measured_contrast_multiplier": [
+            0.9348341822624207,
+            1.2333875894546509,
+            1.671351671218872
+          ]
+        },
+        "9_to_32": {
+          "proxy_over_actual_mean": 1.048026442527771,
+          "contrast_over_actual_mean": 1.0303864479064941,
+          "actual_over_independent_mean": 1.0019657611846924,
+          "proxy_abs_log_error_q": [
+            0.03988327085971832,
+            0.23939558863639832,
+            0.5795335173606873
+          ],
+          "contrast_abs_log_error_q": [
+            0.03475986421108246,
+            0.14633990824222565,
+            0.4422377943992615
+          ],
+          "measured_contrast_multiplier": [
+            0.655978262424469,
+            0.8738881349563599,
+            1.0900925397872925
+          ]
+        },
+        "33_to_64": {
+          "proxy_over_actual_mean": 1.0520555973052979,
+          "contrast_over_actual_mean": 1.033974289894104,
+          "actual_over_independent_mean": 1.006182074546814,
+          "proxy_abs_log_error_q": [
+            0.030631810426712036,
+            0.1925615668296814,
+            0.5831910371780396
+          ],
+          "contrast_abs_log_error_q": [
+            0.021406251937150955,
+            0.12816323339939117,
+            0.40397438406944275
+          ],
+          "measured_contrast_multiplier": [
+            0.6793947815895081,
+            0.9009999632835388,
+            1.0920606851577759
+          ]
+        },
+        "above_64": {
+          "proxy_over_actual_mean": 1.0615659952163696,
+          "contrast_over_actual_mean": 1.040030837059021,
+          "actual_over_independent_mean": 1.002476692199707,
+          "proxy_abs_log_error_q": [
+            0.033385664224624634,
+            0.17417308688163757,
+            0.5395970940589905
+          ],
+          "contrast_abs_log_error_q": [
+            0.024643056094646454,
+            0.1213485449552536,
+            0.3688082695007324
+          ],
+          "measured_contrast_multiplier": [
+            0.6751374006271362,
+            0.891728401184082,
+            1.0404155254364014
+          ]
+        }
+      },
+      "practical_low_urban": {
+        "1_to_8": {
+          "proxy_over_actual_mean": 0.9861657619476318,
+          "contrast_over_actual_mean": 1.0304714441299438,
+          "actual_over_independent_mean": 1.0101525783538818,
+          "proxy_abs_log_error_q": [
+            0.033349037170410156,
+            0.17823311686515808,
+            0.43888574838638306
+          ],
+          "contrast_abs_log_error_q": [
+            0.025579623878002167,
+            0.1745302975177765,
+            0.4453340768814087
+          ],
+          "measured_contrast_multiplier": [
+            0.9124955534934998,
+            1.0920565128326416,
+            1.323800802230835
+          ]
+        },
+        "9_to_32": {
+          "proxy_over_actual_mean": 1.0157084465026855,
+          "contrast_over_actual_mean": 1.0079628229141235,
+          "actual_over_independent_mean": 0.9974316358566284,
+          "proxy_abs_log_error_q": [
+            0.02244156040251255,
+            0.12184198200702667,
+            0.27109676599502563
+          ],
+          "contrast_abs_log_error_q": [
+            0.01786424033343792,
+            0.09749709069728851,
+            0.23391081392765045
+          ],
+          "measured_contrast_multiplier": [
+            0.867667019367218,
+            0.9761478900909424,
+            1.119474172592163
+          ]
+        },
+        "33_to_64": {
+          "proxy_over_actual_mean": 0.9919479489326477,
+          "contrast_over_actual_mean": 0.9893412590026855,
+          "actual_over_independent_mean": 1.008516788482666,
+          "proxy_abs_log_error_q": [
+            0.014075490646064281,
+            0.08645453304052353,
+            0.2140616476535797
+          ],
+          "contrast_abs_log_error_q": [
+            0.017948521301150322,
+            0.0744052529335022,
+            0.1785147339105606
+          ],
+          "measured_contrast_multiplier": [
+            0.8738221526145935,
+            0.9933453798294067,
+            1.1322916746139526
+          ]
+        },
+        "above_64": {
+          "proxy_over_actual_mean": 0.9962137937545776,
+          "contrast_over_actual_mean": 0.9959846138954163,
+          "actual_over_independent_mean": 1.0042941570281982,
+          "proxy_abs_log_error_q": [
+            0.009338648989796638,
+            0.05395948886871338,
+            0.1420344114303589
+          ],
+          "contrast_abs_log_error_q": [
+            0.008805176243185997,
+            0.05754585564136505,
+            0.13743501901626587
+          ],
+          "measured_contrast_multiplier": [
+            0.9234955906867981,
+            0.9877083897590637,
+            1.0660862922668457
+          ]
+        }
+      }
+    }
+  }
+}

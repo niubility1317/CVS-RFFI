@@ -21,7 +21,7 @@
     "20261123-phase1-lora-dura-complex-response-confirm-m4-r01"
   ],
   "replaces_run_id": null,
-  "authorization": "User handoff from 01a1dedc-e242-78a2-8064-20079b2070eb and active LoRa/WiSig observable recovery goal. Source screen only.",
+  "authorization": "User handoff from 01a1dedc-e242-78a2-8064-20079b2070eb and active LoRa/WiSig observable recovery goal. Formal frozen residual baseline completion for the registered two missing recognition seeds.",
   "code": {
     "commit": "7e8e66802d5d8ab14e9e21432911f3217fda0854",
     "checkout": "E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010",
@@ -31,7 +31,7 @@
   "data": {
     "dataset": "LoRa registered main data",
     "version": "lora_full_packets_v1",
-    "representation": "Phase-aligned six chirps, float32 [6,2,256] plus replay of registered full and residual received views in frozen source scoring",
+    "representation": "Phase-aligned six chirps, float32 [6,2,256]. Existing registered seven-view residual target cache; source IQ only for the real-checkpoint smoke.",
     "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
     "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-dura-residual-practical-m1-r01/target_views/complete.json; registered 2000 per RX target manifest",
     "label_map_ref": "F:/FULL wisig/Radio Frequency Fingerprint LoRa Dataset With Multiple Receivers/multiple_receiver_test.zip; separate local truth scorer only",

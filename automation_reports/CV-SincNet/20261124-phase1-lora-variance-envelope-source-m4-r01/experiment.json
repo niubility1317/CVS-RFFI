@@ -1,0 +1,254 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261124-phase1-lora-variance-envelope-source-m4-r01",
+  "group_id": "phase1-lora-observable-recovery",
+  "display_name": "LoRa 分带噪声方差不确定性与恢复约束",
+  "description": "Matched point versus two-point, equal-center variance for the same band-limited waveform correction and optimization.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "source_only",
+    "dual_path"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261124-phase1-lora-echo-marginal-source-m4-r01",
+    "20261122-phase1-lora-tri-label-set-m3-r01",
+    "20261123-phase1-lora-dura-residual-practical-m1-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User handoff from 01a1dedc-e242-78a2-8064-20079b2070eb and active LoRa/WiSig observable recovery goal. Source screen only.",
+  "code": {
+    "commit": "f61a3cc0f1e116559bab84b2da284db1fc283a88",
+    "checkout": "E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-variance-envelope-source-m4-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa registered main data",
+    "version": "lora_full_packets_v1",
+    "representation": "Phase-aligned six chirps, float32 [6,2,256] plus replay of registered full and residual received views in frozen source scoring",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/U_s_metadata.npz and /home/szu2070436088/2510044040/CV-SincNet/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/V_metadata.npz; fixed per-RX panel",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/V_metadata.npz; source scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": {
+        "fit": 5000,
+        "clean_calibration": 2500,
+        "generic_diagnostic_only": 500
+      },
+      "V": {
+        "paired_frozen_score": 900
+      }
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": "experiments/pamf_lora_main/joint_unroll_source.py and channel_blind_source.py"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Single-seed source screen. No held-out target receivers. Fit uses U_s clean IQ only."
+  },
+  "checkpoint": {
+    "initialization": "Both arms use matched random initialization. No fitted propagation parameters.",
+    "sources": [
+      {
+        "role": "frozen score only",
+        "ref": "20261122-phase1-lora-tri-label-set-m3-r01, final frozen Tri-set 2026092702"
+      },
+      {
+        "role": "matched reference only",
+        "ref": "20261123-phase1-lora-dura-residual-practical-m1-r01; exact registered baseline from source_control"
+      }
+    ],
+    "contract_check_ref": "experiments/pamf_lora_main/variance_bound_source.py",
+    "provenance_verdict": "Restore fitting reads legal source U IQ and independent generic augmentation only; no target or simulator state.",
+    "selection_rule": "Same fixed Step 3600 and source-U clean gate. Same trained readout must exceed matched DURA for both routes and preserve clean."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex handoff thread 01a208a9-57df-7f82-a078-cd9477adf998",
+    "gpu_policy": "Up to two simultaneous workers on different eligible GPUs; capacity checked by existing scheduler with all compute PIDs and max 4 per GPU",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-variance-envelope-source-m4-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-variance-envelope-source-m4-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/variance_envelope_v1",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.variance_bound_source publish --repo E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010 --output E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/variance_envelope_v1 --context E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_calibration_source_r01_context.json --ssh-config E:/type10-7/tools/n607_ssh_config --parent-submit E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_residual_practical_release/submit.json",
+    "stop_rule": "Stop new run-owned jobs on source contract, nonfinite gradients, calibration or reporting/closure failure."
+  },
+  "expected_artifacts": [
+    "checkpoint_smoke.json",
+    "smoke-{point,interval}.json",
+    "{point,interval}-model.pt",
+    "{point,interval}-complete.json",
+    "{full,residual}-predictions.json",
+    "{full,residual}-variance-width.json",
+    "{full,residual}-source-scores.json",
+    "b1.json",
+    "state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "clean correct count",
+      "paired net gains/harms",
+      "per-RX counts",
+      "split-band variance span and same-weights gain reduction separated by observed severity",
+      "training and inference cost"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "readout"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-variance-envelope-source-m4-r01/{full,residual}-predictions.json",
+    "scorer_ref": "experiments.pamf_lora_main.variance_bound_source score"
+  },
+  "rows": [
+    {
+      "row_id": "fit-point",
+      "method": "Per-band point variance and bounded observation update",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/variance_bound_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-variance-envelope-source-m4-r01/configs/fit-point.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026112991,
+        "split": 2026112991,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No support or scoring for recovery fit.",
+      "k": null,
+      "scenario": null,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "3600 steps, batch 12, three views per packet, 254735 learned parameters",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-variance-envelope-source-m4-r01/point-model.pt",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-variance-envelope-source-m4-r01/logs/fit-point.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.variance_bound_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-variance-envelope-source-m4-r01/configs/fit-point.json point",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-variance-envelope-source-m4-r01/point-model.pt"
+      ]
+    },
+    {
+      "row_id": "fit-interval",
+      "method": "Equal-center split variance averaged bound for both updates",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/variance_bound_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-variance-envelope-source-m4-r01/configs/fit-interval.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026112991,
+        "split": 2026112991,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No support or scoring for recovery fit.",
+      "k": null,
+      "scenario": null,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "3600 steps, batch 12, three views per packet, 254735 learned parameters",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-variance-envelope-source-m4-r01/interval-model.pt",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-variance-envelope-source-m4-r01/logs/fit-interval.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.variance_bound_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-variance-envelope-source-m4-r01/configs/fit-interval.json interval",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-variance-envelope-source-m4-r01/interval-model.pt"
+      ]
+    },
+    {
+      "row_id": "evaluate-full",
+      "method": "Direct, matched DURA, point and interval coarse/refined/half, plus same-weights interval-to-point half",
+      "purpose": "source_screen",
+      "config_ref": "experiments/pamf_lora_main/variance_bound_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-variance-envelope-source-m4-r01/configs/evaluate-full.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026112992
+      },
+      "seed_notes": "Recognizer has fixed historical split. Panel seed recorded; received channels replay existing package derivation, no new process-level augmentation seed.",
+      "k": null,
+      "scenario": "full clean plus six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "900 frozen source V packages per view",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-variance-envelope-source-m4-r01/full-predictions.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-variance-envelope-source-m4-r01/logs/evaluate-full.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.variance_bound_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-variance-envelope-source-m4-r01/configs/evaluate-full.json full",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-variance-envelope-source-m4-r01/full-predictions.json"
+      ]
+    },
+    {
+      "row_id": "evaluate-residual",
+      "method": "Direct, matched DURA, point and interval coarse/refined/half, plus same-weights interval-to-point half",
+      "purpose": "source_screen",
+      "config_ref": "experiments/pamf_lora_main/variance_bound_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-variance-envelope-source-m4-r01/configs/evaluate-residual.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026112992
+      },
+      "seed_notes": "Recognizer has fixed historical split. Panel seed recorded; received channels replay existing package derivation, no new process-level augmentation seed.",
+      "k": null,
+      "scenario": "residual clean plus six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "900 frozen source V packages per view",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-variance-envelope-source-m4-r01/residual-predictions.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-variance-envelope-source-m4-r01/logs/evaluate-residual.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.variance_bound_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-variance-envelope-source-m4-r01/configs/evaluate-residual.json residual",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-variance-envelope-source-m4-r01/residual-predictions.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Positive/negative bins form disjoint views of across-chirp spectral disagreement in each band.",
+    "Matched central variance and equal model parameters. The integrated arm averages two variances symmetrically around the center.",
+    "Isolated true source trace evaluation only. No trace, scenario parameter or channel simulator component enters training or calibration."
+  ],
+  "registered_at": "2026-11-23T20:11:15+00:00"
+}

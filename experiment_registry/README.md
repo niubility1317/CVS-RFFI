@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 分带噪声方差不确定性与恢复约束](../automation_reports/CV-SincNet/20261124-phase1-lora-variance-envelope-source-m4-r01/report.md)
 - [LoRa 短回波不确定性与联合恢复](../automation_reports/CV-SincNet/20261124-phase1-lora-echo-marginal-source-m4-r01/report.md)
 - [LoRa 源域 clean 前导响应保护与粗恢复保留](../automation_reports/CV-SincNet/20261124-phase1-lora-clean-pilot-protected-source-m4-r01/report.md)
 - [LoRa 跨组验证前导响应与联合恢复](../automation_reports/CV-SincNet/20261124-phase1-lora-crossfit-pilot-response-source-m4-r01/report.md)

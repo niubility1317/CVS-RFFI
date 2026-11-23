@@ -1,0 +1,5 @@
+{"at": "2026-11-23T20:11:15+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-23T20:11:15+00:00", "status": "LOCAL_VERIFIED", "note": "Equal center, shared signal cancellation, per-band bounded edit and carrier coverage verified.", "evidence": "8 focused tests, local compile and independent P0/P1 PASS", "row_id": null}
+{"at": "2026-11-23T20:12:52+00:00", "status": "RUNNING", "note": "Archive, compile, true-checkpoint and one-step smokes passed. Independent CWD, argv, GPU and increasing logs verified.", "evidence": "N607 controller 2172900, point 2173132/GPU3, interval 2173133/GPU6", "row_id": null}
+{"at": "2026-11-23T20:23:17+00:00", "status": "TRAINING_COMPLETE", "note": "Both source-only matched weights frozen after 3600 steps.", "evidence": "point-complete.json and interval-complete.json", "row_id": null}
+{"at": "2026-11-23T20:23:17+00:00", "status": "ANALYZED", "note": "Both source-only seven-view matrices independently scored. 两种训练候选均未达到预登记的双路线源域门槛，本轮无正式目标预测。", "evidence": "full-source-scores.json and residual-source-scores.json", "row_id": null}

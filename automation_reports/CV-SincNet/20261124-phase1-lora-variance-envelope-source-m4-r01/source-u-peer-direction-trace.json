@@ -1,0 +1,752 @@
+{
+  "packets": 150,
+  "source_role": "held_U_s",
+  "trace_is_diagnostic_only": true,
+  "target_reads": 0,
+  "V_reads": 0,
+  "F_reads": 0,
+  "TX_reads": 0,
+  "quantiles": [
+    0.1,
+    0.5,
+    0.9
+  ],
+  "by_route": {
+    "full": {
+      "practical_low_suburban": {
+        "1_to_8": {
+          "coherence": {
+            "signal_in_direction": {
+              "energy_ratio": 0.3010871708393097,
+              "p50": 0.7349975109100342
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.3699761629104614,
+              "p50": 0.6984175443649292
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.25728490948677063,
+              "p50": 0.4945726990699768
+            }
+          },
+          "precision": {
+            "signal_in_direction": {
+              "energy_ratio": 0.2981743812561035,
+              "p50": 0.7388745546340942
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.37745675444602966,
+              "p50": 0.6934139132499695
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.2662280201911926,
+              "p50": 0.49261125922203064
+            }
+          }
+        },
+        "9_to_32": {
+          "coherence": {
+            "signal_in_direction": {
+              "energy_ratio": 0.011424107477068901,
+              "p50": 0.08206348866224289
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.17466464638710022,
+              "p50": 0.2327592968940735
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.1696850210428238,
+              "p50": 0.22623053193092346
+            }
+          },
+          "precision": {
+            "signal_in_direction": {
+              "energy_ratio": 0.011357661336660385,
+              "p50": 0.08143935352563858
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.18059106171131134,
+              "p50": 0.23245106637477875
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.17559801042079926,
+              "p50": 0.2277248501777649
+            }
+          }
+        },
+        "33_to_64": {
+          "coherence": {
+            "signal_in_direction": {
+              "energy_ratio": 0.007041486911475658,
+              "p50": 0.0736394077539444
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.1751292198896408,
+              "p50": 0.22039636969566345
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.17225942015647888,
+              "p50": 0.21517640352249146
+            }
+          },
+          "precision": {
+            "signal_in_direction": {
+              "energy_ratio": 0.007036990020424128,
+              "p50": 0.07343381643295288
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.18081551790237427,
+              "p50": 0.22088834643363953
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.1777936816215515,
+              "p50": 0.21558193862438202
+            }
+          }
+        },
+        "above_64": {
+          "coherence": {
+            "signal_in_direction": {
+              "energy_ratio": 0.006733233574777842,
+              "p50": 0.08283039927482605
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.18113760650157928,
+              "p50": 0.22905035316944122
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.17985430359840393,
+              "p50": 0.22562311589717865
+            }
+          },
+          "precision": {
+            "signal_in_direction": {
+              "energy_ratio": 0.0067360494285821915,
+              "p50": 0.08324635773897171
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.18429222702980042,
+              "p50": 0.22825583815574646
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.1829506903886795,
+              "p50": 0.22407206892967224
+            }
+          }
+        }
+      },
+      "practical_high_urban": {
+        "1_to_8": {
+          "coherence": {
+            "signal_in_direction": {
+              "energy_ratio": 0.2855737805366516,
+              "p50": 2.9878461360931396
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.4043959081172943,
+              "p50": 2.2781057357788086
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.32547426223754883,
+              "p50": 0.7507657408714294
+            }
+          },
+          "precision": {
+            "signal_in_direction": {
+              "energy_ratio": 0.2872180938720703,
+              "p50": 2.9926700592041016
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.41037747263908386,
+              "p50": 2.280852794647217
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.33044880628585815,
+              "p50": 0.7515168190002441
+            }
+          }
+        },
+        "9_to_32": {
+          "coherence": {
+            "signal_in_direction": {
+              "energy_ratio": 0.03579162806272507,
+              "p50": 0.34061935544013977
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.2418767213821411,
+              "p50": 0.40779247879981995
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.23275069892406464,
+              "p50": 0.3530794382095337
+            }
+          },
+          "precision": {
+            "signal_in_direction": {
+              "energy_ratio": 0.035622239112854004,
+              "p50": 0.33972489833831787
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.24753236770629883,
+              "p50": 0.4082428514957428
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.23823992908000946,
+              "p50": 0.35262638330459595
+            }
+          }
+        },
+        "33_to_64": {
+          "coherence": {
+            "signal_in_direction": {
+              "energy_ratio": 0.014871271327137947,
+              "p50": 0.31193414330482483
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.21530625224113464,
+              "p50": 0.3944193422794342
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.20894643664360046,
+              "p50": 0.3415428698062897
+            }
+          },
+          "precision": {
+            "signal_in_direction": {
+              "energy_ratio": 0.01487805601209402,
+              "p50": 0.31169837713241577
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.22084330022335052,
+              "p50": 0.3950239419937134
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.2143774777650833,
+              "p50": 0.34119999408721924
+            }
+          }
+        },
+        "above_64": {
+          "coherence": {
+            "signal_in_direction": {
+              "energy_ratio": 0.015613071620464325,
+              "p50": 0.3410957157611847
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.19545048475265503,
+              "p50": 0.40737947821617126
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.19059120118618011,
+              "p50": 0.3548259735107422
+            }
+          },
+          "precision": {
+            "signal_in_direction": {
+              "energy_ratio": 0.015615317039191723,
+              "p50": 0.33965638279914856
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.19839029014110565,
+              "p50": 0.40673813223838806
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.19350463151931763,
+              "p50": 0.3533110022544861
+            }
+          }
+        }
+      },
+      "practical_low_urban": {
+        "1_to_8": {
+          "coherence": {
+            "signal_in_direction": {
+              "energy_ratio": 0.19779059290885925,
+              "p50": 0.3428020477294922
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.30658257007598877,
+              "p50": 0.41277676820755005
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.27153539657592773,
+              "p50": 0.3528647720813751
+            }
+          },
+          "precision": {
+            "signal_in_direction": {
+              "energy_ratio": 0.1977773904800415,
+              "p50": 0.3411043882369995
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.30855631828308105,
+              "p50": 0.417581707239151
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.2728269100189209,
+              "p50": 0.352901428937912
+            }
+          }
+        },
+        "9_to_32": {
+          "coherence": {
+            "signal_in_direction": {
+              "energy_ratio": 0.005081843119114637,
+              "p50": 0.014284401200711727
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.17363323271274567,
+              "p50": 0.19279198348522186
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.1712716519832611,
+              "p50": 0.19127888977527618
+            }
+          },
+          "precision": {
+            "signal_in_direction": {
+              "energy_ratio": 0.0050820824690163136,
+              "p50": 0.013996696099638939
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.17650088667869568,
+              "p50": 0.19321563839912415
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.1740763783454895,
+              "p50": 0.19148960709571838
+            }
+          }
+        },
+        "33_to_64": {
+          "coherence": {
+            "signal_in_direction": {
+              "energy_ratio": 0.0017102702986449003,
+              "p50": 0.004296597559005022
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.1697777509689331,
+              "p50": 0.18447457253932953
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.16782331466674805,
+              "p50": 0.18271736800670624
+            }
+          },
+          "precision": {
+            "signal_in_direction": {
+              "energy_ratio": 0.0017125557642430067,
+              "p50": 0.004308423958718777
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.1728111356496811,
+              "p50": 0.18745380640029907
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.1708374172449112,
+              "p50": 0.18479780852794647
+            }
+          }
+        },
+        "above_64": {
+          "coherence": {
+            "signal_in_direction": {
+              "energy_ratio": 0.0014290014514699578,
+              "p50": 0.0037428035866469145
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.16966921091079712,
+              "p50": 0.1811610907316208
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.16889846324920654,
+              "p50": 0.1807161420583725
+            }
+          },
+          "precision": {
+            "signal_in_direction": {
+              "energy_ratio": 0.0014311658451333642,
+              "p50": 0.003707451280206442
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.17131029069423676,
+              "p50": 0.1823657602071762
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.170525923371315,
+              "p50": 0.18107467889785767
+            }
+          }
+        }
+      }
+    },
+    "residual": {
+      "practical_low_suburban": {
+        "1_to_8": {
+          "coherence": {
+            "signal_in_direction": {
+              "energy_ratio": 0.14377377927303314,
+              "p50": 0.2814788222312927
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.16860739886760712,
+              "p50": 0.4376029968261719
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.14859923720359802,
+              "p50": 0.4048510491847992
+            }
+          },
+          "precision": {
+            "signal_in_direction": {
+              "energy_ratio": 0.13756592571735382,
+              "p50": 0.2486432045698166
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.1507098227739334,
+              "p50": 0.36246106028556824
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.12972132861614227,
+              "p50": 0.3265177607536316
+            }
+          }
+        },
+        "9_to_32": {
+          "coherence": {
+            "signal_in_direction": {
+              "energy_ratio": 0.006847121752798557,
+              "p50": 0.019280439242720604
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.05445215478539467,
+              "p50": 0.2825370728969574
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.053495414555072784,
+              "p50": 0.2778192460536957
+            }
+          },
+          "precision": {
+            "signal_in_direction": {
+              "energy_ratio": 0.006915973499417305,
+              "p50": 0.018546534702181816
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.03190750628709793,
+              "p50": 0.19269202649593353
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.03134308382868767,
+              "p50": 0.18902014195919037
+            }
+          }
+        },
+        "33_to_64": {
+          "coherence": {
+            "signal_in_direction": {
+              "energy_ratio": 0.009227358736097813,
+              "p50": 0.014718601480126381
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.058441728353500366,
+              "p50": 0.2889325022697449
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.05737682059407234,
+              "p50": 0.28546297550201416
+            }
+          },
+          "precision": {
+            "signal_in_direction": {
+              "energy_ratio": 0.0094206053763628,
+              "p50": 0.01531805470585823
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.035857781767845154,
+              "p50": 0.19718226790428162
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.03504584729671478,
+              "p50": 0.19553130865097046
+            }
+          }
+        },
+        "above_64": {
+          "coherence": {
+            "signal_in_direction": {
+              "energy_ratio": 0.003649868071079254,
+              "p50": 0.015109183266758919
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.051546063274145126,
+              "p50": 0.288302481174469
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.05120762437582016,
+              "p50": 0.2844351530075073
+            }
+          },
+          "precision": {
+            "signal_in_direction": {
+              "energy_ratio": 0.0038295520935207605,
+              "p50": 0.01575448550283909
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.028988901525735855,
+              "p50": 0.19650152325630188
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.028754863888025284,
+              "p50": 0.19531595706939697
+            }
+          }
+        }
+      },
+      "practical_high_urban": {
+        "1_to_8": {
+          "coherence": {
+            "signal_in_direction": {
+              "energy_ratio": 0.2784954011440277,
+              "p50": 1.1635745763778687
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.263046532869339,
+              "p50": 0.8950009942054749
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.2023557722568512,
+              "p50": 0.6584583520889282
+            }
+          },
+          "precision": {
+            "signal_in_direction": {
+              "energy_ratio": 0.26678505539894104,
+              "p50": 1.0598701238632202
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.25773873925209045,
+              "p50": 0.8657910227775574
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.19176369905471802,
+              "p50": 0.5534474849700928
+            }
+          }
+        },
+        "9_to_32": {
+          "coherence": {
+            "signal_in_direction": {
+              "energy_ratio": 0.013214299455285072,
+              "p50": 0.10222181677818298
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.037169408053159714,
+              "p50": 0.35976269841194153
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.03545672819018364,
+              "p50": 0.329351544380188
+            }
+          },
+          "precision": {
+            "signal_in_direction": {
+              "energy_ratio": 0.013114026747643948,
+              "p50": 0.09724550694227219
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.019997455179691315,
+              "p50": 0.26084104180336
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.018540075048804283,
+              "p50": 0.2540558874607086
+            }
+          }
+        },
+        "33_to_64": {
+          "coherence": {
+            "signal_in_direction": {
+              "energy_ratio": 0.008134190924465656,
+              "p50": 0.08231396228075027
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.032425377517938614,
+              "p50": 0.33811405301094055
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.031049819663167,
+              "p50": 0.32174447178840637
+            }
+          },
+          "precision": {
+            "signal_in_direction": {
+              "energy_ratio": 0.008291537873446941,
+              "p50": 0.0831998661160469
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.015532979741692543,
+              "p50": 0.2507677972316742
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.014376906678080559,
+              "p50": 0.2437315583229065
+            }
+          }
+        },
+        "above_64": {
+          "coherence": {
+            "signal_in_direction": {
+              "energy_ratio": 0.007610933389514685,
+              "p50": 0.08284805715084076
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.032062727957963943,
+              "p50": 0.32942086458206177
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.030882397666573524,
+              "p50": 0.3091941475868225
+            }
+          },
+          "precision": {
+            "signal_in_direction": {
+              "energy_ratio": 0.007792356424033642,
+              "p50": 0.08437416702508926
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.014858905225992203,
+              "p50": 0.24999456107616425
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.013844707980751991,
+              "p50": 0.24399276077747345
+            }
+          }
+        }
+      },
+      "practical_low_urban": {
+        "1_to_8": {
+          "coherence": {
+            "signal_in_direction": {
+              "energy_ratio": 0.1478194296360016,
+              "p50": 0.21107526123523712
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.19028979539871216,
+              "p50": 0.32650548219680786
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.1654825061559677,
+              "p50": 0.2952210307121277
+            }
+          },
+          "precision": {
+            "signal_in_direction": {
+              "energy_ratio": 0.14361603558063507,
+              "p50": 0.19573575258255005
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.17229636013507843,
+              "p50": 0.2653501629829407
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.14756299555301666,
+              "p50": 0.24051448702812195
+            }
+          }
+        },
+        "9_to_32": {
+          "coherence": {
+            "signal_in_direction": {
+              "energy_ratio": 0.004213329870253801,
+              "p50": 0.005960213020443916
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.06813179701566696,
+              "p50": 0.11073406785726547
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.06726190447807312,
+              "p50": 0.11059120297431946
+            }
+          },
+          "precision": {
+            "signal_in_direction": {
+              "energy_ratio": 0.004373572766780853,
+              "p50": 0.006091626361012459
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.04553033784031868,
+              "p50": 0.06352469325065613
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.0449230931699276,
+              "p50": 0.062455467879772186
+            }
+          }
+        },
+        "33_to_64": {
+          "coherence": {
+            "signal_in_direction": {
+              "energy_ratio": 0.0010502696968615055,
+              "p50": 0.0015311393653973937
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.06556094437837601,
+              "p50": 0.11170094460248947
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.06485804170370102,
+              "p50": 0.11034028977155685
+            }
+          },
+          "precision": {
+            "signal_in_direction": {
+              "energy_ratio": 0.0012122621992602944,
+              "p50": 0.0016503407387062907
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.043119460344314575,
+              "p50": 0.05695657432079315
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.04261000454425812,
+              "p50": 0.05685075372457504
+            }
+          }
+        },
+        "above_64": {
+          "coherence": {
+            "signal_in_direction": {
+              "energy_ratio": 0.0012020289432257414,
+              "p50": 0.0009071156964637339
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.06516760587692261,
+              "p50": 0.11355942487716675
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.06488127261400223,
+              "p50": 0.11354921013116837
+            }
+          },
+          "precision": {
+            "signal_in_direction": {
+              "energy_ratio": 0.001354557229205966,
+              "p50": 0.0010139677906408906
+            },
+            "observed_fit_residual": {
+              "energy_ratio": 0.042341288179159164,
+              "p50": 0.06044936552643776
+            },
+            "oracle_dose_residual": {
+              "energy_ratio": 0.04213058575987816,
+              "p50": 0.06024395674467087
+            }
+          }
+        }
+      }
+    }
+  }
+}
