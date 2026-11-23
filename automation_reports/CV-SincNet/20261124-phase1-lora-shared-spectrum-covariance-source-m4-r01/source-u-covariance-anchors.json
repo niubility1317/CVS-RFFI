@@ -1,0 +1,359 @@
+{
+  "packets": 150,
+  "source_role": "held_U_s",
+  "held_receivers": [
+    "b200_1",
+    "b200_mini_1",
+    "b210_1",
+    "pluto_1",
+    "rtl_1"
+  ],
+  "targets_read": 0,
+  "F_reads": 0,
+  "TX_reads": 0,
+  "V_reads": 0,
+  "provided_truth_to_estimate": false,
+  "reference": "received frame with exact added noise removed offline",
+  "by_route": {
+    "full": {
+      "practical_low_suburban": {
+        "stages": {
+          "all": {
+            "n": 150,
+            "data": {
+              "near_anchor": {
+                "raw_relative_error": 0.2897927715728046,
+                "estimate_relative_error": 0.3914818598549742
+              },
+              "far_anchor": {
+                "raw_relative_error": 0.2897927715728046,
+                "estimate_relative_error": 0.41650921510906097
+              },
+              "equal_mixture": {
+                "raw_relative_error": 0.2897927715728046,
+                "estimate_relative_error": 0.3507953562645558
+              }
+            }
+          },
+          "agree": {
+            "n": 142,
+            "data": {
+              "near_anchor": {
+                "raw_relative_error": 0.23706771368878973,
+                "estimate_relative_error": 0.36843580536218407
+              },
+              "far_anchor": {
+                "raw_relative_error": 0.23706771368878973,
+                "estimate_relative_error": 0.3932750792114895
+              },
+              "equal_mixture": {
+                "raw_relative_error": 0.23706771368878973,
+                "estimate_relative_error": 0.33313409486369316
+              }
+            }
+          },
+          "disagree": {
+            "n": 8,
+            "data": {
+              "near_anchor": {
+                "raw_relative_error": 2.254648263906078,
+                "estimate_relative_error": 1.2503176499717508
+              },
+              "far_anchor": {
+                "raw_relative_error": 2.254648263906078,
+                "estimate_relative_error": 1.2823540592889562
+              },
+              "equal_mixture": {
+                "raw_relative_error": 2.254648263906078,
+                "estimate_relative_error": 1.008961091072399
+              }
+            }
+          }
+        },
+        "cosine_median": 0.967112873168478
+      },
+      "practical_high_urban": {
+        "stages": {
+          "all": {
+            "n": 150,
+            "data": {
+              "near_anchor": {
+                "raw_relative_error": 0.18256061018888298,
+                "estimate_relative_error": 0.2531195792739295
+              },
+              "far_anchor": {
+                "raw_relative_error": 0.18256061018888298,
+                "estimate_relative_error": 0.2917606351728765
+              },
+              "equal_mixture": {
+                "raw_relative_error": 0.18256061018888298,
+                "estimate_relative_error": 0.23575484801816782
+              }
+            }
+          },
+          "agree": {
+            "n": 146,
+            "data": {
+              "near_anchor": {
+                "raw_relative_error": 0.07191110173569751,
+                "estimate_relative_error": 0.24850611532897413
+              },
+              "far_anchor": {
+                "raw_relative_error": 0.07191110173569751,
+                "estimate_relative_error": 0.2848752712260233
+              },
+              "equal_mixture": {
+                "raw_relative_error": 0.07191110173569751,
+                "estimate_relative_error": 0.23116061125029666
+              }
+            }
+          },
+          "disagree": {
+            "n": 4,
+            "data": {
+              "near_anchor": {
+                "raw_relative_error": 20.896672725611893,
+                "estimate_relative_error": 1.1167818831756176
+              },
+              "far_anchor": {
+                "raw_relative_error": 20.896672725611893,
+                "estimate_relative_error": 1.5807333811381528
+              },
+              "equal_mixture": {
+                "raw_relative_error": 20.896672725611893,
+                "estimate_relative_error": 1.0958177332929397
+              }
+            }
+          }
+        },
+        "cosine_median": 0.9870409260974929
+      },
+      "practical_low_urban": {
+        "stages": {
+          "all": {
+            "n": 150,
+            "data": {
+              "near_anchor": {
+                "raw_relative_error": 1.2933742967102435,
+                "estimate_relative_error": 0.6469571204214054
+              },
+              "far_anchor": {
+                "raw_relative_error": 1.2933742967102435,
+                "estimate_relative_error": 0.7707525187102572
+              },
+              "equal_mixture": {
+                "raw_relative_error": 1.2933742967102435,
+                "estimate_relative_error": 0.6249527264890751
+              }
+            }
+          },
+          "agree": {
+            "n": 122,
+            "data": {
+              "near_anchor": {
+                "raw_relative_error": 0.9694418837971163,
+                "estimate_relative_error": 0.5860608794576152
+              },
+              "far_anchor": {
+                "raw_relative_error": 0.9694418837971163,
+                "estimate_relative_error": 0.6855246620851282
+              },
+              "equal_mixture": {
+                "raw_relative_error": 0.9694418837971163,
+                "estimate_relative_error": 0.5720167879883225
+              }
+            }
+          },
+          "disagree": {
+            "n": 28,
+            "data": {
+              "near_anchor": {
+                "raw_relative_error": 2.8961834089009892,
+                "estimate_relative_error": 0.9482701290121891
+              },
+              "far_anchor": {
+                "raw_relative_error": 2.8961834089009892,
+                "estimate_relative_error": 1.19245772561673
+              },
+              "equal_mixture": {
+                "raw_relative_error": 2.8961834089009892,
+                "estimate_relative_error": 0.8868783665581023
+              }
+            }
+          }
+        },
+        "cosine_median": 0.8585065087332651
+      }
+    },
+    "residual": {
+      "practical_low_suburban": {
+        "stages": {
+          "all": {
+            "n": 150,
+            "data": {
+              "near_anchor": {
+                "raw_relative_error": 0.7343938287719476,
+                "estimate_relative_error": 0.9254138658167592
+              },
+              "far_anchor": {
+                "raw_relative_error": 0.7343938287719476,
+                "estimate_relative_error": 1.1762962272872157
+              },
+              "equal_mixture": {
+                "raw_relative_error": 0.7343938287719476,
+                "estimate_relative_error": 0.5756423459741539
+              }
+            }
+          },
+          "agree": {
+            "n": 116,
+            "data": {
+              "near_anchor": {
+                "raw_relative_error": 0.4802490292626731,
+                "estimate_relative_error": 0.5624321093984315
+              },
+              "far_anchor": {
+                "raw_relative_error": 0.4802490292626731,
+                "estimate_relative_error": 0.7885861584489173
+              },
+              "equal_mixture": {
+                "raw_relative_error": 0.4802490292626731,
+                "estimate_relative_error": 0.46083549614117036
+              }
+            }
+          },
+          "disagree": {
+            "n": 34,
+            "data": {
+              "near_anchor": {
+                "raw_relative_error": 1.983759710119745,
+                "estimate_relative_error": 2.709817964961847
+              },
+              "far_anchor": {
+                "raw_relative_error": 1.983759710119745,
+                "estimate_relative_error": 3.0822637418571883
+              },
+              "equal_mixture": {
+                "raw_relative_error": 1.983759710119745,
+                "estimate_relative_error": 1.1400283235873419
+              }
+            }
+          }
+        },
+        "cosine_median": 0.8390122612793658
+      },
+      "practical_high_urban": {
+        "stages": {
+          "all": {
+            "n": 150,
+            "data": {
+              "near_anchor": {
+                "raw_relative_error": 0.32354545030060833,
+                "estimate_relative_error": 0.7069394849075361
+              },
+              "far_anchor": {
+                "raw_relative_error": 0.32354545030060833,
+                "estimate_relative_error": 1.788155598497108
+              },
+              "equal_mixture": {
+                "raw_relative_error": 0.32354545030060833,
+                "estimate_relative_error": 0.6932898855534995
+              }
+            }
+          },
+          "agree": {
+            "n": 130,
+            "data": {
+              "near_anchor": {
+                "raw_relative_error": 0.21081549341857792,
+                "estimate_relative_error": 0.49818516784626227
+              },
+              "far_anchor": {
+                "raw_relative_error": 0.21081549341857792,
+                "estimate_relative_error": 0.9779013597408369
+              },
+              "equal_mixture": {
+                "raw_relative_error": 0.21081549341857792,
+                "estimate_relative_error": 0.5304026879295961
+              }
+            }
+          },
+          "disagree": {
+            "n": 20,
+            "data": {
+              "near_anchor": {
+                "raw_relative_error": 1.103966986339885,
+                "estimate_relative_error": 2.1521308899417644
+              },
+              "far_anchor": {
+                "raw_relative_error": 1.103966986339885,
+                "estimate_relative_error": 7.397488513032277
+              },
+              "equal_mixture": {
+                "raw_relative_error": 1.103966986339885,
+                "estimate_relative_error": 1.8209464596069174
+              }
+            }
+          }
+        },
+        "cosine_median": 0.9419006359960935
+      },
+      "practical_low_urban": {
+        "stages": {
+          "all": {
+            "n": 150,
+            "data": {
+              "near_anchor": {
+                "raw_relative_error": 3.4826731752480997,
+                "estimate_relative_error": 1.3630819075094354
+              },
+              "far_anchor": {
+                "raw_relative_error": 3.4826731752480997,
+                "estimate_relative_error": 1.5603561687081338
+              },
+              "equal_mixture": {
+                "raw_relative_error": 3.4826731752480997,
+                "estimate_relative_error": 0.9928020993038998
+              }
+            }
+          },
+          "agree": {
+            "n": 80,
+            "data": {
+              "near_anchor": {
+                "raw_relative_error": 3.2087848288072545,
+                "estimate_relative_error": 1.1930851479910851
+              },
+              "far_anchor": {
+                "raw_relative_error": 3.2087848288072545,
+                "estimate_relative_error": 1.3033392808300763
+              },
+              "equal_mixture": {
+                "raw_relative_error": 3.2087848288072545,
+                "estimate_relative_error": 0.9882770797781256
+              }
+            }
+          },
+          "disagree": {
+            "n": 70,
+            "data": {
+              "near_anchor": {
+                "raw_relative_error": 3.8861122635259324,
+                "estimate_relative_error": 1.6134880987968854
+              },
+              "far_anchor": {
+                "raw_relative_error": 3.8861122635259324,
+                "estimate_relative_error": 1.9389435027987623
+              },
+              "equal_mixture": {
+                "raw_relative_error": 3.8861122635259324,
+                "estimate_relative_error": 0.9994674787391366
+              }
+            }
+          }
+        },
+        "cosine_median": 0.32428714776372664
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "pid": 2217757,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-shared-spectrum-covariance-source-m4-r01-release",
+  "code_commit": "47edb35687032789e993b760092718ea746527bd",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "status": "SUBMITTED_NOT_YET_VERIFIED",
+  "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-shared-spectrum-covariance-source-m4-r01",
+  "state": "RUNNING_VERIFIED",
+  "workers": [
+    {
+      "arm": "diagonal",
+      "pid": 2218643,
+      "gpu": 3,
+      "log_step": 100
+    },
+    {
+      "arm": "rank",
+      "pid": 2218644,
+      "gpu": 6,
+      "log_step": 100
+    }
+  ],
+  "checkpoint_smoke_pid": 2217774,
+  "checkpoint_smoke": "PASS"
+}
