@@ -41,7 +41,7 @@ ISOLATION = dict(F_reads=0, TX_reads=0, V_reads=0, target_reads=0)
 
 
 @torch.no_grad()
-def build_arrays(rt, route, model, count, hold, *, baseline=None):
+def build_arrays(rt, route, model, count, hold, *, baseline=None, with_frames=False):
     parent = Path(rt['parent_root'])
     source, cache, contract = handles(dict(rt, parent_root=str(parent.parent / DATA_RUN)))
     raw, rx, ids, slots = source_role(source, contract, 'U_s')
@@ -88,7 +88,8 @@ def build_arrays(rt, route, model, count, hold, *, baseline=None):
                 estimates, active = zip(*(baseline(group) for group in wave.flatten(0, 1).split(40)), strict=True)
                 supported = torch.cat(active).unflatten(0, (len(cohort), 2))
                 base = complex_iq(torch.cat(estimates)).unflatten(0, (len(cohort), 2)) / basis
-                parts.append((received, q, foreground, base, supported, clean_frame, clean_q))
+                frozen = (received, q, foreground, base, supported, clean_frame, clean_q)
+                parts.append((*frozen, to_first) if with_frames else frozen)
             print('RETENTION_NOISE_REPLAYS', route, len(cohort), correlation, flush=True)
     return (*parts, contract)
 

@@ -172,10 +172,10 @@ def load_models(root, route, contract, recipe, device):
 
 @torch.no_grad()
 def score(rt, route, *, recipe=DEFAULT, panel=result_panel, modes=MODES, render=readouts,
-          checkpoint_run=None):
+          checkpoint_run=None, binding=None):
     device = 'cuda:0'
     root = Path(rt['run_root'])
-    source, cache, contract, baseline, tracker = source_control(rt, route, device)
+    source, cache, contract, baseline, tracker = binding or source_control(rt, route, device)
     parent = root if checkpoint_run is None else root.parent/checkpoint_run
     if checkpoint_run is not None and read(parent/'state.json')['status'] != 'SOURCE_SCORED':
         raise ValueError('Expected complete source-selected vector checkpoints')
