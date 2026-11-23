@@ -1,0 +1,44 @@
+{
+  "masks": [
+    "old",
+    "split_near_total",
+    "split_full_total"
+  ],
+  "by_view": {
+    "clean": [
+      0,
+      1,
+      1
+    ],
+    "practical_high": [
+      21,
+      57,
+      64
+    ],
+    "practical_mid": [
+      159,
+      321,
+      375
+    ],
+    "practical_low_suburban": [
+      320,
+      632,
+      677
+    ],
+    "practical_high_urban": [
+      92,
+      115,
+      123
+    ],
+    "practical_mid_urban": [
+      396,
+      505,
+      540
+    ],
+    "practical_low_urban": [
+      641,
+      752,
+      783
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "scope": "split_near single readout, before frozen classifier",
+  "timing": {
+    "clean": {
+      "median_ms": 6.343415472656488,
+      "active": 0
+    },
+    "generic": {
+      "median_ms": 46.03835439775139,
+      "active": 1
+    }
+  },
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "n_measurements": 24,
+  "parameters": 254735
+}

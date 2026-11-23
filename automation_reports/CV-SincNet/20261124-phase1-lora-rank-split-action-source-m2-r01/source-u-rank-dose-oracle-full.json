@@ -1,0 +1,1208 @@
+{
+  "packets": 150,
+  "source_role": "held_U_s",
+  "target_reads": 0,
+  "F_reads": 0,
+  "V_reads": 0,
+  "TX_reads": 0,
+  "per_band_oracle_used_for_fit": false,
+  "exact_noise_only_diagnostic": true,
+  "by_route": {
+    "full": {
+      "practical_high": {
+        "common": {
+          "1_to_8": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.7805101267591161,
+              "nonpositive": 4,
+              "directional_alignment_cosine": 0.6511940292654523,
+              "half_recovered_noise_energy": 0.40348813887518514,
+              "optimal_recovered_noise_energy": 0.4278806598026316
+            },
+            "bypass": {
+              "packets": 145,
+              "mean_dose": 0.7763888949031309,
+              "nonpositive": 4,
+              "directional_alignment_cosine": 0.41249431853935237,
+              "half_recovered_noise_energy": 0.12951063559537465,
+              "optimal_recovered_noise_energy": 0.1959143032454922
+            },
+            "old_active": {
+              "packets": 5,
+              "mean_dose": 0.9000258505826846,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.6597494110224856,
+              "half_recovered_noise_energy": 0.4146940987461224,
+              "optimal_recovered_noise_energy": 0.43736832084001276
+            }
+          },
+          "9_to_32": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9603199732677892,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9704011812347912,
+              "half_recovered_noise_energy": 0.7094415963755898,
+              "optimal_recovered_noise_energy": 0.9422782769708372
+            },
+            "bypass": {
+              "packets": 145,
+              "mean_dose": 0.9590752056770792,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.7143059945932426,
+              "half_recovered_noise_energy": 0.2972667212128893,
+              "optimal_recovered_noise_energy": 0.47387155559186456
+            },
+            "old_active": {
+              "packets": 5,
+              "mean_dose": 0.9964182333983835,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9832559881798091,
+              "half_recovered_noise_energy": 0.7311411835787552,
+              "optimal_recovered_noise_energy": 0.9669382771542536
+            }
+          },
+          "33_to_64": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9195302361912667,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9925202785249239,
+              "half_recovered_noise_energy": 0.7408958384540864,
+              "optimal_recovered_noise_energy": 0.9861674667701008
+            },
+            "bypass": {
+              "packets": 145,
+              "mean_dose": 0.9168047044540738,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.8360501967347327,
+              "half_recovered_noise_energy": 0.5240890128168576,
+              "optimal_recovered_noise_energy": 0.7249814245318855
+            },
+            "old_active": {
+              "packets": 5,
+              "mean_dose": 0.9985706565698553,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9986667905339871,
+              "half_recovered_noise_energy": 0.750169419091566,
+              "optimal_recovered_noise_energy": 0.9973393005763529
+            }
+          },
+          "above_64": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9187830379497105,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9907241541135844,
+              "half_recovered_noise_energy": 0.735379676939513,
+              "optimal_recovered_noise_energy": 0.9830010209339838
+            },
+            "bypass": {
+              "packets": 145,
+              "mean_dose": 0.9159824530514249,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.8171457752829253,
+              "half_recovered_noise_energy": 0.5065571673545987,
+              "optimal_recovered_noise_energy": 0.6982034236303888
+            },
+            "old_active": {
+              "packets": 5,
+              "mean_dose": 1,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9986640227117559,
+              "half_recovered_noise_energy": 0.7468882984341921,
+              "optimal_recovered_noise_energy": 0.9973249078448772
+            }
+          },
+          "all_noncarrier": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9275121130070875,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9622575815986887,
+              "half_recovered_noise_energy": 0.7082066288109873,
+              "optimal_recovered_noise_energy": 0.9271111587685591
+            },
+            "bypass": {
+              "packets": 145,
+              "mean_dose": 0.925243978987245,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.7788482398092785,
+              "half_recovered_noise_energy": 0.4475368063113295,
+              "optimal_recovered_noise_energy": 0.6280307241139549
+            },
+            "old_active": {
+              "packets": 5,
+              "mean_dose": 0.99328799958252,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9701920101873939,
+              "half_recovered_noise_energy": 0.7206551406688294,
+              "optimal_recovered_noise_energy": 0.9413940024884194
+            }
+          }
+        },
+        "private": {
+          "1_to_8": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.7095623883816639,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9587804127583395,
+              "half_recovered_noise_energy": 0.6992208854852161,
+              "optimal_recovered_noise_energy": 0.9247968122676788
+            },
+            "bypass": {
+              "packets": 145,
+              "mean_dose": 0.7015923111561464,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.6848540785438197,
+              "half_recovered_noise_energy": 0.41868297485747435,
+              "optimal_recovered_noise_energy": 0.4969661770614672
+            },
+            "old_active": {
+              "packets": 5,
+              "mean_dose": 0.9406946279216714,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.974102264383404,
+              "half_recovered_noise_energy": 0.715848939822288,
+              "optimal_recovered_noise_energy": 0.950155206908012
+            }
+          },
+          "9_to_32": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.8709906473704374,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9922818373935929,
+              "half_recovered_noise_energy": 0.7417263998876287,
+              "optimal_recovered_noise_energy": 0.9889080395481368
+            },
+            "bypass": {
+              "packets": 145,
+              "mean_dose": 0.8665756727055494,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.8282097782829693,
+              "half_recovered_noise_energy": 0.5715068457262737,
+              "optimal_recovered_noise_energy": 0.7640252165887276
+            },
+            "old_active": {
+              "packets": 5,
+              "mean_dose": 0.999024912652188,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9994818462205937,
+              "half_recovered_noise_energy": 0.7493384784418773,
+              "optimal_recovered_noise_energy": 0.998964614553882
+            }
+          },
+          "33_to_64": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.8596366404019047,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9925764985749995,
+              "half_recovered_noise_energy": 0.7426058586460021,
+              "optimal_recovered_noise_energy": 0.9894948122663363
+            },
+            "bypass": {
+              "packets": 145,
+              "mean_dose": 0.8548099890322957,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.8407943899598042,
+              "half_recovered_noise_energy": 0.5949252447903758,
+              "optimal_recovered_noise_energy": 0.7750817192797447
+            },
+            "old_active": {
+              "packets": 5,
+              "mean_dose": 0.9996095301205618,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9997427847603765,
+              "half_recovered_noise_energy": 0.7494872746098136,
+              "optimal_recovered_noise_energy": 0.9994857355324768
+            }
+          },
+          "above_64": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.8490500360111473,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9915558960498211,
+              "half_recovered_noise_energy": 0.7408216548676876,
+              "optimal_recovered_noise_energy": 0.9880895888830955
+            },
+            "bypass": {
+              "packets": 145,
+              "mean_dose": 0.8438680491843934,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.8334432577207489,
+              "half_recovered_noise_energy": 0.5906431074353437,
+              "optimal_recovered_noise_energy": 0.7621817767099179
+            },
+            "old_active": {
+              "packets": 5,
+              "mean_dose": 0.9993276539870118,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9997498170766975,
+              "half_recovered_noise_energy": 0.7484032525839384,
+              "optimal_recovered_noise_energy": 0.9994942946958683
+            }
+          },
+          "all_noncarrier": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.8511090288297866,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9902390570264519,
+              "half_recovered_noise_energy": 0.7392496348235862,
+              "optimal_recovered_noise_energy": 0.9850404612904229
+            },
+            "bypass": {
+              "packets": 145,
+              "mean_dose": 0.8460655150589121,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.8252110040798006,
+              "half_recovered_noise_energy": 0.5768401162522162,
+              "optimal_recovered_noise_energy": 0.7460067483683934
+            },
+            "old_active": {
+              "packets": 5,
+              "mean_dose": 0.9973709281851446,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9983325751993243,
+              "half_recovered_noise_energy": 0.7471549390890561,
+              "optimal_recovered_noise_energy": 0.9966754580995739
+            }
+          }
+        },
+        "total": {
+          "1_to_8": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.7163911366848097,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.8904090861171641,
+              "half_recovered_noise_energy": 0.6354155592002838,
+              "optimal_recovered_noise_energy": 0.7952688355594751
+            },
+            "bypass": {
+              "packets": 145,
+              "mean_dose": 0.7089815177613201,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.6473902356829834,
+              "half_recovered_noise_energy": 0.37186275088415083,
+              "optimal_recovered_noise_energy": 0.44492966977219534
+            },
+            "old_active": {
+              "packets": 5,
+              "mean_dose": 0.9312700854660049,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9024542146513125,
+              "half_recovered_noise_energy": 0.6499778474047649,
+              "optimal_recovered_noise_energy": 0.8146263978412335
+            }
+          },
+          "9_to_32": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.8808041136172335,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9891734891651064,
+              "half_recovered_noise_energy": 0.7370962140165851,
+              "optimal_recovered_noise_energy": 0.9820668040703237
+            },
+            "bypass": {
+              "packets": 145,
+              "mean_dose": 0.8767123169089788,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.802733134288213,
+              "half_recovered_noise_energy": 0.5266360228896705,
+              "optimal_recovered_noise_energy": 0.7138406747652609
+            },
+            "old_active": {
+              "packets": 5,
+              "mean_dose": 0.9994662181566198,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9971768774072063,
+              "half_recovered_noise_energy": 0.7467455545374193,
+              "optimal_recovered_noise_energy": 0.9943646417012375
+            }
+          },
+          "33_to_64": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.870523052066087,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9925655243724323,
+              "half_recovered_noise_energy": 0.7422947144066531,
+              "optimal_recovered_noise_energy": 0.9887626219692006
+            },
+            "bypass": {
+              "packets": 145,
+              "mean_dose": 0.8660770542725772,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.8381991269148616,
+              "half_recovered_noise_energy": 0.5828774161244439,
+              "optimal_recovered_noise_energy": 0.763749765175919
+            },
+            "old_active": {
+              "packets": 5,
+              "mean_dose": 0.9994569880778753,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9995449743173058,
+              "half_recovered_noise_energy": 0.7496117856068653,
+              "optimal_recovered_noise_energy": 0.9990904540919417
+            }
+          },
+          "above_64": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.8594084775017452,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9914127630419051,
+              "half_recovered_noise_energy": 0.7399174428091577,
+              "optimal_recovered_noise_energy": 0.9870636369449111
+            },
+            "bypass": {
+              "packets": 145,
+              "mean_dose": 0.854575143592937,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.8290577305082788,
+              "half_recovered_noise_energy": 0.5767126910790871,
+              "optimal_recovered_noise_energy": 0.7478301359895025
+            },
+            "old_active": {
+              "packets": 5,
+              "mean_dose": 0.9995751608571808,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9995694685387722,
+              "half_recovered_noise_energy": 0.7481515302948444,
+              "optimal_recovered_noise_energy": 0.9991335647839726
+            }
+          },
+          "all_noncarrier": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.8633061371298608,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9855413727838171,
+              "half_recovered_noise_energy": 0.7340121555461872,
+              "optimal_recovered_noise_energy": 0.9749802607245815
+            },
+            "bypass": {
+              "packets": 145,
+              "mean_dose": 0.8586939527251962,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.8154994766255728,
+              "half_recovered_noise_energy": 0.5553518834665797,
+              "optimal_recovered_noise_energy": 0.7235564425276321
+            },
+            "old_active": {
+              "packets": 5,
+              "mean_dose": 0.9970594848651299,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9935672975969432,
+              "half_recovered_noise_energy": 0.742680737474125,
+              "optimal_recovered_noise_energy": 0.9871793240155188
+            }
+          }
+        }
+      },
+      "practical_low_suburban": {
+        "common": {
+          "1_to_8": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9613403837114927,
+              "nonpositive": 1,
+              "directional_alignment_cosine": 0.9110187164666602,
+              "half_recovered_noise_energy": 0.6319243457608492,
+              "optimal_recovered_noise_energy": 0.8370221405453246
+            },
+            "bypass": {
+              "packets": 97,
+              "mean_dose": 0.9454862519943252,
+              "nonpositive": 1,
+              "directional_alignment_cosine": 0.5082563832554802,
+              "half_recovered_noise_energy": 0.1717496601958717,
+              "optimal_recovered_noise_energy": 0.2771892285560382
+            },
+            "old_active": {
+              "packets": 53,
+              "mean_dose": 0.9903564360995156,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9200640778665653,
+              "half_recovered_noise_energy": 0.6450709400836999,
+              "optimal_recovered_noise_energy": 0.8530158412276367
+            }
+          },
+          "9_to_32": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.990732255622053,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9902270606312316,
+              "half_recovered_noise_energy": 0.7285830285770041,
+              "optimal_recovered_noise_energy": 0.9807158324367242
+            },
+            "bypass": {
+              "packets": 97,
+              "mean_dose": 0.985771478803292,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.8266393232526426,
+              "half_recovered_noise_energy": 0.3994075992664812,
+              "optimal_recovered_noise_energy": 0.6410920536011068
+            },
+            "old_active": {
+              "packets": 53,
+              "mean_dose": 0.9998114131960117,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.994484397689963,
+              "half_recovered_noise_energy": 0.7365084108634956,
+              "optimal_recovered_noise_energy": 0.9888927740951369
+            }
+          },
+          "33_to_64": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9813409547264335,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9968360475402741,
+              "half_recovered_noise_energy": 0.7453285169439302,
+              "optimal_recovered_noise_energy": 0.9938770965980813
+            },
+            "bypass": {
+              "packets": 97,
+              "mean_dose": 0.9719720820784854,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.925336416059113,
+              "half_recovered_noise_energy": 0.6170673398502233,
+              "optimal_recovered_noise_energy": 0.8612945435796193
+            },
+            "old_active": {
+              "packets": 53,
+              "mean_dose": 0.998487759383999,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9985468681638465,
+              "half_recovered_noise_energy": 0.7484496647350543,
+              "optimal_recovered_noise_energy": 0.9971034021090065
+            }
+          },
+          "above_64": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9874540065284206,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9970789486615903,
+              "half_recovered_noise_energy": 0.7451198470756064,
+              "optimal_recovered_noise_energy": 0.994330655602196
+            },
+            "bypass": {
+              "packets": 97,
+              "mean_dose": 0.9814150832616253,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9225151426632142,
+              "half_recovered_noise_energy": 0.608206742660058,
+              "optimal_recovered_noise_energy": 0.8539928573100805
+            },
+            "old_active": {
+              "packets": 53,
+              "mean_dose": 0.9985063755261405,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9988188468468016,
+              "half_recovered_noise_energy": 0.7483528135329897,
+              "optimal_recovered_noise_energy": 0.9976444902896656
+            }
+          },
+          "all_noncarrier": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9863274148961773,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9910211660157132,
+              "half_recovered_noise_energy": 0.735568874653808,
+              "optimal_recovered_noise_energy": 0.9823146026350059
+            },
+            "bypass": {
+              "packets": 97,
+              "mean_dose": 0.9791222270451613,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.8792573319523396,
+              "half_recovered_noise_energy": 0.5403360284969758,
+              "optimal_recovered_noise_energy": 0.7732004784284444
+            },
+            "old_active": {
+              "packets": 53,
+              "mean_dose": 0.9995142681329425,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9936530437902088,
+              "half_recovered_noise_energy": 0.7402859013143822,
+              "optimal_recovered_noise_energy": 0.9873670152715178
+            }
+          }
+        },
+        "private": {
+          "1_to_8": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9332486157874053,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9558368046016087,
+              "half_recovered_noise_energy": 0.6883970217385676,
+              "optimal_recovered_noise_energy": 0.9153354867441855
+            },
+            "bypass": {
+              "packets": 97,
+              "mean_dose": 0.9154415623604177,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.7977164344558837,
+              "half_recovered_noise_energy": 0.5068723548972169,
+              "optimal_recovered_noise_energy": 0.6628134835336618
+            },
+            "old_active": {
+              "packets": 53,
+              "mean_dose": 0.9658388833801945,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9594084977612017,
+              "half_recovered_noise_energy": 0.6927917132862612,
+              "optimal_recovered_noise_energy": 0.9214490157340821
+            }
+          },
+          "9_to_32": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9566167279523825,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9965167118676557,
+              "half_recovered_noise_energy": 0.7467084167487207,
+              "optimal_recovered_noise_energy": 0.9939962847719657
+            },
+            "bypass": {
+              "packets": 97,
+              "mean_dose": 0.9427074519872808,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9125515793020754,
+              "half_recovered_noise_energy": 0.6496111630837317,
+              "optimal_recovered_noise_energy": 0.8682026874371673
+            },
+            "old_active": {
+              "packets": 53,
+              "mean_dose": 0.98207332736021,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9984487317945363,
+              "half_recovered_noise_energy": 0.7490021873181028,
+              "optimal_recovered_noise_energy": 0.9969679615238006
+            }
+          },
+          "33_to_64": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9586191389228723,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9973995237234888,
+              "half_recovered_noise_energy": 0.7474142956390464,
+              "optimal_recovered_noise_energy": 0.9953057981691669
+            },
+            "bypass": {
+              "packets": 97,
+              "mean_dose": 0.944524250302052,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9308025104726396,
+              "half_recovered_noise_energy": 0.6741498926360452,
+              "optimal_recovered_noise_energy": 0.8816667628079675
+            },
+            "old_active": {
+              "packets": 53,
+              "mean_dose": 0.9844154445119208,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9990546508612923,
+              "half_recovered_noise_energy": 0.7492608097223737,
+              "optimal_recovered_noise_energy": 0.998169891379639
+            }
+          },
+          "above_64": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9600024942073151,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9974279043811989,
+              "half_recovered_noise_energy": 0.747242087133686,
+              "optimal_recovered_noise_energy": 0.9953348639374459
+            },
+            "bypass": {
+              "packets": 97,
+              "mean_dose": 0.9461831097695013,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9297153028687489,
+              "half_recovered_noise_energy": 0.6739245800183454,
+              "optimal_recovered_noise_energy": 0.8784152821283219
+            },
+            "old_active": {
+              "packets": 53,
+              "mean_dose": 0.9852945751595402,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9991102574683395,
+              "half_recovered_noise_energy": 0.749085910858172,
+              "optimal_recovered_noise_energy": 0.9982752134839397
+            }
+          },
+          "all_noncarrier": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9580847512184967,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9945499737091098,
+              "half_recovered_noise_energy": 0.7433050720911736,
+              "optimal_recovered_noise_energy": 0.9896790259757755
+            },
+            "bypass": {
+              "packets": 97,
+              "mean_dose": 0.9439133907129226,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9186992084145827,
+              "half_recovered_noise_energy": 0.658493903399147,
+              "optimal_recovered_noise_energy": 0.8613273942978223
+            },
+            "old_active": {
+              "packets": 53,
+              "mean_dose": 0.9840210147853024,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9963945179121798,
+              "half_recovered_noise_energy": 0.7454073842396598,
+              "optimal_recovered_noise_energy": 0.9928606257428353
+            }
+          }
+        },
+        "total": {
+          "1_to_8": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9433127926697049,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.949314332870882,
+              "half_recovered_noise_energy": 0.6800280350350767,
+              "optimal_recovered_noise_energy": 0.9025806091554568
+            },
+            "bypass": {
+              "packets": 97,
+              "mean_dose": 0.9251325775695554,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.7549307523009611,
+              "half_recovered_noise_energy": 0.44999083910407267,
+              "optimal_recovered_noise_energy": 0.5956500360225802
+            },
+            "old_active": {
+              "packets": 53,
+              "mean_dose": 0.9765860165322431,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.953680891524959,
+              "half_recovered_noise_energy": 0.6857452674152605,
+              "optimal_recovered_noise_energy": 0.9102089120656957
+            }
+          },
+          "9_to_32": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9629199296539271,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9954497115646722,
+              "half_recovered_noise_energy": 0.7436875033999786,
+              "optimal_recovered_noise_energy": 0.9917091541695671
+            },
+            "bypass": {
+              "packets": 97,
+              "mean_dose": 0.9493367977687104,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.8920142720746923,
+              "half_recovered_noise_energy": 0.6072616620313088,
+              "optimal_recovered_noise_energy": 0.8277347995520579
+            },
+            "old_active": {
+              "packets": 53,
+              "mean_dose": 0.9877796238589469,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9977773257252432,
+              "half_recovered_noise_energy": 0.746920647527956,
+              "optimal_recovered_noise_energy": 0.9955951681127598
+            }
+          },
+          "33_to_64": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9628771597853101,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9973043966065558,
+              "half_recovered_noise_energy": 0.747063853653238,
+              "optimal_recovered_noise_energy": 0.995024774232963
+            },
+            "bypass": {
+              "packets": 97,
+              "mean_dose": 0.9498394826326634,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9291425672932325,
+              "half_recovered_noise_energy": 0.6648306965422335,
+              "optimal_recovered_noise_energy": 0.8770086199538196
+            },
+            "old_active": {
+              "packets": 53,
+              "mean_dose": 0.9867385689137386,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9989692479324395,
+              "half_recovered_noise_energy": 0.7491243963865954,
+              "optimal_recovered_noise_energy": 0.9979819430643923
+            }
+          },
+          "above_64": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9647409437076802,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9973656218074545,
+              "half_recovered_noise_energy": 0.7468679647801032,
+              "optimal_recovered_noise_energy": 0.9950985147373941
+            },
+            "bypass": {
+              "packets": 97,
+              "mean_dose": 0.95213457718966,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9275199606690943,
+              "half_recovered_noise_energy": 0.6629151265305976,
+              "optimal_recovered_noise_energy": 0.8722137033666358
+            },
+            "old_active": {
+              "packets": 53,
+              "mean_dose": 0.9878129729953772,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.999058774136213,
+              "half_recovered_noise_energy": 0.7489565033530321,
+              "optimal_recovered_noise_energy": 0.9981555843246328
+            }
+          },
+          "all_noncarrier": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9631659975475952,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9939477685349208,
+              "half_recovered_noise_energy": 0.7419867504097795,
+              "optimal_recovered_noise_energy": 0.9883696061325629
+            },
+            "bypass": {
+              "packets": 97,
+              "mean_dose": 0.9499269400719558,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9108214554002373,
+              "half_recovered_noise_energy": 0.6387724168755627,
+              "optimal_recovered_noise_energy": 0.8449810609461332
+            },
+            "old_active": {
+              "packets": 53,
+              "mean_dose": 0.9873959706633879,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9959273600435985,
+              "half_recovered_noise_energy": 0.7445342068136181,
+              "optimal_recovered_noise_energy": 0.9919086113769382
+            }
+          }
+        }
+      },
+      "practical_low_urban": {
+        "common": {
+          "1_to_8": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9813452229133162,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9297064911196543,
+              "half_recovered_noise_energy": 0.6400805938606209,
+              "optimal_recovered_noise_energy": 0.864435639696031
+            },
+            "bypass": {
+              "packets": 49,
+              "mean_dose": 0.9653976987470244,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.5341160066018079,
+              "half_recovered_noise_energy": 0.16991827536466134,
+              "optimal_recovered_noise_energy": 0.2690551319338847
+            },
+            "old_active": {
+              "packets": 101,
+              "mean_dose": 0.9890821405781506,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9305569340033396,
+              "half_recovered_noise_energy": 0.6413243198898585,
+              "optimal_recovered_noise_energy": 0.8660106069055966
+            }
+          },
+          "9_to_32": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9961839728957141,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9950837383845796,
+              "half_recovered_noise_energy": 0.7420424392624956,
+              "optimal_recovered_noise_energy": 0.9902307073429871
+            },
+            "bypass": {
+              "packets": 49,
+              "mean_dose": 0.9936618173434912,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.8544370741686506,
+              "half_recovered_noise_energy": 0.4099569878478893,
+              "optimal_recovered_noise_energy": 0.654016100355565
+            },
+            "old_active": {
+              "packets": 101,
+              "mean_dose": 0.9974075929160997,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9955206079570937,
+              "half_recovered_noise_energy": 0.7429004025385865,
+              "optimal_recovered_noise_energy": 0.9910993385475514
+            }
+          },
+          "33_to_64": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9909293807185997,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9989378617929882,
+              "half_recovered_noise_energy": 0.7491306126910864,
+              "optimal_recovered_noise_energy": 0.9978929701481816
+            },
+            "bypass": {
+              "packets": 49,
+              "mean_dose": 0.9757824433517347,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9354771108681766,
+              "half_recovered_noise_energy": 0.6242655081588946,
+              "optimal_recovered_noise_energy": 0.8733435238338347
+            },
+            "old_active": {
+              "packets": 101,
+              "mean_dose": 0.9982778948866827,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9991019500193341,
+              "half_recovered_noise_energy": 0.7494521400829498,
+              "optimal_recovered_noise_energy": 0.9982136847207718
+            }
+          },
+          "above_64": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9952225182916508,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9991253256197514,
+              "half_recovered_noise_energy": 0.7493208433242472,
+              "optimal_recovered_noise_energy": 0.9982584426141567
+            },
+            "bypass": {
+              "packets": 49,
+              "mean_dose": 0.9899056990671894,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9352152208127915,
+              "half_recovered_noise_energy": 0.6203739634225031,
+              "optimal_recovered_noise_energy": 0.8698076318990656
+            },
+            "old_active": {
+              "packets": 101,
+              "mean_dose": 0.9978019652421323,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9992951291208346,
+              "half_recovered_noise_energy": 0.7496596164491269,
+              "optimal_recovered_noise_energy": 0.998595912451135
+            }
+          },
+          "all_noncarrier": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9957301030894844,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9939323337708345,
+              "half_recovered_noise_energy": 0.740785877610876,
+              "optimal_recovered_noise_energy": 0.9879085153327949
+            },
+            "bypass": {
+              "packets": 49,
+              "mean_dose": 0.9887971822276213,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.8933558758693823,
+              "half_recovered_noise_energy": 0.5508000765705134,
+              "optimal_recovered_noise_energy": 0.788478513689372
+            },
+            "old_active": {
+              "packets": 101,
+              "mean_dose": 0.9990935993492005,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9941945452163424,
+              "half_recovered_noise_energy": 0.7412810121699424,
+              "optimal_recovered_noise_energy": 0.9884282630475587
+            }
+          }
+        },
+        "private": {
+          "1_to_8": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9588432723153532,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9628463892674746,
+              "half_recovered_noise_energy": 0.6987711459984216,
+              "optimal_recovered_noise_energy": 0.9277463322819987
+            },
+            "bypass": {
+              "packets": 49,
+              "mean_dose": 0.941841486821332,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.8231667170640449,
+              "half_recovered_noise_energy": 0.5237175420884321,
+              "optimal_recovered_noise_energy": 0.6808959618861774
+            },
+            "old_active": {
+              "packets": 101,
+              "mean_dose": 0.967091663297601,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9631984435681239,
+              "half_recovered_noise_energy": 0.6992449801135278,
+              "optimal_recovered_noise_energy": 0.9284145054827073
+            }
+          },
+          "9_to_32": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9749686028771847,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9987985247702917,
+              "half_recovered_noise_energy": 0.7491913126313531,
+              "optimal_recovered_noise_energy": 0.9976567296427279
+            },
+            "bypass": {
+              "packets": 49,
+              "mean_dose": 0.9355149437574419,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9241624955957192,
+              "half_recovered_noise_energy": 0.6577489062385805,
+              "optimal_recovered_noise_energy": 0.8709501607973877
+            },
+            "old_active": {
+              "packets": 101,
+              "mean_dose": 0.9941094870045845,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9989898997150792,
+              "half_recovered_noise_energy": 0.7494327107256661,
+              "optimal_recovered_noise_energy": 0.9979912213240253
+            }
+          },
+          "33_to_64": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9756884743898534,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.999429434498479,
+              "half_recovered_noise_energy": 0.7497881990470178,
+              "optimal_recovered_noise_energy": 0.998912492322565
+            },
+            "bypass": {
+              "packets": 49,
+              "mean_dose": 0.9344819959532529,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9318989924652414,
+              "half_recovered_noise_energy": 0.6748270132383258,
+              "optimal_recovered_noise_energy": 0.8835586290107679
+            },
+            "old_active": {
+              "packets": 101,
+              "mean_dose": 0.9956797362056298,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9996028071968714,
+              "half_recovered_noise_energy": 0.749983548935704,
+              "optimal_recovered_noise_energy": 0.9992131060884012
+            }
+          },
+          "above_64": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9749071188852254,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.999464675622707,
+              "half_recovered_noise_energy": 0.7495918617069199,
+              "optimal_recovered_noise_energy": 0.998988607158495
+            },
+            "bypass": {
+              "packets": 49,
+              "mean_dose": 0.932552980435023,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9288951583833469,
+              "half_recovered_noise_energy": 0.6738215023973508,
+              "optimal_recovered_noise_energy": 0.8786113048825044
+            },
+            "old_active": {
+              "packets": 101,
+              "mean_dose": 0.9954551662521552,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9996475236954416,
+              "half_recovered_noise_energy": 0.7497903707616901,
+              "optimal_recovered_noise_energy": 0.9993039809366894
+            }
+          },
+          "all_noncarrier": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.974811300096917,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.997019296402545,
+              "half_recovered_noise_energy": 0.7463108964051786,
+              "optimal_recovered_noise_energy": 0.9941024896376922
+            },
+            "bypass": {
+              "packets": 49,
+              "mean_dose": 0.9353586841340439,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9221020553865742,
+              "half_recovered_noise_energy": 0.6610012403936549,
+              "optimal_recovered_noise_energy": 0.8646653616823787
+            },
+            "old_active": {
+              "packets": 101,
+              "mean_dose": 0.9939516781383108,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9972119662566983,
+              "half_recovered_noise_energy": 0.7465349000289089,
+              "optimal_recovered_noise_energy": 0.9944423618990845
+            }
+          }
+        },
+        "total": {
+          "1_to_8": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9672646575469432,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.957367871159487,
+              "half_recovered_noise_energy": 0.6890046846118202,
+              "optimal_recovered_noise_energy": 0.9170379565634893
+            },
+            "bypass": {
+              "packets": 49,
+              "mean_dose": 0.9510185733314648,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.7806436896591527,
+              "half_recovered_noise_energy": 0.4659592230579599,
+              "optimal_recovered_noise_energy": 0.6120629235888004
+            },
+            "old_active": {
+              "packets": 101,
+              "mean_dose": 0.975146421176235,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9578009230228789,
+              "half_recovered_noise_energy": 0.6896061407079443,
+              "optimal_recovered_noise_energy": 0.9178603408947841
+            }
+          },
+          "9_to_32": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9787761562140344,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9981840625703388,
+              "half_recovered_noise_energy": 0.7480083317790883,
+              "optimal_recovered_noise_energy": 0.9964153828991643
+            },
+            "bypass": {
+              "packets": 49,
+              "mean_dose": 0.9430576701695442,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.905679786434997,
+              "half_recovered_noise_energy": 0.6174752219060978,
+              "optimal_recovered_noise_energy": 0.833986311495569
+            },
+            "old_active": {
+              "packets": 101,
+              "mean_dose": 0.9961049266712623,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9984161174773933,
+              "half_recovered_noise_energy": 0.7483517082980455,
+              "optimal_recovered_noise_energy": 0.9968426639864708
+            }
+          },
+          "33_to_64": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9782011246072371,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9993479265528168,
+              "half_recovered_noise_energy": 0.7496791359206615,
+              "optimal_recovered_noise_energy": 0.9987386064419612
+            },
+            "bypass": {
+              "packets": 49,
+              "mean_dose": 0.9409294890006771,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9315282937066622,
+              "half_recovered_noise_energy": 0.666523689923483,
+              "optimal_recovered_noise_energy": 0.8809351022216148
+            },
+            "old_active": {
+              "packets": 101,
+              "mean_dose": 0.9962834032678454,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9995197460586065,
+              "half_recovered_noise_energy": 0.7498954123496995,
+              "optimal_recovered_noise_energy": 0.9990449979346101
+            }
+          },
+          "above_64": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9783590926705267,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9994088194462811,
+              "half_recovered_noise_energy": 0.7495472599797547,
+              "optimal_recovered_noise_energy": 0.9988631132357545
+            },
+            "bypass": {
+              "packets": 49,
+              "mean_dose": 0.9420945109137364,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9287346154891162,
+              "half_recovered_noise_energy": 0.6650019856406945,
+              "optimal_recovered_noise_energy": 0.8757432475108448
+            },
+            "old_active": {
+              "packets": 101,
+              "mean_dose": 0.9959528006515439,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.999589493008385,
+              "half_recovered_noise_energy": 0.7497688605785661,
+              "optimal_recovered_noise_energy": 0.9991858212307726
+            }
+          },
+          "all_noncarrier": {
+            "all": {
+              "packets": 150,
+              "mean_dose": 0.9783957819672608,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9965096648723226,
+              "half_recovered_noise_energy": 0.7453979954661073,
+              "optimal_recovered_noise_energy": 0.9930729191680862
+            },
+            "bypass": {
+              "packets": 49,
+              "mean_dose": 0.9431920701844557,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9158116667329429,
+              "half_recovered_noise_energy": 0.642905822094812,
+              "optimal_recovered_noise_energy": 0.8509784635269597
+            },
+            "old_active": {
+              "packets": 101,
+              "mean_dose": 0.9954748104559488,
+              "nonpositive": 0,
+              "directional_alignment_cosine": 0.9967138654444864,
+              "half_recovered_noise_energy": 0.7456667844313524,
+              "optimal_recovered_noise_energy": 0.9934455663707217
+            }
+          }
+        }
+      }
+    }
+  }
+}

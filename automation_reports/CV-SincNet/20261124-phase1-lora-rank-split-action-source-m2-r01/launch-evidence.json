@@ -1,0 +1,33 @@
+{
+  "pid": 2249458,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-rank-split-action-source-m2-r01-release",
+  "code_commit": "d7a46afa6fe8f8122bdd94e5b6b89d1b42ac3bd8",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "status": "SUBMITTED_NOT_YET_VERIFIED",
+  "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-rank-split-action-source-m2-r01",
+  "state": "RUNNING_VERIFIED",
+  "smoke_pid": 2249473,
+  "calibrate_pid": 2250019,
+  "workers": [
+    {
+      "route": "full",
+      "pid": 2250293,
+      "gpu": 3
+    },
+    {
+      "route": "residual",
+      "pid": 2250294,
+      "gpu": 6
+    }
+  ],
+  "completion": {
+    "state": "SOURCE_SCORED",
+    "reserve_pid": 2251816,
+    "reserve_count": 11100,
+    "score_pid": 2252365,
+    "complete_clean_count": 12000,
+    "target_reads": 0,
+    "readback": "VERIFIED"
+  }
+}
