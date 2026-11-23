@@ -125,7 +125,7 @@ def score_frozen(rt, modes=MODES, comparisons=(('separate', 'shared'), ('separat
 
 
 @torch.no_grad()
-def measure(rt, recipe=RECIPES['separate']):
+def measure(rt, recipe=RECIPES['separate'], *, verify_reader=True):
     root = Path(rt['run_root'])
     (_, calibration, _), contract = setup(rt, 'cuda:0', smoke=True)
     saved = torch.load(root / f'{recipe.name}-model.pt', map_location='cuda:0', weights_only=True)
@@ -139,16 +139,17 @@ def measure(rt, recipe=RECIPES['separate']):
     wave = real_iq(generic_observation(complex_iq(calibration), rng))
     power_proxy = corruption_score(coordinates(tracker, wave)[0])
     corrupt = wave[power_proxy.argmax().view(1)]
-    _, _, bound_contract, baseline, _ = source_control(rt, 'full', 'cuda:0')
-    if bound_contract != contract:
-        raise ValueError('Source U timing and frozen reader contracts differ')
-    reader = load_reader(root, contract, 'cuda:0')
-    proposal, _ = recover(corrupt, tracker, (model,), saved['threshold'], half=False)
-    reference, _ = baseline(corrupt)
-    logits = reader(torch.cat((corrupt, reference, *proposal)))[0]
-    if logits.shape != (3, 10) or not torch.isfinite(logits).all():
-        raise ValueError('Real frozen LoRa checkpoint smoke failed')
-    print('LORA_RESTORATION_REAL_CHECKPOINT_PASS', flush=True)
+    if verify_reader:
+        _, _, bound_contract, baseline, _ = source_control(rt, 'full', 'cuda:0')
+        if bound_contract != contract:
+            raise ValueError('Source U timing and frozen reader contracts differ')
+        reader = load_reader(root, contract, 'cuda:0')
+        proposal, _ = recover(corrupt, tracker, (model,), saved['threshold'], half=False)
+        reference, _ = baseline(corrupt)
+        logits = reader(torch.cat((corrupt, reference, *proposal)))[0]
+        if logits.shape != (3, 10) or not torch.isfinite(logits).all():
+            raise ValueError('Real frozen LoRa checkpoint smoke failed')
+        print('LORA_RESTORATION_REAL_CHECKPOINT_PASS', flush=True)
     results = {}
     for name, value in (('source_clean', clean), ('generic_disturbed', corrupt)):
         start_ms = []
@@ -164,12 +165,12 @@ def measure(rt, recipe=RECIPES['separate']):
           timing=results, torch=torch.__version__, gpu=torch.cuda.get_device_name()))
 
 
-def dispatch(rt, recipes=RECIPES):
+def dispatch(rt, recipes=RECIPES, *, initial_stages=()):
     root = Path(rt['run_root'])
     root.mkdir()
     launch = partial(start, module=rt['runner'])
     try:
-        for action, names in (('smoke', recipes), ('fit', recipes), ('timing', ('source',)),
+        for action, names in (*initial_stages, ('smoke', recipes), ('fit', recipes), ('timing', ('source',)),
                               ('evaluate', ROUTES)):
             schedule(rt, [(action, name) for name in names], launch)
         if launch(rt, 'score', 'source').wait():
