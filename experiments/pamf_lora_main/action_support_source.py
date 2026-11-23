@@ -33,13 +33,13 @@ MODES = ('direct', 'reference', 'rank_old', 'open_quarter', 'open_half', 'split_
 PAIRS = (*((name, 'rank_old') for name in MODES[3:]), ('split_near', 'open_half'), ('split_full', 'open_half'))
 
 
-def limits(root, device, original):
+def limits(root, device, original, *, schema=SCHEMA, count=2):
     bound = read(root / 'support-calibration.json')
-    if (bound['schema'] != SCHEMA or bound['status'] != 'SOURCE_FROZEN' or bound['parent'] != RANK_RUN
+    if (bound['schema'] != schema or bound['status'] != 'SOURCE_FROZEN' or bound['parent'] != RANK_RUN
             or bound['old_threshold'] != original or any(bound[k] != v for k, v in ISOLATION.items())):
         raise ValueError('Unexpected source-only split action calibration')
     threshold = torch.as_tensor(bound['thresholds'], dtype=torch.float32, device=device)
-    if threshold.shape != (2,) or not torch.isfinite(threshold).all():
+    if threshold.shape != (count,) or not torch.isfinite(threshold).all():
         raise ValueError('Unexpected split action threshold')
     return threshold
 
@@ -87,7 +87,8 @@ def render(iq, _unused, baseline, tracker, models, *, original, thresholds, coun
 
 
 @torch.no_grad()
-def source_calibrate(rt, *, smoke=False):
+def source_calibrate(rt, *, smoke=False, measure=evidence, renderer=render, modes=MODES,
+                     schema=SCHEMA, smoke_edit_index=4):
     root, device = Path(rt['run_root']), 'cuda:0'
     (_, cal, held), contract = setup(rt, device, smoke=smoke)
     model, original = parent_model(root, contract, device)
@@ -98,7 +99,7 @@ def source_calibrate(rt, *, smoke=False):
         rows, old = [], []
         for portion in iq.split(48):
             y, _, q, _ = coordinates(tracker, portion)
-            rows.append(evidence(model, y, q))
+            rows.append(measure(model, y, q))
             old.append(corruption_score(y) > original)
         return torch.cat(rows), torch.cat(old)
 
@@ -110,13 +111,13 @@ def source_calibrate(rt, *, smoke=False):
             raise ValueError('Inconsistent frozen source recognizer and rank recovery')
         disturbed = real_iq(generic_noise(complex_iq(cal[:3]), rng, amplitude=.06))
         cases = torch.cat((cal[:3], disturbed))
-        output, _ = render(cases, None, binding[3], tracker, (model,), original=original, thresholds=boundary)
+        output, _ = renderer(cases, None, binding[3], tracker, (model,), original=original, thresholds=boundary)
         logits = load_reader(root, contract, device)(output.flatten(0,1))[0]
-        if logits.shape != (len(cases)*len(MODES),10) or not torch.isfinite(logits).all():
+        if logits.shape != (len(cases)*len(modes),10) or not torch.isfinite(logits).all():
             raise ValueError('Real checkpoint action support smoke failed')
-        if not torch.equal(output[0], cases) or not output[4, 3:].ne(cases[3:]).any():
+        if not torch.equal(output[0], cases) or not output[smoke_edit_index, 3:].ne(cases[3:]).any():
             raise ValueError('Real checkpoint smoke did not exercise the candidate edit')
-        write(root/'checkpoint_smoke.json',dict(status='PASS',modes=len(MODES),source_packets=len(cases),target_reads=0))
+        write(root/'checkpoint_smoke.json',dict(status='PASS',modes=len(modes),source_packets=len(cases),target_reads=0))
         print('LORA_SPLIT_ACTION_CHECKPOINT_PASS',flush=True)
         return
 
@@ -128,7 +129,7 @@ def source_calibrate(rt, *, smoke=False):
         support = tallies > boundary
         diagnostic[name] = dict(old=int(old.sum()), split=support.sum(0).tolist(),
                                 added=(support & ~old[:, None]).sum(0).tolist())
-    write(root/'support-calibration.json',dict(schema=SCHEMA,status='SOURCE_FROZEN',parent=RANK_RUN,
+    write(root/'support-calibration.json',dict(schema=schema,status='SOURCE_FROZEN',parent=RANK_RUN,
           n_cal=len(cal), n_held=len(held), old_threshold=original, thresholds=boundary.tolist(),
           calibration_seconds=perf_counter()-start_time, generic_held=diagnostic, **ISOLATION))
     print('LORA_SPLIT_ACTION_FROZEN',boundary.tolist(),diagnostic,flush=True)
@@ -155,7 +156,7 @@ def reserve_indices(rx):
 
 
 @torch.no_grad()
-def evaluate_reserve(rt):
+def evaluate_reserve(rt, *, modes=MODES, renderer=render, load_limits=limits):
     root, device = Path(rt['run_root']), 'cuda:0'
     source, cache, contract, control, tracker = source_control(rt,'full',device)
     _, rx, ids, _ = source_role(source,contract,'V')
@@ -164,12 +165,12 @@ def evaluate_reserve(rt):
     if recorded.shape[1:] != (len(rx),6,2,256) or len(index) != 11100:
         raise ValueError('Clean reserve must be the 11100 packets outside the fixed 900 source panel')
     model, original = parent_model(root,contract,device)
-    thresholds = limits(root,device,original)
+    thresholds = load_limits(root,device,original)
     reader=load_reader(root,contract,device)
     parts=[]
     for ids_chunk in np.array_split(index,1+len(index)//48):
         iq=tensor(recorded[0,ids_chunk],device)
-        rows,_=render(iq,None,control,tracker,(model,),original=original,thresholds=thresholds)
+        rows,_=renderer(iq,None,control,tracker,(model,),original=original,thresholds=thresholds)
         base=reader(iq)[0]
         if not torch.isfinite(base).all():
             raise ValueError('Nonfinite clean reserve direct logits')
@@ -188,18 +189,18 @@ def evaluate_reserve(rt):
         if len(parts)%40==0:
             print('LORA_CLEAN_RESERVE_PREDICTED',sum(x.shape[1] for x in parts),flush=True)
     with (root/'clean-reserve-predictions.npz').open('xb') as out:
-        np.savez(out,ids=ids[index],rows=np.concatenate(parts,axis=1),modes=np.asarray(MODES))
+        np.savez(out,ids=ids[index],rows=np.concatenate(parts,axis=1),modes=np.asarray(modes))
     print('LORA_CLEAN_RESERVE_FROZEN',len(index),flush=True)
 
 
-def independent_score(rt):
+def independent_score(rt, *, modes=MODES, comparisons=PAIRS):
     root, source = Path(rt['run_root']), Path(rt['source_root'])
     with np.load(root/'clean-reserve-predictions.npz',allow_pickle=False) as stored:
         ids, pred = stored['ids'],stored['rows']
-        if (tuple(stored['modes']) != MODES or ids.shape != (11100,) or pred.shape != (len(MODES),11100)
+        if (tuple(stored['modes']) != modes or ids.shape != (11100,) or pred.shape != (len(modes),11100)
                 or pred.dtype.kind not in 'iu' or (pred<0).any() or (pred>=10).any()):
             raise ValueError('Incomplete clean reserve predictions')
-    main = {r:read_frozen(root,r,MODES) for r in ROUTES}
+    main = {r:read_frozen(root,r,modes) for r in ROUTES}
     fixed = np.asarray(main['full'][0])
     main_clean=main['full'][1]['clean']
     if list(fixed)!=main['residual'][0] or not np.array_equal(main_clean,main['residual'][1]['clean']):
@@ -210,7 +211,7 @@ def independent_score(rt):
         raise ValueError('Main and reserve clean predictions must form the complete source V set')
     lookup={key:i for i,key in enumerate(official)}
     positions=np.array([lookup[k] for k in clean_ids])
-    score_frozen(rt,modes=MODES,comparisons=PAIRS)
+    score_frozen(rt,modes=modes,comparisons=comparisons)
     full_clean=np.concatenate((main_clean,pred),axis=1)
     with np.load(source/'V_metadata.npz',allow_pickle=False) as truth:
         if not np.array_equal(truth['ids'][positions],clean_ids):
@@ -223,7 +224,7 @@ def independent_score(rt):
         return dict(n=int(mask.sum()),correct=correct.sum(1).tolist(),
                     repairs=(correct&~base).sum(1).tolist(),harms=(~correct&base).sum(1).tolist(),
                     switched=(full_clean[:,mask]!=full_clean[:1,mask]).sum(1).tolist())
-    write(root/'clean-complete-scores.json',dict(status='SOURCE_SCORED',modes=list(MODES), target_reads=0,
+    write(root/'clean-complete-scores.json',dict(status='SOURCE_SCORED',modes=list(modes), target_reads=0,
         truth_after_predictions=True, summary=count(np.ones(len(clean_ids),dtype=bool)),
         per_rx={r:count(rx==r) for r in SOURCE},scope='source V clean complete main and independent reserve'))
     print('LORA_CLEAN_COMPLETE_SCORED',len(clean_ids),flush=True)

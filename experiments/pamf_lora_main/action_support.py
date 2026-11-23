@@ -21,9 +21,8 @@ def support_gain(before_a, before_b, after_a, after_b, bands):
     return torch.minimum(*gains)
 
 
-def observed_support(prior, observed, coherence, bands, selectors):
-    """Compute proof scores from independent odd/even chirp proposal fits."""
-    half=[]
+def independent_proposals(prior, observed, coherence, bands, selectors):
+    """Build analytic proposals from independent odd/even chirp observations."""
     for start in (0,1):
         y,q=observed[:,start::2],coherence[:,start::2]
         measured=torch.fft.fft(y,norm='ortho')
@@ -32,7 +31,13 @@ def observed_support(prior, observed, coherence, bands, selectors):
         noise=variance@bands
         prediction=prior.mean+prior.innovation(measured-prior.mean,noise,True)
         proposal=y+zero_carrier(torch.fft.ifft(prediction-measured,norm='ortho'))
-        half.append((y.mean(1),torch.lerp(y,proposal,.5).mean(1)))
+        yield y, proposal
+
+
+def observed_support(prior, observed, coherence, bands, selectors):
+    """Compute proof scores from independent odd/even chirp proposal fits."""
+    half = [(y.mean(1), torch.lerp(y, proposal, .5).mean(1)) for y, proposal in
+            independent_proposals(prior, observed, coherence, bands, selectors)]
     return confirmation_scores(support_gain(half[0][0],half[1][0],half[0][1],half[1][1],bands))
 
 
