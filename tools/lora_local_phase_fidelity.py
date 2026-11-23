@@ -11,7 +11,8 @@ import numpy as np
 import torch
 
 from experiments.cric_dura_comparison.io import read, tensor
-from experiments.pamf_lora_main import lapped_posterior_source, local_phase_source, spectral_block_source, split_shrink_source
+from experiments.pamf_lora_main import held_chirp_precision_source, lapped_posterior_source, local_phase_source
+from experiments.pamf_lora_main import spectral_block_source, split_shrink_source
 from experiments.pamf_lora_main.channel_blind import corruption_score
 from experiments.pamf_lora_main.channel_blind_source import panel, receive_only
 from experiments.pamf_lora_main.data import SOURCE, VIEWS
@@ -19,8 +20,9 @@ from experiments.pamf_lora_main.denoise_source import replay
 from experiments.pamf_lora_main.dura_repair import PacketRestorer, complex_iq
 from experiments.pamf_lora_main.full_packet_publish import DATA_RUN
 from experiments.pamf_lora_main.full_packet_views import source_contract, source_role
+from experiments.pamf_lora_main.held_chirp_precision import held_eigenvalues
 from experiments.pamf_lora_main.joint_unroll_source import coordinates
-from experiments.pamf_lora_main.lapped_posterior import analysis as lapped_analysis
+from experiments.pamf_lora_main.lapped_posterior import other_mean
 from experiments.pamf_lora_main.local_wiener_source import ROUTES, read_frozen
 from experiments.pamf_lora_main.runner import activate
 from experiments.pamf_lora_main.split_shrink import spectrum as split_spectrum
@@ -116,18 +118,18 @@ LAPPED_VARIANCE_FIELDS = ('local_power', 'pooled_power', 'prior_variance', 'prio
 
 
 def lapped_variance(model, tracked, quality, frame, source, epsilon, *, clean):
-    coefficients = lapped_analysis(tracked, model.window)
+    coefficients = model.transformed(tracked)
     measured = model.estimate_power(coefficients)
     pooled = measured.mean(dim=-2, keepdim=True).expand_as(measured)
     local = .75 * measured + .25 * pooled
     prior, variance = model.restore(tracked, quality)[2:]
-    error = (lapped_analysis(source / frame, model.window) - prior).abs().square()
+    error = (model.transformed(source / frame) - prior).abs().square()
     noncarrier = model.noncarrier
     normalize = (error / variance)[..., noncarrier].flatten(1).mean(-1)
     results = [local.flatten(1).mean(-1), pooled.flatten(1).mean(-1),
                variance[..., noncarrier].flatten(1).mean(-1), normalize]
     if not clean:
-        actual_spec = lapped_analysis(complex_iq(epsilon) / frame, model.window)
+        actual_spec = model.transformed(complex_iq(epsilon) / frame)
         actual = actual_spec[..., model.outer].abs().square().mean(-1, keepdim=True)
         errors = 10. * (torch.stack((local, pooled)).clamp_min(1e-10).log10() - actual.clamp_min(1e-10).log10())
         results.extend(errors.flatten(2).mean(-1).unbind(0))
@@ -135,6 +137,34 @@ def lapped_variance(model, tracked, quality, frame, source, epsilon, *, clean):
         variation = errors - errors.mean(dim=-2, keepdim=True)
         results.extend(variation.square().flatten(2).mean(-1).sqrt().unbind(0))
     return torch.stack(results, dim=-1).cpu().numpy()
+
+
+HELD_RISK_FIELDS = ('learned_risk_ratio', 'isotropic_risk_ratio', 'directional_large_risk_ratio',
+                    'directional_small_risk_ratio', 'weak_band_gain_contrast')
+
+
+def held_risk(model, tracked, quality, frame, source):
+    observed = model.transformed(tracked)
+    support = other_mean(observed)
+    dispersion = (other_mean(observed.abs().square()) - support.abs().square()).clamp_min(0.)
+    measurement = model.estimate_power(observed)
+    noise = .75 * measurement + .25 * measurement.mean(dim=-2, keepdim=True)
+    support_noise = other_mean(noise).clamp_min(0.)
+    large, small, axis = held_eigenvalues(observed, support, dispersion, support_noise)
+    prior, variance = model.restore(tracked, quality)[2:]
+    error = model.transformed(source / frame) - prior
+    axis = torch.where(axis.abs() > .5, axis, 1.)
+    major = .5 * (error + axis * error.conj())
+    minor = error - major
+    energy = error.abs().square()
+    fields = (energy / variance, energy / (variance + .5 * (large + small)),
+              2. * major.abs().square() / (variance + large),
+              2. * minor.abs().square() / (variance + small))
+    ratios = [v[...,model.noncarrier].flatten(1).mean(-1) for v in fields]
+    weak = (model.frequency.abs() <= .125) & model.noncarrier
+    contrast = (large - small) / (2 * (.02 + noise + variance) + large + small)
+    ratios.append(contrast[...,weak].flatten(1).mean(-1))
+    return torch.stack(ratios, dim=-1).cpu().numpy()
 
 
 def paired_source(data, cache, contract, root, route, modes):
@@ -155,7 +185,8 @@ def diagnose(rt, route, device):
     is_tangent = rt['run_id']==TANGENT_RUN
     is_split = rt['run_id']==split_shrink_source.RUN
     is_lapped = rt['run_id']==lapped_posterior_source.RUN
-    if is_geometry or is_tangent or is_split or is_lapped:
+    is_held = rt['run_id']==held_chirp_precision_source.RUN
+    if is_geometry or is_tangent or is_split or is_lapped or is_held:
         if is_tangent:
             from experiments.pamf_lora_main import empirical_tangent_source as study
             recipes = study.recipes(rt)
@@ -164,6 +195,9 @@ def diagnose(rt, route, device):
             recipes = study.RECIPES
         elif is_lapped:
             study = lapped_posterior_source
+            recipes = study.RECIPES
+        elif is_held:
+            study = held_chirp_precision_source
             recipes = study.RECIPES
         else:
             from experiments.pamf_lora_main import complex_geometry_source as study
@@ -187,6 +221,8 @@ def diagnose(rt, route, device):
         models = (*models, split_shrink_source.ScalarReadout(models[-1]).eval())
     elif is_lapped:
         models = (*models, lapped_posterior_source.PooledReadout(models[-1]).eval())
+    elif is_held:
+        models = (*models, held_chirp_precision_source.ScalarReadout(models[-1]).eval())
     tracker = PacketRestorer('consensus').to(device).eval()
     truth = tensor(clean,device)
     output = {}
@@ -203,6 +239,7 @@ def diagnose(rt, route, device):
             direction = []
             noise_stats = []
             attenuation = []
+            held_stats = []
             for received, epsilon, source in zip(tensor(capture,device).split(18),tensor(noise,device).split(18),truth.split(18),strict=True):
                 recoveries, count = recover(received,tracker,models,threshold)[:2]
                 active += count
@@ -222,6 +259,8 @@ def diagnose(rt, route, device):
                 noiseless = y-complex_iq(epsilon)
                 if is_lapped:
                     noise_stats.append(lapped_variance(models[1],tracked,quality,frame,ground,epsilon,clean=view=='clean'))
+                if is_held:
+                    held_stats.append(held_risk(models[1],tracked,quality,frame,ground))
                 for reference, group in ((target,bands_from_ground),(noiseless,bands_from_noiseless)):
                     compared = waves
                     if is_geometry:
@@ -259,6 +298,11 @@ def diagnose(rt, route, device):
                     median=np.median(values,axis=0).tolist(),
                     by_receiver={name:np.median(part,axis=0).tolist()
                                  for name,part in zip(SOURCE,np.split(values,len(SOURCE)),strict=True)})
+            if is_held:
+                values = np.concatenate(held_stats)
+                output[view]['held_risk'] = dict(fields=HELD_RISK_FIELDS, median=np.median(values,axis=0).tolist(),
+                    by_receiver={name:np.median(part,axis=0).tolist()
+                                 for name,part in zip(SOURCE,np.split(values,len(SOURCE)),strict=True)})
     if is_geometry:
         readouts = (*readouts,'bounded_pair_projection')
     return dict(route=route,n=len(rows),bands=BANDS,metrics=METRICS,readouts=readouts,scenes=output)
@@ -273,7 +317,7 @@ def main():
     rt = read(args.runtime)
     root = Path(rt['run_root'])
     analyzed_runs = (local_phase_source.RUN, GEOMETRY_RUN, TANGENT_RUN, split_shrink_source.RUN,
-                     lapped_posterior_source.RUN)
+                     lapped_posterior_source.RUN, held_chirp_precision_source.RUN)
     if rt.get('run_id') not in analyzed_runs or read(root/'state.json')['status']!='SOURCE_SCORED':
         raise ValueError('The full dual-route truth-last scoring must already be complete')
     activate(rt)
