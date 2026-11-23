@@ -1,0 +1,3 @@
+{"at": "2026-11-23T23:16:28+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-23T23:16:28+00:00", "status": "LOCAL_VERIFIED", "note": "Eleven focused tests and compilation, independent P0/P1 review with a targeted holdout fix.", "evidence": "tests/test_lora_cross_component_prior.py", "row_id": null}
+{"at": "2026-11-23T23:19:55+00:00", "status": "FAILED", "note": "Owned CPU smoke terminated after reproducible DLASWP numerical backend hang; original root preserved.", "evidence": "state.json", "row_id": null}

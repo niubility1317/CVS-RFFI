@@ -1,0 +1,27 @@
+{
+  "pid": 2316429,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-order-noise-prior-source-cpu-r01-release",
+  "code_commit": "13ecf6f521aa4ef00f90f564d15ab60e853f2904",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "status": "VERIFIED",
+  "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-order-noise-prior-source-cpu-r01",
+  "state": "SOURCE_DIAGNOSTIC_COMPLETE",
+  "smoke": {
+    "pid": 2316450,
+    "device": "CPU",
+    "status": "PASS"
+  },
+  "probe": {
+    "pid": 2316518,
+    "device": "CPU",
+    "last_log": "CROSS_COMPONENT_REGISTERED_READY residual practical_low_urban 150"
+  },
+  "process_live_at_terminal_check": false,
+  "n_clean": 500,
+  "n_generic": 500,
+  "n_registered": 150,
+  "parent_metrics_exact_match": true,
+  "n_fit_per_fold": 800,
+  "seconds": 13.430112936068326
+}

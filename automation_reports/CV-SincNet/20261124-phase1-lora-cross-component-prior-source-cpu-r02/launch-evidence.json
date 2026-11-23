@@ -1,0 +1,25 @@
+{
+  "pid": 2313812,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-cross-component-prior-source-cpu-r02-release",
+  "code_commit": "2d20a9d76962b65be2a35f4d8c9a9ce2a6256f63",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "status": "VERIFIED",
+  "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-cross-component-prior-source-cpu-r02",
+  "state": "SOURCE_DIAGNOSTIC_COMPLETE",
+  "smoke": {
+    "pid": 2313827,
+    "device": "CPU",
+    "status": "PASS"
+  },
+  "probe": {
+    "pid": 2313892,
+    "device": "CPU",
+    "first_progress": "CROSS_COMPONENT_GENERIC_READY rtl_1 100"
+  },
+  "n_clean": 500,
+  "n_generic": 500,
+  "n_registered": 150,
+  "fit_per_fold": 800,
+  "wall_seconds": 12.056535131065175
+}

@@ -1,0 +1,5 @@
+{"at": "2026-11-23T23:20:23+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-23T23:20:23+00:00", "status": "LOCAL_VERIFIED", "note": "12 focused tests, compilation and targeted ridge backend review passed.", "evidence": "tests/test_lora_cross_component_prior.py", "row_id": null}
+{"at": "2026-11-23T23:21:06+00:00", "status": "RUNNING", "note": "CPU-only. Actual source smoke passed. Controller and probe identities, CWD, no CUDA and five-fold log growth read back.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-23T23:21:34+00:00", "status": "ANALYZED", "note": "Five receiver folds and exact registered IQ playback complete.", "evidence": "source-u-cross-component.json", "row_id": "probe-source"}
+{"at": "2026-11-23T23:21:34+00:00", "status": "ANALYZED", "note": "Source cross-component result, eligible evidence []", "evidence": "source-u-cross-component.json", "row_id": null}

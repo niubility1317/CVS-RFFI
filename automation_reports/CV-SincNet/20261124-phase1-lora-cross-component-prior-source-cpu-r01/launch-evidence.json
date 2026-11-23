@@ -1,0 +1,16 @@
+{
+  "pid": 2309737,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-cross-component-prior-source-cpu-r01-release",
+  "code_commit": "867dba9f3bf2908f8c28b27616a33ce583d971b2",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "status": "FAILED",
+  "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-cross-component-prior-source-cpu-r01",
+  "state": "FAILED",
+  "smoke_pid": 2309749,
+  "smoke_only": true,
+  "owned_stop": "SIGTERM",
+  "workers_terminal": true,
+  "target_reads": 0,
+  "observed_error": "Intel oneMKL DLASWP parameter 6, source smoke blocked"
+}

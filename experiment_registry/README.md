@@ -10,6 +10,9 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 包内顺序特征的实收噪声修正](../automation_reports/CV-SincNet/20261124-phase1-lora-order-noise-prior-source-cpu-r01/report.md)
+- [LoRa 公共谱与包内顺序能否预测独有谱](../automation_reports/CV-SincNet/20261124-phase1-lora-cross-component-prior-source-cpu-r02/report.md)
+- [LoRa 公共与独有谱诊断 r01 数值后端故障](../automation_reports/CV-SincNet/20261124-phase1-lora-cross-component-prior-source-cpu-r01/report.md)
 - [LoRa 实收带外频点的复数噪声预测](../automation_reports/CV-SincNet/20261124-phase1-lora-offband-noise-source-cpu-r01/report.md)
 - [LoRa 独有复谱约束的同剂量方向消融](../automation_reports/CV-SincNet/20261124-phase1-lora-private-dose-direction-source-m2-r02/report.md)
 - [LoRa 同剂量方向消融 r01 技术失败](../automation_reports/CV-SincNet/20261124-phase1-lora-private-dose-direction-source-m2-r01/report.md)

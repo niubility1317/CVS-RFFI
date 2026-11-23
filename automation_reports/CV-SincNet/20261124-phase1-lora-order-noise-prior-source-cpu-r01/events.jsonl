@@ -1,0 +1,5 @@
+{"at": "2026-11-23T23:24:35+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-23T23:24:35+00:00", "status": "LOCAL_VERIFIED", "note": "Thirteen targeted tests and independent review completed.", "evidence": "tests/test_lora_cross_component_prior.py", "row_id": null}
+{"at": "2026-11-23T23:25:45+00:00", "status": "RUNNING", "note": "Controller and CPU worker identifiers from remote launch log; both stages terminal by first readback.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-23T23:25:46+00:00", "status": "ANALYZED", "note": "All source-only controlled order noise measurements closed.", "evidence": "source-u-cross-component.json", "row_id": "probe-source"}
+{"at": "2026-11-23T23:25:46+00:00", "status": "ANALYZED", "note": "Exact parent metric agreement for all controls; new endpoint eligible=False.", "evidence": "source-u-cross-component.json", "row_id": null}
