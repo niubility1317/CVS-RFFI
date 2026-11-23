@@ -12,7 +12,7 @@ import torch
 
 from experiments.cric_dura_comparison.io import read, tensor
 from experiments.pamf_lora_main import held_chirp_precision_source, lapped_posterior_source, local_phase_source
-from experiments.pamf_lora_main import packet_relation_source, spectral_block_source, split_shrink_source
+from experiments.pamf_lora_main import packet_relation_source, reference_cancel_source, spectral_block_source, split_shrink_source
 from experiments.pamf_lora_main.channel_blind import corruption_score
 from experiments.pamf_lora_main.channel_blind_source import panel, receive_only
 from experiments.pamf_lora_main.data import SOURCE, VIEWS
@@ -168,6 +168,42 @@ def held_risk(model, tracked, quality, frame, source):
     return torch.stack(ratios, dim=-1).cpu().numpy()
 
 
+CANCEL_FIELDS = ('near_common_dose', 'middle_common_dose', 'near_private_dose', 'middle_private_dose',
+                 'near_common_spectral_gain', 'middle_common_spectral_gain', 'near_private_spectral_gain',
+                 'middle_private_spectral_gain', 'near_common_source_budget_coverage',
+                 'middle_common_source_budget_coverage', 'near_private_source_budget_coverage',
+                 'middle_private_source_budget_coverage', 'outer_power_bias_db')
+
+
+def cancellation_evidence(model, tracked, frame, epsilon, clean):
+    from experiments.pamf_lora_main.reference_cancel import pair_spectrum
+
+    edit, doses = model.cancellation(tracked)
+    correction = pair_spectrum(edit)
+    known_noise = complex_iq(epsilon) / frame
+    actual = pair_spectrum(known_noise)
+    noiseless = pair_spectrum(tracked - known_noise)
+    gains, coverage = [], []
+    for name in ('near', 'middle'):
+        bins = getattr(model, f'{name}_bins') % 256
+        noise = actual[..., bins]
+        cancel = correction[..., bins]
+        power = noise.abs().square().sum((1, 3)).clamp_min(1e-8)
+        excess = (noise + cancel).abs().square().sum((1, 3))
+        gains.append((1 - excess / power).masked_fill(power < 1e-7, 0.))
+        signal, _ = model.signed_residual(noiseless, name)
+        within = signal.abs().square().mean(-1) <= getattr(model, f'{name}_budget')
+        coverage.append(within.float().mean(1))
+    values = [doses.mean(1).flatten(1), torch.stack(gains, dim=-1).flatten(1),
+              torch.stack(coverage, dim=-1).flatten(1)]
+    if not clean:
+        estimate = model.estimate_power(model.transformed(tracked)).mean((1, 2, 3))
+        true = model.transformed(known_noise)
+        power = true[..., model.outer].abs().square().mean((1, 2, 3))
+        values.append((10 * (estimate.clamp_min(1e-10)/power.clamp_min(1e-10)).log10()).unsqueeze(-1))
+    return np.asarray(torch.cat(values, dim=1).tolist(), dtype=np.float32)
+
+
 RELATION_FIELDS = ('log_distance_rmse', 'neighbor_recall_at_5', 'paired_source_retrieval_at_1')
 
 
@@ -222,7 +258,14 @@ def diagnose(rt, route, device):
     is_lapped = rt['run_id']==lapped_posterior_source.RUN
     is_held = rt['run_id']==held_chirp_precision_source.RUN
     is_relation = rt['run_id']==packet_relation_source.RUN
-    if is_geometry or is_tangent or is_split or is_lapped or is_held or is_relation:
+    is_cancel = rt['run_id']==reference_cancel_source.RUN
+    if is_cancel:
+        study = reference_cancel_source
+        recipes = study.RECIPES
+        recover = partial(study.recovery, controls=True)
+        readouts = ('direct', 'fixed_full', 'guarded_full', 'guarded_half', 'guarded_without_cancel')
+        indices = tuple(study.MODES.index(name) - 2 for name in readouts[1:])
+    elif is_geometry or is_tangent or is_split or is_lapped or is_held or is_relation:
         if is_tangent:
             from experiments.pamf_lora_main import empirical_tangent_source as study
             recipes = study.recipes(rt)
@@ -284,6 +327,7 @@ def diagnose(rt, route, device):
             attenuation = []
             held_stats = []
             relation_stats = []
+            cancellation_stats = []
             batches = zip(tensor(capture,device).split(18),tensor(noise,device).split(18),truth.split(18),strict=True)
             for batch,(received, epsilon, source) in enumerate(batches):
                 recoveries, count = recover(received,tracker,models,threshold)[:2]
@@ -308,6 +352,8 @@ def diagnose(rt, route, device):
                     held_stats.append(held_risk(models[1],tracked,quality,frame,ground))
                 if is_relation:
                     relation_stats.append(fingerprint(torch.stack(waves)/source_frames[batch]))
+                if is_cancel:
+                    cancellation_stats.append(cancellation_evidence(models[1],tracked,frame,epsilon,view=='clean'))
                 for reference, group in ((target,bands_from_ground),(noiseless,bands_from_noiseless)):
                     compared = waves
                     if is_geometry:
@@ -350,6 +396,12 @@ def diagnose(rt, route, device):
                 output[view]['held_risk'] = dict(fields=HELD_RISK_FIELDS, median=np.median(values,axis=0).tolist(),
                     by_receiver={name:np.median(part,axis=0).tolist()
                                  for name,part in zip(SOURCE,np.split(values,len(SOURCE)),strict=True)})
+            if is_cancel:
+                values = np.concatenate(cancellation_stats)
+                output[view]['cancellation'] = dict(fields=CANCEL_FIELDS[:values.shape[1]],
+                    median=np.median(values,axis=0).tolist(), mean=np.mean(values,axis=0).tolist(),
+                    by_receiver={name:np.median(part,axis=0).tolist()
+                                 for name,part in zip(SOURCE,np.split(values,len(SOURCE),axis=0),strict=True)})
             if is_relation:
                 estimates = [torch.cat(parts,dim=1) for parts in zip(*relation_stats,strict=True)]
                 reference_groups = zip(*(value.chunk(len(SOURCE),dim=0) for value in source_features),strict=True)
@@ -373,7 +425,8 @@ def main():
     rt = read(args.runtime)
     root = Path(rt['run_root'])
     analyzed_runs = (local_phase_source.RUN, GEOMETRY_RUN, TANGENT_RUN, split_shrink_source.RUN,
-                     lapped_posterior_source.RUN, held_chirp_precision_source.RUN, packet_relation_source.RUN)
+                     lapped_posterior_source.RUN, held_chirp_precision_source.RUN, packet_relation_source.RUN,
+                     reference_cancel_source.RUN)
     if rt.get('run_id') not in analyzed_runs or read(root/'state.json')['status']!='SOURCE_SCORED':
         raise ValueError('The full dual-route truth-last scoring must already be complete')
     activate(rt)
