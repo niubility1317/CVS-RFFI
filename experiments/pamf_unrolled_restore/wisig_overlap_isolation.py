@@ -138,7 +138,7 @@ def evaluate(rt, route):
     write(root/f'{route}-complete.json',summaries)
 
 
-def dispatch(rt):
+def dispatch(rt, *, modes=MODES, paired_source_iq_isolated=True):
     root = Path(rt['run_root'])
     root.mkdir(exist_ok=False)
     def state(name, **fields):
@@ -163,8 +163,8 @@ def dispatch(rt):
         if set(reports) != {f'{route}_{view}' for route in ROUTES for view in VIEWS} or any(
                 value['count']!=1800 for value in reports.values()):
             raise ValueError('Both isolation routes must freeze all rows before truth access')
-        write(pred/'complete.json',dict(status='FROZEN',count=1800,modes=list(MODES),views=list(VIEWS),
-              source_truth_reads=0,target_reads=0,summaries=reports,paired_source_iq_isolated=True))
+        write(pred/'complete.json',dict(status='FROZEN',count=1800,modes=list(modes),views=list(VIEWS),
+              source_truth_reads=0,target_reads=0,summaries=reports,paired_source_iq_isolated=paired_source_iq_isolated))
         state('SCORE')
         if start('score','source').wait():
             raise RuntimeError('Independent WiSig isolation scoring failed')
@@ -174,13 +174,13 @@ def dispatch(rt):
         raise
 
 
-def publish(repo, output, context, ssh_config):
+def publish(repo, output, context, ssh_config, *, run=RUN, runner=None):
     cfg = read(context)
     rt = {key:cfg[key] for key in ('project','python','frozen_sources')}
     p = PurePosixPath(rt['project'])
     runs = p/'runs'
-    rt.update(run_id=RUN, runner=__spec__.name, code_commit=release_commit(repo),
-              run_root=str(runs/RUN), release_root=str(p/'releases'/f'{RUN}-release'),
+    rt.update(run_id=run, runner=runner or __spec__.name, code_commit=release_commit(repo),
+              run_root=str(runs/run), release_root=str(p/'releases'/f'{run}-release'),
               source_root=str(runs/core.baseline.CACHE_RUN/'cache'), parent_root=str(runs/core.baseline.R17_RUN),
               recognizer_run=str(runs/tri.tri_plan.RUN))
     release(repo,output,rt,ssh_config,archive_extras=('tools/r17_activation_factorization.py',))
