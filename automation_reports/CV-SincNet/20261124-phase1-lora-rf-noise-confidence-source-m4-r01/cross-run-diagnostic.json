@@ -1,0 +1,172 @@
+{
+  "status": "VERIFIED",
+  "physical_count": 900,
+  "routes": {
+    "full": {
+      "kernel_vs_transport": {
+        "six": {
+          "net": 0,
+          "interval": [
+            -12.0,
+            13.0
+          ]
+        },
+        "low": {
+          "net": 2,
+          "interval": [
+            -5.024999999999999,
+            10.0
+          ]
+        }
+      },
+      "confidence_vs_flat": {
+        "six": {
+          "net": 0,
+          "interval": [
+            -3.0,
+            3.0
+          ]
+        },
+        "low": {
+          "net": -1,
+          "interval": [
+            -3.0,
+            0.0
+          ]
+        }
+      },
+      "confidence_half_vs_flat_half": {
+        "six": {
+          "net": -1,
+          "interval": [
+            -3.0,
+            0.0
+          ]
+        },
+        "low": {
+          "net": 0,
+          "interval": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "confidence_vs_transport": {
+        "six": {
+          "net": 6,
+          "interval": [
+            -7.0,
+            20.0
+          ]
+        },
+        "low": {
+          "net": 4,
+          "interval": [
+            -4.0,
+            12.0
+          ]
+        }
+      },
+      "confidence_half_vs_transport_half": {
+        "six": {
+          "net": 5,
+          "interval": [
+            -6.0,
+            16.0
+          ]
+        },
+        "low": {
+          "net": 4,
+          "interval": [
+            -3.0,
+            11.0
+          ]
+        }
+      }
+    },
+    "residual": {
+      "kernel_vs_transport": {
+        "six": {
+          "net": -17,
+          "interval": [
+            -34.025,
+            0.0
+          ]
+        },
+        "low": {
+          "net": -10,
+          "interval": [
+            -19.0,
+            -2.0
+          ]
+        }
+      },
+      "confidence_vs_flat": {
+        "six": {
+          "net": 1,
+          "interval": [
+            -3.0,
+            5.0
+          ]
+        },
+        "low": {
+          "net": 0,
+          "interval": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "confidence_half_vs_flat_half": {
+        "six": {
+          "net": 1,
+          "interval": [
+            0.0,
+            3.0
+          ]
+        },
+        "low": {
+          "net": 0,
+          "interval": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "confidence_vs_transport": {
+        "six": {
+          "net": -11,
+          "interval": [
+            -31.025,
+            10.0
+          ]
+        },
+        "low": {
+          "net": -14,
+          "interval": [
+            -24.0,
+            -4.0
+          ]
+        }
+      },
+      "confidence_half_vs_transport_half": {
+        "six": {
+          "net": -14,
+          "interval": [
+            -32.0,
+            4.0
+          ]
+        },
+        "low": {
+          "net": -8,
+          "interval": [
+            -18.025,
+            2.0
+          ]
+        }
+      }
+    }
+  },
+  "independent_truth_last": true,
+  "target_reads": 0
+}

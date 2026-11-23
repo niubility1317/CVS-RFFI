@@ -185,7 +185,7 @@
       "budget_ref": "1800 optimizer steps, batch 12, each with three views",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-rf-noise-transport-source-m4-r01/transport-model.pt",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-rf-noise-transport-source-m4-r01/logs/fit-transport.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.repeat_transport_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-rf-noise-transport-source-m4-r01/configs/fit-transport.json transport",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.rf_noise_transport_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-rf-noise-transport-source-m4-r01/configs/fit-transport.json transport",
       "expected_artifacts": [
         "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-rf-noise-transport-source-m4-r01/transport-model.pt"
       ]

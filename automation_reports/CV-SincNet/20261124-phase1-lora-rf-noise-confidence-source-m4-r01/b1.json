@@ -1,0 +1,16 @@
+{
+  "parameters": 16740,
+  "timing": {
+    "source_clean": {
+      "active": false,
+      "median_ms": 1.7506415024399757
+    },
+    "generic_disturbed": {
+      "active": true,
+      "median_ms": 8.818028960376978
+    }
+  },
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "n_measurements": 24,
+  "torch": "2.1.0+cu121"
+}

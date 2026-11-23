@@ -1,0 +1,529 @@
+{
+  "status": "VERIFIED",
+  "hold": 50,
+  "TX_reads": 0,
+  "target_reads": 0,
+  "estimates": {
+    "kernel": {
+      "confidence_quantiles": [
+        0.0,
+        0.1516333520412445,
+        0.5986618995666504
+      ],
+      "relative_psd_shape_mse": [
+        0.3075294494628906,
+        0.3783224821090698,
+        0.6031259894371033
+      ],
+      "estimated_to_measured_power": [
+        0.8148393630981445,
+        0.9513237476348877,
+        1.0547740459442139
+      ],
+      "frequency_relative_std": [
+        0.39466390013694763,
+        0.5656527876853943,
+        0.7832241654396057
+      ]
+    },
+    "confidence": {
+      "confidence_quantiles": [
+        0.0,
+        0.1516333520412445,
+        0.5986618995666504
+      ],
+      "relative_psd_shape_mse": [
+        0.3255750238895416,
+        0.427679181098938,
+        0.6246131062507629
+      ],
+      "estimated_to_measured_power": [
+        0.8148393630981445,
+        0.9513236284255981,
+        1.0547740459442139
+      ],
+      "frequency_relative_std": [
+        0.0,
+        0.08461135625839233,
+        0.346597820520401
+      ]
+    }
+  },
+  "waves": {
+    "direct": {
+      "relative_edit_power": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "noncarrier_retention": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "max_dc_difference": 0.0,
+      "lower_observed_disturbance": {
+        "1-8": {
+          "complex_nmse": 4.4272871017456055,
+          "magnitude_nmse": 2.838629961013794,
+          "real_correlation": 0.3935468792915344
+        },
+        "9-32": {
+          "complex_nmse": 63.691280364990234,
+          "magnitude_nmse": 53.8697509765625,
+          "real_correlation": 0.13522982597351074
+        },
+        "33-64": {
+          "complex_nmse": 210.62620544433594,
+          "magnitude_nmse": 197.95126342773438,
+          "real_correlation": 0.07340603321790695
+        },
+        "65-128": {
+          "complex_nmse": 489.9618225097656,
+          "magnitude_nmse": 465.4606018066406,
+          "real_correlation": 0.043849192559719086
+        }
+      },
+      "higher_observed_disturbance": {
+        "1-8": {
+          "complex_nmse": 4.6091156005859375,
+          "magnitude_nmse": 3.038681983947754,
+          "real_correlation": 0.3503679931163788
+        },
+        "9-32": {
+          "complex_nmse": 86.63089752197266,
+          "magnitude_nmse": 72.61365509033203,
+          "real_correlation": 0.1172139048576355
+        },
+        "33-64": {
+          "complex_nmse": 338.90234375,
+          "magnitude_nmse": 317.2568664550781,
+          "real_correlation": 0.05227275937795639
+        },
+        "65-128": {
+          "complex_nmse": 725.3767700195312,
+          "magnitude_nmse": 691.3646240234375,
+          "real_correlation": 0.03774143382906914
+        }
+      }
+    },
+    "kernel_coarse": {
+      "relative_edit_power": [
+        0.007742136251181364,
+        0.015119697898626328,
+        0.025016814470291138
+      ],
+      "noncarrier_retention": [
+        0.5454774498939514,
+        0.5696721076965332,
+        0.6043403744697571
+      ],
+      "max_dc_difference": 1.9074068404734135e-06,
+      "lower_observed_disturbance": {
+        "1-8": {
+          "complex_nmse": 1.999515414237976,
+          "magnitude_nmse": 1.083717942237854,
+          "real_correlation": 0.39799171686172485
+        },
+        "9-32": {
+          "complex_nmse": 36.918121337890625,
+          "magnitude_nmse": 29.50705909729004,
+          "real_correlation": 0.14824141561985016
+        },
+        "33-64": {
+          "complex_nmse": 129.5359344482422,
+          "magnitude_nmse": 121.2909927368164,
+          "real_correlation": 0.08006162941455841
+        },
+        "65-128": {
+          "complex_nmse": 295.4858093261719,
+          "magnitude_nmse": 276.2766418457031,
+          "real_correlation": 0.04959050565958023
+        }
+      },
+      "higher_observed_disturbance": {
+        "1-8": {
+          "complex_nmse": 1.9435964822769165,
+          "magnitude_nmse": 0.8948380947113037,
+          "real_correlation": 0.33368098735809326
+        },
+        "9-32": {
+          "complex_nmse": 45.85408020019531,
+          "magnitude_nmse": 36.49464797973633,
+          "real_correlation": 0.13704164326190948
+        },
+        "33-64": {
+          "complex_nmse": 194.3580322265625,
+          "magnitude_nmse": 177.20440673828125,
+          "real_correlation": 0.05488274246454239
+        },
+        "65-128": {
+          "complex_nmse": 415.9540710449219,
+          "magnitude_nmse": 390.2350158691406,
+          "real_correlation": 0.03762141615152359
+        }
+      }
+    },
+    "kernel": {
+      "relative_edit_power": [
+        0.007747078780084848,
+        0.015128768049180508,
+        0.025033092126250267
+      ],
+      "noncarrier_retention": [
+        0.5454182624816895,
+        0.5696109533309937,
+        0.6042506098747253
+      ],
+      "max_dc_difference": 1.9073597741225967e-06,
+      "lower_observed_disturbance": {
+        "1-8": {
+          "complex_nmse": 1.9989559650421143,
+          "magnitude_nmse": 1.08159601688385,
+          "real_correlation": 0.3978517949581146
+        },
+        "9-32": {
+          "complex_nmse": 36.906402587890625,
+          "magnitude_nmse": 29.49789047241211,
+          "real_correlation": 0.14828075468540192
+        },
+        "33-64": {
+          "complex_nmse": 129.51524353027344,
+          "magnitude_nmse": 121.26763916015625,
+          "real_correlation": 0.08004534989595413
+        },
+        "65-128": {
+          "complex_nmse": 295.4603271484375,
+          "magnitude_nmse": 276.2497863769531,
+          "real_correlation": 0.04958287999033928
+        }
+      },
+      "higher_observed_disturbance": {
+        "1-8": {
+          "complex_nmse": 1.942567229270935,
+          "magnitude_nmse": 0.8935937285423279,
+          "real_correlation": 0.3338044285774231
+        },
+        "9-32": {
+          "complex_nmse": 45.84765625,
+          "magnitude_nmse": 36.47087860107422,
+          "real_correlation": 0.13670332729816437
+        },
+        "33-64": {
+          "complex_nmse": 194.32933044433594,
+          "magnitude_nmse": 177.1763916015625,
+          "real_correlation": 0.05485551059246063
+        },
+        "65-128": {
+          "complex_nmse": 415.94232177734375,
+          "magnitude_nmse": 390.22210693359375,
+          "real_correlation": 0.03761057183146477
+        }
+      }
+    },
+    "kernel_half": {
+      "relative_edit_power": [
+        0.001936769811436534,
+        0.0037821917794644833,
+        0.0062582725659012794
+      ],
+      "noncarrier_retention": [
+        0.751916766166687,
+        0.766621470451355,
+        0.7862443327903748
+      ],
+      "max_dc_difference": 1.907581463456154e-06,
+      "lower_observed_disturbance": {
+        "1-8": {
+          "complex_nmse": 2.8111817836761475,
+          "magnitude_nmse": 1.7328779697418213,
+          "real_correlation": 0.41698428988456726
+        },
+        "9-32": {
+          "complex_nmse": 49.207786560058594,
+          "magnitude_nmse": 40.60553741455078,
+          "real_correlation": 0.13724525272846222
+        },
+        "33-64": {
+          "complex_nmse": 167.4374542236328,
+          "magnitude_nmse": 156.12109375,
+          "real_correlation": 0.07429030537605286
+        },
+        "65-128": {
+          "complex_nmse": 386.2135925292969,
+          "magnitude_nmse": 364.3731994628906,
+          "real_correlation": 0.04726555570960045
+        }
+      },
+      "higher_observed_disturbance": {
+        "1-8": {
+          "complex_nmse": 2.853085994720459,
+          "magnitude_nmse": 1.561043620109558,
+          "real_correlation": 0.33458489179611206
+        },
+        "9-32": {
+          "complex_nmse": 64.36973571777344,
+          "magnitude_nmse": 52.43378448486328,
+          "real_correlation": 0.12690754234790802
+        },
+        "33-64": {
+          "complex_nmse": 261.60589599609375,
+          "magnitude_nmse": 242.6470184326172,
+          "real_correlation": 0.05341002345085144
+        },
+        "65-128": {
+          "complex_nmse": 559.553955078125,
+          "magnitude_nmse": 529.7028198242188,
+          "real_correlation": 0.037139762192964554
+        }
+      }
+    },
+    "confidence_coarse": {
+      "relative_edit_power": [
+        0.007478031795471907,
+        0.014576109126210213,
+        0.024992672726511955
+      ],
+      "noncarrier_retention": [
+        0.5490275025367737,
+        0.5808557271957397,
+        0.6116068363189697
+      ],
+      "max_dc_difference": 1.9073488601861754e-06,
+      "lower_observed_disturbance": {
+        "1-8": {
+          "complex_nmse": 1.9658913612365723,
+          "magnitude_nmse": 1.0017999410629272,
+          "real_correlation": 0.41113609075546265
+        },
+        "9-32": {
+          "complex_nmse": 35.575374603271484,
+          "magnitude_nmse": 30.842060089111328,
+          "real_correlation": 0.15047532320022583
+        },
+        "33-64": {
+          "complex_nmse": 130.83187866210938,
+          "magnitude_nmse": 121.5585708618164,
+          "real_correlation": 0.08004363626241684
+        },
+        "65-128": {
+          "complex_nmse": 304.0799255371094,
+          "magnitude_nmse": 286.86260986328125,
+          "real_correlation": 0.05036894604563713
+        }
+      },
+      "higher_observed_disturbance": {
+        "1-8": {
+          "complex_nmse": 1.8755919933319092,
+          "magnitude_nmse": 0.8593264222145081,
+          "real_correlation": 0.3313193917274475
+        },
+        "9-32": {
+          "complex_nmse": 45.790103912353516,
+          "magnitude_nmse": 35.87327194213867,
+          "real_correlation": 0.1382746547460556
+        },
+        "33-64": {
+          "complex_nmse": 193.7649383544922,
+          "magnitude_nmse": 177.6387176513672,
+          "real_correlation": 0.05386362969875336
+        },
+        "65-128": {
+          "complex_nmse": 444.3819274902344,
+          "magnitude_nmse": 417.9056701660156,
+          "real_correlation": 0.036283742636442184
+        }
+      }
+    },
+    "confidence": {
+      "relative_edit_power": [
+        0.007484741974622011,
+        0.01458548754453659,
+        0.02500772662460804
+      ],
+      "noncarrier_retention": [
+        0.5489665865898132,
+        0.5807740688323975,
+        0.6115333437919617
+      ],
+      "max_dc_difference": 1.907350679175579e-06,
+      "lower_observed_disturbance": {
+        "1-8": {
+          "complex_nmse": 1.9653537273406982,
+          "magnitude_nmse": 0.9997519850730896,
+          "real_correlation": 0.4109756648540497
+        },
+        "9-32": {
+          "complex_nmse": 35.56751251220703,
+          "magnitude_nmse": 30.840360641479492,
+          "real_correlation": 0.1504254788160324
+        },
+        "33-64": {
+          "complex_nmse": 130.78656005859375,
+          "magnitude_nmse": 121.53612518310547,
+          "real_correlation": 0.08002271503210068
+        },
+        "65-128": {
+          "complex_nmse": 304.07073974609375,
+          "magnitude_nmse": 286.85345458984375,
+          "real_correlation": 0.05034111812710762
+        }
+      },
+      "higher_observed_disturbance": {
+        "1-8": {
+          "complex_nmse": 1.8745944499969482,
+          "magnitude_nmse": 0.8591345548629761,
+          "real_correlation": 0.33104565739631653
+        },
+        "9-32": {
+          "complex_nmse": 45.78432083129883,
+          "magnitude_nmse": 35.865379333496094,
+          "real_correlation": 0.13824239373207092
+        },
+        "33-64": {
+          "complex_nmse": 193.74636840820312,
+          "magnitude_nmse": 177.61859130859375,
+          "real_correlation": 0.05383475497364998
+        },
+        "65-128": {
+          "complex_nmse": 444.3705749511719,
+          "magnitude_nmse": 417.8932189941406,
+          "real_correlation": 0.03623373433947563
+        }
+      }
+    },
+    "confidence_half": {
+      "relative_edit_power": [
+        0.0018711854936555028,
+        0.003646371653303504,
+        0.00625193165615201
+      ],
+      "noncarrier_retention": [
+        0.7536553144454956,
+        0.7722240686416626,
+        0.7899610996246338
+      ],
+      "max_dc_difference": 1.90827972801344e-06,
+      "lower_observed_disturbance": {
+        "1-8": {
+          "complex_nmse": 2.7506558895111084,
+          "magnitude_nmse": 1.659024715423584,
+          "real_correlation": 0.41679444909095764
+        },
+        "9-32": {
+          "complex_nmse": 48.66498947143555,
+          "magnitude_nmse": 39.758872985839844,
+          "real_correlation": 0.13873186707496643
+        },
+        "33-64": {
+          "complex_nmse": 170.1275177001953,
+          "magnitude_nmse": 158.76431274414062,
+          "real_correlation": 0.07474809885025024
+        },
+        "65-128": {
+          "complex_nmse": 390.78997802734375,
+          "magnitude_nmse": 373.9857482910156,
+          "real_correlation": 0.04675362631678581
+        }
+      },
+      "higher_observed_disturbance": {
+        "1-8": {
+          "complex_nmse": 2.8178763389587402,
+          "magnitude_nmse": 1.543775200843811,
+          "real_correlation": 0.3352457582950592
+        },
+        "9-32": {
+          "complex_nmse": 64.32064819335938,
+          "magnitude_nmse": 52.38667678833008,
+          "real_correlation": 0.12649373710155487
+        },
+        "33-64": {
+          "complex_nmse": 262.6971435546875,
+          "magnitude_nmse": 243.71102905273438,
+          "real_correlation": 0.052987053990364075
+        },
+        "65-128": {
+          "complex_nmse": 575.5645751953125,
+          "magnitude_nmse": 545.3408813476562,
+          "real_correlation": 0.03716469183564186
+        }
+      }
+    }
+  },
+  "frozen_decision_differences": {
+    "full": {
+      "clean": {
+        "_coarse": 0,
+        "": 0,
+        "_half": 0
+      },
+      "practical_high": {
+        "_coarse": 0,
+        "": 0,
+        "_half": 1
+      },
+      "practical_mid": {
+        "_coarse": 2,
+        "": 2,
+        "_half": 4
+      },
+      "practical_low_suburban": {
+        "_coarse": 8,
+        "": 8,
+        "_half": 3
+      },
+      "practical_high_urban": {
+        "_coarse": 2,
+        "": 2,
+        "_half": 3
+      },
+      "practical_mid_urban": {
+        "_coarse": 6,
+        "": 6,
+        "_half": 7
+      },
+      "practical_low_urban": {
+        "_coarse": 13,
+        "": 13,
+        "_half": 5
+      }
+    },
+    "residual": {
+      "clean": {
+        "_coarse": 0,
+        "": 0,
+        "_half": 0
+      },
+      "practical_high": {
+        "_coarse": 2,
+        "": 2,
+        "_half": 0
+      },
+      "practical_mid": {
+        "_coarse": 20,
+        "": 20,
+        "_half": 17
+      },
+      "practical_low_suburban": {
+        "_coarse": 36,
+        "": 37,
+        "_half": 12
+      },
+      "practical_high_urban": {
+        "_coarse": 6,
+        "": 6,
+        "_half": 2
+      },
+      "practical_mid_urban": {
+        "_coarse": 46,
+        "": 47,
+        "_half": 34
+      },
+      "practical_low_urban": {
+        "_coarse": 41,
+        "": 39,
+        "_half": 16
+      }
+    }
+  }
+}
