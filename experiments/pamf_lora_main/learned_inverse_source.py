@@ -25,6 +25,7 @@ from .residual_dura import SEED
 from .runner import activate
 from .spectral_unroll import ROUTES
 from .weak_signal_probe_source import RECIPE, RUN as PARENT, panel as weak_panel
+from .weak_signal_probe import observed_noise_rms
 
 
 RUN = '20261123-phase1-lora-dura-learned-inverse-source-m2-r01'
@@ -48,9 +49,7 @@ def input_readouts(received, exact, baseline, tracker, denoiser):
     if active.any():
         y, rotation, q, rms = coordinates(tracker,received[active])
         guess[active] = real_iq(denoiser(y,q)*rotation*rms)
-        outer = torch.fft.fftfreq(y.shape[-1],device=y.device).abs()>.25
-        tail = torch.fft.fft(y,norm='ortho')[...,outer].abs().square()
-        noise_rms[active] = (tail.median(-1).values/np.log(2.)).sqrt()*rms[...,0]
+        noise_rms[active] = (observed_noise_rms(y)*rms)[...,0]
     selected = active[:,None,None,None]
     guesses = (guess,.5*guess,.80*exact,exact)
     values = [torch.where(selected,normalized(received-g,received),received) for g in guesses]

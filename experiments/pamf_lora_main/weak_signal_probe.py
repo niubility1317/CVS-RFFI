@@ -1,5 +1,7 @@
 """Train LoRa denoising to pass weak source signal changes with noise held fixed."""
 
+from math import log
+
 import torch
 
 from experiments.pamf_unrolled_restore.denoise import Denoise
@@ -15,6 +17,13 @@ class ProjectedDenoise(Denoise):
     def forward(self, received, coherence, *, packet=True):
         noise = super().forward(received, coherence, packet=packet)
         return torch.fft.ifft(supported(fft(noise), True), norm='ortho')
+
+
+def observed_noise_rms(received):
+    """Estimate added noise in the tracked frame from outer spectral power."""
+    outer = torch.fft.fftfreq(received.shape[-1], device=received.device).abs()>.25
+    power = fft(received)[...,outer].abs().square()
+    return (power.median(-1,keepdim=True).values/log(2.)).sqrt()
 
 
 def source_probe(signal, to_first, indices):
