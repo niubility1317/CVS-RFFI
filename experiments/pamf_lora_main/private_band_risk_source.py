@@ -27,7 +27,7 @@ from .variance_bound import spectral_contrast, variance_interval
 from .weak_guard_source import parent_model
 
 
-RUN = '20261124-phase1-lora-private-band-risk-source-cpu-r01'
+RUN = '20261124-phase1-lora-private-band-risk-source-cpu-r02'
 SEED = 2026114117
 PER_RX = 30
 PROBES = 4
@@ -121,7 +121,7 @@ def summarize(readout, reference, groups):
     power = band_inner(private, private, weight, mask)
     valid = readout['active'][:, None] & (quadratic > 1e-10) & (power > 1e-10)
     partition = {'pooled': torch.ones(len(mid), dtype=torch.bool, device=mid.device)}
-    partition.update({name: torch.as_tensor(groups == name, device=mid.device) for name in SOURCE})
+    partition.update({name: tensor(groups == name, mid.device) for name in SOURCE})
     doses = {'midpoint':torch.zeros_like(exact_linear), 'fixed_step_half':torch.full_like(exact_linear,.5),
              'full':torch.ones_like(exact_linear), 'received_risk':readout['dose'],
              'observed_residual_only':minimizing_dose(readout['uncorrected'],quadratic),
@@ -174,6 +174,10 @@ def smoke(rt):
     if (int(tested['active'].sum()) != len(iq) or tested['edit'].abs().amax() == 0
             or bypass['dose'].count_nonzero() or not torch.equal(bypass['midpoint'],bypass['spectrum'])):
         raise ValueError('Actual source checkpoint risk or clean bypass failed')
+    clean = fft(complex_iq(calibration[:2])/tested['basis'])
+    grouped = summarize(tested,clean,np.repeat(SOURCE[0],len(iq)))['strata']
+    if grouped['pooled'] != grouped[SOURCE[0]] or not any(row['n'] for row in grouped['pooled'].values()):
+        raise ValueError('Actual source checkpoint risk summary failed')
     write(root/'smoke.json',dict(status='PASS',tracked=len(iq),threshold=threshold,**ISOLATION))
     print('LORA_PRIVATE_RISK_CHECKPOINT_PASS',flush=True)
 
