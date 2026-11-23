@@ -24,7 +24,7 @@ class Denoise(nn.Module):
         self.spectral = Core(incoming=7, outgoing=3)
         self.temporal = Core(incoming=5, outgoing=2)
 
-    def forward(self, received, coherence, *, packet):
+    def forward(self, received, coherence, *, packet, mixed_conv=False):
         spec = torch.fft.fftshift(torch.fft.fft(received, norm='ortho'), dim=-1)
         context, spread = complementary_context(spec, coherence)
         if not packet:
@@ -32,7 +32,10 @@ class Denoise(nn.Module):
         confidence = coherence.expand_as(received.real)
         features = torch.stack((spec.real, spec.imag, spec.abs().log1p(),
                                 context.real, context.imag, spread.log1p(), confidence), dim=2)
-        spectral = self.spectral(features.flatten(0, 1)).unflatten(0, received.shape[:2])
+        with torch.autocast('cuda',dtype=torch.bfloat16,enabled=mixed_conv):
+            spectral = self.spectral(features.flatten(0, 1)).unflatten(0, received.shape[:2])
+        if mixed_conv:
+            spectral = spectral.float()
         amplitude, real, imag = spectral.unbind(2)
         # Keep the initialization exactly at the received IQ.
         weight = torch.sigmoid(amplitude - 3.) - torch.sigmoid(amplitude.new_tensor(-3.))
@@ -40,7 +43,10 @@ class Denoise(nn.Module):
         spectral_noise = torch.fft.ifft(torch.fft.ifftshift(estimate, dim=-1), norm='ortho')
         features = torch.stack((received.real, received.imag, spectral_noise.real,
                                 spectral_noise.imag, confidence), dim=2)
-        temporal = self.temporal(features.flatten(0, 1)).unflatten(0, received.shape[:2])
+        with torch.autocast('cuda',dtype=torch.bfloat16,enabled=mixed_conv):
+            temporal = self.temporal(features.flatten(0, 1)).unflatten(0, received.shape[:2])
+        if mixed_conv:
+            temporal = temporal.float()
         return spectral_noise + .10*torch.complex(temporal[:, :, 0], temporal[:, :, 1])
 
 

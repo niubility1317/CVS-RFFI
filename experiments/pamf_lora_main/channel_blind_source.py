@@ -1,8 +1,11 @@
 """Train one clean-source recovery model and freeze it before practical scoring."""
 
 import argparse
+from dataclasses import dataclass
 from functools import partial
 from pathlib import Path
+import time
+from typing import Callable
 
 import numpy as np
 import torch
@@ -31,6 +34,19 @@ MODES = ('direct','reference','blind_coarse','blind_refined','blind_half')
 ISOLATION = dict(F_reads=0,TX_reads=0,V_reads=0,target_reads=0,practical_reads=0,trace_reads=0)
 
 
+@dataclass(frozen=True)
+class FitRecipe:
+    name: str
+    steps: int
+    model: Callable
+    perturb: Callable
+    restore: Callable
+
+
+DEFAULT = FitRecipe('blind',STEPS,ChannelBlind,generic_observation,
+                    lambda model,y,q,_template:model(y,q))
+
+
 def partition(rx, fit=FIT, cal=CAL, held=HELD):
     rng = np.random.default_rng(SEED)
     parts = [rng.permutation(np.flatnonzero(rx==key)) for key in SOURCE]
@@ -46,9 +62,12 @@ def panel(rx):
                                              replace=False)) for key in SOURCE])
 
 
-def proof(contract):
-    return dict(status='SOURCE_FROZEN',contract=contract,seed=SEED,steps=STEPS,
+def proof(contract, recipe=DEFAULT):
+    metadata = dict(status='SOURCE_FROZEN',contract=contract,seed=SEED,steps=recipe.steps,
                 fit_per_rx=FIT,calibration_per_rx=CAL,held_per_rx=HELD,**ISOLATION)
+    if recipe.name!='blind':
+        metadata['estimator'] = recipe.name
+    return metadata
 
 
 def setup(rt, device, *, smoke=False):
@@ -70,34 +89,35 @@ def waveform_risk(output, target):
     return (error.abs().square()/(power+.03*power.mean(-1,keepdim=True)+.001)).log1p().mean()
 
 
-def costs(model, tracker, iq, generator, *, with_identity):
+def costs(model, tracker, iq, generator, *, with_identity, recipe=DEFAULT):
     clean = complex_iq(iq)
-    y = torch.stack((generic_observation(clean,generator),generic_observation(clean,generator)),dim=1)
+    y = torch.stack((recipe.perturb(clean,generator),recipe.perturb(clean,generator)),dim=1)
     if with_identity:
         y[-2:] = clean[-2:,None]
     flat = real_iq(y.flatten(0,1))
     observed,rotation,q,rms = coordinates(tracker,flat)
     basis = rotation*rms
     target = clean[:,None].expand_as(y).flatten(0,1)/basis
-    coarse,refined = model(observed,q)
+    coarse,refined = recipe.restore(model,observed,q,rotation)
     physical_error = ((refined-target)*basis).unflatten(0,y.shape[:2])
     paired = (physical_error[:,0]-physical_error[:,1]).abs().square().mean()
     return torch.stack((waveform_risk(coarse,target),waveform_risk(refined,target),paired))
 
 
-def fit(rt, *, smoke=False):
+def fit(rt, *, smoke=False, recipe=DEFAULT):
     device = 'cuda:0'
     torch.manual_seed(SEED)
     (training,calibration,held), contract = setup(rt,device,smoke=smoke)
     tracker = PacketRestorer('consensus').to(device).eval()
-    model = ChannelBlind().to(device)
+    model = recipe.model().to(device)
     opt = torch.optim.AdamW(model.parameters(),lr=2e-4,weight_decay=1e-4)
-    steps = 1 if smoke else STEPS
+    steps = 1 if smoke else recipe.steps
     lr = torch.optim.lr_scheduler.CosineAnnealingLR(opt,steps,eta_min=2e-5)
     rng = torch.Generator(device=device).manual_seed(SEED)
+    start_time = time.perf_counter()
     for step in range(1,steps+1):
         ix = torch.randint(len(training),(BATCH,),device=device,generator=rng)
-        values = costs(model,tracker,training[ix],rng,with_identity=True)
+        values = costs(model,tracker,training[ix],rng,with_identity=True,recipe=recipe)
         if not torch.isfinite(values).all():
             raise FloatingPointError('Nonfinite channel-blind source fit')
         opt.zero_grad(set_to_none=True)
@@ -109,24 +129,29 @@ def fit(rt, *, smoke=False):
         lr.step()
         if step==1 or step%50==0:
             print('CHANNEL_BLIND_FIT',step,*values.detach().tolist(),flush=True)
+    torch.cuda.synchronize()
+    worker_seconds = time.perf_counter()-start_time
     with torch.no_grad():
         model.eval()
         clean_scores = torch.cat([corruption_score(coordinates(tracker,v)[0])
                                   for v in calibration.split(32)])
         threshold = float(1.05*clean_scores.max())
         eval_rng = torch.Generator(device=device).manual_seed(SEED+5)
-        validation = [len(v)*costs(model,tracker,v,eval_rng,with_identity=False) for v in held.split(BATCH)]
+        validation = [len(v)*costs(model,tracker,v,eval_rng,with_identity=False,recipe=recipe)
+                      for v in held.split(BATCH)]
         result = (torch.stack(validation).sum(0)/len(held)).tolist()
     root = Path(rt['run_root'])
-    meta = proof(contract)
+    meta = proof(contract,recipe)
     summary = {k:v for k,v in meta.items() if k!='contract'}
     summary.update(threshold=threshold,held_waveform=result,
-                   n_fit=len(training),n_calibration=len(calibration),n_held=len(held))
+                   n_fit=len(training),n_calibration=len(calibration),n_held=len(held),
+                   worker_seconds=worker_seconds,
+                   bf16_training_convolutions=recipe.name!='blind' and torch.cuda.is_bf16_supported())
     if smoke:
-        write(root/'smoke-blind.json',dict(summary,status='PASS',steps=1))
+        write(root/f'smoke-{recipe.name}.json',dict(summary,status='PASS',steps=1))
     else:
-        torch.save(dict(proof=meta,weights=model.state_dict(),threshold=threshold),root/'blind-model.pt')
-        write(root/'blind-complete.json',summary)
+        torch.save(dict(proof=meta,weights=model.state_dict(),threshold=threshold),root/f'{recipe.name}-model.pt')
+        write(root/f'{recipe.name}-complete.json',summary)
 
 
 def receive_only(route, scene, row):

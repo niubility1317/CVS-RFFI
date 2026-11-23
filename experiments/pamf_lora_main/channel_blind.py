@@ -34,15 +34,22 @@ class ChannelBlind(nn.Module):
         self.coarse = Denoise()
         self.prior = Core(incoming=8, widths=(24,48,72,96))
 
-    def forward(self, observed, quality):
+    def propose(self, observed, quality, *, mixed_conv=False):
         variance = observed_noise_rms(observed).square()
-        coarse = observed-zero_carrier(self.coarse(observed,quality,packet=True))
+        coarse = observed-zero_carrier(self.coarse(observed,quality,packet=True,mixed_conv=mixed_conv))
         innovation = observed-coarse
         fields = torch.stack((observed.real,observed.imag,coarse.real,coarse.imag,
                               innovation.real,innovation.imag,quality.expand_as(observed.real),
                               variance.log1p().expand_as(observed.real)),dim=2)
-        change = self.prior(fields.flatten(0,1)).unflatten(0,observed.shape[:2])
+        with torch.autocast('cuda',dtype=torch.bfloat16,enabled=mixed_conv):
+            change = self.prior(fields.flatten(0,1)).unflatten(0,observed.shape[:2])
+        if mixed_conv:
+            change = change.float()
         proposed = coarse+zero_carrier(torch.complex(change[:,:,0],change[:,:,1]))
+        return coarse,proposed,variance
+
+    def forward(self, observed, quality):
+        coarse,proposed,variance = self.propose(observed,quality)
         # Identity observation operator, with packet averaging as the prior scale.
         trust = variance/(variance+1./observed.shape[1])
         refined = observed+trust*(proposed-observed)
