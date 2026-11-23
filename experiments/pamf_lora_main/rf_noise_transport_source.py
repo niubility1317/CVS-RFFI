@@ -16,18 +16,28 @@ from .complex_vector_source import load_reader, publish
 from .dura_repair import PacketRestorer, complex_iq, real_iq
 from .joint_unroll_source import coordinates, source_control
 from .natural_detail import natural_objective, paired_echo_inputs
+from .rf_noise_confidence import RFNoiseConfidence
 from .rf_noise_transport import RFNoiseTransport, colored_observation
 from .runner import activate
 from .spectral_unroll import ROUTES
 
 
 RUN = '20261124-phase1-lora-rf-noise-transport-source-m4-r01'
+CONFIDENCE_RUN = '20261124-phase1-lora-rf-noise-confidence-source-m4-r01'
 STEPS = 1800
 MODES = ('direct', 'reference', 'flat_coarse', 'flat', 'flat_half',
          'transport_coarse', 'transport', 'transport_half')
 PAIRS = (('transport_coarse', 'flat_coarse'), ('transport', 'flat'), ('transport_half', 'flat_half'))
 RECIPES = {name: FitRecipe(name, STEPS, partial(RFNoiseTransport, aligned), colored_observation, RFNoiseTransport.forward)
            for name, aligned in (('flat', False), ('transport', True))}
+CONFIDENCE_MODES = ('direct', 'reference', 'kernel_coarse', 'kernel', 'kernel_half',
+                    'confidence_coarse', 'confidence', 'confidence_half')
+CONFIDENCE_PAIRS = (('confidence_coarse', 'kernel_coarse'), ('confidence', 'kernel'),
+                    ('confidence_half', 'kernel_half'))
+CONFIDENCE_RECIPES = {
+    name: FitRecipe(name, STEPS, partial(RFNoiseConfidence, adaptive), colored_observation, RFNoiseTransport.forward)
+    for name, adaptive in (('kernel', False), ('confidence', True))
+}
 
 
 @torch.no_grad()
@@ -55,30 +65,29 @@ def render(iq, _unused, baseline, tracker, models, *, threshold):
 
 
 @torch.no_grad()
-def checkpoint_smoke(rt):
+def checkpoint_smoke(rt, recipes, modes):
     root, device = Path(rt['run_root']), 'cuda:0'
     (_, calibration, _), contract = setup(rt, device, smoke=True)
     _, _, expected, baseline, tracker = source_control(rt, 'full', device)
     if contract != expected:
         raise ValueError('Source U does not match the real LoRa checkpoint contract')
     reader = load_reader(root, contract, device)
-    models = [recipe.model().to(device).eval() for recipe in RECIPES.values()]
+    models = [recipe.model().to(device).eval() for recipe in recipes.values()]
     generator = torch.Generator(device=device).manual_seed(2026112403)
     batch = real_iq(colored_observation(complex_iq(calibration[:2]), generator))
     values, _ = render(batch, None, baseline, tracker, models, threshold=-1.)
     logits = reader(values.flatten(0, 1))[0]
-    if logits.shape != (len(MODES) * len(batch), 10) or not torch.isfinite(logits).all():
+    if logits.shape != (len(modes) * len(batch), 10) or not torch.isfinite(logits).all():
         raise ValueError('LoRa current IQ and real-reader smoke failed')
     write(root / 'checkpoint_smoke.json', dict(status='PASS', source_U=len(batch), target_reads=0))
     print('LORA_RF_NOISE_REAL_CHECKPOINT_PASS', flush=True)
 
 
 @torch.no_grad()
-def timing(rt):
+def timing(rt, recipe):
     root, device = Path(rt['run_root']), 'cuda:0'
     (_, calibration, _), contract = setup(rt, device, smoke=True)
     tracker = PacketRestorer('consensus').to(device).eval()
-    recipe = RECIPES['transport']
     saved = torch.load(root / f'{recipe.name}-model.pt', map_location=device, weights_only=True)
     if saved['proof'] != proof(contract, recipe):
         raise ValueError('Cannot time another LoRa restore checkpoint')
@@ -109,32 +118,44 @@ def main():
     pub = commands.add_parser('publish')
     for key in ('repo', 'output', 'context', 'ssh-config', 'parent-submit'):
         pub.add_argument('--' + key, type=Path, required=True)
+    pub.add_argument('--confidence-study', action='store_true')
+    fit_arms = (*RECIPES, *CONFIDENCE_RECIPES)
     for action in ('dispatch', 'checkpoint_smoke', 'smoke', 'fit', 'timing', 'evaluate', 'score'):
         cmd = commands.add_parser(action)
         cmd.add_argument('runtime', type=Path)
         if action != 'dispatch':
-            cmd.add_argument('name', choices=RECIPES if action in ('smoke', 'fit') else
+            cmd.add_argument('name', choices=fit_arms if action in ('smoke', 'fit') else
                              ROUTES if action == 'evaluate' else ('source',))
     args = vars(parser.parse_args())
     action = args.pop('action')
     if action == 'publish':
-        publish(**args, run=RUN, runner=__spec__.name)
+        run = CONFIDENCE_RUN if args.pop('confidence_study') else RUN
+        publish(**args, run=run, runner=__spec__.name)
         return
     rt = read(args['runtime'])
+    run = Path(rt['run_root']).name
+    if run == CONFIDENCE_RUN:
+        recipes, modes, pairs = CONFIDENCE_RECIPES, CONFIDENCE_MODES, CONFIDENCE_PAIRS
+        measured = 'confidence'
+    elif run == RUN:
+        recipes, modes, pairs = RECIPES, MODES, PAIRS
+        measured = 'transport'
+    else:
+        raise ValueError('Expected a registered LoRa RF noise estimation run')
     if action == 'dispatch':
-        dispatch(rt, RECIPES, initial_stages=(('checkpoint_smoke', ('source',)),))
+        dispatch(rt, recipes, initial_stages=(('checkpoint_smoke', ('source',)),))
     elif action == 'score':
-        score_frozen(rt, modes=MODES, comparisons=PAIRS)
+        score_frozen(rt, modes=modes, comparisons=pairs)
     else:
         activate(rt)
         if action == 'checkpoint_smoke':
-            checkpoint_smoke(rt)
+            checkpoint_smoke(rt, recipes, modes)
         elif action == 'evaluate':
-            evaluate(rt, args['name'], recipes=RECIPES, modes=MODES, renderer=render)
+            evaluate(rt, args['name'], recipes=recipes, modes=modes, renderer=render)
         elif action == 'timing':
-            timing(rt)
+            timing(rt, recipes[measured])
         else:
-            fit(rt, smoke=action == 'smoke', recipe=RECIPES[args['name']], receiver_batches=True,
+            fit(rt, smoke=action == 'smoke', recipe=recipes[args['name']], receiver_batches=True,
                 calculate=partial(natural_objective, preserve=.35, make_pair=paired_echo_inputs))
 
 

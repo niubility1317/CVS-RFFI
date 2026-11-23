@@ -66,31 +66,36 @@ class RFNoiseTransport(nn.Module):
                                 onesided=False, return_complex=True, length=view.shape[-1])
         return recovered.reshape_as(view)
 
-    def estimate_noise(self, observed, rotation):
+    def native_samples(self, observed, rotation):
         native = self.analyze(observed * rotation)
         ridge = power(self.analyze(rotation)).argmax(dim=-1, keepdim=True)
         distance = (self.frequency - ridge + FFT // 2).remainder(FFT) - FFT // 2
-        off_mainlobe = distance.abs() >= 7
-        energy = power(native)
+        outside = distance.abs() >= 7
+        return power(native).masked_fill(~outside, torch.nan), outside, ridge
+
+    @staticmethod
+    def noise_profile(samples, outside):
         # Use the current chirp PSD with a mild shrinkage to same-packet estimates.
         # Very short/ambiguous ridge support falls back to that chirp's aggregate.
-        samples = energy.masked_fill(~off_mainlobe, torch.nan)
         aggregate = samples.flatten(-2).nanmedian(dim=-1).values
         per_tone = samples.nanmedian(dim=-2).values
-        per_tone = torch.where(off_mainlobe.sum(dim=-2) >= 4, per_tone, aggregate[..., None])
+        per_tone = torch.where(outside.sum(dim=-2) >= 4, per_tone, aggregate[..., None])
         packet = per_tone.median(dim=1, keepdim=True).values
         profile = (.75 * per_tone + .25 * packet) / log(2)
         scalar = profile.mean(dim=-1, keepdim=True)
-        mapping = (self.frequency + ridge).remainder(FFT)
         # Both arms use the same mean noise power from the same native samples.
         color = profile / scalar.clamp_min(1e-8)
         color = color.clamp(.1, 5.)
         color = color / color.mean(dim=-1, keepdim=True)
-        profile = scalar * color
-        warped = profile[:, :, None].expand_as(native.real).gather(-1, mapping)
+        return scalar * color, scalar
+
+    def estimate_noise(self, observed, rotation):
+        samples, outside, ridge = self.native_samples(observed, rotation)
+        profile, scalar = self.noise_profile(samples, outside)
         if self.aligned:
-            return warped
-        return scalar[:, :, None].expand_as(native.real)
+            mapping = (self.frequency + ridge).remainder(FFT)
+            return profile[:, :, None].expand_as(samples).gather(-1, mapping)
+        return scalar[:, :, None].expand_as(samples)
 
     def forward(self, observed, quality, rotation):
         native_shape = self.estimate_noise(observed, rotation)
