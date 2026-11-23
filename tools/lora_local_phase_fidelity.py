@@ -1,4 +1,4 @@
-"""Audit frozen LoRa phase readouts against paired source waveforms and traces."""
+"""Audit frozen LoRa recovery against paired source waveforms and traces."""
 
 import argparse
 from concurrent.futures import ProcessPoolExecutor
@@ -10,6 +10,8 @@ import numpy as np
 import torch
 
 from experiments.cric_dura_comparison.io import read, tensor
+from experiments.pamf_lora_main import local_phase_source, spectral_block_source
+from experiments.pamf_lora_main.channel_blind import corruption_score
 from experiments.pamf_lora_main.channel_blind_source import panel, receive_only
 from experiments.pamf_lora_main.data import SOURCE, VIEWS
 from experiments.pamf_lora_main.denoise_source import replay
@@ -17,15 +19,24 @@ from experiments.pamf_lora_main.dura_repair import PacketRestorer, complex_iq
 from experiments.pamf_lora_main.full_packet_publish import DATA_RUN
 from experiments.pamf_lora_main.full_packet_views import source_contract, source_role
 from experiments.pamf_lora_main.joint_unroll_source import coordinates
-from experiments.pamf_lora_main.local_phase_source import MODES, RECIPES, RUN, recover
 from experiments.pamf_lora_main.local_wiener_source import ROUTES, read_frozen
 from experiments.pamf_lora_main.runner import activate
-from experiments.pamf_lora_main.spectral_block_source import load_models
 
 
 BANDS = ((1, 8), (9, 32), (33, 64), (65, 128))
 METRICS = ('complex_nmse', 'magnitude_nmse', 'normalized_real_correlation')
-READOUTS = ('direct', 'middle_full', 'edges_full', 'edges_half')
+GEOMETRY_RUN = '20261124-phase1-lora-complex-geometry-source-m4-r01'
+
+
+def bounded_projection(model, direct, reference, y, frame, threshold):
+    """L2 projection onto the candidate's exact noncarrier editing disks."""
+    x, _, _, level, _ = model.observe(y)
+    target = model.spectral(reference/frame)
+    bound = .60*(x.abs()+.15*level.clamp_min(1e-8).sqrt())
+    correction = model.bounded(target-x,bound)
+    output = direct+model.temporal(correction)*frame
+    use = corruption_score(y)>threshold
+    return torch.where(use[:,None,None],output,direct)
 
 
 def spectral_metrics(waves, known, frame):
@@ -46,10 +57,10 @@ def spectral_metrics(waves, known, frame):
     return np.asarray(torch.stack(bands,dim=2).tolist(),dtype=np.float32)
 
 
-def paired_source(data, cache, contract, root, route):
+def paired_source(data, cache, contract, root, route, modes):
     raw, receivers, ids, _ = source_role(data,contract,'V')
     selected = panel(receivers)
-    frozen_ids, _, marks = read_frozen(root,route,MODES)
+    frozen_ids, _, marks = read_frozen(root,route,modes)
     if ids[selected].tolist()!=frozen_ids:
         raise ValueError('The diagnostic must follow the same frozen source V physical IDs')
     rows = list(zip(raw[selected],receivers[selected],ids[selected],strict=True))
@@ -60,12 +71,23 @@ def paired_source(data, cache, contract, root, route):
 
 @torch.no_grad()
 def diagnose(rt, route, device):
+    is_geometry = rt['run_id']==GEOMETRY_RUN
+    if is_geometry:
+        from experiments.pamf_lora_main import complex_geometry_source as study
+        recover = spectral_block_source.recover
+        readouts = ('direct',*study.MODES[2:])
+        indices = range(len(study.MODES)-2)
+    else:
+        study = local_phase_source
+        recover = study.recover
+        readouts = ('direct','middle_full','edges_full','edges_half')
+        indices = (1,4,5)
     root = Path(rt['run_root'])
     data = Path(rt['source_root'])
     cache = root.parent/DATA_RUN/'source_views'
     contract = source_contract(data)
-    rows, registered, clean, selected, marks = paired_source(data,cache,contract,root,route)
-    models, threshold = load_models(root,contract,device,RECIPES)
+    rows, registered, clean, selected, marks = paired_source(data,cache,contract,root,route,study.MODES)
+    models, threshold = spectral_block_source.load_models(root,contract,device,study.RECIPES)
     tracker = PacketRestorer('consensus').to(device).eval()
     truth = tensor(clean,device)
     output = {}
@@ -80,17 +102,23 @@ def diagnose(rt, route, device):
                         raise ValueError('Residual source trace replay changed sampled registered IQ')
             active, bands_from_ground, bands_from_noiseless = 0, [], []
             for received, epsilon, source in zip(tensor(capture,device).split(18),tensor(noise,device).split(18),truth.split(18),strict=True):
-                recoveries, count, _ = recover(received,tracker,models,threshold)
+                recoveries, count = recover(received,tracker,models,threshold)[:2]
                 active += count
                 y = complex_iq(received)
-                waves = torch.stack([y,*(complex_iq(recoveries[k]) for k in (1,4,5))])
-                _, phase, _, rms = coordinates(tracker,received)
+                waves = [y,*(complex_iq(recoveries[k]) for k in indices)]
+                tracked, phase, _, rms = coordinates(tracker,received)
                 frame = phase*rms
                 # One fit against the direct readout is shared by all diagnostic comparisons.
                 ground = complex_iq(source)
                 gain = (y*ground.conj()).mean(-1,keepdim=True)/ground.abs().square().mean(-1,keepdim=True).clamp_min(1e-6)
-                bands_from_ground.append(spectral_metrics(waves,ground*gain,frame))
-                bands_from_noiseless.append(spectral_metrics(waves,y-complex_iq(epsilon),frame))
+                target = ground*gain
+                noiseless = y-complex_iq(epsilon)
+                for reference, group in ((target,bands_from_ground),(noiseless,bands_from_noiseless)):
+                    compared = waves
+                    if is_geometry:
+                        projected = bounded_projection(models[-1],y,reference,tracked,frame,threshold)
+                        compared = [*waves,projected]
+                    group.append(spectral_metrics(torch.stack(compared),reference,frame))
             if active!=marks[view]['active']:
                 raise ValueError('Diagnostic gate triggers differ from frozen predictions')
             ground, noiseless = [np.concatenate(parts,axis=1) for parts in (bands_from_ground,bands_from_noiseless)]
@@ -99,7 +127,9 @@ def diagnose(rt, route, device):
                 output[view][key] = dict(median=np.median(values,axis=1).tolist(),
                     by_receiver={name:np.median(group,axis=1).tolist()
                                  for name,group in zip(SOURCE,np.split(values,len(SOURCE),axis=1),strict=True)})
-    return dict(route=route,n=len(rows),bands=BANDS,metrics=METRICS,readouts=READOUTS,scenes=output)
+    if is_geometry:
+        readouts = (*readouts,'bounded_pair_projection')
+    return dict(route=route,n=len(rows),bands=BANDS,metrics=METRICS,readouts=readouts,scenes=output)
 
 
 def main():
@@ -110,7 +140,7 @@ def main():
     args = parser.parse_args()
     rt = read(args.runtime)
     root = Path(rt['run_root'])
-    if rt.get('run_id')!=RUN or read(root/'state.json')['status']!='SOURCE_SCORED':
+    if rt.get('run_id') not in (local_phase_source.RUN,GEOMETRY_RUN) or read(root/'state.json')['status']!='SOURCE_SCORED':
         raise ValueError('The full dual-route truth-last scoring must already be complete')
     activate(rt)
     print(json.dumps(diagnose(rt,args.route,args.device),allow_nan=False))
