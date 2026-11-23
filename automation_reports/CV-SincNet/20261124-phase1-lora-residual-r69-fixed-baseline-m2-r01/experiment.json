@@ -1,0 +1,209 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261124-phase1-lora-residual-r69-fixed-baseline-m2-r01",
+  "group_id": "phase1-lora-observable-recovery",
+  "display_name": "LoRa residual 固定 R69 三种子配对补齐",
+  "description": "Add two frozen Tri-set recognizer seeds to the historical 2026092702 residual R69 gated-half control; no fitting or calibration.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "frozen_baseline",
+    "truth_last",
+    "three_seed"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261123-phase1-lora-dura-residual-practical-m1-r01",
+    "20261123-phase1-lora-dura-residual-gate-m1-r01",
+    "20261122-phase1-lora-tri-label-set-m3-r01",
+    "20261123-phase1-lora-dura-complex-response-confirm-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User handoff from 01a1dedc-e242-78a2-8064-20079b2070eb and active LoRa/WiSig observable recovery goal. Source screen only.",
+  "code": {
+    "commit": "7e8e66802d5d8ab14e9e21432911f3217fda0854",
+    "checkout": "E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-residual-r69-fixed-baseline-m2-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa registered main data",
+    "version": "lora_full_packets_v1",
+    "representation": "Phase-aligned six chirps, float32 [6,2,256] plus replay of registered full and residual received views in frozen source scoring",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-dura-residual-practical-m1-r01/target_views/complete.json; registered 2000 per RX target manifest",
+    "label_map_ref": "F:/FULL wisig/Radio Frequency Fingerprint LoRa Dataset With Multiple Receivers/multiple_receiver_test.zip; separate local truth scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": 0,
+      "V": 0,
+      "source_no_query_smoke": 10,
+      "target_blind_packages_per_reader": 30000
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": "experiments/pamf_lora_main/packet_physics.py; processing_route=residual"
+  },
+  "permissions": {
+    "regime": "source_trained_blind_target_evaluation",
+    "query_use": "frozen_prediction_only",
+    "external_method_exception": null,
+    "claim_scope": "Original frozen residual baseline only. Test outcomes do not influence restoration development."
+  },
+  "checkpoint": {
+    "initialization": "No training. Exact residual R69 restoration weights and gate from seed 2026092702.",
+    "sources": [
+      {
+        "role": "frozen restoration",
+        "ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-dura-residual-practical-m1-r01/G/lineage/r69/final.pt"
+      },
+      {
+        "role": "frozen source gate",
+        "ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-dura-residual-gate-m1-r01/gate.json"
+      },
+      {
+        "role": "frozen recognizers",
+        "ref": "20261122-phase1-lora-tri-label-set-m3-r01; seed 2026092701 and 2026092703"
+      }
+    ],
+    "contract_check_ref": "residual_dura_gate_run.frozen_models; source/truth roles from original LoRa data contract",
+    "provenance_verdict": "Original G fitted on legal residual L/U, independently from F and TX labels. Its original practical simulator supervision is retained as baseline provenance.",
+    "selection_rule": "Fixed registered R69 and gate, original gated half and raw half plus direct. Full and residual baselines are separate historic versions; no tuning."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex handoff thread 01a208a9-57df-7f82-a078-cd9477adf998",
+    "gpu_policy": "Up to two simultaneous workers on different eligible GPUs; capacity checked by existing scheduler with all compute PIDs and max 4 per GPU",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-residual-r69-fixed-baseline-m2-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-residual-r69-fixed-baseline-m2-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/residual_fixed_r69_baseline_v1",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.residual_dura_gate_run publish --repo E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010 --output E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/residual_fixed_r69_baseline_v1 --context E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_calibration_source_r01_context.json --ssh-config E:/type10-7/tools/n607_ssh_config --parent-submit E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_residual_practical_release/submit.json --fixed-baseline",
+    "stop_rule": "Freeze neither matrix if missing lineage, gate contract, blind views, reader identity, shape, or nonfinite predictions. No retraining."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "{2026092701,2026092703}/smoke.json",
+    "{2026092701,2026092703}/predictions/complete.json",
+    "{2026092701,2026092703}/activity.json",
+    "independent score matrices per seed and three-seed aggregate"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "net correct changes",
+      "clean exact decision comparison",
+      "per-RX correctness"
+    ],
+    "dimensions": [
+      "recognizer seed",
+      "scene",
+      "receiver",
+      "readout"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-residual-r69-fixed-baseline-m2-r01/{2026092701,2026092703}/predictions/",
+    "scorer_ref": "experiments.pamf_lora_main.residual_dura_score --disturbance-gate --fixed-reader-seed <seed>"
+  },
+  "rows": [
+    {
+      "row_id": "predict-2026092701",
+      "method": "Frozen historical residual R69 and source gate with separate Tri-set reader",
+      "purpose": "matched_baseline_completion",
+      "config_ref": "experiments/pamf_lora_main/residual_dura_gate_run.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-residual-r69-fixed-baseline-m2-r01/configs/predict-2026092701.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only frozen recognizer seed changes. Same residual G seed 2026092702 and same frozen gate.",
+      "k": null,
+      "scenario": "residual clean plus six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "30000 physical packets across 15 target RX; three readings, seven views, no optimizer",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-residual-r69-fixed-baseline-m2-r01/2026092701/predictions",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-residual-r69-fixed-baseline-m2-r01/logs/predict-2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.residual_dura_gate_run predict /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-residual-r69-fixed-baseline-m2-r01/configs/predict-2026092701.json 2026092701",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-residual-r69-fixed-baseline-m2-r01/2026092701/predictions/complete.json",
+        "E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/residual_fixed_r69_baseline_v1/2026092701/scores.json"
+      ]
+    },
+    {
+      "row_id": "predict-2026092703",
+      "method": "Frozen historical residual R69 and source gate with separate Tri-set reader",
+      "purpose": "matched_baseline_completion",
+      "config_ref": "experiments/pamf_lora_main/residual_dura_gate_run.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-residual-r69-fixed-baseline-m2-r01/configs/predict-2026092703.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only frozen recognizer seed changes. Same residual G seed 2026092702 and same frozen gate.",
+      "k": null,
+      "scenario": "residual clean plus six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "30000 physical packets across 15 target RX; three readings, seven views, no optimizer",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-residual-r69-fixed-baseline-m2-r01/2026092703/predictions",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-residual-r69-fixed-baseline-m2-r01/logs/predict-2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.residual_dura_gate_run predict /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-residual-r69-fixed-baseline-m2-r01/configs/predict-2026092703.json 2026092703",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-residual-r69-fixed-baseline-m2-r01/2026092703/predictions/complete.json",
+        "E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/residual_fixed_r69_baseline_v1/2026092703/scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Seed 2026092702 predictions and scores reused without replay from 20261123-phase1-lora-dura-residual-gate-m1-r01.",
+    "Both newly predicted seed rows are frozen before the independent local truth-side scorer opens the official archive.",
+    "Existing matched full route controls: E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_complex_response_confirm_readout."
+  ],
+  "registered_at": "2026-11-23T17:59:06+00:00"
+}
