@@ -2,8 +2,10 @@
 
 import argparse
 from concurrent.futures import ProcessPoolExecutor
+from dataclasses import dataclass
 from functools import partial
 from pathlib import Path, PurePosixPath
+from typing import Callable
 
 import numpy as np
 import torch
@@ -40,38 +42,56 @@ MODES = ('direct', 'reference', 'direct_vector', 'balanced_vector', 'balanced_ha
 ISOLATION = dict(F_reads=0, TX_reads=0, V_reads=0, target_reads=0)
 
 
+@dataclass(frozen=True)
+class VectorRecipe:
+    seed: int
+    steps: int
+    train_per_rx: int
+    held_per_rx: int
+    arms: tuple[str, str]
+    model: Callable
+    targets: Callable
+    loss: Callable
+
+
+DEFAULT = VectorRecipe(KEY, STEPS, TRAIN_PER_RX, HELD_PER_RX, ARMS, lambda _: ComplexVector(),
+                       teacher_vectors, lambda value, target, _: vector_risk(value, target))
+
+
 @torch.no_grad()
-def training_pairs(arrays):
+def training_pairs(arrays, create_targets=teacher_vectors):
     measured, q, foreground, baseline, supported, clean, cq = arrays
     take = supported.flatten()
     x, b, q, foreground = (a.flatten(0, 1)[take] for a in (measured, baseline, q, foreground))
     if len(x) < 16:
         raise ValueError('Missing source practical exposures at the mature gate')
-    return (x, b, q, teacher_vectors(b, foreground)), (clean, cq)
+    return (x, b, q, create_targets(b, foreground)), (clean, cq)
 
 
-def record(contract, route):
-    return dict(status='SOURCE_FROZEN', route=route, contract=contract, seed=KEY, steps=STEPS,
-                train_per_rx=TRAIN_PER_RX, held_per_rx=HELD_PER_RX, arms=list(ARMS), **ISOLATION)
+def record(contract, route, recipe=DEFAULT):
+    return dict(status='SOURCE_FROZEN', route=route, contract=contract, seed=recipe.seed, steps=recipe.steps,
+                train_per_rx=recipe.train_per_rx, held_per_rx=recipe.held_per_rx,
+                arms=list(recipe.arms), **ISOLATION)
 
 
-def fit(rt, route, *, smoke=False):
+def fit(rt, route, *, smoke=False, recipe=DEFAULT):
     device = 'cuda:0'
-    torch.manual_seed(KEY)
+    torch.manual_seed(recipe.seed)
     _, _, original, baseline, tracker = source_control(rt, route, device)
-    fit_per, held_per = (6, 4) if smoke else (TRAIN_PER_RX, HELD_PER_RX)
+    fit_per, held_per = (6, 4) if smoke else (recipe.train_per_rx, recipe.held_per_rx)
     raw_fit, raw_held, contract = build_arrays(rt, route, tracker, fit_per, held_per, baseline=baseline)
     if original != contract:
         raise ValueError('The mature restoration path and source exposure must agree')
-    (y, b, q, targets), (clean, clean_q) = training_pairs(raw_fit)
-    (yh, bh, qh, th), _ = training_pairs(raw_held)
+    (y, b, q, targets), (clean, clean_q) = training_pairs(raw_fit, recipe.targets)
+    (yh, bh, qh, th), _ = training_pairs(raw_held, recipe.targets)
     del raw_fit, raw_held
-    models = {k: ComplexVector().to(device) for k in ARMS}
-    models['balanced'].load_state_dict(models['direct'].state_dict())
+    models = {k: recipe.model(k).to(device) for k in recipe.arms}
+    first, second = models.values()
+    second.load_state_dict(first.state_dict())
     optim = torch.optim.AdamW([p for m in models.values() for p in m.parameters()], lr=2e-4, weight_decay=1e-4)
-    steps = 1 if smoke else STEPS
+    steps = 1 if smoke else recipe.steps
     lr = torch.optim.lr_scheduler.CosineAnnealingLR(optim, steps, eta_min=2e-5)
-    rng = torch.Generator(device=device).manual_seed(KEY)
+    rng = torch.Generator(device=device).manual_seed(recipe.seed)
     for step in range(1, steps+1):
         ids = torch.randint(len(y), (BATCH,), device=device, generator=rng)
         clean_ids = torch.randint(len(clean), (2,), device=device, generator=rng)
@@ -79,8 +99,8 @@ def fit(rt, route, *, smoke=False):
         v = torch.cat((y[ids], reset))
         w = torch.cat((b[ids], reset))
         trust = torch.cat((q[ids], rq))
-        losses = torch.stack([vector_risk(m(v, w, trust), torch.cat((targets[k][ids],
-                                   torch.zeros_like(targets[k][ids[:2]])))) for k, m in models.items()])
+        losses = torch.stack([recipe.loss(m(v, w, trust), torch.cat((targets[k][ids],
+                                   torch.zeros_like(targets[k][ids[:2]]))), k) for k, m in models.items()])
         if not torch.isfinite(losses).all():
             raise FloatingPointError('Nonfinite source complex-vector fitting')
         optim.zero_grad(set_to_none=True)
@@ -98,12 +118,13 @@ def fit(rt, route, *, smoke=False):
         indices = torch.arange(len(yh), device=device).split(20)
         for k, m in models.items():
             m.eval()
-            held[k] = sum(len(i)*float(vector_risk(m(yh[i], bh[i], qh[i]), th[k][i])) for i in indices)/len(yh)
-    evidence = record(contract, route)
+            held[k] = sum(len(i)*float(recipe.loss(m(yh[i], bh[i], qh[i]), th[k][i], k))
+                          for i in indices)/len(yh)
+    evidence = record(contract, route, recipe)
     root = Path(rt['run_root'])
     report = {k: v for k, v in evidence.items() if k != 'contract'}
     report.update(fit_active=len(y), held_active=len(yh), held_loss=held,
-                  zero_baseline={k: float(vector_risk(torch.zeros_like(t), t)) for k,t in th.items()})
+                  zero_baseline={k: float(recipe.loss(torch.zeros_like(t), t, k)) for k,t in th.items()})
     if smoke:
         write(root/f'smoke-{route}.json', dict(report, status='PASS', steps=1,
                                                train_per_rx=fit_per, held_per_rx=held_per))
@@ -140,21 +161,21 @@ def readouts(received, noise, baseline, tracker, models):
 
 
 @torch.no_grad()
-def score(rt, route):
+def score(rt, route, *, recipe=DEFAULT, panel=result_panel, modes=MODES, render=readouts):
     device = 'cuda:0'
     root = Path(rt['run_root'])
     source, cache, contract, baseline, tracker = source_control(rt, route, device)
     saved = torch.load(root/f'{route}-model.pt', map_location=device, weights_only=True)
-    if saved['proof'] != record(contract, route) or set(saved['models']) != set(ARMS):
+    if saved['proof'] != record(contract, route, recipe) or set(saved['models']) != set(recipe.arms):
         raise ValueError('Wrong individually frozen complex-vector source weights')
-    models = [ComplexVector().to(device).eval().requires_grad_(False) for _ in ARMS]
-    for m, k in zip(models, ARMS, strict=True):
+    models = [recipe.model(k).to(device).eval().requires_grad_(False) for k in recipe.arms]
+    for m, k in zip(models, recipe.arms, strict=True):
         m.load_state_dict(saved['models'][k], strict=True)
     f = recognizer(device).eval().requires_grad_(False)
     weights = complete_f(root.parent/SET_RUN, contract, case(SEED, SET_METHOD))/'model.pt'
     f.load_state_dict(torch.load(weights, map_location=device, weights_only=True), strict=True)
     raw, rx, ids, _ = source_role(source, contract, 'V')
-    chosen = result_panel(rx)
+    chosen = panel(rx)
     rows = list(zip(raw[chosen], rx[chosen], ids[chosen], strict=True))
     official = np.load(cache/'V.npy', mmap_mode='r', allow_pickle=False) if cache is not None else None
     pred, metrics = {}, {}
@@ -166,16 +187,16 @@ def score(rt, route):
                 raise ValueError('Full source view mismatch')
             n_active, parts = 0, []
             for y, epsilon in zip(tensor(capture, device).split(18), tensor(noise, device).split(18), strict=True):
-                x, active = readouts(y, epsilon, baseline, tracker, models)
+                x, active = render(y, epsilon, baseline, tracker, models)
                 logits = f(x.flatten(0, 1))[0]
                 if not torch.isfinite(logits).all() or (view=='clean' and active):
                     raise ValueError('Invalid clean guard or nonfinite frozen classification')
                 n_active += active
-                parts.append(logits.argmax(1).reshape(len(MODES), len(y)).cpu().tolist())
+                parts.append(logits.argmax(1).reshape(len(modes), len(y)).cpu().tolist())
             pred[view] = np.concatenate(parts, axis=1)
             metrics[view] = dict(active=n_active)
             print('COMPLEX_VECTOR_SOURCE', route, view, n_active, flush=True)
-    summarize(root, route, source, chosen, ids, pred, metrics, MODES)
+    summarize(root, route, source, chosen, ids, pred, metrics, modes)
 
 
 def dispatch(rt):
@@ -192,7 +213,7 @@ def dispatch(rt):
         raise
 
 
-def publish(repo, output, context, ssh_config, parent_submit):
+def publish(repo, output, context, ssh_config, parent_submit, *, run=RUN, runner=None):
     cfg = read(context)
     rt = {k: cfg[k] for k in ('project', 'python', 'frozen_sources')}
     project = PurePosixPath(rt['project'])
@@ -200,8 +221,8 @@ def publish(repo, output, context, ssh_config, parent_submit):
     receipt = read(parent_submit)
     if receipt['archive_transfer'] != 'VERIFIED' or PurePosixPath(receipt['run_root']) != parent:
         raise ValueError('Exact source receipt required')
-    rt.update(run_id=RUN, runner=__spec__.name, code_commit=release_commit(repo),
-              run_root=str(project/'runs'/RUN), release_root=str(project/'releases'/f'{RUN}-release'),
+    rt.update(run_id=run, runner=runner or __spec__.name, code_commit=release_commit(repo),
+              run_root=str(project/'runs'/run), release_root=str(project/'releases'/f'{run}-release'),
               source_root=str(project/'releases'/f'{DATA_RUN}-release'/'data'/'source'), parent_root=str(parent),
               allowed_gpus=[3,6,2,0,4,1,5], max_workers=2, max_compute_processes=4)
     release(repo, output, rt, ssh_config)

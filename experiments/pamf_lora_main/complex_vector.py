@@ -44,7 +44,7 @@ class ComplexVector(nn.Module):
         self.spectral = Core(incoming=13, outgoing=2)
         self.temporal = Core(incoming=7, outgoing=2)
 
-    def forward(self, observed, baseline, quality):
+    def proposal(self, observed, baseline, quality):
         original, current = (torch.fft.fftshift(fft(x), dim=-1) for x in (observed, baseline))
         nearby, dispersion = complementary_context(original, quality)
         companion, _ = complementary_context(current, quality)
@@ -58,8 +58,10 @@ class ComplexVector(nn.Module):
         t = torch.stack((observed.real, observed.imag, baseline.real, baseline.imag,
                          detail.real, detail.imag, q), dim=2)
         second = self.temporal(t.flatten(0, 1)).unflatten(0, observed.shape[:2])
-        proposed = .06*(torch.fft.ifftshift(proposal, dim=-1) +
-                        fft(torch.complex(second[:, :, 0], second[:, :, 1])))
+        return torch.fft.ifftshift(proposal, dim=-1) + fft(torch.complex(second[:, :, 0], second[:, :, 1]))
+
+    def forward(self, observed, baseline, quality):
+        proposed = .06*self.proposal(observed, baseline, quality)
         output = torch.zeros_like(proposed)
         for band in bands(proposed.shape[-1], proposed.device):
             x = proposed[..., band]
