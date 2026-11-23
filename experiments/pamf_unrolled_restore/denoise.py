@@ -19,10 +19,10 @@ def complementary_context(spectrum, coherence):
 class Denoise(nn.Module):
     """Estimate additive noise from each waveform and the other same-packet symbols."""
 
-    def __init__(self):
+    def __init__(self, *, widths=(32, 64, 96, 128)):
         super().__init__()
-        self.spectral = Core(incoming=7, outgoing=3)
-        self.temporal = Core(incoming=5, outgoing=2)
+        self.spectral = Core(incoming=7, outgoing=3, widths=widths)
+        self.temporal = Core(incoming=5, outgoing=2, widths=widths)
 
     def forward(self, received, coherence, *, packet, mixed_conv=False):
         spec = torch.fft.fftshift(torch.fft.fft(received, norm='ortho'), dim=-1)

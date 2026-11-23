@@ -95,11 +95,12 @@ def setup(rt, device, *, smoke=False):
     return tuple(tensor(values[0,i],device) for i in indices),contract
 
 
-def waveform_risk(output, target):
+def waveform_risk(output, target, *, per_chirp=False):
     reference = torch.fft.fft(target,norm='ortho')[...,1:]
     error = torch.fft.fft(output-target,norm='ortho')[...,1:]
     power = reference.abs().square()
-    return (error.abs().square()/(power+.03*power.mean(-1,keepdim=True)+.001)).log1p().mean()
+    risk = (error.abs().square() / (power + .03 * power.mean(-1, keepdim=True) + .001)).log1p()
+    return risk.mean(dim=-1) if per_chirp else risk.mean()
 
 
 def costs(model, tracker, iq, generator, *, with_identity, recipe=DEFAULT):

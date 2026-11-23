@@ -6,6 +6,8 @@ from .channel_blind_source import waveform_risk
 from .dura_repair import complex_iq, real_iq
 from .joint_unroll_source import coordinates
 from .pilot_joint import apply_echo, echo_taps
+from .tail_risk import stratified_upper_quarter
+from .weak_signal_probe import observed_noise_rms
 
 
 def detail_bands(value):
@@ -65,7 +67,7 @@ def paired_echo_inputs(clean, perturb, rng, change, *, with_identity):
 
 
 def natural_objective(model, tracker, iq, rng, *, with_identity, recipe, step, preserve,
-                      make_pair=paired_inputs, projection_weight=None):
+                      make_pair=paired_inputs, projection_weight=None, tail_weight=None):
     clean = complex_iq(iq)
     framed, rotation, _, rms = coordinates(tracker, iq)
     clean_basis = rotation * rms
@@ -81,10 +83,22 @@ def natural_objective(model, tracker, iq, rng, *, with_identity, recipe, step, p
     consistent = (refined_iq[:, 0] - refined_iq[:, 1]).abs().square().mean()
     transport = (refined_iq[:, 2] - refined_iq[:, 0]) / clean_basis
     measured = transfer_risk(transport, delta)
-    values = torch.stack((waveform_risk(coarse,target), waveform_risk(refined,target),
-                          consistent, measured))
+    per_chirp = tail_weight is not None
+    stage_risks = torch.stack(tuple(waveform_risk(stage, target, per_chirp=per_chirp)
+                                    for stage in (coarse, refined)))
+    means = stage_risks.flatten(1).mean(1) if per_chirp else stage_risks
+    values = torch.cat((means, torch.stack((consistent, measured))))
     first,second,paired = recipe.loss_weights(step)
     loss = first*values[0] + second*values[1] + paired*values[2] + preserve*values[3]
+    if per_chirp:
+        slots = slice(None, -2) if with_identity else slice(None)
+        perturbed = stage_risks.unflatten(1, wave.shape[:2])[:, slots]
+        with torch.no_grad():
+            noise = observed_noise_rms(observed).squeeze(-1).unflatten(0, wave.shape[:2])[slots]
+        tails = stratified_upper_quarter(perturbed, noise)
+        excess = tails - perturbed.flatten(1).mean(dim=1)
+        loss = loss + tail_weight * (first * excess[0] + second * excess[1])
+        values = torch.cat((values, tails))
     if projection_weight is not None:
         projected = projection_risk(transport, delta)
         loss = loss + projection_weight * projected
