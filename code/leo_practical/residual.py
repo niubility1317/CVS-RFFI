@@ -26,10 +26,13 @@ class ResidualChannel:
         self.latent = ChannelStream(replace(cfg, processing_route="full"), seed, receiver, geometry)
         self.used = False
 
-    def process(self, x, *, preceding_context=None, return_traces=False, quality_snr_db=None):
+    def process(self, x, *, preceding_context=None, return_traces=False, quality_snr_db=None,
+                return_operator=False):
         if self.used:
             raise ValueError("ResidualChannel is snapshot-only; create a new instance per record")
         cfg, latent = self.cfg, self.latent
+        if return_operator and not return_traces:
+            raise ValueError("operator output requires a residual trace")
         x = np.asarray(x, complex)
         if x.ndim != 1 or len(x) < 4 or not np.isfinite(x).all():
             raise ValueError("expected finite 1D raw IQ")
@@ -137,6 +140,10 @@ class ResidualChannel:
                          "quality_proxy_may_differ_from_full_route_on_colored_input"],
             parameter_provenance="same_practical_engineering_parameters_not_independent_weak_channel")
         if return_traces:
-            return y.astype(np.complex64),meta,dict(pre_agc_signal=signal,pre_agc_noise=noise,
+            trace = dict(pre_agc_signal=signal,pre_agc_noise=noise,
                 propagation_kernel=h,residual_kernel=main_kernel,equalizer_kernel=g)
+            if return_operator:
+                trace.update(operator_main=alpha*main_rotation, operator_image=beta*image_rotation,
+                             image_kernel=image_kernel)
+            return y.astype(np.complex64), meta, trace
         return y.astype(np.complex64),meta

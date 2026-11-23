@@ -375,10 +375,13 @@ class ChannelStream:
         self.eq_signal_history = None
         self.eq_noise_history = None
 
-    def process(self, x, *, preceding_context=None, return_traces=False, quality_snr_db=None):
+    def process(self, x, *, preceding_context=None, return_traces=False, quality_snr_db=None,
+                return_operator=False):
         cfg = self.cfg
         if cfg.processing_route != "full":
             raise ValueError("use ResidualChannel or batch API for the residual route")
+        if return_operator and (not return_traces or cfg.mode != "post_sync" or cfg.equalization_enabled):
+            raise ValueError("operator trace requires post-sync IQ without equalization")
         x = np.asarray(x, dtype=np.complex128)
         if x.ndim != 1 or len(x) < 4 or not np.isfinite(x).all():
             raise ValueError("expected finite 1D IQ, at least four samples")
@@ -573,6 +576,15 @@ class ChannelStream:
                         "geometry": self.geometry.source, "fading_rx_noise": "engineering_assumption",
                         "atmosphere": cfg.atmosphere_source})
         if return_traces:
-            return y.astype(np.complex64), meta, dict(state=state, shadow_z=shadow,
+            trace = dict(state=state, shadow_z=shadow,
                 coefficients=fading, pre_agc_signal=signal, pre_agc_noise=noise)
+            if return_operator:
+                basis = iq_imbalance(np.array([1., 1j]), self.receiver)
+                if cfg.iq_compensation_enabled:
+                    basis = compensate_iq(basis, self.receiver.estimated_amplitude_imbalance_db,
+                                          self.receiver.estimated_quadrature_error_deg)
+                alpha, beta = (basis[0] - 1j*basis[1])/2, (basis[0] + 1j*basis[1])/2
+                trace.update(path_gain=gain, operator_main=alpha*rotation*correction,
+                             operator_image=beta*rotation.conj()*correction)
+            return y.astype(np.complex64), meta, trace
         return y.astype(np.complex64), meta
