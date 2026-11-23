@@ -1,0 +1,7 @@
+{"at": "2026-11-23T23:31:08+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-23T23:31:08+00:00", "status": "LOCAL_VERIFIED", "note": "Ten targeted tests, compilation and one independent review passed.", "evidence": "tests/test_lora_private_transport.py", "row_id": null}
+{"at": "2026-11-23T23:32:25+00:00", "status": "RUNNING", "note": "Archive and compile verified. Real frozen parent and reader smoke PASS. Two owned prediction PIDs, argv/CWD and physical GPUs independently observed with growing logs.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-23T23:34:48+00:00", "status": "ANALYZED", "note": "Fixed source V seven-view matrix and independent scorer verified.", "evidence": "full-source-scores.json", "row_id": "evaluate-full"}
+{"at": "2026-11-23T23:34:48+00:00", "status": "ANALYZED", "note": "Fixed source V seven-view matrix and independent scorer verified.", "evidence": "residual-source-scores.json", "row_id": "evaluate-residual"}
+{"at": "2026-11-23T23:34:48+00:00", "status": "ANALYZED", "note": "900+11100 complete source clean predictions reconciled.", "evidence": "clean-complete-scores.json", "row_id": "evaluate-reserve"}
+{"at": "2026-11-23T23:34:48+00:00", "status": "ANALYZED", "note": "Source-only. Eligible sqrt-g readouts [].", "evidence": "full-source-scores.json,residual-source-scores.json,clean-complete-scores.json", "row_id": null}

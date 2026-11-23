@@ -1,0 +1,44 @@
+{
+  "pid": 2320182,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-private-variance-transport-source-m2-r01-release",
+  "code_commit": "170b3a91eed9daa097c65eb81edc523de71acb54",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "status": "VERIFIED",
+  "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-private-variance-transport-source-m2-r01",
+  "state": "SOURCE_SCORED",
+  "smoke": {
+    "pid": 2320199,
+    "gpu": 3,
+    "status": "PASS"
+  },
+  "timing": {
+    "pid": 2320747,
+    "gpu": 3
+  },
+  "prediction_workers": [
+    {
+      "route": "full",
+      "pid": 2320983,
+      "gpu": 3,
+      "device_memory_mib": 710
+    },
+    {
+      "route": "residual",
+      "pid": 2320984,
+      "gpu": 2,
+      "device_memory_mib": 1314
+    }
+  ],
+  "reserve": {
+    "pid": 2322518,
+    "physical_gpu": 3,
+    "frozen_n": 11100
+  },
+  "scorer": {
+    "pid": 2322852,
+    "device": "CPU",
+    "truth_after_all_predictions": true,
+    "complete_source_clean": 12000
+  }
+}

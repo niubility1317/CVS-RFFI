@@ -1,0 +1,16 @@
+{
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "n_measurements": 24,
+  "timing": {
+    "clean": {
+      "active": 0,
+      "median_ms": 1.6589565202593803
+    },
+    "generic": {
+      "active": 1,
+      "median_ms": 50.15815305523574
+    }
+  },
+  "restoration_weights": 254735,
+  "scope": "shared rank parent and four private engineering readouts; excludes classifier and DURA"
+}
