@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 包内镜像证据约束细化](../automation_reports/CV-SincNet/20261124-phase1-lora-mirror-protected-refine-source-m3-r01/report.md)
 - [LoRa 去扫频谱的镜像共轭恢复](../automation_reports/CV-SincNet/20261124-phase1-lora-conjugate-companion-source-m4-r01/report.md)
 - [LoRa residual 固定 R69 三种子配对补齐](../automation_reports/CV-SincNet/20261124-phase1-lora-residual-r69-fixed-baseline-m2-r01/report.md)
 - [LoRa 冻结复数修正的频带析因](../automation_reports/CV-SincNet/20261124-phase1-lora-tail-frequency-factorial-source-m2-r01/report.md)

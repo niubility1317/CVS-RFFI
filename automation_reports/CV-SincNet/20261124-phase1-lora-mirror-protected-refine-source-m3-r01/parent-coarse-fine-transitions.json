@@ -1,0 +1,437 @@
+{
+  "parent": "20261124-phase1-lora-conjugate-companion-source-m4-r01",
+  "traces_read": 0,
+  "target_reads": 0,
+  "n_packets": 900,
+  "evidence": "Per-packet transitions between previously frozen, source-scored checkpoints",
+  "routes": {
+    "full": {
+      "total": {
+        "net_coarse": 24,
+        "net_fine": -9,
+        "strata": {
+          "mirror_only_correct": {
+            "coarse_count": 165,
+            "adj_only_final": 2,
+            "mirror_only_final": 28,
+            "both_final_correct": 57,
+            "both_final_wrong": 78,
+            "swing": -139
+          },
+          "adjacent_only_correct": {
+            "coarse_count": 141,
+            "adj_only_final": 28,
+            "mirror_only_final": 3,
+            "both_final_correct": 44,
+            "both_final_wrong": 66,
+            "swing": 116
+          },
+          "coarse_equal": {
+            "coarse_count": 5094,
+            "adj_only_final": 62,
+            "mirror_only_final": 52,
+            "both_final_correct": 2845,
+            "both_final_wrong": 2135,
+            "swing": -10
+          }
+        }
+      },
+      "by_scene": {
+        "practical_high": {
+          "net_coarse": 2,
+          "net_fine": 1,
+          "strata": {
+            "mirror_only_correct": {
+              "coarse_count": 4,
+              "adj_only_final": 0,
+              "mirror_only_final": 0,
+              "both_final_correct": 3,
+              "both_final_wrong": 1,
+              "swing": -4
+            },
+            "adjacent_only_correct": {
+              "coarse_count": 2,
+              "adj_only_final": 0,
+              "mirror_only_final": 0,
+              "both_final_correct": 1,
+              "both_final_wrong": 1,
+              "swing": 2
+            },
+            "coarse_equal": {
+              "coarse_count": 894,
+              "adj_only_final": 0,
+              "mirror_only_final": 1,
+              "both_final_correct": 589,
+              "both_final_wrong": 304,
+              "swing": 1
+            }
+          }
+        },
+        "practical_mid": {
+          "net_coarse": 6,
+          "net_fine": -6,
+          "strata": {
+            "mirror_only_correct": {
+              "coarse_count": 19,
+              "adj_only_final": 0,
+              "mirror_only_final": 0,
+              "both_final_correct": 10,
+              "both_final_wrong": 9,
+              "swing": -19
+            },
+            "adjacent_only_correct": {
+              "coarse_count": 13,
+              "adj_only_final": 4,
+              "mirror_only_final": 1,
+              "both_final_correct": 2,
+              "both_final_wrong": 6,
+              "swing": 10
+            },
+            "coarse_equal": {
+              "coarse_count": 868,
+              "adj_only_final": 6,
+              "mirror_only_final": 3,
+              "both_final_correct": 530,
+              "both_final_wrong": 329,
+              "swing": -3
+            }
+          }
+        },
+        "practical_low_suburban": {
+          "net_coarse": 14,
+          "net_fine": -12,
+          "strata": {
+            "mirror_only_correct": {
+              "coarse_count": 41,
+              "adj_only_final": 1,
+              "mirror_only_final": 3,
+              "both_final_correct": 16,
+              "both_final_wrong": 21,
+              "swing": -39
+            },
+            "adjacent_only_correct": {
+              "coarse_count": 27,
+              "adj_only_final": 2,
+              "mirror_only_final": 0,
+              "both_final_correct": 8,
+              "both_final_wrong": 17,
+              "swing": 25
+            },
+            "coarse_equal": {
+              "coarse_count": 832,
+              "adj_only_final": 16,
+              "mirror_only_final": 4,
+              "both_final_correct": 450,
+              "both_final_wrong": 362,
+              "swing": -12
+            }
+          }
+        },
+        "practical_high_urban": {
+          "net_coarse": 0,
+          "net_fine": 2,
+          "strata": {
+            "mirror_only_correct": {
+              "coarse_count": 8,
+              "adj_only_final": 0,
+              "mirror_only_final": 2,
+              "both_final_correct": 3,
+              "both_final_wrong": 3,
+              "swing": -6
+            },
+            "adjacent_only_correct": {
+              "coarse_count": 8,
+              "adj_only_final": 1,
+              "mirror_only_final": 0,
+              "both_final_correct": 3,
+              "both_final_wrong": 4,
+              "swing": 7
+            },
+            "coarse_equal": {
+              "coarse_count": 884,
+              "adj_only_final": 1,
+              "mirror_only_final": 2,
+              "both_final_correct": 570,
+              "both_final_wrong": 311,
+              "swing": 1
+            }
+          }
+        },
+        "practical_mid_urban": {
+          "net_coarse": -3,
+          "net_fine": 1,
+          "strata": {
+            "mirror_only_correct": {
+              "coarse_count": 35,
+              "adj_only_final": 0,
+              "mirror_only_final": 9,
+              "both_final_correct": 11,
+              "both_final_wrong": 15,
+              "swing": -26
+            },
+            "adjacent_only_correct": {
+              "coarse_count": 38,
+              "adj_only_final": 10,
+              "mirror_only_final": 0,
+              "both_final_correct": 13,
+              "both_final_wrong": 15,
+              "swing": 28
+            },
+            "coarse_equal": {
+              "coarse_count": 827,
+              "adj_only_final": 13,
+              "mirror_only_final": 15,
+              "both_final_correct": 412,
+              "both_final_wrong": 387,
+              "swing": 2
+            }
+          }
+        },
+        "practical_low_urban": {
+          "net_coarse": 5,
+          "net_fine": 5,
+          "strata": {
+            "mirror_only_correct": {
+              "coarse_count": 58,
+              "adj_only_final": 1,
+              "mirror_only_final": 14,
+              "both_final_correct": 14,
+              "both_final_wrong": 29,
+              "swing": -45
+            },
+            "adjacent_only_correct": {
+              "coarse_count": 53,
+              "adj_only_final": 11,
+              "mirror_only_final": 2,
+              "both_final_correct": 17,
+              "both_final_wrong": 23,
+              "swing": 44
+            },
+            "coarse_equal": {
+              "coarse_count": 789,
+              "adj_only_final": 26,
+              "mirror_only_final": 27,
+              "both_final_correct": 294,
+              "both_final_wrong": 442,
+              "swing": 1
+            }
+          }
+        }
+      }
+    },
+    "residual": {
+      "total": {
+        "net_coarse": 96,
+        "net_fine": -8,
+        "strata": {
+          "mirror_only_correct": {
+            "coarse_count": 379,
+            "adj_only_final": 12,
+            "mirror_only_final": 24,
+            "both_final_correct": 168,
+            "both_final_wrong": 175,
+            "swing": -367
+          },
+          "adjacent_only_correct": {
+            "coarse_count": 283,
+            "adj_only_final": 27,
+            "mirror_only_final": 7,
+            "both_final_correct": 134,
+            "both_final_wrong": 115,
+            "swing": 263
+          },
+          "coarse_equal": {
+            "coarse_count": 4738,
+            "adj_only_final": 109,
+            "mirror_only_final": 109,
+            "both_final_correct": 2355,
+            "both_final_wrong": 2165,
+            "swing": 0
+          }
+        }
+      },
+      "by_scene": {
+        "practical_high": {
+          "net_coarse": 0,
+          "net_fine": 1,
+          "strata": {
+            "mirror_only_correct": {
+              "coarse_count": 3,
+              "adj_only_final": 0,
+              "mirror_only_final": 0,
+              "both_final_correct": 2,
+              "both_final_wrong": 1,
+              "swing": -3
+            },
+            "adjacent_only_correct": {
+              "coarse_count": 3,
+              "adj_only_final": 0,
+              "mirror_only_final": 0,
+              "both_final_correct": 1,
+              "both_final_wrong": 2,
+              "swing": 3
+            },
+            "coarse_equal": {
+              "coarse_count": 894,
+              "adj_only_final": 0,
+              "mirror_only_final": 1,
+              "both_final_correct": 538,
+              "both_final_wrong": 355,
+              "swing": 1
+            }
+          }
+        },
+        "practical_mid": {
+          "net_coarse": 29,
+          "net_fine": 4,
+          "strata": {
+            "mirror_only_correct": {
+              "coarse_count": 99,
+              "adj_only_final": 2,
+              "mirror_only_final": 8,
+              "both_final_correct": 52,
+              "both_final_wrong": 37,
+              "swing": -93
+            },
+            "adjacent_only_correct": {
+              "coarse_count": 70,
+              "adj_only_final": 4,
+              "mirror_only_final": 2,
+              "both_final_correct": 35,
+              "both_final_wrong": 29,
+              "swing": 68
+            },
+            "coarse_equal": {
+              "coarse_count": 731,
+              "adj_only_final": 16,
+              "mirror_only_final": 16,
+              "both_final_correct": 365,
+              "both_final_wrong": 334,
+              "swing": 0
+            }
+          }
+        },
+        "practical_low_suburban": {
+          "net_coarse": 30,
+          "net_fine": 6,
+          "strata": {
+            "mirror_only_correct": {
+              "coarse_count": 96,
+              "adj_only_final": 7,
+              "mirror_only_final": 6,
+              "both_final_correct": 48,
+              "both_final_wrong": 35,
+              "swing": -97
+            },
+            "adjacent_only_correct": {
+              "coarse_count": 66,
+              "adj_only_final": 6,
+              "mirror_only_final": 2,
+              "both_final_correct": 31,
+              "both_final_wrong": 27,
+              "swing": 62
+            },
+            "coarse_equal": {
+              "coarse_count": 738,
+              "adj_only_final": 23,
+              "mirror_only_final": 34,
+              "both_final_correct": 327,
+              "both_final_wrong": 354,
+              "swing": 11
+            }
+          }
+        },
+        "practical_high_urban": {
+          "net_coarse": 6,
+          "net_fine": 2,
+          "strata": {
+            "mirror_only_correct": {
+              "coarse_count": 10,
+              "adj_only_final": 1,
+              "mirror_only_final": 1,
+              "both_final_correct": 1,
+              "both_final_wrong": 7,
+              "swing": -10
+            },
+            "adjacent_only_correct": {
+              "coarse_count": 4,
+              "adj_only_final": 0,
+              "mirror_only_final": 1,
+              "both_final_correct": 1,
+              "both_final_wrong": 2,
+              "swing": 5
+            },
+            "coarse_equal": {
+              "coarse_count": 886,
+              "adj_only_final": 1,
+              "mirror_only_final": 2,
+              "both_final_correct": 554,
+              "both_final_wrong": 329,
+              "swing": 1
+            }
+          }
+        },
+        "practical_mid_urban": {
+          "net_coarse": 7,
+          "net_fine": -1,
+          "strata": {
+            "mirror_only_correct": {
+              "coarse_count": 76,
+              "adj_only_final": 2,
+              "mirror_only_final": 4,
+              "both_final_correct": 30,
+              "both_final_wrong": 40,
+              "swing": -74
+            },
+            "adjacent_only_correct": {
+              "coarse_count": 69,
+              "adj_only_final": 9,
+              "mirror_only_final": 2,
+              "both_final_correct": 35,
+              "both_final_wrong": 23,
+              "swing": 62
+            },
+            "coarse_equal": {
+              "coarse_count": 755,
+              "adj_only_final": 21,
+              "mirror_only_final": 25,
+              "both_final_correct": 330,
+              "both_final_wrong": 379,
+              "swing": 4
+            }
+          }
+        },
+        "practical_low_urban": {
+          "net_coarse": 24,
+          "net_fine": -20,
+          "strata": {
+            "mirror_only_correct": {
+              "coarse_count": 95,
+              "adj_only_final": 0,
+              "mirror_only_final": 5,
+              "both_final_correct": 35,
+              "both_final_wrong": 55,
+              "swing": -90
+            },
+            "adjacent_only_correct": {
+              "coarse_count": 71,
+              "adj_only_final": 8,
+              "mirror_only_final": 0,
+              "both_final_correct": 31,
+              "both_final_wrong": 32,
+              "swing": 63
+            },
+            "coarse_equal": {
+              "coarse_count": 734,
+              "adj_only_final": 48,
+              "mirror_only_final": 31,
+              "both_final_correct": 241,
+              "both_final_wrong": 414,
+              "swing": -17
+            }
+          }
+        }
+      }
+    }
+  }
+}
