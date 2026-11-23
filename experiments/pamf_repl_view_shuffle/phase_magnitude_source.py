@@ -48,7 +48,7 @@ def evaluate(rt, route):
         restored = dict(fitted=fitted, **candidates(y, fitted, noise))
         for name in ('fitted', 'fit_phase', 'weighted_phase'):
             restored[f'{name}_guarded'] = torch.where(active[:, None], restored[name], y)
-        return restored, {'effective_noise': noise, 'gate_active': active}
+        return restored, {'effective_noise': noise, 'gate_active': active.float()}
 
     panel.predict(rt, route, alternatives=MODES, restore=restore, diagnose=action.spectral_evidence)
 
