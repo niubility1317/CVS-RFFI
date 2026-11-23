@@ -1,0 +1,72 @@
+{
+  "status": "VERIFIED",
+  "held_U": 50,
+  "seed": 2026112417,
+  "target_reads": 0,
+  "TX_reads": 0,
+  "metrics": {
+    "diagonal": {
+      "coarse_logit_adjustment": [
+        6.820847511291504,
+        8.928567886352539,
+        13.689186096191406
+      ],
+      "fine_logit_adjustment": [
+        2.18550181388855,
+        3.3170909881591797,
+        5.278547286987305
+      ],
+      "noncarrier_fraction_coarse": [
+        0.00032356989686377347,
+        0.0011071634944528341,
+        0.0030802905093878508
+      ],
+      "noncarrier_fraction_final": [
+        0.0003215736651327461,
+        0.0011047258740291,
+        0.003079198533669114
+      ]
+    },
+    "covariance": {
+      "coarse_logit_adjustment": [
+        6.112337112426758,
+        8.364583969116211,
+        12.529644012451172
+      ],
+      "fine_logit_adjustment": [
+        1.601445198059082,
+        2.6010618209838867,
+        4.0056891441345215
+      ],
+      "noncarrier_fraction_coarse": [
+        0.0003248787543270737,
+        0.0011077866656705737,
+        0.003080685157328844
+      ],
+      "noncarrier_fraction_final": [
+        0.0003218314959667623,
+        0.0011048311134800315,
+        0.0030793456826359034
+      ]
+    }
+  },
+  "frozen_decision_differences": {
+    "full": {
+      "covariance_coarse_vs_diagonal_coarse": 0,
+      "covariance_vs_diagonal": 0,
+      "covariance_half_vs_diagonal_half": 0,
+      "covariance_vs_covariance_coarse": 1
+    },
+    "residual": {
+      "covariance_coarse_vs_diagonal_coarse": 0,
+      "covariance_vs_diagonal": 0,
+      "covariance_half_vs_diagonal_half": 0,
+      "covariance_vs_covariance_coarse": 0
+    }
+  },
+  "relative_final_iq_distance": [
+    9.201898132360498e-10,
+    3.6797220825945942e-09,
+    6.104221483838046e-08
+  ]
+}
