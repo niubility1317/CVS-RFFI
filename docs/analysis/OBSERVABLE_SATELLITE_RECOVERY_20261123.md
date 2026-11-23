@@ -1,6 +1,6 @@
 # LoRa 与 WiSig 可部署星地信道恢复阶段结果
 
-截至 2026-11-23，原冻结基线的两套数据和两条信道路线已补齐。当前候选尚未达到正式验收，目标保持进行中。
+截至 2026-11-24，原冻结基线的两套数据和两条信道路线已补齐。当前候选尚未达到正式验收，目标保持进行中。
 
 ## LoRa 三种子基线与验收差距
 
@@ -36,10 +36,12 @@ R69 v1.0 有 266,951 个参数。历史两阶段学生由 R65 固定父版初始
 
 - LoRa 局部 Wiener 对照覆盖同一 900 个源 V 包与原 Tri-set 单种子。完整复协方差全量在 full 相对成熟 DURA 净增 42 次，95% 配对区间为 −3 至 +92，在 residual 净减 249 次，区间约为 −324 至 −176。两路线 clean 均保持 667/900。匹配半量消融中，复协方差相对对角读出分别净减 24 次和净增 31 次。同包隔离归因显示，换成真实总噪声功率后，原 Wiener 六景在 full 和 residual 分别再少判对 3 和 138 次。保载波精确扣噪则分别多判对 423 和 871 次，五台源接收机均受益。Residual 上更准确的功率未能解决复谱恢复造成的识别损失。该读出未进入正式目标矩阵。 [LoRa 局部 Wiener 对照](../../automation_reports/CV-SincNet/20261123-phase1-lora-local-wiener-source-m2-r01/report.md) · [LoRa 隔离噪声归因](../../automation_reports/CV-SincNet/20261123-diagnostic-lora-noise-floor-source-m2-r01/report.md)
 - LoRa 分块复谱实验中，匹配遮挡组的粗恢复在 full 和 residual 比全谱组净多判对 93 和 257 次，五台源接收机均正向。遮挡组全量细化相对同组粗恢复则净少 13 和 128 次。两条路线最好的联合半量比成熟 DURA 分别少 49 和 126 次，clean 均为 667/900。两组各 34,693 参数、1,600 步。遮挡先验的独立收益在源域消融成立，两组均未进入正式矩阵。 [LoRa 分块复谱消融](../../automation_reports/CV-SincNet/20261123-phase1-lora-spectral-block-source-m4-r01/report.md)
+- LoRa 同范数方向消融中，保护实收共享复谱在 full 全量读出净增 34 次，在 residual 半量读出净减 105 次。保护半量在 full 比直通多 28 次，95% 配对区间为 +5 至 +52，仍比成熟 DURA 少 38 次。Clean 均为 667/900。相同约束的源域收益未跨路线复现。 [LoRa 同量复数修正](../../automation_reports/CV-SincNet/20261123-phase1-lora-repeat-protection-source-m4-r01/report.md)
 - WiSig 的直接前导均衡和绝对 CFO 校正使 clean 与受损识别均下降。两路短训练重复残差可反映观测失配，估计方差含相位变化和硬件失配。 [接收量及工程对照](../../automation_reports/CV-SincNet/20261123-phase1-wisig-stf-engineering-source-s2026092701-r02/report.md)
 - 与历史 F50 配对时，接收端时标检测和协议后缀外推在源 V 把两路线六景提高到 7,121/10,800，同时保持 1,773/1,800 clean。换成正式对比所用的 Tri-SIG-TIME 单种子后，同一方法的两路线六景分别净减 66 和 67 次正确。拟合一个短长前导共享复响应也下降，其中标量法净减 176 和 172，三抽头法净减 204 和 206。Tri-SIG-TIME 的 R69 同包基线为 10,194 和 10,195/10,800。两条路线的 clean 正确数均为 1,775/1,800，时标方法未晋级。 [F50 时标对照](../../automation_reports/CV-SincNet/20261123-phase1-wisig-timing-engineering-source-s2026092701-r01/report.md) · [Tri-SIG-TIME 联合前导对照](../../automation_reports/CV-SincNet/20261123-phase1-wisig-joint-preamble-source-s2026092701-r01/report.md)
 - 合法源 U 训练使用通用波形扰动，粗恢复、观测约束和细化联合训练。与匹配波形损失组相比，弱复谱约束在冻结 Tri-SIG-TIME 单种子的无门联合源读出中，两路线六景分别多判对 1,524 和 1,526 次，全部场景和源接收机方向一致。复评沿用原 227,268 参数、1,200 步权重。该读出仍低于直通与 R69，固定门在两条路线各净少 2 次六景正确与 1 次 clean 正确。此前把接收端时标放进训练和推理可改善历史 F50 的匹配训练对照，联合细化仍低于只做时标校正。 [Tri-SIG-TIME 弱复谱权重复评](../../automation_reports/CV-SincNet/20261123-phase1-wisig-tri-learned-replay-s2026092701-r01/report.md) · [F50 弱复谱消融](../../automation_reports/CV-SincNet/20261123-phase1-wisig-uncertain-prior-source-s2026092701-m2-r01/report.md) · [时标联合训练消融](../../automation_reports/CV-SincNet/20261123-phase1-wisig-aligned-recovery-source-s2026092701-m2-r01/report.md)
 - WiSig 使用实收短前导重复信息的频块遮挡粗恢复相对匹配全谱臂在 full 与 residual 均多判对 4,479 次。两路五台源接收机方向一致，绝对识别仍低于直通。遮挡臂继续细化各少判对约 5,600 次，只改单一幅度或相位可部分挽回。固定门在两路六景各只触发 1/10,800 次，逐景正确数与直通一致。此结果与 LoRa 一起定位了粗预测与联合细化的收益差异，尚无候选通过跨路线要求。 [WiSig 重复前导频块消融](../../automation_reports/CV-SincNet/20261123-phase1-wisig-repeat-block-source-m3-r01/report.md)
+- WiSig 的另一项同包隔离诊断使用相同冻结 Tri-SIG-TIME。实收幅度与配对 clean 相位结合后，两路线六景是 87.45% 和 87.47%，仍低于同次 R69 的 94.39% 和 94.40%。仅替换 clean 幅度分别是 72.81% 和 72.89%。两者都取配对 clean 时为 98.61%。这些读出用于归因，配对 clean 未用于训练、冻结或候选输入。 [WiSig 幅相因子报告](https://github.com/niubility1317/CVS-RFFI/blob/4538bbb21ed6e22bad9ca2c6599f6d0ecee879be/automation_reports/CV-SincNet/20261123-phase1-wisig-phase-magnitude-source-m4-r01/report.md)
 - 配对 clean 只进隔离源诊断。依次归因时标、缺失样点和整体复增益后，最强的诊断仍低于原 R69。该读出不纳入可部署候选。 [配对隔离归因](../../automation_reports/CV-SincNet/20261123-diagnostic-wisig-source-paired-time-edge-s2026092701-r01/report.md)
 
 ## 相关工作与本轮验证口径
