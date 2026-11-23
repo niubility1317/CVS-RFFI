@@ -72,7 +72,7 @@ class LappedPosterior(nn.Module):
         return out.float().unflatten(0, source[0].shape[:2]).unbind(2)
 
     def restore(self, observed, quality, *, stationary_readout=False, scalar_readout=False,
-                reference_action=None, noise_override=None, observation_edit=None):
+                reference_action=None, noise_override=None, observation_edit=None, project_edit=None):
         value = self.transformed(observed)
         reference = other_mean(value)
         spread = (other_mean(value.abs().square()) - reference.abs().square()).clamp_min(0.)
@@ -101,6 +101,10 @@ class LappedPosterior(nn.Module):
         if observation_edit is not None:
             first = first + self.transformed(observation_edit)
         current = value + first
+        projected_first = None
+        if project_edit is not None:
+            projected_first = project_edit(synthesis(first, self.window))
+            current = value + self.transformed(projected_first)
         q = quality[..., None].expand_as(spread)
         c, d = self.fields(self.refine, (value.real, value.imag, current.real, current.imag,
                            innovation.real, innovation.imag, scale.clamp(-4., 4.),
@@ -111,9 +115,14 @@ class LappedPosterior(nn.Module):
         if companion is not None:
             second = second + .50 * companion * amplitude * correction.conj()
         outputs = []
-        for edit in (first, second):
+        for index, edit in enumerate((first, second)):
             # The overlap-add frame retains the original time grid and mean.
-            timed = synthesis(edit, self.window)
+            if index == 0 and projected_first is not None:
+                timed = projected_first
+            else:
+                timed = synthesis(edit, self.window)
+                if project_edit is not None:
+                    timed = project_edit(timed)
             timed = timed - timed.mean(-1, keepdim=True)
             outputs.append(observed + timed)
         return *outputs, prior, variance
