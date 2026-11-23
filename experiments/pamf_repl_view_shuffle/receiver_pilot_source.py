@@ -145,13 +145,16 @@ def percentile(values):
     return [float(x) for x in np.quantile(a, (.1, .5, .9))]
 
 
-def predict(rt, route, *, alternatives=None, restore=None, diagnose=None):
+def predict(rt, route, *, alternatives=None, restore=None, diagnose=None, diagnostic_restore=None):
     import torch
 
     root = Path(rt['run_root'])
     alternatives = readouts(rt) if alternatives is None else alternatives
     modes = ('raw', 'R69', *alternatives)
-    restore = restorer(rt, 'cuda:0') if restore is None else restore
+    if diagnostic_restore is None and restore is None:
+        restore = restorer(rt, 'cuda:0')
+    if diagnostic_restore is not None and restore is not None:
+        raise ValueError('A paired-reference diagnostic must use its own prediction row')
     ref = panels(rt)[route]
     ids = np.load(ref / 'physical_ids.npy', allow_pickle=False)
     if len(ids) != N or len(np.unique(ids)) != N or set(np.load(ref / 'roles.npy', allow_pickle=False)) != {'V'}:
@@ -174,7 +177,12 @@ def predict(rt, route, *, alternatives=None, restore=None, diagnose=None):
             x = tensor(np.ascontiguousarray(observations[at:at + 128]), 'cuda:0')
             target = tensor(np.ascontiguousarray(clean[at:at + 128]), 'cuda:0')
             with torch.inference_mode():
-                variants, diag = restore(torch.complex(x[:, 0], x[:, 1]))
+                y = torch.complex(x[:, 0], x[:, 1])
+                if diagnostic_restore is None:
+                    variants, diag = restore(y)
+                else:
+                    variants = diagnostic_restore(y, torch.complex(target[:, 0], target[:, 1]))
+                    diag = {}
                 ds, recovered = read_logits(reader, r69, x, variants)
                 for mode, value in ds.items():
                     if value.shape != (len(x), 6) or not torch.isfinite(value).all():
@@ -200,7 +208,8 @@ def predict(rt, route, *, alternatives=None, restore=None, diagnose=None):
     np.savez(row / 'predictions.npz', ids=ids, **predictions)
     write(row / 'complete.json', dict(status='PREDICTIONS_COMPLETE', n=N,
           route=route, seed=SEEDS[0], modes=modes, views=VIEWS, telemetry=evidence,
-          predictor_reads_truth=False, elapsed_seconds=time.perf_counter()-elapsed))
+          predictor_reads_truth=False, diagnostic_reference_input=diagnostic_restore is not None,
+          elapsed_seconds=time.perf_counter()-elapsed))
 
 
 def load_predictions(rt, route, modes=None):
@@ -221,7 +230,7 @@ def load_predictions(rt, route, modes=None):
     return ids, decisions, done
 
 
-def cpu_score(rt, alternatives=None, *, pairs=(), trainable_parameters=0):
+def cpu_score(rt, alternatives=None, *, pairs=(), trainable_parameters=0, contrasts=()):
     from experiments.cric_dura_comparison.evaluation import metrics
 
     modes = ('raw', 'R69', *(readouts(rt) if alternatives is None else alternatives))
@@ -279,6 +288,14 @@ def cpu_score(rt, alternatives=None, *, pairs=(), trainable_parameters=0):
                     ci=[float(t) for t in np.quantile(difference[draw].sum(axis=1), (.025, .975))])
             six[mode] = dict(correct=int(hit.sum()), accuracy=float(hit.mean()/6), pairs=inner)
         report[route] = dict(views=metrics_by_view, six=six, prediction=proof)
+        if contrasts:
+            effects = {}
+            for label, terms in contrasts:
+                delta = sum(value * sum((predictions[f'{mode}__{view}'] == truth).astype(np.int16)
+                                        for view in VIEWS[1:]) for mode, value in terms)
+                effects[label] = dict(net=int(delta.sum()),
+                    ci=np.quantile(delta[draw].sum(axis=1), (.025, .975)).tolist())
+            report[route]['contrasts'] = effects
     write(Path(rt['run_root']) / 'source_scores.json', dict(status='SOURCE_SCORED',
           truth_after_complete_predictions=True, target_reads=0,
           receiver_control_trainable_parameters=trainable_parameters,
