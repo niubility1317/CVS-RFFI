@@ -1,0 +1,193 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261123-phase1-wisig-uncertain-prior-source-s2026092701-m2-r01",
+  "group_id": "wisig-observable-satellite-recovery",
+  "display_name": "WiSig 接收不确定性先验与弱复谱保真源域消融",
+  "description": "两行从零联合优化时频粗恢复、保留重复前导相干分量的软观测约束与时域细化。唯一训练变量为弱复谱差异传递损失权重。先固定权重和清洁旁路阈值，再在同一源 V 面板双路线评分。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "WiSig",
+    "DURA",
+    "L-STF",
+    "source_V",
+    "full",
+    "residual"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261123-phase1-wisig-stf-engineering-source-s2026092701-r02",
+    "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02",
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-11-23 LoRa 与 WiSig 可部署星地恢复目标及空闲显卡多进程授权",
+  "code": {
+    "commit": "启动命令从已推送分支 HEAD 固定，实际 OID 写入 submit.json",
+    "checkout": "E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-uncertain-prior-source-s2026092701-m2-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig ManySig",
+    "version": "Main split F0 源域固定 7/63/30。只使用已登记的 1800 个 V 包",
+    "representation": "equalized=1，25 MS/s，256 点原始协议坐标；拟合只打开 U clean，对其施加独立通用扰动",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/validation/physical_ids.npy",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": 56700,
+      "V": 1800
+    },
+    "train_ratio": "52604 个隐藏 TX 的 U 包用于拟合，互斥 4096 包仅估计源 clean 旁路阈值。V 全部留到冻结后。",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/validation 与 validation_full，原封不变"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "not_applicable",
+    "external_method_exception": null,
+    "claim_scope": "仅固定源 V 双路线证据。通用扰动只输出波形，拟合、校准、冻结均无类标、F、V、目标、practical 轨迹或场景。"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [
+      "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/launch.json --reader-folder (F50 seed 2026092701)",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt (R69 E20/4940)"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json + source_reference",
+    "provenance_verdict": "原 F50 和 R69 仅用于冻结评估，沿用配对源 V，predict 核对 R69 生成提交",
+    "selection_rule": "固定完成 1200 步，无源 V 或 F 选模。清洁门取独立 clean U 的有效残差占比 q=0.999。"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "当前 Codex 聊天 WiSig 不确定性联合先验试验",
+    "gpu_policy": "每行一个进程，优先用利用率低且至少剩余 12 GiB 的卡，两行分卡并行，其他进程保持",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-uncertain-prior-source-s2026092701-m2-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-uncertain-prior-source-s2026092701-m2-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261123-phase1-wisig-uncertain-prior-source-s2026092701-m2-r01",
+    "launch_command": "python -m experiments.pamf_unrolled_restore.wisig_uncertain_source publish --repo \"E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo\" --output \"E:/type10-7/local_artifacts/20261123-phase1-wisig-uncertain-prior-source-s2026092701-m2-r01/release\" --context E:/type10-7/local_artifacts/lora_main_20261121/runtime_source.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "固定数据角色、不可覆盖目录、真实 checkpoint、数值或完整预测屏障失效时仅停止本 run，保留已写产物"
+  },
+  "expected_artifacts": [
+    "smoke-*.json",
+    "*-complete.json",
+    "waveform.pt",
+    "weak_detail.pt",
+    "predictions/complete.json",
+    "source-scores.json",
+    "logs/"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "准确率",
+      "正确数",
+      "错变对",
+      "对变错",
+      "逐场景门开启数",
+      "参数量",
+      "训练墙钟"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "mode",
+      "seed"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-uncertain-prior-source-s2026092701-m2-r01/predictions",
+    "scorer_ref": "experiments.pamf_unrolled_restore.wisig_uncertain_source score"
+  },
+  "rows": [
+    {
+      "row_id": "waveform-s2026092701",
+      "method": "时频粗恢复＋时域细化＋接收不确定性约束，弱复谱传递损失权重 0",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_unrolled_restore/wisig_uncertain_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-uncertain-prior-source-s2026092701-m2-r01/configs/fit-waveform.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092703,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "既有 Main 划分 392005；拟合采样 RNG 2026092703；通用扰动 2026092702；训练/校准 U 分割 2026092701；评估固定面板，无新随机行。",
+      "k": null,
+      "scenario": "clean 和六景，分别评估 full/residual",
+      "optimizer": "AdamW，weight decay 1e−4；cosine 最低 3e−5",
+      "lr": 0.0003,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "两行分别 1200 步，batch 64 个真实 U 包，每包三视图，单次联合训练。",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-uncertain-prior-source-s2026092701-m2-r01/waveform.pt",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-uncertain-prior-source-s2026092701-m2-r01/logs/fit-waveform.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_uncertain_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-uncertain-prior-source-s2026092701-m2-r01/configs/fit-waveform.json waveform",
+      "expected_artifacts": [
+        "waveform.pt",
+        "waveform-complete.json",
+        "logs/fit-waveform.log"
+      ]
+    },
+    {
+      "row_id": "weak_detail-s2026092701",
+      "method": "时频粗恢复＋时域细化＋接收不确定性约束，弱复谱传递损失权重 0.2",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_unrolled_restore/wisig_uncertain_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-uncertain-prior-source-s2026092701-m2-r01/configs/fit-weak_detail.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092703,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "既有 Main 划分 392005；拟合采样 RNG 2026092703；通用扰动 2026092702；训练/校准 U 分割 2026092701；评估固定面板，无新随机行。",
+      "k": null,
+      "scenario": "clean 和六景，分别评估 full/residual",
+      "optimizer": "AdamW，weight decay 1e−4；cosine 最低 3e−5",
+      "lr": 0.0003,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "两行分别 1200 步，batch 64 个真实 U 包，每包三视图，单次联合训练。",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-uncertain-prior-source-s2026092701-m2-r01/weak_detail.pt",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-uncertain-prior-source-s2026092701-m2-r01/logs/fit-weak_detail.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_uncertain_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-uncertain-prior-source-s2026092701-m2-r01/configs/fit-weak_detail.json weak_detail",
+      "expected_artifacts": [
+        "weak_detail.pt",
+        "weak_detail-complete.json",
+        "logs/fit-weak_detail.log"
+      ]
+    }
+  ],
+  "notes": [
+    "同一源 V 工程对照中的直通和 R69 预测逐物理 ID 对齐复用。对两个候选都固定同一恢复权重和旁路阈值跨 full/residual。编译后每行真实源无目标训练更新 smoke，再固定预算。"
+  ],
+  "registered_at": "2026-11-23T14:11:05+00:00"
+}

@@ -105,13 +105,13 @@ def predict(rt, *, smoke=False):
                modes=list(MODES), views=list(VIEWS), source_truth_reads=0, target_reads=0))
 
 
-def score(rt):
+def score(rt, modes=MODES):
     if os.environ.get('CUDA_VISIBLE_DEVICES') != '':
         raise ValueError('Independent CPU truth-side scorer required')
     _, _, source, _, ids, rx, positions = handles(rt)
     root = Path(rt['run_root']) / 'predictions'
     complete = read(root / 'complete.json')
-    if any(complete[k] != v for k, v in dict(status='FROZEN', modes=list(MODES), views=list(VIEWS),
+    if any(complete[k] != v for k, v in dict(status='FROZEN', modes=list(modes), views=list(VIEWS),
                                             count=len(ids), source_truth_reads=0, target_reads=0).items()):
         raise ValueError('Complete fixed source predictions are required before opening labels')
     records = {}
@@ -120,7 +120,7 @@ def score(rt):
         for scene in VIEWS:
             with np.load(root / f'{route}_{scene}.npz', allow_pickle=False) as rows:
                 pred = rows['decision']
-                if (not np.array_equal(rows['ids'], ids) or pred.shape != (len(MODES), len(ids))
+                if (not np.array_equal(rows['ids'], ids) or pred.shape != (len(modes), len(ids))
                         or pred.dtype != np.uint8 or (pred > 5).any()):
                     raise ValueError('Prediction decisions or physical IDs differ from frozen panel')
                 decisions.append(pred)
@@ -134,18 +134,18 @@ def score(rt):
             hit = decisions[:, :, mask] == labels[mask]
             scores[route][group] = dict(count=int(mask.sum()), correct=hit.sum(axis=-1).tolist(), pairs={})
             for base in ('direct', 'r69'):
-                baseline = hit[:, MODES.index(base):MODES.index(base) + 1]
+                baseline = hit[:, modes.index(base):modes.index(base) + 1]
                 scores[route][group]['pairs'][base] = dict(
                     repaired=(hit & ~baseline).sum(axis=-1).tolist(), damaged=(~hit & baseline).sum(axis=-1).tolist())
     write(root.parent / 'source-scores.json', dict(status='SOURCE_SCORED', scores=scores, views=list(VIEWS),
-           modes=list(MODES), reader_seed=2026092701, target_reads=0, truth_last=True))
+           modes=list(modes), reader_seed=2026092701, target_reads=0, truth_last=True))
 
 
-def select_gpu():
+def select_gpu(exclude=()):
     query = ['nvidia-smi', '--query-gpu=index,utilization.gpu,memory.free', '--format=csv,noheader,nounits']
     for _ in range(30):
         rows = (tuple(map(int, line.split(','))) for line in subprocess.check_output(query, text=True).splitlines())
-        available = [(load, -free, gpu) for gpu, load, free in rows if free >= 12_288]
+        available = [(load, -free, gpu) for gpu, load, free in rows if free >= 12_288 and gpu not in exclude]
         if available:
             return min(available)[-1]
         sleep(20)
