@@ -54,14 +54,21 @@ def quantiles(values):
     return np.quantile(np.concatenate(values), (0.1, 0.5, 0.9)).tolist()
 
 
-@torch.no_grad()
-def predict(rt, *, smoke=False, transform=readouts, readout_names=READOUTS):
-    cache, parent, source, reader, ids, _, _ = handles(rt)
-    f = load_reader(reader, source, 'cuda:0').eval().requires_grad_(False)
+def original_r69(parent):
     r69, proof = load_checkpoint(parent.parent / R69_RUN / 'stage2' / KIND / 'final.pt', 'cuda:0')
-    if (proof['arm'], proof['epoch'], proof['updates'], proof['code_commit']) != ('stage2', 20, 4940, R69_COMMIT):
+    if ((proof['arm'], proof['epoch'], proof['updates'], proof['code_commit']) != ('stage2', 20, 4940, R69_COMMIT)
+            or sum(p.numel() for p in r69.parameters()) != 266951):
         raise ValueError('Expected original frozen R69 checkpoint')
-    engine = InferenceEngine(r69.eval().requires_grad_(False), reuse=True, graph=True, native=False)
+    return InferenceEngine(r69.eval().requires_grad_(False), reuse=True, graph=True, native=False)
+
+
+@torch.no_grad()
+def predict(rt, *, smoke=False, transform=readouts, readout_names=READOUTS, reader_factory=None):
+    cache, parent, source, reader, ids, _, _ = handles(rt)
+    f = load_reader(reader, source, 'cuda:0') if reader_factory is None else reader_factory(rt)
+    f.eval().requires_grad_(False)
+    classify = f if reader_factory is None else lambda y: f.classify_features(f.features(y))
+    engine = original_r69(parent)
     root = Path(rt['run_root'])
     modes = (*readout_names, 'r69')
     numbers = {}
@@ -89,7 +96,7 @@ def predict(rt, *, smoke=False, transform=readouts, readout_names=READOUTS):
                 y = tensor(x, 'cuda:0')
                 restored, = engine(y)
                 inputs = (y, *(tensor(variants[m], 'cuda:0') for m in readout_names[1:]), restored)
-                logits = torch.stack([f(z) for z in inputs])
+                logits = torch.stack([classify(z) for z in inputs])
                 if logits.shape != (len(modes), len(x), 6) or not torch.isfinite(logits).all():
                     raise ValueError('Incomplete or nonfinite frozen source decisions')
                 predictions.append(logits.argmax(dim=-1).tolist())
