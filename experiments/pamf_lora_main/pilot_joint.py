@@ -55,8 +55,8 @@ def pilot_inverse(observed, proposed, template, variance):
 
 
 class PilotJoint(ChannelBlind):
-    def __init__(self, *, equalize, widths=None):
-        super().__init__(widths=widths)
+    def __init__(self, *, equalize, widths=None, companion=None):
+        super().__init__(widths=widths, companion=companion)
         self.equalize = equalize
 
     def forward(self, observed, quality, template):

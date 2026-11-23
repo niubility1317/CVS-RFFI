@@ -29,9 +29,10 @@ def generic_observation(signal,generator):
 
 
 class ChannelBlind(nn.Module):
-    def __init__(self, *, widths=None):
+    def __init__(self, *, widths=None, companion=None):
         super().__init__()
-        self.coarse = Denoise() if widths is None else Denoise(widths=widths)
+        coarse_config = {} if widths is None else {'widths': widths}
+        self.coarse = Denoise(companion=companion, **coarse_config)
         self.prior = Core(incoming=8, widths=(24, 48, 72, 96) if widths is None else widths)
 
     def propose(self, observed, quality, *, mixed_conv=False):

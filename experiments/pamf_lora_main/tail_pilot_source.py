@@ -23,6 +23,16 @@ TAIL_WEIGHT = .45
 MODES = ('direct', 'reference', 'average_coarse', 'average', 'average_half',
          'tail_coarse', 'tail', 'tail_half')
 PAIRS = (('tail_coarse', 'average_coarse'), ('tail', 'average'), ('tail_half', 'average_half'))
+MIRROR_RUN = '20261124-phase1-lora-conjugate-companion-source-m4-r01'
+COMPANIONS = ('adjacent', 'mirror')
+MIRROR_MODES = ('direct', 'reference', 'adjacent_coarse', 'adjacent', 'adjacent_half',
+                'mirror_coarse', 'mirror', 'mirror_half')
+MIRROR_PAIRS = (('mirror_coarse', 'adjacent_coarse'), ('mirror', 'adjacent'), ('mirror_half', 'adjacent_half'))
+MIRROR_RECIPES = {
+    name: FitRecipe(name, STEPS, partial(PilotJoint, equalize=False, widths=WIDTHS, companion=name),
+                    colored_observation, PilotJoint.forward)
+    for name in COMPANIONS
+}
 RECIPES = {name: FitRecipe(name, STEPS, partial(PilotJoint, equalize=False, widths=WIDTHS),
                            colored_observation, PilotJoint.forward)
            for name in ('average', 'tail')}
@@ -34,35 +44,47 @@ def main():
     pub = commands.add_parser('publish')
     for name in ('repo', 'output', 'context', 'ssh-config', 'parent-submit'):
         pub.add_argument('--' + name, type=Path, required=True)
+    pub.add_argument('--conjugate-companion', action='store_true')
     for stage in ('dispatch', 'checkpoint_smoke', 'smoke', 'fit', 'timing', 'evaluate', 'score'):
         cmd = commands.add_parser(stage)
         cmd.add_argument('runtime', type=Path)
         if stage != 'dispatch':
-            names = RECIPES if stage in ('smoke', 'fit') else ROUTES if stage == 'evaluate' else ('source',)
+            names = (*RECIPES, *MIRROR_RECIPES) if stage in ('smoke', 'fit') else (
+                ROUTES if stage == 'evaluate' else ('source',))
             cmd.add_argument('name', choices=names)
     args = vars(parser.parse_args())
     stage = args.pop('action')
     if stage == 'publish':
-        publish(**args, run=RUN, runner=__spec__.name)
+        run = MIRROR_RUN if args.pop('conjugate_companion') else RUN
+        publish(**args, run=run, runner=__spec__.name)
         return
     rt = read(args['runtime'])
+    run = Path(rt['run_root']).name
+    if run == MIRROR_RUN:
+        recipes, modes, pairs = MIRROR_RECIPES, MIRROR_MODES, MIRROR_PAIRS
+        tail_arm = 'mirror'
+    elif run == RUN:
+        recipes, modes, pairs = RECIPES, MODES, PAIRS
+        tail_arm = 'tail'
+    else:
+        raise ValueError('Expected a registered LoRa pilot source run')
     if stage == 'dispatch':
-        dispatch(rt, RECIPES, initial_stages=(('checkpoint_smoke', ('source',)),))
+        dispatch(rt, recipes, initial_stages=(('checkpoint_smoke', ('source',)),))
     elif stage == 'score':
-        score_frozen(rt, modes=MODES, comparisons=PAIRS)
+        score_frozen(rt, modes=modes, comparisons=pairs)
     else:
         activate(rt)
         if stage == 'checkpoint_smoke':
-            checkpoint_smoke(rt, RECIPES, MODES)
+            checkpoint_smoke(rt, recipes, modes)
         elif stage == 'evaluate':
-            evaluate(rt, args['name'], recipes=RECIPES, modes=MODES, renderer=render)
+            evaluate(rt, args['name'], recipes=recipes, modes=modes, renderer=render)
         elif stage == 'timing':
-            timing(rt, RECIPES['tail'])
+            timing(rt, recipes[tail_arm])
         else:
             name = args['name']
-            fit(rt, smoke=stage == 'smoke', recipe=RECIPES[name], receiver_batches=True,
+            fit(rt, smoke=stage == 'smoke', recipe=recipes[name], receiver_batches=True,
                 calculate=partial(natural_objective, preserve=.35, make_pair=paired_echo_inputs,
-                                  tail_weight=TAIL_WEIGHT if name == 'tail' else 0.))
+                                  tail_weight=TAIL_WEIGHT if run == MIRROR_RUN or name == tail_arm else 0.))
 
 
 if __name__ == '__main__':
