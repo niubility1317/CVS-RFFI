@@ -1,0 +1,4 @@
+{"at": "2026-11-23T15:08:07+00:00", "status": "PLANNED", "note": "Both IQ-only models and the same 900-package seven-view source matrix fixed.", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-23T15:08:07+00:00", "status": "LOCAL_VERIFIED", "note": "Ten focused tests and single independent P0/P1 review passed.", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-11-23T15:11:56+00:00", "status": "RUNNING", "note": "Verified GPU process binding and positive log growth on both fit and evaluation routes.", "evidence": ["report.md", "N607:20261123-phase1-lora-chirp-spectrum-recovery-source-m4-r01/logs"], "row_id": null}
+{"at": "2026-11-23T15:11:56+00:00", "status": "ANALYZED", "note": "Both V source routes passed truth-last closure. Separate shrinkage does not beat tied or mature reference with paired support.", "evidence": ["report.md", "full-source-scores.json", "residual-source-scores.json", "band_fidelity.json"], "row_id": null}

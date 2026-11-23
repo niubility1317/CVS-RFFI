@@ -1,0 +1,114 @@
+{
+  "records": 500,
+  "trigger_count": 470,
+  "fixed_U_only": true,
+  "independent_generic_seed": 2026112309,
+  "basis": "original received carrier coordinates",
+  "routes_or_target_read": false,
+  "metrics": {
+    "direct": {
+      "1-8 kHz": {
+        "normalized_complex_error": 4.8046091992874285,
+        "normalized_amplitude_error": 2.520643091364518,
+        "real_complex_cosine": 0.13811517218017988,
+        "error_vs_direct": 1.0
+      },
+      "9-32 kHz": {
+        "normalized_complex_error": 42.74642064726645,
+        "normalized_amplitude_error": 36.150791635846424,
+        "real_complex_cosine": 0.12090021515209119,
+        "error_vs_direct": 1.0
+      },
+      "33-64 kHz": {
+        "normalized_complex_error": 165.3229034190598,
+        "normalized_amplitude_error": 151.1107880732517,
+        "real_complex_cosine": 0.07064749193924783,
+        "error_vs_direct": 1.0
+      },
+      "65-128 kHz": {
+        "normalized_complex_error": 367.64249139485486,
+        "normalized_amplitude_error": 346.6566835028438,
+        "real_complex_cosine": 0.04661260278071997,
+        "error_vs_direct": 1.0
+      }
+    },
+    "shared": {
+      "1-8 kHz": {
+        "normalized_complex_error": 1.1607976065469272,
+        "normalized_amplitude_error": 0.9031957645878783,
+        "real_complex_cosine": 0.061326425205020935,
+        "error_vs_direct": 0.2416008375289056
+      },
+      "9-32 kHz": {
+        "normalized_complex_error": 2.6329029381215676,
+        "normalized_amplitude_error": 2.0033281940981924,
+        "real_complex_cosine": 0.07840808022734581,
+        "error_vs_direct": 0.061593529896869545
+      },
+      "33-64 kHz": {
+        "normalized_complex_error": 7.670625063826039,
+        "normalized_amplitude_error": 6.346763582215118,
+        "real_complex_cosine": 0.047028654678284314,
+        "error_vs_direct": 0.04639783662873723
+      },
+      "65-128 kHz": {
+        "normalized_complex_error": 14.985093644817967,
+        "normalized_amplitude_error": 13.112138741535977,
+        "real_complex_cosine": 0.031642598824056796,
+        "error_vs_direct": 0.04075996109144984
+      }
+    },
+    "separate": {
+      "1-8 kHz": {
+        "normalized_complex_error": 1.1607981248951071,
+        "normalized_amplitude_error": 0.9031960163158175,
+        "real_complex_cosine": 0.061325848221273675,
+        "error_vs_direct": 0.24160094541451263
+      },
+      "9-32 kHz": {
+        "normalized_complex_error": 2.6328978472235707,
+        "normalized_amplitude_error": 2.0033496525622234,
+        "real_complex_cosine": 0.07840889904979909,
+        "error_vs_direct": 0.06159341080156473
+      },
+      "33-64 kHz": {
+        "normalized_complex_error": 7.670617341519168,
+        "normalized_amplitude_error": 6.346797242423736,
+        "real_complex_cosine": 0.04702810670561975,
+        "error_vs_direct": 0.0463977899182893
+      },
+      "65-128 kHz": {
+        "normalized_complex_error": 14.984971926191918,
+        "normalized_amplitude_error": 13.112081522148536,
+        "real_complex_cosine": 0.03163981927955229,
+        "error_vs_direct": 0.04075963001267386
+      }
+    },
+    "separate_half": {
+      "1-8 kHz": {
+        "normalized_complex_error": 2.0676225650196716,
+        "normalized_amplitude_error": 0.7968384692588895,
+        "real_complex_cosine": 0.13499510916696278,
+        "error_vs_direct": 0.4303414657171953
+      },
+      "9-32 kHz": {
+        "normalized_complex_error": 13.416502592337537,
+        "normalized_amplitude_error": 9.80391427766456,
+        "real_complex_cosine": 0.12363826925567005,
+        "error_vs_direct": 0.31386259689547824
+      },
+      "33-64 kHz": {
+        "normalized_complex_error": 50.65158710172539,
+        "normalized_amplitude_error": 42.88361786244616,
+        "real_complex_cosine": 0.0726407914535775,
+        "error_vs_direct": 0.3063797335650098
+      },
+      "65-128 kHz": {
+        "normalized_complex_error": 110.58479417334306,
+        "normalized_amplitude_error": 99.15548440395347,
+        "real_complex_cosine": 0.048211240746499906,
+        "error_vs_direct": 0.30079437704216
+      }
+    }
+  }
+}
