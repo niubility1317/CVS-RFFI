@@ -175,10 +175,10 @@ def smoke(rt):
           paired_source=True, source_gradients=gradients, F_reads=0, TX_reads=0, target_reads=0))
 
 
-def train_source(rt):
+def train_source(rt, *, source_pairs=None, model_seed=SEED):
     root = Path(rt['run_root'])
-    source = root / 'source_pairs'
-    c = dict(output_root=str(root / 'G' / 'lineage'), model_seed=SEED, code_commit=rt['code_commit'],
+    source = root / 'source_pairs' if source_pairs is None else Path(source_pairs)
+    c = dict(output_root=str(root / 'G' / 'lineage'), model_seed=model_seed, code_commit=rt['code_commit'],
              cache=dict(source_contract=str(source / 'contract.json'), roles='LU'),
              practical=ROUTE, observed_phase=True, cap=CAP, teacher_weight=TEACHER_WEIGHT)
     train(c, view=ResidualView(source), prepare_model=prepare_model, reconstruction=ObservedShape())

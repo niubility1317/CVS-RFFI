@@ -26,14 +26,15 @@ def prediction(path):
 
 
 def collect(submit, ssh_config, dataset, output, full_control, disturbance_gate=False):
-    run_id, modes = RUN, MODES
-    if disturbance_gate:
-        from .residual_dura_gate_run import MODES as gate_modes, RUN as gate_run
-        run_id, modes = gate_run, gate_modes
     receipt = read(submit)
     run = PurePosixPath(receipt['run_root'])
-    if run.name != run_id or receipt['archive_transfer'] != 'VERIFIED':
+    allowed, modes = {RUN: SEED}, MODES
+    if disturbance_gate:
+        from .residual_dura_gate_run import MODES as gate_modes, SEED_RUNS
+        allowed, modes = {name: seed for seed, name in SEED_RUNS.items()}, gate_modes
+    if run.name not in allowed or receipt['archive_transfer'] != 'VERIFIED':
         raise ValueError('Wrong residual DURA receipt')
+    seed = allowed[run.name]
     root = shlex.quote(str(run))
     conn = ['ssh', '-F', str(ssh_config), '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', 'N607']
     wait_for_predictions(conn, root)
@@ -54,7 +55,7 @@ def collect(submit, ssh_config, dataset, output, full_control, disturbance_gate=
                 raise ValueError('Unexpected residual DURA scoring artifact')
             with archive.extractfile(member) as src, (output / member.name).open('xb') as dst:
                 dst.write(src.read())
-    if read(p / 'complete.json') != dict(status='PREDICTIONS_FROZEN', seed=SEED,
+    if read(p / 'complete.json') != dict(status='PREDICTIONS_FROZEN', seed=seed,
             receivers=list(TARGET), per_receiver=LIMIT, views=list(VIEWS), modes=list(modes),
             practical=ROUTE, target_truth_read=False) or {f.name for f in p.glob('*.npy')} != matrix:
         raise ValueError('Residual LoRa predictions were not all frozen before scoring')
@@ -63,7 +64,7 @@ def collect(submit, ssh_config, dataset, output, full_control, disturbance_gate=
     coverage = {}
     if disturbance_gate:
         smoke = read(output / 'smoke.json')
-        if (smoke['status'] != 'PASS' or smoke['stage'] != 'r69' or smoke['seed'] != SEED
+        if (smoke['status'] != 'PASS' or smoke['stage'] != 'r69' or smoke['seed'] != seed
                 or smoke['F_reads'] or smoke['TX_labels_read'] or smoke['target_reads']):
             raise ValueError('Mismatched independent gate source smoke')
         coverage = read(output / 'activity.json')
@@ -78,9 +79,9 @@ def collect(submit, ssh_config, dataset, output, full_control, disturbance_gate=
                     reference = 'dura_half' if count else 'direct'
                     if not np.array_equal(rows[r, v, 'dura_gated_half'], rows[r, v, reference]):
                         raise ValueError('Gated predictions disagree with uniform gate activity')
-    full = full_control / 'predictions' / str(SEED)
+    full = full_control / 'predictions' / str(seed)
     control = read(full / 'complete.json')
-    if (control['status'] != 'PREDICTIONS_FROZEN' or control['seed'] != SEED
+    if (control['status'] != 'PREDICTIONS_FROZEN' or control['seed'] != seed
             or control['receivers'] != list(TARGET) or control['per_receiver'] != LIMIT
             or control['views'] != list(VIEWS) or control['target_truth_read'] is not False):
         raise ValueError('Full practical prediction control does not match')
@@ -113,7 +114,7 @@ def collect(submit, ssh_config, dataset, output, full_control, disturbance_gate=
         average = practical / (len(VIEWS[1:])*len(answer))
         metrics[m] = dict(views=views, practical_correct=practical, practical_mean=average,
                           clean_gap=views['clean']['accuracy']-average)
-    summary = dict(status='SCORED_COMPLETE', truth_last=True, seed=SEED, practical=ROUTE,
+    summary = dict(status='SCORED_COMPLETE', truth_last=True, seed=seed, practical=ROUTE,
                    clean_control_prediction_changes=clean_control_changes,
                    matrix_arrays=len(rows), metrics=metrics)
     if disturbance_gate:
