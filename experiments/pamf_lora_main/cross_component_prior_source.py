@@ -27,7 +27,7 @@ from .variance_bound import spectral_contrast, variance_interval
 from .weak_signal_probe import observed_noise_rms
 
 
-RUN = '20261124-phase1-lora-cross-component-prior-source-cpu-r01'
+RUN = '20261124-phase1-lora-cross-component-prior-source-cpu-r02'
 N_FIT_RX = 200
 N_REPLAY_RX = 30
 SEED = 2026113551

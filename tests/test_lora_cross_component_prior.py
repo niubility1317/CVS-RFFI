@@ -58,3 +58,17 @@ def test_order_observation_cannot_reenter_its_own_prior_via_other_chirp_predicti
     after=context_center(predictor,disturbed_features)
     torch.testing.assert_close(after[:,2],before[:,2])
     assert after.abs().max()>.1
+
+
+def test_rank_deficient_wide_ridge_does_not_require_batched_lu(monkeypatch):
+    def unavailable_lu(*_args, **_kwargs):
+        raise RuntimeError('Batched LU unavailable')
+
+    monkeypatch.setattr(torch.linalg, 'solve', unavailable_lu)
+    gen=torch.Generator().manual_seed(81)
+    x=torch.randn((25,6,384),generator=gen)
+    y=torch.randn((25,6,128),generator=gen)
+    estimator=fit_regression(x,y,ridge=.10)
+    prediction=estimator.predict(x)
+    assert torch.isfinite(prediction).all()
+    assert (prediction-y).square().mean()<.001

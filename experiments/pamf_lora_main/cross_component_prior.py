@@ -53,8 +53,9 @@ def fit_regression(x, y, *, ridge=.10):
     normalized = ((x-center)/scale).transpose(0,1).double()
     targets = (y-target_mean).transpose(0,1).double()
     basis = torch.eye(x.shape[-1],dtype=normalized.dtype,device=x.device)
-    coeff = torch.linalg.solve(normalized.mT @ normalized / len(x) + ridge*basis,
-                               normalized.mT @ targets / len(x))
+    system = normalized.mT @ normalized / len(x) + ridge*basis
+    target_cross = normalized.mT @ targets / len(x)
+    coeff = torch.cholesky_solve(target_cross, torch.linalg.cholesky(system))
     return Regression(center,scale,target_mean,coeff.to(x.dtype))
 
 
