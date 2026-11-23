@@ -180,10 +180,27 @@ def route_predictor(rt, route, device):
 @torch.no_grad()
 def score(rt, route):
     device = 'cuda:0'
-    parent, _, contract, _ = source_state(rt)
-    root = Path(rt['run_root'])
     basis = load_basis(rt, route, device)
     proposals, tracker = route_predictor(rt, route, device)
+
+    def render(y):
+        baseline, extra, active = proposals(y)
+        filtered = [baseline.clone() for _ in range(3)]
+        drift = 0.
+        if active.any():
+            variants, drift = project_corrections(baseline[active], extra[active], tracker, basis)
+            for output, candidate in zip(filtered, variants, strict=True):
+                output[active] = candidate
+        return torch.stack((y, baseline, extra, *filtered)), int(active.sum()), drift
+
+    evaluate(rt, route, MODES, validate_panel, render)
+
+
+@torch.no_grad()
+def evaluate(rt, route, modes, panel, render):
+    device = 'cuda:0'
+    parent, _, contract, _ = source_state(rt)
+    root = Path(rt['run_root'])
     if route == 'full':
         _, cache, _ = handles(dict(rt, parent_root=str(parent.parent / DATA_RUN)))
         archive = np.load(cache / 'V.npy', mmap_mode='r', allow_pickle=False)
@@ -193,7 +210,10 @@ def score(rt, route):
     iq, rx, ids, _ = source_role(source, contract, 'V')
     if archive is not None and (archive.shape != (len(VIEWS), len(ids), 6, 2, 256) or archive.dtype != np.float32):
         raise ValueError('Unexpected full practical source V cache')
-    chosen = validate_panel(rx)
+    chosen = panel(rx)
+    per_rx = len(chosen) // len(SOURCE)
+    if not per_rx or any(np.count_nonzero(rx[chosen] == name) != per_rx for name in SOURCE):
+        raise ValueError('Frozen score requires a balanced source panel')
     rows = list(zip(iq[chosen], rx[chosen], ids[chosen], strict=True))
     f = recognizer(device).eval().requires_grad_(False)
     weights = complete_f(parent.parent / SET_RUN, contract, case(SEED, SET_METHOD)) / 'model.pt'
@@ -209,19 +229,13 @@ def score(rt, route):
                 obs = np.stack(list(pool.map(partial(observed, scene, route), rows, chunksize=16)))
             chunks, coverage, max_drift = [], 0, 0.
             for y in tensor(obs, device).split(24):
-                baseline, extra, active = proposals(y)
-                filtered = [baseline.clone() for _ in range(3)]
-                if active.any():
-                    variants, drift = project_corrections(baseline[active], extra[active], tracker, basis)
-                    for output, candidate in zip(filtered, variants, strict=True):
-                        output[active] = candidate
-                    max_drift = max(max_drift, drift)
-                wave = torch.stack((y, baseline, extra, *filtered))
+                wave, active, drift = render(y)
+                max_drift = max(max_drift, drift)
                 logits = f(wave.flatten(0, 1))[0]
                 if max_drift > 2e-6 or not torch.isfinite(logits).all():
                     raise ValueError('Invalid frozen scores or mismatched frequency-band doses')
-                coverage += int(active.sum())
-                chunks.append(logits.argmax(1).reshape(len(MODES), len(y)).cpu().tolist())
+                coverage += active
+                chunks.append(logits.argmax(1).reshape(len(modes), len(y)).cpu().tolist())
             predictions[scene] = np.concatenate(chunks, axis=1)
             metrics[scene] = dict(active=coverage, maximum_norm_difference=max_drift)
             print('REPEATABLE_SOURCE_PREDICTED', route, scene, coverage, flush=True)
@@ -232,16 +246,16 @@ def score(rt, route):
     hits = {v: y == truth for v, y in predictions.items()}
     for v, hit in hits.items():
         metrics[v].update(correct=hit.sum(-1).tolist(),
-                          by_rx=hit.reshape(len(MODES), len(SOURCE), EVAL_PER_RX).sum(-1).tolist())
+                          by_rx=hit.reshape(len(modes), len(SOURCE), per_rx).sum(-1).tolist())
     six = np.stack([hits[v] for v in VIEWS[1:]]).sum(0)
     low = hits['practical_low_urban'].astype(int)
     rng = np.random.default_rng(KEY + 2)
-    draws = np.concatenate([rng.integers(i * EVAL_PER_RX, (i + 1) * EVAL_PER_RX, (1600, EVAL_PER_RX))
+    draws = np.concatenate([rng.integers(i * per_rx, (i + 1) * per_rx, (1600, per_rx))
                             for i in range(len(SOURCE))], axis=1)
     intervals = {name: [np.quantile(delta[draws].sum(1), (.025, .975)).tolist() for delta in v - v[1]]
                  for name, v in (('six', six), ('low_urban', low))}
     write(root / f'{route}-source-scores.json', dict(status='SOURCE_SCORED', route=route, n=len(chosen),
-          modes=list(MODES), metrics=metrics, six=six.sum(1).tolist(), paired_ci_vs_reference=intervals,
+          modes=list(modes), metrics=metrics, six=six.sum(1).tolist(), paired_ci_vs_reference=intervals,
           target_reads=0, truth_after_predictions=True))
 
 
