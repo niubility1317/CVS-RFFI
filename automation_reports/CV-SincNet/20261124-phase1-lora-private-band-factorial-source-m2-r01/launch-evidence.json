@@ -1,0 +1,43 @@
+{
+  "pid": 2327976,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-private-band-factorial-source-m2-r01-release",
+  "code_commit": "d5bc5e8ba08ab89b337e8447936ebb9dd19ddb65",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "status": "VERIFIED",
+  "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-private-band-factorial-source-m2-r01",
+  "state": "SOURCE_SCORED",
+  "smoke": {
+    "pid": 2327992,
+    "gpu": 3,
+    "status": "PASS"
+  },
+  "timing": {
+    "pid": 2328066,
+    "gpu": 3
+  },
+  "prediction_workers": [
+    {
+      "route": "full",
+      "pid": 2328141,
+      "gpu": 3
+    },
+    {
+      "route": "residual",
+      "pid": 2328142,
+      "gpu": 6
+    }
+  ],
+  "reserve": {
+    "pid": 2329241,
+    "gpu": 3,
+    "frozen_n": 11100
+  },
+  "scorer": {
+    "pid": 2329424,
+    "device": "CPU",
+    "clean_n": 12000,
+    "truth_after_all_predictions": true
+  },
+  "endpoint_top1_mismatches": 0
+}

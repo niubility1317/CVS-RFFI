@@ -1,0 +1,7 @@
+{"at": "2026-11-23T23:39:27+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-23T23:39:27+00:00", "status": "LOCAL_VERIFIED", "note": "Ten focused tests and compiler, independent P0/P1 check.", "evidence": "tests/test_lora_private_transport_bands.py", "row_id": null}
+{"at": "2026-11-23T23:40:40+00:00", "status": "RUNNING", "note": "Real checkpoint smoke verified. N607 transfer/compile, owned controller and two worker identities, exact CWD and GPUs read back.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-23T23:43:02+00:00", "status": "ANALYZED", "note": "Seven views fixed and scored independently.", "evidence": "full-source-scores.json", "row_id": "evaluate-full"}
+{"at": "2026-11-23T23:43:02+00:00", "status": "ANALYZED", "note": "Seven views fixed and scored independently.", "evidence": "residual-source-scores.json", "row_id": "evaluate-residual"}
+{"at": "2026-11-23T23:43:02+00:00", "status": "ANALYZED", "note": "Full 12000 clean physical records independently reconciled and scored.", "evidence": "clean-complete-scores.json", "row_id": "evaluate-reserve"}
+{"at": "2026-11-23T23:43:02+00:00", "status": "ANALYZED", "note": "Frozen source-only factorial complete; mixed endpoints eligible=[].", "evidence": "factorial-source-contrasts.json", "row_id": null}
