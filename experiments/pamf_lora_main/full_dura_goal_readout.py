@@ -14,6 +14,7 @@ SEEDS=(2026092701,2026092702,2026092703)
 SCENES=VIEWS[1:]
 N=len(TARGET)*LIMIT
 WISIG_RECOVERY=(.784277-.3736)/(.84677976-.3736)
+PRACTICAL_GOAL=.67
 
 
 def score_rows(root, modes):
@@ -88,7 +89,7 @@ def compare(reference,candidates,mode):
     base,new=readings['direct'],readings['candidate']
     gap=new['clean']-new['practical']
     closed=(new['practical']-base['practical'])/(base['clean']-base['practical'])
-    checks=dict(practical_at_least_57=new['practical']>=.57,low_urban_at_least_43=new['low_urban']>=.43,
+    checks=dict(practical_at_least_67=new['practical']>=PRACTICAL_GOAL,low_urban_at_least_43=new['low_urban']>=.43,
                 keeps_direct_clean_count=new['clean_correct']>=base['clean_correct'],
                 clean_gap_within_three_points=abs(gap)<=.03,
                 reaches_wisig_reference_fraction=closed>=WISIG_RECOVERY)
