@@ -1,0 +1,32 @@
+{
+  "pid": 2302813,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-offband-noise-source-cpu-r01-release",
+  "code_commit": "6640ad102a0e1e2341ecd4ca057e0336c6248bce",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "status": "VERIFIED",
+  "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-offband-noise-source-cpu-r01",
+  "state": "SOURCE_DIAGNOSTIC_COMPLETE",
+  "smoke": {
+    "pid": 2302822,
+    "device": "CPU",
+    "status": "PASS"
+  },
+  "probe": {
+    "pid": 2302890,
+    "device": "CPU",
+    "first_progress": "OFFBAND_GENERIC_READY white 150"
+  },
+  "generic": [
+    "white",
+    "broad",
+    "narrow"
+  ],
+  "registered_routes": [
+    "full",
+    "residual"
+  ],
+  "probe_wall_seconds": 32.67422183603048,
+  "isolated_truth_labels_read": 0,
+  "target_reads": 0
+}

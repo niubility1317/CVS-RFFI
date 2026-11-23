@@ -1,0 +1,5 @@
+{"at": "2026-11-23T23:05:34+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-23T23:05:34+00:00", "status": "LOCAL_VERIFIED", "note": "Nine focused tests and compile passed; one scientific sign error fixed with a failing regression and targeted P0/P1 re-review.", "evidence": "tests/test_lora_offband_noise.py", "row_id": null}
+{"at": "2026-11-23T23:06:13+00:00", "status": "RUNNING", "note": "N607 CPU-only probe. Immutable release, transfer/compile, live owned PID/CWD/command and generic log growth verified.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-23T23:07:23+00:00", "status": "ANALYZED", "note": "All planned source-only waveform measurements verified.", "evidence": "source-u-offband-results.json", "row_id": "probe-source"}
+{"at": "2026-11-23T23:07:23+00:00", "status": "ANALYZED", "note": "Completed source-only additive-noise witness audit. Eligible bands []", "evidence": "source-u-offband-results.json", "row_id": null}

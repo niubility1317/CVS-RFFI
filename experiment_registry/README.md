@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 实收带外频点的复数噪声预测](../automation_reports/CV-SincNet/20261124-phase1-lora-offband-noise-source-cpu-r01/report.md)
 - [LoRa 独有复谱约束的同剂量方向消融](../automation_reports/CV-SincNet/20261124-phase1-lora-private-dose-direction-source-m2-r02/report.md)
 - [LoRa 同剂量方向消融 r01 技术失败](../automation_reports/CV-SincNet/20261124-phase1-lora-private-dose-direction-source-m2-r01/report.md)
 - [LoRa 半量恢复的独有复谱差异方向约束](../automation_reports/CV-SincNet/20261124-phase1-lora-private-secant-source-m4-r01/report.md)

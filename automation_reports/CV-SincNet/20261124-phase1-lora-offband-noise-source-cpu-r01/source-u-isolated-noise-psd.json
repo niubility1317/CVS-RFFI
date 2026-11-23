@@ -1,0 +1,341 @@
+{
+  "n": 150,
+  "role": "held_U_s",
+  "fit_count_per_fold": 120,
+  "diagnostic_only": true,
+  "F_reads": 0,
+  "TX_reads": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "noise_used_in_any_deployable_candidate": false,
+  "registered": {
+    "full": {
+      "practical_low_suburban": {
+        "bands": {
+          "1_to_8": {
+            "received_witness": {
+              "n": 150,
+              "rms_edit_median": 0.00933310016989708,
+              "fraction_under_square_error": 0.3400000035762787,
+              "reduction": -0.00012520643940661103,
+              "noise_correlation_median": -0.021419093012809753,
+              "signal_real_gain_shift_median": 0.0012184169609099627,
+              "signal_projection_abs_median": 0.001679586828686297,
+              "density_support": 239
+            },
+            "isolated_noise_witness": {
+              "n": 150,
+              "rms_edit_median": 0.005948190111666918,
+              "fraction_under_square_error": 0.3933333456516266,
+              "reduction": -0.000030477978725684807,
+              "noise_correlation_median": -0.009368270635604858,
+              "signal_real_gain_shift_median": 0.00006555479922099039,
+              "signal_projection_abs_median": 0.00039028929313644767,
+              "density_support": 239
+            }
+          },
+          "9_to_32": {
+            "received_witness": {
+              "n": 150,
+              "rms_edit_median": 0.013531527481973171,
+              "fraction_under_square_error": 0.3466666638851166,
+              "reduction": -0.000024126591597450897,
+              "noise_correlation_median": -0.004056318197399378,
+              "signal_real_gain_shift_median": 0.004146798048168421,
+              "signal_projection_abs_median": 0.004176958464086056,
+              "density_support": 191
+            },
+            "isolated_noise_witness": {
+              "n": 150,
+              "rms_edit_median": 0.009192009456455708,
+              "fraction_under_square_error": 0.4333333373069763,
+              "reduction": -0.00001572533255966846,
+              "noise_correlation_median": 0.002233685925602913,
+              "signal_real_gain_shift_median": -0.00007766524504404515,
+              "signal_projection_abs_median": 0.0006900319131091237,
+              "density_support": 191
+            }
+          },
+          "33_to_64": {
+            "received_witness": {
+              "n": 150,
+              "rms_edit_median": 0.020777609199285507,
+              "fraction_under_square_error": 0.4333333373069763,
+              "reduction": 0.0007721399888396263,
+              "noise_correlation_median": 0.009913007728755474,
+              "signal_real_gain_shift_median": -0.007611225824803114,
+              "signal_projection_abs_median": 0.008036399260163307,
+              "density_support": 127
+            },
+            "isolated_noise_witness": {
+              "n": 150,
+              "rms_edit_median": 0.01221586111932993,
+              "fraction_under_square_error": 0.6000000238418579,
+              "reduction": 0.0008070363546721637,
+              "noise_correlation_median": 0.016422849148511887,
+              "signal_real_gain_shift_median": 0.00021025640307925642,
+              "signal_projection_abs_median": 0.0012075841659680009,
+              "density_support": 127
+            }
+          }
+        },
+        "raw_psd_rms_shape": 0.12046463787555695,
+        "first_eight_abs_acf": [
+          0.039765968918800354,
+          0.03974049910902977,
+          0.03561702370643616,
+          0.030396809801459312,
+          0.022323261946439743,
+          0.019685670733451843,
+          0.015138478018343449,
+          0.012724719010293484
+        ]
+      },
+      "practical_low_urban": {
+        "bands": {
+          "1_to_8": {
+            "received_witness": {
+              "n": 150,
+              "rms_edit_median": 0.03510817885398865,
+              "fraction_under_square_error": 0.4266666769981384,
+              "reduction": -0.000050738384743453935,
+              "noise_correlation_median": -0.0066318330354988575,
+              "signal_real_gain_shift_median": 0.001348078832961619,
+              "signal_projection_abs_median": 0.002059233607724309,
+              "density_support": 239
+            },
+            "isolated_noise_witness": {
+              "n": 150,
+              "rms_edit_median": 0.034824542701244354,
+              "fraction_under_square_error": 0.41999998688697815,
+              "reduction": -0.000036570945667335764,
+              "noise_correlation_median": -0.0077484664507210255,
+              "signal_real_gain_shift_median": -0.000047461438953178003,
+              "signal_projection_abs_median": 0.0007637666421942413,
+              "density_support": 239
+            }
+          },
+          "9_to_32": {
+            "received_witness": {
+              "n": 150,
+              "rms_edit_median": 0.050338197499513626,
+              "fraction_under_square_error": 0.36666667461395264,
+              "reduction": -0.00019906224042642862,
+              "noise_correlation_median": -0.005862754303961992,
+              "signal_real_gain_shift_median": 0.0035808440297842026,
+              "signal_projection_abs_median": 0.004677601624280214,
+              "density_support": 191
+            },
+            "isolated_noise_witness": {
+              "n": 150,
+              "rms_edit_median": 0.049238160252571106,
+              "fraction_under_square_error": 0.41333332657814026,
+              "reduction": -0.00019591049931477755,
+              "noise_correlation_median": -0.000918818695936352,
+              "signal_real_gain_shift_median": -0.00007032728899503127,
+              "signal_projection_abs_median": 0.0020107857417315245,
+              "density_support": 191
+            }
+          },
+          "33_to_64": {
+            "received_witness": {
+              "n": 150,
+              "rms_edit_median": 0.07311305403709412,
+              "fraction_under_square_error": 0.5400000214576721,
+              "reduction": 0.00044813446584157646,
+              "noise_correlation_median": 0.012694352306425571,
+              "signal_real_gain_shift_median": -0.0074034822173416615,
+              "signal_projection_abs_median": 0.009544716216623783,
+              "density_support": 127
+            },
+            "isolated_noise_witness": {
+              "n": 150,
+              "rms_edit_median": 0.07116444408893585,
+              "fraction_under_square_error": 0.6200000047683716,
+              "reduction": 0.0004545326519291848,
+              "noise_correlation_median": 0.01592615805566311,
+              "signal_real_gain_shift_median": 0.0007252575014717877,
+              "signal_projection_abs_median": 0.0036977017298340797,
+              "density_support": 127
+            }
+          }
+        },
+        "raw_psd_rms_shape": 0.11935257911682129,
+        "first_eight_abs_acf": [
+          0.03880353644490242,
+          0.03691841661930084,
+          0.0340665765106678,
+          0.029177527874708176,
+          0.02497890405356884,
+          0.023527314886450768,
+          0.015765052288770676,
+          0.012983469292521477
+        ]
+      }
+    },
+    "residual": {
+      "practical_low_suburban": {
+        "bands": {
+          "1_to_8": {
+            "received_witness": {
+              "n": 150,
+              "rms_edit_median": 0.023197997361421585,
+              "fraction_under_square_error": 0.3866666555404663,
+              "reduction": -0.00006206979742273688,
+              "noise_correlation_median": -0.012538597919046879,
+              "signal_real_gain_shift_median": -0.000526095915120095,
+              "signal_projection_abs_median": 0.001328417332842946,
+              "density_support": 239
+            },
+            "isolated_noise_witness": {
+              "n": 150,
+              "rms_edit_median": 0.02315998636186123,
+              "fraction_under_square_error": 0.3733333349227905,
+              "reduction": -0.00003748387098312378,
+              "noise_correlation_median": -0.012613076716661453,
+              "signal_real_gain_shift_median": -0.00020340675837360322,
+              "signal_projection_abs_median": 0.0011535793310031295,
+              "density_support": 239
+            }
+          },
+          "9_to_32": {
+            "received_witness": {
+              "n": 150,
+              "rms_edit_median": 0.03205135092139244,
+              "fraction_under_square_error": 0.41999998688697815,
+              "reduction": -0.00039815829950384796,
+              "noise_correlation_median": 0.0006751897744834423,
+              "signal_real_gain_shift_median": -0.0003726872964762151,
+              "signal_projection_abs_median": 0.0011554146185517311,
+              "density_support": 191
+            },
+            "isolated_noise_witness": {
+              "n": 150,
+              "rms_edit_median": 0.031137721613049507,
+              "fraction_under_square_error": 0.4333333373069763,
+              "reduction": -0.0003903233155142516,
+              "noise_correlation_median": -0.005060221534222364,
+              "signal_real_gain_shift_median": 0.00013354336260817945,
+              "signal_projection_abs_median": 0.001005215453915298,
+              "density_support": 191
+            }
+          },
+          "33_to_64": {
+            "received_witness": {
+              "n": 150,
+              "rms_edit_median": 0.031021466478705406,
+              "fraction_under_square_error": 0.4533333480358124,
+              "reduction": -0.00041158145177178085,
+              "noise_correlation_median": -0.0015143640339374542,
+              "signal_real_gain_shift_median": 0.00025830051163211465,
+              "signal_projection_abs_median": 0.0014602291630581021,
+              "density_support": 127
+            },
+            "isolated_noise_witness": {
+              "n": 150,
+              "rms_edit_median": 0.030618730932474136,
+              "fraction_under_square_error": 0.4399999976158142,
+              "reduction": -0.00040073294076137245,
+              "noise_correlation_median": -0.0021663052029907703,
+              "signal_real_gain_shift_median": 0.00019377765420358628,
+              "signal_projection_abs_median": 0.0013212242629379034,
+              "density_support": 127
+            }
+          }
+        },
+        "raw_psd_rms_shape": 0.033983245491981506,
+        "first_eight_abs_acf": [
+          0.0013393339468166232,
+          0.0024961286690086126,
+          0.0012737363576889038,
+          0.0014541081618517637,
+          0.0037863892503082752,
+          0.0024092390667647123,
+          0.0013850812101736665,
+          0.0006268826546147466
+        ]
+      },
+      "practical_low_urban": {
+        "bands": {
+          "1_to_8": {
+            "received_witness": {
+              "n": 150,
+              "rms_edit_median": 0.07550368458032608,
+              "fraction_under_square_error": 0.41333332657814026,
+              "reduction": -0.00045619430602528155,
+              "noise_correlation_median": -0.022215165197849274,
+              "signal_real_gain_shift_median": -0.000014769917470403016,
+              "signal_projection_abs_median": 0.002091662958264351,
+              "density_support": 239
+            },
+            "isolated_noise_witness": {
+              "n": 150,
+              "rms_edit_median": 0.07543623447418213,
+              "fraction_under_square_error": 0.4333333373069763,
+              "reduction": -0.00044850859558209777,
+              "noise_correlation_median": -0.023194830864667892,
+              "signal_real_gain_shift_median": 0.00024159380700439215,
+              "signal_projection_abs_median": 0.0020970837213099003,
+              "density_support": 239
+            }
+          },
+          "9_to_32": {
+            "received_witness": {
+              "n": 150,
+              "rms_edit_median": 0.11066602915525436,
+              "fraction_under_square_error": 0.4866666793823242,
+              "reduction": -0.00011717734014382586,
+              "noise_correlation_median": 0.0008732782443985343,
+              "signal_real_gain_shift_median": 0.0002115114766638726,
+              "signal_projection_abs_median": 0.003966926597058773,
+              "density_support": 191
+            },
+            "isolated_noise_witness": {
+              "n": 150,
+              "rms_edit_median": 0.11035008728504181,
+              "fraction_under_square_error": 0.4866666793823242,
+              "reduction": -0.00011411939340177923,
+              "noise_correlation_median": 0.0022414224222302437,
+              "signal_real_gain_shift_median": 0.00007800458115525544,
+              "signal_projection_abs_median": 0.0038461834192276,
+              "density_support": 191
+            }
+          },
+          "33_to_64": {
+            "received_witness": {
+              "n": 150,
+              "rms_edit_median": 0.12213236093521118,
+              "fraction_under_square_error": 0.5,
+              "reduction": 0.00007649047620361671,
+              "noise_correlation_median": 0.005212645512074232,
+              "signal_real_gain_shift_median": -0.0005092085339128971,
+              "signal_projection_abs_median": 0.005196946207433939,
+              "density_support": 127
+            },
+            "isolated_noise_witness": {
+              "n": 150,
+              "rms_edit_median": 0.12170293927192688,
+              "fraction_under_square_error": 0.5066666603088379,
+              "reduction": 0.000081586156738922,
+              "noise_correlation_median": 0.006750205997377634,
+              "signal_real_gain_shift_median": -0.0005079099792055786,
+              "signal_projection_abs_median": 0.005282965023070574,
+              "density_support": 127
+            }
+          }
+        },
+        "raw_psd_rms_shape": 0.035973452031612396,
+        "first_eight_abs_acf": [
+          0.003744682529941201,
+          0.00220315158367157,
+          0.002704242244362831,
+          0.002429189160466194,
+          0.0012336750514805317,
+          0.0021965480409562588,
+          0.002331055933609605,
+          0.001556068193167448
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261124-phase1-lora-offband-noise-source-cpu-r01",
+  "group_id": "phase1-lora-observable-recovery",
+  "display_name": "LoRa 实收带外频点的复数噪声预测",
+  "description": "Source U covariance witness falsification for direct complex prediction of colored noise from received off-band coefficients.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "source_only",
+    "dual_path"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261124-phase1-lora-private-dose-direction-source-m2-r02",
+    "20261124-phase1-lora-rf-noise-transport-source-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User handoff from 01a1dedc-e242-78a2-8064-20079b2070eb and active LoRa/WiSig observable recovery goal. Source screen only.",
+  "code": {
+    "commit": "6640ad102a0e1e2341ecd4ca057e0336c6248bce",
+    "checkout": "E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-offband-noise-source-cpu-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa registered main data",
+    "version": "lora_full_packets_v1",
+    "representation": "Phase-aligned six chirps, float32 [6,2,256] plus replay of registered full and residual received views in frozen source scoring",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "Source U metadata, fixed prior split and first 30 per source RX from held role. No source V or target metadata.",
+    "label_map_ref": null,
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": {
+        "held": 150,
+        "source_no_query_smoke": 2
+      },
+      "V": 0
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": "experiments/pamf_lora_main/packet_physics.py"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source U waveform-only audit. No recognition. Actual noise isolated in comparison."
+  },
+  "checkpoint": {
+    "initialization": "Analytic fixed covariance, no trainable parameters.",
+    "sources": [],
+    "contract_check_ref": "experiments/pamf_lora_main/offband_noise_source.py",
+    "provenance_verdict": "Only legal held U clean and received source replay. No classifier, V, identity labels or target.",
+    "selection_rule": "Fixed signal-only probe, reported source reductions and leakage, no parameter selection from isolated noise."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex handoff thread 01a208a9-57df-7f82-a078-cd9477adf998",
+    "gpu_policy": "CPU-only. Six ordinary CPU workers for replay, no GPU allocation.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-offband-noise-source-cpu-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-offband-noise-source-cpu-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/offband_noise_witness_v1",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.offband_noise_source publish --repo E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010 --output E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/offband_noise_witness_v1 --context E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_calibration_source_r01_context.json --ssh-config E:/type10-7/tools/n607_ssh_config --parent-submit E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_residual_practical_release/submit.json",
+    "stop_rule": "Stop on source data mismatch, nonfinite covariance, noise reference replay mismatch, or incomplete artifacts."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "smoke.json",
+    "source-u-offband-results.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "normalized reduction in added-noise error energy",
+      "complex noise correlation",
+      "signal direction attenuation and clean edit energy"
+    ],
+    "dimensions": [
+      "generic profile",
+      "registered route",
+      "source scene",
+      "band",
+      "witness margin",
+      "predictor"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "offband_noise_source.py diagnostics only"
+  },
+  "rows": [
+    {
+      "row_id": "probe-source",
+      "method": "Fixed observable and separated reference-only witness inputs",
+      "purpose": "source-only waveform identifiability",
+      "config_ref": "experiments/pamf_lora_main/offband_noise_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-offband-noise-source-cpu-r01/configs/probe-source.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 2026112991,
+        "data": null,
+        "augmentation": 2026113413,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No learned model; one registered held U split and one independent generic perturbation seed.",
+      "k": null,
+      "scenario": "clean, generic white/broad/narrow, registered full/residual low suburban/urban",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "150 fixed held U source packets; fixed 16 CG iterations per vector",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-offband-noise-source-cpu-r01/source-u-offband-results.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-offband-noise-source-cpu-r01/logs/probe-source.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.offband_noise_source probe /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-offband-noise-source-cpu-r01/configs/probe-source.json source",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-offband-noise-source-cpu-r01/source-u-offband-results.json"
+      ]
+    }
+  ],
+  "notes": [
+    "All held IQ is source U, no truth labels. Known covariance/noise controls diagnose the witness ceiling only.",
+    "Projection stability and realistic noise reducibility are assessed before consideration of a learned model."
+  ],
+  "registered_at": "2026-11-23T23:05:34+00:00"
+}
