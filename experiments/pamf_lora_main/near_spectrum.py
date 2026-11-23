@@ -24,7 +24,10 @@ class NearSpectrum(ComplexVector):
 
     def forward(self, observed, baseline, quality, frozen_update):
         current = baseline + torch.fft.ifft(frozen_update, norm='ortho')
-        proposal = .3*self.proposal(observed, current, quality)
+        return self.reorient(frozen_update, .3*self.proposal(observed, current, quality))
+
+    @staticmethod
+    def reorient(frozen_update, proposal):
         result = frozen_update.clone()
         for band in bands(frozen_update.shape[-1], frozen_update.device):
             reference = frozen_update[..., band]
