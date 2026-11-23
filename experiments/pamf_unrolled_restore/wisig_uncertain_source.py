@@ -101,29 +101,39 @@ def fit(rt, arm, *, smoke=False, recipe=RECIPE, observe=None):
     write(root / f'{arm}-complete.json', evidence)
 
 
+def load_models(root, recipe):
+    models = {}
+    for arm in recipe:
+        checkpoint = torch.load(root / f'{arm}.pt', map_location='cuda:0', weights_only=True)
+        evidence = read(root / f'{arm}-complete.json')
+        if (checkpoint['evidence'] != evidence or any(evidence[k] != v for k, v in proof(arm, recipe).items())
+                or not 0 <= evidence['clean_threshold'] <= 1):
+            raise ValueError('Fixed source-only candidate required')
+        model = UncertaintyPrior().to('cuda:0').eval().requires_grad_(False)
+        model.load_state_dict(checkpoint['state'], strict=True)
+        models[arm] = (model, evidence['clean_threshold'])
+    return models
+
+
 @torch.no_grad()
-def evaluate(rt, recipe=RECIPE, prepare=None):
+def evaluate(rt, recipe=RECIPE, prepare=None, *, model_root=None, reader_factory=None):
     cache, _, source, reader, ids, _, _ = baseline.handles(rt)
-    f = baseline.load_reader(reader, source, 'cuda:0').eval().requires_grad_(False)
+    f = baseline.load_reader(reader, source, 'cuda:0') if reader_factory is None else reader_factory(rt)
+    f.eval().requires_grad_(False)
+    classify = f if reader_factory is None else lambda y: f.classify_features(f.features(y))
     root = Path(rt['run_root'])
     old = Path(rt['baseline_root']) / 'predictions'
     done = read(old / 'complete.json')
     if (done['status'], done['count'], done['target_reads'], done['source_truth_reads']) != ('FROZEN', len(ids), 0, 0):
         raise ValueError('Expected fixed same-panel truth-blind direct/R69 evidence')
-    models = {}
+    models = load_models(root if model_root is None else model_root, recipe)
     modes = modes_for(recipe)
-    for arm in recipe:
-        checkpoint = torch.load(root / f'{arm}.pt', map_location='cuda:0', weights_only=True)
-        evidence = read(root / f'{arm}-complete.json')
-        if checkpoint['evidence'] != evidence or any(evidence[k] != v for k, v in proof(arm, recipe).items()):
-            raise ValueError('Fixed source-only candidate required')
-        model = UncertaintyPrior().to('cuda:0').eval()
-        model.load_state_dict(checkpoint['state'], strict=True)
-        models[arm] = (model, evidence['clean_threshold'])
     activity = {}
+    seconds = {}
     for route, folder in baseline.ROUTES.items():
         for scene in baseline.VIEWS:
             key = f'{route}_{scene}'
+            started = perf_counter()
             with np.load(old / f'{key}.npz', allow_pickle=False) as ref:
                 if (not np.array_equal(ref['ids'], ids) or ref['decision'].shape != (len(done['modes']), len(ids))
                         or ref['decision'].dtype != np.uint8 or (ref['decision'] > 5).any()):
@@ -145,7 +155,7 @@ def evaluate(rt, recipe=RECIPE, prepare=None):
                         active = active | shifted
                     activity[key][arm] += int(active.sum())
                     variants.extend((coarse, joint, torch.where(active[:, None], joint, x)))
-                logits = torch.stack([f(as_iq(value)) for value in variants])
+                logits = torch.stack([classify(as_iq(value)) for value in variants])
                 if logits.shape != (len(modes) - 2, len(x), 6) or not torch.isfinite(logits).all():
                     raise ValueError('Incomplete source predictions')
                 rows.append(logits.argmax(dim=-1).tolist())
@@ -153,9 +163,11 @@ def evaluate(rt, recipe=RECIPE, prepare=None):
             out.parent.mkdir(exist_ok=True)
             with out.open('xb') as stream:
                 np.savez(stream, ids=ids, decision=np.concatenate((decisions, np.concatenate(rows, axis=1))).astype(np.uint8))
+            seconds[key] = perf_counter() - started
             print('WISIG_UNCERTAIN_FROZEN', key, len(ids), flush=True)
     write(root / 'predictions' / 'complete.json', dict(status='FROZEN', modes=list(modes), views=list(baseline.VIEWS),
-          count=len(ids), source_truth_reads=0, target_reads=0, gate_activity=activity, readouts_reused=['direct', 'r69']))
+          count=len(ids), source_truth_reads=0, target_reads=0, gate_activity=activity, readouts_reused=['direct', 'r69'],
+          evaluation_seconds=seconds))
 
 
 def train_worker(rt, action, arm, gpu):
