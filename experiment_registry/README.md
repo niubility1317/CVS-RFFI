@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 实测源包配对的复数差异保真](../automation_reports/CV-SincNet/20261124-phase1-lora-real-source-pair-contrast-m4-r01/report.md)
 - [LoRa 整包二次相位与独立线性频偏](../automation_reports/CV-SincNet/20261124-phase1-lora-packet-phase-tracker-source-m3-r01/report.md)
 - [LoRa 包内镜像证据约束细化](../automation_reports/CV-SincNet/20261124-phase1-lora-mirror-protected-refine-source-m3-r01/report.md)
 - [LoRa 去扫频谱的镜像共轭恢复](../automation_reports/CV-SincNet/20261124-phase1-lora-conjugate-companion-source-m4-r01/report.md)

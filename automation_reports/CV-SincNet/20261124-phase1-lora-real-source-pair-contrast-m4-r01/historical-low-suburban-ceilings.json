@@ -1,0 +1,96 @@
+{
+  "20261123-phase1-lora-dura-packet-near-source-m2-r01": {
+    "full": {
+      "n": 900,
+      "by_mode": {
+        "direct": 509,
+        "reference": 514,
+        "frozen_broad": 509,
+        "individual_context": 516,
+        "packet_context": 516,
+        "packet_context_half": 512,
+        "known_matched_near": 558,
+        "known_noise": 574
+      }
+    },
+    "residual": {
+      "n": 900,
+      "by_mode": {
+        "direct": 452,
+        "reference": 466,
+        "frozen_broad": 436,
+        "individual_context": 444,
+        "packet_context": 442,
+        "packet_context_half": 443,
+        "known_matched_near": 557,
+        "known_noise": 619
+      }
+    }
+  },
+  "20261123-phase1-lora-dura-inverse-noise-dose-source-m2-r01": {
+    "full": {
+      "n": 300,
+      "by_mode": {
+        "direct": 167,
+        "reference": 170,
+        "removed_50": 185,
+        "removed_80": 189,
+        "removed_100": 191,
+        "inverse_0": 173,
+        "inverse_50": 190,
+        "inverse_80": 219,
+        "inverse_100": 236,
+        "paired_clean": 239
+      }
+    },
+    "residual": {
+      "n": 300,
+      "by_mode": {
+        "direct": 150,
+        "reference": 151,
+        "removed_50": 173,
+        "removed_80": 189,
+        "removed_100": 198,
+        "inverse_0": 150,
+        "inverse_50": 186,
+        "inverse_80": 207,
+        "inverse_100": 234,
+        "paired_clean": 239
+      }
+    }
+  },
+  "20261123-phase1-lora-dura-learned-inverse-source-m2-r01": {
+    "full": {
+      "n": 300,
+      "by_mode": {
+        "direct": 175,
+        "reference": 186,
+        "learned": 171,
+        "learned_half": 178,
+        "known_80": 203,
+        "known_100": 197,
+        "inverse_raw": 166,
+        "inverse_learned": 166,
+        "inverse_learned_half": 176,
+        "inverse_80": 218,
+        "inverse_100": 216
+      }
+    },
+    "residual": {
+      "n": 300,
+      "by_mode": {
+        "direct": 144,
+        "reference": 145,
+        "learned": 144,
+        "learned_half": 153,
+        "known_80": 199,
+        "known_100": 206,
+        "inverse_raw": 150,
+        "inverse_learned": 142,
+        "inverse_learned_half": 154,
+        "inverse_80": 206,
+        "inverse_100": 220
+      }
+    }
+  }
+}
