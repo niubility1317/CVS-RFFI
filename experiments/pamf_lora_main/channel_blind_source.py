@@ -196,6 +196,7 @@ def fit(rt, *, smoke=False, recipe=DEFAULT, calculate=objective, receiver_batche
                    bf16_training_convolutions=recipe.name!='blind' and torch.cuda.is_bf16_supported())
     if progress:
         summary['held_trajectory'] = progress
+        summary['peak_cuda_allocated_bytes'] = torch.cuda.max_memory_allocated()
     if smoke:
         write(root/f'smoke-{recipe.name}.json',dict(summary,status='PASS',steps=1))
     else:
