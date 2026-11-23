@@ -142,9 +142,11 @@ def readouts(iq, known_noise, baseline, tracker, models, packet_arms=(False, Tru
     return torch.stack((iq, reference, *outputs)), int(active.sum())
 
 
-def summarize(root, route, source, chosen, ids, predictions, metrics, modes=MODES):
-    write(root / f'{route}-predictions.json', dict(ids=ids[chosen].tolist(),
-          rows={k: v.tolist() for k, v in predictions.items()}))
+def summarize(root, route, source, chosen, ids, predictions, metrics, modes=MODES, *,
+              predictions_written=False, comparisons=()):
+    if not predictions_written:
+        write(root / f'{route}-predictions.json', dict(ids=ids[chosen].tolist(),
+              rows={k: v.tolist() for k, v in predictions.items()}))
     with np.load(source / 'V_metadata.npz', allow_pickle=False) as metadata:
         if not np.array_equal(metadata['ids'][chosen], ids[chosen]):
             raise ValueError('Unexpected LoRa source truth order')
@@ -161,9 +163,18 @@ def summarize(root, route, source, chosen, ids, predictions, metrics, modes=MODE
                             for i in range(len(SOURCE))], axis=-1)
     ci = {k: [np.quantile(delta[draws].sum(1), (.025, .975)).tolist() for delta in h-h[1]]
           for k, h in (('six', six), ('low', hits[VIEWS[-1]].astype(int)))}
+    additional = {}
+    for arm, control in comparisons:
+        a, b = modes.index(arm), modes.index(control)
+        changes = {k: np.asarray(h[a], dtype=int) - np.asarray(h[b], dtype=int)
+                   for k, h in (('six', six), ('low', hits[VIEWS[-1]]))}
+        additional[f'{arm}_vs_{control}'] = {
+            k: dict(net=int(d.sum()), interval=np.quantile(d[draws].sum(1), (.025, .975)).tolist())
+            for k, d in changes.items()}
     write(root / f'{route}-source-scores.json', dict(status='SOURCE_SCORED', route=route,
           n=len(chosen), modes=list(modes), metrics=metrics, six=six.sum(1).tolist(),
-          paired_ci_vs_reference=ci, target_reads=0, truth_after_predictions=True))
+          paired_ci_vs_reference=ci, target_reads=0, truth_after_predictions=True,
+          **({'additional_pairs': additional} if additional else {})))
 
 
 @torch.no_grad()
