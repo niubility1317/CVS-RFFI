@@ -76,7 +76,7 @@ def readouts(wave, truth, baseline, tracker):
     return torch.stack((received, reference, *practical, *projected, truth)), int(allowed.sum())
 
 
-def summarize(root, route, source, ids, chosen, preds, metrics):
+def summarize(root, route, source, ids, chosen, preds, metrics, modes=MODES):
     write(root / f'{route}-predictions.json',
           dict(ids=ids[chosen].tolist(), rows={k: v.tolist() for k, v in preds.items()}))
     with np.load(source / 'V_metadata.npz', allow_pickle=False) as metadata:
@@ -84,29 +84,31 @@ def summarize(root, route, source, ids, chosen, preds, metrics):
             raise ValueError('Source V scoring changed the held-out row order')
         truth = metadata['y'][chosen]
     hits = {view: row == truth for view, row in preds.items()}
+    per_rx = len(chosen) // len(SOURCE)
     for view, row in hits.items():
         baseline = row[1]
         metrics[view].update(correct=row.sum(1).tolist(),
             repairs=(row & ~baseline).sum(1).tolist(), harms=(~row & baseline).sum(1).tolist(),
-            by_rx=row.reshape(len(MODES), len(SOURCE), PER_RX).sum(-1).tolist())
+            by_rx=row.reshape(len(modes), len(SOURCE), per_rx).sum(-1).tolist())
     six = np.stack([hits[k] for k in VIEWS[1:]]).sum(0)
     rng = np.random.default_rng(DRAW+1)
-    bootstrap = np.concatenate([rng.integers(j*PER_RX, (j+1)*PER_RX, (1600, PER_RX))
+    bootstrap = np.concatenate([rng.integers(j*per_rx, (j+1)*per_rx, (1600, per_rx))
                                for j in range(len(SOURCE))], axis=-1)
     ci = {k: [np.quantile(delta[bootstrap].sum(1), (.025, .975)).tolist() for delta in h-h[1]]
           for k, h in (('six', six), ('low', hits[VIEWS[-1]].astype(int)))}
     write(root / f'{route}-source-scores.json', dict(status='SOURCE_SCORED', route=route,
-          n=len(chosen), modes=list(MODES), metrics=metrics, six=six.sum(1).tolist(),
+          n=len(chosen), modes=list(modes), metrics=metrics, six=six.sum(1).tolist(),
           paired_ci_vs_reference=ci, trained_G_updates=0, target_reads=0, truth_after_predictions=True))
 
 
 @torch.no_grad()
-def evaluate(rt, route, *, smoke=False):
+def evaluate(rt, route, *, smoke=False, per_rx=PER_RX, sampler=select_panel,
+             simulator=simulate, renderer=readouts, modes=MODES):
     device = 'cuda:0'
     root = Path(rt['run_root'])
     source, cache, contract, baseline, tracker = source_control(rt, route, device)
     raw, rx, ids, _ = source_role(source, contract, 'V')
-    chosen = select_panel(rx, 2 if smoke else PER_RX)
+    chosen = sampler(rx, 2 if smoke else per_rx)
     rows = list(zip(raw[chosen], rx[chosen], ids[chosen], strict=True))
     clean = np.stack([chirp_windows(row[0]) for row in rows])
     reference = np.load(cache / 'V.npy', allow_pickle=False, mmap_mode='r') if cache is not None else None
@@ -118,7 +120,7 @@ def evaluate(rt, route, *, smoke=False):
     metrics, preds = {}, {}
     with ProcessPoolExecutor(max_workers=8) as pool:
         for scene in scenes:
-            replay = zip(*pool.map(partial(simulate, route, scene), rows, chunksize=2), strict=True)
+            replay = zip(*pool.map(partial(simulator, route, scene), rows, chunksize=2), strict=True)
             stack, errors = replay
             captures = np.stack(stack, axis=1)
             if (not np.isfinite(captures).all() or
@@ -128,7 +130,7 @@ def evaluate(rt, route, *, smoke=False):
             count, parts = 0, []
             for batch, truth in zip(tensor(captures, device).split(20, dim=1),
                                     tensor(clean, device).split(20), strict=True):
-                wave, active = readouts(batch, truth, baseline, tracker)
+                wave, active = renderer(batch, truth, baseline, tracker)
                 count += active
                 if not torch.isfinite(wave).all():
                     raise ValueError('Nonfinite physical inverse output')
@@ -136,7 +138,7 @@ def evaluate(rt, route, *, smoke=False):
                     logits = f(wave.flatten(0, 1))[0]
                     if not torch.isfinite(logits).all():
                         raise ValueError('Nonfinite frozen Tri-set logits')
-                    parts.append(logits.argmax(1).reshape(len(MODES), len(truth)).cpu().tolist())
+                    parts.append(logits.argmax(1).reshape(len(modes), len(truth)).cpu().tolist())
             metrics[scene] = dict(active=count, replay_relative_error=errors.max().item())
             if not smoke:
                 preds[scene] = np.concatenate(parts, axis=1)
@@ -145,7 +147,7 @@ def evaluate(rt, route, *, smoke=False):
         write(root / f'smoke-{route}.json', dict(status='PASS', route=route, n=len(chosen),
               metrics=metrics, F_reads=0, TX_reads=0, target_reads=0))
     else:
-        summarize(root, route, source, ids, chosen, preds, metrics)
+        summarize(root, route, source, ids, chosen, preds, metrics, modes)
 
 
 def dispatch(rt):
@@ -162,7 +164,7 @@ def dispatch(rt):
         raise
 
 
-def publish(repo, output, context, ssh_config, parent_submit):
+def publish(repo, output, context, ssh_config, parent_submit, *, run=RUN, runner=None):
     cfg = read(context)
     rt = {k: cfg[k] for k in ('project', 'python', 'frozen_sources')}
     project = PurePosixPath(rt['project'])
@@ -170,8 +172,8 @@ def publish(repo, output, context, ssh_config, parent_submit):
     sub = read(parent_submit)
     if sub['archive_transfer'] != 'VERIFIED' or PurePosixPath(sub['run_root']) != parent:
         raise ValueError('Matching source-only LoRa contract required')
-    rt.update(run_id=RUN, runner=__spec__.name, code_commit=release_commit(repo),
-              run_root=str(project / 'runs' / RUN), release_root=str(project / 'releases' / f'{RUN}-release'),
+    rt.update(run_id=run, runner=runner or __spec__.name, code_commit=release_commit(repo),
+              run_root=str(project / 'runs' / run), release_root=str(project / 'releases' / f'{run}-release'),
               source_root=str(project / 'releases' / f'{DATA_RUN}-release' / 'data' / 'source'),
               parent_root=str(parent), allowed_gpus=[3, 6, 2, 0, 4, 1, 5], max_workers=2, max_compute_processes=4)
     release(repo, output, rt, ssh_config)

@@ -2,8 +2,10 @@ import numpy as np
 import pytest
 
 from experiments.pamf_lora_main.data import SOURCE, VIEWS
+from experiments.pamf_lora_main.inverse_noise_dose_source import REMOVED
 from experiments.pamf_lora_main.packet_physics import aligned_view
-from experiments.pamf_lora_main.physical_inverse import ReplayAction, convolution, full_replay, residual_replay
+from experiments.pamf_lora_main.physical_inverse import (ReplayAction, convolution, full_replay,
+                                                         noise_doses, residual_replay)
 
 
 def test_sparse_widely_linear_operator_transposes_in_real_coordinates():
@@ -26,3 +28,14 @@ def test_replay_keeps_the_original_received_iq(route, replay):
     assert np.array_equal(values[0], original)
     assert values.shape == (4, 6, 2, 256) and np.isfinite(values).all()
     assert error < 2e-9
+    doses, _ = replay(iq, scene, SOURCE[0], 'physical-inverse-test', removed=REMOVED)
+    assert doses.shape == (8, 6, 2, 256) and np.isfinite(doses).all()
+    np.testing.assert_array_equal(doses[[0, 3, 4, 7]], values)
+
+
+def test_known_noise_amplitude_doses_leave_the_signal_fixed():
+    signal = np.array([1+2j, 2+1j])
+    noise = np.array([.1+.04j, -.03+.05j])
+    doses = noise_doses(signal+noise, signal, REMOVED)
+    for received, removed in zip(doses, REMOVED, strict=True):
+        np.testing.assert_allclose(received-signal, (1.-removed)*noise, atol=1e-12)

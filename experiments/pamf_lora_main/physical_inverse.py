@@ -69,12 +69,17 @@ def validate(action, clean, observed, meta, trace):
     return signal, noise, g, float(error)
 
 
-def inverse(action, observed, clean_observation, noise):
-    # Use the same regularization for the two arms of the noise attribution.
+def noise_doses(observed, clean_observation, removed):
+    return [observed if dose == 0 else clean_observation if dose == 1
+            else observed + dose*(clean_observation-observed) for dose in removed]
+
+
+def inverse(action, observed, clean_observation, noise, removed=(0., 1.)):
+    # Fixed regularization isolates the effect of input noise across doses.
     solver = action.operator()
     regularization = float(np.clip(np.sqrt(3. * np.mean(np.abs(noise)**2)), 1e-5, 1.))
     solutions = []
-    for y in (observed, clean_observation):
+    for y in noise_doses(observed, clean_observation, removed):
         rhs = np.concatenate((y.real, y.imag))
         result = lsmr(solver, rhs, damp=regularization, atol=1e-5, btol=1e-5, maxiter=30)
         estimate = result[0]
@@ -86,7 +91,7 @@ def inverse(action, observed, clean_observation, noise):
     return solutions
 
 
-def full_replay(z, scene, rx, pid):
+def full_replay(z, scene, rx, pid, *, removed=(0., 1.)):
     from leo_practical.channel import ChannelStream, normalize_input, stable_seed
     x, _ = normalize_input(z)
     cfg = channel(scene)
@@ -99,16 +104,16 @@ def full_replay(z, scene, rx, pid):
     propagation = convolution(start+np.arange(len(y)), kernel, len(x))
     operator = ReplayAction(propagation, trace['operator_main'], trace['operator_image'])
     signal, noise, gain, err = validate(operator, x, y, meta, trace)
-    solved, known_noise_solved = inverse(operator, y.astype(np.complex128)/gain, signal, noise)
+    estimates = inverse(operator, y.astype(np.complex128)/gain, signal, noise, removed)
     offset = meta['numerical_filter_latency_samples'] - CONTEXT
     # Direct and pure denoising use the registered sampling/latency convention.
     # The inverse directly estimates the native source time grid.
-    return np.stack([pack_windows(w) for w in (chirp_samples(y, offset),
-                     chirp_samples(gain*signal, offset), chirp_samples(solved),
-                     chirp_samples(known_noise_solved))]), err
+    receives = [chirp_samples(w, offset) for w in noise_doses(y, gain*signal, removed)]
+    restored = [chirp_samples(w) for w in estimates]
+    return np.stack([pack_windows(w) for w in (*receives, *restored)]), err
 
 
-def residual_replay(z, scene, rx, pid):
+def residual_replay(z, scene, rx, pid, *, removed=(0., 1.)):
     from leo_practical.channel import normalize_input, sample_geometry, stable_seed
     from leo_practical.residual import ResidualChannel
     x, _ = normalize_input(z)
@@ -128,7 +133,8 @@ def residual_replay(z, scene, rx, pid):
         propagation = convolution(start+np.arange(len(y)), np.broadcast_to(h, (len(y), len(h))), len(grid))
         operator = ReplayAction(propagation, trace['operator_main'], trace['operator_image'])
         signal, noise, gain, err = validate(operator, grid, y, meta, trace)
-        solved, known_noise_solved = inverse(operator, y.astype(np.complex128)/gain, signal, noise)
-        rows.append((y, gain*signal, solved[32:288], known_noise_solved[32:288]))
+        estimates = inverse(operator, y.astype(np.complex128)/gain, signal, noise, removed)
+        receives = noise_doses(y, gain*signal, removed)
+        rows.append((*receives, *(w[32:288] for w in estimates)))
         errors.append(err)
     return np.stack([pack_windows(np.stack(a)) for a in zip(*rows, strict=True)]), max(errors)
