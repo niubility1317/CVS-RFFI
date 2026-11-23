@@ -129,20 +129,20 @@ def normalized(wave, original):
     return wave * ratio.sqrt()
 
 
-def readouts(iq, known_noise, baseline, tracker, models):
+def readouts(iq, known_noise, baseline, tracker, models, packet_arms=(False, True)):
     reference, active = baseline(iq)
     outputs = [iq.clone() for _ in MODES[2:]]
     if active.any():
         y = iq[active]
         working, phase, q, rms = coordinates(tracker, y)
-        guesses = [real_iq(model(working, q, packet=(arm == 'packet'))*phase*rms)
-                   for model, arm in zip(models, ARMS, strict=True)]
+        guesses = [real_iq(model(working, q, packet=context)*phase*rms)
+                   for model, context in zip(models, packet_arms, strict=True)]
         for arm, noise in zip(outputs, (*guesses, .5*guesses[1], known_noise[active]), strict=True):
             arm[active] = normalized(y-noise, y)
     return torch.stack((iq, reference, *outputs)), int(active.sum())
 
 
-def summarize(root, route, source, chosen, ids, predictions, metrics):
+def summarize(root, route, source, chosen, ids, predictions, metrics, modes=MODES):
     write(root / f'{route}-predictions.json', dict(ids=ids[chosen].tolist(),
           rows={k: v.tolist() for k, v in predictions.items()}))
     with np.load(source / 'V_metadata.npz', allow_pickle=False) as metadata:
@@ -154,7 +154,7 @@ def summarize(root, route, source, chosen, ids, predictions, metrics):
         base = correct[1]
         metrics[view].update(correct=correct.sum(1).tolist(),
             repairs=(correct & ~base).sum(1).tolist(), harms=(~correct & base).sum(1).tolist(),
-            by_rx=correct.reshape(len(MODES), len(SOURCE), EVAL_PER_RX).sum(-1).tolist())
+            by_rx=correct.reshape(len(modes), len(SOURCE), EVAL_PER_RX).sum(-1).tolist())
     six = np.stack([hits[k] for k in VIEWS[1:]]).sum(0)
     rng = np.random.default_rng(KEY+3)
     draws = np.concatenate([rng.integers(i*EVAL_PER_RX, (i+1)*EVAL_PER_RX, (1600, EVAL_PER_RX))
@@ -162,26 +162,19 @@ def summarize(root, route, source, chosen, ids, predictions, metrics):
     ci = {k: [np.quantile(delta[draws].sum(1), (.025, .975)).tolist() for delta in h-h[1]]
           for k, h in (('six', six), ('low', hits[VIEWS[-1]].astype(int)))}
     write(root / f'{route}-source-scores.json', dict(status='SOURCE_SCORED', route=route,
-          n=len(chosen), modes=list(MODES), metrics=metrics, six=six.sum(1).tolist(),
+          n=len(chosen), modes=list(modes), metrics=metrics, six=six.sum(1).tolist(),
           paired_ci_vs_reference=ci, target_reads=0, truth_after_predictions=True))
 
 
 @torch.no_grad()
-def score(rt, route):
-    device = 'cuda:0'
-    root = Path(rt['run_root'])
-    source, cache, contract, baseline, tracker = source_control(rt, route, device)
-    proof = torch.load(root / f'{route}-model.pt', map_location=device, weights_only=True)
-    if proof['proof'] != record(route, contract) or set(proof['models']) != set(ARMS):
-        raise ValueError('Wrong frozen noise model or source route')
-    models = [Denoise().to(device).eval().requires_grad_(False) for _ in ARMS]
-    for model, arm in zip(models, ARMS, strict=True):
-        model.load_state_dict(proof['models'][arm], strict=True)
+def score_models(root, route, binding, models, *, selection=panel, modes=MODES,
+                 packet_arms=(False, True), device='cuda:0'):
+    source, cache, contract, baseline, tracker = binding
     f = recognizer(device).eval().requires_grad_(False)
     f_path = complete_f(root.parent / SET_RUN, contract, case(SEED, SET_METHOD)) / 'model.pt'
     f.load_state_dict(torch.load(f_path, map_location=device, weights_only=True), strict=True)
     raw, rx, ids, _ = source_role(source, contract, 'V')
-    chosen = panel(rx)
+    chosen = selection(rx)
     rows = list(zip(raw[chosen], rx[chosen], ids[chosen], strict=True))
     official = np.load(cache/'V.npy', mmap_mode='r', allow_pickle=False) if cache is not None else None
     metrics, predictions = {}, {}
@@ -193,16 +186,29 @@ def score(rt, route):
                 raise ValueError('Source V waveform replays differ from the registered full route')
             parts, n_active = [], 0
             for wave, noise in zip(tensor(y, device).split(24), tensor(epsilon, device).split(24), strict=True):
-                result, count = readouts(wave, noise, baseline, tracker, models)
+                result, count = readouts(wave, noise, baseline, tracker, models, packet_arms)
                 logits = f(result.flatten(0, 1))[0]
                 if not torch.isfinite(logits).all():
                     raise ValueError('Nonfinite frozen Tri-set')
-                parts.append(logits.argmax(1).reshape(len(MODES), len(wave)).cpu().tolist())
+                parts.append(logits.argmax(1).reshape(len(modes), len(wave)).cpu().tolist())
                 n_active += count
             predictions[view] = np.concatenate(parts, axis=1)
             metrics[view] = dict(active=n_active)
             print('DENOISE_SOURCE_PREDICTED', route, view, n_active, flush=True)
-    summarize(root, route, source, chosen, ids, predictions, metrics)
+    summarize(root, route, source, chosen, ids, predictions, metrics, modes)
+
+
+def score(rt, route):
+    device = 'cuda:0'
+    root = Path(rt['run_root'])
+    binding = source_control(rt, route, device)
+    proof = torch.load(root / f'{route}-model.pt', map_location=device, weights_only=True)
+    if proof['proof'] != record(route, binding[2]) or set(proof['models']) != set(ARMS):
+        raise ValueError('Wrong frozen noise model or source route')
+    models = [Denoise().to(device).eval().requires_grad_(False) for _ in ARMS]
+    for model, arm in zip(models, ARMS, strict=True):
+        model.load_state_dict(proof['models'][arm], strict=True)
+    score_models(root, route, binding, models, device=device)
 
 
 def dispatch(rt):
