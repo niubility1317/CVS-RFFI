@@ -37,7 +37,7 @@ FIELDS = ('active','outer_common','outer_private','split_coherence','context_lev
 DEVICE = 'cuda:0'
 
 
-def recover(iq, tracker, models, threshold, *, compare=False):
+def recover(iq, tracker, models, threshold, *, compare=False, switch='exchange'):
     observed,rotation,quality,rms = coordinates(tracker,iq)
     enabled = corruption_score(observed)>threshold
     count = int(enabled.sum())
@@ -52,7 +52,7 @@ def recover(iq, tracker, models, threshold, *, compare=False):
         edit = fine-y
         proposals.extend((coarse-y,edit,.5*edit))
     if compare:
-        own = models[-1].stages(y,q,level,exchange=False)[1]-y
+        own = models[-1].stages(y,q,level,**{switch:False})[1]-y
         matched = match_dose(edit,own,level)
         proposals.extend((matched,match_dose(own,edit,level)))
         doses = (physical_norm(torch.stack((edit,matched)),level)/physical_norm(y,level).clamp_min(1e-7))
@@ -62,16 +62,16 @@ def recover(iq, tracker, models, threshold, *, compare=False):
     return outputs,count,measures
 
 
-def render(iq, _unused, baseline, tracker, models, *, threshold, measurements=None):
+def render(iq, _unused, baseline, tracker, models, *, threshold, measurements=None, switch='exchange'):
     reference,_ = baseline(iq)
-    outputs,active,evidence = recover(iq,tracker,models,threshold,compare=True)
+    outputs,active,evidence = recover(iq,tracker,models,threshold,compare=True,switch=switch)
     if measurements is not None:
         measurements.append(np.asarray(evidence.tolist()))
     return torch.cat((torch.stack((iq,reference)),outputs)),active
 
 
 @torch.no_grad()
-def smoke(rt, recipes, modes):
+def smoke(rt, recipes, modes, *, switch='exchange'):
     root = Path(rt['run_root'])
     (_,source,_),contract = setup(rt,DEVICE,smoke=True)
     models,threshold = load_models(root,contract,DEVICE,recipes)
@@ -83,7 +83,7 @@ def smoke(rt, recipes, modes):
     perturbed = real_iq(generic_observation(complex_iq(source),rng))
     active = perturbed[corruption_score(coordinates(tracker,perturbed)[0]).argmax().view(1)]
     clean = source[corruption_score(coordinates(tracker,source)[0]).argmin().view(1)]
-    output,triggered = render(torch.cat((clean,active)),None,baseline,tracker,models,threshold=threshold)
+    output,triggered = render(torch.cat((clean,active)),None,baseline,tracker,models,threshold=threshold,switch=switch)
     logits = reader(output.flatten(0,1))[0]
     if triggered!=1 or logits.shape!=(2*len(modes),10) or not torch.isfinite(logits).all():
         raise ValueError('Expected a finite real-checkpoint result with an active restoration')
@@ -105,25 +105,25 @@ def smoke(rt, recipes, modes):
           device=torch.cuda.get_device_name()))
 
 
-def evaluate(rt, route, recipes, modes):
+def evaluate(rt, route, recipes, modes, *, switch='exchange', fields=FIELDS):
     binding = source_control(rt,route,DEVICE)
     models,threshold = load_models(Path(rt['run_root']),binding[2],DEVICE,recipes)
     records = []
 
     def finalize(root, route, source, chosen, ids, predictions, metrics, modes):
-        values = np.concatenate(records).reshape(len(VIEWS),len(chosen),len(FIELDS))
+        values = np.concatenate(records).reshape(len(VIEWS),len(chosen),len(fields))
         result = {}
         for view, rows in zip(VIEWS,values,strict=True):
             result[view] = {}
             for group,cells in zip(SOURCE,np.split(rows,len(SOURCE)),strict=True):
                 active = cells[cells[:,0]>0]
-                medians = dict(zip(FIELDS[1:],np.median(active[:,1:],axis=0),strict=True)) if len(active) else {}
+                medians = dict(zip(fields[1:],np.median(active[:,1:],axis=0),strict=True)) if len(active) else {}
                 result[view][group] = dict(active=len(active),**medians)
         write(root/f'{route}-estimates.json',dict(by_view=result))
         freeze(root,route,source,chosen,ids,predictions,metrics,modes)
 
     score(rt,route,panel=panel,modes=modes,binding=binding,frozen_models=models,replay_fn=receive_only,
-          render=partial(render,threshold=threshold,measurements=records),require_clean_bypass=False,
+          render=partial(render,threshold=threshold,measurements=records,switch=switch),require_clean_bypass=False,
           finalize=finalize)
 
 
