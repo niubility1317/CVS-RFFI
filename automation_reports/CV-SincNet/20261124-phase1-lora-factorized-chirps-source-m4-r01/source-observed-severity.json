@@ -1,0 +1,2015 @@
+{
+  "parent": "20261124-phase1-lora-factorized-chirps-source-m4-r01",
+  "n_packets": 900,
+  "observed_noise_rms_thresholds": [
+    0.045941177755594254,
+    0.15,
+    0.4
+  ],
+  "scopes": [
+    "bypass",
+    "active_to_0.15",
+    "active_0.15_to_0.40",
+    "active_above_0.40"
+  ],
+  "uses_actual_added_noise": false,
+  "target_reads": 0,
+  "by_route": {
+    "full": {
+      "pooled": {
+        "bypass": {
+          "exposures": 3771,
+          "comparisons": {
+            "joint_half__vs__independent_half": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 2449,
+              "control_correct": 2449
+            },
+            "joint_half__vs__joint_unlinked_half": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 2449,
+              "control_correct": 2449
+            },
+            "joint_half__vs__reference": {
+              "better": 52,
+              "worse": 65,
+              "variant_correct": 2449,
+              "control_correct": 2462
+            },
+            "joint_common_half__vs__direct": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 2449,
+              "control_correct": 2449
+            },
+            "joint_private_half__vs__direct": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 2449,
+              "control_correct": 2449
+            }
+          }
+        },
+        "active_to_0.15": {
+          "exposures": 653,
+          "comparisons": {
+            "joint_half__vs__independent_half": {
+              "better": 52,
+              "worse": 37,
+              "variant_correct": 333,
+              "control_correct": 318
+            },
+            "joint_half__vs__joint_unlinked_half": {
+              "better": 72,
+              "worse": 29,
+              "variant_correct": 333,
+              "control_correct": 290
+            },
+            "joint_half__vs__reference": {
+              "better": 43,
+              "worse": 56,
+              "variant_correct": 333,
+              "control_correct": 346
+            },
+            "joint_common_half__vs__direct": {
+              "better": 25,
+              "worse": 33,
+              "variant_correct": 311,
+              "control_correct": 319
+            },
+            "joint_private_half__vs__direct": {
+              "better": 36,
+              "worse": 27,
+              "variant_correct": 328,
+              "control_correct": 319
+            }
+          }
+        },
+        "active_0.15_to_0.40": {
+          "exposures": 629,
+          "comparisons": {
+            "joint_half__vs__independent_half": {
+              "better": 21,
+              "worse": 30,
+              "variant_correct": 193,
+              "control_correct": 202
+            },
+            "joint_half__vs__joint_unlinked_half": {
+              "better": 23,
+              "worse": 22,
+              "variant_correct": 193,
+              "control_correct": 192
+            },
+            "joint_half__vs__reference": {
+              "better": 29,
+              "worse": 40,
+              "variant_correct": 193,
+              "control_correct": 204
+            },
+            "joint_common_half__vs__direct": {
+              "better": 36,
+              "worse": 37,
+              "variant_correct": 192,
+              "control_correct": 193
+            },
+            "joint_private_half__vs__direct": {
+              "better": 56,
+              "worse": 35,
+              "variant_correct": 214,
+              "control_correct": 193
+            }
+          }
+        },
+        "active_above_0.40": {
+          "exposures": 347,
+          "comparisons": {
+            "joint_half__vs__independent_half": {
+              "better": 13,
+              "worse": 13,
+              "variant_correct": 83,
+              "control_correct": 83
+            },
+            "joint_half__vs__joint_unlinked_half": {
+              "better": 11,
+              "worse": 2,
+              "variant_correct": 83,
+              "control_correct": 74
+            },
+            "joint_half__vs__reference": {
+              "better": 14,
+              "worse": 13,
+              "variant_correct": 83,
+              "control_correct": 82
+            },
+            "joint_common_half__vs__direct": {
+              "better": 12,
+              "worse": 22,
+              "variant_correct": 57,
+              "control_correct": 67
+            },
+            "joint_private_half__vs__direct": {
+              "better": 30,
+              "worse": 16,
+              "variant_correct": 81,
+              "control_correct": 67
+            }
+          }
+        }
+      },
+      "by_scene": {
+        "practical_high": {
+          "bypass": {
+            "exposures": 879,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 582,
+                "control_correct": 582
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 582,
+                "control_correct": 582
+              },
+              "joint_half__vs__reference": {
+                "better": 3,
+                "worse": 1,
+                "variant_correct": 582,
+                "control_correct": 580
+              },
+              "joint_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 582,
+                "control_correct": 582
+              },
+              "joint_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 582,
+                "control_correct": 582
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 13,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 2,
+                "worse": 2,
+                "variant_correct": 7,
+                "control_correct": 7
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 7,
+                "control_correct": 6
+              },
+              "joint_half__vs__reference": {
+                "better": 1,
+                "worse": 1,
+                "variant_correct": 7,
+                "control_correct": 7
+              },
+              "joint_common_half__vs__direct": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 7,
+                "control_correct": 8
+              },
+              "joint_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 8,
+                "control_correct": 8
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 7,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 2
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 1
+              },
+              "joint_half__vs__reference": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 2,
+                "control_correct": 3
+              },
+              "joint_common_half__vs__direct": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 3,
+                "control_correct": 4
+              },
+              "joint_private_half__vs__direct": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 3,
+                "control_correct": 4
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 1,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "joint_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "joint_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "joint_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              }
+            }
+          }
+        },
+        "practical_mid": {
+          "bypass": {
+            "exposures": 741,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 480,
+                "control_correct": 480
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 480,
+                "control_correct": 480
+              },
+              "joint_half__vs__reference": {
+                "better": 13,
+                "worse": 16,
+                "variant_correct": 480,
+                "control_correct": 483
+              },
+              "joint_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 480,
+                "control_correct": 480
+              },
+              "joint_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 480,
+                "control_correct": 480
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 119,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 7,
+                "worse": 8,
+                "variant_correct": 60,
+                "control_correct": 61
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 15,
+                "worse": 4,
+                "variant_correct": 60,
+                "control_correct": 49
+              },
+              "joint_half__vs__reference": {
+                "better": 13,
+                "worse": 10,
+                "variant_correct": 60,
+                "control_correct": 57
+              },
+              "joint_common_half__vs__direct": {
+                "better": 3,
+                "worse": 7,
+                "variant_correct": 57,
+                "control_correct": 61
+              },
+              "joint_private_half__vs__direct": {
+                "better": 4,
+                "worse": 4,
+                "variant_correct": 61,
+                "control_correct": 61
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 31,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 0,
+                "worse": 2,
+                "variant_correct": 12,
+                "control_correct": 14
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 2,
+                "worse": 1,
+                "variant_correct": 12,
+                "control_correct": 11
+              },
+              "joint_half__vs__reference": {
+                "better": 2,
+                "worse": 3,
+                "variant_correct": 12,
+                "control_correct": 13
+              },
+              "joint_common_half__vs__direct": {
+                "better": 2,
+                "worse": 1,
+                "variant_correct": 15,
+                "control_correct": 14
+              },
+              "joint_private_half__vs__direct": {
+                "better": 2,
+                "worse": 2,
+                "variant_correct": 14,
+                "control_correct": 14
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 9,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 1
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 2
+              },
+              "joint_half__vs__reference": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 1
+              },
+              "joint_common_half__vs__direct": {
+                "better": 2,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 0
+              },
+              "joint_private_half__vs__direct": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 0
+              }
+            }
+          }
+        },
+        "practical_low_suburban": {
+          "bypass": {
+            "exposures": 580,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 349,
+                "control_correct": 349
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 349,
+                "control_correct": 349
+              },
+              "joint_half__vs__reference": {
+                "better": 17,
+                "worse": 29,
+                "variant_correct": 349,
+                "control_correct": 361
+              },
+              "joint_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 349,
+                "control_correct": 349
+              },
+              "joint_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 349,
+                "control_correct": 349
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 257,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 19,
+                "worse": 10,
+                "variant_correct": 133,
+                "control_correct": 124
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 33,
+                "worse": 8,
+                "variant_correct": 133,
+                "control_correct": 108
+              },
+              "joint_half__vs__reference": {
+                "better": 13,
+                "worse": 19,
+                "variant_correct": 133,
+                "control_correct": 139
+              },
+              "joint_common_half__vs__direct": {
+                "better": 11,
+                "worse": 16,
+                "variant_correct": 116,
+                "control_correct": 121
+              },
+              "joint_private_half__vs__direct": {
+                "better": 14,
+                "worse": 7,
+                "variant_correct": 128,
+                "control_correct": 121
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 50,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 4,
+                "worse": 3,
+                "variant_correct": 20,
+                "control_correct": 19
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 2,
+                "worse": 3,
+                "variant_correct": 20,
+                "control_correct": 21
+              },
+              "joint_half__vs__reference": {
+                "better": 3,
+                "worse": 6,
+                "variant_correct": 20,
+                "control_correct": 23
+              },
+              "joint_common_half__vs__direct": {
+                "better": 5,
+                "worse": 5,
+                "variant_correct": 20,
+                "control_correct": 20
+              },
+              "joint_private_half__vs__direct": {
+                "better": 5,
+                "worse": 3,
+                "variant_correct": 22,
+                "control_correct": 20
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 13,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 2,
+                "worse": 1,
+                "variant_correct": 3,
+                "control_correct": 2
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 3,
+                "control_correct": 2
+              },
+              "joint_half__vs__reference": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 3,
+                "control_correct": 4
+              },
+              "joint_common_half__vs__direct": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 2,
+                "control_correct": 3
+              },
+              "joint_private_half__vs__direct": {
+                "better": 1,
+                "worse": 2,
+                "variant_correct": 2,
+                "control_correct": 3
+              }
+            }
+          }
+        },
+        "practical_high_urban": {
+          "bypass": {
+            "exposures": 808,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 543,
+                "control_correct": 543
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 543,
+                "control_correct": 543
+              },
+              "joint_half__vs__reference": {
+                "better": 2,
+                "worse": 2,
+                "variant_correct": 543,
+                "control_correct": 543
+              },
+              "joint_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 543,
+                "control_correct": 543
+              },
+              "joint_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 543,
+                "control_correct": 543
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 29,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 1,
+                "worse": 1,
+                "variant_correct": 17,
+                "control_correct": 17
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 17,
+                "control_correct": 16
+              },
+              "joint_half__vs__reference": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 17,
+                "control_correct": 18
+              },
+              "joint_common_half__vs__direct": {
+                "better": 2,
+                "worse": 1,
+                "variant_correct": 16,
+                "control_correct": 15
+              },
+              "joint_private_half__vs__direct": {
+                "better": 3,
+                "worse": 0,
+                "variant_correct": 18,
+                "control_correct": 15
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 51,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 4,
+                "worse": 6,
+                "variant_correct": 17,
+                "control_correct": 19
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 2,
+                "worse": 2,
+                "variant_correct": 17,
+                "control_correct": 17
+              },
+              "joint_half__vs__reference": {
+                "better": 3,
+                "worse": 4,
+                "variant_correct": 17,
+                "control_correct": 18
+              },
+              "joint_common_half__vs__direct": {
+                "better": 4,
+                "worse": 6,
+                "variant_correct": 19,
+                "control_correct": 21
+              },
+              "joint_private_half__vs__direct": {
+                "better": 4,
+                "worse": 5,
+                "variant_correct": 20,
+                "control_correct": 21
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 12,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 5,
+                "control_correct": 5
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 5,
+                "control_correct": 4
+              },
+              "joint_half__vs__reference": {
+                "better": 3,
+                "worse": 0,
+                "variant_correct": 5,
+                "control_correct": 2
+              },
+              "joint_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 2
+              },
+              "joint_private_half__vs__direct": {
+                "better": 3,
+                "worse": 0,
+                "variant_correct": 5,
+                "control_correct": 2
+              }
+            }
+          }
+        },
+        "practical_mid_urban": {
+          "bypass": {
+            "exposures": 504,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 326,
+                "control_correct": 326
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 326,
+                "control_correct": 326
+              },
+              "joint_half__vs__reference": {
+                "better": 10,
+                "worse": 12,
+                "variant_correct": 326,
+                "control_correct": 328
+              },
+              "joint_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 326,
+                "control_correct": 326
+              },
+              "joint_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 326,
+                "control_correct": 326
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 102,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 11,
+                "worse": 5,
+                "variant_correct": 55,
+                "control_correct": 49
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 9,
+                "worse": 2,
+                "variant_correct": 55,
+                "control_correct": 48
+              },
+              "joint_half__vs__reference": {
+                "better": 6,
+                "worse": 9,
+                "variant_correct": 55,
+                "control_correct": 58
+              },
+              "joint_common_half__vs__direct": {
+                "better": 4,
+                "worse": 1,
+                "variant_correct": 51,
+                "control_correct": 48
+              },
+              "joint_private_half__vs__direct": {
+                "better": 7,
+                "worse": 5,
+                "variant_correct": 50,
+                "control_correct": 48
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 211,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 8,
+                "worse": 10,
+                "variant_correct": 57,
+                "control_correct": 59
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 11,
+                "worse": 5,
+                "variant_correct": 57,
+                "control_correct": 51
+              },
+              "joint_half__vs__reference": {
+                "better": 7,
+                "worse": 13,
+                "variant_correct": 57,
+                "control_correct": 63
+              },
+              "joint_common_half__vs__direct": {
+                "better": 9,
+                "worse": 10,
+                "variant_correct": 55,
+                "control_correct": 56
+              },
+              "joint_private_half__vs__direct": {
+                "better": 20,
+                "worse": 11,
+                "variant_correct": 65,
+                "control_correct": 56
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 83,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 3,
+                "worse": 5,
+                "variant_correct": 19,
+                "control_correct": 21
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 2,
+                "worse": 2,
+                "variant_correct": 19,
+                "control_correct": 19
+              },
+              "joint_half__vs__reference": {
+                "better": 4,
+                "worse": 3,
+                "variant_correct": 19,
+                "control_correct": 18
+              },
+              "joint_common_half__vs__direct": {
+                "better": 5,
+                "worse": 6,
+                "variant_correct": 13,
+                "control_correct": 14
+              },
+              "joint_private_half__vs__direct": {
+                "better": 9,
+                "worse": 4,
+                "variant_correct": 19,
+                "control_correct": 14
+              }
+            }
+          }
+        },
+        "practical_low_urban": {
+          "bypass": {
+            "exposures": 259,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 169,
+                "control_correct": 169
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 169,
+                "control_correct": 169
+              },
+              "joint_half__vs__reference": {
+                "better": 7,
+                "worse": 5,
+                "variant_correct": 169,
+                "control_correct": 167
+              },
+              "joint_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 169,
+                "control_correct": 169
+              },
+              "joint_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 169,
+                "control_correct": 169
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 133,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 12,
+                "worse": 11,
+                "variant_correct": 61,
+                "control_correct": 60
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 13,
+                "worse": 15,
+                "variant_correct": 61,
+                "control_correct": 63
+              },
+              "joint_half__vs__reference": {
+                "better": 10,
+                "worse": 16,
+                "variant_correct": 61,
+                "control_correct": 67
+              },
+              "joint_common_half__vs__direct": {
+                "better": 5,
+                "worse": 7,
+                "variant_correct": 64,
+                "control_correct": 66
+              },
+              "joint_private_half__vs__direct": {
+                "better": 8,
+                "worse": 11,
+                "variant_correct": 63,
+                "control_correct": 66
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 279,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 5,
+                "worse": 9,
+                "variant_correct": 85,
+                "control_correct": 89
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 5,
+                "worse": 11,
+                "variant_correct": 85,
+                "control_correct": 91
+              },
+              "joint_half__vs__reference": {
+                "better": 14,
+                "worse": 13,
+                "variant_correct": 85,
+                "control_correct": 84
+              },
+              "joint_common_half__vs__direct": {
+                "better": 16,
+                "worse": 14,
+                "variant_correct": 80,
+                "control_correct": 78
+              },
+              "joint_private_half__vs__direct": {
+                "better": 25,
+                "worse": 13,
+                "variant_correct": 90,
+                "control_correct": 78
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 229,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 7,
+                "worse": 7,
+                "variant_correct": 53,
+                "control_correct": 53
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 7,
+                "worse": 0,
+                "variant_correct": 53,
+                "control_correct": 46
+              },
+              "joint_half__vs__reference": {
+                "better": 6,
+                "worse": 9,
+                "variant_correct": 53,
+                "control_correct": 56
+              },
+              "joint_common_half__vs__direct": {
+                "better": 5,
+                "worse": 15,
+                "variant_correct": 37,
+                "control_correct": 47
+              },
+              "joint_private_half__vs__direct": {
+                "better": 16,
+                "worse": 10,
+                "variant_correct": 53,
+                "control_correct": 47
+              }
+            }
+          }
+        }
+      }
+    },
+    "residual": {
+      "pooled": {
+        "bypass": {
+          "exposures": 1975,
+          "comparisons": {
+            "joint_half__vs__independent_half": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 1237,
+              "control_correct": 1237
+            },
+            "joint_half__vs__joint_unlinked_half": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 1237,
+              "control_correct": 1237
+            },
+            "joint_half__vs__reference": {
+              "better": 71,
+              "worse": 93,
+              "variant_correct": 1237,
+              "control_correct": 1259
+            },
+            "joint_common_half__vs__direct": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 1237,
+              "control_correct": 1237
+            },
+            "joint_private_half__vs__direct": {
+              "better": 0,
+              "worse": 0,
+              "variant_correct": 1237,
+              "control_correct": 1237
+            }
+          }
+        },
+        "active_to_0.15": {
+          "exposures": 2631,
+          "comparisons": {
+            "joint_half__vs__independent_half": {
+              "better": 173,
+              "worse": 171,
+              "variant_correct": 1349,
+              "control_correct": 1347
+            },
+            "joint_half__vs__joint_unlinked_half": {
+              "better": 255,
+              "worse": 120,
+              "variant_correct": 1349,
+              "control_correct": 1214
+            },
+            "joint_half__vs__reference": {
+              "better": 124,
+              "worse": 155,
+              "variant_correct": 1349,
+              "control_correct": 1380
+            },
+            "joint_common_half__vs__direct": {
+              "better": 222,
+              "worse": 349,
+              "variant_correct": 1178,
+              "control_correct": 1305
+            },
+            "joint_private_half__vs__direct": {
+              "better": 190,
+              "worse": 331,
+              "variant_correct": 1164,
+              "control_correct": 1305
+            }
+          }
+        },
+        "active_0.15_to_0.40": {
+          "exposures": 354,
+          "comparisons": {
+            "joint_half__vs__independent_half": {
+              "better": 31,
+              "worse": 17,
+              "variant_correct": 159,
+              "control_correct": 145
+            },
+            "joint_half__vs__joint_unlinked_half": {
+              "better": 16,
+              "worse": 6,
+              "variant_correct": 159,
+              "control_correct": 149
+            },
+            "joint_half__vs__reference": {
+              "better": 22,
+              "worse": 26,
+              "variant_correct": 159,
+              "control_correct": 163
+            },
+            "joint_common_half__vs__direct": {
+              "better": 32,
+              "worse": 58,
+              "variant_correct": 128,
+              "control_correct": 154
+            },
+            "joint_private_half__vs__direct": {
+              "better": 26,
+              "worse": 63,
+              "variant_correct": 117,
+              "control_correct": 154
+            }
+          }
+        },
+        "active_above_0.40": {
+          "exposures": 440,
+          "comparisons": {
+            "joint_half__vs__independent_half": {
+              "better": 21,
+              "worse": 25,
+              "variant_correct": 164,
+              "control_correct": 168
+            },
+            "joint_half__vs__joint_unlinked_half": {
+              "better": 14,
+              "worse": 12,
+              "variant_correct": 164,
+              "control_correct": 162
+            },
+            "joint_half__vs__reference": {
+              "better": 33,
+              "worse": 27,
+              "variant_correct": 164,
+              "control_correct": 158
+            },
+            "joint_common_half__vs__direct": {
+              "better": 36,
+              "worse": 67,
+              "variant_correct": 121,
+              "control_correct": 152
+            },
+            "joint_private_half__vs__direct": {
+              "better": 33,
+              "worse": 62,
+              "variant_correct": 123,
+              "control_correct": 152
+            }
+          }
+        }
+      },
+      "by_scene": {
+        "practical_high": {
+          "bypass": {
+            "exposures": 861,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 524,
+                "control_correct": 524
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 524,
+                "control_correct": 524
+              },
+              "joint_half__vs__reference": {
+                "better": 31,
+                "worse": 41,
+                "variant_correct": 524,
+                "control_correct": 534
+              },
+              "joint_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 524,
+                "control_correct": 524
+              },
+              "joint_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 524,
+                "control_correct": 524
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 39,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 2,
+                "worse": 3,
+                "variant_correct": 15,
+                "control_correct": 16
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 3,
+                "worse": 6,
+                "variant_correct": 15,
+                "control_correct": 18
+              },
+              "joint_half__vs__reference": {
+                "better": 1,
+                "worse": 3,
+                "variant_correct": 15,
+                "control_correct": 17
+              },
+              "joint_common_half__vs__direct": {
+                "better": 2,
+                "worse": 3,
+                "variant_correct": 14,
+                "control_correct": 15
+              },
+              "joint_private_half__vs__direct": {
+                "better": 2,
+                "worse": 3,
+                "variant_correct": 14,
+                "control_correct": 15
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 0,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 0,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              }
+            }
+          }
+        },
+        "practical_mid": {
+          "bypass": {
+            "exposures": 183,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 118,
+                "control_correct": 118
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 118,
+                "control_correct": 118
+              },
+              "joint_half__vs__reference": {
+                "better": 3,
+                "worse": 7,
+                "variant_correct": 118,
+                "control_correct": 122
+              },
+              "joint_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 118,
+                "control_correct": 118
+              },
+              "joint_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 118,
+                "control_correct": 118
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 715,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 45,
+                "worse": 45,
+                "variant_correct": 367,
+                "control_correct": 367
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 73,
+                "worse": 37,
+                "variant_correct": 367,
+                "control_correct": 331
+              },
+              "joint_half__vs__reference": {
+                "better": 35,
+                "worse": 39,
+                "variant_correct": 367,
+                "control_correct": 371
+              },
+              "joint_common_half__vs__direct": {
+                "better": 53,
+                "worse": 56,
+                "variant_correct": 344,
+                "control_correct": 347
+              },
+              "joint_private_half__vs__direct": {
+                "better": 46,
+                "worse": 51,
+                "variant_correct": 342,
+                "control_correct": 347
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 2,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 0
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "joint_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "joint_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 0,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              }
+            }
+          }
+        },
+        "practical_low_suburban": {
+          "bypass": {
+            "exposures": 0,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 881,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 65,
+                "worse": 62,
+                "variant_correct": 464,
+                "control_correct": 461
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 95,
+                "worse": 39,
+                "variant_correct": 464,
+                "control_correct": 408
+              },
+              "joint_half__vs__reference": {
+                "better": 41,
+                "worse": 51,
+                "variant_correct": 464,
+                "control_correct": 474
+              },
+              "joint_common_half__vs__direct": {
+                "better": 62,
+                "worse": 96,
+                "variant_correct": 421,
+                "control_correct": 455
+              },
+              "joint_private_half__vs__direct": {
+                "better": 63,
+                "worse": 91,
+                "variant_correct": 427,
+                "control_correct": 455
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 19,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 9,
+                "control_correct": 8
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 1,
+                "worse": 2,
+                "variant_correct": 9,
+                "control_correct": 10
+              },
+              "joint_half__vs__reference": {
+                "better": 1,
+                "worse": 2,
+                "variant_correct": 9,
+                "control_correct": 10
+              },
+              "joint_common_half__vs__direct": {
+                "better": 4,
+                "worse": 3,
+                "variant_correct": 12,
+                "control_correct": 11
+              },
+              "joint_private_half__vs__direct": {
+                "better": 1,
+                "worse": 7,
+                "variant_correct": 5,
+                "control_correct": 11
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 0,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              }
+            }
+          }
+        },
+        "practical_high_urban": {
+          "bypass": {
+            "exposures": 833,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 530,
+                "control_correct": 530
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 530,
+                "control_correct": 530
+              },
+              "joint_half__vs__reference": {
+                "better": 32,
+                "worse": 39,
+                "variant_correct": 530,
+                "control_correct": 537
+              },
+              "joint_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 530,
+                "control_correct": 530
+              },
+              "joint_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 530,
+                "control_correct": 530
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 64,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 1,
+                "worse": 5,
+                "variant_correct": 26,
+                "control_correct": 30
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 2,
+                "worse": 4,
+                "variant_correct": 26,
+                "control_correct": 28
+              },
+              "joint_half__vs__reference": {
+                "better": 4,
+                "worse": 5,
+                "variant_correct": 26,
+                "control_correct": 27
+              },
+              "joint_common_half__vs__direct": {
+                "better": 7,
+                "worse": 8,
+                "variant_correct": 24,
+                "control_correct": 25
+              },
+              "joint_private_half__vs__direct": {
+                "better": 7,
+                "worse": 7,
+                "variant_correct": 25,
+                "control_correct": 25
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 3,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 2
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 2,
+                "control_correct": 3
+              },
+              "joint_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 2,
+                "control_correct": 2
+              },
+              "joint_common_half__vs__direct": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 2,
+                "control_correct": 3
+              },
+              "joint_private_half__vs__direct": {
+                "better": 0,
+                "worse": 1,
+                "variant_correct": 2,
+                "control_correct": 3
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 0,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_half__vs__reference": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              },
+              "joint_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 0,
+                "control_correct": 0
+              }
+            }
+          }
+        },
+        "practical_mid_urban": {
+          "bypass": {
+            "exposures": 97,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 64,
+                "control_correct": 64
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 64,
+                "control_correct": 64
+              },
+              "joint_half__vs__reference": {
+                "better": 4,
+                "worse": 6,
+                "variant_correct": 64,
+                "control_correct": 66
+              },
+              "joint_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 64,
+                "control_correct": 64
+              },
+              "joint_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 64,
+                "control_correct": 64
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 592,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 35,
+                "worse": 38,
+                "variant_correct": 297,
+                "control_correct": 300
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 55,
+                "worse": 23,
+                "variant_correct": 297,
+                "control_correct": 265
+              },
+              "joint_half__vs__reference": {
+                "better": 27,
+                "worse": 36,
+                "variant_correct": 297,
+                "control_correct": 306
+              },
+              "joint_common_half__vs__direct": {
+                "better": 65,
+                "worse": 119,
+                "variant_correct": 228,
+                "control_correct": 282
+              },
+              "joint_private_half__vs__direct": {
+                "better": 49,
+                "worse": 109,
+                "variant_correct": 222,
+                "control_correct": 282
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 138,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 11,
+                "worse": 11,
+                "variant_correct": 64,
+                "control_correct": 64
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 6,
+                "worse": 2,
+                "variant_correct": 64,
+                "control_correct": 60
+              },
+              "joint_half__vs__reference": {
+                "better": 8,
+                "worse": 11,
+                "variant_correct": 64,
+                "control_correct": 67
+              },
+              "joint_common_half__vs__direct": {
+                "better": 16,
+                "worse": 24,
+                "variant_correct": 56,
+                "control_correct": 64
+              },
+              "joint_private_half__vs__direct": {
+                "better": 11,
+                "worse": 26,
+                "variant_correct": 49,
+                "control_correct": 64
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 73,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 4,
+                "worse": 5,
+                "variant_correct": 26,
+                "control_correct": 27
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 2,
+                "worse": 2,
+                "variant_correct": 26,
+                "control_correct": 26
+              },
+              "joint_half__vs__reference": {
+                "better": 5,
+                "worse": 2,
+                "variant_correct": 26,
+                "control_correct": 23
+              },
+              "joint_common_half__vs__direct": {
+                "better": 5,
+                "worse": 11,
+                "variant_correct": 17,
+                "control_correct": 23
+              },
+              "joint_private_half__vs__direct": {
+                "better": 5,
+                "worse": 11,
+                "variant_correct": 17,
+                "control_correct": 23
+              }
+            }
+          }
+        },
+        "practical_low_urban": {
+          "bypass": {
+            "exposures": 1,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "joint_half__vs__reference": {
+                "better": 1,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 0
+              },
+              "joint_common_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              },
+              "joint_private_half__vs__direct": {
+                "better": 0,
+                "worse": 0,
+                "variant_correct": 1,
+                "control_correct": 1
+              }
+            }
+          },
+          "active_to_0.15": {
+            "exposures": 340,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 25,
+                "worse": 18,
+                "variant_correct": 180,
+                "control_correct": 173
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 27,
+                "worse": 11,
+                "variant_correct": 180,
+                "control_correct": 164
+              },
+              "joint_half__vs__reference": {
+                "better": 16,
+                "worse": 21,
+                "variant_correct": 180,
+                "control_correct": 185
+              },
+              "joint_common_half__vs__direct": {
+                "better": 33,
+                "worse": 67,
+                "variant_correct": 147,
+                "control_correct": 181
+              },
+              "joint_private_half__vs__direct": {
+                "better": 23,
+                "worse": 70,
+                "variant_correct": 134,
+                "control_correct": 181
+              }
+            }
+          },
+          "active_0.15_to_0.40": {
+            "exposures": 192,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 18,
+                "worse": 6,
+                "variant_correct": 83,
+                "control_correct": 71
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 9,
+                "worse": 1,
+                "variant_correct": 83,
+                "control_correct": 75
+              },
+              "joint_half__vs__reference": {
+                "better": 13,
+                "worse": 13,
+                "variant_correct": 83,
+                "control_correct": 83
+              },
+              "joint_common_half__vs__direct": {
+                "better": 12,
+                "worse": 30,
+                "variant_correct": 58,
+                "control_correct": 76
+              },
+              "joint_private_half__vs__direct": {
+                "better": 14,
+                "worse": 29,
+                "variant_correct": 61,
+                "control_correct": 76
+              }
+            }
+          },
+          "active_above_0.40": {
+            "exposures": 367,
+            "comparisons": {
+              "joint_half__vs__independent_half": {
+                "better": 17,
+                "worse": 20,
+                "variant_correct": 138,
+                "control_correct": 141
+              },
+              "joint_half__vs__joint_unlinked_half": {
+                "better": 12,
+                "worse": 10,
+                "variant_correct": 138,
+                "control_correct": 136
+              },
+              "joint_half__vs__reference": {
+                "better": 28,
+                "worse": 25,
+                "variant_correct": 138,
+                "control_correct": 135
+              },
+              "joint_common_half__vs__direct": {
+                "better": 31,
+                "worse": 56,
+                "variant_correct": 104,
+                "control_correct": 129
+              },
+              "joint_private_half__vs__direct": {
+                "better": 28,
+                "worse": 51,
+                "variant_correct": 106,
+                "control_correct": 129
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

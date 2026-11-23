@@ -1,0 +1,5 @@
+{"at": "2026-11-23T20:28:50+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-23T20:28:50+00:00", "status": "LOCAL_VERIFIED", "note": "Dense complex solution, heteroscedastic neighbor borrowing and clean prior separation match the analytical model.", "evidence": "8 focused tests, compile and independent P0/P1 PASS", "row_id": null}
+{"at": "2026-11-23T20:30:55+00:00", "status": "RUNNING", "note": "Archive and compile verified. Actual checkpoint and both one-step smokes passed. Exact CWD, argv and GPU processes verified.", "evidence": "N607 controller 2186245, independent 2186883/GPU3, joint 2186884/GPU6", "row_id": null}
+{"at": "2026-11-23T20:40:39+00:00", "status": "TRAINING_COMPLETE", "note": "Both source-only matched weights frozen after 3600 steps.", "evidence": "independent-complete.json and joint-complete.json", "row_id": null}
+{"at": "2026-11-23T20:40:39+00:00", "status": "ANALYZED", "note": "Both source-only seven-view matrices independently scored. 两种训练候选均未达到预登记的双路线源域门槛，本轮无正式目标预测。", "evidence": "full-source-scores.json and residual-source-scores.json", "row_id": null}

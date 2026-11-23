@@ -1,0 +1,299 @@
+{
+  "packets": 500,
+  "fit_per_fold": 400,
+  "tx_reads": 0,
+  "F_reads": 0,
+  "V_reads": 0,
+  "targets_read": 0,
+  "source_clean_shared_fraction": {
+    "b200_1": {
+      "1_to_8": 0.9858673214912415,
+      "9_to_32": 0.8549613356590271,
+      "33_to_64": 0.4715757369995117,
+      "above_64": 0.19690896570682526
+    },
+    "b200_mini_1": {
+      "1_to_8": 0.986236035823822,
+      "9_to_32": 0.8539623022079468,
+      "33_to_64": 0.46537232398986816,
+      "above_64": 0.18986809253692627
+    },
+    "b210_1": {
+      "1_to_8": 0.9858189821243286,
+      "9_to_32": 0.856489896774292,
+      "33_to_64": 0.4754939079284668,
+      "above_64": 0.1989237666130066
+    },
+    "pluto_1": {
+      "1_to_8": 0.9854562282562256,
+      "9_to_32": 0.8579837083816528,
+      "33_to_64": 0.4749923646450043,
+      "above_64": 0.19773916900157928
+    },
+    "rtl_1": {
+      "1_to_8": 0.9873160719871521,
+      "9_to_32": 0.9592406153678894,
+      "33_to_64": 0.7355422377586365,
+      "above_64": 0.4357682466506958
+    }
+  },
+  "private_top8_frequency_share": {
+    "b200_1": 0.45951637625694275,
+    "b200_mini_1": 0.4522528648376465,
+    "b210_1": 0.4572245180606842,
+    "pluto_1": 0.46856802701950073,
+    "rtl_1": 0.5500021576881409
+  },
+  "by_disturbance": {
+    "clean": {
+      "1_to_8": {
+        "private_independent_freq": {
+          "relative_error": 0.4521625339984894,
+          "median_real_gain": 0.5707688331604004,
+          "median_absolute_phase_rad": 0.005896535702049732
+        },
+        "private_correlated_freq": {
+          "relative_error": 0.33634766936302185,
+          "median_real_gain": 0.5718387365341187,
+          "median_absolute_phase_rad": 0.00713133392855525
+        }
+      },
+      "9_to_32": {
+        "private_independent_freq": {
+          "relative_error": 0.7601178884506226,
+          "median_real_gain": 0.3242988884449005,
+          "median_absolute_phase_rad": 0.004426119849085808
+        },
+        "private_correlated_freq": {
+          "relative_error": 0.7537654042243958,
+          "median_real_gain": 0.3175177574157715,
+          "median_absolute_phase_rad": 0.007446130737662315
+        }
+      },
+      "33_to_64": {
+        "private_independent_freq": {
+          "relative_error": 0.69711834192276,
+          "median_real_gain": 0.3163721561431885,
+          "median_absolute_phase_rad": 0.0007113764295354486
+        },
+        "private_correlated_freq": {
+          "relative_error": 0.69711834192276,
+          "median_real_gain": 0.3163721561431885,
+          "median_absolute_phase_rad": 0.0007113764295354486
+        }
+      },
+      "above_64": {
+        "private_independent_freq": {
+          "relative_error": 0.6803410649299622,
+          "median_real_gain": 0.2979355454444885,
+          "median_absolute_phase_rad": 0.000602773972786963
+        },
+        "private_correlated_freq": {
+          "relative_error": 0.6803410649299622,
+          "median_real_gain": 0.2979355454444885,
+          "median_absolute_phase_rad": 0.000602773972786963
+        }
+      }
+    },
+    "light_noise": {
+      "1_to_8": {
+        "private_independent_freq": {
+          "relative_error": 0.952139139175415,
+          "median_real_gain": 0.029012685641646385,
+          "median_absolute_phase_rad": 0.36389803886413574
+        },
+        "private_correlated_freq": {
+          "relative_error": 0.915337324142456,
+          "median_real_gain": 0.0465870164334774,
+          "median_absolute_phase_rad": 0.33776211738586426
+        }
+      },
+      "9_to_32": {
+        "private_independent_freq": {
+          "relative_error": 0.9972956776618958,
+          "median_real_gain": 0.008889609947800636,
+          "median_absolute_phase_rad": 0.460086464881897
+        },
+        "private_correlated_freq": {
+          "relative_error": 0.9892611503601074,
+          "median_real_gain": 0.019738858565688133,
+          "median_absolute_phase_rad": 0.3369731307029724
+        }
+      },
+      "33_to_64": {
+        "private_independent_freq": {
+          "relative_error": 0.9605116248130798,
+          "median_real_gain": 0.049800388514995575,
+          "median_absolute_phase_rad": 0.10650060325860977
+        },
+        "private_correlated_freq": {
+          "relative_error": 0.9605116248130798,
+          "median_real_gain": 0.049800388514995575,
+          "median_absolute_phase_rad": 0.10650060325860977
+        }
+      },
+      "above_64": {
+        "private_independent_freq": {
+          "relative_error": 0.9534534811973572,
+          "median_real_gain": 0.05371110886335373,
+          "median_absolute_phase_rad": 0.06939054280519485
+        },
+        "private_correlated_freq": {
+          "relative_error": 0.9534534811973572,
+          "median_real_gain": 0.05371110886335373,
+          "median_absolute_phase_rad": 0.06939054280519485
+        }
+      }
+    },
+    "broad_noise": {
+      "1_to_8": {
+        "private_independent_freq": {
+          "relative_error": 0.993387758731842,
+          "median_real_gain": 0.0038422606885433197,
+          "median_absolute_phase_rad": 0.6485532522201538
+        },
+        "private_correlated_freq": {
+          "relative_error": 0.9858484268188477,
+          "median_real_gain": 0.0078410180285573,
+          "median_absolute_phase_rad": 0.3753356337547302
+        }
+      },
+      "9_to_32": {
+        "private_independent_freq": {
+          "relative_error": 0.9996111392974854,
+          "median_real_gain": 0.0008202599128708243,
+          "median_absolute_phase_rad": 1.1999766826629639
+        },
+        "private_correlated_freq": {
+          "relative_error": 0.9923369884490967,
+          "median_real_gain": 0.00458243815228343,
+          "median_absolute_phase_rad": 0.49843114614486694
+        }
+      },
+      "33_to_64": {
+        "private_independent_freq": {
+          "relative_error": 0.9852199554443359,
+          "median_real_gain": 0.012939189560711384,
+          "median_absolute_phase_rad": 0.20477329194545746
+        },
+        "private_correlated_freq": {
+          "relative_error": 0.9852199554443359,
+          "median_real_gain": 0.012939189560711384,
+          "median_absolute_phase_rad": 0.20477329194545746
+        }
+      },
+      "above_64": {
+        "private_independent_freq": {
+          "relative_error": 0.9771952629089355,
+          "median_real_gain": 0.02031678520143032,
+          "median_absolute_phase_rad": 0.13839097321033478
+        },
+        "private_correlated_freq": {
+          "relative_error": 0.9771952629089355,
+          "median_real_gain": 0.02031678520143032,
+          "median_absolute_phase_rad": 0.13839097321033478
+        }
+      }
+    },
+    "light_echo": {
+      "1_to_8": {
+        "private_independent_freq": {
+          "relative_error": 0.9525371789932251,
+          "median_real_gain": 0.02750079147517681,
+          "median_absolute_phase_rad": 0.41528552770614624
+        },
+        "private_correlated_freq": {
+          "relative_error": 0.9156625866889954,
+          "median_real_gain": 0.0486820824444294,
+          "median_absolute_phase_rad": 0.3195480406284332
+        }
+      },
+      "9_to_32": {
+        "private_independent_freq": {
+          "relative_error": 0.9966587424278259,
+          "median_real_gain": 0.008482913486659527,
+          "median_absolute_phase_rad": 0.45796146988868713
+        },
+        "private_correlated_freq": {
+          "relative_error": 0.9887073636054993,
+          "median_real_gain": 0.0200650654733181,
+          "median_absolute_phase_rad": 0.27653005719184875
+        }
+      },
+      "33_to_64": {
+        "private_independent_freq": {
+          "relative_error": 0.9648445844650269,
+          "median_real_gain": 0.04175345599651337,
+          "median_absolute_phase_rad": 0.12023581564426422
+        },
+        "private_correlated_freq": {
+          "relative_error": 0.9648445844650269,
+          "median_real_gain": 0.04175345599651337,
+          "median_absolute_phase_rad": 0.12023581564426422
+        }
+      },
+      "above_64": {
+        "private_independent_freq": {
+          "relative_error": 0.9597758054733276,
+          "median_real_gain": 0.041947755962610245,
+          "median_absolute_phase_rad": 0.0927172526717186
+        },
+        "private_correlated_freq": {
+          "relative_error": 0.9597758054733276,
+          "median_real_gain": 0.041947755962610245,
+          "median_absolute_phase_rad": 0.0927172526717186
+        }
+      }
+    },
+    "broad_echo": {
+      "1_to_8": {
+        "private_independent_freq": {
+          "relative_error": 0.9938895106315613,
+          "median_real_gain": 0.0035662625450640917,
+          "median_absolute_phase_rad": 0.7090675234794617
+        },
+        "private_correlated_freq": {
+          "relative_error": 0.9866313934326172,
+          "median_real_gain": 0.0073074339888989925,
+          "median_absolute_phase_rad": 0.42678794264793396
+        }
+      },
+      "9_to_32": {
+        "private_independent_freq": {
+          "relative_error": 0.9995465874671936,
+          "median_real_gain": 0.0007672335486859083,
+          "median_absolute_phase_rad": 1.219470739364624
+        },
+        "private_correlated_freq": {
+          "relative_error": 0.9924342036247253,
+          "median_real_gain": 0.004177968017756939,
+          "median_absolute_phase_rad": 0.5370113253593445
+        }
+      },
+      "33_to_64": {
+        "private_independent_freq": {
+          "relative_error": 0.9859206080436707,
+          "median_real_gain": 0.01097796205431223,
+          "median_absolute_phase_rad": 0.27929818630218506
+        },
+        "private_correlated_freq": {
+          "relative_error": 0.9859206080436707,
+          "median_real_gain": 0.01097796205431223,
+          "median_absolute_phase_rad": 0.27929818630218506
+        }
+      },
+      "above_64": {
+        "private_independent_freq": {
+          "relative_error": 0.9788740873336792,
+          "median_real_gain": 0.01632010005414486,
+          "median_absolute_phase_rad": 0.17365649342536926
+        },
+        "private_correlated_freq": {
+          "relative_error": 0.9788740873336792,
+          "median_real_gain": 0.01632010005414486,
+          "median_absolute_phase_rad": 0.17365649342536926
+        }
+      }
+    }
+  }
+}
