@@ -58,7 +58,8 @@ def checkpoint_smoke(rt):
     print('WISIG_ACTION_REAL_CHECKPOINT_PASS', flush=True)
 
 
-def fit(rt, name, *, smoke=False, model_factory=None, run=RUN, criterion=objective):
+def fit(rt, name, *, smoke=False, model_factory=None, run=RUN, criterion=objective,
+        mixed_precision=True):
     device = 'cuda:0'
     torch.manual_seed(SEED)
     model = (ObservableAction(ARMS[name]) if model_factory is None else model_factory()).to(device)
@@ -96,7 +97,7 @@ def fit(rt, name, *, smoke=False, model_factory=None, run=RUN, criterion=objecti
                             for ids in np.split(hold, HOLD // BATCH)]).mean(dim=0)
     report = dict(proof(name, run), status='SOURCE_FROZEN', held=held.tolist(), worker_seconds=seconds,
                   parameter_count=sum(p.numel() for p in model.parameters()),
-                  n_fit=len(fit_ids), n_hold=HOLD, bf16_training=torch.cuda.is_bf16_supported())
+                  n_fit=len(fit_ids), n_hold=HOLD, bf16_training=mixed_precision and torch.cuda.is_bf16_supported())
     with (root / f'{name}.pt').open('xb') as f:
         torch.save(dict(meta=report, weights=model.state_dict()), f)
     write(root / f'{name}-complete.json', report)
