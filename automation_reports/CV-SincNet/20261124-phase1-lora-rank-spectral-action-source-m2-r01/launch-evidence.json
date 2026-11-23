@@ -1,0 +1,30 @@
+{
+  "pid": 2263387,
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-rank-spectral-action-source-m2-r01-release",
+  "code_commit": "bc2f3897c364214763dba8d2c7c5f683241bb7fc",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "status": "VERIFIED",
+  "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-rank-spectral-action-source-m2-r01",
+  "state": "SOURCE_SCORED",
+  "smoke_pid": 2263405,
+  "calibration_pid": 2263952,
+  "workers": [
+    {
+      "route": "full",
+      "pid": 2264374,
+      "gpu": 3
+    },
+    {
+      "route": "residual",
+      "pid": 2264375,
+      "gpu": 2
+    }
+  ],
+  "reserve_pid": 2265985,
+  "reserve_gpu": 3,
+  "reserve_frozen": 11100,
+  "scorer_pid": 2266613,
+  "complete_clean_scored": 12000,
+  "independent_truth_last": true
+}

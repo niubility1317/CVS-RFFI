@@ -1,0 +1,184 @@
+{
+  "n": 150,
+  "route_do_not_use_to_choose_action": true,
+  "source_role": "held_U_s",
+  "F_reads": 0,
+  "V_reads": 0,
+  "TX_reads": 0,
+  "target_reads": 0,
+  "noise_truth_diagnostic_only": true,
+  "by_route": {
+    "full": {
+      "practical_low_suburban": {
+        "registered": {
+          "1_to_8": {
+            "source_alias_to_signal_ratio": 0.026038385927677155,
+            "unmatched_noise_in_relative_alias_contrast": 0.11735942214727402,
+            "packet_contrast_pearson": 0.790876773805311,
+            "relative_contrast_error": 0.7548603024673738
+          },
+          "9_to_32": {
+            "source_alias_to_signal_ratio": 0.5090897679328918,
+            "unmatched_noise_in_relative_alias_contrast": 0.1393761783838272,
+            "packet_contrast_pearson": 0.4180717743737729,
+            "relative_contrast_error": 1102.9562708833369
+          },
+          "33_to_63": {
+            "source_alias_to_signal_ratio": 0.851571798324585,
+            "unmatched_noise_in_relative_alias_contrast": 0.03830387070775032,
+            "packet_contrast_pearson": 0.14409486170700458,
+            "relative_contrast_error": 10192.659309568333
+          }
+        },
+        "occupied_noise_only": {
+          "1_to_8": {
+            "source_alias_to_signal_ratio": 0.02472967468202114,
+            "unmatched_noise_in_relative_alias_contrast": 0.9849141836166382,
+            "packet_contrast_pearson": 0.7212924122019315,
+            "relative_contrast_error": 21.17790130310842
+          },
+          "9_to_32": {
+            "source_alias_to_signal_ratio": 0.4995684027671814,
+            "unmatched_noise_in_relative_alias_contrast": 0.853973925113678,
+            "packet_contrast_pearson": 0.5298232949949067,
+            "relative_contrast_error": 42945.001334583416
+          },
+          "33_to_63": {
+            "source_alias_to_signal_ratio": 0.8484379053115845,
+            "unmatched_noise_in_relative_alias_contrast": 0.3941783905029297,
+            "packet_contrast_pearson": 0.4067404745257271,
+            "relative_contrast_error": 318945.0023523614
+          }
+        }
+      },
+      "practical_low_urban": {
+        "registered": {
+          "1_to_8": {
+            "source_alias_to_signal_ratio": 0.008205147460103035,
+            "unmatched_noise_in_relative_alias_contrast": 0.05886515974998474,
+            "packet_contrast_pearson": 0.7497857498946008,
+            "relative_contrast_error": 0.5781865836472978
+          },
+          "9_to_32": {
+            "source_alias_to_signal_ratio": 0.2519536316394806,
+            "unmatched_noise_in_relative_alias_contrast": 0.07897336035966873,
+            "packet_contrast_pearson": 0.46408497261450604,
+            "relative_contrast_error": 1189.2750132040107
+          },
+          "33_to_63": {
+            "source_alias_to_signal_ratio": 0.7452621459960938,
+            "unmatched_noise_in_relative_alias_contrast": 0.06690742820501328,
+            "packet_contrast_pearson": 0.5101416841662492,
+            "relative_contrast_error": 59350.080825794736
+          }
+        },
+        "occupied_noise_only": {
+          "1_to_8": {
+            "source_alias_to_signal_ratio": 0.00901002623140812,
+            "unmatched_noise_in_relative_alias_contrast": 0.9814893007278442,
+            "packet_contrast_pearson": 0.8038262177749823,
+            "relative_contrast_error": 52.69952202710442
+          },
+          "9_to_32": {
+            "source_alias_to_signal_ratio": 0.26833823323249817,
+            "unmatched_noise_in_relative_alias_contrast": 0.8472656607627869,
+            "packet_contrast_pearson": 0.7581504410120068,
+            "relative_contrast_error": 103599.3975684775
+          },
+          "33_to_63": {
+            "source_alias_to_signal_ratio": 0.753068745136261,
+            "unmatched_noise_in_relative_alias_contrast": 0.41552168130874634,
+            "packet_contrast_pearson": 0.6531525313929418,
+            "relative_contrast_error": 1198361.353833013
+          }
+        }
+      }
+    },
+    "residual": {
+      "practical_low_suburban": {
+        "registered": {
+          "1_to_8": {
+            "source_alias_to_signal_ratio": 0.028264516964554787,
+            "unmatched_noise_in_relative_alias_contrast": 0.03156278282403946,
+            "packet_contrast_pearson": 0.11903247282715483,
+            "relative_contrast_error": 7.3902783411520465
+          },
+          "9_to_32": {
+            "source_alias_to_signal_ratio": 0.5004506707191467,
+            "unmatched_noise_in_relative_alias_contrast": 0.013047111220657825,
+            "packet_contrast_pearson": 0.08897895748272586,
+            "relative_contrast_error": 3569.098223465841
+          },
+          "33_to_63": {
+            "source_alias_to_signal_ratio": 0.33337920904159546,
+            "unmatched_noise_in_relative_alias_contrast": -0.018489990383386612,
+            "packet_contrast_pearson": 0.04663935208504772,
+            "relative_contrast_error": 18.768917958073118
+          }
+        },
+        "occupied_noise_only": {
+          "1_to_8": {
+            "source_alias_to_signal_ratio": 0.027313709259033203,
+            "unmatched_noise_in_relative_alias_contrast": 0.9844023585319519,
+            "packet_contrast_pearson": 0.5940361821822296,
+            "relative_contrast_error": 143.40294183358688
+          },
+          "9_to_32": {
+            "source_alias_to_signal_ratio": 0.2965468764305115,
+            "unmatched_noise_in_relative_alias_contrast": 0.8531761765480042,
+            "packet_contrast_pearson": 0.3423355226305541,
+            "relative_contrast_error": 1332.8520194543964
+          },
+          "33_to_63": {
+            "source_alias_to_signal_ratio": 0.8451888561248779,
+            "unmatched_noise_in_relative_alias_contrast": 0.396126925945282,
+            "packet_contrast_pearson": 0.49282585162206427,
+            "relative_contrast_error": 437585.8018029315
+          }
+        }
+      },
+      "practical_low_urban": {
+        "registered": {
+          "1_to_8": {
+            "source_alias_to_signal_ratio": 0.00457452517002821,
+            "unmatched_noise_in_relative_alias_contrast": -0.021354760974645615,
+            "packet_contrast_pearson": 0.26696824169889877,
+            "relative_contrast_error": 1.9771831708978036
+          },
+          "9_to_32": {
+            "source_alias_to_signal_ratio": 0.3080146014690399,
+            "unmatched_noise_in_relative_alias_contrast": -0.025369416922330856,
+            "packet_contrast_pearson": 0.06584924395176846,
+            "relative_contrast_error": 255.16040955739814
+          },
+          "33_to_63": {
+            "source_alias_to_signal_ratio": 1.3042622804641724,
+            "unmatched_noise_in_relative_alias_contrast": 0.009986854158341885,
+            "packet_contrast_pearson": -0.023000030832418847,
+            "relative_contrast_error": 480.2722587436626
+          }
+        },
+        "occupied_noise_only": {
+          "1_to_8": {
+            "source_alias_to_signal_ratio": 0.0044644554145634174,
+            "unmatched_noise_in_relative_alias_contrast": 0.9823510646820068,
+            "packet_contrast_pearson": 0.576159689977031,
+            "relative_contrast_error": 64.4729356316699
+          },
+          "9_to_32": {
+            "source_alias_to_signal_ratio": 0.12929090857505798,
+            "unmatched_noise_in_relative_alias_contrast": 0.831615686416626,
+            "packet_contrast_pearson": 0.19092399843331104,
+            "relative_contrast_error": 12915.708885965489
+          },
+          "33_to_63": {
+            "source_alias_to_signal_ratio": 0.6465275883674622,
+            "unmatched_noise_in_relative_alias_contrast": 0.43376171588897705,
+            "packet_contrast_pearson": 0.45347005000236645,
+            "relative_contrast_error": 1453686.7893296808
+          }
+        }
+      }
+    }
+  }
+}

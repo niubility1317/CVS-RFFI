@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 逐频带互检、恢复剂量及 clean 风险](../automation_reports/CV-SincNet/20261124-phase1-lora-rank-spectral-action-source-m2-r01/report.md)
 - [LoRa 恢复改动的奇偶验证与全源域 clean 压测](../automation_reports/CV-SincNet/20261124-phase1-lora-rank-split-action-source-m2-r01/report.md)
 - [LoRa 保护带弱扰动触发与秩四恢复剂量消融](../automation_reports/CV-SincNet/20261124-phase1-lora-rank-guard-extension-source-m2-r01/report.md)
 - [LoRa 公共谱秩四 I/Q 协方差](../automation_reports/CV-SincNet/20261124-phase1-lora-shared-spectrum-covariance-source-m4-r01/report.md)

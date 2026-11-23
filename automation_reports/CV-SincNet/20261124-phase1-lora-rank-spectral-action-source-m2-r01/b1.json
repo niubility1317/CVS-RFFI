@@ -1,0 +1,16 @@
+{
+  "scope": "band_boost single readout before frozen classifier",
+  "timing": {
+    "clean": {
+      "median_ms": 11.5029375301674,
+      "active": 0
+    },
+    "generic": {
+      "median_ms": 63.14150046091527,
+      "active": 1
+    }
+  },
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "n_measurements": 24,
+  "parameters": 254735
+}

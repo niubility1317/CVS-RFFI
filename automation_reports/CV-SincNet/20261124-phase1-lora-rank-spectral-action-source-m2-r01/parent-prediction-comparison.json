@@ -1,0 +1,237 @@
+{
+  "packets": 900,
+  "source_only": true,
+  "truth_reads": 0,
+  "F_reads": 0,
+  "target_reads": 0,
+  "by_route": {
+    "full": {
+      "clean": {
+        "parent_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_rank": {
+          "open_1_8": 18,
+          "open_9_32": 25,
+          "open_33_64": 24,
+          "open_65_128": 66,
+          "band_half": 0,
+          "band_taper": 0,
+          "band_boost": 0
+        }
+      },
+      "practical_high": {
+        "parent_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_rank": {
+          "open_1_8": 23,
+          "open_9_32": 41,
+          "open_33_64": 25,
+          "open_65_128": 52,
+          "band_half": 5,
+          "band_taper": 0,
+          "band_boost": 0
+        }
+      },
+      "practical_mid": {
+        "parent_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_rank": {
+          "open_1_8": 28,
+          "open_9_32": 38,
+          "open_33_64": 22,
+          "open_65_128": 56,
+          "band_half": 14,
+          "band_taper": 0,
+          "band_boost": 8
+        }
+      },
+      "practical_low_suburban": {
+        "parent_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_rank": {
+          "open_1_8": 30,
+          "open_9_32": 38,
+          "open_33_64": 27,
+          "open_65_128": 58,
+          "band_half": 37,
+          "band_taper": 2,
+          "band_boost": 23
+        }
+      },
+      "practical_high_urban": {
+        "parent_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_rank": {
+          "open_1_8": 35,
+          "open_9_32": 44,
+          "open_33_64": 29,
+          "open_65_128": 51,
+          "band_half": 6,
+          "band_taper": 1,
+          "band_boost": 7
+        }
+      },
+      "practical_mid_urban": {
+        "parent_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_rank": {
+          "open_1_8": 17,
+          "open_9_32": 36,
+          "open_33_64": 17,
+          "open_65_128": 38,
+          "band_half": 17,
+          "band_taper": 2,
+          "band_boost": 33
+        }
+      },
+      "practical_low_urban": {
+        "parent_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_rank": {
+          "open_1_8": 9,
+          "open_9_32": 14,
+          "open_33_64": 11,
+          "open_65_128": 13,
+          "band_half": 9,
+          "band_taper": 0,
+          "band_boost": 84
+        }
+      }
+    },
+    "residual": {
+      "clean": {
+        "parent_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_rank": {
+          "open_1_8": 18,
+          "open_9_32": 25,
+          "open_33_64": 24,
+          "open_65_128": 66,
+          "band_half": 0,
+          "band_taper": 0,
+          "band_boost": 0
+        }
+      },
+      "practical_high": {
+        "parent_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_rank": {
+          "open_1_8": 41,
+          "open_9_32": 59,
+          "open_33_64": 40,
+          "open_65_128": 73,
+          "band_half": 24,
+          "band_taper": 0,
+          "band_boost": 0
+        }
+      },
+      "practical_mid": {
+        "parent_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_rank": {
+          "open_1_8": 10,
+          "open_9_32": 15,
+          "open_33_64": 13,
+          "open_65_128": 15,
+          "band_half": 8,
+          "band_taper": 1,
+          "band_boost": 10
+        }
+      },
+      "practical_low_suburban": {
+        "parent_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_rank": {
+          "open_1_8": 0,
+          "open_9_32": 0,
+          "open_33_64": 0,
+          "open_65_128": 0,
+          "band_half": 0,
+          "band_taper": 0,
+          "band_boost": 11
+        }
+      },
+      "practical_high_urban": {
+        "parent_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_rank": {
+          "open_1_8": 48,
+          "open_9_32": 65,
+          "open_33_64": 42,
+          "open_65_128": 74,
+          "band_half": 19,
+          "band_taper": 0,
+          "band_boost": 2
+        }
+      },
+      "practical_mid_urban": {
+        "parent_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_rank": {
+          "open_1_8": 3,
+          "open_9_32": 11,
+          "open_33_64": 6,
+          "open_65_128": 7,
+          "band_half": 2,
+          "band_taper": 1,
+          "band_boost": 25
+        }
+      },
+      "practical_low_urban": {
+        "parent_mismatches": {
+          "direct": 0,
+          "reference": 0,
+          "rank_old": 0
+        },
+        "changed_vs_rank": {
+          "open_1_8": 0,
+          "open_9_32": 0,
+          "open_33_64": 0,
+          "open_65_128": 0,
+          "band_half": 0,
+          "band_taper": 0,
+          "band_boost": 48
+        }
+      }
+    }
+  }
+}
