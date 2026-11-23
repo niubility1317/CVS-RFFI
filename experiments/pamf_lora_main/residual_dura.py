@@ -184,14 +184,7 @@ def train_source(rt, *, source_pairs=None, model_seed=SEED):
     train(c, view=ResidualView(source), prepare_model=prepare_model, reconstruction=ObservedShape())
 
 
-@torch.no_grad()
-def predict(rt):
-    root = Path(rt['run_root'])
-    target = root / 'target_views'
-    if read(target / 'complete.json') != dict(status='TARGET_READY', protocol=PROTOCOL,
-            target_truth_read=False, receivers=list(TARGET), per_receiver=LIMIT,
-            views=list(VIEWS), processing_route='residual'):
-        raise ValueError('Frozen residual target data required')
+def frozen_models(rt, root, reader_seeds, device):
     contract = source_contract(Path(rt['source_root']))
     residual_contract = read(root / 'source_pairs' / 'contract.json')
     lineage = root / 'G' / 'lineage'
@@ -199,15 +192,35 @@ def predict(rt):
     if (residual_contract != dict(contract, practical=ROUTE) or proof['status'] != 'SOURCE_FROZEN'
             or proof['updates'] != 39520 or any(proof[k] for k in ('F_reads','TX_labels_read','target_reads'))):
         raise ValueError('Residual DURA lineage must freeze before prediction')
-    device = 'cuda:0'
     g, item = load(lineage / 'r69' / 'final.pt', residual_contract, 'LU', device)
     if item['model_seed'] != SEED or item['stage'] != 'r69':
         raise ValueError('Wrong residual DURA checkpoint')
     g.eval().requires_grad_(False)
-    f = recognizer(device).eval().requires_grad_(False)
-    weight = complete_f(root.parent / SET_RUN, contract, case(SEED, SET_METHOD)) / 'model.pt'
-    f.load_state_dict(torch.load(weight, map_location=device, weights_only=True), strict=True)
-    projector = ObservedShape().to(device).eval()
+    readers = {}
+    for seed in reader_seeds:
+        f = recognizer(device).eval().requires_grad_(False)
+        weight = complete_f(root.parent / SET_RUN, contract, case(seed, SET_METHOD)) / 'model.pt'
+        f.load_state_dict(torch.load(weight, map_location=device, weights_only=True), strict=True)
+        readers[seed] = f
+    return g, readers, ObservedShape().to(device).eval()
+
+
+def frozen_target(root):
+    target = root / 'target_views'
+    if read(target / 'complete.json') != dict(status='TARGET_READY', protocol=PROTOCOL,
+            target_truth_read=False, receivers=list(TARGET), per_receiver=LIMIT,
+            views=list(VIEWS), processing_route='residual'):
+        raise ValueError('Frozen residual target data required')
+    return target
+
+
+@torch.no_grad()
+def predict(rt):
+    root = Path(rt['run_root'])
+    target = frozen_target(root)
+    device = 'cuda:0'
+    g, readers, projector = frozen_models(rt, root, (SEED,), device)
+    f = readers[SEED]
     output = root / 'predictions'
     output.mkdir(exist_ok=False)
     for rx in TARGET:

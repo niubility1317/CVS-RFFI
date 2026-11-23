@@ -1,0 +1,200 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261123-phase1-lora-residual-frozen-r69-replay-m2-r01",
+  "group_id": "lora-observable-satellite-recovery",
+  "display_name": "LoRa residual 原冻结 R69 三种子配对补齐",
+  "description": "用原 residual practical R69 2026092702 权重及原半量规则，补齐 Tri-set 01、03 的同包决策，并复用 02 的既有冻结预测形成三种子匹配基线。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "LoRa",
+    "DURA",
+    "R69",
+    "residual",
+    "three-seed",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261123-phase1-lora-dura-residual-practical-m1-r01",
+    "20261122-phase1-lora-tri-label-set-m3-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "LoRa 与 WiSig 可部署星地信道恢复目标明确授权补齐缺失的原冻结 DURA 基线。",
+  "code": {
+    "commit": "执行分支已推送 HEAD，由 submit.json 固定 OID",
+    "checkout": "E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-lora-residual-frozen-r69-replay-m2-r01-release"
+  },
+  "data": {
+    "dataset": "IEEE DataPort Radio Frequency Fingerprint LoRa Dataset With Multiple Receivers",
+    "version": "lora_full_packets_v1，同原三种子物理包顺序",
+    "representation": "六条 256 kHz × 256 点已定时补偿 chirp，按包 RMS 存储",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-dura-residual-practical-m1-r01/target_views/complete.json",
+    "physical_ids_ref": "registered receiver and original opaque packet order (2000 per receiver)",
+    "label_map_ref": "原发布方 31–40，独立本地评分器",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "roles": {
+      "L_s": 2800,
+      "U_s": 25200,
+      "V": 12000
+    },
+    "train_ratio": "原冻结恢复器合同，补测不新增训练或校准。",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-dura-residual-practical-m1-r01/target_views/complete.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "已登记 residual practical 目标对照。本次增加两个冻结识别器读出；无新 G、F 训练。"
+  },
+  "checkpoint": {
+    "initialization": "none",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-dura-residual-practical-m1-r01/G/lineage/r69/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-tri-label-set-m3-r01/F",
+      "E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_residual_practical_readout/predictions"
+    ],
+    "contract_check_ref": "同源角色、物理索引及原 R69 lineage complete.json",
+    "provenance_verdict": "same LoRa residual G and original Tri-set F; no state update",
+    "selection_rule": "既有 frozen residual R69 2026092702 及原投影半量读出；不新设任何门，不重跑 F/G 训练。"
+  },
+  "execution": {
+    "host": "N607＋本机 CPU scorer",
+    "launch_owner": "当前 Codex 聊天 LoRa residual frozen reference replay",
+    "gpu_policy": "优先低利用率且至少 12 GiB 空闲的卡，四接收机分片分卡。单分片 R69 一次前向供两识别种子使用。",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-residual-frozen-r69-replay-m2-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-residual-frozen-r69-replay-m2-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261123-phase1-lora-residual-frozen-r69-replay-m2-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.residual_reference_replay publish --repo \"E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo\" --output \"E:/type10-7/local_artifacts/20261123-phase1-lora-residual-frozen-r69-replay-m2-r01/release\" --context E:/type10-7/local_artifacts/lora_main_20261121/runtime_source.json --ssh-config E:/type10-7/tools/n607_ssh_config --parent-submit \"E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_residual_practical_release/submit.json\"",
+    "stop_rule": "原恢复或识别来源、数据合同、数值、输出独占或 2×2×7×15 预测覆盖失效时停止当前链并保留产物。"
+  },
+  "expected_artifacts": [
+    "predictions/complete.json",
+    "predictions/<seed>/<rx>__<scene>__<mode>.npy",
+    "smoke.json",
+    "scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro F1",
+      "correct",
+      "corrected",
+      "damaged",
+      "bootstrap paired CI"
+    ],
+    "dimensions": [
+      "seed",
+      "view",
+      "receiver",
+      "route"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-residual-frozen-r69-replay-m2-r01/predictions",
+    "scorer_ref": "python -m experiments.pamf_lora_main.residual_reference_replay score --receipt E:/type10-7/local_artifacts/20261123-phase1-lora-residual-frozen-r69-replay-m2-r01/release/submit.json --ssh-config E:/type10-7/tools/n607_ssh_config --out E:/type10-7/local_artifacts/20261123-phase1-lora-residual-frozen-r69-replay-m2-r01/readout --old E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_residual_practical_readout --dataset \"F:/FULL wisig/Radio Frequency Fingerprint LoRa Dataset With Multiple Receivers\""
+  },
+  "rows": [
+    {
+      "row_id": "frozen-tri-set-s2026092701",
+      "method": "同一个已冻结 LoRa residual R69 半量与直通，原 Tri-set 默认头",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/residual_reference_replay.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-lora-residual-frozen-r69-replay-m2-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 20261123
+      },
+      "seed_notes": "只增加两个既有识别模型种子。恢复器 seed 2026092702 固定。原目标数据沿用不可变视图，无新 split/data/augmentation/support。evaluation seed 只用于独立物理包 bootstrap。",
+      "k": null,
+      "scenario": "residual practical 六景及 clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "15 RX×2000 包×七视图，两读出，无更新",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-residual-frozen-r69-replay-m2-r01/predictions/2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-residual-frozen-r69-replay-m2-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.residual_reference_replay dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-lora-residual-frozen-r69-replay-m2-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "predictions/<seed>/<rx>__<scene>__<mode>.npy",
+        "smoke.json",
+        "scores.json"
+      ]
+    },
+    {
+      "row_id": "frozen-tri-set-s2026092703",
+      "method": "同一个已冻结 LoRa residual R69 半量与直通，原 Tri-set 默认头",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/residual_reference_replay.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-lora-residual-frozen-r69-replay-m2-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 20261123
+      },
+      "seed_notes": "只增加两个既有识别模型种子。恢复器 seed 2026092702 固定。原目标数据沿用不可变视图，无新 split/data/augmentation/support。evaluation seed 只用于独立物理包 bootstrap。",
+      "k": null,
+      "scenario": "residual practical 六景及 clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "15 RX×2000 包×七视图，两读出，无更新",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-residual-frozen-r69-replay-m2-r01/predictions/2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-residual-frozen-r69-replay-m2-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.residual_reference_replay dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-lora-residual-frozen-r69-replay-m2-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "predictions/<seed>/<rx>__<scene>__<mode>.npy",
+        "smoke.json",
+        "scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "原三种子 full 的 DURA 结果保留原身份。此补测用既有 residual R69 权重按原方式对同路线 frozen IQ，旧 02 免重跑。"
+  ],
+  "registered_at": "2026-11-23T14:36:37+00:00"
+}
