@@ -51,3 +51,25 @@ def test_natural_objective_has_transfer_gradient_and_receive_only_render():
     clean, count = render(iq, None, baseline, tracker, (model, model), threshold=10.)
     assert count == 0 and torch.equal(clean, iq.expand_as(clean))
     assert [int(mask.sum()) for mask in detail_bands(shape)] == [16, 48]
+
+def test_paired_echo_inputs_transport_the_difference_before_adding_shared_noise():
+    from experiments.pamf_lora_main.natural_detail import paired_echo_inputs
+    from experiments.pamf_lora_main.pilot_joint import apply_echo, echo_taps
+
+    clean = torch.zeros((4, 6, 256), dtype=torch.complex64)
+    clean[..., 20] = 3j
+    change = torch.zeros_like(clean)
+    change[..., 5] = .2 + .4j
+
+    def perturb(value, _):
+        return value + .17j
+
+    seed = 11
+    first_taps = echo_taps(clean, torch.Generator().manual_seed(seed))
+    obs = paired_echo_inputs(clean, perturb, torch.Generator().manual_seed(seed), change,
+                             with_identity=True)
+    torch.testing.assert_close(obs[:2, 0], apply_echo(clean, first_taps)[:2]+.17j)
+    torch.testing.assert_close(obs[:2, 2]-obs[:2, 0], apply_echo(change, first_taps)[:2])
+    assert not torch.allclose(obs[:2, 2]-obs[:2, 0], change[:2])
+    torch.testing.assert_close(obs[-2:, 0], clean[-2:])
+    torch.testing.assert_close(obs[-2:, 2], clean[-2:]+change[-2:])

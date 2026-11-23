@@ -8,15 +8,22 @@ from .channel_blind import ChannelBlind, generic_observation, zero_carrier
 LAGS = (-1,0,1)
 
 
+def echo_taps(clean, rng):
+    """Draw two local complex echoes independently of the test channel."""
+    shape = (len(clean), 1, 1, 2)
+    angle = (2. * torch.pi) * torch.rand(shape, device=clean.device, generator=rng)
+    strength = .25 * torch.rand(shape, device=clean.device, generator=rng).square()
+    return torch.polar(strength, angle).unbind(-1)
+
+
+def apply_echo(clean, taps):
+    first, second = taps
+    return clean + first * clean.roll(1, -1) + second * clean.roll(-2, -1)
+
+
 def generic_distortion(clean, rng):
     """Generate a broad two-echo stress family independent of test channels."""
-    device = clean.device
-    shape = (len(clean),1,1)
-    angle = (2.*torch.pi)*torch.rand((*shape,2),device=device,generator=rng)
-    strength = .25*torch.rand((*shape,2),device=device,generator=rng).square()
-    a,b = (torch.polar(strength,angle)).unbind(-1)
-    shifted = clean+a*clean.roll(1,-1)+b*clean.roll(-2,-1)
-    return generic_observation(shifted,rng)
+    return generic_observation(apply_echo(clean, echo_taps(clean, rng)), rng)
 
 
 def estimate_pilot(observed, template, variance):

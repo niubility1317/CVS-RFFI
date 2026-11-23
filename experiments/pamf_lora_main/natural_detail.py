@@ -5,6 +5,7 @@ import torch
 from .channel_blind_source import waveform_risk
 from .dura_repair import complex_iq, real_iq
 from .joint_unroll_source import coordinates
+from .pilot_joint import apply_echo, echo_taps
 
 
 def detail_bands(value):
@@ -39,13 +40,25 @@ def paired_inputs(clean, perturb, rng, change, *, with_identity):
     return torch.stack((a, b, a + change), dim=1)
 
 
-def natural_objective(model, tracker, iq, rng, *, with_identity, recipe, step, preserve):
+def paired_echo_inputs(clean, perturb, rng, change, *, with_identity):
+    first_taps = echo_taps(clean, rng)
+    first = perturb(apply_echo(clean, first_taps), rng)
+    second = perturb(apply_echo(clean, echo_taps(clean, rng)), rng)
+    changed = first + apply_echo(change, first_taps)
+    if with_identity:
+        first[-2:] = second[-2:] = clean[-2:]
+        changed[-2:] = clean[-2:] + change[-2:]
+    return torch.stack((first, second, changed), dim=1)
+
+
+def natural_objective(model, tracker, iq, rng, *, with_identity, recipe, step, preserve,
+                      make_pair=paired_inputs):
     clean = complex_iq(iq)
     framed, rotation, _, rms = coordinates(tracker, iq)
     clean_basis = rotation * rms
     delta = weak_difference(framed)
     change = delta * clean_basis
-    wave = paired_inputs(clean, recipe.perturb, rng, change, with_identity=with_identity)
+    wave = make_pair(clean, recipe.perturb, rng, change, with_identity=with_identity)
     observed, rotation, quality, rms = coordinates(tracker, real_iq(wave.flatten(0, 1)))
     basis = rotation * rms
     targets = torch.stack((clean, clean, clean + change), dim=1).flatten(0, 1)
