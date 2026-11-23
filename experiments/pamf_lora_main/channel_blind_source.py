@@ -117,7 +117,14 @@ def costs(model, tracker, iq, generator, *, with_identity, recipe=DEFAULT):
     return torch.stack((waveform_risk(coarse,target),waveform_risk(refined,target),paired))
 
 
-def fit(rt, *, smoke=False, recipe=DEFAULT):
+def objective(model, tracker, iq, rng, *, with_identity, recipe, step):
+    values = costs(model, tracker, iq, rng, with_identity=with_identity, recipe=recipe)
+    coarse, refined, paired = recipe.loss_weights(step)
+    loss = coarse * values[0] + refined * values[1] + paired * values[2]
+    return loss, values
+
+
+def fit(rt, *, smoke=False, recipe=DEFAULT, calculate=objective, receiver_batches=False):
     device = 'cuda:0'
     torch.manual_seed(SEED)
     (training,calibration,held), contract = setup(rt,device,smoke=smoke)
@@ -129,13 +136,18 @@ def fit(rt, *, smoke=False, recipe=DEFAULT):
     rng = torch.Generator(device=device).manual_seed(SEED)
     start_time = time.perf_counter()
     for step in range(1,steps+1):
-        ix = torch.randint(len(training),(BATCH,),device=device,generator=rng)
-        values = costs(model,tracker,training[ix],rng,with_identity=True,recipe=recipe)
+        if receiver_batches:
+            count = len(training) // len(SOURCE)
+            receiver = torch.randint(len(SOURCE),(1,),device=device,generator=rng)
+            ix = receiver*count + torch.randint(count,(BATCH,),device=device,generator=rng)
+        else:
+            ix = torch.randint(len(training),(BATCH,),device=device,generator=rng)
+        loss,values = calculate(model,tracker,training[ix],rng,with_identity=True,
+                                recipe=recipe,step=step)
         if not torch.isfinite(values).all():
             raise FloatingPointError('Nonfinite channel-blind source fit')
         opt.zero_grad(set_to_none=True)
-        coarse, refined, paired = recipe.loss_weights(step)
-        (coarse * values[0] + refined * values[1] + paired * values[2]).backward()
+        loss.backward()
         grad = torch.nn.utils.clip_grad_norm_(model.parameters(),1.,error_if_nonfinite=True)
         if step==1 and grad<=0:
             raise ValueError('No gradient on raw source IQ')
@@ -151,8 +163,10 @@ def fit(rt, *, smoke=False, recipe=DEFAULT):
                                   for v in calibration.split(32)])
         threshold = float(1.05*clean_scores.max())
         eval_rng = torch.Generator(device=device).manual_seed(SEED+5)
-        validation = [len(v)*costs(model,tracker,v,eval_rng,with_identity=False,recipe=recipe)
-                      for v in held.split(BATCH)]
+        groups = held.chunk(len(SOURCE)) if receiver_batches else (held,)
+        validation = [len(v)*calculate(model,tracker,v,eval_rng,with_identity=False,
+                                        recipe=recipe,step=steps)[1]
+                      for group in groups for v in group.split(BATCH)]
         result = (torch.stack(validation).sum(0)/len(held)).tolist()
     root = Path(rt['run_root'])
     meta = proof(contract,recipe)
