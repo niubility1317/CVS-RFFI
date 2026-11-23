@@ -12,6 +12,7 @@ from experiments.cric_dura_comparison.io import read, tensor
 from experiments.pamf_lora_main.runner import activate
 from experiments.pamf_unrolled_restore import wisig_anchored_window_source as runner
 from experiments.pamf_unrolled_restore import wisig_repeat_drift_source as study
+from experiments.pamf_unrolled_restore import wisig_r69_stage_isolation as stage_study
 from experiments.pamf_unrolled_restore.wisig_repeat_drift import STF_BEGIN, STF_END
 from experiments.pamf_unrolled_restore.wisig_uncertain_prior import as_complex
 from tools.wisig_anchored_window_audit import FIELDS, timing_reference, waveform_metrics
@@ -59,16 +60,21 @@ def measure(runtime):
     root = Path(runtime['run_root'])
     marker = read(root/'predictions/complete.json')
     scores = read(root/'source-scores.json')
-    if (runtime['run_id']!=study.RUN or read(root/'state.json')['status']!='SOURCE_SCORED'
+    stages = runtime['run_id']==stage_study.RUN
+    modes, prediction_modes = (stage_study.MODES,stage_study.MODES) if stages else (MODES,study.MODES)
+    if (runtime['run_id'] not in (study.RUN,stage_study.RUN) or read(root/'state.json')['status']!='SOURCE_SCORED'
             or marker['status']!='FROZEN' or marker['target_reads'] or marker['source_truth_reads']
-            or marker['modes']!=list(study.MODES) or not scores['truth_last'] or scores['target_reads']):
+            or marker['modes']!=list(prediction_modes) or not scores['truth_last'] or scores['target_reads']):
         raise ValueError('Expected the already-scored dual-route WiSig source predictions')
     activate(runtime)
     torch.backends.cuda.matmul.allow_tf32 = False
     torch.backends.cudnn.allow_tf32 = False
     cache,_,_,_,ids,rx,_ = runner.core.baseline.handles(runtime)
-    models = list(runner.load_models(runtime,arms=study.ARMS,build=study.build))
     r69 = runner.core.baseline.original_r69(Path(runtime['parent_root']))
+    if stages:
+        stage_readouts = stage_study.StageReadout(r69.pipeline)
+    else:
+        models = list(runner.load_models(runtime,arms=study.ARMS,build=study.build))
     time = torch.arange(256,device='cuda:0')
     offsets = torch.arange(-64,65,device='cuda:0')
     positions = time[None] + offsets[:,None]
@@ -92,24 +98,31 @@ def measure(runtime):
                 rows = slice(offset,offset+48)
                 iq = tensor(raw[rows],'cuda:0')
                 received = as_complex(iq)
-                restored, = r69(iq)
-                variants = [study.proposals(model,gate,received) for model,gate in models]
-                polar, (drift,active,shift) = variants
-                if 'active_source' not in latency and active.any():
-                    latency['active_source'] = single_packet_latency(*models[-1],received[active][:1])
-                waves = torch.stack((received,as_complex(restored),polar[0][-1],drift[0],drift[1],*drift[-3:]))
                 reference = as_complex(tensor(clean[rows],'cuda:0'))
                 delta,_ = timing_reference(received,reference,positions,offsets)
-                shift_errors.append((shift-delta).abs())
+                if stages:
+                    waves = torch.stack((received,*(as_complex(value) for value in stage_readouts(iq))))
+                else:
+                    restored, = r69(iq)
+                    variants = [study.proposals(model,gate,received) for model,gate in models]
+                    polar, (drift,active,shift) = variants
+                    if 'active_source' not in latency and active.any():
+                        latency['active_source'] = single_packet_latency(*models[-1],received[active][:1])
+                    waves = torch.stack((received,as_complex(restored),polar[0][-1],drift[0],drift[1],*drift[-3:]))
+                    shift_errors.append((shift-delta).abs())
                 results.append(decompose(waves,reference,delta,time,frequency))
             merged = {region:torch.cat([batch[region] for batch in results],dim=1) for region in results[0]}
-            errors = torch.cat(shift_errors)
-            routes[route][view] = {name:dict(count=len(samples),shift_error_median_samples=int(errors[samples].median()),
-                colocated_within_two=int((errors[samples]<=2).sum()),
-                median={region:matrix[:,samples].median(dim=1).values.tolist() for region,matrix in merged.items()})
-                for name,samples in groups.items()}
+            routes[route][view] = {}
+            errors = torch.cat(shift_errors) if shift_errors else None
+            for name,samples in groups.items():
+                group = dict(count=len(samples),median={region:matrix[:,samples].median(dim=1).values.tolist()
+                                                        for region,matrix in merged.items()})
+                if errors is not None:
+                    group.update(shift_error_median_samples=int(errors[samples].median()),
+                                 colocated_within_two=int((errors[samples]<=2).sum()))
+                routes[route][view][name] = group
     return dict(status='VERIFIED',target_reads=0,paired_clean_diagnostic_only=True,
-                rows=len(ids),modes=MODES,audit_fields=FIELDS,region_fields=REGION_FIELDS,routes=routes,
+                rows=len(ids),modes=modes,audit_fields=FIELDS,region_fields=REGION_FIELDS,routes=routes,
                 b1=latency,device=torch.cuda.get_device_name())
 
 
