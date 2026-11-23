@@ -1,0 +1,1452 @@
+{
+  "status": "ANALYZED",
+  "frozen_reader_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+  "r69_run": "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+  "truth_last": true,
+  "rows": [
+    {
+      "route": "residual",
+      "seed": 2026092701,
+      "split": "cross_rx",
+      "count_per_view": 126000,
+      "six_practical_accuracy": {
+        "raw": 0.713920634920635,
+        "R69": 0.8026269841269841
+      },
+      "by_view": {
+        "clean": {
+          "correct": {
+            "raw": 111019,
+            "R69": 111074
+          },
+          "repairs": 224,
+          "harms": 169
+        },
+        "practical_high": {
+          "correct": {
+            "raw": 102127,
+            "R69": 107728
+          },
+          "repairs": 11537,
+          "harms": 5936
+        },
+        "practical_mid": {
+          "correct": {
+            "raw": 98920,
+            "R69": 105959
+          },
+          "repairs": 13719,
+          "harms": 6680
+        },
+        "practical_low_suburban": {
+          "correct": {
+            "raw": 95972,
+            "R69": 103711
+          },
+          "repairs": 15593,
+          "harms": 7854
+        },
+        "practical_high_urban": {
+          "correct": {
+            "raw": 97610,
+            "R69": 106046
+          },
+          "repairs": 14916,
+          "harms": 6480
+        },
+        "practical_mid_urban": {
+          "correct": {
+            "raw": 79638,
+            "R69": 96170
+          },
+          "repairs": 26451,
+          "harms": 9919
+        },
+        "practical_low_urban": {
+          "correct": {
+            "raw": 65457,
+            "R69": 87172
+          },
+          "repairs": 34005,
+          "harms": 12290
+        }
+      }
+    },
+    {
+      "route": "residual",
+      "seed": 2026092701,
+      "split": "cross_both",
+      "count_per_view": 42000,
+      "six_practical_accuracy": {
+        "raw": 0.6976944444444444,
+        "R69": 0.7670396825396826
+      },
+      "by_view": {
+        "clean": {
+          "correct": {
+            "raw": 34366,
+            "R69": 34440
+          },
+          "repairs": 106,
+          "harms": 32
+        },
+        "practical_high": {
+          "correct": {
+            "raw": 33307,
+            "R69": 33969
+          },
+          "repairs": 3120,
+          "harms": 2458
+        },
+        "practical_mid": {
+          "correct": {
+            "raw": 32301,
+            "R69": 33508
+          },
+          "repairs": 3961,
+          "harms": 2754
+        },
+        "practical_low_suburban": {
+          "correct": {
+            "raw": 31279,
+            "R69": 32910
+          },
+          "repairs": 4687,
+          "harms": 3056
+        },
+        "practical_high_urban": {
+          "correct": {
+            "raw": 31834,
+            "R69": 33477
+          },
+          "repairs": 4294,
+          "harms": 2651
+        },
+        "practical_mid_urban": {
+          "correct": {
+            "raw": 25859,
+            "R69": 31016
+          },
+          "repairs": 8814,
+          "harms": 3657
+        },
+        "practical_low_urban": {
+          "correct": {
+            "raw": 21239,
+            "R69": 28414
+          },
+          "repairs": 11415,
+          "harms": 4240
+        }
+      }
+    },
+    {
+      "route": "residual",
+      "seed": 2026092701,
+      "split": "combined",
+      "count_per_view": 168000,
+      "six_practical_accuracy": {
+        "raw": 0.7098640873015873,
+        "R69": 0.7937301587301587
+      },
+      "by_view": {
+        "clean": {
+          "correct": {
+            "raw": 145385,
+            "R69": 145514
+          },
+          "repairs": 330,
+          "harms": 201
+        },
+        "practical_high": {
+          "correct": {
+            "raw": 135434,
+            "R69": 141697
+          },
+          "repairs": 14657,
+          "harms": 8394
+        },
+        "practical_mid": {
+          "correct": {
+            "raw": 131221,
+            "R69": 139467
+          },
+          "repairs": 17680,
+          "harms": 9434
+        },
+        "practical_low_suburban": {
+          "correct": {
+            "raw": 127251,
+            "R69": 136621
+          },
+          "repairs": 20280,
+          "harms": 10910
+        },
+        "practical_high_urban": {
+          "correct": {
+            "raw": 129444,
+            "R69": 139523
+          },
+          "repairs": 19210,
+          "harms": 9131
+        },
+        "practical_mid_urban": {
+          "correct": {
+            "raw": 105497,
+            "R69": 127186
+          },
+          "repairs": 35265,
+          "harms": 13576
+        },
+        "practical_low_urban": {
+          "correct": {
+            "raw": 86696,
+            "R69": 115586
+          },
+          "repairs": 45420,
+          "harms": 16530
+        }
+      }
+    },
+    {
+      "route": "residual",
+      "seed": 2026092702,
+      "split": "cross_rx",
+      "count_per_view": 126000,
+      "six_practical_accuracy": {
+        "raw": 0.7069140211640211,
+        "R69": 0.8048399470899471
+      },
+      "by_view": {
+        "clean": {
+          "correct": {
+            "raw": 112680,
+            "R69": 112650
+          },
+          "repairs": 143,
+          "harms": 173
+        },
+        "practical_high": {
+          "correct": {
+            "raw": 101122,
+            "R69": 108355
+          },
+          "repairs": 11512,
+          "harms": 4279
+        },
+        "practical_mid": {
+          "correct": {
+            "raw": 98000,
+            "R69": 106411
+          },
+          "repairs": 13683,
+          "harms": 5272
+        },
+        "practical_low_suburban": {
+          "correct": {
+            "raw": 94860,
+            "R69": 103898
+          },
+          "repairs": 15557,
+          "harms": 6519
+        },
+        "practical_high_urban": {
+          "correct": {
+            "raw": 96779,
+            "R69": 106482
+          },
+          "repairs": 14755,
+          "harms": 5052
+        },
+        "practical_mid_urban": {
+          "correct": {
+            "raw": 78828,
+            "R69": 96401
+          },
+          "repairs": 26447,
+          "harms": 8874
+        },
+        "practical_low_urban": {
+          "correct": {
+            "raw": 64838,
+            "R69": 86912
+          },
+          "repairs": 33669,
+          "harms": 11595
+        }
+      }
+    },
+    {
+      "route": "residual",
+      "seed": 2026092702,
+      "split": "cross_both",
+      "count_per_view": 42000,
+      "six_practical_accuracy": {
+        "raw": 0.6826230158730159,
+        "R69": 0.7716111111111111
+      },
+      "by_view": {
+        "clean": {
+          "correct": {
+            "raw": 34817,
+            "R69": 34833
+          },
+          "repairs": 49,
+          "harms": 33
+        },
+        "practical_high": {
+          "correct": {
+            "raw": 32683,
+            "R69": 34178
+          },
+          "repairs": 2987,
+          "harms": 1492
+        },
+        "practical_mid": {
+          "correct": {
+            "raw": 31519,
+            "R69": 33750
+          },
+          "repairs": 4062,
+          "harms": 1831
+        },
+        "practical_low_suburban": {
+          "correct": {
+            "raw": 30641,
+            "R69": 33106
+          },
+          "repairs": 4835,
+          "harms": 2370
+        },
+        "practical_high_urban": {
+          "correct": {
+            "raw": 31111,
+            "R69": 33644
+          },
+          "repairs": 4306,
+          "harms": 1773
+        },
+        "practical_mid_urban": {
+          "correct": {
+            "raw": 25333,
+            "R69": 31284
+          },
+          "repairs": 8918,
+          "harms": 2967
+        },
+        "practical_low_urban": {
+          "correct": {
+            "raw": 20734,
+            "R69": 28484
+          },
+          "repairs": 11577,
+          "harms": 3827
+        }
+      }
+    },
+    {
+      "route": "residual",
+      "seed": 2026092702,
+      "split": "combined",
+      "count_per_view": 168000,
+      "six_practical_accuracy": {
+        "raw": 0.7008412698412698,
+        "R69": 0.7965327380952381
+      },
+      "by_view": {
+        "clean": {
+          "correct": {
+            "raw": 147497,
+            "R69": 147483
+          },
+          "repairs": 192,
+          "harms": 206
+        },
+        "practical_high": {
+          "correct": {
+            "raw": 133805,
+            "R69": 142533
+          },
+          "repairs": 14499,
+          "harms": 5771
+        },
+        "practical_mid": {
+          "correct": {
+            "raw": 129519,
+            "R69": 140161
+          },
+          "repairs": 17745,
+          "harms": 7103
+        },
+        "practical_low_suburban": {
+          "correct": {
+            "raw": 125501,
+            "R69": 137004
+          },
+          "repairs": 20392,
+          "harms": 8889
+        },
+        "practical_high_urban": {
+          "correct": {
+            "raw": 127890,
+            "R69": 140126
+          },
+          "repairs": 19061,
+          "harms": 6825
+        },
+        "practical_mid_urban": {
+          "correct": {
+            "raw": 104161,
+            "R69": 127685
+          },
+          "repairs": 35365,
+          "harms": 11841
+        },
+        "practical_low_urban": {
+          "correct": {
+            "raw": 85572,
+            "R69": 115396
+          },
+          "repairs": 45246,
+          "harms": 15422
+        }
+      }
+    },
+    {
+      "route": "residual",
+      "seed": 2026092703,
+      "split": "cross_rx",
+      "count_per_view": 126000,
+      "six_practical_accuracy": {
+        "raw": 0.7141124338624338,
+        "R69": 0.7896732804232804
+      },
+      "by_view": {
+        "clean": {
+          "correct": {
+            "raw": 110049,
+            "R69": 110160
+          },
+          "repairs": 236,
+          "harms": 125
+        },
+        "practical_high": {
+          "correct": {
+            "raw": 101877,
+            "R69": 106443
+          },
+          "repairs": 9359,
+          "harms": 4793
+        },
+        "practical_mid": {
+          "correct": {
+            "raw": 98676,
+            "R69": 104460
+          },
+          "repairs": 11679,
+          "harms": 5895
+        },
+        "practical_low_suburban": {
+          "correct": {
+            "raw": 95593,
+            "R69": 102066
+          },
+          "repairs": 13746,
+          "harms": 7273
+        },
+        "practical_high_urban": {
+          "correct": {
+            "raw": 97612,
+            "R69": 104586
+          },
+          "repairs": 12651,
+          "harms": 5677
+        },
+        "practical_mid_urban": {
+          "correct": {
+            "raw": 79900,
+            "R69": 94330
+          },
+          "repairs": 24572,
+          "harms": 10142
+        },
+        "practical_low_urban": {
+          "correct": {
+            "raw": 66211,
+            "R69": 85108
+          },
+          "repairs": 31989,
+          "harms": 13092
+        }
+      }
+    },
+    {
+      "route": "residual",
+      "seed": 2026092703,
+      "split": "cross_both",
+      "count_per_view": 42000,
+      "six_practical_accuracy": {
+        "raw": 0.6839325396825396,
+        "R69": 0.7662222222222222
+      },
+      "by_view": {
+        "clean": {
+          "correct": {
+            "raw": 35140,
+            "R69": 35129
+          },
+          "repairs": 44,
+          "harms": 55
+        },
+        "practical_high": {
+          "correct": {
+            "raw": 32440,
+            "R69": 34176
+          },
+          "repairs": 3071,
+          "harms": 1335
+        },
+        "practical_mid": {
+          "correct": {
+            "raw": 31518,
+            "R69": 33610
+          },
+          "repairs": 3962,
+          "harms": 1870
+        },
+        "practical_low_suburban": {
+          "correct": {
+            "raw": 30653,
+            "R69": 32866
+          },
+          "repairs": 4613,
+          "harms": 2400
+        },
+        "practical_high_urban": {
+          "correct": {
+            "raw": 31108,
+            "R69": 33613
+          },
+          "repairs": 4222,
+          "harms": 1717
+        },
+        "practical_mid_urban": {
+          "correct": {
+            "raw": 25528,
+            "R69": 30834
+          },
+          "repairs": 8671,
+          "harms": 3365
+        },
+        "practical_low_urban": {
+          "correct": {
+            "raw": 21104,
+            "R69": 27989
+          },
+          "repairs": 11245,
+          "harms": 4360
+        }
+      }
+    },
+    {
+      "route": "residual",
+      "seed": 2026092703,
+      "split": "combined",
+      "count_per_view": 168000,
+      "six_practical_accuracy": {
+        "raw": 0.7065674603174603,
+        "R69": 0.7838105158730159
+      },
+      "by_view": {
+        "clean": {
+          "correct": {
+            "raw": 145189,
+            "R69": 145289
+          },
+          "repairs": 280,
+          "harms": 180
+        },
+        "practical_high": {
+          "correct": {
+            "raw": 134317,
+            "R69": 140619
+          },
+          "repairs": 12430,
+          "harms": 6128
+        },
+        "practical_mid": {
+          "correct": {
+            "raw": 130194,
+            "R69": 138070
+          },
+          "repairs": 15641,
+          "harms": 7765
+        },
+        "practical_low_suburban": {
+          "correct": {
+            "raw": 126246,
+            "R69": 134932
+          },
+          "repairs": 18359,
+          "harms": 9673
+        },
+        "practical_high_urban": {
+          "correct": {
+            "raw": 128720,
+            "R69": 138199
+          },
+          "repairs": 16873,
+          "harms": 7394
+        },
+        "practical_mid_urban": {
+          "correct": {
+            "raw": 105428,
+            "R69": 125164
+          },
+          "repairs": 33243,
+          "harms": 13507
+        },
+        "practical_low_urban": {
+          "correct": {
+            "raw": 87315,
+            "R69": 113097
+          },
+          "repairs": 43234,
+          "harms": 17452
+        }
+      }
+    },
+    {
+      "route": "full",
+      "seed": 2026092701,
+      "split": "cross_rx",
+      "count_per_view": 126000,
+      "six_practical_accuracy": {
+        "raw": 0.7139576719576719,
+        "R69": 0.8026468253968254
+      },
+      "by_view": {
+        "clean": {
+          "correct": {
+            "raw": 111019,
+            "R69": 111074
+          },
+          "repairs": 224,
+          "harms": 169
+        },
+        "practical_high": {
+          "correct": {
+            "raw": 102132,
+            "R69": 107725
+          },
+          "repairs": 11539,
+          "harms": 5946
+        },
+        "practical_mid": {
+          "correct": {
+            "raw": 98938,
+            "R69": 105959
+          },
+          "repairs": 13702,
+          "harms": 6681
+        },
+        "practical_low_suburban": {
+          "correct": {
+            "raw": 95971,
+            "R69": 103712
+          },
+          "repairs": 15594,
+          "harms": 7853
+        },
+        "practical_high_urban": {
+          "correct": {
+            "raw": 97621,
+            "R69": 106046
+          },
+          "repairs": 14897,
+          "harms": 6472
+        },
+        "practical_mid_urban": {
+          "correct": {
+            "raw": 79645,
+            "R69": 96183
+          },
+          "repairs": 26461,
+          "harms": 9923
+        },
+        "practical_low_urban": {
+          "correct": {
+            "raw": 65445,
+            "R69": 87176
+          },
+          "repairs": 34008,
+          "harms": 12277
+        }
+      }
+    },
+    {
+      "route": "full",
+      "seed": 2026092701,
+      "split": "cross_both",
+      "count_per_view": 42000,
+      "six_practical_accuracy": {
+        "raw": 0.6975992063492064,
+        "R69": 0.7671309523809524
+      },
+      "by_view": {
+        "clean": {
+          "correct": {
+            "raw": 34366,
+            "R69": 34440
+          },
+          "repairs": 106,
+          "harms": 32
+        },
+        "practical_high": {
+          "correct": {
+            "raw": 33303,
+            "R69": 33974
+          },
+          "repairs": 3124,
+          "harms": 2453
+        },
+        "practical_mid": {
+          "correct": {
+            "raw": 32290,
+            "R69": 33510
+          },
+          "repairs": 3967,
+          "harms": 2747
+        },
+        "practical_low_suburban": {
+          "correct": {
+            "raw": 31279,
+            "R69": 32905
+          },
+          "repairs": 4685,
+          "harms": 3059
+        },
+        "practical_high_urban": {
+          "correct": {
+            "raw": 31831,
+            "R69": 33477
+          },
+          "repairs": 4295,
+          "harms": 2649
+        },
+        "practical_mid_urban": {
+          "correct": {
+            "raw": 25878,
+            "R69": 31028
+          },
+          "repairs": 8827,
+          "harms": 3677
+        },
+        "practical_low_urban": {
+          "correct": {
+            "raw": 21214,
+            "R69": 28423
+          },
+          "repairs": 11442,
+          "harms": 4233
+        }
+      }
+    },
+    {
+      "route": "full",
+      "seed": 2026092701,
+      "split": "combined",
+      "count_per_view": 168000,
+      "six_practical_accuracy": {
+        "raw": 0.7098680555555555,
+        "R69": 0.7937678571428571
+      },
+      "by_view": {
+        "clean": {
+          "correct": {
+            "raw": 145385,
+            "R69": 145514
+          },
+          "repairs": 330,
+          "harms": 201
+        },
+        "practical_high": {
+          "correct": {
+            "raw": 135435,
+            "R69": 141699
+          },
+          "repairs": 14663,
+          "harms": 8399
+        },
+        "practical_mid": {
+          "correct": {
+            "raw": 131228,
+            "R69": 139469
+          },
+          "repairs": 17669,
+          "harms": 9428
+        },
+        "practical_low_suburban": {
+          "correct": {
+            "raw": 127250,
+            "R69": 136617
+          },
+          "repairs": 20279,
+          "harms": 10912
+        },
+        "practical_high_urban": {
+          "correct": {
+            "raw": 129452,
+            "R69": 139523
+          },
+          "repairs": 19192,
+          "harms": 9121
+        },
+        "practical_mid_urban": {
+          "correct": {
+            "raw": 105523,
+            "R69": 127211
+          },
+          "repairs": 35288,
+          "harms": 13600
+        },
+        "practical_low_urban": {
+          "correct": {
+            "raw": 86659,
+            "R69": 115599
+          },
+          "repairs": 45450,
+          "harms": 16510
+        }
+      }
+    },
+    {
+      "route": "full",
+      "seed": 2026092702,
+      "split": "cross_rx",
+      "count_per_view": 126000,
+      "six_practical_accuracy": {
+        "raw": 0.7068571428571429,
+        "R69": 0.8047777777777778
+      },
+      "by_view": {
+        "clean": {
+          "correct": {
+            "raw": 112680,
+            "R69": 112650
+          },
+          "repairs": 143,
+          "harms": 173
+        },
+        "practical_high": {
+          "correct": {
+            "raw": 101122,
+            "R69": 108349
+          },
+          "repairs": 11502,
+          "harms": 4275
+        },
+        "practical_mid": {
+          "correct": {
+            "raw": 97995,
+            "R69": 106413
+          },
+          "repairs": 13694,
+          "harms": 5276
+        },
+        "practical_low_suburban": {
+          "correct": {
+            "raw": 94850,
+            "R69": 103903
+          },
+          "repairs": 15569,
+          "harms": 6516
+        },
+        "practical_high_urban": {
+          "correct": {
+            "raw": 96776,
+            "R69": 106480
+          },
+          "repairs": 14752,
+          "harms": 5048
+        },
+        "practical_mid_urban": {
+          "correct": {
+            "raw": 78814,
+            "R69": 96370
+          },
+          "repairs": 26427,
+          "harms": 8871
+        },
+        "practical_low_urban": {
+          "correct": {
+            "raw": 64827,
+            "R69": 86897
+          },
+          "repairs": 33669,
+          "harms": 11599
+        }
+      }
+    },
+    {
+      "route": "full",
+      "seed": 2026092702,
+      "split": "cross_both",
+      "count_per_view": 42000,
+      "six_practical_accuracy": {
+        "raw": 0.6825793650793651,
+        "R69": 0.7714404761904762
+      },
+      "by_view": {
+        "clean": {
+          "correct": {
+            "raw": 34817,
+            "R69": 34833
+          },
+          "repairs": 49,
+          "harms": 33
+        },
+        "practical_high": {
+          "correct": {
+            "raw": 32686,
+            "R69": 34174
+          },
+          "repairs": 2982,
+          "harms": 1494
+        },
+        "practical_mid": {
+          "correct": {
+            "raw": 31518,
+            "R69": 33746
+          },
+          "repairs": 4061,
+          "harms": 1833
+        },
+        "practical_low_suburban": {
+          "correct": {
+            "raw": 30632,
+            "R69": 33103
+          },
+          "repairs": 4843,
+          "harms": 2372
+        },
+        "practical_high_urban": {
+          "correct": {
+            "raw": 31117,
+            "R69": 33639
+          },
+          "repairs": 4298,
+          "harms": 1776
+        },
+        "practical_mid_urban": {
+          "correct": {
+            "raw": 25341,
+            "R69": 31274
+          },
+          "repairs": 8907,
+          "harms": 2974
+        },
+        "practical_low_urban": {
+          "correct": {
+            "raw": 20716,
+            "R69": 28467
+          },
+          "repairs": 11576,
+          "harms": 3825
+        }
+      }
+    },
+    {
+      "route": "full",
+      "seed": 2026092702,
+      "split": "combined",
+      "count_per_view": 168000,
+      "six_practical_accuracy": {
+        "raw": 0.7007876984126984,
+        "R69": 0.7964434523809524
+      },
+      "by_view": {
+        "clean": {
+          "correct": {
+            "raw": 147497,
+            "R69": 147483
+          },
+          "repairs": 192,
+          "harms": 206
+        },
+        "practical_high": {
+          "correct": {
+            "raw": 133808,
+            "R69": 142523
+          },
+          "repairs": 14484,
+          "harms": 5769
+        },
+        "practical_mid": {
+          "correct": {
+            "raw": 129513,
+            "R69": 140159
+          },
+          "repairs": 17755,
+          "harms": 7109
+        },
+        "practical_low_suburban": {
+          "correct": {
+            "raw": 125482,
+            "R69": 137006
+          },
+          "repairs": 20412,
+          "harms": 8888
+        },
+        "practical_high_urban": {
+          "correct": {
+            "raw": 127893,
+            "R69": 140119
+          },
+          "repairs": 19050,
+          "harms": 6824
+        },
+        "practical_mid_urban": {
+          "correct": {
+            "raw": 104155,
+            "R69": 127644
+          },
+          "repairs": 35334,
+          "harms": 11845
+        },
+        "practical_low_urban": {
+          "correct": {
+            "raw": 85543,
+            "R69": 115364
+          },
+          "repairs": 45245,
+          "harms": 15424
+        }
+      }
+    },
+    {
+      "route": "full",
+      "seed": 2026092703,
+      "split": "cross_rx",
+      "count_per_view": 126000,
+      "six_practical_accuracy": {
+        "raw": 0.7141944444444445,
+        "R69": 0.7896560846560846
+      },
+      "by_view": {
+        "clean": {
+          "correct": {
+            "raw": 110049,
+            "R69": 110160
+          },
+          "repairs": 236,
+          "harms": 125
+        },
+        "practical_high": {
+          "correct": {
+            "raw": 101879,
+            "R69": 106445
+          },
+          "repairs": 9353,
+          "harms": 4787
+        },
+        "practical_mid": {
+          "correct": {
+            "raw": 98679,
+            "R69": 104460
+          },
+          "repairs": 11667,
+          "harms": 5886
+        },
+        "practical_low_suburban": {
+          "correct": {
+            "raw": 95602,
+            "R69": 102074
+          },
+          "repairs": 13748,
+          "harms": 7276
+        },
+        "practical_high_urban": {
+          "correct": {
+            "raw": 97614,
+            "R69": 104595
+          },
+          "repairs": 12667,
+          "harms": 5686
+        },
+        "practical_mid_urban": {
+          "correct": {
+            "raw": 79927,
+            "R69": 94332
+          },
+          "repairs": 24567,
+          "harms": 10162
+        },
+        "practical_low_urban": {
+          "correct": {
+            "raw": 66230,
+            "R69": 85074
+          },
+          "repairs": 31958,
+          "harms": 13114
+        }
+      }
+    },
+    {
+      "route": "full",
+      "seed": 2026092703,
+      "split": "cross_both",
+      "count_per_view": 42000,
+      "six_practical_accuracy": {
+        "raw": 0.6840277777777778,
+        "R69": 0.7662301587301588
+      },
+      "by_view": {
+        "clean": {
+          "correct": {
+            "raw": 35140,
+            "R69": 35129
+          },
+          "repairs": 44,
+          "harms": 55
+        },
+        "practical_high": {
+          "correct": {
+            "raw": 32441,
+            "R69": 34179
+          },
+          "repairs": 3071,
+          "harms": 1333
+        },
+        "practical_mid": {
+          "correct": {
+            "raw": 31514,
+            "R69": 33606
+          },
+          "repairs": 3966,
+          "harms": 1874
+        },
+        "practical_low_suburban": {
+          "correct": {
+            "raw": 30647,
+            "R69": 32866
+          },
+          "repairs": 4618,
+          "harms": 2399
+        },
+        "practical_high_urban": {
+          "correct": {
+            "raw": 31115,
+            "R69": 33610
+          },
+          "repairs": 4217,
+          "harms": 1722
+        },
+        "practical_mid_urban": {
+          "correct": {
+            "raw": 25564,
+            "R69": 30846
+          },
+          "repairs": 8654,
+          "harms": 3372
+        },
+        "practical_low_urban": {
+          "correct": {
+            "raw": 21094,
+            "R69": 27983
+          },
+          "repairs": 11251,
+          "harms": 4362
+        }
+      }
+    },
+    {
+      "route": "full",
+      "seed": 2026092703,
+      "split": "combined",
+      "count_per_view": 168000,
+      "six_practical_accuracy": {
+        "raw": 0.7066527777777778,
+        "R69": 0.7837996031746032
+      },
+      "by_view": {
+        "clean": {
+          "correct": {
+            "raw": 145189,
+            "R69": 145289
+          },
+          "repairs": 280,
+          "harms": 180
+        },
+        "practical_high": {
+          "correct": {
+            "raw": 134320,
+            "R69": 140624
+          },
+          "repairs": 12424,
+          "harms": 6120
+        },
+        "practical_mid": {
+          "correct": {
+            "raw": 130193,
+            "R69": 138066
+          },
+          "repairs": 15633,
+          "harms": 7760
+        },
+        "practical_low_suburban": {
+          "correct": {
+            "raw": 126249,
+            "R69": 134940
+          },
+          "repairs": 18366,
+          "harms": 9675
+        },
+        "practical_high_urban": {
+          "correct": {
+            "raw": 128729,
+            "R69": 138205
+          },
+          "repairs": 16884,
+          "harms": 7408
+        },
+        "practical_mid_urban": {
+          "correct": {
+            "raw": 105491,
+            "R69": 125178
+          },
+          "repairs": 33221,
+          "harms": 13534
+        },
+        "practical_low_urban": {
+          "correct": {
+            "raw": 87324,
+            "R69": 113057
+          },
+          "repairs": 43209,
+          "harms": 17476
+        }
+      }
+    }
+  ],
+  "aggregate": [
+    {
+      "route": "full",
+      "split": "cross_rx",
+      "label": "仅跨 RX",
+      "n": 378000,
+      "raw": 71.16697530864198,
+      "r69": 79.90268959435626,
+      "net": 8.735714285714286,
+      "sd": 1.1288591585207066,
+      "clean": [
+        333748,
+        333884
+      ],
+      "per_seed_deltas_pp": [
+        8.868915343915347,
+        9.792063492063505,
+        7.546164021164003
+      ]
+    },
+    {
+      "route": "full",
+      "split": "cross_both",
+      "label": "双跨",
+      "n": 126000,
+      "raw": 68.8068783068783,
+      "r69": 76.82671957671957,
+      "net": 8.019841269841265,
+      "sd": 0.9819267038075115,
+      "clean": [
+        104323,
+        104402
+      ],
+      "per_seed_deltas_pp": [
+        6.9531746031746025,
+        8.886111111111106,
+        8.220238095238088
+      ]
+    },
+    {
+      "route": "full",
+      "split": "combined",
+      "label": "合并",
+      "n": 504000,
+      "raw": 70.57695105820105,
+      "r69": 79.13369708994709,
+      "net": 8.556746031746039,
+      "sd": 0.936647871111487,
+      "clean": [
+        438071,
+        438286
+      ],
+      "per_seed_deltas_pp": [
+        8.389980158730168,
+        9.565575396825409,
+        7.714682539682542
+      ]
+    },
+    {
+      "route": "residual",
+      "split": "cross_rx",
+      "label": "仅跨 RX",
+      "n": 378000,
+      "raw": 71.16490299823633,
+      "r69": 79.90467372134039,
+      "net": 8.739770723104058,
+      "sd": 1.1239822134545947,
+      "clean": [
+        333748,
+        333884
+      ],
+      "per_seed_deltas_pp": [
+        8.870634920634913,
+        9.792592592592598,
+        7.556084656084664
+      ]
+    },
+    {
+      "route": "residual",
+      "split": "cross_both",
+      "label": "双跨",
+      "n": 126000,
+      "raw": 68.80833333333334,
+      "r69": 76.82910052910053,
+      "net": 8.020767195767197,
+      "sd": 0.9985566345049044,
+      "clean": [
+        104323,
+        104402
+      ],
+      "per_seed_deltas_pp": [
+        6.93452380952381,
+        8.898809523809518,
+        8.228968253968262
+      ]
+    },
+    {
+      "route": "residual",
+      "split": "combined",
+      "label": "合并",
+      "n": 504000,
+      "raw": 70.57576058201057,
+      "r69": 79.13578042328042,
+      "net": 8.560019841269844,
+      "sd": 0.9345661029084386,
+      "clean": [
+        438071,
+        438286
+      ],
+      "per_seed_deltas_pp": [
+        8.386607142857144,
+        9.569146825396828,
+        7.72430555555556
+      ]
+    }
+  ],
+  "prediction_readback": [
+    {
+      "seed": 2026092701,
+      "split": "cross_rx",
+      "raw_vs_original": {
+        "raw__clean": 0,
+        "raw__practical_high": 0,
+        "raw__practical_mid": 0,
+        "raw__practical_low_suburban": 0,
+        "raw__practical_high_urban": 0,
+        "raw__practical_mid_urban": 0,
+        "raw__practical_low_urban": 0
+      },
+      "full_vs_residual_clean": {
+        "raw__clean": 0,
+        "R69__clean": 0
+      }
+    },
+    {
+      "seed": 2026092701,
+      "split": "cross_both",
+      "raw_vs_original": {
+        "raw__clean": 0,
+        "raw__practical_high": 0,
+        "raw__practical_mid": 0,
+        "raw__practical_low_suburban": 0,
+        "raw__practical_high_urban": 0,
+        "raw__practical_mid_urban": 0,
+        "raw__practical_low_urban": 0
+      },
+      "full_vs_residual_clean": {
+        "raw__clean": 0,
+        "R69__clean": 0
+      }
+    },
+    {
+      "seed": 2026092702,
+      "split": "cross_rx",
+      "raw_vs_original": {
+        "raw__clean": 0,
+        "raw__practical_high": 0,
+        "raw__practical_mid": 0,
+        "raw__practical_low_suburban": 0,
+        "raw__practical_high_urban": 0,
+        "raw__practical_mid_urban": 0,
+        "raw__practical_low_urban": 0
+      },
+      "full_vs_residual_clean": {
+        "raw__clean": 0,
+        "R69__clean": 0
+      }
+    },
+    {
+      "seed": 2026092702,
+      "split": "cross_both",
+      "raw_vs_original": {
+        "raw__clean": 0,
+        "raw__practical_high": 0,
+        "raw__practical_mid": 0,
+        "raw__practical_low_suburban": 0,
+        "raw__practical_high_urban": 0,
+        "raw__practical_mid_urban": 0,
+        "raw__practical_low_urban": 0
+      },
+      "full_vs_residual_clean": {
+        "raw__clean": 0,
+        "R69__clean": 0
+      }
+    },
+    {
+      "seed": 2026092703,
+      "split": "cross_rx",
+      "raw_vs_original": {
+        "raw__clean": 0,
+        "raw__practical_high": 0,
+        "raw__practical_mid": 0,
+        "raw__practical_low_suburban": 0,
+        "raw__practical_high_urban": 0,
+        "raw__practical_mid_urban": 0,
+        "raw__practical_low_urban": 0
+      },
+      "full_vs_residual_clean": {
+        "raw__clean": 0,
+        "R69__clean": 0
+      }
+    },
+    {
+      "seed": 2026092703,
+      "split": "cross_both",
+      "raw_vs_original": {
+        "raw__clean": 0,
+        "raw__practical_high": 0,
+        "raw__practical_mid": 0,
+        "raw__practical_low_suburban": 0,
+        "raw__practical_high_urban": 0,
+        "raw__practical_mid_urban": 0,
+        "raw__practical_low_urban": 0
+      },
+      "full_vs_residual_clean": {
+        "raw__clean": 0,
+        "R69__clean": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,522 @@
+{
+  "routes": {
+    "full": {
+      "modes": [
+        "direct",
+        "reference",
+        "waveform",
+        "waveform_half",
+        "detail",
+        "detail_half"
+      ],
+      "six": [
+        3028,
+        3094,
+        2946,
+        3045,
+        3032,
+        3066
+      ],
+      "low": [
+        360,
+        374,
+        321,
+        368,
+        354,
+        367
+      ],
+      "clean": [
+        667,
+        667,
+        667,
+        667,
+        667,
+        667
+      ],
+      "active": {
+        "clean": 0,
+        "practical_high": 21,
+        "practical_mid": 159,
+        "practical_low_suburban": 320,
+        "practical_high_urban": 92,
+        "practical_mid_urban": 396,
+        "practical_low_urban": 641
+      },
+      "full_vs_waveform": {
+        "six": 86,
+        "six_ci": [
+          45,
+          126
+        ],
+        "low": 33,
+        "low_ci": [
+          9,
+          57
+        ],
+        "repairs": 242,
+        "harms": 156,
+        "per_rx": [
+          7,
+          1,
+          24,
+          35,
+          19
+        ],
+        "per_scene": [
+          1,
+          12,
+          4,
+          10,
+          26,
+          33
+        ]
+      },
+      "full_vs_dura": {
+        "six": -62,
+        "six_ci": [
+          -108,
+          -14
+        ],
+        "low": -20,
+        "low_ci": [
+          -47,
+          7
+        ],
+        "repairs": 236,
+        "harms": 298,
+        "per_rx": [
+          -18,
+          -24,
+          -2,
+          -11,
+          -7
+        ],
+        "per_scene": [
+          2,
+          -2,
+          -31,
+          -1,
+          -10,
+          -20
+        ]
+      },
+      "full_vs_previous": {
+        "six": -16,
+        "six_ci": [
+          -49,
+          18
+        ],
+        "low": -19,
+        "low_ci": [
+          -40,
+          2
+        ],
+        "repairs": 142,
+        "harms": 158,
+        "per_rx": [
+          -2,
+          -20,
+          0,
+          17,
+          -11
+        ],
+        "per_scene": [
+          2,
+          10,
+          -1,
+          -4,
+          -4,
+          -19
+        ]
+      },
+      "full_interaction": {
+        "six": -29,
+        "six_ci": [
+          -72,
+          15
+        ]
+      },
+      "half_vs_waveform": {
+        "six": 21,
+        "six_ci": [
+          -2,
+          44.024999999999636
+        ],
+        "low": -1,
+        "low_ci": [
+          -15,
+          14
+        ],
+        "repairs": 82,
+        "harms": 61,
+        "per_rx": [
+          5,
+          2,
+          -5,
+          8,
+          11
+        ],
+        "per_scene": [
+          0,
+          5,
+          3,
+          7,
+          7,
+          -1
+        ]
+      },
+      "half_vs_dura": {
+        "six": -28,
+        "six_ci": [
+          -64,
+          8
+        ],
+        "low": -7,
+        "low_ci": [
+          -24,
+          10
+        ],
+        "repairs": 141,
+        "harms": 169,
+        "per_rx": [
+          -10,
+          -5,
+          -5,
+          -7,
+          -1
+        ],
+        "per_scene": [
+          2,
+          3,
+          -24,
+          5,
+          -7,
+          -7
+        ]
+      },
+      "half_vs_previous": {
+        "six": -2,
+        "six_ci": [
+          -21,
+          17
+        ],
+        "low": -4,
+        "low_ci": [
+          -14,
+          6
+        ],
+        "repairs": 46,
+        "harms": 48,
+        "per_rx": [
+          3,
+          1,
+          -5,
+          2,
+          -3
+        ],
+        "per_scene": [
+          1,
+          -1,
+          -4,
+          3,
+          3,
+          -4
+        ]
+      },
+      "half_interaction": {
+        "six": 9,
+        "six_ci": [
+          -14,
+          32
+        ]
+      }
+    },
+    "residual": {
+      "modes": [
+        "direct",
+        "reference",
+        "waveform",
+        "waveform_half",
+        "detail",
+        "detail_half"
+      ],
+      "six": [
+        2848,
+        2960,
+        2621,
+        2876,
+        2803,
+        2886
+      ],
+      "low": [
+        387,
+        403,
+        261,
+        397,
+        334,
+        386
+      ],
+      "clean": [
+        667,
+        667,
+        667,
+        667,
+        667,
+        667
+      ],
+      "active": {
+        "clean": 0,
+        "practical_high": 39,
+        "practical_mid": 717,
+        "practical_low_suburban": 900,
+        "practical_high_urban": 67,
+        "practical_mid_urban": 803,
+        "practical_low_urban": 899
+      },
+      "full_vs_waveform": {
+        "six": 182,
+        "six_ci": [
+          120.97500000000001,
+          242.02499999999964
+        ],
+        "low": 73,
+        "low_ci": [
+          42,
+          104
+        ],
+        "repairs": 490,
+        "harms": 308,
+        "per_rx": [
+          46,
+          15,
+          18,
+          56,
+          47
+        ],
+        "per_scene": [
+          3,
+          20,
+          22,
+          8,
+          56,
+          73
+        ]
+      },
+      "full_vs_dura": {
+        "six": -157,
+        "six_ci": [
+          -217,
+          -98.97500000000036
+        ],
+        "low": -69,
+        "low_ci": [
+          -98.02499999999999,
+          -40
+        ],
+        "repairs": 339,
+        "harms": 496,
+        "per_rx": [
+          -48,
+          -10,
+          -30,
+          -39,
+          -30
+        ],
+        "per_scene": [
+          -8,
+          -22,
+          -33,
+          -5,
+          -20,
+          -69
+        ]
+      },
+      "full_vs_previous": {
+        "six": 16,
+        "six_ci": [
+          -38,
+          70
+        ],
+        "low": -9,
+        "low_ci": [
+          -34,
+          17
+        ],
+        "repairs": 299,
+        "harms": 283,
+        "per_rx": [
+          8,
+          7,
+          -7,
+          6,
+          2
+        ],
+        "per_scene": [
+          3,
+          -7,
+          19,
+          3,
+          7,
+          -9
+        ]
+      },
+      "full_interaction": {
+        "six": -35,
+        "six_ci": [
+          -98,
+          27
+        ]
+      },
+      "half_vs_waveform": {
+        "six": 10,
+        "six_ci": [
+          -21,
+          41
+        ],
+        "low": -11,
+        "low_ci": [
+          -28,
+          6
+        ],
+        "repairs": 125,
+        "harms": 115,
+        "per_rx": [
+          -10,
+          6,
+          0,
+          3,
+          11
+        ],
+        "per_scene": [
+          -1,
+          9,
+          4,
+          3,
+          6,
+          -11
+        ]
+      },
+      "half_vs_dura": {
+        "six": -74,
+        "six_ci": [
+          -118,
+          -29
+        ],
+        "low": -17,
+        "low_ci": [
+          -35,
+          1
+        ],
+        "repairs": 192,
+        "harms": 266,
+        "per_rx": [
+          -36,
+          2,
+          -15,
+          -23,
+          -2
+        ],
+        "per_scene": [
+          -11,
+          -14,
+          -18,
+          -3,
+          -11,
+          -17
+        ]
+      },
+      "half_vs_previous": {
+        "six": 12,
+        "six_ci": [
+          -17,
+          41
+        ],
+        "low": -8,
+        "low_ci": [
+          -21,
+          5
+        ],
+        "repairs": 113,
+        "harms": 101,
+        "per_rx": [
+          -2,
+          8,
+          -1,
+          4,
+          3
+        ],
+        "per_scene": [
+          -1,
+          7,
+          5,
+          1,
+          8,
+          -8
+        ]
+      },
+      "half_interaction": {
+        "six": -25,
+        "six_ci": [
+          -62,
+          11.024999999999636
+        ]
+      }
+    }
+  },
+  "fit": {
+    "waveform": {
+      "status": "SOURCE_FROZEN",
+      "seed": 2026112991,
+      "steps": 1800,
+      "fit_per_rx": 1000,
+      "calibration_per_rx": 500,
+      "held_per_rx": 100,
+      "F_reads": 0,
+      "TX_reads": 0,
+      "V_reads": 0,
+      "target_reads": 0,
+      "practical_reads": 0,
+      "trace_reads": 0,
+      "estimator": "echo_waveform",
+      "threshold": 0.045941177755594254,
+      "held_waveform": [
+        0.10511387139558792,
+        0.19799093902111053,
+        0.031182898208498955,
+        0.12736964225769043
+      ],
+      "n_fit": 5000,
+      "n_calibration": 2500,
+      "n_held": 500,
+      "worker_seconds": 421.89095504698344,
+      "bf16_training_convolutions": true
+    },
+    "detail": {
+      "status": "SOURCE_FROZEN",
+      "seed": 2026112991,
+      "steps": 1800,
+      "fit_per_rx": 1000,
+      "calibration_per_rx": 500,
+      "held_per_rx": 100,
+      "F_reads": 0,
+      "TX_reads": 0,
+      "V_reads": 0,
+      "target_reads": 0,
+      "practical_reads": 0,
+      "trace_reads": 0,
+      "estimator": "echo_detail",
+      "threshold": 0.045941177755594254,
+      "held_waveform": [
+        0.1080927923321724,
+        0.22282642126083374,
+        0.040740784257650375,
+        0.03643225505948067
+      ],
+      "n_fit": 5000,
+      "n_calibration": 2500,
+      "n_held": 500,
+      "worker_seconds": 561.6548651137855,
+      "bf16_training_convolutions": true
+    }
+  }
+}

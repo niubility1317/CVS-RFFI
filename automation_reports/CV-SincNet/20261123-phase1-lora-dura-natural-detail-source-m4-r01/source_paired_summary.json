@@ -1,0 +1,202 @@
+{
+  "full": {
+    "six": [
+      3028,
+      3094,
+      2933,
+      3056,
+      3048,
+      3068
+    ],
+    "low": [
+      360,
+      374,
+      319,
+      376,
+      373,
+      371
+    ],
+    "clean": [
+      667,
+      667,
+      667,
+      667,
+      667,
+      667
+    ],
+    "active": {
+      "clean": 0,
+      "practical_high": 21,
+      "practical_mid": 159,
+      "practical_low_suburban": 320,
+      "practical_high_urban": 92,
+      "practical_mid_urban": 396,
+      "practical_low_urban": 641
+    },
+    "full_detail_vs_control": {
+      "six_delta": 115,
+      "six_ci": [
+        77,
+        152
+      ],
+      "low_delta": 54,
+      "low_ci": [
+        31,
+        77
+      ],
+      "repairs": 224,
+      "harms": 109
+    },
+    "half_detail_vs_control": {
+      "six_delta": 12,
+      "six_ci": [
+        -9,
+        33
+      ],
+      "low_delta": -5,
+      "low_ci": [
+        -17,
+        6
+      ],
+      "repairs": 61,
+      "harms": 49
+    },
+    "half_detail_vs_dura": {
+      "six_delta": -26,
+      "six_ci": [
+        -61,
+        9
+      ],
+      "low_delta": -3,
+      "low_ci": [
+        -19,
+        14
+      ],
+      "repairs": 137,
+      "harms": 163
+    },
+    "detail_half_per_rx_net": [
+      -13,
+      -6,
+      0,
+      -9,
+      2
+    ],
+    "full_view_net_detail_vs_waveform": [
+      2,
+      2,
+      18,
+      12,
+      27,
+      54
+    ],
+    "half_view_net_detail_vs_dura": [
+      1,
+      4,
+      -20,
+      2,
+      -10,
+      -3
+    ]
+  },
+  "residual": {
+    "six": [
+      2848,
+      2960,
+      2570,
+      2839,
+      2787,
+      2874
+    ],
+    "low": [
+      387,
+      403,
+      267,
+      383,
+      343,
+      394
+    ],
+    "clean": [
+      667,
+      667,
+      667,
+      667,
+      667,
+      667
+    ],
+    "active": {
+      "clean": 0,
+      "practical_high": 39,
+      "practical_mid": 717,
+      "practical_low_suburban": 900,
+      "practical_high_urban": 67,
+      "practical_mid_urban": 803,
+      "practical_low_urban": 899
+    },
+    "full_detail_vs_control": {
+      "six_delta": 217,
+      "six_ci": [
+        158.97500000000002,
+        275
+      ],
+      "low_delta": 76,
+      "low_ci": [
+        49,
+        104
+      ],
+      "repairs": 448,
+      "harms": 231
+    },
+    "half_detail_vs_control": {
+      "six_delta": 35,
+      "six_ci": [
+        7,
+        64
+      ],
+      "low_delta": 11,
+      "low_ci": [
+        -4,
+        26
+      ],
+      "repairs": 112,
+      "harms": 77
+    },
+    "half_detail_vs_dura": {
+      "six_delta": -86,
+      "six_ci": [
+        -131,
+        -40
+      ],
+      "low_delta": -9,
+      "low_ci": [
+        -26,
+        8
+      ],
+      "repairs": 188,
+      "harms": 274
+    },
+    "detail_half_per_rx_net": [
+      -34,
+      -6,
+      -14,
+      -27,
+      -5
+    ],
+    "full_view_net_detail_vs_waveform": [
+      0,
+      36,
+      42,
+      1,
+      62,
+      76
+    ],
+    "half_view_net_detail_vs_dura": [
+      -10,
+      -21,
+      -23,
+      -4,
+      -19,
+      -9
+    ]
+  }
+}

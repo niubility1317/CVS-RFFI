@@ -1,0 +1,328 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261123-phase1-wisig-r69-paired-main-m6-r01",
+  "group_id": "phase1-wisig-observable-recovery",
+  "display_name": "WiSig 主划分三种子原 DURA 同包基线",
+  "description": "Tri-SIG-TIME SSL fixed E50 primary split, direct and original R69, same physical records in full and residual receiving routes.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "truth_last",
+    "dual_path"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User delegated observable LoRa/WiSig recovery goal. Fixed baseline target-bound inference and independent scorer only.",
+  "code": {
+    "commit": "85fcb6ed8b3023197553181d8260524b7e185718",
+    "checkout": "E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-r69-paired-main-m6-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig ManySig",
+    "version": "Main split F0",
+    "representation": "original equalized center [2,256] float32 IQ; full/post_sync/noeq and residual/post_sync/noeq",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/index.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": 0.7,
+    "capsule_id": null,
+    "split_id": "Existing Main split F0 evaluation subsets",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/manifest.json",
+    "support_query_ref": null,
+    "leo_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/manifest.json"
+  },
+  "permissions": {
+    "regime": "frozen_evaluation",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Paired Main split Phase1 frozen references; no target adaptation or recovery fitting."
+  },
+  "checkpoint": {
+    "initialization": "none; frozen inference",
+    "sources": [
+      {
+        "ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F",
+        "role": "three immutable frozen default-head readers, fixed E50"
+      },
+      {
+        "ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt",
+        "role": "original frozen G reference"
+      }
+    ],
+    "contract_check_ref": "report.md and original F0-LU binding in experiments/cric_dura_comparison/continuation_setup.py",
+    "provenance_verdict": "Original native F0 LU R69 reference, separately preserved; fixed frozen readers from scratch plus own segments under F0.",
+    "selection_rule": "Seeds 2026092701 through 2026092703 by predeclared order, no target selection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex handoff 01a208a9-57df-7f82-a078-cd9477adf998",
+    "gpu_policy": "Prefer GPU 3/6/2, dynamically admit up to 3 distinct GPUs with known compute capacity; max 4 compute processes per card.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/wisig_r69_paired_main_20261123",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_repl_view_shuffle.dura_baseline publish --repo E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010 --output E:/type10-7/local_artifacts/wisig_r69_paired_main_20261123 --local-context E:/type10-7/local_artifacts/pamf_repl_view_shuffle_20261027/runtime.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "Stop future dispatch on contract, nonfinite, binding, collision or closure failure, retaining all written artifacts."
+  },
+  "expected_artifacts": [
+    "full_views/{cross_rx,cross_both}/manifest.json",
+    "{full,residual}/<seed>/predictions/complete.json",
+    "{full,residual}/<seed>/scores/scores.json",
+    "summary.json",
+    "state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "correct count",
+      "repairs",
+      "harms",
+      "net"
+    ],
+    "dimensions": [
+      "route",
+      "seed",
+      "split",
+      "view",
+      "receiver",
+      "day",
+      "TX"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/{full,residual}/<seed>/predictions",
+    "scorer_ref": "experiments.pamf_repl_view_shuffle.dura_baseline.score_all"
+  },
+  "rows": [
+    {
+      "row_id": "residual-s2026092701",
+      "method": "Raw direct and original R69 / frozen Tri-SIG-TIME SSL E50",
+      "purpose": "fixed_reference",
+      "config_ref": "experiments/pamf_repl_view_shuffle/dura_baseline.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-r69-paired-main-m6-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Existing seed 392005 for original applied channel and split registry. Receiver calibration seed 2027. No support or additional evaluation resampling. Model seed belongs to F; R69 has fixed source seed 2026092701.",
+      "k": null,
+      "scenario": "residual|clean + six practical|cross_rx + cross_both",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Frozen, no fit or optimizer update",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/residual/2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/logs/predict-residual-2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_view_shuffle.dura_baseline predict /home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-r69-paired-main-m6-r01-release/runtime.json residual-2026092701",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/residual/2026092701/predictions/complete.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/residual/2026092701/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "residual-s2026092702",
+      "method": "Raw direct and original R69 / frozen Tri-SIG-TIME SSL E50",
+      "purpose": "fixed_reference",
+      "config_ref": "experiments/pamf_repl_view_shuffle/dura_baseline.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-r69-paired-main-m6-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Existing seed 392005 for original applied channel and split registry. Receiver calibration seed 2027. No support or additional evaluation resampling. Model seed belongs to F; R69 has fixed source seed 2026092701.",
+      "k": null,
+      "scenario": "residual|clean + six practical|cross_rx + cross_both",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Frozen, no fit or optimizer update",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/residual/2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/logs/predict-residual-2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_view_shuffle.dura_baseline predict /home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-r69-paired-main-m6-r01-release/runtime.json residual-2026092702",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/residual/2026092702/predictions/complete.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/residual/2026092702/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "residual-s2026092703",
+      "method": "Raw direct and original R69 / frozen Tri-SIG-TIME SSL E50",
+      "purpose": "fixed_reference",
+      "config_ref": "experiments/pamf_repl_view_shuffle/dura_baseline.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-r69-paired-main-m6-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Existing seed 392005 for original applied channel and split registry. Receiver calibration seed 2027. No support or additional evaluation resampling. Model seed belongs to F; R69 has fixed source seed 2026092701.",
+      "k": null,
+      "scenario": "residual|clean + six practical|cross_rx + cross_both",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Frozen, no fit or optimizer update",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/residual/2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/logs/predict-residual-2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_view_shuffle.dura_baseline predict /home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-r69-paired-main-m6-r01-release/runtime.json residual-2026092703",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/residual/2026092703/predictions/complete.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/residual/2026092703/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "full-s2026092701",
+      "method": "Raw direct and original R69 / frozen Tri-SIG-TIME SSL E50",
+      "purpose": "fixed_reference",
+      "config_ref": "experiments/pamf_repl_view_shuffle/dura_baseline.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-r69-paired-main-m6-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Existing seed 392005 for original applied channel and split registry. Receiver calibration seed 2027. No support or additional evaluation resampling. Model seed belongs to F; R69 has fixed source seed 2026092701.",
+      "k": null,
+      "scenario": "full|clean + six practical|cross_rx + cross_both",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Frozen, no fit or optimizer update",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/full/2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/logs/predict-full-2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_view_shuffle.dura_baseline predict /home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-r69-paired-main-m6-r01-release/runtime.json full-2026092701",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/full/2026092701/predictions/complete.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/full/2026092701/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "full-s2026092702",
+      "method": "Raw direct and original R69 / frozen Tri-SIG-TIME SSL E50",
+      "purpose": "fixed_reference",
+      "config_ref": "experiments/pamf_repl_view_shuffle/dura_baseline.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-r69-paired-main-m6-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Existing seed 392005 for original applied channel and split registry. Receiver calibration seed 2027. No support or additional evaluation resampling. Model seed belongs to F; R69 has fixed source seed 2026092701.",
+      "k": null,
+      "scenario": "full|clean + six practical|cross_rx + cross_both",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Frozen, no fit or optimizer update",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/full/2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/logs/predict-full-2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_view_shuffle.dura_baseline predict /home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-r69-paired-main-m6-r01-release/runtime.json full-2026092702",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/full/2026092702/predictions/complete.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/full/2026092702/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "full-s2026092703",
+      "method": "Raw direct and original R69 / frozen Tri-SIG-TIME SSL E50",
+      "purpose": "fixed_reference",
+      "config_ref": "experiments/pamf_repl_view_shuffle/dura_baseline.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-r69-paired-main-m6-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 392005,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Existing seed 392005 for original applied channel and split registry. Receiver calibration seed 2027. No support or additional evaluation resampling. Model seed belongs to F; R69 has fixed source seed 2026092701.",
+      "k": null,
+      "scenario": "full|clean + six practical|cross_rx + cross_both",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Frozen, no fit or optimizer update",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/full/2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/logs/predict-full-2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_view_shuffle.dura_baseline predict /home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-r69-paired-main-m6-r01-release/runtime.json full-2026092703",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/full/2026092703/predictions/complete.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-r69-paired-main-m6-r01/full/2026092703/scores/scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Phase1 fixed main test; no support and no Phase2 capsule. RTX3090 FP32 no TF32, batch 128.",
+    "Historical residual set is immutable. Full generation uses only valid clean reference and physical IDs and is isolated from labels and recovery fitting."
+  ],
+  "registered_at": "2026-11-23T14:05:51+00:00"
+}

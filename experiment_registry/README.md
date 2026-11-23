@@ -8,6 +8,12 @@
 - [完整目录CSV](catalog.csv) · [结构化目录](catalog.jsonl) · [覆盖与缺项](coverage.json)
 - 通过show的`--section artifacts/facts`读取该条目的路径或配置出处；细目按记录压缩保存于details/，不扫描全库。
 
+## LoRa 与 WiSig 星地恢复
+
+- [LoRa 通用复回波作用下的自然弱指纹保真消融](../automation_reports/CV-SincNet/20261123-phase1-lora-dura-natural-detail-echo-source-m4-r01/report.md)
+- [LoRa 自然弱复谱差异保真源域对照](../automation_reports/CV-SincNet/20261123-phase1-lora-dura-natural-detail-source-m4-r01/report.md)
+- [WiSig 主划分三种子原 DURA 同包基线](../automation_reports/CV-SincNet/20261123-phase1-wisig-r69-paired-main-m6-r01/report.md)
+
 ## 登记规模
 
 |记录类型|数量|
