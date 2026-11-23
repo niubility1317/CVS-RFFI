@@ -27,9 +27,12 @@ def generic_taps(signal, rng):
     return radius * tap / tap.abs().sum(-1, keepdim=True).clamp_min(1e-8)
 
 
-def paired_action_inputs(clean, perturb, rng, change, *, with_identity):
+def paired_action_inputs(clean, perturb, rng, change, *, with_identity, echo_probability=1.):
     def draw():
         taps = generic_taps(clean, rng)
+        if echo_probability < 1.:
+            draw_echo = torch.rand((len(clean), 1), device=clean.device, generator=rng) < echo_probability
+            taps = taps * draw_echo
         filtered = apply_transfer(clean, taps)
         scale = .15 + .85 * torch.rand((len(clean), 1, 1), device=clean.device, generator=rng).square()
         measurement = filtered + scale * (perturb(filtered, rng) - filtered)
