@@ -1,0 +1,21 @@
+{
+  "n": 4096,
+  "seed": 2026112321,
+  "quantile": 0.999,
+  "minimum_margin": 2.701014757156372,
+  "static": "fine",
+  "average_proposal_risk": {
+    "raw": 1.436571717262268,
+    "coarse": 1.1077017784118652,
+    "fine": 0.7612974047660828,
+    "anchored": 0.9546059370040894,
+    "phase": 1.2635526657104492,
+    "amplitude": 0.8578190207481384
+  },
+  "routed_waveform_risk": 0.7612922191619873,
+  "best_per_packet_waveform_risk": 0.7218931913375854,
+  "perturbation_seed": 2026112335,
+  "target_reads": 0,
+  "recognizer_reads": 0,
+  "source_truth_reads": 0
+}

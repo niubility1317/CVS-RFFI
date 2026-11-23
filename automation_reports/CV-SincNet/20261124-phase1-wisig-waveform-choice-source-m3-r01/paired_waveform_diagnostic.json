@@ -1,0 +1,321 @@
+{
+  "target_reads": 0,
+  "n": 1800,
+  "diagnostic_only": true,
+  "routes": {
+    "full": {
+      "six": {
+        "waveform_choice": 7089,
+        "label_coverage": 10058,
+        "raw": 9057,
+        "R69": 10194,
+        "static": 7018,
+        "routed": 7020,
+        "routed_guarded": 8923
+      },
+      "waveform_vs_raw": {
+        "net": -1968,
+        "ci": [
+          -2106.0,
+          -1830.9750000000001
+        ]
+      },
+      "waveform_vs_R69": {
+        "net": -3105,
+        "ci": [
+          -3242.0,
+          -2962.9750000000004
+        ]
+      },
+      "per_view": {
+        "clean": {
+          "waveform_choice": 1775,
+          "label_coverage": 1787,
+          "raw": 1775,
+          "R69": 1775,
+          "static": 1630,
+          "routed": 1633,
+          "routed_guarded": 1776
+        },
+        "practical_high": {
+          "waveform_choice": 1350,
+          "label_coverage": 1779,
+          "raw": 1726,
+          "R69": 1767,
+          "static": 1335,
+          "routed": 1336,
+          "routed_guarded": 1724
+        },
+        "practical_mid": {
+          "waveform_choice": 1307,
+          "label_coverage": 1748,
+          "raw": 1655,
+          "R69": 1751,
+          "static": 1295,
+          "routed": 1295,
+          "routed_guarded": 1637
+        },
+        "practical_low_suburban": {
+          "waveform_choice": 1272,
+          "label_coverage": 1728,
+          "raw": 1628,
+          "R69": 1730,
+          "static": 1261,
+          "routed": 1261,
+          "routed_guarded": 1613
+        },
+        "practical_high_urban": {
+          "waveform_choice": 1291,
+          "label_coverage": 1750,
+          "raw": 1650,
+          "R69": 1748,
+          "static": 1275,
+          "routed": 1276,
+          "routed_guarded": 1631
+        },
+        "practical_mid_urban": {
+          "waveform_choice": 1019,
+          "label_coverage": 1597,
+          "raw": 1317,
+          "R69": 1655,
+          "static": 1000,
+          "routed": 1002,
+          "routed_guarded": 1269
+        },
+        "practical_low_urban": {
+          "waveform_choice": 850,
+          "label_coverage": 1456,
+          "raw": 1081,
+          "R69": 1543,
+          "static": 852,
+          "routed": 850,
+          "routed_guarded": 1049
+        }
+      },
+      "waveform_choice_counts": {
+        "clean": {
+          "raw": 1800,
+          "coarse": 0,
+          "fine": 0,
+          "anchored": 0,
+          "phase": 0,
+          "amplitude": 0
+        },
+        "practical_high": {
+          "raw": 0,
+          "coarse": 0,
+          "fine": 1488,
+          "anchored": 0,
+          "phase": 0,
+          "amplitude": 312
+        },
+        "practical_mid": {
+          "raw": 0,
+          "coarse": 0,
+          "fine": 1465,
+          "anchored": 6,
+          "phase": 0,
+          "amplitude": 329
+        },
+        "practical_low_suburban": {
+          "raw": 0,
+          "coarse": 0,
+          "fine": 1445,
+          "anchored": 8,
+          "phase": 0,
+          "amplitude": 347
+        },
+        "practical_high_urban": {
+          "raw": 0,
+          "coarse": 0,
+          "fine": 1474,
+          "anchored": 2,
+          "phase": 0,
+          "amplitude": 324
+        },
+        "practical_mid_urban": {
+          "raw": 0,
+          "coarse": 0,
+          "fine": 1453,
+          "anchored": 33,
+          "phase": 0,
+          "amplitude": 314
+        },
+        "practical_low_urban": {
+          "raw": 0,
+          "coarse": 0,
+          "fine": 1412,
+          "anchored": 59,
+          "phase": 0,
+          "amplitude": 329
+        }
+      },
+      "mean_selected_waveform_risk": {
+        "clean": 0.0,
+        "practical_high": 0.8521940447886784,
+        "practical_mid": 0.8507087766793039,
+        "practical_low_suburban": 0.8506484762827555,
+        "practical_high_urban": 0.8506991915570365,
+        "practical_mid_urban": 0.8456507552001211,
+        "practical_low_urban": 0.8437041039268176
+      }
+    },
+    "residual": {
+      "six": {
+        "waveform_choice": 7082,
+        "label_coverage": 10057,
+        "raw": 9062,
+        "R69": 10195,
+        "static": 7017,
+        "routed": 7018,
+        "routed_guarded": 8930
+      },
+      "waveform_vs_raw": {
+        "net": -1980,
+        "ci": [
+          -2120.025,
+          -1840.9750000000001
+        ]
+      },
+      "waveform_vs_R69": {
+        "net": -3113,
+        "ci": [
+          -3251.05,
+          -2967.9750000000004
+        ]
+      },
+      "per_view": {
+        "clean": {
+          "waveform_choice": 1775,
+          "label_coverage": 1787,
+          "raw": 1775,
+          "R69": 1775,
+          "static": 1630,
+          "routed": 1633,
+          "routed_guarded": 1776
+        },
+        "practical_high": {
+          "waveform_choice": 1349,
+          "label_coverage": 1779,
+          "raw": 1726,
+          "R69": 1767,
+          "static": 1334,
+          "routed": 1335,
+          "routed_guarded": 1724
+        },
+        "practical_mid": {
+          "waveform_choice": 1306,
+          "label_coverage": 1750,
+          "raw": 1654,
+          "R69": 1751,
+          "static": 1295,
+          "routed": 1295,
+          "routed_guarded": 1637
+        },
+        "practical_low_suburban": {
+          "waveform_choice": 1271,
+          "label_coverage": 1729,
+          "raw": 1630,
+          "R69": 1730,
+          "static": 1260,
+          "routed": 1260,
+          "routed_guarded": 1612
+        },
+        "practical_high_urban": {
+          "waveform_choice": 1291,
+          "label_coverage": 1751,
+          "raw": 1650,
+          "R69": 1748,
+          "static": 1276,
+          "routed": 1277,
+          "routed_guarded": 1631
+        },
+        "practical_mid_urban": {
+          "waveform_choice": 1020,
+          "label_coverage": 1588,
+          "raw": 1317,
+          "R69": 1655,
+          "static": 1003,
+          "routed": 1004,
+          "routed_guarded": 1271
+        },
+        "practical_low_urban": {
+          "waveform_choice": 845,
+          "label_coverage": 1460,
+          "raw": 1085,
+          "R69": 1544,
+          "static": 849,
+          "routed": 847,
+          "routed_guarded": 1055
+        }
+      },
+      "waveform_choice_counts": {
+        "clean": {
+          "raw": 1800,
+          "coarse": 0,
+          "fine": 0,
+          "anchored": 0,
+          "phase": 0,
+          "amplitude": 0
+        },
+        "practical_high": {
+          "raw": 0,
+          "coarse": 0,
+          "fine": 1488,
+          "anchored": 0,
+          "phase": 0,
+          "amplitude": 312
+        },
+        "practical_mid": {
+          "raw": 0,
+          "coarse": 0,
+          "fine": 1466,
+          "anchored": 5,
+          "phase": 0,
+          "amplitude": 329
+        },
+        "practical_low_suburban": {
+          "raw": 0,
+          "coarse": 0,
+          "fine": 1443,
+          "anchored": 8,
+          "phase": 0,
+          "amplitude": 349
+        },
+        "practical_high_urban": {
+          "raw": 0,
+          "coarse": 0,
+          "fine": 1472,
+          "anchored": 2,
+          "phase": 0,
+          "amplitude": 326
+        },
+        "practical_mid_urban": {
+          "raw": 0,
+          "coarse": 0,
+          "fine": 1450,
+          "anchored": 33,
+          "phase": 0,
+          "amplitude": 317
+        },
+        "practical_low_urban": {
+          "raw": 0,
+          "coarse": 0,
+          "fine": 1417,
+          "anchored": 60,
+          "phase": 0,
+          "amplitude": 323
+        }
+      },
+      "mean_selected_waveform_risk": {
+        "clean": 0.0,
+        "practical_high": 0.8521940835316976,
+        "practical_mid": 0.8507072182827525,
+        "practical_low_suburban": 0.8506468610631095,
+        "practical_high_urban": 0.8506839701864455,
+        "practical_mid_urban": 0.8456139361527231,
+        "practical_low_urban": 0.8437359100580215
+      }
+    }
+  }
+}
