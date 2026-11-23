@@ -13,7 +13,7 @@ from .dura_baseline import R69_RUN, SEEDS, VIEWS, historical, model_pair
 from .plan import RUN as READER_RUN
 from .receiver_pilot import READOUTS
 
-RUN = '20261123-phase1-wisig-preamble-receiver-source-m2-r01'
+RUN = '20261123-phase1-wisig-preamble-receiver-source-m2-r02'
 SOURCE_RUN = '20261021-phase1-CRIC-DURA-comparison-m153-r02'
 PAIR_RUN = '20261019-phase1-reception-restoration-selfsup-manysig-m6-r02'
 N = 1800
@@ -149,7 +149,7 @@ def predict(rt, route):
                     error = (z - target).square().sum(dim=(1, 2)) / scale
                     errors[mode].append(np.asarray(error.tolist(), dtype=np.float32))
                 for mode in READOUTS:
-                    changes[mode].append(np.asarray((wave[mode] != x).any(dim=(1, 2)).tolist(), dtype=bool))
+                    changes[mode].append(np.asarray((wave[mode] != x).flatten(1).any(dim=1).tolist(), dtype=bool))
                 for key, vector in diag.items():
                     telemetry.setdefault(key, []).append(np.asarray(vector.tolist()))
         for mode in MODES:
