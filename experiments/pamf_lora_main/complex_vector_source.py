@@ -160,17 +160,26 @@ def readouts(received, noise, baseline, tracker, models):
     return torch.stack((received, mature, *(copies[k] for k in MODES[2:]))), int(active.sum())
 
 
-@torch.no_grad()
-def score(rt, route, *, recipe=DEFAULT, panel=result_panel, modes=MODES, render=readouts):
-    device = 'cuda:0'
-    root = Path(rt['run_root'])
-    source, cache, contract, baseline, tracker = source_control(rt, route, device)
+def load_models(root, route, contract, recipe, device):
     saved = torch.load(root/f'{route}-model.pt', map_location=device, weights_only=True)
     if saved['proof'] != record(contract, route, recipe) or set(saved['models']) != set(recipe.arms):
         raise ValueError('Wrong individually frozen complex-vector source weights')
     models = [recipe.model(k).to(device).eval().requires_grad_(False) for k in recipe.arms]
     for m, k in zip(models, recipe.arms, strict=True):
         m.load_state_dict(saved['models'][k], strict=True)
+    return models
+
+
+@torch.no_grad()
+def score(rt, route, *, recipe=DEFAULT, panel=result_panel, modes=MODES, render=readouts,
+          checkpoint_run=None):
+    device = 'cuda:0'
+    root = Path(rt['run_root'])
+    source, cache, contract, baseline, tracker = source_control(rt, route, device)
+    parent = root if checkpoint_run is None else root.parent/checkpoint_run
+    if checkpoint_run is not None and read(parent/'state.json')['status'] != 'SOURCE_SCORED':
+        raise ValueError('Expected complete source-selected vector checkpoints')
+    models = load_models(parent, route, contract, recipe, device)
     f = recognizer(device).eval().requires_grad_(False)
     weights = complete_f(root.parent/SET_RUN, contract, case(SEED, SET_METHOD))/'model.pt'
     f.load_state_dict(torch.load(weights, map_location=device, weights_only=True), strict=True)
