@@ -1,0 +1,185 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261124-phase1-lora-empirical-tangent-source-m4-r01",
+  "group_id": "lora-observable-satellite-recovery",
+  "display_name": "LoRa 实测源库与局部复数变化方向保护",
+  "description": "用互斥 U 角色进行模板查询与长训，在同一观测复谱修正剂量下对照真实源波形变化方向的保护。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "LoRa",
+    "DURA",
+    "source_V",
+    "empirical_tangent",
+    "full",
+    "residual"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261122-phase1-lora-full-aligned-data-r01",
+    "20261122-phase1-lora-tri-label-set-m3-r01",
+    "20261123-phase1-lora-dura-residual-practical-m1-r01",
+    "20261123-phase1-lora-dura-direct-detail-source-m2-r01",
+    "20261123-phase1-lora-local-wiener-source-m2-r01",
+    "20261123-phase1-lora-spectral-block-source-m4-r01",
+    "20261123-phase1-lora-repeat-protection-source-m4-r01",
+    "20261124-phase1-lora-crossfit-choice-source-m4-r01",
+    "20261123-phase1-lora-dura-chirp-ends-phase-m1-r01",
+    "20261124-phase1-lora-local-phase-source-m4-r01",
+    "20261124-phase1-lora-complex-geometry-source-m4-r01",
+    "20261124-phase1-lora-empirical-chirp-source-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "LoRa 与 WiSig 可部署恢复目标及用户本轮扩大训练预算和按实时余量并行的要求",
+  "code": {
+    "commit": "启动命令从已推送分支 HEAD 固定，实际 OID 写入 submit.json",
+    "checkout": "E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo",
+    "environment": "${N607_PYTHON}",
+    "cwd": "${N607_PROJECT}/releases/20261124-phase1-lora-empirical-tangent-source-m4-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa 多接收机 IEEE DataPort",
+    "version": "lora_full_packets_v1 源 7/63/30 固定划分",
+    "representation": "1 MS/s 采集及既有构造，冻结读出为 256 kS/s 六条 256 点窄窗复 IQ",
+    "contract_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json role_ids.V",
+    "label_map_ref": "experiments/pamf_lora_main/data.py CLASSES (31 至 40)，仅评分读取 V_metadata.npz y",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "10 个登记发射机的固定源分配，拟合不可见",
+    "roles": {
+      "L_s": 0,
+      "U_s": 25000,
+      "V": 900
+    },
+    "train_ratio": "每台源 RX 1,000 包建库、3,400 包拟合、500 包门限、100 包留出。四组互斥。重复使用原 900 个同物理源 V 包。",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "${N607_PROJECT}/runs/20261122-phase1-lora-full-aligned-data-r01/source_views/complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": "沿用 full 1 MHz 对齐及 residual 256 kHz post-sync/noEQ 原视图"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "not_applicable",
+    "external_method_exception": null,
+    "claim_scope": "拟合和冻结隔离 F、V、TX 真值、注册 practical 轨迹和目标。仅当前实收 IQ 与本包估计输入。"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [
+      "20261122-phase1-lora-tri-label-set-m3-r01 / tri_set 2026092702",
+      "20261123-phase1-lora-dura-direct-detail-source-m2-r01 及冻结 full 复响应半量",
+      "20261123-phase1-lora-dura-residual-practical-m1-r01 原 R69 及固定 residual 门控投影半量"
+    ],
+    "contract_check_ref": "source_contract 与 complete_f/source_control 核对各自源物理角色",
+    "provenance_verdict": "拟合从零启动，两臂共享一次从互斥合法源 U 构建的库；原模型仅用于作冻结比较，权重不并入候选。",
+    "selection_rule": "固定两臂 40,000 步与共同门限，同一读出须两路分别超越 DURA 六景、各自保住 clean。两路较小净收益优先，低城区、clean 与 B1 依次比较。"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "LoRa 实测源方向保护",
+    "gpu_policy": "训练臂和后续路线各两张不同物理卡，按实时利用率和显存余量选卡，可与其他进程共卡。",
+    "remote_run_root": "${N607_PROJECT}/runs/20261124-phase1-lora-empirical-tangent-source-m4-r01",
+    "remote_log_root": "${N607_PROJECT}/runs/20261124-phase1-lora-empirical-tangent-source-m4-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261124-phase1-lora-empirical-tangent-source-m4-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.empirical_tangent_source publish --repo \"E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo\" --output \"E:/type10-7/local_artifacts/20261124-phase1-lora-empirical-tangent-source-m4-r01/release\" --context E:/type10-7/local_artifacts/lora_main_20261121/runtime_source.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "固定 U 源库和四角色、真实源单步、有限训练、真实终步权重无查询、双路线预测与独立评分出现系统性失败时停止下游。"
+  },
+  "expected_artifacts": [
+    "bank.pt",
+    "bank.json",
+    "smoke-matched.json",
+    "smoke-protected.json",
+    "smoke.json",
+    "matched-model.pt",
+    "matched-complete.json",
+    "protected-model.pt",
+    "protected-complete.json",
+    "full-predictions.json",
+    "full-source-scores.json",
+    "residual-predictions.json",
+    "residual-source-scores.json",
+    "logs/"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "逐 RX 与逐景正确数",
+      "clean 门限",
+      "同包纠错、改错和配对区间",
+      "固定源 U 留出复谱/差异传递误差",
+      "库字节数与建库时间",
+      "参数量、峰值显存、训练时间和 B1"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "mode",
+      "seed"
+    ],
+    "prediction_ref": "${N607_PROJECT}/runs/20261124-phase1-lora-empirical-tangent-source-m4-r01/<route>-predictions.json",
+    "scorer_ref": "experiments.pamf_lora_main.empirical_tangent_source score"
+  },
+  "rows": [
+    {
+      "row_id": "dual-route-empirical-tangent-s2026092702",
+      "method": "直通、成熟 DURA，以及相同复修正范数下的标量与源变化方向保护两臂，各自固定粗、全量、半量。",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/empirical_tangent_source.py",
+      "resolved_config_ref": "${N607_PROJECT}/releases/20261124-phase1-lora-empirical-tangent-source-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026112620
+      },
+      "seed_notes": "冻结识别器用 2026092702，两个模型初始化、规定 U 分区、拟合扰动都用 2026112991。原 split 完全复用，评估 bootstrap 独立固定。零目标访问。",
+      "k": null,
+      "scenario": "clean 和六景，分别评估 full/residual",
+      "optimizer": "AdamW，步级余弦，权重衰减 1e-4，梯度范数上界 1.0",
+      "lr": 0.0002,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "共享 5,000 实测无标签模板。两臂各 36,004 参数、40,000 步、batch 24；17,000 U 拟合、2,500 U 门限、500 U 留出。两路线 900×7×8 固定判定。",
+      "output_root": "${N607_PROJECT}/runs/20261124-phase1-lora-empirical-tangent-source-m4-r01",
+      "log_path": "${N607_PROJECT}/runs/20261124-phase1-lora-empirical-tangent-source-m4-r01/logs",
+      "command": "${N607_PYTHON} -u -m experiments.pamf_lora_main.empirical_tangent_source dispatch ${N607_PROJECT}/releases/20261124-phase1-lora-empirical-tangent-source-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "bank.pt",
+        "bank.json",
+        "smoke-matched.json",
+        "smoke-protected.json",
+        "smoke.json",
+        "matched-model.pt",
+        "matched-complete.json",
+        "protected-model.pt",
+        "protected-complete.json",
+        "full-predictions.json",
+        "full-source-scores.json",
+        "residual-predictions.json",
+        "residual-source-scores.json",
+        "logs/"
+      ]
+    }
+  ],
+  "notes": [
+    "库从每台源 RX 固定 U 分区的前 1000 包产生。两臂优化、校准和留出的各自合法 U 均排除这些库物理 ID。",
+    "查询使用另一半组实收去扫频弱复谱，12 个模板的复数近邻均值、离差及两半模板一致性引导粗细恢复。候选不接收 RX 编号、TX 真值或任何模拟真值。",
+    "设计保护只作用在去扫频 1–32 kHz。基于邻居的加权复差异构造局部方向，阻尼投影后保留实际观测。另一臂对同一提议只缩放以匹配编辑 L2 范数。不同臂学到的提议可以不同。",
+    "两臂共用真实测量坐标、跨包弱复谱差异约束、门限、训练步数和连续优化器日程。目标集零读取。"
+  ],
+  "registered_at": "2026-11-23T17:48:34+00:00"
+}

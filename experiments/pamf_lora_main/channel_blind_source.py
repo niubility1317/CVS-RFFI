@@ -46,6 +46,7 @@ class FitRecipe:
     batch: int = BATCH
     fit_per_rx: int = FIT
     validation_steps: tuple[int, ...] = ()
+    bank_per_rx: int = 0
 
     def loss_weights(self, step):
         if not self.coarse_first:
@@ -81,6 +82,8 @@ def proof(contract, recipe=DEFAULT):
                 fit_per_rx=recipe.fit_per_rx,calibration_per_rx=CAL,held_per_rx=HELD,**ISOLATION)
     if recipe.batch != BATCH:
         metadata['batch'] = recipe.batch
+    if recipe.bank_per_rx:
+        metadata['bank_per_rx'] = recipe.bank_per_rx
     if recipe.name!='blind':
         metadata['estimator'] = recipe.name
     if recipe.coarse_first:
@@ -88,7 +91,7 @@ def proof(contract, recipe=DEFAULT):
     return metadata
 
 
-def setup(rt, device, *, smoke=False, fit_per_rx=FIT):
+def setup(rt, device, *, smoke=False, fit_per_rx=FIT, bank_per_rx=0):
     source = Path(rt['source_root'])
     contract = source_contract(source)
     _,rx,_,_ = source_role(source,contract,'U_s')
@@ -96,7 +99,11 @@ def setup(rt, device, *, smoke=False, fit_per_rx=FIT):
     values = np.load(raw,mmap_mode='r',allow_pickle=False)
     if values.shape!=(1,len(rx),6,2,256) or values.dtype!=np.float32:
         raise ValueError('Blind training requires the single clean source U view')
-    indices = partition(rx,5,4,3) if smoke else partition(rx,fit=fit_per_rx)
+    reserved = bank_per_rx
+    indices = partition(rx,5+reserved,4,3) if smoke else partition(rx,fit=fit_per_rx+reserved)
+    if reserved:
+        fit, cal, held = indices
+        indices = (fit.reshape(len(SOURCE),-1)[:,reserved:].reshape(-1),cal,held)
     return tuple(tensor(values[0,i],device) for i in indices),contract
 
 
@@ -145,7 +152,8 @@ def held_waveform(model, tracker, held, calculate, recipe, step, receiver_batche
 def fit(rt, *, smoke=False, recipe=DEFAULT, calculate=objective, receiver_batches=False):
     device = 'cuda:0'
     torch.manual_seed(SEED)
-    (training,calibration,held), contract = setup(rt,device,smoke=smoke,fit_per_rx=recipe.fit_per_rx)
+    (training,calibration,held), contract = setup(rt,device,smoke=smoke,fit_per_rx=recipe.fit_per_rx,
+                                                   bank_per_rx=recipe.bank_per_rx)
     tracker = PacketRestorer('consensus').to(device).eval()
     model = recipe.model().to(device)
     opt = torch.optim.AdamW(model.parameters(),lr=2e-4,weight_decay=1e-4)
