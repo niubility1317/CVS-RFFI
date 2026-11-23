@@ -145,13 +145,13 @@ def percentile(values):
     return [float(x) for x in np.quantile(a, (.1, .5, .9))]
 
 
-def predict(rt, route):
+def predict(rt, route, *, alternatives=None, restore=None, diagnose=None):
     import torch
 
     root = Path(rt['run_root'])
-    alternatives = readouts(rt)
+    alternatives = readouts(rt) if alternatives is None else alternatives
     modes = ('raw', 'R69', *alternatives)
-    restore = restorer(rt, 'cuda:0')
+    restore = restorer(rt, 'cuda:0') if restore is None else restore
     ref = panels(rt)[route]
     ids = np.load(ref / 'physical_ids.npy', allow_pickle=False)
     if len(ids) != N or len(np.unique(ids)) != N or set(np.load(ref / 'roles.npy', allow_pickle=False)) != {'V'}:
@@ -187,6 +187,8 @@ def predict(rt, route):
                     errors[mode].append(np.asarray(error.tolist(), dtype=np.float32))
                 for mode in alternatives:
                     changes[mode].append(np.asarray((wave[mode] != x).flatten(1).any(dim=1).tolist(), dtype=bool))
+                if diagnose is not None:
+                    diag.update(diagnose(wave, target))
                 for key, vector in diag.items():
                     telemetry.setdefault(key, []).append(np.asarray(vector.tolist()))
         for mode in modes:
@@ -201,8 +203,8 @@ def predict(rt, route):
           predictor_reads_truth=False, elapsed_seconds=time.perf_counter()-elapsed))
 
 
-def load_predictions(rt, route):
-    modes = ('raw', 'R69', *readouts(rt))
+def load_predictions(rt, route, modes=None):
+    modes = ('raw', 'R69', *readouts(rt)) if modes is None else modes
     output = Path(rt['run_root']) / route
     done = read(output / 'complete.json')
     if (done['status'], done['route'], done['seed'], done['n'], done['views'], done['modes']) != (
@@ -219,11 +221,11 @@ def load_predictions(rt, route):
     return ids, decisions, done
 
 
-def cpu_score(rt):
+def cpu_score(rt, alternatives=None, *, pairs=(), trainable_parameters=0):
     from experiments.cric_dura_comparison.evaluation import metrics
 
-    modes = ('raw', 'R69', *readouts(rt))
-    loaded = {r: load_predictions(rt, r) for r in ROUTES}
+    modes = ('raw', 'R69', *(readouts(rt) if alternatives is None else alternatives))
+    loaded = {r: load_predictions(rt, r, modes) for r in ROUTES}
     ids, _, _ = loaded['full']
     source_panels = panels(rt)
     rx = np.load(source_panels['full'] / 'rx.npy', allow_pickle=False)
@@ -270,7 +272,7 @@ def cpu_score(rt):
         for mode in modes:
             hit = sum((predictions[f'{mode}__{v}'] == truth).astype(np.int16) for v in VIEWS[1:])
             inner = {}
-            for name in ('raw', 'R69'):
+            for name in ('raw', 'R69', *(control for arm, control in pairs if arm == mode)):
                 baseline = sum((predictions[f'{name}__{v}'] == truth).astype(np.int16) for v in VIEWS[1:])
                 difference = hit - baseline
                 inner[name] = dict(net=int(difference.sum()),
@@ -278,15 +280,16 @@ def cpu_score(rt):
             six[mode] = dict(correct=int(hit.sum()), accuracy=float(hit.mean()/6), pairs=inner)
         report[route] = dict(views=metrics_by_view, six=six, prediction=proof)
     write(Path(rt['run_root']) / 'source_scores.json', dict(status='SOURCE_SCORED',
-          truth_after_complete_predictions=True, target_reads=0, receiver_control_trainable_parameters=0,
+          truth_after_complete_predictions=True, target_reads=0,
+          receiver_control_trainable_parameters=trainable_parameters,
           n=N, frozen_recognizer_seed=SEEDS[0], routes=report))
     print('PILOT_SOURCE_TRUTH_LAST_DONE', flush=True)
 
 
-def launch(rt, kind, name, gpu=None):
+def launch(rt, kind, name, gpu=None, *, module=None):
     root = Path(rt['run_root'])
     log = root / 'logs' / f'{kind}-{name}.log'
-    cmd = [rt['python'], '-u', '-m', __spec__.name, kind, str(Path(rt['release_root']) / 'runtime.json'), name]
+    cmd = [rt['python'], '-u', '-m', module or __spec__.name, kind, str(Path(rt['release_root']) / 'runtime.json'), name]
     env = dict(os.environ, CUDA_VISIBLE_DEVICES='' if gpu is None else str(gpu),
                OMP_NUM_THREADS='2', OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='1')
     with log.open('x', encoding='utf-8') as f:
@@ -315,15 +318,15 @@ def dispatch(rt):
         raise
 
 
-def publish(repo, output, local_context, ssh_config, timing=False):
+def publish(repo, output, local_context, ssh_config, timing=False, *, run_id=None, runner=None):
     from experiments.pamf_lora_main.publish import release, release_commit
 
     old = read(local_context)
     project = old['project']
     rt = {k: old[k] for k in ('project', 'python', 'frozen_sources')}
-    run = TIMING_RUN if timing else RUN
+    run = run_id or (TIMING_RUN if timing else RUN)
     rt.update(run_id=run, run_root=f'{project}/runs/{run}',
-              release_root=f'{project}/releases/{run}-release', runner=__spec__.name, timing=timing,
+              release_root=f'{project}/releases/{run}-release', runner=runner or __spec__.name, timing=timing,
               code_commit=release_commit(repo), allowed_gpus=[3, 6, 2, 7, 0, 1, 4, 5],
               max_workers=2, max_compute_processes=4,
               recognizer_run=f'{project}/runs/{READER_RUN}',
