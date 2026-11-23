@@ -36,9 +36,8 @@ ManySig 主比较使用 25 MS/s、256 点、逐包 RMS 归一化的 WiSig equali
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
-源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+**VERIFIED／FAILED**。代码提交 `6dd997ad883fe1de595a6c643e4b39d192b1dd4e` 的传输与编译通过。N607 控制器 PID 1916381 在导入阶段退出，`controller.log` 记录 `ModuleNotFoundError: No module named 'tools'`，直接缺项是 R69 间接导入的 `tools/r17_activation_factorization.py`。独立读回确认实验目录未创建，推理、真值和目标访问均未发生。保留原归档，由 [r02](../20261123-phase1-wisig-stf-engineering-source-s2026092701-r02/report.md) 以同矩阵补发行。
 
 ## 交接
 
-记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+N607 证据 `releases/20261123-phase1-wisig-stf-engineering-source-s2026092701-r01-release/controller.log`。

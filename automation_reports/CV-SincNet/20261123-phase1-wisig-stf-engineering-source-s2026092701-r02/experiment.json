@@ -1,0 +1,161 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261123-phase1-wisig-stf-engineering-source-s2026092701-r02",
+  "group_id": "wisig-observable-satellite-recovery",
+  "display_name": "WiSig 短训练前导双路线工程对照",
+  "description": "在固定的 1,800 个源 V 物理包上，比较粗细载频校正、正则化均衡、估计残差功率和保留原载频偏移的相对作用。两条路线共享算法与固定规则。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "WiSig",
+    "DURA",
+    "L-STF",
+    "source_V",
+    "full",
+    "residual"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02",
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02"
+  ],
+  "replaces_run_id": "20261123-phase1-wisig-stf-engineering-source-s2026092701-r01",
+  "authorization": "2026-11-23 LoRa 与 WiSig 可部署星地恢复目标及空闲显卡多进程授权",
+  "code": {
+    "commit": "启动命令从已推送分支 HEAD 固定，实际 OID 写入 submit.json",
+    "checkout": "E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-stf-engineering-source-s2026092701-r02-release"
+  },
+  "data": {
+    "dataset": "WiSig ManySig",
+    "version": "Main split F0 源域固定 7/63/30。只使用已登记的 1800 个 V 包",
+    "representation": "equalized=1，25 MS/s，256 点规范化复 IQ；full/residual post-sync/noEQ",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/validation/physical_ids.npy",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": 0,
+      "V": 1800
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/validation 与 validation_full，原封不变"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "not_applicable",
+    "external_method_exception": null,
+    "claim_scope": "固定源 V 工程对照；不拟合、无目标访问"
+  },
+  "checkpoint": {
+    "initialization": "none",
+    "sources": [
+      "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/launch.json --reader-folder (F50 seed 2026092701)",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt (R69 E20/4940)"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json + source_reference",
+    "provenance_verdict": "原 F50 和 R69 仅用于冻结评估，沿用配对源 V，predict 核对 R69 生成提交",
+    "selection_rule": "全部工程控制预先固定，零训练、零校准、零目标访问"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "当前 Codex 聊天 WiSig 工程对照",
+    "gpu_policy": "按实际利用率和剩余显存排序，单评估 worker，至少 12 GiB 空闲；不限制其他任务和同卡进程数",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-stf-engineering-source-s2026092701-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-stf-engineering-source-s2026092701-r02/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261123-phase1-wisig-stf-engineering-source-s2026092701-r02",
+    "launch_command": "python -m experiments.pamf_unrolled_restore.wisig_short_training_source publish --repo \"E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo\" --output \"E:/type10-7/local_artifacts/20261123-phase1-wisig-stf-engineering-source-s2026092701-r02/release\" --context E:/type10-7/local_artifacts/lora_main_20261121/runtime_source.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "固定数据角色、不可覆盖目录、真实 checkpoint、数值或完整预测屏障失效时仅停止本 run，保留已写产物"
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "predictions/complete.json",
+    "predictions/<route>_<scene>.npz",
+    "source-scores.json",
+    "logs/"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "正确数",
+      "错变对",
+      "对变错",
+      "相干度",
+      "初细频偏差",
+      "有效残差方差",
+      "表观采样钟漂移",
+      "每景墙钟"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "mode",
+      "seed"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-stf-engineering-source-s2026092701-r02/predictions",
+    "scorer_ref": "experiments.pamf_unrolled_restore.wisig_short_training_source score"
+  },
+  "rows": [
+    {
+      "row_id": "dual-route-stf-s2026092701",
+      "method": "直通、粗 CFO、细 CFO、正则逆、噪声加权均衡、保留估计 CFO 的噪声加权均衡及冻结 R69",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_unrolled_restore/wisig_short_training.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-stf-engineering-source-s2026092701-r02-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "split/data/augmentation 只记录既有源构建种子。评估同包确定执行，无抽样、support 或新模型 seed。",
+      "k": null,
+      "scenario": "clean 和六景，分别评估 full/residual",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "1×1800 包×两路线×七视图×七读出；学习步数 0；工程前端 0 训练参数。",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-stf-engineering-source-s2026092701-r02",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-wisig-stf-engineering-source-s2026092701-r02/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_short_training_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261123-phase1-wisig-stf-engineering-source-s2026092701-r02-release/runtime.json",
+      "expected_artifacts": [
+        "smoke.json",
+        "predictions/complete.json",
+        "predictions/<route>_<scene>.npz",
+        "source-scores.json",
+        "logs/"
+      ]
+    }
+  ],
+  "notes": [
+    "r01 VERIFIED/FAILED：归档漏带 R69 间接依赖 tools/r17_activation_factorization.py，调度器在导入时退出。没有创建运行目录，没有读取 IQ 或真值。r02 只修补发布成员，矩阵和算法保持冻结。"
+  ],
+  "registered_at": "2026-11-23T13:57:56+00:00"
+}

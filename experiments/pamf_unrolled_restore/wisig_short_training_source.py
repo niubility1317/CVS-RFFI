@@ -22,7 +22,7 @@ from .design import KIND, RUN as R17_RUN
 from .wisig_short_training import READOUTS, SAMPLE_RATE_HZ, readouts
 
 
-RUN = '20261123-phase1-wisig-stf-engineering-source-s2026092701-r01'
+RUN = '20261123-phase1-wisig-stf-engineering-source-s2026092701-r02'
 CACHE_RUN = '20261019-phase1-reception-restoration-selfsup-manysig-m6-r02'
 R69_RUN = '20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69'
 R69_COMMIT = 'b2a2ce937a64654e17e84c2aa817b9da4257a48f'
@@ -174,7 +174,7 @@ def publish(repo, output, context, ssh_config):
     runtime.update(run_id=RUN, runner=__spec__.name, code_commit=release_commit(repo),
                    release_root=str(project / 'releases' / f'{RUN}-release'), run_root=str(project / 'runs' / RUN),
                    source_root=str(project / 'runs' / CACHE_RUN / 'cache'), parent_root=str(project / 'runs' / R17_RUN))
-    release(repo, output, runtime, ssh_config)
+    release(repo, output, runtime, ssh_config, archive_extras=('tools/r17_activation_factorization.py',))
 
 
 def main():
