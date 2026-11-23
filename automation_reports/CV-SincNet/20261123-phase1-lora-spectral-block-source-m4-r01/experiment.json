@@ -1,0 +1,175 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261123-phase1-lora-spectral-block-source-m4-r01",
+  "group_id": "lora-observable-satellite-recovery",
+  "display_name": "LoRa 分块复谱盲先验与观测残差匹配消融",
+  "description": "检验频域相同分块在所有 chirp 上遮挡后学习的复数先验，能否提高可部署 LoRa 恢复的同包冻结识别。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "LoRa",
+    "DURA",
+    "blind_spectral_prior",
+    "source_V",
+    "full",
+    "residual"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261122-phase1-lora-full-aligned-data-r01",
+    "20261122-phase1-lora-tri-label-set-m3-r01",
+    "20261123-phase1-lora-dura-residual-practical-m1-r01",
+    "20261123-phase1-lora-dura-direct-detail-source-m2-r01",
+    "20261123-phase1-lora-local-wiener-source-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-11-23 LoRa 与 WiSig 可部署星地恢复目标及空闲显卡多进程授权",
+  "code": {
+    "commit": "启动命令从已推送分支 HEAD 固定，实际 OID 写入 submit.json",
+    "checkout": "E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo",
+    "environment": "${N607_PYTHON}",
+    "cwd": "${N607_PROJECT}/releases/20261123-phase1-lora-spectral-block-source-m4-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa 多接收机 IEEE DataPort",
+    "version": "lora_full_packets_v1 源 7/63/30 固定划分",
+    "representation": "1 MS/s 采集及既有构造，冻结读出为 256 kS/s 六条 256 点窄窗复 IQ",
+    "contract_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json role_ids.V",
+    "label_map_ref": "experiments/pamf_lora_main/data.py CLASSES (31 至 40)，仅评分读取 V_metadata.npz y",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "10 个登记发射机的固定源分配，拟合不可见",
+    "roles": {
+      "L_s": 0,
+      "U_s": 8000,
+      "V": 900
+    },
+    "train_ratio": "原 7%/63%/30% 固定分配。本轮仅用 5000 源 U 拟合、2500 源 U 门限、500 源 U 留出和 900 源 V 固定预测。",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "${N607_PROJECT}/runs/20261122-phase1-lora-full-aligned-data-r01/source_views/complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": "沿用 full 1 MHz 对齐及 residual 256 kHz post-sync/noEQ 原视图"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "not_applicable",
+    "external_method_exception": null,
+    "claim_scope": "拟合和冻结隔离 F、V、TX 真值、注册 practical 轨迹和目标。仅当前实收 IQ 与本包估计输入。"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [
+      "20261122-phase1-lora-tri-label-set-m3-r01 / tri_set 2026092702",
+      "20261123-phase1-lora-dura-direct-detail-source-m2-r01 及冻结 full 复响应半量",
+      "20261123-phase1-lora-dura-residual-practical-m1-r01 原 R69 及固定 residual 门控投影半量"
+    ],
+    "contract_check_ref": "source_contract 与 complete_f/source_control 核对各自源物理角色",
+    "provenance_verdict": "原 Tri-set 和 DURA 仅在候选冻结后进入比较。两个候选不继承任何历史权重或精确噪声。",
+    "selection_rule": "两个匹配臂从零、固定末步 1600，各自冻结一次；同一原源 U 校准规则与门限。两路线都超过成熟 DURA 六景并保持 clean 方可扩展。"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "当前目标 LoRa 分块复谱恢复",
+    "gpu_policy": "训练臂和后续路线各两张不同物理卡，按实时利用率和显存余量选卡，可与其他进程共卡。",
+    "remote_run_root": "${N607_PROJECT}/runs/20261123-phase1-lora-spectral-block-source-m4-r01",
+    "remote_log_root": "${N607_PROJECT}/runs/20261123-phase1-lora-spectral-block-source-m4-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261123-phase1-lora-spectral-block-source-m4-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.spectral_block_source publish --repo \"E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo\" --output \"E:/type10-7/local_artifacts/20261123-phase1-lora-spectral-block-source-m4-r01/release\" --context E:/type10-7/local_artifacts/lora_main_20261121/runtime_source.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "仅数据角色、非有限值、真实权重 smoke 或冻结输出/评分契约失败才停止后续派发，保留已完成训练和预测。"
+  },
+  "expected_artifacts": [
+    "smoke-masked.json",
+    "smoke-unmasked.json",
+    "smoke.json",
+    "masked-model.pt",
+    "unmasked-model.pt",
+    "masked-complete.json",
+    "unmasked-complete.json",
+    "full-predictions.json",
+    "residual-predictions.json",
+    "full-source-scores.json",
+    "residual-source-scores.json",
+    "logs/"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "正确数与 clean",
+      "源 U 留出误差",
+      "同包纠错与改错",
+      "分层配对区间",
+      "门限触发",
+      "B1 墙钟",
+      "优化圈墙钟",
+      "参数量"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "mode",
+      "seed"
+    ],
+    "prediction_ref": "${N607_PROJECT}/runs/20261123-phase1-lora-spectral-block-source-m4-r01/<route>-predictions.json",
+    "scorer_ref": "experiments.pamf_lora_main.spectral_block_source score"
+  },
+  "rows": [
+    {
+      "row_id": "matched-masked-prior-s2026092702",
+      "method": "直通和 DURA，加每个同参臂粗恢复、联合全量、联合半量。两臂唯一差别为粗先验能否看到当前待预测复频率分块。",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/spectral_block_recovery.py",
+      "resolved_config_ref": "${N607_PROJECT}/releases/20261123-phase1-lora-spectral-block-source-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026112620
+      },
+      "seed_notes": "冻结识别器用 2026092702，两个模型初始化、规定 U 分区、拟合扰动都用 2026112991。原 split 完全复用，评估 bootstrap 独立固定。零目标访问。",
+      "k": null,
+      "scenario": "clean 和六景，分别评估 full/residual",
+      "optimizer": "AdamW，步级余弦，权重衰减 1e-4，梯度范数上界 1.0",
+      "lr": 0.0002,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "每臂同初始化 34693 参数，各 1600 步、batch 12；通用扰动和 IQ 保真监督匹配。冻结后评估 900 物理包×两路线×七景×八读出。",
+      "output_root": "${N607_PROJECT}/runs/20261123-phase1-lora-spectral-block-source-m4-r01",
+      "log_path": "${N607_PROJECT}/runs/20261123-phase1-lora-spectral-block-source-m4-r01/logs",
+      "command": "${N607_PYTHON} -u -m experiments.pamf_lora_main.spectral_block_source dispatch ${N607_PROJECT}/releases/20261123-phase1-lora-spectral-block-source-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "smoke-masked.json",
+        "smoke-unmasked.json",
+        "smoke.json",
+        "masked-model.pt",
+        "unmasked-model.pt",
+        "masked-complete.json",
+        "unmasked-complete.json",
+        "full-predictions.json",
+        "residual-predictions.json",
+        "full-source-scores.json",
+        "residual-source-scores.json",
+        "logs/"
+      ]
+    }
+  ],
+  "notes": [
+    "两臂采用同一端到端优化循环，粗恢复和观测约束细化共同训练。",
+    "受损样本来自合法 U IQ 与独立通用扰动，训练目标为实际源 IQ 及其复数差异，不向模型提供任意逐点噪声或真实算子。",
+    "频域盲先验的可见性在固定追踪后的复数坐标里定义。最终恢复细化可使用中心观测。"
+  ],
+  "registered_at": "2026-11-23T15:34:49+00:00"
+}

@@ -128,25 +128,25 @@ def predict(rt, route, gate):
           frozen_models=(model,), replay_fn=receive_only, require_clean_bypass=False, finalize=freeze)
 
 
-def read_frozen(root, route):
+def read_frozen(root, route, modes=MODES):
     row = read(root/f'{route}-predictions.json')
     n = EVAL_PER_RX*len(SOURCE)
     ids = row['ids']
     result = {key: np.asarray(value) for key, value in row['rows'].items()}
-    if (len(ids) != n or len(set(ids)) != n or row['modes'] != list(MODES)
+    if (len(ids) != n or len(set(ids)) != n or row['modes'] != list(modes)
             or set(result) != set(VIEWS) or set(row['metrics']) != set(VIEWS)
-            or any(x.shape != (len(MODES), n) or x.dtype.kind not in 'iu'
+            or any(x.shape != (len(modes), n) or x.dtype.kind not in 'iu'
                    or (x<0).any() or (x>=10).any() for x in result.values())):
         raise ValueError('Both complete source V route matrices are required')
     return ids, result, row['metrics']
 
 
-def score_frozen(rt):
+def score_frozen(rt, modes=MODES, *, comparisons=(('covariance_half', 'diagonal_half'), ('covariance_half', 'direct'))):
     if os.environ.get('CUDA_VISIBLE_DEVICES') != '':
         raise ValueError('An independent CPU scorer is required')
     root = Path(rt['run_root'])
     source = Path(rt['source_root'])
-    frozen = {route: read_frozen(root, route) for route in ROUTES}
+    frozen = {route: read_frozen(root, route, modes) for route in ROUTES}
     ids = np.asarray(source_contract(source)['role_ids']['V'])
     position = {pid: i for i, pid in enumerate(ids)}
     full_ids = frozen['full'][0]
@@ -157,9 +157,8 @@ def score_frozen(rt):
         if not np.array_equal(panel(np.asarray(SOURCE)[meta['rx_i']]), chosen):
             raise ValueError('Expected the fixed balanced source panel')
     for route, (_, predictions, metrics) in frozen.items():
-        summarize(root, route, source, chosen, ids, predictions, metrics, MODES,
-                  predictions_written=True,
-                  comparisons=(('covariance_half', 'diagonal_half'), ('covariance_half', 'direct')))
+        summarize(root, route, source, chosen, ids, predictions, metrics, modes,
+                  predictions_written=True, comparisons=comparisons)
     print('LORA_LOCAL_WIENER_SOURCE_SCORED', flush=True)
 
 
