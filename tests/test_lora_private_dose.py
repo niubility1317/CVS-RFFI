@@ -58,3 +58,18 @@ def test_private_direction_swap_keeps_shared_and_private_doses():
     torch.testing.assert_close(shared_parts[1], b)
     torch.testing.assert_close(band_energy(swapped, rms, bands), band_energy(first, rms, bands))
     torch.testing.assert_close(band_energy(reverse, rms, bands), band_energy(second, rms, bands))
+
+
+def test_mixed_batch_telemetry_crosses_numpy_as_native_values(monkeypatch):
+    from experiments.pamf_lora_main.private_dose_source import summarize_telemetry
+
+    def reject_array_conversion(_):
+        raise TypeError("Incompatible torch NumPy array type")
+
+    monkeypatch.setattr(torch.Tensor, "numpy", reject_array_conversion)
+    values = torch.ones((2, 2, 4, 4))
+    values[:, :, 1] *= 2.
+    result = summarize_telemetry([(torch.empty((0, 2, 4, 4)), 0.), (values, 1e-8)])
+    assert result["active"] == 2
+    assert result["private"]["9_to_32"]["ratio_median"] == 2.
+    assert result["max_matched_band_rms_error"] == 1e-8

@@ -26,7 +26,7 @@ from .runner import activate
 from .spectral_unroll import ROUTES
 
 
-RUN = '20261124-phase1-lora-private-dose-direction-source-m2-r01'
+RUN = '20261124-phase1-lora-private-dose-direction-source-m2-r02'
 MODES = ('direct', 'reference', 'paired_half', 'private_gain_half', 'gain_dir_paired_dose',
          'paired_dir_gain_dose', 'private_dir_paired_dose', 'shared_dir_paired_dose')
 PAIRS = (('private_gain_half', 'paired_half'),
@@ -55,7 +55,7 @@ def numerical_evidence(first, second, swaps, rms, bands):
     maximum = torch.stack(errors).max().item()
     if maximum > 2e-6 or not torch.isfinite(geometry).all():
         raise ValueError('LoRa physical band energy is not matched')
-    return geometry.cpu().numpy(), maximum
+    return geometry.cpu(), maximum
 
 
 @torch.no_grad()
@@ -64,7 +64,7 @@ def readouts(iq, tracker, models, threshold, *, telemetry=None):
     active = corruption_score(y) > threshold
     if not active.any():
         if telemetry is not None:
-            telemetry.append((np.empty((0,2,4,4)), 0.))
+            telemetry.append((torch.empty((0,2,4,4)), 0.))
         return [iq] * (len(MODES)-2), 0
     y, rotation, q, rms = (a[active] for a in (y,rotation,q,rms))
     bands = models[0].bands.clone()
@@ -91,7 +91,10 @@ def render(iq, _unused, baseline, tracker, models, *, threshold, telemetry=None)
 
 
 def summarize_telemetry(rows):
-    values = np.concatenate([x[0] for x in rows],axis=0)
+    geometry = torch.cat([x[0] for x in rows], dim=0)
+    # The N607 Torch NumPy bridge and the imported NumPy can produce
+    # distinct ndarray types. Numeric lists keep the reduction on one side.
+    values = np.asarray(geometry.tolist()).reshape(tuple(geometry.shape))
     report = dict(active=len(values),max_matched_band_rms_error=max(x[1] for x in rows))
     for component,group in zip(('shared','private'),values.transpose(1,0,2,3),strict=True):
         bands = {}
@@ -119,6 +122,9 @@ def smoke(rt):
     iq = real_iq(colored_observation(complex_iq(cal[:2]),generator))
     evidence=[]
     restored,n = render(iq,None,baseline,tracker,models,threshold=-1.,telemetry=evidence)
+    summary = summarize_telemetry([(torch.empty((0,2,4,4)), 0.), *evidence])
+    if summary['active'] != len(iq):
+        raise ValueError('Mixed bypass and active telemetry smoke failed')
     reader = load_reader(root,contract,device)
     logits = reader(restored.flatten(0,1))[0]
     if n!=len(iq) or logits.shape!=(len(iq)*len(MODES),10) or not torch.isfinite(logits).all():
