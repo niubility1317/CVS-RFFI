@@ -1,0 +1,24 @@
+{
+  "run_id": "20261123-phase1-wisig-observable-action-source-m4-r01",
+  "arm": "identity",
+  "steps": 1200,
+  "batch": 48,
+  "seed": 2026112321,
+  "target_reads": 0,
+  "source_truth_reads": 0,
+  "recognizer_reads": 0,
+  "source_V_reads": 0,
+  "practical_training_reads": 0,
+  "status": "SOURCE_FROZEN",
+  "held": [
+    0.5544148683547974,
+    0.4452914595603943,
+    0.6948950290679932,
+    0.45976752042770386
+  ],
+  "worker_seconds": 100.16262474516407,
+  "parameter_count": 501508,
+  "n_fit": 51836,
+  "n_hold": 768,
+  "bf16_training": true
+}
