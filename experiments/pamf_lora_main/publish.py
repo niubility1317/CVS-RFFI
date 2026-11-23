@@ -42,7 +42,8 @@ with tarfile.open(archive) as source:
 runtime = release/'runtime.json'
 runtime.write_text(json.dumps(rt, indent=2) + chr(10), encoding='utf-8')
 env = dict(os.environ, CUDA_VISIBLE_DEVICES='', OMP_NUM_THREADS='2', PYTHONPATH=str(release))
-subprocess.run([rt['python'], '-m', 'compileall', '-q', 'experiments/pamf_lora_main'],
+entry = rt.get('runner', 'experiments.pamf_lora_main.runner').replace('.', '/') + '.py'
+subprocess.run([rt['python'], '-m', 'compileall', '-q', 'experiments/pamf_lora_main', entry],
                cwd=release, env=env, check=True)
 cmd = [rt['python'], '-u', '-m', rt.get('runner', 'experiments.pamf_lora_main.runner'), 'dispatch', str(runtime)]
 with (release/'controller.log').open('x') as log:
@@ -65,11 +66,11 @@ def release_commit(repo):
     return commit
 
 
-def release(repo, output, rt, ssh_config, data=None,*,transfer_timeout=240):
+def release(repo, output, rt, ssh_config, data=None,*,transfer_timeout=240,archive_extras=()):
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
     package = output / f"{rt['run_id']}-release.tar.gz"
-    dirs = ('experiments', 'code', 'baselines', 'comparison_suite')
+    dirs = ('experiments', 'code', 'baselines', 'comparison_suite', *archive_extras)
     committed = subprocess.check_output(
         ['git', '-C', str(repo), 'archive', '--format=tar', rt['code_commit'], '--', *dirs])
     with tarfile.open(fileobj=io.BytesIO(committed)) as source, tarfile.open(package, 'x:gz', compresslevel=3) as dest:
