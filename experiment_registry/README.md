@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 原接收频率噪声谱与去扫坐标传递](../automation_reports/CV-SincNet/20261124-phase1-lora-rf-noise-transport-source-m4-r01/report.md)
 - [LoRa 复谱保留约束与同剂量方向消融](../automation_reports/CV-SincNet/20261124-phase1-lora-repeat-protected-spectrum-source-m4-r01/report.md)
 - [LoRa 跨 chirp 噪声协方差白化](../automation_reports/CV-SincNet/20261124-phase1-lora-repeat-covariance-source-m4-r01/report.md)
 - [WiSig 分段短前导相位校正](../automation_reports/CV-SincNet/20261124-phase1-wisig-preamble-phase-source-m4-r01/report.md)
