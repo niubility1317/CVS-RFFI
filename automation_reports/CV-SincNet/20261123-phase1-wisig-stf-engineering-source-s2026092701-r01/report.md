@@ -16,7 +16,7 @@
 
 ## 可用接收量与固定读出
 
-ManySig 主比较使用 25 MS/s、256 点、逐包 RMS 归一化的 WiSig equalized=1 IQ。发布方以更长的输入做包检测、粗细载频偏移校正、L-LTF 信道与噪声估计和 MMSE 均衡，再加回载频偏移。现有窗口包含约 10.24 μs 样本，长训练字段的两段完整重复和同带宽空闲样本均不在评估输入内。当前代码使用索引 80 至 159 的四个名义 L-STF 短周期。已经处理过的 WiSig 参考、RX/TX 的频响和追加传播作用都会进入测得响应。[WiSig 原论文](https://arxiv.org/html/2112.15363) · [作者均衡实现](https://github.com/WiSig-dataset/wisig-process-raw/tree/main/matlab_equalization)
+ManySig 主比较使用 25 MS/s、256 点、逐包 RMS 归一化的 WiSig equalized=1 IQ。发布方以更长的输入做包检测、粗细载频偏移校正、L-LTF 信道与噪声估计和 MMSE 均衡，再加回载频偏移。现有窗口包含约 10.24 μs 样本，长训练字段的两段完整重复和同带宽空闲样本均不在评估输入内。当前代码使用索引 80 至 159 的四个名义 L-STF 短周期。已经处理过的 WiSig 参考、RX/TX 的频响和追加传播作用都会进入测得响应。[WiSig 原论文](https://arxiv.org/html/2112.15363) · [作者均衡实现](https://github.com/WiSig-dataset/wisig-process-raw/blob/master/matlab_equalization/equalize_channel.m)
 
 | 量 | 来源与可用时点 | 方法与误差 |
 | --- | --- | --- |
