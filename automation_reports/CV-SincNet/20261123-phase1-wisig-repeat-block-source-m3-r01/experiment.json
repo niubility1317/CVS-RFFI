@@ -1,0 +1,176 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261123-phase1-wisig-repeat-block-source-m3-r01",
+  "group_id": "wisig-observable-satellite-recovery",
+  "display_name": "WiSig 重复前导频块复数恢复与幅相读出",
+  "description": "使用实收短前导预测复谱，比较粗恢复是否遮挡同频块以及只修正幅度、相位或联合恢复的冻结源识别变化。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "WiSig",
+    "DURA",
+    "STF",
+    "blind_spectral_prior",
+    "full",
+    "residual",
+    "source_V"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261123-phase1-wisig-uncertain-prior-source-s2026092701-m2-r01",
+    "20261123-phase1-wisig-joint-preamble-source-s2026092701-r01",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261123-phase1-wisig-tri-learned-replay-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-11-23 LoRa 与 WiSig 可部署星地恢复目标及空闲显卡多进程授权",
+  "code": {
+    "commit": "启动命令从已推送分支 HEAD 固定，实际 OID 写入 submit.json",
+    "checkout": "E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo",
+    "environment": "${N607_PYTHON}",
+    "cwd": "${N607_PROJECT}/releases/20261123-phase1-wisig-repeat-block-source-m3-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig ManySig",
+    "version": "Main split F0 源域固定 7/63/30。只使用已登记的 1800 个 V 包",
+    "representation": "equalized=1，25 MS/s，256 点规范化复 IQ；full/residual post-sync/noEQ",
+    "contract_ref": "${N607_PROJECT}/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json",
+    "physical_ids_ref": "${N607_PROJECT}/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/validation/physical_ids.npy",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": 56700,
+      "V": 1800
+    },
+    "train_ratio": "既有分配。源 U 52,604 包用于拟合抽样，4,096 包用于独立校准，源 V 固定 1,800 包。",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/validation 与 validation_full，原封不变"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "not_applicable",
+    "external_method_exception": null,
+    "claim_scope": "源 U 端到端训练，拟合和冻结仅读合法 IQ；同冻结 Tri-SIG-TIME 单种子验证，不访问目标。"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [
+      "20261027-phase1-pamf-repl-shuffled-views-m16-r02/configs/predict__main_split-repl-shuffled_time-3view-s2026092701.json",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt (R69 E20/4940)"
+    ],
+    "contract_check_ref": "${N607_PROJECT}/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json + source_reference",
+    "provenance_verdict": "新候选不继承旧权重、精确算子或噪声记录。只在冻结后加载同源主对比 Tri-SIG-TIME，复用同 reader 原直通与 R69 决策。",
+    "selection_rule": "每组固定末步 1600。门从 4,096 U 的方差代理最大值×1.05 与过渡重复误差最小值×0.95 两项 OR 冻结；两路线同一规则。六景两路超过匹配 R69 且 clean 持平才进入后续正式比较。"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "当前目标 WiSig 重复前导频块实验",
+    "gpu_policy": "不同物理 GPU 各一训练臂，按读回实时负载和显存择卡，可与既有其他进程共卡。",
+    "remote_run_root": "${N607_PROJECT}/runs/20261123-phase1-wisig-repeat-block-source-m3-r01",
+    "remote_log_root": "${N607_PROJECT}/runs/20261123-phase1-wisig-repeat-block-source-m3-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261123-phase1-wisig-repeat-block-source-m3-r01",
+    "launch_command": "python -m experiments.pamf_unrolled_restore.wisig_repeat_blocks_source publish --repo \"E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo\" --output \"E:/type10-7/local_artifacts/20261123-phase1-wisig-repeat-block-source-m3-r01/release\" --context E:/type10-7/local_artifacts/lora_main_20261121/runtime_source.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "固定数据角色、不可覆盖目录、真实 checkpoint、数值或完整预测屏障失效时仅停止本 run，保留已写产物"
+  },
+  "expected_artifacts": [
+    "smoke-visible.json",
+    "smoke-masked.json",
+    "visible.pt",
+    "masked.pt",
+    "visible-complete.json",
+    "masked-complete.json",
+    "smoke.json",
+    "predictions/complete.json",
+    "predictions/<route>_<scene>.npz",
+    "source-scores.json",
+    "logs/"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "逐景和逐 RX 正确数",
+      "纠错",
+      "改错",
+      "按 RX 分层物理包配对区间",
+      "clean",
+      "门触发",
+      "训练和 B1 墙钟",
+      "参数量"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "mode",
+      "seed"
+    ],
+    "prediction_ref": "${N607_PROJECT}/runs/20261123-phase1-wisig-repeat-block-source-m3-r01/predictions",
+    "scorer_ref": "experiments.pamf_unrolled_restore.wisig_repeat_blocks_source score"
+  },
+  "rows": [
+    {
+      "row_id": "dual-route-wisig-repeat-block-s2026092701",
+      "method": "同包直通和 R69；可见与遮挡两臂均读出粗恢复、联合恢复、仅幅度、仅相位和实际固定旁路。",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_unrolled_restore/wisig_repeat_blocks.py",
+      "resolved_config_ref": "${N607_PROJECT}/releases/20261123-phase1-wisig-repeat-block-source-m3-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": 2026112331
+      },
+      "seed_notes": "原 source split/data/augmentation 登记固定。两臂模型 seed2026092701，U 扰动种子 2026092702，抽包 2026092703；独立配对重抽 2026112331，通用烟测 2026112332。",
+      "k": null,
+      "scenario": "clean 和六景，分别评估 full/residual",
+      "optimizer": "AdamW，每步余弦，权重衰减 1e-4，梯度范数上界 1",
+      "lr": 0.0003,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "每组 240868 参数、1600 步、batch 48。随后两路线各 1800 包×七景×12 读出。",
+      "output_root": "${N607_PROJECT}/runs/20261123-phase1-wisig-repeat-block-source-m3-r01",
+      "log_path": "${N607_PROJECT}/runs/20261123-phase1-wisig-repeat-block-source-m3-r01/logs",
+      "command": "${N607_PYTHON} -u -m experiments.pamf_unrolled_restore.wisig_repeat_blocks_source dispatch ${N607_PROJECT}/releases/20261123-phase1-wisig-repeat-block-source-m3-r01-release/runtime.json",
+      "expected_artifacts": [
+        "smoke-visible.json",
+        "smoke-masked.json",
+        "visible.pt",
+        "masked.pt",
+        "visible-complete.json",
+        "masked-complete.json",
+        "smoke.json",
+        "predictions/complete.json",
+        "predictions/<route>_<scene>.npz",
+        "source-scores.json",
+        "logs/"
+      ]
+    }
+  ],
+  "notes": [
+    "拟合只交付通用扰动后的 IQ 和合法原源 IQ。无 TX、F、V、注册 practical 参数或目标读取。",
+    "原冻结同包直通和 R69 在核对读出、祖先提交和物理 ID 后复用。",
+    "纯幅度读出保留当前包非零频点的相位，纯相位读出保留当前包频点幅度。"
+  ],
+  "registered_at": "2026-11-23T15:46:20+00:00"
+}

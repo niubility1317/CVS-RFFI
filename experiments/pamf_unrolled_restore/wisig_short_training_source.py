@@ -112,7 +112,21 @@ def predict(rt, *, smoke=False, transform=readouts, readout_names=READOUTS, read
                modes=list(modes), views=list(VIEWS), source_truth_reads=0, target_reads=0))
 
 
-def score(rt, modes=MODES):
+def paired_intervals(decisions, labels, rx, modes, comparisons):
+    rng = np.random.default_rng(2026112331)
+    rows = [np.flatnonzero(rx==key) for key in np.unique(rx)]
+    draw = np.concatenate([indices[rng.integers(len(indices),size=(1600,len(indices)))] for indices in rows],axis=1)
+    correct = (decisions == labels).astype(np.int16)
+    pairs = {}
+    for arm, base in comparisons:
+        delta = correct[:,modes.index(arm)] - correct[:,modes.index(base)]
+        endpoints = dict(clean=delta[0],six=delta[1:].sum(0),low_urban=delta[-1])
+        pairs[f'{arm}_vs_{base}'] = {key:dict(net=int(value.sum()),
+            ci=np.quantile(value[draw].sum(1),(.025,.975)).tolist()) for key,value in endpoints.items()}
+    return pairs
+
+
+def score(rt, modes=MODES, *, comparisons=()):
     if os.environ.get('CUDA_VISIBLE_DEVICES') != '':
         raise ValueError('Independent CPU truth-side scorer required')
     _, _, source, _, ids, rx, positions = handles(rt)
@@ -144,8 +158,10 @@ def score(rt, modes=MODES):
                 baseline = hit[:, modes.index(base):modes.index(base) + 1]
                 scores[route][group]['pairs'][base] = dict(
                     repaired=(hit & ~baseline).sum(axis=-1).tolist(), damaged=(~hit & baseline).sum(axis=-1).tolist())
+    uncertainty = {'paired_intervals': {route: paired_intervals(decisions,labels,rx,modes,comparisons)
+                  for route,decisions in records.items()}} if comparisons else {}
     write(root.parent / 'source-scores.json', dict(status='SOURCE_SCORED', scores=scores, views=list(VIEWS),
-           modes=list(modes), reader_seed=2026092701, target_reads=0, truth_last=True))
+           modes=list(modes), reader_seed=2026092701, target_reads=0, truth_last=True, **uncertainty))
 
 
 def dispatch(rt):

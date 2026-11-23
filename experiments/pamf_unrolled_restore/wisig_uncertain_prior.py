@@ -104,11 +104,11 @@ def natural_delta(source):
     return torch.fft.ifft(spectrum, norm='ortho')
 
 
-def fit_loss(model, source, generator, preserve, observe=None):
+def fit_loss(model, source, generator, preserve, observe=None, perturbation=perturb):
     delta = natural_delta(source)
     targets = torch.stack((source, source, source + delta), dim=1)
-    shared = perturb(targets[:, (0, 2)], generator)
-    independent = perturb(targets[:, 1:2], generator)
+    shared = perturbation(targets[:, (0, 2)], generator)
+    independent = perturbation(targets[:, 1:2], generator)
     inputs = torch.stack((shared[:, 0], independent[:, 0], shared[:, 1]), dim=1)
     inputs[-4:] = targets[-4:]
     received = inputs.flatten(0, 1) if observe is None else observe(inputs, generator)
