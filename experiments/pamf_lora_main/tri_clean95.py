@@ -16,7 +16,7 @@ from .full_packet_data import COUNTS, LIMIT
 from .full_packet_views import native, source_contract, target_contract
 from .full_supervised import batches, handles
 from .full_tri_repl_lora import labeled_loss, unlabeled_loss
-from .packet_data import CHIRPS
+from .packet_data import CHIRPS, PACKET_LEN
 from .packet_runner import schedule
 from .refine_runner import start
 from .runner import activate
@@ -94,7 +94,11 @@ class SpectrumAligned(CoherentPacket):
 class TimeFrequencyAligned(CoherentPacket):
     def forward(self,x):
         logits,fused=self.raw(x)
-        traces=self.trace(x)
+        drift_layer=getattr(self,'relative_drift',None)
+        if drift_layer is None:
+            traces=self.trace(x)
+        else:
+            traces,drift=self.trace(x,with_drift=True)
         aligned=self.encoder(traces.flatten(0,1)).reshape(len(x),x.shape[1],-1).mean(1)
         z=torch.complex(traces[:,:,0],traces[:,:,1])
         z=z-z.mean(-1,keepdim=True)
@@ -106,6 +110,8 @@ class TimeFrequencyAligned(CoherentPacket):
         ratio=(log[...,1:,:]-log[...,:-1,:]).clamp(-8.,8.)
         features=torch.stack((log[...,1:,:].mean(1),ratio.mean(1)),dim=1)
         aligned=aligned+.10*self.time_frequency(features)
+        if drift_layer is not None:
+            aligned=aligned+.10*drift_layer(torch.asinh(drift))
         return logits+self.head(aligned),fused+.10*aligned
 
 
@@ -124,12 +130,17 @@ def clean_model(rt,root,c,row,device):
             f.time_frequency=nn.Sequential(nn.Conv2d(2,16,3,padding=1),nn.GroupNorm(4,16),nn.SiLU(),
                 nn.Conv2d(16,24,3,padding=1,stride=2),nn.GroupNorm(4,24),nn.SiLU(),
                 nn.AdaptiveAvgPool2d((4,5)),nn.Flatten(),nn.Linear(480,160),nn.LayerNorm(160)).to(device)
+            if row.get('relative_drift'):
+                f.relative_drift=nn.Sequential(nn.Linear(len(row['chirps']),32),nn.LayerNorm(32),nn.SiLU(),
+                                              nn.Linear(32,160),nn.LayerNorm(160)).to(device)
         return f
     return preserve_alignment(model_for(rt,root,c,row,device),row)
 
 
 def study(rt):
     if rt.get('scratch'):
+        if rt.get('drift_study'):
+            return DRIFT_ROWS,SCRATCH_EPOCHS,16
         if rt.get('noise_study'):
             return NOISE_ROWS,SCRATCH_EPOCHS,16
         return (TIMEFREQ_ROWS if rt.get('timefreq') else SCRATCH_ROWS),SCRATCH_EPOCHS,16
@@ -162,9 +173,26 @@ NOISE_ROWS={
     'small_noise': {'warmup':32,'time_frequency':True,'ordinary_std':.003},
     'no_noise': {'warmup':32,'time_frequency':True,'ordinary_std':0.},
 }
+DRIFT_RUN='20261125-phase1-lora-pamf-tri-clean-relativetone-m2-r01'
+ALL_CHIRPS=tuple(range(PACKET_LEN//1024))
+DRIFT_ROWS={
+    'all8_control384': {'warmup':32,'samples':384,'time_frequency':True,'chirps':ALL_CHIRPS,'ordinary_std':.003},
+    'all8_relative384': {'warmup':32,'samples':384,'time_frequency':True,'chirps':ALL_CHIRPS,'ordinary_std':.003,
+                         'relative_drift':True},
+}
 VALIDATION_EPOCHS={0,2,4,8,12,16,20,24}
-STARTS=np.asarray(CHIRPS)*1024+WINDOW_START-125
-CROP=STARTS[:,None]+np.arange(1250)
+
+
+def padded_crop(chirps):
+    starts=np.asarray(chirps)*1024+WINDOW_START-125
+    crop=starts[:,None]+np.arange(1250)
+    # Reflect filter support outside the recorded preamble. All central
+    # 1 ms signal windows still consist of the original physical samples.
+    crop=np.where(crop<0,-crop,crop)
+    return np.where(crop>=PACKET_LEN,2*PACKET_LEN-2-crop,crop)
+
+
+CROPS={chirps:padded_crop(chirps) for chirps in (CHIRPS,ALL_CHIRPS)}
 
 
 def source_handles(rt):
@@ -183,13 +211,15 @@ def row_names(rt):
         return tuple(study(rt)[0])
     if rt.get('noise_study'):
         return ('small_noise',)
+    if rt.get('drift_study'):
+        return ('all8_relative384',)
     return SCRATCH_LOCAL if rt.get('scratch') else LOCAL
 
 
-def clean_iq(packets,samples):
+def clean_iq(packets,samples,chirps=CHIRPS):
     if samples not in (192,256,384,512):
         raise ValueError('Unknown registered clean aperture')
-    z = resample_poly(packets[:,CROP],up=samples//8,down=125,axis=-1)
+    z = resample_poly(packets[:,CROPS[chirps]],up=samples//8,down=125,axis=-1)
     edge=samples//8
     z=z[...,edge:edge+samples]
     norm=np.sqrt(np.mean(np.abs(z)**2,axis=(1,2),keepdims=True))
@@ -199,21 +229,32 @@ def clean_iq(packets,samples):
     return np.stack((z.real,z.imag),axis=2).astype(np.float32,copy=False)
 
 
+def cache_layout(samples,chirps,protocol):
+    name=str(samples)
+    expected=dict(status='CLEAN_SOURCE_READY',samples=samples,source_protocol=protocol)
+    if chirps==ALL_CHIRPS:
+        name+='-all8'
+        expected['chirps']=list(chirps)
+    return name,expected
+
+
 def cache(rt):
     source,_,contract=source_handles(rt)
     root=Path(rt['run_root'])
     rows=study(rt)[0]
-    for n in sorted({rows[k].get('samples',256) for k in row_names(rt)}):
-        folder=root/'clean_cache'/str(n)
+    shapes={(rows[k].get('samples',256),rows[k].get('chirps',CHIRPS)) for k in row_names(rt)}
+    for n,chirps in sorted(shapes):
+        key,expected=cache_layout(n,chirps,contract['protocol'])
+        folder=root/'clean_cache'/key
         folder.mkdir(parents=True,exist_ok=False)
         for key,count in COUNTS.items():
             x=native(source,key,count)
-            out=np.lib.format.open_memmap(folder/f'{key}.npy',mode='w+',dtype=np.float32,shape=(count,6,2,n))
+            out=np.lib.format.open_memmap(folder/f'{key}.npy',mode='w+',dtype=np.float32,shape=(count,len(chirps),2,n))
             for i in range(0,count,64):
-                out[i:i+64]=clean_iq(x[i:i+64],n)
+                out[i:i+64]=clean_iq(x[i:i+64],n,chirps)
             out.flush()
             print('LORA_CLEAN_IQ',n,key,count,flush=True)
-        write(folder/'complete.json',dict(status='CLEAN_SOURCE_READY',samples=n,source_protocol=contract['protocol']))
+        write(folder/'complete.json',expected)
 
 
 def labels(source,contract,key):
@@ -277,7 +318,7 @@ def smoke(rt):
     for name,row in study(rt)[0].items():
         f=(clean_model(rt,root,c,row,'cpu') if rt.get('scratch')
            else preserve_alignment(configure(deepcopy(parent),row),row))
-        grid=clean_iq(raw[i],row.get('samples',256))
+        grid=clean_iq(raw[i],row.get('samples',256),row.get('chirps',CHIRPS))
         if row.get('two_rate'):
             grid=np.concatenate((grid,clean_iq(raw[i],256)),axis=-1)
         a=tensor(grid)
@@ -297,9 +338,11 @@ def train(rt,name):
     rows,epochs,u_count=study(rt)
     row=rows[name]
     n=row.get('samples',256)
+    chirps=row.get('chirps',CHIRPS)
     cache_root=Path(rt.get('fixed_clean_cache',root/'clean_cache'))
-    clean=cache_root/str(n)
-    if read(clean/'complete.json')!=dict(status='CLEAN_SOURCE_READY',samples=n,source_protocol=c['protocol']):
+    key,expected=cache_layout(n,chirps,c['protocol'])
+    clean=cache_root/key
+    if read(clean/'complete.json')!=expected:
         raise ValueError('Clean source cache not ready')
     device='cuda:0'
     out=root/'F'/name
@@ -420,11 +463,12 @@ def dispatch(rt):
     if (rt.get('quick') or rt.get('transfer') or rt.get('timefreq')) and on_local(rt):
         raise ValueError('Quick branch study is registered for N607 only')
     root=Path(rt['run_root'])
-    if rt.get('noise_study') and not rt.get('scratch'):
-        raise ValueError('The matched noise comparison requires random initialization')
+    if (rt.get('noise_study') or rt.get('drift_study')) and not rt.get('scratch'):
+        raise ValueError('The clean input comparisons require random initialization')
     root.mkdir(exist_ok=False)
     state=root/'state.json'
-    fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq','noise_study','fixed_clean_cache') if k in rt)
+    fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq',
+                             'noise_study','drift_study','fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)
     try:
@@ -437,7 +481,7 @@ def dispatch(rt):
         schedule(rt,[('train',name) for name in names],launch)
         evidence={name:read(root/'F'/name/'complete.json')['frozen'] for name in names}
         ranking=sorted(names,key=lambda name:(evidence[name]['correct'],-evidence[name]['nll']),reverse=True)
-        source_only=bool(on_local(rt) or rt.get('quick') or rt.get('transfer') or rt.get('timefreq') or rt.get('noise_study'))
+        source_only=bool(on_local(rt) or any(rt.get(k) for k in ('quick','transfer','timefreq','noise_study','drift_study')))
         tested=[] if source_only else list(dict.fromkeys(['control',ranking[0]]))
         write(root/'selection.json',dict(names=tested,rank=ranking,source=evidence,
                                         target_reads=0,goal_met=evidence[ranking[0]]['correct']>=TARGET_SOURCE_ACCURACY*evidence[ranking[0]]['n']))

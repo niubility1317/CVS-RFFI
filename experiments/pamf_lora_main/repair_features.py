@@ -43,7 +43,7 @@ class AlignedTrace(nn.Module):
         self.reference = ChirpResponse(samples=samples)
         self.register_buffer('time', torch.arange(samples, dtype=torch.float32), persistent=False)
 
-    def forward(self, x):
+    def forward(self, x, *, with_drift=False):
         z = torch.complex(x[:, :, 0], x[:, :, 1])
         baseband = z * self.reference.chirp.conj()
         length = 8*self.time.numel()
@@ -60,7 +60,15 @@ class AlignedTrace(nn.Module):
         w = w * (dc.conj() / dc.abs().clamp_min(1e-5))
         rms = z.abs().square().mean(-1, keepdim=True).clamp_min(1e-6).sqrt()
         w = w / rms
-        return torch.stack((w.real, w.imag, z.abs() / rms), dim=2)
+        trace = torch.stack((w.real, w.imag, z.abs() / rms), dim=2)
+        if with_drift:
+            # Only variation between chirps enters the model. The common
+            # carrier offset, including receiver oscillator bias, is removed.
+            rate = self.reference.sample_rate
+            tone = k * (rate / length) + slope * (rate / (2 * torch.pi))
+            drift = tone - tone.mean(dim=1, keepdim=True)
+            return trace, drift
+        return trace
 
 
 class CoherentPacket(nn.Module):
