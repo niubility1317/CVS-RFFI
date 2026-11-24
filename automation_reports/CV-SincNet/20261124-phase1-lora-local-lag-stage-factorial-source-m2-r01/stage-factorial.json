@@ -1,0 +1,266 @@
+{
+  "status": "CHECKED",
+  "n": 900,
+  "target_reads": 0,
+  "F_reads": 0,
+  "source_V_truth_read_after_complete_predictions": true,
+  "bootstrap": 1600,
+  "endpoint_mismatches": {
+    "full": {
+      "clean": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "direction_coarse": 0,
+        "lag_coarse": 0,
+        "direction_direction": 0,
+        "lag_lag": 0
+      },
+      "practical_high": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "direction_coarse": 0,
+        "lag_coarse": 0,
+        "direction_direction": 0,
+        "lag_lag": 0
+      },
+      "practical_mid": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "direction_coarse": 0,
+        "lag_coarse": 0,
+        "direction_direction": 0,
+        "lag_lag": 0
+      },
+      "practical_low_suburban": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "direction_coarse": 0,
+        "lag_coarse": 0,
+        "direction_direction": 0,
+        "lag_lag": 0
+      },
+      "practical_high_urban": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "direction_coarse": 0,
+        "lag_coarse": 0,
+        "direction_direction": 0,
+        "lag_lag": 0
+      },
+      "practical_mid_urban": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "direction_coarse": 0,
+        "lag_coarse": 0,
+        "direction_direction": 0,
+        "lag_lag": 0
+      },
+      "practical_low_urban": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "direction_coarse": 0,
+        "lag_coarse": 0,
+        "direction_direction": 0,
+        "lag_lag": 0
+      }
+    },
+    "residual": {
+      "clean": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "direction_coarse": 0,
+        "lag_coarse": 0,
+        "direction_direction": 0,
+        "lag_lag": 0
+      },
+      "practical_high": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "direction_coarse": 0,
+        "lag_coarse": 0,
+        "direction_direction": 0,
+        "lag_lag": 0
+      },
+      "practical_mid": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "direction_coarse": 0,
+        "lag_coarse": 0,
+        "direction_direction": 0,
+        "lag_lag": 0
+      },
+      "practical_low_suburban": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "direction_coarse": 0,
+        "lag_coarse": 0,
+        "direction_direction": 0,
+        "lag_lag": 0
+      },
+      "practical_high_urban": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "direction_coarse": 0,
+        "lag_coarse": 0,
+        "direction_direction": 0,
+        "lag_lag": 0
+      },
+      "practical_mid_urban": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "direction_coarse": 0,
+        "lag_coarse": 0,
+        "direction_direction": 0,
+        "lag_lag": 0
+      },
+      "practical_low_urban": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "direction_coarse": 0,
+        "lag_coarse": 0,
+        "direction_direction": 0,
+        "lag_lag": 0
+      }
+    }
+  },
+  "factorial": {
+    "full": {
+      "lag_coarse": {
+        "six": -26,
+        "six_ci": [
+          -47,
+          -3.5
+        ],
+        "low": 0,
+        "low_ci": [
+          -11,
+          11
+        ],
+        "per_view": [
+          0,
+          -10,
+          -11.5,
+          -0.5,
+          -4,
+          0
+        ]
+      },
+      "lag_refinement": {
+        "six": -16,
+        "six_ci": [
+          -29.5,
+          -1.4875000000000682
+        ],
+        "low": -7,
+        "low_ci": [
+          -16.5,
+          2
+        ],
+        "per_view": [
+          1,
+          0,
+          -2.5,
+          -0.5,
+          -7,
+          -7
+        ]
+      },
+      "interaction": {
+        "six": 16,
+        "six_ci": [
+          -5,
+          36
+        ],
+        "low": 10,
+        "low_ci": [
+          -3,
+          22
+        ],
+        "per_view": [
+          -2,
+          0,
+          5,
+          -1,
+          4,
+          10
+        ]
+      }
+    },
+    "residual": {
+      "lag_coarse": {
+        "six": -20,
+        "six_ci": [
+          -53,
+          15
+        ],
+        "low": -10,
+        "low_ci": [
+          -22.5,
+          2
+        ],
+        "per_view": [
+          1.5,
+          2.5,
+          -9,
+          -1.5,
+          -3.5,
+          -10
+        ]
+      },
+      "lag_refinement": {
+        "six": -20,
+        "six_ci": [
+          -43,
+          2
+        ],
+        "low": -9,
+        "low_ci": [
+          -20.5125,
+          2
+        ],
+        "per_view": [
+          1.5,
+          -1.5,
+          -3,
+          -1.5,
+          -6.5,
+          -9
+        ]
+      },
+      "interaction": {
+        "six": -16,
+        "six_ci": [
+          -49,
+          17
+        ],
+        "low": -6,
+        "low_ci": [
+          -22,
+          10
+        ],
+        "per_view": [
+          -1,
+          -7,
+          0,
+          1,
+          -3,
+          -6
+        ]
+      }
+    }
+  }
+}

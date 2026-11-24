@@ -1,0 +1,98 @@
+{
+  "submit": {
+    "pid": 2586315,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-local-lag-stage-factorial-source-m2-r01-release",
+    "code_commit": "7d0d885bc5eac52dd2f1e819b68ed267ad0da459",
+    "archive_transfer": "VERIFIED",
+    "remote_compile": "PASS",
+    "status": "SUBMITTED_NOT_YET_VERIFIED",
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-local-lag-stage-factorial-source-m2-r01"
+  },
+  "controller": {
+    "pid": 2586315,
+    "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.stage_splice_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-local-lag-stage-factorial-source-m2-r01-release/runtime.json",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-local-lag-stage-factorial-source-m2-r01-release",
+    "cuda": [
+      "CUDA_VISIBLE_DEVICES="
+    ]
+  },
+  "jobs": {
+    "smoke-source": {
+      "pid": 2586328,
+      "gpu": 3,
+      "identity": null,
+      "bytes": 468,
+      "last": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+        "  return self.fget.__get__(instance, owner)()",
+        "LORA_FROZEN_STAGE_SPLICE_REAL_CHECKPOINT_PASS"
+      ]
+    },
+    "timing-source": {
+      "pid": 2586400,
+      "gpu": 3,
+      "identity": null,
+      "bytes": 422,
+      "last": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+        "  return self.fget.__get__(instance, owner)()"
+      ]
+    },
+    "evaluate-full": {
+      "pid": 2586471,
+      "gpu": 3,
+      "identity": {
+        "pid": 2586471,
+        "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.stage_splice_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-local-lag-stage-factorial-source-m2-r01/configs/evaluate-full.json full",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-local-lag-stage-factorial-source-m2-r01-release",
+        "cuda": [
+          "CUDA_VISIBLE_DEVICES=3"
+        ]
+      },
+      "bytes": 457,
+      "last": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+        "  return self.fget.__get__(instance, owner)()",
+        "COMPLEX_VECTOR_SOURCE full clean 0"
+      ]
+    },
+    "evaluate-residual": {
+      "pid": 2586472,
+      "gpu": 6,
+      "identity": {
+        "pid": 2586472,
+        "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.stage_splice_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-local-lag-stage-factorial-source-m2-r01/configs/evaluate-residual.json residual",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-local-lag-stage-factorial-source-m2-r01-release",
+        "cuda": [
+          "CUDA_VISIBLE_DEVICES=6"
+        ]
+      },
+      "bytes": 461,
+      "last": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+        "  return self.fget.__get__(instance, owner)()",
+        "COMPLEX_VECTOR_SOURCE residual clean 0"
+      ]
+    }
+  },
+  "state": null,
+  "files": {
+    "smoke.json": 113,
+    "b1.json": 349
+  },
+  "verification": "VERIFIED",
+  "growth": {
+    "evaluate-full": {
+      "first": 457,
+      "second": 652
+    },
+    "evaluate-residual": {
+      "first": 461,
+      "second": 782
+    }
+  },
+  "post_files": {
+    "smoke.json": 113,
+    "b1.json": 349
+  }
+}
