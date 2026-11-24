@@ -131,11 +131,11 @@ def evaluate(iq, noise, tracker, model, threshold, prior, rx):
     return dict(n=len(iq),active=int(observed_active.sum()),cells=cells)
 
 
-def model_binding(rt, contract):
+def model_binding(rt, contract, *, device='cpu'):
     root=Path(rt['run_root']).parent/PARENT
     if read(root/'state.json')['status']!='SOURCE_SCORED':
         raise ValueError('Need completed source-only parent recovery')
-    _, arms, threshold=bind_models(root,contract,'cpu')
+    _, arms, threshold=bind_models(root,contract,device)
     return arms[1],threshold
 
 
