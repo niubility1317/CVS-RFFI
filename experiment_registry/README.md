@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 冻结恢复的实收幅度与相位消融](../automation_reports/CV-SincNet/20261124-phase1-lora-polar-shape-source-m2-r01/report.md)
 - [LoRa 按独立源坐标监督复数细节](../automation_reports/CV-SincNet/20261124-phase1-lora-independent-shape-source-m3-r01/report.md)
 - [LoRa 独立源坐标的相对载波恢复](../automation_reports/CV-SincNet/20261124-phase1-lora-relative-carrier-source-m5-r01/report.md)
 - [LoRa 载波幅度与复数细节联合恢复](../automation_reports/CV-SincNet/20261124-phase1-lora-carrier-coupled-source-m4-r01/report.md)

@@ -1,0 +1,2065 @@
+{
+  "status": "VERIFIED",
+  "n": 900,
+  "target_reads": 0,
+  "truth_after_predictions": true,
+  "frozen_controls_identical": true,
+  "results": {
+    "full": {
+      "direct": {
+        "six": {
+          "correct": 3028,
+          "repair": 0,
+          "damage": 0,
+          "net_vs_direct": 0,
+          "net_vs_dura": -66
+        },
+        "by_view": {
+          "clean": {
+            "correct": 667,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": 0
+          },
+          "practical_high": {
+            "correct": 595,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": 4
+          },
+          "practical_mid": {
+            "correct": 555,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": 1
+          },
+          "practical_low_suburban": {
+            "correct": 493,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": -34
+          },
+          "practical_high_urban": {
+            "correct": 581,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": 0
+          },
+          "practical_mid_urban": {
+            "correct": 444,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": -23
+          },
+          "practical_low_urban": {
+            "correct": 360,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": -14
+          }
+        },
+        "by_receiver": {
+          "b200_1": {
+            "correct": 573,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": -25
+          },
+          "b200_mini_1": {
+            "correct": 562,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": -12
+          },
+          "b210_1": {
+            "correct": 570,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": -7
+          },
+          "pluto_1": {
+            "correct": 656,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": -18
+          },
+          "rtl_1": {
+            "correct": 667,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": -4
+          }
+        },
+        "paired95": {
+          "six_vs_dura": [
+            -100,
+            -31
+          ],
+          "urban_vs_dura": [
+            -31,
+            4.024999999999864
+          ],
+          "six_vs_original_half": [
+            -78,
+            -15.975000000000136
+          ]
+        }
+      },
+      "reference": {
+        "six": {
+          "correct": 3094,
+          "repair": 187,
+          "damage": 121,
+          "net_vs_direct": 66,
+          "net_vs_dura": 0
+        },
+        "by_view": {
+          "clean": {
+            "correct": 667,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": 0
+          },
+          "practical_high": {
+            "correct": 591,
+            "repair": 1,
+            "damage": 5,
+            "net_vs_direct": -4,
+            "net_vs_dura": 0
+          },
+          "practical_mid": {
+            "correct": 554,
+            "repair": 26,
+            "damage": 27,
+            "net_vs_direct": -1,
+            "net_vs_dura": 0
+          },
+          "practical_low_suburban": {
+            "correct": 527,
+            "repair": 58,
+            "damage": 24,
+            "net_vs_direct": 34,
+            "net_vs_dura": 0
+          },
+          "practical_high_urban": {
+            "correct": 581,
+            "repair": 8,
+            "damage": 8,
+            "net_vs_direct": 0,
+            "net_vs_dura": 0
+          },
+          "practical_mid_urban": {
+            "correct": 467,
+            "repair": 43,
+            "damage": 20,
+            "net_vs_direct": 23,
+            "net_vs_dura": 0
+          },
+          "practical_low_urban": {
+            "correct": 374,
+            "repair": 51,
+            "damage": 37,
+            "net_vs_direct": 14,
+            "net_vs_dura": 0
+          }
+        },
+        "by_receiver": {
+          "b200_1": {
+            "correct": 598,
+            "repair": 42,
+            "damage": 17,
+            "net_vs_direct": 25,
+            "net_vs_dura": 0
+          },
+          "b200_mini_1": {
+            "correct": 574,
+            "repair": 33,
+            "damage": 21,
+            "net_vs_direct": 12,
+            "net_vs_dura": 0
+          },
+          "b210_1": {
+            "correct": 577,
+            "repair": 28,
+            "damage": 21,
+            "net_vs_direct": 7,
+            "net_vs_dura": 0
+          },
+          "pluto_1": {
+            "correct": 674,
+            "repair": 41,
+            "damage": 23,
+            "net_vs_direct": 18,
+            "net_vs_dura": 0
+          },
+          "rtl_1": {
+            "correct": 671,
+            "repair": 43,
+            "damage": 39,
+            "net_vs_direct": 4,
+            "net_vs_dura": 0
+          }
+        },
+        "paired95": {
+          "six_vs_dura": [
+            0,
+            0
+          ],
+          "urban_vs_dura": [
+            0,
+            0
+          ],
+          "six_vs_original_half": [
+            -20,
+            53.024999999999864
+          ]
+        }
+      },
+      "own_shape_coarse": {
+        "six": {
+          "correct": 3002,
+          "repair": 244,
+          "damage": 270,
+          "net_vs_direct": -26,
+          "net_vs_dura": -92
+        },
+        "by_view": {
+          "clean": {
+            "correct": 667,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": 0
+          },
+          "practical_high": {
+            "correct": 590,
+            "repair": 4,
+            "damage": 9,
+            "net_vs_direct": -5,
+            "net_vs_dura": -1
+          },
+          "practical_mid": {
+            "correct": 551,
+            "repair": 19,
+            "damage": 23,
+            "net_vs_direct": -4,
+            "net_vs_dura": -3
+          },
+          "practical_low_suburban": {
+            "correct": 474,
+            "repair": 39,
+            "damage": 58,
+            "net_vs_direct": -19,
+            "net_vs_dura": -53
+          },
+          "practical_high_urban": {
+            "correct": 581,
+            "repair": 15,
+            "damage": 15,
+            "net_vs_direct": 0,
+            "net_vs_dura": 0
+          },
+          "practical_mid_urban": {
+            "correct": 447,
+            "repair": 60,
+            "damage": 57,
+            "net_vs_direct": 3,
+            "net_vs_dura": -20
+          },
+          "practical_low_urban": {
+            "correct": 359,
+            "repair": 107,
+            "damage": 108,
+            "net_vs_direct": -1,
+            "net_vs_dura": -15
+          }
+        },
+        "by_receiver": {
+          "b200_1": {
+            "correct": 577,
+            "repair": 47,
+            "damage": 43,
+            "net_vs_direct": 4,
+            "net_vs_dura": -21
+          },
+          "b200_mini_1": {
+            "correct": 558,
+            "repair": 46,
+            "damage": 50,
+            "net_vs_direct": -4,
+            "net_vs_dura": -16
+          },
+          "b210_1": {
+            "correct": 565,
+            "repair": 51,
+            "damage": 56,
+            "net_vs_direct": -5,
+            "net_vs_dura": -12
+          },
+          "pluto_1": {
+            "correct": 660,
+            "repair": 49,
+            "damage": 45,
+            "net_vs_direct": 4,
+            "net_vs_dura": -14
+          },
+          "rtl_1": {
+            "correct": 642,
+            "repair": 51,
+            "damage": 76,
+            "net_vs_direct": -25,
+            "net_vs_dura": -29
+          }
+        },
+        "paired95": {
+          "six_vs_dura": [
+            -147,
+            -37
+          ],
+          "urban_vs_dura": [
+            -43,
+            16
+          ],
+          "six_vs_original_half": [
+            -116.025,
+            -30.975000000000136
+          ]
+        }
+      },
+      "own_shape_half": {
+        "six": {
+          "correct": 3077,
+          "repair": 153,
+          "damage": 104,
+          "net_vs_direct": 49,
+          "net_vs_dura": -17
+        },
+        "by_view": {
+          "clean": {
+            "correct": 667,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": 0
+          },
+          "practical_high": {
+            "correct": 592,
+            "repair": 1,
+            "damage": 4,
+            "net_vs_direct": -3,
+            "net_vs_dura": 1
+          },
+          "practical_mid": {
+            "correct": 554,
+            "repair": 12,
+            "damage": 13,
+            "net_vs_direct": -1,
+            "net_vs_dura": 0
+          },
+          "practical_low_suburban": {
+            "correct": 504,
+            "repair": 36,
+            "damage": 25,
+            "net_vs_direct": 11,
+            "net_vs_dura": -23
+          },
+          "practical_high_urban": {
+            "correct": 579,
+            "repair": 6,
+            "damage": 8,
+            "net_vs_direct": -2,
+            "net_vs_dura": -2
+          },
+          "practical_mid_urban": {
+            "correct": 458,
+            "repair": 34,
+            "damage": 20,
+            "net_vs_direct": 14,
+            "net_vs_dura": -9
+          },
+          "practical_low_urban": {
+            "correct": 390,
+            "repair": 64,
+            "damage": 34,
+            "net_vs_direct": 30,
+            "net_vs_dura": 16
+          }
+        },
+        "by_receiver": {
+          "b200_1": {
+            "correct": 597,
+            "repair": 36,
+            "damage": 12,
+            "net_vs_direct": 24,
+            "net_vs_dura": -1
+          },
+          "b200_mini_1": {
+            "correct": 569,
+            "repair": 28,
+            "damage": 21,
+            "net_vs_direct": 7,
+            "net_vs_dura": -5
+          },
+          "b210_1": {
+            "correct": 569,
+            "repair": 25,
+            "damage": 26,
+            "net_vs_direct": -1,
+            "net_vs_dura": -8
+          },
+          "pluto_1": {
+            "correct": 672,
+            "repair": 30,
+            "damage": 14,
+            "net_vs_direct": 16,
+            "net_vs_dura": -2
+          },
+          "rtl_1": {
+            "correct": 670,
+            "repair": 34,
+            "damage": 31,
+            "net_vs_direct": 3,
+            "net_vs_dura": -1
+          }
+        },
+        "paired95": {
+          "six_vs_dura": [
+            -53.025,
+            20
+          ],
+          "urban_vs_dura": [
+            -4,
+            36
+          ],
+          "six_vs_original_half": [
+            0,
+            0
+          ]
+        }
+      },
+      "phase_coarse": {
+        "six": {
+          "correct": 3011,
+          "repair": 200,
+          "damage": 217,
+          "net_vs_direct": -17,
+          "net_vs_dura": -83
+        },
+        "by_view": {
+          "clean": {
+            "correct": 667,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": 0
+          },
+          "practical_high": {
+            "correct": 590,
+            "repair": 1,
+            "damage": 6,
+            "net_vs_direct": -5,
+            "net_vs_dura": -1
+          },
+          "practical_mid": {
+            "correct": 552,
+            "repair": 19,
+            "damage": 22,
+            "net_vs_direct": -3,
+            "net_vs_dura": -2
+          },
+          "practical_low_suburban": {
+            "correct": 483,
+            "repair": 37,
+            "damage": 47,
+            "net_vs_direct": -10,
+            "net_vs_dura": -44
+          },
+          "practical_high_urban": {
+            "correct": 577,
+            "repair": 9,
+            "damage": 13,
+            "net_vs_direct": -4,
+            "net_vs_dura": -4
+          },
+          "practical_mid_urban": {
+            "correct": 445,
+            "repair": 44,
+            "damage": 43,
+            "net_vs_direct": 1,
+            "net_vs_dura": -22
+          },
+          "practical_low_urban": {
+            "correct": 364,
+            "repair": 90,
+            "damage": 86,
+            "net_vs_direct": 4,
+            "net_vs_dura": -10
+          }
+        },
+        "by_receiver": {
+          "b200_1": {
+            "correct": 582,
+            "repair": 40,
+            "damage": 31,
+            "net_vs_direct": 9,
+            "net_vs_dura": -16
+          },
+          "b200_mini_1": {
+            "correct": 556,
+            "repair": 34,
+            "damage": 40,
+            "net_vs_direct": -6,
+            "net_vs_dura": -18
+          },
+          "b210_1": {
+            "correct": 556,
+            "repair": 39,
+            "damage": 53,
+            "net_vs_direct": -14,
+            "net_vs_dura": -21
+          },
+          "pluto_1": {
+            "correct": 656,
+            "repair": 44,
+            "damage": 44,
+            "net_vs_direct": 0,
+            "net_vs_dura": -18
+          },
+          "rtl_1": {
+            "correct": 661,
+            "repair": 43,
+            "damage": 49,
+            "net_vs_direct": -6,
+            "net_vs_dura": -10
+          }
+        },
+        "paired95": {
+          "six_vs_dura": [
+            -131,
+            -33
+          ],
+          "urban_vs_dura": [
+            -36,
+            19
+          ],
+          "six_vs_original_half": [
+            -102,
+            -27
+          ]
+        }
+      },
+      "amplitude_coarse": {
+        "six": {
+          "correct": 3071,
+          "repair": 143,
+          "damage": 100,
+          "net_vs_direct": 43,
+          "net_vs_dura": -23
+        },
+        "by_view": {
+          "clean": {
+            "correct": 667,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": 0
+          },
+          "practical_high": {
+            "correct": 595,
+            "repair": 2,
+            "damage": 2,
+            "net_vs_direct": 0,
+            "net_vs_dura": 4
+          },
+          "practical_mid": {
+            "correct": 558,
+            "repair": 9,
+            "damage": 6,
+            "net_vs_direct": 3,
+            "net_vs_dura": 4
+          },
+          "practical_low_suburban": {
+            "correct": 504,
+            "repair": 26,
+            "damage": 15,
+            "net_vs_direct": 11,
+            "net_vs_dura": -23
+          },
+          "practical_high_urban": {
+            "correct": 582,
+            "repair": 8,
+            "damage": 7,
+            "net_vs_direct": 1,
+            "net_vs_dura": 1
+          },
+          "practical_mid_urban": {
+            "correct": 462,
+            "repair": 42,
+            "damage": 24,
+            "net_vs_direct": 18,
+            "net_vs_dura": -5
+          },
+          "practical_low_urban": {
+            "correct": 370,
+            "repair": 56,
+            "damage": 46,
+            "net_vs_direct": 10,
+            "net_vs_dura": -4
+          }
+        },
+        "by_receiver": {
+          "b200_1": {
+            "correct": 573,
+            "repair": 22,
+            "damage": 22,
+            "net_vs_direct": 0,
+            "net_vs_dura": -25
+          },
+          "b200_mini_1": {
+            "correct": 578,
+            "repair": 38,
+            "damage": 22,
+            "net_vs_direct": 16,
+            "net_vs_dura": 4
+          },
+          "b210_1": {
+            "correct": 577,
+            "repair": 22,
+            "damage": 15,
+            "net_vs_direct": 7,
+            "net_vs_dura": 0
+          },
+          "pluto_1": {
+            "correct": 673,
+            "repair": 34,
+            "damage": 17,
+            "net_vs_direct": 17,
+            "net_vs_dura": -1
+          },
+          "rtl_1": {
+            "correct": 670,
+            "repair": 27,
+            "damage": 24,
+            "net_vs_direct": 3,
+            "net_vs_dura": -1
+          }
+        },
+        "paired95": {
+          "six_vs_dura": [
+            -59.025,
+            15
+          ],
+          "urban_vs_dura": [
+            -23.025,
+            18
+          ],
+          "six_vs_original_half": [
+            -39,
+            29
+          ]
+        }
+      },
+      "phase_half": {
+        "six": {
+          "correct": 3066,
+          "repair": 144,
+          "damage": 106,
+          "net_vs_direct": 38,
+          "net_vs_dura": -28
+        },
+        "by_view": {
+          "clean": {
+            "correct": 667,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": 0
+          },
+          "practical_high": {
+            "correct": 592,
+            "repair": 1,
+            "damage": 4,
+            "net_vs_direct": -3,
+            "net_vs_dura": 1
+          },
+          "practical_mid": {
+            "correct": 557,
+            "repair": 15,
+            "damage": 13,
+            "net_vs_direct": 2,
+            "net_vs_dura": 3
+          },
+          "practical_low_suburban": {
+            "correct": 491,
+            "repair": 25,
+            "damage": 27,
+            "net_vs_direct": -2,
+            "net_vs_dura": -36
+          },
+          "practical_high_urban": {
+            "correct": 579,
+            "repair": 6,
+            "damage": 8,
+            "net_vs_direct": -2,
+            "net_vs_dura": -2
+          },
+          "practical_mid_urban": {
+            "correct": 456,
+            "repair": 32,
+            "damage": 20,
+            "net_vs_direct": 12,
+            "net_vs_dura": -11
+          },
+          "practical_low_urban": {
+            "correct": 391,
+            "repair": 65,
+            "damage": 34,
+            "net_vs_direct": 31,
+            "net_vs_dura": 17
+          }
+        },
+        "by_receiver": {
+          "b200_1": {
+            "correct": 584,
+            "repair": 27,
+            "damage": 16,
+            "net_vs_direct": 11,
+            "net_vs_dura": -14
+          },
+          "b200_mini_1": {
+            "correct": 578,
+            "repair": 34,
+            "damage": 18,
+            "net_vs_direct": 16,
+            "net_vs_dura": 4
+          },
+          "b210_1": {
+            "correct": 568,
+            "repair": 27,
+            "damage": 29,
+            "net_vs_direct": -2,
+            "net_vs_dura": -9
+          },
+          "pluto_1": {
+            "correct": 671,
+            "repair": 28,
+            "damage": 13,
+            "net_vs_direct": 15,
+            "net_vs_dura": -3
+          },
+          "rtl_1": {
+            "correct": 665,
+            "repair": 28,
+            "damage": 30,
+            "net_vs_direct": -2,
+            "net_vs_dura": -6
+          }
+        },
+        "paired95": {
+          "six_vs_dura": [
+            -66,
+            13.024999999999864
+          ],
+          "urban_vs_dura": [
+            -4,
+            39
+          ],
+          "six_vs_original_half": [
+            -35,
+            14
+          ]
+        }
+      },
+      "amplitude_half": {
+        "six": {
+          "correct": 3063,
+          "repair": 82,
+          "damage": 47,
+          "net_vs_direct": 35,
+          "net_vs_dura": -31
+        },
+        "by_view": {
+          "clean": {
+            "correct": 667,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": 0
+          },
+          "practical_high": {
+            "correct": 593,
+            "repair": 0,
+            "damage": 2,
+            "net_vs_direct": -2,
+            "net_vs_dura": 2
+          },
+          "practical_mid": {
+            "correct": 554,
+            "repair": 3,
+            "damage": 4,
+            "net_vs_direct": -1,
+            "net_vs_dura": 0
+          },
+          "practical_low_suburban": {
+            "correct": 500,
+            "repair": 16,
+            "damage": 9,
+            "net_vs_direct": 7,
+            "net_vs_dura": -27
+          },
+          "practical_high_urban": {
+            "correct": 585,
+            "repair": 6,
+            "damage": 2,
+            "net_vs_direct": 4,
+            "net_vs_dura": 4
+          },
+          "practical_mid_urban": {
+            "correct": 462,
+            "repair": 25,
+            "damage": 7,
+            "net_vs_direct": 18,
+            "net_vs_dura": -5
+          },
+          "practical_low_urban": {
+            "correct": 369,
+            "repair": 32,
+            "damage": 23,
+            "net_vs_direct": 9,
+            "net_vs_dura": -5
+          }
+        },
+        "by_receiver": {
+          "b200_1": {
+            "correct": 584,
+            "repair": 19,
+            "damage": 8,
+            "net_vs_direct": 11,
+            "net_vs_dura": -14
+          },
+          "b200_mini_1": {
+            "correct": 570,
+            "repair": 19,
+            "damage": 11,
+            "net_vs_direct": 8,
+            "net_vs_dura": -4
+          },
+          "b210_1": {
+            "correct": 571,
+            "repair": 9,
+            "damage": 8,
+            "net_vs_direct": 1,
+            "net_vs_dura": -6
+          },
+          "pluto_1": {
+            "correct": 665,
+            "repair": 18,
+            "damage": 9,
+            "net_vs_direct": 9,
+            "net_vs_dura": -9
+          },
+          "rtl_1": {
+            "correct": 673,
+            "repair": 17,
+            "damage": 11,
+            "net_vs_direct": 6,
+            "net_vs_dura": 2
+          }
+        },
+        "paired95": {
+          "six_vs_dura": [
+            -64.025,
+            3
+          ],
+          "urban_vs_dura": [
+            -22,
+            12
+          ],
+          "six_vs_original_half": [
+            -44,
+            17.024999999999864
+          ]
+        }
+      }
+    },
+    "residual": {
+      "direct": {
+        "six": {
+          "correct": 2848,
+          "repair": 0,
+          "damage": 0,
+          "net_vs_direct": 0,
+          "net_vs_dura": -112
+        },
+        "by_view": {
+          "clean": {
+            "correct": 667,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": 0
+          },
+          "practical_high": {
+            "correct": 539,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": -12
+          },
+          "practical_mid": {
+            "correct": 465,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": -29
+          },
+          "practical_low_suburban": {
+            "correct": 466,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": -18
+          },
+          "practical_high_urban": {
+            "correct": 558,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": -8
+          },
+          "practical_mid_urban": {
+            "correct": 433,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": -29
+          },
+          "practical_low_urban": {
+            "correct": 387,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": -16
+          }
+        },
+        "by_receiver": {
+          "b200_1": {
+            "correct": 540,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": -46
+          },
+          "b200_mini_1": {
+            "correct": 518,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": -4
+          },
+          "b210_1": {
+            "correct": 549,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": -13
+          },
+          "pluto_1": {
+            "correct": 635,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": -24
+          },
+          "rtl_1": {
+            "correct": 606,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": -25
+          }
+        },
+        "paired95": {
+          "six_vs_dura": [
+            -162,
+            -60
+          ],
+          "urban_vs_dura": [
+            -32,
+            0.024999999999863576
+          ],
+          "six_vs_original_half": [
+            -125,
+            -6
+          ]
+        }
+      },
+      "reference": {
+        "six": {
+          "correct": 2960,
+          "repair": 303,
+          "damage": 191,
+          "net_vs_direct": 112,
+          "net_vs_dura": 0
+        },
+        "by_view": {
+          "clean": {
+            "correct": 667,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": 0
+          },
+          "practical_high": {
+            "correct": 551,
+            "repair": 43,
+            "damage": 31,
+            "net_vs_direct": 12,
+            "net_vs_dura": 0
+          },
+          "practical_mid": {
+            "correct": 494,
+            "repair": 60,
+            "damage": 31,
+            "net_vs_direct": 29,
+            "net_vs_dura": 0
+          },
+          "practical_low_suburban": {
+            "correct": 484,
+            "repair": 58,
+            "damage": 40,
+            "net_vs_direct": 18,
+            "net_vs_dura": 0
+          },
+          "practical_high_urban": {
+            "correct": 566,
+            "repair": 43,
+            "damage": 35,
+            "net_vs_direct": 8,
+            "net_vs_dura": 0
+          },
+          "practical_mid_urban": {
+            "correct": 462,
+            "repair": 53,
+            "damage": 24,
+            "net_vs_direct": 29,
+            "net_vs_dura": 0
+          },
+          "practical_low_urban": {
+            "correct": 403,
+            "repair": 46,
+            "damage": 30,
+            "net_vs_direct": 16,
+            "net_vs_dura": 0
+          }
+        },
+        "by_receiver": {
+          "b200_1": {
+            "correct": 586,
+            "repair": 81,
+            "damage": 35,
+            "net_vs_direct": 46,
+            "net_vs_dura": 0
+          },
+          "b200_mini_1": {
+            "correct": 522,
+            "repair": 48,
+            "damage": 44,
+            "net_vs_direct": 4,
+            "net_vs_dura": 0
+          },
+          "b210_1": {
+            "correct": 562,
+            "repair": 56,
+            "damage": 43,
+            "net_vs_direct": 13,
+            "net_vs_dura": 0
+          },
+          "pluto_1": {
+            "correct": 659,
+            "repair": 57,
+            "damage": 33,
+            "net_vs_direct": 24,
+            "net_vs_dura": 0
+          },
+          "rtl_1": {
+            "correct": 631,
+            "repair": 61,
+            "damage": 36,
+            "net_vs_direct": 25,
+            "net_vs_dura": 0
+          }
+        },
+        "paired95": {
+          "six_vs_dura": [
+            0,
+            0
+          ],
+          "urban_vs_dura": [
+            0,
+            0
+          ],
+          "six_vs_original_half": [
+            -12,
+            103.02499999999986
+          ]
+        }
+      },
+      "own_shape_coarse": {
+        "six": {
+          "correct": 2760,
+          "repair": 467,
+          "damage": 555,
+          "net_vs_direct": -88,
+          "net_vs_dura": -200
+        },
+        "by_view": {
+          "clean": {
+            "correct": 667,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": 0
+          },
+          "practical_high": {
+            "correct": 537,
+            "repair": 4,
+            "damage": 6,
+            "net_vs_direct": -2,
+            "net_vs_dura": -14
+          },
+          "practical_mid": {
+            "correct": 462,
+            "repair": 102,
+            "damage": 105,
+            "net_vs_direct": -3,
+            "net_vs_dura": -32
+          },
+          "practical_low_suburban": {
+            "correct": 429,
+            "repair": 114,
+            "damage": 151,
+            "net_vs_direct": -37,
+            "net_vs_dura": -55
+          },
+          "practical_high_urban": {
+            "correct": 553,
+            "repair": 6,
+            "damage": 11,
+            "net_vs_direct": -5,
+            "net_vs_dura": -13
+          },
+          "practical_mid_urban": {
+            "correct": 419,
+            "repair": 112,
+            "damage": 126,
+            "net_vs_direct": -14,
+            "net_vs_dura": -43
+          },
+          "practical_low_urban": {
+            "correct": 360,
+            "repair": 129,
+            "damage": 156,
+            "net_vs_direct": -27,
+            "net_vs_dura": -43
+          }
+        },
+        "by_receiver": {
+          "b200_1": {
+            "correct": 557,
+            "repair": 111,
+            "damage": 94,
+            "net_vs_direct": 17,
+            "net_vs_dura": -29
+          },
+          "b200_mini_1": {
+            "correct": 497,
+            "repair": 83,
+            "damage": 104,
+            "net_vs_direct": -21,
+            "net_vs_dura": -25
+          },
+          "b210_1": {
+            "correct": 515,
+            "repair": 89,
+            "damage": 123,
+            "net_vs_direct": -34,
+            "net_vs_dura": -47
+          },
+          "pluto_1": {
+            "correct": 606,
+            "repair": 84,
+            "damage": 113,
+            "net_vs_direct": -29,
+            "net_vs_dura": -53
+          },
+          "rtl_1": {
+            "correct": 585,
+            "repair": 100,
+            "damage": 121,
+            "net_vs_direct": -21,
+            "net_vs_dura": -46
+          }
+        },
+        "paired95": {
+          "six_vs_dura": [
+            -279,
+            -118.97500000000014
+          ],
+          "urban_vs_dura": [
+            -75.025,
+            -10.975000000000136
+          ],
+          "six_vs_original_half": [
+            -208,
+            -93.97500000000014
+          ]
+        }
+      },
+      "own_shape_half": {
+        "six": {
+          "correct": 2912,
+          "repair": 345,
+          "damage": 281,
+          "net_vs_direct": 64,
+          "net_vs_dura": -48
+        },
+        "by_view": {
+          "clean": {
+            "correct": 667,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": 0
+          },
+          "practical_high": {
+            "correct": 540,
+            "repair": 2,
+            "damage": 1,
+            "net_vs_direct": 1,
+            "net_vs_dura": -11
+          },
+          "practical_mid": {
+            "correct": 487,
+            "repair": 86,
+            "damage": 64,
+            "net_vs_direct": 22,
+            "net_vs_dura": -7
+          },
+          "practical_low_suburban": {
+            "correct": 463,
+            "repair": 78,
+            "damage": 81,
+            "net_vs_direct": -3,
+            "net_vs_dura": -21
+          },
+          "practical_high_urban": {
+            "correct": 560,
+            "repair": 8,
+            "damage": 6,
+            "net_vs_direct": 2,
+            "net_vs_dura": -6
+          },
+          "practical_mid_urban": {
+            "correct": 448,
+            "repair": 73,
+            "damage": 58,
+            "net_vs_direct": 15,
+            "net_vs_dura": -14
+          },
+          "practical_low_urban": {
+            "correct": 414,
+            "repair": 98,
+            "damage": 71,
+            "net_vs_direct": 27,
+            "net_vs_dura": 11
+          }
+        },
+        "by_receiver": {
+          "b200_1": {
+            "correct": 558,
+            "repair": 75,
+            "damage": 57,
+            "net_vs_direct": 18,
+            "net_vs_dura": -28
+          },
+          "b200_mini_1": {
+            "correct": 513,
+            "repair": 50,
+            "damage": 55,
+            "net_vs_direct": -5,
+            "net_vs_dura": -9
+          },
+          "b210_1": {
+            "correct": 553,
+            "repair": 68,
+            "damage": 64,
+            "net_vs_direct": 4,
+            "net_vs_dura": -9
+          },
+          "pluto_1": {
+            "correct": 651,
+            "repair": 66,
+            "damage": 50,
+            "net_vs_direct": 16,
+            "net_vs_dura": -8
+          },
+          "rtl_1": {
+            "correct": 637,
+            "repair": 86,
+            "damage": 55,
+            "net_vs_direct": 31,
+            "net_vs_dura": 6
+          }
+        },
+        "paired95": {
+          "six_vs_dura": [
+            -103.025,
+            12
+          ],
+          "urban_vs_dura": [
+            -12,
+            34
+          ],
+          "six_vs_original_half": [
+            0,
+            0
+          ]
+        }
+      },
+      "phase_coarse": {
+        "six": {
+          "correct": 2774,
+          "repair": 407,
+          "damage": 481,
+          "net_vs_direct": -74,
+          "net_vs_dura": -186
+        },
+        "by_view": {
+          "clean": {
+            "correct": 667,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": 0
+          },
+          "practical_high": {
+            "correct": 537,
+            "repair": 3,
+            "damage": 5,
+            "net_vs_direct": -2,
+            "net_vs_dura": -14
+          },
+          "practical_mid": {
+            "correct": 463,
+            "repair": 96,
+            "damage": 98,
+            "net_vs_direct": -2,
+            "net_vs_dura": -31
+          },
+          "practical_low_suburban": {
+            "correct": 434,
+            "repair": 93,
+            "damage": 125,
+            "net_vs_direct": -32,
+            "net_vs_dura": -50
+          },
+          "practical_high_urban": {
+            "correct": 554,
+            "repair": 5,
+            "damage": 9,
+            "net_vs_direct": -4,
+            "net_vs_dura": -12
+          },
+          "practical_mid_urban": {
+            "correct": 420,
+            "repair": 92,
+            "damage": 105,
+            "net_vs_direct": -13,
+            "net_vs_dura": -42
+          },
+          "practical_low_urban": {
+            "correct": 366,
+            "repair": 118,
+            "damage": 139,
+            "net_vs_direct": -21,
+            "net_vs_dura": -37
+          }
+        },
+        "by_receiver": {
+          "b200_1": {
+            "correct": 533,
+            "repair": 91,
+            "damage": 98,
+            "net_vs_direct": -7,
+            "net_vs_dura": -53
+          },
+          "b200_mini_1": {
+            "correct": 490,
+            "repair": 68,
+            "damage": 96,
+            "net_vs_direct": -28,
+            "net_vs_dura": -32
+          },
+          "b210_1": {
+            "correct": 511,
+            "repair": 73,
+            "damage": 111,
+            "net_vs_direct": -38,
+            "net_vs_dura": -51
+          },
+          "pluto_1": {
+            "correct": 641,
+            "repair": 87,
+            "damage": 81,
+            "net_vs_direct": 6,
+            "net_vs_dura": -18
+          },
+          "rtl_1": {
+            "correct": 599,
+            "repair": 88,
+            "damage": 95,
+            "net_vs_direct": -7,
+            "net_vs_dura": -32
+          }
+        },
+        "paired95": {
+          "six_vs_dura": [
+            -260,
+            -109
+          ],
+          "urban_vs_dura": [
+            -67,
+            -5.975000000000136
+          ],
+          "six_vs_original_half": [
+            -189,
+            -89
+          ]
+        }
+      },
+      "amplitude_coarse": {
+        "six": {
+          "correct": 2890,
+          "repair": 248,
+          "damage": 206,
+          "net_vs_direct": 42,
+          "net_vs_dura": -70
+        },
+        "by_view": {
+          "clean": {
+            "correct": 667,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": 0
+          },
+          "practical_high": {
+            "correct": 537,
+            "repair": 1,
+            "damage": 3,
+            "net_vs_direct": -2,
+            "net_vs_dura": -14
+          },
+          "practical_mid": {
+            "correct": 478,
+            "repair": 43,
+            "damage": 30,
+            "net_vs_direct": 13,
+            "net_vs_dura": -16
+          },
+          "practical_low_suburban": {
+            "correct": 459,
+            "repair": 54,
+            "damage": 61,
+            "net_vs_direct": -7,
+            "net_vs_dura": -25
+          },
+          "practical_high_urban": {
+            "correct": 565,
+            "repair": 9,
+            "damage": 2,
+            "net_vs_direct": 7,
+            "net_vs_dura": -1
+          },
+          "practical_mid_urban": {
+            "correct": 463,
+            "repair": 69,
+            "damage": 39,
+            "net_vs_direct": 30,
+            "net_vs_dura": 1
+          },
+          "practical_low_urban": {
+            "correct": 388,
+            "repair": 72,
+            "damage": 71,
+            "net_vs_direct": 1,
+            "net_vs_dura": -15
+          }
+        },
+        "by_receiver": {
+          "b200_1": {
+            "correct": 546,
+            "repair": 51,
+            "damage": 45,
+            "net_vs_direct": 6,
+            "net_vs_dura": -40
+          },
+          "b200_mini_1": {
+            "correct": 513,
+            "repair": 37,
+            "damage": 42,
+            "net_vs_direct": -5,
+            "net_vs_dura": -9
+          },
+          "b210_1": {
+            "correct": 556,
+            "repair": 52,
+            "damage": 45,
+            "net_vs_direct": 7,
+            "net_vs_dura": -6
+          },
+          "pluto_1": {
+            "correct": 644,
+            "repair": 51,
+            "damage": 42,
+            "net_vs_direct": 9,
+            "net_vs_dura": -15
+          },
+          "rtl_1": {
+            "correct": 631,
+            "repair": 57,
+            "damage": 32,
+            "net_vs_direct": 25,
+            "net_vs_dura": 0
+          }
+        },
+        "paired95": {
+          "six_vs_dura": [
+            -123,
+            -15
+          ],
+          "urban_vs_dura": [
+            -37,
+            7
+          ],
+          "six_vs_original_half": [
+            -79.025,
+            31
+          ]
+        }
+      },
+      "phase_half": {
+        "six": {
+          "correct": 2903,
+          "repair": 292,
+          "damage": 237,
+          "net_vs_direct": 55,
+          "net_vs_dura": -57
+        },
+        "by_view": {
+          "clean": {
+            "correct": 667,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": 0
+          },
+          "practical_high": {
+            "correct": 539,
+            "repair": 1,
+            "damage": 1,
+            "net_vs_direct": 0,
+            "net_vs_dura": -12
+          },
+          "practical_mid": {
+            "correct": 487,
+            "repair": 86,
+            "damage": 64,
+            "net_vs_direct": 22,
+            "net_vs_dura": -7
+          },
+          "practical_low_suburban": {
+            "correct": 468,
+            "repair": 65,
+            "damage": 63,
+            "net_vs_direct": 2,
+            "net_vs_dura": -16
+          },
+          "practical_high_urban": {
+            "correct": 558,
+            "repair": 3,
+            "damage": 3,
+            "net_vs_direct": 0,
+            "net_vs_dura": -8
+          },
+          "practical_mid_urban": {
+            "correct": 452,
+            "repair": 66,
+            "damage": 47,
+            "net_vs_direct": 19,
+            "net_vs_dura": -10
+          },
+          "practical_low_urban": {
+            "correct": 399,
+            "repair": 71,
+            "damage": 59,
+            "net_vs_direct": 12,
+            "net_vs_dura": -4
+          }
+        },
+        "by_receiver": {
+          "b200_1": {
+            "correct": 553,
+            "repair": 63,
+            "damage": 50,
+            "net_vs_direct": 13,
+            "net_vs_dura": -33
+          },
+          "b200_mini_1": {
+            "correct": 516,
+            "repair": 48,
+            "damage": 50,
+            "net_vs_direct": -2,
+            "net_vs_dura": -6
+          },
+          "b210_1": {
+            "correct": 551,
+            "repair": 53,
+            "damage": 51,
+            "net_vs_direct": 2,
+            "net_vs_dura": -11
+          },
+          "pluto_1": {
+            "correct": 655,
+            "repair": 56,
+            "damage": 36,
+            "net_vs_direct": 20,
+            "net_vs_dura": -4
+          },
+          "rtl_1": {
+            "correct": 628,
+            "repair": 72,
+            "damage": 50,
+            "net_vs_direct": 22,
+            "net_vs_dura": -3
+          }
+        },
+        "paired95": {
+          "six_vs_dura": [
+            -113,
+            -4
+          ],
+          "urban_vs_dura": [
+            -27,
+            18
+          ],
+          "six_vs_original_half": [
+            -43,
+            26
+          ]
+        }
+      },
+      "amplitude_half": {
+        "six": {
+          "correct": 2901,
+          "repair": 154,
+          "damage": 101,
+          "net_vs_direct": 53,
+          "net_vs_dura": -59
+        },
+        "by_view": {
+          "clean": {
+            "correct": 667,
+            "repair": 0,
+            "damage": 0,
+            "net_vs_direct": 0,
+            "net_vs_dura": 0
+          },
+          "practical_high": {
+            "correct": 540,
+            "repair": 1,
+            "damage": 0,
+            "net_vs_direct": 1,
+            "net_vs_dura": -11
+          },
+          "practical_mid": {
+            "correct": 476,
+            "repair": 25,
+            "damage": 14,
+            "net_vs_direct": 11,
+            "net_vs_dura": -18
+          },
+          "practical_low_suburban": {
+            "correct": 465,
+            "repair": 32,
+            "damage": 33,
+            "net_vs_direct": -1,
+            "net_vs_dura": -19
+          },
+          "practical_high_urban": {
+            "correct": 561,
+            "repair": 5,
+            "damage": 2,
+            "net_vs_direct": 3,
+            "net_vs_dura": -5
+          },
+          "practical_mid_urban": {
+            "correct": 450,
+            "repair": 37,
+            "damage": 20,
+            "net_vs_direct": 17,
+            "net_vs_dura": -12
+          },
+          "practical_low_urban": {
+            "correct": 409,
+            "repair": 54,
+            "damage": 32,
+            "net_vs_direct": 22,
+            "net_vs_dura": 6
+          }
+        },
+        "by_receiver": {
+          "b200_1": {
+            "correct": 552,
+            "repair": 33,
+            "damage": 21,
+            "net_vs_direct": 12,
+            "net_vs_dura": -34
+          },
+          "b200_mini_1": {
+            "correct": 510,
+            "repair": 17,
+            "damage": 25,
+            "net_vs_direct": -8,
+            "net_vs_dura": -12
+          },
+          "b210_1": {
+            "correct": 564,
+            "repair": 30,
+            "damage": 15,
+            "net_vs_direct": 15,
+            "net_vs_dura": 2
+          },
+          "pluto_1": {
+            "correct": 641,
+            "repair": 32,
+            "damage": 26,
+            "net_vs_direct": 6,
+            "net_vs_dura": -18
+          },
+          "rtl_1": {
+            "correct": 634,
+            "repair": 42,
+            "damage": 14,
+            "net_vs_direct": 28,
+            "net_vs_dura": 3
+          }
+        },
+        "paired95": {
+          "six_vs_dura": [
+            -109,
+            -9
+          ],
+          "urban_vs_dura": [
+            -13,
+            25.024999999999864
+          ],
+          "six_vs_original_half": [
+            -66,
+            42
+          ]
+        }
+      }
+    }
+  },
+  "clean": {
+    "status": "SOURCE_SCORED",
+    "modes": [
+      "direct",
+      "reference",
+      "own_shape_coarse",
+      "own_shape_half",
+      "phase_coarse",
+      "amplitude_coarse",
+      "phase_half",
+      "amplitude_half"
+    ],
+    "target_reads": 0,
+    "truth_after_predictions": true,
+    "summary": {
+      "n": 12000,
+      "correct": [
+        8986,
+        8986,
+        8986,
+        8986,
+        8986,
+        8986,
+        8986,
+        8986
+      ],
+      "repairs": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "harms": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "switched": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "per_rx": {
+      "b200_1": {
+        "n": 2400,
+        "correct": [
+          1751,
+          1751,
+          1751,
+          1751,
+          1751,
+          1751,
+          1751,
+          1751
+        ],
+        "repairs": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "harms": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "switched": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "b200_mini_1": {
+        "n": 2400,
+        "correct": [
+          1757,
+          1757,
+          1757,
+          1757,
+          1757,
+          1757,
+          1757,
+          1757
+        ],
+        "repairs": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "harms": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "switched": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "b210_1": {
+        "n": 2400,
+        "correct": [
+          1793,
+          1793,
+          1793,
+          1793,
+          1793,
+          1793,
+          1793,
+          1793
+        ],
+        "repairs": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "harms": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "switched": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "pluto_1": {
+        "n": 2400,
+        "correct": [
+          1798,
+          1798,
+          1798,
+          1798,
+          1798,
+          1798,
+          1798,
+          1798
+        ],
+        "repairs": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "harms": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "switched": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "rtl_1": {
+        "n": 2400,
+        "correct": [
+          1887,
+          1887,
+          1887,
+          1887,
+          1887,
+          1887,
+          1887,
+          1887
+        ],
+        "repairs": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "harms": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "switched": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "scope": "source V clean complete main and independent reserve"
+  }
+}

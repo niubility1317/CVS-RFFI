@@ -1,0 +1,16 @@
+{
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "n_measurements": 24,
+  "parameters": 254913,
+  "timing": {
+    "clean": {
+      "active": 0,
+      "median_ms": 1.9389784429222345
+    },
+    "generic": {
+      "active": 1,
+      "median_ms": 56.640140479430556
+    }
+  },
+  "scope": "one frozen restoration forward and six waveform readouts, excludes DURA and F"
+}

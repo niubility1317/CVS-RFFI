@@ -1,0 +1,280 @@
+{
+  "status": "VERIFIED",
+  "n": 900,
+  "target_reads": 0,
+  "truth_after_predictions": true,
+  "sources": [
+    "20261124-phase1-lora-independent-shape-source-m3-r01",
+    "20261124-phase1-lora-common-failure-physics-source-m2-r01"
+  ],
+  "results": {
+    "full": {
+      "practical_high": {
+        "dura_only": 3,
+        "own_only": 4,
+        "dura_only_raw_correct": 2,
+        "own_only_raw_correct": 3,
+        "candidate_damage_vs_raw": 4,
+        "dura_damage_vs_raw": 5,
+        "candidate_repair_vs_raw": 1,
+        "dura_repair_vs_raw": 1,
+        "dura_only_diagnostic": {
+          "noise80": 3,
+          "noise100": 3,
+          "noise80_action": 2,
+          "noise100_action": 2
+        },
+        "known_correct": {
+          "noise80": 624,
+          "noise100": 626,
+          "noise80_action": 653,
+          "noise100_action": 665
+        }
+      },
+      "practical_mid": {
+        "dura_only": 29,
+        "own_only": 29,
+        "dura_only_raw_correct": 5,
+        "own_only_raw_correct": 19,
+        "candidate_damage_vs_raw": 13,
+        "dura_damage_vs_raw": 27,
+        "candidate_repair_vs_raw": 12,
+        "dura_repair_vs_raw": 26,
+        "dura_only_diagnostic": {
+          "noise80": 20,
+          "noise100": 20,
+          "noise80_action": 23,
+          "noise100_action": 24
+        },
+        "known_correct": {
+          "noise80": 610,
+          "noise100": 614,
+          "noise80_action": 655,
+          "noise100_action": 661
+        }
+      },
+      "practical_low_suburban": {
+        "dura_only": 61,
+        "own_only": 38,
+        "dura_only_raw_correct": 20,
+        "own_only_raw_correct": 19,
+        "candidate_damage_vs_raw": 25,
+        "dura_damage_vs_raw": 24,
+        "candidate_repair_vs_raw": 36,
+        "dura_repair_vs_raw": 58,
+        "dura_only_diagnostic": {
+          "noise80": 43,
+          "noise100": 42,
+          "noise80_action": 45,
+          "noise100_action": 47
+        },
+        "known_correct": {
+          "noise80": 590,
+          "noise100": 602,
+          "noise80_action": 636,
+          "noise100_action": 663
+        }
+      },
+      "practical_high_urban": {
+        "dura_only": 10,
+        "own_only": 8,
+        "dura_only_raw_correct": 4,
+        "own_only_raw_correct": 4,
+        "candidate_damage_vs_raw": 8,
+        "dura_damage_vs_raw": 8,
+        "candidate_repair_vs_raw": 6,
+        "dura_repair_vs_raw": 8,
+        "dura_only_diagnostic": {
+          "noise80": 6,
+          "noise100": 6,
+          "noise80_action": 8,
+          "noise100_action": 8
+        },
+        "known_correct": {
+          "noise80": 607,
+          "noise100": 611,
+          "noise80_action": 653,
+          "noise100_action": 664
+        }
+      },
+      "practical_mid_urban": {
+        "dura_only": 41,
+        "own_only": 32,
+        "dura_only_raw_correct": 15,
+        "own_only_raw_correct": 15,
+        "candidate_damage_vs_raw": 20,
+        "dura_damage_vs_raw": 20,
+        "candidate_repair_vs_raw": 34,
+        "dura_repair_vs_raw": 43,
+        "dura_only_diagnostic": {
+          "noise80": 28,
+          "noise100": 26,
+          "noise80_action": 26,
+          "noise100_action": 28
+        },
+        "known_correct": {
+          "noise80": 538,
+          "noise100": 569,
+          "noise80_action": 582,
+          "noise100_action": 649
+        }
+      },
+      "practical_low_urban": {
+        "dura_only": 41,
+        "own_only": 57,
+        "dura_only_raw_correct": 19,
+        "own_only_raw_correct": 22,
+        "candidate_damage_vs_raw": 34,
+        "dura_damage_vs_raw": 37,
+        "candidate_repair_vs_raw": 64,
+        "dura_repair_vs_raw": 51,
+        "dura_only_diagnostic": {
+          "noise80": 25,
+          "noise100": 25,
+          "noise80_action": 24,
+          "noise100_action": 31
+        },
+        "known_correct": {
+          "noise80": 490,
+          "noise100": 530,
+          "noise80_action": 506,
+          "noise100_action": 619
+        }
+      }
+    },
+    "residual": {
+      "practical_high": {
+        "dura_only": 44,
+        "own_only": 33,
+        "dura_only_raw_correct": 1,
+        "own_only_raw_correct": 31,
+        "candidate_damage_vs_raw": 1,
+        "dura_damage_vs_raw": 31,
+        "candidate_repair_vs_raw": 2,
+        "dura_repair_vs_raw": 43,
+        "dura_only_diagnostic": {
+          "noise80": 33,
+          "noise100": 29,
+          "noise80_action": 33,
+          "noise100_action": 33
+        },
+        "known_correct": {
+          "noise80": 610,
+          "noise100": 615,
+          "noise80_action": 663,
+          "noise100_action": 662
+        }
+      },
+      "practical_mid": {
+        "dura_only": 69,
+        "own_only": 62,
+        "dura_only_raw_correct": 41,
+        "own_only_raw_correct": 8,
+        "candidate_damage_vs_raw": 64,
+        "dura_damage_vs_raw": 31,
+        "candidate_repair_vs_raw": 86,
+        "dura_repair_vs_raw": 60,
+        "dura_only_diagnostic": {
+          "noise80": 45,
+          "noise100": 40,
+          "noise80_action": 42,
+          "noise100_action": 44
+        },
+        "known_correct": {
+          "noise80": 594,
+          "noise100": 604,
+          "noise80_action": 631,
+          "noise100_action": 665
+        }
+      },
+      "practical_low_suburban": {
+        "dura_only": 80,
+        "own_only": 59,
+        "dura_only_raw_correct": 54,
+        "own_only_raw_correct": 13,
+        "candidate_damage_vs_raw": 81,
+        "dura_damage_vs_raw": 40,
+        "candidate_repair_vs_raw": 78,
+        "dura_repair_vs_raw": 58,
+        "dura_only_diagnostic": {
+          "noise80": 57,
+          "noise100": 53,
+          "noise80_action": 55,
+          "noise100_action": 57
+        },
+        "known_correct": {
+          "noise80": 601,
+          "noise100": 613,
+          "noise80_action": 622,
+          "noise100_action": 664
+        }
+      },
+      "practical_high_urban": {
+        "dura_only": 47,
+        "own_only": 41,
+        "dura_only_raw_correct": 4,
+        "own_only_raw_correct": 33,
+        "candidate_damage_vs_raw": 6,
+        "dura_damage_vs_raw": 35,
+        "candidate_repair_vs_raw": 8,
+        "dura_repair_vs_raw": 43,
+        "dura_only_diagnostic": {
+          "noise80": 37,
+          "noise100": 36,
+          "noise80_action": 33,
+          "noise100_action": 35
+        },
+        "known_correct": {
+          "noise80": 621,
+          "noise100": 617,
+          "noise80_action": 647,
+          "noise100_action": 664
+        }
+      },
+      "practical_mid_urban": {
+        "dura_only": 71,
+        "own_only": 57,
+        "dura_only_raw_correct": 45,
+        "own_only_raw_correct": 11,
+        "candidate_damage_vs_raw": 58,
+        "dura_damage_vs_raw": 24,
+        "candidate_repair_vs_raw": 73,
+        "dura_repair_vs_raw": 53,
+        "dura_only_diagnostic": {
+          "noise80": 59,
+          "noise100": 45,
+          "noise80_action": 43,
+          "noise100_action": 48
+        },
+        "known_correct": {
+          "noise80": 561,
+          "noise100": 577,
+          "noise80_action": 586,
+          "noise100_action": 671
+        }
+      },
+      "practical_low_urban": {
+        "dura_only": 65,
+        "own_only": 76,
+        "dura_only_raw_correct": 51,
+        "own_only_raw_correct": 10,
+        "candidate_damage_vs_raw": 71,
+        "dura_damage_vs_raw": 30,
+        "candidate_repair_vs_raw": 98,
+        "dura_repair_vs_raw": 46,
+        "dura_only_diagnostic": {
+          "noise80": 46,
+          "noise100": 36,
+          "noise80_action": 43,
+          "noise100_action": 46
+        },
+        "known_correct": {
+          "noise80": 537,
+          "noise100": 562,
+          "noise80_action": 561,
+          "noise100_action": 660
+        }
+      }
+    }
+  }
+}

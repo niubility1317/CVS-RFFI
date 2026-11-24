@@ -1,0 +1,5 @@
+{"at": "2026-11-24T07:05:42+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-24T07:22:10+00:00", "status": "ANALYZED", "note": "Real source smoke, paired dual-route predictions and independent scoring verified.", "evidence": "full-source-scores.json", "row_id": "evaluate-full"}
+{"at": "2026-11-24T07:22:10+00:00", "status": "ANALYZED", "note": "Real source smoke, paired dual-route predictions and independent scoring verified.", "evidence": "residual-source-scores.json", "row_id": "evaluate-residual"}
+{"at": "2026-11-24T07:22:10+00:00", "status": "ANALYZED", "note": "Real source smoke, paired dual-route predictions and independent scoring verified.", "evidence": "clean-complete-scores.json", "row_id": "evaluate-reserve"}
+{"at": "2026-11-24T07:22:10+00:00", "status": "ANALYZED", "note": "Real source smoke, paired dual-route predictions and independent scoring verified.", "evidence": "polar-transition-audit.json", "row_id": null}
