@@ -453,6 +453,7 @@ def diagnose(rt, route, device):
     is_transport = rt['run_id']==variance_transport_source.RUN
     is_cross_frequency = rt['run_id']=='20261124-phase1-lora-cross-frequency-source-m2-r01'
     is_cross_dose = rt['run_id']=='20261124-phase1-lora-cross-frequency-dose-source-m4-r01'
+    is_mixture = rt['run_id']=='20261124-phase1-lora-spectral-mixture-source-m2-r01'
     is_interval = rt['run_id']==coherent_interval_source.RUN
     is_joint = rt['run_id']==joint_spectrum_source.RUN
     is_anchor = rt['run_id']==ANCHOR_RUN
@@ -496,9 +497,11 @@ def diagnose(rt, route, device):
         readouts = ('direct', 'scalar_full', 'interval_full', 'interval_matched',
                     'scalar_matched', 'interval_off')
         indices = tuple(study.MODES.index(name) - 2 for name in readouts[1:])
-    elif is_transport or is_cross_frequency:
+    elif is_transport or is_cross_frequency or is_mixture:
         if is_cross_frequency:
             from experiments.pamf_lora_main import cross_frequency_source as study
+        elif is_mixture:
+            from experiments.pamf_lora_main import spectral_mixture_source as study
         else:
             study = variance_transport_source
         recover = lambda iq, tracker, models, threshold: study.recover(iq, tracker, models[0], threshold)
@@ -551,7 +554,7 @@ def diagnose(rt, route, device):
     cache = root.parent/DATA_RUN/'source_views'
     contract = source_contract(data)
     rows, registered, clean, selected, marks = paired_source(data,cache,contract,root,route,study.MODES)
-    if is_transport or is_cross_frequency:
+    if is_transport or is_cross_frequency or is_mixture:
         threshold = study.load_gate(root)
         models = (study.load(root, contract, threshold, device),)
     else:
@@ -627,7 +630,7 @@ def diagnose(rt, route, device):
                     joint_stats.append(joint_part_metrics(waves,noiseless,frame))
                     if view!='clean':
                         noise_stats.append(joint_noise_bias(models[1],tracked,frame,epsilon))
-                if is_cross_frequency or is_cross_dose:
+                if is_cross_frequency or is_cross_dose or is_mixture:
                     joint_stats.append(joint_part_metrics(waves,noiseless,frame))
                     if view != 'clean':
                         prior = models[-1].prior if is_cross_dose else models[0]
@@ -721,7 +724,7 @@ def diagnose(rt, route, device):
                     pooled=report_interval(values),
                     by_receiver={name:report_interval(part) for name,part in
                                  zip(SOURCE,np.split(values,len(SOURCE),axis=1),strict=True)})
-            if is_joint or is_anchor or is_received or is_dose or is_cross_frequency or is_cross_dose:
+            if is_joint or is_anchor or is_received or is_dose or is_cross_frequency or is_cross_dose or is_mixture:
                 values = np.concatenate(joint_stats,axis=1)
                 output[view]['components_noiseless'] = dict(order=['shared','private'],
                     median=np.median(values,axis=1).tolist(),
@@ -814,7 +817,8 @@ def main():
                      joint_spectrum_source.RUN, ANCHOR_RUN, received_update_source.RUN,
                      phase_dose_source.RUN, BURST_DOSE_RUN, NEIGHBOR_PHASE_RUN,
                      '20261124-phase1-lora-cross-frequency-source-m2-r01',
-                     '20261124-phase1-lora-cross-frequency-dose-source-m4-r01')
+                     '20261124-phase1-lora-cross-frequency-dose-source-m4-r01',
+                     '20261124-phase1-lora-spectral-mixture-source-m2-r01')
     if rt.get('run_id') not in analyzed_runs or read(root/'state.json')['status']!='SOURCE_SCORED':
         raise ValueError('The full dual-route truth-last scoring must already be complete')
     activate(rt)
