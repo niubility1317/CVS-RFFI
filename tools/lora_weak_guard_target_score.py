@@ -148,6 +148,23 @@ def score_arrays(rows, truth, mode='guard_half'):
     return dict(aggregate=aggregate, paired=paired, rows=records)
 
 
+def dura_capacity_acceptance(aggregate):
+    candidate = dura_capacity_target.MODES[1]
+    full = aggregate['full'][candidate]
+    minima = {'six_scene': 361800, 'low_urban': 47700, 'clean': 64490}
+    checks = {name: dict(correct=full[name], minimum=minimum, passed=full[name] >= minimum)
+              for name, minimum in minima.items()}
+    by_route = {}
+    for route in ROUTES:
+        current, prior = (aggregate[route][method] for method in (candidate, 'dura_half'))
+        six_gain, clean_gain = (current[key] - prior[key] for key in ('six_scene', 'clean'))
+        by_route[route] = dict(six_gain=six_gain, clean_gain=clean_gain, passed=six_gain > 0 and clean_gain >= 0)
+    gap = abs(6 * full['clean'] - full['six_scene'])
+    return dict(passed=all(item['passed'] for item in (*checks.values(), *by_route.values())),
+                full_minima=checks, versus_original_dura=by_route,
+                full_clean_gap_pp=100 * gap / 540000, full_clean_gap_within_3pp=gap <= 16200)
+
+
 def score(output, full, residual, residual_old, dataset, *, replay=guard, previous_guard=None):
     rows = frozen_rows(output, full, residual, residual_old, replay=replay, previous_guard=previous_guard)
     smoke = read(output / 'smoke.json')
@@ -166,6 +183,8 @@ def score(output, full, residual, residual_old, dataset, *, replay=guard, previo
         or result['aggregate']['full']['dura_half'] != expected_original_full
         or result['aggregate']['residual']['dura_half'] != expected_residual):
         raise ValueError('Independent truth scoring did not reproduce the registered matched baselines')
+    if replay is dura_capacity_target:
+        result['formal_acceptance'] = dura_capacity_acceptance(result['aggregate'])
     write(output / 'scores.json', dict(status='TARGET_SCORED', truth_last=True, bootstrap_replicates=REPLICATES, **result))
 
 

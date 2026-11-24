@@ -54,3 +54,21 @@ def test_paired_scoring_repair_and_harm_for_both_candidate_names(monkeypatch):
         assert aggregate == {'clean': 3, 'six_scene': 23, 'low_urban': 3}
         assert (paired['repairs'], paired['harms'], paired['net']) == (6, 1, 5)
         assert f'{mode}_vs' in scores['rows'][0]
+
+
+def test_acceptance_uses_formal_thresholds_and_both_clean_counts():
+    aggregate = {
+        'full': {'dura_half': {'six_scene': 301599, 'clean': 64490},
+                 'expanded_half': {'six_scene': 361800, 'low_urban': 47700, 'clean': 64490}},
+        'residual': {'dura_half': {'six_scene': 289162, 'clean': 64307},
+                     'expanded_half': {'six_scene': 289163, 'clean': 64307}},
+    }
+    condition = scoring.dura_capacity_acceptance(aggregate)
+    assert condition['passed'] and not condition['full_clean_gap_within_3pp']
+
+    aggregate['full']['expanded_half']['low_urban'] -= 1
+    aggregate['residual']['expanded_half']['clean'] -= 1
+    failed = scoring.dura_capacity_acceptance(aggregate)
+    assert not failed['passed']
+    assert not failed['full_minima']['low_urban']['passed']
+    assert failed['versus_original_dura']['residual'] == {'six_gain': 1, 'clean_gain': -1, 'passed': False}
