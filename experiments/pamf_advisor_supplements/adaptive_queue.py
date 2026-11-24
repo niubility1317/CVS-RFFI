@@ -194,72 +194,91 @@ def analysis(root):
         wr=csv.DictWriter(f,fieldnames=list(rows[0]));wr.writeheader();wr.writerows(rows)
 
 
+def free_memory(gpu):
+    raw = subprocess.check_output(["nvidia-smi", "-i", str(gpu), "--query-gpu=memory.free",
+                                   "--format=csv,noheader,nounits"], text=True).strip()
+    return int(raw)
+
+
+def launch(rt, job, gpu, script="adaptive_queue.py"):
+    cmd = [rt["python"], "-u", str(Path(rt["release_root"])/script), "worker",
+           "--runtime", rt["runtime_file"], "--kind", job["kind"], "--config", job["config"]]
+    name = Path(rt["run_root"])/"logs"/f"{job['id']}.log"
+    with name.open("x") as stream:
+        env = dict(os.environ, CUDA_VISIBLE_DEVICES="" if gpu is None else str(gpu),
+                   OMP_NUM_THREADS="2", MKL_NUM_THREADS="2", OPENBLAS_NUM_THREADS="2")
+        process = subprocess.Popen(cmd, cwd=rt["release_root"], env=env, stdin=subprocess.DEVNULL,
+                                   stdout=stream, stderr=subprocess.STDOUT, start_new_session=True)
+    return process, dict(status="RUNNING", pid=process.pid, gpu=gpu, argv=cmd, cwd=rt["release_root"], log=str(name))
+
+
 def dispatch(rt):
     from experiments.cric_dura_comparison.io import read
-    from experiments.cric_dura_comparison.pipeline import ready, done, block_failed_dependencies
     from experiments.pamf_repl_completion.runner import foreign_CPU_score
     from experiments.practical_full_2x2.cache import atomic
 
     root = Path(rt["run_root"])
     root.mkdir(exist_ok=False)
-    log = root/"logs"; log.mkdir()
-    gates = {j["id"]:dict(status="QUEUED") for j in prepare(rt)}
-    jobs = {j["id"]:j for j in read(root/"jobs.json")}
+    (root/"logs").mkdir()
+    jobs = {j["id"]:j for j in prepare(rt)}
+    gates = {key:dict(status="QUEUED") for key in jobs}
     state = dict(status="PREPARING", pid=os.getpid(), jobs=gates, code_commit=rt["code_commit"])
     path = root/"pipeline_state.json"
     atomic(path,state)
-
-    def available(gpu):
-        raw = subprocess.check_output(["nvidia-smi","-i",str(gpu),"--query-gpu=memory.free",
-                                       "--format=csv,noheader,nounits"],text=True).strip()
-        return int(raw) >= 11000
-
-    def launch(job,gpu):
-        cmd = [rt["python"],"-u",__file__, "worker","--runtime",rt["runtime_file"],
-               "--kind",job["kind"],"--config",job["config"]]
-        name = log/f"{job['id']}.log"
-        with name.open("x") as stream:
-            env = dict(os.environ,CUDA_VISIBLE_DEVICES="" if gpu is None else str(gpu),
-                       OMP_NUM_THREADS="2", MKL_NUM_THREADS="2", OPENBLAS_NUM_THREADS="2")
-            process = subprocess.Popen(cmd,cwd=rt["release_root"],env=env,stdin=subprocess.DEVNULL,
-                                       stdout=stream,stderr=subprocess.STDOUT,start_new_session=True)
-        return process,dict(status="RUNNING",pid=process.pid,gpu=gpu,argv=cmd,cwd=rt["release_root"],log=str(name))
-
-    gpu = next((g for g in rt["allowed_gpus"] if available(g)),None)
+    gpu = next((g for g in rt["allowed_gpus"] if free_memory(g) >= 11000),None)
     if gpu is None:
         raise RuntimeError("No allocated GPU has memory for the initial checkpoint smoke")
-    child, item = launch(dict(id="smoke",kind="smoke",config=rt["runtime_file"]),gpu)
+    child, item = launch(rt,dict(id="smoke",kind="smoke",config=rt["runtime_file"]),gpu)
     state.update(status="SMOKE_RUNNING",smoke=item)
     atomic(path,state)
     if child.wait() or read(root/"smoke.json")["status"]!="PASS":
         state["status"]="FAILED_NO_QUERY_SMOKE";atomic(path,state)
         raise RuntimeError("Real checkpoint smoke did not pass")
     state["status"]="RUNNING"
-    active = {}; failures=[]
+    schedule(rt, jobs, state, {}, lambda memory, _: memory >= 11000, foreign_score=foreign_CPU_score)
+
+
+def schedule(rt, jobs, state, active, admits, launch_job=launch, analyze=analysis, auxiliary=None,
+             foreign_score=None):
+    from experiments.cric_dura_comparison.pipeline import ready, done, block_failed_dependencies, alive
+    from experiments.practical_full_2x2.cache import atomic
+
+    root = Path(rt["run_root"])
+    path = root/"pipeline_state.json"
+    gates = state["jobs"]
+    failures = []
     while True:
         for key,(proc,item) in list(active.items()):
-            if proc.poll() is None:
+            if (alive(item["pid"]) if proc is None else proc.poll() is None):
                 continue
-            ok=proc.returncode==0 and done(jobs[key])
-            gates[key]=dict(item,status="COMPLETE" if ok else "FAILED",exit_code=proc.returncode)
+            exit_code = proc.returncode if proc is not None else None
+            ok=exit_code in (None, 0) and done(jobs[key])
+            gates[key]=dict(item,status="COMPLETE" if ok else "FAILED",exit_code=exit_code)
             if not ok: failures.append(key)
             del active[key]
+        if auxiliary is not None and auxiliary.poll() is not None and "augmentation" not in failures:
+            failures.append("augmentation")
         block_failed_dependencies(list(jobs.values()),state,[])
         queued=[job for key,job in jobs.items() if gates[key]["status"]=="QUEUED"]
         eligible=[j for j in queued if ready(j)] if not failures else []
         new=[]
         cpu=next((j for j in eligible if j["kind"] in ("score","reuse")),None)
         if (cpu and not any(item["gpu"] is None for _,item in active.values())
-                and (cpu["kind"]=="reuse" or not foreign_CPU_score({p.pid for p,_ in active.values()}))):
+                and (cpu["kind"]=="reuse" or foreign_score is None
+                     or not foreign_score({item["pid"] for _,item in active.values()}))):
             new.append((cpu,None))
         gpu_jobs=sorted((j for j in eligible if j["kind"] in ("train","predict")),
-                        key=lambda j:j["kind"]!="predict")
+                        key=lambda j:(j["kind"]!="predict", j.get("priority",0)))
         for gpu in rt["allowed_gpus"]:
             if not gpu_jobs: break
-            if not any(item["gpu"]==gpu for _,item in active.values()) and available(gpu):
-                new.append((gpu_jobs.pop(0),gpu))
+            if any(item["gpu"]==gpu for _,item in active.values()):
+                continue
+            memory = free_memory(gpu)
+            candidate = next((i for i, job in enumerate(gpu_jobs) if admits(memory, job)), None)
+            if candidate is not None:
+                new.append((gpu_jobs.pop(candidate),gpu))
         for job,gpu in new:
-            active[job["id"]]=launch(job,gpu)
+            active[job["id"]]=launch_job(rt,job,gpu)
             gates[job["id"]]=active[job["id"]][1]
         state.update(counts=dict(Counter(x["status"] for x in gates.values())),failed_jobs=failures,updated_at=time.time())
         atomic(path,state)
@@ -268,7 +287,7 @@ def dispatch(rt):
     state["status"]="PARTIAL_TECHNICAL_FAILURE" if failures else "ANALYZING"
     atomic(path,state)
     if not failures:
-        analysis(root)
+        analyze(root)
         state["status"]="ANALYZED"
         atomic(path,state)
 
