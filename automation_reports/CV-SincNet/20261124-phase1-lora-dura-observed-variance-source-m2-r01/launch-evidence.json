@@ -1,0 +1,93 @@
+{
+  "status": "VERIFIED",
+  "smoke": {
+    "submit": {
+      "pid": 2815131,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-observed-variance-source-m2-r01-release",
+      "code_commit": "eb4bfec755fa50358f4abd043ed5b5b1fe9d73bc",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-observed-variance-source-m2-r01"
+    },
+    "controller": {
+      "pid": 2815131,
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.dura_observed_variance_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-observed-variance-source-m2-r01-release/runtime.json",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-observed-variance-source-m2-r01-release",
+      "cuda": [
+        "CUDA_VISIBLE_DEVICES="
+      ]
+    },
+    "jobs": {
+      "smoke-source": {
+        "pid": 2815208,
+        "gpu": 7,
+        "identity": null,
+        "bytes": 459,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_ANTITHETIC_REAL_CHECKPOINT_PASS"
+        ]
+      }
+    },
+    "state": null,
+    "files": {
+      "smoke.json": 128
+    }
+  },
+  "running": {
+    "submit": {
+      "pid": 2815131,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-observed-variance-source-m2-r01-release",
+      "code_commit": "eb4bfec755fa50358f4abd043ed5b5b1fe9d73bc",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-observed-variance-source-m2-r01"
+    },
+    "controller": {
+      "pid": 2815131,
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.dura_observed_variance_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-observed-variance-source-m2-r01-release/runtime.json",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-observed-variance-source-m2-r01-release",
+      "cuda": [
+        "CUDA_VISIBLE_DEVICES="
+      ]
+    },
+    "jobs": {
+      "smoke-source": {
+        "pid": 2815208,
+        "gpu": 7,
+        "identity": null,
+        "bytes": 459,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_ANTITHETIC_REAL_CHECKPOINT_PASS"
+        ]
+      },
+      "fit-observed_variance": {
+        "pid": 2816240,
+        "gpu": 7,
+        "identity": {
+          "pid": 2816240,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.dura_observed_variance_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-observed-variance-source-m2-r01/configs/fit-observed_variance.json observed_variance",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-observed-variance-source-m2-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=7"
+          ]
+        },
+        "bytes": 919,
+        "last": [
+          "CHANNEL_BLIND_FIT 1 2.755194902420044 3.8148953914642334 4.12438440322876 3.2882909774780273 2.8014841079711914 0.16673007607460022 2.588162660598755 0.6291000247001648 1.7907859086990356 1.352760910987854 1.6735590696334839 1.9918954372406006 0.17557235062122345 0.39808979630470276 0.2477511316537857",
+          "CHANNEL_BLIND_FIT 50 2.7466113567352295 3.296489953994751 3.6136374473571777 2.556053400039673 2.611016273498535 0.06366375833749771 2.0009117126464844 0.40664491057395935 2.031337022781372 1.1396329402923584 1.0504610538482666 1.5580203533172607 0.05866844952106476 0.06184837594628334 0.061766281723976135",
+          "CHANNEL_BLIND_FIT 100 2.852672815322876 3.038398027420044 3.554412841796875 2.4752695560455322 2.7263383865356445 0.14718538522720337 2.025722026824951 0.29983869194984436 1.7714279890060425 1.1154347658157349 0.9202358722686768 1.3328860998153687 0.07943814247846603 0.07623513787984848 0.08354330062866211"
+        ]
+      }
+    },
+    "state": null,
+    "files": {
+      "smoke.json": 128
+    }
+  }
+}

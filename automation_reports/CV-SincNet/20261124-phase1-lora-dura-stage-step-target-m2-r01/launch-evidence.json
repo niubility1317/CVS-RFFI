@@ -1,0 +1,116 @@
+{
+  "status": "VERIFIED",
+  "smoke": {
+    "submit": {
+      "pid": 2802254,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-stage-step-target-m2-r01-release",
+      "code_commit": "bc6d511458c760a378b3e55ab94c7d805b0cdd69",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-stage-step-target-m2-r01"
+    },
+    "controller": {
+      "pid": 2802254,
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.dura_stage_step_target dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-stage-step-target-m2-r01-release/runtime.json",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-stage-step-target-m2-r01-release",
+      "cuda": [
+        "CUDA_VISIBLE_DEVICES="
+      ]
+    },
+    "jobs": {
+      "smoke-source": {
+        "pid": 2802268,
+        "gpu": 3,
+        "identity": {
+          "pid": 2802268,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.dura_stage_step_target smoke /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-stage-step-target-m2-r01/configs/smoke-source.json source",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-stage-step-target-m2-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=3"
+          ]
+        },
+        "bytes": 422,
+        "receivers": 0,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()"
+        ]
+      }
+    },
+    "state": {
+      "status": "SOURCE_SMOKE"
+    },
+    "written": {
+      "full": 0,
+      "residual": 0
+    },
+    "files": {
+      "state.json": 31
+    }
+  },
+  "initial_prediction": {
+    "submit": {
+      "pid": 2802254,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-stage-step-target-m2-r01-release",
+      "code_commit": "bc6d511458c760a378b3e55ab94c7d805b0cdd69",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-stage-step-target-m2-r01"
+    },
+    "controller": {
+      "pid": 2802254,
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.dura_stage_step_target dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-stage-step-target-m2-r01-release/runtime.json",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-stage-step-target-m2-r01-release",
+      "cuda": [
+        "CUDA_VISIBLE_DEVICES="
+      ]
+    },
+    "jobs": {
+      "smoke-source": {
+        "pid": 2802268,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 464,
+        "receivers": 0,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_DURA_STAGE_STEP_REAL_CHECKPOINT_PASS"
+        ]
+      },
+      "predict-full": {
+        "pid": 2802494,
+        "gpu": 3,
+        "identity": {
+          "pid": 2802494,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.dura_stage_step_target predict /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-stage-step-target-m2-r01/configs/predict-full.json full",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-stage-step-target-m2-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=3"
+          ]
+        },
+        "bytes": 666,
+        "receivers": 7,
+        "last": [
+          "LORA_TARGET_PREDICTED full n210_1",
+          "LORA_TARGET_PREDICTED full n210_2",
+          "LORA_TARGET_PREDICTED full n210_3"
+        ]
+      }
+    },
+    "state": {
+      "status": "PREDICTING"
+    },
+    "written": {
+      "full": 265,
+      "residual": 0
+    },
+    "files": {
+      "state.json": 29,
+      "smoke.json": 317,
+      "b1.json": 367
+    }
+  }
+}

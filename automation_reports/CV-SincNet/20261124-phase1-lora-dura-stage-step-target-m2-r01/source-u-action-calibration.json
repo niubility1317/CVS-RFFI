@@ -1,0 +1,91 @@
+{
+  "status": "VERIFIED",
+  "n": 150,
+  "results": {
+    "full": {
+      "practical_low_suburban": {
+        "active": 53,
+        "favourable_estimated": 49,
+        "estimated_vs_clean_private": {
+          "correlation": -0.9313851594924927,
+          "agree": 49,
+          "favourable": 53
+        },
+        "estimated_vs_noiseless_private": {
+          "correlation": -0.931073009967804,
+          "agree": 49,
+          "favourable": 53
+        },
+        "offband_log_correlation": 0.9985545873641968,
+        "offband_to_noise_median": 1.0094585418701172,
+        "variance_log_correlation": -0.686518669128418,
+        "variance_to_noise_median": 214.7186279296875,
+        "forward_model_error_to_noise_median": 727.3895874023438
+      },
+      "practical_low_urban": {
+        "active": 101,
+        "favourable_estimated": 86,
+        "estimated_vs_clean_private": {
+          "correlation": 0.16466911137104034,
+          "agree": 87,
+          "favourable": 100
+        },
+        "estimated_vs_noiseless_private": {
+          "correlation": 0.18277087807655334,
+          "agree": 87,
+          "favourable": 100
+        },
+        "offband_log_correlation": 0.9992077946662903,
+        "offband_to_noise_median": 0.9774705767631531,
+        "variance_log_correlation": -0.5504435300827026,
+        "variance_to_noise_median": 9.083770751953125,
+        "forward_model_error_to_noise_median": 38.86919021606445
+      }
+    },
+    "residual": {
+      "practical_low_suburban": {
+        "active": 150,
+        "favourable_estimated": 150,
+        "estimated_vs_clean_private": {
+          "correlation": 0.5914337635040283,
+          "agree": 150,
+          "favourable": 150
+        },
+        "estimated_vs_noiseless_private": {
+          "correlation": 0.5937425494194031,
+          "agree": 149,
+          "favourable": 149
+        },
+        "offband_log_correlation": 0.9979126453399658,
+        "offband_to_noise_median": 1.0409454107284546,
+        "variance_log_correlation": -0.7543225288391113,
+        "variance_to_noise_median": 67.46075439453125,
+        "forward_model_error_to_noise_median": 251.7916717529297
+      },
+      "practical_low_urban": {
+        "active": 150,
+        "favourable_estimated": 145,
+        "estimated_vs_clean_private": {
+          "correlation": -0.1751014143228531,
+          "agree": 145,
+          "favourable": 150
+        },
+        "estimated_vs_noiseless_private": {
+          "correlation": -0.16642343997955322,
+          "agree": 145,
+          "favourable": 150
+        },
+        "offband_log_correlation": 0.9963318109512329,
+        "offband_to_noise_median": 1.0184338092803955,
+        "variance_log_correlation": -0.7630693316459656,
+        "variance_to_noise_median": 4.62949800491333,
+        "forward_model_error_to_noise_median": 32.322811126708984
+      }
+    }
+  },
+  "F_reads": 0,
+  "V_reads": 0,
+  "TX_reads": 0,
+  "target_reads": 0,
+  "exact_trace_for_diagnostics_only": true
+}
