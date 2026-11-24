@@ -35,6 +35,13 @@ def complete_labeled_batches(y, rx, rng):
             yield np.asarray(batch, dtype=np.int64)
 
 
+def packet_phase_curvature(gain):
+    phase=gain/gain.abs().clamp_min(1e-5)
+    # A constant phase and a common linear phase slope both cancel.
+    variation=phase[:,2:]*phase[:,:-2]*phase[:,1:-1].conj().square()
+    return torch.cat((variation.real,variation.imag),dim=1)
+
+
 class AlignedTrace(nn.Module):
     """Remove the common dechirped tone and retain residual amplitude and phase."""
 
@@ -43,7 +50,7 @@ class AlignedTrace(nn.Module):
         self.reference = ChirpResponse(samples=samples)
         self.register_buffer('time', torch.arange(samples, dtype=torch.float32), persistent=False)
 
-    def forward(self, x, *, with_drift=False):
+    def forward(self, x, *, with_drift=False, with_phase=False):
         z = torch.complex(x[:, :, 0], x[:, :, 1])
         baseband = z * self.reference.chirp.conj()
         length = 8*self.time.numel()
@@ -61,6 +68,8 @@ class AlignedTrace(nn.Module):
         rms = z.abs().square().mean(-1, keepdim=True).clamp_min(1e-6).sqrt()
         w = w / rms
         trace = torch.stack((w.real, w.imag, z.abs() / rms), dim=2)
+        if with_phase:
+            return trace,packet_phase_curvature(dc.squeeze(-1))
         if with_drift:
             # Only variation between chirps enters the model. The common
             # carrier offset, including receiver oscillator bias, is removed.

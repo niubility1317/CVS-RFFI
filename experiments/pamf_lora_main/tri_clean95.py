@@ -94,7 +94,10 @@ class SpectrumAligned(CoherentPacket):
 class TimeFrequencyAligned(CoherentPacket):
     def forward(self,x):
         drift_layer=getattr(self,'relative_drift',None)
-        if drift_layer is None:
+        phase_layer=getattr(self,'phase_curvature',None)
+        if phase_layer is not None:
+            traces,phase=self.trace(x,with_phase=True)
+        elif drift_layer is None:
             traces=self.trace(x)
         else:
             traces,drift=self.trace(x,with_drift=True)
@@ -109,7 +112,8 @@ class TimeFrequencyAligned(CoherentPacket):
         edge_layer=getattr(self,'edge_features',None)
         if edge_layer is not None:
             interior=chirps[:,1:-1].mean(1)
-            edges=torch.cat((chirps[:,0]-interior,chirps[:,-1]-interior),dim=1)
+            tail=chirps[:,-1]-interior
+            edges=torch.cat((chirps[:,0]-interior,torch.zeros_like(tail) if self.first_edge else tail),dim=1)
             aligned=aligned+.10*edge_layer(edges)
         z=torch.complex(traces[:,:,0],traces[:,:,1])
         z=z-z.mean(-1,keepdim=True)
@@ -128,6 +132,8 @@ class TimeFrequencyAligned(CoherentPacket):
         aligned=aligned+.10*self.time_frequency(features)
         if drift_layer is not None:
             aligned=aligned+.10*drift_layer(torch.asinh(drift))
+        if phase_layer is not None:
+            aligned=aligned+.10*phase_layer(phase)
         return logits+self.head(aligned),fused+.10*aligned
 
 
@@ -145,6 +151,7 @@ def clean_model(rt,root,c,row,device):
             f.__class__=TimeFrequencyAligned
             f.nominal_iq=row.get('nominal_iq',False)
             f.spectral_edges=row.get('spectral_edges',False)
+            f.first_edge=row.get('first_edge',False)
             f.time_frequency=nn.Sequential(nn.Conv2d(2,16,3,padding=1),nn.GroupNorm(4,16),nn.SiLU(),
                 nn.Conv2d(16,24,3,padding=1,stride=2),nn.GroupNorm(4,24),nn.SiLU(),
                 nn.AdaptiveAvgPool2d((4,5)),nn.Flatten(),nn.Linear(480,160),nn.LayerNorm(160)).to(device)
@@ -153,6 +160,9 @@ def clean_model(rt,root,c,row,device):
                                               nn.Linear(32,160),nn.LayerNorm(160)).to(device)
             if row.get('edge_features'):
                 f.edge_features=nn.Sequential(nn.LayerNorm(320),nn.Linear(320,160),nn.LayerNorm(160)).to(device)
+            if row.get('phase_curvature'):
+                f.phase_curvature=nn.Sequential(nn.Linear(12,32),nn.LayerNorm(32),nn.SiLU(),
+                                               nn.Linear(32,160),nn.LayerNorm(160)).to(device)
             if f.spectral_edges:
                 original=f.time_frequency[0]
                 extended=nn.Conv2d(4,16,3,padding=1,device=device)
@@ -167,6 +177,8 @@ def clean_model(rt,root,c,row,device):
 
 def study(rt):
     if rt.get('scratch'):
+        if rt.get('phase_study'):
+            return PHASE_ROWS,80,16
         if rt.get('robust_study'):
             return ROBUST_ROWS,80,16
         if rt.get('edge_study'):
@@ -233,6 +245,11 @@ ROBUST_ROWS={
     'spectral_joint_rx': dict(EDGE_ROWS['edge_aware384'],spectral_edges=True,joint_rx_weight=.12),
 }
 ROBUST_SOURCE_CORRECT=11760
+PHASE_RUN='20261125-phase1-lora-pamf-tri-clean-headphase98-m2-r01'
+PHASE_ROWS={
+    'first_edge': dict(ROBUST_ROWS['control'],first_edge=True),
+    'first_phase': dict(ROBUST_ROWS['control'],first_edge=True,phase_curvature=True),
+}
 VALIDATION_EPOCHS={0,2,4,8,12,16,20,24}
 
 
@@ -272,6 +289,8 @@ def row_names(rt):
         return ('edge_aware384',)
     if rt.get('robust_study'):
         return ('spectral_joint_rx',)
+    if rt.get('phase_study'):
+        return ('first_phase',)
     return SCRATCH_LOCAL if rt.get('scratch') else LOCAL
 
 
@@ -453,7 +472,7 @@ def train(rt,name):
     validation_epochs=set(VALIDATION_EPOCHS)
     if rt.get('scratch'):
         validation_epochs.update(range(warmup,epochs+1,4))
-        if rt.get('budget_study') or rt.get('edge_study') or rt.get('robust_study'):
+        if any(rt.get(k) for k in ('budget_study','edge_study','robust_study','phase_study')):
             validation_epochs.update((32,48,60))
     with (out/'epochs.jsonl').open('x',encoding='utf8') as log:
         for epoch in range(1,epochs+1):
@@ -539,12 +558,13 @@ def dispatch(rt):
         raise ValueError('Quick branch study is registered for N607 only')
     root=Path(rt['run_root'])
     screens=('quick','transfer','timefreq','noise_study','drift_study','budget_study')
-    if any(rt.get(k) for k in ('noise_study','drift_study','budget_study','edge_study','robust_study')) and not rt.get('scratch'):
+    gated_study=bool(rt.get('robust_study') or rt.get('phase_study'))
+    if (gated_study or any(rt.get(k) for k in ('noise_study','drift_study','budget_study','edge_study'))) and not rt.get('scratch'):
         raise ValueError('The clean input comparisons require random initialization')
     root.mkdir(exist_ok=False)
     state=root/'state.json'
     fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq',
-                             'noise_study','drift_study','budget_study','edge_study','robust_study',
+                             'noise_study','drift_study','budget_study','edge_study','robust_study','phase_study',
                              'fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)
@@ -562,7 +582,7 @@ def dispatch(rt):
         tested=[] if source_only else list(dict.fromkeys(['control',ranking[0]]))
         best=evidence[ranking[0]]
         goal_met=best['correct']>=TARGET_SOURCE_ACCURACY*best['n']
-        if rt.get('robust_study'):
+        if gated_study:
             goal_met=best['n']==12000 and best['correct']>=ROBUST_SOURCE_CORRECT
             tested=[ranking[0]] if goal_met and not source_only else []
         write(root/'selection.json',dict(names=tested,rank=ranking,source=evidence,target_reads=0,goal_met=goal_met))

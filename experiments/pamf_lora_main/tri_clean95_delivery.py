@@ -15,18 +15,22 @@ from .publish import release, release_commit
 from .scoring import macro_f1
 from .tri_clean95 import (
     BUDGET_RUN, DRIFT_RUN, EDGE_ROWS, EDGE_RUN, NOISE_RUN, QUICK_RUN, ROWS, RUN, SCRATCH_ROWS, SCRATCH_RUN,
-    ROBUST_ROWS, ROBUST_RUN, SEED, TIMEFREQ_RUN, TRANSFER_RUN,
+    PHASE_ROWS, PHASE_RUN, ROBUST_ROWS, ROBUST_RUN, SEED, TIMEFREQ_RUN, TRANSFER_RUN,
 )
 
 
+QUALIFIED_ROWS={ROBUST_RUN:ROBUST_ROWS,PHASE_RUN:PHASE_ROWS}
+
+
 def publish(repo, output, context, ssh_config, quick=False, transfer=False, scratch=False, timefreq=False,
-            noise=False,drift=False,budget=False,edge=False,robust=False):
+            noise=False,drift=False,budget=False,edge=False,robust=False,headphase=False):
     ctx=read(context)
     rt={k:ctx[k] for k in ('project','python','frozen_sources')}
     project=PurePosixPath(rt['project'])
     parent=project/'runs'/DATA_RUN
     native=project/'releases'/f'{DATA_RUN}-release'/'data'
-    studies=((robust,ROBUST_RUN),(edge,EDGE_RUN),(budget,BUDGET_RUN),(drift,DRIFT_RUN),(noise,NOISE_RUN),(timefreq,TIMEFREQ_RUN),(scratch,SCRATCH_RUN),
+    studies=((headphase,PHASE_RUN),(robust,ROBUST_RUN),(edge,EDGE_RUN),(budget,BUDGET_RUN),
+             (drift,DRIFT_RUN),(noise,NOISE_RUN),(timefreq,TIMEFREQ_RUN),(scratch,SCRATCH_RUN),
              (transfer,TRANSFER_RUN),(quick,QUICK_RUN))
     name=next((name for enabled,name in studies if enabled),RUN)
     rt.update(run_id=name,code_commit=release_commit(repo),runner='experiments.pamf_lora_main.tri_clean95',
@@ -55,6 +59,9 @@ def publish(repo, output, context, ssh_config, quick=False, transfer=False, scra
     if robust:
         rt.update(scratch=True,robust_study=True,fixed_clean_cache=str(project/'runs'/DRIFT_RUN/'clean_cache'),
                   allowed_gpus=[3,6,5,7,0],max_workers=4,min_free_mib=10000)
+    if headphase:
+        rt.update(scratch=True,phase_study=True,fixed_clean_cache=str(project/'runs'/DRIFT_RUN/'clean_cache'),
+                  allowed_gpus=[3,6,5,7],max_workers=2,min_free_mib=12500)
     if quick or transfer:
         del rt['native_target_root'],rt['target_views']
         rt.update(quick=quick,transfer=transfer,fixed_clean_cache=str(project/'runs'/RUN/'clean_cache'))
@@ -65,8 +72,8 @@ def publish(repo, output, context, ssh_config, quick=False, transfer=False, scra
     release(repo,output,rt,ssh_config)
 
 
-def frozen_predictions(output,names,*,qualified=False):
-    accepted=(len(names)==1 and names[0] in ROBUST_ROWS) if qualified else (
+def frozen_predictions(output,names,*,qualified_rows=None):
+    accepted=(len(names)==1 and names[0] in qualified_rows) if qualified_rows is not None else (
         bool(names) and names[0]=='control' and len(set(names))==len(names)
         and set(names)<=set(ROWS)|set(SCRATCH_ROWS)|set(EDGE_ROWS))
     if not accepted:
@@ -89,7 +96,8 @@ def frozen_predictions(output,names,*,qualified=False):
 
 def score(submit, ssh_config, dataset, output):
     run_root=read(submit)['run_root']
-    qualified=PurePosixPath(run_root).name==ROBUST_RUN
+    qualified_rows=QUALIFIED_ROWS.get(PurePosixPath(run_root).name)
+    qualified=qualified_rows is not None
     root=shlex.quote(run_root)
     conn=['ssh','-F',str(ssh_config),'-T','-o','BatchMode=yes','-o','ConnectTimeout=10','N607']
     state=wait_for_predictions(conn,root,allow_source_only=qualified)
@@ -98,7 +106,7 @@ def score(submit, ssh_config, dataset, output):
         return
     output.mkdir(parents=True,exist_ok=False)
     receive(conn,root,output,main=False)
-    preds=frozen_predictions(output,state['names'],qualified=qualified)
+    preds=frozen_predictions(output,state['names'],qualified_rows=qualified_rows)
     truth=[]
     with zipfile.ZipFile(dataset/'multiple_receiver_test.zip') as archive:
         for i,rx in enumerate(TARGET):
@@ -135,6 +143,7 @@ if __name__=='__main__':
             study.add_argument('--budget',action='store_true')
             study.add_argument('--edge',action='store_true')
             study.add_argument('--robust',action='store_true')
+            study.add_argument('--headphase',action='store_true')
     args=vars(parser.parse_args())
     kind=args.pop('kind')
     {'publish':publish,'score':score}[kind](**args)

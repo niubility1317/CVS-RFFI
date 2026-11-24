@@ -12,6 +12,7 @@ from experiments.pamf_lora_main.packet_physics import chirp_samples
 from experiments.pamf_lora_main.tri_branch_shapes import retain_projection
 from experiments.pamf_lora_main import tri_clean95
 from experiments.pamf_lora_main.packet_physics import chirp_windows
+from experiments.pamf_lora_main.repair_features import packet_phase_curvature
 from experiments.pamf_ssl_research.hard_pl_objective import mechanism_loss
 from experiments.pamf_ssl_research.source_receiver_extrapolation import extrapolate
 
@@ -101,3 +102,11 @@ class TriTuningTests(TestCase):
                     tri_clean95.dispatch(rt)
                 self.assertEqual(predicted,expected)
                 self.assertEqual(read(root/'selection.json')['names'],expected)
+
+    def test_packet_phase_feature_removes_common_phase_and_linear_drift(self):
+        t=torch.arange(8,dtype=torch.float64)
+        base=torch.polar(1+.2*t,torch.sin(t)).unsqueeze(0)
+        rotated=base*torch.polar(torch.ones_like(t),.4+.2*t)
+        actual=packet_phase_curvature(rotated)
+        self.assertEqual(actual.shape,(1,12))
+        torch.testing.assert_close(actual,packet_phase_curvature(base))
