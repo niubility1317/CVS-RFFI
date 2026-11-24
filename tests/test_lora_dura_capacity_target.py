@@ -7,35 +7,23 @@ from experiments.pamf_lora_main.data import VIEWS
 from tools import lora_weak_guard_target_score as scoring
 
 
-SOURCE_MODES = ('direct', 'reference', 'base_half', 'expanded_half')
+@pytest.mark.parametrize('record', [None, dict(status='SOURCE_FROZEN', estimator='expanded', steps=39000),
+                                    dict(status='SOURCE_FROZEN', estimator='base', steps=40000)])
+def test_replay_requires_fixed_terminal_model(tmp_path, record):
+    if record is not None:
+        write(tmp_path / 'expanded-complete.json', record)
+    with pytest.raises(ValueError, match='terminal'):
+        target.frozen_fit(tmp_path, 40000)
 
 
-def write_source_scores(root, route, *, candidate_six=610, candidate_clean=600):
-    counts = {view: {'correct': [590, 600, 606, candidate_six]} for view in VIEWS[1:]}
-    counts['clean'] = {'correct': [600, 600, 600, candidate_clean]}
-    write(root / f'{route}-source-scores.json', dict(n=900, truth_after_predictions=True,
-          target_reads=0, modes=SOURCE_MODES, metrics=counts))
-
-
-@pytest.mark.parametrize('route,accuracy,clean', [('full', 600, 600), ('residual', 610, 599)])
-def test_admission_requires_gain_and_clean_on_both_routes(tmp_path, route, accuracy, clean):
-    write(tmp_path / 'state.json', {'status': 'SOURCE_SCORED'})
-    for name in target.ROUTES:
-        write_source_scores(tmp_path, name, candidate_six=accuracy if name == route else 610,
-                            candidate_clean=clean if name == route else 600)
-    with pytest.raises(ValueError, match=f'source admission for {route}'):
-        target.require_source_admission(tmp_path, SOURCE_MODES)
-
-
-def test_admission_requires_terminal_scores(tmp_path):
-    state = tmp_path / 'state.json'
-    write(state, {'status': 'FIT'})
-    with pytest.raises(ValueError, match='must be complete'):
-        target.require_source_admission(tmp_path, SOURCE_MODES)
-    write(state, {'status': 'SOURCE_SCORED'}, exclusive=False)
+def test_frozen_model_can_replay_without_source_accuracy(tmp_path):
+    write(tmp_path / 'state.json', {'status': 'PREDICT'})
+    record = dict(status='SOURCE_FROZEN', estimator='expanded', steps=40000, threshold=.123)
+    write(tmp_path / 'expanded-complete.json', record)
+    assert target.frozen_fit(tmp_path, 40000) == record
     for route in target.ROUTES:
-        write_source_scores(tmp_path, route)
-    target.require_source_admission(tmp_path, SOURCE_MODES)
+        write(tmp_path / f'{route}-source-scores.json', {'accuracy': 0.})
+    assert target.frozen_fit(tmp_path, 40000) == record
 
 
 def test_target_matrix_keeps_same_routes_packets_and_readers():

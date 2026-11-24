@@ -1,4 +1,4 @@
-"""Replay the source-admitted LoRa DURA expanded half readout, truth-blind."""
+"""Replay the frozen LoRa DURA expanded half readout, truth-blind."""
 
 import argparse
 import json
@@ -28,29 +28,21 @@ def expected_files():
     return replay.expected_files(MODES)
 
 
-def require_source_admission(root, source_modes):
+def frozen_fit(root, steps):
     from experiments.cric_dura_comparison.io import read
-    from experiments.pamf_lora_main.data import VIEWS
 
-    if read(root / 'state.json')['status'] != 'SOURCE_SCORED':
-        raise ValueError('DURA capacity source evaluation must be complete before target access')
-    direct, reference, candidate = (source_modes.index(mode) for mode in ('direct', 'reference', MODES[1]))
-    for route in ROUTES:
-        scores = read(root / f'{route}-source-scores.json')
-        metrics = scores['metrics']
-        if (scores['n'] != 900 or scores['modes'] != list(source_modes) or set(metrics) != set(VIEWS)
-                or scores['target_reads'] != 0 or not scores['truth_after_predictions']):
-            raise ValueError(f'Expected unchanged, truth-last source scores for {route}')
-        clean = metrics['clean']['correct']
-        gain = sum(metrics[view]['correct'][candidate]-metrics[view]['correct'][reference] for view in VIEWS[1:])
-        if gain <= 0 or clean[candidate] < max(clean[direct], clean[reference]):
-            raise ValueError(f'Fixed DURA capacity readout did not pass source admission for {route}')
+    record = root / 'expanded-complete.json'
+    if not record.is_file():
+        raise ValueError('The terminal expanded training artifact must be frozen before target access')
+    fit = read(record)
+    if (fit['status'], fit['estimator'], fit['steps']) != ('SOURCE_FROZEN', 'expanded', steps):
+        raise ValueError('Expected the preregistered terminal expanded model')
+    return fit
 
 
 def source_inference(rt, device):
     import torch
     from experiments.cric_dura_comparison.io import read
-    from experiments.pamf_lora_main.dura_capacity_source import MODES as source_modes
     from experiments.pamf_lora_main.dura_capacity_source import RECIPES, READOUTS, recover
     from experiments.pamf_lora_main.dura_repair import PacketRestorer
     from experiments.pamf_lora_main.full_adaptive import SET_METHOD, SET_RUN, case, complete_f
@@ -65,10 +57,13 @@ def source_inference(rt, device):
         raise ValueError('Unexpected source DURA capacity release')
     runs = project / 'runs'
     root = runs / ORIGIN
-    require_source_admission(root, source_modes)
+    expanded = RECIPES['expanded']
+    fit = frozen_fit(root, expanded.steps)
     activate(rt)
     contract = source_contract(Path(rt['source_root']))
-    models, threshold = load_models(root, contract, device, {'expanded': RECIPES['expanded']})
+    models, threshold = load_models(root, contract, device, {'expanded': expanded})
+    if threshold != fit['threshold']:
+        raise ValueError('Frozen calibration threshold differs from the selected checkpoint')
     tracker = PacketRestorer('consensus').to(device).eval()
     readers = {}
     for seed in SEEDS:

@@ -24,7 +24,7 @@
 
 评分完成后用独立诊断脚本读取相同源 V 接收视图，分解跨 chirp 共享谱和独有谱的复数误差，另比较接收估计外带方差与附加噪声的差值、相对作用与单位作用的预测误差。精确噪声仅供这一诊断，脚本要求源真值评分已完成。 [波形诊断代码](../../../tools/lora_local_phase_fidelity.py)
 
-正式评测入口使用同一末步 `expanded` 和源 U 门限，只取固定半量 `expanded_half`。入口检查完整源 V 评分及两路线的六景和 clean 准入条件。目标 IQ 盲预测复用三种子 Tri-set 和 15 台未见接收机的两个既有视图。独立评分复核同包直通完全一致、原 DURA 基线及 Full 复响应半量，另可纳入已完成的 guard_half。源域运行和正式评测使用独立输出根。 [盲预测入口](../../../experiments/pamf_lora_main/dura_capacity_target.py) · [独立评分](../../../tools/lora_weak_guard_target_score.py)
+正式评测入口使用同一末步 `expanded` 和源 U 门限，只取固定半量 `expanded_half`。按用户最新要求，源 V 结果作为参考，正式性能按目标测试判定。权重与门限冻结后执行盲预测，复用三种子 Tri-set 和 15 台未见接收机的两个既有视图。独立评分复核同包直通完全一致、原 DURA 基线及 Full 复响应半量，另可纳入已完成的 guard_half。源域运行和正式评测使用独立输出根。 [盲预测入口](../../../experiments/pamf_lora_main/dura_capacity_target.py) · [独立评分](../../../tools/lora_weak_guard_target_score.py)
 
 ## 源 U 接收噪声验证
 

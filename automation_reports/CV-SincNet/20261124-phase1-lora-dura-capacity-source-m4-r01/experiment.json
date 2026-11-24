@@ -76,7 +76,7 @@
     ],
     "contract_check_ref": "source_contract 与 complete_f/source_control 核对各自源物理角色",
     "provenance_verdict": "同一 source_contract，proof 精确比对两原始拟合合同及零 F/TX/V/target/practical/trace 读取。R69 历史权重仅在冻结后作为对照。",
-    "selection_rule": "两臂 40,000 末步冻结；主读出 expanded_half。两路线维持同权和相同校准门。源域主读出两路均需配对改善各自已绑定的 reference 六景并维持 clean。任何正式测试另对原冻结 DURA 核验。"
+    "selection_rule": "两臂 40,000 末步冻结；正式主读出固定 expanded_half。两路线维持同权和相同校准门。源 V 六景和 clean 结果作为参考，正式性能按目标测试判定。"
   },
   "execution": {
     "host": "N607",
