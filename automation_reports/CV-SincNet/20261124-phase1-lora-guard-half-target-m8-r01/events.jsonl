@@ -1,1 +1,2 @@
 {"at": "2026-11-24T07:20:43+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-24T07:23:02+00:00", "status": "FAILED", "note": "FAILED no-query smoke due to historical package shadowing before weak_guard_source import. Target prediction count zero. Preserve immutable output and use a new qualified run for the identical candidate and test.", "evidence": ["readback_2026-11-24T072120.json,logs/smoke-source.log"], "row_id": null}

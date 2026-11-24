@@ -9,7 +9,7 @@ import sys
 from time import perf_counter
 
 
-RUN = '20261124-phase1-lora-guard-half-target-m8-r01'
+RUN = '20261124-phase1-lora-guard-half-target-m8-r02'
 ORIGIN = '20261124-phase1-lora-rank-guard-extension-source-m2-r01'
 ORIGIN_CODE = '0789ee3329648db6ee348c7fea56adf3a2171237'
 DATA = '20261122-phase1-lora-full-aligned-data-r01'
@@ -47,9 +47,13 @@ def source_inference(rt, device):
     from experiments.pamf_lora_main.full_adaptive import SET_METHOD, SET_RUN, case, complete_f
     from experiments.pamf_lora_main.full_packet_views import source_contract
     from experiments.pamf_lora_main.residual_dura import recognizer
+    from experiments.pamf_lora_main.runner import activate
     from experiments.pamf_lora_main.weak_guard_source import MODES as source_modes
     from experiments.pamf_lora_main.weak_guard_source import frozen_guard, parent_model, recover
 
+    # The original entry point imports its restoration dependencies before activation
+    # makes the historical F and channel packages visible.
+    activate(rt)
     runs = Path(rt['project']) / 'runs'
     contract = source_contract(Path(rt['source_root']))
     candidate = runs / ORIGIN
@@ -98,11 +102,9 @@ def run_worker(rt, stage, shard):
     from experiments.pamf_lora_main.full_packet_data import LIMIT
     from experiments.pamf_lora_main.full_packet_views import source_role
     from experiments.pamf_lora_main.packet_physics import chirp_windows
-    from experiments.pamf_lora_main.runner import activate
     from experiments.pamf_lora_main.dura_repair import complex_iq, real_iq
     from experiments.pamf_lora_main.weak_guard import generic_noise
 
-    activate(rt)
     device = 'cuda:0'
     root = Path(rt['run_root'])
     with torch.no_grad():
