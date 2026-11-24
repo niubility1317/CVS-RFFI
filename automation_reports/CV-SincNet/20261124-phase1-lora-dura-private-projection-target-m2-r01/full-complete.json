@@ -1,0 +1,39 @@
+{
+  "status": "PREDICTIONS_FROZEN",
+  "route": "full",
+  "seed": 2026092702,
+  "modes": [
+    "wide_half",
+    "wide_quarter",
+    "equal_near_edit",
+    "radial_observed"
+  ],
+  "receivers": [
+    "b200_2",
+    "b200_mini_2",
+    "b210_2",
+    "pluto_2",
+    "n210_1",
+    "n210_2",
+    "n210_3",
+    "rtl_2",
+    "rtl_3",
+    "rtl_4",
+    "rtl_5",
+    "rtl_6",
+    "rtl_7",
+    "rtl_8",
+    "rtl_9"
+  ],
+  "per_receiver": 2000,
+  "views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "target_truth_read": false
+}

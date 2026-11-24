@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa DURA 近带保护的双路线单种子目标测试](../automation_reports/CV-SincNet/20261124-phase1-lora-dura-private-projection-target-m2-r01/report.md)
 - [LoRa DURA 近带独有复谱保护](../automation_reports/CV-SincNet/20261124-phase1-lora-dura-private-projection-source-m2-r01/report.md)
 - [LoRa DURA 双阶段先验扩容对照](../automation_reports/CV-SincNet/20261124-phase1-lora-dura-prior-width-source-m2-r01/report.md)
 - [LoRa 固定中点融合的单种子目标测试](../automation_reports/CV-SincNet/20261124-phase1-lora-fixed-mid-target-m2-r01/report.md)
