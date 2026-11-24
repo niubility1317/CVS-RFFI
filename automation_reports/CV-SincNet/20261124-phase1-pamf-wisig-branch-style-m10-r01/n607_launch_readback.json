@@ -1,0 +1,70 @@
+{
+  "observed_at": "2026-11-24T19:09:07.424581+08:00",
+  "run_id": "20261124-phase1-pamf-wisig-branch-style-m10-r01",
+  "release_present": true,
+  "run_present": true,
+  "pid": 2933150,
+  "expected_commit": "8ec66542c21bfd9a08b9c799dd8cbc51740ad76c",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "controller_log": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-pamf-wisig-branch-style-m10-r01-release/controller.log",
+  "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-pamf-wisig-branch-style-m10-r01-release",
+  "argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "-m",
+    "experiments.pamf_wisig_branch_style.runner",
+    "dispatch",
+    "--config",
+    "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-pamf-wisig-branch-style-m10-r01-release/runtime.json"
+  ],
+  "controller_log_bytes": 70,
+  "controller_log_tail": "WAITING_FOR_SMOKE_GPU 20261124-phase1-pamf-wisig-branch-style-m10-r01\n",
+  "state": "WAITING_FOR_SMOKE_GPU",
+  "heartbeat": 1795518536.6825755,
+  "gpu_availability": {
+    "0": {
+      "free_mib": 15537,
+      "compute_slots": 5,
+      "foreign_or_unknown": true
+    },
+    "1": {
+      "free_mib": 11269,
+      "compute_slots": 6,
+      "foreign_or_unknown": true
+    },
+    "2": {
+      "free_mib": 16873,
+      "compute_slots": 5,
+      "foreign_or_unknown": true
+    },
+    "3": {
+      "free_mib": 20543,
+      "compute_slots": 2,
+      "foreign_or_unknown": false
+    },
+    "4": {
+      "free_mib": 7026,
+      "compute_slots": 7,
+      "foreign_or_unknown": true
+    },
+    "5": {
+      "free_mib": 18392,
+      "compute_slots": 6,
+      "foreign_or_unknown": true
+    },
+    "6": {
+      "free_mib": 14663,
+      "compute_slots": 5,
+      "foreign_or_unknown": true
+    },
+    "7": {
+      "free_mib": 11947,
+      "compute_slots": 3,
+      "foreign_or_unknown": false
+    }
+  },
+  "counts": null,
+  "queued": 30,
+  "active": []
+}
