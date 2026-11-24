@@ -1,0 +1,33 @@
+{
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "n_measurements": 24,
+  "scope": "one half-dose restoration, excludes DURA and F",
+  "arms": {
+    "matched": {
+      "parameters": 254735,
+      "timing": {
+        "clean": {
+          "median_ms": 1.72222510445863,
+          "active": 0
+        },
+        "generic": {
+          "median_ms": 47.47036355547607,
+          "active": 1
+        }
+      }
+    },
+    "pooled": {
+      "parameters": 254735,
+      "timing": {
+        "clean": {
+          "median_ms": 1.8260724609717727,
+          "active": 0
+        },
+        "generic": {
+          "median_ms": 50.94464006833732,
+          "active": 1
+        }
+      }
+    }
+  }
+}

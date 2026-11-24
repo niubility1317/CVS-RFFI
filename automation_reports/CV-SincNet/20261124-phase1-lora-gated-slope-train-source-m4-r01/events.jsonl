@@ -1,0 +1,9 @@
+{"at": "2026-11-24T00:16:52+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-24T00:16:52+00:00", "status": "LOCAL_VERIFIED", "note": "Six focused tests and one independent P0/P1 review passed.", "evidence": "gated_slope_source.py", "row_id": null}
+{"at": "2026-11-24T00:18:30+00:00", "status": "RUNNING", "note": "Verified actual checkpoint smoke and both active fit processes with PID/CWD/argv/GPU and positive finite STEP300.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-24T00:29:15+00:00", "status": "ANALYZED", "note": "Matched source-only fit completed and frozen.", "evidence": "matched-complete.json", "row_id": "fit-matched"}
+{"at": "2026-11-24T00:29:15+00:00", "status": "ANALYZED", "note": "Matched source-only fit completed and frozen.", "evidence": "pooled-complete.json", "row_id": "fit-pooled"}
+{"at": "2026-11-24T00:29:15+00:00", "status": "ANALYZED", "note": "Verified seven-view source scoring after freeze.", "evidence": "full-source-scores.json", "row_id": "evaluate-full"}
+{"at": "2026-11-24T00:29:15+00:00", "status": "ANALYZED", "note": "Verified seven-view source scoring after freeze.", "evidence": "residual-source-scores.json", "row_id": "evaluate-residual"}
+{"at": "2026-11-24T00:29:15+00:00", "status": "ANALYZED", "note": "Complete 12000 physical source V clean rows.", "evidence": "clean-complete-scores.json", "row_id": "evaluate-reserve"}
+{"at": "2026-11-24T00:29:15+00:00", "status": "ANALYZED", "note": "Both training arms and source scores closed. Primary qualified=False.", "evidence": "report.md", "row_id": null}

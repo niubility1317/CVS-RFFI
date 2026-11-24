@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 带 clean 旁路的包内斜率收缩联合训练](../automation_reports/CV-SincNet/20261124-phase1-lora-gated-slope-train-source-m4-r01/report.md)
 - [LoRa 接收坐标误差与私有谱泄漏](../automation_reports/CV-SincNet/20261124-phase1-lora-frame-leakage-source-cpu-r02/report.md)
 - [LoRa 接收坐标误差与私有谱泄漏（首次数值检查失败）](../automation_reports/CV-SincNet/20261124-phase1-lora-frame-leakage-source-cpu-r01/report.md)
 - [LoRa 私有复谱的幅值和相位分离](../automation_reports/CV-SincNet/20261124-phase1-lora-private-polar-source-m2-r01/report.md)
