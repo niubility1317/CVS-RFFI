@@ -45,7 +45,7 @@ def guard_scores(analysis):
     return margin,noise
 
 
-def fit(rt, arm, *, smoke, build=default_model, calculate=objective, gate_features=None):
+def fit(rt, arm, *, smoke, build=default_model, calculate=objective, gate_features=None, trainable_heads=None):
     if set(rt) != {'run_root','source_root'}:
         raise ValueError('Only the source IQ and output roots are open to fitting')
     torch.set_num_threads(2)
@@ -78,8 +78,11 @@ def fit(rt, arm, *, smoke, build=default_model, calculate=objective, gate_featur
         opt.zero_grad(set_to_none=True)
         loss.backward()
         norm = torch.nn.utils.clip_grad_norm_(model.parameters(),1.,error_if_nonfinite=True)
-        if step==1 and any(net[-1].weight.grad.norm()<=0 for net in (model.timing,model.coarse,model.refine)):
-            raise ValueError('Timing, coarse and fine must receive source IQ loss gradients')
+        if step == 1:
+            heads = ((model.timing[-1], model.coarse[-1], model.refine[-1])
+                     if trainable_heads is None else trainable_heads(model))
+            if any(layer.weight.grad is None or layer.weight.grad.norm() <= 0 for layer in heads):
+                raise ValueError('All designated work stages must receive source IQ loss gradients')
         opt.step()
         schedule.step()
         if step==1 or step%50==0:
