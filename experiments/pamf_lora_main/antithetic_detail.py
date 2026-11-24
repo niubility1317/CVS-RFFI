@@ -7,6 +7,7 @@ from .crossfit_pilot import apply_transfer, generic_taps
 from .dura_repair import complex_iq, real_iq
 from .joint_unroll_source import coordinates
 from .natural_detail import detail_bands, transfer_risk, weak_difference
+from .packet_relation import packet_relation_risk
 
 
 def antithetic_inputs(signal, change, perturb, rng, *, with_identity, transform=None):
@@ -67,7 +68,7 @@ def private_direction_risk(even, odd, reference):
 
 
 def objective(model, tracker, iq, rng, *, with_identity, recipe, step, split_risk,
-              build_inputs=antithetic_inputs, private_risk_weight=0.):
+              build_inputs=antithetic_inputs, private_risk_weight=0., relation_weight=0.):
     clean = complex_iq(iq)
     framed, rotation, _, rms = coordinates(tracker, iq)
     source_basis = rotation * rms
@@ -98,4 +99,8 @@ def objective(model, tracker, iq, rng, *, with_identity, recipe, step, split_ris
         private = private_direction_risk(mean[:, 0], difference[:, 0], reference[:, 0])
         loss = loss + private_risk_weight * private.sum(0).mean()
         values = torch.cat((values, private.flatten()))
+    if relation_weight:
+        relations = packet_relation_risk(half[:, :2], reference[:, 0])
+        loss = loss + relation_weight * relations.mean()
+        values = torch.cat((values, relations))
     return loss, values
