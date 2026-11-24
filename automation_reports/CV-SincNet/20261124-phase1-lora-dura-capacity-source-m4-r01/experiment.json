@@ -20,13 +20,14 @@
   "parent_run_ids": [
     "20261122-phase1-lora-full-aligned-data-r01",
     "20261122-phase1-lora-tri-label-set-m3-r01",
-    "20261124-phase1-lora-dura-capacity-source-m4-r01",
-    "20261123-phase1-lora-dura-residual-practical-m1-r01"
+    "20261123-phase1-lora-dura-complex-response-confirm-m4-r01",
+    "20261123-phase1-lora-dura-residual-practical-m1-r01",
+    "20261123-phase1-lora-dura-residual-gate-m1-r01"
   ],
   "replaces_run_id": null,
   "authorization": "用户明确要求在 DURA 基础上优化，允许扩大规模和参数。只用合法源 IQ。",
   "code": {
-    "commit": "启动命令从已推送分支 HEAD 固定，实际 OID 写入 submit.json",
+    "commit": "3de50180aaaa1179587a753d4f6dde201fc989c6",
     "checkout": "E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo",
     "environment": "${N607_PYTHON}",
     "cwd": "${N607_PROJECT}/releases/20261124-phase1-lora-dura-capacity-source-m4-r01-release"
@@ -71,11 +72,11 @@
     "initialization": "两臂从零。保留 DURA 的时频粗恢复、双阶段独立先验及每阶段两步 CG，不继承历史网络权重。",
     "sources": [
       "20261122-phase1-lora-tri-label-set-m3-r01 / Tri-set 2026092702",
-      "既有 Full 半量 DURA 和 Residual 原 R69 用于配对评分"
+      "源 V 的 Full 对照为冻结复响应半量，Residual 为带源门限与形状投影的冻结 R69 末阶段半量"
     ],
     "contract_check_ref": "source_contract 与 complete_f/source_control 核对各自源物理角色",
     "provenance_verdict": "同一 source_contract，proof 精确比对两原始拟合合同及零 F/TX/V/target/practical/trace 读取。R69 历史权重仅在冻结后作为对照。",
-    "selection_rule": "两臂 40,000 末步冻结；主读出 expanded_half。两路线维持同权和相同校准门。源域主读出两路均需配对改善原 DURA 六景并维持 clean。"
+    "selection_rule": "两臂 40,000 末步冻结；主读出 expanded_half。两路线维持同权和相同校准门。源域主读出两路均需配对改善各自已绑定的 reference 六景并维持 clean。任何正式测试另对原冻结 DURA 核验。"
   },
   "execution": {
     "host": "N607",
