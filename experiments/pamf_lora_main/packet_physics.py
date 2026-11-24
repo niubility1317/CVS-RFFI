@@ -24,12 +24,22 @@ def chirp_grid(z, offset=0):
     return resample_poly(x, up=32, down=125, axis=-1)
 
 
-def chirp_samples(z, offset=0):
-    return chirp_grid(z, offset)[:, 32:288]
+def chirp_samples(z, offset=0, *, samples=256):
+    if samples == 256:
+        return chirp_grid(z, offset)[:, 32:288]
+    if samples not in (192, 384, 512):
+        raise ValueError('Unregistered LoRa IQ window size')
+    starts = np.asarray(CHIRPS) * 1024 + WINDOW_START - 125 + offset
+    if starts[0] < 0 or starts[-1] + 1250 > len(z):
+        raise ValueError('LoRa chirp crop needs real input context on both sides')
+    x = z[starts[:, None] + np.arange(1250)]
+    grid = resample_poly(x, up=samples//8, down=125, axis=-1)
+    start = samples//8
+    return grid[:, start:start+samples]
 
 
-def chirp_windows(z, offset=0):
-    return pack_windows(chirp_samples(z, offset))
+def chirp_windows(z, offset=0, *, samples=256):
+    return pack_windows(chirp_samples(z, offset, samples=samples))
 
 
 def pack_windows(values):
@@ -103,8 +113,10 @@ def residual_view(z, scene, receiver, pid, namespace, *, trace=False, realizatio
 
 
 def aligned_view(z, scene, receiver, pid, namespace, *, trace=False, channel_override=None,
-                 realization=None, processing_route='full'):
+                 realization=None, processing_route='full', samples=256):
     if processing_route == 'residual':
+        if samples != 256:
+            raise ValueError('Residual replay uses the registered 256-sample grid')
         if channel_override is not None:
             raise ValueError('Residual LoRa uses its registered snapshot configuration')
         return residual_view(z, scene, receiver, pid, namespace, trace=trace, realization=realization)
@@ -128,22 +140,22 @@ def aligned_view(z, scene, receiver, pid, namespace, *, trace=False, channel_ove
     if (meta['channel_equalization_applied'] or meta['boundary'] != 'provided_context'
             or latency != cfg.fractional_delay_half_length):
         raise ValueError('Aligned practical must use known filter delay and real IQ context')
-    result = chirp_windows(y, offset=latency-CONTEXT)
+    result = chirp_windows(y, offset=latency-CONTEXT, samples=samples)
     return (result, meta) if trace else result
 
 
-def job(scene, namespace, item, *, processing_route='full'):
+def job(scene, namespace, item, *, processing_route='full', samples=256):
     z, rx, pid = item
     if scene == 'clean':
-        return chirp_windows(z)
-    return aligned_view(z, scene, rx, pid, namespace, processing_route=processing_route)
+        return chirp_windows(z, samples=samples)
+    return aligned_view(z, scene, rx, pid, namespace, processing_route=processing_route, samples=samples)
 
 
-def save_views(pool, path, packets, receivers, ids, namespace, scenes, *, processing_route='full'):
-    shape = (len(scenes), len(packets), len(CHIRPS), 2, 256)
+def save_views(pool, path, packets, receivers, ids, namespace, scenes, *, processing_route='full', samples=256):
+    shape = (len(scenes), len(packets), len(CHIRPS), 2, samples)
     output = np.lib.format.open_memmap(path, mode='w+', dtype=np.float32, shape=shape)
     for i, scene in enumerate(scenes):
-        run = partial(job, scene, namespace, processing_route=processing_route)
+        run = partial(job, scene, namespace, processing_route=processing_route, samples=samples)
         seq = zip(packets, receivers, ids, strict=True)
         for index, record in enumerate(pool.map(run, seq, chunksize=24)):
             output[i, index] = record

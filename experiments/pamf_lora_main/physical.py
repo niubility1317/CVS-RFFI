@@ -15,16 +15,18 @@ def rms_normalize(x):
 
 class ChirpResponse(nn.Module):
     """Make the 29-feature PAMF response on public LoRa preamble excitation."""
-    def __init__(self, fft_factor=1):
+    def __init__(self, fft_factor=1, *, samples=256):
         super().__init__()
-        self.fft_size = 256 * fft_factor
-        t = torch.arange(256, dtype=torch.float64) / FS_HZ + WINDOW_START / 1e6
+        self.samples = samples
+        self.sample_rate = samples*1000
+        self.fft_size = samples * fft_factor
+        t = torch.arange(samples, dtype=torch.float64) / self.sample_rate + WINDOW_START / 1e6
         chirp = torch.exp(2j * torch.pi * BANDWIDTH_HZ * (t.square() / (2 * .001024) - t / 2))
         self.register_buffer('chirp', chirp.to(torch.complex64), persistent=False)
-        self.register_buffer('bins', torch.linspace(-56, 56, 12).round().long() % 256, persistent=False)
+        self.register_buffer('bins', torch.linspace(-56, 56, 12).round().long() % samples, persistent=False)
 
     def contract(self):
-        return dict(reference='LoRa SF7 upchirp', bandwidth_hz=BANDWIDTH_HZ, sample_rate_hz=FS_HZ,
+        return dict(reference='LoRa SF7 upchirp', bandwidth_hz=BANDWIDTH_HZ, sample_rate_hz=self.sample_rate,
                     response_features=29, explicit_CFO_identity_input=False)
 
     def components(self, x):
@@ -35,7 +37,7 @@ class ChirpResponse(nn.Module):
         # fitted state or explicit carrier-offset coordinate.
         peak = torch.fft.fft(w, n=self.fft_size)
         best = peak.abs().argmax(dim=-1)
-        phase = -2j * torch.pi * best[:, None] * torch.arange(256, device=x.device) / self.fft_size
+        phase = -2j * torch.pi * best[:, None] * torch.arange(self.samples, device=x.device) / self.fft_size
         correction = phase.exp().to(z.dtype)
         gain = (w * correction).mean(dim=-1)
         nrg = z.abs().square().mean(dim=-1).clamp_min(1e-12)
@@ -46,9 +48,9 @@ class ChirpResponse(nn.Module):
         relative = aligned * gain.conj()[:, None] / gain.abs().square().clamp_min(1e-6)[:, None]
         residual = relative - 1
         bounded = residual / (1 + residual.abs().square() / 16).sqrt()
-        c = (w[:, 1:] * w[:, :-1].conj()).sum(dim=-1).abs() / (255 * nrg)
+        c = (w[:, 1:] * w[:, :-1].conj()).sum(dim=-1).abs() / ((self.samples - 1) * nrg)
         concentration = peak.abs().amax(dim=-1) / peak.abs().sum(dim=-1).clamp_min(1e-8)
-        center_power = z[:, 64:192].abs().square().mean(dim=-1) / nrg
+        center_power = z[:, self.samples//4:3*self.samples//4].abs().square().mean(dim=-1) / nrg
         features = torch.cat((bounded.real, bounded.imag,
             torch.stack((quality, c, concentration, torch.zeros_like(c), center_power), dim=1)), dim=1)
         return dict(features=features, quality=quality, relative_transfer=relative)
@@ -57,7 +59,7 @@ class ChirpResponse(nn.Module):
         z = torch.complex(x[:, 0], x[:, 1])
         w = z * self.chirp.to(z.dtype).conj()
         peak = torch.fft.fft(w, n=self.fft_size).abs().amax(dim=-1)
-        return (peak / 256).square() / z.abs().square().mean(dim=-1).clamp_min(1e-12)
+        return (peak / self.samples).square() / z.abs().square().mean(dim=-1).clamp_min(1e-12)
 
     def forward(self, x):
         return self.components(x)['features']

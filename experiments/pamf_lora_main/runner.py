@@ -54,14 +54,14 @@ def worker(c, kind):
     raise ValueError('Unknown job kind')
 
 
-def available(allowed, max_compute_processes=2):
+def available(allowed, max_compute_processes=2, min_free_mib=12_288):
     def nvsmi(field):
         return subprocess.check_output(['nvidia-smi', field, '--format=csv,noheader,nounits'], text=True)
     others = Counter(line.strip().split(',')[0] for line in nvsmi('--query-compute-apps=gpu_uuid').splitlines())
     caps = (line.replace(' ', '').split(',') for line in
             nvsmi('--query-gpu=index,uuid,memory.free').splitlines())
     return [int(i) for i, uuid, mb in caps
-            if int(i) in allowed and others[uuid] < max_compute_processes and int(mb) >= 12_288]
+            if int(i) in allowed and others[uuid] < max_compute_processes and int(mb) >= min_free_mib]
 
 
 def job(rt, kind, name, gpu, **args):

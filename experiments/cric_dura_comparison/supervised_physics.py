@@ -11,9 +11,19 @@ def shuffled_descriptor(self, h):
     u = torch.tanh(self.local_projection(h)).transpose(1, 2)
     b, t, _ = u.shape
     windows = u.reshape(b * 4, t // 4, 6)
-    if windows.shape[1] != 8 or self.window_order.device != h.device:
-        raise ValueError('Fixed256 IQ requires t2 length32 and device-resident order')
-    shifted = windows[:, self.window_order]
+    if self.window_order.device != h.device:
+        raise ValueError('Fixed device-resident signature permutation required')
+    length = windows.shape[1]
+    if length == 8:
+        shifted = windows[:, self.window_order]
+    elif getattr(self, 'variable_iq_grid', False):
+        blocks = (length+7)//8
+        if length != 8*blocks:
+            windows = torch.nn.functional.interpolate(windows.transpose(1,2),size=8*blocks,
+                        mode='linear',align_corners=False).transpose(1,2)
+        shifted = windows.reshape(b*4,blocks,8,6)[:,:,self.window_order].reshape(b*4,8*blocks,6)
+    else:
+        raise ValueError('Fixed256 IQ requires t2 length32')
     if getattr(self, 'tuning_half_path', False):
         shifted = torch.nn.functional.avg_pool1d(shifted.transpose(1,2), 2).transpose(1,2)
     return path_signature(shifted, True).reshape(b, 112)

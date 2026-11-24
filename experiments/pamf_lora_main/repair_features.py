@@ -38,20 +38,20 @@ def complete_labeled_batches(y, rx, rng):
 class AlignedTrace(nn.Module):
     """Remove the common dechirped tone and retain residual amplitude and phase."""
 
-    def __init__(self):
+    def __init__(self, *, samples=256):
         super().__init__()
-        self.reference = ChirpResponse()
-        self.register_buffer('time', torch.arange(256, dtype=torch.float32), persistent=False)
+        self.reference = ChirpResponse(samples=samples)
+        self.register_buffer('time', torch.arange(samples, dtype=torch.float32), persistent=False)
 
     def forward(self, x):
         z = torch.complex(x[:, :, 0], x[:, :, 1])
         baseband = z * self.reference.chirp.conj()
-        length = 2048
+        length = 8*self.time.numel()
         k = torch.fft.fft(baseband, n=length).abs().argmax(-1)
         k = (k + length // 2) % length - length // 2
         coarse = 2 * torch.pi * k[..., None] * self.time / length
         w = baseband * torch.polar(torch.ones_like(coarse), -coarse)
-        lag = 24
+        lag = 3*self.time.numel()//32
         slope = (w[..., lag:] * w[..., :-lag].conj()).mean(-1).angle() / lag
         slope = slope.clamp(-torch.pi / length, torch.pi / length)
         fine = slope[..., None] * self.time
