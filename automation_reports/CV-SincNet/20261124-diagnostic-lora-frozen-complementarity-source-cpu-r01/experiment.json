@@ -1,0 +1,170 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261124-diagnostic-lora-frozen-complementarity-source-cpu-r01",
+  "group_id": "phase1-lora-observable-recovery",
+  "display_name": "LoRa 冻结恢复候选的逐包互补性",
+  "description": "Truth-side complementarity analysis of 27 frozen matched LoRa source runs.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source_only",
+    "dual_path",
+    "oracle_diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261123-phase1-lora-chirp-spectrum-recovery-source-m4-r01",
+    "20261123-phase1-lora-complex-transport-source-m4-r01",
+    "20261124-phase1-lora-clean-pilot-protected-source-m4-r01",
+    "20261124-phase1-lora-conjugate-companion-source-m4-r01",
+    "20261124-phase1-lora-coupled-echo-source-m4-r01",
+    "20261124-phase1-lora-cross-chirp-hankel-source-m2-r01",
+    "20261124-phase1-lora-crossfit-pilot-response-source-m4-r01",
+    "20261124-phase1-lora-echo-marginal-source-m4-r01",
+    "20261124-phase1-lora-empirical-iq-prior-source-m2-r01",
+    "20261124-phase1-lora-factorized-chirps-source-m4-r01",
+    "20261124-phase1-lora-gated-slope-train-source-m4-r01",
+    "20261124-phase1-lora-joint-mode-covariance-source-m2-r01",
+    "20261124-phase1-lora-mirror-protected-refine-source-m3-r01",
+    "20261124-phase1-lora-packet-phase-tracker-source-m3-r01",
+    "20261124-phase1-lora-private-polar-source-m2-r01",
+    "20261124-phase1-lora-private-secant-source-m4-r01",
+    "20261124-phase1-lora-private-variance-transport-source-m2-r01",
+    "20261124-phase1-lora-rank-split-action-source-m2-r01",
+    "20261124-phase1-lora-real-source-pair-contrast-m4-r01",
+    "20261124-phase1-lora-repeat-covariance-source-m4-r01",
+    "20261124-phase1-lora-repeat-protected-spectrum-source-m4-r01",
+    "20261124-phase1-lora-rf-noise-confidence-source-m4-r01",
+    "20261124-phase1-lora-rf-noise-transport-source-m4-r01",
+    "20261124-phase1-lora-shared-latent-mixture-source-m2-r01",
+    "20261124-phase1-lora-shared-spectrum-covariance-source-m4-r01",
+    "20261124-phase1-lora-tail-pilot-source-m4-r01",
+    "20261124-phase1-lora-variance-envelope-source-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User handoff from 01a1dedc-e242-78a2-8064-20079b2070eb and active LoRa/WiSig observable recovery goal. Source screen only.",
+  "code": {
+    "commit": "74db7ea9562521a63118c08170647aa24a6b96ac",
+    "checkout": "E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-empirical-iq-prior-source-m2-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa registered main data",
+    "version": "lora_full_packets_v1",
+    "representation": "Phase-aligned six chirps, float32 [6,2,256] plus replay of registered full and residual received views in frozen source scoring",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "Validated frozen anchor predictions and original registered V_metadata.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/V_metadata.npz; source scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": 0,
+      "V": {
+        "matched_frozen_source": 900
+      }
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": "experiments/pamf_lora_main/packet_physics.py"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Descriptive only, not a deployable selector or a target upper bound."
+  },
+  "checkpoint": {
+    "initialization": "No models loaded. Reuse existing frozen predictions.",
+    "sources": [
+      {
+        "role": "frozen anchor predictions",
+        "ref": "20261124-phase1-lora-empirical-iq-prior-source-m2-r01"
+      }
+    ],
+    "contract_check_ref": "analyze_frozen.py",
+    "provenance_verdict": "Both routes matched at every physical ID and control prediction before independent truth read.",
+    "selection_rule": "No method selection or fit. Observed label unions, pair complementarity and descriptive sensitivity."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex handoff thread 01a208a9-57df-7f82-a078-cd9477adf998",
+    "gpu_policy": "CPU only, no new dispatch.",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\lora_packet_pilot_20261122\\full_v1\\frozen_complementarity",
+    "launch_command": "In immutable anchor release CWD, python analyze_frozen.py candidate-matrix.json, streamed over SSH for read-only execution.",
+    "stop_rule": "Stop on an unmatched anchor or no verified compatible historical candidates."
+  },
+  "expected_artifacts": [
+    "candidate-matrix.json",
+    "pair-overlap-with-sensitivity.json",
+    "report.md"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "paired correct union",
+      "coverage by scene and RX",
+      "overlap of errors",
+      "source eligibility sensitivity"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "candidate coverage"
+    ],
+    "prediction_ref": "candidate-matrix.json",
+    "scorer_ref": "analyze_frozen.py"
+  },
+  "rows": [
+    {
+      "row_id": "source-overlap",
+      "method": "Read-only overlap of existing decisions",
+      "purpose": "source_diagnostic",
+      "config_ref": "candidate-matrix.json",
+      "resolved_config_ref": "candidate-matrix.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "All frozen decisions on the identical registered V panel; no new seed assignment.",
+      "k": null,
+      "scenario": "Both routes clean and six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "27 experiments × 900 physical packets on two routes, no GPU",
+      "output_root": "pair-overlap-with-sensitivity.json",
+      "log_path": null,
+      "command": "In immutable anchor release CWD, python analyze_frozen.py candidate-matrix.json, streamed over SSH for read-only execution.",
+      "expected_artifacts": [
+        "pair-overlap-with-sensitivity.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No training, candidate executions or target access. code.commit and cwd identify the existing anchor release; read-only analysis script is archived with this record."
+  ],
+  "registered_at": "2026-11-24T01:38:23+00:00"
+}

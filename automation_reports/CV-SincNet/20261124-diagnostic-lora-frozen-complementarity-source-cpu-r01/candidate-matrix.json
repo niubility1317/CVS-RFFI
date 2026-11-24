@@ -1,0 +1,379 @@
+[
+  {
+    "run": "20261123-phase1-lora-chirp-spectrum-recovery-source-m4-r01",
+    "family": "spectral",
+    "main": [
+      "separate_half"
+    ],
+    "extra": [
+      "shared",
+      "separate"
+    ]
+  },
+  {
+    "run": "20261123-phase1-lora-complex-transport-source-m4-r01",
+    "family": "transport",
+    "main": [
+      "complex_transport_half",
+      "waveform_transport_half"
+    ],
+    "extra": [
+      "waveform_transport",
+      "complex_transport"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-clean-pilot-protected-source-m4-r01",
+    "family": "pilot",
+    "main": [
+      "anchored_half",
+      "protected_half"
+    ],
+    "extra": [
+      "engineering",
+      "protected_engineering",
+      "protected_coarse",
+      "protected",
+      "anchored_coarse",
+      "anchored"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-conjugate-companion-source-m4-r01",
+    "family": "mirror",
+    "main": [
+      "adjacent_half",
+      "mirror_half"
+    ],
+    "extra": [
+      "adjacent_coarse",
+      "mirror_coarse",
+      "adjacent",
+      "mirror"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-coupled-echo-source-m4-r01",
+    "family": "echo",
+    "main": [
+      "linked_half",
+      "echo_half"
+    ],
+    "extra": [
+      "engineering_linked",
+      "engineering_echo",
+      "linked_coarse",
+      "echo_coarse",
+      "linked",
+      "echo"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-cross-chirp-hankel-source-m2-r01",
+    "family": "hankel",
+    "main": [
+      "protected_hankel_half",
+      "local_self_included_half"
+    ],
+    "extra": [
+      "global_hankel_half",
+      "local_hankel_half",
+      "matched_dose_half"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-crossfit-pilot-response-source-m4-r01",
+    "family": "pilot",
+    "main": [
+      "identity_half",
+      "crossfit_half"
+    ],
+    "extra": [
+      "engineering",
+      "identity_coarse",
+      "crossfit_coarse",
+      "identity",
+      "crossfit"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-echo-marginal-source-m4-r01",
+    "family": "echo",
+    "main": [
+      "additive_half",
+      "marginal_half"
+    ],
+    "extra": [
+      "gaussian_engineering",
+      "marginal_engineering",
+      "additive_coarse",
+      "marginal_coarse",
+      "additive",
+      "marginal"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-empirical-iq-prior-source-m2-r01",
+    "family": "empirical",
+    "main": [
+      "rank_joint_matched",
+      "rank_split_matched"
+    ],
+    "extra": [
+      "split_half",
+      "joint_half"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-factorized-chirps-source-m4-r01",
+    "family": "spectral",
+    "main": [
+      "independent_half",
+      "joint_half"
+    ],
+    "extra": [
+      "engineering_independent",
+      "engineering_joint",
+      "independent_coarse",
+      "joint_coarse",
+      "independent",
+      "joint"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-gated-slope-train-source-m4-r01",
+    "family": "sync",
+    "main": [
+      "matched_half",
+      "pooled_half"
+    ],
+    "extra": [
+      "inference_only_half",
+      "matched_full",
+      "pooled_full"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-joint-mode-covariance-source-m2-r01",
+    "family": "spectral",
+    "main": [
+      "rank_joint_matched",
+      "rank_separate_matched"
+    ],
+    "extra": [
+      "separate_half",
+      "joint_half"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-mirror-protected-refine-source-m3-r01",
+    "family": "mirror",
+    "main": [
+      "frozen_protected_half",
+      "protected_half"
+    ],
+    "extra": [
+      "frozen_protected",
+      "trained_coarse",
+      "protected",
+      "dose_only_half",
+      "dose_only"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-packet-phase-tracker-source-m3-r01",
+    "family": "sync",
+    "main": [
+      "local_frozen_half",
+      "joint_frozen_half",
+      "trained_joint_half"
+    ],
+    "extra": [
+      "curvature_only",
+      "joint_frozen",
+      "trained_coarse",
+      "trained_joint"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-private-polar-source-m2-r01",
+    "family": "private",
+    "main": [
+      "vector_phase",
+      "vector_magnitude",
+      "modal_phase",
+      "modal_magnitude"
+    ],
+    "extra": [
+      "modal_phase_low",
+      "coherent_floor",
+      "wiener_half",
+      "wiener_full"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-private-secant-source-m4-r01",
+    "family": "private",
+    "main": [
+      "paired_half",
+      "private_gain_half"
+    ],
+    "extra": [
+      "paired_coarse",
+      "paired",
+      "private_gain_coarse",
+      "private_gain"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-private-variance-transport-source-m2-r01",
+    "family": "transport",
+    "main": [
+      "wiener_half",
+      "transport_half"
+    ],
+    "extra": [
+      "wiener_full",
+      "transport_full"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-rank-split-action-source-m2-r01",
+    "family": "gate",
+    "main": [
+      "split_near",
+      "split_full"
+    ],
+    "extra": [
+      "open_half",
+      "open_quarter"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-real-source-pair-contrast-m4-r01",
+    "family": "spectral",
+    "main": [
+      "point_half",
+      "pair_half"
+    ],
+    "extra": [
+      "point_coarse",
+      "point",
+      "pair_coarse",
+      "pair"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-repeat-covariance-source-m4-r01",
+    "family": "noise",
+    "main": [
+      "diagonal_half",
+      "covariance_half"
+    ],
+    "extra": [
+      "diagonal_coarse",
+      "covariance_coarse",
+      "diagonal",
+      "covariance"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-repeat-protected-spectrum-source-m4-r01",
+    "family": "noise",
+    "main": [
+      "covariance_half",
+      "covariance_radial"
+    ],
+    "extra": [
+      "diagonal_half",
+      "diagonal_coarse",
+      "covariance_coarse",
+      "diagonal",
+      "covariance"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-rf-noise-confidence-source-m4-r01",
+    "family": "noise",
+    "main": [
+      "kernel_half",
+      "confidence_half"
+    ],
+    "extra": [
+      "kernel_coarse",
+      "confidence_coarse",
+      "kernel",
+      "confidence"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-rf-noise-transport-source-m4-r01",
+    "family": "noise",
+    "main": [
+      "flat_half",
+      "transport_half"
+    ],
+    "extra": [
+      "flat_coarse",
+      "transport_coarse",
+      "flat",
+      "transport"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-shared-latent-mixture-source-m2-r01",
+    "family": "empirical",
+    "main": [
+      "mixture_delta_half"
+    ],
+    "extra": [
+      "shared_gaussian",
+      "shared_mixture",
+      "mixture_delta_full"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-shared-spectrum-covariance-source-m4-r01",
+    "family": "spectral",
+    "main": [
+      "diagonal_half",
+      "rank_half"
+    ],
+    "extra": [
+      "engineering_diagonal",
+      "engineering_rank",
+      "diagonal_coarse",
+      "rank_coarse",
+      "diagonal",
+      "rank"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-tail-pilot-source-m4-r01",
+    "family": "spectral",
+    "main": [
+      "average_half",
+      "tail_half"
+    ],
+    "extra": [
+      "average_coarse",
+      "tail_coarse",
+      "average",
+      "tail"
+    ]
+  },
+  {
+    "run": "20261124-phase1-lora-variance-envelope-source-m4-r01",
+    "family": "noise",
+    "main": [
+      "point_half",
+      "interval_half"
+    ],
+    "extra": [
+      "point_coarse",
+      "interval_coarse",
+      "point",
+      "interval"
+    ]
+  }
+]

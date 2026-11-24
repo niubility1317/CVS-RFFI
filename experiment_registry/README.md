@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 冻结恢复候选的逐包互补性](../automation_reports/CV-SincNet/20261124-diagnostic-lora-frozen-complementarity-source-cpu-r01/report.md)
 - [LoRa 实收似然与无标签源包差分先验](../automation_reports/CV-SincNet/20261124-phase1-lora-empirical-iq-prior-source-m2-r01/report.md)
 - [LoRa 公共与差分复谱的联合协方差](../automation_reports/CV-SincNet/20261124-phase1-lora-joint-mode-covariance-source-m2-r01/report.md)
 - [LoRa 固定信道下的独立噪声观测与公共私有归因](../automation_reports/CV-SincNet/20261124-phase1-lora-noise-replicas-source-m2-r01/report.md)
