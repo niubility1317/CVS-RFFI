@@ -1,0 +1,78 @@
+{
+  "verification": "VERIFIED",
+  "live_full": {
+    "pid": 2614813,
+    "gpu": 3,
+    "identity": {
+      "pid": 2614813,
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.frame_marginal_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-frame-marginal-source-m2-r01/configs/evaluate-full.json full",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-frame-marginal-source-m2-r01-release",
+      "cuda": [
+        "CUDA_VISIBLE_DEVICES=3"
+      ]
+    },
+    "bytes": 754,
+    "last": [
+      "COMPLEX_VECTOR_SOURCE full practical_high_urban 92",
+      "COMPLEX_VECTOR_SOURCE full practical_mid_urban 396",
+      "COMPLEX_VECTOR_SOURCE full practical_low_urban 641"
+    ]
+  },
+  "live_reserve": {
+    "pid": 2615846,
+    "gpu": 3,
+    "identity": {
+      "pid": 2615846,
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.frame_marginal_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-frame-marginal-source-m2-r01/configs/evaluate-reserve.json reserve",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-frame-marginal-source-m2-r01-release",
+      "cuda": [
+        "CUDA_VISIBLE_DEVICES=3"
+      ]
+    },
+    "bytes": 0,
+    "last": []
+  },
+  "controller": {
+    "pid": 2614376,
+    "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.frame_marginal_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-frame-marginal-source-m2-r01-release/runtime.json",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-frame-marginal-source-m2-r01-release",
+    "cuda": [
+      "CUDA_VISIBLE_DEVICES="
+    ]
+  },
+  "submit": {
+    "pid": 2614376,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-frame-marginal-source-m2-r01-release",
+    "code_commit": "93ae73cc881beee4f17b9a3aecb05a5d91119bb4",
+    "archive_transfer": "VERIFIED",
+    "remote_compile": "PASS",
+    "status": "SUBMITTED_NOT_YET_VERIFIED",
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-frame-marginal-source-m2-r01"
+  },
+  "growth": {
+    "reserve": [
+      0,
+      558
+    ]
+  },
+  "residual": {
+    "initial": {
+      "pid": 2614814,
+      "gpu": 6,
+      "identity": null,
+      "bytes": 782,
+      "last": [
+        "COMPLEX_VECTOR_SOURCE residual practical_high_urban 67",
+        "COMPLEX_VECTOR_SOURCE residual practical_mid_urban 803",
+        "COMPLEX_VECTOR_SOURCE residual practical_low_urban 899"
+      ]
+    },
+    "spreads": true
+  },
+  "post_files": {
+    "smoke.json": 82,
+    "b1.json": 351,
+    "full-spreads.json": 328,
+    "residual-spreads.json": 328
+  }
+}

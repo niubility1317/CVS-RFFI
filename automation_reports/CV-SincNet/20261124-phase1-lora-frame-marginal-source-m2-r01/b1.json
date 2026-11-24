@@ -1,0 +1,16 @@
+{
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "n_measurements": 24,
+  "timing": {
+    "clean": {
+      "active": 0,
+      "median_ms": 2.741124131716788
+    },
+    "generic": {
+      "active": 1,
+      "median_ms": 71.34747598320246
+    }
+  },
+  "restoration_weights": 254735,
+  "scope": "one frozen arm in three plausible rotations; excludes DURA and F"
+}
