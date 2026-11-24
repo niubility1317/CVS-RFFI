@@ -36,6 +36,8 @@ R69 v1.0 有 266,951 个参数。历史两阶段学生由 R65 固定父版初始
 
 ## 源域验证
 
+- LoRa 从 20,000 个源 U 包拟合 8 分量跨频先验。按奇偶对折及一致性回写的主读出较 DURA 在 Full 净增 6 次、Residual 净减 84 次，clean 均为 667/900。与统一先验同物理 RMS 时，两路净差 −8 和 +3，区间均跨零。独立 U 核查中，通用扰动使先验仅重 1.46% 的分量从 3/500 上升至 428/500，伴随高后验与更大标准化距离。结果定位了靠后验一致性判断可用性的失效，未晋级。 [LoRa 跨频混合冻结测试及置信核查](../../automation_reports/CV-SincNet/20261124-phase1-lora-spectral-mixture-source-m2-r01/report.md)
+
 - LoRa 跨频方向统一和分开回写两臂各从零训练 40,000 步。分开全量较匹配 DURA 在 Full 净增 42 次，在 Residual 净减 309 次，clean 均保持 667/900。相对原固定解析分别净减 7 和 22 次。同权等物理 RMS 开启分量独立，两路各净减 2 次，区间均跨零。Residual 低城区两个分量系数仍接近 1，各 RX 编辑量中位数达 30%。当前分配结构未晋级正式测试。 [LoRa 跨频连续回写和逐接收机结果](../../automation_reports/CV-SincNet/20261124-phase1-lora-cross-frequency-dose-source-m4-r01/report.md)
 
 - LoRa 用 20,000 个合法源 U 包校准公共和独有跨频 I/Q 协方差。与同物理 RMS 的逐频对照相比，跨频方差保持在 Full 和 Residual 六景净增 238［+183，+293］和 521［+425，+620］次，十个路线接收机组合均正向。主读出对 DURA 净增 49［+9，+89］和净减 287［−357，−219］次，clean 均为 667/900。Residual 低城区各 RX 编辑 RMS 中位数触及 30% 上限，跨频方向的低城区弱复谱相关改善未达到两路线对 DURA 的晋级条件。 [LoRa 跨频协方差匹配消融及独立评分](../../automation_reports/CV-SincNet/20261124-phase1-lora-cross-frequency-source-m2-r01/report.md)
