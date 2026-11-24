@@ -44,6 +44,7 @@ NEIGHBOR_PHASE_RUN = '20261124-phase1-lora-neighbor-phase-source-m4-r01'
 CROSS_FREQUENCY_RUN = '20261124-phase1-lora-cross-frequency-source-m2-r01'
 CROSS_FREQUENCY_DOSE_RUN = '20261124-phase1-lora-cross-frequency-dose-source-m4-r01'
 SPECTRAL_MIXTURE_RUN = '20261124-phase1-lora-spectral-mixture-source-m2-r01'
+MIXTURE_DIRECTIONS_RUN = '20261124-diagnostic-lora-mixture-directions-source-m2-r01'
 RADIUS_INTERACTIONS = {
     'power_phase': ('power_joint', 'direct', 'power_radius', 'local_full'),
     'fold_phase': ('fold_joint', 'direct', 'fold_radius', 'local_full'),
@@ -174,6 +175,10 @@ def collect(rt):
         from experiments.pamf_lora_main import spectral_mixture_source
         modes = spectral_mixture_source.MODES
         pairs = (*spectral_mixture_source.COMPARISONS, ('direct', 'reference'))
+    elif rt.get('run_id')==MIXTURE_DIRECTIONS_RUN:
+        from experiments.pamf_lora_main import spectral_mixture_diagnostic
+        modes = spectral_mixture_diagnostic.MODES
+        pairs = (*spectral_mixture_diagnostic.COMPARISONS, ('direct', 'reference'))
     else:
         from experiments.pamf_lora_main import empirical_tangent_source as tangent
         if rt.get('run_id')!=tangent.RUN:

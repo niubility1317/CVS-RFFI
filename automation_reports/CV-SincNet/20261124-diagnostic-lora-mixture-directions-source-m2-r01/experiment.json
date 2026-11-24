@@ -1,0 +1,164 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261124-diagnostic-lora-mixture-directions-source-m2-r01",
+  "group_id": "lora-observable-satellite-recovery",
+  "display_name": "LoRa 混合路由和复修正方向的同量隔离诊断",
+  "description": "固定八分量先验和每包物理 IQ 改变量，分别替换路由来源、按波形选择专家及精确非载波方向。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "LoRa",
+    "DURA",
+    "source_V",
+    "spectral_mixture",
+    "diagnostic",
+    "equal_rms",
+    "full",
+    "residual"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261124-phase1-lora-spectral-mixture-source-m2-r01",
+    "20261124-diagnostic-lora-noise-split-source-m2-r01",
+    "20261122-phase1-lora-full-aligned-data-r01",
+    "20261122-phase1-lora-tri-label-set-m3-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "LoRa 恢复目标中的精确扣噪与幅相归因。源域隔离诊断。",
+  "code": {
+    "commit": "启动命令从已推送分支 HEAD 固定，实际 OID 写入 submit.json",
+    "checkout": "E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo",
+    "environment": "${N607_PYTHON}",
+    "cwd": "${N607_PROJECT}/releases/20261124-diagnostic-lora-mixture-directions-source-m2-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa 多接收机 IEEE DataPort",
+    "version": "lora_full_packets_v1 源 7/63/30 固定划分",
+    "representation": "1 MS/s 采集及既有构造，冻结读出为 256 kS/s 六条 256 点窄窗复 IQ",
+    "contract_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json role_ids.V",
+    "label_map_ref": "experiments/pamf_lora_main/data.py CLASSES (31 至 40)，仅评分读取 V_metadata.npz y",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "10 个登记发射机的固定源分配，拟合不可见",
+    "roles": {
+      "L_s": 0,
+      "U_s": 0,
+      "V": 900
+    },
+    "train_ratio": "没有拟合。复用前轮的合法 U 冻结混合状态。900 个固定源 V 物理包，每台源 RX 180，七景。",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "${N607_PROJECT}/runs/20261122-phase1-lora-full-aligned-data-r01/source_views/complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": "沿用 full 1 MHz 对齐及 residual 256 kHz post-sync/noEQ 原视图"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "not_applicable",
+    "external_method_exception": null,
+    "claim_scope": "隔离复算允许源 V 同包配对 clean 和实际新增噪声作为诊断参考。无训练、校准或选模，完全无目标。专家只根据隔离波形投影选择。"
+  },
+  "checkpoint": {
+    "initialization": "reuse existing frozen source U mixture, no updates",
+    "sources": [
+      "20261122-phase1-lora-tri-label-set-m3-r01 / tri_set 2026092702",
+      "20261123-phase1-lora-dura-direct-detail-source-m2-r01 及冻结 full 复响应半量",
+      "20261123-phase1-lora-dura-residual-practical-m1-r01 原 R69 及固定 residual 门控投影半量"
+    ],
+    "contract_check_ref": "source_contract 与 complete_f/source_control 核对各自源物理角色",
+    "provenance_verdict": "只读旧混合校准及两路原七景预测。源 U 原 20000 包 64 次 EM 已冻结，F/TX/V/目标均未参与。",
+    "selection_rule": "预先固定所有隔离读出。只做机理判断，无候选晋级或权重阈值选择。"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "当前 LoRa 可部署星地恢复目标",
+    "gpu_policy": "按实时余量选真实权重隔离 smoke GPU 和两张预测 GPU；独立 CPU 评分。",
+    "remote_run_root": "${N607_PROJECT}/runs/20261124-diagnostic-lora-mixture-directions-source-m2-r01",
+    "remote_log_root": "${N607_PROJECT}/runs/20261124-diagnostic-lora-mixture-directions-source-m2-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261124-diagnostic-lora-mixture-directions-source-m2-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.spectral_mixture_diagnostic publish --repo \"E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo\" --output \"E:/type10-7/local_artifacts/20261124-diagnostic-lora-mixture-directions-source-m2-r01/release\" --context E:/type10-7/local_artifacts/lora_main_20261121/runtime_source.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "原预测复算失配、实收重放失配、同量误差超误差容限、实际权重 smoke 或评分技术失败才停止后续派发。"
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "full-predictions.json",
+    "residual-predictions.json",
+    "full-source-scores.json",
+    "residual-source-scores.json",
+    "full-isolated-estimates.json",
+    "residual-isolated-estimates.json",
+    "logs/"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "两路线六景和低城区识别、clean、同包净纠错及区间",
+      "逐接收机和场景的路由概率变化、专家选择和投影误差",
+      "物理 IQ 编辑 RMS 一致性"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "mode",
+      "seed"
+    ],
+    "prediction_ref": "${N607_PROJECT}/runs/20261124-diagnostic-lora-mixture-directions-source-m2-r01/<route>-predictions.json",
+    "scorer_ref": "experiments.pamf_lora_main.spectral_mixture_diagnostic score"
+  },
+  "rows": [
+    {
+      "row_id": "dual-route-mixture-directions-s2026092702",
+      "method": "直通、DURA、三项原混合对照、实收／扣噪／clean 三种同量概率、同量精确选专家、同量精确方向及非载波完全精确扣噪。",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/spectral_mixture_diagnostic.py",
+      "resolved_config_ref": "${N607_PROJECT}/releases/20261124-diagnostic-lora-mixture-directions-source-m2-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026112481,
+        "support": null,
+        "evaluation": 2026112620
+      },
+      "seed_notes": "原冻结识别器 seed2026092702、同包原面板和独立 bootstrap。Smoke 通用扰动 seed2026112481。",
+      "k": null,
+      "scenario": "clean 和六景，分别评估 full/residual",
+      "optimizer": "无。只读诊断。",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "零训练更新；900物理包×七景×11读出×两路线，CPU truth-last。",
+      "output_root": "${N607_PROJECT}/runs/20261124-diagnostic-lora-mixture-directions-source-m2-r01",
+      "log_path": "${N607_PROJECT}/runs/20261124-diagnostic-lora-mixture-directions-source-m2-r01/logs",
+      "command": "${N607_PYTHON} -u -m experiments.pamf_lora_main.spectral_mixture_diagnostic dispatch ${N607_PROJECT}/releases/20261124-diagnostic-lora-mixture-directions-source-m2-r01-release/runtime.json",
+      "expected_artifacts": [
+        "smoke.json",
+        "full-predictions.json",
+        "residual-predictions.json",
+        "full-source-scores.json",
+        "residual-source-scores.json",
+        "full-isolated-estimates.json",
+        "residual-isolated-estimates.json",
+        "logs/"
+      ]
+    }
+  ],
+  "notes": [
+    "实收原三项读出和两项基线与前轮逐包逐景分类结果核对。",
+    "同量草案固定在同包解析半量实际 RMS，只更换权重来源；候选结构和所有先验冻结不更新。",
+    "精确噪声仅用于同量方向和专家重放，专家筛选只计算波形投影，F/TX 均不参与筛选。",
+    "两路预测全部固定后 CPU 才读取源标签，目标完全隔离。"
+  ],
+  "registered_at": "2026-11-24T04:25:53+00:00"
+}

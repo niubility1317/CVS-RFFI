@@ -108,9 +108,7 @@ class SpectralMixture(CrossFrequencyPrior):
         spectrum = torch.cat((torch.zeros_like(edit[..., :1]), edit), dim=-1)
         return self.basis.mT.to(spectrum) @ torch.fft.ifft(spectrum, norm='ortho')
 
-    def changes(self, observed, rms):
-        spectrum = self.spectrum(observed)
-        noise = self.noise(spectrum)
+    def prior_directions(self, spectrum, noise):
         value = self.coefficients(spectrum)
         index = self.component
         received_noise = noise[:, index, None]
@@ -119,6 +117,12 @@ class SpectralMixture(CrossFrequencyPrior):
         variance = self.expert_variance[:, index]
         shrink = posterior_gain(variance, received_noise[:, None]).sqrt() - 1.
         experts = shrink * (value[:, None] - self.expert_center)
+        return parent, experts
+
+    def changes(self, observed, rms):
+        spectrum = self.spectrum(observed)
+        noise = self.noise(spectrum)
+        parent, experts = self.prior_directions(spectrum, noise)
         weights, info = self.routing(observed)
         mixed = torch.einsum('gmk,mkcd->gmcd', weights, experts)
         even, odd, joint = self.synthesize(mixed)
