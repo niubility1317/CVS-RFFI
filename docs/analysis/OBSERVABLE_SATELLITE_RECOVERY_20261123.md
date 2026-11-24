@@ -53,7 +53,7 @@ R69 v1.0 有 266,951 个参数。历史两阶段学生由 R65 固定父版初始
 
 ## 源域验证
 
-- LoRa 的两项同包隔离实验分开量化降噪方向、剂量和反演。在 900 包源 V 面板中，沿精确非载波方向回写与原半量 DURA 同等 RMS，Full 和 Residual 六景仍只达到 58.67% 和 58.48%，较同包 DURA 净增 74 和 198 次。全量精确扣噪同时扩大剂量与覆盖，对应 65.91% 和 66.33%。另一个 300 包源 V 面板中，原噪声下单做精确反演的净变化为 +12、−7，两路区间均跨零。精确减少新增噪声幅度的 80% 后，再做精确反演相对同剂量降噪分别净增 109［+60，+158］和 57［+6，+104］次，合用六景达到 70.06% 和 68.94%。这些数字属于各自的源 V 面板，可解释为何需要同时改善可估计的复修正与观测求解。正式门限只在三种子目标矩阵上检验。 [等剂量方向归因](../../automation_reports/CV-SincNet/20261124-diagnostic-lora-mixture-directions-source-m2-r01/report.md) · [隔离降噪剂量及反演归因](../../automation_reports/CV-SincNet/20261123-phase1-lora-dura-inverse-noise-dose-source-m2-r01/report.md)
+- LoRa 的两项同包隔离实验分开量化降噪方向、剂量和反演。在 900 包源 V 面板中，沿精确非载波方向按统一先验半量的逐包 RMS 回写，Full 和 Residual 六景达到 58.67% 和 58.48%，较同包原 DURA 半量净增 74 和 198 次。全量精确扣噪同时扩大剂量与覆盖，对应 65.91% 和 66.33%。另一个 300 包源 V 面板中，原噪声下单做精确反演的净变化为 +12、−7，两路区间均跨零。精确减少新增噪声幅度的 80% 后，再做精确反演相对同剂量降噪分别净增 109［+60，+158］和 57［+6，+104］次，合用六景达到 70.06% 和 68.94%。这些数字属于各自的源 V 面板，可解释为何需要同时改善可估计的复修正与观测求解。正式门限只在三种子目标矩阵上检验。 [等剂量方向归因](../../automation_reports/CV-SincNet/20261124-diagnostic-lora-mixture-directions-source-m2-r01/report.md) · [隔离降噪剂量及反演归因](../../automation_reports/CV-SincNet/20261123-phase1-lora-dura-inverse-noise-dose-source-m2-r01/report.md)
 
 - LoRa 同物理 RMS 的平行和复方向两组各从零训练 40,000 步。完整复方向对 DURA 在 Full、Residual 六景净减 48［−87，−11］、318［−385，−254］次。相对同权平行净减 22、28 次，clean 均为 667/900。低城区与隔离精确方向的余弦从原解析半量的 0.989、0.996 降至 0.808、0.838，Residual 两倍剂量再净减 400 次。该候选未晋级。 [LoRa 等量复方向完整训练与冻结测试](../../automation_reports/CV-SincNet/20261124-phase1-lora-angular-transport-source-m4-r01/report.md)
 
