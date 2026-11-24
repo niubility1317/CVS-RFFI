@@ -27,7 +27,7 @@ class ObservedVarianceDura(PacketDura):
     def __init__(self):
         super().__init__(wide=True)
 
-    def solve(self, native, observed):
+    def solve(self, native, observed, _rotation=None):
         coarse, action, _ = self.restorer.estimate_context(native)
         return self.restorer.stage_outputs(native, context=(coarse, action, receive_variance(observed)))
 
@@ -42,7 +42,7 @@ MODES = ('direct', 'reference', 'rank_parent_half',
 PAIRS = tuple((f'{ARM}_{stage}', f'{CONTROL.name}_{stage}') for stage in ('coarse', 'half', 'full'))
 
 
-def main():
+def run_matched_source(*, run, arm, recipes, reused, modes, pairs, runner):
     parser = argparse.ArgumentParser(description=__doc__)
     actions = parser.add_subparsers(dest='action', required=True)
     pub = actions.add_parser('publish')
@@ -52,30 +52,31 @@ def main():
         step = actions.add_parser(action)
         step.add_argument('runtime', type=Path)
         if action != 'dispatch':
-            choices = (ARM,) if action == 'fit' else (*ROUTES,'reserve') if action == 'evaluate' else ('source',)
+            choices = (arm,) if action == 'fit' else (*ROUTES,'reserve') if action == 'evaluate' else ('source',)
             step.add_argument('row', choices=choices)
     options = vars(parser.parse_args())
     action = options.pop('action')
     if action == 'publish':
-        return publish(**options, run=RUN, runner=__spec__.name, allowed_gpus=(7,3,6,2,0,4,1,5))
+        return publish(**options, run=run, runner=runner, allowed_gpus=(7,3,6,2,0,4,1,5))
     rt = read(options['runtime'])
     if action == 'dispatch':
-        return dispatch(rt, fit_arms=(ARM,))
+        return dispatch(rt, fit_arms=(arm,))
     if action == 'score':
-        return independent_score(rt, modes=MODES, comparisons=PAIRS)
+        return independent_score(rt, modes=modes, comparisons=pairs)
     activate(rt)
-    common = dict(recipes=RECIPES, reused=REUSED, reframe=packet_frame, mixer=mix)
+    common = dict(recipes=recipes, reused=reused, reframe=packet_frame, mixer=mix)
     if action == 'smoke':
-        return smoke(rt, modes=MODES, split_risk=(False, False), calculations={ARM:CALCULATE},
+        return smoke(rt, modes=modes, split_risk=(False, False), calculations={arm: CALCULATE},
                      calibrate_fn=None, **common)
     if action == 'fit':
-        return fit(rt, recipe=RECIPES[ARM], calculate=CALCULATE, receiver_batches=True)
+        return fit(rt, recipe=recipes[arm], calculate=CALCULATE, receiver_batches=True)
     if action == 'timing':
         return timing(rt, **common)
     if options['row'] == 'reserve':
-        return reserve(rt, modes=MODES, **common)
-    return evaluate(rt, options['row'], modes=MODES, **common)
+        return reserve(rt, modes=modes, **common)
+    return evaluate(rt, options['row'], modes=modes, **common)
 
 
 if __name__ == '__main__':
-    main()
+    run_matched_source(run=RUN, arm=ARM, recipes=RECIPES, reused=REUSED,
+                       modes=MODES, pairs=PAIRS, runner=__spec__.name)
