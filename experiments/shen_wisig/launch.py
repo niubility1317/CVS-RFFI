@@ -9,7 +9,7 @@ import time
 from experiments.cric_dura_comparison.io import read, write
 from experiments.cric_dura_comparison.source_queue import allow_shared
 from experiments.pamf_repl_view_shuffle.plan import TASKS
-from .runner import CLASSES, SOURCE_DAYS
+from .runner import CLASSES, RECIPES, SOURCE_DAYS
 
 
 SEEDS = (2026092701, 2026092702, 2026092703)
@@ -88,7 +88,7 @@ def invoke(root, stage, config, seed, gpu=None, *, bounded_gpu=False):
             raise RuntimeError(f'{stage} s{seed} failed. See {log}')
 
 
-def configurations(root, inputs, commit, seed):
+def configurations(root, inputs, commit, seed, recipe):
     folder = root / f's{seed}'
     folder.mkdir()
     identity = dict(run_id=root.name, row_id=f'shen-wisig-main-s{seed}', model_seed=seed)
@@ -97,7 +97,8 @@ def configurations(root, inputs, commit, seed):
     tests = {name: inputs['tests'][name] for name in TASKS}
     configs = {
         'train': dict(identity, source_cache=inputs['source_cache'], code_commit=commit,
-                      source_contract=inputs['source_contract'], output_root=str(source)),
+                      source_contract=inputs['source_contract'], output_root=str(source),
+                      recipe=recipe),
         'predict': dict(identity, source_output=str(source), source_contract=inputs['source_contract'],
                         classes=CLASSES, readouts=['raw'], output_root=str(raw),
                         tests={name: {'views_root': t['views_root']} for name, t in tests.items()}),
@@ -110,11 +111,18 @@ def configurations(root, inputs, commit, seed):
     return paths
 
 
-def launch(root, handles, commit, shared_gpu):
+def launch(root, handles, commit, shared_gpu, decision):
     inputs = read(handles)['F0']
+    recipe = 'original'
+    if decision is not None:
+        source = read(decision)
+        recipe = source['selection']
+        if (source['target_reads'] != 0 or recipe not in RECIPES
+                or recipe == 'original' or recipe not in source['eligible']):
+            raise ValueError('Require a qualifying fixed source-only screen')
     root.mkdir(exist_ok=False)
     (root / 'logs').mkdir()
-    jobs = {seed: configurations(root, inputs, commit, seed) for seed in SEEDS}
+    jobs = {seed: configurations(root, inputs, commit, seed, recipe) for seed in SEEDS}
     try:
         invoke(root, 'smoke', jobs[SEEDS[0]]['train'], SEEDS[0])
         for seed, cfg in jobs.items():
@@ -140,5 +148,6 @@ if __name__ == '__main__':
     parser.add_argument('--handles', required=True, type=Path)
     parser.add_argument('--commit', required=True)
     parser.add_argument('--shared-gpu', choices=tuple(map(str, range(8))))
+    parser.add_argument('--source-decision', type=Path)
     args = parser.parse_args()
-    launch(args.root, args.handles, args.commit, args.shared_gpu)
+    launch(args.root, args.handles, args.commit, args.shared_gpu, args.source_decision)

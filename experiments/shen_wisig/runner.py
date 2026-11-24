@@ -23,10 +23,19 @@ SOURCE_RXS = [1, 3, 4, 6, 8]
 SOURCE_DAYS = [1, 2, 3]
 CLASSES = ['14-10', '14-7', '20-15', '20-19', '6-15', '8-20']
 EPOCHS = 50
+RECIPES = {
+    'original': ('original', False),
+    'rx': ('original', True),
+    'stable': ('stable', False),
+    'wifi': ('wifi', False),
+    'joint': ('wifi', True),
+    'stable_rx': ('stable', True),
+}
 
 
 def source_contract(config):
-    if set(config) != SOURCE_FIELDS:
+    keys = set(config) - {'recipe'}
+    if keys != SOURCE_FIELDS or config.get('recipe', 'original') not in RECIPES:
         raise ValueError('Training requires only registered source paths and row identity')
     contract = read(config['source_contract'])
     if (contract['source_rxs'] != SOURCE_RXS or contract['source_days'] != SOURCE_DAYS
@@ -36,8 +45,18 @@ def source_contract(config):
     return contract
 
 
-def create_model(device):
-    return ReceiverAdversarialCNN(len(CLASSES), len(SOURCE_RXS)).to(device)
+def create_model(device, recipe='original', receivers=len(SOURCE_RXS)):
+    return ReceiverAdversarialCNN(len(CLASSES), receivers, RECIPES[recipe][0]).to(device)
+
+
+def make_optimizers(model, recipe):
+    adversary = None
+    if RECIPES[recipe][1]:
+        adversary = torch.optim.Adam(model.rx.parameters(), lr=0.002)
+        params = [*model.backbone.parameters(), *model.tx.parameters()]
+    else:
+        params = model.parameters()
+    return torch.optim.SGD(params, lr=0.001, momentum=0.9), adversary
 
 
 def labels(dataset, device):
@@ -69,26 +88,46 @@ def auxiliary_iq(dataset):
     return torch.cat(output)
 
 
-def train_loss(model, original, satellite, tx, rx):
+def train_loss(model, original, satellite, tx, rx, adversary=None, progress=0.):
     features = model.encode(torch.cat((original, satellite), dim=0))
     tx_logits = model.classify_features(features)
     ordinary, augmented = tx_logits.split(len(tx))
-    rx_logits = model.receiver_logits(features[:len(tx)])
+    source = features[:len(tx)]
+    strength = 1.
+    if adversary is not None:
+        detached = source.detach()
+        for _ in range(2):
+            adversary.zero_grad(set_to_none=True)
+            F.cross_entropy(model.rx(detached), rx).backward()
+            adversary.step()
+        # The independent optimizer learns an informative RX classifier first.
+        # This branch then trains the shared extractor against that classifier.
+        strength = 0.2 + 0.8 * min(1., 2. * progress)
+        model.rx.requires_grad_(False)
+    rx_logits = model.receiver_logits(source, strength)
+    if adversary is not None:
+        model.rx.requires_grad_(True)
     loss = F.cross_entropy(ordinary, tx) + F.cross_entropy(rx_logits, rx)
     return loss + 0.68 * F.cross_entropy(augmented, tx), ordinary
 
 
 @torch.no_grad()
-def validate(model, images, tx, rx):
+def validate(model, images, tx, rx=None):
     model.eval()
-    loss = correct = 0
-    for x, y, r in zip(images.split(256), tx.split(256), rx.split(256), strict=True):
+    loss = correct = rx_correct = 0
+    for start in range(0, len(tx), 256):
+        indices = slice(start, start + 256)
+        x, y = images[indices], tx[indices]
         features = model.encode(x)
         logits = model.classify_features(features)
         loss += F.cross_entropy(logits, y, reduction='sum')
-        loss += F.cross_entropy(model.receiver_logits(features), r, reduction='sum')
+        if rx is not None:
+            r = rx[indices]
+            rx_logits = model.receiver_logits(features)
+            loss += F.cross_entropy(rx_logits, r, reduction='sum')
+            rx_correct += (rx_logits.argmax(1) == r).sum()
         correct += (logits.argmax(1) == y).sum()
-    return float(loss) / len(tx), float(correct) / len(tx)
+    return float(loss) / len(tx), float(correct) / len(tx), float(rx_correct) / len(tx) if rx is not None else None
 
 
 def load_reader(folder, contract, device):
@@ -101,17 +140,21 @@ def load_reader(folder, contract, device):
         payload['identity'][k] != frozen[k] for k in ('run_id', 'row_id', 'model_seed')
     ):
         raise ValueError('Frozen checkpoint contract or row differs')
-    model = create_model(device)
+    recipe = payload.get('recipe', 'original')
+    if recipe != frozen.get('recipe', 'original'):
+        raise ValueError('Checkpoint and frozen input representation differ')
+    model = create_model(device, recipe)
     model.load_state_dict(payload['weights'], strict=True)
     return model.eval(), frozen
 
 
 def freeze(folder, model, contract, config, **metrics):
     identity = {k: config[k] for k in ('run_id', 'row_id', 'model_seed', 'code_commit')}
-    torch.save(dict(weights=model.state_dict(), source_contract=contract, identity=identity),
+    recipe = config.get('recipe', 'original')
+    torch.save(dict(weights=model.state_dict(), source_contract=contract, identity=identity, recipe=recipe),
                folder / 'model.pt')
     write(folder / 'complete.json',
-          dict(status='SOURCE_FROZEN', target_access=False, **identity, **metrics))
+          dict(status='SOURCE_FROZEN', target_access=False, recipe=recipe, **identity, **metrics))
 
 
 def smoke(config, device):
@@ -125,9 +168,12 @@ def smoke(config, device):
     physical = {k: torch.tensor(labeled.metadata[k][selected].tolist())
                 for k in ('eq_i', 'rx_i', 'day_i', 'sig_i', 'base_index')}
     satellite = simulate(sample, physical, epoch=1, step=0)
-    model = create_model(device)
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
-    loss, _ = train_loss(model, spectrogram(sample), spectrogram(satellite), tx[selected], rx[selected])
+    recipe = config.get('recipe', 'original')
+    model = create_model(device, recipe)
+    optimizer, adversary = make_optimizers(model, recipe)
+    encode = model.front_end
+    loss, _ = train_loss(model, spectrogram(sample, encode), spectrogram(satellite, encode),
+                         tx[selected], rx[selected], adversary)
     loss.backward()
     if not torch.isfinite(loss) or any(p.grad is None or not torch.isfinite(p.grad).all() for p in model.parameters()):
         raise FloatingPointError('Source checkpoint smoke encountered a bad gradient')
@@ -154,11 +200,13 @@ def train(config, device):
     out = Path(config['output_root'])
     out.mkdir(parents=False, exist_ok=False)
     print('SHEN_WISIG_SOURCE_ROLES', len(labeled), len(val), flush=True)
-    sat = spectrogram(auxiliary_iq(labeled).to(device))
-    val_images = spectrogram(val.x.to(device))
+    recipe = config.get('recipe', 'original')
+    front_end = RECIPES[recipe][0]
+    sat = spectrogram(auxiliary_iq(labeled).to(device), front_end)
+    val_images = spectrogram(val.x.to(device), front_end)
     iq = labeled.x.to(device)
-    model = create_model(device)
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
+    model = create_model(device, recipe)
+    optimizer, adversary = make_optimizers(model, recipe)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.2, patience=9,
                                                            threshold=0)
     best_loss = float('inf')
@@ -168,27 +216,34 @@ def train(config, device):
             model.train()
             correct = loss_sum = 0
             for index in torch.randperm(len(iq), device=device, generator=seed).split(64):
-                ordinary = spectrogram(add_noise(iq[index], seed))
-                loss, logits = train_loss(model, ordinary, sat[index], tx[index], rx[index])
                 optimizer.zero_grad(set_to_none=True)
+                ordinary = spectrogram(add_noise(iq[index], seed), front_end)
+                loss, logits = train_loss(model, ordinary, sat[index], tx[index], rx[index],
+                                          adversary, (epoch - 1) / (EPOCHS - 1))
                 loss.backward()
                 optimizer.step()
                 correct += (logits.detach().argmax(1) == tx[index]).sum()
                 loss_sum += loss.detach() * len(index)
-            val_loss, val_accuracy = validate(model, val_images, val_tx, val_rx)
+            val_loss, val_accuracy, val_rx_accuracy = validate(model, val_images, val_tx, val_rx)
             stats = dict(epoch=epoch, loss=float(loss_sum) / len(iq), accuracy=float(correct) / len(iq),
-                         val_loss=val_loss, val_accuracy=val_accuracy, lr=optimizer.param_groups[0]['lr'])
+                         val_loss=val_loss, val_accuracy=val_accuracy, val_rx_accuracy=val_rx_accuracy,
+                         lr=optimizer.param_groups[0]['lr'])
             line = json.dumps(stats, allow_nan=False)
             log.write(line + '\n')
             log.flush()
             print(line, flush=True)
+            if recipe != 'original':
+                continue  # Fixed E50, matching the source-held comparison's fixed checkpoint rule.
             scheduler.step(val_loss)
             if val_loss < best_loss:
                 best_loss, best_epoch, best_accuracy = val_loss, epoch, val_accuracy
                 best_weights = {key: value.detach().cpu().clone() for key, value in model.state_dict().items()}
             if epoch - best_epoch >= 20:
                 break
-    model.load_state_dict(best_weights, strict=True)
+    if recipe == 'original':
+        model.load_state_dict(best_weights, strict=True)
+    else:
+        best_epoch, best_loss, best_accuracy = epoch, val_loss, val_accuracy
     freeze(out, model, contract, config, epoch=best_epoch, epochs_trained=epoch,
            val_loss=best_loss, val_accuracy=best_accuracy)
 
