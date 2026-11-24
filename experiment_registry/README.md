@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 局部复时延相关保真](../automation_reports/CV-SincNet/20261124-phase1-lora-local-lag-profile-source-m3-r01/report.md)
 - [LoRa 同接收机源包复谱关系保真](../automation_reports/CV-SincNet/20261124-phase1-lora-packet-relation-source-m3-r01/report.md)
 - [LoRa 单包耦合自助法恢复方向校验](../automation_reports/CV-SincNet/20261124-phase1-lora-fission-risk-source-m2-r01/report.md)
 - [LoRa 实收射频噪声协方差搬运](../automation_reports/CV-SincNet/20261124-phase1-lora-transported-noise-covariance-source-m2-r01/report.md)

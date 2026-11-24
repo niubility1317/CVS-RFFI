@@ -1,0 +1,33 @@
+{
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "n_measurements": 24,
+  "scope": "single half strength arm, excludes DURA and F",
+  "arms": {
+    "direction_risk": {
+      "parameters": 254735,
+      "timing": {
+        "clean": {
+          "median_ms": 2.5640480453148484,
+          "active": 0
+        },
+        "generic": {
+          "median_ms": 50.96054100431502,
+          "active": 1
+        }
+      }
+    },
+    "local_lag": {
+      "parameters": 254735,
+      "timing": {
+        "clean": {
+          "median_ms": 2.956507494673133,
+          "active": 0
+        },
+        "generic": {
+          "median_ms": 49.784386646933854,
+          "active": 1
+        }
+      }
+    }
+  }
+}

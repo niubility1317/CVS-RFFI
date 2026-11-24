@@ -1,0 +1,60 @@
+{
+  "submit": {
+    "pid": 2571221,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-local-lag-profile-source-m3-r01-release",
+    "code_commit": "78b2920bb2cf25a434cd5a41ab63e0423e99cbe3",
+    "archive_transfer": "VERIFIED",
+    "remote_compile": "PASS",
+    "status": "SUBMITTED_NOT_YET_VERIFIED",
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-local-lag-profile-source-m3-r01"
+  },
+  "controller": {
+    "pid": 2571221,
+    "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.lag_profile_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-local-lag-profile-source-m3-r01-release/runtime.json",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-local-lag-profile-source-m3-r01-release",
+    "cuda": [
+      "CUDA_VISIBLE_DEVICES="
+    ]
+  },
+  "jobs": {
+    "smoke-source": {
+      "pid": 2571248,
+      "gpu": 3,
+      "identity": null,
+      "bytes": 459,
+      "last": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+        "  return self.fget.__get__(instance, owner)()",
+        "LORA_ANTITHETIC_REAL_CHECKPOINT_PASS"
+      ]
+    },
+    "fit-local_lag": {
+      "pid": 2571817,
+      "gpu": 3,
+      "identity": {
+        "pid": 2571817,
+        "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.lag_profile_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-local-lag-profile-source-m3-r01/configs/fit-local_lag.json local_lag",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-local-lag-profile-source-m3-r01-release",
+        "cuda": [
+          "CUDA_VISIBLE_DEVICES=3"
+        ]
+      },
+      "bytes": 741,
+      "last": [
+        "CHANNEL_BLIND_FIT 1 2.0422277450561523 2.0422277450561523 4.080033779144287 2.4076552391052246 3.2033979892730713 0.18401440978050232 3.427924394607544 0.47781097888946533 2.213012218475342 1.381401777267456 0.9943147301673889 1.7731473445892334",
+        "CHANNEL_BLIND_FIT 50 2.0313515663146973 1.9140366315841675 3.396164894104004 1.6321632862091064 2.6344432830810547 0.05423959717154503 2.466167449951172 0.3727051317691803 1.7934576272964478 1.1164885759353638 0.854675829410553 1.1620925664901733",
+        "CHANNEL_BLIND_FIT 100 1.6929987668991089 1.3669853210449219 3.6746606826782227 2.5481536388397217 2.5329678058624268 0.2864687740802765 4.114523410797119 0.4894942343235016 1.531690001487732 0.9070408940315247 0.8724416494369507 1.0063323974609375"
+      ]
+    }
+  },
+  "state": null,
+  "files": {
+    "smoke.json": 128
+  },
+  "verification": "VERIFIED",
+  "growth": {
+    "row": "fit-local_lag",
+    "first": 0,
+    "second": 741
+  }
+}
