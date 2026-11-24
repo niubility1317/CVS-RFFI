@@ -27,10 +27,13 @@ class PacketDura(nn.Module):
 
     def forward(self, observed, _quality, rotation):
         native = real_iq(observed * rotation).flatten(0, 1)
-        stages, _, _, coarse = self.restorer.stage_outputs(native)
+        stages, _, _, coarse = self.solve(native, observed)
 
         def packet_frame(wave):
             phased = complex_iq(wave.unflatten(0, observed.shape[:2])) * rotation.conj()
             return match_packet_power(phased, observed)
 
         return packet_frame(coarse), packet_frame(stages[-1])
+
+    def solve(self, native, _observed):
+        return self.restorer.stage_outputs(native)

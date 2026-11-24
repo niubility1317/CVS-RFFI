@@ -230,7 +230,8 @@ def dispatch(rt):
         raise
 
 
-def publish(repo, output, context, ssh_config, parent_submit, *, run=RUN, runner=None):
+def publish(repo, output, context, ssh_config, parent_submit, *, run=RUN, runner=None,
+            allowed_gpus=(3,6,2,0,4,1,5)):
     cfg = read(context)
     rt = {k: cfg[k] for k in ('project', 'python', 'frozen_sources')}
     project = PurePosixPath(rt['project'])
@@ -241,7 +242,7 @@ def publish(repo, output, context, ssh_config, parent_submit, *, run=RUN, runner
     rt.update(run_id=run, runner=runner or __spec__.name, code_commit=release_commit(repo),
               run_root=str(project/'runs'/run), release_root=str(project/'releases'/f'{run}-release'),
               source_root=str(project/'releases'/f'{DATA_RUN}-release'/'data'/'source'), parent_root=str(parent),
-              allowed_gpus=[3,6,2,0,4,1,5], max_workers=2, max_compute_processes=4)
+              allowed_gpus=list(allowed_gpus), max_workers=2, max_compute_processes=4)
     release(repo, output, rt, ssh_config)
 
 
