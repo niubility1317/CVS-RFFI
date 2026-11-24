@@ -1,0 +1,117 @@
+{
+  "status": "RUNNING",
+  "code_commit": "f26645dc9373ee6c14ecd278a2ea5e0dbe0b2e7a",
+  "controller": {
+    "pid": 2910323,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-pamf-advisor-data-m32-r01-release",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.pamf_advisor_supplements.runner",
+      "dispatch",
+      "--config",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-pamf-advisor-data-m32-r01-release/runtime.json"
+    ]
+  },
+  "smoke": {
+    "status": "PASS",
+    "real_checkpoint": true,
+    "source_samples": 2,
+    "query_reads": 0,
+    "U_truth_reads": 0
+  },
+  "counts": {
+    "RUNNING": 3,
+    "QUEUED": 93
+  },
+  "workers": [
+    {
+      "name": "train__budget630-ssl-s2026092701",
+      "gpu": 0,
+      "log_bytes": 16306,
+      "process": {
+        "pid": 2911228,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-pamf-advisor-data-m32-r01-release",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.pamf_advisor_supplements.runner",
+          "worker",
+          "--kind",
+          "train",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-pamf-advisor-data-m32-r01/configs/train__budget630-ssl-s2026092701.json"
+        ]
+      },
+      "cuda": [
+        "GPU-56adac86-77cd-36c9-8770-dbf002650461, 2911228, 1518"
+      ],
+      "progress": {
+        "epoch": 2,
+        "updates": 444,
+        "L_actual": 56832,
+        "U_actual": 0
+      }
+    },
+    {
+      "name": "train__budget630-pl-s2026092701",
+      "gpu": 2,
+      "log_bytes": 16294,
+      "process": {
+        "pid": 2911359,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-pamf-advisor-data-m32-r01-release",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.pamf_advisor_supplements.runner",
+          "worker",
+          "--kind",
+          "train",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-pamf-advisor-data-m32-r01/configs/train__budget630-pl-s2026092701.json"
+        ]
+      },
+      "cuda": [
+        "GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 2911359, 1518"
+      ],
+      "progress": {
+        "epoch": 2,
+        "updates": 444,
+        "L_actual": 56832,
+        "U_actual": 0
+      }
+    },
+    {
+      "name": "train__budget3150-ssl-s2026092701",
+      "gpu": 4,
+      "log_bytes": 16320,
+      "process": {
+        "pid": 2911428,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-pamf-advisor-data-m32-r01-release",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.pamf_advisor_supplements.runner",
+          "worker",
+          "--kind",
+          "train",
+          "--config",
+          "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-pamf-advisor-data-m32-r01/configs/train__budget3150-ssl-s2026092701.json"
+        ]
+      },
+      "cuda": [
+        "GPU-95d925a1-7218-ca7b-adef-164241f4f491, 2911428, 2212"
+      ],
+      "progress": {
+        "epoch": 2,
+        "updates": 444,
+        "L_actual": 56832,
+        "U_actual": 0
+      }
+    }
+  ]
+}

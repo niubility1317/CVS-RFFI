@@ -1,0 +1,56 @@
+{
+  "ten_class_double_cross": [
+    {
+      "setting": "10-class setting",
+      "test": "cross_both",
+      "view": "clean",
+      "metric": "accuracy",
+      "seed": 2026092701,
+      "ordinary_pl_pct": 83.42427031291086,
+      "full_ssl_pct": 81.86300289245332,
+      "change_pp": -1.5612674204575399
+    },
+    {
+      "setting": "10-class setting",
+      "test": "cross_both",
+      "view": "clean",
+      "metric": "accuracy",
+      "seed": 2026092702,
+      "ordinary_pl_pct": 83.89758085721799,
+      "full_ssl_pct": 83.62805679726532,
+      "change_pp": -0.2695240599526727
+    },
+    {
+      "setting": "10-class setting",
+      "test": "cross_both",
+      "view": "clean",
+      "metric": "accuracy",
+      "seed": 2026092703,
+      "ordinary_pl_pct": 82.95095976860374,
+      "full_ssl_pct": 81.9780436497502,
+      "change_pp": -0.9729161188535329
+    }
+  ],
+  "ssl_rows": 1056,
+  "dura_rows": 546,
+  "dura_six_scene": [
+    {
+      "test": "cross_rx",
+      "raw5_pct": 71.29439300411522,
+      "raw6_pct": 72.28395061728395,
+      "dura5_pct": 78.89840534979423,
+      "dura6_pct": 75.31203703703703,
+      "raw6_minus5_pp": 0.9895576131687234,
+      "dura6_minus5_pp": -3.5863683127572012
+    },
+    {
+      "test": "cross_both",
+      "raw5_pct": 68.33796296296296,
+      "raw6_pct": 70.22453703703704,
+      "dura5_pct": 76.02885802469136,
+      "dura6_pct": 71.75848765432099,
+      "raw6_minus5_pp": 1.8865740740740757,
+      "dura6_minus5_pp": -4.270370370370369
+    }
+  ]
+}

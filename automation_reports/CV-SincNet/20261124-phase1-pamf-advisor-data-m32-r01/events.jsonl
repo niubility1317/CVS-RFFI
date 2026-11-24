@@ -1,1 +1,2 @@
 {"at": "2026-11-24T10:45:37+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-24T10:56:55+00:00", "status": "RUNNING", "note": "N607真实checkpoint冒烟PASS；首批3个GPU进程的PID、CWD、argv、CUDA及epoch/步数独立核验。", "evidence": ["n607_launch_readback.json"], "row_id": null}
