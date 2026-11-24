@@ -275,9 +275,20 @@ def neighbor_parent_comparison(rt):
     return compare_frozen_studies(rt, studies, pairs, {})
 
 
+def cross_frequency_parent_comparison(rt):
+    from experiments.pamf_lora_main import cross_frequency_dose_source, cross_frequency_source
+
+    studies = {'parent': (CROSS_FREQUENCY_RUN, cross_frequency_source.MODES),
+               'current': (CROSS_FREQUENCY_DOSE_RUN, cross_frequency_dose_source.MODES)}
+    pairs = tuple((f'current_{mode}', 'parent_joint_transport')
+                  for mode in ('separate_full', 'tied_full', 'analytic_fixed'))
+    return compare_frozen_studies(rt, studies, pairs, {})
+
+
 if __name__=='__main__':
     if os.environ.get('CUDA_VISIBLE_DEVICES')!='':
         raise ValueError('This diagnostic scores on an independent CPU process')
-    methods = {'--dose-interaction': phase_dose_interaction, '--neighbor-parent': neighbor_parent_comparison}
+    methods = {'--dose-interaction': phase_dose_interaction, '--neighbor-parent': neighbor_parent_comparison,
+               '--cross-frequency-parent': cross_frequency_parent_comparison}
     method = methods.get(sys.argv[2], collect) if len(sys.argv) > 2 else collect
     print(json.dumps(method(read(Path(sys.argv[1]))),allow_nan=False))

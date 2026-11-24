@@ -36,6 +36,8 @@ R69 v1.0 有 266,951 个参数。历史两阶段学生由 R65 固定父版初始
 
 ## 源域验证
 
+- LoRa 跨频方向统一和分开回写两臂各从零训练 40,000 步。分开全量较匹配 DURA 在 Full 净增 42 次，在 Residual 净减 309 次，clean 均保持 667/900。相对原固定解析分别净减 7 和 22 次。同权等物理 RMS 开启分量独立，两路各净减 2 次，区间均跨零。Residual 低城区两个分量系数仍接近 1，各 RX 编辑量中位数达 30%。当前分配结构未晋级正式测试。 [LoRa 跨频连续回写和逐接收机结果](../../automation_reports/CV-SincNet/20261124-phase1-lora-cross-frequency-dose-source-m4-r01/report.md)
+
 - LoRa 用 20,000 个合法源 U 包校准公共和独有跨频 I/Q 协方差。与同物理 RMS 的逐频对照相比，跨频方差保持在 Full 和 Residual 六景净增 238［+183，+293］和 521［+425，+620］次，十个路线接收机组合均正向。主读出对 DURA 净增 49［+9，+89］和净减 287［−357，−219］次，clean 均为 667/900。Residual 低城区各 RX 编辑 RMS 中位数触及 30% 上限，跨频方向的低城区弱复谱相关改善未达到两路线对 DURA 的晋级条件。 [LoRa 跨频协方差匹配消融及独立评分](../../automation_reports/CV-SincNet/20261124-phase1-lora-cross-frequency-source-m2-r01/report.md)
 
 - LoRa 将同一条 chirp 的对称邻点构造成独立相位方向。匹配的两组各训练 40,000 步，邻点组降低了固定源 U 相位和复谱损失，但 Full、Residual 六景较半量 DURA 净减 99［−147，−52］、216［−288，−145］次。两路 clean 均为 667/900。同权等 IQ RMS 的邻点开关净差为 −29、−30 次，区间均跨零。低城区新增几何方向在隔离对照中对应 9.55% 和 1.83% 的相位能量，两路弱独有复谱 NMSE 都升高。候选未晋级目标矩阵。 [LoRa 邻点相位与逐接收机冻结识别](../../automation_reports/CV-SincNet/20261124-phase1-lora-neighbor-phase-source-m4-r01/report.md)
