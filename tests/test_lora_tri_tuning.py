@@ -156,6 +156,20 @@ class TriTuningTests(TestCase):
             self.assertTrue((shifted[:,0]>=np.arange(8)*1024).all())
             self.assertTrue((shifted[:,-1]<(np.arange(8)+1)*1024).all())
 
+    def test_chirp_readout_starts_uniform_and_learns_position_specific_scores(self):
+        gate=tri_clean95.ChirpReadout(160,10,8)
+        x=torch.randn(4,8,160,generator=torch.Generator().manual_seed(32))
+        weight=torch.randn(10,160,generator=torch.Generator().manual_seed(6))
+        correction=gate(x,weight)
+        self.assertEqual(tuple(correction.shape),(4,10))
+        torch.testing.assert_close(correction,torch.zeros_like(correction))
+        correction.sum().backward()
+        self.assertGreater(float(gate.position.grad.abs().sum()),0.)
+        self.assertGreater(float(gate.gate.weight.grad.abs().sum()),0.)
+        rows,epochs,u_batch=tri_clean95.study({'scratch':True,'chirpread_study':True})
+        self.assertEqual((epochs,u_batch),(112,16))
+        self.assertTrue(rows['phase_chirpread']['chirp_readout'])
+
     def test_coverage_uses_unique_source_indices_for_all_repl_epochs(self):
         rows,epochs,u_batch=tri_clean95.study({'scratch':True,'coverage_study':True})
         row=rows['phase_coverage']

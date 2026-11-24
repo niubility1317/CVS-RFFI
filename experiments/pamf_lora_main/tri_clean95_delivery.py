@@ -14,7 +14,7 @@ from .full_packet_publish import DATA_RUN
 from .publish import release, release_commit
 from .scoring import macro_f1
 from .tri_clean95 import (
-    ANCHOR_ROWS, ANCHOR_RUN, BUDGET_RUN, COVERAGE_ROWS, COVERAGE_RUN, DRIFT_RUN, EDGE_ROWS, EDGE_RUN, NOISE_RUN, QUICK_RUN, ROWS, RUN, SCRATCH_ROWS, SCRATCH_RUN,
+    ANCHOR_ROWS, ANCHOR_RUN, BUDGET_RUN, CHIRP_READ_ROWS, CHIRP_READ_RUN, COVERAGE_ROWS, COVERAGE_RUN, DRIFT_RUN, EDGE_ROWS, EDGE_RUN, NOISE_RUN, QUICK_RUN, ROWS, RUN, SCRATCH_ROWS, SCRATCH_RUN,
     PHASE_JOINT_ROWS, PHASE_JOINT_RUN, PHASE_ROWS, PHASE_RUN, PHYSICS_ROWS, PHYSICS_RUN, ROBUST_ROWS, ROBUST_RUN, SEED,
     RTL_ROWS, RTL_RUN, TIMEFREQ_RUN, TIMING_ROWS, TIMING_RUN, TRANSFER_RUN,
 )
@@ -22,18 +22,18 @@ from .tri_clean95 import (
 
 QUALIFIED_ROWS={ROBUST_RUN:ROBUST_ROWS,PHASE_RUN:PHASE_ROWS,ANCHOR_RUN:ANCHOR_ROWS,
                 TIMING_RUN:TIMING_ROWS,PHASE_JOINT_RUN:PHASE_JOINT_ROWS,RTL_RUN:RTL_ROWS,
-                PHYSICS_RUN:PHYSICS_ROWS,COVERAGE_RUN:COVERAGE_ROWS}
+                PHYSICS_RUN:PHYSICS_ROWS,COVERAGE_RUN:COVERAGE_ROWS,CHIRP_READ_RUN:CHIRP_READ_ROWS}
 
 
 def publish(repo, output, context, ssh_config, quick=False, transfer=False, scratch=False, timefreq=False,
             noise=False,drift=False,budget=False,edge=False,robust=False,headphase=False,
-            anchor=False,timing=False,phasejoint=False,rtl=False,physics=False,coverage=False):
+            anchor=False,timing=False,phasejoint=False,rtl=False,physics=False,coverage=False,chirpread=False):
     ctx=read(context)
     rt={k:ctx[k] for k in ('project','python','frozen_sources')}
     project=PurePosixPath(rt['project'])
     parent=project/'runs'/DATA_RUN
     native=project/'releases'/f'{DATA_RUN}-release'/'data'
-    studies=((coverage,COVERAGE_RUN),(physics,PHYSICS_RUN),(rtl,RTL_RUN),(phasejoint,PHASE_JOINT_RUN),(timing,TIMING_RUN),(anchor,ANCHOR_RUN),(headphase,PHASE_RUN),
+    studies=((chirpread,CHIRP_READ_RUN),(coverage,COVERAGE_RUN),(physics,PHYSICS_RUN),(rtl,RTL_RUN),(phasejoint,PHASE_JOINT_RUN),(timing,TIMING_RUN),(anchor,ANCHOR_RUN),(headphase,PHASE_RUN),
              (robust,ROBUST_RUN),(edge,EDGE_RUN),(budget,BUDGET_RUN),
              (drift,DRIFT_RUN),(noise,NOISE_RUN),(timefreq,TIMEFREQ_RUN),(scratch,SCRATCH_RUN),
              (transfer,TRANSFER_RUN),(quick,QUICK_RUN))
@@ -85,6 +85,9 @@ def publish(repo, output, context, ssh_config, quick=False, transfer=False, scra
     if coverage:
         rt.update(scratch=True,coverage_study=True,fixed_clean_cache=str(project/'runs'/DRIFT_RUN/'clean_cache'),
                   allowed_gpus=[5,3,2,7,6],max_workers=1,min_free_mib=12000)
+    if chirpread:
+        rt.update(scratch=True,chirpread_study=True,fixed_clean_cache=str(project/'runs'/DRIFT_RUN/'clean_cache'),
+                  allowed_gpus=[3,6,2,5,7],max_workers=1,min_free_mib=12000)
     if quick or transfer:
         del rt['native_target_root'],rt['target_views']
         rt.update(quick=quick,transfer=transfer,fixed_clean_cache=str(project/'runs'/RUN/'clean_cache'))
@@ -173,6 +176,7 @@ if __name__=='__main__':
             study.add_argument('--rtl',action='store_true')
             study.add_argument('--physics',action='store_true')
             study.add_argument('--coverage',action='store_true')
+            study.add_argument('--chirpread',action='store_true')
     args=vars(parser.parse_args())
     kind=args.pop('kind')
     {'publish':publish,'score':score}[kind](**args)

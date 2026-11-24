@@ -91,6 +91,21 @@ class SpectrumAligned(CoherentPacket):
         return logits+self.head(aligned),fused+.10*aligned
 
 
+class ChirpReadout(torch.nn.Module):
+    def __init__(self,channels,classes,chirp_count):
+        super().__init__()
+        self.gate=torch.nn.Linear(channels,classes,bias=False)
+        self.position=torch.nn.Parameter(torch.zeros(chirp_count,classes))
+        torch.nn.init.zeros_(self.gate.weight)
+
+    def forward(self,chirps,head_weight):
+        scores=self.gate(chirps)+self.position
+        delta=scores.softmax(dim=1)-1/chirps.shape[1]
+        chirp_logits=torch.nn.functional.linear(chirps,head_weight)
+        # Preserve half of the uniform full-packet weight for every chirp.
+        return .5*(delta*chirp_logits).sum(dim=1)
+
+
 class TimeFrequencyAligned(CoherentPacket):
     def forward(self,x):
         drift_layer=getattr(self,'relative_drift',None)
@@ -139,7 +154,11 @@ class TimeFrequencyAligned(CoherentPacket):
             aligned=aligned+.10*phase_layer(phase)
         if physics_layer is not None:
             aligned=aligned+.10*physics_layer(physics)
-        return logits+self.head(aligned),fused+.10*aligned
+        logits=logits+self.head(aligned)
+        chirp_readout=getattr(self,'chirp_readout',None)
+        if chirp_readout is not None:
+            logits=logits+chirp_readout(chirps,self.head.weight)
+        return logits,fused+.10*aligned
 
 
 def clean_model(rt,root,c,row,device):
@@ -171,6 +190,8 @@ def clean_model(rt,root,c,row,device):
             if row.get('packet_physics'):
                 f.packet_physics=nn.Sequential(nn.Linear(24,32),nn.LayerNorm(32),nn.SiLU(),
                                                nn.Linear(32,160),nn.LayerNorm(160)).to(device)
+            if row.get('chirp_readout'):
+                f.chirp_readout=ChirpReadout(f.head.in_features,f.head.out_features,len(row['chirps'])).to(device)
             if f.spectral_edges:
                 original=f.time_frequency[0]
                 extended=nn.Conv2d(4,16,3,padding=1,device=device)
@@ -185,6 +206,8 @@ def clean_model(rt,root,c,row,device):
 
 def study(rt):
     if rt.get('scratch'):
+        if rt.get('chirpread_study'):
+            return CHIRP_READ_ROWS,112,16
         if rt.get('coverage_study'):
             return COVERAGE_ROWS,112,16
         if rt.get('physics_study'):
@@ -282,6 +305,10 @@ PHASE_JOINT_RUN='20261125-phase1-lora-pamf-tri-clean-phasejoint98-s2026092702-r0
 PHASE_JOINT_ROWS={
     'phase_joint': dict(ANCHOR_ROWS['phase_anchor'],joint_rx_weight=.12),
 }
+CHIRP_READ_RUN='20261125-phase1-lora-pamf-tri-clean-chirpread98-s2026092702-r01'
+CHIRP_READ_ROWS={
+    'phase_chirpread': dict(ANCHOR_ROWS['phase_anchor'],chirp_readout=True),
+}
 COVERAGE_RUN='20261125-phase1-lora-pamf-tri-clean-ucoverage98-s2026092702-r01'
 COVERAGE_ROWS={
     'phase_coverage': dict(ANCHOR_ROWS['phase_anchor'],cover_u=True),
@@ -329,6 +356,8 @@ def row_names(rt):
         return ('phase_jitter',)
     if rt.get('phase_joint_study'):
         return ('phase_joint',)
+    if rt.get('chirpread_study'):
+        return ('phase_chirpread',)
     if rt.get('coverage_study'):
         return ('phase_coverage',)
     if rt.get('physics_study'):
@@ -528,7 +557,7 @@ def train(rt,name):
         validation_epochs.update(range(warmup,epochs+1,4))
         if any(rt.get(k) for k in ('budget_study','edge_study','robust_study','phase_study')):
             validation_epochs.update((32,48,60))
-        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study')):
+        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study')):
             validation_epochs.update((32,48,64,80,88))
     with (out/'epochs.jsonl').open('x',encoding='utf8') as log:
         for epoch in range(1,epochs+1):
@@ -624,14 +653,14 @@ def dispatch(rt):
     root=Path(rt['run_root'])
     screens=('quick','transfer','timefreq','noise_study','drift_study','budget_study')
     gated_study=any(rt.get(k) for k in ('robust_study','phase_study','anchor_study','timing_study',
-                                       'phase_joint_study','rtl_study','physics_study','coverage_study'))
+                                       'phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study'))
     if (gated_study or any(rt.get(k) for k in ('noise_study','drift_study','budget_study','edge_study'))) and not rt.get('scratch'):
         raise ValueError('The clean input comparisons require random initialization')
     root.mkdir(exist_ok=False)
     state=root/'state.json'
     fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq',
                              'noise_study','drift_study','budget_study','edge_study','robust_study','phase_study','anchor_study',
-                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study',
+                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study',
                              'fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)
