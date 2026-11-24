@@ -1,0 +1,5 @@
+{"at": "2026-11-24T08:09:24+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-24T08:17:00+00:00", "status": "ANALYZED", "row_id": "evaluate-full", "evidence": "full-source-scores.json", "note": "Verified frozen same-packet source experiment. Source performance is diagnostic only."}
+{"at": "2026-11-24T08:17:00+00:00", "status": "ANALYZED", "row_id": "evaluate-residual", "evidence": "residual-source-scores.json", "note": "Verified frozen same-packet source experiment. Source performance is diagnostic only."}
+{"at": "2026-11-24T08:17:00+00:00", "status": "ANALYZED", "row_id": "evaluate-reserve", "evidence": "clean-complete-scores.json", "note": "Verified frozen same-packet source experiment. Source performance is diagnostic only."}
+{"at": "2026-11-24T08:17:00+00:00", "status": "ANALYZED", "row_id": null, "evidence": "report.md", "note": "Verified frozen same-packet source experiment. Source performance is diagnostic only."}

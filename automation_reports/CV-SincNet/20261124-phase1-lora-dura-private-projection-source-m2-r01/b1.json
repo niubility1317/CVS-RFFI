@@ -1,0 +1,16 @@
+{
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "n_measurements": 24,
+  "timing": {
+    "clean": {
+      "active": 0,
+      "median_ms": 1.6796225681900978
+    },
+    "generic": {
+      "active": 1,
+      "median_ms": 91.97991748806089
+    }
+  },
+  "parameters": 614939,
+  "scope": "frozen wide DURA and all six comparison readouts, excludes historical DURA and classifier"
+}
