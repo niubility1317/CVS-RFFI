@@ -13,20 +13,25 @@ from .full_packet_data import LIMIT
 from .full_packet_publish import DATA_RUN
 from .publish import release, release_commit
 from .scoring import macro_f1
-from .tri_clean95 import ROWS, RUN, SEED
+from .tri_clean95 import ROWS, QUICK_RUN, RUN, SEED
 
 
-def publish(repo, output, context, ssh_config):
+def publish(repo, output, context, ssh_config, quick=False):
     ctx=read(context)
     rt={k:ctx[k] for k in ('project','python','frozen_sources')}
     project=PurePosixPath(rt['project'])
     parent=project/'runs'/DATA_RUN
     native=project/'releases'/f'{DATA_RUN}-release'/'data'
-    rt.update(run_id=RUN,code_commit=release_commit(repo),runner='experiments.pamf_lora_main.tri_clean95',
-              release_root=str(project/'releases'/f'{RUN}-release'),run_root=str(project/'runs'/RUN),
+    name=QUICK_RUN if quick else RUN
+    rt.update(run_id=name,code_commit=release_commit(repo),runner='experiments.pamf_lora_main.tri_clean95',
+              release_root=str(project/'releases'/f'{name}-release'),run_root=str(project/'runs'/name),
               parent_root=str(parent),source_root=str(native/'source'),
               native_target_root=str(native/'target'),target_views=str(native/'target'),
               allowed_gpus=[3,5,6,7,0,1,2,4],max_workers=6,max_compute_processes=12)
+    if quick:
+        del rt['native_target_root'],rt['target_views']
+        rt.update(quick=True,fixed_clean_cache=str(project/'runs'/RUN/'clean_cache'),
+                  allowed_gpus=[0,2,4,1],max_workers=4,min_free_mib=8000)
     release(repo,output,rt,ssh_config)
 
 
@@ -80,6 +85,7 @@ if __name__=='__main__':
                             ('score',('submit','output','dataset','ssh-config'))]:
         p=actions.add_parser(command)
         for k in fields:p.add_argument('--'+k,type=Path,required=True)
+        if command=='publish':p.add_argument('--quick',action='store_true')
     args=vars(parser.parse_args())
     kind=args.pop('kind')
     {'publish':publish,'score':score}[kind](**args)

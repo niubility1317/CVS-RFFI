@@ -35,6 +35,22 @@ ROWS={
     'l_warmup': {'warmup':6},
 }
 LOCAL=('control','iq384')
+QUICK_RUN='20261125-phase1-lora-pamf-tri-clean-branch-loss-m7-r01'
+QUICK_ROWS={
+    'control': {},
+    'frequency_pool4': {'branch_pool':'frequency'},
+    'pa_pool4': {'branch_pool':'pa'},
+    'frequency_grid2x': {'freq_scale':2},
+    'reference96': {'reference_width':96},
+    'contrast_double': {'contrast_weight':.2},
+    'kl_half': {'kl_weight':.5},
+}
+
+
+def study(rt):
+    if rt.get('quick'):
+        return QUICK_ROWS,8,16
+    return ROWS,EPOCHS,U_BATCH
 EPOCHS=24
 U_BATCH=32
 TARGET_SOURCE_ACCURACY=.95
@@ -93,12 +109,16 @@ def clean_validation(f,v,y,rx):
                     by_tx={str(31+i):float(hits[y==i].float().mean()) for i in range(10)})
 
 
-def _labeled_and_unlabeled(f,x,y,rx,u,ur,step,with_u,force=None):
+def terms(row):
+    return {k:row[k] for k in ('contrast_weight','kl_weight') if k in row}
+
+
+def _labeled_and_unlabeled(f,x,y,rx,u,ur,step,with_u,force=None,mechanism=None):
     f.train()
-    lab,_=labeled_loss(f,x,x,y,rx,step)
+    lab,_=labeled_loss(f,x,x,y,rx,step,mechanism=mechanism)
     if not with_u:
         return lab,lab.detach(),0,0
-    unlab,pseudo,keep,details=unlabeled_loss(f,u,ur,step,3.,forced_pseudo=force)
+    unlab,pseudo,keep,details=unlabeled_loss(f,u,ur,step,3.,forced_pseudo=force,mechanism=mechanism)
     safe,_,_=protected_loss(lab,unlab,trainable(f))
     if force is not None and (details['forwards']!=6 or not details['partners']):
         raise ValueError('Real smoke did not traverse the Tri training branches')
@@ -116,11 +136,11 @@ def smoke(rt):
     y,rx=tensor(yn[i]),tensor(rn[i])
     records={}
     from .tri_tuning import configure
-    for name,row in ROWS.items():
+    for name,row in study(rt)[0].items():
         f=configure(deepcopy(parent),row)
         a=tensor(clean_iq(raw[i],row.get('samples',256)))
         t=shape_trace(f,a)
-        loss,_,_,n=_labeled_and_unlabeled(f,a,y,rx,a,rx,1,True,force=y)
+        loss,_,_,n=_labeled_and_unlabeled(f,a,y,rx,a,rx,1,True,force=y,mechanism=terms(row))
         loss.backward()
         norm=float(torch.nn.utils.clip_grad_norm_(f.parameters(),5.,error_if_nonfinite=True))
         if norm<=0 or n!=len(y):raise ValueError('Failed real clean Tri gradient check')
@@ -131,9 +151,11 @@ def smoke(rt):
 def train(rt,name):
     root=Path(rt['run_root'])
     source,_,c=handles(rt)
-    row=ROWS[name]
+    rows,epochs,u_count=study(rt)
+    row=rows[name]
     n=row.get('samples',256)
-    clean=root/'clean_cache'/str(n)
+    cache_root=Path(rt.get('fixed_clean_cache',root/'clean_cache'))
+    clean=cache_root/str(n)
     if read(clean/'complete.json')!=dict(status='CLEAN_SOURCE_READY',samples=n,source_protocol=c['protocol']):
         raise ValueError('Clean source cache not ready')
     device='cuda:0'
@@ -149,7 +171,7 @@ def train(rt,name):
     ur=tensor(labels(source,c,'U_s'),device)
     vy,vr=(tensor(a,device) for a in labels(source,c,'V'))
     opt=torch.optim.AdamW(f.parameters(),lr=row.get('lr',3e-4),weight_decay=5e-4)
-    sch=torch.optim.lr_scheduler.CosineAnnealingLR(opt,EPOCHS*STEPS,eta_min=1e-5)
+    sch=torch.optim.lr_scheduler.CosineAnnealingLR(opt,epochs*STEPS,eta_min=1e-5)
     rng=np.random.default_rng(721)
     ugen=torch.Generator(device=device).manual_seed(SEED)
     path=out/'best.pt'
@@ -158,10 +180,11 @@ def train(rt,name):
     torch.save(f.state_dict(),path)
     write(out/'initial.json',dict(V=initial,shapes=shape_trace(f,x[:2])))
     step=0
+    mechanism=terms(row)
     with (out/'epochs.jsonl').open('x',encoding='utf8') as log:
-        for epoch in range(1,EPOCHS+1):
+        for epoch in range(1,epochs+1):
             use_u=epoch>row.get('warmup',0)
-            order=torch.randperm(len(u),device=device,generator=ugen)[:STEPS*U_BATCH].reshape(STEPS,U_BATCH)
+            order=torch.randperm(len(u),device=device,generator=ugen)[:STEPS*u_count].reshape(STEPS,u_count)
             ui=order if use_u else (None,)*STEPS
             sl,su,accepted=0.,0.,0
             for b,pos in zip(batches(yn,rn,rng),ui,strict=True):
@@ -169,14 +192,14 @@ def train(rt,name):
                 step+=1
                 opt.zero_grad(set_to_none=True)
                 ux,urb=(u[pos],ur[pos]) if use_u else (None,None)
-                loss,lab,unlab,a=_labeled_and_unlabeled(f,x[i],y[i],rx[i],ux,urb,step,use_u)
+                loss,lab,unlab,a=_labeled_and_unlabeled(f,x[i],y[i],rx[i],ux,urb,step,use_u,mechanism=mechanism)
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(f.parameters(),5.,error_if_nonfinite=True)
                 opt.step()
                 sch.step()
                 sl+=float(lab);su+=float(unlab);accepted+=a
             rec=dict(epoch=epoch,step=step,L_loss=sl/STEPS,U_loss=su/STEPS,
-                     U_seen=STEPS*U_BATCH if use_u else 0,U_accepted=accepted,
+                     U_seen=STEPS*u_count if use_u else 0,U_accepted=accepted,
                      lr=opt.param_groups[0]['lr'])
             if epoch in VALIDATION_EPOCHS:
                 rec['V']=clean_validation(f,v,vy,vr)
@@ -186,7 +209,7 @@ def train(rt,name):
                     torch.save(f.state_dict(),path)
             log.write(json.dumps(rec,allow_nan=False)+'\n');log.flush()
             print('LORA_CLEAN95',name,epoch,step,rec.get('V',{}).get('accuracy'),accepted,flush=True)
-    if step!=EPOCHS*STEPS:
+    if step!=epochs*STEPS:
         raise ValueError('Incomplete registered clean updates')
     f.load_state_dict(torch.load(path,map_location=device,weights_only=True),strict=True)
     training=clean_validation(f,x,y,rx)
@@ -221,25 +244,29 @@ def predict(rt,name):
 
 
 def dispatch(rt):
+    if rt.get('quick') and rt.get('local_parent'):
+        raise ValueError('Quick branch study is registered for N607 only')
     root=Path(rt['run_root'])
     root.mkdir(exist_ok=False)
     state=root/'state.json'
-    fields=('local_parent',) if rt.get('local_parent') else ()
+    fields=tuple(k for k in ('local_parent','quick','fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)
     try:
         write(state,dict(status='SOURCE_SMOKE'))
-        for stage in ('smoke','cache'):
+        stages=('smoke',) if rt.get('quick') else ('smoke','cache')
+        for stage in stages:
             if launch(rt,stage,'all').wait():raise RuntimeError(f'Clean {stage} failed')
         write(state,dict(status='SOURCE_TRAINING'),exclusive=False)
-        names=LOCAL if rt.get('local_parent') else tuple(ROWS)
+        names=LOCAL if rt.get('local_parent') else tuple(study(rt)[0])
         schedule(rt,[('train',name) for name in names],launch)
         evidence={name:read(root/'F'/name/'complete.json')['frozen'] for name in names}
         ranking=sorted(names,key=lambda name:(evidence[name]['correct'],-evidence[name]['nll']),reverse=True)
-        tested=[] if rt.get('local_parent') else list(dict.fromkeys(['control',ranking[0]]))
+        source_only=bool(rt.get('local_parent') or rt.get('quick'))
+        tested=[] if source_only else list(dict.fromkeys(['control',ranking[0]]))
         write(root/'selection.json',dict(names=tested,rank=ranking,source=evidence,
                                         target_reads=0,goal_met=evidence[ranking[0]]['correct']>=TARGET_SOURCE_ACCURACY*evidence[ranking[0]]['n']))
-        if rt.get('local_parent'):
+        if source_only:
             write(state,dict(status='SOURCE_DIAGNOSTIC_COMPLETE'),exclusive=False)
             return
         write(state,dict(status='PREDICTING',names=tested),exclusive=False)
