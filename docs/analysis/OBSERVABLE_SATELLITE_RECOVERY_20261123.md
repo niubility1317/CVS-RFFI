@@ -17,7 +17,7 @@
 
 Full 当前最好版本距六景和低城区验收分别差 10.9976 和 10.9500 个百分点。Residual 原 R69 半量较直通在六景净多 3,360 次正确，按物理包和接收机计算的 95% 配对区间为 +2,693 至 +4,008 次，clean 净少 183 次。两条路线均待新方法用同一冻结权重、门限与推理规则完成正式配对验证。
 
-LoRa 下一版设计把幅度和相位修正的剂量交给同包实收证据估计，使用同预算标量回写及同权等量读出作对照。目前已完成设计验算，冻结识别结果待训练后评分。 [LoRa 实收复谱修正设计](LORA_RECEIVED_SPECTRAL_UPDATE_DESIGN_20261124.md)
+LoRa 实收复谱方向修正的两臂已各完成 40,000 步。双方向终步在 Full、Residual 六景比匹配 DURA 净减 66、198 次，clean 均为 667/900。同权等量相较标量净减 11、16 次，两个配对区间均跨零。低城区五台源接收机的相位回写中位数均为零。候选停在源域。 [LoRa 实收复谱修正设计](LORA_RECEIVED_SPECTRAL_UPDATE_DESIGN_20261124.md) · [冻结结果、配对统计与幅相审计](../../automation_reports/CV-SincNet/20261124-phase1-lora-received-update-source-m4-r01/report.md)
 
 ## WiSig Main split 原冻结 R69
 

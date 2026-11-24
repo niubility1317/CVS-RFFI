@@ -13,6 +13,7 @@ from experiments.pamf_lora_main import coherent_interval_source
 from experiments.pamf_lora_main import joint_spectrum_source
 from experiments.pamf_lora_main import noise_split_diagnostic
 from experiments.pamf_lora_main import packet_relation_source, reference_cancel_source, split_shrink_source
+from experiments.pamf_lora_main import received_update_source
 from experiments.pamf_lora_main import variance_transport_source
 from experiments.pamf_lora_main.channel_blind_source import panel
 from experiments.pamf_lora_main.complex_geometry_source import COMPARISONS, MODES, RUN
@@ -130,6 +131,9 @@ def collect(rt):
         from experiments.pamf_lora_main import common_anchor_source
         modes = common_anchor_source.MODES
         pairs = (*common_anchor_source.COMPARISONS, ('direct','reference'))
+    elif rt.get('run_id')==received_update_source.RUN:
+        modes = received_update_source.MODES
+        pairs = (*received_update_source.COMPARISONS, ('direct','reference'))
     else:
         from experiments.pamf_lora_main import empirical_tangent_source as tangent
         if rt.get('run_id')!=tangent.RUN:
