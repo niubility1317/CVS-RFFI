@@ -174,13 +174,19 @@ def labeled_loss(model,x,practical,y,rx,step,*,mechanism=None,ordinary_std=.015,
     return loss,detail
 
 
+def repl_acceptance(confidence,rx,rtl_threshold=.95):
+    if rtl_threshold==.95:
+        return confidence>=.95
+    return torch.where(rx==SOURCE.index('rtl_1'),confidence>=rtl_threshold,confidence>=.95)
+
+
 def unlabeled_loss(model,x,rx,step,weight,*,forced_pseudo=None,practical=None,practical_valid=None,
-                   mechanism=None,ordinary_std=.015):
+                   mechanism=None,ordinary_std=.015,rtl_threshold=.95):
     model.eval()
     with torch.no_grad():
         probabilities=model(x)[0].softmax(1)
         confidence,y=probabilities.max(1)
-        accepted=confidence>=.95
+        accepted=repl_acceptance(confidence,rx,rtl_threshold)
         if forced_pseudo is not None:
             y=forced_pseudo
             accepted=torch.ones_like(accepted)

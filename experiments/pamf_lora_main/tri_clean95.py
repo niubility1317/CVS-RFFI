@@ -212,6 +212,8 @@ def clean_model(rt,root,c,row,device):
 
 def study(rt):
     if rt.get('scratch'):
+        if rt.get('rtlgate_study'):
+            return RTL_GATE_ROWS,112,16
         if rt.get('tailaverage_study'):
             return TAIL_AVERAGE_ROWS,112,16
         if rt.get('groupfusion_study'):
@@ -319,6 +321,10 @@ PHASE_JOINT_RUN='20261125-phase1-lora-pamf-tri-clean-phasejoint98-s2026092702-r0
 PHASE_JOINT_ROWS={
     'phase_joint': dict(ANCHOR_ROWS['phase_anchor'],joint_rx_weight=.12),
 }
+RTL_GATE_RUN='20261125-phase1-lora-pamf-tri-clean-rtlgate98-s2026092702-r01'
+RTL_GATE_ROWS={
+    'phase_rtlgate': dict(ANCHOR_ROWS['phase_anchor'],rtl_repl_threshold=.975),
+}
 TAIL_AVERAGE_RUN='20261125-phase1-lora-pamf-tri-clean-tailaverage98-s2026092702-r01'
 TAIL_AVERAGE_ROWS={
     'phase_tailaverage': dict(ANCHOR_ROWS['phase_anchor'],tail_average=(100,104,108,112)),
@@ -387,6 +393,8 @@ def row_names(rt):
         return ('phase_jitter',)
     if rt.get('phase_joint_study'):
         return ('phase_joint',)
+    if rt.get('rtlgate_study'):
+        return ('phase_rtlgate',)
     if rt.get('tailaverage_study'):
         return ('phase_tailaverage',)
     if rt.get('groupfusion_study'):
@@ -482,7 +490,7 @@ def terms(row):
 
 def _labeled_and_unlabeled(f,x,y,rx,u,ur,step,with_u,force=None,mechanism=None,raw_ce=0.,ordinary_std=.015,
                            joint_rx_weight=0.,clean_anchor_weight=0.,rtl_weight=1.,pair_margin_weight=0.,
-                           source_weight=None):
+                           source_weight=None,rtl_threshold=.95):
     f.train()
     scores=[]
     hook=f.raw.register_forward_hook(lambda _,args,out:scores.append(out[0])) if raw_ce else None
@@ -500,7 +508,7 @@ def _labeled_and_unlabeled(f,x,y,rx,u,ur,step,with_u,force=None,mechanism=None,r
     if not with_u:
         return lab,lab.detach(),0,0
     unlab,pseudo,keep,details=unlabeled_loss(f,u,ur,step,3.,forced_pseudo=force,mechanism=mechanism,
-                                          ordinary_std=ordinary_std)
+                                          ordinary_std=ordinary_std,rtl_threshold=rtl_threshold)
     safe,_,_=protected_loss(lab,unlab,trainable(f))
     if force is not None and (details['forwards']!=6 or not details['partners']):
         raise ValueError('Real smoke did not traverse the Tri training branches')
@@ -537,7 +545,8 @@ def smoke(rt):
                                          clean_anchor_weight=row.get('clean_anchor_weight',0.),
                                          rtl_weight=row.get('rtl_weight',1.),
                                          pair_margin_weight=row.get('pair_margin_weight',0.),
-                                         source_weight=tensor(rank_weights[i]) if rank_weights is not None else None)
+                                         source_weight=tensor(rank_weights[i]) if rank_weights is not None else None,
+                                         rtl_threshold=row.get('rtl_repl_threshold',.95))
         loss.backward()
         norm=float(torch.nn.utils.clip_grad_norm_(f.parameters(),5.,error_if_nonfinite=True))
         if norm<=0 or n!=len(y):raise ValueError('Failed real clean Tri gradient check')
@@ -631,6 +640,7 @@ def train(rt,name):
     clean_anchor_weight=row.get('clean_anchor_weight',0.)
     rtl_weight=row.get('rtl_weight',1.)
     pair_margin_weight=row.get('pair_margin_weight',0.)
+    rtl_threshold=row.get('rtl_repl_threshold',.95)
     if joint_rx_weight:
         from .packet_models import cross_rx
     warmup=row.get('warmup',0)
@@ -641,7 +651,7 @@ def train(rt,name):
         validation_epochs.update(range(warmup,epochs+1,4))
         if any(rt.get(k) for k in ('budget_study','edge_study','robust_study','phase_study')):
             validation_epochs.update((32,48,60))
-        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study')):
+        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study')):
             validation_epochs.update((32,48,64,80,88))
     snapshots=row.get('tail_average',())
     averaged_state=None
@@ -677,7 +687,8 @@ def train(rt,name):
                     loss,lab,unlab,a=_labeled_and_unlabeled(f,x[i],y[i],rx[i],ux,urb,step,use_u,
                               mechanism=mechanism,raw_ce=row.get('raw_ce',0.),ordinary_std=ordinary_std,
                               joint_rx_weight=joint_rx_weight,clean_anchor_weight=clean_anchor_weight,
-                              rtl_weight=rtl_weight,pair_margin_weight=pair_margin_weight,source_weight=source_weight)
+                              rtl_weight=rtl_weight,pair_margin_weight=pair_margin_weight,
+                              source_weight=source_weight,rtl_threshold=rtl_threshold)
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(f.parameters(),5.,error_if_nonfinite=True)
                 opt.step()
@@ -754,14 +765,14 @@ def dispatch(rt):
     root=Path(rt['run_root'])
     screens=('quick','transfer','timefreq','noise_study','drift_study','budget_study')
     gated_study=any(rt.get(k) for k in ('robust_study','phase_study','anchor_study','timing_study',
-                                       'phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study'))
+                                       'phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study'))
     if (gated_study or any(rt.get(k) for k in ('noise_study','drift_study','budget_study','edge_study'))) and not rt.get('scratch'):
         raise ValueError('The clean input comparisons require random initialization')
     root.mkdir(exist_ok=False)
     state=root/'state.json'
     fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq',
                              'noise_study','drift_study','budget_study','edge_study','robust_study','phase_study','anchor_study',
-                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study',
+                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study',
                              'fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)

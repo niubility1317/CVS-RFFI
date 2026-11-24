@@ -185,6 +185,18 @@ class TriTuningTests(TestCase):
         with self.assertRaisesRegex(ValueError,'Unique source U budget'):
             tri_clean95.distinct_u_batches(100,16,88,16,**options)
 
+    def test_repl_rtl_gate_only_tightens_the_registered_source_receiver(self):
+        from experiments.pamf_lora_main.full_tri_repl_lora import repl_acceptance
+        rtl=SOURCE.index('rtl_1')
+        confidence=torch.tensor([.949,.95,.974,.975,.95,.974,.975])
+        receiver=torch.tensor([rtl,rtl,rtl,rtl,0,1,2])
+        expected=torch.tensor([False,False,False,True,True,True,True])
+        torch.testing.assert_close(repl_acceptance(confidence,receiver),confidence>=.95)
+        torch.testing.assert_close(repl_acceptance(confidence,receiver,.975),expected)
+        rows,epochs,batch=tri_clean95.study({'scratch':True,'rtlgate_study':True})
+        self.assertEqual((epochs,batch),(112,16))
+        self.assertEqual(rows['phase_rtlgate']['rtl_repl_threshold'],.975)
+
     def test_tail_average_matches_equal_snapshot_weights_and_preserves_integer_buffers(self):
         average=None
         for count,value in enumerate((2.,-2.,3.,7.),start=1):
