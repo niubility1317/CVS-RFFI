@@ -39,6 +39,13 @@ LEARNED_INTERACTIONS = {
 LEARNED_RUN = '20261124-diagnostic-lora-learned-split-source-m2-r01'
 ANCHOR_RUN = '20261124-phase1-lora-common-anchor-source-m4-r01'
 BURST_DOSE_RUN = '20261124-phase1-lora-phase-dose-bursts-source-m4-r01'
+RADIUS_RUN = '20261124-diagnostic-lora-phase-radius-source-m2-r01'
+RADIUS_INTERACTIONS = {
+    'power_phase': ('power_joint', 'direct', 'power_radius', 'local_full'),
+    'fold_phase': ('fold_joint', 'direct', 'fold_radius', 'local_full'),
+    'isolated_equal_phase': ('exact_joint_equal', 'direct', 'exact_radius_equal', 'local_full'),
+    'isolated_all_phase': ('exact_joint_all', 'direct', 'exact_radius_all', 'local_full'),
+}
 
 
 def with_six(value):
@@ -143,6 +150,10 @@ def collect(rt):
     elif rt.get('run_id') in (phase_dose_source.RUN, BURST_DOSE_RUN):
         modes = phase_dose_source.MODES
         pairs = (*phase_dose_source.COMPARISONS, ('direct','reference'))
+    elif rt.get('run_id')==RADIUS_RUN:
+        from experiments.pamf_lora_main import phase_radius_diagnostic
+        modes = phase_radius_diagnostic.MODES
+        pairs = (*phase_radius_diagnostic.COMPARISONS, ('direct', 'reference'))
     else:
         from experiments.pamf_lora_main import empirical_tangent_source as tangent
         if rt.get('run_id')!=tangent.RUN:
@@ -172,9 +183,12 @@ def collect(rt):
             interactions[route] = factor_interactions(hits,groups,modes,NOISE_INTERACTIONS)
         elif rt.get('run_id')==LEARNED_RUN:
             interactions[route] = factor_interactions(hits,groups,modes,LEARNED_INTERACTIONS)
+        elif rt.get('run_id')==RADIUS_RUN:
+            interactions[route] = factor_interactions(hits, groups, modes, RADIUS_INTERACTIONS)
     artifact = dict(reader_seed=2026092702,bootstrap_replicates=REPEATS,target_reads=0,routes=result)
     if interactions:
-        key = 'learned_interactions' if rt.get('run_id')==LEARNED_RUN else 'noise_interactions'
+        key = {LEARNED_RUN: 'learned_interactions', RADIUS_RUN: 'radius_interactions'}.get(
+            rt.get('run_id'), 'noise_interactions')
         artifact[key] = interactions
     return artifact
 
