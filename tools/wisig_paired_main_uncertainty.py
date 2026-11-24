@@ -11,7 +11,7 @@ import numpy as np
 REPLICATES = 1600
 
 
-def paired(raw, restored, rng, n_resamples=REPLICATES):
+def paired(raw, restored, rng, n_resamples=REPLICATES, *, labels=('raw', 'r69')):
     """Bootstrap whole physical packets with all seeds and requested views attached."""
     if raw.shape != restored.shape or raw.ndim != 3 or raw.shape[-1] == 0:
         raise ValueError('Expected matching seed, view and nonempty physical packet axes')
@@ -21,13 +21,13 @@ def paired(raw, restored, rng, n_resamples=REPLICATES):
     support, frequency = np.unique(changes, return_counts=True)
     # Equal-valued physical packets are interchangeable for summing a bootstrap draw.
     bootstrap = rng.multinomial(len(changes), frequency / len(changes), size=n_resamples) @ support
-    row = dict(physical_packets=raw.shape[-1], judgments=raw.size, raw_correct=int(raw.sum()),
-               r69_correct=int(restored.sum()), repairs=int(repaired.sum()), harms=int(harmed.sum()),
-               net=int(changes.sum()), gain_pp=100 * changes.sum().item() / raw.size)
+    row = dict(physical_packets=raw.shape[-1], judgments=raw.size, repairs=int(repaired.sum()),
+               harms=int(harmed.sum()), net=int(changes.sum()), gain_pp=100 * changes.sum().item() / raw.size,
+               **{f'{labels[0]}_correct': int(raw.sum()), f'{labels[1]}_correct': int(restored.sum())})
     return row, bootstrap
 
 
-def summarize(raw, restored, receivers, views, rng):
+def summarize(raw, restored, receivers, views, rng, *, labels=('raw', 'r69')):
     grouped = {name: np.flatnonzero(receivers == name) for name in np.unique(receivers)}
     report = {}
     selections = [(view, slice(index, index + 1)) for index, view in enumerate(views)]
@@ -35,11 +35,11 @@ def summarize(raw, restored, receivers, views, rng):
         a, b = raw[:, select], restored[:, select]
         cells, draws = {}, []
         for name, indices in grouped.items():
-            row, bootstrap = paired(a[..., indices], b[..., indices], rng)
+            row, bootstrap = paired(a[..., indices], b[..., indices], rng, labels=labels)
             row['ci95_pp'] = (100 * np.quantile(bootstrap, (.025, .975)) / row['judgments']).tolist()
             cells[name] = row
             draws.append(bootstrap)
-        fields = ('physical_packets', 'judgments', 'raw_correct', 'r69_correct', 'repairs', 'harms', 'net')
+        fields = ('physical_packets', 'judgments', *(f'{label}_correct' for label in labels), 'repairs', 'harms', 'net')
         overall = {field: sum(row[field] for row in cells.values()) for field in fields}
         total = overall['judgments']
         overall['gain_pp'] = 100 * overall['net'] / total
