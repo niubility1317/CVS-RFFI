@@ -1,0 +1,26 @@
+{
+  "raw_pilot": {
+    "active_at_most_0.15": {
+      "exposures": 2631,
+      "positive": 1675,
+      "mean_support": 0.03975507851473418
+    },
+    "active_above_0.15": {
+      "exposures": 794,
+      "positive": 125,
+      "mean_support": 0.0008849940011723516
+    }
+  },
+  "denoised_pilot": {
+    "active_at_most_0.15": {
+      "exposures": 2631,
+      "positive": 2103,
+      "mean_support": 0.04004091547723507
+    },
+    "active_above_0.15": {
+      "exposures": 794,
+      "positive": 262,
+      "mean_support": 0.0013366358106022217
+    }
+  }
+}

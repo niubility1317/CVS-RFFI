@@ -1,0 +1,12 @@
+{"at": "2026-11-24T05:33:11+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-24T05:34:37+00:00", "status": "RUNNING", "note": "PID CWD argv CUDA and log growth verified. No-query smoke passed.", "evidence": "launch-evidence.json", "row_id": "fit-raw_pilot"}
+{"at": "2026-11-24T05:34:37+00:00", "status": "RUNNING", "note": "PID CWD argv CUDA and log growth verified. No-query smoke passed.", "evidence": "launch-evidence.json", "row_id": "fit-denoised_pilot"}
+{"at": "2026-11-24T05:34:37+00:00", "status": "RUNNING", "note": "Verified N607 shared-budget raw/denoised pilot source fitting.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-24T05:44:30+00:00", "status": "RUNNING", "note": "Frozen source prediction identities and log growth verified.", "evidence": "launch-evidence.json", "row_id": "evaluate-full"}
+{"at": "2026-11-24T05:44:30+00:00", "status": "RUNNING", "note": "Frozen source prediction identities and log growth verified.", "evidence": "launch-evidence.json", "row_id": "evaluate-residual"}
+{"at": "2026-11-24T05:45:44+00:00", "status": "ANALYZED", "note": "Matching source-only fit frozen.", "evidence": "raw_pilot-complete.json", "row_id": "fit-raw_pilot"}
+{"at": "2026-11-24T05:45:44+00:00", "status": "ANALYZED", "note": "Matching source-only fit frozen.", "evidence": "denoised_pilot-complete.json", "row_id": "fit-denoised_pilot"}
+{"at": "2026-11-24T05:45:44+00:00", "status": "ANALYZED", "note": "Frozen source scoring verified after complete predictions.", "evidence": "full-source-scores.json", "row_id": "evaluate-full"}
+{"at": "2026-11-24T05:45:44+00:00", "status": "ANALYZED", "note": "Frozen source scoring verified after complete predictions.", "evidence": "residual-source-scores.json", "row_id": "evaluate-residual"}
+{"at": "2026-11-24T05:45:44+00:00", "status": "ANALYZED", "note": "Frozen source scoring verified after complete predictions.", "evidence": "clean-complete-scores.json", "row_id": "evaluate-reserve"}
+{"at": "2026-11-24T05:45:44+00:00", "status": "ANALYZED", "note": "Paired source results and clean reserve checked.", "evidence": "report.md", "row_id": null}
