@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 公共与差分复谱的联合协方差](../automation_reports/CV-SincNet/20261124-phase1-lora-joint-mode-covariance-source-m2-r01/report.md)
 - [LoRa 固定信道下的独立噪声观测与公共私有归因](../automation_reports/CV-SincNet/20261124-phase1-lora-noise-replicas-source-m2-r01/report.md)
 - [LoRa 局部 Hankel 重复子空间与等剂量降噪](../automation_reports/CV-SincNet/20261124-phase1-lora-cross-chirp-hankel-source-m2-r01/report.md)
 - [LoRa 公共谱矩匹配混合后验](../automation_reports/CV-SincNet/20261124-phase1-lora-shared-latent-mixture-source-m2-r01/report.md)

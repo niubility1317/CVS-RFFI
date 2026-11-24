@@ -1,0 +1,16 @@
+{
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "n_measurements": 24,
+  "timing": {
+    "clean": {
+      "active": 0,
+      "median_ms": 2.1148384548723698
+    },
+    "generic": {
+      "active": 1,
+      "median_ms": 54.46516943629831
+    }
+  },
+  "restoration_weights": 254735,
+  "scope": "frozen rank and both joint-mode posteriors; excludes DURA and F"
+}
