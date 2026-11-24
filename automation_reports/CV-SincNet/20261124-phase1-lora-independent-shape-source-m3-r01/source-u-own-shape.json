@@ -1,0 +1,912 @@
+{
+  "status": "COMPLETE",
+  "n": 150,
+  "seconds": 28.502584946108982,
+  "reference_after_frozen_output": true,
+  "target_reads": 0,
+  "V_reads": 0,
+  "TX_reads": 0,
+  "F_reads": 0,
+  "rows": {
+    "full": {
+      "practical_low_suburban": {
+        "active": 53,
+        "gains": {
+          "relative_coupled": {
+            "mean_first": 1.0000762939453125,
+            "mean_fine": 1.000064492225647,
+            "fine_log_abs_median": 0.006292056757956743,
+            "max_packet_log_mean": 3.958120942115784e-08
+          },
+          "own_shape": {
+            "mean_first": 1.0000230073928833,
+            "mean_fine": 1.000068187713623,
+            "fine_log_abs_median": 0.005202331580221653,
+            "max_packet_log_mean": 2.8492650017142296e-08
+          }
+        },
+        "readouts": {
+          "direct": {
+            "carrier_relative_db_rmse": 0.24169421195983887,
+            "carrier_relative_amp_mae": 0.10484103858470917,
+            "packet_max_power_relative_error": 0,
+            "packet_rms_ratio_median": 1,
+            "packet_rms_ratio_p10": 1,
+            "private_clean": [
+              {
+                "relative_error": 154.44021606445312,
+                "gain": 1.0079703330993652,
+                "phase_rad": 0.26546791195869446
+              },
+              {
+                "relative_error": 227.72787475585938,
+                "gain": 0.9998292326927185,
+                "phase_rad": 0.14452716708183289
+              },
+              {
+                "relative_error": 220.31961059570312,
+                "gain": 1.0054590702056885,
+                "phase_rad": 0.10691046714782715
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 5.275109767913818,
+                "gain": 0.9543178677558899,
+                "phase_rad": 0.06259985268115997
+              },
+              {
+                "relative_error": 169.30191040039062,
+                "gain": 0.9983509182929993,
+                "phase_rad": 0.10735102742910385
+              },
+              {
+                "relative_error": 316.7698059082031,
+                "gain": 1.0049835443496704,
+                "phase_rad": 0.10288579761981964
+              }
+            ]
+          },
+          "relative_coupled_coarse": {
+            "carrier_relative_db_rmse": 0.1994638293981552,
+            "carrier_relative_amp_mae": 0.10750997066497803,
+            "packet_max_power_relative_error": 2.384185791015625e-07,
+            "packet_rms_ratio_median": 1,
+            "packet_rms_ratio_p10": 0.9999999403953552,
+            "private_clean": [
+              {
+                "relative_error": 20.859962463378906,
+                "gain": 0.799213707447052,
+                "phase_rad": 0.2881772220134735
+              },
+              {
+                "relative_error": 6.300609111785889,
+                "gain": 0.8875933885574341,
+                "phase_rad": 0.1616065353155136
+              },
+              {
+                "relative_error": 5.905436992645264,
+                "gain": 0.8782057762145996,
+                "phase_rad": 0.11410251259803772
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 0.4298842251300812,
+                "gain": 0.9221804141998291,
+                "phase_rad": 0.09176647663116455
+              },
+              {
+                "relative_error": 2.2880678176879883,
+                "gain": 0.8863904476165771,
+                "phase_rad": 0.11540680378675461
+              },
+              {
+                "relative_error": 4.229296684265137,
+                "gain": 0.8870498538017273,
+                "phase_rad": 0.10042938590049744
+              }
+            ]
+          },
+          "relative_coupled_half": {
+            "carrier_relative_db_rmse": 0.21440672874450684,
+            "carrier_relative_amp_mae": 0.09813619405031204,
+            "packet_max_power_relative_error": 3.5762786865234375e-07,
+            "packet_rms_ratio_median": 1,
+            "packet_rms_ratio_p10": 0.9999999403953552,
+            "private_clean": [
+              {
+                "relative_error": 70.14163970947266,
+                "gain": 0.8716663718223572,
+                "phase_rad": 0.2652031183242798
+              },
+              {
+                "relative_error": 69.87818145751953,
+                "gain": 0.9181807637214661,
+                "phase_rad": 0.14297345280647278
+              },
+              {
+                "relative_error": 67.37555694580078,
+                "gain": 0.9383793473243713,
+                "phase_rad": 0.10691046714782715
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 1.2047452926635742,
+                "gain": 0.923774003982544,
+                "phase_rad": 0.05825265869498253
+              },
+              {
+                "relative_error": 30.078092575073242,
+                "gain": 0.9096179008483887,
+                "phase_rad": 0.10080445557832718
+              },
+              {
+                "relative_error": 56.77709197998047,
+                "gain": 0.9063158631324768,
+                "phase_rad": 0.10288579761981964
+              }
+            ]
+          },
+          "own_shape_coarse": {
+            "carrier_relative_db_rmse": 0.236392080783844,
+            "carrier_relative_amp_mae": 0.11313314735889435,
+            "packet_max_power_relative_error": 3.5762786865234375e-07,
+            "packet_rms_ratio_median": 1,
+            "packet_rms_ratio_p10": 0.9999999403953552,
+            "private_clean": [
+              {
+                "relative_error": 15.817907333374023,
+                "gain": 0.787713885307312,
+                "phase_rad": 0.4180203378200531
+              },
+              {
+                "relative_error": 5.88943338394165,
+                "gain": 0.8875933885574341,
+                "phase_rad": 0.14775896072387695
+              },
+              {
+                "relative_error": 5.8430962562561035,
+                "gain": 0.8782057762145996,
+                "phase_rad": 0.09927475452423096
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 1.34149968624115,
+                "gain": 0.9221804141998291,
+                "phase_rad": 0.10552861541509628
+              },
+              {
+                "relative_error": 2.4949939250946045,
+                "gain": 0.8863904476165771,
+                "phase_rad": 0.11540680378675461
+              },
+              {
+                "relative_error": 4.274765491485596,
+                "gain": 0.8870498538017273,
+                "phase_rad": 0.10115060210227966
+              }
+            ]
+          },
+          "own_shape_half": {
+            "carrier_relative_db_rmse": 0.20606118440628052,
+            "carrier_relative_amp_mae": 0.09408318996429443,
+            "packet_max_power_relative_error": 3.5762786865234375e-07,
+            "packet_rms_ratio_median": 1,
+            "packet_rms_ratio_p10": 0.9999999403953552,
+            "private_clean": [
+              {
+                "relative_error": 49.249298095703125,
+                "gain": 0.8691251873970032,
+                "phase_rad": 0.2639089822769165
+              },
+              {
+                "relative_error": 69.75904846191406,
+                "gain": 0.9181807637214661,
+                "phase_rad": 0.14452716708183289
+              },
+              {
+                "relative_error": 67.5212631225586,
+                "gain": 0.9383793473243713,
+                "phase_rad": 0.10691046714782715
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 1.4378538131713867,
+                "gain": 0.9221804141998291,
+                "phase_rad": 0.06039018556475639
+              },
+              {
+                "relative_error": 30.029340744018555,
+                "gain": 0.8915901184082031,
+                "phase_rad": 0.1096406877040863
+              },
+              {
+                "relative_error": 56.519588470458984,
+                "gain": 0.9063158631324768,
+                "phase_rad": 0.10288579761981964
+              }
+            ]
+          }
+        }
+      },
+      "practical_low_urban": {
+        "active": 101,
+        "gains": {
+          "relative_coupled": {
+            "mean_first": 1.0001256465911865,
+            "mean_fine": 1.0001094341278076,
+            "fine_log_abs_median": 0.007359098643064499,
+            "max_packet_log_mean": 3.771856427192688e-08
+          },
+          "own_shape": {
+            "mean_first": 1.000024676322937,
+            "mean_fine": 1.0001190900802612,
+            "fine_log_abs_median": 0.006687995512038469,
+            "max_packet_log_mean": 3.414849558680544e-08
+          }
+        },
+        "readouts": {
+          "direct": {
+            "carrier_relative_db_rmse": 0.34504765272140503,
+            "carrier_relative_amp_mae": 0.20384110510349274,
+            "packet_max_power_relative_error": 0,
+            "packet_rms_ratio_median": 1,
+            "packet_rms_ratio_p10": 1,
+            "private_clean": [
+              {
+                "relative_error": 689.3985595703125,
+                "gain": 1.0530630350112915,
+                "phase_rad": 0.6074543595314026
+              },
+              {
+                "relative_error": 1036.8123779296875,
+                "gain": 0.9807446599006653,
+                "phase_rad": 0.4084187150001526
+              },
+              {
+                "relative_error": 1064.380615234375,
+                "gain": 0.9979251623153687,
+                "phase_rad": 0.3846678137779236
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 7.45074987411499,
+                "gain": 0.9090214371681213,
+                "phase_rad": 0.10759490728378296
+              },
+              {
+                "relative_error": 338.38800048828125,
+                "gain": 0.9659173488616943,
+                "phase_rad": 0.2510971128940582
+              },
+              {
+                "relative_error": 1281.8272705078125,
+                "gain": 0.9780099987983704,
+                "phase_rad": 0.30661869049072266
+              }
+            ]
+          },
+          "relative_coupled_coarse": {
+            "carrier_relative_db_rmse": 0.2773600220680237,
+            "carrier_relative_amp_mae": 0.17340491712093353,
+            "packet_max_power_relative_error": 3.5762786865234375e-07,
+            "packet_rms_ratio_median": 1,
+            "packet_rms_ratio_p10": 0.9999999403953552,
+            "private_clean": [
+              {
+                "relative_error": 59.597408294677734,
+                "gain": 0.2941344678401947,
+                "phase_rad": 0.7864397168159485
+              },
+              {
+                "relative_error": 5.931159973144531,
+                "gain": 0.04983517900109291,
+                "phase_rad": 0.5704435706138611
+              },
+              {
+                "relative_error": 3.9527416229248047,
+                "gain": 0.029845455661416054,
+                "phase_rad": 0.3439413905143738
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 0.5402884483337402,
+                "gain": 0.42746755480766296,
+                "phase_rad": 0.13325028121471405
+              },
+              {
+                "relative_error": 0.8647809624671936,
+                "gain": 0.4666101634502411,
+                "phase_rad": 0.13514745235443115
+              },
+              {
+                "relative_error": 1.9288406372070312,
+                "gain": 0.31499922275543213,
+                "phase_rad": 0.13389413058757782
+              }
+            ]
+          },
+          "relative_coupled_half": {
+            "carrier_relative_db_rmse": 0.30270272493362427,
+            "carrier_relative_amp_mae": 0.18344265222549438,
+            "packet_max_power_relative_error": 3.5762786865234375e-07,
+            "packet_rms_ratio_median": 1,
+            "packet_rms_ratio_p10": 0.9999999403953552,
+            "private_clean": [
+              {
+                "relative_error": 290.83984375,
+                "gain": 0.8320701122283936,
+                "phase_rad": 0.6061067581176758
+              },
+              {
+                "relative_error": 297.8263244628906,
+                "gain": 0.7847591638565063,
+                "phase_rad": 0.4522865414619446
+              },
+              {
+                "relative_error": 304.3095397949219,
+                "gain": 0.7879804968833923,
+                "phase_rad": 0.37408724427223206
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 1.4001911878585815,
+                "gain": 0.7169174551963806,
+                "phase_rad": 0.06790882349014282
+              },
+              {
+                "relative_error": 45.327877044677734,
+                "gain": 0.7655369639396667,
+                "phase_rad": 0.22735169529914856
+              },
+              {
+                "relative_error": 171.4031982421875,
+                "gain": 0.7411173582077026,
+                "phase_rad": 0.25630274415016174
+              }
+            ]
+          },
+          "own_shape_coarse": {
+            "carrier_relative_db_rmse": 0.32974448800086975,
+            "carrier_relative_amp_mae": 0.19860754907131195,
+            "packet_max_power_relative_error": 2.980232238769531e-07,
+            "packet_rms_ratio_median": 1,
+            "packet_rms_ratio_p10": 0.9999999403953552,
+            "private_clean": [
+              {
+                "relative_error": 38.19655227661133,
+                "gain": 0.21428295969963074,
+                "phase_rad": 0.8599420189857483
+              },
+              {
+                "relative_error": 3.652702569961548,
+                "gain": 0.026074185967445374,
+                "phase_rad": 0.4720461964607239
+              },
+              {
+                "relative_error": 3.5541911125183105,
+                "gain": 0.020494332537055016,
+                "phase_rad": 0.3338768184185028
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 1.7275352478027344,
+                "gain": -0.15106573700904846,
+                "phase_rad": 2.9401161670684814
+              },
+              {
+                "relative_error": 1.3108657598495483,
+                "gain": 0.016598045825958252,
+                "phase_rad": 0.5301767587661743
+              },
+              {
+                "relative_error": 2.1391236782073975,
+                "gain": 0.019911162555217743,
+                "phase_rad": 0.32123127579689026
+              }
+            ]
+          },
+          "own_shape_half": {
+            "carrier_relative_db_rmse": 0.29374873638153076,
+            "carrier_relative_amp_mae": 0.17798343300819397,
+            "packet_max_power_relative_error": 2.384185791015625e-07,
+            "packet_rms_ratio_median": 1,
+            "packet_rms_ratio_p10": 0.9999999403953552,
+            "private_clean": [
+              {
+                "relative_error": 192.654296875,
+                "gain": 0.7946270108222961,
+                "phase_rad": 0.5544202327728271
+              },
+              {
+                "relative_error": 297.24627685546875,
+                "gain": 0.8043864965438843,
+                "phase_rad": 0.4095847010612488
+              },
+              {
+                "relative_error": 304.3188171386719,
+                "gain": 0.7879804968833923,
+                "phase_rad": 0.38138964772224426
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 1.7838289737701416,
+                "gain": 0.3520280420780182,
+                "phase_rad": 0.10744364559650421
+              },
+              {
+                "relative_error": 45.28867721557617,
+                "gain": 0.6266617774963379,
+                "phase_rad": 0.2674781382083893
+              },
+              {
+                "relative_error": 169.7529296875,
+                "gain": 0.6739298701286316,
+                "phase_rad": 0.29580241441726685
+              }
+            ]
+          }
+        }
+      }
+    },
+    "residual": {
+      "practical_low_suburban": {
+        "active": 150,
+        "gains": {
+          "relative_coupled": {
+            "mean_first": 1.001327633857727,
+            "mean_fine": 1.001740574836731,
+            "fine_log_abs_median": 0.035377051681280136,
+            "max_packet_log_mean": 3.91155481338501e-08
+          },
+          "own_shape": {
+            "mean_first": 1.0014846324920654,
+            "mean_fine": 1.0005905628204346,
+            "fine_log_abs_median": 0.02086908370256424,
+            "max_packet_log_mean": 4.113341489642153e-08
+          }
+        },
+        "readouts": {
+          "direct": {
+            "carrier_relative_db_rmse": 1.2971994876861572,
+            "carrier_relative_amp_mae": 0.5592675805091858,
+            "packet_max_power_relative_error": 0,
+            "packet_rms_ratio_median": 1,
+            "packet_rms_ratio_p10": 1,
+            "private_clean": [
+              {
+                "relative_error": 257.7070007324219,
+                "gain": 0.7131465673446655,
+                "phase_rad": 0.7915732264518738
+              },
+              {
+                "relative_error": 375.4137268066406,
+                "gain": 0.9651980400085449,
+                "phase_rad": 0.5436074733734131
+              },
+              {
+                "relative_error": 379.93426513671875,
+                "gain": 0.8973796963691711,
+                "phase_rad": 0.4304978549480438
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 17.834260940551758,
+                "gain": 0.863765299320221,
+                "phase_rad": 0.1822272390127182
+              },
+              {
+                "relative_error": 479.44677734375,
+                "gain": 0.881019651889801,
+                "phase_rad": 0.3899747133255005
+              },
+              {
+                "relative_error": 3.3083863258361816,
+                "gain": 0.8942150473594666,
+                "phase_rad": 0.4025117754936218
+              }
+            ]
+          },
+          "relative_coupled_coarse": {
+            "carrier_relative_db_rmse": 1.46184504032135,
+            "carrier_relative_amp_mae": 0.7927088737487793,
+            "packet_max_power_relative_error": 2.980232238769531e-07,
+            "packet_rms_ratio_median": 1,
+            "packet_rms_ratio_p10": 0.9999999403953552,
+            "private_clean": [
+              {
+                "relative_error": 9.506342887878418,
+                "gain": 0.011526552960276604,
+                "phase_rad": 1.482999563217163
+              },
+              {
+                "relative_error": 1.3501957654953003,
+                "gain": 0.02534862607717514,
+                "phase_rad": 0.5815146565437317
+              },
+              {
+                "relative_error": 1.0460169315338135,
+                "gain": 0.020578280091285706,
+                "phase_rad": 0.40755900740623474
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 1.053863525390625,
+                "gain": 0.11527153104543686,
+                "phase_rad": 0.4251020848751068
+              },
+              {
+                "relative_error": 1.5660117864608765,
+                "gain": 0.05669929087162018,
+                "phase_rad": 0.3841630518436432
+              },
+              {
+                "relative_error": 0.9992093443870544,
+                "gain": 0.028502164408564568,
+                "phase_rad": 0.26507455110549927
+              }
+            ]
+          },
+          "relative_coupled_half": {
+            "carrier_relative_db_rmse": 1.4065272808074951,
+            "carrier_relative_amp_mae": 0.6850129961967468,
+            "packet_max_power_relative_error": 2.384185791015625e-07,
+            "packet_rms_ratio_median": 1,
+            "packet_rms_ratio_p10": 0.9999998807907104,
+            "private_clean": [
+              {
+                "relative_error": 88.29450225830078,
+                "gain": 0.3116809129714966,
+                "phase_rad": 0.8371325135231018
+              },
+              {
+                "relative_error": 98.58695220947266,
+                "gain": 0.4817345440387726,
+                "phase_rad": 0.5488178730010986
+              },
+              {
+                "relative_error": 99.1369857788086,
+                "gain": 0.4647220969200134,
+                "phase_rad": 0.4332364499568939
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 5.942755222320557,
+                "gain": 0.5097445249557495,
+                "phase_rad": 0.1547093540430069
+              },
+              {
+                "relative_error": 116.3728256225586,
+                "gain": 0.4671632647514343,
+                "phase_rad": 0.3634549677371979
+              },
+              {
+                "relative_error": 1.4257490634918213,
+                "gain": 0.4594956934452057,
+                "phase_rad": 0.4051951766014099
+              }
+            ]
+          },
+          "own_shape_coarse": {
+            "carrier_relative_db_rmse": 1.5903996229171753,
+            "carrier_relative_amp_mae": 0.8242028951644897,
+            "packet_max_power_relative_error": 2.980232238769531e-07,
+            "packet_rms_ratio_median": 1,
+            "packet_rms_ratio_p10": 0.9999998807907104,
+            "private_clean": [
+              {
+                "relative_error": 5.840597629547119,
+                "gain": 0.015543719753623009,
+                "phase_rad": 1.4782917499542236
+              },
+              {
+                "relative_error": 1.0582308769226074,
+                "gain": 0.024790525436401367,
+                "phase_rad": 0.4666249454021454
+              },
+              {
+                "relative_error": 1.0050147771835327,
+                "gain": 0.021594800055027008,
+                "phase_rad": 0.3753446340560913
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 1.7687698602676392,
+                "gain": -0.11921531707048416,
+                "phase_rad": 2.6355366706848145
+              },
+              {
+                "relative_error": 1.717207670211792,
+                "gain": 0.015047464519739151,
+                "phase_rad": 0.525190532207489
+              },
+              {
+                "relative_error": 1.0022199153900146,
+                "gain": 0.01755979284644127,
+                "phase_rad": 0.4497166872024536
+              }
+            ]
+          },
+          "own_shape_half": {
+            "carrier_relative_db_rmse": 1.2771546840667725,
+            "carrier_relative_amp_mae": 0.6038545966148376,
+            "packet_max_power_relative_error": 2.980232238769531e-07,
+            "packet_rms_ratio_median": 1,
+            "packet_rms_ratio_p10": 0.9999999403953552,
+            "private_clean": [
+              {
+                "relative_error": 66.80826568603516,
+                "gain": 0.3192695081233978,
+                "phase_rad": 0.7964139580726624
+              },
+              {
+                "relative_error": 97.79278564453125,
+                "gain": 0.47547203302383423,
+                "phase_rad": 0.5402733087539673
+              },
+              {
+                "relative_error": 98.87271118164062,
+                "gain": 0.4649641215801239,
+                "phase_rad": 0.4286172091960907
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 4.438169479370117,
+                "gain": 0.35273057222366333,
+                "phase_rad": 0.18576785922050476
+              },
+              {
+                "relative_error": 95.96942138671875,
+                "gain": 0.44339224696159363,
+                "phase_rad": 0.3782567083835602
+              },
+              {
+                "relative_error": 1.3369263410568237,
+                "gain": 0.45455625653266907,
+                "phase_rad": 0.4045541286468506
+              }
+            ]
+          }
+        }
+      },
+      "practical_low_urban": {
+        "active": 150,
+        "gains": {
+          "relative_coupled": {
+            "mean_first": 1.0027296543121338,
+            "mean_fine": 1.0037163496017456,
+            "fine_log_abs_median": 0.06620071828365326,
+            "max_packet_log_mean": 3.973643103449831e-08
+          },
+          "own_shape": {
+            "mean_first": 1.0034403800964355,
+            "mean_fine": 1.0013164281845093,
+            "fine_log_abs_median": 0.03817107900977135,
+            "max_packet_log_mean": 3.6011140736036396e-08
+          }
+        },
+        "readouts": {
+          "direct": {
+            "carrier_relative_db_rmse": 2.404806137084961,
+            "carrier_relative_amp_mae": 1.624554991722107,
+            "packet_max_power_relative_error": 0,
+            "packet_rms_ratio_median": 1,
+            "packet_rms_ratio_p10": 1,
+            "private_clean": [
+              {
+                "relative_error": 1496.66943359375,
+                "gain": 0.5996132493019104,
+                "phase_rad": 1.36636221408844
+              },
+              {
+                "relative_error": 2210.4248046875,
+                "gain": 1.3169606924057007,
+                "phase_rad": 0.9439324140548706
+              },
+              {
+                "relative_error": 2334.419921875,
+                "gain": 0.877139687538147,
+                "phase_rad": 1.129894733428955
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 7.247188568115234,
+                "gain": 0.8473691344261169,
+                "phase_rad": 0.24385841190814972
+              },
+              {
+                "relative_error": 27.30279541015625,
+                "gain": 0.6660082936286926,
+                "phase_rad": 0.8580798506736755
+              },
+              {
+                "relative_error": 540.43994140625,
+                "gain": 0.9188454151153564,
+                "phase_rad": 1.0340274572372437
+              }
+            ]
+          },
+          "relative_coupled_coarse": {
+            "carrier_relative_db_rmse": 2.57191801071167,
+            "carrier_relative_amp_mae": 1.928734540939331,
+            "packet_max_power_relative_error": 3.5762786865234375e-07,
+            "packet_rms_ratio_median": 1,
+            "packet_rms_ratio_p10": 0.9999999403953552,
+            "private_clean": [
+              {
+                "relative_error": 96.06156921386719,
+                "gain": 0.07313340157270432,
+                "phase_rad": 1.4590789079666138
+              },
+              {
+                "relative_error": 4.932765960693359,
+                "gain": 0.020100252702832222,
+                "phase_rad": 1.102613925933838
+              },
+              {
+                "relative_error": 1.7024712562561035,
+                "gain": 0.01217468548566103,
+                "phase_rad": 1.0628629922866821
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 0.7947442531585693,
+                "gain": 0.38583439588546753,
+                "phase_rad": 0.2506929636001587
+              },
+              {
+                "relative_error": 0.9812306761741638,
+                "gain": 0.3683723509311676,
+                "phase_rad": 0.22837820649147034
+              },
+              {
+                "relative_error": 1.047659993171692,
+                "gain": 0.19648028910160065,
+                "phase_rad": 0.27045807242393494
+              }
+            ]
+          },
+          "relative_coupled_half": {
+            "carrier_relative_db_rmse": 2.5576984882354736,
+            "carrier_relative_amp_mae": 1.839739203453064,
+            "packet_max_power_relative_error": 2.384185791015625e-07,
+            "packet_rms_ratio_median": 1,
+            "packet_rms_ratio_p10": 0.9999999403953552,
+            "private_clean": [
+              {
+                "relative_error": 610.2001342773438,
+                "gain": 0.1272469311952591,
+                "phase_rad": 1.4903749227523804
+              },
+              {
+                "relative_error": 620.517822265625,
+                "gain": 0.6030282378196716,
+                "phase_rad": 0.9067012071609497
+              },
+              {
+                "relative_error": 650.721923828125,
+                "gain": 0.470260888338089,
+                "phase_rad": 1.0943156480789185
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 2.302889347076416,
+                "gain": 0.6706119775772095,
+                "phase_rad": 0.1442478746175766
+              },
+              {
+                "relative_error": 6.056356906890869,
+                "gain": 0.482744961977005,
+                "phase_rad": 0.6336727142333984
+              },
+              {
+                "relative_error": 106.71125793457031,
+                "gain": 0.521104633808136,
+                "phase_rad": 0.9270360469818115
+              }
+            ]
+          },
+          "own_shape_coarse": {
+            "carrier_relative_db_rmse": 2.872713327407837,
+            "carrier_relative_amp_mae": 2.119401216506958,
+            "packet_max_power_relative_error": 2.980232238769531e-07,
+            "packet_rms_ratio_median": 1,
+            "packet_rms_ratio_p10": 0.9999999403953552,
+            "private_clean": [
+              {
+                "relative_error": 56.733314514160156,
+                "gain": -0.0008195824339054525,
+                "phase_rad": 1.5673495531082153
+              },
+              {
+                "relative_error": 1.3543927669525146,
+                "gain": 0.012582669034600258,
+                "phase_rad": 1.042232871055603
+              },
+              {
+                "relative_error": 1.1132956743240356,
+                "gain": 0.01058680284768343,
+                "phase_rad": 0.9040040969848633
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 1.545646071434021,
+                "gain": -0.30689653754234314,
+                "phase_rad": 2.9033167362213135
+              },
+              {
+                "relative_error": 1.0121625661849976,
+                "gain": -0.0037965045776218176,
+                "phase_rad": 1.6283499002456665
+              },
+              {
+                "relative_error": 1.1569117307662964,
+                "gain": 0.006784867029637098,
+                "phase_rad": 1.3357599973678589
+              }
+            ]
+          },
+          "own_shape_half": {
+            "carrier_relative_db_rmse": 2.324730396270752,
+            "carrier_relative_amp_mae": 1.6362972259521484,
+            "packet_max_power_relative_error": 2.384185791015625e-07,
+            "packet_rms_ratio_median": 1,
+            "packet_rms_ratio_p10": 0.9999999403953552,
+            "private_clean": [
+              {
+                "relative_error": 408.8215637207031,
+                "gain": 0.188296377658844,
+                "phase_rad": 1.3849436044692993
+              },
+              {
+                "relative_error": 615.497314453125,
+                "gain": 0.6545054912567139,
+                "phase_rad": 0.9391966462135315
+              },
+              {
+                "relative_error": 649.4989624023438,
+                "gain": 0.4677039384841919,
+                "phase_rad": 1.1399857997894287
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 2.1294734477996826,
+                "gain": 0.21425554156303406,
+                "phase_rad": 0.2886492609977722
+              },
+              {
+                "relative_error": 5.401419639587402,
+                "gain": 0.30141815543174744,
+                "phase_rad": 0.9117581248283386
+              },
+              {
+                "relative_error": 93.70948028564453,
+                "gain": 0.4156600832939148,
+                "phase_rad": 1.105460524559021
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

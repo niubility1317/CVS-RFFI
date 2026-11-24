@@ -1,0 +1,82 @@
+{
+  "status": "COMPLETE",
+  "n": 150,
+  "target_reads": 0,
+  "F_reads": 0,
+  "V_reads": 0,
+  "TX_reads": 0,
+  "rows": {
+    "full": {
+      "practical_low_suburban": [
+        {
+          "leakage_median": 998.2378540039062,
+          "mismatch_median": 1126.25537109375,
+          "fraction_above_detail": 1
+        },
+        {
+          "leakage_median": 42.48601531982422,
+          "mismatch_median": 54.31884002685547,
+          "fraction_above_detail": 0.846666693687439
+        },
+        {
+          "leakage_median": 5.063998222351074,
+          "mismatch_median": 9.838147163391113,
+          "fraction_above_detail": 0.6600000262260437
+        }
+      ],
+      "practical_low_urban": [
+        {
+          "leakage_median": 7584.08447265625,
+          "mismatch_median": 7547.81201171875,
+          "fraction_above_detail": 1
+        },
+        {
+          "leakage_median": 236.1061248779297,
+          "mismatch_median": 244.43994140625,
+          "fraction_above_detail": 0.9066666960716248
+        },
+        {
+          "leakage_median": 31.404672622680664,
+          "mismatch_median": 27.236406326293945,
+          "fraction_above_detail": 0.7933333516120911
+        }
+      ]
+    },
+    "residual": {
+      "practical_low_suburban": [
+        {
+          "leakage_median": 5086.65380859375,
+          "mismatch_median": 5021.85791015625,
+          "fraction_above_detail": 1
+        },
+        {
+          "leakage_median": 211.07119750976562,
+          "mismatch_median": 216.30178833007812,
+          "fraction_above_detail": 1
+        },
+        {
+          "leakage_median": 28.73788070678711,
+          "mismatch_median": 28.654253005981445,
+          "fraction_above_detail": 0.9733333587646484
+        }
+      ],
+      "practical_low_urban": [
+        {
+          "leakage_median": 30851.783203125,
+          "mismatch_median": 30995.18359375,
+          "fraction_above_detail": 1
+        },
+        {
+          "leakage_median": 652.128662109375,
+          "mismatch_median": 689.824951171875,
+          "fraction_above_detail": 1
+        },
+        {
+          "leakage_median": 85.45999145507812,
+          "mismatch_median": 91.55482482910156,
+          "fraction_above_detail": 1
+        }
+      ]
+    }
+  }
+}

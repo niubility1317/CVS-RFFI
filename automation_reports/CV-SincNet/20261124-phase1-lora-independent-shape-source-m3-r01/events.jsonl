@@ -1,0 +1,8 @@
+{"at": "2026-11-24T06:43:27+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-24T06:46:12+00:00", "status": "RUNNING", "note": "Verified PID, CWD, argv, GPU, and fit-log growth after real source U smoke.", "evidence": "launch-evidence.json", "row_id": "fit-own_shape"}
+{"at": "2026-11-24T06:46:12+00:00", "status": "RUNNING", "note": "Independent source shape fitting verified live on N607.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-24T06:58:24+00:00", "status": "ANALYZED", "note": "New source-only fit frozen.", "evidence": "own_shape-complete.json", "row_id": "fit-own_shape"}
+{"at": "2026-11-24T06:58:24+00:00", "status": "ANALYZED", "note": "Frozen source scoring verified after complete predictions.", "evidence": "full-source-scores.json", "row_id": "evaluate-full"}
+{"at": "2026-11-24T06:58:24+00:00", "status": "ANALYZED", "note": "Frozen source scoring verified after complete predictions.", "evidence": "residual-source-scores.json", "row_id": "evaluate-residual"}
+{"at": "2026-11-24T06:58:24+00:00", "status": "ANALYZED", "note": "Frozen source scoring verified after complete predictions.", "evidence": "clean-complete-scores.json", "row_id": "evaluate-reserve"}
+{"at": "2026-11-24T06:58:24+00:00", "status": "ANALYZED", "note": "Paired source recovery and independent waveform checks verified.", "evidence": "report.md", "row_id": null}
