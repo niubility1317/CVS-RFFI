@@ -9,6 +9,8 @@ import torch
 from experiments.cric_dura_comparison.io import read, write
 from experiments.pamf_lora_main import tri_tuning
 from experiments.pamf_lora_main.clean_aperture import ALL_CHIRPS, padded_crop
+from experiments.pamf_lora_main.data import SOURCE
+from experiments.pamf_lora_main.full_tri_repl_lora import clean_source_ce
 from experiments.pamf_lora_main.packet_physics import chirp_samples
 from experiments.pamf_lora_main.tri_branch_shapes import retain_projection
 from experiments.pamf_lora_main import tri_clean95
@@ -119,3 +121,15 @@ class TriTuningTests(TestCase):
             np.testing.assert_array_equal(shifted,center+offset)
             self.assertTrue((shifted[:,0]>=np.arange(8)*1024).all())
             self.assertTrue((shifted[:,-1]<(np.arange(8)+1)*1024).all())
+
+    def test_rtl_weight_applies_only_to_the_labeled_source_receiver(self):
+        rows,epochs,u_batch=tri_clean95.study({'scratch':True,'rtl_study':True})
+        self.assertEqual((epochs,u_batch),(112,16))
+        self.assertEqual(rows['phase_rtl']['rtl_weight'],2.)
+        t=torch.zeros(3,10)
+        t[1,1]=5.
+        labels=torch.zeros(3,dtype=torch.long)
+        rx=torch.tensor([0,SOURCE.index('rtl_1'),2])
+        ce=torch.nn.functional.cross_entropy(t,labels,label_smoothing=.01,reduction='none')
+        torch.testing.assert_close(clean_source_ce(t,labels,rx),ce.mean())
+        torch.testing.assert_close(clean_source_ce(t,labels,rx,2.),(ce.sum()+ce[1])/4)
