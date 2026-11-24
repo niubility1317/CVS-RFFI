@@ -33,8 +33,9 @@ CONTROL_MODES = {'full': ('direct', 'coherent_half', 'complex_response_half'),
 BATCH = 18
 
 
-def freeze_metadata(route):
-    return dict(status='PREDICTIONS_FROZEN', route=route, seed=SEED, mode=MODE,
+def freeze_metadata(route, modes=(MODE,)):
+    readouts = {'mode': MODE} if modes == (MODE,) else {'modes': list(modes)}
+    return dict(status='PREDICTIONS_FROZEN', route=route, seed=SEED, **readouts,
                 receivers=list(TARGET), per_receiver=LIMIT, views=list(VIEWS), target_truth_read=False)
 
 
@@ -86,6 +87,11 @@ def fixed_readout(iq, tracker, models, threshold):
     return waves[SOURCE_MODES.index(MODE) - 2], active
 
 
+def midpoint_readouts(iq, tracker, models, threshold):
+    wave, active = fixed_readout(iq, tracker, models, threshold)
+    return (wave,), active
+
+
 def update_predictions(destination, changed, scores):
     mask = np.asarray(changed.cpu().tolist(), dtype=bool)
     destination[mask] = scores.argmax(1).cpu().tolist()
@@ -109,14 +115,20 @@ def smoke(rt):
     print('LORA_FIXED_MID_SOURCE_SMOKE_PASS', flush=True)
 
 
+def source_smoke_metadata(source_run, modes):
+    return dict(status='PASS', source_run=source_run, target_reads=0,
+                **({'mode': MODE} if modes == (MODE,) else {'modes': list(modes)}))
+
+
 @torch.no_grad()
-def predict(rt, route):
+def predict(rt, route, *, modes=(MODE,), source_run=SOURCE_RUN,
+            prepare=frozen_runtime, evaluate=midpoint_readouts):
     root, device = Path(rt['run_root']), 'cuda:0'
     check = read(root/'smoke.json')
-    if (check['status'], check['source_run'], check['mode'], check['target_reads']) != ('PASS', SOURCE_RUN, MODE, 0):
+    if any(check.get(k) != v for k,v in source_smoke_metadata(source_run, modes).items()):
         raise ValueError('Actual source-only smoke required before target access')
     contract = source_contract(Path(rt['source_root']))
-    tracker, models, threshold, reader = frozen_runtime(rt, contract, device)
+    tracker, models, threshold, reader = prepare(rt, contract, device)
     target = blind_views(rt, route)
     control = Path(rt['controls'][route])
     control_metadata(control, route)
@@ -129,26 +141,29 @@ def predict(rt, route):
             raise ValueError(f'Invalid blind LoRa IQ for {route}/{rx}')
         activity[rx] = {}
         for j, view in enumerate(VIEWS):
-            pred = frozen_prediction(output_path(control, rx, view, 'direct')).astype(np.int16)
+            direct = frozen_prediction(output_path(control, rx, view, 'direct')).astype(np.int16)
+            rows = [direct.copy() for _ in modes]
             active_count = 0
             for i in range(0, LIMIT, BATCH):
                 original = tensor(iq[j, i:i+BATCH], device)
-                wave, active = fixed_readout(original, tracker, models, threshold)
+                waves, active = evaluate(original, tracker, models, threshold)
                 active_count += active
                 if active:
-                    changed = (wave != original).flatten(1).any(-1)
-                    if changed.any():
-                        scores = reader(wave[changed])[0]
-                        if not scores.isfinite().all():
-                            raise ValueError(f'Nonfinite fixed midpoint logits for {route}/{rx}/{view}')
-                        update_predictions(pred[i:i+len(wave)], changed, scores)
+                    for mode, pred, wave in zip(modes, rows, waves, strict=True):
+                        changed = (wave != original).flatten(1).any(-1)
+                        if changed.any():
+                            scores = reader(wave[changed])[0]
+                            if not scores.isfinite().all():
+                                raise ValueError(f'Nonfinite logits for {mode}/{route}/{rx}/{view}')
+                            update_predictions(pred[i:i+len(wave)], changed, scores)
             activity[rx][view] = active_count
-            path = output_path(dest, rx, view, MODE)
-            with path.open('xb') as stream:
-                np.save(stream, pred)
-        print('LORA_FIXED_MID_PREDICTED', route, rx, flush=True)
+            for mode, pred in zip(modes, rows, strict=True):
+                path = output_path(dest, rx, view, mode)
+                with path.open('xb') as stream:
+                    np.save(stream, pred)
+        print('LORA_TARGET_PREDICTED', route, rx, flush=True)
     write(dest/'activity.json', activity)
-    write(dest/'complete.json', freeze_metadata(route))
+    write(dest/'complete.json', freeze_metadata(route, modes))
 
 
 def dispatch(rt):
@@ -167,22 +182,22 @@ def dispatch(rt):
         raise
 
 
-def publish(repo, output, context, ssh_config, source_submit):
+def publish(repo, output, context, ssh_config, source_submit, *, run=RUN, source_run=SOURCE_RUN, runner=None):
     cfg = read(context)
     runtime = {key: cfg[key] for key in ('project','python','frozen_sources')}
     project = PurePosixPath(runtime['project'])
     runs, releases = project/'runs', project/'releases'
     source = read(source_submit)
     if (source['archive_transfer'] != 'VERIFIED' or source['remote_compile'] != 'PASS'
-            or PurePosixPath(source['run_root']) != runs/SOURCE_RUN):
+            or PurePosixPath(source['run_root']) != runs/source_run):
         raise ValueError('Expected the exact completed source experiment')
-    runtime.update(run_id=RUN, runner=__spec__.name, code_commit=release_commit(repo),
-        run_root=str(runs/RUN), release_root=str(releases/f'{RUN}-release'),
+    runtime.update(run_id=run, runner=runner or __spec__.name, code_commit=release_commit(repo),
+        run_root=str(runs/run), release_root=str(releases/f'{run}-release'),
         source_root=str(releases/f'{DATA_RUN}-release'/'data'/'source'), parent_root=str(runs/DATA_RUN),
         target_views={'full':str(runs/DATA_RUN/'target_views'), 'residual':str(runs/RESIDUAL_RUN/'target_views')},
         controls={'full':str(runs/COMPLEX_RESPONSE_RUN/'predictions'/str(SEED)),
                   'residual':str(runs/RESIDUAL_CONTROL/'predictions')},
-        external_releases=[str(runs/SOURCE_RUN/'state.json')],
+        external_releases=[str(runs/source_run/'state.json')],
         allowed_gpus=[3,6,2,0,4,1,5], max_workers=2, max_compute_processes=4)
     release(repo, output, runtime, ssh_config)
 

@@ -14,12 +14,12 @@ from .fixed_mid_target import (CONTROL_MODES, LIMIT, MODE, RUN, SEED, control_me
 from .spectral_unroll import ROUTES
 
 
-def read_matrix(output, controls):
-    expected = {f'{rx}__{view}__{MODE}.npy' for rx in TARGET for view in VIEWS}
+def read_matrix(output, controls, modes=(MODE,)):
+    expected = {f'{rx}__{view}__{mode}.npy' for rx in TARGET for view in VIEWS for mode in modes}
     matrices, activity = {}, {}
     for route, control in zip(ROUTES, controls, strict=True):
         path = output/'predictions'/route
-        if (read(path/'complete.json') != freeze_metadata(route)
+        if (read(path/'complete.json') != freeze_metadata(route, modes)
                 or {entry.name for entry in path.glob('*.npy')} != expected):
             raise ValueError(f'Incomplete frozen {route} prediction matrix')
         control_metadata(control, route)
@@ -29,16 +29,17 @@ def read_matrix(output, controls):
                     for n in views.values()) for views in activity[route].values())):
             raise ValueError(f'Incomplete {route} gate activity')
         matrices[route] = {}
-        for mode in (*CONTROL_MODES[route], MODE):
-            parent = path if mode == MODE else control
+        for mode in (*CONTROL_MODES[route], *modes):
+            parent = path if mode in modes else control
             matrices[route][mode] = np.asarray([
                 [frozen_prediction(output_path(parent, rx, view, mode)) for view in VIEWS] for rx in TARGET])
         direct = matrices[route]['direct']
-        candidate = matrices[route][MODE]
-        for i, rx in enumerate(TARGET):
-            for j, view in enumerate(VIEWS):
-                if np.count_nonzero(candidate[i,j] != direct[i,j]) > activity[route][rx][view]:
-                    raise ValueError('More switched predictions than active input packets')
+        for mode in modes:
+            candidate = matrices[route][mode]
+            for i, rx in enumerate(TARGET):
+                for j, view in enumerate(VIEWS):
+                    if np.count_nonzero(candidate[i,j] != direct[i,j]) > activity[route][rx][view]:
+                        raise ValueError('More switched predictions than active input packets')
     if not np.array_equal(matrices['full']['direct'][:,0],matrices['residual']['direct'][:,0]):
         raise ValueError('Frozen direct clean predictions disagree across paths')
     return matrices, activity
@@ -56,7 +57,7 @@ def interval(candidate, baseline, draws):
     return np.quantile(counts,[.025,.975]).tolist()
 
 
-def summarize(rows, truth, draws):
+def summarize(rows, truth, draws, *, primary=MODE):
     hits = {name: pred == truth[:,None,:] for name,pred in rows.items()}
     raw = hits['direct']
     values = {}
@@ -67,9 +68,9 @@ def summarize(rows, truth, draws):
             receivers={rx:{view:paired_counts(found[r,i],raw[r,i]) for i,view in enumerate(VIEWS)}
                        for r,rx in enumerate(TARGET)})
     paired = {}
-    proposed = hits[MODE]
+    proposed = hits[primary]
     for name, reference in hits.items():
-        if name == MODE:
+        if name == primary:
             continue
         six = paired_counts(proposed[:,1:], reference[:,1:])
         six['ci95'] = interval(proposed[:,1:].sum(1), reference[:,1:].sum(1), draws)
@@ -84,16 +85,17 @@ def summarize(rows, truth, draws):
     return dict(modes=values, candidate_vs=paired)
 
 
-def collect(submit, ssh_config, dataset, output, full_control, residual_control):
+def collect(submit, ssh_config, dataset, output, full_control, residual_control,
+            *, run=RUN, modes=(MODE,), primary=MODE):
     receipt = read(submit)
     remote = PurePosixPath(receipt['run_root'])
-    if remote.name != RUN or receipt['archive_transfer'] != 'VERIFIED' or receipt['remote_compile'] != 'PASS':
-        raise ValueError('Wrong official midpoint release')
+    if remote.name != run or receipt['archive_transfer'] != 'VERIFIED' or receipt['remote_compile'] != 'PASS':
+        raise ValueError('Wrong official LoRa target release')
     connection = ['ssh','-F',str(ssh_config),'-T','-o','BatchMode=yes','-o','ConnectTimeout=10','N607']
     wait_for_predictions(connection, shlex.quote(str(remote)))
     output.mkdir(parents=True)
     receive(connection, shlex.quote(str(remote)), output, main=False)
-    matrices, activity = read_matrix(output, (full_control, residual_control))
+    matrices, activity = read_matrix(output, (full_control, residual_control), modes)
     truth = []
     with zipfile.ZipFile(dataset/'multiple_receiver_test.zip') as archive:
         for i, rx in enumerate(TARGET):
@@ -101,12 +103,12 @@ def collect(submit, ssh_config, dataset, output, full_control, residual_control)
                 truth.append(label_ids(data, LIMIT)[packet_indices(LIMIT, i)])
     y = np.stack(truth)
     draws = np.random.default_rng(392240).integers(LIMIT,size=(len(TARGET),1600,LIMIT),dtype=np.int16)
-    scores = {r:summarize(matrix,y,draws) for r,matrix in matrices.items()}
-    clean_switch = int(np.count_nonzero(matrices['full'][MODE][:,0] != matrices['residual'][MODE][:,0]))
+    scores = {r:summarize(matrix,y,draws,primary=primary) for r,matrix in matrices.items()}
+    clean_switch = int(np.count_nonzero(matrices['full'][primary][:,0] != matrices['residual'][primary][:,0]))
     write(output/'scores.json',dict(status='SCORED_COMPLETE', seed=SEED, n_packets=y.size,
           truth_after_complete_dual_predictions=True, clean_route_label_disagreements=clean_switch,
           activity=activity, routes=scores))
-    print('LORA_FIXED_MID_TARGET_SCORED', output/'scores.json', flush=True)
+    print('LORA_TARGET_SCORED', output/'scores.json', flush=True)
 
 
 if __name__ == '__main__':
