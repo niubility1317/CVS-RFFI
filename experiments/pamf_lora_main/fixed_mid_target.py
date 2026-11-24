@@ -182,7 +182,8 @@ def dispatch(rt):
         raise
 
 
-def publish(repo, output, context, ssh_config, source_submit, *, run=RUN, source_run=SOURCE_RUN, runner=None):
+def publish(repo, output, context, ssh_config, source_submit, *, run=RUN, source_run=SOURCE_RUN, runner=None,
+            allowed_gpus=(3,6,2,0,4,1,5)):
     cfg = read(context)
     runtime = {key: cfg[key] for key in ('project','python','frozen_sources')}
     project = PurePosixPath(runtime['project'])
@@ -198,7 +199,7 @@ def publish(repo, output, context, ssh_config, source_submit, *, run=RUN, source
         controls={'full':str(runs/COMPLEX_RESPONSE_RUN/'predictions'/str(SEED)),
                   'residual':str(runs/RESIDUAL_CONTROL/'predictions')},
         external_releases=[str(runs/source_run/'state.json')],
-        allowed_gpus=[3,6,2,0,4,1,5], max_workers=2, max_compute_processes=4)
+        allowed_gpus=list(allowed_gpus), max_workers=2, max_compute_processes=4)
     release(repo, output, runtime, ssh_config)
 
 
