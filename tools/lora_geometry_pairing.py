@@ -40,6 +40,7 @@ LEARNED_RUN = '20261124-diagnostic-lora-learned-split-source-m2-r01'
 ANCHOR_RUN = '20261124-phase1-lora-common-anchor-source-m4-r01'
 BURST_DOSE_RUN = '20261124-phase1-lora-phase-dose-bursts-source-m4-r01'
 RADIUS_RUN = '20261124-diagnostic-lora-phase-radius-source-m2-r01'
+NEIGHBOR_PHASE_RUN = '20261124-phase1-lora-neighbor-phase-source-m4-r01'
 RADIUS_INTERACTIONS = {
     'power_phase': ('power_joint', 'direct', 'power_radius', 'local_full'),
     'fold_phase': ('fold_joint', 'direct', 'fold_radius', 'local_full'),
@@ -154,6 +155,10 @@ def collect(rt):
         from experiments.pamf_lora_main import phase_radius_diagnostic
         modes = phase_radius_diagnostic.MODES
         pairs = (*phase_radius_diagnostic.COMPARISONS, ('direct', 'reference'))
+    elif rt.get('run_id')==NEIGHBOR_PHASE_RUN:
+        from experiments.pamf_lora_main import neighbor_phase_source
+        modes = neighbor_phase_source.MODES
+        pairs = (*neighbor_phase_source.COMPARISONS, ('direct', 'reference'))
     else:
         from experiments.pamf_lora_main import empirical_tangent_source as tangent
         if rt.get('run_id')!=tangent.RUN:
