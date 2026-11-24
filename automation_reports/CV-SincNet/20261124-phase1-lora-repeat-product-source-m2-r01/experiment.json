@@ -1,0 +1,171 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261124-phase1-lora-repeat-product-source-m2-r01",
+  "group_id": "lora-observable-satellite-recovery",
+  "display_name": "LoRa 跨重复频谱乘积公共方向工程对照",
+  "description": "在匹配的物理 IQ RMS 与固定独有修正下，比较线性重复和跨两组复谱乘积提出的同包公共弱带方向。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "LoRa",
+    "DURA",
+    "source_V",
+    "equal_rms",
+    "cross_repeat",
+    "full",
+    "residual"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261122-phase1-lora-full-aligned-data-r01",
+    "20261122-phase1-lora-tri-label-set-m3-r01",
+    "20261123-phase1-lora-dura-residual-practical-m1-r01",
+    "20261123-phase1-lora-dura-direct-detail-source-m2-r01",
+    "20261124-phase1-lora-variance-transport-source-m2-r01",
+    "20261124-diagnostic-lora-noise-split-source-m2-r01",
+    "20261124-phase1-lora-neighbor-phase-source-m4-r01",
+    "20261124-phase1-lora-cross-frequency-source-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "LoRa 可部署目标所列成熟工程对照和独立机制归因。",
+  "code": {
+    "commit": "启动命令从已推送分支 HEAD 固定，实际 OID 写入 submit.json",
+    "checkout": "E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo",
+    "environment": "${N607_PYTHON}",
+    "cwd": "${N607_PROJECT}/releases/20261124-phase1-lora-repeat-product-source-m2-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa 多接收机 IEEE DataPort",
+    "version": "lora_full_packets_v1 源 7/63/30 固定划分",
+    "representation": "1 MS/s 采集及既有构造，冻结读出为 256 kS/s 六条 256 点窄窗复 IQ",
+    "contract_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json role_ids.V",
+    "label_map_ref": "experiments/pamf_lora_main/data.py CLASSES (31 至 40)，仅评分读取 V_metadata.npz y",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "10 个登记发射机的固定源分配，拟合不可见",
+    "roles": {
+      "L_s": 0,
+      "U_s": 23000,
+      "V": 900
+    },
+    "train_ratio": "源 U 20,000 物理包，各作为地面、通用独立噪声和突发三份闭式协方差样本。继承同划分独立 2,500 包旁路校准。固定 500 留出用于源 U 先验机制核查。900 V 只接冻结预测。",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "${N607_PROJECT}/runs/20261122-phase1-lora-full-aligned-data-r01/source_views/complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": "沿用 full 1 MHz 对齐及 residual 256 kHz post-sync/noEQ 原视图"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "not_applicable",
+    "external_method_exception": null,
+    "claim_scope": "闭式校准只读合法源 U 的 IQ 和通用扰动结果。推理只读当前包的 IQ 与已登记的源域冻结统计。F、TX、目标、真实信道和噪声完全隔离于拟合。"
+  },
+  "checkpoint": {
+    "initialization": "复用同源 U 冻结跨频先验，并与本轮单次闭式协方差联合读出",
+    "sources": [
+      "20261122-phase1-lora-tri-label-set-m3-r01 / tri_set 2026092702",
+      "20261123-phase1-lora-dura-direct-detail-source-m2-r01 及冻结 full 复响应半量",
+      "20261123-phase1-lora-dura-residual-practical-m1-r01 原 R69 及固定 residual 门控投影半量"
+    ],
+    "contract_check_ref": "source_contract 与 complete_f/source_control 核对各自源物理角色",
+    "provenance_verdict": "继承合法 U-only 同契约匹配跨频先验，禁止重新读精确诊断量。两带严守原尺度及独有更新。",
+    "selection_rule": "固定工程主对照 products_common。源 V 冻结只用于检验是否较线性与原 DURA 两路都改善并保持 clean。"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "当前 LoRa 可部署星地恢复目标",
+    "gpu_policy": "按显存与实时负载选择解析校准/检查卡，并在两张有余量的 GPU 并行预测。CPU 独立评分。",
+    "remote_run_root": "${N607_PROJECT}/runs/20261124-phase1-lora-repeat-product-source-m2-r01",
+    "remote_log_root": "${N607_PROJECT}/runs/20261124-phase1-lora-repeat-product-source-m2-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261124-phase1-lora-repeat-product-source-m2-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.repeat_product_source publish --repo \"E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo\" --output \"E:/type10-7/local_artifacts/20261124-phase1-lora-repeat-product-source-m2-r01/release\" --context E:/type10-7/local_artifacts/lora_main_20261121/runtime_source.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "只在源权限、校准/无目标真实权重检查、IQ 总量与独有分量保持、固定预测或独立评分出现技术错误时停止。"
+  },
+  "expected_artifacts": [
+    "calibration.pt",
+    "calibration.json",
+    "smoke.json",
+    "full-predictions.json",
+    "residual-predictions.json",
+    "full-source-scores.json",
+    "residual-source-scores.json",
+    "full-estimates.json",
+    "residual-estimates.json",
+    "logs/"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "两路线六景及低城区、clean 正确数",
+      "同包纠错、改错及逐 RX 配对区间",
+      "等物理 IQ RMS 和独有修正保持",
+      "校准与 B1 计算成本"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "mode",
+      "seed"
+    ],
+    "prediction_ref": "${N607_PROJECT}/runs/20261124-phase1-lora-repeat-product-source-m2-r01/<route>-predictions.json",
+    "scorer_ref": "experiments.pamf_lora_main.repeat_product_source score"
+  },
+  "rows": [
+    {
+      "row_id": "dual-route-repeat-product-s2026092702",
+      "method": "直通、匹配半量 DURA、解析半量、线性重复公共方向、跨重复产品项公共方向。",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/repeat_product_source.py",
+      "resolved_config_ref": "${N607_PROJECT}/releases/20261124-phase1-lora-repeat-product-source-m2-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026112449,
+        "support": null,
+        "evaluation": 2026112620
+      },
+      "seed_notes": "固定 Tri-set 2026092702 及原同包面板。通用扰动 seed 2026112449。",
+      "k": null,
+      "scenario": "clean 和六景，分别评估 full/residual",
+      "optimizer": "每折每频点闭式正则最小二乘，岭系数 0.10。",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "20,000 U 包三种视图共 60,000；无迭代优化。两条路线各 900 源 V 包 × 7 视图 × 5 读出。",
+      "output_root": "${N607_PROJECT}/runs/20261124-phase1-lora-repeat-product-source-m2-r01",
+      "log_path": "${N607_PROJECT}/runs/20261124-phase1-lora-repeat-product-source-m2-r01/logs",
+      "command": "${N607_PYTHON} -u -m experiments.pamf_lora_main.repeat_product_source dispatch ${N607_PROJECT}/releases/20261124-phase1-lora-repeat-product-source-m2-r01-release/runtime.json",
+      "expected_artifacts": [
+        "calibration.pt",
+        "calibration.json",
+        "smoke.json",
+        "full-predictions.json",
+        "residual-predictions.json",
+        "full-source-scores.json",
+        "residual-source-scores.json",
+        "full-estimates.json",
+        "residual-estimates.json",
+        "logs/"
+      ]
+    }
+  ],
+  "notes": [
+    "三组互斥。每个提议只从另两组同包实收频谱构造。训练目标为原地面去载波、以自身载波归一的弱复谱。",
+    "只更新物理加权公共成分，保留私有修正及每带物理量。线性组与产品组共享同一拟合数据、冻结先验、读出和预算。",
+    "所有候选在相同门限下预测，双路线文件固定之后由独立 CPU 接真值。"
+  ],
+  "registered_at": "2026-11-24T06:08:11+00:00"
+}

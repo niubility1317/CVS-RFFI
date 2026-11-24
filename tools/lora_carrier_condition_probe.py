@@ -16,6 +16,7 @@ from experiments.pamf_lora_main.full_packet_views import source_contract, source
 from experiments.pamf_lora_main.joint_unroll_source import coordinates
 from experiments.pamf_lora_main.packet_physics import chirp_windows
 from experiments.pamf_lora_main.phase_dose_bursts_source import burst_observation
+from experiments.pamf_lora_main.repeat_product import independent_noise
 
 
 SEED = 2026112407
@@ -51,15 +52,6 @@ def paired_context(tracker, clean, observed, mask):
                               (clean - ground_tone) / observed_frame, ground), 1)
     reference = fft(references)[..., mask]
     return carrier_features(tracker, tracked, phase, rms), reference
-
-
-def independent_noise(clean, rng):
-    # An independent, target-free range of disturbance levels. The sampled
-    # scale is used only to generate the observation.
-    random = torch.rand((len(clean), 1, 1), device=clean.device, generator=rng)
-    scale = (.02 + .28 * random) * clean.abs().square().mean((1, 2), keepdim=True).sqrt()
-    noise = torch.randn(clean.shape, device=clean.device, dtype=clean.dtype, generator=rng)
-    return clean + scale*noise
 
 
 def source_rows(data, raw_ids, tracker, regime, mask, *, seed, device):
