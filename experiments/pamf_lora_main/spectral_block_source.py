@@ -54,7 +54,9 @@ def load_models(root, contract, device, recipes=RECIPES):
         model.load_state_dict(cp['weights'], strict=True)
         models.append(model)
         thresholds.append(cp['threshold'])
-    if thresholds[0] != thresholds[1] or not np.isfinite(thresholds[0]) or thresholds[0] <= 0:
+    if not thresholds or not np.isfinite(thresholds[0]) or thresholds[0] <= 0:
+        raise ValueError('Expected a finite positive source U threshold')
+    if any(value != thresholds[0] for value in thresholds[1:]):
         raise ValueError('Source U threshold must be identical across arms')
     return tuple(models), thresholds[0]
 
@@ -124,8 +126,9 @@ def evaluate(rt, route, recipes=RECIPES, modes=MODES):
 
 
 def paired_tasks(rt, kind, names):
-    slots = [select_gpu()]
-    slots.append(select_gpu(exclude=slots))
+    slots = []
+    for _ in names:
+        slots.append(select_gpu(exclude=slots))
     write(Path(rt['run_root'])/'state.json', dict(status=kind.upper(), gpus=dict(zip(names,slots,strict=True))), exclusive=False)
     jobs = [start(rt,kind,name,gpu,module=rt['runner']) for name,gpu in zip(names,slots,strict=True)]
     if any([p.wait() for p in jobs]):

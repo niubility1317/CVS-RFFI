@@ -46,6 +46,8 @@ CROSS_FREQUENCY_DOSE_RUN = '20261124-phase1-lora-cross-frequency-dose-source-m4-
 SPECTRAL_MIXTURE_RUN = '20261124-phase1-lora-spectral-mixture-source-m2-r01'
 MIXTURE_DIRECTIONS_RUN = '20261124-diagnostic-lora-mixture-directions-source-m2-r01'
 ANGULAR_TRANSPORT_RUN = '20261124-phase1-lora-angular-transport-source-m4-r01'
+BAND_ALLOCATION_RUN = '20261124-phase1-lora-band-allocation-source-m3-r01'
+BAND_ALLOCATION_DIAGNOSTIC = '20261124-diagnostic-lora-band-allocation-source-m2-r01'
 RADIUS_INTERACTIONS = {
     'power_phase': ('power_joint', 'direct', 'power_radius', 'local_full'),
     'fold_phase': ('fold_joint', 'direct', 'fold_radius', 'local_full'),
@@ -184,6 +186,14 @@ def collect(rt):
         from experiments.pamf_lora_main import angular_transport_source
         modes = angular_transport_source.MODES
         pairs = (*angular_transport_source.COMPARISONS, ('direct', 'reference'))
+    elif rt.get('run_id') == BAND_ALLOCATION_RUN:
+        from experiments.pamf_lora_main import band_allocation_source
+        modes = band_allocation_source.MODES
+        pairs = (*band_allocation_source.COMPARISONS, ('direct', 'reference'))
+    elif rt.get('run_id') == BAND_ALLOCATION_DIAGNOSTIC:
+        from experiments.pamf_lora_main import band_allocation_diagnostic
+        modes = band_allocation_diagnostic.MODES
+        pairs = (*band_allocation_diagnostic.COMPARISONS, ('direct', 'reference'))
     else:
         from experiments.pamf_lora_main import empirical_tangent_source as tangent
         if rt.get('run_id')!=tangent.RUN:

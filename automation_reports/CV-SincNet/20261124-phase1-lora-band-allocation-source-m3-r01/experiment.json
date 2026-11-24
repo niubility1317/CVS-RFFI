@@ -1,0 +1,169 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261124-phase1-lora-band-allocation-source-m3-r01",
+  "group_id": "lora-observable-satellite-recovery",
+  "display_name": "LoRa 实收等量分带恢复",
+  "description": "实收估计分带复投影，粗细两段联合训练；有界投影保持同包原 IQ RMS 和三带内的复修正方向。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "LoRa",
+    "DURA",
+    "source_V",
+    "equal_rms",
+    "band_allocation",
+    "full",
+    "residual"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261122-phase1-lora-full-aligned-data-r01",
+    "20261122-phase1-lora-tri-label-set-m3-r01",
+    "20261123-phase1-lora-dura-residual-practical-m1-r01",
+    "20261123-phase1-lora-dura-direct-detail-source-m2-r01",
+    "20261124-phase1-lora-cross-frequency-source-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "LoRa 可部署恢复目标与等量分带设计。候选使用源 IQ，精确量独立隔离。",
+  "code": {
+    "commit": "启动命令从已推送分支 HEAD 固定，实际 OID 写入 submit.json",
+    "checkout": "E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo",
+    "environment": "${N607_PYTHON}",
+    "cwd": "${N607_PROJECT}/releases/20261124-phase1-lora-band-allocation-source-m3-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa 多接收机 IEEE DataPort",
+    "version": "lora_full_packets_v1 源 7/63/30 固定划分",
+    "representation": "1 MS/s 采集及既有构造，冻结读出为 256 kS/s 六条 256 点窄窗复 IQ",
+    "contract_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json role_ids.V",
+    "label_map_ref": "experiments/pamf_lora_main/data.py CLASSES (31 至 40)，仅评分读取 V_metadata.npz y",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "10 个登记发射机的固定源分配，拟合不可见",
+    "roles": {
+      "L_s": 0,
+      "U_s": 23000,
+      "V": 900
+    },
+    "train_ratio": "20,000 源 U 拟合；独立 2,500 划分为 1,250 clean 门、625 粗校准、625 细校准；500 固定留出。另 900 源 V 只用于冻结评分。",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "${N607_PROJECT}/runs/20261122-phase1-lora-full-aligned-data-r01/source_views/complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": "沿用 full 1 MHz 对齐及 residual 256 kHz post-sync/noEQ 原视图"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "not_applicable",
+    "external_method_exception": null,
+    "claim_scope": "源 U IQ 和独立通用突发。F-free、TX-free、目标隔离，实收预测只有 IQ 与固定公开协议及源统计。"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [
+      "20261122-phase1-lora-tri-label-set-m3-r01 / tri_set 2026092702",
+      "20261123-phase1-lora-dura-direct-detail-source-m2-r01 及冻结 full 复响应半量",
+      "20261123-phase1-lora-dura-residual-practical-m1-r01 原 R69 及固定 residual 门控投影半量"
+    ],
+    "contract_check_ref": "source_contract 与 complete_f/source_control 核对各自源物理角色",
+    "provenance_verdict": "单臂从零，共同解析先验在同一合法 U 分区重新拟合。末步后两个互斥 U 风险折校准。",
+    "selection_rule": "40,000 步固定终步，主读出 learned_final。分别超过两路匹配 DURA 六景并维持 clean 才进入正式矩阵。"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "当前 LoRa 可部署星地恢复目标",
+    "gpu_policy": "按实时余量选择 N607 GPU，可共用空闲容量。单臂完整训练（如适用），两路线并行预测，CPU 独立 truth-last。",
+    "remote_run_root": "${N607_PROJECT}/runs/20261124-phase1-lora-band-allocation-source-m3-r01",
+    "remote_log_root": "${N607_PROJECT}/runs/20261124-phase1-lora-band-allocation-source-m3-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261124-phase1-lora-band-allocation-source-m3-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.band_allocation_source publish --repo \"E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo\" --output \"E:/type10-7/local_artifacts/20261124-phase1-lora-band-allocation-source-m3-r01/release\" --context E:/type10-7/local_artifacts/lora_main_20261121/runtime_source.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "仅角色不合法、非有限训练、真实权重 smoke、同量或原预测回放失败、固定预测或独立评分技术失败时停止后续派发。"
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "full-predictions.json",
+    "residual-predictions.json",
+    "full-source-scores.json",
+    "residual-source-scores.json",
+    "logs/",
+    "band-model.pt",
+    "band-complete.json",
+    "full-estimates.json",
+    "residual-estimates.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "两路线六景及低城区识别、clean 正确数",
+      "同包纠错、改错、净变化及配对区间",
+      "逐场景逐 RX 分带比例、物理 RMS 及置信",
+      "同权等量分带消融",
+      "训练时间、参数及实测 B1"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "mode",
+      "seed"
+    ],
+    "prediction_ref": "${N607_PROJECT}/runs/20261124-phase1-lora-band-allocation-source-m3-r01/<route>-predictions.json",
+    "scorer_ref": "experiments.pamf_lora_main.band_allocation_source score"
+  },
+  "rows": [
+    {
+      "row_id": "dual-route-band-allocation-s2026092702",
+      "method": "直通、DURA、仅同步、同步 MMSE、半盲正则化、解析半量、实收能量分带、学习粗和细、同权统一、关闭反馈、单位作用、固定方差。",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/band_allocation_source.py",
+      "resolved_config_ref": "${N607_PROJECT}/releases/20261124-phase1-lora-band-allocation-source-m3-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026112620
+      },
+      "seed_notes": "原冻结 Tri-set 2026092702。U 分区、初始化和扰动种子 2026112991；风险校准用其 +37；V 面板和配对重抽固定。",
+      "k": null,
+      "scenario": "clean 和六景，分别评估 full/residual",
+      "optimizer": "AdamW，步级余弦，权重衰减 1e-4，梯度范数上界 1.0",
+      "lr": 0.0002,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "单臂连续 40,000 步、batch24、20,000源U拟合、2,500 校准、500 固定留出；900×七景×13 读出×两路线。",
+      "output_root": "${N607_PROJECT}/runs/20261124-phase1-lora-band-allocation-source-m3-r01",
+      "log_path": "${N607_PROJECT}/runs/20261124-phase1-lora-band-allocation-source-m3-r01/logs",
+      "command": "${N607_PYTHON} -u -m experiments.pamf_lora_main.band_allocation_source dispatch ${N607_PROJECT}/releases/20261124-phase1-lora-band-allocation-source-m3-r01-release/runtime.json",
+      "expected_artifacts": [
+        "smoke.json",
+        "full-predictions.json",
+        "residual-predictions.json",
+        "full-source-scores.json",
+        "residual-source-scores.json",
+        "logs/",
+        "band-model.pt",
+        "band-complete.json",
+        "full-estimates.json",
+        "residual-estimates.json"
+      ]
+    }
+  ],
+  "notes": [
+    "共同原物理 IQ RMS、固定每段内复方向、保留载波、clean 输入逐元素直通。",
+    "提议倍率允许 0.25 至 12，最终增益严格限定 0.5 至 1.5；先宽后限可保留不同频带的有效比例。",
+    "拟合、冻结与推理不导入隔离精确诊断模块。"
+  ],
+  "registered_at": "2026-11-24T05:25:59+00:00"
+}
