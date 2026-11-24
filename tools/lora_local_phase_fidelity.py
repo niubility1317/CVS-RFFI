@@ -36,6 +36,7 @@ BANDS = ((1, 8), (9, 32), (33, 64), (65, 128))
 METRICS = ('complex_nmse', 'magnitude_nmse', 'normalized_real_correlation')
 GEOMETRY_RUN = '20261124-phase1-lora-complex-geometry-source-m4-r01'
 TANGENT_RUN = '20261124-phase1-lora-empirical-tangent-source-m4-r01'
+ANCHOR_RUN = '20261124-phase1-lora-common-anchor-source-m4-r01'
 
 
 def bounded_projection(model, direct, reference, y, frame, threshold):
@@ -255,6 +256,15 @@ def joint_part_metrics(waves, reference, frame):
                      for select in (slice(0,1),slice(1,None))],axis=-2)
 
 
+def anchored_action_metrics(model, observed, quality, rms, reference, noiseless, frame):
+    _,_,action,variance = model.states(observed,quality,rms)
+    normalized = reference/frame
+    baseline = (normalized-observed).abs().square().mean((1,2))
+    predicted = (action*normalized-observed).abs().square().mean((1,2))
+    expected = (observed-noiseless/frame).abs().square().mean((1,2))
+    return np.asarray(torch.stack((baseline,predicted,variance.mean((1,2)),expected),dim=1).tolist(),dtype=np.float32)
+
+
 def shared_interval_evidence(model, observed, quality, waves, source, frame):
     (_, _, _, confidence), _ = model.spectral_evidence(observed, quality)
     confidence = confidence.squeeze(1)
@@ -344,7 +354,15 @@ def diagnose(rt, route, device):
     is_transport = rt['run_id']==variance_transport_source.RUN
     is_interval = rt['run_id']==coherent_interval_source.RUN
     is_joint = rt['run_id']==joint_spectrum_source.RUN
-    if is_joint:
+    is_anchor = rt['run_id']==ANCHOR_RUN
+    if is_anchor:
+        from experiments.pamf_lora_main import common_anchor_source as study
+        from experiments.pamf_lora_main.joint_spectrum_source import recover as joint_recover
+        recipes = study.RECIPES
+        recover = partial(joint_recover,compare=True,switch='anchor_common')
+        readouts = ('direct',*study.MODES[2:])
+        indices = range(len(study.MODES)-2)
+    elif is_joint:
         study = joint_spectrum_source
         recipes = study.RECIPES
         recover = partial(study.recover,compare=True)
@@ -438,6 +456,7 @@ def diagnose(rt, route, device):
             transport_stats = []
             interval_stats = []
             joint_stats = []
+            action_stats = []
             batches = zip(tensor(capture,device).split(18),tensor(noise,device).split(18),truth.split(18),strict=True)
             for batch,(received, epsilon, source) in enumerate(batches):
                 recoveries, count = recover(received,tracker,models,threshold)[:2]
@@ -474,6 +493,9 @@ def diagnose(rt, route, device):
                     joint_stats.append(joint_part_metrics(waves,noiseless,frame))
                     if view!='clean':
                         noise_stats.append(joint_noise_bias(models[1],tracked,frame,epsilon))
+                if is_anchor:
+                    joint_stats.append(joint_part_metrics(waves,noiseless,frame))
+                    action_stats.append(anchored_action_metrics(models[1],tracked,quality,rms,target,noiseless,frame))
                 for reference, group in ((target,bands_from_ground),(noiseless,bands_from_noiseless)):
                     compared = waves
                     if is_geometry:
@@ -543,7 +565,7 @@ def diagnose(rt, route, device):
                     pooled=report_interval(values),
                     by_receiver={name:report_interval(part) for name,part in
                                  zip(SOURCE,np.split(values,len(SOURCE),axis=1),strict=True)})
-            if is_joint:
+            if is_joint or is_anchor:
                 values = np.concatenate(joint_stats,axis=1)
                 output[view]['components_noiseless'] = dict(order=['shared','private'],
                     median=np.median(values,axis=1).tolist(),
@@ -555,6 +577,12 @@ def diagnose(rt, route, device):
                         median=np.median(error,axis=0).tolist(),
                         by_receiver={name:np.median(group,axis=0).tolist()
                                      for name,group in zip(SOURCE,np.split(error,len(SOURCE)),strict=True)})
+            if is_anchor:
+                actions = np.concatenate(action_stats)
+                output[view]['action_error'] = dict(fields=['identity_residual','estimated_action_residual',
+                    'estimated_residual_variance','exact_added_noise_power'],median=np.median(actions,axis=0).tolist(),
+                    by_receiver={name:np.median(group,axis=0).tolist() for name,group in
+                                 zip(SOURCE,np.split(actions,len(SOURCE)),strict=True)})
             if is_relation:
                 estimates = [torch.cat(parts,dim=1) for parts in zip(*relation_stats,strict=True)]
                 reference_groups = zip(*(value.chunk(len(SOURCE),dim=0) for value in source_features),strict=True)
@@ -580,7 +608,7 @@ def main():
     analyzed_runs = (local_phase_source.RUN, GEOMETRY_RUN, TANGENT_RUN, split_shrink_source.RUN,
                      lapped_posterior_source.RUN, held_chirp_precision_source.RUN, packet_relation_source.RUN,
                      reference_cancel_source.RUN, variance_transport_source.RUN, coherent_interval_source.RUN,
-                     joint_spectrum_source.RUN)
+                     joint_spectrum_source.RUN, ANCHOR_RUN)
     if rt.get('run_id') not in analyzed_runs or read(root/'state.json')['status']!='SOURCE_SCORED':
         raise ValueError('The full dual-route truth-last scoring must already be complete')
     activate(rt)
