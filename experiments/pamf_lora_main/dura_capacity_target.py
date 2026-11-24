@@ -13,7 +13,7 @@ from experiments.pamf_lora_main import weak_guard_target as replay
 from experiments.pamf_lora_main.weak_guard_target import ROUTES, SEEDS, matrix
 
 
-RUN = '20261124-phase1-lora-dura-capacity-target-m8-r01'
+RUN = '20261124-phase1-lora-dura-capacity-target-m8-r02'
 ORIGIN = '20261124-phase1-lora-dura-capacity-source-m4-r01'
 ORIGIN_CODE = '3de50180aaaa1179587a753d4f6dde201fc989c6'
 MODES = ('direct', 'expanded_half')

@@ -147,6 +147,6 @@ R69 v1.0 有 266,951 个参数。历史两阶段学生由 R65 固定父版初始
 
 两项长训的观测步骤都可写成求解 $\|W^{1/2}(y-\hat A x)\|_2^2+\lambda\|x-z\|_2^2$，其中 $z$ 是该阶段的学习先验，$W$ 由包内估计产生。LoRa 通过保护带能量和重复 chirp 提取初值，使用当前输出作为两步 CG 的初点，限制校正能量并把增量映射回原时间与幅度坐标。WiSig 用 STF 重复相位、可见 STF/LTF 的正则拟合与交叉预测生成时标和相对复响应，应用两步预条件 CG。两者的 $\hat A$ 都含共轭镜像项，求解器使用复数乘积实部定义内积。 [LoRa 展开代码](../../experiments/pamf_lora_main/dura_capacity.py) · [WiSig 前导与展开代码](../../experiments/pamf_unrolled_restore/wisig_preamble_dura.py) · [WiSig 求解代码](../../experiments/pamf_unrolled_restore/wisig_observed_solve.py)
 
-两项正式测试登记的是固定末步读出。LoRa 源域配对记录宽度、动作、噪声权重和求解的消融，WiSig 源域配对记录启用与关闭前导复响应锚点的独立长训。文献对照支持上述结构和监督方式的描述。源域消融可用于解释机制，正式测试负责确认两路线的识别净收益和 clean 保持。 [LoRa 登记](../../automation_reports/CV-SincNet/20261124-phase1-lora-dura-capacity-target-m8-r01/report.md) · [WiSig 登记](../../automation_reports/CV-SincNet/20261124-phase1-wisig-preamble-dura-main-m4-r01/report.md)
+两项正式测试登记的是固定末步读出。LoRa 源域配对记录宽度、动作、噪声权重和求解的消融，WiSig 源域配对记录启用与关闭前导复响应锚点的独立长训。文献对照支持上述结构和监督方式的描述。源域消融可用于解释机制，正式测试负责确认两路线的识别净收益和 clean 保持。 [LoRa 登记](../../automation_reports/CV-SincNet/20261124-phase1-lora-dura-capacity-target-m8-r02/report.md) · [WiSig 登记](../../automation_reports/CV-SincNet/20261124-phase1-wisig-preamble-dura-main-m4-r01/report.md)
 
 接收端时标校正的源域收益依赖所用冻结识别器。弱复谱约束的正向匹配消融已在历史 F50 和正式所用的 Tri-SIG-TIME 单种子上复现。两套数据的新方法正式准确率及跨设置通用性仍待验证。

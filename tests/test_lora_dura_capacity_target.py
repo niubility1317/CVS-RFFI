@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+import torch
 
 from experiments.cric_dura_comparison.io import write
 from experiments.pamf_lora_main import dura_capacity_target as target, weak_guard_target as guard
@@ -34,6 +35,14 @@ def test_target_matrix_keeps_same_routes_packets_and_readers():
     assert len(target.expected_files()) == 1260
     assert target.expected_files() == {path.replace('__guard_half.npy', '__expanded_half.npy')
                                       for path in guard.expected_files()}
+
+
+def test_shared_no_query_probe_has_no_legacy_training_dependency():
+    iq = torch.zeros(12, 6, 256, dtype=torch.complex64)
+    first = guard.smoke_disturbance(iq, torch.Generator().manual_seed(2026112481))
+    again = guard.smoke_disturbance(iq, torch.Generator().manual_seed(2026112481))
+    assert torch.equal(first, again) and torch.isfinite(first).all()
+    assert first.shape == iq.shape and .07 < first.abs().square().mean().sqrt() < .09
 
 
 def test_paired_scoring_repair_and_harm_for_both_candidate_names(monkeypatch):

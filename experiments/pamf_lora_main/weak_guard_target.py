@@ -94,6 +94,21 @@ def blind_cache(rt, route):
     return cache
 
 
+def smoke_disturbance(iq, rng):
+    import torch
+
+    options = dict(device=iq.device, generator=rng)
+    draw = torch.complex(torch.randn(iq.shape, **options), torch.randn(iq.shape, **options))
+    frequency = torch.fft.fftfreq(iq.shape[-1], device=iq.device)
+    shape = (len(iq), 1, 1)
+    angle = 2 * torch.pi * (frequency - torch.rand(shape, **options))
+    depth = .95 * torch.rand(shape, **options)
+    flat = torch.rand(shape, **options) < .40
+    profile = (1 + torch.where(flat, 0., depth) * angle.cos()).sqrt()
+    colored = torch.fft.ifft(torch.fft.fft(draw) * profile)
+    return iq + .08 * colored / 2**.5
+
+
 def run_worker(rt, stage, shard, *, bind=source_inference, modes=MODES, events='LORA_GUARD_TARGET'):
     import numpy as np
     import torch
@@ -103,7 +118,6 @@ def run_worker(rt, stage, shard, *, bind=source_inference, modes=MODES, events='
     from experiments.pamf_lora_main.full_packet_views import source_role
     from experiments.pamf_lora_main.packet_physics import chirp_windows
     from experiments.pamf_lora_main.dura_repair import complex_iq, real_iq
-    from experiments.pamf_lora_main.weak_guard import generic_noise
 
     device = 'cuda:0'
     root = Path(rt['run_root'])
@@ -127,7 +141,7 @@ def run_worker(rt, stage, shard, *, bind=source_inference, modes=MODES, events='
             iq, _, _, _ = source_role(Path(rt['source_root']), contract, 'U_s')
             quiet = tensor(np.stack([chirp_windows(iq[i]) for i in range(12)]), device)
             rng = torch.Generator(device=device).manual_seed(2026112481)
-            disturbed = real_iq(generic_noise(complex_iq(quiet), rng, amplitude=.08))
+            disturbed = real_iq(smoke_disturbance(complex_iq(quiet), rng))
             raw_output, bypass = restore(quiet)
             _, active = classify(disturbed)
             classify(quiet)
