@@ -185,6 +185,8 @@ def clean_model(rt,root,c,row,device):
 
 def study(rt):
     if rt.get('scratch'):
+        if rt.get('coverage_study'):
+            return COVERAGE_ROWS,112,16
         if rt.get('physics_study'):
             return PHYSICS_ROWS,112,16
         if rt.get('rtl_study'):
@@ -280,6 +282,10 @@ PHASE_JOINT_RUN='20261125-phase1-lora-pamf-tri-clean-phasejoint98-s2026092702-r0
 PHASE_JOINT_ROWS={
     'phase_joint': dict(ANCHOR_ROWS['phase_anchor'],joint_rx_weight=.12),
 }
+COVERAGE_RUN='20261125-phase1-lora-pamf-tri-clean-ucoverage98-s2026092702-r01'
+COVERAGE_ROWS={
+    'phase_coverage': dict(ANCHOR_ROWS['phase_anchor'],cover_u=True),
+}
 PHYSICS_RUN='20261125-phase1-lora-pamf-tri-clean-packetphysics98-s2026092702-r01'
 PHYSICS_ROWS={
     'phase_physics': dict(ANCHOR_ROWS['phase_anchor'],packet_physics=True),
@@ -323,6 +329,8 @@ def row_names(rt):
         return ('phase_jitter',)
     if rt.get('phase_joint_study'):
         return ('phase_joint',)
+    if rt.get('coverage_study'):
+        return ('phase_coverage',)
     if rt.get('physics_study'):
         return ('phase_physics',)
     if rt.get('rtl_study'):
@@ -443,6 +451,13 @@ def smoke(rt):
     write(root/'smoke.json',dict(status='PASS',U_truth_reads=0,target_reads=0,rows=records))
 
 
+def distinct_u_batches(total,epochs,steps,batch_size,*,device,generator):
+    draws=epochs*steps*batch_size
+    if draws>total:
+        raise ValueError('Unique source U budget exceeds the available source packets')
+    return torch.randperm(total,device=device,generator=generator)[:draws].reshape(epochs,steps,batch_size)
+
+
 def train(rt,name):
     root=Path(rt['run_root'])
     source,_,c=source_handles(rt)
@@ -506,18 +521,23 @@ def train(rt,name):
     if joint_rx_weight:
         from .packet_models import cross_rx
     warmup=row.get('warmup',0)
+    covered_u=(distinct_u_batches(len(u),epochs-warmup,STEPS,u_count,device=device,generator=ugen)
+               if row.get('cover_u') else None)
     validation_epochs=set(VALIDATION_EPOCHS)
     if rt.get('scratch'):
         validation_epochs.update(range(warmup,epochs+1,4))
         if any(rt.get(k) for k in ('budget_study','edge_study','robust_study','phase_study')):
             validation_epochs.update((32,48,60))
-        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study')):
+        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study')):
             validation_epochs.update((32,48,64,80,88))
     with (out/'epochs.jsonl').open('x',encoding='utf8') as log:
         for epoch in range(1,epochs+1):
             use_u=epoch>warmup
-            order=torch.randperm(len(u),device=device,generator=ugen)[:STEPS*u_count].reshape(STEPS,u_count)
-            ui=order if use_u else (None,)*STEPS
+            if covered_u is None:
+                order=torch.randperm(len(u),device=device,generator=ugen)[:STEPS*u_count].reshape(STEPS,u_count)
+                ui=order if use_u else (None,)*STEPS
+            else:
+                ui=covered_u[epoch-warmup-1] if use_u else (None,)*STEPS
             sl,su,accepted=0.,0.,0
             for b,pos in zip(batches(yn,rn,rng),ui,strict=True):
                 i=tensor(b,device)
@@ -604,14 +624,14 @@ def dispatch(rt):
     root=Path(rt['run_root'])
     screens=('quick','transfer','timefreq','noise_study','drift_study','budget_study')
     gated_study=any(rt.get(k) for k in ('robust_study','phase_study','anchor_study','timing_study',
-                                       'phase_joint_study','rtl_study','physics_study'))
+                                       'phase_joint_study','rtl_study','physics_study','coverage_study'))
     if (gated_study or any(rt.get(k) for k in ('noise_study','drift_study','budget_study','edge_study'))) and not rt.get('scratch'):
         raise ValueError('The clean input comparisons require random initialization')
     root.mkdir(exist_ok=False)
     state=root/'state.json'
     fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq',
                              'noise_study','drift_study','budget_study','edge_study','robust_study','phase_study','anchor_study',
-                             'timing_study','phase_joint_study','rtl_study','physics_study',
+                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study',
                              'fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)

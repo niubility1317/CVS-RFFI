@@ -156,6 +156,21 @@ class TriTuningTests(TestCase):
             self.assertTrue((shifted[:,0]>=np.arange(8)*1024).all())
             self.assertTrue((shifted[:,-1]<(np.arange(8)+1)*1024).all())
 
+    def test_coverage_uses_unique_source_indices_for_all_repl_epochs(self):
+        rows,epochs,u_batch=tri_clean95.study({'scratch':True,'coverage_study':True})
+        row=rows['phase_coverage']
+        self.assertTrue(row['cover_u'])
+        rng=torch.Generator().manual_seed(tri_clean95.SEED)
+        options=dict(device='cpu',generator=rng)
+        actual=tri_clean95.distinct_u_batches(25200,epochs-row['warmup'],88,u_batch,**options)
+        self.assertEqual(tuple(actual.shape),(16,88,16))
+        self.assertEqual(actual.unique().numel(),22528)
+        self.assertTrue(0<=actual.min()<=actual.max()<25200)
+        rng.manual_seed(tri_clean95.SEED)
+        torch.testing.assert_close(actual,tri_clean95.distinct_u_batches(25200,16,88,16,**options))
+        with self.assertRaisesRegex(ValueError,'Unique source U budget'):
+            tri_clean95.distinct_u_batches(100,16,88,16,**options)
+
     def test_rtl_weight_applies_only_to_the_labeled_source_receiver(self):
         rows,epochs,u_batch=tri_clean95.study({'scratch':True,'rtl_study':True})
         self.assertEqual((epochs,u_batch),(112,16))
