@@ -64,7 +64,7 @@ def read_stages(model, observed, quality, rotation, rms, recipe):
 
 
 @torch.no_grad()
-def render(iq, _, baseline, tracker, models, *, modes=MODES, recipes=None):
+def render(iq, _, baseline, tracker, models, *, modes=MODES, recipes=None, reframe=None):
     parent, two_arms, threshold = models
     reference, _ = baseline(iq)
     frame = coordinates(tracker, iq)
@@ -74,6 +74,8 @@ def render(iq, _, baseline, tracker, models, *, modes=MODES, recipes=None):
         return torch.stack((iq, reference, *([iq] * (len(modes) - 2)))), 0
     frame = tuple(v[active] for v in frame)
     rank, = restore(iq, active, parent, frame, (.5,))
+    if reframe is not None:
+        frame = reframe(frame)
     y, rot, q, rms = frame
     rows = [iq, reference, rank]
     stage_recipes = recipes.values() if recipes is not None else (None,) * len(two_arms)
@@ -86,22 +88,24 @@ def render(iq, _, baseline, tracker, models, *, modes=MODES, recipes=None):
     return torch.stack(rows), n
 
 
-def evaluate(rt, route, *, recipes=RECIPES, modes=MODES, reused=None):
+def evaluate(rt, route, *, recipes=RECIPES, modes=MODES, reused=None, reframe=None):
     root, device = Path(rt['run_root']), 'cuda:0'
     binding = source_control(rt, route, device)
-    score(rt, route, panel=panel, modes=modes, render=partial(render, modes=modes, recipes=recipes), binding=binding,
+    renderer = partial(render, modes=modes, recipes=recipes, reframe=reframe)
+    score(rt, route, panel=panel, modes=modes, render=renderer, binding=binding,
           frozen_models=bind_models(root, binding[2], device, recipes=recipes, reused=reused), require_clean_bypass=False,
           replay_fn=receive_only, finalize=freeze, reader_chunk=144)
 
 
-def reserve(rt, *, recipes=RECIPES, modes=MODES, reused=None):
+def reserve(rt, *, recipes=RECIPES, modes=MODES, reused=None, reframe=None):
     def bind(root, contract, device, baseline, tracker):
         models = bind_models(root, contract, device, recipes=recipes, reused=reused)
-        return lambda iq: render(iq, None, baseline, tracker, models, modes=modes, recipes=recipes)
+        return lambda iq: render(iq, None, baseline, tracker, models, modes=modes, recipes=recipes, reframe=reframe)
     predict_clean_reserve(rt, modes=modes, bind=bind)
 
 
-def smoke(rt, *, recipes=RECIPES, modes=MODES, split_risk=(False, True), calculations=None, reused=None):
+def smoke(rt, *, recipes=RECIPES, modes=MODES, split_risk=(False, True), calculations=None, reused=None,
+          reframe=None, calibrate_fn=calibrate):
     root, device = Path(rt['run_root']), 'cuda:0'
     (training, cal, _), contract = setup(rt, device, smoke=True)
     _, _, matched, baseline, tracker = source_control(rt, 'full', device)
@@ -118,7 +122,7 @@ def smoke(rt, *, recipes=RECIPES, modes=MODES, split_risk=(False, True), calcula
             models.append(model)
             continue
         model = recipe.model().to(device)
-        calibrate(model, tracker, training)
+        calibrate_fn(model, tracker, training)
         rng = torch.Generator(device=device).manual_seed(2026114990)
         example = cal[:6]
         calculate = (calculations or {}).get(recipe.name, partial(objective, split_risk=split))
@@ -133,7 +137,8 @@ def smoke(rt, *, recipes=RECIPES, modes=MODES, split_risk=(False, True), calcula
     corrupted = real_iq(colored_observation(complex_iq(cal), rng))
     active = corruption_score(coordinates(tracker, corrupted)[0]) > threshold
     batch = torch.cat((cal[:2], corrupted[active][:2]))
-    waves, n = render(batch, None, baseline, tracker, (parent, tuple(models), threshold), modes=modes, recipes=recipes)
+    waves, n = render(batch, None, baseline, tracker, (parent, tuple(models), threshold),
+                      modes=modes, recipes=recipes, reframe=reframe)
     with torch.no_grad():
         logits = load_reader(root, contract, device)(waves.flatten(0, 1))[0]
     if (n != 2 or logits.shape != (len(modes)*len(batch), 10) or not logits.isfinite().all()
@@ -145,7 +150,7 @@ def smoke(rt, *, recipes=RECIPES, modes=MODES, split_risk=(False, True), calcula
 
 
 @torch.no_grad()
-def timing(rt, *, recipes=RECIPES, reused=None):
+def timing(rt, *, recipes=RECIPES, reused=None, reframe=None):
     root, device = Path(rt['run_root']), 'cuda:0'
     (_, cal, _), contract = setup(rt, device, smoke=True)
     _, arms, threshold = bind_models(root, contract, device, recipes=recipes, reused=reused)
@@ -164,7 +169,8 @@ def timing(rt, *, recipes=RECIPES, reused=None):
                 frame = coordinates(tracker, iq)
                 active = corruption_score(frame[0]) > threshold
                 if active.any():
-                    y, rot, q, rms = (v[active] for v in frame)
+                    chosen = tuple(v[active] for v in frame)
+                    y, rot, q, rms = chosen if reframe is None else reframe(chosen)
                     _, full = read_stages(model, y, q, rot, rms, recipe)
                     processed = iq.clone()
                     processed[active] += .5 * real_iq((full - y) * rot * rms)

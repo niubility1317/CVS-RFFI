@@ -69,14 +69,15 @@ def private_direction_risk(even, odd, reference):
 
 
 def objective(model, tracker, iq, rng, *, with_identity, recipe, step, split_risk,
-              build_inputs=antithetic_inputs, private_risk_weight=0., relation_weight=0., lag_weight=0.):
+              build_inputs=antithetic_inputs, private_risk_weight=0., relation_weight=0., lag_weight=0.,
+              observation_frame=coordinates, carrier_risk=None):
     clean = complex_iq(iq)
-    framed, rotation, _, rms = coordinates(tracker, iq)
+    framed, rotation, _, rms = observation_frame(tracker, iq)
     source_basis = rotation * rms
     delta = weak_difference(framed)
     change = delta * source_basis
     wave = build_inputs(clean, change, recipe.perturb, rng, with_identity=with_identity)
-    observed, rotation, quality, rms = coordinates(tracker, real_iq(wave.flatten(0, 1)))
+    observed, rotation, quality, rms = observation_frame(tracker, real_iq(wave.flatten(0, 1)))
     basis = rotation * rms
     target = torch.stack((clean, clean, clean + change, clean + change), dim=1)
     stages = recipe.restore(model, observed, quality, rotation)
@@ -109,4 +110,8 @@ def objective(model, tracker, iq, rng, *, with_identity, recipe, step, split_ris
         lag = lag_profile_risk(half[:, :2], reference[:, 0])
         loss = loss + lag_weight * lag.mean()
         values = torch.cat((values, lag))
+    if carrier_risk is not None:
+        extra, diagnostics = carrier_risk(coarse, refined, stage_target, half, adapted_target)
+        loss = loss + extra
+        values = torch.cat((values, diagnostics))
     return loss, values
