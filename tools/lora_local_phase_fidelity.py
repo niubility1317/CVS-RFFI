@@ -41,6 +41,7 @@ GEOMETRY_RUN = '20261124-phase1-lora-complex-geometry-source-m4-r01'
 TANGENT_RUN = '20261124-phase1-lora-empirical-tangent-source-m4-r01'
 ANCHOR_RUN = '20261124-phase1-lora-common-anchor-source-m4-r01'
 BURST_DOSE_RUN = '20261124-phase1-lora-phase-dose-bursts-source-m4-r01'
+NEIGHBOR_PHASE_RUN = '20261124-phase1-lora-neighbor-phase-source-m4-r01'
 
 
 def bounded_projection(model, direct, reference, y, frame, threshold):
@@ -309,6 +310,60 @@ def phase_placement(waves, epsilon, frame):
     return np.asarray(torch.stack(values, dim=-2).tolist(), dtype=np.float32)
 
 
+def neighbor_explained_phase(model, raw, tracked, q, rms, phase):
+    from experiments.pamf_lora_main.local_phase import project
+    from experiments.pamf_lora_main.neighbor_phase import neighbor_angle, remove_parallel
+    from experiments.pamf_lora_main.phase_observation_diagnostic import repeat_angle
+
+    power = raw.abs().square()
+    shared = tracked * rms / rms.square().mean(1, keepdim=True).sqrt()
+    within, agreement = neighbor_angle(tracked)
+    window = torch.ones_like(model.time)
+
+    def projected(z, mask):
+        return project(z, power, mask, model.time, angle_cap=.65)
+
+    repeat = projected(repeat_angle(shared, q), window)
+    repeat_inside = projected(repeat, model.valid_neighbors)
+    neighbor = remove_parallel(projected(within, model.valid_neighbors), repeat_inside, power)
+    target = projected(phase, window)
+    energy = (power * target.square()).sum((1, 2)).clamp_min(1e-10)
+    explained = [((power * target * direction).sum(-1).square() /
+                  (power * direction.square()).sum(-1).clamp_min(1e-10)).sum(1) / energy
+                 for direction in (repeat, neighbor)]
+    return torch.stack((*explained, agreement.mean((1, 2))), -1)
+
+
+@torch.no_grad()
+def neighbor_held_support(rt):
+    from experiments.pamf_lora_main.channel_blind_source import setup
+    from experiments.pamf_lora_main.dura_repair import real_iq
+    from experiments.pamf_lora_main.neighbor_phase import NeighborPhaseDose
+    from experiments.pamf_lora_main.phase_dose_bursts_source import burst_observation
+
+    if rt['run_id'] != NEIGHBOR_PHASE_RUN:
+        raise ValueError('This U-only diagnostic uses the registered neighbor-phase source data')
+    torch.set_num_threads(3)
+    (_, _, held), _ = setup(rt, 'cpu', fit_per_rx=4000)
+    model = NeighborPhaseDose(True).eval()
+    tracker = PacketRestorer('consensus').eval()
+    rng = torch.Generator().manual_seed(2026112477)
+    by_rx = {}
+    for rx, batches in zip(SOURCE, held.chunk(len(SOURCE)), strict=True):
+        measures = []
+        for iq in batches.split(24):
+            ground = complex_iq(iq)
+            received = burst_observation(ground, rng)
+            tracked, _, q, rms = coordinates(tracker, real_iq(received))
+            phase = (ground * received.conj()).angle()
+            measures.append(neighbor_explained_phase(model, received, tracked, q, rms, phase))
+        data = torch.cat(measures, 0)
+        by_rx[rx] = dict(n=len(data), median=data.median(dim=0).values.tolist())
+    return dict(n=len(held), target_reads=0, source_V_reads=0, classifier_reads=0,
+                fields=['repeat_explained_energy', 'additional_explained_energy', 'neighbor_support'],
+                by_receiver=by_rx)
+
+
 def shared_interval_evidence(model, observed, quality, waves, source, frame):
     (_, _, _, confidence), _ = model.spectral_evidence(observed, quality)
     confidence = confidence.squeeze(1)
@@ -400,11 +455,14 @@ def diagnose(rt, route, device):
     is_joint = rt['run_id']==joint_spectrum_source.RUN
     is_anchor = rt['run_id']==ANCHOR_RUN
     is_received = rt['run_id']==received_update_source.RUN
-    is_dose = rt['run_id'] in (phase_dose_source.RUN, BURST_DOSE_RUN)
+    is_neighbor = rt['run_id'] == NEIGHBOR_PHASE_RUN
+    is_dose = rt['run_id'] in (phase_dose_source.RUN, BURST_DOSE_RUN, NEIGHBOR_PHASE_RUN)
     if is_dose:
         study = phase_dose_source
         if rt['run_id'] == BURST_DOSE_RUN:
             from experiments.pamf_lora_main import phase_dose_bursts_source as study
+        if is_neighbor:
+            from experiments.pamf_lora_main import neighbor_phase_source as study
         recipes = study.RECIPES
         recover = partial(study.recover, compare=True)
         readouts = ('direct', *study.MODES[2:])
@@ -521,6 +579,7 @@ def diagnose(rt, route, device):
             joint_stats = []
             action_stats = []
             phase_stats = []
+            neighbor_stats = []
             batches = zip(tensor(capture,device).split(18),tensor(noise,device).split(18),truth.split(18),strict=True)
             for batch,(received, epsilon, source) in enumerate(batches):
                 recoveries, count = recover(received,tracker,models,threshold)[:2]
@@ -566,6 +625,12 @@ def diagnose(rt, route, device):
                 if is_dose:
                     joint_stats.append(joint_part_metrics(waves,noiseless,frame))
                     phase_stats.append(phase_placement(waves, epsilon, frame))
+                if is_neighbor and view != 'clean':
+                    noise = complex_iq(epsilon) / frame
+                    exact = y - (noise - noise.mean(-1, keepdim=True)) * frame
+                    phase_delta = (exact * y.conj()).angle()
+                    values = neighbor_explained_phase(models[-1], y, tracked, quality, rms, phase_delta)
+                    neighbor_stats.append(np.asarray(values.tolist(), dtype=np.float32))
                 for reference, group in ((target,bands_from_ground),(noiseless,bands_from_noiseless)):
                     compared = waves
                     if is_geometry:
@@ -672,6 +737,18 @@ def diagnose(rt, route, device):
                     mean=placement.mean(1).tolist(), median=np.median(placement, axis=1).tolist(),
                     by_receiver={name:part.mean(1).tolist() for name,part in
                                  zip(SOURCE,np.split(placement,len(SOURCE),axis=1),strict=True)})
+            if neighbor_stats:
+                identified = np.concatenate(neighbor_stats)
+                output[view]['neighbor_geometry'] = dict(
+                    fields=['repeat_explained_energy', 'additional_explained_energy', 'neighbor_support'],
+                    median=np.median(identified, axis=0).tolist(),
+                    by_receiver={name:np.median(part, axis=0).tolist() for name, part in
+                                 zip(SOURCE,np.split(identified,len(SOURCE)),strict=True)})
+                with_neighbor, without_neighbor = (placement[readouts.index(name)] for name in
+                                                   ('neighbor_equal', 'repeat_equal'))
+                edited = (with_neighbor[:, 0, 0] > 1e-7) & (without_neighbor[:, 0, 0] > 1e-7)
+                change = with_neighbor[..., 2] - without_neighbor[..., 2]
+                output[view]['neighbor_equal_phase_gain'] = equal_phase_gain(change, edited)
             if is_relation:
                 estimates = [torch.cat(parts,dim=1) for parts in zip(*relation_stats,strict=True)]
                 reference_groups = zip(*(value.chunk(len(SOURCE),dim=0) for value in source_features),strict=True)
@@ -686,19 +763,35 @@ def diagnose(rt, route, device):
     return dict(route=route,n=len(rows),bands=BANDS,metrics=METRICS,readouts=readouts,scenes=output)
 
 
+def equal_phase_gain(change, edited):
+    def summarize(values, valid):
+        values = values[valid]
+        if len(values) == 0:
+            return dict(n=0, median=None, positive_fraction=None)
+        return dict(n=len(values), median=np.median(values, axis=0).tolist(),
+                    positive_fraction=(values > 1e-7).mean(axis=0).tolist())
+
+    return dict(pooled=summarize(change, edited),
+                by_receiver={name:summarize(values, valid) for name, values, valid in
+                             zip(SOURCE, np.split(change, len(SOURCE)), np.split(edited, len(SOURCE)), strict=True)})
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('runtime',type=Path)
-    parser.add_argument('route',choices=ROUTES)
+    parser.add_argument('route',choices=(*ROUTES, 'neighbor-held'))
     parser.add_argument('--device',default='cuda:0')
     args = parser.parse_args()
     rt = read(args.runtime)
+    if args.route == 'neighbor-held':
+        print(json.dumps(neighbor_held_support(rt), allow_nan=False))
+        return
     root = Path(rt['run_root'])
     analyzed_runs = (local_phase_source.RUN, GEOMETRY_RUN, TANGENT_RUN, split_shrink_source.RUN,
                      lapped_posterior_source.RUN, held_chirp_precision_source.RUN, packet_relation_source.RUN,
                      reference_cancel_source.RUN, variance_transport_source.RUN, coherent_interval_source.RUN,
                      joint_spectrum_source.RUN, ANCHOR_RUN, received_update_source.RUN,
-                     phase_dose_source.RUN, BURST_DOSE_RUN)
+                     phase_dose_source.RUN, BURST_DOSE_RUN, NEIGHBOR_PHASE_RUN)
     if rt.get('run_id') not in analyzed_runs or read(root/'state.json')['status']!='SOURCE_SCORED':
         raise ValueError('The full dual-route truth-last scoring must already be complete')
     activate(rt)

@@ -198,19 +198,18 @@ def collect(rt):
     return artifact
 
 
-def phase_dose_interaction(rt):
-    """Compare perturbation recipes on the same frozen source panel."""
+def compare_frozen_studies(rt, studies, pairs, factors):
+    """Reconcile two separately scored LoRa studies on the same source IDs."""
     parent = Path(rt['run_root']).parent
     source = Path(rt['source_root'])
-    modes = phase_dose_source.MODES
-    roots = {'standard': parent / phase_dose_source.RUN, 'bursts': parent / BURST_DOSE_RUN}
+    roots = {name: parent / run for name, (run, _) in studies.items()}
     if any(read(run / 'state.json')['status'] != 'SOURCE_SCORED' for run in roots.values()):
-        raise ValueError('Both phase-dose studies must already be truth-last scored')
-    frozen = {name: {route: read_frozen(run, route, modes) for route in ROUTES}
+        raise ValueError('Both studies must already be truth-last scored')
+    frozen = {name: {route: read_frozen(run, route, studies[name][1]) for route in ROUTES}
               for name, run in roots.items()}
-    ids = frozen['standard'][ROUTES[0]][0]
+    ids = next(iter(frozen.values()))[ROUTES[0]][0]
     if any(data[0] != ids for values in frozen.values() for data in values.values()):
-        raise ValueError('The two trained phase-dose studies must use exactly the same physical IDs')
+        raise ValueError('Expected the same physical IDs in both studies')
     available = source_contract(source)['role_ids']['V']
     index = {key: i for i, key in enumerate(available)}
     chosen = np.asarray([index[key] for key in ids])
@@ -220,15 +219,7 @@ def phase_dose_interaction(rt):
             raise ValueError('Unexpected source panel order')
         truth = metadata['y'][chosen]
     groups = {rx: np.flatnonzero(receivers[chosen] == rx) for rx in SOURCE}
-    aliases = tuple(f'{arm}_{mode}' for arm in roots for mode in modes)
-    pairs = tuple((f'bursts_{mode}', f'standard_{mode}')
-                  for mode in ('pooled_full', 'local_full', 'local_equal', 'pooled_equal'))
-    factors = {
-        'trained_local_effect': ('bursts_local_full', 'standard_pooled_full',
-                                 'bursts_pooled_full', 'standard_local_full'),
-        'fixed_edit_local_effect': ('bursts_local_equal', 'standard_pooled_equal',
-                                   'bursts_pooled_equal', 'standard_local_equal'),
-    }
+    aliases = tuple(f'{arm}_{mode}' for arm, (_, modes) in studies.items() for mode in modes)
     output = {}
     for route in ROUTES:
         matrices = []
@@ -250,8 +241,33 @@ def phase_dose_interaction(rt):
     return dict(reader_seed=2026092702, bootstrap_replicates=REPEATS, target_reads=0, routes=output)
 
 
+def phase_dose_interaction(rt):
+    modes = phase_dose_source.MODES
+    studies = {'standard': (phase_dose_source.RUN, modes), 'bursts': (BURST_DOSE_RUN, modes)}
+    pairs = tuple((f'bursts_{mode}', f'standard_{mode}')
+                  for mode in ('pooled_full', 'local_full', 'local_equal', 'pooled_equal'))
+    factors = {
+        'trained_local_effect': ('bursts_local_full', 'standard_pooled_full',
+                                 'bursts_pooled_full', 'standard_local_full'),
+        'fixed_edit_local_effect': ('bursts_local_equal', 'standard_pooled_equal',
+                                    'bursts_pooled_equal', 'standard_local_equal'),
+    }
+    return compare_frozen_studies(rt, studies, pairs, factors)
+
+
+def neighbor_parent_comparison(rt):
+    from experiments.pamf_lora_main import neighbor_phase_source
+
+    studies = {'parent': (BURST_DOSE_RUN, phase_dose_source.MODES),
+               'current': (NEIGHBOR_PHASE_RUN, neighbor_phase_source.MODES)}
+    pairs = tuple((f'current_{mode}', 'parent_local_full')
+                  for mode in ('neighbor_full', 'repeat_full', 'neighbor_off'))
+    return compare_frozen_studies(rt, studies, pairs, {})
+
+
 if __name__=='__main__':
     if os.environ.get('CUDA_VISIBLE_DEVICES')!='':
         raise ValueError('This diagnostic scores on an independent CPU process')
-    method = phase_dose_interaction if '--dose-interaction' in sys.argv else collect
+    methods = {'--dose-interaction': phase_dose_interaction, '--neighbor-parent': neighbor_parent_comparison}
+    method = methods.get(sys.argv[2], collect) if len(sys.argv) > 2 else collect
     print(json.dumps(method(read(Path(sys.argv[1]))),allow_nan=False))
