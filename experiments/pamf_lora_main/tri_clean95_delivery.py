@@ -14,22 +14,22 @@ from .full_packet_publish import DATA_RUN
 from .publish import release, release_commit
 from .scoring import macro_f1
 from .tri_clean95 import (
-    BUDGET_RUN, DRIFT_RUN, EDGE_ROWS, EDGE_RUN, NOISE_RUN, QUICK_RUN, ROWS, RUN, SCRATCH_ROWS, SCRATCH_RUN,
+    ANCHOR_ROWS, ANCHOR_RUN, BUDGET_RUN, DRIFT_RUN, EDGE_ROWS, EDGE_RUN, NOISE_RUN, QUICK_RUN, ROWS, RUN, SCRATCH_ROWS, SCRATCH_RUN,
     PHASE_ROWS, PHASE_RUN, ROBUST_ROWS, ROBUST_RUN, SEED, TIMEFREQ_RUN, TRANSFER_RUN,
 )
 
 
-QUALIFIED_ROWS={ROBUST_RUN:ROBUST_ROWS,PHASE_RUN:PHASE_ROWS}
+QUALIFIED_ROWS={ROBUST_RUN:ROBUST_ROWS,PHASE_RUN:PHASE_ROWS,ANCHOR_RUN:ANCHOR_ROWS}
 
 
 def publish(repo, output, context, ssh_config, quick=False, transfer=False, scratch=False, timefreq=False,
-            noise=False,drift=False,budget=False,edge=False,robust=False,headphase=False):
+            noise=False,drift=False,budget=False,edge=False,robust=False,headphase=False,anchor=False):
     ctx=read(context)
     rt={k:ctx[k] for k in ('project','python','frozen_sources')}
     project=PurePosixPath(rt['project'])
     parent=project/'runs'/DATA_RUN
     native=project/'releases'/f'{DATA_RUN}-release'/'data'
-    studies=((headphase,PHASE_RUN),(robust,ROBUST_RUN),(edge,EDGE_RUN),(budget,BUDGET_RUN),
+    studies=((anchor,ANCHOR_RUN),(headphase,PHASE_RUN),(robust,ROBUST_RUN),(edge,EDGE_RUN),(budget,BUDGET_RUN),
              (drift,DRIFT_RUN),(noise,NOISE_RUN),(timefreq,TIMEFREQ_RUN),(scratch,SCRATCH_RUN),
              (transfer,TRANSFER_RUN),(quick,QUICK_RUN))
     name=next((name for enabled,name in studies if enabled),RUN)
@@ -62,6 +62,9 @@ def publish(repo, output, context, ssh_config, quick=False, transfer=False, scra
     if headphase:
         rt.update(scratch=True,phase_study=True,fixed_clean_cache=str(project/'runs'/DRIFT_RUN/'clean_cache'),
                   allowed_gpus=[3,6,5,7],max_workers=2,min_free_mib=12500)
+    if anchor:
+        rt.update(scratch=True,anchor_study=True,fixed_clean_cache=str(project/'runs'/DRIFT_RUN/'clean_cache'),
+                  allowed_gpus=[5,6],max_workers=2,min_free_mib=11000)
     if quick or transfer:
         del rt['native_target_root'],rt['target_views']
         rt.update(quick=quick,transfer=transfer,fixed_clean_cache=str(project/'runs'/RUN/'clean_cache'))
@@ -144,6 +147,7 @@ if __name__=='__main__':
             study.add_argument('--edge',action='store_true')
             study.add_argument('--robust',action='store_true')
             study.add_argument('--headphase',action='store_true')
+            study.add_argument('--anchor',action='store_true')
     args=vars(parser.parse_args())
     kind=args.pop('kind')
     {'publish':publish,'score':score}[kind](**args)

@@ -133,7 +133,8 @@ def mean_contrast(outputs,y,rx,keep,*,joint=False):
     return torch.stack(losses).mean()
 
 
-def labeled_loss(model,x,practical,y,rx,step,*,mechanism=None,ordinary_std=.015,joint_rx_weight=0.):
+def labeled_loss(model,x,practical,y,rx,step,*,mechanism=None,ordinary_std=.015,
+                 joint_rx_weight=0.,clean_anchor_weight=0.):
     ordinary=ordinary_iq(x,ordinary_std)
     use=(torch.arange(len(x),device=x.device)+step)%2==0
     mixed=torch.where(use[:,None,None,None],practical,ordinary)
@@ -145,6 +146,9 @@ def labeled_loss(model,x,practical,y,rx,step,*,mechanism=None,ordinary_std=.015,
         from .packet_models import cross_rx
         joint=torch.stack([cross_rx(p[1],y,rx,balance=True)[0] for p in outputs[:2]]).mean()
         loss=loss+joint_rx_weight*joint
+    if clean_anchor_weight:
+        raw_ce=torch.stack([F.cross_entropy(p[0],y,label_smoothing=.01) for p in outputs[-2:]]).mean()
+        loss=(loss+clean_anchor_weight*raw_ce)/(1.+clean_anchor_weight)
     return loss,detail
 
 
