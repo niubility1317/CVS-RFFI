@@ -62,3 +62,19 @@ def test_reference_id_mismatch_blocks_all_truth_io():
         with pytest.raises(ValueError, match='paired reference coverage'):
             evaluation.score({'classes': ['a', 'b']}, reference={'classes': ['a', 'b']})
         read.assert_not_called()
+
+
+def test_shared_memory_dispatch_spreads_then_uses_second_slot():
+    from experiments.pamf_wisig_branch_style.runner import assign_by_memory
+
+    active = {'time': (SimpleNamespace(pid=7), {'gpu': 0})}
+    free = {0: 12500, 1: 13000, 2: 6300}
+    assert assign_by_memory([0, 1, 2], free, {7: 4508}, active, 5) == [1, 0, 1]
+
+
+def test_shared_memory_dispatch_reserves_space_for_startup():
+    from experiments.pamf_wisig_branch_style.runner import assign_by_memory
+
+    active = {'time': (SimpleNamespace(pid=7), {'gpu': 0})}
+    assert assign_by_memory([0], {0: 10000}, {}, active, 1) == []
+    assert assign_by_memory([0], {0: 10000}, {7: 4508}, active, 1) == [0]
