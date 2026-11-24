@@ -1,0 +1,519 @@
+{
+  "status": "PASS",
+  "n": 150,
+  "isolated_reference_after_prediction": true,
+  "F_reads": 0,
+  "V_reads": 0,
+  "TX_reads": 0,
+  "target_reads": 0,
+  "rows": {
+    "full": {
+      "practical_low_suburban": {
+        "n": 150,
+        "active": 53,
+        "by_mode": {
+          "direct": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.2463584542274475,
+              "median_real_gain": 0.9971433281898499,
+              "median_abs_phase_rad": 0.022376103326678276
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 2.1241743564605713,
+              "median_real_gain": 0.9967436194419861,
+              "median_abs_phase_rad": 0.02336272969841957
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 5.758209705352783,
+              "median_real_gain": 0.996406614780426,
+              "median_abs_phase_rad": 0.039854083210229874
+            }
+          },
+          "rank_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.0918537825345993,
+              "median_real_gain": 0.996334433555603,
+              "median_abs_phase_rad": 0.019888894632458687
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 0.5964834690093994,
+              "median_real_gain": 0.9934197068214417,
+              "median_abs_phase_rad": 0.02102506160736084
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 1.5508623123168945,
+              "median_real_gain": 0.9940287470817566,
+              "median_abs_phase_rad": 0.034267522394657135
+            }
+          },
+          "shared_gaussian": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.09593275934457779,
+              "median_real_gain": 0.9960403442382812,
+              "median_abs_phase_rad": 0.021525001153349876
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 0.5995910167694092,
+              "median_real_gain": 0.9967436194419861,
+              "median_abs_phase_rad": 0.02081839181482792
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 1.555773138999939,
+              "median_real_gain": 0.9952734708786011,
+              "median_abs_phase_rad": 0.03515966609120369
+            }
+          },
+          "shared_mixture": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.09528309851884842,
+              "median_real_gain": 0.9957737922668457,
+              "median_abs_phase_rad": 0.021894939243793488
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 0.5984602570533752,
+              "median_real_gain": 0.9967436194419861,
+              "median_abs_phase_rad": 0.02081839181482792
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 1.555448055267334,
+              "median_real_gain": 0.9952734708786011,
+              "median_abs_phase_rad": 0.034667301923036575
+            }
+          },
+          "mixture_delta_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.09105188399553299,
+              "median_real_gain": 0.996334433555603,
+              "median_abs_phase_rad": 0.019831690937280655
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 0.5956394076347351,
+              "median_real_gain": 0.9935131669044495,
+              "median_abs_phase_rad": 0.02121410146355629
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 1.5505863428115845,
+              "median_real_gain": 0.9940287470817566,
+              "median_abs_phase_rad": 0.034267522394657135
+            }
+          },
+          "mixture_delta_full": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.09040148556232452,
+              "median_real_gain": 0.996334433555603,
+              "median_abs_phase_rad": 0.020126065239310265
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 0.5948836803436279,
+              "median_real_gain": 0.9935131669044495,
+              "median_abs_phase_rad": 0.021362848579883575
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 1.5503586530685425,
+              "median_real_gain": 0.9934494495391846,
+              "median_abs_phase_rad": 0.034261107444763184
+            }
+          }
+        }
+      },
+      "practical_low_urban": {
+        "n": 150,
+        "active": 101,
+        "by_mode": {
+          "direct": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 1.1588579416275024,
+              "median_real_gain": 0.9936832785606384,
+              "median_abs_phase_rad": 0.055129967629909515
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 9.807052612304688,
+              "median_real_gain": 0.9992586970329285,
+              "median_abs_phase_rad": 0.07615304738283157
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 28.794424057006836,
+              "median_real_gain": 1.0026512145996094,
+              "median_abs_phase_rad": 0.11944816261529922
+            }
+          },
+          "rank_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.41761502623558044,
+              "median_real_gain": 0.9874740839004517,
+              "median_abs_phase_rad": 0.06486428529024124
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 2.540163993835449,
+              "median_real_gain": 0.9880790710449219,
+              "median_abs_phase_rad": 0.052298542112112045
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 7.269806861877441,
+              "median_real_gain": 0.9870969653129578,
+              "median_abs_phase_rad": 0.08736907690763474
+            }
+          },
+          "shared_gaussian": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.4286651313304901,
+              "median_real_gain": 0.9711321592330933,
+              "median_abs_phase_rad": 0.05545424669981003
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 2.565723180770874,
+              "median_real_gain": 0.9941756725311279,
+              "median_abs_phase_rad": 0.048462722450494766
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 7.291220664978027,
+              "median_real_gain": 0.9953818321228027,
+              "median_abs_phase_rad": 0.08696596324443817
+            }
+          },
+          "shared_mixture": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.42823439836502075,
+              "median_real_gain": 0.973176121711731,
+              "median_abs_phase_rad": 0.055000826716423035
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 2.5643906593322754,
+              "median_real_gain": 0.9972338080406189,
+              "median_abs_phase_rad": 0.05254746228456497
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 7.290809154510498,
+              "median_real_gain": 0.9953818321228027,
+              "median_abs_phase_rad": 0.08442371338605881
+            }
+          },
+          "mixture_delta_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.41737645864486694,
+              "median_real_gain": 0.9863983988761902,
+              "median_abs_phase_rad": 0.06471797078847885
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 2.5387909412384033,
+              "median_real_gain": 0.9869376420974731,
+              "median_abs_phase_rad": 0.052046723663806915
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 7.269290447235107,
+              "median_real_gain": 0.9870969653129578,
+              "median_abs_phase_rad": 0.08586554229259491
+            }
+          },
+          "mixture_delta_full": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.41795265674591064,
+              "median_real_gain": 0.9873247146606445,
+              "median_abs_phase_rad": 0.06877701729536057
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 2.5379998683929443,
+              "median_real_gain": 0.9859620332717896,
+              "median_abs_phase_rad": 0.05003637075424194
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 7.269080638885498,
+              "median_real_gain": 0.988623321056366,
+              "median_abs_phase_rad": 0.08586554229259491
+            }
+          }
+        }
+      }
+    },
+    "residual": {
+      "practical_low_suburban": {
+        "n": 150,
+        "active": 150,
+        "by_mode": {
+          "direct": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.6222313642501831,
+              "median_real_gain": 0.9868786334991455,
+              "median_abs_phase_rad": 0.054369453340768814
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 3.730290174484253,
+              "median_real_gain": 0.9884728789329529,
+              "median_abs_phase_rad": 0.09055919200181961
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 9.803638458251953,
+              "median_real_gain": 0.994178056716919,
+              "median_abs_phase_rad": 0.0998038575053215
+            }
+          },
+          "rank_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.21574284136295319,
+              "median_real_gain": 0.9848544001579285,
+              "median_abs_phase_rad": 0.054833896458148956
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 0.9943337440490723,
+              "median_real_gain": 0.9749389290809631,
+              "median_abs_phase_rad": 0.05612499639391899
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 2.498331069946289,
+              "median_real_gain": 0.9600691199302673,
+              "median_abs_phase_rad": 0.05239911004900932
+            }
+          },
+          "shared_gaussian": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.21118459105491638,
+              "median_real_gain": 0.9861610531806946,
+              "median_abs_phase_rad": 0.05015313997864723
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 0.9929998517036438,
+              "median_real_gain": 0.9883376359939575,
+              "median_abs_phase_rad": 0.04998844489455223
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 2.497513771057129,
+              "median_real_gain": 0.9752863049507141,
+              "median_abs_phase_rad": 0.05231542885303497
+            }
+          },
+          "shared_mixture": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.21105694770812988,
+              "median_real_gain": 0.9856626987457275,
+              "median_abs_phase_rad": 0.04992116615176201
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 0.9923911094665527,
+              "median_real_gain": 0.9874794483184814,
+              "median_abs_phase_rad": 0.050262026488780975
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 2.4971559047698975,
+              "median_real_gain": 0.9723991751670837,
+              "median_abs_phase_rad": 0.052175432443618774
+            }
+          },
+          "mixture_delta_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.21562157571315765,
+              "median_real_gain": 0.9842880964279175,
+              "median_abs_phase_rad": 0.05404507368803024
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 0.993725597858429,
+              "median_real_gain": 0.977250874042511,
+              "median_abs_phase_rad": 0.05599426478147507
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 2.4979701042175293,
+              "median_real_gain": 0.956353485584259,
+              "median_abs_phase_rad": 0.053322821855545044
+            }
+          },
+          "mixture_delta_full": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.21552705764770508,
+              "median_real_gain": 0.9834448099136353,
+              "median_abs_phase_rad": 0.05395738407969475
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 0.9932332038879395,
+              "median_real_gain": 0.975756824016571,
+              "median_abs_phase_rad": 0.056585997343063354
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 2.4977407455444336,
+              "median_real_gain": 0.9622524380683899,
+              "median_abs_phase_rad": 0.05361243337392807
+            }
+          }
+        }
+      },
+      "practical_low_urban": {
+        "n": 150,
+        "active": 150,
+        "by_mode": {
+          "direct": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 3.171147108078003,
+              "median_real_gain": 0.9303561449050903,
+              "median_abs_phase_rad": 0.23208920657634735
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 26.73841667175293,
+              "median_real_gain": 0.9669038653373718,
+              "median_abs_phase_rad": 0.33270448446273804
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 80.77993774414062,
+              "median_real_gain": 0.9542602896690369,
+              "median_abs_phase_rad": 0.5111188888549805
+            }
+          },
+          "rank_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 1.0101619958877563,
+              "median_real_gain": 0.9068954586982727,
+              "median_abs_phase_rad": 0.1730947494506836
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 6.782980442047119,
+              "median_real_gain": 0.94554203748703,
+              "median_abs_phase_rad": 0.17874741554260254
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 20.1911563873291,
+              "median_real_gain": 0.9284366965293884,
+              "median_abs_phase_rad": 0.25831520557403564
+            }
+          },
+          "shared_gaussian": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 1.0044699907302856,
+              "median_real_gain": 0.8992876410484314,
+              "median_abs_phase_rad": 0.16842323541641235
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 6.825189113616943,
+              "median_real_gain": 0.9853676557540894,
+              "median_abs_phase_rad": 0.16875088214874268
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 20.26192283630371,
+              "median_real_gain": 0.9833053946495056,
+              "median_abs_phase_rad": 0.2361409068107605
+            }
+          },
+          "shared_mixture": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 1.0038341283798218,
+              "median_real_gain": 0.8990283012390137,
+              "median_abs_phase_rad": 0.16830332577228546
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 6.824533939361572,
+              "median_real_gain": 0.9977620840072632,
+              "median_abs_phase_rad": 0.16900651156902313
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 20.262662887573242,
+              "median_real_gain": 0.9911923408508301,
+              "median_abs_phase_rad": 0.24042269587516785
+            }
+          },
+          "mixture_delta_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 1.0095163583755493,
+              "median_real_gain": 0.9057955741882324,
+              "median_abs_phase_rad": 0.1753958761692047
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 6.78214693069458,
+              "median_real_gain": 0.9490442872047424,
+              "median_abs_phase_rad": 0.17608030140399933
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 20.191448211669922,
+              "median_real_gain": 0.9326544404029846,
+              "median_abs_phase_rad": 0.25922760367393494
+            }
+          },
+          "mixture_delta_full": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 1.0090924501419067,
+              "median_real_gain": 0.9048600792884827,
+              "median_abs_phase_rad": 0.174220010638237
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 6.781887531280518,
+              "median_real_gain": 0.9525465965270996,
+              "median_abs_phase_rad": 0.1732432246208191
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 20.19244384765625,
+              "median_real_gain": 0.9316911697387695,
+              "median_abs_phase_rad": 0.2601568102836609
+            }
+          }
+        }
+      }
+    }
+  }
+}

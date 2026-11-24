@@ -1,0 +1,8 @@
+{"at": "2026-11-24T00:47:21+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-24T00:47:21+00:00", "status": "LOCAL_VERIFIED", "note": "Three focused tests and independent P0/P1 review passed.", "evidence": "shared_latent_mixture_source.py", "row_id": null}
+{"at": "2026-11-24T00:48:51+00:00", "status": "RUNNING", "note": "Verified actual smoke, frozen source-only fit, two prediction worker PID/CWD/argv and GPU, positive log growth.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-24T00:51:15+00:00", "status": "ANALYZED", "note": "500 clean U, moment matched prior verified.", "evidence": "source-mixture-complete.json", "row_id": "fit-source"}
+{"at": "2026-11-24T00:51:15+00:00", "status": "ANALYZED", "note": "Seven source scenes independently scored.", "evidence": "full-source-scores.json", "row_id": "evaluate-full"}
+{"at": "2026-11-24T00:51:15+00:00", "status": "ANALYZED", "note": "Seven source scenes independently scored.", "evidence": "residual-source-scores.json", "row_id": "evaluate-residual"}
+{"at": "2026-11-24T00:51:15+00:00", "status": "ANALYZED", "note": "All 12000 clean source V rows scored after freeze.", "evidence": "clean-complete-scores.json", "row_id": "evaluate-reserve"}
+{"at": "2026-11-24T00:51:15+00:00", "status": "ANALYZED", "note": "Matched mixture source-only comparison verified; eligible=False.", "evidence": "report.md", "row_id": null}

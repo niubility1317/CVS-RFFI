@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 公共谱矩匹配混合后验](../automation_reports/CV-SincNet/20261124-phase1-lora-shared-latent-mixture-source-m2-r01/report.md)
 - [LoRa 实收噪声加权与已知作用逆解归因](../automation_reports/CV-SincNet/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01/report.md)
 - [LoRa 带 clean 旁路的包内斜率收缩联合训练](../automation_reports/CV-SincNet/20261124-phase1-lora-gated-slope-train-source-m4-r01/report.md)
 - [LoRa 接收坐标误差与私有谱泄漏](../automation_reports/CV-SincNet/20261124-phase1-lora-frame-leakage-source-cpu-r02/report.md)
