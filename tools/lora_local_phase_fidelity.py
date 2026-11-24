@@ -21,7 +21,7 @@ from experiments.pamf_lora_main.channel_blind import corruption_score
 from experiments.pamf_lora_main.channel_blind_source import panel, receive_only
 from experiments.pamf_lora_main.data import SOURCE, VIEWS
 from experiments.pamf_lora_main.denoise_source import replay
-from experiments.pamf_lora_main.dura_repair import PacketRestorer, complex_iq
+from experiments.pamf_lora_main.dura_repair import PacketRestorer, complex_iq, real_iq
 from experiments.pamf_lora_main.full_packet_publish import DATA_RUN
 from experiments.pamf_lora_main.full_packet_views import source_contract, source_role
 from experiments.pamf_lora_main.held_chirp_precision import held_eigenvalues
@@ -71,6 +71,30 @@ def spectral_metrics(waves, known, frame):
         coherence = product/(power*received.abs().square().sum((-2,-1)).clamp_min(1e-6)).sqrt()
         bands.append(torch.stack((error,magnitude,coherence),dim=-1))
     return np.asarray(torch.stack(bands,dim=2).tolist(),dtype=np.float32)
+
+
+def tracked_carrier_leakage(reference, frame, tracker):
+    """Measure a clean reference tone's leakage into the received tracking frame."""
+    clean, phase, _, rms = coordinates(tracker, real_iq(reference))
+    tone = clean.mean(-1, keepdim=True) * phase * rms
+    received_tone, received_detail = [spectrum_parts(torch.fft.fft(x/frame, norm='ortho'))
+                                      for x in (tone, reference-tone)]
+    bins = torch.arange(256, device=reference.device)
+    bins = torch.minimum(bins, 256-bins)
+    stats = []
+    for left, right in ((received_tone[:, :1], received_detail[:, :1]),
+                        (received_tone[:, 1:], received_detail[:, 1:])):
+        bands = []
+        for low, high in BANDS[:2]:
+            mask = (bins>=low) & (bins<=high)
+            a, b = left[..., mask], right[..., mask]
+            tone_energy = a.abs().square().sum((1, 2))
+            detail_energy = b.abs().square().sum((1, 2))
+            total_energy = (a+b).abs().square().sum((1, 2)).clamp_min(1e-8)
+            bands.append(torch.stack((tone_energy / total_energy, detail_energy / total_energy,
+                                      2*(a*b.conj()).real.sum((1, 2))/total_energy), dim=-1))
+        stats.append(torch.stack(bands, dim=1))
+    return np.asarray(torch.stack(stats,dim=1).tolist(),dtype=np.float32)
 
 
 def direction_fraction(model, tracked, frame, waves):
@@ -610,6 +634,7 @@ def diagnose(rt, route, device):
             phase_stats = []
             neighbor_stats = []
             angular_stats = []
+            leakage_stats = []
             batches = zip(tensor(capture,device).split(18),tensor(noise,device).split(18),truth.split(18),strict=True)
             for batch,(received, epsilon, source) in enumerate(batches):
                 recoveries, count = recover(received,tracker,models,threshold)[:2]
@@ -628,6 +653,8 @@ def diagnose(rt, route, device):
                 gain = (y*ground.conj()).mean(-1,keepdim=True)/ground.abs().square().mean(-1,keepdim=True).clamp_min(1e-6)
                 target = ground*gain
                 noiseless = y-complex_iq(epsilon)
+                if is_band_allocation or is_weak_sideband:
+                    leakage_stats.append(tracked_carrier_leakage(noiseless, frame, tracker))
                 if is_lapped:
                     noise_stats.append(lapped_variance(models[1],tracked,quality,frame,ground,epsilon,clean=view=='clean'))
                 if is_held:
@@ -768,6 +795,14 @@ def diagnose(rt, route, device):
                     median=np.median(values, axis=1).tolist(),
                     by_receiver={name:np.median(row, axis=1).tolist()
                                  for name,row in zip(SOURCE,np.split(values,len(SOURCE),axis=1),strict=True)})
+            if leakage_stats:
+                values = np.concatenate(leakage_stats)
+                output[view]['carrier_leakage'] = dict(
+                    groups=['shared', 'private'], bands=BANDS[:2],
+                    fields=['tone_energy_over_total', 'detail_energy_over_total', 'cross_energy_over_total'],
+                    median=np.median(values, axis=0).tolist(),
+                    by_receiver={name:np.median(rows, axis=0).tolist()
+                                 for name,rows in zip(SOURCE,np.split(values,len(SOURCE)),strict=True)})
             if is_anchor:
                 actions = np.concatenate(action_stats)
                 output[view]['action_error'] = dict(fields=['identity_residual','estimated_action_residual',
