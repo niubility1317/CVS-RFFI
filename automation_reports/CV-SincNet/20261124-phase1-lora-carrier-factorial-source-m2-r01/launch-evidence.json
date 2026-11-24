@@ -1,0 +1,99 @@
+{
+  "verification": "VERIFIED",
+  "submit": {
+    "pid": 2646798,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-carrier-factorial-source-m2-r01-release",
+    "code_commit": "7b7483abd271f74f19ce6ef49576534e24fd86d4",
+    "archive_transfer": "VERIFIED",
+    "remote_compile": "PASS",
+    "status": "SUBMITTED_NOT_YET_VERIFIED",
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-carrier-factorial-source-m2-r01"
+  },
+  "controller": {
+    "pid": 2646798,
+    "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.carrier_factorial_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-carrier-factorial-source-m2-r01-release/runtime.json",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-carrier-factorial-source-m2-r01-release",
+    "cuda": [
+      "CUDA_VISIBLE_DEVICES="
+    ]
+  },
+  "jobs": {
+    "smoke-full": {
+      "pid": 2646815,
+      "gpu": 3,
+      "identity": null,
+      "bytes": 522,
+      "last": [
+        "  return self.fget.__get__(instance, owner)()",
+        "LORA_COMMON_FAILURE_CAPTURE full clean 5 0",
+        "LORA_COMMON_FAILURE_CAPTURE full practical_low_urban 5 5"
+      ]
+    },
+    "smoke-residual": {
+      "pid": 2646816,
+      "gpu": 2,
+      "identity": null,
+      "bytes": 530,
+      "last": [
+        "  return self.fget.__get__(instance, owner)()",
+        "LORA_COMMON_FAILURE_CAPTURE residual clean 5 0",
+        "LORA_COMMON_FAILURE_CAPTURE residual practical_low_urban 5 5"
+      ]
+    },
+    "evaluate-full": {
+      "pid": 2647041,
+      "gpu": 3,
+      "identity": {
+        "pid": 2647041,
+        "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.carrier_factorial_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-carrier-factorial-source-m2-r01/configs/evaluate-full.json full",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-carrier-factorial-source-m2-r01-release",
+        "cuda": [
+          "CUDA_VISIBLE_DEVICES=3"
+        ]
+      },
+      "bytes": 523,
+      "last": [
+        "  return self.fget.__get__(instance, owner)()",
+        "LORA_COMMON_FAILURE_CAPTURE full clean 900 0",
+        "LORA_COMMON_FAILURE_CAPTURE full practical_high 900 674"
+      ]
+    },
+    "evaluate-residual": {
+      "pid": 2647042,
+      "gpu": 2,
+      "identity": {
+        "pid": 2647042,
+        "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.carrier_factorial_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-carrier-factorial-source-m2-r01/configs/evaluate-residual.json residual",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-carrier-factorial-source-m2-r01-release",
+        "cuda": [
+          "CUDA_VISIBLE_DEVICES=2"
+        ]
+      },
+      "bytes": 590,
+      "last": [
+        "LORA_COMMON_FAILURE_CAPTURE residual clean 900 0",
+        "LORA_COMMON_FAILURE_CAPTURE residual practical_high 900 900",
+        "LORA_COMMON_FAILURE_CAPTURE residual practical_mid 900 900"
+      ]
+    }
+  },
+  "state": null,
+  "files": {
+    "smoke-full.json": 404,
+    "smoke-residual.json": 406
+  },
+  "files_after": {
+    "smoke-full.json": 404,
+    "smoke-residual.json": 406
+  },
+  "growth": {
+    "evaluate-full": [
+      523,
+      578
+    ],
+    "evaluate-residual": [
+      590,
+      724
+    ]
+  }
+}

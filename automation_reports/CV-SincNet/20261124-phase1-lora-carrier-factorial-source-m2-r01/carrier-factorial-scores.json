@@ -1,0 +1,227 @@
+{
+  "status": "SOURCE_DIAGNOSTIC_SCORED",
+  "n": 900,
+  "arms": [
+    "direct",
+    "reference",
+    "noise100",
+    "detail",
+    "carrier_amplitude",
+    "amplitude_detail",
+    "trajectory",
+    "trajectory_detail",
+    "trajectory_amplitude",
+    "noise100_action",
+    "fixed_received_carrier"
+  ],
+  "historical_endpoint_differences": 0,
+  "target_reads": 0,
+  "training_updates": 0,
+  "truth_after_predictions": true,
+  "routes": {
+    "full": {
+      "effects": {
+        "trajectory": {
+          "six": {
+            "net": 23.0,
+            "ci": [
+              -42.256249999999994,
+              89.0
+            ]
+          },
+          "low": {
+            "net": 3.5,
+            "ci": [
+              -12.0,
+              18.75
+            ]
+          }
+        },
+        "carrier_amplitude": {
+          "six": {
+            "net": 2.0,
+            "ci": [
+              -2.75,
+              6.5
+            ]
+          },
+          "low": {
+            "net": 0.0,
+            "ci": [
+              -3.0,
+              3.0
+            ]
+          }
+        },
+        "detail": {
+          "six": {
+            "net": 344.0,
+            "ci": [
+              272.5,
+              414.51875000000007
+            ]
+          },
+          "low": {
+            "net": 84.5,
+            "ci": [
+              60.493750000000006,
+              108.25625000000002
+            ]
+          }
+        }
+      },
+      "oracle_gains": {
+        "six": 722,
+        "low": 166
+      },
+      "retained": {
+        "direct": {
+          "six": 123,
+          "low": 29
+        },
+        "reference": {
+          "six": 140,
+          "low": 31
+        },
+        "noise100": {
+          "six": 0,
+          "low": 0
+        },
+        "detail": {
+          "six": 480,
+          "low": 126
+        },
+        "carrier_amplitude": {
+          "six": 7,
+          "low": 1
+        },
+        "amplitude_detail": {
+          "six": 484,
+          "low": 126
+        },
+        "trajectory": {
+          "six": 248,
+          "low": 48
+        },
+        "trajectory_detail": {
+          "six": 715,
+          "low": 163
+        },
+        "trajectory_amplitude": {
+          "six": 248,
+          "low": 47
+        },
+        "noise100_action": {
+          "six": 722,
+          "low": 166
+        },
+        "fixed_received_carrier": {
+          "six": 106,
+          "low": 34
+        }
+      }
+    },
+    "residual": {
+      "effects": {
+        "trajectory": {
+          "six": {
+            "net": 3.5,
+            "ci": [
+              -45.506249999999994,
+              54.25
+            ]
+          },
+          "low": {
+            "net": -0.5,
+            "ci": [
+              -10.5,
+              9.506250000000023
+            ]
+          }
+        },
+        "carrier_amplitude": {
+          "six": {
+            "net": 182.5,
+            "ci": [
+              146.0,
+              217.50625000000002
+            ]
+          },
+          "low": {
+            "net": 81.5,
+            "ci": [
+              65.0,
+              98.0
+            ]
+          }
+        },
+        "detail": {
+          "six": {
+            "net": 206.0,
+            "ci": [
+              146.24375,
+              268.75625
+            ]
+          },
+          "low": {
+            "net": 19.5,
+            "ci": [
+              -1.0,
+              40.0
+            ]
+          }
+        }
+      },
+      "oracle_gains": {
+        "six": 674,
+        "low": 157
+      },
+      "retained": {
+        "direct": {
+          "six": 182,
+          "low": 40
+        },
+        "reference": {
+          "six": 185,
+          "low": 44
+        },
+        "noise100": {
+          "six": 0,
+          "low": 0
+        },
+        "detail": {
+          "six": 336,
+          "low": 55
+        },
+        "carrier_amplitude": {
+          "six": 123,
+          "low": 34
+        },
+        "amplitude_detail": {
+          "six": 522,
+          "low": 134
+        },
+        "trajectory": {
+          "six": 206,
+          "low": 40
+        },
+        "trajectory_detail": {
+          "six": 407,
+          "low": 58
+        },
+        "trajectory_amplitude": {
+          "six": 227,
+          "low": 43
+        },
+        "noise100_action": {
+          "six": 674,
+          "low": 157
+        },
+        "fixed_received_carrier": {
+          "six": 231,
+          "low": 41
+        }
+      }
+    }
+  }
+}

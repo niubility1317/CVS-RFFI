@@ -1,0 +1,151 @@
+{
+  "status": "COMPLETE",
+  "n": 150,
+  "seconds": 14.715914323925972,
+  "target_reads": 0,
+  "TX_reads": 0,
+  "V_reads": 0,
+  "F_reads": 0,
+  "rows": {
+    "full": {
+      "practical_low_suburban": {
+        "abs_center_rad": {
+          "median": 1.368693232536316,
+          "p90": 2.7522881031036377
+        },
+        "abs_center_after_common_rad": {
+          "median": 0.6002058386802673,
+          "p90": 2.0691888332366943
+        },
+        "abs_slope_hz": {
+          "median": 91.48346710205078,
+          "p90": 186.7919158935547
+        },
+        "abs_slope_after_packet_median_hz": {
+          "median": 2.2743072509765625,
+          "p90": 7.932193279266357
+        },
+        "abs_noisy_to_noiseless_center_rad": {
+          "median": 0.0012203010264784098,
+          "p90": 0.004961984232068062
+        },
+        "abs_noisy_to_noiseless_slope_hz": {
+          "median": 0.9820953011512756,
+          "p90": 4.114535808563232
+        },
+        "abs_carrier_gain_db": {
+          "median": 0.01988556608557701,
+          "p90": 0.0695892795920372
+        },
+        "projection_edit_energy_ratio": {
+          "median": 0.012519137933850288,
+          "p90": 0.06279517710208893
+        }
+      },
+      "practical_low_urban": {
+        "abs_center_rad": {
+          "median": 1.4633959531784058,
+          "p90": 2.785599708557129
+        },
+        "abs_center_after_common_rad": {
+          "median": 0.8653875589370728,
+          "p90": 2.3902153968811035
+        },
+        "abs_slope_hz": {
+          "median": 167.0548095703125,
+          "p90": 703.7348022460938
+        },
+        "abs_slope_after_packet_median_hz": {
+          "median": 3.9029541015625,
+          "p90": 20.201011657714844
+        },
+        "abs_noisy_to_noiseless_center_rad": {
+          "median": 0.004589305259287357,
+          "p90": 0.030135588720440865
+        },
+        "abs_noisy_to_noiseless_slope_hz": {
+          "median": 3.6973352432250977,
+          "p90": 38.16266632080078
+        },
+        "abs_carrier_gain_db": {
+          "median": 0.02381967566907406,
+          "p90": 0.15793034434318542
+        },
+        "projection_edit_energy_ratio": {
+          "median": 0.04433500021696091,
+          "p90": 0.26912763714790344
+        }
+      }
+    },
+    "residual": {
+      "practical_low_suburban": {
+        "abs_center_rad": {
+          "median": 0.2680918276309967,
+          "p90": 0.8691508173942566
+        },
+        "abs_center_after_common_rad": {
+          "median": 0.2550651729106903,
+          "p90": 0.819585382938385
+        },
+        "abs_slope_hz": {
+          "median": 81.14652252197266,
+          "p90": 224.65684509277344
+        },
+        "abs_slope_after_packet_median_hz": {
+          "median": 73.05388641357422,
+          "p90": 228.65907287597656
+        },
+        "abs_noisy_to_noiseless_center_rad": {
+          "median": 0.0025306069292128086,
+          "p90": 0.010370760224759579
+        },
+        "abs_noisy_to_noiseless_slope_hz": {
+          "median": 2.21120285987854,
+          "p90": 9.289952278137207
+        },
+        "abs_carrier_gain_db": {
+          "median": 0.29197514057159424,
+          "p90": 1.1624023914337158
+        },
+        "projection_edit_energy_ratio": {
+          "median": 0.20130664110183716,
+          "p90": 0.2678951323032379
+        }
+      },
+      "practical_low_urban": {
+        "abs_center_rad": {
+          "median": 0.5982959270477295,
+          "p90": 2.457401990890503
+        },
+        "abs_center_after_common_rad": {
+          "median": 0.5869752168655396,
+          "p90": 2.0853641033172607
+        },
+        "abs_slope_hz": {
+          "median": 160.66140747070312,
+          "p90": 704.4781494140625
+        },
+        "abs_slope_after_packet_median_hz": {
+          "median": 148.57083129882812,
+          "p90": 671.0879516601562
+        },
+        "abs_noisy_to_noiseless_center_rad": {
+          "median": 0.007670657243579626,
+          "p90": 0.06237195432186127
+        },
+        "abs_noisy_to_noiseless_slope_hz": {
+          "median": 7.377227783203125,
+          "p90": 67.59050750732422
+        },
+        "abs_carrier_gain_db": {
+          "median": 2.0753087997436523,
+          "p90": 10.303178787231445
+        },
+        "projection_edit_energy_ratio": {
+          "median": 0.1440245807170868,
+          "p90": 0.24796125292778015
+        }
+      }
+    }
+  }
+}

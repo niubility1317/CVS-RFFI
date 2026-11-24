@@ -1,0 +1,7 @@
+{"at": "2026-11-24T05:51:12+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-24T05:53:13+00:00", "status": "RUNNING", "note": "Verified live PID CWD argv GPU and log growth after actual source U smoke.", "evidence": "launch-evidence.json", "row_id": "evaluate-full"}
+{"at": "2026-11-24T05:53:13+00:00", "status": "RUNNING", "note": "Verified live PID CWD argv GPU and log growth after actual source U smoke.", "evidence": "launch-evidence.json", "row_id": "evaluate-residual"}
+{"at": "2026-11-24T05:53:13+00:00", "status": "RUNNING", "note": "Independent N607 dual-route source diagnostics alive.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-24T05:55:43+00:00", "status": "ANALYZED", "note": "Frozen matched source waveforms scored independently.", "evidence": "full-source-scores.json", "row_id": "evaluate-full"}
+{"at": "2026-11-24T05:55:43+00:00", "status": "ANALYZED", "note": "Frozen matched source waveforms scored independently.", "evidence": "residual-source-scores.json", "row_id": "evaluate-residual"}
+{"at": "2026-11-24T05:55:43+00:00", "status": "ANALYZED", "note": "Three independently crossed waveform components analyzed.", "evidence": "carrier-factorial-scores.json", "row_id": null}

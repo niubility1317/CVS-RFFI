@@ -1,0 +1,40 @@
+{
+  "status": "VERIFIED",
+  "target_reads": 0,
+  "uses_completed_source_truth": true,
+  "bootstrap_draws": 4000,
+  "amplitude_detail_interaction": {
+    "full": {
+      "six": {
+        "net": 3,
+        "interval": [
+          -6.5,
+          13
+        ]
+      },
+      "low": {
+        "net": 1,
+        "interval": [
+          -5,
+          6.5
+        ]
+      }
+    },
+    "residual": {
+      "six": {
+        "net": 621,
+        "interval": [
+          518.4875,
+          721.0125
+        ]
+      },
+      "low": {
+        "net": 323,
+        "interval": [
+          282.5,
+          364.51250000000005
+        ]
+      }
+    }
+  }
+}

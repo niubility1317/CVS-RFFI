@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "source_U": 5,
+  "target_reads": 0,
+  "TX_reads": 0,
+  "metrics": {
+    "clean": {
+      "max_operator_replay_error": 0.0,
+      "reference_active": 0
+    },
+    "practical_low_urban": {
+      "max_operator_replay_error": 2.4552172465601753e-16,
+      "reference_active": 5
+    }
+  },
+  "worker_seconds": 4.4239574579987675,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "cpu_workers": 8
+}
