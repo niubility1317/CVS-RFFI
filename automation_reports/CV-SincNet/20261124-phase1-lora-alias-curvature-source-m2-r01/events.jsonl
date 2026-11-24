@@ -1,0 +1,7 @@
+{"at": "2026-11-24T02:22:55+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-24T02:22:55+00:00", "status": "LOCAL_VERIFIED", "note": "Three scoped numerical checks, CLI and independent P0/P1 release review passed.", "evidence": "report.md", "row_id": null}
+{"at": "2026-11-24T02:25:37+00:00", "status": "RUNNING", "note": "Verified both live N607 prediction workers by PID/CWD/argv/GPU and independent increasing logs.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-24T02:26:51+00:00", "status": "ANALYZED", "note": "Physically matched source diagnostics with independent frozen scores.", "evidence": "full-source-scores.json", "row_id": "evaluate-full"}
+{"at": "2026-11-24T02:26:51+00:00", "status": "ANALYZED", "note": "Physically matched source diagnostics with independent frozen scores.", "evidence": "residual-source-scores.json", "row_id": "evaluate-residual"}
+{"at": "2026-11-24T02:26:51+00:00", "status": "ANALYZED", "note": "Physically matched source diagnostics with independent frozen scores.", "evidence": "clean-complete-scores.json", "row_id": "evaluate-reserve"}
+{"at": "2026-11-24T02:26:51+00:00", "status": "ANALYZED", "note": "Completed the same-packet alias perturbation direction comparison.", "evidence": "report.md", "row_id": null}

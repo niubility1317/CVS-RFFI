@@ -1,0 +1,258 @@
+{
+  "verification": "VERIFIED",
+  "observed": {
+    "submit": {
+      "pid": 2459296,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-alias-curvature-source-m2-r01-release",
+      "code_commit": "47ee8130ccbd70b263c416a4a583f4be45b0204f",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-alias-curvature-source-m2-r01"
+    },
+    "controller": {
+      "pid": 2459296,
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.alias_curvature_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-alias-curvature-source-m2-r01-release/runtime.json",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-alias-curvature-source-m2-r01-release",
+      "cuda": [
+        "CUDA_VISIBLE_DEVICES="
+      ]
+    },
+    "jobs": {
+      "smoke-source": {
+        "pid": 2459317,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 464,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_ALIAS_CURVATURE_REAL_CHECKPOINT_PASS"
+        ]
+      },
+      "timing-source": {
+        "pid": 2459410,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 422,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()"
+        ]
+      },
+      "evaluate-full": {
+        "pid": 2459969,
+        "gpu": 3,
+        "identity": {
+          "pid": 2459969,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.alias_curvature_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-alias-curvature-source-m2-r01/configs/evaluate-full.json full",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-alias-curvature-source-m2-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=3"
+          ]
+        },
+        "bytes": 502,
+        "last": [
+          "  return self.fget.__get__(instance, owner)()",
+          "COMPLEX_VECTOR_SOURCE full clean 0",
+          "COMPLEX_VECTOR_SOURCE full practical_high 21"
+        ]
+      },
+      "evaluate-residual": {
+        "pid": 2459970,
+        "gpu": 6,
+        "identity": {
+          "pid": 2459970,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.alias_curvature_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-alias-curvature-source-m2-r01/configs/evaluate-residual.json residual",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-alias-curvature-source-m2-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=6"
+          ]
+        },
+        "bytes": 510,
+        "last": [
+          "  return self.fget.__get__(instance, owner)()",
+          "COMPLEX_VECTOR_SOURCE residual clean 0",
+          "COMPLEX_VECTOR_SOURCE residual practical_high 39"
+        ]
+      }
+    },
+    "state": null,
+    "files": {
+      "smoke.json": 124,
+      "b1.json": 264
+    }
+  },
+  "progress": {
+    "submit": {
+      "pid": 2459296,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-alias-curvature-source-m2-r01-release",
+      "code_commit": "47ee8130ccbd70b263c416a4a583f4be45b0204f",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-alias-curvature-source-m2-r01"
+    },
+    "controller": {
+      "pid": 2459296,
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.alias_curvature_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-alias-curvature-source-m2-r01-release/runtime.json",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-alias-curvature-source-m2-r01-release",
+      "cuda": [
+        "CUDA_VISIBLE_DEVICES="
+      ]
+    },
+    "jobs": {
+      "smoke-source": {
+        "pid": 2459317,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 464,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_ALIAS_CURVATURE_REAL_CHECKPOINT_PASS"
+        ]
+      },
+      "timing-source": {
+        "pid": 2459410,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 422,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()"
+        ]
+      },
+      "evaluate-full": {
+        "pid": 2459969,
+        "gpu": 3,
+        "identity": {
+          "pid": 2459969,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.alias_curvature_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-alias-curvature-source-m2-r01/configs/evaluate-full.json full",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-alias-curvature-source-m2-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=3"
+          ]
+        },
+        "bytes": 703,
+        "last": [
+          "COMPLEX_VECTOR_SOURCE full practical_low_suburban 320",
+          "COMPLEX_VECTOR_SOURCE full practical_high_urban 92",
+          "COMPLEX_VECTOR_SOURCE full practical_mid_urban 396"
+        ]
+      },
+      "evaluate-residual": {
+        "pid": 2459970,
+        "gpu": 6,
+        "identity": null,
+        "bytes": 782,
+        "last": [
+          "COMPLEX_VECTOR_SOURCE residual practical_high_urban 67",
+          "COMPLEX_VECTOR_SOURCE residual practical_mid_urban 803",
+          "COMPLEX_VECTOR_SOURCE residual practical_low_urban 899"
+        ]
+      }
+    },
+    "state": null,
+    "files": {
+      "smoke.json": 124,
+      "b1.json": 264
+    }
+  },
+  "terminal": {
+    "submit": {
+      "pid": 2459296,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-alias-curvature-source-m2-r01-release",
+      "code_commit": "47ee8130ccbd70b263c416a4a583f4be45b0204f",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-alias-curvature-source-m2-r01"
+    },
+    "controller": {
+      "pid": 2459296,
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.alias_curvature_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-alias-curvature-source-m2-r01-release/runtime.json",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-alias-curvature-source-m2-r01-release",
+      "cuda": [
+        "CUDA_VISIBLE_DEVICES="
+      ]
+    },
+    "jobs": {
+      "smoke-source": {
+        "pid": 2459317,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 464,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_ALIAS_CURVATURE_REAL_CHECKPOINT_PASS"
+        ]
+      },
+      "timing-source": {
+        "pid": 2459410,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 422,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()"
+        ]
+      },
+      "evaluate-full": {
+        "pid": 2459969,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 754,
+        "last": [
+          "COMPLEX_VECTOR_SOURCE full practical_high_urban 92",
+          "COMPLEX_VECTOR_SOURCE full practical_mid_urban 396",
+          "COMPLEX_VECTOR_SOURCE full practical_low_urban 641"
+        ]
+      },
+      "evaluate-residual": {
+        "pid": 2459970,
+        "gpu": 6,
+        "identity": null,
+        "bytes": 782,
+        "last": [
+          "COMPLEX_VECTOR_SOURCE residual practical_high_urban 67",
+          "COMPLEX_VECTOR_SOURCE residual practical_mid_urban 803",
+          "COMPLEX_VECTOR_SOURCE residual practical_low_urban 899"
+        ]
+      },
+      "evaluate-reserve": {
+        "pid": 2461577,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 624,
+        "last": [
+          "LORA_CLEAN_RESERVE_PREDICTED 7680",
+          "LORA_CLEAN_RESERVE_PREDICTED 9596",
+          "LORA_CLEAN_RESERVE_FROZEN 11100"
+        ]
+      },
+      "score-source": {
+        "pid": 2461719,
+        "gpu": null,
+        "identity": null,
+        "bytes": 64,
+        "last": [
+          "LORA_RESTORATION_SOURCE_SCORED",
+          "LORA_CLEAN_COMPLETE_SCORED 12000"
+        ]
+      }
+    },
+    "state": {
+      "status": "SOURCE_SCORED"
+    },
+    "files": {
+      "state.json": 32,
+      "smoke.json": 124,
+      "b1.json": 264,
+      "full-source-scores.json": 8558,
+      "residual-source-scores.json": 8623,
+      "clean-complete-scores.json": 2817
+    }
+  }
+}
