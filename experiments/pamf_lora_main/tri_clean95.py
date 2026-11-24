@@ -93,12 +93,17 @@ class SpectrumAligned(CoherentPacket):
 
 class TimeFrequencyAligned(CoherentPacket):
     def forward(self,x):
-        logits,fused=self.raw(x)
         drift_layer=getattr(self,'relative_drift',None)
         if drift_layer is None:
             traces=self.trace(x)
         else:
             traces,drift=self.trace(x,with_drift=True)
+        core_input=x
+        if getattr(self,'nominal_iq',False):
+            baseband=torch.complex(traces[:,:,0],traces[:,:,1])
+            nominal=baseband*self.trace.reference.chirp
+            core_input=torch.stack((nominal.real,nominal.imag),dim=2)
+        logits,fused=self.raw(core_input)
         aligned=self.encoder(traces.flatten(0,1)).reshape(len(x),x.shape[1],-1).mean(1)
         z=torch.complex(traces[:,:,0],traces[:,:,1])
         z=z-z.mean(-1,keepdim=True)
@@ -127,6 +132,7 @@ def clean_model(rt,root,c,row,device):
         if row.get('time_frequency'):
             from torch import nn
             f.__class__=TimeFrequencyAligned
+            f.nominal_iq=row.get('nominal_iq',False)
             f.time_frequency=nn.Sequential(nn.Conv2d(2,16,3,padding=1),nn.GroupNorm(4,16),nn.SiLU(),
                 nn.Conv2d(16,24,3,padding=1,stride=2),nn.GroupNorm(4,24),nn.SiLU(),
                 nn.AdaptiveAvgPool2d((4,5)),nn.Flatten(),nn.Linear(480,160),nn.LayerNorm(160)).to(device)
@@ -139,6 +145,8 @@ def clean_model(rt,root,c,row,device):
 
 def study(rt):
     if rt.get('scratch'):
+        if rt.get('budget_study'):
+            return BUDGET_ROWS,88,16
         if rt.get('drift_study'):
             return DRIFT_ROWS,SCRATCH_EPOCHS,16
         if rt.get('noise_study'):
@@ -180,6 +188,11 @@ DRIFT_ROWS={
     'all8_relative384': {'warmup':32,'samples':384,'time_frequency':True,'chirps':ALL_CHIRPS,'ordinary_std':.003,
                          'relative_drift':True},
 }
+BUDGET_RUN='20261125-phase1-lora-pamf-tri-clean-budget-m2-r01'
+BUDGET_ROWS={
+    'budget_control384': {'warmup':72,'samples':384,'time_frequency':True},
+    'budget_nominal384': {'warmup':72,'samples':384,'time_frequency':True,'nominal_iq':True},
+}
 VALIDATION_EPOCHS={0,2,4,8,12,16,20,24}
 
 
@@ -213,6 +226,8 @@ def row_names(rt):
         return ('small_noise',)
     if rt.get('drift_study'):
         return ('all8_relative384',)
+    if rt.get('budget_study'):
+        return ('budget_nominal384',)
     return SCRATCH_LOCAL if rt.get('scratch') else LOCAL
 
 
@@ -384,9 +399,15 @@ def train(rt,name):
     step=0
     mechanism=terms(row)
     ordinary_std=row.get('ordinary_std',.015)
+    warmup=row.get('warmup',0)
+    validation_epochs=set(VALIDATION_EPOCHS)
+    if rt.get('scratch'):
+        validation_epochs.update(range(warmup,epochs+1,4))
+        if rt.get('budget_study'):
+            validation_epochs.update((32,48,60))
     with (out/'epochs.jsonl').open('x',encoding='utf8') as log:
         for epoch in range(1,epochs+1):
-            use_u=epoch>row.get('warmup',0)
+            use_u=epoch>warmup
             order=torch.randperm(len(u),device=device,generator=ugen)[:STEPS*u_count].reshape(STEPS,u_count)
             ui=order if use_u else (None,)*STEPS
             sl,su,accepted=0.,0.,0
@@ -410,7 +431,7 @@ def train(rt,name):
             rec=dict(epoch=epoch,step=step,L_loss=sl/STEPS,U_loss=su/STEPS,
                      U_seen=STEPS*u_count if use_u else 0,U_accepted=accepted,
                      lr=opt.param_groups[0]['lr'])
-            if epoch in VALIDATION_EPOCHS or rt.get('scratch') and epoch in {32,36,40,44,48}:
+            if epoch in validation_epochs:
                 rec['V']=clean_validation(f,v,vy,vr)
                 key=lambda p:(p['correct'],-p['nll'])
                 # Keep the supervised trajectory for diagnosis. Only complete
@@ -450,7 +471,7 @@ def predict(rt,name):
         x=native(target,rx,LIMIT)
         codes=[]
         for i in range(0,LIMIT,64):
-            y=f(tensor(clean_iq(x[i:i+64],row.get('samples',256)),'cuda:0'))[0]
+            y=f(tensor(clean_iq(x[i:i+64],row.get('samples',256),row.get('chirps',CHIRPS)),'cuda:0'))[0]
             if not torch.isfinite(y).all():raise ValueError('Nonfinite blind clean logits')
             codes.extend(y.argmax(1).tolist())
         np.save(out/f'{rx}__clean__direct.npy',np.asarray(codes,dtype=np.int16))
@@ -463,12 +484,13 @@ def dispatch(rt):
     if (rt.get('quick') or rt.get('transfer') or rt.get('timefreq')) and on_local(rt):
         raise ValueError('Quick branch study is registered for N607 only')
     root=Path(rt['run_root'])
-    if (rt.get('noise_study') or rt.get('drift_study')) and not rt.get('scratch'):
+    screens=('quick','transfer','timefreq','noise_study','drift_study','budget_study')
+    if any(rt.get(k) for k in ('noise_study','drift_study','budget_study')) and not rt.get('scratch'):
         raise ValueError('The clean input comparisons require random initialization')
     root.mkdir(exist_ok=False)
     state=root/'state.json'
     fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq',
-                             'noise_study','drift_study','fixed_clean_cache') if k in rt)
+                             'noise_study','drift_study','budget_study','fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)
     try:
@@ -481,7 +503,7 @@ def dispatch(rt):
         schedule(rt,[('train',name) for name in names],launch)
         evidence={name:read(root/'F'/name/'complete.json')['frozen'] for name in names}
         ranking=sorted(names,key=lambda name:(evidence[name]['correct'],-evidence[name]['nll']),reverse=True)
-        source_only=bool(on_local(rt) or any(rt.get(k) for k in ('quick','transfer','timefreq','noise_study','drift_study')))
+        source_only=bool(on_local(rt) or any(rt.get(k) for k in screens))
         tested=[] if source_only else list(dict.fromkeys(['control',ranking[0]]))
         write(root/'selection.json',dict(names=tested,rank=ranking,source=evidence,
                                         target_reads=0,goal_met=evidence[ranking[0]]['correct']>=TARGET_SOURCE_ACCURACY*evidence[ranking[0]]['n']))

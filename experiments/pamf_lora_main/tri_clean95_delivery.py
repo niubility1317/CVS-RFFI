@@ -14,18 +14,18 @@ from .full_packet_publish import DATA_RUN
 from .publish import release, release_commit
 from .scoring import macro_f1
 from .tri_clean95 import (
-    DRIFT_RUN, NOISE_RUN, QUICK_RUN, ROWS, RUN, SCRATCH_ROWS, SCRATCH_RUN, SEED, TIMEFREQ_RUN, TRANSFER_RUN,
+    BUDGET_RUN, DRIFT_RUN, NOISE_RUN, QUICK_RUN, ROWS, RUN, SCRATCH_ROWS, SCRATCH_RUN, SEED, TIMEFREQ_RUN, TRANSFER_RUN,
 )
 
 
 def publish(repo, output, context, ssh_config, quick=False, transfer=False, scratch=False, timefreq=False,
-            noise=False,drift=False):
+            noise=False,drift=False,budget=False):
     ctx=read(context)
     rt={k:ctx[k] for k in ('project','python','frozen_sources')}
     project=PurePosixPath(rt['project'])
     parent=project/'runs'/DATA_RUN
     native=project/'releases'/f'{DATA_RUN}-release'/'data'
-    studies=((drift,DRIFT_RUN),(noise,NOISE_RUN),(timefreq,TIMEFREQ_RUN),(scratch,SCRATCH_RUN),
+    studies=((budget,BUDGET_RUN),(drift,DRIFT_RUN),(noise,NOISE_RUN),(timefreq,TIMEFREQ_RUN),(scratch,SCRATCH_RUN),
              (transfer,TRANSFER_RUN),(quick,QUICK_RUN))
     name=next((name for enabled,name in studies if enabled),RUN)
     rt.update(run_id=name,code_commit=release_commit(repo),runner='experiments.pamf_lora_main.tri_clean95',
@@ -33,7 +33,7 @@ def publish(repo, output, context, ssh_config, quick=False, transfer=False, scra
               parent_root=str(parent),source_root=str(native/'source'),
               native_target_root=str(native/'target'),target_views=str(native/'target'),
               allowed_gpus=[3,5,6,7,0,1,2,4],max_workers=6,max_compute_processes=12)
-    if scratch or timefreq or noise or drift:
+    if scratch or timefreq or noise or drift or budget:
         rt.update(scratch=True,fixed_clean_cache=str(project/'runs'/RUN/'clean_cache'),
                   max_workers=4)
     if timefreq:
@@ -45,6 +45,9 @@ def publish(repo, output, context, ssh_config, quick=False, transfer=False, scra
     if drift:
         del rt['native_target_root'],rt['target_views'],rt['fixed_clean_cache']
         rt.update(drift_study=True,allowed_gpus=[2,4,1],max_workers=2,min_free_mib=9000)
+    if budget:
+        del rt['native_target_root'],rt['target_views']
+        rt.update(budget_study=True,allowed_gpus=[5,0,6,4],max_workers=2,min_free_mib=9500)
     if quick or transfer:
         del rt['native_target_root'],rt['target_views']
         rt.update(quick=quick,transfer=transfer,fixed_clean_cache=str(project/'runs'/RUN/'clean_cache'))
@@ -113,6 +116,7 @@ if __name__=='__main__':
             study.add_argument('--timefreq',action='store_true')
             study.add_argument('--noise',action='store_true')
             study.add_argument('--drift',action='store_true')
+            study.add_argument('--budget',action='store_true')
     args=vars(parser.parse_args())
     kind=args.pop('kind')
     {'publish':publish,'score':score}[kind](**args)
