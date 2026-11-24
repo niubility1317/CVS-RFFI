@@ -93,9 +93,9 @@ def evaluate(rt, route, recipes=RECIPES, modes=MODES, renderer=render):
           finalize=freeze)
 
 
-def read_frozen(root, route, modes):
+def read_frozen(root, route, modes, *, per_rx=EVAL_PER_RX):
     stored = read(root / f'{route}-predictions.json')
-    count = len(SOURCE) * EVAL_PER_RX
+    count = len(SOURCE) * per_rx
     ids = stored['ids']
     rows = {view: np.asarray(value) for view, value in stored['rows'].items()}
     if (len(ids) != count or len(set(ids)) != count or stored['modes'] != list(modes)

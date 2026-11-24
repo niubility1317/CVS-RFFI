@@ -143,7 +143,7 @@ def readouts(iq, known_noise, baseline, tracker, models, packet_arms=(False, Tru
 
 
 def summarize(root, route, source, chosen, ids, predictions, metrics, modes=MODES, *,
-              predictions_written=False, comparisons=()):
+              predictions_written=False, comparisons=(), per_rx=EVAL_PER_RX):
     if not predictions_written:
         write(root / f'{route}-predictions.json', dict(ids=ids[chosen].tolist(),
               rows={k: v.tolist() for k, v in predictions.items()}))
@@ -156,10 +156,10 @@ def summarize(root, route, source, chosen, ids, predictions, metrics, modes=MODE
         base = correct[1]
         metrics[view].update(correct=correct.sum(1).tolist(),
             repairs=(correct & ~base).sum(1).tolist(), harms=(~correct & base).sum(1).tolist(),
-            by_rx=correct.reshape(len(modes), len(SOURCE), EVAL_PER_RX).sum(-1).tolist())
+            by_rx=correct.reshape(len(modes), len(SOURCE), per_rx).sum(-1).tolist())
     six = np.stack([hits[k] for k in VIEWS[1:]]).sum(0)
     rng = np.random.default_rng(KEY+3)
-    draws = np.concatenate([rng.integers(i*EVAL_PER_RX, (i+1)*EVAL_PER_RX, (1600, EVAL_PER_RX))
+    draws = np.concatenate([rng.integers(i*per_rx, (i+1)*per_rx, (1600, per_rx))
                             for i in range(len(SOURCE))], axis=-1)
     ci = {k: [np.quantile(delta[draws].sum(1), (.025, .975)).tolist() for delta in h-h[1]]
           for k, h in (('six', six), ('low', hits[VIEWS[-1]].astype(int)))}
