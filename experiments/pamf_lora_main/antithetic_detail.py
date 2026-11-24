@@ -9,12 +9,14 @@ from .joint_unroll_source import coordinates
 from .natural_detail import detail_bands, transfer_risk, weak_difference
 
 
-def antithetic_inputs(signal, change, perturb, rng, *, with_identity):
+def antithetic_inputs(signal, change, perturb, rng, *, with_identity, transform=None):
     """Hold generic response and noise scale fixed across both source signals."""
     taps = generic_taps(signal, rng)
-    transform = torch.rand((len(signal), 1), device=signal.device, generator=rng) < .5
-    taps = taps * transform
+    has_taps = torch.rand((len(signal), 1), device=signal.device, generator=rng) < .5
+    taps = taps * has_taps
     base, shifted = apply_transfer(signal, taps), apply_transfer(signal + change, taps)
+    if transform is not None:
+        base, shifted = transform(base, shifted)
     noise = perturb(base, rng) - base
     if with_identity:
         base[-2:] = signal[-2:]
@@ -44,13 +46,14 @@ def component_risk(error, signal):
     return torch.stack(losses).mean()
 
 
-def objective(model, tracker, iq, rng, *, with_identity, recipe, step, split_risk):
+def objective(model, tracker, iq, rng, *, with_identity, recipe, step, split_risk,
+              build_inputs=antithetic_inputs):
     clean = complex_iq(iq)
     framed, rotation, _, rms = coordinates(tracker, iq)
     source_basis = rotation * rms
     delta = weak_difference(framed)
     change = delta * source_basis
-    wave = antithetic_inputs(clean, change, recipe.perturb, rng, with_identity=with_identity)
+    wave = build_inputs(clean, change, recipe.perturb, rng, with_identity=with_identity)
     observed, rotation, quality, rms = coordinates(tracker, real_iq(wave.flatten(0, 1)))
     basis = rotation * rms
     target = torch.stack((clean, clean, clean + change, clean + change), dim=1)

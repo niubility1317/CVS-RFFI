@@ -42,9 +42,17 @@ PAIRS = tuple((f'antithetic_{stage}', f'pointwise_{stage}') for stage in ('half'
 PAIRS += (('antithetic_half', 'rank_parent_half'), ('pointwise_half', 'rank_parent_half'))
 
 
-def bind_models(root, contract, device, *, recipes=RECIPES):
+def load_arm(root, recipe, contract, device, reused):
+    if reused and recipe.name in reused:
+        root = root.parent / reused[recipe.name]
+        if read(root / 'state.json')['status'] != 'SOURCE_SCORED':
+            raise ValueError(f'Expected a completed source-only run for {recipe.name}')
+    return load_model(root, recipe, contract, device)
+
+
+def bind_models(root, contract, device, *, recipes=RECIPES, reused=None):
     parent, threshold = parent_model(root, contract, device)
-    arms = [load_model(root, arm, contract, device) for arm in recipes.values()]
+    arms = [load_arm(root, arm, contract, device, reused) for arm in recipes.values()]
     if abs(threshold - THRESHOLD) > 1e-6 or any(abs(v - threshold) > 1e-6 for _, v in arms):
         raise ValueError('All restoration arms must share the legal clean calibration')
     return parent, tuple(model for model, _ in arms), threshold
@@ -72,22 +80,22 @@ def render(iq, _, baseline, tracker, models, *, modes=MODES):
     return torch.stack(rows), n
 
 
-def evaluate(rt, route, *, recipes=RECIPES, modes=MODES):
+def evaluate(rt, route, *, recipes=RECIPES, modes=MODES, reused=None):
     root, device = Path(rt['run_root']), 'cuda:0'
     binding = source_control(rt, route, device)
     score(rt, route, panel=panel, modes=modes, render=partial(render, modes=modes), binding=binding,
-          frozen_models=bind_models(root, binding[2], device, recipes=recipes), require_clean_bypass=False,
+          frozen_models=bind_models(root, binding[2], device, recipes=recipes, reused=reused), require_clean_bypass=False,
           replay_fn=receive_only, finalize=freeze, reader_chunk=144)
 
 
-def reserve(rt, *, recipes=RECIPES, modes=MODES):
+def reserve(rt, *, recipes=RECIPES, modes=MODES, reused=None):
     def bind(root, contract, device, baseline, tracker):
-        models = bind_models(root, contract, device, recipes=recipes)
+        models = bind_models(root, contract, device, recipes=recipes, reused=reused)
         return lambda iq: render(iq, None, baseline, tracker, models, modes=modes)
     predict_clean_reserve(rt, modes=modes, bind=bind)
 
 
-def smoke(rt, *, recipes=RECIPES, modes=MODES, split_risk=(False, True)):
+def smoke(rt, *, recipes=RECIPES, modes=MODES, split_risk=(False, True), calculations=None, reused=None):
     root, device = Path(rt['run_root']), 'cuda:0'
     (training, cal, _), contract = setup(rt, device, smoke=True)
     _, _, matched, baseline, tracker = source_control(rt, 'full', device)
@@ -95,17 +103,25 @@ def smoke(rt, *, recipes=RECIPES, modes=MODES, split_risk=(False, True)):
         raise ValueError('Expected matched blind source and frozen recognition input')
     parent, threshold = parent_model(root, contract, device)
     models = []
+    finite_gradient_arms = 0
     for recipe, split in zip(recipes.values(), split_risk, strict=True):
+        if reused and recipe.name in reused:
+            model, reused_threshold = load_arm(root, recipe, contract, device, reused)
+            if abs(reused_threshold - threshold) > 1e-6:
+                raise ValueError('Expected matched calibration from the frozen control')
+            models.append(model)
+            continue
         model = recipe.model().to(device)
         calibrate(model, tracker, training)
         rng = torch.Generator(device=device).manual_seed(2026114990)
         example = cal[:6]
-        loss, terms = objective(model, tracker, example, rng, with_identity=True, recipe=recipe,
-                                step=1, split_risk=split)
+        calculate = (calculations or {}).get(recipe.name, partial(objective, split_risk=split))
+        loss, terms = calculate(model, tracker, example, rng, with_identity=True, recipe=recipe, step=1)
         loss.backward()
         gradient = torch.nn.utils.clip_grad_norm_(model.parameters(), 1., error_if_nonfinite=True)
         if not terms.isfinite().all() or float(gradient) <= 0:
             raise ValueError('Expected finite antithetic source training gradient')
+        finite_gradient_arms += 1
         models.append(model.eval().requires_grad_(False))
     rng = torch.Generator(device=device).manual_seed(2026114451)
     corrupted = real_iq(colored_observation(complex_iq(cal), rng))
@@ -117,16 +133,16 @@ def smoke(rt, *, recipes=RECIPES, modes=MODES, split_risk=(False, True)):
     if (n != 2 or logits.shape != (len(modes)*len(batch), 10) or not logits.isfinite().all()
             or not torch.equal(waves[2:, :2], batch[:2].expand_as(waves[2:, :2]))):
         raise ValueError('Real source antithetic no-query checkpoint smoke failed')
-    write(root/'smoke.json', dict(status='PASS', source_U=len(batch), finite_gradient_arms=2,
+    write(root/'smoke.json', dict(status='PASS', source_U=len(batch), finite_gradient_arms=finite_gradient_arms,
                                  active=n, clean_bypassed=2, target_reads=0))
     print('LORA_ANTITHETIC_REAL_CHECKPOINT_PASS', flush=True)
 
 
 @torch.no_grad()
-def timing(rt, *, recipes=RECIPES):
+def timing(rt, *, recipes=RECIPES, reused=None):
     root, device = Path(rt['run_root']), 'cuda:0'
     (_, cal, _), contract = setup(rt, device, smoke=True)
-    _, arms, threshold = bind_models(root, contract, device, recipes=recipes)
+    _, arms, threshold = bind_models(root, contract, device, recipes=recipes, reused=reused)
     tracker = PacketRestorer('consensus').to(device).eval()
     rng = torch.Generator(device=device).manual_seed(2026114451)
     corrupt = real_iq(colored_observation(complex_iq(cal), rng))
