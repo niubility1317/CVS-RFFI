@@ -2,3 +2,8 @@
 {"at": "2026-11-24T10:12:25+00:00", "status": "RUNNING", "evidence": "launch-evidence.json", "row_id": "fit-carrier_action", "note": "Real source checkpoint smoke passed; matching GPU worker independently verified."}
 {"at": "2026-11-24T10:12:25+00:00", "status": "ANALYZED", "evidence": "action-audit.json", "row_id": "audit-source-u", "note": "Frozen original-source held-U action analysis completed without F or target inputs."}
 {"at": "2026-11-24T10:12:59+00:00", "status": "RUNNING", "evidence": "launch-evidence.json", "row_id": null, "note": "Training and downstream registered scoring chain running."}
+{"at": "2026-11-24T10:44:01+00:00", "status": "ANALYZED", "evidence": "carrier_action-complete.json", "row_id": "fit-carrier_action", "note": "Same source-only paired experiment independently verified."}
+{"at": "2026-11-24T10:44:01+00:00", "status": "ANALYZED", "evidence": "full-source-scores.json", "row_id": "evaluate-full", "note": "Same source-only paired experiment independently verified."}
+{"at": "2026-11-24T10:44:01+00:00", "status": "ANALYZED", "evidence": "residual-source-scores.json", "row_id": "evaluate-residual", "note": "Same source-only paired experiment independently verified."}
+{"at": "2026-11-24T10:44:01+00:00", "status": "ANALYZED", "evidence": "clean-complete-scores.json", "row_id": "evaluate-reserve", "note": "Same source-only paired experiment independently verified."}
+{"at": "2026-11-24T10:44:01+00:00", "status": "ANALYZED", "evidence": "report.md", "row_id": null, "note": "Same source-only paired experiment independently verified."}

@@ -1,1 +1,4 @@
 {"at": "2026-11-24T10:09:14+00:00", "status": "PLANNED", "evidence": "experiment.json", "row_id": null, "note": "Frozen protocol before target access. Fixed half and quarter, original same-dose historical controls. Local session 93222 waits on verified source completion before target release and truth-last scoring."}
+{"at": "2026-11-24T10:44:26+00:00", "status": "RUNNING", "evidence": "launch-evidence.json", "row_id": "predict-full", "note": "Real no-target source smoke passed; PID/CWD/CUDA and growing prediction output verified."}
+{"at": "2026-11-24T10:44:26+00:00", "status": "RUNNING", "evidence": "launch-evidence.json", "row_id": "predict-residual", "note": "Real no-target source smoke passed; PID/CWD/CUDA and growing prediction output verified."}
+{"at": "2026-11-24T10:44:26+00:00", "status": "RUNNING", "evidence": "launch-evidence.json", "row_id": null, "note": "Real no-target source smoke passed; PID/CWD/CUDA and growing prediction output verified."}

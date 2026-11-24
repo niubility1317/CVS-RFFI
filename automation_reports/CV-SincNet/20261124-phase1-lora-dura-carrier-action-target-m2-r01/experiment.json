@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "Active LoRa/WiSig goal and latest user direction to use formal held-out test performance.",
   "code": {
-    "commit": "d586164ce335cfdb504a4ff6a40fdc87592cd213",
+    "commit": "593d050b4f6471230e53c6b5287831b538be32ed",
     "checkout": "E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-carrier-action-target-m2-r01-release"
@@ -202,7 +202,8 @@
     }
   ],
   "notes": [
-    "420 predictions fixed before independent truth. Historical width dose controls are reused without regenerating predictions."
+    "420 predictions fixed before independent truth. Historical width dose controls are reused without regenerating predictions.",
+    "Release HEAD 593d050b4f6471230e53c6b5287831b538be32ed differs from preregistered implementation d586164ce335cfdb504a4ff6a40fdc87592cd213 only in report and registry content; deployed archive code paths were verified equal."
   ],
   "registered_at": "2026-11-24T10:09:14+00:00"
 }
