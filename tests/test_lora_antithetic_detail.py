@@ -1,7 +1,7 @@
 import torch
 
 from experiments.pamf_lora_main.antithetic_detail import (
-    antithetic_inputs, component_risk, pair_terms,
+    antithetic_inputs, component_risk, pair_terms, private_direction_risk,
 )
 from experiments.pamf_lora_main.crossfit_pilot import apply_transfer, generic_taps
 from experiments.pamf_lora_main.rf_noise_transport import colored_observation
@@ -42,3 +42,31 @@ def test_even_odd_risk_decomposition_retains_nonzero_noise_penalty():
     loss = component_risk(mean - clean, clean) + component_risk(odd, clean)
     loss.backward()
     assert nonzero.grad.isfinite().all() and nonzero.grad.abs().sum() > 0
+
+
+
+def test_direction_risk_separates_private_bias_and_noise_without_cancellation():
+    t = torch.arange(256) / 256
+    near = torch.exp(2j * torch.pi * 4 * t)
+    middle = torch.exp(2j * torch.pi * 16 * t)
+    target = torch.stack((near + middle, -(near + middle)))[None]
+    common_noise = near.expand_as(target)
+    clean = private_direction_risk(target + common_noise, common_noise, target)
+    assert clean.abs().max() < 1e-6
+    bias = .5 * torch.stack((near, -near))[None]
+    noise = .2j * torch.stack((middle, -middle))[None]
+    values = private_direction_risk(target + bias, noise, target)
+    torch.testing.assert_close(values, torch.tensor([[.25, 0.], [0., .04]]).log1p(),
+                               atol=1e-6, rtol=4e-5)
+    mirrored = private_direction_risk(target + bias, -noise, target)
+    torch.testing.assert_close(values, mirrored)
+
+
+def test_direction_risk_has_finite_gradient_on_nearly_empty_bands():
+    rng = torch.Generator().manual_seed(51)
+    reference = 1e-5 * torch.randn(4, 6, 256, generator=rng, dtype=torch.complex64)
+    even = torch.randn(reference.shape, generator=rng, dtype=torch.complex64).requires_grad_()
+    odd = torch.randn(reference.shape, generator=rng, dtype=torch.complex64).requires_grad_()
+    risk = private_direction_risk(even, odd, reference).sum()
+    risk.backward()
+    assert risk.isfinite() and even.grad.isfinite().all() and odd.grad.isfinite().all()

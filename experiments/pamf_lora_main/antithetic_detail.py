@@ -46,8 +46,28 @@ def component_risk(error, signal):
     return torch.stack(losses).mean()
 
 
+def private_direction_risk(even, odd, reference):
+    """Measure half-strength bias and noise along each clean private chirp spectrum."""
+    private = []
+    for value in (even - reference, odd, reference):
+        centered = value - value.mean(-2, keepdim=True)
+        private.append(torch.fft.fft(centered, norm='ortho'))
+    bias, noise, target = private
+    risks = []
+    for band in detail_bands(target):
+        template = target[..., band]
+        energy = template.abs().square().mean(-1)
+        denominator = energy + 1e-4
+        axis = template.conj()
+        bias_gain = (bias[..., band] * axis).mean(-1) / denominator
+        noise_gain = (noise[..., band] * axis).mean(-1) / denominator
+        risks.append(torch.stack((bias_gain.abs().square().log1p().mean(),
+                                  noise_gain.abs().square().log1p().mean())))
+    return torch.stack(risks, dim=1)
+
+
 def objective(model, tracker, iq, rng, *, with_identity, recipe, step, split_risk,
-              build_inputs=antithetic_inputs):
+              build_inputs=antithetic_inputs, private_risk_weight=0.):
     clean = complex_iq(iq)
     framed, rotation, _, rms = coordinates(tracker, iq)
     source_basis = rotation * rms
@@ -73,4 +93,9 @@ def objective(model, tracker, iq, rng, *, with_identity, recipe, step, split_ris
     focus = bias + response if split_risk else point
     first, second, _ = recipe.loss_weights(step)
     loss = first*coarse_risk + second*full_risk + .30*focus + .35*transfer
-    return loss, torch.stack((coarse_risk, full_risk, point, bias, response, transfer))
+    values = torch.stack((coarse_risk, full_risk, point, bias, response, transfer))
+    if private_risk_weight:
+        private = private_direction_risk(mean[:, 0], difference[:, 0], reference[:, 0])
+        loss = loss + private_risk_weight * private.sum(0).mean()
+        values = torch.cat((values, private.flatten()))
+    return loss, values
