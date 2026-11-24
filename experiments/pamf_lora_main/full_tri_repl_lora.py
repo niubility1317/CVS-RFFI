@@ -81,8 +81,8 @@ def total_epochs(method):
     return EPOCHS+WARM_EPOCHS if method in WARM_METHODS else EPOCHS
 
 
-def ordinary_iq(raw):
-    return raw+.015*torch.randn_like(raw)
+def ordinary_iq(raw, std=.015):
+    return raw+std*torch.randn_like(raw)
 
 
 def packet_outputs(model,x,style=None,*,capture=False):
@@ -133,8 +133,8 @@ def mean_contrast(outputs,y,rx,keep,*,joint=False):
     return torch.stack(losses).mean()
 
 
-def labeled_loss(model,x,practical,y,rx,step,*,mechanism=None):
-    ordinary=ordinary_iq(x)
+def labeled_loss(model,x,practical,y,rx,step,*,mechanism=None,ordinary_std=.015):
+    ordinary=ordinary_iq(x,ordinary_std)
     use=(torch.arange(len(x),device=x.device)+step)%2==0
     mixed=torch.where(use[:,None,None,None],practical,ordinary)
     outputs=six_views(model,x,mixed,ordinary,None)
@@ -145,7 +145,7 @@ def labeled_loss(model,x,practical,y,rx,step,*,mechanism=None):
 
 
 def unlabeled_loss(model,x,rx,step,weight,*,forced_pseudo=None,practical=None,practical_valid=None,
-                   mechanism=None):
+                   mechanism=None,ordinary_std=.015):
     model.eval()
     with torch.no_grad():
         probabilities=model(x)[0].softmax(1)
@@ -164,7 +164,7 @@ def unlabeled_loss(model,x,rx,step,weight,*,forced_pseudo=None,practical=None,pr
         if forced_pseudo is not None:
             enabled=dict.fromkeys(STYLE['levels'],True)
         style=(rows.flatten(),valid.repeat_interleave(n_chirp),mix,enabled)
-        ordinary=ordinary_iq(x)
+        ordinary=ordinary_iq(x,ordinary_std)
         use=(torch.arange(len(x),device=x.device)+step)%2==0
         exposure=torch.zeros_like(use)
         if practical is not None:

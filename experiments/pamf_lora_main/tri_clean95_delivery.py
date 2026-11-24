@@ -13,27 +13,30 @@ from .full_packet_data import LIMIT
 from .full_packet_publish import DATA_RUN
 from .publish import release, release_commit
 from .scoring import macro_f1
-from .tri_clean95 import ROWS, QUICK_RUN, RUN, SCRATCH_ROWS, SCRATCH_RUN, SEED, TIMEFREQ_RUN, TRANSFER_RUN
+from .tri_clean95 import NOISE_RUN, ROWS, QUICK_RUN, RUN, SCRATCH_ROWS, SCRATCH_RUN, SEED, TIMEFREQ_RUN, TRANSFER_RUN
 
 
-def publish(repo, output, context, ssh_config, quick=False, transfer=False, scratch=False, timefreq=False):
+def publish(repo, output, context, ssh_config, quick=False, transfer=False, scratch=False, timefreq=False, noise=False):
     ctx=read(context)
     rt={k:ctx[k] for k in ('project','python','frozen_sources')}
     project=PurePosixPath(rt['project'])
     parent=project/'runs'/DATA_RUN
     native=project/'releases'/f'{DATA_RUN}-release'/'data'
-    name=TIMEFREQ_RUN if timefreq else SCRATCH_RUN if scratch else TRANSFER_RUN if transfer else QUICK_RUN if quick else RUN
+    name=NOISE_RUN if noise else TIMEFREQ_RUN if timefreq else SCRATCH_RUN if scratch else TRANSFER_RUN if transfer else QUICK_RUN if quick else RUN
     rt.update(run_id=name,code_commit=release_commit(repo),runner='experiments.pamf_lora_main.tri_clean95',
               release_root=str(project/'releases'/f'{name}-release'),run_root=str(project/'runs'/name),
               parent_root=str(parent),source_root=str(native/'source'),
               native_target_root=str(native/'target'),target_views=str(native/'target'),
               allowed_gpus=[3,5,6,7,0,1,2,4],max_workers=6,max_compute_processes=12)
-    if scratch or timefreq:
+    if scratch or timefreq or noise:
         rt.update(scratch=True,fixed_clean_cache=str(project/'runs'/RUN/'clean_cache'),
                   max_workers=4)
     if timefreq:
         del rt['native_target_root'],rt['target_views']
         rt.update(timefreq=True,allowed_gpus=[0,5,4,6,2,1,7],max_workers=2,min_free_mib=10000)
+    if noise:
+        del rt['native_target_root'],rt['target_views']
+        rt.update(noise_study=True,allowed_gpus=[2,4,1,7],max_workers=2,min_free_mib=10000)
     if quick or transfer:
         del rt['native_target_root'],rt['target_views']
         rt.update(quick=quick,transfer=transfer,fixed_clean_cache=str(project/'runs'/RUN/'clean_cache'))
@@ -100,6 +103,7 @@ if __name__=='__main__':
             study.add_argument('--transfer',action='store_true')
             study.add_argument('--scratch',action='store_true')
             study.add_argument('--timefreq',action='store_true')
+            study.add_argument('--noise',action='store_true')
     args=vars(parser.parse_args())
     kind=args.pop('kind')
     {'publish':publish,'score':score}[kind](**args)

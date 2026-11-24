@@ -130,6 +130,8 @@ def clean_model(rt,root,c,row,device):
 
 def study(rt):
     if rt.get('scratch'):
+        if rt.get('noise_study'):
+            return NOISE_ROWS,SCRATCH_EPOCHS,16
         return (TIMEFREQ_ROWS if rt.get('timefreq') else SCRATCH_ROWS),SCRATCH_EPOCHS,16
     if rt.get('transfer'):
         return TRANSFER_ROWS,8,16
@@ -154,6 +156,12 @@ TIMEFREQ_ROWS={
     'timefreq256': {'warmup':32,'time_frequency':True},
     'timefreq384': {'warmup':32,'samples':384,'time_frequency':True},
 }
+NOISE_RUN='20261125-phase1-lora-pamf-tri-clean-noise-m3-r01'
+NOISE_ROWS={
+    'standard_noise': {'warmup':32,'time_frequency':True,'ordinary_std':.015},
+    'small_noise': {'warmup':32,'time_frequency':True,'ordinary_std':.003},
+    'no_noise': {'warmup':32,'time_frequency':True,'ordinary_std':0.},
+}
 VALIDATION_EPOCHS={0,2,4,8,12,16,20,24}
 STARTS=np.asarray(CHIRPS)*1024+WINDOW_START-125
 CROP=STARTS[:,None]+np.arange(1250)
@@ -168,6 +176,14 @@ def source_handles(rt):
 
 def on_local(rt):
     return bool(rt.get('local_parent') or rt.get('local_only'))
+
+
+def row_names(rt):
+    if not on_local(rt):
+        return tuple(study(rt)[0])
+    if rt.get('noise_study'):
+        return ('small_noise',)
+    return SCRATCH_LOCAL if rt.get('scratch') else LOCAL
 
 
 def clean_iq(packets,samples):
@@ -187,8 +203,7 @@ def cache(rt):
     source,_,contract=source_handles(rt)
     root=Path(rt['run_root'])
     rows=study(rt)[0]
-    names=(SCRATCH_LOCAL if rt.get('scratch') else LOCAL) if on_local(rt) else rows
-    for n in sorted({rows[k].get('samples',256) for k in names}):
+    for n in sorted({rows[k].get('samples',256) for k in row_names(rt)}):
         folder=root/'clean_cache'/str(n)
         folder.mkdir(parents=True,exist_ok=False)
         for key,count in COUNTS.items():
@@ -225,12 +240,12 @@ def terms(row):
     return {k:row[k] for k in ('contrast_weight','kl_weight') if k in row}
 
 
-def _labeled_and_unlabeled(f,x,y,rx,u,ur,step,with_u,force=None,mechanism=None,raw_ce=0.):
+def _labeled_and_unlabeled(f,x,y,rx,u,ur,step,with_u,force=None,mechanism=None,raw_ce=0.,ordinary_std=.015):
     f.train()
     scores=[]
     hook=f.raw.register_forward_hook(lambda _,args,out:scores.append(out[0])) if raw_ce else None
     try:
-        lab,_=labeled_loss(f,x,x,y,rx,step,mechanism=mechanism)
+        lab,_=labeled_loss(f,x,x,y,rx,step,mechanism=mechanism,ordinary_std=ordinary_std)
     finally:
         if hook is not None:
             hook.remove()
@@ -240,7 +255,8 @@ def _labeled_and_unlabeled(f,x,y,rx,u,ur,step,with_u,force=None,mechanism=None,r
         lab=lab+raw_ce*torch.stack([torch.nn.functional.cross_entropy(q,y,label_smoothing=.01) for q in scores]).mean()
     if not with_u:
         return lab,lab.detach(),0,0
-    unlab,pseudo,keep,details=unlabeled_loss(f,u,ur,step,3.,forced_pseudo=force,mechanism=mechanism)
+    unlab,pseudo,keep,details=unlabeled_loss(f,u,ur,step,3.,forced_pseudo=force,mechanism=mechanism,
+                                          ordinary_std=ordinary_std)
     safe,_,_=protected_loss(lab,unlab,trainable(f))
     if force is not None and (details['forwards']!=6 or not details['partners']):
         raise ValueError('Real smoke did not traverse the Tri training branches')
@@ -266,7 +282,8 @@ def smoke(rt):
             grid=np.concatenate((grid,clean_iq(raw[i],256)),axis=-1)
         a=tensor(grid)
         t=shape_trace(f,a)
-        loss,_,_,n=_labeled_and_unlabeled(f,a,y,rx,a,rx,1,True,force=y,mechanism=terms(row),raw_ce=row.get('raw_ce',0.))
+        loss,_,_,n=_labeled_and_unlabeled(f,a,y,rx,a,rx,1,True,force=y,mechanism=terms(row),
+                                         raw_ce=row.get('raw_ce',0.),ordinary_std=row.get('ordinary_std',.015))
         loss.backward()
         norm=float(torch.nn.utils.clip_grad_norm_(f.parameters(),5.,error_if_nonfinite=True))
         if norm<=0 or n!=len(y):raise ValueError('Failed real clean Tri gradient check')
@@ -323,6 +340,7 @@ def train(rt,name):
     write(out/'initial.json',dict(V=initial,shapes=shape_trace(f,x[:2])))
     step=0
     mechanism=terms(row)
+    ordinary_std=row.get('ordinary_std',.015)
     with (out/'epochs.jsonl').open('x',encoding='utf8') as log:
         for epoch in range(1,epochs+1):
             use_u=epoch>row.get('warmup',0)
@@ -340,7 +358,7 @@ def train(rt,name):
                     lab,unlab,a=loss.detach(),0.,0
                 else:
                     loss,lab,unlab,a=_labeled_and_unlabeled(f,x[i],y[i],rx[i],ux,urb,step,use_u,
-                              mechanism=mechanism,raw_ce=row.get('raw_ce',0.))
+                              mechanism=mechanism,raw_ce=row.get('raw_ce',0.),ordinary_std=ordinary_std)
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(f.parameters(),5.,error_if_nonfinite=True)
                 opt.step()
@@ -366,6 +384,7 @@ def train(rt,name):
     training=clean_validation(f,x,y,rx)
     write(out/'complete.json',dict(status='SOURCE_FROZEN',seed=SEED,method=name,frozen=best,L=training,
                                   steps=step,clean_only=True,satellite_batches=0,
+                                  ordinary_std=ordinary_std,
                                   initialization='random_seed' if rt.get('scratch') else 'same_contract_E140',
                                   target_reads=0,U_truth_reads=0))
 
@@ -401,9 +420,11 @@ def dispatch(rt):
     if (rt.get('quick') or rt.get('transfer') or rt.get('timefreq')) and on_local(rt):
         raise ValueError('Quick branch study is registered for N607 only')
     root=Path(rt['run_root'])
+    if rt.get('noise_study') and not rt.get('scratch'):
+        raise ValueError('The matched noise comparison requires random initialization')
     root.mkdir(exist_ok=False)
     state=root/'state.json'
-    fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq','fixed_clean_cache') if k in rt)
+    fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq','noise_study','fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)
     try:
@@ -412,11 +433,11 @@ def dispatch(rt):
         for stage in stages:
             if launch(rt,stage,'all').wait():raise RuntimeError(f'Clean {stage} failed')
         write(state,dict(status='SOURCE_TRAINING'),exclusive=False)
-        names=(SCRATCH_LOCAL if rt.get('scratch') else LOCAL) if on_local(rt) else tuple(study(rt)[0])
+        names=row_names(rt)
         schedule(rt,[('train',name) for name in names],launch)
         evidence={name:read(root/'F'/name/'complete.json')['frozen'] for name in names}
         ranking=sorted(names,key=lambda name:(evidence[name]['correct'],-evidence[name]['nll']),reverse=True)
-        source_only=bool(on_local(rt) or rt.get('quick') or rt.get('transfer') or rt.get('timefreq'))
+        source_only=bool(on_local(rt) or rt.get('quick') or rt.get('transfer') or rt.get('timefreq') or rt.get('noise_study'))
         tested=[] if source_only else list(dict.fromkeys(['control',ranking[0]]))
         write(root/'selection.json',dict(names=tested,rank=ranking,source=evidence,
                                         target_reads=0,goal_met=evidence[ranking[0]]['correct']>=TARGET_SOURCE_ACCURACY*evidence[ranking[0]]['n']))
