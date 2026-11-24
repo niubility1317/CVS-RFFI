@@ -1,0 +1,884 @@
+{
+  "status": "COMPLETE",
+  "n": 150,
+  "seconds": 24.448802781989798,
+  "reference_after_frozen_output": true,
+  "target_reads": 0,
+  "V_reads": 0,
+  "TX_reads": 0,
+  "F_reads": 0,
+  "rows": {
+    "full": {
+      "practical_low_suburban": {
+        "active": 53,
+        "gains": {
+          "independent_gain": {
+            "mean_first": 0.27769604325294495,
+            "mean_fine": 0.2636379301548004,
+            "fine_log_abs_median": 1.359588384628296
+          },
+          "coupled_gain": {
+            "mean_first": 0.5950447916984558,
+            "mean_fine": 0.27124765515327454,
+            "fine_log_abs_median": 1.3193074464797974
+          }
+        },
+        "readouts": {
+          "direct": {
+            "carrier_relative_db_rmse": 0.24169421195983887,
+            "carrier_relative_amp_mae": 0.10484103858470917,
+            "packet_rms_ratio_median": 1,
+            "packet_rms_ratio_p10": 1,
+            "private_clean": [
+              {
+                "relative_error": 1.0434823036193848,
+                "gain": 0.00019324316235724837,
+                "phase_rad": 1.4929052591323853
+              },
+              {
+                "relative_error": 2.88362979888916,
+                "gain": 0.00905933603644371,
+                "phase_rad": 1.2264039516448975
+              },
+              {
+                "relative_error": 11.824542045593262,
+                "gain": 0.011109213344752789,
+                "phase_rad": 1.2631951570510864
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 5.275109767913818,
+                "gain": 0.9543178677558899,
+                "phase_rad": 0.06259985268115997
+              },
+              {
+                "relative_error": 169.30191040039062,
+                "gain": 0.9983509182929993,
+                "phase_rad": 0.10735102742910385
+              },
+              {
+                "relative_error": 316.7698059082031,
+                "gain": 1.0049835443496704,
+                "phase_rad": 0.10288579761981964
+              }
+            ]
+          },
+          "independent_gain_coarse": {
+            "carrier_relative_db_rmse": 0.21878330409526825,
+            "carrier_relative_amp_mae": 0.09569129347801208,
+            "packet_rms_ratio_median": 0.26810380816459656,
+            "packet_rms_ratio_p10": 0.26258954405784607,
+            "private_clean": [
+              {
+                "relative_error": 1.0061984062194824,
+                "gain": -0.00046876026317477226,
+                "phase_rad": 1.6987638473510742
+              },
+              {
+                "relative_error": 1.054763674736023,
+                "gain": 0.003504546359181404,
+                "phase_rad": 1.2968558073043823
+              },
+              {
+                "relative_error": 1.3053572177886963,
+                "gain": 0.00384580553509295,
+                "phase_rad": 1.4317612648010254
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 0.6489214301109314,
+                "gain": 0.923774003982544,
+                "phase_rad": 0.08526454865932465
+              },
+              {
+                "relative_error": 2.73032808303833,
+                "gain": 0.8996990919113159,
+                "phase_rad": 0.11601456254720688
+              },
+              {
+                "relative_error": 4.46996545791626,
+                "gain": 0.9063158631324768,
+                "phase_rad": 0.10115060210227966
+              }
+            ]
+          },
+          "independent_gain_half": {
+            "carrier_relative_db_rmse": 0.23772746324539185,
+            "carrier_relative_amp_mae": 0.10344890505075455,
+            "packet_rms_ratio_median": 0.6282652020454407,
+            "packet_rms_ratio_p10": 0.615557074546814,
+            "private_clean": [
+              {
+                "relative_error": 1.0173287391662598,
+                "gain": -0.0003319762763567269,
+                "phase_rad": 1.6371989250183105
+              },
+              {
+                "relative_error": 1.5161746740341187,
+                "gain": 0.008435014635324478,
+                "phase_rad": 1.2805020809173584
+              },
+              {
+                "relative_error": 3.946554660797119,
+                "gain": 0.0069832275621593,
+                "phase_rad": 1.260345697402954
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 3.478280544281006,
+                "gain": 0.9367102980613708,
+                "phase_rad": 0.05869007483124733
+              },
+              {
+                "relative_error": 102.21066284179688,
+                "gain": 0.9690642356872559,
+                "phase_rad": 0.10229360312223434
+              },
+              {
+                "relative_error": 191.57984924316406,
+                "gain": 0.9502579569816589,
+                "phase_rad": 0.10288579761981964
+              }
+            ]
+          },
+          "coupled_gain_coarse": {
+            "carrier_relative_db_rmse": 0.3255724608898163,
+            "carrier_relative_amp_mae": 0.23383241891860962,
+            "packet_rms_ratio_median": 0.616753101348877,
+            "packet_rms_ratio_p10": 0.38262152671813965,
+            "private_clean": [
+              {
+                "relative_error": 1.0062885284423828,
+                "gain": -0.00037888827500864863,
+                "phase_rad": 1.6727373600006104
+              },
+              {
+                "relative_error": 1.062979817390442,
+                "gain": 0.0026883964892476797,
+                "phase_rad": 1.4081705808639526
+              },
+              {
+                "relative_error": 1.3325570821762085,
+                "gain": 0.0022915261797606945,
+                "phase_rad": 1.5073550939559937
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 0.45008939504623413,
+                "gain": 0.9258943200111389,
+                "phase_rad": 0.0883680135011673
+              },
+              {
+                "relative_error": 2.895256280899048,
+                "gain": 0.9317589998245239,
+                "phase_rad": 0.09919018298387527
+              },
+              {
+                "relative_error": 4.981789588928223,
+                "gain": 0.9406962990760803,
+                "phase_rad": 0.10042938590049744
+              }
+            ]
+          },
+          "coupled_gain_half": {
+            "carrier_relative_db_rmse": 0.23801694810390472,
+            "carrier_relative_amp_mae": 0.10301149636507034,
+            "packet_rms_ratio_median": 0.6320449709892273,
+            "packet_rms_ratio_p10": 0.6151058673858643,
+            "private_clean": [
+              {
+                "relative_error": 1.0176894664764404,
+                "gain": -0.00024895500973798335,
+                "phase_rad": 1.4929052591323853
+              },
+              {
+                "relative_error": 1.5210641622543335,
+                "gain": 0.00677118357270956,
+                "phase_rad": 1.2812319993972778
+              },
+              {
+                "relative_error": 3.9626338481903076,
+                "gain": 0.007874117232859135,
+                "phase_rad": 1.3164373636245728
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 3.4514987468719482,
+                "gain": 0.9333906769752502,
+                "phase_rad": 0.05986173823475838
+              },
+              {
+                "relative_error": 104.11944580078125,
+                "gain": 0.9778880476951599,
+                "phase_rad": 0.09919018298387527
+              },
+              {
+                "relative_error": 194.68154907226562,
+                "gain": 0.965553879737854,
+                "phase_rad": 0.10288579761981964
+              }
+            ]
+          }
+        }
+      },
+      "practical_low_urban": {
+        "active": 101,
+        "gains": {
+          "independent_gain": {
+            "mean_first": 0.3035525679588318,
+            "mean_fine": 0.2805212140083313,
+            "fine_log_abs_median": 1.2641597986221313
+          },
+          "coupled_gain": {
+            "mean_first": 0.4894312620162964,
+            "mean_fine": 0.2848305404186249,
+            "fine_log_abs_median": 1.2450509071350098
+          }
+        },
+        "readouts": {
+          "direct": {
+            "carrier_relative_db_rmse": 0.34504765272140503,
+            "carrier_relative_amp_mae": 0.20384110510349274,
+            "packet_rms_ratio_median": 1,
+            "packet_rms_ratio_p10": 1,
+            "private_clean": [
+              {
+                "relative_error": 1.0400663614273071,
+                "gain": 0.0020163212902843952,
+                "phase_rad": 1.3595614433288574
+              },
+              {
+                "relative_error": 4.63831901550293,
+                "gain": 0.0015880221035331488,
+                "phase_rad": 1.541831612586975
+              },
+              {
+                "relative_error": 24.877504348754883,
+                "gain": 0.013377688825130463,
+                "phase_rad": 1.3611828088760376
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 7.45074987411499,
+                "gain": 0.9090214371681213,
+                "phase_rad": 0.10759490728378296
+              },
+              {
+                "relative_error": 338.38800048828125,
+                "gain": 0.9659173488616943,
+                "phase_rad": 0.2510971128940582
+              },
+              {
+                "relative_error": 1281.8272705078125,
+                "gain": 0.9780099987983704,
+                "phase_rad": 0.30661869049072266
+              }
+            ]
+          },
+          "independent_gain_coarse": {
+            "carrier_relative_db_rmse": 0.31822288036346436,
+            "carrier_relative_amp_mae": 0.1830323040485382,
+            "packet_rms_ratio_median": 0.2833006978034973,
+            "packet_rms_ratio_p10": 0.25348010659217834,
+            "private_clean": [
+              {
+                "relative_error": 1.0009781122207642,
+                "gain": 0.00023973228235263377,
+                "phase_rad": 1.4978426694869995
+              },
+              {
+                "relative_error": 1.0158904790878296,
+                "gain": 0.001243339735083282,
+                "phase_rad": 1.4752395153045654
+              },
+              {
+                "relative_error": 1.0737007856369019,
+                "gain": 0.0027759207878261805,
+                "phase_rad": 1.42875075340271
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 0.7817128896713257,
+                "gain": 0.6907945275306702,
+                "phase_rad": 0.14982225000858307
+              },
+              {
+                "relative_error": 1.843986988067627,
+                "gain": 0.9008965492248535,
+                "phase_rad": 0.11436725407838821
+              },
+              {
+                "relative_error": 2.9155356884002686,
+                "gain": 0.8354212045669556,
+                "phase_rad": 0.11976416409015656
+              }
+            ]
+          },
+          "independent_gain_half": {
+            "carrier_relative_db_rmse": 0.34000805020332336,
+            "carrier_relative_amp_mae": 0.20012909173965454,
+            "packet_rms_ratio_median": 0.6265681385993958,
+            "packet_rms_ratio_p10": 0.5923800468444824,
+            "private_clean": [
+              {
+                "relative_error": 1.011877179145813,
+                "gain": 0.0009340691613033414,
+                "phase_rad": 1.3901931047439575
+              },
+              {
+                "relative_error": 1.9198153018951416,
+                "gain": -0.000502827693708241,
+                "phase_rad": 1.5709489583969116
+              },
+              {
+                "relative_error": 7.0216898918151855,
+                "gain": 0.008408927358686924,
+                "phase_rad": 1.3918266296386719
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 4.914731025695801,
+                "gain": 0.8702790141105652,
+                "phase_rad": 0.0774390771985054
+              },
+              {
+                "relative_error": 207.03424072265625,
+                "gain": 0.9312158226966858,
+                "phase_rad": 0.22620759904384613
+              },
+              {
+                "relative_error": 783.7720947265625,
+                "gain": 0.9349556565284729,
+                "phase_rad": 0.27832308411598206
+              }
+            ]
+          },
+          "coupled_gain_coarse": {
+            "carrier_relative_db_rmse": 0.3640366494655609,
+            "carrier_relative_amp_mae": 0.24803297221660614,
+            "packet_rms_ratio_median": 0.4348292350769043,
+            "packet_rms_ratio_p10": 0.3124887943267822,
+            "private_clean": [
+              {
+                "relative_error": 1.0010429620742798,
+                "gain": -8.11701247585006e-05,
+                "phase_rad": 1.5377784967422485
+              },
+              {
+                "relative_error": 1.0182195901870728,
+                "gain": -1.4878166439302731e-05,
+                "phase_rad": 1.5718868970870972
+              },
+              {
+                "relative_error": 1.0792557001113892,
+                "gain": 0.003874900285154581,
+                "phase_rad": 1.4217430353164673
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 0.5556039810180664,
+                "gain": 0.5268527865409851,
+                "phase_rad": 0.08177880942821503
+              },
+              {
+                "relative_error": 1.3796898126602173,
+                "gain": 0.8744139075279236,
+                "phase_rad": 0.12503677606582642
+              },
+              {
+                "relative_error": 2.7082741260528564,
+                "gain": 0.8194347620010376,
+                "phase_rad": 0.12332797795534134
+              }
+            ]
+          },
+          "coupled_gain_half": {
+            "carrier_relative_db_rmse": 0.3396192193031311,
+            "carrier_relative_amp_mae": 0.19940879940986633,
+            "packet_rms_ratio_median": 0.6286866664886475,
+            "packet_rms_ratio_p10": 0.5895150303840637,
+            "private_clean": [
+              {
+                "relative_error": 1.0120658874511719,
+                "gain": 0.0009340691613033414,
+                "phase_rad": 1.4487037658691406
+              },
+              {
+                "relative_error": 1.9243555068969727,
+                "gain": -0.0010883063077926636,
+                "phase_rad": 1.6300450563430786
+              },
+              {
+                "relative_error": 7.030542850494385,
+                "gain": 0.008820150047540665,
+                "phase_rad": 1.388820767402649
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 4.872311115264893,
+                "gain": 0.8375052213668823,
+                "phase_rad": 0.091827891767025
+              },
+              {
+                "relative_error": 209.43643188476562,
+                "gain": 0.9229446053504944,
+                "phase_rad": 0.22941884398460388
+              },
+              {
+                "relative_error": 791.2042846679688,
+                "gain": 0.9290239214897156,
+                "phase_rad": 0.25630274415016174
+              }
+            ]
+          }
+        }
+      }
+    },
+    "residual": {
+      "practical_low_suburban": {
+        "active": 150,
+        "gains": {
+          "independent_gain": {
+            "mean_first": 0.268822580575943,
+            "mean_fine": 0.2576817274093628,
+            "fine_log_abs_median": 1.3594090938568115
+          },
+          "coupled_gain": {
+            "mean_first": 0.5835462808609009,
+            "mean_fine": 0.2663682699203491,
+            "fine_log_abs_median": 1.323865532875061
+          }
+        },
+        "readouts": {
+          "direct": {
+            "carrier_relative_db_rmse": 1.2971994876861572,
+            "carrier_relative_amp_mae": 0.5592675805091858,
+            "packet_rms_ratio_median": 1,
+            "packet_rms_ratio_p10": 1,
+            "private_clean": [
+              {
+                "relative_error": 1.0453763008117676,
+                "gain": 0.0004239660338498652,
+                "phase_rad": 1.4516569375991821
+              },
+              {
+                "relative_error": 4.486252784729004,
+                "gain": 0.010096448473632336,
+                "phase_rad": 1.3376253843307495
+              },
+              {
+                "relative_error": 4.982915878295898,
+                "gain": 0.06525051593780518,
+                "phase_rad": 0.9284103512763977
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 17.834260940551758,
+                "gain": 0.863765299320221,
+                "phase_rad": 0.1822272390127182
+              },
+              {
+                "relative_error": 479.44677734375,
+                "gain": 0.881019651889801,
+                "phase_rad": 0.3899747133255005
+              },
+              {
+                "relative_error": 3.3083863258361816,
+                "gain": 0.8942150473594666,
+                "phase_rad": 0.4025117754936218
+              }
+            ]
+          },
+          "independent_gain_coarse": {
+            "carrier_relative_db_rmse": 1.2423038482666016,
+            "carrier_relative_amp_mae": 0.5283418893814087,
+            "packet_rms_ratio_median": 0.26684850454330444,
+            "packet_rms_ratio_p10": 0.2548334002494812,
+            "private_clean": [
+              {
+                "relative_error": 0.9992318153381348,
+                "gain": -0.0004359337326604873,
+                "phase_rad": 1.6709364652633667
+              },
+              {
+                "relative_error": 0.9959775805473328,
+                "gain": 0.00015479311696253717,
+                "phase_rad": 1.5234135389328003
+              },
+              {
+                "relative_error": 0.9985790252685547,
+                "gain": 0.0027866929303854704,
+                "phase_rad": 1.1333045959472656
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 2.835841417312622,
+                "gain": 0.32947683334350586,
+                "phase_rad": 0.3764970302581787
+              },
+              {
+                "relative_error": 5.700958728790283,
+                "gain": 0.21090704202651978,
+                "phase_rad": 0.36533865332603455
+              },
+              {
+                "relative_error": 1.0092427730560303,
+                "gain": 0.12396504729986191,
+                "phase_rad": 0.2483782023191452
+              }
+            ]
+          },
+          "independent_gain_half": {
+            "carrier_relative_db_rmse": 1.2878280878067017,
+            "carrier_relative_amp_mae": 0.5538060069084167,
+            "packet_rms_ratio_median": 0.6273596882820129,
+            "packet_rms_ratio_p10": 0.6139273643493652,
+            "private_clean": [
+              {
+                "relative_error": 1.0111498832702637,
+                "gain": -0.0005298643955029547,
+                "phase_rad": 1.6221061944961548
+              },
+              {
+                "relative_error": 1.874212384223938,
+                "gain": 0.004419938661158085,
+                "phase_rad": 1.3614941835403442
+              },
+              {
+                "relative_error": 1.9630694389343262,
+                "gain": 0.030688034370541573,
+                "phase_rad": 0.8835773468017578
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 12.433418273925781,
+                "gain": 0.7539531588554382,
+                "phase_rad": 0.14789792895317078
+              },
+              {
+                "relative_error": 299.18792724609375,
+                "gain": 0.753695547580719,
+                "phase_rad": 0.3545370399951935
+              },
+              {
+                "relative_error": 2.346351146697998,
+                "gain": 0.7433165311813354,
+                "phase_rad": 0.39544248580932617
+              }
+            ]
+          },
+          "coupled_gain_coarse": {
+            "carrier_relative_db_rmse": 2.5343613624572754,
+            "carrier_relative_amp_mae": 1.7392303943634033,
+            "packet_rms_ratio_median": 0.5968173742294312,
+            "packet_rms_ratio_p10": 0.5081653594970703,
+            "private_clean": [
+              {
+                "relative_error": 0.9997121691703796,
+                "gain": -0.0006543519557453692,
+                "phase_rad": 1.6746615171432495
+              },
+              {
+                "relative_error": 1.0007599592208862,
+                "gain": 0.001066549215465784,
+                "phase_rad": 1.3602219820022583
+              },
+              {
+                "relative_error": 0.9988679885864258,
+                "gain": 0.0030805421993136406,
+                "phase_rad": 1.2322049140930176
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 1.107974886894226,
+                "gain": 0.1333850622177124,
+                "phase_rad": 0.41853636503219604
+              },
+              {
+                "relative_error": 3.0003461837768555,
+                "gain": 0.1267164647579193,
+                "phase_rad": 0.32941654324531555
+              },
+              {
+                "relative_error": 1.0008015632629395,
+                "gain": 0.057779163122177124,
+                "phase_rad": 0.4603700637817383
+              }
+            ]
+          },
+          "coupled_gain_half": {
+            "carrier_relative_db_rmse": 1.2994883060455322,
+            "carrier_relative_amp_mae": 0.5627472400665283,
+            "packet_rms_ratio_median": 0.6313753128051758,
+            "packet_rms_ratio_p10": 0.6167324781417847,
+            "private_clean": [
+              {
+                "relative_error": 1.0110914707183838,
+                "gain": -0.0002983607701025903,
+                "phase_rad": 1.6153136491775513
+              },
+              {
+                "relative_error": 1.881766676902771,
+                "gain": 0.0046888114884495735,
+                "phase_rad": 1.3827457427978516
+              },
+              {
+                "relative_error": 1.9705030918121338,
+                "gain": 0.03158494085073471,
+                "phase_rad": 0.9287543296813965
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 12.014763832092285,
+                "gain": 0.7324568033218384,
+                "phase_rad": 0.1830982118844986
+              },
+              {
+                "relative_error": 302.0820617675781,
+                "gain": 0.7464197874069214,
+                "phase_rad": 0.36751633882522583
+              },
+              {
+                "relative_error": 2.364670991897583,
+                "gain": 0.7411738038063049,
+                "phase_rad": 0.40302667021751404
+              }
+            ]
+          }
+        }
+      },
+      "practical_low_urban": {
+        "active": 150,
+        "gains": {
+          "independent_gain": {
+            "mean_first": 0.2914189398288727,
+            "mean_fine": 0.27281585335731506,
+            "fine_log_abs_median": 1.308958649635315
+          },
+          "coupled_gain": {
+            "mean_first": 0.4705202877521515,
+            "mean_fine": 0.2745572030544281,
+            "fine_log_abs_median": 1.2959418296813965
+          }
+        },
+        "readouts": {
+          "direct": {
+            "carrier_relative_db_rmse": 2.404806137084961,
+            "carrier_relative_amp_mae": 1.624554991722107,
+            "packet_rms_ratio_median": 1,
+            "packet_rms_ratio_p10": 1,
+            "private_clean": [
+              {
+                "relative_error": 1.066019892692566,
+                "gain": -0.0007424093200825155,
+                "phase_rad": 1.594601035118103
+              },
+              {
+                "relative_error": 7.9148430824279785,
+                "gain": -0.0008737711468711495,
+                "phase_rad": 1.556531548500061
+              },
+              {
+                "relative_error": 29.797042846679688,
+                "gain": 0.016367344185709953,
+                "phase_rad": 1.5063587427139282
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 7.247188568115234,
+                "gain": 0.8473691344261169,
+                "phase_rad": 0.24385841190814972
+              },
+              {
+                "relative_error": 27.30279541015625,
+                "gain": 0.6660082936286926,
+                "phase_rad": 0.8580798506736755
+              },
+              {
+                "relative_error": 540.43994140625,
+                "gain": 0.9188454151153564,
+                "phase_rad": 1.0340274572372437
+              }
+            ]
+          },
+          "independent_gain_coarse": {
+            "carrier_relative_db_rmse": 2.2430388927459717,
+            "carrier_relative_amp_mae": 1.4652739763259888,
+            "packet_rms_ratio_median": 0.25124359130859375,
+            "packet_rms_ratio_p10": 0.21644620597362518,
+            "private_clean": [
+              {
+                "relative_error": 1.0010641813278198,
+                "gain": -0.0006036799750290811,
+                "phase_rad": 1.6643047332763672
+              },
+              {
+                "relative_error": 0.9998779892921448,
+                "gain": 0.00396735081449151,
+                "phase_rad": 1.2908568382263184
+              },
+              {
+                "relative_error": 0.9989892244338989,
+                "gain": 0.006396826356649399,
+                "phase_rad": 1.318374752998352
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 1.358069658279419,
+                "gain": 0.6201072931289673,
+                "phase_rad": 0.2981483042240143
+              },
+              {
+                "relative_error": 1.0669810771942139,
+                "gain": 1.0401461124420166,
+                "phase_rad": 0.20129838585853577
+              },
+              {
+                "relative_error": 1.6674314737319946,
+                "gain": 0.7007514238357544,
+                "phase_rad": 0.2508472800254822
+              }
+            ]
+          },
+          "independent_gain_half": {
+            "carrier_relative_db_rmse": 2.3723747730255127,
+            "carrier_relative_amp_mae": 1.592796802520752,
+            "packet_rms_ratio_median": 0.604699432849884,
+            "packet_rms_ratio_p10": 0.5787762999534607,
+            "private_clean": [
+              {
+                "relative_error": 1.0179182291030884,
+                "gain": 0.0008751017157919705,
+                "phase_rad": 1.4262288808822632
+              },
+              {
+                "relative_error": 2.7188682556152344,
+                "gain": 0.0014246837235987186,
+                "phase_rad": 1.4839454889297485
+              },
+              {
+                "relative_error": 8.173213958740234,
+                "gain": 0.01326235942542553,
+                "phase_rad": 1.5105233192443848
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 5.127871513366699,
+                "gain": 0.8064775466918945,
+                "phase_rad": 0.15495499968528748
+              },
+              {
+                "relative_error": 16.94879722595215,
+                "gain": 0.6954264640808105,
+                "phase_rad": 0.713283896446228
+              },
+              {
+                "relative_error": 329.3237609863281,
+                "gain": 0.8954490423202515,
+                "phase_rad": 0.9309508800506592
+              }
+            ]
+          },
+          "coupled_gain_coarse": {
+            "carrier_relative_db_rmse": 4.006423473358154,
+            "carrier_relative_amp_mae": 3.2055816650390625,
+            "packet_rms_ratio_median": 0.4552020728588104,
+            "packet_rms_ratio_p10": 0.2953605353832245,
+            "private_clean": [
+              {
+                "relative_error": 1.0000957250595093,
+                "gain": -0.00011727120727300644,
+                "phase_rad": 1.5988969802856445
+              },
+              {
+                "relative_error": 1.0000886917114258,
+                "gain": 0.004112677648663521,
+                "phase_rad": 1.3207544088363647
+              },
+              {
+                "relative_error": 1.0002671480178833,
+                "gain": 0.00584663450717926,
+                "phase_rad": 1.351050853729248
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 0.8470771908760071,
+                "gain": 0.46641576290130615,
+                "phase_rad": 0.20377863943576813
+              },
+              {
+                "relative_error": 1.0528934001922607,
+                "gain": 0.9201937317848206,
+                "phase_rad": 0.2048228532075882
+              },
+              {
+                "relative_error": 1.604439377784729,
+                "gain": 0.5950707197189331,
+                "phase_rad": 0.2532656788825989
+              }
+            ]
+          },
+          "coupled_gain_half": {
+            "carrier_relative_db_rmse": 2.402785539627075,
+            "carrier_relative_amp_mae": 1.6252143383026123,
+            "packet_rms_ratio_median": 0.60697340965271,
+            "packet_rms_ratio_p10": 0.5776787996292114,
+            "private_clean": [
+              {
+                "relative_error": 1.017256736755371,
+                "gain": 0.0004341885505709797,
+                "phase_rad": 1.4333806037902832
+              },
+              {
+                "relative_error": 2.727112054824829,
+                "gain": 9.575943840900436e-05,
+                "phase_rad": 1.5560681819915771
+              },
+              {
+                "relative_error": 8.191048622131348,
+                "gain": -0.0011281345505267382,
+                "phase_rad": 1.5622859001159668
+              }
+            ],
+            "private_noiseless_relative": [
+              {
+                "relative_error": 4.985575199127197,
+                "gain": 0.7785118222236633,
+                "phase_rad": 0.18395380675792694
+              },
+              {
+                "relative_error": 17.225818634033203,
+                "gain": 0.6687768697738647,
+                "phase_rad": 0.6969698071479797
+              },
+              {
+                "relative_error": 334.4439392089844,
+                "gain": 0.8189239501953125,
+                "phase_rad": 0.930563747882843
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{"at": "2026-11-24T06:02:48+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-24T06:05:25+00:00", "status": "RUNNING", "note": "Verified live GPU, PID, CWD, argv and growing fit log after the real smoke.", "evidence": "launch-evidence.json", "row_id": "fit-independent_gain"}
+{"at": "2026-11-24T06:05:25+00:00", "status": "RUNNING", "note": "Verified live GPU, PID, CWD, argv and growing fit log after the real smoke.", "evidence": "launch-evidence.json", "row_id": "fit-coupled_gain"}
+{"at": "2026-11-24T06:05:25+00:00", "status": "RUNNING", "note": "Matched N607 carrier and complex detail recovery fitting verified.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-24T06:17:48+00:00", "status": "ANALYZED", "note": "Matching source-only fit frozen.", "evidence": "independent_gain-complete.json", "row_id": "fit-independent_gain"}
+{"at": "2026-11-24T06:17:48+00:00", "status": "ANALYZED", "note": "Matching source-only fit frozen.", "evidence": "coupled_gain-complete.json", "row_id": "fit-coupled_gain"}
+{"at": "2026-11-24T06:17:48+00:00", "status": "ANALYZED", "note": "Frozen source scoring verified after complete predictions.", "evidence": "full-source-scores.json", "row_id": "evaluate-full"}
+{"at": "2026-11-24T06:17:48+00:00", "status": "ANALYZED", "note": "Frozen source scoring verified after complete predictions.", "evidence": "residual-source-scores.json", "row_id": "evaluate-residual"}
+{"at": "2026-11-24T06:17:48+00:00", "status": "ANALYZED", "note": "Frozen source scoring verified after complete predictions.", "evidence": "clean-complete-scores.json", "row_id": "evaluate-reserve"}
+{"at": "2026-11-24T06:17:48+00:00", "status": "ANALYZED", "note": "Paired source results and clean reserve checked.", "evidence": "report.md", "row_id": null}

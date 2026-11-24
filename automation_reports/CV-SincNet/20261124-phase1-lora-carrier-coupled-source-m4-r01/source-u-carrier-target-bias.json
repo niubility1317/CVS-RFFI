@@ -1,0 +1,29 @@
+{
+  "status": "COMPLETE",
+  "n": 150,
+  "target_reads": 0,
+  "TX_reads": 0,
+  "F_reads": 0,
+  "original_generic": {
+    "target_in_received_frame": {
+      "median": 0.7018673419952393,
+      "below_half": 0.39888888597488403
+    },
+    "source_own_frame": {
+      "median": 1.0307319164276123,
+      "below_half": 0.03444444388151169
+    },
+    "target_over_source_amplitude": 0.9095543026924133
+  },
+  "amplitude_and_noise_only": {
+    "target_in_received_frame": {
+      "median": 1.0017961263656616,
+      "below_half": 0.04444444552063942
+    },
+    "source_own_frame": {
+      "median": 1.0030990839004517,
+      "below_half": 0.04444444552063942
+    },
+    "target_over_source_amplitude": 0.9999250769615173
+  }
+}

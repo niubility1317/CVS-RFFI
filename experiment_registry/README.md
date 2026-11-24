@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 载波幅度与复数细节联合恢复](../automation_reports/CV-SincNet/20261124-phase1-lora-carrier-coupled-source-m4-r01/report.md)
 - [LoRa 精确反演收益的载波与细节归因](../automation_reports/CV-SincNet/20261124-phase1-lora-carrier-factorial-source-m2-r01/report.md)
 - [LoRa 去噪前导的交叉校正](../automation_reports/CV-SincNet/20261124-phase1-lora-pilot-after-denoise-source-m4-r01/report.md)
 - [LoRa 共同失败包的噪声与接收作用归因](../automation_reports/CV-SincNet/20261124-phase1-lora-common-failure-physics-source-m2-r01/report.md)

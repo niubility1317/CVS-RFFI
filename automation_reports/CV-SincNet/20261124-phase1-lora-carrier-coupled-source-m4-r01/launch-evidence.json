@@ -1,0 +1,134 @@
+{
+  "verification": "VERIFIED",
+  "submit": {
+    "pid": 2658590,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-carrier-coupled-source-m4-r01-release",
+    "code_commit": "deb0a25f18920bf9dac9c301113ce8dff2a1f8b4",
+    "archive_transfer": "VERIFIED",
+    "remote_compile": "PASS",
+    "status": "SUBMITTED_NOT_YET_VERIFIED",
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-carrier-coupled-source-m4-r01"
+  },
+  "controller": {
+    "pid": 2658590,
+    "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.carrier_coupled_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-carrier-coupled-source-m4-r01-release/runtime.json",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-carrier-coupled-source-m4-r01-release",
+    "cuda": [
+      "CUDA_VISIBLE_DEVICES="
+    ]
+  },
+  "jobs": {
+    "smoke-source": {
+      "pid": 2658603,
+      "gpu": 3,
+      "identity": null,
+      "bytes": 459,
+      "last": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+        "  return self.fget.__get__(instance, owner)()",
+        "LORA_ANTITHETIC_REAL_CHECKPOINT_PASS"
+      ]
+    },
+    "fit-independent_gain": {
+      "pid": 2658680,
+      "gpu": 3,
+      "identity": {
+        "pid": 2658680,
+        "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.carrier_coupled_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-carrier-coupled-source-m4-r01/configs/fit-independent_gain.json independent_gain",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-carrier-coupled-source-m4-r01-release",
+        "cuda": [
+          "CUDA_VISIBLE_DEVICES=3"
+        ]
+      },
+      "bytes": 1509,
+      "last": [
+        "CHANNEL_BLIND_FIT 100 1.5674855709075928 1.529301404953003 4.203133583068848 3.004629135131836 3.0856881141662598 0.280520498752594 4.81840181350708 0.7108122110366821 2.0271730422973633 1.4423586130142212 1.4150328636169434 2.060563087463379 0.8001018166542053 0.7950180172920227 0.26275885105133057",
+        "CHANNEL_BLIND_FIT 150 1.6731003522872925 1.578256607055664 3.7115724086761475 2.271899938583374 2.801762580871582 0.13399648666381836 3.5073275566101074 0.5160645842552185 1.9242935180664062 1.2280151844024658 0.9918291568756104 1.5428515672683716 0.5208213925361633 0.5170254707336426 0.17720474302768707",
+        "CHANNEL_BLIND_FIT 200 1.2118167877197266 1.078987956047058 3.6813788414001465 2.449483871459961 2.85829496383667 0.25739485025405884 4.29467248916626 0.6643598079681396 2.178107738494873 1.226677417755127 1.212539792060852 1.81217360496521 0.46095991134643555 0.4519191384315491 0.22333844006061554"
+      ]
+    },
+    "fit-coupled_gain": {
+      "pid": 2658681,
+      "gpu": 2,
+      "identity": {
+        "pid": 2658681,
+        "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.carrier_coupled_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-carrier-coupled-source-m4-r01/configs/fit-coupled_gain.json coupled_gain",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-carrier-coupled-source-m4-r01-release",
+        "cuda": [
+          "CUDA_VISIBLE_DEVICES=2"
+        ]
+      },
+      "bytes": 1510,
+      "last": [
+        "CHANNEL_BLIND_FIT 100 1.441104531288147 1.4042682647705078 4.1411237716674805 2.9780664443969727 2.996898651123047 0.2733367085456848 4.804514408111572 0.6883671283721924 1.9659641981124878 1.3750176429748535 1.3183640241622925 1.94072425365448 0.791732132434845 0.7904837727546692 0.2642335891723633",
+        "CHANNEL_BLIND_FIT 150 1.4663152694702148 1.3865007162094116 3.6136937141418457 2.2428574562072754 2.669708251953125 0.1302640736103058 3.4986412525177 0.5016228556632996 1.819425344467163 1.135424256324768 0.8834180235862732 1.4036718606948853 0.514699399471283 0.5140201449394226 0.17845691740512848",
+        "CHANNEL_BLIND_FIT 200 0.9143376350402832 0.8218688368797302 3.5303447246551514 2.4154436588287354 2.645098924636841 0.2388416826725006 4.273334980010986 0.6440483927726746 2.0135180950164795 1.0724033117294312 1.032920479774475 1.5594755411148071 0.44230520725250244 0.4400079548358917 0.22484567761421204"
+      ]
+    }
+  },
+  "state": null,
+  "files": {
+    "smoke.json": 128
+  },
+  "growth": {
+    "fit-independent_gain": [
+      1509,
+      3655
+    ],
+    "fit-coupled_gain": [
+      1510,
+      3672
+    ]
+  },
+  "files_after": {
+    "smoke.json": 128
+  },
+  "frozen_evaluate": {
+    "jobs": {
+      "evaluate-full": {
+        "pid": 2667562,
+        "gpu": 3,
+        "identity": {
+          "pid": 2667562,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.carrier_coupled_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-carrier-coupled-source-m4-r01/configs/evaluate-full.json full",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-carrier-coupled-source-m4-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=3"
+          ]
+        },
+        "bytes": 422,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()"
+        ]
+      },
+      "evaluate-residual": {
+        "pid": 2667563,
+        "gpu": 2,
+        "identity": {
+          "pid": 2667563,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.carrier_coupled_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-carrier-coupled-source-m4-r01/configs/evaluate-residual.json residual",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-carrier-coupled-source-m4-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=2"
+          ]
+        },
+        "bytes": 422,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()"
+        ]
+      }
+    },
+    "growth": {
+      "evaluate-full": [
+        422,
+        754
+      ],
+      "evaluate-residual": [
+        422,
+        782
+      ]
+    }
+  }
+}
