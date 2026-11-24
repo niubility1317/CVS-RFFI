@@ -12,6 +12,7 @@ from experiments.cric_dura_comparison.f_data import SourceDataset
 from experiments.cric_dura_comparison.io import read, write
 from experiments.cric_dura_comparison.t1_practical import Practical
 from experiments.pamf_repl_view_shuffle import evaluation
+from .channel import exponential_tdl
 from .model import ReceiverAdversarialCNN, spectrogram
 
 
@@ -30,7 +31,10 @@ RECIPES = {
     'wifi': ('wifi', False),
     'joint': ('wifi', True),
     'stable_rx': ('stable', True),
+    'paper_pdp_half': ('wifi', False),
+    'paper_pdp_all': ('wifi', False),
 }
+PAPER_PDP = {'paper_pdp_half': .5, 'paper_pdp_all': 1.}
 
 
 def source_contract(config):
@@ -75,6 +79,12 @@ def add_noise(iq, generator):
     power = iq.square().mean(dim=(1, 2), keepdim=True)
     noise = torch.randn(iq.shape, device=iq.device, generator=generator)
     return iq + noise * (power * 10 ** (-snr_db / 10)).sqrt()
+
+
+def source_view(iq, recipe, rng, channel_rng):
+    if recipe in PAPER_PDP:
+        iq = exponential_tdl(iq, channel_rng, PAPER_PDP[recipe])
+    return add_noise(iq, rng)
 
 
 def auxiliary_iq(dataset):
@@ -172,7 +182,13 @@ def smoke(config, device):
     model = create_model(device, recipe)
     optimizer, adversary = make_optimizers(model, recipe)
     encode = model.front_end
-    loss, _ = train_loss(model, spectrogram(sample, encode), spectrogram(satellite, encode),
+    if recipe in PAPER_PDP:
+        rng = torch.Generator(device=device).manual_seed(config['model_seed'])
+        channel_rng = torch.Generator(device=device).manual_seed(config['model_seed'] + 1237)
+        sample_view = source_view(sample, recipe, rng, channel_rng)
+    else:
+        sample_view = sample
+    loss, _ = train_loss(model, spectrogram(sample_view, encode), spectrogram(satellite, encode),
                          tx[selected], rx[selected], adversary)
     loss.backward()
     if not torch.isfinite(loss) or any(p.grad is None or not torch.isfinite(p.grad).all() for p in model.parameters()):
@@ -193,6 +209,7 @@ def train(config, device):
     contract = source_contract(config)
     torch.manual_seed(config['model_seed'])
     seed = torch.Generator(device=device).manual_seed(config['model_seed'])
+    channel_seed = torch.Generator(device=device).manual_seed(config['model_seed'] + 1237)
     labeled = SourceDataset(config['source_cache'], 'L_s', contract)
     val = SourceDataset(config['source_cache'], 'V', contract)
     tx, rx = labels(labeled, device)
@@ -217,7 +234,7 @@ def train(config, device):
             correct = loss_sum = 0
             for index in torch.randperm(len(iq), device=device, generator=seed).split(64):
                 optimizer.zero_grad(set_to_none=True)
-                ordinary = spectrogram(add_noise(iq[index], seed), front_end)
+                ordinary = spectrogram(source_view(iq[index], recipe, seed, channel_seed), front_end)
                 loss, logits = train_loss(model, ordinary, sat[index], tx[index], rx[index],
                                           adversary, (epoch - 1) / (EPOCHS - 1))
                 loss.backward()

@@ -3,6 +3,7 @@ import torch
 
 from experiments.shen_wisig.model import ReceiverAdversarialCNN, spectrogram
 from experiments.shen_wisig.runner import make_optimizers, source_contract, train_loss
+from experiments.shen_wisig.channel import exponential_tdl, linear_fir
 
 
 @pytest.mark.parametrize(('front_end', 'shape'), [
@@ -53,3 +54,16 @@ def test_training_rejects_target_config_before_opening_the_source_contract():
         source_contract(dict(run_id='test', row_id='test', code_commit='code', model_seed=1,
                              source_cache='source', source_contract='missing', output_root='out',
                              tests={'cross_rx': {'views_root': 'target'}}))
+
+
+def test_source_multipath_is_causal_packet_local_and_reproducible():
+    signal = torch.tensor([[0., 0., 0., 1.]], dtype=torch.complex64)
+    taps = torch.tensor([[0., 1.]], dtype=torch.complex64)
+    torch.testing.assert_close(linear_fir(signal, taps), torch.zeros_like(signal))
+    iq = torch.ones(3, 2, 256)
+    generator = torch.Generator().manual_seed(17)
+    torch.testing.assert_close(exponential_tdl(iq, generator, 0.), iq)
+    result = exponential_tdl(iq, generator.manual_seed(17), 1.)
+    torch.testing.assert_close(result, exponential_tdl(iq, generator.manual_seed(17), 1.))
+    assert result.shape == iq.shape and torch.isfinite(result).all()
+    assert not torch.equal(result[0], result[1])
