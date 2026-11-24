@@ -13,6 +13,8 @@ from experiments.cric_dura_comparison.io import read, tensor, write
 from .historical import write_csv
 
 RUN = "20261124-phase1-pamf-dura-advisor-s2026092701-r01"
+SINGLE_RUN = "20261124-phase1-pamf-dura-single-advisor-s2026092701-r01"
+TRAINED_SINGLE = "trained_single"
 SEED = 20261124
 COUNT = 3072
 TASKS = ("cross_rx", "cross_both")
@@ -143,7 +145,7 @@ def predict(c):
     reader, _ = load_reader(c["source_output"], contract, dict(structure="full", signature_views=3,
         permuted=True, learning_regime="ssl", model_seed=2026092701), device)
     g = load_G(c["g"], contract, device)
-    methods = model_routes(g, device)
+    methods = {TRAINED_SINGLE: g} if c.get("trained_single") else model_routes(g, device)
     before = [snapshot(module) for module in (g,reader)]
     ref = np.load(c["source_smoke"], mmap_mode="r", allow_pickle=False)[:4]
     with torch.inference_mode():
@@ -168,8 +170,8 @@ def predict(c):
                 observed = np.load(Path(m["observations_root"]) / f"{panel}.npy", mmap_mode="r", allow_pickle=False)[pos]
             else:
                 observed = simulated(clean, ids, panel)
-            buffers = {name: [] for name in METHODS}
-            sums = {name: np.zeros(3, dtype=np.float64) for name in METHODS}
+            buffers = {name: [] for name in methods}
+            sums = {name: np.zeros(3, dtype=np.float64) for name in methods}
             with torch.inference_mode():
                 for i in range(0,len(ids),128):
                     y = tensor(np.asarray(observed[i:i+128], dtype=np.float32), device)
@@ -189,7 +191,7 @@ def predict(c):
                             ((z-ref).square().mean((1,2))/energy).sum().item(),
                             (spec-ref_spec).square().mean(1).sum().item(),
                             (1-F.cosine_similarity(features,ref_feature)).sum().item()])
-            for name in METHODS:
+            for name in methods:
                 values[f"{name}__{panel}"] = np.asarray(buffers[name],dtype=np.int64)
                 avg = sums[name] / len(ids)
                 if not np.isfinite(avg).all():
@@ -203,24 +205,35 @@ def predict(c):
         raise ValueError("Frozen state changed")
     write_csv(r/"fidelity.csv",fidelity)
     write(r/"complete.json",dict(status="ALL_PREDICTIONS_COMPLETE", truth_read=False, query_fit=False,
-                                 count_per_task=COUNT, panels=list(PANELS), routes=list(METHODS)))
+                                 count_per_task=COUNT, panels=list(PANELS), routes=list(methods)))
 
 
 def score(c):
     p = Path(c["prediction_output"])
+    baseline = Path(c["baseline_prediction_output"]) if c.get("baseline_prediction_output") else None
+    routes = (TRAINED_SINGLE,) if baseline else METHODS
     done = read(p/"complete.json")
     if done != dict(status="ALL_PREDICTIONS_COMPLETE", truth_read=False, query_fit=False,
-                    count_per_task=COUNT, panels=list(PANELS), routes=list(METHODS)):
+                    count_per_task=COUNT, panels=list(PANELS), routes=list(routes)):
         raise ValueError("Truth stays closed without all preregistered predictions")
+    if baseline and read(baseline / "complete.json") != dict(
+            status="ALL_PREDICTIONS_COMPLETE", truth_read=False, query_fit=False,
+            count_per_task=COUNT, panels=list(PANELS), routes=list(METHODS)):
+        raise ValueError("Complete prior raw decisions required")
     predictions = {}
     for task in TASKS:
         _, expected, _ = population(c["tests"][task]["views_root"],c["classes"],task)
         with np.load(p/f"{task}.npz",allow_pickle=False) as a:
-            if set(a.files) != {"ids"} | {f"{route}__{panel}" for route in METHODS for panel in PANELS}:
+            if set(a.files) != {"ids"} | {f"{route}__{panel}" for route in routes for panel in PANELS}:
                 raise ValueError("Missing frozen prediction cell")
             if not np.array_equal(a["ids"],expected):
                 raise ValueError("Wrong sample population")
             values = {key:a[key] for key in a.files if key!="ids"}
+            if baseline:
+                with np.load(baseline / f"{task}.npz", allow_pickle=False) as previous:
+                    if not np.array_equal(previous["ids"], expected):
+                        raise ValueError("Prior raw decisions use different physical IDs")
+                    values.update({f"raw__{panel}":previous[f"raw__{panel}"] for panel in PANELS})
             if any(x.shape!=(COUNT,) or x.dtype.kind not in "iu" or x.min()<0 or x.max()>=6 for x in values.values()):
                 raise ValueError("Invalid frozen decisions")
             predictions[task] = expected, values
@@ -235,7 +248,7 @@ def score(c):
         strata.extend(("receiver",str(i),rx==i) for i in np.unique(rx))
         for panel in PANELS:
             ref = values[f"raw__{panel}"]
-            for route in METHODS:
+            for route in routes:
                 result = values[f"{route}__{panel}"]
                 for dim, name, use in strata:
                     a,b = ref[use]==labels[use],result[use]==labels[use]

@@ -6,7 +6,7 @@ import subprocess
 import time
 
 from experiments.cric_dura_comparison.io import read, write
-from .dura import COUNT, METHODS, PANELS, RUN, SEED, TASKS
+from .dura import COUNT, METHODS, PANELS, RUN, SEED, SINGLE_RUN, TASKS, TRAINED_SINGLE
 
 MODULE = "experiments.pamf_advisor_supplements.dura"
 
@@ -27,11 +27,18 @@ def dispatch(rt):
         views={k:h["tests"][k]["views_root"] for k in TASKS}, output_root=str(root/"predictions"))
     score = dict(prediction_output=pred["output_root"], classes=h["classes"],
         tests={k:h["tests"][k] for k in TASKS}, output_root=str(root/"scores"))
+    single = rt["run_id"] == SINGLE_RUN
+    if single:
+        project = Path(rt["project"])
+        ancestry = project / "runs" / "20261021-phase1-T1-DURA-G-ablation-m21-r01"
+        checkpoint = ancestry / "coarse_only-s2026092701" / "source" / "final.pt"
+        pred.update(trained_single=True, g=dict(kind="G_ablation", arm="coarse_only", checkpoint=str(checkpoint)))
+        score["baseline_prediction_output"] = str(project / "runs" / RUN / "predictions")
     write(root/"predict.json", pred)
     write(root/"score.json", score)
-    registered = read(Path(rt["release_root"])/"automation_reports"/"CV-SincNet"/RUN/"experiment.json")
+    registered = read(Path(rt["release_root"])/"automation_reports"/"CV-SincNet"/rt["run_id"]/"experiment.json")
     request=registered["rows"][0]["data_overrides"]
-    if request != dict(routes=list(METHODS), panels=list(PANELS), samples_per_task=COUNT, sampling_seed=SEED):
+    if request != dict(routes=[TRAINED_SINGLE] if single else list(METHODS), panels=list(PANELS), samples_per_task=COUNT, sampling_seed=SEED):
         raise ValueError("Restoration registration differs from executable matrix")
     choices=rt["allowed_gpus"]
     for action in ("predict","score"):

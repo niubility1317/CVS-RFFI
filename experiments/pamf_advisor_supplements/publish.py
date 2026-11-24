@@ -44,10 +44,11 @@ print(json.dumps(dict(pid=p.pid, archive_verified=True, compile_pass=True, cwd=s
 """
 
 
-def publish(ssh_config, output, restoration=False):
+def publish(ssh_config, output, restoration=False, single=False):
     import shlex
-    if restoration:
-        from .dura import RUN as run_id
+    if restoration or single:
+        from .dura import RUN as dura_run, SINGLE_RUN
+        run_id = SINGLE_RUN if single else dura_run
         release = f"{PROJECT}/releases/{run_id}-release"
         run_root = f"{PROJECT}/runs/{run_id}"
         command = [PYTHON, "-u", "-m", "experiments.pamf_advisor_supplements.dura_dispatch",
@@ -76,7 +77,7 @@ def publish(ssh_config, output, restoration=False):
     rt = dict(run_id=run_id, code_commit=commit, python=PYTHON, project=PROJECT, release_root=release,
               run_root=run_root, runtime_file=f"{release}/runtime.json", context=CONTEXT,
               chrono_cache=f"{PROJECT}/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/chrono",
-              allowed_gpus=[5, 6, 7] if restoration else [0, 1, 2, 4], launch_owner="codex-pamf-advisor-20261124")
+              allowed_gpus=[5, 6, 7] if restoration or single else [0, 1, 2, 4], launch_owner="codex-pamf-advisor-20261124")
     with archive.open("rb") as stream:
         digest = hashlib.sha256(stream.read()).hexdigest()
     request = dict(runtime=rt, sha256=digest, archive=f"{PROJECT}/releases/{archive.name}",
@@ -98,5 +99,6 @@ if __name__ == "__main__":
     p.add_argument("--ssh-config", required=True)
     p.add_argument("--output", required=True, type=Path)
     p.add_argument("--restoration", action="store_true")
+    p.add_argument("--single", action="store_true")
     args = p.parse_args()
-    publish(args.ssh_config, args.output, args.restoration)
+    publish(args.ssh_config, args.output, args.restoration, args.single)
