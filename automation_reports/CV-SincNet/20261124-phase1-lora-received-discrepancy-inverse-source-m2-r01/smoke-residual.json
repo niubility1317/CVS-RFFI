@@ -1,0 +1,38 @@
+{
+  "status": "PASS",
+  "source_u": 10,
+  "target_reads": 0,
+  "TX_reads": 0,
+  "metrics": {
+    "practical_low_urban": {
+      "active": 10,
+      "replay_relative_error": 2.4552172465601753e-16,
+      "discrepancy_stops": {
+        "raw_stop1": {
+          "reached": 10,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 4.0
+        },
+        "raw_stop075": {
+          "reached": 10,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 5.0
+        },
+        "weighted_stop1": {
+          "reached": 10,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 4.0
+        },
+        "weighted_stop075": {
+          "reached": 10,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 5.0
+        }
+      }
+    }
+  }
+}

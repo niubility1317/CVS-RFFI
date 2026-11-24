@@ -1,0 +1,1215 @@
+{
+  "status": "SOURCE_SCORED",
+  "route": "full",
+  "n": 300,
+  "modes": [
+    "direct",
+    "reference",
+    "exact80_direct",
+    "raw_damped",
+    "weighted_damped",
+    "raw_stop1",
+    "raw_stop075",
+    "weighted_stop1",
+    "weighted_stop075",
+    "exact80_damped"
+  ],
+  "metrics": {
+    "clean": {
+      "active": 0,
+      "replay_relative_error": 0.0,
+      "discrepancy_stops": {
+        "raw_stop1": {
+          "reached": 0,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": null
+        },
+        "raw_stop075": {
+          "reached": 0,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": null
+        },
+        "weighted_stop1": {
+          "reached": 0,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": null
+        },
+        "weighted_stop075": {
+          "reached": 0,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": null
+        }
+      },
+      "correct": [
+        216,
+        216,
+        216,
+        216,
+        216,
+        216,
+        216,
+        216,
+        216,
+        216
+      ],
+      "repairs": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "harms": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "by_rx": [
+        [
+          41,
+          41,
+          46,
+          40,
+          48
+        ],
+        [
+          41,
+          41,
+          46,
+          40,
+          48
+        ],
+        [
+          41,
+          41,
+          46,
+          40,
+          48
+        ],
+        [
+          41,
+          41,
+          46,
+          40,
+          48
+        ],
+        [
+          41,
+          41,
+          46,
+          40,
+          48
+        ],
+        [
+          41,
+          41,
+          46,
+          40,
+          48
+        ],
+        [
+          41,
+          41,
+          46,
+          40,
+          48
+        ],
+        [
+          41,
+          41,
+          46,
+          40,
+          48
+        ],
+        [
+          41,
+          41,
+          46,
+          40,
+          48
+        ],
+        [
+          41,
+          41,
+          46,
+          40,
+          48
+        ]
+      ]
+    },
+    "practical_high": {
+      "active": 229,
+      "replay_relative_error": 4.3510028889753657e-16,
+      "discrepancy_stops": {
+        "raw_stop1": {
+          "reached": 229,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 1.0
+        },
+        "raw_stop075": {
+          "reached": 229,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 1.0
+        },
+        "weighted_stop1": {
+          "reached": 229,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 2.0
+        },
+        "weighted_stop075": {
+          "reached": 229,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 2.0
+        }
+      },
+      "correct": [
+        208,
+        206,
+        207,
+        199,
+        199,
+        196,
+        197,
+        199,
+        199,
+        214
+      ],
+      "repairs": [
+        4,
+        0,
+        8,
+        12,
+        12,
+        14,
+        13,
+        11,
+        11,
+        22
+      ],
+      "harms": [
+        2,
+        0,
+        7,
+        19,
+        19,
+        24,
+        22,
+        18,
+        18,
+        14
+      ],
+      "by_rx": [
+        [
+          44,
+          37,
+          42,
+          38,
+          47
+        ],
+        [
+          43,
+          38,
+          42,
+          37,
+          46
+        ],
+        [
+          38,
+          39,
+          43,
+          40,
+          47
+        ],
+        [
+          38,
+          34,
+          39,
+          39,
+          49
+        ],
+        [
+          38,
+          34,
+          39,
+          39,
+          49
+        ],
+        [
+          34,
+          36,
+          39,
+          38,
+          49
+        ],
+        [
+          36,
+          36,
+          39,
+          37,
+          49
+        ],
+        [
+          38,
+          34,
+          39,
+          38,
+          50
+        ],
+        [
+          38,
+          34,
+          39,
+          38,
+          50
+        ],
+        [
+          39,
+          40,
+          44,
+          42,
+          49
+        ]
+      ]
+    },
+    "practical_mid": {
+      "active": 295,
+      "replay_relative_error": 1.8142602109340886e-15,
+      "discrepancy_stops": {
+        "raw_stop1": {
+          "reached": 295,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 1.0
+        },
+        "raw_stop075": {
+          "reached": 295,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 1.0
+        },
+        "weighted_stop1": {
+          "reached": 295,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 2.0
+        },
+        "weighted_stop075": {
+          "reached": 295,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 2.0
+        }
+      },
+      "correct": [
+        180,
+        182,
+        203,
+        170,
+        170,
+        174,
+        175,
+        172,
+        173,
+        211
+      ],
+      "repairs": [
+        5,
+        0,
+        26,
+        16,
+        16,
+        21,
+        21,
+        18,
+        18,
+        41
+      ],
+      "harms": [
+        7,
+        0,
+        5,
+        28,
+        28,
+        29,
+        28,
+        28,
+        27,
+        12
+      ],
+      "by_rx": [
+        [
+          33,
+          30,
+          43,
+          31,
+          43
+        ],
+        [
+          32,
+          30,
+          43,
+          32,
+          45
+        ],
+        [
+          40,
+          35,
+          43,
+          34,
+          51
+        ],
+        [
+          30,
+          27,
+          38,
+          32,
+          43
+        ],
+        [
+          30,
+          27,
+          38,
+          32,
+          43
+        ],
+        [
+          31,
+          31,
+          37,
+          34,
+          41
+        ],
+        [
+          32,
+          31,
+          37,
+          34,
+          41
+        ],
+        [
+          30,
+          27,
+          38,
+          34,
+          43
+        ],
+        [
+          30,
+          27,
+          38,
+          34,
+          44
+        ],
+        [
+          37,
+          38,
+          44,
+          41,
+          51
+        ]
+      ]
+    },
+    "practical_low_suburban": {
+      "active": 300,
+      "replay_relative_error": 5.058979929598928e-16,
+      "discrepancy_stops": {
+        "raw_stop1": {
+          "reached": 300,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 1.0
+        },
+        "raw_stop075": {
+          "reached": 300,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 1.0
+        },
+        "weighted_stop1": {
+          "reached": 300,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 2.0
+        },
+        "weighted_stop075": {
+          "reached": 300,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 2.0
+        }
+      },
+      "correct": [
+        175,
+        186,
+        203,
+        166,
+        166,
+        162,
+        162,
+        163,
+        164,
+        218
+      ],
+      "repairs": [
+        12,
+        0,
+        38,
+        18,
+        18,
+        20,
+        20,
+        18,
+        18,
+        47
+      ],
+      "harms": [
+        23,
+        0,
+        21,
+        38,
+        38,
+        44,
+        44,
+        41,
+        40,
+        15
+      ],
+      "by_rx": [
+        [
+          32,
+          31,
+          34,
+          36,
+          42
+        ],
+        [
+          34,
+          33,
+          37,
+          40,
+          42
+        ],
+        [
+          40,
+          43,
+          41,
+          36,
+          43
+        ],
+        [
+          28,
+          28,
+          31,
+          35,
+          44
+        ],
+        [
+          28,
+          28,
+          31,
+          35,
+          44
+        ],
+        [
+          29,
+          26,
+          29,
+          36,
+          42
+        ],
+        [
+          29,
+          26,
+          29,
+          36,
+          42
+        ],
+        [
+          28,
+          27,
+          28,
+          35,
+          45
+        ],
+        [
+          28,
+          27,
+          29,
+          35,
+          45
+        ],
+        [
+          39,
+          41,
+          44,
+          44,
+          50
+        ]
+      ]
+    },
+    "practical_high_urban": {
+      "active": 222,
+      "replay_relative_error": 8.604121460641784e-16,
+      "discrepancy_stops": {
+        "raw_stop1": {
+          "reached": 222,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 1.0
+        },
+        "raw_stop075": {
+          "reached": 222,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 1.0
+        },
+        "weighted_stop1": {
+          "reached": 222,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 2.0
+        },
+        "weighted_stop075": {
+          "reached": 222,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 2.0
+        }
+      },
+      "correct": [
+        194,
+        192,
+        198,
+        196,
+        196,
+        189,
+        189,
+        196,
+        196,
+        212
+      ],
+      "repairs": [
+        4,
+        0,
+        12,
+        16,
+        16,
+        13,
+        13,
+        16,
+        16,
+        28
+      ],
+      "harms": [
+        2,
+        0,
+        6,
+        12,
+        12,
+        16,
+        16,
+        12,
+        12,
+        8
+      ],
+      "by_rx": [
+        [
+          36,
+          38,
+          37,
+          39,
+          44
+        ],
+        [
+          36,
+          37,
+          37,
+          39,
+          43
+        ],
+        [
+          38,
+          40,
+          38,
+          40,
+          42
+        ],
+        [
+          37,
+          35,
+          39,
+          39,
+          46
+        ],
+        [
+          37,
+          35,
+          39,
+          39,
+          46
+        ],
+        [
+          37,
+          35,
+          38,
+          34,
+          45
+        ],
+        [
+          36,
+          35,
+          38,
+          35,
+          45
+        ],
+        [
+          37,
+          35,
+          39,
+          39,
+          46
+        ],
+        [
+          37,
+          35,
+          39,
+          39,
+          46
+        ],
+        [
+          38,
+          42,
+          44,
+          41,
+          47
+        ]
+      ]
+    },
+    "practical_mid_urban": {
+      "active": 298,
+      "replay_relative_error": 1.006618495601983e-15,
+      "discrepancy_stops": {
+        "raw_stop1": {
+          "reached": 298,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 1.0
+        },
+        "raw_stop075": {
+          "reached": 298,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 1.0
+        },
+        "weighted_stop1": {
+          "reached": 298,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 2.0
+        },
+        "weighted_stop075": {
+          "reached": 298,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 2.0
+        }
+      },
+      "correct": [
+        145,
+        152,
+        169,
+        143,
+        143,
+        143,
+        142,
+        143,
+        144,
+        184
+      ],
+      "repairs": [
+        7,
+        0,
+        33,
+        19,
+        19,
+        20,
+        19,
+        20,
+        20,
+        45
+      ],
+      "harms": [
+        14,
+        0,
+        16,
+        28,
+        28,
+        29,
+        29,
+        29,
+        28,
+        13
+      ],
+      "by_rx": [
+        [
+          26,
+          28,
+          31,
+          28,
+          32
+        ],
+        [
+          26,
+          30,
+          31,
+          30,
+          35
+        ],
+        [
+          27,
+          32,
+          38,
+          32,
+          40
+        ],
+        [
+          26,
+          27,
+          32,
+          29,
+          29
+        ],
+        [
+          26,
+          27,
+          32,
+          29,
+          29
+        ],
+        [
+          28,
+          25,
+          30,
+          29,
+          31
+        ],
+        [
+          27,
+          25,
+          30,
+          29,
+          31
+        ],
+        [
+          28,
+          26,
+          31,
+          29,
+          29
+        ],
+        [
+          28,
+          27,
+          31,
+          29,
+          29
+        ],
+        [
+          32,
+          37,
+          38,
+          38,
+          39
+        ]
+      ]
+    },
+    "practical_low_urban": {
+      "active": 299,
+      "replay_relative_error": 1.4753601709473071e-15,
+      "discrepancy_stops": {
+        "raw_stop1": {
+          "reached": 299,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 1.0
+        },
+        "raw_stop075": {
+          "reached": 299,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 1.0
+        },
+        "weighted_stop1": {
+          "reached": 299,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 1.0
+        },
+        "weighted_stop075": {
+          "reached": 299,
+          "bypassed": 0,
+          "no_crossing": 0,
+          "median_reached": 1.0
+        }
+      },
+      "correct": [
+        130,
+        118,
+        168,
+        113,
+        114,
+        122,
+        122,
+        114,
+        114,
+        164
+      ],
+      "repairs": [
+        21,
+        0,
+        62,
+        25,
+        25,
+        26,
+        26,
+        25,
+        25,
+        62
+      ],
+      "harms": [
+        9,
+        0,
+        12,
+        30,
+        29,
+        22,
+        22,
+        29,
+        29,
+        16
+      ],
+      "by_rx": [
+        [
+          19,
+          29,
+          28,
+          22,
+          32
+        ],
+        [
+          18,
+          25,
+          27,
+          19,
+          29
+        ],
+        [
+          29,
+          32,
+          38,
+          30,
+          39
+        ],
+        [
+          16,
+          23,
+          26,
+          22,
+          26
+        ],
+        [
+          16,
+          23,
+          27,
+          22,
+          26
+        ],
+        [
+          18,
+          24,
+          27,
+          23,
+          30
+        ],
+        [
+          18,
+          24,
+          27,
+          23,
+          30
+        ],
+        [
+          16,
+          22,
+          26,
+          23,
+          27
+        ],
+        [
+          16,
+          22,
+          26,
+          23,
+          27
+        ],
+        [
+          31,
+          30,
+          35,
+          31,
+          37
+        ]
+      ]
+    }
+  },
+  "six": [
+    1032,
+    1036,
+    1148,
+    987,
+    988,
+    986,
+    987,
+    987,
+    990,
+    1203
+  ],
+  "paired_ci_vs_reference": {
+    "six": [
+      [
+        -24.0,
+        17.0
+      ],
+      [
+        0.0,
+        0.0
+      ],
+      [
+        80.0,
+        143.0
+      ],
+      [
+        -85.0,
+        -13.975000000000136
+      ],
+      [
+        -84.025,
+        -12.0
+      ],
+      [
+        -88.0,
+        -11.0
+      ],
+      [
+        -88.0,
+        -11.0
+      ],
+      [
+        -86.0,
+        -13.0
+      ],
+      [
+        -82.0,
+        -10.0
+      ],
+      [
+        122.975,
+        210.02499999999986
+      ]
+    ],
+    "low": [
+      [
+        1.0,
+        23.0
+      ],
+      [
+        0.0,
+        0.0
+      ],
+      [
+        35.0,
+        65.0
+      ],
+      [
+        -19.0,
+        10.0
+      ],
+      [
+        -18.0,
+        11.0
+      ],
+      [
+        -9.0,
+        18.0
+      ],
+      [
+        -9.0,
+        18.0
+      ],
+      [
+        -18.0,
+        11.0
+      ],
+      [
+        -18.0,
+        11.0
+      ],
+      [
+        30.0,
+        62.0
+      ]
+    ]
+  },
+  "target_reads": 0,
+  "truth_after_predictions": true,
+  "additional_pairs": {
+    "weighted_damped_vs_raw_damped": {
+      "six": {
+        "net": 1,
+        "interval": [
+          0.0,
+          3.0
+        ]
+      },
+      "low": {
+        "net": 1,
+        "interval": [
+          0.0,
+          3.0
+        ]
+      }
+    },
+    "raw_stop1_vs_raw_damped": {
+      "six": {
+        "net": -1,
+        "interval": [
+          -20.0,
+          21.0
+        ]
+      },
+      "low": {
+        "net": 9,
+        "interval": [
+          3.0,
+          15.0
+        ]
+      }
+    },
+    "raw_stop075_vs_raw_damped": {
+      "six": {
+        "net": 0,
+        "interval": [
+          -18.0,
+          20.0
+        ]
+      },
+      "low": {
+        "net": 9,
+        "interval": [
+          3.0,
+          15.0
+        ]
+      }
+    },
+    "weighted_stop1_vs_raw_damped": {
+      "six": {
+        "net": 0,
+        "interval": [
+          -8.0,
+          9.0
+        ]
+      },
+      "low": {
+        "net": 1,
+        "interval": [
+          -3.0,
+          5.0
+        ]
+      }
+    },
+    "weighted_stop075_vs_raw_damped": {
+      "six": {
+        "net": 3,
+        "interval": [
+          -5.0,
+          11.0
+        ]
+      },
+      "low": {
+        "net": 1,
+        "interval": [
+          -3.0,
+          5.0
+        ]
+      }
+    },
+    "weighted_stop1_vs_raw_stop1": {
+      "six": {
+        "net": 1,
+        "interval": [
+          -19.0,
+          20.0
+        ]
+      },
+      "low": {
+        "net": -8,
+        "interval": [
+          -14.0,
+          -3.0
+        ]
+      }
+    },
+    "weighted_stop075_vs_raw_stop075": {
+      "six": {
+        "net": 3,
+        "interval": [
+          -16.0,
+          21.0
+        ]
+      },
+      "low": {
+        "net": -8,
+        "interval": [
+          -14.0,
+          -3.0
+        ]
+      }
+    },
+    "exact80_damped_vs_exact80_direct": {
+      "six": {
+        "net": 55,
+        "interval": [
+          12.0,
+          99.02499999999986
+        ]
+      },
+      "low": {
+        "net": -4,
+        "interval": [
+          -19.0,
+          11.0
+        ]
+      }
+    }
+  }
+}

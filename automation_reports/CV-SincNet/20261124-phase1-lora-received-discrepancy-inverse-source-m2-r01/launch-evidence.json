@@ -1,0 +1,158 @@
+{
+  "submit": {
+    "pid": 2369514,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01-release",
+    "code_commit": "922a67c15262057d7bd581e9c36c381729283578",
+    "archive_transfer": "VERIFIED",
+    "remote_compile": "PASS",
+    "status": "SUBMITTED_NOT_YET_VERIFIED",
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01"
+  },
+  "controller": {
+    "pid": 2369514,
+    "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.discrepancy_inverse_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01-release/runtime.json",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01-release",
+    "cuda": [
+      "CUDA_VISIBLE_DEVICES="
+    ]
+  },
+  "jobs": {
+    "smoke-full": {
+      "pid": 2369531,
+      "gpu": 3,
+      "identity": null,
+      "bytes": 494,
+      "last": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+        "  return self.fget.__get__(instance, owner)()",
+        "LORA_DISCREPANCY_SOURCE full practical_low_urban 10 4.9215499916311e-16"
+      ]
+    },
+    "smoke-residual": {
+      "pid": 2369532,
+      "gpu": 6,
+      "identity": null,
+      "bytes": 501,
+      "last": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+        "  return self.fget.__get__(instance, owner)()",
+        "LORA_DISCREPANCY_SOURCE residual practical_low_urban 10 2.4552172465601753e-16"
+      ]
+    },
+    "evaluate-full": {
+      "pid": 2370114,
+      "gpu": 3,
+      "identity": {
+        "pid": 2370114,
+        "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.discrepancy_inverse_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01/configs/evaluate-full.json full",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01-release",
+        "cuda": [
+          "CUDA_VISIBLE_DEVICES=3"
+        ]
+      },
+      "bytes": 604,
+      "last": [
+        "LORA_DISCREPANCY_SOURCE full clean 0 0.0",
+        "LORA_DISCREPANCY_SOURCE full practical_high 229 4.3510028889753657e-16",
+        "LORA_DISCREPANCY_SOURCE full practical_mid 295 1.8142602109340886e-15"
+      ]
+    },
+    "evaluate-residual": {
+      "pid": 2370115,
+      "gpu": 6,
+      "identity": null,
+      "bytes": 937,
+      "last": [
+        "LORA_DISCREPANCY_SOURCE residual practical_high_urban 300 2.5728229638100957e-16",
+        "LORA_DISCREPANCY_SOURCE residual practical_mid_urban 300 2.5281286795794646e-16",
+        "LORA_DISCREPANCY_SOURCE residual practical_low_urban 300 2.711810397852786e-16"
+      ]
+    }
+  },
+  "state": null,
+  "files": {
+    "smoke-full.json": 832,
+    "smoke-residual.json": 835,
+    "residual-inverse-cost.json": 142
+  },
+  "terminal": {
+    "submit": {
+      "pid": 2369514,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01-release",
+      "code_commit": "922a67c15262057d7bd581e9c36c381729283578",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01"
+    },
+    "controller": null,
+    "jobs": {
+      "smoke-full": {
+        "pid": 2369531,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 494,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_DISCREPANCY_SOURCE full practical_low_urban 10 4.9215499916311e-16"
+        ]
+      },
+      "smoke-residual": {
+        "pid": 2369532,
+        "gpu": 6,
+        "identity": null,
+        "bytes": 501,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_DISCREPANCY_SOURCE residual practical_low_urban 10 2.4552172465601753e-16"
+        ]
+      },
+      "evaluate-full": {
+        "pid": 2370114,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 909,
+        "last": [
+          "LORA_DISCREPANCY_SOURCE full practical_high_urban 222 8.604121460641784e-16",
+          "LORA_DISCREPANCY_SOURCE full practical_mid_urban 298 1.006618495601983e-15",
+          "LORA_DISCREPANCY_SOURCE full practical_low_urban 299 1.4753601709473071e-15"
+        ]
+      },
+      "evaluate-residual": {
+        "pid": 2370115,
+        "gpu": 6,
+        "identity": null,
+        "bytes": 937,
+        "last": [
+          "LORA_DISCREPANCY_SOURCE residual practical_high_urban 300 2.5728229638100957e-16",
+          "LORA_DISCREPANCY_SOURCE residual practical_mid_urban 300 2.5281286795794646e-16",
+          "LORA_DISCREPANCY_SOURCE residual practical_low_urban 300 2.711810397852786e-16"
+        ]
+      },
+      "score-source": {
+        "pid": 2372289,
+        "gpu": null,
+        "identity": null,
+        "bytes": 41,
+        "last": [
+          "LORA_DISCREPANCY_TRUTH_LAST_COMPLETE 300"
+        ]
+      }
+    },
+    "state": {
+      "status": "SOURCE_SCORED"
+    },
+    "files": {
+      "state.json": 32,
+      "smoke-full.json": 832,
+      "smoke-residual.json": 835,
+      "full-source-scores.json": 18255,
+      "residual-source-scores.json": 18254,
+      "full-inverse-cost.json": 143,
+      "residual-inverse-cost.json": 142
+    }
+  },
+  "verification": "VERIFIED"
+}

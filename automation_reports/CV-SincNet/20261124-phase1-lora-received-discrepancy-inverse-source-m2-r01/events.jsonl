@@ -1,0 +1,6 @@
+{"at": "2026-11-24T00:36:42+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-24T00:36:42+00:00", "status": "LOCAL_VERIFIED", "note": "Five focused tests; one review; targeted closure of weighted budget.", "evidence": "discrepancy_inverse_source.py", "row_id": null}
+{"at": "2026-11-24T00:39:09+00:00", "status": "RUNNING", "note": "Remote source U smokes passed. Independently verified evaluation PIDs/CWD/GPU and progress; residual prediction finished.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-24T00:41:34+00:00", "status": "ANALYZED", "note": "300 matched source V records fully scored.", "evidence": "full-source-scores.json", "row_id": "evaluate-full"}
+{"at": "2026-11-24T00:41:34+00:00", "status": "ANALYZED", "note": "300 matched source V records fully scored.", "evidence": "residual-source-scores.json", "row_id": "evaluate-residual"}
+{"at": "2026-11-24T00:41:34+00:00", "status": "ANALYZED", "note": "Known-action isolation diagnostic complete; eligible=[].", "evidence": "report.md", "row_id": null}

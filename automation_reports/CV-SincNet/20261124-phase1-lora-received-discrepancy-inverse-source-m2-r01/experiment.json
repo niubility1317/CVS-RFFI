@@ -1,0 +1,191 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01",
+  "group_id": "phase1-lora-observable-recovery",
+  "display_name": "LoRa 实收噪声加权与已知作用逆解归因",
+  "description": "Known-action source-only comparison of raw and received-noise weighted inverse regularizers.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "source_only",
+    "dual_path"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261123-phase1-lora-dura-learned-inverse-source-m2-r01",
+    "20261123-phase1-lora-dura-inverse-noise-dose-source-m2-r01",
+    "20261124-phase1-lora-gated-slope-train-source-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User handoff from 01a1dedc-e242-78a2-8064-20079b2070eb and active LoRa/WiSig observable recovery goal. Source screen only.",
+  "code": {
+    "commit": "922a67c15262057d7bd581e9c36c381729283578",
+    "checkout": "E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa registered main data",
+    "version": "lora_full_packets_v1",
+    "representation": "Known-source projected output operator restricted to six registered LoRa windows and externally validated source clock.",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "Same 300 source V packets as 20261123-phase1-lora-dura-learned-inverse-source-m2-r01 plus 10 U-only smoke per route.",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/V_metadata.npz; source scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": {
+        "real_checkpoint_smoke": 10
+      },
+      "V": {
+        "per_rx": 60,
+        "n": 300
+      }
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": "experiments/pamf_lora_main/packet_physics.py"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-V exact-action diagnostic, not deployment or target evaluation."
+  },
+  "checkpoint": {
+    "initialization": "No restoration training or learned-weights use apart from matched DURA and frozen Tri-set readouts.",
+    "sources": [
+      {
+        "role": "frozen Tri-set readout",
+        "ref": "20261122-phase1-lora-tri-label-set-m3-r01 seed 2026092702"
+      },
+      {
+        "role": "route-matched DURA",
+        "ref": "Existing registered full and residual half-dose DURA source controls"
+      }
+    ],
+    "contract_check_ref": "experiments/pamf_lora_main/discrepancy_inverse_source.py",
+    "provenance_verdict": "True forward action only in isolated diagnostic arms. No target/F fitting, noise truth only exact80.",
+    "selection_rule": "Observed-input stop1 rule must beat DURA and unweighted LSMR on both routes and preserve low urban and clean before a new independent experiment with observable action.",
+    "source_expected_noise": "Received spectral median per chirp."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex handoff thread 01a208a9-57df-7f82-a078-cd9477adf998",
+    "gpu_policy": "At most two concurrent routes on different eligible GPUs, subject to live GPU memory/process headroom. Eight CPU workers per route.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/received_discrepancy_inverse_v1",
+    "launch_command": "'E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe' -m experiments.pamf_lora_main.discrepancy_inverse_source publish --repo 'E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010' --output 'E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/received_discrepancy_inverse_v1' --context 'E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_calibration_source_r01_context.json' --ssh-config 'E:/type10-7/tools/n607_ssh_config' --parent-submit 'E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_residual_practical_release/submit.json'",
+    "stop_rule": "Stop subsequent launch on source trace mismatch, numerical failure, invalid actual IQ, or truth-last coverage failure."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "{full,residual}-predictions.json",
+    "{full,residual}-source-scores.json",
+    "smoke-{full,residual}.json",
+    "{full,residual}-inverse-cost.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "paired six-view recognition",
+      "low urban per receiver",
+      "CGLS crossing frequency",
+      "CGLS stop iteration",
+      "source replay error",
+      "worker wall time"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "readout"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01/{full,residual}-predictions.json",
+    "scorer_ref": "experiments.pamf_lora_main.discrepancy_inverse_source score"
+  },
+  "rows": [
+    {
+      "row_id": "evaluate-full",
+      "method": "Raw/diagnostic pure exact80 and known-action damped/CGLS readouts",
+      "purpose": "source_screen",
+      "config_ref": "experiments/pamf_lora_main/discrepancy_inverse_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01/configs/evaluate-full.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026112931
+      },
+      "seed_notes": "Same deterministic historical 300-packet panel and frozen Tri-set 2026092702.",
+      "k": null,
+      "scenario": "full clean plus six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "60 source V physical packets per source receiver, 10 readouts over seven views, no fitted parameters.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01/full-predictions.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01/logs/evaluate-full.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.discrepancy_inverse_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01/configs/evaluate-full.json full",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01/full-predictions.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01/full-source-scores.json"
+      ]
+    },
+    {
+      "row_id": "evaluate-residual",
+      "method": "Raw/diagnostic pure exact80 and known-action damped/CGLS readouts",
+      "purpose": "source_screen",
+      "config_ref": "experiments/pamf_lora_main/discrepancy_inverse_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01/configs/evaluate-residual.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026112931
+      },
+      "seed_notes": "Same deterministic historical 300-packet panel and frozen Tri-set 2026092702.",
+      "k": null,
+      "scenario": "residual clean plus six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "60 source V physical packets per source receiver, 10 readouts over seven views, no fitted parameters.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01/residual-predictions.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01/logs/evaluate-residual.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.discrepancy_inverse_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01/configs/evaluate-residual.json residual",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01/residual-predictions.json",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-received-discrepancy-inverse-source-m2-r01/residual-source-scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Known action isolated to this source diagnostic. Exact noise only in exact80 rows, no fitted or reusable candidate parameters.",
+    "Both routes fully frozen before source V labels. No target data."
+  ],
+  "registered_at": "2026-11-24T00:36:42+00:00"
+}
