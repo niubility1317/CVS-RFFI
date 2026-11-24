@@ -43,7 +43,7 @@ PAIRS = tuple((f'{ARM}_{stage}', f'{CONTROL.name}_{stage}') for stage in ('coars
 
 
 def run_matched_source(*, run, arm, recipes, reused, modes, pairs, runner,
-                       allowed_gpus=(7,3,6,2,0,4,1,5)):
+                       allowed_gpus=(7,3,6,2,0,4,1,5), calculate=CALCULATE):
     parser = argparse.ArgumentParser(description=__doc__)
     actions = parser.add_subparsers(dest='action', required=True)
     pub = actions.add_parser('publish')
@@ -67,10 +67,10 @@ def run_matched_source(*, run, arm, recipes, reused, modes, pairs, runner,
     activate(rt)
     common = dict(recipes=recipes, reused=reused, reframe=packet_frame, mixer=mix)
     if action == 'smoke':
-        return smoke(rt, modes=modes, split_risk=(False, False), calculations={arm: CALCULATE},
+        return smoke(rt, modes=modes, split_risk=(False, False), calculations={arm: calculate},
                      calibrate_fn=None, **common)
     if action == 'fit':
-        return fit(rt, recipe=recipes[arm], calculate=CALCULATE, receiver_batches=True)
+        return fit(rt, recipe=recipes[arm], calculate=calculate, receiver_batches=True)
     if action == 'timing':
         return timing(rt, **common)
     if options['row'] == 'reserve':

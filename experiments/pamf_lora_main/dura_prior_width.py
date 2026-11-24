@@ -25,7 +25,7 @@ class PacketDura(nn.Module):
             share_long_weights(parent_priors)
             self.restorer.prior = nn.ModuleList([parent_priors[i] for i in STAGE_TARGETS])
 
-    def forward(self, observed, _quality, rotation):
+    def forward(self, observed, _quality, rotation, *, include_first=False):
         native = real_iq(observed * rotation).flatten(0, 1)
         stages, _, _, coarse = self.solve(native, observed, rotation)
 
@@ -33,6 +33,8 @@ class PacketDura(nn.Module):
             phased = complex_iq(wave.unflatten(0, observed.shape[:2])) * rotation.conj()
             return match_packet_power(phased, observed)
 
+        if include_first:
+            return tuple(packet_frame(wave) for wave in (coarse, *stages))
         return packet_frame(coarse), packet_frame(stages[-1])
 
     def solve(self, native, _observed, _rotation=None):

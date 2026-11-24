@@ -70,7 +70,8 @@ def private_direction_risk(even, odd, reference):
 
 def objective(model, tracker, iq, rng, *, with_identity, recipe, step, split_risk,
               build_inputs=antithetic_inputs, private_risk_weight=0., relation_weight=0., lag_weight=0.,
-              observation_frame=coordinates, carrier_risk=None, mix=torch.lerp, source_shape=False):
+              observation_frame=coordinates, carrier_risk=None, mix=torch.lerp, source_shape=False,
+              first_map_weight=0.):
     clean = complex_iq(iq)
     framed, rotation, _, rms = observation_frame(tracker, iq)
     source_basis = rotation * rms
@@ -81,16 +82,25 @@ def objective(model, tracker, iq, rng, *, with_identity, recipe, step, split_ris
     basis = rotation * rms
     target = torch.stack((clean, clean, clean + change, clean + change), dim=1)
     stages = recipe.restore(model, observed, quality, rotation)
-    coarse, refined = recipe.transform_stages(observed, stages, rms)
+    stages = recipe.transform_stages(observed, stages, rms)
+    if first_map_weight:
+        coarse, first_map, refined = stages
+    else:
+        coarse, refined = stages
     adapted_target = target / source_basis[:, None]
     # The independent objective compares each waveform relative to its own carrier.
     stage_target = adapted_target.flatten(0, 1) if source_shape else target.flatten(0, 1) / basis
     coarse_risk = waveform_risk(coarse, stage_target)
     full_risk = waveform_risk(refined, stage_target)
-    recovered = (refined * basis).unflatten(0, wave.shape[:2])
-    physical_half = mix(wave, recovered, .5)
     received_basis = basis.unflatten(0, wave.shape[:2])
-    half = physical_half / (received_basis if source_shape else source_basis[:, None])
+    loss_basis = received_basis if source_shape else source_basis[:, None]
+
+    def half_strength(proposal):
+        recovered = (proposal * basis).unflatten(0, wave.shape[:2])
+        physical = mix(wave, recovered, .5)
+        return physical, physical / loss_basis
+
+    physical_half, half = half_strength(refined)
     mean, difference = pair_terms(half)
     reference = adapted_target[:, ::2]
     point = component_risk(half - adapted_target, adapted_target)
@@ -101,6 +111,13 @@ def objective(model, tracker, iq, rng, *, with_identity, recipe, step, split_ris
     first, second, _ = recipe.loss_weights(step)
     loss = first*coarse_risk + second*full_risk + .30*focus + .35*transfer
     values = torch.stack((coarse_risk, full_risk, point, bias, response, transfer))
+    if first_map_weight:
+        _, first_half = half_strength(first_map)
+        first_mean, _ = pair_terms(first_half)
+        first_point = component_risk(first_half - adapted_target, adapted_target)
+        first_transfer = transfer_risk(first_mean[:, 1] - first_mean[:, 0], delta)
+        loss = loss + first_map_weight * (.30*first_point + .35*first_transfer)
+        values = torch.cat((values, torch.stack((first_point, first_transfer))))
     if private_risk_weight:
         private = private_direction_risk(mean[:, 0], difference[:, 0], reference[:, 0])
         loss = loss + private_risk_weight * private.sum(0).mean()
