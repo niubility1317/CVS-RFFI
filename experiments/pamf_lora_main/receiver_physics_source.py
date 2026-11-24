@@ -34,7 +34,7 @@ PAIRS = tuple((f'{NEW_ARM}_{stage}', f'pointwise_{stage}') for stage in ('half',
 PAIRS += (('receiver_physics_half', 'rank_parent_half'), ('pointwise_half', 'rank_parent_half'))
 
 
-def calculation(device, *, private_risk_weight=0., relation_weight=0.):
+def calculation(device, *, private_risk_weight=0., relation_weight=0., lag_weight=0.):
     training_rng = torch.Generator(device=device).manual_seed(2026113181)
     held_rng = torch.Generator(device=device).manual_seed(2026113182)
 
@@ -45,7 +45,7 @@ def calculation(device, *, private_risk_weight=0., relation_weight=0.):
                                  with_identity=with_identity, transform=transform)
 
     return partial(objective, split_risk=False, build_inputs=build_inputs,
-                   private_risk_weight=private_risk_weight, relation_weight=relation_weight)
+                   private_risk_weight=private_risk_weight, relation_weight=relation_weight, lag_weight=lag_weight)
 
 
 def main():

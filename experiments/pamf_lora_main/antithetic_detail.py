@@ -6,6 +6,7 @@ from .channel_blind_source import waveform_risk
 from .crossfit_pilot import apply_transfer, generic_taps
 from .dura_repair import complex_iq, real_iq
 from .joint_unroll_source import coordinates
+from .lag_profile import lag_profile_risk
 from .natural_detail import detail_bands, transfer_risk, weak_difference
 from .packet_relation import packet_relation_risk
 
@@ -68,7 +69,7 @@ def private_direction_risk(even, odd, reference):
 
 
 def objective(model, tracker, iq, rng, *, with_identity, recipe, step, split_risk,
-              build_inputs=antithetic_inputs, private_risk_weight=0., relation_weight=0.):
+              build_inputs=antithetic_inputs, private_risk_weight=0., relation_weight=0., lag_weight=0.):
     clean = complex_iq(iq)
     framed, rotation, _, rms = coordinates(tracker, iq)
     source_basis = rotation * rms
@@ -103,4 +104,8 @@ def objective(model, tracker, iq, rng, *, with_identity, recipe, step, split_ris
         relations = packet_relation_risk(half[:, :2], reference[:, 0])
         loss = loss + relation_weight * relations.mean()
         values = torch.cat((values, relations))
+    if lag_weight:
+        lag = lag_profile_risk(half[:, :2], reference[:, 0])
+        loss = loss + lag_weight * lag.mean()
+        values = torch.cat((values, lag))
     return loss, values
