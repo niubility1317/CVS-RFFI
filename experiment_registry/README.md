@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa DURA 双阶段先验扩容对照](../automation_reports/CV-SincNet/20261124-phase1-lora-dura-prior-width-source-m2-r01/report.md)
 - [LoRa 固定中点融合的单种子目标测试](../automation_reports/CV-SincNet/20261124-phase1-lora-fixed-mid-target-m2-r01/report.md)
 - [LoRa 冻结恢复的实收幅度与相位消融](../automation_reports/CV-SincNet/20261124-phase1-lora-polar-shape-source-m2-r01/report.md)
 - [LoRa 按独立源坐标监督复数细节](../automation_reports/CV-SincNet/20261124-phase1-lora-independent-shape-source-m3-r01/report.md)

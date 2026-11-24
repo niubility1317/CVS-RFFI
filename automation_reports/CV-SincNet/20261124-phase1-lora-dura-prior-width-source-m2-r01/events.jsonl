@@ -1,0 +1,10 @@
+{"at": "2026-11-24T07:41:25+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-24T07:51:14+00:00", "status": "RUNNING", "note": "Real source U smoke, commands, working directories, GPUs and both fit log growth verified.", "evidence": "launch-evidence.json", "row_id": "fit-compact"}
+{"at": "2026-11-24T07:51:14+00:00", "status": "RUNNING", "note": "Real source U smoke, commands, working directories, GPUs and both fit log growth verified.", "evidence": "launch-evidence.json", "row_id": "fit-wide"}
+{"at": "2026-11-24T07:51:14+00:00", "status": "RUNNING", "note": "Real source U smoke, commands, working directories, GPUs and both fit log growth verified.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-24T08:01:42+00:00", "status": "ANALYZED", "evidence": "compact-complete.json", "row_id": "fit-compact", "note": "Same source-only paired experiment independently verified."}
+{"at": "2026-11-24T08:01:42+00:00", "status": "ANALYZED", "evidence": "wide-complete.json", "row_id": "fit-wide", "note": "Same source-only paired experiment independently verified."}
+{"at": "2026-11-24T08:01:42+00:00", "status": "ANALYZED", "evidence": "full-source-scores.json", "row_id": "evaluate-full", "note": "Same source-only paired experiment independently verified."}
+{"at": "2026-11-24T08:01:42+00:00", "status": "ANALYZED", "evidence": "residual-source-scores.json", "row_id": "evaluate-residual", "note": "Same source-only paired experiment independently verified."}
+{"at": "2026-11-24T08:01:42+00:00", "status": "ANALYZED", "evidence": "clean-complete-scores.json", "row_id": "evaluate-reserve", "note": "Same source-only paired experiment independently verified."}
+{"at": "2026-11-24T08:01:42+00:00", "status": "ANALYZED", "evidence": "report.md", "row_id": null, "note": "Same source-only paired experiment independently verified."}

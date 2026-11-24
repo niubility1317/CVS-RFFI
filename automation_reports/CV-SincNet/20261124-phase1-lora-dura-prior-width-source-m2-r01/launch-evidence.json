@@ -1,0 +1,188 @@
+{
+  "status": "VERIFIED",
+  "training": {
+    "submit": {
+      "pid": 2748652,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-prior-width-source-m2-r01-release",
+      "code_commit": "2200b5f736db72c6c1c50252b9d7d517b4232ddb",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-prior-width-source-m2-r01"
+    },
+    "controller": {
+      "pid": 2748652,
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.dura_prior_width_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-prior-width-source-m2-r01-release/runtime.json",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-prior-width-source-m2-r01-release",
+      "cuda": [
+        "CUDA_VISIBLE_DEVICES="
+      ]
+    },
+    "jobs": {
+      "smoke-source": {
+        "pid": 2748668,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 459,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_ANTITHETIC_REAL_CHECKPOINT_PASS"
+        ]
+      },
+      "fit-compact": {
+        "pid": 2749149,
+        "gpu": 3,
+        "identity": {
+          "pid": 2749149,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.dura_prior_width_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-prior-width-source-m2-r01/configs/fit-compact.json compact",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-prior-width-source-m2-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=3"
+          ]
+        },
+        "bytes": 2774,
+        "last": [
+          "CHANNEL_BLIND_FIT 300 2.601076602935791 2.384248971939087 3.3005359172821045 2.1885902881622314 2.5022194385528564 0.11652445793151855 1.9255812168121338 0.402527391910553 1.7800403833389282 1.1743366718292236 0.8676621317863464 1.2765207290649414 0.07721865922212601 0.07647790014743805 0.09190363436937332",
+          "CHANNEL_BLIND_FIT 350 2.315030097961426 1.9844624996185303 3.0618960857391357 1.6383390426635742 2.611940860748291 0.08688058704137802 1.5388959646224976 0.3653450906276703 1.9169758558273315 0.9820069074630737 0.888150155544281 1.0410622358322144 0.013066462241113186 0.013470375910401344 0.016287071630358696",
+          "CHANNEL_BLIND_FIT 400 2.1162867546081543 1.722183346748352 2.737460136413574 1.442101001739502 2.3779759407043457 0.07223762571811676 1.3046934604644775 0.15205131471157074 1.7069774866104126 0.8805310130119324 0.5604929327964783 1.0994091033935547 0.03180304914712906 0.03420074284076691 0.04078798368573189"
+        ]
+      },
+      "fit-wide": {
+        "pid": 2749150,
+        "gpu": 6,
+        "identity": {
+          "pid": 2749150,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.dura_prior_width_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-prior-width-source-m2-r01/configs/fit-wide.json wide",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-prior-width-source-m2-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=6"
+          ]
+        },
+        "bytes": 1843,
+        "last": [
+          "CHANNEL_BLIND_FIT 150 2.6878626346588135 2.592163562774658 2.935131072998047 1.5796846151351929 2.501896858215332 0.05049733817577362 1.7946031093597412 0.2744883596897125 1.941955327987671 1.0072356462478638 0.6904497742652893 1.1196590662002563 0.043912727385759354 0.04049495980143547 0.04580070450901985",
+          "CHANNEL_BLIND_FIT 200 2.4467499256134033 2.242070436477661 2.8991947174072266 1.5120940208435059 2.5060548782348633 0.06585893034934998 1.3979426622390747 0.19731280207633972 1.9257155656814575 0.9158089756965637 0.7468013763427734 1.168363094329834 0.07245996594429016 0.06462433189153671 0.07763794809579849",
+          "CHANNEL_BLIND_FIT 250 2.5772838592529297 2.2993855476379395 3.089531898498535 1.6585067510604858 2.6176512241363525 0.07087639719247818 1.573781132698059 0.2266828566789627 2.024168014526367 1.0066667795181274 0.9429206848144531 1.21720552444458 0.06614575535058975 0.056779418140649796 0.0712282657623291"
+        ]
+      }
+    },
+    "state": null,
+    "files": {
+      "smoke.json": 128
+    }
+  },
+  "completed": {
+    "submit": {
+      "pid": 2748652,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-prior-width-source-m2-r01-release",
+      "code_commit": "2200b5f736db72c6c1c50252b9d7d517b4232ddb",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-prior-width-source-m2-r01"
+    },
+    "controller": null,
+    "jobs": {
+      "smoke-source": {
+        "pid": 2748668,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 459,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_ANTITHETIC_REAL_CHECKPOINT_PASS"
+        ]
+      },
+      "fit-compact": {
+        "pid": 2749149,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 15184,
+        "last": [
+          "CHANNEL_BLIND_FIT 2300 1.1710200309753418 0.6645652651786804 2.758829355239868 1.619309663772583 2.215498924255371 0.1562962830066681 1.822295904159546 0.2062075287103653 1.7439485788345337 0.7139922976493835 0.594231128692627 0.6180347800254822 0.013572980649769306 0.11156800389289856 0.03259941563010216",
+          "CHANNEL_BLIND_FIT 2350 0.9851688146591187 0.5379693508148193 2.469170570373535 1.5542874336242676 1.795013666152954 0.10990282148122787 1.519695520401001 0.19209547340869904 1.5777723789215088 0.5253691077232361 0.839257538318634 0.5807650089263916 0.02139923721551895 0.09939776360988617 0.045629553496837616",
+          "CHANNEL_BLIND_FIT 2400 1.0349222421646118 0.5283494591712952 2.4319515228271484 1.480931282043457 1.8079249858856201 0.1330055296421051 1.7091249227523804 0.15817414224147797 1.402861475944519 0.6039902567863464 0.5217734575271606 0.4821023941040039 0.01785426028072834 0.10802189260721207 0.040210504084825516"
+        ]
+      },
+      "fit-wide": {
+        "pid": 2749150,
+        "gpu": 6,
+        "identity": null,
+        "bytes": 15215,
+        "last": [
+          "CHANNEL_BLIND_FIT 2300 1.2601045370101929 0.46459174156188965 2.669177293777466 1.5328803062438965 2.129500389099121 0.15882311761379242 1.7710399627685547 0.20868754386901855 1.7366046905517578 0.6848238706588745 0.5801676511764526 0.5685480833053589 0.015280161052942276 0.07052434235811234 0.02457471378147602",
+          "CHANNEL_BLIND_FIT 2350 1.0544275045394897 0.4036778509616852 2.379873752593994 1.4751707315444946 1.725200891494751 0.1112738698720932 1.5110952854156494 0.16509728133678436 1.489958643913269 0.5156457424163818 0.7094032168388367 0.5273788571357727 0.025084909051656723 0.06463168561458588 0.03941284865140915",
+          "CHANNEL_BLIND_FIT 2400 1.1226224899291992 0.3788083791732788 2.3273463249206543 1.3947346210479736 1.740044355392456 0.13357627391815186 1.6426783800125122 0.14260932803153992 1.3951002359390259 0.5606259107589722 0.42936691641807556 0.41938939690589905 0.020686443895101547 0.07568828761577606 0.03223885968327522"
+        ]
+      },
+      "timing-source": {
+        "pid": 2759278,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 422,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()"
+        ]
+      },
+      "evaluate-full": {
+        "pid": 2759354,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 754,
+        "last": [
+          "COMPLEX_VECTOR_SOURCE full practical_high_urban 92",
+          "COMPLEX_VECTOR_SOURCE full practical_mid_urban 396",
+          "COMPLEX_VECTOR_SOURCE full practical_low_urban 641"
+        ]
+      },
+      "evaluate-residual": {
+        "pid": 2759355,
+        "gpu": 6,
+        "identity": null,
+        "bytes": 782,
+        "last": [
+          "COMPLEX_VECTOR_SOURCE residual practical_high_urban 67",
+          "COMPLEX_VECTOR_SOURCE residual practical_mid_urban 803",
+          "COMPLEX_VECTOR_SOURCE residual practical_low_urban 899"
+        ]
+      },
+      "evaluate-reserve": {
+        "pid": 2761334,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 624,
+        "last": [
+          "LORA_CLEAN_RESERVE_PREDICTED 7680",
+          "LORA_CLEAN_RESERVE_PREDICTED 9596",
+          "LORA_CLEAN_RESERVE_FROZEN 11100"
+        ]
+      },
+      "score-source": {
+        "pid": 2761429,
+        "gpu": null,
+        "identity": null,
+        "bytes": 64,
+        "last": [
+          "LORA_RESTORATION_SOURCE_SCORED",
+          "LORA_CLEAN_COMPLETE_SCORED 12000"
+        ]
+      }
+    },
+    "state": {
+      "status": "SOURCE_SCORED"
+    },
+    "files": {
+      "state.json": 32,
+      "smoke.json": 128,
+      "b1.json": 669,
+      "compact-complete.json": 846,
+      "wide-complete.json": 841,
+      "full-source-scores.json": 11982,
+      "residual-source-scores.json": 12032,
+      "clean-complete-scores.json": 3687
+    }
+  }
+}
