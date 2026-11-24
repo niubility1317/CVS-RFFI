@@ -48,6 +48,7 @@ MIXTURE_DIRECTIONS_RUN = '20261124-diagnostic-lora-mixture-directions-source-m2-
 ANGULAR_TRANSPORT_RUN = '20261124-phase1-lora-angular-transport-source-m4-r01'
 BAND_ALLOCATION_RUN = '20261124-phase1-lora-band-allocation-source-m3-r01'
 BAND_ALLOCATION_DIAGNOSTIC = '20261124-diagnostic-lora-band-allocation-source-m2-r01'
+WEAK_SIDEBAND_RUN = '20261124-phase1-lora-weak-sideband-source-m4-r01'
 RADIUS_INTERACTIONS = {
     'power_phase': ('power_joint', 'direct', 'power_radius', 'local_full'),
     'fold_phase': ('fold_joint', 'direct', 'fold_radius', 'local_full'),
@@ -194,6 +195,10 @@ def collect(rt):
         from experiments.pamf_lora_main import band_allocation_diagnostic
         modes = band_allocation_diagnostic.MODES
         pairs = (*band_allocation_diagnostic.COMPARISONS, ('exact_equal', 'anchor'), ('direct', 'reference'))
+    elif rt.get('run_id') == WEAK_SIDEBAND_RUN:
+        from experiments.pamf_lora_main import weak_sideband_source
+        modes = weak_sideband_source.MODES
+        pairs = (*weak_sideband_source.COMPARISONS, ('direct', 'reference'))
     else:
         from experiments.pamf_lora_main import empirical_tangent_source as tangent
         if rt.get('run_id')!=tangent.RUN:

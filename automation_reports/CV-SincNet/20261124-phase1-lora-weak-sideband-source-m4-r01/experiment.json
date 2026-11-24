@@ -1,0 +1,181 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261124-phase1-lora-weak-sideband-source-m4-r01",
+  "group_id": "lora-observable-satellite-recovery",
+  "display_name": "LoRa 主载波分离的弱旁带监督",
+  "description": "两个匹配长训只改变源参考监督是否先分离主载波；两条弱带保持各自原物理编辑 RMS。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "LoRa",
+    "DURA",
+    "source_V",
+    "carrier_leakage",
+    "weak_sideband",
+    "equal_rms",
+    "full",
+    "residual"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261122-phase1-lora-full-aligned-data-r01",
+    "20261122-phase1-lora-tri-label-set-m3-r01",
+    "20261123-phase1-lora-dura-residual-practical-m1-r01",
+    "20261123-phase1-lora-dura-direct-detail-source-m2-r01",
+    "20261124-diagnostic-lora-mixture-directions-source-m2-r01",
+    "20261124-phase1-lora-cross-frequency-dose-source-m4-r01",
+    "20261124-phase1-lora-angular-transport-source-m4-r01",
+    "20261124-diagnostic-lora-band-allocation-source-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "LoRa 可部署恢复目标授权同量源域机制消融与两个连续长训。",
+  "code": {
+    "commit": "启动命令从已推送分支 HEAD 固定，实际 OID 写入 submit.json",
+    "checkout": "E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo",
+    "environment": "${N607_PYTHON}",
+    "cwd": "${N607_PROJECT}/releases/20261124-phase1-lora-weak-sideband-source-m4-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa 多接收机 IEEE DataPort",
+    "version": "lora_full_packets_v1 源 7/63/30 固定划分",
+    "representation": "1 MS/s 采集及既有构造，冻结读出为 256 kS/s 六条 256 点窄窗复 IQ",
+    "contract_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json role_ids.V",
+    "label_map_ref": "experiments/pamf_lora_main/data.py CLASSES (31 至 40)，仅评分读取 V_metadata.npz y",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "10 个登记发射机的固定源分配，拟合不可见",
+    "roles": {
+      "L_s": 0,
+      "U_s": 23000,
+      "V": 900
+    },
+    "train_ratio": "匹配的 20,000 个原始源 U 拟合，2,500 个互斥源 U 门限，500 个互斥源 U 固定留出。仍沿用 900 个同包源 V 物理 ID。",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "${N607_PROJECT}/runs/20261122-phase1-lora-full-aligned-data-r01/source_views/complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": "沿用 full 1 MHz 对齐及 residual 256 kHz post-sync/noEQ 原视图"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "not_applicable",
+    "external_method_exception": null,
+    "claim_scope": "用合法源 U IQ 和通用突发训练。源参考的地面载波估计仅在 U 波形监督使用。实收恢复只从当包 IQ 和固定波形估计，不访问真模拟参数、F、TX、源 V 或目标来拟合。"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [
+      "20261122-phase1-lora-tri-label-set-m3-r01 / tri_set 2026092702",
+      "20261123-phase1-lora-dura-direct-detail-source-m2-r01 及冻结 full 复响应半量",
+      "20261123-phase1-lora-dura-residual-practical-m1-r01 原 R69 及固定 residual 门控投影半量"
+    ],
+    "contract_check_ref": "source_contract 与 complete_f/source_control 核对各自源物理角色",
+    "provenance_verdict": "两臂同配方从零，解析状态各自在相同 U-only 分区重算。F 只在终步后无目标 smoke 和 V 评分中加载。",
+    "selection_rule": "主读出 separate_final，固定终步。仅当两路严格超过同次 DURA 六景且 clean 保持时进入正式阶段；同预算 fullref_final 用于单独判定监督分离的作用。"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "当前 LoRa 可部署星地恢复目标",
+    "gpu_policy": "按 N607 实时余量，两臂各选一张 GPU，可以共享其他健康进程的余量。两条路线并行，独立 CPU 评分。",
+    "remote_run_root": "${N607_PROJECT}/runs/20261124-phase1-lora-weak-sideband-source-m4-r01",
+    "remote_log_root": "${N607_PROJECT}/runs/20261124-phase1-lora-weak-sideband-source-m4-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261124-phase1-lora-weak-sideband-source-m4-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.weak_sideband_source publish --repo \"E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo\" --output \"E:/type10-7/local_artifacts/20261124-phase1-lora-weak-sideband-source-m4-r01/release\" --context E:/type10-7/local_artifacts/lora_main_20261121/runtime_source.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "只在数据权限、非有限、真实权重无目标 smoke、每弱带实际 IQ 等量、预测或独立评分发生技术故障时停止后续派发。保留已存数据。"
+  },
+  "expected_artifacts": [
+    "fullref-model.pt",
+    "separate-model.pt",
+    "fullref-complete.json",
+    "separate-complete.json",
+    "smoke-fullref.json",
+    "smoke-separate.json",
+    "smoke.json",
+    "full-predictions.json",
+    "residual-predictions.json",
+    "full-source-scores.json",
+    "residual-source-scores.json",
+    "full-estimates.json",
+    "residual-estimates.json",
+    "logs/"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "两路线逐景和低城区识别、clean 正确数",
+      "逐 RX 纠错、改错、净变化及配对区间",
+      "两段物理修改 RMS 与实际方向",
+      "逐带复谱保真、参数量、墙钟和 B1"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "mode",
+      "seed"
+    ],
+    "prediction_ref": "${N607_PROJECT}/runs/20261124-phase1-lora-weak-sideband-source-m4-r01/<route>-predictions.json",
+    "scorer_ref": "experiments.pamf_lora_main.weak_sideband_source score"
+  },
+  "rows": [
+    {
+      "row_id": "dual-route-weak-sideband-s2026092702",
+      "method": "直通、匹配半量 DURA、完整参考粗细、先分离主载波粗细、解析半量、单位作用、固定方差、关闭反馈。",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/weak_sideband_source.py",
+      "resolved_config_ref": "${N607_PROJECT}/releases/20261124-phase1-lora-weak-sideband-source-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026112620
+      },
+      "seed_notes": "原冻结 Tri-set 2026092702。两组 U 分区、初始化和扰动种子均为 2026112991；V 面板、配对重抽固定。",
+      "k": null,
+      "scenario": "clean 和六景，分别评估 full/residual",
+      "optimizer": "AdamW，步级余弦，权重衰减 1e-4，梯度范数上界 1.0",
+      "lr": 0.0002,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "每臂连续 40,000 步、batch24、20,000 源 U 拟合、2,500 固定门限、500 固定留出。900 源 V 物理包×七景×10 读出×两路线。",
+      "output_root": "${N607_PROJECT}/runs/20261124-phase1-lora-weak-sideband-source-m4-r01",
+      "log_path": "${N607_PROJECT}/runs/20261124-phase1-lora-weak-sideband-source-m4-r01/logs",
+      "command": "${N607_PYTHON} -u -m experiments.pamf_lora_main.weak_sideband_source dispatch ${N607_PROJECT}/releases/20261124-phase1-lora-weak-sideband-source-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "fullref-model.pt",
+        "separate-model.pt",
+        "fullref-complete.json",
+        "separate-complete.json",
+        "smoke-fullref.json",
+        "smoke-separate.json",
+        "smoke.json",
+        "full-predictions.json",
+        "residual-predictions.json",
+        "full-source-scores.json",
+        "residual-source-scores.json",
+        "full-estimates.json",
+        "residual-estimates.json",
+        "logs/"
+      ]
+    }
+  ],
+  "notes": [
+    "两臂只有源参考定义不同，粗细结构、初始权重、数据、通用扰动和损失项一致。",
+    "1–8 和 9–32 kHz 各自在原 IQ 物理范数匹配参考，保留载波和其他频带。0.25 切向相对上限共享固定。",
+    "粗层、接收作用约束和细化同一个 AdamW 持续优化，终步作固定权重。",
+    "所有预测固定，随后独立 CPU 读取标签。精确噪声只在终步评分后的隔离波形审计。"
+  ],
+  "registered_at": "2026-11-24T05:43:05+00:00"
+}
