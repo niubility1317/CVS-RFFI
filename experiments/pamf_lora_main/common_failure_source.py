@@ -37,13 +37,13 @@ PAIRS = (('noise80', 'direct'), ('noise100', 'direct'), ('action', 'direct'),
 CONTROLS = tuple(HIST_MODES.index(name) for name in ('direct', 'reference', 'rank_half', 'bounded_half'))
 
 
-def isolated_inverse(operator, observed, signal, noise):
-    # Use the unedited observation's noise level in all three solves.
+def isolated_inverse(operator, observed, signal, noise, doses=DOSES):
+    # Use the unedited observation's noise level in every solve.
     damping = np.sqrt(3 * np.mean(np.abs(noise)**2))
-    return solve_observations(operator, noise_doses(observed, signal, DOSES), damping)
+    return solve_observations(operator, noise_doses(observed, signal, doses), damping)
 
 
-def full_controls(iq, scene, rx, pid):
+def full_controls(iq, scene, rx, pid, *, direct_doses=DOSES, inverse_doses=DOSES):
     action, source, observed, signal, noise, gain, offset, replay_error = full_action(iq, scene, rx, pid)
     sample = sampling_matrix(len(observed), offset)
     native = chirp_samples(observed, offset)
@@ -52,29 +52,30 @@ def full_controls(iq, scene, rx, pid):
     if not np.isfinite(mismatch) or mismatch > 2e-9:
         raise ValueError('Projected action diverges on the registered Full windows')
     answers = isolated_inverse(projected_operator(action, sample),
-                               native.ravel().astype(np.complex128)/gain, clear, sample @ noise)
-    direct = [chirp_samples(value, offset) for value in noise_doses(observed, gain*signal, DOSES)]
+                               native.ravel().astype(np.complex128)/gain, clear, sample @ noise, inverse_doses)
+    direct = [chirp_samples(value, offset) for value in noise_doses(observed, gain*signal, direct_doses)]
     recovered = [chirp_samples(x) for x in answers]
     return np.stack([pack_windows(v) for v in (*direct, *recovered)]), max(replay_error, mismatch)
 
 
-def residual_controls(iq, scene, rx, pid):
+def residual_controls(iq, scene, rx, pid, *, direct_doses=DOSES, inverse_doses=DOSES):
     cases, errors = [], []
     for action, observed, signal, noise, gain, replay_error in residual_actions(iq, scene, rx, pid):
-        answers = isolated_inverse(action.operator(), observed.astype(np.complex128)/gain, signal, noise)
-        direct = noise_doses(observed, gain*signal, DOSES)
+        answers = isolated_inverse(action.operator(), observed.astype(np.complex128)/gain, signal, noise, inverse_doses)
+        direct = noise_doses(observed, gain*signal, direct_doses)
         cases.append((*direct, *(x[32:288] for x in answers)))
         errors.append(replay_error)
     return np.stack([pack_windows(np.stack(v)) for v in zip(*cases, strict=True)]), max(errors)
 
 
-def diagnostic_capture(route, scene, item):
+def diagnostic_capture(route, scene, item, *, direct_doses=DOSES, inverse_doses=DOSES):
     iq, rx, pid = item
     if scene == 'clean':
-        return np.broadcast_to(chirp_windows(iq), (1+len(ARMS), 6, 2, 256)), 0.
+        count = len(direct_doses) + len(inverse_doses)
+        return np.broadcast_to(chirp_windows(iq), (count, 6, 2, 256)), 0.
     if route == 'full':
-        return full_controls(iq, scene, rx, pid)
-    waves, error = residual_controls(iq, scene, rx, pid)
+        return full_controls(iq, scene, rx, pid, direct_doses=direct_doses, inverse_doses=inverse_doses)
+    waves, error = residual_controls(iq, scene, rx, pid, direct_doses=direct_doses, inverse_doses=inverse_doses)
     expected = aligned_view(iq, scene, rx, pid, 'source-V', processing_route='residual')
     if not np.array_equal(waves[0], expected):
         raise ValueError('Residual replay differs from the registered input')
@@ -82,11 +83,11 @@ def diagnostic_capture(route, scene, item):
 
 
 @torch.no_grad()
-def evaluate(rt, route, *, smoke=False):
+def evaluate(rt, route, *, smoke=False, capture=diagnostic_capture, render=None, modes=MODES):
     started = perf_counter()
     root = Path(rt['run_root'])
     device = 'cuda:0'
-    source, cache, contract, baseline, _ = source_control(rt, route, device)
+    source, cache, contract, baseline, tracker = source_control(rt, route, device)
     reader = load_reader(root, contract, device)
     raw, rx, ids, _ = source_role(source, contract, 'U_s' if smoke else 'V')
     chosen = (np.array([np.flatnonzero(rx == key)[0] for key in SOURCE]) if smoke else panel(rx))
@@ -95,7 +96,7 @@ def evaluate(rt, route, *, smoke=False):
     predictions, metrics = {}, {}
     with ProcessPoolExecutor(max_workers=8) as pool:
         for scene in ('clean', VIEWS[-1]) if smoke else VIEWS:
-            values, errors = zip(*pool.map(partial(diagnostic_capture, route, scene), jobs, chunksize=3), strict=True)
+            values, errors = zip(*pool.map(partial(capture, route, scene), jobs, chunksize=3), strict=True)
             captures = np.stack(values, axis=1)
             if not np.isfinite(captures).all() or not np.isfinite(errors).all():
                 raise FloatingPointError('Nonfinite source counterfactual')
@@ -108,11 +109,16 @@ def evaluate(rt, route, *, smoke=False):
             parts, active = [], 0
             for block in tensor(captures, device).split(16, dim=1):
                 reference, allowed = baseline(block[0])
-                inputs = torch.cat((block[:1], reference.unsqueeze(0), block[1:]))
-                logits = reader(inputs.flatten(0, 1))[0]
+                if render is None:
+                    inputs = torch.cat((block[:1], reference.unsqueeze(0), block[1:]))
+                else:
+                    inputs = render(block, reference, tracker)
+                if inputs.shape[:2] != (len(modes), block.shape[1]):
+                    raise ValueError('Unexpected diagnostic readout coverage')
+                logits = torch.cat([reader(batch)[0] for batch in inputs.flatten(0, 1).split(128)])
                 if logits.shape != (inputs.shape[0]*inputs.shape[1], 10) or not logits.isfinite().all():
                     raise ValueError('Invalid frozen classifier output')
-                parts.append(logits.argmax(1).reshape(len(MODES), -1).cpu().numpy())
+                parts.append(logits.argmax(1).reshape(len(modes), -1).cpu().numpy())
                 active += int(allowed.sum())
             predictions[scene] = np.concatenate(parts, axis=1)
             metrics[scene] = dict(max_operator_replay_error=float(max(errors)), reference_active=active)
@@ -123,7 +129,7 @@ def evaluate(rt, route, *, smoke=False):
         write(root / f'smoke-{route}.json', dict(status='PASS', source_U=len(chosen), target_reads=0,
               TX_reads=0, metrics=metrics, **cost))
     else:
-        freeze(root, route, source, chosen, ids, predictions, metrics, MODES)
+        freeze(root, route, source, chosen, ids, predictions, metrics, modes)
         write(root / f'{route}-cost.json', cost)
 
 
