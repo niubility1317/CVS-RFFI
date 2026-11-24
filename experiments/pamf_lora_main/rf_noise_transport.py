@@ -46,6 +46,36 @@ def network(size):
     return layers
 
 
+def analyze(value, window):
+    spectrum = torch.stft(value.flatten(0, 1), FFT, HOP, window=window, normalized=True,
+                          onesided=False, return_complex=True, pad_mode='reflect')
+    return spectrum.unflatten(0, value.shape[:2]).transpose(-1, -2)
+
+
+def native_samples(observed, rotation, window, frequency):
+    native = analyze(observed * rotation, window)
+    ridge = power(analyze(rotation, window)).argmax(dim=-1, keepdim=True)
+    distance = (frequency - ridge + FFT // 2).remainder(FFT) - FFT // 2
+    outside = distance.abs() >= 7
+    return power(native).masked_fill(~outside, torch.nan), outside, ridge
+
+
+def noise_profile(samples, outside):
+    # Use the current chirp PSD with a mild shrinkage to same-packet estimates.
+    # Very short/ambiguous ridge support falls back to that chirp's aggregate.
+    aggregate = samples.flatten(-2).nanmedian(dim=-1).values
+    per_tone = samples.nanmedian(dim=-2).values
+    per_tone = torch.where(outside.sum(dim=-2) >= 4, per_tone, aggregate[..., None])
+    packet = per_tone.median(dim=1, keepdim=True).values
+    profile = (.75 * per_tone + .25 * packet) / log(2)
+    scalar = profile.mean(dim=-1, keepdim=True)
+    # Both arms use the same mean noise power from the same native samples.
+    color = profile / scalar.clamp_min(1e-8)
+    color = color.clamp(.1, 5.)
+    color = color / color.mean(dim=-1, keepdim=True)
+    return scalar * color, scalar
+
+
 class RFNoiseTransport(nn.Module):
     def __init__(self, aligned):
         super().__init__()
@@ -56,9 +86,7 @@ class RFNoiseTransport(nn.Module):
         self.register_buffer('frequency', torch.arange(FFT), persistent=False)
 
     def analyze(self, value):
-        spectrum = torch.stft(value.flatten(0, 1), FFT, HOP, window=self.window, normalized=True,
-                              onesided=False, return_complex=True, pad_mode='reflect')
-        return spectrum.unflatten(0, value.shape[:2]).transpose(-1, -2)
+        return analyze(value, self.window)
 
     def synthesize(self, spectrum, view):
         flat = spectrum.transpose(-1, -2).flatten(0, 1)
@@ -67,27 +95,9 @@ class RFNoiseTransport(nn.Module):
         return recovered.reshape_as(view)
 
     def native_samples(self, observed, rotation):
-        native = self.analyze(observed * rotation)
-        ridge = power(self.analyze(rotation)).argmax(dim=-1, keepdim=True)
-        distance = (self.frequency - ridge + FFT // 2).remainder(FFT) - FFT // 2
-        outside = distance.abs() >= 7
-        return power(native).masked_fill(~outside, torch.nan), outside, ridge
+        return native_samples(observed, rotation, self.window, self.frequency)
 
-    @staticmethod
-    def noise_profile(samples, outside):
-        # Use the current chirp PSD with a mild shrinkage to same-packet estimates.
-        # Very short/ambiguous ridge support falls back to that chirp's aggregate.
-        aggregate = samples.flatten(-2).nanmedian(dim=-1).values
-        per_tone = samples.nanmedian(dim=-2).values
-        per_tone = torch.where(outside.sum(dim=-2) >= 4, per_tone, aggregate[..., None])
-        packet = per_tone.median(dim=1, keepdim=True).values
-        profile = (.75 * per_tone + .25 * packet) / log(2)
-        scalar = profile.mean(dim=-1, keepdim=True)
-        # Both arms use the same mean noise power from the same native samples.
-        color = profile / scalar.clamp_min(1e-8)
-        color = color.clamp(.1, 5.)
-        color = color / color.mean(dim=-1, keepdim=True)
-        return scalar * color, scalar
+    noise_profile = staticmethod(noise_profile)
 
     def estimate_noise(self, observed, rotation):
         samples, outside, ridge = self.native_samples(observed, rotation)
