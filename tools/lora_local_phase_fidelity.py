@@ -479,7 +479,8 @@ def diagnose(rt, route, device):
     is_cross_dose = rt['run_id']=='20261124-phase1-lora-cross-frequency-dose-source-m4-r01'
     is_mixture = rt['run_id']=='20261124-phase1-lora-spectral-mixture-source-m2-r01'
     is_angular = rt['run_id']=='20261124-phase1-lora-angular-transport-source-m4-r01'
-    is_band_allocation = rt['run_id']=='20261124-phase1-lora-band-allocation-source-m3-r01'
+    is_band_allocation = rt['run_id'] in ('20261124-phase1-lora-band-allocation-source-m3-r01',
+                                        '20261124-phase1-lora-band-allocation-source-m3-r02')
     is_weak_sideband = rt['run_id']=='20261124-phase1-lora-weak-sideband-source-m4-r01'
     is_interval = rt['run_id']==coherent_interval_source.RUN
     is_joint = rt['run_id']==joint_spectrum_source.RUN
@@ -888,6 +889,7 @@ def main():
                      '20261124-phase1-lora-spectral-mixture-source-m2-r01',
                      '20261124-phase1-lora-angular-transport-source-m4-r01',
                      '20261124-phase1-lora-band-allocation-source-m3-r01',
+                     '20261124-phase1-lora-band-allocation-source-m3-r02',
                      '20261124-phase1-lora-weak-sideband-source-m4-r01')
     if rt.get('run_id') not in analyzed_runs or read(root/'state.json')['status']!='SOURCE_SCORED':
         raise ValueError('The full dual-route truth-last scoring must already be complete')

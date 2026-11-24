@@ -65,6 +65,9 @@ def test_real_source_objective_trains_and_clean_uses_bitwise_bypass():
         assert output.shape == (len(MODES) - 2, *iq.shape)
         assert torch.isfinite(rows).all()
         assert torch.equal(output[3], output[7])
+        single, single_count, _ = recover(iq[:1], tracker, (model,), 0.)
+        assert single_count == 1
+        assert torch.allclose(single[0], output[6, :1], atol=1e-6)
 
         class FrozenDirection:
             def changes(self, y, rms):

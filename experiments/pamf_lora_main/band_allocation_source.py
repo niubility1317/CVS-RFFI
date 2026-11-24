@@ -152,7 +152,8 @@ def recover(iq, tracker, models, threshold, *, matrix=False):
     frame = angle * rms
     if not matrix:
         update = real_iq(fine * frame)
-        update = torch.where(torch.isfinite(update).all((1, 2, 3))[:, None, None, None], update, 0.)
+        finite = torch.isfinite(update).flatten(1).all(-1)
+        update = torch.where(finite[:, None, None, None], update, 0.)
         outputs[0, gate] = iq[gate] + update
         return outputs, count, records
 

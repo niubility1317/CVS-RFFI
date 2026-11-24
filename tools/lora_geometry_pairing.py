@@ -47,6 +47,7 @@ SPECTRAL_MIXTURE_RUN = '20261124-phase1-lora-spectral-mixture-source-m2-r01'
 MIXTURE_DIRECTIONS_RUN = '20261124-diagnostic-lora-mixture-directions-source-m2-r01'
 ANGULAR_TRANSPORT_RUN = '20261124-phase1-lora-angular-transport-source-m4-r01'
 BAND_ALLOCATION_RUN = '20261124-phase1-lora-band-allocation-source-m3-r01'
+BAND_ALLOCATION_REPLAY = '20261124-phase1-lora-band-allocation-source-m3-r02'
 BAND_ALLOCATION_DIAGNOSTIC = '20261124-diagnostic-lora-band-allocation-source-m2-r01'
 WEAK_SIDEBAND_RUN = '20261124-phase1-lora-weak-sideband-source-m4-r01'
 RADIUS_INTERACTIONS = {
@@ -187,7 +188,7 @@ def collect(rt):
         from experiments.pamf_lora_main import angular_transport_source
         modes = angular_transport_source.MODES
         pairs = (*angular_transport_source.COMPARISONS, ('direct', 'reference'))
-    elif rt.get('run_id') == BAND_ALLOCATION_RUN:
+    elif rt.get('run_id') in (BAND_ALLOCATION_RUN, BAND_ALLOCATION_REPLAY):
         from experiments.pamf_lora_main import band_allocation_source
         modes = band_allocation_source.MODES
         pairs = (*band_allocation_source.COMPARISONS, ('direct', 'reference'))
