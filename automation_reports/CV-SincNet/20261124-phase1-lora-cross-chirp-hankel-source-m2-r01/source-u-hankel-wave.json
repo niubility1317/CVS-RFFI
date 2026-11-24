@@ -1,0 +1,723 @@
+{
+  "status": "PASS",
+  "n": 150,
+  "isolated_reference_after_readouts": true,
+  "F_reads": 0,
+  "V_reads": 0,
+  "TX_reads": 0,
+  "target_reads": 0,
+  "rows": {
+    "full": {
+      "practical_low_suburban": {
+        "n": 150,
+        "active": 53,
+        "physical_dose_max_mismatch": 0.0000019073486328125,
+        "by_mode": {
+          "direct": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 1.284801959991455,
+              "median_real_gain": 0.9922265410423279,
+              "median_abs_phase_rad": 0.020211979746818542
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 11.587287902832031,
+              "median_real_gain": 0.9981100559234619,
+              "median_abs_phase_rad": 0.02281925454735756
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 29.358797073364258,
+              "median_real_gain": 1.001258373260498,
+              "median_abs_phase_rad": 0.03675892576575279
+            }
+          },
+          "rank_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.4254930913448334,
+              "median_real_gain": 0.9900678992271423,
+              "median_abs_phase_rad": 0.019857758656144142
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 3.1333656311035156,
+              "median_real_gain": 0.9915506839752197,
+              "median_abs_phase_rad": 0.02050609141588211
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 7.90079927444458,
+              "median_real_gain": 0.9891548156738281,
+              "median_abs_phase_rad": 0.03383582457900047
+            }
+          },
+          "global_hankel_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.5315023064613342,
+              "median_real_gain": 0.9832156300544739,
+              "median_abs_phase_rad": 0.020198287442326546
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 3.833404064178467,
+              "median_real_gain": 0.9761170744895935,
+              "median_abs_phase_rad": 0.02513473480939865
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 9.038175582885742,
+              "median_real_gain": 0.9693205952644348,
+              "median_abs_phase_rad": 0.037949088960886
+            }
+          },
+          "local_hankel_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.5266834497451782,
+              "median_real_gain": 0.9832156300544739,
+              "median_abs_phase_rad": 0.020198287442326546
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 3.8594160079956055,
+              "median_real_gain": 0.9761170744895935,
+              "median_abs_phase_rad": 0.02366538532078266
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 9.291998863220215,
+              "median_real_gain": 0.9698958396911621,
+              "median_abs_phase_rad": 0.037949088960886
+            }
+          },
+          "local_self_included_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.5386978983879089,
+              "median_real_gain": 0.9832156300544739,
+              "median_abs_phase_rad": 0.020207388326525688
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 3.978253126144409,
+              "median_real_gain": 0.9761170744895935,
+              "median_abs_phase_rad": 0.024146102368831635
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 9.518625259399414,
+              "median_real_gain": 0.9698958396911621,
+              "median_abs_phase_rad": 0.03849886357784271
+            }
+          },
+          "protected_hankel_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.5235388875007629,
+              "median_real_gain": 0.9910767078399658,
+              "median_abs_phase_rad": 0.01995990052819252
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 3.8406989574432373,
+              "median_real_gain": 0.991912305355072,
+              "median_abs_phase_rad": 0.022069068625569344
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 9.2758150100708,
+              "median_real_gain": 0.9891548156738281,
+              "median_abs_phase_rad": 0.03548051789402962
+            }
+          },
+          "matched_dose_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.4771704375743866,
+              "median_real_gain": 0.990546703338623,
+              "median_abs_phase_rad": 0.020198287442326546
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 3.643397331237793,
+              "median_real_gain": 0.9917234182357788,
+              "median_abs_phase_rad": 0.020820412784814835
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 9.189512252807617,
+              "median_real_gain": 0.9891548156738281,
+              "median_abs_phase_rad": 0.03512278199195862
+            }
+          }
+        },
+        "near_time": {
+          "direct": {
+            "center": 15.113243103027344,
+            "ends": 2.316680908203125
+          },
+          "rank_half": {
+            "center": 4.239359378814697,
+            "ends": 0.6700748801231384
+          },
+          "global_hankel_half": {
+            "center": 5.1074323654174805,
+            "ends": 0.8408217430114746
+          },
+          "local_hankel_half": {
+            "center": 5.092440128326416,
+            "ends": 0.8467519283294678
+          },
+          "local_self_included_half": {
+            "center": 5.236664295196533,
+            "ends": 0.8711254596710205
+          },
+          "protected_hankel_half": {
+            "center": 5.170624732971191,
+            "ends": 0.826856255531311
+          },
+          "matched_dose_half": {
+            "center": 4.894351482391357,
+            "ends": 0.7694298028945923
+          }
+        }
+      },
+      "practical_low_urban": {
+        "n": 150,
+        "active": 101,
+        "physical_dose_max_mismatch": 0.000002384185791015625,
+        "by_mode": {
+          "direct": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 3.5609614849090576,
+              "median_real_gain": 0.9848870635032654,
+              "median_abs_phase_rad": 0.047396060079336166
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 48.75594711303711,
+              "median_real_gain": 0.9982239007949829,
+              "median_abs_phase_rad": 0.06882095336914062
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 143.11654663085938,
+              "median_real_gain": 0.9905461668968201,
+              "median_abs_phase_rad": 0.10742493718862534
+            }
+          },
+          "rank_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 1.112642765045166,
+              "median_real_gain": 0.8706900477409363,
+              "median_abs_phase_rad": 0.04265779256820679
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 12.366660118103027,
+              "median_real_gain": 0.9659345746040344,
+              "median_abs_phase_rad": 0.04894575476646423
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 36.074623107910156,
+              "median_real_gain": 0.9618685841560364,
+              "median_abs_phase_rad": 0.07640809565782547
+            }
+          },
+          "global_hankel_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 1.3308731317520142,
+              "median_real_gain": 0.6725426912307739,
+              "median_abs_phase_rad": 0.04479077458381653
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 15.0425443649292,
+              "median_real_gain": 0.6937136054039001,
+              "median_abs_phase_rad": 0.06180933117866516
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 43.27829360961914,
+              "median_real_gain": 0.701084315776825,
+              "median_abs_phase_rad": 0.1264171600341797
+            }
+          },
+          "local_hankel_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 1.3363761901855469,
+              "median_real_gain": 0.6598012447357178,
+              "median_abs_phase_rad": 0.04546283930540085
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 15.375954627990723,
+              "median_real_gain": 0.7287343740463257,
+              "median_abs_phase_rad": 0.057770274579524994
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 44.429298400878906,
+              "median_real_gain": 0.7339600920677185,
+              "median_abs_phase_rad": 0.12587124109268188
+            }
+          },
+          "local_self_included_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 1.363752841949463,
+              "median_real_gain": 0.6774733662605286,
+              "median_abs_phase_rad": 0.04567507654428482
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 15.83973217010498,
+              "median_real_gain": 0.7351148724555969,
+              "median_abs_phase_rad": 0.06224863976240158
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 45.776611328125,
+              "median_real_gain": 0.7480967044830322,
+              "median_abs_phase_rad": 0.11417914927005768
+            }
+          },
+          "protected_hankel_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 1.3268474340438843,
+              "median_real_gain": 0.9059156179428101,
+              "median_abs_phase_rad": 0.04471969231963158
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 15.308674812316895,
+              "median_real_gain": 0.9836560487747192,
+              "median_abs_phase_rad": 0.050655025988817215
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 44.307708740234375,
+              "median_real_gain": 0.9680697321891785,
+              "median_abs_phase_rad": 0.08278084546327591
+            }
+          },
+          "matched_dose_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 1.263279914855957,
+              "median_real_gain": 0.8792681097984314,
+              "median_abs_phase_rad": 0.043010253459215164
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 14.596555709838867,
+              "median_real_gain": 0.9721262454986572,
+              "median_abs_phase_rad": 0.04987625405192375
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 42.6374397277832,
+              "median_real_gain": 0.9632480144500732,
+              "median_abs_phase_rad": 0.07902287691831589
+            }
+          }
+        },
+        "near_time": {
+          "direct": {
+            "center": 38.24811935424805,
+            "ends": 7.023004531860352
+          },
+          "rank_half": {
+            "center": 9.990861892700195,
+            "ends": 1.9309343099594116
+          },
+          "global_hankel_half": {
+            "center": 11.996722221374512,
+            "ends": 2.355365037918091
+          },
+          "local_hankel_half": {
+            "center": 12.150649070739746,
+            "ends": 2.4047656059265137
+          },
+          "local_self_included_half": {
+            "center": 12.50179386138916,
+            "ends": 2.467604160308838
+          },
+          "protected_hankel_half": {
+            "center": 12.27726936340332,
+            "ends": 2.3579864501953125
+          },
+          "matched_dose_half": {
+            "center": 11.730278015136719,
+            "ends": 2.2421302795410156
+          }
+        }
+      }
+    },
+    "residual": {
+      "practical_low_suburban": {
+        "n": 150,
+        "active": 150,
+        "physical_dose_max_mismatch": 0.000003337860107421875,
+        "by_mode": {
+          "direct": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 2.6326260566711426,
+              "median_real_gain": 0.9559066891670227,
+              "median_abs_phase_rad": 0.057210057973861694
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 19.944347381591797,
+              "median_real_gain": 0.9862315058708191,
+              "median_abs_phase_rad": 0.0788724347949028
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 41.425315856933594,
+              "median_real_gain": 0.9738072752952576,
+              "median_abs_phase_rad": 0.09538356214761734
+            }
+          },
+          "rank_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.8153734803199768,
+              "median_real_gain": 0.9307157397270203,
+              "median_abs_phase_rad": 0.04558466002345085
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 5.081823825836182,
+              "median_real_gain": 0.9290611147880554,
+              "median_abs_phase_rad": 0.05306747183203697
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 10.514206886291504,
+              "median_real_gain": 0.9121299982070923,
+              "median_abs_phase_rad": 0.05199591442942619
+            }
+          },
+          "global_hankel_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 1.2511365413665771,
+              "median_real_gain": 0.7238910794258118,
+              "median_abs_phase_rad": 0.05622393265366554
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 5.824192523956299,
+              "median_real_gain": 0.6117047667503357,
+              "median_abs_phase_rad": 0.0650654211640358
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 11.458333969116211,
+              "median_real_gain": 0.5863838195800781,
+              "median_abs_phase_rad": 0.09625303000211716
+            }
+          },
+          "local_hankel_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 1.2016602754592896,
+              "median_real_gain": 0.7494496703147888,
+              "median_abs_phase_rad": 0.05591929703950882
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 5.97510290145874,
+              "median_real_gain": 0.6689547300338745,
+              "median_abs_phase_rad": 0.06659667938947678
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 11.821404457092285,
+              "median_real_gain": 0.6541939377784729,
+              "median_abs_phase_rad": 0.089642733335495
+            }
+          },
+          "local_self_included_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 1.1989001035690308,
+              "median_real_gain": 0.7550365328788757,
+              "median_abs_phase_rad": 0.054430581629276276
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 6.0754923820495605,
+              "median_real_gain": 0.6781572699546814,
+              "median_abs_phase_rad": 0.06538437306880951
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 11.980320930480957,
+              "median_real_gain": 0.663382351398468,
+              "median_abs_phase_rad": 0.08806680142879486
+            }
+          },
+          "protected_hankel_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 1.225778579711914,
+              "median_real_gain": 0.9454250931739807,
+              "median_abs_phase_rad": 0.0476105660200119
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 5.957794189453125,
+              "median_real_gain": 0.941074788570404,
+              "median_abs_phase_rad": 0.058635786175727844
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 11.803009986877441,
+              "median_real_gain": 0.9152851104736328,
+              "median_abs_phase_rad": 0.05975620821118355
+            }
+          },
+          "matched_dose_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.9016801118850708,
+              "median_real_gain": 0.9357157349586487,
+              "median_abs_phase_rad": 0.046514905989170074
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 5.789318084716797,
+              "median_real_gain": 0.932765007019043,
+              "median_abs_phase_rad": 0.055462371557950974
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 11.977031707763672,
+              "median_real_gain": 0.9141013026237488,
+              "median_abs_phase_rad": 0.05454232543706894
+            }
+          }
+        },
+        "near_time": {
+          "direct": {
+            "center": 29.58473014831543,
+            "ends": 4.260034084320068
+          },
+          "rank_half": {
+            "center": 7.779489040374756,
+            "ends": 1.169653058052063
+          },
+          "global_hankel_half": {
+            "center": 9.647599220275879,
+            "ends": 1.4953727722167969
+          },
+          "local_hankel_half": {
+            "center": 9.450035095214844,
+            "ends": 1.5316319465637207
+          },
+          "local_self_included_half": {
+            "center": 9.586419105529785,
+            "ends": 1.5416866540908813
+          },
+          "protected_hankel_half": {
+            "center": 9.63776969909668,
+            "ends": 1.5186859369277954
+          },
+          "matched_dose_half": {
+            "center": 8.823262214660645,
+            "ends": 1.3157567977905273
+          }
+        }
+      },
+      "practical_low_urban": {
+        "n": 150,
+        "active": 150,
+        "physical_dose_max_mismatch": 0.000003337860107421875,
+        "by_mode": {
+          "direct": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 6.013133525848389,
+              "median_real_gain": 0.8893324732780457,
+              "median_abs_phase_rad": 0.13069365918636322
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 108.03315734863281,
+              "median_real_gain": 0.8726091384887695,
+              "median_abs_phase_rad": 0.3485938310623169
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 360.2650146484375,
+              "median_real_gain": 0.9440428018569946,
+              "median_abs_phase_rad": 0.4390374720096588
+            }
+          },
+          "rank_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 1.8054007291793823,
+              "median_real_gain": 0.7553466558456421,
+              "median_abs_phase_rad": 0.10169259458780289
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 27.133569717407227,
+              "median_real_gain": 0.8372677564620972,
+              "median_abs_phase_rad": 0.19437867403030396
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 89.9984130859375,
+              "median_real_gain": 0.8499103784561157,
+              "median_abs_phase_rad": 0.22701062262058258
+            }
+          },
+          "global_hankel_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 2.4242208003997803,
+              "median_real_gain": 0.5871063470840454,
+              "median_abs_phase_rad": 0.13410858809947968
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 30.559480667114258,
+              "median_real_gain": 0.5355626940727234,
+              "median_abs_phase_rad": 0.33837002515792847
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 101.83131408691406,
+              "median_real_gain": 0.5313588976860046,
+              "median_abs_phase_rad": 0.3850181996822357
+            }
+          },
+          "local_hankel_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 2.3828511238098145,
+              "median_real_gain": 0.6009178161621094,
+              "median_abs_phase_rad": 0.1372985988855362
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 31.569074630737305,
+              "median_real_gain": 0.5671058297157288,
+              "median_abs_phase_rad": 0.3222544491291046
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 105.13687896728516,
+              "median_real_gain": 0.5617183446884155,
+              "median_abs_phase_rad": 0.389795184135437
+            }
+          },
+          "local_self_included_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 2.3810319900512695,
+              "median_real_gain": 0.602927029132843,
+              "median_abs_phase_rad": 0.13540521264076233
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 32.13075256347656,
+              "median_real_gain": 0.5757241249084473,
+              "median_abs_phase_rad": 0.29729923605918884
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 107.46635437011719,
+              "median_real_gain": 0.5693241953849792,
+              "median_abs_phase_rad": 0.376868337392807
+            }
+          },
+          "protected_hankel_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 2.428521156311035,
+              "median_real_gain": 0.8042495250701904,
+              "median_abs_phase_rad": 0.11709781736135483
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 31.490488052368164,
+              "median_real_gain": 0.8553382158279419,
+              "median_abs_phase_rad": 0.20432063937187195
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 104.84599304199219,
+              "median_real_gain": 0.8591557741165161,
+              "median_abs_phase_rad": 0.264551043510437
+            }
+          },
+          "matched_dose_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 2.028057098388672,
+              "median_real_gain": 0.7663118243217468,
+              "median_abs_phase_rad": 0.10381551086902618
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 31.36163330078125,
+              "median_real_gain": 0.8454023599624634,
+              "median_abs_phase_rad": 0.20427055656909943
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 104.10417175292969,
+              "median_real_gain": 0.8582098484039307,
+              "median_abs_phase_rad": 0.23453731834888458
+            }
+          }
+        },
+        "near_time": {
+          "direct": {
+            "center": 67.07469940185547,
+            "ends": 12.082393646240234
+          },
+          "rank_half": {
+            "center": 17.262386322021484,
+            "ends": 3.2588493824005127
+          },
+          "global_hankel_half": {
+            "center": 20.537982940673828,
+            "ends": 3.8694989681243896
+          },
+          "local_hankel_half": {
+            "center": 20.508209228515625,
+            "ends": 4.00139045715332
+          },
+          "local_self_included_half": {
+            "center": 20.78479766845703,
+            "ends": 4.0436506271362305
+          },
+          "protected_hankel_half": {
+            "center": 20.734888076782227,
+            "ends": 3.9938666820526123
+          },
+          "matched_dose_half": {
+            "center": 19.877355575561523,
+            "ends": 3.7206943035125732
+          }
+        }
+      }
+    }
+  }
+}

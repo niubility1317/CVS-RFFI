@@ -1,0 +1,7 @@
+{"at": "2026-11-24T00:56:06+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-24T00:56:06+00:00", "status": "LOCAL_VERIFIED", "note": "Four focused tests and one independent P0/P1 review passed.", "evidence": "cross_chirp_hankel_source.py", "row_id": null}
+{"at": "2026-11-24T00:57:28+00:00", "status": "RUNNING", "note": "Real source smoke passed. Two evaluation PIDs/CWD/argv/GPU and positive log growth verified.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-24T00:59:56+00:00", "status": "ANALYZED", "note": "Verified complete source V scoring.", "evidence": "full-source-scores.json", "row_id": "evaluate-full"}
+{"at": "2026-11-24T00:59:56+00:00", "status": "ANALYZED", "note": "Verified complete source V scoring.", "evidence": "residual-source-scores.json", "row_id": "evaluate-residual"}
+{"at": "2026-11-24T00:59:56+00:00", "status": "ANALYZED", "note": "Verified 12000 disjoint source clean predictions after freeze.", "evidence": "clean-complete-scores.json", "row_id": "evaluate-reserve"}
+{"at": "2026-11-24T00:59:56+00:00", "status": "ANALYZED", "note": "Local Hankel paired source-only readout complete; primary eligible=False.", "evidence": "report.md", "row_id": null}

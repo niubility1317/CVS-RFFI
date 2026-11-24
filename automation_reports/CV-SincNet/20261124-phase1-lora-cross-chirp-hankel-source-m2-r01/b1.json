@@ -1,0 +1,16 @@
+{
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "n_measurements": 24,
+  "timing": {
+    "clean": {
+      "active": 0,
+      "median_ms": 3.427710966207087
+    },
+    "generic": {
+      "active": 1,
+      "median_ms": 68.61303688492626
+    }
+  },
+  "restoration_weights": 254735,
+  "scope": "frozen rank and all three Hankel filters; excludes DURA and F"
+}
