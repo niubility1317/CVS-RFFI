@@ -1,0 +1,30 @@
+{
+  "submit": {
+    "pid": 2349082,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-frame-leakage-source-cpu-r01-release",
+    "code_commit": "4a0f39bd4fad725d241dd1de9e79edc4f14b1a79",
+    "archive_transfer": "VERIFIED",
+    "remote_compile": "PASS",
+    "status": "SUBMITTED_NOT_YET_VERIFIED",
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-frame-leakage-source-cpu-r01"
+  },
+  "live": null,
+  "stages": {
+    "smoke": {
+      "pid": 2349091,
+      "live": null,
+      "bytes": 1253,
+      "last": [
+        "    return func(*args, **kwargs)",
+        "  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-frame-leakage-source-cpu-r01-release/experiments/pamf_lora_main/frame_leakage_source.py\", line 113, in smoke",
+        "    raise ValueError('Invalid source no-query coordinate attribution smoke')",
+        "ValueError: Invalid source no-query coordinate attribution smoke"
+      ]
+    }
+  },
+  "state": {
+    "status": "FAILED",
+    "error": "LoRa frame leakage smoke failed"
+  },
+  "files": {}
+}

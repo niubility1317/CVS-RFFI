@@ -1,0 +1,89 @@
+{
+  "submit": {
+    "pid": 2350128,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-frame-leakage-source-cpu-r02-release",
+    "code_commit": "4e374715e6757598055d6091801a1eb6ccf362de",
+    "archive_transfer": "VERIFIED",
+    "remote_compile": "PASS",
+    "status": "SUBMITTED_NOT_YET_VERIFIED",
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-frame-leakage-source-cpu-r02"
+  },
+  "live": {
+    "pid": 2350128,
+    "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.frame_leakage_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-frame-leakage-source-cpu-r02-release/runtime.json",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-frame-leakage-source-cpu-r02-release",
+    "cuda": [
+      "CUDA_VISIBLE_DEVICES="
+    ]
+  },
+  "stages": {
+    "smoke": {
+      "pid": 2350143,
+      "live": null,
+      "bytes": 37,
+      "last": [
+        "LORA_FRAME_LEAKAGE_SOURCE_SMOKE_PASS"
+      ]
+    },
+    "probe": {
+      "pid": 2350326,
+      "live": {
+        "pid": 2350326,
+        "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.frame_leakage_source probe /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-frame-leakage-source-cpu-r02/configs/probe-source.json source",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-frame-leakage-source-cpu-r02-release",
+        "cuda": [
+          "CUDA_VISIBLE_DEVICES="
+        ]
+      },
+      "bytes": 31,
+      "last": [
+        "LORA_FRAME_LEAKAGE_GENERIC 150"
+      ]
+    }
+  },
+  "state": null,
+  "files": {
+    "smoke.json": 135
+  },
+  "terminal": {
+    "submit": {
+      "pid": 2350128,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-frame-leakage-source-cpu-r02-release",
+      "code_commit": "4e374715e6757598055d6091801a1eb6ccf362de",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-frame-leakage-source-cpu-r02"
+    },
+    "live": null,
+    "stages": {
+      "smoke": {
+        "pid": 2350143,
+        "live": null,
+        "bytes": 37,
+        "last": [
+          "LORA_FRAME_LEAKAGE_SOURCE_SMOKE_PASS"
+        ]
+      },
+      "probe": {
+        "pid": 2350326,
+        "live": null,
+        "bytes": 261,
+        "last": [
+          "LORA_FRAME_LEAKAGE_READY full practical_low_suburban 150",
+          "LORA_FRAME_LEAKAGE_READY full practical_low_urban 150",
+          "LORA_FRAME_LEAKAGE_READY residual practical_low_suburban 150",
+          "LORA_FRAME_LEAKAGE_READY residual practical_low_urban 150"
+        ]
+      }
+    },
+    "state": {
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
+    },
+    "files": {
+      "smoke.json": 135,
+      "source-u-frame-leakage.json": 722888
+    }
+  },
+  "verification": "VERIFIED"
+}

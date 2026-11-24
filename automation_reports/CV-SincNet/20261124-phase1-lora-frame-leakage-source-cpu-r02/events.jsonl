@@ -1,0 +1,5 @@
+{"at": "2026-11-24T00:09:10+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-24T00:09:10+00:00", "status": "LOCAL_VERIFIED", "note": "Four focused tests passed. Reproduced exact reported remote issue and fixed only smoke numerical guard.", "evidence": "frame_leakage_source.py", "row_id": null}
+{"at": "2026-11-24T00:09:47+00:00", "status": "RUNNING", "note": "Verified live CPU controller and probe PID/CWD/argv, smoke, and 150-packet generic milestone.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-24T00:10:42+00:00", "status": "ANALYZED", "note": "Verified held-U waveform coordinate decomposition and observed-only variants.", "evidence": "source-u-frame-leakage.json", "row_id": "probe-source"}
+{"at": "2026-11-24T00:10:42+00:00", "status": "ANALYZED", "note": "Source-only diagnostic closed, qualified=[].", "evidence": "report.md", "row_id": null}

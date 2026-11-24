@@ -10,6 +10,8 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 接收坐标误差与私有谱泄漏](../automation_reports/CV-SincNet/20261124-phase1-lora-frame-leakage-source-cpu-r02/report.md)
+- [LoRa 接收坐标误差与私有谱泄漏（首次数值检查失败）](../automation_reports/CV-SincNet/20261124-phase1-lora-frame-leakage-source-cpu-r01/report.md)
 - [LoRa 私有复谱的幅值和相位分离](../automation_reports/CV-SincNet/20261124-phase1-lora-private-polar-source-m2-r01/report.md)
 - [LoRa 实收噪声方差与私有复谱修正风险](../automation_reports/CV-SincNet/20261124-phase1-lora-private-band-risk-source-cpu-r02/report.md)
 - [LoRa 实收噪声方差与私有复谱修正风险（首次兼容失败）](../automation_reports/CV-SincNet/20261124-phase1-lora-private-band-risk-source-cpu-r01/report.md)
