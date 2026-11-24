@@ -29,7 +29,7 @@ def wait_for_predictions(connection, root):
         if status['status'] == 'FAILED':
             raise RuntimeError(status['error'])
         if status['status'] == 'PREDICTIONS_FROZEN':
-            return
+            return status
         time.sleep(60)
 
 def receive(connection, root, output, main):

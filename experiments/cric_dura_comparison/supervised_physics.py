@@ -13,7 +13,10 @@ def shuffled_descriptor(self, h):
     windows = u.reshape(b * 4, t // 4, 6)
     if windows.shape[1] != 8 or self.window_order.device != h.device:
         raise ValueError('Fixed256 IQ requires t2 length32 and device-resident order')
-    return path_signature(windows[:, self.window_order], True).reshape(b, 112)
+    shifted = windows[:, self.window_order]
+    if getattr(self, 'tuning_half_path', False):
+        shifted = torch.nn.functional.avg_pool1d(shifted.transpose(1,2), 2).transpose(1,2)
+    return path_signature(shifted, True).reshape(b, 112)
 
 
 def install(model, arm, seed):

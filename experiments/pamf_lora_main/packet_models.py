@@ -30,7 +30,7 @@ class PacketTri(nn.Module):
     def forward(self, x):
         if self.views == 1:
             x = x[:, SINGLE_INDEX:SINGLE_INDEX+1]
-        fused = self.encoder.features(x.flatten(0, 1)).reshape(len(x), self.views, 160).mean(dim=1)
+        fused = self.encoder.features(x.flatten(0, 1)).reshape(len(x), self.views, -1).mean(dim=1)
         return self.encoder.classify_features(fused), fused
 
 

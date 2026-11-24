@@ -133,18 +133,19 @@ def mean_contrast(outputs,y,rx,keep,*,joint=False):
     return torch.stack(losses).mean()
 
 
-def labeled_loss(model,x,practical,y,rx,step):
+def labeled_loss(model,x,practical,y,rx,step,*,mechanism=None):
     ordinary=ordinary_iq(x)
     use=(torch.arange(len(x),device=x.device)+step)%2==0
     mixed=torch.where(use[:,None,None,None],practical,ordinary)
     outputs=six_views(model,x,mixed,ordinary,None)
     accepted=torch.ones_like(use)
     aux=mean_contrast(outputs,y,rx,accepted)
-    loss,detail=mechanism_loss(*(p[0] for p in outputs),y,accepted,use,aux)
+    loss,detail=mechanism_loss(*(p[0] for p in outputs),y,accepted,use,aux,**(mechanism or {}))
     return loss,detail
 
 
-def unlabeled_loss(model,x,rx,step,weight,*,forced_pseudo=None,practical=None,practical_valid=None):
+def unlabeled_loss(model,x,rx,step,weight,*,forced_pseudo=None,practical=None,practical_valid=None,
+                   mechanism=None):
     model.eval()
     with torch.no_grad():
         probabilities=model(x)[0].softmax(1)
@@ -173,12 +174,12 @@ def unlabeled_loss(model,x,rx,step,weight,*,forced_pseudo=None,practical=None,pr
     model.train()
     outputs=six_views(model,x,mixed,ordinary,style)
     shallow=mean_contrast(outputs,y,rx,accepted)
-    loss,detail=mechanism_loss(*(p[0] for p in outputs),y,accepted,use,shallow)
+    loss,detail=mechanism_loss(*(p[0] for p in outputs),y,accepted,use,shallow,**(mechanism or {}))
     joint=mean_contrast(outputs,y,rx,accepted,joint=True)
     replacing=[]
     for logits,h,_,branches in outputs[:2]:
         def extend(v):
-            return extrapolate(v,y,accepted,rx,partner,valid,.25)
+            return extrapolate(v,y,accepted,rx,partner,valid,.25,width=v.shape[1])
         if isinstance(model,CoherentPacket):
             logits_ext=model.raw.encoder.classify_features(extend(branches['raw']))+model.head(extend(branches['aligned']))
         else:

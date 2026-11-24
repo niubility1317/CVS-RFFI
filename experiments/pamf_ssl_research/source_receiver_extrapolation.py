@@ -7,13 +7,13 @@ from .matched_report import SEEDS
 ALPHAS=(0.,.25,.5,1.)
 
 
-def extrapolate(h,pseudo,accepted,rx,partner,valid,alpha):
+def extrapolate(h,pseudo,accepted,rx,partner,valid,alpha,*,width=160):
     n=len(h)
-    if (h.shape!=(n,160) or not bool(torch.isfinite(h).all()) or alpha not in ALPHAS
+    if (h.shape!=(n,width) or not bool(torch.isfinite(h).all()) or alpha not in ALPHAS
         or any(v.shape!=(n,) for v in (pseudo,accepted,rx,partner,valid))
         or any(v.dtype!=torch.long for v in (pseudo,rx,partner)) or accepted.dtype!=torch.bool or valid.dtype!=torch.bool
         or (n and (int(partner.min())<0 or int(partner.max())>=n))):
-        raise ValueError('Finite fulljoint160 and fixed aligned source pseudo/RX partner masks required')
+        raise ValueError('Finite full joint features and fixed aligned source pseudo/RX partner masks required')
     if bool((valid&(~accepted|~accepted[partner]|(pseudo!=pseudo[partner])|(rx==rx[partner]))).any()):
         raise ValueError('Accepted same-pseudo different-sourceRX endpoints required')
     out=h.clone();out[valid]=h[valid]+alpha*(h[valid]-h[partner[valid]])

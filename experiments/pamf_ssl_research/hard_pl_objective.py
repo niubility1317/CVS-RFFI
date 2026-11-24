@@ -18,14 +18,15 @@ def masked_pair(a,b,y,accepted,kl_weight):
     return ce+kl_weight*kl,ce,kl
 
 
-def mechanism_loss(o0,o1,m0,m1,r0,r1,y,accepted,physical,aux):
+def mechanism_loss(o0,o1,m0,m1,r0,r1,y,accepted,physical,aux,
+                   *, kl_weight=1., contrast_weight=.1, physical_weight=1.):
     if physical.dtype!=torch.bool or physical.shape!=y.shape or not len(y) or int(physical.sum())*2!=len(y):
         raise ValueError('Exact even ordinary/physical half partition required')
-    ordinary,_,okl=masked_pair(o0,o1,y,accepted,1.)
-    mixed,_,_=masked_pair(m0[~physical],m1[~physical],y[~physical],accepted[~physical],1.)
+    ordinary,_,okl=masked_pair(o0,o1,y,accepted,kl_weight)
+    mixed,_,_=masked_pair(m0[~physical],m1[~physical],y[~physical],accepted[~physical],kl_weight)
     as_loss,_,askl=masked_pair(m0[physical],m1[physical],y[physical],accepted[physical],0.)
-    raw,_,rkl=masked_pair(r0,r1,y,accepted,1.)
-    loss=(.5*ordinary+.25*mixed+.25*as_loss+.25*raw+.1*aux)/1.25
+    raw,_,rkl=masked_pair(r0,r1,y,accepted,kl_weight)
+    loss=(.5*ordinary+.25*mixed+.25*physical_weight*as_loss+.25*raw+contrast_weight*aux)/1.25
     return loss,dict(ordinary_KL=okl.detach(),raw_KL=rkl.detach(),As_KL=askl.detach(),
         As_KL_weight=0.,contrast=aux.detach(),CE_normalizer=1.25)
 
