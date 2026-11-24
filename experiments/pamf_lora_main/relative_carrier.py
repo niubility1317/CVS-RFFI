@@ -40,10 +40,11 @@ def normalized_pairs(clean, change, perturb, rng, *, with_identity):
     return match_packet_power(candidates,clean[:,None])
 
 
-def training_objective(model, tracker, iq, rng, *, with_identity, recipe, step):
+def training_objective(model, tracker, iq, rng, *, with_identity, recipe, step, source_shape=False):
     return objective(model,tracker,iq,rng,with_identity=with_identity,recipe=recipe,step=step,
                      split_risk=False,build_inputs=normalized_pairs,private_risk_weight=.20,lag_weight=.25,
-                     observation_frame=observed_frame,carrier_risk=amplitude_risk,mix=mix)
+                     observation_frame=observed_frame,carrier_risk=amplitude_risk,mix=mix,
+                     source_shape=source_shape)
 
 
 class RelativeCarrierRecovery(CarrierCoupledRecovery):

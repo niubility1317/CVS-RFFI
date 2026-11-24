@@ -70,7 +70,7 @@ def private_direction_risk(even, odd, reference):
 
 def objective(model, tracker, iq, rng, *, with_identity, recipe, step, split_risk,
               build_inputs=antithetic_inputs, private_risk_weight=0., relation_weight=0., lag_weight=0.,
-              observation_frame=coordinates, carrier_risk=None, mix=torch.lerp):
+              observation_frame=coordinates, carrier_risk=None, mix=torch.lerp, source_shape=False):
     clean = complex_iq(iq)
     framed, rotation, _, rms = observation_frame(tracker, iq)
     source_basis = rotation * rms
@@ -82,13 +82,15 @@ def objective(model, tracker, iq, rng, *, with_identity, recipe, step, split_ris
     target = torch.stack((clean, clean, clean + change, clean + change), dim=1)
     stages = recipe.restore(model, observed, quality, rotation)
     coarse, refined = recipe.transform_stages(observed, stages, rms)
-    stage_target = target.flatten(0, 1) / basis
+    adapted_target = target / source_basis[:, None]
+    # The independent objective compares each waveform relative to its own carrier.
+    stage_target = adapted_target.flatten(0, 1) if source_shape else target.flatten(0, 1) / basis
     coarse_risk = waveform_risk(coarse, stage_target)
     full_risk = waveform_risk(refined, stage_target)
     recovered = (refined * basis).unflatten(0, wave.shape[:2])
     physical_half = mix(wave, recovered, .5)
-    half = physical_half / source_basis[:, None]
-    adapted_target = target / source_basis[:, None]
+    received_basis = basis.unflatten(0, wave.shape[:2])
+    half = physical_half / (received_basis if source_shape else source_basis[:, None])
     mean, difference = pair_terms(half)
     reference = adapted_target[:, ::2]
     point = component_risk(half - adapted_target, adapted_target)
@@ -112,9 +114,9 @@ def objective(model, tracker, iq, rng, *, with_identity, recipe, step, split_ris
         loss = loss + lag_weight * lag.mean()
         values = torch.cat((values, lag))
     if carrier_risk is not None:
+        received_half = half if source_shape else physical_half / received_basis
         extra, diagnostics = carrier_risk(coarse, refined, stage_target, half, adapted_target,
-                                          source_frame=framed,
-                                          received_half=physical_half / basis.unflatten(0, wave.shape[:2]))
+                                          source_frame=framed, received_half=received_half)
         loss = loss + extra
         values = torch.cat((values, diagnostics))
     return loss, values
