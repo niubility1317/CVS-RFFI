@@ -1,0 +1,252 @@
+{
+  "verification": "VERIFIED",
+  "observed": {
+    "submit": {
+      "pid": 2423162,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-antithetic-noise-response-source-m4-r01-release",
+      "code_commit": "c89c5929946fa4b935660d50cc5dd4c650e950c4",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-antithetic-noise-response-source-m4-r01"
+    },
+    "controller": {
+      "pid": 2423162,
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.antithetic_detail_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-antithetic-noise-response-source-m4-r01-release/runtime.json",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-antithetic-noise-response-source-m4-r01-release",
+      "cuda": [
+        "CUDA_VISIBLE_DEVICES="
+      ]
+    },
+    "jobs": {
+      "smoke-source": {
+        "pid": 2423186,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 459,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_ANTITHETIC_REAL_CHECKPOINT_PASS"
+        ]
+      },
+      "fit-pointwise": {
+        "pid": 2423541,
+        "gpu": 3,
+        "identity": {
+          "pid": 2423541,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.antithetic_detail_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-antithetic-noise-response-source-m4-r01/configs/fit-pointwise.json pointwise",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-antithetic-noise-response-source-m4-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=3"
+          ]
+        },
+        "bytes": 820,
+        "last": [
+          "CHANNEL_BLIND_FIT 150 2.10945725440979 1.205384612083435 2.0012130737304688 0.3748120665550232 1.921984076499939 0.006270392332226038",
+          "CHANNEL_BLIND_FIT 200 1.9416390657424927 0.5826965570449829 1.9653160572052002 0.4135996699333191 1.7978451251983643 0.006568356417119503",
+          "CHANNEL_BLIND_FIT 250 1.0900933742523193 0.36473509669303894 1.6626877784729004 0.31290486454963684 1.5068182945251465 0.026482392102479935"
+        ]
+      },
+      "fit-antithetic": {
+        "pid": 2423542,
+        "gpu": 6,
+        "identity": {
+          "pid": 2423542,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.antithetic_detail_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-antithetic-noise-response-source-m4-r01/configs/fit-antithetic.json antithetic",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-antithetic-noise-response-source-m4-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=6"
+          ]
+        },
+        "bytes": 960,
+        "last": [
+          "CHANNEL_BLIND_FIT 200 1.982775092124939 0.6386217474937439 2.0776562690734863 0.2656320333480835 1.9361001253128052 0.005789532326161861",
+          "CHANNEL_BLIND_FIT 250 1.0610947608947754 0.37982165813446045 1.6412404775619507 0.2637811005115509 1.4947667121887207 0.02658359706401825",
+          "CHANNEL_BLIND_FIT 300 0.18459270894527435 0.2855305075645447 1.8911023139953613 0.24061033129692078 1.7535673379898071 0.037605442106723785"
+        ]
+      }
+    },
+    "state": null,
+    "files": {
+      "smoke.json": 128
+    }
+  },
+  "initial": {
+    "submit": {
+      "pid": 2423162,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-antithetic-noise-response-source-m4-r01-release",
+      "code_commit": "c89c5929946fa4b935660d50cc5dd4c650e950c4",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-antithetic-noise-response-source-m4-r01"
+    },
+    "controller": {
+      "pid": 2423162,
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.antithetic_detail_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-antithetic-noise-response-source-m4-r01-release/runtime.json",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-antithetic-noise-response-source-m4-r01-release",
+      "cuda": [
+        "CUDA_VISIBLE_DEVICES="
+      ]
+    },
+    "jobs": {
+      "smoke-source": {
+        "pid": 2423186,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 459,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_ANTITHETIC_REAL_CHECKPOINT_PASS"
+        ]
+      },
+      "fit-pointwise": {
+        "pid": 2423541,
+        "gpu": 3,
+        "identity": {
+          "pid": 2423541,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.antithetic_detail_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-antithetic-noise-response-source-m4-r01/configs/fit-pointwise.json pointwise",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-antithetic-noise-response-source-m4-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=3"
+          ]
+        },
+        "bytes": 0,
+        "last": []
+      },
+      "fit-antithetic": {
+        "pid": 2423542,
+        "gpu": 6,
+        "identity": {
+          "pid": 2423542,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.antithetic_detail_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-antithetic-noise-response-source-m4-r01/configs/fit-antithetic.json antithetic",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-antithetic-noise-response-source-m4-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=6"
+          ]
+        },
+        "bytes": 0,
+        "last": []
+      }
+    },
+    "state": null,
+    "files": {
+      "smoke.json": 128
+    }
+  },
+  "terminal": {
+    "submit": {
+      "pid": 2423162,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-antithetic-noise-response-source-m4-r01-release",
+      "code_commit": "c89c5929946fa4b935660d50cc5dd4c650e950c4",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-antithetic-noise-response-source-m4-r01"
+    },
+    "controller": null,
+    "jobs": {
+      "smoke-source": {
+        "pid": 2423186,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 459,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_ANTITHETIC_REAL_CHECKPOINT_PASS"
+        ]
+      },
+      "fit-pointwise": {
+        "pid": 2423541,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 10205,
+        "last": [
+          "CHANNEL_BLIND_FIT 3500 0.049153633415699005 0.13823913037776947 1.3317018747329712 0.11978080868721008 1.250750184059143 0.00814836099743843",
+          "CHANNEL_BLIND_FIT 3550 0.05970984324812889 0.14983800053596497 1.4418214559555054 0.21510903537273407 1.3015316724777222 0.01087824534624815",
+          "CHANNEL_BLIND_FIT 3600 0.0526711530983448 0.1531299352645874 1.391554832458496 0.04634767025709152 1.3700332641601562 0.015022060833871365"
+        ]
+      },
+      "fit-antithetic": {
+        "pid": 2423542,
+        "gpu": 6,
+        "identity": null,
+        "bytes": 10219,
+        "last": [
+          "CHANNEL_BLIND_FIT 3500 0.051277488470077515 0.14112919569015503 1.3245034217834473 0.10607009381055832 1.2446492910385132 0.007450848817825317",
+          "CHANNEL_BLIND_FIT 3550 0.062239985913038254 0.15232358872890472 1.458204984664917 0.20211368799209595 1.3210290670394897 0.009919867850840092",
+          "CHANNEL_BLIND_FIT 3600 0.05379578098654747 0.15700170397758484 1.3961994647979736 0.04169398918747902 1.3766686916351318 0.013899827376008034"
+        ]
+      },
+      "timing-source": {
+        "pid": 2432451,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 422,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()"
+        ]
+      },
+      "evaluate-full": {
+        "pid": 2432692,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 754,
+        "last": [
+          "COMPLEX_VECTOR_SOURCE full practical_high_urban 92",
+          "COMPLEX_VECTOR_SOURCE full practical_mid_urban 396",
+          "COMPLEX_VECTOR_SOURCE full practical_low_urban 641"
+        ]
+      },
+      "evaluate-residual": {
+        "pid": 2432693,
+        "gpu": 6,
+        "identity": null,
+        "bytes": 782,
+        "last": [
+          "COMPLEX_VECTOR_SOURCE residual practical_high_urban 67",
+          "COMPLEX_VECTOR_SOURCE residual practical_mid_urban 803",
+          "COMPLEX_VECTOR_SOURCE residual practical_low_urban 899"
+        ]
+      },
+      "evaluate-reserve": {
+        "pid": 2435269,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 624,
+        "last": [
+          "LORA_CLEAN_RESERVE_PREDICTED 7680",
+          "LORA_CLEAN_RESERVE_PREDICTED 9596",
+          "LORA_CLEAN_RESERVE_FROZEN 11100"
+        ]
+      },
+      "score-source": {
+        "pid": 2435463,
+        "gpu": null,
+        "identity": null,
+        "bytes": 64,
+        "last": [
+          "LORA_RESTORATION_SOURCE_SCORED",
+          "LORA_CLEAN_COMPLETE_SCORED 12000"
+        ]
+      }
+    },
+    "state": {
+      "status": "SOURCE_SCORED"
+    },
+    "files": {
+      "state.json": 32,
+      "smoke.json": 128,
+      "pointwise-complete.json": 674,
+      "antithetic-complete.json": 677,
+      "b1.json": 681,
+      "full-source-scores.json": 11960,
+      "residual-source-scores.json": 11982,
+      "clean-complete-scores.json": 3711
+    }
+  }
+}

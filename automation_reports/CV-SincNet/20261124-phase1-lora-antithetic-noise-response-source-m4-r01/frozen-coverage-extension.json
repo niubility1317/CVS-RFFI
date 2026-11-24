@@ -1,0 +1,187 @@
+{
+  "status": "VERIFIED",
+  "n": 900,
+  "target_reads": 0,
+  "truth_after_validated_predictions": true,
+  "previous": "20261124-diagnostic-lora-frozen-complementarity-source-cpu-r01",
+  "additions": {
+    "run": "20261124-phase1-lora-antithetic-noise-response-source-m4-r01",
+    "family": "antithetic",
+    "main": [
+      "pointwise_half",
+      "antithetic_half"
+    ],
+    "extra": [
+      "pointwise_coarse",
+      "antithetic_coarse",
+      "pointwise_full",
+      "antithetic_full"
+    ]
+  },
+  "results": {
+    "full": {
+      "primary": {
+        "before": {
+          "clean": 667,
+          "six": 3622,
+          "low": 571,
+          "views": {
+            "clean": 667,
+            "practical_high": 601,
+            "practical_mid": 618,
+            "practical_low_suburban": 623,
+            "practical_high_urban": 611,
+            "practical_mid_urban": 598,
+            "practical_low_urban": 571
+          }
+        },
+        "after": {
+          "clean": 667,
+          "six": 3643,
+          "low": 584,
+          "views": {
+            "clean": 667,
+            "practical_high": 601,
+            "practical_mid": 619,
+            "practical_low_suburban": 624,
+            "practical_high_urban": 611,
+            "practical_mid_urban": 604,
+            "practical_low_urban": 584
+          }
+        },
+        "added": 21,
+        "by_view": {
+          "clean": 0,
+          "practical_high": 0,
+          "practical_mid": 1,
+          "practical_low_suburban": 1,
+          "practical_high_urban": 0,
+          "practical_mid_urban": 6,
+          "practical_low_urban": 13
+        }
+      },
+      "all": {
+        "before": {
+          "clean": 686,
+          "six": 4081,
+          "low": 750,
+          "views": {
+            "clean": 686,
+            "practical_high": 628,
+            "practical_mid": 656,
+            "practical_low_suburban": 686,
+            "practical_high_urban": 655,
+            "practical_mid_urban": 706,
+            "practical_low_urban": 750
+          }
+        },
+        "after": {
+          "clean": 686,
+          "six": 4102,
+          "low": 759,
+          "views": {
+            "clean": 686,
+            "practical_high": 628,
+            "practical_mid": 658,
+            "practical_low_suburban": 688,
+            "practical_high_urban": 657,
+            "practical_mid_urban": 712,
+            "practical_low_urban": 759
+          }
+        },
+        "added": 21,
+        "by_view": {
+          "clean": 0,
+          "practical_high": 0,
+          "practical_mid": 2,
+          "practical_low_suburban": 2,
+          "practical_high_urban": 2,
+          "practical_mid_urban": 6,
+          "practical_low_urban": 9
+        }
+      }
+    },
+    "residual": {
+      "primary": {
+        "before": {
+          "clean": 667,
+          "six": 3979,
+          "low": 650,
+          "views": {
+            "clean": 667,
+            "practical_high": 595,
+            "practical_mid": 695,
+            "practical_low_suburban": 709,
+            "practical_high_urban": 628,
+            "practical_mid_urban": 702,
+            "practical_low_urban": 650
+          }
+        },
+        "after": {
+          "clean": 667,
+          "six": 3995,
+          "low": 657,
+          "views": {
+            "clean": 667,
+            "practical_high": 595,
+            "practical_mid": 695,
+            "practical_low_suburban": 711,
+            "practical_high_urban": 628,
+            "practical_mid_urban": 709,
+            "practical_low_urban": 657
+          }
+        },
+        "added": 16,
+        "by_view": {
+          "clean": 0,
+          "practical_high": 0,
+          "practical_mid": 0,
+          "practical_low_suburban": 2,
+          "practical_high_urban": 0,
+          "practical_mid_urban": 7,
+          "practical_low_urban": 7
+        }
+      },
+      "all": {
+        "before": {
+          "clean": 686,
+          "six": 4581,
+          "low": 835,
+          "views": {
+            "clean": 686,
+            "practical_high": 620,
+            "practical_mid": 810,
+            "practical_low_suburban": 837,
+            "practical_high_urban": 651,
+            "practical_mid_urban": 828,
+            "practical_low_urban": 835
+          }
+        },
+        "after": {
+          "clean": 686,
+          "six": 4596,
+          "low": 843,
+          "views": {
+            "clean": 686,
+            "practical_high": 620,
+            "practical_mid": 811,
+            "practical_low_suburban": 840,
+            "practical_high_urban": 651,
+            "practical_mid_urban": 831,
+            "practical_low_urban": 843
+          }
+        },
+        "added": 15,
+        "by_view": {
+          "clean": 0,
+          "practical_high": 0,
+          "practical_mid": 1,
+          "practical_low_suburban": 3,
+          "practical_high_urban": 0,
+          "practical_mid_urban": 3,
+          "practical_low_urban": 8
+        }
+      }
+    }
+  }
+}

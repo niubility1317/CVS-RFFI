@@ -1,0 +1,30 @@
+{
+  "status": "SOURCE_FROZEN",
+  "seed": 2026112991,
+  "steps": 3600,
+  "fit_per_rx": 1000,
+  "calibration_per_rx": 500,
+  "held_per_rx": 100,
+  "F_reads": 0,
+  "TX_reads": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "practical_reads": 0,
+  "trace_reads": 0,
+  "estimator": "antithetic",
+  "threshold": 0.045941177755594254,
+  "held_waveform": [
+    0.09738020598888397,
+    0.20908677577972412,
+    1.7918633222579956,
+    0.2359890192747116,
+    1.6157927513122559,
+    0.01651078090071678
+  ],
+  "n_fit": 5000,
+  "n_calibration": 2500,
+  "n_held": 500,
+  "worker_seconds": 509.0752235199325,
+  "bf16_training_convolutions": true,
+  "initializer_seconds": 0.5515924259088933
+}
