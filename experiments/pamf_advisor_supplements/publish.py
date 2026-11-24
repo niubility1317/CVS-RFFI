@@ -44,8 +44,16 @@ print(json.dumps(dict(pid=p.pid, archive_verified=True, compile_pass=True, cwd=s
 """
 
 
-def publish(ssh_config, output):
+def publish(ssh_config, output, restoration=False):
     import shlex
+    if restoration:
+        from .dura import RUN as run_id
+        release = f"{PROJECT}/releases/{run_id}-release"
+        run_root = f"{PROJECT}/runs/{run_id}"
+        command = [PYTHON, "-u", "-m", "experiments.pamf_advisor_supplements.dura_dispatch",
+                   "dispatch", "--config", f"{release}/runtime.json"]
+    else:
+        run_id, release, run_root, command = RUN, RELEASE, REMOTE, COMMAND.split()
     root = Path(__file__).resolve().parents[2]
     git = lambda *args: subprocess.check_output(["git", "-C", str(root), *args], text=True).strip()
     commit = git("rev-parse", "HEAD")
@@ -54,9 +62,9 @@ def publish(ssh_config, output):
     if not remote or remote[0] != commit:
         raise ValueError("Release commit unavailable at its Git upstream")
     output.mkdir(parents=True, exist_ok=False)
-    archive = output / f"{RUN}-release.tar.gz"
+    archive = output / f"{run_id}-release.tar.gz"
     paths = ["experiments", "comparison_suite", "baselines", "code",
-             f"automation_reports/CV-SincNet/{RUN}/experiment.json"]
+             f"automation_reports/CV-SincNet/{run_id}/experiment.json"]
     with archive.open("xb") as target, gzip.GzipFile(fileobj=target, mode="wb", mtime=0) as zipped:
         from shutil import copyfileobj
         with subprocess.Popen(["git", "-C", str(root), "archive", "--format=tar", commit, "--", *paths],
@@ -65,14 +73,14 @@ def publish(ssh_config, output):
             if process.wait():
                 raise RuntimeError("git archive failed")
     # The run registration lives under its relative repository path.
-    rt = dict(run_id=RUN, code_commit=commit, python=PYTHON, project=PROJECT, release_root=RELEASE,
-              run_root=REMOTE, runtime_file=f"{RELEASE}/runtime.json", context=CONTEXT,
+    rt = dict(run_id=run_id, code_commit=commit, python=PYTHON, project=PROJECT, release_root=release,
+              run_root=run_root, runtime_file=f"{release}/runtime.json", context=CONTEXT,
               chrono_cache=f"{PROJECT}/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/chrono",
-              allowed_gpus=[0, 1, 2, 4], launch_owner="codex-pamf-advisor-20261124")
+              allowed_gpus=[5, 6, 7] if restoration else [0, 1, 2, 4], launch_owner="codex-pamf-advisor-20261124")
     with archive.open("rb") as stream:
         digest = hashlib.sha256(stream.read()).hexdigest()
     request = dict(runtime=rt, sha256=digest, archive=f"{PROJECT}/releases/{archive.name}",
-                   command=COMMAND.split())
+                   command=command)
     write(output / "request.json", request)
     auth = ["-F", ssh_config, "-o", "BatchMode=yes", "-o", "ConnectTimeout=10"]
     subprocess.run(["ssh", *auth, "-T", "N607", "test ! -e " + shlex.quote(request["archive"])], check=True, timeout=20)
@@ -89,5 +97,6 @@ if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("--ssh-config", required=True)
     p.add_argument("--output", required=True, type=Path)
+    p.add_argument("--restoration", action="store_true")
     args = p.parse_args()
-    publish(args.ssh_config, args.output)
+    publish(args.ssh_config, args.output, args.restoration)
