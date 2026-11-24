@@ -80,6 +80,17 @@ class CrossFrequencyPrior(nn.Module):
         separate = torch.einsum('kbcfr,fqr->kbcfq', separate, bin_axes).flatten(-2)
         return torch.stack((joint[0], separate[0], joint[1], separate[1]))
 
+    def transport(self, spectrum, noise):
+        value = torch.view_as_real(spectrum).flatten(-2) - self.center
+        edits = []
+        for index, part in enumerate((value[:, :1], value[:, 1:])):
+            axes = self.joint_axes[index]
+            gain = posterior_gain(self.joint_variance[index], noise[:, index, None, None])
+            edits.append(((part @ axes) * (gain.sqrt() - 1.)) @ axes.T)
+        packed = torch.view_as_complex(torch.cat(edits, dim=1).unflatten(-1, (255, 2)).contiguous())
+        full = torch.cat((torch.zeros_like(packed[..., :1]), packed), dim=-1)
+        return self.basis.mT.to(full) @ torch.fft.ifft(full, norm='ortho')
+
     def changes(self, observed, rms):
         spectrum = self.spectrum(observed)
         noise = self.noise(spectrum)

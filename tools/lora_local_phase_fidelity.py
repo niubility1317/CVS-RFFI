@@ -454,6 +454,7 @@ def diagnose(rt, route, device):
     is_cross_frequency = rt['run_id']=='20261124-phase1-lora-cross-frequency-source-m2-r01'
     is_cross_dose = rt['run_id']=='20261124-phase1-lora-cross-frequency-dose-source-m4-r01'
     is_mixture = rt['run_id']=='20261124-phase1-lora-spectral-mixture-source-m2-r01'
+    is_angular = rt['run_id']=='20261124-phase1-lora-angular-transport-source-m4-r01'
     is_interval = rt['run_id']==coherent_interval_source.RUN
     is_joint = rt['run_id']==joint_spectrum_source.RUN
     is_anchor = rt['run_id']==ANCHOR_RUN
@@ -507,8 +508,11 @@ def diagnose(rt, route, device):
         recover = lambda iq, tracker, models, threshold: study.recover(iq, tracker, models[0], threshold)
         readouts = ('direct', *study.MODES[2:])
         indices = range(len(study.MODES) - 2)
-    elif is_cross_dose:
-        from experiments.pamf_lora_main import cross_frequency_dose_source as study
+    elif is_cross_dose or is_angular:
+        if is_angular:
+            from experiments.pamf_lora_main import angular_transport_source as study
+        else:
+            from experiments.pamf_lora_main import cross_frequency_dose_source as study
         recipes = study.RECIPES
         recover = partial(study.recover, compare=True)
         readouts = ('direct', *study.MODES[2:])
@@ -594,6 +598,7 @@ def diagnose(rt, route, device):
             action_stats = []
             phase_stats = []
             neighbor_stats = []
+            angular_stats = []
             batches = zip(tensor(capture,device).split(18),tensor(noise,device).split(18),truth.split(18),strict=True)
             for batch,(received, epsilon, source) in enumerate(batches):
                 recoveries, count = recover(received,tracker,models,threshold)[:2]
@@ -630,16 +635,25 @@ def diagnose(rt, route, device):
                     joint_stats.append(joint_part_metrics(waves,noiseless,frame))
                     if view!='clean':
                         noise_stats.append(joint_noise_bias(models[1],tracked,frame,epsilon))
-                if is_cross_frequency or is_cross_dose or is_mixture:
+                if is_cross_frequency or is_cross_dose or is_mixture or is_angular:
                     joint_stats.append(joint_part_metrics(waves,noiseless,frame))
                     if view != 'clean':
-                        prior = models[-1].prior if is_cross_dose else models[0]
+                        prior = models[-1].prior if is_cross_dose or is_angular else models[0]
                         estimated = prior.noise(prior.spectrum(tracked))
                         true_spectrum = prior.spectrum(complex_iq(epsilon) / frame)[..., prior.outer].abs().square()
                         true = .5 * torch.stack((true_spectrum[:, 0].mean(-1),
                                                  true_spectrum[:, 1:].mean((1, 2))), dim=-1)
                         error_db = 10 * (estimated / true.clamp_min(1e-10)).clamp_min(1e-10).log10()
                         noise_stats.append(np.asarray(error_db.tolist(), dtype=np.float32))
+                if is_angular and view != 'clean':
+                    wanted = -complex_iq(epsilon) / frame
+                    wanted = (wanted - wanted.mean(-1, keepdim=True)) * frame
+                    edit = torch.stack(waves) - y
+                    dot = (edit * wanted.conj()).real.sum((2, 3))
+                    target_power = wanted.abs().square().sum((1, 2)).clamp_min(1e-10)
+                    edit_power = edit.abs().square().sum((2, 3))
+                    cosine = dot / (edit_power * target_power).clamp_min(1e-12).sqrt()
+                    angular_stats.append(np.asarray(torch.stack((cosine, dot / target_power), dim=-1).tolist()))
                 if is_anchor:
                     joint_stats.append(joint_part_metrics(waves,noiseless,frame))
                     action_stats.append(anchored_action_metrics(models[1],tracked,quality,rms,target,noiseless,frame))
@@ -724,7 +738,7 @@ def diagnose(rt, route, device):
                     pooled=report_interval(values),
                     by_receiver={name:report_interval(part) for name,part in
                                  zip(SOURCE,np.split(values,len(SOURCE),axis=1),strict=True)})
-            if is_joint or is_anchor or is_received or is_dose or is_cross_frequency or is_cross_dose or is_mixture:
+            if is_joint or is_anchor or is_received or is_dose or is_cross_frequency or is_cross_dose or is_mixture or is_angular:
                 values = np.concatenate(joint_stats,axis=1)
                 output[view]['components_noiseless'] = dict(order=['shared','private'],
                     median=np.median(values,axis=1).tolist(),
@@ -736,6 +750,12 @@ def diagnose(rt, route, device):
                         median=np.median(error,axis=0).tolist(),
                         by_receiver={name:np.median(group,axis=0).tolist()
                                      for name,group in zip(SOURCE,np.split(error,len(SOURCE)),strict=True)})
+            if angular_stats:
+                values = np.concatenate(angular_stats, axis=1)
+                output[view]['exact_direction_alignment'] = dict(fields=['real_cosine', 'projected_exact_fraction'],
+                    median=np.median(values, axis=1).tolist(),
+                    by_receiver={name:np.median(row, axis=1).tolist()
+                                 for name,row in zip(SOURCE,np.split(values,len(SOURCE),axis=1),strict=True)})
             if is_anchor:
                 actions = np.concatenate(action_stats)
                 output[view]['action_error'] = dict(fields=['identity_residual','estimated_action_residual',
@@ -818,7 +838,8 @@ def main():
                      phase_dose_source.RUN, BURST_DOSE_RUN, NEIGHBOR_PHASE_RUN,
                      '20261124-phase1-lora-cross-frequency-source-m2-r01',
                      '20261124-phase1-lora-cross-frequency-dose-source-m4-r01',
-                     '20261124-phase1-lora-spectral-mixture-source-m2-r01')
+                     '20261124-phase1-lora-spectral-mixture-source-m2-r01',
+                     '20261124-phase1-lora-angular-transport-source-m4-r01')
     if rt.get('run_id') not in analyzed_runs or read(root/'state.json')['status']!='SOURCE_SCORED':
         raise ValueError('The full dual-route truth-last scoring must already be complete')
     activate(rt)
