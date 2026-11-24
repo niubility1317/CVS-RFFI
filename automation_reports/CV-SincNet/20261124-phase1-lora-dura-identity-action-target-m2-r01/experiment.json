@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "Active LoRa/WiSig goal and latest user direction to use formal held-out test performance.",
   "code": {
-    "commit": "70cb35d9c358ba2523375b2576d95ddc49e58c49",
+    "commit": "796a82fefa55cf4b921f7eece8164f9b80f1c84f",
     "checkout": "E:/codex/home/worktrees/lora-dura-identity-action/standard_ce_baselines_20261010",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-identity-action-target-m2-r01-release"
@@ -203,7 +203,8 @@
   ],
   "notes": [
     "420 predictions fixed before independent truth. Historical width dose controls are reused without regenerating predictions.",
-    "The existing carrier-action target prediction has a different run root. Each experiment is scored separately before any cross-variant comparison."
+    "The existing carrier-action target prediction has a different run root. Each experiment is scored separately before any cross-variant comparison.",
+    "Release HEAD 796a82fefa55cf4b921f7eece8164f9b80f1c84f differs from preregistered implementation 70cb35d9c358ba2523375b2576d95ddc49e58c49 only in report and registry content; deployed archive code paths were verified equal."
   ],
   "registered_at": "2026-11-24T10:23:52+00:00"
 }

@@ -1,3 +1,8 @@
 {"at": "2026-11-24T10:23:52+00:00", "status": "PLANNED", "evidence": "experiment.json", "row_id": null, "note": "Fixed source snapshot and both target doses preregistered before prediction."}
 {"at": "2026-11-24T10:25:33+00:00", "status": "RUNNING", "evidence": "launch-evidence.json", "row_id": "fit-identity_action", "note": "PID, CWD, exact cmdline and GPU verified, with increasing source training log."}
 {"at": "2026-11-24T10:25:33+00:00", "status": "RUNNING", "evidence": "launch-evidence.json", "row_id": null, "note": "PID, CWD, exact cmdline and GPU verified, with increasing source training log."}
+{"at": "2026-11-24T10:47:48+00:00", "status": "ANALYZED", "evidence": "identity_action-complete.json", "row_id": "fit-identity_action", "note": "Same source-only paired experiment independently verified."}
+{"at": "2026-11-24T10:47:48+00:00", "status": "ANALYZED", "evidence": "full-source-scores.json", "row_id": "evaluate-full", "note": "Same source-only paired experiment independently verified."}
+{"at": "2026-11-24T10:47:48+00:00", "status": "ANALYZED", "evidence": "residual-source-scores.json", "row_id": "evaluate-residual", "note": "Same source-only paired experiment independently verified."}
+{"at": "2026-11-24T10:47:48+00:00", "status": "ANALYZED", "evidence": "clean-complete-scores.json", "row_id": "evaluate-reserve", "note": "Same source-only paired experiment independently verified."}
+{"at": "2026-11-24T10:47:48+00:00", "status": "ANALYZED", "evidence": "report.md", "row_id": null, "note": "Same source-only paired experiment independently verified."}

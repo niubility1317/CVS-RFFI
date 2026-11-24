@@ -11,3 +11,7 @@
 ## 运行安排
 
 独立本地会话已等待本源实验终态。冻结后自动发布目标候选及启动独立评分。 [源运行证据](../20261124-phase1-lora-dura-identity-action-source-m2-r01/launch-evidence.json)
+
+## 发布回读 VERIFIED
+
+真实源 U 冒烟通过。已核对 Full GPU 7 与 Residual GPU 3 的 PID、工作目录、命令行、GPU 与增长中的预测产物。本地独立 scorer 正等待全量两路冻结。 [运行证据](launch-evidence.json)
