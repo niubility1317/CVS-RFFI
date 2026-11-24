@@ -1,8 +1,13 @@
+import json
+
 import pytest
 import torch
 from torch import nn
 
-from experiments.pamf_lora_main.external_full8 import RUN, restore, role_dataset, source_runtime
+from experiments.pamf_lora_main.external_full8 import (
+    RECOVERY_RUN, RUN, SEED, SOURCE_FIELDS, TRAIN_COMMIT, freeze_record, frozen_checkpoint,
+    recovery_training_runtime, restore, role_dataset, source_runtime,
+)
 from experiments.pamf_lora_main.external_full8_delivery import frozen_predictions
 from experiments.pamf_lora_main.external_full8_models import PacketEdges, PartitionedPacketEncoder, packet_chirps
 
@@ -67,3 +72,33 @@ def test_owned_checkpoint_load_supports_legacy_pytorch_signature(tmp_path, monke
     assert restore(path, {}, {}, 1, 'cpu')['stage'] == 1
     with pytest.raises(ValueError, match='provenance'):
         restore(path, {}, {}, 2, 'cpu')
+
+
+def test_recovery_binds_original_training_and_target_handles(tmp_path):
+    previous_path = tmp_path/'releases'/f'{RUN}-release'/'runtime.json'
+    previous_path.parent.mkdir(parents=True)
+    previous = {k: str(tmp_path/k) for k in (*SOURCE_FIELDS, 'native_target_root')}
+    previous.update(run_id=RUN, code_commit=TRAIN_COMMIT, run_root=str(tmp_path/'runs'/RUN))
+    previous_path.write_text(json.dumps(previous), encoding='utf-8')
+    recovery = dict(previous, run_id=RECOVERY_RUN, code_commit='recovery',
+                    run_root=str(tmp_path/'runs'/RECOVERY_RUN))
+    assert recovery_training_runtime(recovery) == {k: previous[k] for k in SOURCE_FIELDS}
+    with pytest.raises(ValueError, match='data or model source differs'):
+        recovery_training_runtime(dict(recovery, native_target_root='other-target'))
+    previous_path.write_text(json.dumps(dict(previous, code_commit='wrong')), encoding='utf-8')
+    with pytest.raises(ValueError, match='training provenance'):
+        recovery_training_runtime(recovery)
+
+
+def test_recovery_waits_for_complete_immutable_stage_record(tmp_path):
+    config = {'stages': 2, 'epochs': 100}
+    assert freeze_record(tmp_path) is None
+    path = tmp_path/'complete.json'
+    path.write_text('{"status":', encoding='utf-8')
+    assert freeze_record(tmp_path) is None
+    frozen = dict(status='SOURCE_FROZEN', method='ibrff', seed=SEED, checkpoint='stage2.pt',
+                  stage_epochs={'1': 100, '2': 100}, target_reads=0, satellite_batches=0, U_truth_reads=0)
+    path.write_text(json.dumps(frozen)+'\n', encoding='utf-8')
+    assert frozen_checkpoint(tmp_path, config, 'ibrff', freeze_record(tmp_path)) == tmp_path/'stage2.pt'
+    with pytest.raises(ValueError, match='frozen'):
+        frozen_checkpoint(tmp_path, config, 'ibrff', dict(frozen, checkpoint='../stage2.pt'))

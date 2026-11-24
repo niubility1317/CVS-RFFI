@@ -6,17 +6,17 @@ from pathlib import Path
 
 import numpy as np
 import torch
-from scipy.signal import resample_poly
 
 from experiments.cric_dura_comparison.io import read, tensor, write
 from experiments.pamf_ssl_research.u_gradprotect_objective import protected_loss
+from .clean_aperture import ALL_CHIRPS, clean_iq
 from .comparison import seed_all
-from .data import SOURCE, TARGET, WINDOW_START
+from .data import SOURCE, TARGET
 from .full_packet_data import COUNTS, LIMIT
 from .full_packet_views import native, source_contract, target_contract
 from .full_supervised import batches, handles
 from .full_tri_repl_lora import labeled_loss, unlabeled_loss
-from .packet_data import CHIRPS, PACKET_LEN
+from .packet_data import CHIRPS
 from .packet_runner import schedule
 from .refine_runner import start
 from .runner import activate
@@ -220,7 +220,6 @@ NOISE_ROWS={
     'no_noise': {'warmup':32,'time_frequency':True,'ordinary_std':0.},
 }
 DRIFT_RUN='20261125-phase1-lora-pamf-tri-clean-relativetone-m2-r01'
-ALL_CHIRPS=tuple(range(PACKET_LEN//1024))
 DRIFT_ROWS={
     'all8_control384': {'warmup':32,'samples':384,'time_frequency':True,'chirps':ALL_CHIRPS,'ordinary_std':.003},
     'all8_relative384': {'warmup':32,'samples':384,'time_frequency':True,'chirps':ALL_CHIRPS,'ordinary_std':.003,
@@ -253,18 +252,6 @@ PHASE_ROWS={
 VALIDATION_EPOCHS={0,2,4,8,12,16,20,24}
 
 
-def padded_crop(chirps):
-    starts=np.asarray(chirps)*1024+WINDOW_START-125
-    crop=starts[:,None]+np.arange(1250)
-    # Reflect filter support outside the recorded preamble. All central
-    # 1 ms signal windows still consist of the original physical samples.
-    crop=np.where(crop<0,-crop,crop)
-    return np.where(crop>=PACKET_LEN,2*PACKET_LEN-2-crop,crop)
-
-
-CROPS={chirps:padded_crop(chirps) for chirps in (CHIRPS,ALL_CHIRPS)}
-
-
 def source_handles(rt):
     if rt.get('scratch'):
         source=Path(rt['source_root'])
@@ -292,19 +279,6 @@ def row_names(rt):
     if rt.get('phase_study'):
         return ('first_phase',)
     return SCRATCH_LOCAL if rt.get('scratch') else LOCAL
-
-
-def clean_iq(packets,samples,chirps=CHIRPS):
-    if samples not in (192,256,384,512):
-        raise ValueError('Unknown registered clean aperture')
-    z = resample_poly(packets[:,CROPS[chirps]],up=samples//8,down=125,axis=-1)
-    edge=samples//8
-    z=z[...,edge:edge+samples]
-    norm=np.sqrt(np.mean(np.abs(z)**2,axis=(1,2),keepdims=True))
-    if not np.isfinite(norm).all() or (norm<=1e-12).any():
-        raise ValueError('Nonfinite or empty clean packet')
-    z=z/norm
-    return np.stack((z.real,z.imag),axis=2).astype(np.float32,copy=False)
 
 
 def cache_layout(samples,chirps,protocol):

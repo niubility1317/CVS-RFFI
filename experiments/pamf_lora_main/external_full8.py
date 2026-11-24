@@ -15,6 +15,7 @@ import torch
 from torch.nn import functional as F
 
 from experiments.cric_dura_comparison.io import read, write
+from .clean_aperture import clean_iq
 from .data import CLASSES, SOURCE, SPLIT_SEED, TARGET
 from .external_full8_models import (CHIRPS, EDGE_GAIN, SAMPLES, PacketEdges, SDGPacketViews, build, identity,
                                     optimizers, train_batch)
@@ -23,6 +24,8 @@ from .full_packet_views import native, source_contract, target_contract
 
 
 RUN = '20261125-phase1-lora-external-full8-m4-r01'
+RECOVERY_RUN = '20261125-phase1-lora-external-full8-clean-predict-m4-r02'
+TRAIN_COMMIT = 'ef6f890b9aeeeffa2d223158e2b5a9c38ef98bf6'
 SEED = 2026092702
 BUDGETS = {'riei': (200, 64, .0001, 1), 'drift': (200, 256, .0001, 1),
            'ibrff': (100, 128, .001, 2), 'sdg': (400, 32, .001, 1)}
@@ -42,6 +45,41 @@ def source_runtime(rt):
                                           source_protocol=contract['protocol'], chirps=list(CHIRPS)):
         raise ValueError('Registered all-chirp clean source cache required')
     return source, contract, cache
+
+
+def recovery_training_runtime(rt):
+    root = Path(rt['run_root'])
+    if rt['run_id'] != RECOVERY_RUN or root.name != RECOVERY_RUN or root.parent.name != 'runs':
+        raise ValueError('Wrong immutable prediction recovery root')
+    project = root.parent.parent
+    old_root = root.with_name(RUN)
+    previous = read(project/'releases'/f'{RUN}-release'/'runtime.json')
+    if (previous['run_id'] != RUN or previous['code_commit'] != TRAIN_COMMIT
+            or Path(previous['run_root']) != old_root):
+        raise ValueError('Unexpected external Full8 training provenance')
+    for field in (*SOURCE_FIELDS[3:], 'native_target_root'):
+        if previous[field] != rt[field]:
+            raise ValueError(f'Prediction recovery data or model source differs: {field}')
+    return {k: previous[k] for k in SOURCE_FIELDS}
+
+
+def freeze_record(folder):
+    try:
+        record = (folder/'complete.json').read_text(encoding='utf-8')
+    except FileNotFoundError:
+        return None
+    # The original writer appends its newline after closing the JSON object.
+    return json.loads(record) if record.endswith('\n') else None
+
+
+def frozen_checkpoint(folder, c, family, frozen):
+    path = folder/f"stage{c['stages']}.pt"
+    if (not frozen or frozen['status'] != 'SOURCE_FROZEN' or frozen['method'] != family
+            or frozen['seed'] != SEED or frozen['checkpoint'] != path.name
+            or frozen['stage_epochs'] != {str(k): c['epochs'] for k in range(1, c['stages'] + 1)}
+            or any(frozen[k] for k in ('target_reads', 'satellite_batches', 'U_truth_reads'))):
+        raise ValueError('Source checkpoint must be frozen before clean prediction')
+    return path
 
 
 def configuration(rt, family):
@@ -220,26 +258,31 @@ def train(rt, family):
 
 @torch.no_grad()
 def predict(rt, family):
-    from .tri_clean95 import clean_iq
-    target = Path(rt['native_target_root'])
-    source_rt = {k: v for k, v in rt.items() if k != 'native_target_root'}
-    _, contract, _ = source_runtime(source_rt)
-    c = configuration(rt, family)
+    recovering = rt['run_id'] == RECOVERY_RUN
+    source_rt = (recovery_training_runtime(rt) if recovering
+                 else {k: v for k, v in rt.items() if k != 'native_target_root'})
+    source, contract, _ = source_runtime(source_rt)
+    c = configuration(source_rt, family)
     root = Path(rt['run_root'])
-    folder = root/'F'/family
-    frozen = read(folder/'complete.json')
-    checkpoint_path = folder/f"stage{c['stages']}.pt"
-    if (frozen['status'] != 'SOURCE_FROZEN' or frozen['method'] != family
-            or frozen['checkpoint'] != checkpoint_path.name
-            or frozen['stage_epochs'] != {str(k): c['epochs'] for k in range(1, c['stages'] + 1)}
-            or any(frozen[k] for k in ('target_reads', 'satellite_batches', 'U_truth_reads'))):
-        raise ValueError('Source checkpoint must be frozen before clean prediction')
+    folder = Path(source_rt['run_root'])/'F'/family
+    frozen = freeze_record(folder)
+    checkpoint_path = frozen_checkpoint(folder, c, family, frozen)
     device = 'cuda:0'
     model = build(c).to(device).eval()
     chosen = restore(checkpoint_path, c, contract, c['stages'], device)
     if chosen['epoch'] != frozen['frozen']['epoch']:
         raise ValueError('Source checkpoint does not match the selected epoch')
     model.load_state_dict(chosen['state_dict'], strict=True)
+    if recovering:
+        raw = native(source, 'L_s', contract['counts']['L_s'])[:8]
+        iq = clean_iq(raw, SAMPLES, CHIRPS)
+        q = identity(model, family, torch.from_numpy(iq).to(device))
+        if q.shape != (len(raw), len(CLASSES)) or not torch.isfinite(q).all():
+            raise ValueError('Recovered external source checkpoint failed no-query smoke')
+        write(root/'source_smoke'/f'{family}.json',
+              dict(status='PASS', target_reads=0, source_run=RUN, code_commit=TRAIN_COMMIT,
+                   checkpoint=str(checkpoint_path), epoch=chosen['epoch'], source_count=len(raw)))
+    target = Path(rt['native_target_root'])
     target_contract(target)
     out = root/'predictions'/family
     out.mkdir(parents=True, exist_ok=False)
@@ -286,6 +329,8 @@ def dispatch(rt):
     root.mkdir(exist_ok=False)
     state = root/'state.json'
     try:
+        if rt['run_id'] == RECOVERY_RUN:
+            return dispatch_recovery(rt, state)
         write(state, dict(status='SOURCE_SMOKE'))
         if launch(rt, 'smoke').wait():
             raise RuntimeError('External Full8 source smoke failed')
@@ -321,6 +366,42 @@ def dispatch(rt):
     except Exception as exc:
         write(state, dict(status='FAILED', error=str(exc)), exclusive=False)
         raise
+
+
+def dispatch_recovery(rt, state):
+    from .runner import available
+    source_rt = recovery_training_runtime(rt)
+    source_runtime(source_rt)
+    old_root = Path(source_rt['run_root'])
+    if read(old_root/'state.json')['status'] != 'FAILED' or any((old_root/'predictions').glob('*/complete.json')):
+        raise ValueError('Recovery requires the failed original controller and no completed predictions')
+    write(state, dict(status='WAITING_SOURCE_FREEZE', source_run=RUN, methods=list(METHODS)))
+    pending = list(METHODS)
+    active = {}
+    while pending or active:
+        for gpu, (child, family) in list(active.items()):
+            done = child.poll()
+            if done is None:
+                continue
+            if done:
+                raise RuntimeError(f'{family} recovery prediction failed ({done})')
+            del active[gpu]
+        ready = []
+        for family in pending:
+            folder = old_root/'F'/family
+            frozen = freeze_record(folder)
+            if frozen is not None:
+                frozen_checkpoint(folder, configuration(source_rt, family), family, frozen)
+                ready.append(family)
+        if ready:
+            candidates = [gpu for gpu in rt['allowed_gpus'] if gpu not in active]
+            for gpu, family in zip(available(candidates, rt['max_compute_processes'], rt['min_free_mib']), ready):
+                active[gpu] = launch(rt, 'predict', gpu, family), family
+                pending.remove(family)
+        if pending or active:
+            time.sleep(15)
+    write(state, dict(status='PREDICTIONS_FROZEN', names=list(METHODS), source_run=RUN,
+                      target_truth_read=False), exclusive=False)
 
 
 def worker(rt, kind):
