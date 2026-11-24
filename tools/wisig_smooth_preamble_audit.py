@@ -30,21 +30,23 @@ def reference_timing(received, reference):
     return offsets[score.argmax(1)]
 
 
-def diagnostics(raw, clean, thresholds, rx):
+def diagnostics(raw, clean, thresholds, rx, decisions, labels):
     y = raw[:, 0]+1j*raw[:, 1]
     x = clean[:, 0]+1j*clean[:, 1]
     oracle = reference_timing(y, x)
     _, _, fits = observations(raw)
     modes, _ = readouts(raw, thresholds)
     overlap = ((TIME + oracle[:, None] >= 0) & (TIME + oracle[:, None] < len(TIME)))
-    rows = {}
+    rows, active = {}, {}
     for name, wave in modes.items():
         if name == 'direct':
             shift = np.zeros(len(x), dtype=int)
+            delta = shift
         else:
             key = name.removesuffix('_reflect')
             delta, margin, _ = fits[key]
             shift = np.where(margin > thresholds[key], delta, 0)
+        active[name] = shift != 0
         restored = wave[:, 0]+1j*wave[:, 1]
         err = np.abs(x-restored)**2
         power = np.abs(x)**2
@@ -55,10 +57,19 @@ def diagnostics(raw, clean, thresholds, rx):
         groups = {'all': np.ones(len(rx), dtype=bool), **{str(value): rx == value for value in np.unique(rx)}}
         rows[name] = {group: dict(count=int(mask.sum()), active=int((shift[mask]!=0).sum()),
                        shift_near_two=int((delay_err[mask]<=2).sum()),
+                       ungated_near_two=int((np.abs(delta[mask]-oracle[mask])<=2).sum()),
                        median_overlapping_nmse=float(np.median(nmse[mask])),
                        median_overlapping_phase_cosine=float(np.median(cosine[mask])))
                        for group, mask in groups.items()}
-    return rows
+    fixed, smooth = active['fixed_three'], active['smooth_held']
+    correct = decisions == labels
+    contrasts = {}
+    for name, mask in {'both': fixed & smooth, 'fixed_only': fixed & ~smooth,
+                       'smooth_only': ~fixed & smooth, 'neither': ~fixed & ~smooth}.items():
+        # Same boundary interpolation rule in both readouts, conditional on their selected shifts.
+        a, b = (correct[MODES.index(mode), mask] for mode in ('fixed_three_reflect', 'smooth_held_reflect'))
+        contrasts[name] = dict(count=int(mask.sum()), repairs=int((b & ~a).sum()), harms=int((a & ~b).sum()))
+    return dict(readouts=rows, matched_reflect_activity=contrasts)
 
 
 def audit(rt):
@@ -76,7 +87,8 @@ def audit(rt):
     previous = read(prior/'complete.json')
     if previous['count'] != marker['count'] or previous['target_reads'] or previous['source_truth_reads']:
         raise ValueError('The historic same-reader control differs')
-    cache, _, _, _, ids, rx, _ = core.handles(rt)
+    cache, _, source_labels, _, ids, rx, positions = core.handles(rt)
+    labels = np.load(source_labels/'V'/'labels.npy', allow_pickle=False)[positions]
     thresholds = read(root/'threshold.json')['thresholds']
     records = {}
     for route, folder in core.ROUTES.items():
@@ -88,11 +100,12 @@ def audit(rt):
             with np.load(root/'predictions'/name, allow_pickle=False) as new, np.load(prior/name, allow_pickle=False) as old:
                 if not (np.array_equal(new['ids'], ids) and np.array_equal(old['ids'], ids)):
                     raise ValueError('Original and new source physical order differs')
+                decisions, old_decisions = new['decision'], old['decision']
                 for mode in ('direct', 'r69'):
-                    if not np.array_equal(new['decision'][MODES.index(mode)], old['decision'][previous['modes'].index(mode)]):
+                    if not np.array_equal(decisions[MODES.index(mode)], old_decisions[previous['modes'].index(mode)]):
                         raise ValueError('Frozen reader or Original DURA decisions changed')
             raw = np.load(source/f'{view}.npy', mmap_mode='r', allow_pickle=False)
-            records[route][view] = diagnostics(raw, clean, thresholds, rx)
+            records[route][view] = diagnostics(raw, clean, thresholds, rx, decisions, labels)
     return dict(status='VERIFIED', same_direct_and_r69=True, paired_clean_diagnostic_only=True,
                 source_count=len(ids), target_reads=0, routes=records)
 
