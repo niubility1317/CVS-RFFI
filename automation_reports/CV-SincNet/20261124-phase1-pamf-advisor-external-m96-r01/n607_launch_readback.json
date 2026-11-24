@@ -1,0 +1,152 @@
+{
+  "run_id": "20261124-phase1-pamf-advisor-external-m96-r01",
+  "status": "RUNNING",
+  "pid": 2979959,
+  "smoke": {
+    "status": "PASS",
+    "source_methods": [
+      "riei",
+      "drift",
+      "ibrff",
+      "sdg"
+    ],
+    "real_checkpoint": true,
+    "query_reads": 0,
+    "inherited_models": 0
+  },
+  "workers": [
+    {
+      "job": "train__budget630-riei-full-pl-s2026092701",
+      "method": "riei",
+      "pid": 2980507,
+      "gpu": 0,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "cuda_mib": 2522,
+      "log_bytes": 10240,
+      "training_config": true,
+      "config_method": "riei",
+      "epoch_log_bytes": {
+        "stage1": 10180
+      }
+    },
+    {
+      "job": "train__budget630-drift-full-pl-s2026092701",
+      "method": "drift",
+      "pid": 2980508,
+      "gpu": 1,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "cuda_mib": 2624,
+      "log_bytes": 13286,
+      "training_config": true,
+      "config_method": "drift",
+      "epoch_log_bytes": {
+        "stage1": 13208
+      }
+    },
+    {
+      "job": "train__budget630-ibrff-full-pl-s2026092701",
+      "method": "ibrff",
+      "pid": 2980509,
+      "gpu": 2,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "cuda_mib": 2078,
+      "log_bytes": 11182,
+      "training_config": true,
+      "config_method": "ibrff",
+      "epoch_log_bytes": {
+        "stage1": 11116
+      }
+    },
+    {
+      "job": "train__budget630-sdg-full-pl-s2026092701",
+      "method": "sdg",
+      "pid": 2980510,
+      "gpu": 3,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "cuda_mib": 2094,
+      "log_bytes": 4441,
+      "training_config": true,
+      "config_method": "sdg",
+      "epoch_log_bytes": {
+        "stage1": 4064
+      }
+    },
+    {
+      "job": "train__budget3150-riei-full-pl-s2026092701",
+      "method": "riei",
+      "pid": 2980511,
+      "gpu": 4,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "cuda_mib": 2590,
+      "log_bytes": 1027,
+      "training_config": true,
+      "config_method": "riei",
+      "epoch_log_bytes": {
+        "stage1": 1021
+      }
+    },
+    {
+      "job": "train__budget3150-drift-full-pl-s2026092701",
+      "method": "drift",
+      "pid": 2980512,
+      "gpu": 5,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "cuda_mib": 2626,
+      "log_bytes": 6203,
+      "training_config": true,
+      "config_method": "drift",
+      "epoch_log_bytes": {
+        "stage1": 6167
+      }
+    },
+    {
+      "job": "train__budget3150-ibrff-full-pl-s2026092701",
+      "method": "ibrff",
+      "pid": 2980514,
+      "gpu": 6,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "cuda_mib": 2078,
+      "log_bytes": 7395,
+      "training_config": true,
+      "config_method": "ibrff",
+      "epoch_log_bytes": {
+        "stage1": 7353
+      }
+    },
+    {
+      "job": "train__budget3150-sdg-full-pl-s2026092701",
+      "method": "sdg",
+      "pid": 2980516,
+      "gpu": 7,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "cuda_mib": 1842,
+      "log_bytes": 0,
+      "training_config": true,
+      "config_method": "sdg",
+      "epoch_log_bytes": {}
+    }
+  ],
+  "counts": {
+    "riei/RUNNING": 2,
+    "drift/RUNNING": 2,
+    "ibrff/RUNNING": 2,
+    "sdg/RUNNING": 2,
+    "riei/QUEUED": 22,
+    "drift/QUEUED": 22,
+    "ibrff/QUEUED": 22,
+    "sdg/QUEUED": 22
+  },
+  "failed_jobs": [],
+  "code_commit": "cd788bad712a0721e8522098c59765e291a17cdd",
+  "control_commit": null,
+  "adopted": 0,
+  "at": "2026-11-24T12:12:49.745792+00:00"
+}

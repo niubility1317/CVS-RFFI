@@ -1,0 +1,127 @@
+{
+  "run_id": "20261124-phase1-pamf-advisor-adaptive-m48-r01",
+  "status": "RUNNING",
+  "pid": 2979958,
+  "smoke": {
+    "status": "PASS",
+    "real_checkpoint": true,
+    "query_reads": 0
+  },
+  "workers": [
+    {
+      "job": "train__budget630-adaptive-s2026092701",
+      "method": "adaptive",
+      "pid": 2968089,
+      "gpu": 0,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "cuda_mib": 3414,
+      "log_bytes": 26682,
+      "training_config": true,
+      "config_method": "adaptive",
+      "epoch_log_bytes": {}
+    },
+    {
+      "job": "train__budget3150-adaptive-s2026092701",
+      "method": "adaptive",
+      "pid": 2968090,
+      "gpu": 1,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "cuda_mib": 3400,
+      "log_bytes": 26702,
+      "training_config": true,
+      "config_method": "adaptive",
+      "epoch_log_bytes": {}
+    },
+    {
+      "job": "train__receivers1-group1-adaptive-s2026092701",
+      "method": "adaptive",
+      "pid": 2975502,
+      "gpu": 7,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "cuda_mib": 3422,
+      "log_bytes": 6814,
+      "training_config": true,
+      "config_method": "adaptive",
+      "epoch_log_bytes": {}
+    },
+    {
+      "job": "train__receivers1-group1-pl-s2026092701",
+      "method": "pl",
+      "pid": 2968091,
+      "gpu": 2,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "cuda_mib": 2252,
+      "log_bytes": 46397,
+      "training_config": true,
+      "config_method": "pl",
+      "epoch_log_bytes": {}
+    },
+    {
+      "job": "train__receivers1-group2-adaptive-s2026092701",
+      "method": "adaptive",
+      "pid": 2979973,
+      "gpu": 4,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "cuda_mib": 3400,
+      "log_bytes": 6814,
+      "training_config": true,
+      "config_method": "adaptive",
+      "epoch_log_bytes": {}
+    },
+    {
+      "job": "train__receivers1-group2-pl-s2026092701",
+      "method": "pl",
+      "pid": 2968092,
+      "gpu": 3,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "cuda_mib": 2252,
+      "log_bytes": 41403,
+      "training_config": true,
+      "config_method": "pl",
+      "epoch_log_bytes": {}
+    },
+    {
+      "job": "train__receivers1-group3-adaptive-s2026092701",
+      "method": "adaptive",
+      "pid": 2968093,
+      "gpu": 5,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "cuda_mib": 2252,
+      "log_bytes": 51546,
+      "training_config": true,
+      "config_method": "adaptive",
+      "epoch_log_bytes": {}
+    },
+    {
+      "job": "train__receivers1-group3-pl-s2026092701",
+      "method": "pl",
+      "pid": 2968094,
+      "gpu": 6,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "cuda_mib": 2252,
+      "log_bytes": 51390,
+      "training_config": true,
+      "config_method": "pl",
+      "epoch_log_bytes": {}
+    }
+  ],
+  "counts": {
+    "adaptive/RUNNING": 5,
+    "pl/RUNNING": 3,
+    "pl/QUEUED": 13,
+    "adaptive/QUEUED": 4
+  },
+  "failed_jobs": [],
+  "code_commit": "b931a3e96fee26af8b04476e6635fc59fa5bce95",
+  "control_commit": "cd788bad712a0721e8522098c59765e291a17cdd",
+  "adopted": 7,
+  "at": "2026-11-24T12:12:49.745792+00:00"
+}

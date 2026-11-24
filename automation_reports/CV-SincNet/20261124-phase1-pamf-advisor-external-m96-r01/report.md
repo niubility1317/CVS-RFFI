@@ -3,7 +3,7 @@
 - run_id：`20261124-phase1-pamf-advisor-external-m96-r01`
 - group_id：`phase1-pamf-advisor-external-full-pl`；类别：`comparison`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 登记状态：RUNNING（N607 启动 VERIFIED）
 
 ## 目的与对照
 
@@ -33,3 +33,9 @@
 RIEI、DRIFT、IB-RFF 和 SDG 各覆盖 24 个设置，共 96 个从零训练模型。采用已验证的 Full＋普通 PL 与三种 practical 源训练增强，保留各方法原优化器、批量、轮数、原生损失和源验证规则。模型种子为 2026092701。与自适应 Tri 对齐 L、U、V 的物理样本、目标样本、划分和七景视图。训练标签预算为 630、3150、6300 条（L 与 V 合计），源数量覆盖 1 至 6 源 16 个组合，时间覆盖四折留日和 D0、D1 至 D2 的向前测试。
 
 基线使用独立 N607 运行目录。每卡至多一个本 run GPU worker，入队时核实至少 3400 MiB 空闲。既有 D 配方的四种 F0 运行 CUDA 峰值分配为 77 至 601 MiB。预测完成后交给独立评分进程。提交的控制器也允许原自适应 Tri 队列先派发具备数据依赖的训练，训练用 8000 MiB 空闲阈值，预测保留 11000 MiB，已有 worker 继续运行。
+
+## 最新调度状态
+
+N607 启动 VERIFIED。真实权重无查询冒烟通过，四种方法均已开始训练。首批 8 行各自在 GPU 0–7 上运行，PID、工作目录、命令行、CUDA 和实际训练配置已核对。
+
+运行代码提交为 `cd788bad712a0721e8522098c59765e291a17cdd`。首批对应 630 和 3150 条预算，每种方法各两行。其余 88 行训练待派发，正式评分尚未完成。
