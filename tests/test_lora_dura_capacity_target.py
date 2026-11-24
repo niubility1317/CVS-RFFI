@@ -56,6 +56,29 @@ def test_paired_scoring_repair_and_harm_for_both_candidate_names(monkeypatch):
         assert f'{mode}_vs' in scores['rows'][0]
 
 
+def test_receiver_intervals_keep_seed_and_view_changes_on_one_packet(monkeypatch):
+    monkeypatch.setattr(scoring, 'TARGET', ('rx_a', 'rx_b'))
+    monkeypatch.setattr(scoring, 'SEEDS', (1, 2))
+    monkeypatch.setattr(scoring, 'LIMIT', 4)
+    monkeypatch.setattr(scoring, 'REPLICATES', 20)
+    truth = np.zeros((2, 4), dtype=int)
+    direct = np.zeros((2, len(VIEWS), *truth.shape), dtype=int)
+    candidate = direct.copy()
+    direct[0, 1:, 0, :] = 1
+    candidate[1, 1:, 0, :] = 1
+    outputs = {'full': {'direct': direct, 'expanded_half': candidate}}
+    pairs = scoring.score_arrays(outputs, truth, 'expanded_half', detailed_pairing=True)[
+        'paired_by_seed_and_receiver']['full']['direct']
+    six = pairs['all_seeds']['six_practical']
+    assert six['overall']['net'] == 0
+    assert six['by_receiver']['rx_a']['repairs'] == six['by_receiver']['rx_a']['harms'] == 24
+    assert six['by_receiver']['rx_a']['ci95_pp'] == [0., 0.]
+    assert six['by_receiver']['rx_b']['net'] == 0
+    assert pairs['1']['six_practical']['by_receiver']['rx_a']['ci95_pp'] == [100., 100.]
+    assert pairs['2']['six_practical']['by_receiver']['rx_a']['ci95_pp'] == [-100., -100.]
+    assert pairs['all_seeds']['clean']['overall']['candidate_correct'] == 16
+
+
 def test_acceptance_uses_formal_thresholds_and_both_clean_counts():
     aggregate = {
         'full': {'dura_half': {'six_scene': 301599, 'clean': 64490},

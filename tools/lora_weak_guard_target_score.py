@@ -18,6 +18,7 @@ from experiments.pamf_lora_main.residual_dura_score import prediction
 from experiments.pamf_lora_main.residual_reference_replay import completion as residual_replay
 from experiments.pamf_lora_main import dura_capacity_target, weak_guard_target as guard
 from experiments.pamf_lora_main.weak_guard_target import ROUTES, SEEDS, matrix
+from tools.wisig_paired_main_uncertainty import summarize
 
 
 REPLICATES = 1600
@@ -107,10 +108,28 @@ def frozen_rows(output, full, residual, residual_old, *, replay=guard, previous_
     return all_routes
 
 
-def score_arrays(rows, truth, mode='guard_half'):
+def receiver_pairs(hits, mode):
+    receivers = np.repeat(TARGET, LIMIT)
+    rng = np.random.default_rng(20261124)
+    candidate = hits[mode].reshape(len(SEEDS), len(VIEWS), -1)
+    selections = [('all_seeds', slice(None)),
+                  *((str(seed), slice(i, i + 1)) for i, seed in enumerate(SEEDS))]
+    pairs = {}
+    for name, reference in hits.items():
+        if name != mode:
+            baseline = reference.reshape(candidate.shape)
+            pairs[name] = {key: summarize(baseline[select], candidate[select], receivers, VIEWS, rng,
+                                          labels=('baseline', 'candidate')) for key, select in selections}
+    return pairs
+
+
+def score_arrays(rows, truth, mode='guard_half', *, detailed_pairing=False):
     records, paired, aggregate = [], {}, {}
+    by_route = {}
     for route, choices in rows.items():
         hits = {name: decisions == truth for name, decisions in choices.items()}
+        if detailed_pairing:
+            by_route[route] = receiver_pairs(hits, mode)
         candidate = hits[mode]
         baseline_names = tuple(name for name in hits if name != mode)
         for i, seed in enumerate(SEEDS):
@@ -145,7 +164,10 @@ def score_arrays(rows, truth, mode='guard_half'):
                 paired[route][name][view] = dict(
                     net=int(totals[j].sum()), repairs=int(repaired[:, selection].sum()),
                     harms=int(harmed[:, selection].sum()), ci95=np.quantile(pools[j], (.025, .975)).tolist())
-    return dict(aggregate=aggregate, paired=paired, rows=records)
+    scores = dict(aggregate=aggregate, paired=paired, rows=records)
+    if detailed_pairing:
+        scores['paired_by_seed_and_receiver'] = by_route
+    return scores
 
 
 def dura_capacity_acceptance(aggregate):
@@ -175,7 +197,7 @@ def score(output, full, residual, residual_old, dataset, *, replay=guard, previo
         for i, rx in enumerate(TARGET):
             with recording(archive, f'{rx}_test.h5', output) as handle:
                 truth.append(label_ids(handle, LIMIT)[packet_indices(LIMIT, i)])
-    result = score_arrays(rows, np.stack(truth), replay.MODES[1])
+    result = score_arrays(rows, np.stack(truth), replay.MODES[1], detailed_pairing=replay is dura_capacity_target)
     expected_full = dict(clean=64490, six_scene=302413, low_urban=37845)
     expected_residual = dict(clean=64307, six_scene=289162, low_urban=38566)
     expected_original_full = dict(clean=64490, six_scene=301599, low_urban=37596)
