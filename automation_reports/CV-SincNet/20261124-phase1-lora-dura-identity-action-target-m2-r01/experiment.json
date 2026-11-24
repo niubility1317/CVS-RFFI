@@ -1,0 +1,209 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261124-phase1-lora-dura-identity-action-target-m2-r01",
+  "group_id": "phase1-lora-observable-recovery",
+  "display_name": "LoRa DURA 恒等作用闭式求解目标测试",
+  "description": "Frozen identity-action DURA versus dose-matched width control on full and residual practical.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "dual_path",
+    "truth_last",
+    "single_seed"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261124-phase1-lora-dura-identity-action-source-m2-r01",
+    "20261124-phase1-lora-dura-prior-width-source-m2-r01",
+    "20261124-phase1-lora-dura-private-projection-target-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa/WiSig goal and latest user direction to use formal held-out test performance.",
+  "code": {
+    "commit": "70cb35d9c358ba2523375b2576d95ddc49e58c49",
+    "checkout": "E:/codex/home/worktrees/lora-dura-identity-action/standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-identity-action-target-m2-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa registered main data",
+    "version": "lora_full_packets_v1",
+    "representation": "Same 30000 ordered blind packets. Registered Full and Residual practical, aligned six chirps float32 [6,2,256].",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261123-phase1-lora-dura-residual-practical-m1-r01/target_views/complete.json; registered 2000 per RX target manifest; /home/szu2070436088/2510044040/CV-SincNet/runs/20261122-phase1-lora-full-aligned-data-r01/target_views/complete.json; registered 2000 per RX target manifest",
+    "label_map_ref": "F:/FULL wisig/Radio Frequency Fingerprint LoRa Dataset With Multiple Receivers/multiple_receiver_test.zip; separate local truth scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": {
+        "source_smoke": 20
+      },
+      "V": 0,
+      "paired_target_physical_packets": 30000
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": "experiments/pamf_lora_main/packet_physics.py; registered full and residual"
+  },
+  "permissions": {
+    "regime": "source_trained_blind_target_evaluation",
+    "query_use": "frozen_prediction_only",
+    "external_method_exception": null,
+    "claim_scope": "Single-seed paired evaluation on the existing public LoRa split. No fitting or calibration."
+  },
+  "checkpoint": {
+    "initialization": "Use identity_action-model.pt from fixed 2400-step source-only training.",
+    "sources": [
+      {
+        "role": "frozen source model and calibration",
+        "ref": "20261124-phase1-lora-dura-identity-action-source-m2-r01 / identity_action-model.pt"
+      },
+      {
+        "role": "frozen Tri-set reader",
+        "ref": "20261122-phase1-lora-tri-label-set-m3-r01 / 2026092702"
+      }
+    ],
+    "contract_check_ref": "experiments/pamf_lora_main/dura_identity_action_target.py",
+    "provenance_verdict": "Matched packet contract; only source U fitting and clean U calibration; target prediction exclusively after freezing.",
+    "selection_rule": "Half-dose primary and quarter-dose secondary. No settings changed after target access. Compare each to matching frozen width control."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex handoff thread 01a208a9-57df-7f82-a078-cd9477adf998",
+    "gpu_policy": "Prioritize visible eligible GPUs 7,3,6,2,0,4,1,5; up to two route workers on distinct GPUs, each cap four pre-existing compute processes and actual memory checks.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-identity-action-target-m2-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-identity-action-target-m2-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_identity_action_target",
+    "launch_command": "& 'E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe' -m experiments.pamf_lora_main.dura_identity_action_target publish --repo 'E:/codex/home/worktrees/lora-dura-identity-action/standard_ce_baselines_20261010' --output 'E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_identity_action_target' --context 'E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_calibration_source_r01_context.json' --ssh-config 'E:/type10-7/tools/n607_ssh_config' --source-submit 'E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_identity_action_source/submit.json'",
+    "stop_rule": "Verified exact source smoke first, then freeze only if both registered views, same checkpoint, and all numerical predictions pass.",
+    "scoring_command": "& 'E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe' -m experiments.pamf_lora_main.dura_identity_action_target score --submit 'E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_identity_action_target/submit.json' --ssh-config 'E:/type10-7/tools/n607_ssh_config' --dataset 'F:/FULL wisig/Radio Frequency Fingerprint LoRa Dataset With Multiple Receivers' --output 'E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_identity_action_target/readout' --full-control 'E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_complex_response_readout/predictions/2026092702' --residual-control 'E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_residual_gate_readout/predictions' --width-control 'E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_private_projection_target/readout'"
+  },
+  "expected_artifacts": [
+    "state.json",
+    "smoke.json",
+    "predictions/{full,residual}/complete.json",
+    "predictions/{full,residual}/activity.json",
+    "readout/scores.json",
+    "launch-evidence.json",
+    "b1.json",
+    "source-u-steps.json",
+    "second-quarter-lineage.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "six-view accuracy",
+      "low urban",
+      "complete clean",
+      "matched stage endpoints and midpoint",
+      "paired difference and per-receiver accuracy",
+      "noncarrier observation residual",
+      "B1"
+    ],
+    "dimensions": [
+      "recognizer seed",
+      "scene",
+      "receiver",
+      "readout"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-identity-action-target-m2-r01/predictions/{full,residual}",
+    "scorer_ref": "& 'E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe' -m experiments.pamf_lora_main.dura_identity_action_target score --submit 'E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_identity_action_target/submit.json' --ssh-config 'E:/type10-7/tools/n607_ssh_config' --dataset 'F:/FULL wisig/Radio Frequency Fingerprint LoRa Dataset With Multiple Receivers' --output 'E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_identity_action_target/readout' --full-control 'E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_complex_response_readout/predictions/2026092702' --residual-control 'E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_residual_gate_readout/predictions'"
+  },
+  "rows": [
+    {
+      "row_id": "predict-full",
+      "method": "Fixed second-stage half and quarter readouts of the same identity-action DURA.",
+      "purpose": "target_evaluation",
+      "config_ref": "experiments/pamf_lora_main/dura_identity_action_target.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-identity-action-target-m2-r01/configs/predict-full.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "The same Tri-set seed 2026092702 and same observed-variance recovery weight and gate for both routes.",
+      "k": null,
+      "scenario": "full clean and six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "30,000 identical physical packets per view, seven views and two fixed readouts without training.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-identity-action-target-m2-r01/predictions/full",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-identity-action-target-m2-r01/logs/predict-full.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.dura_identity_action_target predict /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-identity-action-target-m2-r01/configs/predict-full.json full",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-identity-action-target-m2-r01/predictions/full/complete.json"
+      ]
+    },
+    {
+      "row_id": "predict-residual",
+      "method": "Fixed second-stage half and quarter readouts of the same identity-action DURA.",
+      "purpose": "target_evaluation",
+      "config_ref": "experiments/pamf_lora_main/dura_identity_action_target.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-identity-action-target-m2-r01/configs/predict-residual.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "The same Tri-set seed 2026092702 and same observed-variance recovery weight and gate for both routes.",
+      "k": null,
+      "scenario": "residual clean and six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "30,000 identical physical packets per view, seven views and two fixed readouts without training.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-identity-action-target-m2-r01/predictions/residual",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-identity-action-target-m2-r01/logs/predict-residual.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.dura_identity_action_target predict /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-identity-action-target-m2-r01/configs/predict-residual.json residual",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-identity-action-target-m2-r01/predictions/residual/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "420 predictions fixed before independent truth. Historical width dose controls are reused without regenerating predictions.",
+    "The existing carrier-action target prediction has a different run root. Each experiment is scored separately before any cross-variant comparison."
+  ],
+  "registered_at": "2026-11-24T10:23:52+00:00"
+}

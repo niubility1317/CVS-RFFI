@@ -10,6 +10,8 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa DURA 恒等作用闭式求解训练](../automation_reports/CV-SincNet/20261124-phase1-lora-dura-identity-action-source-m2-r01/report.md)
+- [LoRa DURA 恒等作用闭式求解目标测试](../automation_reports/CV-SincNet/20261124-phase1-lora-dura-identity-action-target-m2-r01/report.md)
 - [LoRa DURA 载波子空间作用约束训练](../automation_reports/CV-SincNet/20261124-phase1-lora-dura-carrier-action-source-m2-r01/report.md)
 - [LoRa DURA 载波子空间作用约束目标测试](../automation_reports/CV-SincNet/20261124-phase1-lora-dura-carrier-action-target-m2-r01/report.md)
 - [LoRa DURA 实收方差版目标测试](../automation_reports/CV-SincNet/20261124-phase1-lora-dura-observed-variance-target-m2-r01/report.md)

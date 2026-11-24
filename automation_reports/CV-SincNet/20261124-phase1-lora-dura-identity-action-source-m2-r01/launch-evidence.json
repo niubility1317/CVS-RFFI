@@ -1,0 +1,63 @@
+{
+  "status": "VERIFIED",
+  "initial_fit": {
+    "submit": {
+      "pid": 2884083,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-identity-action-source-m2-r01-release",
+      "code_commit": "70cb35d9c358ba2523375b2576d95ddc49e58c49",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-identity-action-source-m2-r01"
+    },
+    "controller": {
+      "pid": 2884083,
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.dura_identity_action_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-identity-action-source-m2-r01-release/runtime.json",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-identity-action-source-m2-r01-release",
+      "cuda": [
+        "CUDA_VISIBLE_DEVICES="
+      ]
+    },
+    "jobs": {
+      "smoke-source": {
+        "pid": 2884104,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 459,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_ANTITHETIC_REAL_CHECKPOINT_PASS"
+        ]
+      },
+      "fit-identity_action": {
+        "pid": 2884356,
+        "gpu": 3,
+        "identity": {
+          "pid": 2884356,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.dura_identity_action_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-identity-action-source-m2-r01/configs/fit-identity_action.json identity_action",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-identity-action-source-m2-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=3"
+          ]
+        },
+        "bytes": 615,
+        "last": [
+          "CHANNEL_BLIND_FIT 1 2.755194902420044 2.755194664001465 3.220790386199951 1.9771342277526855 2.7385659217834473 0.13974657654762268 2.0977160930633545 0.2764502167701721 1.75031316280365 1.313011646270752 1.0584875345230103 1.6815004348754883 0.17557235062122345 0.17557235062122345 0.17557235062122345",
+          "CHANNEL_BLIND_FIT 50 2.7364981174468994 2.7191925048828125 3.0011544227600098 1.4205050468444824 2.6062686443328857 0.055840395390987396 1.672784447669983 0.3060756325721741 2.0407400131225586 1.1452337503433228 0.9336416721343994 1.5289121866226196 0.061129797250032425 0.060460276901721954 0.06124568730592728"
+        ]
+      }
+    },
+    "state": null,
+    "files": {
+      "smoke.json": 128
+    }
+  },
+  "parameters": {
+    "stored": 614939,
+    "used": 578223,
+    "unused_action_decoder": 31468,
+    "unused_global_head_rows": 5248
+  },
+  "dependent_local_score_session": 95610
+}
