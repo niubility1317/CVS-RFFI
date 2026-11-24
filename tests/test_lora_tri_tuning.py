@@ -185,6 +185,24 @@ class TriTuningTests(TestCase):
         with self.assertRaisesRegex(ValueError,'Unique source U budget'):
             tri_clean95.distinct_u_batches(100,16,88,16,**options)
 
+    def test_early_rank_weights_restore_source_row_order_per_receiver(self):
+        from experiments.pamf_lora_main.data import packet_indices, source_role_ordinals
+        signal=[]; labels=[]; receivers=[]; expected=[]
+        for r in range(5):
+            inverse=np.argsort(packet_indices(8000,r))
+            for tx in (5,6,7):
+                ordinals=source_role_ordinals(tx,800)['L_s']
+                signal.extend(inverse[tx*800+ordinals])
+                labels.extend([tx]*len(ordinals))
+                receivers.extend([r]*len(ordinals))
+                expected.extend(np.where((tx in (6,7))&(ordinals<160),3.,1.))
+        actual=tri_clean95.early_source_weights(np.array(labels),np.array(receivers),np.array(signal),3.)
+        np.testing.assert_array_equal(actual,expected)
+        self.assertEqual(int((actual==3).sum()),105)
+        rows,epochs,batch=tri_clean95.study({'scratch':True,'rankweight_study':True})
+        self.assertEqual((epochs,batch),(112,16))
+        self.assertEqual(rows['phase_rankweight']['early_rank_weight'],3.)
+
     def test_confusable_pair_margin_uses_only_the_original_labeled_logits(self):
         logits=torch.zeros(5,10,requires_grad=True)
         target=torch.tensor([1,3,7,6,9])

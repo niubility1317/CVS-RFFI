@@ -206,6 +206,8 @@ def clean_model(rt,root,c,row,device):
 
 def study(rt):
     if rt.get('scratch'):
+        if rt.get('rankweight_study'):
+            return RANK_WEIGHT_ROWS,112,16
         if rt.get('pairmargin_study'):
             return PAIR_MARGIN_ROWS,112,16
         if rt.get('chirpread_study'):
@@ -307,6 +309,10 @@ PHASE_JOINT_RUN='20261125-phase1-lora-pamf-tri-clean-phasejoint98-s2026092702-r0
 PHASE_JOINT_ROWS={
     'phase_joint': dict(ANCHOR_ROWS['phase_anchor'],joint_rx_weight=.12),
 }
+RANK_WEIGHT_RUN='20261125-phase1-lora-pamf-tri-clean-rankweight98-s2026092702-r01'
+RANK_WEIGHT_ROWS={
+    'phase_rankweight': dict(ANCHOR_ROWS['phase_anchor'],early_rank_weight=3.),
+}
 PAIR_MARGIN_RUN='20261125-phase1-lora-pamf-tri-clean-pairmargin98-s2026092702-r01'
 PAIR_MARGIN_ROWS={
     'phase_pairmargin': dict(ANCHOR_ROWS['phase_anchor'],pair_margin_weight=.25),
@@ -362,6 +368,8 @@ def row_names(rt):
         return ('phase_jitter',)
     if rt.get('phase_joint_study'):
         return ('phase_joint',)
+    if rt.get('rankweight_study'):
+        return ('phase_rankweight',)
     if rt.get('pairmargin_study'):
         return ('phase_pairmargin',)
     if rt.get('chirpread_study'):
@@ -410,6 +418,28 @@ def labels(source,contract,key):
         return (m['y'],m['rx_i']) if key!='U_s' else m['rx_i']
 
 
+def early_source_weights(y,rx,signal_index,boost):
+    from .data import packet_indices, source_role_ordinals
+    weights=np.ones(len(y),dtype=np.float32)
+    for tx in (37,38):
+        cls=tx-31
+        ordinal=np.sort(source_role_ordinals(cls,800)['L_s'])
+        for r in range(len(SOURCE)):
+            rows=np.flatnonzero((y==cls)&(rx==r))
+            if len(rows)!=len(ordinal):
+                raise ValueError('Early-rank weighting requires the registered labeled source cells')
+            order=packet_indices(8000,r)[signal_index[rows]]
+            weights[rows[np.argsort(order)][ordinal<160]]=boost
+    return weights
+
+
+def labeled_rank_weights(source,y,rx,boost):
+    if not boost:
+        return None
+    with np.load(source/'L_s_metadata.npz',allow_pickle=False) as metadata:
+        return early_source_weights(y,rx,metadata['sig_i'],boost)
+
+
 def clean_validation(f,v,y,rx):
     f.eval()
     with torch.no_grad():
@@ -428,14 +458,15 @@ def terms(row):
 
 
 def _labeled_and_unlabeled(f,x,y,rx,u,ur,step,with_u,force=None,mechanism=None,raw_ce=0.,ordinary_std=.015,
-                           joint_rx_weight=0.,clean_anchor_weight=0.,rtl_weight=1.,pair_margin_weight=0.):
+                           joint_rx_weight=0.,clean_anchor_weight=0.,rtl_weight=1.,pair_margin_weight=0.,
+                           source_weight=None):
     f.train()
     scores=[]
     hook=f.raw.register_forward_hook(lambda _,args,out:scores.append(out[0])) if raw_ce else None
     try:
         lab,_=labeled_loss(f,x,x,y,rx,step,mechanism=mechanism,ordinary_std=ordinary_std,
                            joint_rx_weight=joint_rx_weight,clean_anchor_weight=clean_anchor_weight,
-                           rtl_weight=rtl_weight,pair_margin_weight=pair_margin_weight)
+                           rtl_weight=rtl_weight,pair_margin_weight=pair_margin_weight,source_weight=source_weight)
     finally:
         if hook is not None:
             hook.remove()
@@ -476,12 +507,14 @@ def smoke(rt):
             grid=np.concatenate((grid,clean_iq(raw[i],256)),axis=-1)
         a=tensor(grid)
         t=shape_trace(f,a)
+        rank_weights=labeled_rank_weights(source,yn,rn,row.get('early_rank_weight',0.))
         loss,_,_,n=_labeled_and_unlabeled(f,a,y,rx,a,rx,1,True,force=y,mechanism=terms(row),
                                          raw_ce=row.get('raw_ce',0.),ordinary_std=row.get('ordinary_std',.015),
                                          joint_rx_weight=row.get('joint_rx_weight',0.),
                                          clean_anchor_weight=row.get('clean_anchor_weight',0.),
                                          rtl_weight=row.get('rtl_weight',1.),
-                                         pair_margin_weight=row.get('pair_margin_weight',0.))
+                                         pair_margin_weight=row.get('pair_margin_weight',0.),
+                                         source_weight=tensor(rank_weights[i]) if rank_weights is not None else None)
         loss.backward()
         norm=float(torch.nn.utils.clip_grad_norm_(f.parameters(),5.,error_if_nonfinite=True))
         if norm<=0 or n!=len(y):raise ValueError('Failed real clean Tri gradient check')
@@ -523,6 +556,8 @@ def train(rt,name):
     x,u,v=[load(key) for key in ('L_s','U_s','V')]
     yn,rn=labels(source,c,'L_s')
     y,rx=tensor(yn,device),tensor(rn,device)
+    rank_weights=labeled_rank_weights(source,yn,rn,row.get('early_rank_weight',0.))
+    rank_weights=tensor(rank_weights,device) if rank_weights is not None else None
     shifts=()
     if row.get('timing_jitter'):
         original=native(source,'L_s',len(yn))
@@ -567,7 +602,7 @@ def train(rt,name):
         validation_epochs.update(range(warmup,epochs+1,4))
         if any(rt.get(k) for k in ('budget_study','edge_study','robust_study','phase_study')):
             validation_epochs.update((32,48,60))
-        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study')):
+        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study')):
             validation_epochs.update((32,48,64,80,88))
     with (out/'epochs.jsonl').open('x',encoding='utf8') as log:
         for epoch in range(1,epochs+1):
@@ -580,6 +615,7 @@ def train(rt,name):
             sl,su,accepted=0.,0.,0
             for b,pos in zip(batches(yn,rn,rng),ui,strict=True):
                 i=tensor(b,device)
+                source_weight=rank_weights[i] if rank_weights is not None else None
                 step+=1
                 opt.zero_grad(set_to_none=True)
                 ux,urb=(u[pos],ur[pos]) if use_u else (None,None)
@@ -591,7 +627,7 @@ def train(rt,name):
                         labeled=torch.where(draw<.125,shifts[0][i],labeled)
                         labeled=torch.where(draw>.875,shifts[1][i],labeled)
                     logits,features=f(labeled)
-                    loss=clean_source_ce(logits,y[i],rx[i],rtl_weight,pair_margin_weight)
+                    loss=clean_source_ce(logits,y[i],rx[i],rtl_weight,pair_margin_weight,source_weight)
                     if joint_rx_weight:
                         loss=loss+joint_rx_weight*cross_rx(features,y[i],rx[i],balance=True)[0]
                     lab,unlab,a=loss.detach(),0.,0
@@ -599,7 +635,7 @@ def train(rt,name):
                     loss,lab,unlab,a=_labeled_and_unlabeled(f,x[i],y[i],rx[i],ux,urb,step,use_u,
                               mechanism=mechanism,raw_ce=row.get('raw_ce',0.),ordinary_std=ordinary_std,
                               joint_rx_weight=joint_rx_weight,clean_anchor_weight=clean_anchor_weight,
-                              rtl_weight=rtl_weight,pair_margin_weight=pair_margin_weight)
+                              rtl_weight=rtl_weight,pair_margin_weight=pair_margin_weight,source_weight=source_weight)
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(f.parameters(),5.,error_if_nonfinite=True)
                 opt.step()
@@ -663,14 +699,14 @@ def dispatch(rt):
     root=Path(rt['run_root'])
     screens=('quick','transfer','timefreq','noise_study','drift_study','budget_study')
     gated_study=any(rt.get(k) for k in ('robust_study','phase_study','anchor_study','timing_study',
-                                       'phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study'))
+                                       'phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study'))
     if (gated_study or any(rt.get(k) for k in ('noise_study','drift_study','budget_study','edge_study'))) and not rt.get('scratch'):
         raise ValueError('The clean input comparisons require random initialization')
     root.mkdir(exist_ok=False)
     state=root/'state.json'
     fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq',
                              'noise_study','drift_study','budget_study','edge_study','robust_study','phase_study','anchor_study',
-                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study',
+                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study',
                              'fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)

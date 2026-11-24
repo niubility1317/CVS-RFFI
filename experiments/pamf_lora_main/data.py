@@ -72,6 +72,11 @@ def label_ids(h5, count):
     return labels.astype(np.int64) - CLASSES[0]
 
 
+def source_role_ordinals(tx,source_limit):
+    order=np.random.default_rng([SPLIT_SEED,2,tx]).permutation(source_limit)
+    return dict(zip(ROLES,np.split(order,[56,560]),strict=True))
+
+
 def make_source(archives, out, scratch):
     contract = dict(protocol='lora_rx5_main_v1', classes=list(map(str, CLASSES)),
                     source_rxs=list(range(len(SOURCE))), source_days=[0],
@@ -80,10 +85,7 @@ def make_source(archives, out, scratch):
                     source_dates_observed=False, split_seed=SPLIT_SEED)
     iq, fields = defaultdict(list), defaultdict(lambda: defaultdict(list))
     source_limit = 800
-    role_ordinals = {}
-    for tx in range(len(CLASSES)):
-        order = np.random.default_rng([SPLIT_SEED, 2, tx]).permutation(source_limit)
-        role_ordinals[tx] = dict(zip(ROLES, np.split(order, [56, 560]), strict=True))
+    role_ordinals={tx:source_role_ordinals(tx,source_limit) for tx in range(len(CLASSES))}
     with zipfile.ZipFile(archives / 'multiple_receiver_train.zip') as archive:
         for rx, receiver in enumerate(SOURCE):
             with recording(archive, f'{receiver}_train.h5', scratch) as h5:

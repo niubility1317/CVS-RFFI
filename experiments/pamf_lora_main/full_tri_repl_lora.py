@@ -133,12 +133,14 @@ def mean_contrast(outputs,y,rx,keep,*,joint=False):
     return torch.stack(losses).mean()
 
 
-def clean_source_ce(logits,y,rx,rtl_weight=1.,pair_margin_weight=0.):
-    if rtl_weight==1.:
+def clean_source_ce(logits,y,rx,rtl_weight=1.,pair_margin_weight=0.,source_weight=None):
+    if rtl_weight==1. and source_weight is None:
         ce=F.cross_entropy(logits,y,label_smoothing=.01)
     else:
         loss=F.cross_entropy(logits,y,label_smoothing=.01,reduction='none')
         weight=1.+(rtl_weight-1.)*(rx==SOURCE.index('rtl_1'))
+        if source_weight is not None:
+            weight=weight*source_weight
         ce=(loss*weight).sum()/weight.sum()
     if pair_margin_weight:
         # TX 32/35, 33/34, and 38/39 have indices 1/4, 2/3, and 7/8.
@@ -152,7 +154,8 @@ def clean_source_ce(logits,y,rx,rtl_weight=1.,pair_margin_weight=0.):
 
 
 def labeled_loss(model,x,practical,y,rx,step,*,mechanism=None,ordinary_std=.015,
-                 joint_rx_weight=0.,clean_anchor_weight=0.,rtl_weight=1.,pair_margin_weight=0.):
+                 joint_rx_weight=0.,clean_anchor_weight=0.,rtl_weight=1.,pair_margin_weight=0.,
+                 source_weight=None):
     ordinary=ordinary_iq(x,ordinary_std)
     use=(torch.arange(len(x),device=x.device)+step)%2==0
     mixed=torch.where(use[:,None,None,None],practical,ordinary)
@@ -165,7 +168,7 @@ def labeled_loss(model,x,practical,y,rx,step,*,mechanism=None,ordinary_std=.015,
         joint=torch.stack([cross_rx(p[1],y,rx,balance=True)[0] for p in outputs[:2]]).mean()
         loss=loss+joint_rx_weight*joint
     if clean_anchor_weight:
-        raw_ce=torch.stack([clean_source_ce(p[0],y,rx,rtl_weight,pair_margin_weight)
+        raw_ce=torch.stack([clean_source_ce(p[0],y,rx,rtl_weight,pair_margin_weight,source_weight)
                             for p in outputs[-2:]]).mean()
         loss=(loss+clean_anchor_weight*raw_ce)/(1.+clean_anchor_weight)
     return loss,detail
