@@ -1,0 +1,4 @@
+{"at": "2026-11-24T10:09:14+00:00", "status": "REGISTERED", "evidence": "experiment.json", "row_id": null, "note": "Frozen protocol before target access. Fixed half and quarter, original same-dose historical controls."}
+{"at": "2026-11-24T10:12:25+00:00", "status": "RUNNING", "evidence": "launch-evidence.json", "row_id": "fit-carrier_action", "note": "Real source checkpoint smoke passed; matching GPU worker independently verified."}
+{"at": "2026-11-24T10:12:25+00:00", "status": "ANALYZED", "evidence": "action-audit.json", "row_id": "audit-source-u", "note": "Frozen original-source held-U action analysis completed without F or target inputs."}
+{"at": "2026-11-24T10:12:59+00:00", "status": "RUNNING", "evidence": "launch-evidence.json", "row_id": null, "note": "Training and downstream registered scoring chain running."}

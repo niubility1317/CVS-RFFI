@@ -1,0 +1,437 @@
+{
+  "status": "VERIFIED",
+  "n": 150,
+  "results": {
+    "full": {
+      "practical_high": {
+        "active": 5,
+        "methods": {
+          "identity": {
+            "relative_action_error": [
+              114.4952621459961,
+              326.6947326660156
+            ],
+            "private_3to8khz_error": [
+              1.1393240690231323,
+              44.80026626586914
+            ]
+          },
+          "original": {
+            "relative_action_error": [
+              927.104736328125,
+              1766.5140380859375
+            ],
+            "private_3to8khz_error": [
+              412.3553161621094,
+              2829.618408203125
+            ]
+          },
+          "projected_original": {
+            "relative_action_error": [
+              529.7327880859375,
+              1170.93017578125
+            ],
+            "private_3to8khz_error": [
+              1.1393251419067383,
+              44.80027770996094
+            ]
+          }
+        }
+      },
+      "practical_mid": {
+        "active": 34,
+        "methods": {
+          "identity": {
+            "relative_action_error": [
+              125.4833755493164,
+              686.7481689453125
+            ],
+            "private_3to8khz_error": [
+              4.099733829498291,
+              52.80248260498047
+            ]
+          },
+          "original": {
+            "relative_action_error": [
+              669.293212890625,
+              1478.8770751953125
+            ],
+            "private_3to8khz_error": [
+              774.5133666992188,
+              3885.400634765625
+            ]
+          },
+          "projected_original": {
+            "relative_action_error": [
+              307.8150329589844,
+              927.356201171875
+            ],
+            "private_3to8khz_error": [
+              4.099735260009766,
+              52.802513122558594
+            ]
+          }
+        }
+      },
+      "practical_low_suburban": {
+        "active": 53,
+        "methods": {
+          "identity": {
+            "relative_action_error": [
+              140.34268188476562,
+              1132.1632080078125
+            ],
+            "private_3to8khz_error": [
+              5.823747158050537,
+              67.4005355834961
+            ]
+          },
+          "original": {
+            "relative_action_error": [
+              727.3895874023438,
+              2117.706787109375
+            ],
+            "private_3to8khz_error": [
+              697.0547485351562,
+              5135.0966796875
+            ]
+          },
+          "projected_original": {
+            "relative_action_error": [
+              401.7265625,
+              1324.1868896484375
+            ],
+            "private_3to8khz_error": [
+              5.823750972747803,
+              67.40056610107422
+            ]
+          }
+        }
+      },
+      "practical_high_urban": {
+        "active": 16,
+        "methods": {
+          "identity": {
+            "relative_action_error": [
+              62.08961486816406,
+              252.23159790039062
+            ],
+            "private_3to8khz_error": [
+              14.952993392944336,
+              49.686180114746094
+            ]
+          },
+          "original": {
+            "relative_action_error": [
+              179.56085205078125,
+              660.0579833984375
+            ],
+            "private_3to8khz_error": [
+              326.4569091796875,
+              1699.060302734375
+            ]
+          },
+          "projected_original": {
+            "relative_action_error": [
+              102.57537841796875,
+              400.8851318359375
+            ],
+            "private_3to8khz_error": [
+              14.953001022338867,
+              49.686195373535156
+            ]
+          }
+        }
+      },
+      "practical_mid_urban": {
+        "active": 66,
+        "methods": {
+          "identity": {
+            "relative_action_error": [
+              30.538494110107422,
+              295.7890625
+            ],
+            "private_3to8khz_error": [
+              6.571107387542725,
+              43.27385711669922
+            ]
+          },
+          "original": {
+            "relative_action_error": [
+              74.24334716796875,
+              750.7593994140625
+            ],
+            "private_3to8khz_error": [
+              267.49383544921875,
+              1390.2711181640625
+            ]
+          },
+          "projected_original": {
+            "relative_action_error": [
+              39.059112548828125,
+              377.99090576171875
+            ],
+            "private_3to8khz_error": [
+              6.571107864379883,
+              43.27388000488281
+            ]
+          }
+        }
+      },
+      "practical_low_urban": {
+        "active": 101,
+        "methods": {
+          "identity": {
+            "relative_action_error": [
+              13.296164512634277,
+              235.6807861328125
+            ],
+            "private_3to8khz_error": [
+              3.0864944458007812,
+              21.729705810546875
+            ]
+          },
+          "original": {
+            "relative_action_error": [
+              38.86919021606445,
+              539.8309326171875
+            ],
+            "private_3to8khz_error": [
+              164.5535125732422,
+              1503.7935791015625
+            ]
+          },
+          "projected_original": {
+            "relative_action_error": [
+              21.90662384033203,
+              276.1859130859375
+            ],
+            "private_3to8khz_error": [
+              3.0864968299865723,
+              21.729717254638672
+            ]
+          }
+        }
+      }
+    },
+    "residual": {
+      "practical_high": {
+        "active": 4,
+        "methods": {
+          "identity": {
+            "relative_action_error": [
+              54.531272888183594,
+              113.51171112060547
+            ],
+            "private_3to8khz_error": [
+              23.555490493774414,
+              48.11869430541992
+            ]
+          },
+          "original": {
+            "relative_action_error": [
+              1026.057373046875,
+              1797.6671142578125
+            ],
+            "private_3to8khz_error": [
+              885.2948608398438,
+              1625.158935546875
+            ]
+          },
+          "projected_original": {
+            "relative_action_error": [
+              635.4215087890625,
+              1045.206787109375
+            ],
+            "private_3to8khz_error": [
+              23.55548858642578,
+              48.11870193481445
+            ]
+          }
+        }
+      },
+      "practical_mid": {
+        "active": 118,
+        "methods": {
+          "identity": {
+            "relative_action_error": [
+              26.862979888916016,
+              66.70683288574219
+            ],
+            "private_3to8khz_error": [
+              15.046629905700684,
+              35.65435791015625
+            ]
+          },
+          "original": {
+            "relative_action_error": [
+              729.8465576171875,
+              1799.4735107421875
+            ],
+            "private_3to8khz_error": [
+              445.4991149902344,
+              1173.97607421875
+            ]
+          },
+          "projected_original": {
+            "relative_action_error": [
+              451.03399658203125,
+              1098.46630859375
+            ],
+            "private_3to8khz_error": [
+              15.046628952026367,
+              35.65435791015625
+            ]
+          }
+        }
+      },
+      "practical_low_suburban": {
+        "active": 150,
+        "methods": {
+          "identity": {
+            "relative_action_error": [
+              11.109848022460938,
+              30.745315551757812
+            ],
+            "private_3to8khz_error": [
+              5.156129837036133,
+              15.925874710083008
+            ]
+          },
+          "original": {
+            "relative_action_error": [
+              254.64187622070312,
+              1009.810302734375
+            ],
+            "private_3to8khz_error": [
+              211.53469848632812,
+              525.3031616210938
+            ]
+          },
+          "projected_original": {
+            "relative_action_error": [
+              153.84268188476562,
+              614.437744140625
+            ],
+            "private_3to8khz_error": [
+              5.156129360198975,
+              15.925872802734375
+            ]
+          }
+        }
+      },
+      "practical_high_urban": {
+        "active": 8,
+        "methods": {
+          "identity": {
+            "relative_action_error": [
+              11.88473129272461,
+              14.321735382080078
+            ],
+            "private_3to8khz_error": [
+              3.5869321823120117,
+              10.46622085571289
+            ]
+          },
+          "original": {
+            "relative_action_error": [
+              85.7686767578125,
+              450.1787414550781
+            ],
+            "private_3to8khz_error": [
+              197.39376831054688,
+              273.4679260253906
+            ]
+          },
+          "projected_original": {
+            "relative_action_error": [
+              46.85212326049805,
+              262.99237060546875
+            ],
+            "private_3to8khz_error": [
+              3.5869317054748535,
+              10.466222763061523
+            ]
+          }
+        }
+      },
+      "practical_mid_urban": {
+        "active": 139,
+        "methods": {
+          "identity": {
+            "relative_action_error": [
+              5.399215221405029,
+              12.939395904541016
+            ],
+            "private_3to8khz_error": [
+              1.9754427671432495,
+              4.835099697113037
+            ]
+          },
+          "original": {
+            "relative_action_error": [
+              41.348087310791016,
+              102.71389770507812
+            ],
+            "private_3to8khz_error": [
+              152.01596069335938,
+              253.1472930908203
+            ]
+          },
+          "projected_original": {
+            "relative_action_error": [
+              21.743501663208008,
+              62.355953216552734
+            ],
+            "private_3to8khz_error": [
+              1.9754441976547241,
+              4.835101127624512
+            ]
+          }
+        }
+      },
+      "practical_low_urban": {
+        "active": 150,
+        "methods": {
+          "identity": {
+            "relative_action_error": [
+              3.8869006633758545,
+              8.77173137664795
+            ],
+            "private_3to8khz_error": [
+              1.3500466346740723,
+              3.4263699054718018
+            ]
+          },
+          "original": {
+            "relative_action_error": [
+              32.35084533691406,
+              56.96425247192383
+            ],
+            "private_3to8khz_error": [
+              133.99215698242188,
+              197.4762725830078
+            ]
+          },
+          "projected_original": {
+            "relative_action_error": [
+              15.157747268676758,
+              32.388309478759766
+            ],
+            "private_3to8khz_error": [
+              1.3500474691390991,
+              3.4263718128204346
+            ]
+          }
+        }
+      }
+    }
+  },
+  "target_reads": 0,
+  "F_reads": 0,
+  "TX_reads": 0,
+  "V_reads": 0,
+  "exact_replay_only_for_diagnostics": true,
+  "frozen_original": true,
+  "optimization_steps": 0
+}
