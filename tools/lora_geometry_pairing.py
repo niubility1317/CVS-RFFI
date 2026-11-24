@@ -179,7 +179,60 @@ def collect(rt):
     return artifact
 
 
+def phase_dose_interaction(rt):
+    """Compare perturbation recipes on the same frozen source panel."""
+    parent = Path(rt['run_root']).parent
+    source = Path(rt['source_root'])
+    modes = phase_dose_source.MODES
+    roots = {'standard': parent / phase_dose_source.RUN, 'bursts': parent / BURST_DOSE_RUN}
+    if any(read(run / 'state.json')['status'] != 'SOURCE_SCORED' for run in roots.values()):
+        raise ValueError('Both phase-dose studies must already be truth-last scored')
+    frozen = {name: {route: read_frozen(run, route, modes) for route in ROUTES}
+              for name, run in roots.items()}
+    ids = frozen['standard'][ROUTES[0]][0]
+    if any(data[0] != ids for values in frozen.values() for data in values.values()):
+        raise ValueError('The two trained phase-dose studies must use exactly the same physical IDs')
+    available = source_contract(source)['role_ids']['V']
+    index = {key: i for i, key in enumerate(available)}
+    chosen = np.asarray([index[key] for key in ids])
+    with np.load(source / 'V_metadata.npz', allow_pickle=False) as metadata:
+        receivers = np.asarray(SOURCE)[metadata['rx_i']]
+        if not np.array_equal(chosen, panel(receivers)) or metadata['ids'][chosen].tolist() != ids:
+            raise ValueError('Unexpected source panel order')
+        truth = metadata['y'][chosen]
+    groups = {rx: np.flatnonzero(receivers[chosen] == rx) for rx in SOURCE}
+    aliases = tuple(f'{arm}_{mode}' for arm in roots for mode in modes)
+    pairs = tuple((f'bursts_{mode}', f'standard_{mode}')
+                  for mode in ('pooled_full', 'local_full', 'local_equal', 'pooled_equal'))
+    factors = {
+        'trained_local_effect': ('bursts_local_full', 'standard_pooled_full',
+                                 'bursts_pooled_full', 'standard_local_full'),
+        'fixed_edit_local_effect': ('bursts_local_equal', 'standard_pooled_equal',
+                                   'bursts_pooled_equal', 'standard_local_equal'),
+    }
+    output = {}
+    for route in ROUTES:
+        matrices = []
+        previous = None
+        for name, root in roots.items():
+            guesses = np.stack([frozen[name][route][1][scene] for scene in VIEWS], axis=1)
+            scored = read(root / f'{route}-source-scores.json')
+            correct = guesses == truth
+            if any(correct[:, i].sum(-1).tolist() != scored['metrics'][scene]['correct']
+                   for i, scene in enumerate(VIEWS)):
+                raise ValueError('Independent reconstruction differs from the frozen source score')
+            if previous is not None and not np.array_equal(previous, guesses[:2]):
+                raise ValueError('Direct or DURA predictions differ across training recipes')
+            previous = guesses[:2]
+            matrices.append(correct)
+        hits = np.concatenate(matrices)
+        output[route] = dict(paired=compare(hits, pairs, groups, aliases),
+                             effects=factor_interactions(hits, groups, aliases, factors))
+    return dict(reader_seed=2026092702, bootstrap_replicates=REPEATS, target_reads=0, routes=output)
+
+
 if __name__=='__main__':
     if os.environ.get('CUDA_VISIBLE_DEVICES')!='':
         raise ValueError('This diagnostic scores on an independent CPU process')
-    print(json.dumps(collect(read(Path(sys.argv[1]))),allow_nan=False))
+    method = phase_dose_interaction if '--dose-interaction' in sys.argv else collect
+    print(json.dumps(method(read(Path(sys.argv[1]))),allow_nan=False))
