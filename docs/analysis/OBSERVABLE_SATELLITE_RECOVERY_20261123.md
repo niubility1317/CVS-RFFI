@@ -36,6 +36,8 @@ R69 v1.0 有 266,951 个参数。历史两阶段学生由 R65 固定父版初始
 
 ## 源域验证
 
+- LoRa 幅相联合对照固定 40,000 步局部相位。实收分组前导幅度与相位合用，Full 和 Residual 相对仅修相位净减 15、32 次，区间均跨零。低城区两路的外带估计功率与精确功率之比中位为 0.993、1.011，但外带去偏幅度的编辑方向与隔离参考反向；分组幅度方向余弦为 0.887、0.876。共同剂量下精确幅度仅净增 4、13 次，区间均跨零。全量精确幅度相对仅修相位净增 59、55 次，Residual 仍比 DURA 少 28 次。两路 clean 均为 667/900。 [幅相联合测试及实收误差](../../automation_reports/CV-SincNet/20261124-diagnostic-lora-phase-radius-source-m2-r01/report.md)
+
 - LoRa 相位位置分配的四个模型各完成 40,000 步。基础通用扰动下，局部与全包读出逐包正确性一致。加入局部和跨 chirp 相关突发后，Residual 的局部全量相对匹配全包净增 136 次，95% 区间 +91 至 +178。同权、同 IQ RMS 仍净增 100 次，区间 +61 至 +138，五台源 RX 均改善。固定噪声代理使 Residual 净减 134 次。主读出的 Full 和 Residual 六景为 3,087、2,877/5,400，分别比 DURA 少 7、83；两路 clean 都为 667/900。该机制获得源域独立收益，候选仍未达到正式晋级条件。 [基础扰动测试](../../automation_reports/CV-SincNet/20261124-phase1-lora-phase-dose-source-m4-r01/report.md) · [突发扰动和匹配结果](../../automation_reports/CV-SincNet/20261124-phase1-lora-phase-dose-bursts-source-m4-r01/report.md)
 
 - LoRa 时域相位对照复用已有 40,000 步权重。实收重复相位在 Full 相对直通净增 65 次，95% 区间 +26 至 +103，较 DURA 少 1 次。Residual 较 DURA 净减 157 次。关闭相位裕量使低城区两路相位非零系数中位份额从 0% 到 66.7%，六景结果无稳定改善。隔离 10% RMS 精确相位相对 DURA 两路净增 152、201 次；在实收两臂的共同预算下，隔离方向相对等量学习仍净增 30、37 次。所有读出 clean 为 667/900。 [冻结相位对照及配对结果](../../automation_reports/CV-SincNet/20261124-diagnostic-lora-phase-observation-source-m2-r01/report.md)
