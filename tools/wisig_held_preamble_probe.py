@@ -6,63 +6,12 @@ from pathlib import Path
 
 import numpy as np
 
-from experiments.pamf_unrolled_restore.wisig_joint_preamble import (
-    IN_ANCHOR, OBSERVED, RIDGE, STARTS, TAP_OFFSETS, WEIGHT, observable, waveform,
-)
-from experiments.pamf_unrolled_restore.wisig_timing import NOMINAL, estimate_timing
+from experiments.pamf_unrolled_restore.wisig_joint_preamble import TAP_OFFSETS, observable
+from experiments.pamf_unrolled_restore.wisig_smooth_preamble import choose, estimate, ridge_bank
+from experiments.pamf_unrolled_restore.wisig_timing import estimate_timing
 
 
 COUNT = 512
-
-
-def design(taps):
-    basis = waveform(OBSERVED[None, :, None] - STARTS[:, None, None] - np.asarray(taps))
-    return (basis * WEIGHT[None, :, None]).astype(np.complex64)
-
-
-def ridge_bank(taps, *, varying=False):
-    basis = design(taps)
-    penalty = np.diag([0.] + [RIDGE] * (len(taps) - 1)).astype(np.float32)
-    if varying:
-        position = (OBSERVED - OBSERVED[0]) / (OBSERVED[-1] - OBSERVED[0])
-        weights = np.maximum(1. - np.abs(3. * position[:, None] - np.arange(4)), 0.)
-        basis = (basis * weights[None, :, :]).astype(np.complex64)
-        differences = np.diff(np.eye(4, dtype=np.float32), axis=0)
-        penalty = .03 * (differences.T @ differences)
-    groups = (np.arange(len(OBSERVED)), *[np.flatnonzero((OBSERVED // 8) % 2 == i) for i in (0, 1)])
-    banks = []
-    for columns in groups:
-        sample_basis = basis[:, columns]
-        adjoint = sample_basis.conj().transpose(0, 2, 1)
-        gram = adjoint @ sample_basis
-        projection = adjoint.reshape(-1, len(columns)).T.copy()
-        banks.append((columns, projection, gram, np.linalg.inv(gram + penalty)))
-    return tuple(banks)
-
-
-def estimate(synced, bank):
-    observed = synced[:, OBSERVED] * WEIGHT.astype(np.float32)
-    fits = []
-    for columns, projection, gram, inverse in bank:
-        part = observed[:, columns]
-        rhs = (part @ projection).reshape(len(observed), len(STARTS), gram.shape[-1])
-        h = np.einsum('dkj,bdj->bdk', inverse, rhs)
-        energy = (part.real**2 + part.imag**2).sum(-1, keepdims=True)
-        fits.append((rhs, h, gram, energy))
-    rhs, h, _, energy = fits[0]
-    apparent = np.sum((h.conj() * rhs).real, axis=-1) / np.maximum(energy, 1e-8)
-    explained = []
-    for (_, trained, _, _), (rhs, _, gram, _) in ((fits[1], fits[2]), (fits[2], fits[1])):
-        projected = np.einsum('dkj,bdj->bdk', gram, trained)
-        explained.append(np.sum((trained.conj() * (2*rhs - projected)).real, axis=-1))
-    predictive = sum(explained) / np.maximum(fits[1][3] + fits[2][3], 1e-8)
-    return apparent, predictive
-
-
-def choose(scores):
-    outer = np.where(~IN_ANCHOR, scores, -np.inf)
-    closest = np.where(IN_ANCHOR, scores, -np.inf).max(1)
-    return STARTS[outer.argmax(1)] - NOMINAL, outer.max(1) - closest
 
 
 def formats(iq, banks):
@@ -70,7 +19,7 @@ def formats(iq, banks):
     _, _, synced = observable(iq)
     result = {'existing_transition': (local, margin)}
     for name, bank in banks.items():
-        for score_name, score in zip(('same_samples', 'held_samples'), estimate(synced, bank), strict=True):
+        for score_name, score in zip(('same_samples', 'held_samples'), estimate(synced, bank)[:2], strict=True):
             result[f'{name}_{score_name}'] = choose(score)
     return result
 
