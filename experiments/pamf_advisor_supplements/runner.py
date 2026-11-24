@@ -180,7 +180,17 @@ def analyze(rt):
     from experiments.cric_dura_comparison.evaluation import DATES
     root = Path(rt["run_root"])
     result = []
+    exposure = {}
     for row in ROWS.values():
+        training = root / "F" / row["row_id"] / "source"
+        finished = read(training / "complete.json")
+        if row["method"] == "ssl":
+            first = read(training / "segment20" / "progress.json")
+            ordinary = (first["PL_seen"], first["PL_accepted"])
+        else:
+            ordinary = (finished["actual_U"]["plain_PL_seen"], finished["actual_U"]["plain_PL_accepted"])
+        exposure[row["row_id"]] = dict(ordinary_PL_seen=ordinary[0], ordinary_PL_accepted=ordinary[1],
+                                         full_SSL=finished["actual_U"]["full_SSL"])
         score = read(root / "readouts" / row["row_id"] / "scores" / "scores.json")
         if not score["truth_last"] or score["row_id"] != row["row_id"]:
             raise ValueError("Missing independent score")
@@ -193,7 +203,8 @@ def analyze(rt):
             if include:
                 result.append(dict(row_id=row["row_id"], family=row["family"], setting=row["setting"],
                     method=row["method"], source_rxs=" ".join(map(str,row["source_rxs"])),
-                    source_days=" ".join(map(str,row["source_days"])), test=r["test"], date=r["stratum"],
+                    source_days=" ".join(map(str,row["source_days"])), endpoint_type=row["family"] if endpoint is not None else r["test"],
+                    target_partition=r["test"], date=r["stratum"],
                     view=r["view"], count=r["count"], accuracy=r["accuracy"], macro_f1=r["macro_f1"]))
     if len(result) != 7 * sum(2 if r["endpoint"] is None else 1 for r in ROWS.values()):
         raise ValueError("Missing scene or held-out date")
@@ -201,6 +212,7 @@ def analyze(rt):
         output = csv.DictWriter(stream, fieldnames=list(result[0]))
         output.writeheader()
         output.writerows(result)
+    write(root / "U_exposure.json", exposure)
 
 
 def admits(gpu):
