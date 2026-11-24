@@ -1,0 +1,170 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261124-phase1-lora-dura-capacity-source-m4-r01",
+  "group_id": "lora-observable-satellite-recovery",
+  "display_name": "LoRa DURA 结构扩容和实收估计消融",
+  "description": "从零配对训练原 DURA 双阶段结构的两种容量，复用多尺度 Core 和四步 CG。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "LoRa",
+    "DURA",
+    "width",
+    "source_V",
+    "full",
+    "residual",
+    "receive_only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261122-phase1-lora-full-aligned-data-r01",
+    "20261122-phase1-lora-tri-label-set-m3-r01",
+    "20261124-phase1-lora-dura-capacity-source-m4-r01",
+    "20261123-phase1-lora-dura-residual-practical-m1-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户明确要求在 DURA 基础上优化，允许扩大规模和参数。只用合法源 IQ。",
+  "code": {
+    "commit": "启动命令从已推送分支 HEAD 固定，实际 OID 写入 submit.json",
+    "checkout": "E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo",
+    "environment": "${N607_PYTHON}",
+    "cwd": "${N607_PROJECT}/releases/20261124-phase1-lora-dura-capacity-source-m4-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa 多接收机 IEEE DataPort",
+    "version": "lora_full_packets_v1 源 7/63/30 固定划分",
+    "representation": "1 MS/s 采集及既有构造，冻结读出为 256 kS/s 六条 256 点窄窗复 IQ",
+    "contract_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json role_ids.V",
+    "label_map_ref": "experiments/pamf_lora_main/data.py CLASSES (31 至 40)，仅评分读取 V_metadata.npz y",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "10 个登记发射机的固定源分配，拟合不可见",
+    "roles": {
+      "L_s": 0,
+      "U_s": 23000,
+      "V": 900
+    },
+    "train_ratio": "20,000 无 TX 源 U 拟合，2,500 互斥 clean 校准，500 互斥留出，900 源 V 冻结后评估。两臂相同源数据、抽样和通用受扰。",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "${N607_PROJECT}/runs/20261122-phase1-lora-full-aligned-data-r01/source_views/complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": "沿用 full 1 MHz 对齐及 residual 256 kHz post-sync/noEQ 原视图"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "not_applicable",
+    "external_method_exception": null,
+    "claim_scope": "训练和校准隔离 TX、F、源 V、目标、practical 元数据、真实作用和噪声。预测候选只见实际收到的 IQ。"
+  },
+  "checkpoint": {
+    "initialization": "两臂从零。保留 DURA 的时频粗恢复、双阶段独立先验及每阶段两步 CG，不继承历史网络权重。",
+    "sources": [
+      "20261122-phase1-lora-tri-label-set-m3-r01 / Tri-set 2026092702",
+      "既有 Full 半量 DURA 和 Residual 原 R69 用于配对评分"
+    ],
+    "contract_check_ref": "source_contract 与 complete_f/source_control 核对各自源物理角色",
+    "provenance_verdict": "同一 source_contract，proof 精确比对两原始拟合合同及零 F/TX/V/target/practical/trace 读取。R69 历史权重仅在冻结后作为对照。",
+    "selection_rule": "两臂 40,000 末步冻结；主读出 expanded_half。两路线维持同权和相同校准门。源域主读出两路均需配对改善原 DURA 六景并维持 clean。"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "当前 LoRa 可部署星地恢复目标",
+    "gpu_policy": "两臂分配给相对空闲的 GPU，典型按实测相对占用排序。训练终步后真实无查询检查。两路线独立并行预测，CPU truth-last。",
+    "remote_run_root": "${N607_PROJECT}/runs/20261124-phase1-lora-dura-capacity-source-m4-r01",
+    "remote_log_root": "${N607_PROJECT}/runs/20261124-phase1-lora-dura-capacity-source-m4-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261124-phase1-lora-dura-capacity-source-m4-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.dura_capacity_source publish --repo \"E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo\" --output \"E:/type10-7/local_artifacts/20261124-phase1-lora-dura-capacity-source-m4-r01/release\" --context E:/type10-7/local_artifacts/lora_main_20261121/runtime_source.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "样本权限、训练数值、真实检查、冻结覆盖或后置评分技术失败时停止当前运行。保留全部预登记结果。"
+  },
+  "expected_artifacts": [
+    "base-complete.json",
+    "expanded-complete.json",
+    "base-model.pt",
+    "expanded-model.pt",
+    "smoke.json",
+    "full-predictions.json",
+    "residual-predictions.json",
+    "full-source-scores.json",
+    "residual-source-scores.json",
+    "full-estimates.json",
+    "residual-estimates.json",
+    "logs/"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "六景、clean、低城区和物理包配对区间",
+      "粗恢复、第一与第二阶段和半量的损益",
+      "同权方差、作用、CG 消融",
+      "训练秒数、接收方差、动作幅度和 B1 时延"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "mode",
+      "seed"
+    ],
+    "prediction_ref": "${N607_PROJECT}/runs/20261124-phase1-lora-dura-capacity-source-m4-r01/<route>-predictions.json",
+    "scorer_ref": "experiments.pamf_lora_main.dura_capacity_source score"
+  },
+  "rows": [
+    {
+      "row_id": "base-fit-and-paired-test",
+      "method": "基础宽度 DURA，351,662 参数",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/dura_capacity_source.py",
+      "resolved_config_ref": "${N607_PROJECT}/releases/20261124-phase1-lora-dura-capacity-source-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026112620
+      },
+      "seed_notes": "原冻结 Tri-set 2026092702。两组 U 分区、初始化和扰动种子均为 2026112991；V 面板、配对重抽固定。",
+      "k": null,
+      "scenario": "clean 和六景，分别评估 full/residual",
+      "optimizer": "AdamW 2e-4、余弦调度至 2e-5",
+      "lr": 0.0002,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "40,000 步，batch 16，固定源 U IDs，七景与 13 个固定读出",
+      "output_root": "${N607_PROJECT}/runs/20261124-phase1-lora-dura-capacity-source-m4-r01",
+      "log_path": "${N607_PROJECT}/runs/20261124-phase1-lora-dura-capacity-source-m4-r01/logs",
+      "command": "${N607_PYTHON} -u -m experiments.pamf_lora_main.dura_capacity_source dispatch ${N607_PROJECT}/releases/20261124-phase1-lora-dura-capacity-source-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "base-complete.json",
+        "expanded-complete.json",
+        "base-model.pt",
+        "expanded-model.pt",
+        "smoke.json",
+        "full-predictions.json",
+        "residual-predictions.json",
+        "full-source-scores.json",
+        "residual-source-scores.json",
+        "full-estimates.json",
+        "residual-estimates.json",
+        "logs/"
+      ]
+    }
+  ],
+  "notes": [
+    "两臂同一模型种子初始化规则和相同源拟合预算。只改变粗时频网络和两阶段先验宽度。",
+    "同一恢复器和固定阈值跨路线；按相同源面板配对评估，目标结果未输入本 run。",
+    "观察消融保留原阶段结构，固定先验和求解使用的方差、单位作用、禁用 CG 三条独立。"
+  ],
+  "registered_at": "2026-11-24T07:41:44+00:00"
+}
