@@ -11,13 +11,17 @@
 | Full 直通 | 55.1180% | 40.6667% | 64,490 |
 | Full 既有 DURA 半量 | 55.8517% | 41.7733% | 64,490 |
 | Full 复响应半量，历史最佳 | 56.0024% | 42.0500% | 64,490 |
-| Full **秩四频谱恢复加弱扰动门，guard_half** | **56.4131%** | **42.6411%** | **64,582** |
+| Full 秩四频谱恢复加弱扰动门，`guard_half` | 56.4131% | 42.6411% | 64,582 |
+| Full 扩容 DURA 半量，`expanded_half` | **56.4759%** | **43.4222%** | 64,490 |
 | Full 正式验收 | 67.0000% | 53.0000% | 至少 64,490 |
 | Residual 直通 | 52.9263% | 41.3500% | 64,490 |
 | Residual 原 R69 半量 | 53.5485% | 42.8511% | 64,307 |
 | Residual **同一冻结 guard_half** | **54.8617%** | **43.9900%** | **64,582** |
+| Residual 同一冻结 `expanded_half` | 53.9015% | 41.9378% | 64,490 |
 
 两路线共用同一源冻结秩四权重、保护带门、去扫门及半量读出。Full 相对复响应半量在六景净增 2,218 次，95% 配对区间 [1,789, 2,668]，低城区净增 532 次。Residual 相对原 R69 半量在六景净增 7,091 次，区间 [6,594, 7,577]，低城区净增 1,025 次。两路 clean 均比直通多 92 次，种子 2026092702 的 clean 少 40 次。Full 距六景和低城区验收分别差 10.5869 和 10.3589 个百分点。 [guard_half 正式双路线结果](../../automation_reports/CV-SincNet/20261124-phase1-lora-guard-half-target-m8-r02/report.md)
+
+40,000 步的扩容 DURA 已完成两路线正式测试。Full 相对原 DURA 六景净增 3,371 次，Residual 净增 1,906 次，clean 分别持平和净增 183 次。Full 的六景点估计较 `guard_half` 多 339 次，配对区间跨零，低城区多 703 次。Residual 的中、低强度城区较原 DURA 分别净减 1,647、822 次。Full 的六景和低城区仍差 10.5241 和 9.5778 个百分点。 [扩容 DURA 逐景、种子及接收机结果](../../automation_reports/CV-SincNet/20261124-phase1-lora-dura-capacity-target-m8-r02/report.md)
 
 LoRa 实收复谱方向修正的两臂已各完成 40,000 步。双方向终步在 Full、Residual 六景比匹配 DURA 净减 66、198 次，clean 均为 667/900。同权等量相较标量净减 11、16 次，两个配对区间均跨零。低城区五台源接收机的相位回写中位数均为零。候选停在源域。 [LoRa 实收复谱修正设计](LORA_RECEIVED_SPECTRAL_UPDATE_DESIGN_20261124.md) · [冻结结果、配对统计与幅相审计](../../automation_reports/CV-SincNet/20261124-phase1-lora-received-update-source-m4-r01/report.md)
 
