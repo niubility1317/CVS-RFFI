@@ -1,0 +1,173 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261124-phase1-lora-cross-frequency-source-m2-r01",
+  "group_id": "lora-observable-satellite-recovery",
+  "display_name": "LoRa 实收跨频点复协方差工程对照",
+  "description": "按公共和独有分量估计全非载波联合协方差。与逐频点块协方差比较后验和相同物理 RMS 方差保持读出。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "LoRa",
+    "DURA",
+    "source_V",
+    "analytic_calibration",
+    "cross_frequency",
+    "full",
+    "residual"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261122-phase1-lora-full-aligned-data-r01",
+    "20261122-phase1-lora-tri-label-set-m3-r01",
+    "20261123-phase1-lora-dura-residual-practical-m1-r01",
+    "20261123-phase1-lora-dura-direct-detail-source-m2-r01",
+    "20261124-phase1-lora-variance-transport-source-m2-r01",
+    "20261124-diagnostic-lora-noise-split-source-m2-r01",
+    "20261124-phase1-lora-neighbor-phase-source-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "LoRa 可部署星地信道恢复目标的接收端工程对照与冻结双路线源域检验",
+  "code": {
+    "commit": "启动命令从已推送分支 HEAD 固定，实际 OID 写入 submit.json",
+    "checkout": "E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo",
+    "environment": "${N607_PYTHON}",
+    "cwd": "${N607_PROJECT}/releases/20261124-phase1-lora-cross-frequency-source-m2-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa 多接收机 IEEE DataPort",
+    "version": "lora_full_packets_v1 源 7/63/30 固定划分",
+    "representation": "1 MS/s 采集及既有构造，冻结读出为 256 kS/s 六条 256 点窄窗复 IQ",
+    "contract_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json role_ids.V",
+    "label_map_ref": "experiments/pamf_lora_main/data.py CLASSES (31 至 40)，仅评分读取 V_metadata.npz y",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "10 个登记发射机的固定源分配，拟合不可见",
+    "roles": {
+      "L_s": 0,
+      "U_s": 23000,
+      "V": 900
+    },
+    "train_ratio": "匹配的 20,000 个原始源 U 拟合，2,500 个互斥源 U 门限，500 个互斥源 U 固定留出。仍沿用 900 个同包源 V 物理 ID。",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "${N607_PROJECT}/runs/20261122-phase1-lora-full-aligned-data-r01/source_views/complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": "沿用 full 1 MHz 对齐及 residual 256 kHz post-sync/noEQ 原视图"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "not_applicable",
+    "external_method_exception": null,
+    "claim_scope": "解析矩拟合仅 clean U。无优化器、真值动作、识别器、V、TX、实用轨迹或目标。恢复使用当前实收 IQ，隔离的新增噪声仅用于评分之后的幅相归因。"
+  },
+  "checkpoint": {
+    "initialization": "analytic source-only moments",
+    "sources": [
+      "20261122-phase1-lora-tri-label-set-m3-r01 / tri_set 2026092702",
+      "20261123-phase1-lora-dura-direct-detail-source-m2-r01 及冻结 full 复响应半量",
+      "20261123-phase1-lora-dura-residual-practical-m1-r01 原 R69 及固定 residual 门控投影半量"
+    ],
+    "contract_check_ref": "source_contract 与 complete_f/source_control 核对各自源物理角色",
+    "provenance_verdict": "不继承恢复权重。Frozen Tri-set 和两路线成熟 DURA 仅在冻结校准后用于无 query smoke 和并行预测。",
+    "selection_rule": "主工程读出为 joint_transport；固定同包比较 joint_equal 与 bin_equal。需两路线六景均胜半量 DURA 且保持 clean 才考虑晋级，读出与阈值不按目标变更。"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "当前 LoRa 可部署星地恢复目标",
+    "gpu_policy": "按显存与实时负载选择解析校准/检查卡，并在两张有余量的 GPU 并行预测。CPU 独立评分。",
+    "remote_run_root": "${N607_PROJECT}/runs/20261124-phase1-lora-cross-frequency-source-m2-r01",
+    "remote_log_root": "${N607_PROJECT}/runs/20261124-phase1-lora-cross-frequency-source-m2-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261124-phase1-lora-cross-frequency-source-m2-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.cross_frequency_source publish --repo \"E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo\" --output \"E:/type10-7/local_artifacts/20261124-phase1-lora-cross-frequency-source-m2-r01/release\" --context E:/type10-7/local_artifacts/lora_main_20261121/runtime_source.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "源角色、非有限矩阵、真实权重无查询检查、固定预测或独立 CPU 评分发生系统性失败时停止本 run 后续派发。保留产物。"
+  },
+  "expected_artifacts": [
+    "calibration.pt",
+    "calibration.json",
+    "smoke.json",
+    "full-predictions.json",
+    "residual-predictions.json",
+    "full-source-scores.json",
+    "residual-source-scores.json",
+    "full-estimates.json",
+    "residual-estimates.json",
+    "logs/"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "两路六景与低城区准确率、clean 正确数",
+      "按场景和 RX 的同包纠错、改错与区间",
+      "相同物理 IQ RMS 跨频项消融",
+      "弱频带复 NMSE、幅度 NMSE 和复相关",
+      "估计噪声误差",
+      "B1、先验存储和校准墙钟"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "mode",
+      "seed"
+    ],
+    "prediction_ref": "${N607_PROJECT}/runs/20261124-phase1-lora-cross-frequency-source-m2-r01/<route>-predictions.json",
+    "scorer_ref": "experiments.pamf_lora_main.cross_frequency_source score"
+  },
+  "rows": [
+    {
+      "row_id": "dual-route-cross-frequency-s2026092702",
+      "method": "直通、匹配 DURA、跨频联合后验均值、逐频块后验均值、两种方差保持读出、两种同物理 RMS 方差保持读出。",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/cross_frequency_source.py",
+      "resolved_config_ref": "${N607_PROJECT}/releases/20261124-phase1-lora-cross-frequency-source-m2-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026112477,
+        "support": null,
+        "evaluation": 2026112620
+      },
+      "seed_notes": "冻结 Tri-set 2026092702。U 分区和 V 面板均复用固定来源。无查询 smoke 通用扰动 2026112477，Bootstrap 冻结。",
+      "k": null,
+      "scenario": "clean 和六景，分别评估 full/residual",
+      "optimizer": "无优化器。分批累计二阶矩并对称特征分解，保留本频 I/Q 相关。",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "解析校准 20,000 物理包、门限 2,500、固定留出 500。零优化步。900×七景×八读出×两路线。",
+      "output_root": "${N607_PROJECT}/runs/20261124-phase1-lora-cross-frequency-source-m2-r01",
+      "log_path": "${N607_PROJECT}/runs/20261124-phase1-lora-cross-frequency-source-m2-r01/logs",
+      "command": "${N607_PYTHON} -u -m experiments.pamf_lora_main.cross_frequency_source dispatch ${N607_PROJECT}/releases/20261124-phase1-lora-cross-frequency-source-m2-r01-release/runtime.json",
+      "expected_artifacts": [
+        "calibration.pt",
+        "calibration.json",
+        "smoke.json",
+        "full-predictions.json",
+        "residual-predictions.json",
+        "full-source-scores.json",
+        "residual-source-scores.json",
+        "full-estimates.json",
+        "residual-estimates.json",
+        "logs/"
+      ]
+    }
+  ],
+  "notes": [
+    "同一六条实收去扫前导，恒等前向作用，分别校准一个公共和一个共享的独有协方差。",
+    "使用实部与虚部联合统计，逐频块对照保留同频相关，联合仅增加跨频相关。",
+    "原 IQ 门限旁路，编辑量上限为原 IQ RMS 的 30%。等剂量共同缩小到逐包较小值，两个振幅保持读出方向作为唯一差异。",
+    "解析校准只接源 U 原始地面接收 IQ。源 V 标签在两路线全部固定后独立读取。"
+  ],
+  "registered_at": "2026-11-24T03:17:33+00:00"
+}

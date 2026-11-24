@@ -451,6 +451,7 @@ def diagnose(rt, route, device):
     is_relation = rt['run_id']==packet_relation_source.RUN
     is_cancel = rt['run_id']==reference_cancel_source.RUN
     is_transport = rt['run_id']==variance_transport_source.RUN
+    is_cross_frequency = rt['run_id']=='20261124-phase1-lora-cross-frequency-source-m2-r01'
     is_interval = rt['run_id']==coherent_interval_source.RUN
     is_joint = rt['run_id']==joint_spectrum_source.RUN
     is_anchor = rt['run_id']==ANCHOR_RUN
@@ -494,8 +495,11 @@ def diagnose(rt, route, device):
         readouts = ('direct', 'scalar_full', 'interval_full', 'interval_matched',
                     'scalar_matched', 'interval_off')
         indices = tuple(study.MODES.index(name) - 2 for name in readouts[1:])
-    elif is_transport:
-        study = variance_transport_source
+    elif is_transport or is_cross_frequency:
+        if is_cross_frequency:
+            from experiments.pamf_lora_main import cross_frequency_source as study
+        else:
+            study = variance_transport_source
         recover = lambda iq, tracker, models, threshold: study.recover(iq, tracker, models[0], threshold)
         readouts = ('direct', *study.MODES[2:])
         indices = range(len(study.MODES) - 2)
@@ -540,7 +544,7 @@ def diagnose(rt, route, device):
     cache = root.parent/DATA_RUN/'source_views'
     contract = source_contract(data)
     rows, registered, clean, selected, marks = paired_source(data,cache,contract,root,route,study.MODES)
-    if is_transport:
+    if is_transport or is_cross_frequency:
         threshold = study.load_gate(root)
         models = (study.load(root, contract, threshold, device),)
     else:
@@ -616,6 +620,16 @@ def diagnose(rt, route, device):
                     joint_stats.append(joint_part_metrics(waves,noiseless,frame))
                     if view!='clean':
                         noise_stats.append(joint_noise_bias(models[1],tracked,frame,epsilon))
+                if is_cross_frequency:
+                    joint_stats.append(joint_part_metrics(waves,noiseless,frame))
+                    if view != 'clean':
+                        prior = models[0]
+                        estimated = prior.noise(prior.spectrum(tracked))
+                        true_spectrum = prior.spectrum(complex_iq(epsilon) / frame)[..., prior.outer].abs().square()
+                        true = .5 * torch.stack((true_spectrum[:, 0].mean(-1),
+                                                 true_spectrum[:, 1:].mean((1, 2))), dim=-1)
+                        error_db = 10 * (estimated / true.clamp_min(1e-10)).clamp_min(1e-10).log10()
+                        noise_stats.append(np.asarray(error_db.tolist(), dtype=np.float32))
                 if is_anchor:
                     joint_stats.append(joint_part_metrics(waves,noiseless,frame))
                     action_stats.append(anchored_action_metrics(models[1],tracked,quality,rms,target,noiseless,frame))
@@ -700,7 +714,7 @@ def diagnose(rt, route, device):
                     pooled=report_interval(values),
                     by_receiver={name:report_interval(part) for name,part in
                                  zip(SOURCE,np.split(values,len(SOURCE),axis=1),strict=True)})
-            if is_joint or is_anchor or is_received or is_dose:
+            if is_joint or is_anchor or is_received or is_dose or is_cross_frequency:
                 values = np.concatenate(joint_stats,axis=1)
                 output[view]['components_noiseless'] = dict(order=['shared','private'],
                     median=np.median(values,axis=1).tolist(),
@@ -791,7 +805,8 @@ def main():
                      lapped_posterior_source.RUN, held_chirp_precision_source.RUN, packet_relation_source.RUN,
                      reference_cancel_source.RUN, variance_transport_source.RUN, coherent_interval_source.RUN,
                      joint_spectrum_source.RUN, ANCHOR_RUN, received_update_source.RUN,
-                     phase_dose_source.RUN, BURST_DOSE_RUN, NEIGHBOR_PHASE_RUN)
+                     phase_dose_source.RUN, BURST_DOSE_RUN, NEIGHBOR_PHASE_RUN,
+                     '20261124-phase1-lora-cross-frequency-source-m2-r01')
     if rt.get('run_id') not in analyzed_runs or read(root/'state.json')['status']!='SOURCE_SCORED':
         raise ValueError('The full dual-route truth-last scoring must already be complete')
     activate(rt)
