@@ -4,9 +4,10 @@ from experiments.cric_dura_comparison.io import read,write,tensor
 from experiments.cric_dura_comparison.evaluation import handle,reject_truth
 from .plan import TASKS,VIEWS
 
-def predict(c,device='cuda:0'):
+def predict(c,device='cuda:0',*,load_reader=None):
     import torch
-    from .source import load_reader
+    if load_reader is None:
+        from .source import load_reader
     reject_truth(c)
     if list(c['tests'])!=list(TASKS) or c['readouts']!=['raw']:raise ValueError('Direct recognition only; both target populations required')
     reader,source=load_reader(c['source_output'],read(c['source_contract']),device)
