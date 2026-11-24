@@ -20,6 +20,7 @@ from .packet_data import CHIRPS
 from .packet_runner import schedule
 from .refine_runner import start
 from .runner import activate
+from .repair_features import AlignedTrace, CoherentPacket
 from .tri_tuning import SEED, STEPS, model_for, shape_trace, trainable
 
 
@@ -47,7 +48,35 @@ QUICK_ROWS={
 }
 
 
+TRANSFER_RUN='20261125-phase1-lora-pamf-tri-clean-transfer-m5-r01'
+TRANSFER_ROWS={
+    'control': {'lr':1.5e-4},
+    'raw_ce': {'lr':1.5e-4,'raw_ce':.25},
+    'dual384': {'lr':1.5e-4,'samples':384,'two_rate':True},
+    'dual384_raw_ce': {'lr':1.5e-4,'samples':384,'two_rate':True,'raw_ce':.25},
+    'dual512': {'lr':1.5e-4,'samples':512,'two_rate':True},
+}
+
+
+class TwoRateCoherent(CoherentPacket):
+    def forward(self, pack):
+        raw, anchor = pack.split((pack.shape[-1]-256,256),dim=-1)
+        logits,fused=self.raw(raw)
+        traces=self.trace(anchor)
+        aligned=self.encoder(traces.flatten(0,1)).reshape(len(pack),pack.shape[1],-1).mean(1)
+        return logits+self.head(aligned),fused+.10*aligned
+
+
+def preserve_alignment(f,row):
+    if row.get('two_rate'):
+        f.__class__=TwoRateCoherent
+        f.trace=AlignedTrace().to(f.head.weight.device)
+    return f
+
+
 def study(rt):
+    if rt.get('transfer'):
+        return TRANSFER_ROWS,8,16
     if rt.get('quick'):
         return QUICK_ROWS,8,16
     return ROWS,EPOCHS,U_BATCH
@@ -113,9 +142,19 @@ def terms(row):
     return {k:row[k] for k in ('contrast_weight','kl_weight') if k in row}
 
 
-def _labeled_and_unlabeled(f,x,y,rx,u,ur,step,with_u,force=None,mechanism=None):
+def _labeled_and_unlabeled(f,x,y,rx,u,ur,step,with_u,force=None,mechanism=None,raw_ce=0.):
     f.train()
-    lab,_=labeled_loss(f,x,x,y,rx,step,mechanism=mechanism)
+    scores=[]
+    hook=f.raw.register_forward_hook(lambda _,args,out:scores.append(out[0])) if raw_ce else None
+    try:
+        lab,_=labeled_loss(f,x,x,y,rx,step,mechanism=mechanism)
+    finally:
+        if hook is not None:
+            hook.remove()
+    if raw_ce:
+        if len(scores)!=6:
+            raise ValueError('Original raw Tri readout must occur in each supervised pass')
+        lab=lab+raw_ce*torch.stack([torch.nn.functional.cross_entropy(q,y,label_smoothing=.01) for q in scores]).mean()
     if not with_u:
         return lab,lab.detach(),0,0
     unlab,pseudo,keep,details=unlabeled_loss(f,u,ur,step,3.,forced_pseudo=force,mechanism=mechanism)
@@ -137,10 +176,13 @@ def smoke(rt):
     records={}
     from .tri_tuning import configure
     for name,row in study(rt)[0].items():
-        f=configure(deepcopy(parent),row)
-        a=tensor(clean_iq(raw[i],row.get('samples',256)))
+        f=preserve_alignment(configure(deepcopy(parent),row),row)
+        grid=clean_iq(raw[i],row.get('samples',256))
+        if row.get('two_rate'):
+            grid=np.concatenate((grid,clean_iq(raw[i],256)),axis=-1)
+        a=tensor(grid)
         t=shape_trace(f,a)
-        loss,_,_,n=_labeled_and_unlabeled(f,a,y,rx,a,rx,1,True,force=y,mechanism=terms(row))
+        loss,_,_,n=_labeled_and_unlabeled(f,a,y,rx,a,rx,1,True,force=y,mechanism=terms(row),raw_ce=row.get('raw_ce',0.))
         loss.backward()
         norm=float(torch.nn.utils.clip_grad_norm_(f.parameters(),5.,error_if_nonfinite=True))
         if norm<=0 or n!=len(y):raise ValueError('Failed real clean Tri gradient check')
@@ -162,10 +204,15 @@ def train(rt,name):
     out=root/'F'/name
     out.mkdir(parents=True,exist_ok=False)
     seed_all(SEED)
-    f=model_for(rt,root,c,row,device)
+    f=preserve_alignment(model_for(rt,root,c,row,device),row)
     seed_all(SEED)
-    x,u,v=[tensor(np.load(clean/f'{key}.npy',mmap_mode='r',allow_pickle=False),device)
-           for key in ('L_s','U_s','V')]
+    def load(key):
+        raw=np.load(clean/f'{key}.npy',mmap_mode='r',allow_pickle=False)
+        if row.get('two_rate'):
+            anchor=np.load(cache_root/'256'/f'{key}.npy',mmap_mode='r',allow_pickle=False)
+            raw=np.concatenate((raw,anchor),axis=-1)
+        return tensor(raw,device)
+    x,u,v=[load(key) for key in ('L_s','U_s','V')]
     yn,rn=labels(source,c,'L_s')
     y,rx=tensor(yn,device),tensor(rn,device)
     ur=tensor(labels(source,c,'U_s'),device)
@@ -192,7 +239,7 @@ def train(rt,name):
                 step+=1
                 opt.zero_grad(set_to_none=True)
                 ux,urb=(u[pos],ur[pos]) if use_u else (None,None)
-                loss,lab,unlab,a=_labeled_and_unlabeled(f,x[i],y[i],rx[i],ux,urb,step,use_u,mechanism=mechanism)
+                loss,lab,unlab,a=_labeled_and_unlabeled(f,x[i],y[i],rx[i],ux,urb,step,use_u,mechanism=mechanism,raw_ce=row.get('raw_ce',0.))
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(f.parameters(),5.,error_if_nonfinite=True)
                 opt.step()
@@ -244,17 +291,17 @@ def predict(rt,name):
 
 
 def dispatch(rt):
-    if rt.get('quick') and rt.get('local_parent'):
+    if (rt.get('quick') or rt.get('transfer')) and rt.get('local_parent'):
         raise ValueError('Quick branch study is registered for N607 only')
     root=Path(rt['run_root'])
     root.mkdir(exist_ok=False)
     state=root/'state.json'
-    fields=tuple(k for k in ('local_parent','quick','fixed_clean_cache') if k in rt)
+    fields=tuple(k for k in ('local_parent','quick','transfer','fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)
     try:
         write(state,dict(status='SOURCE_SMOKE'))
-        stages=('smoke',) if rt.get('quick') else ('smoke','cache')
+        stages=('smoke',) if rt.get('fixed_clean_cache') else ('smoke','cache')
         for stage in stages:
             if launch(rt,stage,'all').wait():raise RuntimeError(f'Clean {stage} failed')
         write(state,dict(status='SOURCE_TRAINING'),exclusive=False)
@@ -262,7 +309,7 @@ def dispatch(rt):
         schedule(rt,[('train',name) for name in names],launch)
         evidence={name:read(root/'F'/name/'complete.json')['frozen'] for name in names}
         ranking=sorted(names,key=lambda name:(evidence[name]['correct'],-evidence[name]['nll']),reverse=True)
-        source_only=bool(rt.get('local_parent') or rt.get('quick'))
+        source_only=bool(rt.get('local_parent') or rt.get('quick') or rt.get('transfer'))
         tested=[] if source_only else list(dict.fromkeys(['control',ranking[0]]))
         write(root/'selection.json',dict(names=tested,rank=ranking,source=evidence,
                                         target_reads=0,goal_met=evidence[ranking[0]]['correct']>=TARGET_SOURCE_ACCURACY*evidence[ranking[0]]['n']))
