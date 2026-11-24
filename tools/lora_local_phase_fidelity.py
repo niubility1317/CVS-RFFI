@@ -42,6 +42,7 @@ TANGENT_RUN = '20261124-phase1-lora-empirical-tangent-source-m4-r01'
 ANCHOR_RUN = '20261124-phase1-lora-common-anchor-source-m4-r01'
 BURST_DOSE_RUN = '20261124-phase1-lora-phase-dose-bursts-source-m4-r01'
 NEIGHBOR_PHASE_RUN = '20261124-phase1-lora-neighbor-phase-source-m4-r01'
+DURA_CAPACITY_RUN = '20261124-phase1-lora-dura-capacity-source-m4-r01'
 
 
 def bounded_projection(model, direct, reference, y, frame, threshold):
@@ -294,6 +295,22 @@ def anchored_action_metrics(model, observed, quality, rms, reference, noiseless,
     return np.asarray(torch.stack((baseline,predicted,variance.mean((1,2)),expected),dim=1).tolist(),dtype=np.float32)
 
 
+def dura_capacity_evidence(model, observed, quality, rms, reference, noiseless, epsilon, frame):
+    _, action, variance, noise, mismatch = model.stages(observed, quality, rms)
+    aligned = reference / frame
+    exact = noiseless / frame
+    actual_noise = complex_iq(epsilon) / frame
+    exact_power = actual_noise.abs().square().mean((1, 2))
+    spectrum = torch.fft.fft(actual_noise, norm='ortho')[..., model.noise_band]
+    exact_outer = spectrum.abs().square().mean((1, 2))
+    outer_ratio = noise.mean((1, 2)) / exact_outer.clamp_min(1e-10)
+    outer_bias = 10. * outer_ratio.clamp_min(1e-10).log10()
+    fitted = (action(aligned) - exact).abs().square().mean((1, 2))
+    identity = (aligned - exact).abs().square().mean((1, 2))
+    fields = (outer_bias, variance.mean((1, 2)), exact_power, identity, fitted, mismatch.mean((1, 2)))
+    return torch.stack(fields, 1).cpu().numpy()
+
+
 def received_update_evidence(model, y, q, rms, aligned_source, noiseless, frame):
     coarse, final, stages, estimates = model.states(y, q, rms, reference=aligned_source / frame)
     action, outer, hold = estimates
@@ -483,6 +500,7 @@ def diagnose(rt, route, device):
                                         '20261124-phase1-lora-band-allocation-source-m3-r02')
     is_weak_sideband = rt['run_id']=='20261124-phase1-lora-weak-sideband-source-m4-r01'
     is_posterior_transport = rt['run_id']=='20261124-phase1-lora-posterior-transport-source-m4-r01'
+    is_dura_capacity = rt['run_id'] == DURA_CAPACITY_RUN
     is_interval = rt['run_id']==coherent_interval_source.RUN
     is_joint = rt['run_id']==joint_spectrum_source.RUN
     is_anchor = rt['run_id']==ANCHOR_RUN
@@ -536,13 +554,15 @@ def diagnose(rt, route, device):
         recover = lambda iq, tracker, models, threshold: study.recover(iq, tracker, models[0], threshold)
         readouts = ('direct', *study.MODES[2:])
         indices = range(len(study.MODES) - 2)
-    elif is_cross_dose or is_angular or is_weak_sideband or is_posterior_transport:
+    elif is_cross_dose or is_angular or is_weak_sideband or is_posterior_transport or is_dura_capacity:
         if is_angular:
             from experiments.pamf_lora_main import angular_transport_source as study
         elif is_weak_sideband:
             from experiments.pamf_lora_main import weak_sideband_source as study
         elif is_posterior_transport:
             from experiments.pamf_lora_main import posterior_transport_source as study
+        elif is_dura_capacity:
+            from experiments.pamf_lora_main import dura_capacity_source as study
         else:
             from experiments.pamf_lora_main import cross_frequency_dose_source as study
         recipes = study.RECIPES
@@ -657,7 +677,7 @@ def diagnose(rt, route, device):
                 gain = (y*ground.conj()).mean(-1,keepdim=True)/ground.abs().square().mean(-1,keepdim=True).clamp_min(1e-6)
                 target = ground*gain
                 noiseless = y-complex_iq(epsilon)
-                if is_band_allocation or is_weak_sideband or is_posterior_transport:
+                if is_band_allocation or is_weak_sideband or is_posterior_transport or is_dura_capacity:
                     leakage_stats.append(tracked_carrier_leakage(noiseless, frame, tracker))
                 if is_lapped:
                     noise_stats.append(lapped_variance(models[1],tracked,quality,frame,ground,epsilon,clean=view=='clean'))
@@ -688,7 +708,13 @@ def diagnose(rt, route, device):
                                                  true_spectrum[:, 1:].mean((1, 2))), dim=-1)
                         error_db = 10 * (estimated / true.clamp_min(1e-10)).clamp_min(1e-10).log10()
                         noise_stats.append(np.asarray(error_db.tolist(), dtype=np.float32))
-                if (is_angular or is_band_allocation or is_weak_sideband or is_posterior_transport) and view != 'clean':
+                if is_dura_capacity:
+                    joint_stats.append(joint_part_metrics(waves, noiseless, frame))
+                    if view != 'clean':
+                        action_stats.append(dura_capacity_evidence(
+                            models[-1], tracked, quality, rms, target, noiseless, epsilon, frame))
+                if (is_angular or is_band_allocation or is_weak_sideband or is_posterior_transport
+                        or is_dura_capacity) and view != 'clean':
                     wanted = -complex_iq(epsilon) / frame
                     wanted = (wanted - wanted.mean(-1, keepdim=True)) * frame
                     edit = torch.stack(waves) - y
@@ -782,7 +808,8 @@ def diagnose(rt, route, device):
                     by_receiver={name:report_interval(part) for name,part in
                                  zip(SOURCE,np.split(values,len(SOURCE),axis=1),strict=True)})
             if (is_joint or is_anchor or is_received or is_dose or is_cross_frequency
-                    or is_cross_dose or is_mixture or is_angular or is_band_allocation or is_weak_sideband or is_posterior_transport):
+                    or is_cross_dose or is_mixture or is_angular or is_band_allocation or is_weak_sideband
+                    or is_posterior_transport or is_dura_capacity):
                 values = np.concatenate(joint_stats,axis=1)
                 output[view]['components_noiseless'] = dict(order=['shared','private'],
                     median=np.median(values,axis=1).tolist(),
@@ -800,6 +827,14 @@ def diagnose(rt, route, device):
                     median=np.median(values, axis=1).tolist(),
                     by_receiver={name:np.median(row, axis=1).tolist()
                                  for name,row in zip(SOURCE,np.split(values,len(SOURCE),axis=1),strict=True)})
+            if is_dura_capacity and action_stats:
+                values = np.concatenate(action_stats)
+                output[view]['action_and_variance'] = dict(
+                    fields=['outer_variance_bias_db', 'used_variance', 'exact_added_noise_power',
+                            'relative_identity_error', 'relative_model_error', 'held_mismatch'],
+                    median=np.median(values, axis=0).tolist(),
+                    by_receiver={name:np.median(group, axis=0).tolist()
+                                 for name,group in zip(SOURCE,np.split(values,len(SOURCE)),strict=True)})
             if leakage_stats:
                 values = np.concatenate(leakage_stats)
                 output[view]['carrier_leakage'] = dict(
@@ -895,7 +930,7 @@ def main():
                      '20261124-phase1-lora-band-allocation-source-m3-r01',
                      '20261124-phase1-lora-band-allocation-source-m3-r02',
                      '20261124-phase1-lora-posterior-transport-source-m4-r01',
-                     '20261124-phase1-lora-weak-sideband-source-m4-r01')
+                     '20261124-phase1-lora-weak-sideband-source-m4-r01', DURA_CAPACITY_RUN)
     if rt.get('run_id') not in analyzed_runs or read(root/'state.json')['status']!='SOURCE_SCORED':
         raise ValueError('The full dual-route truth-last scoring must already be complete')
     activate(rt)
