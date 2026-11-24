@@ -1,0 +1,149 @@
+{
+  "status": "VERIFIED",
+  "working": {
+    "submit": {
+      "pid": 2732109,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-fixed-mid-target-m2-r01-release",
+      "code_commit": "89ec6305fccc39d553bda84e9daab652f20e42d3",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-fixed-mid-target-m2-r01"
+    },
+    "controller": {
+      "pid": 2732109,
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.fixed_mid_target dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-fixed-mid-target-m2-r01-release/runtime.json",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-fixed-mid-target-m2-r01-release",
+      "cuda": [
+        "CUDA_VISIBLE_DEVICES="
+      ]
+    },
+    "jobs": {
+      "smoke-source": {
+        "pid": 2732194,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 455,
+        "receivers": 0,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_FIXED_MID_SOURCE_SMOKE_PASS"
+        ]
+      },
+      "predict-full": {
+        "pid": 2732271,
+        "gpu": 3,
+        "identity": {
+          "pid": 2732271,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.fixed_mid_target predict /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-fixed-mid-target-m2-r01/configs/predict-full.json full",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-fixed-mid-target-m2-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=3"
+          ]
+        },
+        "bytes": 501,
+        "receivers": 2,
+        "last": [
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_FIXED_MID_PREDICTED full b200_2",
+          "LORA_FIXED_MID_PREDICTED full b200_mini_2"
+        ]
+      },
+      "predict-residual": {
+        "pid": 2732272,
+        "gpu": 6,
+        "identity": {
+          "pid": 2732272,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.fixed_mid_target predict /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-fixed-mid-target-m2-r01/configs/predict-residual.json residual",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-fixed-mid-target-m2-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=6"
+          ]
+        },
+        "bytes": 509,
+        "receivers": 2,
+        "last": [
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_FIXED_MID_PREDICTED residual b200_2",
+          "LORA_FIXED_MID_PREDICTED residual b200_mini_2"
+        ]
+      }
+    },
+    "state": {
+      "status": "PREDICTING"
+    },
+    "written": {
+      "full": 16,
+      "residual": 16
+    },
+    "files": {
+      "state.json": 29,
+      "smoke.json": 150
+    }
+  },
+  "finished": {
+    "submit": {
+      "pid": 2732109,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-fixed-mid-target-m2-r01-release",
+      "code_commit": "89ec6305fccc39d553bda84e9daab652f20e42d3",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-fixed-mid-target-m2-r01"
+    },
+    "controller": null,
+    "jobs": {
+      "smoke-source": {
+        "pid": 2732194,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 455,
+        "receivers": 0,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_FIXED_MID_SOURCE_SMOKE_PASS"
+        ]
+      },
+      "predict-full": {
+        "pid": 2732271,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 975,
+        "receivers": 15,
+        "last": [
+          "LORA_FIXED_MID_PREDICTED full rtl_7",
+          "LORA_FIXED_MID_PREDICTED full rtl_8",
+          "LORA_FIXED_MID_PREDICTED full rtl_9"
+        ]
+      },
+      "predict-residual": {
+        "pid": 2732272,
+        "gpu": 6,
+        "identity": null,
+        "bytes": 1035,
+        "receivers": 15,
+        "last": [
+          "LORA_FIXED_MID_PREDICTED residual rtl_7",
+          "LORA_FIXED_MID_PREDICTED residual rtl_8",
+          "LORA_FIXED_MID_PREDICTED residual rtl_9"
+        ]
+      }
+    },
+    "state": {
+      "status": "PREDICTIONS_FROZEN",
+      "target_truth_read": false
+    },
+    "written": {
+      "full": 105,
+      "residual": 105
+    },
+    "files": {
+      "state.json": 67,
+      "smoke.json": 150,
+      "predictions/full/complete.json": 569,
+      "predictions/residual/complete.json": 573
+    }
+  }
+}
