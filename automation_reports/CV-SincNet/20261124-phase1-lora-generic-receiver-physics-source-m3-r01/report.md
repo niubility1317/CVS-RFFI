@@ -74,7 +74,7 @@ pointwise半量的历史拟合为 3,600 步，254,735 参数，训练 567.7 秒�
 接收机扰动组半量的本轮拟合为 3,600 步，254,735 参数，训练 519.1 秒。NVIDIA GeForce RTX 3090 上 B1 中位耗时为 clean 1.89 ms、通用受扰 49.33 ms。
 
 B1 每臂各测 24 次，包括跟踪与恢复，计量止于识别器之前。N607 发布、真实权重 smoke、新臂训练、冻结预测及独立评分 VERIFIED。无目标访问。
-[运行证据](launch-evidence.json) · [逐 chirp 训练](pointwise-complete.json) · [全包训练](receiver_physics-complete.json) · [B1](b1.json)
+[运行证据](launch-evidence.json) · [pointwise 历史训练](../20261124-phase1-lora-antithetic-noise-response-source-m4-r01/pointwise-complete.json) · [接收机扰动训练](receiver_physics-complete.json) · [B1](b1.json)
 
 ## 对下一轮的判断
 

@@ -1,0 +1,8 @@
+{"at": "2026-11-24T03:15:24+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-24T03:15:24+00:00", "status": "LOCAL_VERIFIED", "note": "Seven targeted numerical tests, CLI and independent P0/P1 review PASS.", "evidence": "report.md", "row_id": null}
+{"at": "2026-11-24T03:17:16+00:00", "status": "RUNNING", "note": "VERIFIED on N607 from PID, run CWD, argv, physical GPU allowance and growing fit log. Initial six base losses match the archived fit.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-24T03:29:40+00:00", "status": "ANALYZED", "note": "Matched source fit or truth-last scoring verified.", "evidence": "direction_risk-complete.json", "row_id": "fit-direction_risk"}
+{"at": "2026-11-24T03:29:40+00:00", "status": "ANALYZED", "note": "Matched source fit or truth-last scoring verified.", "evidence": "full-source-scores.json", "row_id": "evaluate-full"}
+{"at": "2026-11-24T03:29:40+00:00", "status": "ANALYZED", "note": "Matched source fit or truth-last scoring verified.", "evidence": "residual-source-scores.json", "row_id": "evaluate-residual"}
+{"at": "2026-11-24T03:29:40+00:00", "status": "ANALYZED", "note": "Matched source fit or truth-last scoring verified.", "evidence": "clean-complete-scores.json", "row_id": "evaluate-reserve"}
+{"at": "2026-11-24T03:29:40+00:00", "status": "ANALYZED", "note": "One source fit, fixed control reuse and frozen practical matrix completed, including actual waveform comparison.", "evidence": "report.md", "row_id": null}

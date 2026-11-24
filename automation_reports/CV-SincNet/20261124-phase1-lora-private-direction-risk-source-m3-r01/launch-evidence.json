@@ -1,0 +1,60 @@
+{
+  "submit": {
+    "pid": 2514675,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-private-direction-risk-source-m3-r01-release",
+    "code_commit": "a0d57c3a2158209db1ac527662728f3441633d01",
+    "archive_transfer": "VERIFIED",
+    "remote_compile": "PASS",
+    "status": "SUBMITTED_NOT_YET_VERIFIED",
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-private-direction-risk-source-m3-r01"
+  },
+  "controller": {
+    "pid": 2514675,
+    "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.private_direction_risk_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-private-direction-risk-source-m3-r01-release/runtime.json",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-private-direction-risk-source-m3-r01-release",
+    "cuda": [
+      "CUDA_VISIBLE_DEVICES="
+    ]
+  },
+  "jobs": {
+    "smoke-source": {
+      "pid": 2514696,
+      "gpu": 3,
+      "identity": null,
+      "bytes": 459,
+      "last": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+        "  return self.fget.__get__(instance, owner)()",
+        "LORA_ANTITHETIC_REAL_CHECKPOINT_PASS"
+      ]
+    },
+    "fit-direction_risk": {
+      "pid": 2515192,
+      "gpu": 3,
+      "identity": {
+        "pid": 2515192,
+        "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.private_direction_risk_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-private-direction-risk-source-m3-r01/configs/fit-direction_risk.json direction_risk",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-private-direction-risk-source-m3-r01-release",
+        "cuda": [
+          "CUDA_VISIBLE_DEVICES=3"
+        ]
+      },
+      "bytes": 1466,
+      "last": [
+        "CHANNEL_BLIND_FIT 200 1.1939256191253662 0.42736494541168213 3.7054269313812256 3.266145706176758 1.7498090267181396 0.27929121255874634 5.329930305480957 0.7792062759399414 1.5604015588760376 0.5592151284217834",
+        "CHANNEL_BLIND_FIT 250 1.1431517601013184 0.4828716516494751 2.873253345489502 2.452601432800293 1.1480326652526855 0.20786142349243164 4.1364264488220215 0.5735251307487488 1.0184993743896484 0.2959391176700592",
+        "CHANNEL_BLIND_FIT 300 0.3347771465778351 0.47858670353889465 3.10483980178833 2.8184494972229004 1.209971308708191 0.28049129247665405 4.639344215393066 0.4289059638977051 1.2817744016647339 0.33795425295829773"
+      ]
+    }
+  },
+  "state": null,
+  "files": {
+    "smoke.json": 128
+  },
+  "verification": "VERIFIED",
+  "growth": {
+    "row": "fit-direction_risk",
+    "first": 208,
+    "second": 1466
+  }
+}

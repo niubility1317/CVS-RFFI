@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 私有谱方向偏差与噪声约束](../automation_reports/CV-SincNet/20261124-phase1-lora-private-direction-risk-source-m3-r01/report.md)
 - [LoRa 通用接收机扰动消融](../automation_reports/CV-SincNet/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/report.md)
 - [LoRa 全包复谱块注意力与逐 chirp 匹配](../automation_reports/CV-SincNet/20261124-phase1-lora-packet-spectral-context-source-m4-r01/report.md)
 - [LoRa 混叠侧实收探针与等能量复谱方向](../automation_reports/CV-SincNet/20261124-phase1-lora-alias-curvature-source-m2-r01/report.md)
