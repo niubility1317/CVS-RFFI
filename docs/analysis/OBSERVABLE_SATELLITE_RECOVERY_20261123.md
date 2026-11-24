@@ -38,6 +38,8 @@ R69 v1.0 有 266,951 个参数。历史两阶段学生由 R65 固定父版初始
 
 - LoRa 同物理 RMS 的平行和复方向两组各从零训练 40,000 步。完整复方向对 DURA 在 Full、Residual 六景净减 48［−87，−11］、318［−385，−254］次。相对同权平行净减 22、28 次，clean 均为 667/900。低城区与隔离精确方向的余弦从原解析半量的 0.989、0.996 降至 0.808、0.838，Residual 两倍剂量再净减 400 次。该候选未晋级。 [LoRa 等量复方向完整训练与冻结测试](../../automation_reports/CV-SincNet/20261124-phase1-lora-angular-transport-source-m4-r01/report.md)
 
+- LoRa 等量分带模型连续训练 40,000 步。复用该终步冻结模型，Full 和 Residual 六景分别为 57.3704% 和 52.9630%，较同包半量 DURA 净增 4［−29，+34］、净减 100［−150，−48］次。与同权统一能量相比净减 4、2 次，区间均跨零。两路 clean 均为 667/900。低城区 9–32 kHz 独有频带内，实收跟踪引入的参考主载波能量比例中位值为 13.53%、58.19%。实验未晋级正式目标。 [等量分带冻结测试与波形](../../automation_reports/CV-SincNet/20261124-phase1-lora-band-allocation-source-m3-r02/report.md) · [载波泄漏源 U 验证](LORA_CARRIER_LEAKAGE_20261124.md)
+
 - LoRa 隔离复算固定八个实收混合专家和物理 IQ 剂量。配对 clean 路由较实收路由在 Full、Residual 六景各净增 17［+6，+28］、44［+20，+68］次，Residual 仍比 DURA 少 53 次。同量隔离精确方向比按实际波形选专家净增 56［+31，+81］、258［+211，+307］次。五个原实收对照逐包复现，两路 clean 均为 667/900。现有混合方向覆盖和回写剂量分别有差距。 [LoRa 混合路由与方向的等量隔离归因](../../automation_reports/CV-SincNet/20261124-diagnostic-lora-mixture-directions-source-m2-r01/report.md)
 
 - LoRa 从 20,000 个源 U 包拟合 8 分量跨频先验。按奇偶对折及一致性回写的主读出较 DURA 在 Full 净增 6 次、Residual 净减 84 次，clean 均为 667/900。与统一先验同物理 RMS 时，两路净差 −8 和 +3，区间均跨零。独立 U 核查中，通用扰动使先验仅重 1.46% 的分量从 3/500 上升至 428/500，伴随高后验与更大标准化距离。结果定位了靠后验一致性判断可用性的失效，未晋级。 [LoRa 跨频混合冻结测试及置信核查](../../automation_reports/CV-SincNet/20261124-phase1-lora-spectral-mixture-source-m2-r01/report.md)
