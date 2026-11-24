@@ -20,7 +20,7 @@ from .packet_data import CHIRPS
 from .packet_runner import schedule
 from .refine_runner import start
 from .runner import activate
-from .repair_features import PacketGroupFusion, AlignedTrace, CoherentPacket
+from .repair_features import AlignedTrace, CoherentPacket, PacketGroupFusion, residual_logit_scale
 from .tri_tuning import SEED, STEPS, model_for, shape_trace, trainable
 
 
@@ -156,7 +156,12 @@ class TimeFrequencyAligned(CoherentPacket):
         if physics_layer is not None:
             aligned=aligned+.10*physics_layer(physics)
         if group_fusion is not None:
-            aligned=aligned+group_fusion(chirps,torch.cat((phase,physics),dim=1),fused)
+            residual=group_fusion(chirps,torch.cat((phase,physics),dim=1),fused)
+            if self.group_logit_limit is not None:
+                core_logits=logits+self.head(aligned)
+                delta_logits=torch.nn.functional.linear(residual,self.head.weight)
+                residual=residual*residual_logit_scale(core_logits,delta_logits,self.group_logit_limit)
+            aligned=aligned+residual
         logits=logits+self.head(aligned)
         chirp_readout=getattr(self,'chirp_readout',None)
         if chirp_readout is not None:
@@ -198,6 +203,7 @@ def clean_model(rt,root,c,row,device):
             if row.get('group_fusion'):
                 f.group_fusion=PacketGroupFusion(f.head.in_features,len(row['chirps']),
                                                 radial=row['group_fusion']=='radial').to(device)
+                f.group_logit_limit=row.get('group_logit_limit')
             if f.spectral_edges:
                 original=f.time_frequency[0]
                 extended=nn.Conv2d(4,16,3,padding=1,device=device)
@@ -212,6 +218,8 @@ def clean_model(rt,root,c,row,device):
 
 def study(rt):
     if rt.get('scratch'):
+        if rt.get('groupcap_study'):
+            return GROUP_CAP_ROWS,112,16
         if rt.get('rtlgate_study'):
             return RTL_GATE_ROWS,112,16
         if rt.get('tailaverage_study'):
@@ -321,6 +329,10 @@ PHASE_JOINT_RUN='20261125-phase1-lora-pamf-tri-clean-phasejoint98-s2026092702-r0
 PHASE_JOINT_ROWS={
     'phase_joint': dict(ANCHOR_ROWS['phase_anchor'],joint_rx_weight=.12),
 }
+GROUP_CAP_RUN='20261125-phase1-lora-pamf-tri-clean-groupcap98-s2026092702-r01'
+GROUP_CAP_ROWS={
+    'phase_groupcap': dict(ANCHOR_ROWS['phase_anchor'],group_fusion='radial',group_logit_limit=.35),
+}
 RTL_GATE_RUN='20261125-phase1-lora-pamf-tri-clean-rtlgate98-s2026092702-r01'
 RTL_GATE_ROWS={
     'phase_rtlgate': dict(ANCHOR_ROWS['phase_anchor'],rtl_repl_threshold=.975),
@@ -393,6 +405,8 @@ def row_names(rt):
         return ('phase_jitter',)
     if rt.get('phase_joint_study'):
         return ('phase_joint',)
+    if rt.get('groupcap_study'):
+        return ('phase_groupcap',)
     if rt.get('rtlgate_study'):
         return ('phase_rtlgate',)
     if rt.get('tailaverage_study'):
@@ -651,7 +665,7 @@ def train(rt,name):
         validation_epochs.update(range(warmup,epochs+1,4))
         if any(rt.get(k) for k in ('budget_study','edge_study','robust_study','phase_study')):
             validation_epochs.update((32,48,60))
-        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study')):
+        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study')):
             validation_epochs.update((32,48,64,80,88))
     snapshots=row.get('tail_average',())
     averaged_state=None
@@ -765,14 +779,14 @@ def dispatch(rt):
     root=Path(rt['run_root'])
     screens=('quick','transfer','timefreq','noise_study','drift_study','budget_study')
     gated_study=any(rt.get(k) for k in ('robust_study','phase_study','anchor_study','timing_study',
-                                       'phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study'))
+                                       'phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study'))
     if (gated_study or any(rt.get(k) for k in ('noise_study','drift_study','budget_study','edge_study'))) and not rt.get('scratch'):
         raise ValueError('The clean input comparisons require random initialization')
     root.mkdir(exist_ok=False)
     state=root/'state.json'
     fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq',
                              'noise_study','drift_study','budget_study','edge_study','robust_study','phase_study','anchor_study',
-                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study',
+                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study',
                              'fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)

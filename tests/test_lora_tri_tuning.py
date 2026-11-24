@@ -209,6 +209,18 @@ class TriTuningTests(TestCase):
         self.assertEqual((epochs,batch),(112,16))
         self.assertEqual(rows['phase_tailaverage']['tail_average'],(100,104,108,112))
 
+    def test_group_residual_is_bounded_per_packet_without_touching_primary_logits(self):
+        from experiments.pamf_lora_main.repair_features import residual_logit_scale
+        core=torch.tensor([[0.,1.,2.],[0.,2.,4.],[5.,5.,5.]])
+        delta=torch.tensor([[0.,4.,8.],[1.1,1.,.9],[0.,1.,2.]])
+        scale=residual_logit_scale(core,delta,.35)
+        torch.testing.assert_close(scale[:,0],torch.tensor([.0875,1.,0.]))
+        shifted=residual_logit_scale(core+1.,delta-2.,.35)
+        torch.testing.assert_close(shifted,scale)
+        rows,epochs,batch=tri_clean95.study({'scratch':True,'groupcap_study':True})
+        self.assertEqual((epochs,batch),(112,16))
+        self.assertEqual(rows['phase_groupcap']['group_logit_limit'],.35)
+
     def test_grouped_features_are_initially_neutral_and_learnable(self):
         from experiments.pamf_lora_main.repair_features import PacketGroupFusion
         rng=torch.Generator().manual_seed(73)

@@ -101,6 +101,13 @@ class AlignedTrace(nn.Module):
         return trace
 
 
+def residual_logit_scale(core_logits,delta_logits,limit):
+    core=core_logits.detach()
+    core_norm=(core-core.mean(1,keepdim=True)).norm(dim=1,keepdim=True)
+    delta_norm=(delta_logits-delta_logits.mean(1,keepdim=True)).norm(dim=1,keepdim=True)
+    return (limit*core_norm/delta_norm.clamp_min(1e-8)).clamp(max=1.)
+
+
 class PacketGroupFusion(nn.Module):
     """Fuse chirp positions and relative physics before the existing head."""
 
