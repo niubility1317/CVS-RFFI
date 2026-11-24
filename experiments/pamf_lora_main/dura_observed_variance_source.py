@@ -42,7 +42,8 @@ MODES = ('direct', 'reference', 'rank_parent_half',
 PAIRS = tuple((f'{ARM}_{stage}', f'{CONTROL.name}_{stage}') for stage in ('coarse', 'half', 'full'))
 
 
-def run_matched_source(*, run, arm, recipes, reused, modes, pairs, runner):
+def run_matched_source(*, run, arm, recipes, reused, modes, pairs, runner,
+                       allowed_gpus=(7,3,6,2,0,4,1,5)):
     parser = argparse.ArgumentParser(description=__doc__)
     actions = parser.add_subparsers(dest='action', required=True)
     pub = actions.add_parser('publish')
@@ -57,7 +58,7 @@ def run_matched_source(*, run, arm, recipes, reused, modes, pairs, runner):
     options = vars(parser.parse_args())
     action = options.pop('action')
     if action == 'publish':
-        return publish(**options, run=run, runner=runner, allowed_gpus=(7,3,6,2,0,4,1,5))
+        return publish(**options, run=run, runner=runner, allowed_gpus=allowed_gpus)
     rt = read(options['runtime'])
     if action == 'dispatch':
         return dispatch(rt, fit_arms=(arm,))

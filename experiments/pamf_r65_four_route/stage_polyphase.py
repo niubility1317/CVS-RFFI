@@ -57,7 +57,7 @@ def _report(parent, model, supplied, *, mode, copied, transformed=0):
     )
 
 
-def _stages(priors, received, context):
+def _stages(priors, received, context, solve_map=weighted_map):
     """Original stage algorithm, with exactly one iteration per supplied prior."""
     if received.ndim != 3 or received.shape[1:] != (2, 256):
         raise ValueError('Current received IQ2x256 is required')
@@ -70,8 +70,8 @@ def _stages(priors, received, context):
         innovation = innovation/(innovation.square().mean((1, 2), keepdim=True)+1e-6).sqrt()
         inputs = torch.cat((received, base, current, innovation, logvar), 1)
         prior = base+SCALE*prior_core(inputs)
-        current = pair(weighted_map(action, observed, complex_iq(prior), variance,
-                                    steps=2, initial=complex_iq(current)))
+        current = pair(solve_map(action, observed, complex_iq(prior), variance,
+                                 steps=2, initial=complex_iq(current)))
         outputs.append(current)
     return outputs, variance, action, base
 
@@ -95,10 +95,10 @@ class StageDistilled(JointCompactRestorer):
         )
         self.initialization_report.update(stage_targets=list(STAGE_TARGETS), stages=2, CG_steps=4)
 
-    def stage_outputs(self, received, context=None):
+    def stage_outputs(self, received, context=None, *, solve_map=weighted_map):
         if context is None:
             context = self.estimate_context(received)
-        return _stages(self.prior, received, context)
+        return _stages(self.prior, received, context, solve_map)
 
 
 def time_unshuffle(value):

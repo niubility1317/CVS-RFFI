@@ -21,10 +21,23 @@ class ActionEstimator(nn.Module):
         impulse[24] = 1
         self.register_buffer('initial_kernel', impulse)
 
-    def forward(self, received, coarse):
+    def _encode(self, received, coarse):
         if received.ndim != 3 or received.shape[1:] != (2, 256) or coarse.shape != received.shape:
             raise ValueError('Only current received/coarse IQ2x256 is accepted')
-        features = self.core.encoder(torch.cat((received, coarse), 1))
+        return self.core.encoder(torch.cat((received, coarse), 1))
+
+    @staticmethod
+    def _variance(logit):
+        # Fixed physical range; output IQ itself is never clipped.
+        log_variance = math.log(1e-8)+(math.log(1.)-math.log(1e-8))*torch.sigmoid(logit+.351)
+        return log_variance.exp()
+
+    def variance_only(self, received, coarse):
+        encoded = self._encode(received, coarse)[-1]
+        return self._variance(self.global_head(encoded.mean(-1))[:, -1])
+
+    def forward(self, received, coarse):
+        features = self._encode(received, coarse)
         value = features[-1]
         global_value = self.global_head(value.mean(-1))
         kernel = torch.complex(global_value[:, :KERNEL_LENGTH]+self.initial_kernel,
@@ -36,10 +49,7 @@ class ActionEstimator(nn.Module):
         coefficients = self.core.out(value)
         main = 1+torch.complex(coefficients[:, 0], coefficients[:, 1])
         image = torch.complex(coefficients[:, 2], coefficients[:, 3])
-        # Fixed physical range; output IQ itself is never clipped.
-        log_variance = math.log(1e-8)+(math.log(1.)-math.log(1e-8))*torch.sigmoid(global_value[:, -1]+.351)
-        variance = log_variance.exp()
-        return Action(kernel, main, image), variance
+        return Action(kernel, main, image), self._variance(global_value[:, -1])
 
 
 class ActionRestorer(nn.Module):
