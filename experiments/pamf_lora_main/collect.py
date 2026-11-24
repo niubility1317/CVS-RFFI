@@ -12,7 +12,7 @@ from experiments.cric_dura_comparison.io import read
 from .scoring import score
 
 
-def wait_for_predictions(connection, root):
+def wait_for_predictions(connection, root, *, allow_source_only=False):
     retries = 0
     while True:
         try:
@@ -29,6 +29,8 @@ def wait_for_predictions(connection, root):
         if status['status'] == 'FAILED':
             raise RuntimeError(status['error'])
         if status['status'] == 'PREDICTIONS_FROZEN':
+            return status
+        if allow_source_only and status['status'] == 'SOURCE_DIAGNOSTIC_COMPLETE':
             return status
         time.sleep(60)
 

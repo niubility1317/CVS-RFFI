@@ -119,7 +119,12 @@ class TimeFrequencyAligned(CoherentPacket):
         power=torch.fft.fftshift(torch.fft.fft(windows*apodize,dim=-1),dim=-1).abs().square()
         log=(power/size+1e-5).log()
         ratio=(log[...,1:,:]-log[...,:-1,:]).clamp(-8.,8.)
-        features=torch.stack((log[...,1:,:].mean(1),ratio.mean(1)),dim=1)
+        local=log[...,1:,:]
+        bands=[local.mean(1),ratio.mean(1)]
+        if self.spectral_edges:
+            interior=local[:,1:-1].mean(1)
+            bands.extend((local[:,0]-interior,local[:,-1]-interior))
+        features=torch.stack(bands,dim=1)
         aligned=aligned+.10*self.time_frequency(features)
         if drift_layer is not None:
             aligned=aligned+.10*drift_layer(torch.asinh(drift))
@@ -139,6 +144,7 @@ def clean_model(rt,root,c,row,device):
             from torch import nn
             f.__class__=TimeFrequencyAligned
             f.nominal_iq=row.get('nominal_iq',False)
+            f.spectral_edges=row.get('spectral_edges',False)
             f.time_frequency=nn.Sequential(nn.Conv2d(2,16,3,padding=1),nn.GroupNorm(4,16),nn.SiLU(),
                 nn.Conv2d(16,24,3,padding=1,stride=2),nn.GroupNorm(4,24),nn.SiLU(),
                 nn.AdaptiveAvgPool2d((4,5)),nn.Flatten(),nn.Linear(480,160),nn.LayerNorm(160)).to(device)
@@ -147,12 +153,22 @@ def clean_model(rt,root,c,row,device):
                                               nn.Linear(32,160),nn.LayerNorm(160)).to(device)
             if row.get('edge_features'):
                 f.edge_features=nn.Sequential(nn.LayerNorm(320),nn.Linear(320,160),nn.LayerNorm(160)).to(device)
+            if f.spectral_edges:
+                original=f.time_frequency[0]
+                extended=nn.Conv2d(4,16,3,padding=1,device=device)
+                with torch.no_grad():
+                    extended.weight[:,:2].copy_(original.weight)
+                    extended.weight[:,2:].zero_()
+                    extended.bias.copy_(original.bias)
+                f.time_frequency[0]=extended
         return f
     return preserve_alignment(model_for(rt,root,c,row,device),row)
 
 
 def study(rt):
     if rt.get('scratch'):
+        if rt.get('robust_study'):
+            return ROBUST_ROWS,80,16
         if rt.get('edge_study'):
             return EDGE_ROWS,80,16
         if rt.get('budget_study'):
@@ -209,6 +225,14 @@ EDGE_ROWS={
     'edge_aware384': {'warmup':64,'samples':384,'time_frequency':True,'chirps':ALL_CHIRPS,'ordinary_std':.003,
                       'edge_features':True},
 }
+ROBUST_RUN='20261125-phase1-lora-pamf-tri-clean-robust98-m4-r01'
+ROBUST_ROWS={
+    'control': dict(EDGE_ROWS['edge_aware384']),
+    'spectral_edges': dict(EDGE_ROWS['edge_aware384'],spectral_edges=True),
+    'joint_rx': dict(EDGE_ROWS['edge_aware384'],joint_rx_weight=.12),
+    'spectral_joint_rx': dict(EDGE_ROWS['edge_aware384'],spectral_edges=True,joint_rx_weight=.12),
+}
+ROBUST_SOURCE_CORRECT=11760
 VALIDATION_EPOCHS={0,2,4,8,12,16,20,24}
 
 
@@ -246,6 +270,8 @@ def row_names(rt):
         return ('budget_nominal384',)
     if rt.get('edge_study'):
         return ('edge_aware384',)
+    if rt.get('robust_study'):
+        return ('spectral_joint_rx',)
     return SCRATCH_LOCAL if rt.get('scratch') else LOCAL
 
 
@@ -314,12 +340,14 @@ def terms(row):
     return {k:row[k] for k in ('contrast_weight','kl_weight') if k in row}
 
 
-def _labeled_and_unlabeled(f,x,y,rx,u,ur,step,with_u,force=None,mechanism=None,raw_ce=0.,ordinary_std=.015):
+def _labeled_and_unlabeled(f,x,y,rx,u,ur,step,with_u,force=None,mechanism=None,raw_ce=0.,ordinary_std=.015,
+                           joint_rx_weight=0.):
     f.train()
     scores=[]
     hook=f.raw.register_forward_hook(lambda _,args,out:scores.append(out[0])) if raw_ce else None
     try:
-        lab,_=labeled_loss(f,x,x,y,rx,step,mechanism=mechanism,ordinary_std=ordinary_std)
+        lab,_=labeled_loss(f,x,x,y,rx,step,mechanism=mechanism,ordinary_std=ordinary_std,
+                           joint_rx_weight=joint_rx_weight)
     finally:
         if hook is not None:
             hook.remove()
@@ -357,7 +385,8 @@ def smoke(rt):
         a=tensor(grid)
         t=shape_trace(f,a)
         loss,_,_,n=_labeled_and_unlabeled(f,a,y,rx,a,rx,1,True,force=y,mechanism=terms(row),
-                                         raw_ce=row.get('raw_ce',0.),ordinary_std=row.get('ordinary_std',.015))
+                                         raw_ce=row.get('raw_ce',0.),ordinary_std=row.get('ordinary_std',.015),
+                                         joint_rx_weight=row.get('joint_rx_weight',0.))
         loss.backward()
         norm=float(torch.nn.utils.clip_grad_norm_(f.parameters(),5.,error_if_nonfinite=True))
         if norm<=0 or n!=len(y):raise ValueError('Failed real clean Tri gradient check')
@@ -417,11 +446,14 @@ def train(rt,name):
     step=0
     mechanism=terms(row)
     ordinary_std=row.get('ordinary_std',.015)
+    joint_rx_weight=row.get('joint_rx_weight',0.)
+    if joint_rx_weight:
+        from .packet_models import cross_rx
     warmup=row.get('warmup',0)
     validation_epochs=set(VALIDATION_EPOCHS)
     if rt.get('scratch'):
         validation_epochs.update(range(warmup,epochs+1,4))
-        if rt.get('budget_study') or rt.get('edge_study'):
+        if rt.get('budget_study') or rt.get('edge_study') or rt.get('robust_study'):
             validation_epochs.update((32,48,60))
     with (out/'epochs.jsonl').open('x',encoding='utf8') as log:
         for epoch in range(1,epochs+1):
@@ -436,11 +468,15 @@ def train(rt,name):
                 ux,urb=(u[pos],ur[pos]) if use_u else (None,None)
                 if rt.get('scratch') and not use_u:
                     f.train()
-                    loss=torch.nn.functional.cross_entropy(f(x[i])[0],y[i],label_smoothing=.01)
+                    logits,features=f(x[i])
+                    loss=torch.nn.functional.cross_entropy(logits,y[i],label_smoothing=.01)
+                    if joint_rx_weight:
+                        loss=loss+joint_rx_weight*cross_rx(features,y[i],rx[i],balance=True)[0]
                     lab,unlab,a=loss.detach(),0.,0
                 else:
                     loss,lab,unlab,a=_labeled_and_unlabeled(f,x[i],y[i],rx[i],ux,urb,step,use_u,
-                              mechanism=mechanism,raw_ce=row.get('raw_ce',0.),ordinary_std=ordinary_std)
+                              mechanism=mechanism,raw_ce=row.get('raw_ce',0.),ordinary_std=ordinary_std,
+                              joint_rx_weight=joint_rx_weight)
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(f.parameters(),5.,error_if_nonfinite=True)
                 opt.step()
@@ -503,12 +539,13 @@ def dispatch(rt):
         raise ValueError('Quick branch study is registered for N607 only')
     root=Path(rt['run_root'])
     screens=('quick','transfer','timefreq','noise_study','drift_study','budget_study')
-    if any(rt.get(k) for k in ('noise_study','drift_study','budget_study','edge_study')) and not rt.get('scratch'):
+    if any(rt.get(k) for k in ('noise_study','drift_study','budget_study','edge_study','robust_study')) and not rt.get('scratch'):
         raise ValueError('The clean input comparisons require random initialization')
     root.mkdir(exist_ok=False)
     state=root/'state.json'
     fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq',
-                             'noise_study','drift_study','budget_study','edge_study','fixed_clean_cache') if k in rt)
+                             'noise_study','drift_study','budget_study','edge_study','robust_study',
+                             'fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)
     try:
@@ -523,9 +560,13 @@ def dispatch(rt):
         ranking=sorted(names,key=lambda name:(evidence[name]['correct'],-evidence[name]['nll']),reverse=True)
         source_only=bool(on_local(rt) or any(rt.get(k) for k in screens))
         tested=[] if source_only else list(dict.fromkeys(['control',ranking[0]]))
-        write(root/'selection.json',dict(names=tested,rank=ranking,source=evidence,
-                                        target_reads=0,goal_met=evidence[ranking[0]]['correct']>=TARGET_SOURCE_ACCURACY*evidence[ranking[0]]['n']))
-        if source_only:
+        best=evidence[ranking[0]]
+        goal_met=best['correct']>=TARGET_SOURCE_ACCURACY*best['n']
+        if rt.get('robust_study'):
+            goal_met=best['n']==12000 and best['correct']>=ROBUST_SOURCE_CORRECT
+            tested=[ranking[0]] if goal_met and not source_only else []
+        write(root/'selection.json',dict(names=tested,rank=ranking,source=evidence,target_reads=0,goal_met=goal_met))
+        if not tested:
             write(state,dict(status='SOURCE_DIAGNOSTIC_COMPLETE'),exclusive=False)
             return
         write(state,dict(status='PREDICTING',names=tested),exclusive=False)

@@ -1,11 +1,12 @@
 from unittest import TestCase
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest.mock import Mock, patch
 
 import numpy as np
 import torch
 
-from experiments.cric_dura_comparison.io import write
+from experiments.cric_dura_comparison.io import read, write
 from experiments.pamf_lora_main import tri_tuning
 from experiments.pamf_lora_main.packet_physics import chirp_samples
 from experiments.pamf_lora_main.tri_branch_shapes import retain_projection
@@ -77,3 +78,26 @@ class TriTuningTests(TestCase):
             write(root/'selection.json', {'names':['control']})
             with self.assertRaisesRegex(ValueError, 'source-frozen'):
                 tri_clean95.predict({'run_root':temp},'iq512')
+
+    def test_robust_study_only_predicts_for_the_source_champion_at_98_percent(self):
+        for n, correct, expected in ((12000,11759,[]), (11999,11760,[]),
+                                     (12000,11760,['joint_rx'])):
+            with self.subTest(n=n, correct=correct), TemporaryDirectory() as temp:
+                root=Path(temp)/'run'
+                rt={'run_root':str(root),'scratch':True,'robust_study':True,
+                    'fixed_clean_cache':'source-only'}
+                predicted=[]
+
+                def schedule(_,jobs,launch):
+                    for kind,name in jobs:
+                        if kind=='predict':
+                            predicted.append(name)
+                            continue
+                        record={'n':n,'correct':correct if name=='joint_rx' else 11478,'nll':.1}
+                        write(root/'F'/name/'complete.json',{'frozen':record})
+
+                with patch.object(tri_clean95,'start',return_value=Mock(wait=lambda:0)), \
+                     patch.object(tri_clean95,'schedule',side_effect=schedule):
+                    tri_clean95.dispatch(rt)
+                self.assertEqual(predicted,expected)
+                self.assertEqual(read(root/'selection.json')['names'],expected)

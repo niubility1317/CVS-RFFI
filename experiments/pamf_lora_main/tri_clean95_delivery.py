@@ -15,18 +15,18 @@ from .publish import release, release_commit
 from .scoring import macro_f1
 from .tri_clean95 import (
     BUDGET_RUN, DRIFT_RUN, EDGE_ROWS, EDGE_RUN, NOISE_RUN, QUICK_RUN, ROWS, RUN, SCRATCH_ROWS, SCRATCH_RUN,
-    SEED, TIMEFREQ_RUN, TRANSFER_RUN,
+    ROBUST_ROWS, ROBUST_RUN, SEED, TIMEFREQ_RUN, TRANSFER_RUN,
 )
 
 
 def publish(repo, output, context, ssh_config, quick=False, transfer=False, scratch=False, timefreq=False,
-            noise=False,drift=False,budget=False,edge=False):
+            noise=False,drift=False,budget=False,edge=False,robust=False):
     ctx=read(context)
     rt={k:ctx[k] for k in ('project','python','frozen_sources')}
     project=PurePosixPath(rt['project'])
     parent=project/'runs'/DATA_RUN
     native=project/'releases'/f'{DATA_RUN}-release'/'data'
-    studies=((edge,EDGE_RUN),(budget,BUDGET_RUN),(drift,DRIFT_RUN),(noise,NOISE_RUN),(timefreq,TIMEFREQ_RUN),(scratch,SCRATCH_RUN),
+    studies=((robust,ROBUST_RUN),(edge,EDGE_RUN),(budget,BUDGET_RUN),(drift,DRIFT_RUN),(noise,NOISE_RUN),(timefreq,TIMEFREQ_RUN),(scratch,SCRATCH_RUN),
              (transfer,TRANSFER_RUN),(quick,QUICK_RUN))
     name=next((name for enabled,name in studies if enabled),RUN)
     rt.update(run_id=name,code_commit=release_commit(repo),runner='experiments.pamf_lora_main.tri_clean95',
@@ -52,6 +52,9 @@ def publish(repo, output, context, ssh_config, quick=False, transfer=False, scra
     if edge:
         rt.update(scratch=True,edge_study=True,fixed_clean_cache=str(project/'runs'/DRIFT_RUN/'clean_cache'),
                   allowed_gpus=[6,3,5,0,4],max_workers=2,min_free_mib=10000)
+    if robust:
+        rt.update(scratch=True,robust_study=True,fixed_clean_cache=str(project/'runs'/DRIFT_RUN/'clean_cache'),
+                  allowed_gpus=[3,6,5,7,0],max_workers=4,min_free_mib=10000)
     if quick or transfer:
         del rt['native_target_root'],rt['target_views']
         rt.update(quick=quick,transfer=transfer,fixed_clean_cache=str(project/'runs'/RUN/'clean_cache'))
@@ -62,8 +65,11 @@ def publish(repo, output, context, ssh_config, quick=False, transfer=False, scra
     release(repo,output,rt,ssh_config)
 
 
-def frozen_predictions(output,names):
-    if not names or names[0]!='control' or len(set(names))!=len(names) or not set(names)<=set(ROWS)|set(SCRATCH_ROWS)|set(EDGE_ROWS):
+def frozen_predictions(output,names,*,qualified=False):
+    accepted=(len(names)==1 and names[0] in ROBUST_ROWS) if qualified else (
+        bool(names) and names[0]=='control' and len(set(names))==len(names)
+        and set(names)<=set(ROWS)|set(SCRATCH_ROWS)|set(EDGE_ROWS))
+    if not accepted:
         raise ValueError('Invalid clean-only source selection')
     result={}
     for name in names:
@@ -82,12 +88,17 @@ def frozen_predictions(output,names):
 
 
 def score(submit, ssh_config, dataset, output):
-    root=shlex.quote(read(submit)['run_root'])
+    run_root=read(submit)['run_root']
+    qualified=PurePosixPath(run_root).name==ROBUST_RUN
+    root=shlex.quote(run_root)
     conn=['ssh','-F',str(ssh_config),'-T','-o','BatchMode=yes','-o','ConnectTimeout=10','N607']
-    state=wait_for_predictions(conn,root)
+    state=wait_for_predictions(conn,root,allow_source_only=qualified)
+    if state['status']=='SOURCE_DIAGNOSTIC_COMPLETE':
+        print('LoRa source selection below 98%; clean test stayed closed',flush=True)
+        return
     output.mkdir(parents=True,exist_ok=False)
     receive(conn,root,output,main=False)
-    preds=frozen_predictions(output,state['names'])
+    preds=frozen_predictions(output,state['names'],qualified=qualified)
     truth=[]
     with zipfile.ZipFile(dataset/'multiple_receiver_test.zip') as archive:
         for i,rx in enumerate(TARGET):
@@ -95,11 +106,12 @@ def score(submit, ssh_config, dataset, output):
                 truth.append(label_ids(h5,LIMIT)[packet_indices(LIMIT,i)])
     truth=np.concatenate(truth)
     result={}
-    base=preds['control']==truth
+    base=preds['control']==truth if not qualified else None
     for name,p in preds.items():
         ok=p==truth
         result[name]=dict(n=len(ok),correct=int(ok.sum()),accuracy=float(ok.mean()),
-            macro_f1=macro_f1(truth,p),repairs=int((ok&~base).sum()),harms=int((base&~ok).sum()),
+            macro_f1=macro_f1(truth,p),repairs=int((ok&~base).sum()) if base is not None else None,
+            harms=int((base&~ok).sum()) if base is not None else None,
             by_rx=dict(zip(TARGET,ok.reshape(len(TARGET),LIMIT).mean(1).tolist(),strict=True)),
             by_tx={str(tx):float(ok[truth==i].mean()) for i,tx in enumerate(CLASSES)})
     write(output/'scores.json',dict(status='SCORED_COMPLETE',views=['clean'],truth_last=True,seed=SEED,results=result))
@@ -122,6 +134,7 @@ if __name__=='__main__':
             study.add_argument('--drift',action='store_true')
             study.add_argument('--budget',action='store_true')
             study.add_argument('--edge',action='store_true')
+            study.add_argument('--robust',action='store_true')
     args=vars(parser.parse_args())
     kind=args.pop('kind')
     {'publish':publish,'score':score}[kind](**args)
