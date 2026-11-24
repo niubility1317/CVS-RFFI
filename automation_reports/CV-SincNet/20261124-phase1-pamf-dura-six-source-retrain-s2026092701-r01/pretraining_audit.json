@@ -1,0 +1,175 @@
+{
+  "at": "2026-11-24T13:09:26.450262+00:00",
+  "training_commit": "34d1357614be0d813cc1e68d8526612d3abdfcb8",
+  "source_rxs": [
+    1,
+    3,
+    4,
+    6,
+    8,
+    11
+  ],
+  "source_counts": {
+    "L_s": 7560,
+    "U_s": 68040,
+    "V": 32400
+  },
+  "cache_selected": [
+    63000,
+    12600
+  ],
+  "source_iq_alignment": [
+    {
+      "role": "L_s",
+      "ids": 7560,
+      "reordered_contract_index": 0,
+      "iq_rows_differ": 2155,
+      "max_abs_difference": 2.384185791015625e-07,
+      "nonfinite_rows": 0,
+      "groups": [
+        {
+          "cache": 0,
+          "count": 6300,
+          "max_abs_difference": 2.384185791015625e-07
+        },
+        {
+          "cache": 1,
+          "count": 1260,
+          "max_abs_difference": 0.0
+        }
+      ]
+    },
+    {
+      "role": "U_s",
+      "ids": 68040,
+      "reordered_contract_index": 0,
+      "iq_rows_differ": 19487,
+      "max_abs_difference": 2.384185791015625e-07,
+      "nonfinite_rows": 0,
+      "groups": [
+        {
+          "cache": 0,
+          "count": 56700,
+          "max_abs_difference": 2.384185791015625e-07
+        },
+        {
+          "cache": 1,
+          "count": 11340,
+          "max_abs_difference": 0.0
+        }
+      ]
+    }
+  ],
+  "source_observation_epochs": 20,
+  "stages": [
+    {
+      "stage": "coarse",
+      "epochs": 20,
+      "updates": 4940,
+      "loss_first": 1.2226264713264188,
+      "loss_last": 0.048838695699748726,
+      "seconds": 1032.6410064180382,
+      "teacher_cache_used": false
+    },
+    {
+      "stage": "action",
+      "epochs": 20,
+      "updates": 4940,
+      "loss_first": 1.5239810844664632,
+      "loss_last": 0.01821718169263138,
+      "seconds": 1205.3313490201253,
+      "teacher_cache_used": false
+    },
+    {
+      "stage": "r17",
+      "epochs": 20,
+      "updates": 4940,
+      "loss_first": 0.02657205823371526,
+      "loss_last": 0.018170478949813468,
+      "seconds": 1915.1201569710393,
+      "teacher_cache_used": false
+    },
+    {
+      "stage": "r38",
+      "epochs": 20,
+      "updates": 4940,
+      "loss_first": 2.5474528308037803,
+      "loss_last": 0.028923167471928513,
+      "seconds": 4057.1811186301056,
+      "teacher_cache_used": false
+    },
+    {
+      "stage": "r44",
+      "epochs": 20,
+      "updates": 4940,
+      "loss_first": 1.947061117497171,
+      "loss_last": 0.02678479007181338,
+      "seconds": 4189.197609075811,
+      "teacher_cache_used": false
+    },
+    {
+      "stage": "r46",
+      "epochs": 20,
+      "updates": 4940,
+      "loss_first": 0.14867171771854523,
+      "loss_last": 0.022696225676753442,
+      "seconds": 4298.498159480048,
+      "teacher_cache_used": false
+    },
+    {
+      "stage": "r65",
+      "epochs": 20,
+      "updates": 4940,
+      "loss_first": 0.024772808562798298,
+      "loss_last": 0.025165932584810355,
+      "seconds": 1449.0532409448642,
+      "teacher_cache_used": false
+    },
+    {
+      "stage": "r69",
+      "epochs": 20,
+      "updates": 4940,
+      "loss_first": 0.031140855751056903,
+      "loss_last": 0.02202498359296486,
+      "seconds": 1224.3188174990937,
+      "teacher_cache_used": false
+    }
+  ],
+  "stdout_records": 160,
+  "stdout_bytes": 48701,
+  "stdout_historic_relative": "runs/20261022-phase1-T1-DURA-stop-invalid-F-control-r01/logs/20261021-phase1-T1-DURA-G-lineage-m35-r01__m6-natural-G-LU-s2026092701.log",
+  "stdout_abnormal_marker_lines": [],
+  "old_scheduler_status": "COMPLETE",
+  "old_scheduler_gpu": 3,
+  "old_F_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "target_tasks": {
+    "cross_rx": {
+      "count": 108000,
+      "rXs": [
+        0,
+        2,
+        5,
+        7,
+        9,
+        10
+      ]
+    },
+    "cross_both": {
+      "count": 36000,
+      "rXs": [
+        0,
+        2,
+        5,
+        7,
+        9,
+        10
+      ]
+    }
+  },
+  "float32_max_absolute_tolerance": 2.384185791015625e-07,
+  "passed": true
+}

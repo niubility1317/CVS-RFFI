@@ -1,0 +1,314 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01",
+  "group_id": "phase1-pamf-advisor-six-source-dura-retrain",
+  "display_name": "六源 DURA 从零重训与共同六目标复测",
+  "description": "复核 DURA 八阶段数据和调度，固定原 G 种子从零重训，对原版 Tri 三个冻结种子复测同一批样本。",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [
+    "six-source-dura-retrain"
+  ],
+  "tags": [
+    "PAMF",
+    "DURA",
+    "Phase1",
+    "same-contract-retrain"
+  ],
+  "comparison_group_id": "phase1-pamf-advisor-six-source-dura-retrain",
+  "parent_run_ids": [
+    "20261021-phase1-T1-DURA-G-lineage-m35-r01",
+    "20261027-phase1-pamf-paper-completion-m119-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-11-24 用户要求跑 Word 导师提出的补实验",
+  "code": {
+    "commit": "Git commit stored in dispatch runtime",
+    "checkout": "Exact native G 34d1357614be0d813cc1e68d8526612d3abdfcb8; original paper inference c9ebb6db301815159710b4c5cc461c9fd808dc55",
+    "environment": "$N607_PYTHON (CVS-RFFI, FP32/TF32 off)",
+    "cwd": "$N607_PROJECT/releases/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig ManySig six-source natural budget",
+    "version": "Retained October G source cache and paper test handles",
+    "representation": "EQ1 normalized FP32 2x256 source IQ; fixed clean + six practical received IQ views",
+    "contract_ref": "$N607_PROJECT/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/m6-natural/source_contract.json",
+    "physical_ids_ref": "$N607_PROJECT/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/m6-natural/source_contract.json",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-paper-completion-m119-r03-release/context.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8,
+      11
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-paper-completion-m119-r03-release/context.json",
+    "roles": {
+      "L_s": 7560,
+      "U_s": 68040,
+      "V": 32400
+    },
+    "train_ratio": "G trains only on L_s/U_s IQ, no TX labels and no F",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "pretraining_audit.json",
+    "support_query_ref": null,
+    "leo_config_ref": "Locked seven Phase1 practical-residual views in the October paper context"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Phase1 closed-set frozen DG on terrestrial IQ with simulated practical impairments"
+  },
+  "checkpoint": {
+    "initialization": "G coarse scratch; all subsequent stages inherit same-run source G only",
+    "sources": [
+      "20261021-phase1-T1-DURA-G-lineage-m35-r01",
+      "20261027-phase1-pamf-paper-completion-m119-r03"
+    ],
+    "contract_check_ref": "$N607_PROJECT/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/m6-natural/source_contract.json",
+    "provenance_verdict": "Old G used only in no-query smoke and historical frozen reference; 3 same-contract legacy F tied to paper predictions, held frozen.",
+    "selection_rule": "Each G stage fixed E20/4940. No target or F access during G training, no target feedback."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-advisor-20261124",
+    "gpu_policy": "One worker this run, choose card with most free memory and at least 11000 MiB; scores on CPU only",
+    "remote_run_root": "$N607_PROJECT/runs/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01",
+    "remote_log_root": "$N607_PROJECT/runs/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01/logs",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01",
+    "launch_command": "$N607_PYTHON -u $N607_PROJECT/releases/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01-release/retrain_six_dura.py dispatch --runtime $N607_PROJECT/releases/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01-release/runtime.json",
+    "stop_rule": "Stop dependent stages on failed no-query smoke, nonfinite source training, broken ancestry, prediction coverage or scoring; retain all artifacts."
+  },
+  "expected_artifacts": [
+    "pretraining_audit.json",
+    "smoke_result.json",
+    "source/complete.json",
+    "source/r69/final.pt",
+    "restored/complete.json",
+    "three seven-view prediction and independent score artifacts",
+    "paired_scores.csv",
+    "summary.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "repairs",
+      "damage",
+      "net"
+    ],
+    "dimensions": [
+      "test",
+      "view",
+      "receiver",
+      "date",
+      "transmitter",
+      "model_seed"
+    ],
+    "prediction_ref": "$N607_PROJECT/runs/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01/readouts",
+    "scorer_ref": "Independent truth side after completion of all three frozen row predictions"
+  },
+  "rows": [
+    {
+      "row_id": "m6-natural-G-LU-s2026092701",
+      "method": "DURA v1.0 six-source exact scratch repeat",
+      "purpose": "Restoration lineage",
+      "config_ref": "$N607_PROJECT/runs/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01/train.json",
+      "resolved_config_ref": "$N607_PROJECT/runs/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01/source/config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural",
+        "g_seed": 2026092701,
+        "f_seed": null,
+        "source_count": {
+          "L_s": 7560,
+          "U_s": 68040,
+          "V": 32400
+        },
+        "test_count": {}
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 20261124,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 20261124
+      },
+      "seed_notes": "Same retained original split/observations; only source G is retrained.",
+      "k": null,
+      "scenario": "Source observations only",
+      "optimizer": "Historical AdamW",
+      "lr": "Historical cosine and warmup",
+      "epochs": 160,
+      "fl_rounds": null,
+      "budget_ref": "20 epochs/4940 updates per stage x 8, exact fixed final",
+      "output_root": "$N607_PROJECT/runs/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01/source",
+      "log_path": "$N607_PROJECT/runs/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01/logs/train.log",
+      "command": "$N607_PYTHON -u $N607_PROJECT/releases/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01-release/retrain_six_dura.py dispatch --runtime $N607_PROJECT/releases/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "eight stage checkpoints and logs",
+        "final G freeze"
+      ]
+    },
+    {
+      "row_id": "m6-natural-s2026092701",
+      "method": "Frozen paper Tri with raw, legacy DURA and retrained DURA",
+      "purpose": "Same-sample frozen identification",
+      "config_ref": "$N607_PROJECT/runs/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01/predict-2026092701.json",
+      "resolved_config_ref": "$N607_PROJECT/runs/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01/predict-2026092701.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural",
+        "g_seed": 2026092701,
+        "f_seed": 2026092701,
+        "source_count": {
+          "L_s": 7560,
+          "U_s": 68040,
+          "V": 32400
+        },
+        "test_count": {
+          "cross_rx": 108000,
+          "cross_both": 36000
+        }
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 20261124,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 20261124
+      },
+      "seed_notes": "Same retained original split/observations; only source G is retrained.",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "Frozen. No fitting",
+      "lr": "No updates",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E50/11100 frozen source F",
+      "output_root": "$N607_PROJECT/runs/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01/readouts/m6-natural-s2026092701",
+      "log_path": "$N607_PROJECT/runs/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01/logs/predict-2026092701.log",
+      "command": "$N607_PYTHON -u $N607_PROJECT/releases/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01-release/retrain_six_dura.py dispatch --runtime $N607_PROJECT/releases/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "seven-view decisions",
+        "truth-last score"
+      ]
+    },
+    {
+      "row_id": "m6-natural-s2026092702",
+      "method": "Frozen paper Tri with raw, legacy DURA and retrained DURA",
+      "purpose": "Same-sample frozen identification",
+      "config_ref": "$N607_PROJECT/runs/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01/predict-2026092702.json",
+      "resolved_config_ref": "$N607_PROJECT/runs/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01/predict-2026092702.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural",
+        "g_seed": 2026092701,
+        "f_seed": 2026092702,
+        "source_count": {
+          "L_s": 7560,
+          "U_s": 68040,
+          "V": 32400
+        },
+        "test_count": {
+          "cross_rx": 108000,
+          "cross_both": 36000
+        }
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 20261124,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 20261124
+      },
+      "seed_notes": "Same retained original split/observations; only source G is retrained.",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "Frozen. No fitting",
+      "lr": "No updates",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E50/11100 frozen source F",
+      "output_root": "$N607_PROJECT/runs/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01/readouts/m6-natural-s2026092702",
+      "log_path": "$N607_PROJECT/runs/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01/logs/predict-2026092702.log",
+      "command": "$N607_PYTHON -u $N607_PROJECT/releases/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01-release/retrain_six_dura.py dispatch --runtime $N607_PROJECT/releases/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "seven-view decisions",
+        "truth-last score"
+      ]
+    },
+    {
+      "row_id": "m6-natural-s2026092703",
+      "method": "Frozen paper Tri with raw, legacy DURA and retrained DURA",
+      "purpose": "Same-sample frozen identification",
+      "config_ref": "$N607_PROJECT/runs/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01/predict-2026092703.json",
+      "resolved_config_ref": "$N607_PROJECT/runs/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01/predict-2026092703.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural",
+        "g_seed": 2026092701,
+        "f_seed": 2026092703,
+        "source_count": {
+          "L_s": 7560,
+          "U_s": 68040,
+          "V": 32400
+        },
+        "test_count": {
+          "cross_rx": 108000,
+          "cross_both": 36000
+        }
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 20261124,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 20261124
+      },
+      "seed_notes": "Same retained original split/observations; only source G is retrained.",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "Frozen. No fitting",
+      "lr": "No updates",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E50/11100 frozen source F",
+      "output_root": "$N607_PROJECT/runs/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01/readouts/m6-natural-s2026092703",
+      "log_path": "$N607_PROJECT/runs/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01/logs/predict-2026092703.log",
+      "command": "$N607_PYTHON -u $N607_PROJECT/releases/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01-release/retrain_six_dura.py dispatch --runtime $N607_PROJECT/releases/20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "seven-view decisions",
+        "truth-last score"
+      ]
+    }
+  ],
+  "notes": [
+    "Exact same G seed 2026092701 is a controlled reproducibility repeat.",
+    "G source IQ reused verbatim: 63000 historical and 12600 additional. Paper cross_rx/cross_both tests use 108000/36000 disjoint IDs.",
+    "Compare original and newly trained G against frozen raw F, keeping all three F seeds and all seven views. No tuning based on initial results."
+  ],
+  "registered_at": "2026-11-24T13:11:26+00:00"
+}
