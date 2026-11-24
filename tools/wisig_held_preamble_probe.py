@@ -20,10 +20,16 @@ def design(taps):
     return (basis * WEIGHT[None, :, None]).astype(np.complex64)
 
 
-def ridge_bank(taps):
+def ridge_bank(taps, *, varying=False):
     basis = design(taps)
-    groups = (np.arange(len(OBSERVED)), *[np.flatnonzero((OBSERVED // 8) % 2 == i) for i in (0, 1)])
     penalty = np.diag([0.] + [RIDGE] * (len(taps) - 1)).astype(np.float32)
+    if varying:
+        position = (OBSERVED - OBSERVED[0]) / (OBSERVED[-1] - OBSERVED[0])
+        weights = np.maximum(1. - np.abs(3. * position[:, None] - np.arange(4)), 0.)
+        basis = (basis * weights[None, :, :]).astype(np.complex64)
+        differences = np.diff(np.eye(4, dtype=np.float32), axis=0)
+        penalty = .03 * (differences.T @ differences)
+    groups = (np.arange(len(OBSERVED)), *[np.flatnonzero((OBSERVED // 8) % 2 == i) for i in (0, 1)])
     banks = []
     for columns in groups:
         sample_basis = basis[:, columns]
@@ -99,19 +105,21 @@ def test_packets(clean, banks, margins):
     return out
 
 
-def probe(source_root):
+def probe(source_root, *, varying=False):
     from experiments.pamf_unrolled_restore.wisig_uncertain_source import source_iq
 
     x, available, calibration = source_iq(source_root)
-    held = available[:COUNT]
+    held = available[COUNT:2*COUNT] if varying else available[:COUNT]
     banks = {name: ridge_bank(taps) for name, taps in TAP_OFFSETS.items()}
+    if varying:
+        banks['piecewise_scalar'] = ridge_bank((0,), varying=True)
     margins = {}
     for part in np.array_split(calibration, 32):
         for name, (_, confidence) in formats(x[part], banks).items():
             margins[name] = max(margins.get(name, -np.inf), float(confidence.max()))
     # Add a positive margin in score units even when the maximum gain is negative.
     margins = {name: value+.02*abs(value)+1e-6 for name, value in margins.items()}
-    return dict(calibration=len(calibration), probes=len(held), threshold=margins,
+    return dict(calibration=len(calibration), probes=len(held), held_offset=COUNT if varying else 0, threshold=margins,
                 target_reads=0, V_reads=0, F_reads=0, TX_reads=0, checkpoint_reads=0,
                 metrics=test_packets(x[held], banks, margins))
 
@@ -119,5 +127,6 @@ def probe(source_root):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('source_root', type=Path)
+    parser.add_argument('--varying', action='store_true')
     args = parser.parse_args()
-    print(json.dumps(probe(args.source_root), allow_nan=False))
+    print(json.dumps(probe(args.source_root, varying=args.varying), allow_nan=False))
