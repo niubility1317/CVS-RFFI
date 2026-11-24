@@ -12,4 +12,8 @@
 
 每臂只用 52,092 个无 TX 的源 U 拟合，另有 4,096 个互斥 U 校准和 512 个源 U 留出。通用独立扰动为时间截窗、短回波、带色噪声、整包复旋转、平滑相位弯曲。训练比较粗恢复、两个求解输出和合法源 IQ，在实收重叠范围拟合观测残差与有效方差，另加两扰动实例一致性和弱复谱误差。没有逐包真实信道、准确噪声、冻结识别器、源 V 或目标供训练监督。
 
-末步固定两臂，同一规则覆盖两路线。用 Main split Tri-SIG-TIME 2026092701 和同一 1,800 个源 V 包各评七景，包含直通、原 R69、两个容量相同的学习读出，以及平滑同权关闭前导作用、固定方差和关闭 CG。先写定两路线全部预测，再由独立 CPU 打开源 V 标签。固定主读出是 `preamble_gated`，源 V 成绩作为参考，性能按后续正式目标测试验收。当前为已登记，长训练尚待核验。 [实现](../../../experiments/pamf_unrolled_restore/wisig_preamble_dura.py) · [执行配置](../../../experiments/pamf_unrolled_restore/wisig_preamble_dura_source.py)
+末步固定两臂，同一规则覆盖两路线。用 Main split Tri-SIG-TIME 2026092701 和同一 1,800 个源 V 包各评七景，包含直通、原 R69、两个容量相同的学习读出，以及平滑同权关闭前导作用、固定方差和关闭 CG。先写定两路线全部预测，再由独立 CPU 打开源 V 标签。固定主读出是 `preamble_gated`，源 V 成绩作为参考，性能按后续正式目标测试验收。 [实现](../../../experiments/pamf_unrolled_restore/wisig_preamble_dura.py) · [执行配置](../../../experiments/pamf_unrolled_restore/wisig_preamble_dura_source.py)
+
+## N607 启动核验
+
+固定执行提交 `53ad5fae18df08c340e2464fb0ace4edf33386a4`。7 项聚焦本机测试和定向独立复核通过。发布归档传输和远程编译通过，两臂在真实源 U 的拟合冒烟完成后进入正式长训。2026-11-24 08:45:49 UTC 独立确认单位名义项组在 GPU 6、平滑前导组在 GPU 3，各到第 50 步，损失记录为有限值。进程工作目录、参数、显卡绑定及日志增长相符。源 V 尚未开始。
