@@ -112,5 +112,152 @@
       "smoke.json": 317,
       "b1.json": 367
     }
+  },
+  "residual_launch": {
+    "submit": {
+      "pid": 2802254,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-stage-step-target-m2-r01-release",
+      "code_commit": "bc6d511458c760a378b3e55ab94c7d805b0cdd69",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-stage-step-target-m2-r01"
+    },
+    "controller": {
+      "pid": 2802254,
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.dura_stage_step_target dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-stage-step-target-m2-r01-release/runtime.json",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-stage-step-target-m2-r01-release",
+      "cuda": [
+        "CUDA_VISIBLE_DEVICES="
+      ]
+    },
+    "jobs": {
+      "smoke-source": {
+        "pid": 2802268,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 464,
+        "receivers": 0,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_DURA_STAGE_STEP_REAL_CHECKPOINT_PASS"
+        ]
+      },
+      "predict-full": {
+        "pid": 2802494,
+        "gpu": 3,
+        "identity": {
+          "pid": 2802494,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.dura_stage_step_target predict /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-stage-step-target-m2-r01/configs/predict-full.json full",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-stage-step-target-m2-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=3"
+          ]
+        },
+        "bytes": 864,
+        "receivers": 13,
+        "last": [
+          "LORA_TARGET_PREDICTED full rtl_5",
+          "LORA_TARGET_PREDICTED full rtl_6",
+          "LORA_TARGET_PREDICTED full rtl_7"
+        ]
+      },
+      "predict-residual": {
+        "pid": 2830085,
+        "gpu": 2,
+        "identity": {
+          "pid": 2830085,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.dura_stage_step_target predict /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-stage-step-target-m2-r01/configs/predict-residual.json residual",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-stage-step-target-m2-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=2"
+          ]
+        },
+        "bytes": 422,
+        "receivers": 0,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()"
+        ]
+      }
+    },
+    "state": {
+      "status": "PREDICTING"
+    },
+    "written": {
+      "full": 485,
+      "residual": 20
+    },
+    "files": {
+      "state.json": 29,
+      "smoke.json": 317,
+      "b1.json": 367
+    }
+  },
+  "completion": {
+    "submit": {
+      "pid": 2802254,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-stage-step-target-m2-r01-release",
+      "code_commit": "bc6d511458c760a378b3e55ab94c7d805b0cdd69",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-stage-step-target-m2-r01"
+    },
+    "controller": null,
+    "jobs": {
+      "smoke-source": {
+        "pid": 2802268,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 464,
+        "receivers": 0,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_DURA_STAGE_STEP_REAL_CHECKPOINT_PASS"
+        ]
+      },
+      "predict-full": {
+        "pid": 2802494,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 930,
+        "receivers": 15,
+        "last": [
+          "LORA_TARGET_PREDICTED full rtl_7",
+          "LORA_TARGET_PREDICTED full rtl_8",
+          "LORA_TARGET_PREDICTED full rtl_9"
+        ]
+      },
+      "predict-residual": {
+        "pid": 2830085,
+        "gpu": 2,
+        "identity": null,
+        "bytes": 990,
+        "receivers": 15,
+        "last": [
+          "LORA_TARGET_PREDICTED residual rtl_7",
+          "LORA_TARGET_PREDICTED residual rtl_8",
+          "LORA_TARGET_PREDICTED residual rtl_9"
+        ]
+      }
+    },
+    "state": {
+      "status": "PREDICTIONS_FROZEN",
+      "target_truth_read": false
+    },
+    "written": {
+      "full": 525,
+      "residual": 525
+    },
+    "files": {
+      "state.json": 67,
+      "smoke.json": 317,
+      "b1.json": 367,
+      "predictions/full/complete.json": 676,
+      "predictions/residual/complete.json": 680
+    }
   }
 }

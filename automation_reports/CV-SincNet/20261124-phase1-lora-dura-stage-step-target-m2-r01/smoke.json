@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "source_run": "20261124-phase1-lora-dura-prior-width-source-m2-r01",
+  "target_reads": 0,
+  "modes": [
+    "first_quarter",
+    "second_quarter",
+    "fixed_mid_quarter",
+    "broadband_step",
+    "noncarrier_step"
+  ],
+  "active": 2,
+  "clean_bypassed": 2,
+  "unchanged_second_stage": true
+}
