@@ -13,7 +13,7 @@ from experiments.pamf_ssl_research.u_gradprotect_objective import protected_loss
 from .comparison import seed_all
 from .data import SOURCE, TARGET, WINDOW_START
 from .full_packet_data import COUNTS, LIMIT
-from .full_packet_views import native, target_contract
+from .full_packet_views import native, source_contract, target_contract
 from .full_supervised import batches, handles
 from .full_tri_repl_lora import labeled_loss, unlabeled_loss
 from .packet_data import CHIRPS
@@ -74,7 +74,39 @@ def preserve_alignment(f,row):
     return f
 
 
+class SpectrumAligned(CoherentPacket):
+    def forward(self,x):
+        logits,fused=self.raw(x)
+        traces=self.trace(x)
+        aligned=self.encoder(traces.flatten(0,1)).reshape(len(x),x.shape[1],-1).mean(1)
+        z=torch.complex(traces[:,:,0],traces[:,:,1])
+        z=z-z.mean(-1,keepdim=True)
+        energy=(z.real.square()+z.imag.square()).mean(-1,keepdim=True).clamp_min(1e-6)
+        spectral=torch.fft.fftshift(torch.fft.fft(z,dim=-1),dim=-1)
+        power=(spectral.abs().square()/(z.shape[-1]*energy)).log1p()
+        bands=torch.nn.functional.adaptive_avg_pool1d(power.flatten(0,1).unsqueeze(1),64)
+        bands=bands.reshape(len(x),x.shape[1],64)
+        pooled=torch.cat((bands.mean(1),bands.std(1,unbiased=False)),dim=1)
+        aligned=aligned+.10*self.spectral(pooled)
+        return logits+self.head(aligned),fused+.10*aligned
+
+
+def clean_model(rt,root,c,row,device):
+    if rt.get('scratch'):
+        from .holdout import construct
+        from .tri_tuning import configure
+        f=configure(construct(device),row)
+        if row.get('spectrum'):
+            f.__class__=SpectrumAligned
+            f.spectral=torch.nn.Sequential(torch.nn.Linear(128,160),
+                                           torch.nn.LayerNorm(160),torch.nn.SiLU()).to(device)
+        return f
+    return preserve_alignment(model_for(rt,root,c,row,device),row)
+
+
 def study(rt):
+    if rt.get('scratch'):
+        return SCRATCH_ROWS,SCRATCH_EPOCHS,16
     if rt.get('transfer'):
         return TRANSFER_ROWS,8,16
     if rt.get('quick'):
@@ -83,9 +115,30 @@ def study(rt):
 EPOCHS=24
 U_BATCH=32
 TARGET_SOURCE_ACCURACY=.95
+SCRATCH_RUN='20261125-phase1-lora-pamf-tri-clean-scratch-m5-r01'
+SCRATCH_ROWS={
+    'control': {'warmup':32},
+    'scratch384': {'warmup':32,'samples':384},
+    'scratch512': {'warmup':32,'samples':512},
+    'residual_spectrum': {'warmup':32,'spectrum':True},
+    'raw_ce': {'warmup':32,'raw_ce':.25},
+}
+SCRATCH_LOCAL=('control','residual_spectrum')
+SCRATCH_EPOCHS=48
 VALIDATION_EPOCHS={0,2,4,8,12,16,20,24}
 STARTS=np.asarray(CHIRPS)*1024+WINDOW_START-125
 CROP=STARTS[:,None]+np.arange(1250)
+
+
+def source_handles(rt):
+    if rt.get('scratch'):
+        source=Path(rt['source_root'])
+        return source,None,source_contract(source)
+    return handles(rt)
+
+
+def on_local(rt):
+    return bool(rt.get('local_parent') or rt.get('local_only'))
 
 
 def clean_iq(packets,samples):
@@ -102,10 +155,11 @@ def clean_iq(packets,samples):
 
 
 def cache(rt):
-    source,_,contract=handles(rt)
+    source,_,contract=source_handles(rt)
     root=Path(rt['run_root'])
-    names=LOCAL if rt.get('local_parent') else ROWS
-    for n in sorted({ROWS[k].get('samples',256) for k in names}):
+    rows=study(rt)[0]
+    names=(SCRATCH_LOCAL if rt.get('scratch') else LOCAL) if on_local(rt) else rows
+    for n in sorted({rows[k].get('samples',256) for k in names}):
         folder=root/'clean_cache'/str(n)
         folder.mkdir(parents=True,exist_ok=False)
         for key,count in COUNTS.items():
@@ -167,8 +221,8 @@ def _labeled_and_unlabeled(f,x,y,rx,u,ur,step,with_u,force=None,mechanism=None,r
 def smoke(rt):
     from copy import deepcopy
     root=Path(rt['run_root'])
-    source,_,c=handles(rt)
-    parent=model_for(rt,root,c,{},'cpu')
+    source,_,c=source_handles(rt)
+    parent=None if rt.get('scratch') else model_for(rt,root,c,{},'cpu')
     yn,rn=labels(source,c,'L_s')
     raw=native(source,'L_s',len(yn))
     i=np.sort(next(batches(yn,rn,np.random.default_rng(721)))[:8])
@@ -176,7 +230,8 @@ def smoke(rt):
     records={}
     from .tri_tuning import configure
     for name,row in study(rt)[0].items():
-        f=preserve_alignment(configure(deepcopy(parent),row),row)
+        f=(clean_model(rt,root,c,row,'cpu') if rt.get('scratch')
+           else preserve_alignment(configure(deepcopy(parent),row),row))
         grid=clean_iq(raw[i],row.get('samples',256))
         if row.get('two_rate'):
             grid=np.concatenate((grid,clean_iq(raw[i],256)),axis=-1)
@@ -192,7 +247,7 @@ def smoke(rt):
 
 def train(rt,name):
     root=Path(rt['run_root'])
-    source,_,c=handles(rt)
+    source,_,c=source_handles(rt)
     rows,epochs,u_count=study(rt)
     row=rows[name]
     n=row.get('samples',256)
@@ -204,7 +259,7 @@ def train(rt,name):
     out=root/'F'/name
     out.mkdir(parents=True,exist_ok=False)
     seed_all(SEED)
-    f=preserve_alignment(model_for(rt,root,c,row,device),row)
+    f=clean_model(rt,root,c,row,device)
     seed_all(SEED)
     def load(key):
         raw=np.load(clean/f'{key}.npy',mmap_mode='r',allow_pickle=False)
@@ -217,8 +272,19 @@ def train(rt,name):
     y,rx=tensor(yn,device),tensor(rn,device)
     ur=tensor(labels(source,c,'U_s'),device)
     vy,vr=(tensor(a,device) for a in labels(source,c,'V'))
-    opt=torch.optim.AdamW(f.parameters(),lr=row.get('lr',3e-4),weight_decay=5e-4)
-    sch=torch.optim.lr_scheduler.CosineAnnealingLR(opt,epochs*STEPS,eta_min=1e-5)
+    rate=row.get('lr',3e-4)
+    opt=torch.optim.AdamW(f.parameters(),lr=rate,weight_decay=5e-4)
+    if rt.get('scratch'):
+        from math import cos, pi
+        warm=row['warmup']*STEPS
+        def lr_factor(step):
+            if step<warm:
+                return .25+.75*.5*(1+cos(pi*step/warm))
+            phase=(step-warm)/(epochs*STEPS-warm)
+            return 1/30.+(.25-1/30.)*.5*(1+cos(pi*phase))
+        sch=torch.optim.lr_scheduler.LambdaLR(opt,lr_factor)
+    else:
+        sch=torch.optim.lr_scheduler.CosineAnnealingLR(opt,epochs*STEPS,eta_min=1e-5)
     rng=np.random.default_rng(721)
     ugen=torch.Generator(device=device).manual_seed(SEED)
     path=out/'best.pt'
@@ -239,7 +305,13 @@ def train(rt,name):
                 step+=1
                 opt.zero_grad(set_to_none=True)
                 ux,urb=(u[pos],ur[pos]) if use_u else (None,None)
-                loss,lab,unlab,a=_labeled_and_unlabeled(f,x[i],y[i],rx[i],ux,urb,step,use_u,mechanism=mechanism,raw_ce=row.get('raw_ce',0.))
+                if rt.get('scratch') and not use_u:
+                    f.train()
+                    loss=torch.nn.functional.cross_entropy(f(x[i])[0],y[i],label_smoothing=.01)
+                    lab,unlab,a=loss.detach(),0.,0
+                else:
+                    loss,lab,unlab,a=_labeled_and_unlabeled(f,x[i],y[i],rx[i],ux,urb,step,use_u,
+                              mechanism=mechanism,raw_ce=row.get('raw_ce',0.))
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(f.parameters(),5.,error_if_nonfinite=True)
                 opt.step()
@@ -248,10 +320,13 @@ def train(rt,name):
             rec=dict(epoch=epoch,step=step,L_loss=sl/STEPS,U_loss=su/STEPS,
                      U_seen=STEPS*u_count if use_u else 0,U_accepted=accepted,
                      lr=opt.param_groups[0]['lr'])
-            if epoch in VALIDATION_EPOCHS:
+            if epoch in VALIDATION_EPOCHS or rt.get('scratch') and epoch in {32,36,40,44,48}:
                 rec['V']=clean_validation(f,v,vy,vr)
                 key=lambda p:(p['correct'],-p['nll'])
-                if key(rec['V'])>key(best):
+                # Keep the supervised trajectory for diagnosis. Only complete
+                # PAMF-Tri REPL checkpoints are eligible for a scratch result.
+                eligible=not rt.get('scratch') or use_u
+                if eligible and (best['epoch']==0 and rt.get('scratch') or key(rec['V'])>key(best)):
                     best=rec['V'] | {'epoch':epoch}
                     torch.save(f.state_dict(),path)
             log.write(json.dumps(rec,allow_nan=False)+'\n');log.flush()
@@ -261,7 +336,9 @@ def train(rt,name):
     f.load_state_dict(torch.load(path,map_location=device,weights_only=True),strict=True)
     training=clean_validation(f,x,y,rx)
     write(out/'complete.json',dict(status='SOURCE_FROZEN',seed=SEED,method=name,frozen=best,L=training,
-                                  steps=step,clean_only=True,target_reads=0,U_truth_reads=0))
+                                  steps=step,clean_only=True,satellite_batches=0,
+                                  initialization='random_seed' if rt.get('scratch') else 'same_contract_E140',
+                                  target_reads=0,U_truth_reads=0))
 
 
 @torch.no_grad()
@@ -269,10 +346,11 @@ def predict(rt,name):
     root=Path(rt['run_root'])
     if name not in read(root/'selection.json')['names']:
         raise ValueError('Clean test permission requires the source-frozen decision')
-    _,_,c=handles(rt)
+    _,_,c=source_handles(rt)
     target=Path(rt['native_target_root'])
     target_contract(target)
-    f=model_for(rt,root,c,ROWS[name],'cuda:0').eval()
+    row=study(rt)[0][name]
+    f=clean_model(rt,root,c,row,'cuda:0').eval()
     path=root/'F'/name
     f.load_state_dict(torch.load(path/'best.pt',map_location='cuda:0',weights_only=True),strict=True)
     out=root/'predictions'/name
@@ -281,7 +359,7 @@ def predict(rt,name):
         x=native(target,rx,LIMIT)
         codes=[]
         for i in range(0,LIMIT,64):
-            y=f(tensor(clean_iq(x[i:i+64],ROWS[name].get('samples',256)),'cuda:0'))[0]
+            y=f(tensor(clean_iq(x[i:i+64],row.get('samples',256)),'cuda:0'))[0]
             if not torch.isfinite(y).all():raise ValueError('Nonfinite blind clean logits')
             codes.extend(y.argmax(1).tolist())
         np.save(out/f'{rx}__clean__direct.npy',np.asarray(codes,dtype=np.int16))
@@ -291,12 +369,12 @@ def predict(rt,name):
 
 
 def dispatch(rt):
-    if (rt.get('quick') or rt.get('transfer')) and rt.get('local_parent'):
+    if (rt.get('quick') or rt.get('transfer')) and on_local(rt):
         raise ValueError('Quick branch study is registered for N607 only')
     root=Path(rt['run_root'])
     root.mkdir(exist_ok=False)
     state=root/'state.json'
-    fields=tuple(k for k in ('local_parent','quick','transfer','fixed_clean_cache') if k in rt)
+    fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)
     try:
@@ -305,11 +383,11 @@ def dispatch(rt):
         for stage in stages:
             if launch(rt,stage,'all').wait():raise RuntimeError(f'Clean {stage} failed')
         write(state,dict(status='SOURCE_TRAINING'),exclusive=False)
-        names=LOCAL if rt.get('local_parent') else tuple(study(rt)[0])
+        names=(SCRATCH_LOCAL if rt.get('scratch') else LOCAL) if on_local(rt) else tuple(study(rt)[0])
         schedule(rt,[('train',name) for name in names],launch)
         evidence={name:read(root/'F'/name/'complete.json')['frozen'] for name in names}
         ranking=sorted(names,key=lambda name:(evidence[name]['correct'],-evidence[name]['nll']),reverse=True)
-        source_only=bool(rt.get('local_parent') or rt.get('quick') or rt.get('transfer'))
+        source_only=bool(on_local(rt) or rt.get('quick') or rt.get('transfer'))
         tested=[] if source_only else list(dict.fromkeys(['control',ranking[0]]))
         write(root/'selection.json',dict(names=tested,rank=ranking,source=evidence,
                                         target_reads=0,goal_met=evidence[ranking[0]]['correct']>=TARGET_SOURCE_ACCURACY*evidence[ranking[0]]['n']))
@@ -318,7 +396,8 @@ def dispatch(rt):
             return
         write(state,dict(status='PREDICTING',names=tested),exclusive=False)
         def launch_blind(runtime,kind,name,gpu=None):
-            return start(runtime,kind,name,gpu,module=__spec__.name,extra_keys=('native_target_root',))
+            return start(runtime,kind,name,gpu,module=__spec__.name,
+                         extra_keys=('native_target_root',*fields))
         schedule(rt,[('predict',name) for name in tested],launch_blind)
         write(state,dict(status='PREDICTIONS_FROZEN',names=tested),exclusive=False)
     except Exception as error:
