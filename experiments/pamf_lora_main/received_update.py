@@ -132,7 +132,8 @@ class ReceivedUpdate(nn.Module):
             projection = projections.transpose(-1, -2)
         return precision, projection
 
-    def correction(self, y, original, edit, quality, sigma, mismatch, rms, *, scalar, target, stage):
+    def correction(self, y, original, edit, quality, sigma, mismatch, rms, *, scalar, target, stage,
+                   phase_margin=True):
         d = self.directions(original, edit)
         gram, projection = self.moments(d, target)
         diagonal = gram.diagonal(dim1=-2, dim2=-1).clamp_min(0.)
@@ -153,14 +154,17 @@ class ReceivedUpdate(nn.Module):
         sigma_b = (.01 + F.softplus(raw_uncertainty)) * scale
         ridge = .01 * diagonal.mean(-1, keepdim=True).clamp_min(1e-8)
         precision = gram + torch.diag_embed(ridge.expand_as(diagonal))
-        gain = solve_gains(estimate - self.kappa[stage] * sigma_b, precision, active, scalar=scalar)
+        penalty = self.kappa[stage] * sigma_b
+        if not phase_margin:
+            penalty = penalty * penalty.new_tensor([1., 0.])
+        gain = solve_gains(estimate - penalty, precision, active, scalar=scalar)
         multiplier = gain.transpose(-1, -2) @ self.bands
         combined = (d * multiplier.unsqueeze(-2)).sum((1, 2))
         restored = y + limit(torch.fft.ifft(combined, norm='ortho'), y, rms, y.real.new_tensor(.10))
         return restored, (estimate, sigma_b, projection, active, gain)
 
     def states(self, y, quality, rms, *, scalar=None, reference=None, identity=False, fixed=False,
-               anchor_common=False, learning_only=False):
+               anchor_common=False, learning_only=False, phase_margin=True):
         original = torch.fft.fft(y, norm='ortho')
         sigma = original[..., self.outer].abs().square().median(-1, keepdim=True).values / log(2.)
         action, other, mismatch = self.estimate(y, sigma)
@@ -181,14 +185,16 @@ class ReceivedUpdate(nn.Module):
         if anchor_common:
             edit = edit - edit.mean(1, keepdim=True)
         args = (quality, sigma, mismatch, rms)
-        first, first_stats = self.correction(y, original, edit, *args, scalar=scalar, target=target, stage=0)
+        first, first_stats = self.correction(y, original, edit, *args, scalar=scalar, target=target,
+                                             stage=0, phase_margin=phase_margin)
         innovation = action.conj() * (y - action * first)
         proposal = first + .30 * self.proposal(self.refine, (*fields, *iq_field(first, innovation)))
         edit = proposal - y if learning_only else constrained_step(
             y, proposal, action, variance, 3., anchor=anchor_common)
         if anchor_common:
             edit = edit - edit.mean(1, keepdim=True)
-        final, second_stats = self.correction(y, original, edit, *args, scalar=scalar, target=target, stage=1)
+        final, second_stats = self.correction(y, original, edit, *args, scalar=scalar, target=target,
+                                              stage=1, phase_margin=phase_margin)
         return first, final, (first_stats, second_stats), (action, sigma, mismatch)
 
 
