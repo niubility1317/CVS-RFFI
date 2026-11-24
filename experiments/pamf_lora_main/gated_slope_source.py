@@ -157,16 +157,16 @@ def timing(rt):
           scope='one half-dose restoration, excludes DURA and F',arms=data))
 
 
-def dispatch(rt):
+def dispatch(rt, *, fit_arms=RECIPES):
     root=Path(rt['run_root'])
     root.mkdir()
     launch=partial(start,module=rt['runner'])
     try:
-        for action,names in (('smoke',('source',)),('fit',RECIPES),('timing',('source',)),
+        for action,names in (('smoke',('source',)),('fit',fit_arms),('timing',('source',)),
                              ('evaluate',ROUTES),('evaluate',('reserve',))):
             schedule(rt,[(action,name) for name in names],launch)
         if launch(rt,'score','source').wait():
-            raise RuntimeError('Independent LoRa guarded slope scoring failed')
+            raise RuntimeError('Independent LoRa source scoring failed')
         write(root/'state.json',dict(status='SOURCE_SCORED'))
     except Exception as exc:
         write(root/'state.json',dict(status='FAILED',error=str(exc)))
