@@ -1,6 +1,7 @@
 """Matched single-seed LoRa PAMF-Tri shape and loss screen."""
 import argparse
 from functools import partial
+from math import cos, pi
 import json
 from pathlib import Path
 from statistics import mean
@@ -41,6 +42,22 @@ ROWS = {
     'fusion192': {'fusion_dim': 192},
 }
 LOCAL_ROWS = ('control', 'three_chirps')
+RUN2 = '20261125-phase1-lora-pamf-tri-budget-shape-m7-r01'
+ROWS2 = {
+    'control': {},
+    'warmup_lr': {'warmup_lr': 44},
+    'u_ramp': {'u_ramp': 4},
+    'contrast_double': {'contrast_weight': .2},
+    'five_chirps': {'chirps': (0, 1, 2, 4, 5)},
+    'fusion224': {'fusion_dim': 224},
+    'lr_half': {'lr': 3e-5},
+}
+
+
+def study(rt):
+    if rt.get('study') == 'budget':
+        return ROWS2, 8
+    return ROWS, EPOCHS
 
 
 class ExpandFeatures(nn.Linear):
@@ -147,7 +164,7 @@ def smoke(rt):
     y, rx = tensor(y[idx]), tensor(rx[idx])
     results = {}
     from copy import deepcopy
-    for name, row in ROWS.items():
+    for name, row in study(rt)[0].items():
         f = configure(deepcopy(model), row)
         x, p = iq(a, row), iq(b, row)
         trace = shape_trace(f, x)
@@ -201,7 +218,8 @@ def trainable(f):
 
 
 def train(rt, name):
-    row = ROWS[name]
+    rows, epochs = study(rt)
+    row = rows[name]
     root = Path(rt['run_root'])
     source, views, contract = handles(rt)
     out = root/'F'/name
@@ -218,8 +236,18 @@ def train(rt, name):
     u, ur = load_u(source, views, contract, device)
     practical = tensor(np.load(views/'U_s_practical.npy', mmap_mode='r', allow_pickle=False), device)
     valid = practical_quality(ChirpResponse(fft_factor=4).to(device), practical)
-    opt = torch.optim.Adam(f.parameters(), lr=6e-5, weight_decay=5e-4)
-    sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, EPOCHS*STEPS, eta_min=1e-5)
+    lr = row.get('lr',6e-5)
+    opt = torch.optim.Adam(f.parameters(),lr=lr,weight_decay=5e-4)
+    warmup = row.get('warmup_lr',0)
+    if warmup:
+        def lr_factor(step):
+            if step < warmup:
+                return .25+.75*step/warmup
+            progress = (step-warmup)/(epochs*STEPS-warmup)
+            return (1+5*.5*(1+cos(pi*progress)))/6
+        sched = torch.optim.lr_scheduler.LambdaLR(opt,lr_factor)
+    else:
+        sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt,epochs*STEPS,eta_min=1e-5)
     named = trainable(f)
     rng = np.random.default_rng(721)
     u_rng = torch.Generator(device=device).manual_seed(SEED)
@@ -227,7 +255,10 @@ def train(rt, name):
     step = 0
     write(out/'initial.json', dict(views=measure(f, v, vy, vr, row), shapes=shape_trace(f, iq(x[0,:2],row))))
     with (out/'epochs.jsonl').open('x', encoding='utf-8') as log:
-        for epoch in range(1, EPOCHS+1):
+        for epoch in range(1, epochs+1):
+            weight = row.get('u_weight',3.)
+            if ramp := row.get('u_ramp'):
+                weight *= .5+.5*min(1.,(epoch-1)/(ramp-1))
             order = torch.randperm(len(u), device=device, generator=u_rng)[:STEPS*U_BATCH].reshape(STEPS,U_BATCH)
             loss_l = loss_u = accepted = partners = flags = 0
             for ids, pos in zip(batches(yn, rn, rng), order, strict=True):
@@ -239,7 +270,7 @@ def train(rt, name):
                 lab, _ = labeled_loss(f, iq(x[0,i], row), iq(x[scene,i], row), y[i], rx[i], step,
                                       mechanism=loss_options)
                 unlab, _, keep, detail = unlabeled_loss(
-                    f, iq(u[pos], row), ur[pos], step, row.get('u_weight', 3.),
+                    f, iq(u[pos], row), ur[pos], step, weight,
                     practical=iq(practical[pos], row), practical_valid=valid[pos], mechanism=loss_options)
                 safeguarded, _, _ = protected_loss(lab, unlab, named)
                 safeguarded.backward()
@@ -253,32 +284,32 @@ def train(rt, name):
                 flags += detail['practical']
             record = dict(epoch=epoch, step=step, L_loss=loss_l/STEPS, U_loss=loss_u/STEPS,
                           U_seen=STEPS*U_BATCH, U_accepted=accepted, U_partners=partners,
-                          U_practical=flags, V=measure(f, v, vy, vr, row))
+                          U_practical=flags, U_weight=weight, lr=opt.param_groups[0]['lr'], V=measure(f, v, vy, vr, row))
             log.write(json.dumps(record, allow_nan=False)+'\n')
             log.flush()
             print('LORA_TRI_SCREEN',name,epoch,step,
                   record['V']['clean']['accuracy'],round(scene_score(record['V']),6),accepted,flush=True)
-    if step != EPOCHS*STEPS:
+    if step != epochs*STEPS:
         raise ValueError('Source budget differs')
     torch.save(f.state_dict(), out/'model.pt')
     write(out/'complete.json', dict(status='SOURCE_FROZEN', seed=SEED, method=name, settings=row,
-                                  epochs=EPOCHS, steps=step, target_reads=0, U_truth_reads=0))
+                                  epochs=epochs, steps=step, target_reads=0, U_truth_reads=0))
 
 
 def scene_score(views):
     return mean(views[k]['accuracy'] for k in VIEWS[1:])
 
 
-def select(root):
+def select(root, rows, epochs):
     results = {}
-    for name in ROWS:
+    for name in rows:
         folder = root/'F'/name
         stamp = read(folder/'complete.json')
         if (stamp['status'], stamp['steps'], stamp['target_reads'], stamp['U_truth_reads']) != (
-                'SOURCE_FROZEN', EPOCHS*STEPS, 0, 0):
+                'SOURCE_FROZEN', epochs*STEPS, 0, 0):
             raise ValueError(f'Source checkpoint not frozen: {name}')
         logs = [json.loads(line) for line in (folder/'epochs.jsonl').read_text().splitlines()]
-        if [r['step'] for r in logs] != [STEPS*i for i in range(1, EPOCHS+1)]:
+        if [r['step'] for r in logs] != [STEPS*i for i in range(1,epochs+1)]:
             raise ValueError(f'Incomplete source log: {name}')
         results[name] = logs[-1]['V']
     ref = results['control']
@@ -305,7 +336,8 @@ def predict(rt, name):
         raise ValueError('Registered blind target cache required')
     out = root/'predictions'/name
     out.mkdir(parents=True, exist_ok=False)
-    f = model_for(rt, root, contract, ROWS[name], 'cuda:0').eval()
+    row = study(rt)[0][name]
+    f = model_for(rt, root, contract, row, 'cuda:0').eval()
     f.load_state_dict(torch.load(root/'F'/name/'model.pt',map_location='cuda:0',weights_only=True),strict=True)
     for rx in TARGET:
         a = np.load(target/f'{rx}.npy', mmap_mode='r', allow_pickle=False)
@@ -314,7 +346,7 @@ def predict(rt, name):
         for v, samples in zip(VIEWS, a, strict=True):
             codes = []
             for batch in tensor(samples,'cuda:0').split(64):
-                logits = f(iq(batch, ROWS[name]))[0]
+                logits = f(iq(batch, row))[0]
                 if not torch.isfinite(logits).all():
                     raise ValueError('Nonfinite LoRa score')
                 codes.extend(logits.argmax(1).tolist())
@@ -328,18 +360,22 @@ def dispatch(rt):
     root = Path(rt['run_root'])
     root.mkdir(exist_ok=False)
     state = root/'state.json'
-    launch = partial(start, module=__spec__.name, extra_keys=('local_parent',) if rt.get('local_parent') else ())
+    fields = tuple(k for k in ('local_parent','study') if k in rt)
+    launch = partial(start, module=__spec__.name, extra_keys=fields)
     try:
         write(state, dict(status='SOURCE_SMOKE'))
         if launch(rt, 'smoke', 'all').wait():
             raise RuntimeError('No-query smoke failed')
         write(state, dict(status='SOURCE_TRAINING'), exclusive=False)
-        rows = LOCAL_ROWS if rt.get('local_parent') else ROWS
-        schedule(rt, [('train',n) for n in rows], launch)
+        rows, epochs = study(rt)
+        scheduled = rows
+        if rt.get('local_parent'):
+            scheduled = ('control','u_ramp') if rt.get('study')=='budget' else LOCAL_ROWS
+        schedule(rt, [('train',n) for n in scheduled], launch)
         if rt.get('local_parent'):
             write(state, dict(status='SOURCE_DIAGNOSTIC_COMPLETE'), exclusive=False)
             return
-        names = select(root)
+        names = select(root, rows, epochs)
         write(state, dict(status='PREDICTING', names=names), exclusive=False)
         schedule(rt, [('predict',n) for n in names], launch)
         write(state, dict(status='PREDICTIONS_FROZEN', names=names), exclusive=False)

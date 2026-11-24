@@ -12,11 +12,11 @@ from .collect import receive, wait_for_predictions
 from .data import CLASSES, TARGET, VIEWS, label_ids, packet_indices, recording
 from .full_packet_data import LIMIT
 from .scoring import macro_f1
-from .tri_tuning import ROWS, SEED
+from .tri_tuning import ROWS, ROWS2, SEED
 
 
 def load_predictions(root, names):
-    if not names or names[0] != 'control' or len(names) != len(set(names)) or any(n not in ROWS for n in names):
+    if not names or names[0] != 'control' or len(names) != len(set(names)) or any(n not in ROWS and n not in ROWS2 for n in names):
         raise ValueError('Invalid frozen LoRa selection')
     results = {}
     for name in names:
