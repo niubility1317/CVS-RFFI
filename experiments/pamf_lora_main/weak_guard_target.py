@@ -26,17 +26,17 @@ def matrix():
             for route in ROUTES for index in range(SHARDS)}
 
 
-def expected_files():
+def expected_files(modes=MODES):
     from experiments.pamf_lora_main.data import TARGET, VIEWS
     return {f'{route}/{seed}/{receiver}__{view}__{mode}.npy'
-            for route in ROUTES for seed in SEEDS for receiver in TARGET for view in VIEWS for mode in MODES}
+            for route in ROUTES for seed in SEEDS for receiver in TARGET for view in VIEWS for mode in modes}
 
 
-def completion():
+def completion(*, origin=ORIGIN, origin_code=ORIGIN_CODE, modes=MODES):
     from experiments.pamf_lora_main.data import TARGET, VIEWS
     from experiments.pamf_lora_main.full_packet_data import LIMIT
-    return dict(status='PREDICTIONS_FROZEN', candidate_run=ORIGIN, origin_commit=ORIGIN_CODE,
-                routes=list(ROUTES), seeds=list(SEEDS), modes=list(MODES), receivers=list(TARGET),
+    return dict(status='PREDICTIONS_FROZEN', candidate_run=origin, origin_commit=origin_code,
+                routes=list(ROUTES), seeds=list(SEEDS), modes=list(modes), receivers=list(TARGET),
                 per_receiver=LIMIT, views=list(VIEWS), target_truth_read=False)
 
 
@@ -94,7 +94,7 @@ def blind_cache(rt, route):
     return cache
 
 
-def run_worker(rt, stage, shard):
+def run_worker(rt, stage, shard, *, bind=source_inference, modes=MODES, events='LORA_GUARD_TARGET'):
     import numpy as np
     import torch
     from experiments.cric_dura_comparison.io import tensor, write
@@ -108,7 +108,7 @@ def run_worker(rt, stage, shard):
     device = 'cuda:0'
     root = Path(rt['run_root'])
     with torch.no_grad():
-        readers, restore, contract = source_inference(rt, device)
+        readers, restore, contract = bind(rt, device)
 
         def classify(batch):
             recovered, active = restore(batch)
@@ -155,17 +155,18 @@ def run_worker(rt, stage, shard):
                         for row, labels in zip(rows[seed], variants, strict=True):
                             row.extend(labels)
                 for seed, variants in rows.items():
-                    for mode, labels in zip(MODES, variants, strict=True):
+                    for mode, labels in zip(modes, variants, strict=True):
                         path = root / 'predictions' / route / str(seed) / f'{receiver}__{view}__{mode}.npy'
                         with path.open('xb') as stream:
                             np.save(stream, np.asarray(labels, dtype=np.int16), allow_pickle=False)
                 activation[f'{receiver}/{view}'] = count
-                print('LORA_GUARD_TARGET_VIEW', route, receiver, view, count, flush=True)
+                print(events + '_VIEW', route, receiver, view, count, flush=True)
         write(root / f'{shard}-complete.json', dict(status='COMPLETE', activation=activation,
                                                   elapsed_seconds=perf_counter()-started, truth_reads=0))
 
 
-def dispatch(rt, runtime_path):
+def dispatch(rt, runtime_path, *, entrypoint=Path(__file__).resolve(), modes=MODES,
+             complete=completion, events='LORA_GUARD_TARGET'):
     from experiments.cric_dura_comparison.io import write
     from experiments.pamf_lora_main.refine_runner import select_gpu
     root = Path(rt['run_root'])
@@ -177,16 +178,16 @@ def dispatch(rt, runtime_path):
     def launch(stage, row, gpu):
         env = dict(os.environ, CUDA_VISIBLE_DEVICES=str(gpu), OMP_NUM_THREADS='1',
                    MKL_NUM_THREADS='1', OPENBLAS_NUM_THREADS='1')
-        args = [rt['python'], '-u', str(Path(__file__).resolve()), stage, str(runtime_path), row]
+        args = [rt['python'], '-u', str(entrypoint), stage, str(runtime_path), row]
         with (logs / f'{stage}-{row}.log').open('x', encoding='utf-8') as log:
             child = subprocess.Popen(args, env=env, stdout=log, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL)
-        print('LORA_GUARD_TARGET_LAUNCHED', stage, row, child.pid, gpu, flush=True)
+        print(events + '_LAUNCHED', stage, row, child.pid, gpu, flush=True)
         return child
 
     try:
         write(state, dict(status='SMOKE'))
         if launch('smoke', 'source', select_gpu()).wait():
-            raise RuntimeError('No-query guard-half smoke failed')
+            raise RuntimeError('No-query LoRa replay smoke failed')
         for route in ROUTES:
             for seed in SEEDS:
                 (root / 'predictions' / route / str(seed)).mkdir(parents=True)
@@ -195,32 +196,32 @@ def dispatch(rt, runtime_path):
         available = sorted((load, -free, gpu) for gpu, load, free in inventory if free >= 8192)
         slots = [gpu for _, _, gpu in available]
         if not slots:
-            raise RuntimeError('No GPU with enough capacity for the guard-half target inference')
+            raise RuntimeError('No GPU with enough capacity for the LoRa target inference')
         rows = list(matrix())
         for offset in range(0, len(rows), len(slots)):
             batch = dict(zip(rows[offset:offset+len(slots)], slots))
             write(state, dict(status='PREDICT', gpus=batch), exclusive=False)
             workers = [launch('evaluate', row, gpu) for row, gpu in batch.items()]
             if any([job.wait() for job in workers]):
-                raise RuntimeError('A guard-half target shard failed')
+                raise RuntimeError('A LoRa target replay shard failed')
         files = {p.relative_to(root / 'predictions').as_posix() for p in (root / 'predictions').rglob('*.npy')}
-        if files != expected_files():
+        if files != expected_files(modes):
             raise ValueError('Missing or unexpected target predictions')
-        write(root / 'predictions' / 'complete.json', completion())
+        write(root / 'predictions' / 'complete.json', complete())
         write(state, dict(status='PREDICTIONS_FROZEN', target_truth_read=False), exclusive=False)
     except Exception as error:
         write(state, dict(status='FAILED', error=str(error)), exclusive=False)
         raise
 
 
-def publish(repo, output, context, ssh_config):
+def publish(repo, output, context, ssh_config, *, run=RUN, runner=None):
     from experiments.cric_dura_comparison.io import read
     from experiments.pamf_lora_main.publish import release, release_commit
     cfg = read(context)
     project = PurePosixPath(cfg['project'])
     rt = {key: cfg[key] for key in ('project', 'python', 'frozen_sources')}
-    rt.update(run_id=RUN, runner=__spec__.name, code_commit=release_commit(repo),
-              release_root=str(project / 'releases' / f'{RUN}-release'), run_root=str(project / 'runs' / RUN),
+    rt.update(run_id=run, runner=runner or __spec__.name, code_commit=release_commit(repo),
+              release_root=str(project / 'releases' / f'{run}-release'), run_root=str(project / 'runs' / run),
               source_root=str(project / 'releases' / f'{DATA}-release' / 'data' / 'source'))
     release(repo, output, rt, ssh_config)
 

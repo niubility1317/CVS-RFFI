@@ -2,6 +2,7 @@
 
 import argparse
 from io import BytesIO
+from json import loads
 from pathlib import Path, PurePosixPath
 import shlex
 import subprocess
@@ -15,23 +16,25 @@ from experiments.pamf_lora_main.data import TARGET, VIEWS, label_ids, packet_ind
 from experiments.pamf_lora_main.full_packet_data import LIMIT
 from experiments.pamf_lora_main.residual_dura_score import prediction
 from experiments.pamf_lora_main.residual_reference_replay import completion as residual_replay
-from experiments.pamf_lora_main.weak_guard_target import ROUTES, RUN, SEEDS, completion, expected_files, matrix
+from experiments.pamf_lora_main import dura_capacity_target, weak_guard_target as guard
+from experiments.pamf_lora_main.weak_guard_target import ROUTES, SEEDS, matrix
 
 
 REPLICATES = 1600
+TESTS = {replay.MODES[1]: replay for replay in (guard, dura_capacity_target)}
 
 
-def collect(receipt, config, output):
+def collect(receipt, config, output, *, replay=guard):
     receipt = read(receipt)
     root = PurePosixPath(receipt['run_root'])
-    if root.name != RUN or receipt['archive_transfer'] != 'VERIFIED':
-        raise ValueError('Expected the registered immutable LoRa guard-half target run')
+    if root.name != replay.RUN or receipt['archive_transfer'] != 'VERIFIED':
+        raise ValueError('Expected the registered immutable LoRa target run')
     conn = ['ssh', '-F', str(config), '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', '-T', 'N607']
     state = subprocess.check_output([*conn, 'cat ' + shlex.quote(str(root / 'state.json'))], timeout=20)
-    if b'"PREDICTIONS_FROZEN"' not in state:
+    if loads(state)['status'] != 'PREDICTIONS_FROZEN':
         raise ValueError('Both routes must freeze before collection')
     reports = {'smoke.json', 'predictions/complete.json', *(f'{name}-complete.json' for name in matrix())}
-    expected = reports | {'predictions/' + name for name in expected_files()}
+    expected = reports | {'predictions/' + name for name in replay.expected_files()}
     command = f'tar -czf - -C {shlex.quote(str(root))} predictions smoke.json ' + ' '.join(sorted(reports - {
         'predictions/complete.json', 'smoke.json'}))
     payload = subprocess.check_output([*conn, command], timeout=180)
@@ -51,12 +54,16 @@ def predictions(folder, mode):
     return np.stack([[prediction(folder / f'{rx}__{view}__{mode}.npy') for rx in TARGET] for view in VIEWS])
 
 
-def frozen_rows(output, full, residual, residual_old):
+def frozen_rows(output, full, residual, residual_old, *, replay=guard, previous_guard=None):
     p = output / 'predictions'
-    if read(p / 'complete.json') != completion():
+    if read(p / 'complete.json') != replay.completion():
         raise ValueError('Frozen two-route submission does not match the selected candidate')
-    if {a.relative_to(p).as_posix() for a in p.rglob('*.npy')} != expected_files():
+    if {a.relative_to(p).as_posix() for a in p.rglob('*.npy')} != replay.expected_files():
         raise ValueError('Target prediction index is incomplete')
+    if previous_guard is not None:
+        previous_guard = previous_guard / 'predictions'
+        if replay is guard or read(previous_guard / 'complete.json') != guard.completion():
+            raise ValueError('The optional guard control requires its own prior frozen target matrix')
     if read(residual / 'predictions' / 'complete.json') != residual_replay():
         raise ValueError('Residual frozen baseline reference differs')
     from experiments.pamf_lora_main import residual_dura as old
@@ -66,6 +73,7 @@ def frozen_rows(output, full, residual, residual_old):
         raise ValueError('Unexpected original residual seed02')
 
     all_routes = {}
+    candidate = replay.MODES[1]
     for route in ROUTES:
         all_seeds = []
         for seed in SEEDS:
@@ -86,19 +94,25 @@ def frozen_rows(output, full, residual, residual_old):
             current = p / route / str(seed)
             if not np.array_equal(prior_direct, predictions(current, 'direct')):
                 raise ValueError(f'Tri-set direct baseline decisions changed for {route} seed {seed}')
-            all_seeds.append(dict(direct=prior_direct, dura_half=predictions(baseline, mode),
-                                  guard_half=predictions(current, 'guard_half'),
-                                  **{name: predictions(baseline, name) for name in best}))
+            row = dict(direct=prior_direct, dura_half=predictions(baseline, mode),
+                       **{name: predictions(baseline, name) for name in best})
+            row[candidate] = predictions(current, candidate)
+            if previous_guard is not None:
+                previous = previous_guard / route / str(seed)
+                if not np.array_equal(prior_direct, predictions(previous, 'direct')):
+                    raise ValueError(f'Historical guard direct predictions differ for {route} seed {seed}')
+                row[guard.MODES[1]] = predictions(previous, guard.MODES[1])
+            all_seeds.append(row)
         all_routes[route] = {mode: np.stack([row[mode] for row in all_seeds]) for mode in all_seeds[0]}
     return all_routes
 
 
-def score_arrays(rows, truth):
+def score_arrays(rows, truth, mode='guard_half'):
     records, paired, aggregate = [], {}, {}
     for route, choices in rows.items():
         hits = {name: decisions == truth for name, decisions in choices.items()}
-        candidate = hits['guard_half']
-        baseline_names = tuple(name for name in hits if name != 'guard_half')
+        candidate = hits[mode]
+        baseline_names = tuple(name for name in hits if name != mode)
         for i, seed in enumerate(SEEDS):
             for j, view in enumerate(VIEWS):
                 for receiver, select in [('ALL', slice(None)), *zip(TARGET, range(len(TARGET)), strict=True)]:
@@ -108,7 +122,7 @@ def score_arrays(rows, truth):
                                 for name in baseline_names}
                     records.append(dict(route=route, seed=seed, view=view, receiver=receiver, count=subject.size,
                                         correct={name: int(a[i, j, select].sum()) for name, a in hits.items()},
-                                        guard_half_vs=compared))
+                                        **{f'{mode}_vs': compared}))
         aggregate[route] = {
             name: dict(clean=int(a[:, 0].sum()), six_scene=int(a[:, 1:].sum()), low_urban=int(a[:, -1].sum()))
             for name, a in hits.items()
@@ -134,8 +148,8 @@ def score_arrays(rows, truth):
     return dict(aggregate=aggregate, paired=paired, rows=records)
 
 
-def score(output, full, residual, residual_old, dataset):
-    rows = frozen_rows(output, full, residual, residual_old)
+def score(output, full, residual, residual_old, dataset, *, replay=guard, previous_guard=None):
+    rows = frozen_rows(output, full, residual, residual_old, replay=replay, previous_guard=previous_guard)
     smoke = read(output / 'smoke.json')
     if smoke['status'] != 'PASS' or smoke['target_reads'] != 0 or smoke['seeds'] != list(SEEDS):
         raise ValueError('Missing no-query smoke for the exact test readers')
@@ -144,10 +158,12 @@ def score(output, full, residual, residual_old, dataset):
         for i, rx in enumerate(TARGET):
             with recording(archive, f'{rx}_test.h5', output) as handle:
                 truth.append(label_ids(handle, LIMIT)[packet_indices(LIMIT, i)])
-    result = score_arrays(rows, np.stack(truth))
+    result = score_arrays(rows, np.stack(truth), replay.MODES[1])
     expected_full = dict(clean=64490, six_scene=302413, low_urban=37845)
     expected_residual = dict(clean=64307, six_scene=289162, low_urban=38566)
+    expected_original_full = dict(clean=64490, six_scene=301599, low_urban=37596)
     if (result['aggregate']['full']['complex_response_half'] != expected_full
+        or result['aggregate']['full']['dura_half'] != expected_original_full
         or result['aggregate']['residual']['dura_half'] != expected_residual):
         raise ValueError('Independent truth scoring did not reproduce the registered matched baselines')
     write(output / 'scores.json', dict(status='TARGET_SCORED', truth_last=True, bootstrap_replicates=REPLICATES, **result))
@@ -164,7 +180,10 @@ if __name__ == '__main__':
     ):
         for name in names:
             cmd.add_argument('--' + name, required=True, type=Path)
+        cmd.add_argument('--candidate', choices=tuple(TESTS), default=guard.MODES[1])
+    evaluate.add_argument('--previous-guard', type=Path)
     arguments = vars(parser.parse_args())
+    arguments['replay'] = TESTS[arguments.pop('candidate')]
     if arguments.pop('action') == 'collect':
         collect(**arguments)
     else:
