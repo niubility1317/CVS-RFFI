@@ -1,0 +1,318 @@
+{
+  "status": "SOURCE_POSTHOC_COMPLETE",
+  "source_packets": 900,
+  "routes": {
+    "full": {
+      "six": {
+        "n": 5400,
+        "correct": {
+          "direct": 3028,
+          "reference": 3094,
+          "rank_half": 3077,
+          "bounded_half": 3092
+        },
+        "all_correct": 2851,
+        "any_correct": 3306,
+        "only_this_correct": {
+          "direct": 34,
+          "reference": 97,
+          "rank_half": 17,
+          "bounded_half": 41
+        },
+        "uniquely_added_by_frame": 1,
+        "all_wrong": 2094,
+        "all_wrong_clean_correct": 1050,
+        "clean_correct": 4002
+      },
+      "by_view": {
+        "practical_high": {
+          "n": 900,
+          "correct": {
+            "direct": 595,
+            "reference": 591,
+            "rank_half": 593,
+            "bounded_half": 592
+          },
+          "all_correct": 587,
+          "any_correct": 598,
+          "only_this_correct": {
+            "direct": 2,
+            "reference": 1,
+            "rank_half": 0,
+            "bounded_half": 2
+          },
+          "uniquely_added_by_frame": 0,
+          "all_wrong": 302,
+          "all_wrong_clean_correct": 122,
+          "clean_correct": 667
+        },
+        "practical_mid": {
+          "n": 900,
+          "correct": {
+            "direct": 555,
+            "reference": 554,
+            "rank_half": 555,
+            "bounded_half": 560
+          },
+          "all_correct": 526,
+          "any_correct": 589,
+          "only_this_correct": {
+            "direct": 5,
+            "reference": 20,
+            "rank_half": 1,
+            "bounded_half": 3
+          },
+          "uniquely_added_by_frame": 0,
+          "all_wrong": 311,
+          "all_wrong_clean_correct": 139,
+          "clean_correct": 667
+        },
+        "practical_low_suburban": {
+          "n": 900,
+          "correct": {
+            "direct": 493,
+            "reference": 527,
+            "rank_half": 510,
+            "bounded_half": 502
+          },
+          "all_correct": 451,
+          "any_correct": 566,
+          "only_this_correct": {
+            "direct": 3,
+            "reference": 35,
+            "rank_half": 5,
+            "bounded_half": 7
+          },
+          "uniquely_added_by_frame": 0,
+          "all_wrong": 334,
+          "all_wrong_clean_correct": 166,
+          "clean_correct": 667
+        },
+        "practical_high_urban": {
+          "n": 900,
+          "correct": {
+            "direct": 581,
+            "reference": 581,
+            "rank_half": 584,
+            "bounded_half": 580
+          },
+          "all_correct": 569,
+          "any_correct": 596,
+          "only_this_correct": {
+            "direct": 3,
+            "reference": 5,
+            "rank_half": 3,
+            "bounded_half": 1
+          },
+          "uniquely_added_by_frame": 0,
+          "all_wrong": 304,
+          "all_wrong_clean_correct": 133,
+          "clean_correct": 667
+        },
+        "practical_mid_urban": {
+          "n": 900,
+          "correct": {
+            "direct": 444,
+            "reference": 467,
+            "rank_half": 463,
+            "bounded_half": 475
+          },
+          "all_correct": 416,
+          "any_correct": 513,
+          "only_this_correct": {
+            "direct": 5,
+            "reference": 20,
+            "rank_half": 4,
+            "bounded_half": 14
+          },
+          "uniquely_added_by_frame": 0,
+          "all_wrong": 387,
+          "all_wrong_clean_correct": 212,
+          "clean_correct": 667
+        },
+        "practical_low_urban": {
+          "n": 900,
+          "correct": {
+            "direct": 360,
+            "reference": 374,
+            "rank_half": 372,
+            "bounded_half": 383
+          },
+          "all_correct": 302,
+          "any_correct": 444,
+          "only_this_correct": {
+            "direct": 16,
+            "reference": 16,
+            "rank_half": 4,
+            "bounded_half": 14
+          },
+          "uniquely_added_by_frame": 1,
+          "all_wrong": 456,
+          "all_wrong_clean_correct": 278,
+          "clean_correct": 667
+        }
+      }
+    },
+    "residual": {
+      "six": {
+        "n": 5400,
+        "correct": {
+          "direct": 2848,
+          "reference": 2960,
+          "rank_half": 2982,
+          "bounded_half": 2935
+        },
+        "all_correct": 2525,
+        "any_correct": 3332,
+        "only_this_correct": {
+          "direct": 54,
+          "reference": 137,
+          "rank_half": 42,
+          "bounded_half": 70
+        },
+        "uniquely_added_by_frame": 0,
+        "all_wrong": 2068,
+        "all_wrong_clean_correct": 1048,
+        "clean_correct": 4002
+      },
+      "by_view": {
+        "practical_high": {
+          "n": 900,
+          "correct": {
+            "direct": 539,
+            "reference": 551,
+            "rank_half": 538,
+            "bounded_half": 539
+          },
+          "all_correct": 506,
+          "any_correct": 583,
+          "only_this_correct": {
+            "direct": 0,
+            "reference": 43,
+            "rank_half": 1,
+            "bounded_half": 0
+          },
+          "uniquely_added_by_frame": 0,
+          "all_wrong": 317,
+          "all_wrong_clean_correct": 141,
+          "clean_correct": 667
+        },
+        "practical_mid": {
+          "n": 900,
+          "correct": {
+            "direct": 465,
+            "reference": 494,
+            "rank_half": 497,
+            "bounded_half": 485
+          },
+          "all_correct": 413,
+          "any_correct": 552,
+          "only_this_correct": {
+            "direct": 13,
+            "reference": 15,
+            "rank_half": 5,
+            "bounded_half": 15
+          },
+          "uniquely_added_by_frame": 0,
+          "all_wrong": 348,
+          "all_wrong_clean_correct": 170,
+          "clean_correct": 667
+        },
+        "practical_low_suburban": {
+          "n": 900,
+          "correct": {
+            "direct": 466,
+            "reference": 484,
+            "rank_half": 498,
+            "bounded_half": 474
+          },
+          "all_correct": 382,
+          "any_correct": 571,
+          "only_this_correct": {
+            "direct": 13,
+            "reference": 16,
+            "rank_half": 13,
+            "bounded_half": 13
+          },
+          "uniquely_added_by_frame": 0,
+          "all_wrong": 329,
+          "all_wrong_clean_correct": 170,
+          "clean_correct": 667
+        },
+        "practical_high_urban": {
+          "n": 900,
+          "correct": {
+            "direct": 558,
+            "reference": 566,
+            "rank_half": 563,
+            "bounded_half": 563
+          },
+          "all_correct": 521,
+          "any_correct": 607,
+          "only_this_correct": {
+            "direct": 2,
+            "reference": 40,
+            "rank_half": 0,
+            "bounded_half": 1
+          },
+          "uniquely_added_by_frame": 0,
+          "all_wrong": 293,
+          "all_wrong_clean_correct": 126,
+          "clean_correct": 667
+        },
+        "practical_mid_urban": {
+          "n": 900,
+          "correct": {
+            "direct": 433,
+            "reference": 462,
+            "rank_half": 471,
+            "bounded_half": 463
+          },
+          "all_correct": 386,
+          "any_correct": 527,
+          "only_this_correct": {
+            "direct": 12,
+            "reference": 14,
+            "rank_half": 8,
+            "bounded_half": 18
+          },
+          "uniquely_added_by_frame": 0,
+          "all_wrong": 373,
+          "all_wrong_clean_correct": 203,
+          "clean_correct": 667
+        },
+        "practical_low_urban": {
+          "n": 900,
+          "correct": {
+            "direct": 387,
+            "reference": 403,
+            "rank_half": 415,
+            "bounded_half": 411
+          },
+          "all_correct": 317,
+          "any_correct": 492,
+          "only_this_correct": {
+            "direct": 14,
+            "reference": 9,
+            "rank_half": 15,
+            "bounded_half": 23
+          },
+          "uniquely_added_by_frame": 0,
+          "all_wrong": 408,
+          "all_wrong_clean_correct": 238,
+          "clean_correct": 667
+        }
+      }
+    }
+  },
+  "common_wrong": {
+    "six": 1247,
+    "low_urban": 257,
+    "six_clean_correct": 474,
+    "low_urban_clean_correct": 123
+  },
+  "uses_truth_for_attribution_only": true,
+  "target_reads": 0,
+  "new_predictions": 0,
+  "training_updates": 0
+}
