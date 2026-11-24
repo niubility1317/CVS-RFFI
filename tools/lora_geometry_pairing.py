@@ -193,7 +193,7 @@ def collect(rt):
     elif rt.get('run_id') == BAND_ALLOCATION_DIAGNOSTIC:
         from experiments.pamf_lora_main import band_allocation_diagnostic
         modes = band_allocation_diagnostic.MODES
-        pairs = (*band_allocation_diagnostic.COMPARISONS, ('direct', 'reference'))
+        pairs = (*band_allocation_diagnostic.COMPARISONS, ('exact_equal', 'anchor'), ('direct', 'reference'))
     else:
         from experiments.pamf_lora_main import empirical_tangent_source as tangent
         if rt.get('run_id')!=tangent.RUN:
@@ -225,9 +225,14 @@ def collect(rt):
             interactions[route] = factor_interactions(hits,groups,modes,LEARNED_INTERACTIONS)
         elif rt.get('run_id')==RADIUS_RUN:
             interactions[route] = factor_interactions(hits, groups, modes, RADIUS_INTERACTIONS)
+        elif rt.get('run_id') == BAND_ALLOCATION_DIAGNOSTIC:
+            contrasts = {'exact_energy_direction': ('exact_equal', 'anchor', 'exact_band_energy',
+                                                     'exact_band_direction')}
+            interactions[route] = factor_interactions(hits, groups, modes, contrasts)
     artifact = dict(reader_seed=2026092702,bootstrap_replicates=REPEATS,target_reads=0,routes=result)
     if interactions:
-        key = {LEARNED_RUN: 'learned_interactions', RADIUS_RUN: 'radius_interactions'}.get(
+        key = {LEARNED_RUN: 'learned_interactions', RADIUS_RUN: 'radius_interactions',
+               BAND_ALLOCATION_DIAGNOSTIC: 'band_interactions'}.get(
             rt.get('run_id'), 'noise_interactions')
         artifact[key] = interactions
     return artifact

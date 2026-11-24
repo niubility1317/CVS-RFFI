@@ -455,6 +455,7 @@ def diagnose(rt, route, device):
     is_cross_dose = rt['run_id']=='20261124-phase1-lora-cross-frequency-dose-source-m4-r01'
     is_mixture = rt['run_id']=='20261124-phase1-lora-spectral-mixture-source-m2-r01'
     is_angular = rt['run_id']=='20261124-phase1-lora-angular-transport-source-m4-r01'
+    is_band_allocation = rt['run_id']=='20261124-phase1-lora-band-allocation-source-m3-r01'
     is_interval = rt['run_id']==coherent_interval_source.RUN
     is_joint = rt['run_id']==joint_spectrum_source.RUN
     is_anchor = rt['run_id']==ANCHOR_RUN
@@ -517,6 +518,13 @@ def diagnose(rt, route, device):
         recover = partial(study.recover, compare=True)
         readouts = ('direct', *study.MODES[2:])
         indices = range(len(study.MODES) - 2)
+    elif is_band_allocation:
+        from experiments.pamf_lora_main import band_allocation_source as study
+        recipes = study.RECIPES
+        recover = partial(study.recover, matrix=True)
+        readouts = ('direct', 'anchor', 'observed_allocation', 'learned_coarse',
+                    'learned_final', 'unit_action', 'fixed_noise')
+        indices = tuple(study.MODES.index(name) - 2 for name in readouts[1:])
     elif is_cancel:
         study = reference_cancel_source
         recipes = study.RECIPES
@@ -635,17 +643,17 @@ def diagnose(rt, route, device):
                     joint_stats.append(joint_part_metrics(waves,noiseless,frame))
                     if view!='clean':
                         noise_stats.append(joint_noise_bias(models[1],tracked,frame,epsilon))
-                if is_cross_frequency or is_cross_dose or is_mixture or is_angular:
+                if is_cross_frequency or is_cross_dose or is_mixture or is_angular or is_band_allocation:
                     joint_stats.append(joint_part_metrics(waves,noiseless,frame))
                     if view != 'clean':
-                        prior = models[-1].prior if is_cross_dose or is_angular else models[0]
+                        prior = models[-1].prior if is_cross_dose or is_angular or is_band_allocation else models[0]
                         estimated = prior.noise(prior.spectrum(tracked))
                         true_spectrum = prior.spectrum(complex_iq(epsilon) / frame)[..., prior.outer].abs().square()
                         true = .5 * torch.stack((true_spectrum[:, 0].mean(-1),
                                                  true_spectrum[:, 1:].mean((1, 2))), dim=-1)
                         error_db = 10 * (estimated / true.clamp_min(1e-10)).clamp_min(1e-10).log10()
                         noise_stats.append(np.asarray(error_db.tolist(), dtype=np.float32))
-                if is_angular and view != 'clean':
+                if (is_angular or is_band_allocation) and view != 'clean':
                     wanted = -complex_iq(epsilon) / frame
                     wanted = (wanted - wanted.mean(-1, keepdim=True)) * frame
                     edit = torch.stack(waves) - y
@@ -738,7 +746,8 @@ def diagnose(rt, route, device):
                     pooled=report_interval(values),
                     by_receiver={name:report_interval(part) for name,part in
                                  zip(SOURCE,np.split(values,len(SOURCE),axis=1),strict=True)})
-            if is_joint or is_anchor or is_received or is_dose or is_cross_frequency or is_cross_dose or is_mixture or is_angular:
+            if (is_joint or is_anchor or is_received or is_dose or is_cross_frequency
+                    or is_cross_dose or is_mixture or is_angular or is_band_allocation):
                 values = np.concatenate(joint_stats,axis=1)
                 output[view]['components_noiseless'] = dict(order=['shared','private'],
                     median=np.median(values,axis=1).tolist(),
@@ -839,7 +848,8 @@ def main():
                      '20261124-phase1-lora-cross-frequency-source-m2-r01',
                      '20261124-phase1-lora-cross-frequency-dose-source-m4-r01',
                      '20261124-phase1-lora-spectral-mixture-source-m2-r01',
-                     '20261124-phase1-lora-angular-transport-source-m4-r01')
+                     '20261124-phase1-lora-angular-transport-source-m4-r01',
+                     '20261124-phase1-lora-band-allocation-source-m3-r01')
     if rt.get('run_id') not in analyzed_runs or read(root/'state.json')['status']!='SOURCE_SCORED':
         raise ValueError('The full dual-route truth-last scoring must already be complete')
     activate(rt)
