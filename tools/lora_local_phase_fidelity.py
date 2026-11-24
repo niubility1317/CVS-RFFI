@@ -15,6 +15,7 @@ from experiments.pamf_lora_main import held_chirp_precision_source, lapped_poste
 from experiments.pamf_lora_main import coherent_interval_source, joint_spectrum_source
 from experiments.pamf_lora_main import packet_relation_source, reference_cancel_source, spectral_block_source, split_shrink_source
 from experiments.pamf_lora_main import received_update_source
+from experiments.pamf_lora_main import phase_dose_source
 from experiments.pamf_lora_main import variance_transport_source
 from experiments.pamf_lora_main.channel_blind import corruption_score
 from experiments.pamf_lora_main.channel_blind_source import panel, receive_only
@@ -39,6 +40,7 @@ METRICS = ('complex_nmse', 'magnitude_nmse', 'normalized_real_correlation')
 GEOMETRY_RUN = '20261124-phase1-lora-complex-geometry-source-m4-r01'
 TANGENT_RUN = '20261124-phase1-lora-empirical-tangent-source-m4-r01'
 ANCHOR_RUN = '20261124-phase1-lora-common-anchor-source-m4-r01'
+BURST_DOSE_RUN = '20261124-phase1-lora-phase-dose-bursts-source-m4-r01'
 
 
 def bounded_projection(model, direct, reference, y, frame, threshold):
@@ -284,6 +286,29 @@ def received_update_evidence(model, y, q, rms, aligned_source, noiseless, frame)
     return np.asarray(torch.stack(values, -1).tolist(), dtype=np.float32)
 
 
+def phase_placement(waves, epsilon, frame):
+    raw = waves[0]
+    noise = complex_iq(epsilon) / frame
+    reference = raw - (noise - noise.mean(-1, keepdim=True)) * frame
+    present = noise.abs().amax((-2, -1), keepdim=True) > 0
+    reference = torch.where(present, torch.polar(raw.abs(), reference.angle()), raw)
+    edit = torch.stack(waves) - raw
+    ideal = reference - raw
+    values = []
+    intervals = (slice(None), *(slice(start, start + 64) for start in range(0, 256, 64)))
+    for region in intervals:
+        selected = edit[..., region]
+        wanted = ideal[..., region]
+        norm = selected.abs().square().sum((-2, -1))
+        reference_norm = wanted.abs().square().sum((-2, -1))
+        raw_norm = raw[..., region].abs().square().sum((-2, -1)).clamp_min(1e-8)
+        inner = (selected * wanted.conj()).real.sum((-2, -1))
+        values.append(torch.stack(((norm / raw_norm).sqrt(),
+                                   inner / (norm * reference_norm).sqrt().clamp_min(1e-8),
+                                   (2 * inner - norm) / raw_norm), dim=-1))
+    return np.asarray(torch.stack(values, dim=-2).tolist(), dtype=np.float32)
+
+
 def shared_interval_evidence(model, observed, quality, waves, source, frame):
     (_, _, _, confidence), _ = model.spectral_evidence(observed, quality)
     confidence = confidence.squeeze(1)
@@ -375,7 +400,16 @@ def diagnose(rt, route, device):
     is_joint = rt['run_id']==joint_spectrum_source.RUN
     is_anchor = rt['run_id']==ANCHOR_RUN
     is_received = rt['run_id']==received_update_source.RUN
-    if is_received:
+    is_dose = rt['run_id'] in (phase_dose_source.RUN, BURST_DOSE_RUN)
+    if is_dose:
+        study = phase_dose_source
+        if rt['run_id'] == BURST_DOSE_RUN:
+            from experiments.pamf_lora_main import phase_dose_bursts_source as study
+        recipes = study.RECIPES
+        recover = partial(study.recover, compare=True)
+        readouts = ('direct', *study.MODES[2:])
+        indices = range(len(study.MODES)-2)
+    elif is_received:
         study = received_update_source
         recipes = study.RECIPES
         recover = partial(study.recover, matrix=True)
@@ -486,6 +520,7 @@ def diagnose(rt, route, device):
             interval_stats = []
             joint_stats = []
             action_stats = []
+            phase_stats = []
             batches = zip(tensor(capture,device).split(18),tensor(noise,device).split(18),truth.split(18),strict=True)
             for batch,(received, epsilon, source) in enumerate(batches):
                 recoveries, count = recover(received,tracker,models,threshold)[:2]
@@ -528,6 +563,9 @@ def diagnose(rt, route, device):
                 if is_received:
                     joint_stats.append(joint_part_metrics(waves,noiseless,frame))
                     action_stats.append(received_update_evidence(models[1],tracked,quality,rms,target,noiseless,frame))
+                if is_dose:
+                    joint_stats.append(joint_part_metrics(waves,noiseless,frame))
+                    phase_stats.append(phase_placement(waves, epsilon, frame))
                 for reference, group in ((target,bands_from_ground),(noiseless,bands_from_noiseless)):
                     compared = waves
                     if is_geometry:
@@ -597,7 +635,7 @@ def diagnose(rt, route, device):
                     pooled=report_interval(values),
                     by_receiver={name:report_interval(part) for name,part in
                                  zip(SOURCE,np.split(values,len(SOURCE),axis=1),strict=True)})
-            if is_joint or is_anchor or is_received:
+            if is_joint or is_anchor or is_received or is_dose:
                 values = np.concatenate(joint_stats,axis=1)
                 output[view]['components_noiseless'] = dict(order=['shared','private'],
                     median=np.median(values,axis=1).tolist(),
@@ -625,6 +663,15 @@ def diagnose(rt, route, device):
                     fields=fields, median=np.median(actions,axis=0).tolist(), mean=actions.mean(0).tolist(),
                     by_receiver={name:part.mean(0).tolist() for name,part in
                                  zip(SOURCE,np.split(actions,len(SOURCE)),strict=True)})
+            if is_dose:
+                placement = np.concatenate(phase_stats, axis=1)
+                output[view]['phase_placement'] = dict(
+                    order=['whole', '0–63', '64–127', '128–191', '192–255'],
+                    fields=['physical_edit_rms_ratio', 'edit_cosine_to_isolated_phase',
+                            'normalized_squared_error_improvement'],
+                    mean=placement.mean(1).tolist(), median=np.median(placement, axis=1).tolist(),
+                    by_receiver={name:part.mean(1).tolist() for name,part in
+                                 zip(SOURCE,np.split(placement,len(SOURCE),axis=1),strict=True)})
             if is_relation:
                 estimates = [torch.cat(parts,dim=1) for parts in zip(*relation_stats,strict=True)]
                 reference_groups = zip(*(value.chunk(len(SOURCE),dim=0) for value in source_features),strict=True)
@@ -650,7 +697,8 @@ def main():
     analyzed_runs = (local_phase_source.RUN, GEOMETRY_RUN, TANGENT_RUN, split_shrink_source.RUN,
                      lapped_posterior_source.RUN, held_chirp_precision_source.RUN, packet_relation_source.RUN,
                      reference_cancel_source.RUN, variance_transport_source.RUN, coherent_interval_source.RUN,
-                     joint_spectrum_source.RUN, ANCHOR_RUN, received_update_source.RUN)
+                     joint_spectrum_source.RUN, ANCHOR_RUN, received_update_source.RUN,
+                     phase_dose_source.RUN, BURST_DOSE_RUN)
     if rt.get('run_id') not in analyzed_runs or read(root/'state.json')['status']!='SOURCE_SCORED':
         raise ValueError('The full dual-route truth-last scoring must already be complete')
     activate(rt)

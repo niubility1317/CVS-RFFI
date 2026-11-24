@@ -38,6 +38,7 @@ LEARNED_INTERACTIONS = {
 }
 LEARNED_RUN = '20261124-diagnostic-lora-learned-split-source-m2-r01'
 ANCHOR_RUN = '20261124-phase1-lora-common-anchor-source-m4-r01'
+BURST_DOSE_RUN = '20261124-phase1-lora-phase-dose-bursts-source-m4-r01'
 
 
 def with_six(value):
@@ -139,7 +140,7 @@ def collect(rt):
     elif rt.get('run_id')==phase_observation_diagnostic.RUN:
         modes = phase_observation_diagnostic.MODES
         pairs = (*phase_observation_diagnostic.COMPARISONS, ('direct','reference'))
-    elif rt.get('run_id')==phase_dose_source.RUN:
+    elif rt.get('run_id') in (phase_dose_source.RUN, BURST_DOSE_RUN):
         modes = phase_dose_source.MODES
         pairs = (*phase_dose_source.COMPARISONS, ('direct','reference'))
     else:

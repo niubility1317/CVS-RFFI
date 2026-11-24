@@ -1,0 +1,194 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261124-phase1-lora-phase-dose-bursts-source-m4-r01",
+  "group_id": "lora-observable-satellite-recovery",
+  "display_name": "LoRa 局部突发与相关扰动的重复前导相位修正",
+  "description": "在通用突发与错置重复支撑下，匹配长训对照局部和全包剂量。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "LoRa",
+    "DURA",
+    "source_V",
+    "time_phase",
+    "local_allocation",
+    "correlated_bursts",
+    "full",
+    "residual"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261122-phase1-lora-full-aligned-data-r01",
+    "20261122-phase1-lora-tri-label-set-m3-r01",
+    "20261123-phase1-lora-dura-residual-practical-m1-r01",
+    "20261123-phase1-lora-dura-direct-detail-source-m2-r01",
+    "20261124-phase1-lora-packet-relation-source-m4-r01",
+    "20261124-phase1-lora-local-phase-source-m4-r01",
+    "20261124-phase1-lora-reference-cancel-source-m4-r01",
+    "20261124-phase1-lora-variance-transport-source-m2-r01",
+    "20261124-phase1-lora-coherent-interval-source-m4-r01",
+    "20261124-diagnostic-lora-noise-split-source-m2-r01",
+    "20261124-phase1-lora-joint-spectrum-source-m4-r01",
+    "20261124-diagnostic-lora-learned-split-source-m2-r01",
+    "20261124-phase1-lora-common-anchor-source-m4-r01",
+    "20261124-phase1-lora-received-update-source-m4-r01",
+    "20261124-diagnostic-lora-phase-observation-source-m2-r01",
+    "20261124-phase1-lora-phase-dose-source-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "LoRa 与 WiSig 可部署恢复目标及用户本轮扩大训练预算和按实时余量并行的要求",
+  "code": {
+    "commit": "启动命令从已推送分支 HEAD 固定，实际 OID 写入 submit.json",
+    "checkout": "E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo",
+    "environment": "${N607_PYTHON}",
+    "cwd": "${N607_PROJECT}/releases/20261124-phase1-lora-phase-dose-bursts-source-m4-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa 多接收机 IEEE DataPort",
+    "version": "lora_full_packets_v1 源 7/63/30 固定划分",
+    "representation": "1 MS/s 采集及既有构造，冻结读出为 256 kS/s 六条 256 点窄窗复 IQ",
+    "contract_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json role_ids.V",
+    "label_map_ref": "experiments/pamf_lora_main/data.py CLASSES (31 至 40)，仅评分读取 V_metadata.npz y",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "10 个登记发射机的固定源分配，拟合不可见",
+    "roles": {
+      "L_s": 0,
+      "U_s": 23000,
+      "V": 900
+    },
+    "train_ratio": "匹配的 20,000 个原始源 U 拟合，2,500 个互斥源 U 门限，500 个互斥源 U 固定留出。仍沿用 900 个同包源 V 物理 ID。",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "${N607_PROJECT}/runs/20261122-phase1-lora-full-aligned-data-r01/source_views/complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": "沿用 full 1 MHz 对齐及 residual 256 kHz post-sync/noEQ 原视图"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "not_applicable",
+    "external_method_exception": null,
+    "claim_scope": "拟合和冻结隔离 F、V、TX 真值、注册 practical 轨迹和目标。仅当前实收 IQ 与本包估计输入。"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [
+      "20261122-phase1-lora-tri-label-set-m3-r01 / tri_set 2026092702",
+      "20261123-phase1-lora-dura-direct-detail-source-m2-r01 及冻结 full 复响应半量",
+      "20261123-phase1-lora-dura-residual-practical-m1-r01 原 R69 及固定 residual 门控投影半量"
+    ],
+    "contract_check_ref": "source_contract 与 complete_f/source_control 核对各自源物理角色",
+    "provenance_verdict": "只复用现有相位剂量架构与协议；这一实验的两组从零训练。已训练F和DURA只进入冻结配对评分。",
+    "selection_rule": "两组各从零40,000步。固定主读出local_full。须在两路线各严格超过匹配半量DURA六景并保持clean才进入目标三种子。"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "当前 LoRa 可部署星地恢复目标",
+    "gpu_policy": "训练臂和后续路线各两张不同物理卡，按实时利用率和显存余量选卡，可与其他进程共卡。",
+    "remote_run_root": "${N607_PROJECT}/runs/20261124-phase1-lora-phase-dose-bursts-source-m4-r01",
+    "remote_log_root": "${N607_PROJECT}/runs/20261124-phase1-lora-phase-dose-bursts-source-m4-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261124-phase1-lora-phase-dose-bursts-source-m4-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.phase_dose_bursts_source publish --repo \"E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo\" --output \"E:/type10-7/local_artifacts/20261124-phase1-lora-phase-dose-bursts-source-m4-r01/release\" --context E:/type10-7/local_artifacts/lora_main_20261121/runtime_source.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "源角色、训练非有限、真实权重无查询检查、固定预测或独立 CPU 评分出现系统性失败时才停止本 run 后续派发。保留已完成产物。"
+  },
+  "expected_artifacts": [
+    "smoke-pooled.json",
+    "smoke-local.json",
+    "smoke.json",
+    "pooled-model.pt",
+    "pooled-complete.json",
+    "local-model.pt",
+    "local-complete.json",
+    "full-predictions.json",
+    "full-source-scores.json",
+    "residual-predictions.json",
+    "residual-source-scores.json",
+    "logs/",
+    "full-estimates.json",
+    "residual-estimates.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "正确数与 clean",
+      "逐景逐 RX",
+      "两级圆周相位风险、复谱、源弱相位传递、前向残差及物理编辑证据",
+      "配对纠错、改错与区间",
+      "B1",
+      "训练墙钟",
+      "参数及峰值 CUDA 显存"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "mode",
+      "seed"
+    ],
+    "prediction_ref": "${N607_PROJECT}/runs/20261124-phase1-lora-phase-dose-bursts-source-m4-r01/<route>-predictions.json",
+    "scorer_ref": "experiments.pamf_lora_main.phase_dose_bursts_source score"
+  },
+  "rows": [
+    {
+      "row_id": "dual-route-phase-dose-bursts-s2026092702",
+      "method": "直通、DURA、各臂粗/细/半量、同权等RMS局部或全包分配、原相位重复基线、单位作用和固定噪声。",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/phase_dose_bursts_source.py",
+      "resolved_config_ref": "${N607_PROJECT}/releases/20261124-phase1-lora-phase-dose-bursts-source-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026112620
+      },
+      "seed_notes": "冻结识别器用 2026092702，两个模型初始化、规定 U 分区、拟合扰动都用 2026112991。原 split 完全复用，评估 bootstrap 独立固定。零目标访问。",
+      "k": null,
+      "scenario": "clean 和六景，分别评估 full/residual",
+      "optimizer": "AdamW，步级余弦，权重衰减 1e-4，梯度范数上界 1.0",
+      "lr": 0.0002,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "每臂40,000步、batch24，20,000拟合/2,500门限/500留出均为源U，900同包×七景×13读出×两路线。",
+      "output_root": "${N607_PROJECT}/runs/20261124-phase1-lora-phase-dose-bursts-source-m4-r01",
+      "log_path": "${N607_PROJECT}/runs/20261124-phase1-lora-phase-dose-bursts-source-m4-r01/logs",
+      "command": "${N607_PYTHON} -u -m experiments.pamf_lora_main.phase_dose_bursts_source dispatch ${N607_PROJECT}/releases/20261124-phase1-lora-phase-dose-bursts-source-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "smoke-pooled.json",
+        "smoke-local.json",
+        "smoke.json",
+        "pooled-model.pt",
+        "pooled-complete.json",
+        "local-model.pt",
+        "local-complete.json",
+        "full-predictions.json",
+        "full-source-scores.json",
+        "residual-predictions.json",
+        "residual-source-scores.json",
+        "logs/",
+        "full-estimates.json",
+        "residual-estimates.json"
+      ]
+    }
+  ],
+  "notes": [
+    "先固定接收前导相位方向，学习如何在同包分配从零至一的剂量；共享骨架和优化。",
+    "使用当前IQ的相对Â和有效方差，固定原时间及逐点幅度，零低阶相位投影，整包10% RMS上限。",
+    "按真实源U相位和弱相位差异监督。同一通用扰动抽样作用到两份源波形。零TX、F、V、target及仿真真值输入或监督。",
+    "锁定两条路线同一权重阈值和规则；两条七景预测均固定后再独立评分，不按目标选读出。",
+    "依据500个合法留出源U的通用扰动网格证据，加入局部独立和跨chirp相关相位突发。未读取任何目标结果、场景参数或真值；原组保留。",
+    "抽样40%保留基础通用扰动、30%局部独立、30%组内相关；2至4条共相成员、支持窗位置与长度均独立抽样。引入连续光滑包络。等量归因规则不变。"
+  ],
+  "registered_at": "2026-11-24T01:44:16+00:00"
+}
