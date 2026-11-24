@@ -8,6 +8,7 @@ import torch
 
 from experiments.cric_dura_comparison.io import read, write
 from experiments.pamf_lora_main import tri_tuning
+from experiments.pamf_lora_main.clean_aperture import ALL_CHIRPS, padded_crop
 from experiments.pamf_lora_main.packet_physics import chirp_samples
 from experiments.pamf_lora_main.tri_branch_shapes import retain_projection
 from experiments.pamf_lora_main import tri_clean95
@@ -110,3 +111,11 @@ class TriTuningTests(TestCase):
         actual=packet_phase_curvature(rotated)
         self.assertEqual(actual.shape,(1,12))
         torch.testing.assert_close(actual,packet_phase_curvature(base))
+
+    def test_timing_views_use_neighbor_samples_within_every_physical_chirp(self):
+        center=padded_crop(ALL_CHIRPS)[:,125:1125]
+        for offset in (-2,2):
+            shifted=padded_crop(ALL_CHIRPS,offset)[:,125:1125]
+            np.testing.assert_array_equal(shifted,center+offset)
+            self.assertTrue((shifted[:,0]>=np.arange(8)*1024).all())
+            self.assertTrue((shifted[:,-1]<(np.arange(8)+1)*1024).all())

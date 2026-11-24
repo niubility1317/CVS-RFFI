@@ -177,6 +177,8 @@ def clean_model(rt,root,c,row,device):
 
 def study(rt):
     if rt.get('scratch'):
+        if rt.get('timing_study'):
+            return TIMING_ROWS,112,16
         if rt.get('anchor_study'):
             return ANCHOR_ROWS,112,16
         if rt.get('phase_study'):
@@ -256,6 +258,10 @@ ANCHOR_ROWS={
     'long_phase': dict(PHASE_ROWS['first_phase'],warmup=96),
     'phase_anchor': dict(PHASE_ROWS['first_phase'],warmup=96,clean_anchor_weight=.5),
 }
+TIMING_RUN='20261125-phase1-lora-pamf-tri-clean-timing98-s2026092702-r01'
+TIMING_ROWS={
+    'phase_jitter': dict(ANCHOR_ROWS['phase_anchor'],timing_jitter=True),
+}
 VALIDATION_EPOCHS={0,2,4,8,12,16,20,24}
 
 
@@ -287,6 +293,8 @@ def row_names(rt):
         return ('first_phase',)
     if rt.get('anchor_study'):
         return ('phase_anchor',)
+    if rt.get('timing_study'):
+        return ('phase_jitter',)
     return SCRATCH_LOCAL if rt.get('scratch') else LOCAL
 
 
@@ -382,6 +390,10 @@ def smoke(rt):
         f=(clean_model(rt,root,c,row,'cpu') if rt.get('scratch')
            else preserve_alignment(configure(deepcopy(parent),row),row))
         grid=clean_iq(raw[i],row.get('samples',256),row.get('chirps',CHIRPS))
+        if row.get('timing_jitter'):
+            shifts=[clean_iq(raw[i],row['samples'],row['chirps'],offset=d) for d in (-2,2)]
+            if any(z.shape!=grid.shape or np.array_equal(z,grid) for z in shifts):
+                raise ValueError('Physical source jitter is missing')
         if row.get('two_rate'):
             grid=np.concatenate((grid,clean_iq(raw[i],256)),axis=-1)
         a=tensor(grid)
@@ -424,6 +436,11 @@ def train(rt,name):
     x,u,v=[load(key) for key in ('L_s','U_s','V')]
     yn,rn=labels(source,c,'L_s')
     y,rx=tensor(yn,device),tensor(rn,device)
+    shifts=()
+    if row.get('timing_jitter'):
+        original=native(source,'L_s',len(yn))
+        shifts=tuple(tensor(clean_iq(original,n,chirps,offset=d),device) for d in (-2,2))
+        lgen=torch.Generator(device=device).manual_seed(SEED+11)
     ur=tensor(labels(source,c,'U_s'),device)
     vy,vr=(tensor(a,device) for a in labels(source,c,'V'))
     rate=row.get('lr',3e-4)
@@ -459,7 +476,7 @@ def train(rt,name):
         validation_epochs.update(range(warmup,epochs+1,4))
         if any(rt.get(k) for k in ('budget_study','edge_study','robust_study','phase_study')):
             validation_epochs.update((32,48,60))
-        if rt.get('anchor_study'):
+        if rt.get('anchor_study') or rt.get('timing_study'):
             validation_epochs.update((32,48,64,80,88))
     with (out/'epochs.jsonl').open('x',encoding='utf8') as log:
         for epoch in range(1,epochs+1):
@@ -474,7 +491,12 @@ def train(rt,name):
                 ux,urb=(u[pos],ur[pos]) if use_u else (None,None)
                 if rt.get('scratch') and not use_u:
                     f.train()
-                    logits,features=f(x[i])
+                    labeled=x[i]
+                    if shifts:
+                        draw=torch.rand(len(i),device=device,generator=lgen)[:,None,None,None]
+                        labeled=torch.where(draw<.125,shifts[0][i],labeled)
+                        labeled=torch.where(draw>.875,shifts[1][i],labeled)
+                    logits,features=f(labeled)
                     loss=torch.nn.functional.cross_entropy(logits,y[i],label_smoothing=.01)
                     if joint_rx_weight:
                         loss=loss+joint_rx_weight*cross_rx(features,y[i],rx[i],balance=True)[0]
@@ -545,13 +567,13 @@ def dispatch(rt):
         raise ValueError('Quick branch study is registered for N607 only')
     root=Path(rt['run_root'])
     screens=('quick','transfer','timefreq','noise_study','drift_study','budget_study')
-    gated_study=bool(rt.get('robust_study') or rt.get('phase_study') or rt.get('anchor_study'))
+    gated_study=any(rt.get(k) for k in ('robust_study','phase_study','anchor_study','timing_study'))
     if (gated_study or any(rt.get(k) for k in ('noise_study','drift_study','budget_study','edge_study'))) and not rt.get('scratch'):
         raise ValueError('The clean input comparisons require random initialization')
     root.mkdir(exist_ok=False)
     state=root/'state.json'
     fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq',
-                             'noise_study','drift_study','budget_study','edge_study','robust_study','phase_study','anchor_study',
+                             'noise_study','drift_study','budget_study','edge_study','robust_study','phase_study','anchor_study','timing_study',
                              'fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)
