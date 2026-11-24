@@ -1,0 +1,165 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261124-diagnostic-lora-dose-direction-source-m2-r01",
+  "group_id": "lora-observable-satellite-recovery",
+  "display_name": "LoRa 物理修改量与扣噪方向隔离对照",
+  "description": "固定两路源 V 原物理记录与共同门限。同一原 IQ RMS 逐级改变解析、精确两种方向，另量化精确幅度与门限覆盖。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "LoRa",
+    "DURA",
+    "source_V",
+    "equal_rms",
+    "diagnostic",
+    "dose_direction",
+    "full",
+    "residual"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261124-phase1-lora-spectral-mixture-source-m2-r01",
+    "20261124-diagnostic-lora-noise-split-source-m2-r01",
+    "20261122-phase1-lora-full-aligned-data-r01",
+    "20261122-phase1-lora-tri-label-set-m3-r01",
+    "20261124-diagnostic-lora-mixture-directions-source-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "LoRa 可部署恢复目标与等量分带设计。候选使用源 IQ，精确量独立隔离。",
+  "code": {
+    "commit": "启动命令从已推送分支 HEAD 固定，实际 OID 写入 submit.json",
+    "checkout": "E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo",
+    "environment": "${N607_PYTHON}",
+    "cwd": "${N607_PROJECT}/releases/20261124-diagnostic-lora-dose-direction-source-m2-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa 多接收机 IEEE DataPort",
+    "version": "lora_full_packets_v1 源 7/63/30 固定划分",
+    "representation": "1 MS/s 采集及既有构造，冻结读出为 256 kS/s 六条 256 点窄窗复 IQ",
+    "contract_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json role_ids.V",
+    "label_map_ref": "experiments/pamf_lora_main/data.py CLASSES (31 至 40)，仅评分读取 V_metadata.npz y",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "10 个登记发射机的固定源分配，拟合不可见",
+    "roles": {
+      "L_s": 0,
+      "U_s": 0,
+      "V": 900
+    },
+    "train_ratio": "没有拟合。复用前轮的合法 U 冻结混合状态。900 个固定源 V 物理包，每台源 RX 180，七景。",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "${N607_PROJECT}/runs/20261122-phase1-lora-full-aligned-data-r01/source_views/complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": "沿用 full 1 MHz 对齐及 residual 256 kHz post-sync/noEQ 原视图"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "not_applicable",
+    "external_method_exception": null,
+    "claim_scope": "只在独立诊断重放进程接入实际新增噪声。零训练、阈值校准、选择和目标数据访问。解析方向独立于附带的精确量。"
+  },
+  "checkpoint": {
+    "initialization": "reuse existing frozen source U mixture, no updates",
+    "sources": [
+      "20261122-phase1-lora-tri-label-set-m3-r01 / tri_set 2026092702",
+      "20261123-phase1-lora-dura-direct-detail-source-m2-r01 及冻结 full 复响应半量",
+      "20261123-phase1-lora-dura-residual-practical-m1-r01 原 R69 及固定 residual 门控投影半量"
+    ],
+    "contract_check_ref": "source_contract 与 complete_f/source_control 核对各自源物理角色",
+    "provenance_verdict": "复用 U-only 先验及原已冻结旁路，逐包复核旧直通、DURA、解析、等量精确与全精确。",
+    "selection_rule": "0.5/1/2/3/4 倍解析半量、两种方向、自然精确量与全覆盖事先固定，隔离归因无候选晋级。"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "当前 LoRa 可部署星地恢复目标",
+    "gpu_policy": "按实时余量选择 N607 GPU，可共用空闲容量。单臂完整训练（如适用），两路线并行预测，CPU 独立 truth-last。",
+    "remote_run_root": "${N607_PROJECT}/runs/20261124-diagnostic-lora-dose-direction-source-m2-r01",
+    "remote_log_root": "${N607_PROJECT}/runs/20261124-diagnostic-lora-dose-direction-source-m2-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261124-diagnostic-lora-dose-direction-source-m2-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.dose_direction_diagnostic publish --repo \"E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo\" --output \"E:/type10-7/local_artifacts/20261124-diagnostic-lora-dose-direction-source-m2-r01/release\" --context E:/type10-7/local_artifacts/lora_main_20261121/runtime_source.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "只在原预测重放失配、源路径非法、物理剂量不一致、真实检查、固定预测或后置评分失败时停止。"
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "full-predictions.json",
+    "residual-predictions.json",
+    "full-source-scores.json",
+    "residual-source-scores.json",
+    "logs/",
+    "full-isolated-estimates.json",
+    "residual-isolated-estimates.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "逐级同物理剂量两方向六景准确率和低城区",
+      "原门限覆盖的独立作用",
+      "按物理包分层配对净纠错",
+      "实际 RMS 与原配准"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "mode",
+      "seed"
+    ],
+    "prediction_ref": "${N607_PROJECT}/runs/20261124-diagnostic-lora-dose-direction-source-m2-r01/<route>-predictions.json",
+    "scorer_ref": "experiments.pamf_lora_main.dose_direction_diagnostic score"
+  },
+  "rows": [
+    {
+      "row_id": "dual-route-dose-direction-s2026092702",
+      "method": "直通、DURA、五档解析与五档精确同量、同门自然精确、全覆盖精确。",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/dose_direction_diagnostic.py",
+      "resolved_config_ref": "${N607_PROJECT}/releases/20261124-diagnostic-lora-dose-direction-source-m2-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026112471,
+        "support": null,
+        "evaluation": 2026112620
+      },
+      "seed_notes": "原冻结识别器 seed2026092702、同包原面板和独立 bootstrap。Smoke 通用扰动 seed2026112481。",
+      "k": null,
+      "scenario": "clean 和六景，分别评估 full/residual",
+      "optimizer": "无。只读诊断。",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "零训练；900 同物理包×七景×14 固定读出×两路线。",
+      "output_root": "${N607_PROJECT}/runs/20261124-diagnostic-lora-dose-direction-source-m2-r01",
+      "log_path": "${N607_PROJECT}/runs/20261124-diagnostic-lora-dose-direction-source-m2-r01/logs",
+      "command": "${N607_PYTHON} -u -m experiments.pamf_lora_main.dose_direction_diagnostic dispatch ${N607_PROJECT}/releases/20261124-diagnostic-lora-dose-direction-source-m2-r01-release/runtime.json",
+      "expected_artifacts": [
+        "smoke.json",
+        "full-predictions.json",
+        "residual-predictions.json",
+        "full-source-scores.json",
+        "residual-source-scores.json",
+        "logs/",
+        "full-isolated-estimates.json",
+        "residual-isolated-estimates.json"
+      ]
+    }
+  ],
+  "notes": [
+    "所有活动包共用原门与实际 IQ RMS。剂量基是原 pooled_half 修改 RMS。隔离精确可能超过该包自然噪声，固定保留。",
+    "解析固定方向由已有 U-only 先验与实收 IQ 产生，独立于隔离量。全覆盖精确与同门自然精确用完全相同去载波噪声。",
+    "适用范围仅为源域定位。两条全量预测固定后，独立 CPU 才读取源 V 真值。"
+  ],
+  "registered_at": "2026-11-24T06:23:09+00:00"
+}
