@@ -1,0 +1,88 @@
+{
+  "submit": {
+    "pid": 2537708,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-transported-noise-covariance-source-m2-r01-release",
+    "code_commit": "f24c9b22be504fa875677c01d7064070020cbfe3",
+    "archive_transfer": "VERIFIED",
+    "remote_compile": "PASS",
+    "status": "SUBMITTED_NOT_YET_VERIFIED",
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-transported-noise-covariance-source-m2-r01"
+  },
+  "controller": {
+    "pid": 2537708,
+    "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.transported_covariance_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-transported-noise-covariance-source-m2-r01-release/runtime.json",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-transported-noise-covariance-source-m2-r01-release",
+    "cuda": [
+      "CUDA_VISIBLE_DEVICES="
+    ]
+  },
+  "jobs": {
+    "smoke-source": {
+      "pid": 2537724,
+      "gpu": 3,
+      "identity": null,
+      "bytes": 466,
+      "last": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+        "  return self.fget.__get__(instance, owner)()",
+        "LORA_TRANSPORTED_NOISE_REAL_CHECKPOINT_PASS"
+      ]
+    },
+    "timing-source": {
+      "pid": 2538082,
+      "gpu": 3,
+      "identity": null,
+      "bytes": 422,
+      "last": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+        "  return self.fget.__get__(instance, owner)()"
+      ]
+    },
+    "evaluate-full": {
+      "pid": 2538360,
+      "gpu": 3,
+      "identity": {
+        "pid": 2538360,
+        "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.transported_covariance_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-transported-noise-covariance-source-m2-r01/configs/evaluate-full.json full",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-transported-noise-covariance-source-m2-r01-release",
+        "cuda": [
+          "CUDA_VISIBLE_DEVICES=3"
+        ]
+      },
+      "bytes": 652,
+      "last": [
+        "COMPLEX_VECTOR_SOURCE full practical_mid 159",
+        "COMPLEX_VECTOR_SOURCE full practical_low_suburban 320",
+        "COMPLEX_VECTOR_SOURCE full practical_high_urban 92"
+      ]
+    },
+    "evaluate-residual": {
+      "pid": 2538361,
+      "gpu": 6,
+      "identity": null,
+      "bytes": 782,
+      "last": [
+        "COMPLEX_VECTOR_SOURCE residual practical_high_urban 67",
+        "COMPLEX_VECTOR_SOURCE residual practical_mid_urban 803",
+        "COMPLEX_VECTOR_SOURCE residual practical_low_urban 899"
+      ]
+    }
+  },
+  "state": null,
+  "files": {
+    "smoke.json": 135,
+    "residual-solver.json": 204,
+    "b1.json": 360
+  },
+  "verification": "VERIFIED",
+  "growth": {
+    "evaluate-full": {
+      "first": 457,
+      "second": 652
+    },
+    "evaluate-residual": {
+      "first": 510,
+      "second": 782
+    }
+  }
+}
