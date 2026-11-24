@@ -185,6 +185,22 @@ class TriTuningTests(TestCase):
         with self.assertRaisesRegex(ValueError,'Unique source U budget'):
             tri_clean95.distinct_u_batches(100,16,88,16,**options)
 
+    def test_grouped_features_are_initially_neutral_and_learnable(self):
+        from experiments.pamf_lora_main.repair_features import PacketGroupFusion
+        rng=torch.Generator().manual_seed(73)
+        inputs=(torch.randn(5,8,160,generator=rng),torch.randn(5,36,generator=rng),
+                torch.randn(5,160,generator=rng))
+        for radial in (False,True):
+            with self.subTest(radial=radial):
+                branch=PacketGroupFusion(160,8,radial=radial)
+                output=branch(*inputs)
+                torch.testing.assert_close(output,torch.zeros(5,160))
+                output.sum().backward()
+                self.assertGreater(float(branch.fusion.weight.grad.abs().sum()),0.)
+        rows,epochs,batch=tri_clean95.study({'scratch':True,'groupfusion_study':True})
+        self.assertEqual((epochs,batch),(112,16))
+        self.assertEqual({r['group_fusion'] for r in rows.values()},{'silu','radial'})
+
     def test_early_rank_weights_restore_source_row_order_per_receiver(self):
         from experiments.pamf_lora_main.data import packet_indices, source_role_ordinals
         signal=[]; labels=[]; receivers=[]; expected=[]

@@ -101,6 +101,30 @@ class AlignedTrace(nn.Module):
         return trace
 
 
+class PacketGroupFusion(nn.Module):
+    """Fuse chirp positions and relative physics before the existing head."""
+
+    def __init__(self, channels, chirp_count, *, radial=False):
+        super().__init__()
+        self.compression=nn.Linear(channels,8,bias=False)
+        widths=(chirp_count*8,36,channels,channels,channels,channels,2*channels)
+        self.groups=nn.ModuleList(
+            nn.Sequential(nn.LayerNorm(width),nn.Linear(width,32)) for width in widths
+        )
+        self.fusion=nn.Linear(32*len(widths),channels,bias=False)
+        self.radial=radial
+        nn.init.zeros_(self.fusion.weight)
+
+    def forward(self,chirps,physics,raw_packet):
+        first,middle,tail=chirps[:,0],chirps[:,1:-1].mean(1),chirps[:,-1]
+        edges=torch.cat((first-middle,tail-middle),dim=1)
+        values=(self.compression(chirps).flatten(1),physics,raw_packet,first,middle,tail,edges)
+        projected=[layer(value) for layer,value in zip(self.groups,values,strict=True)]
+        packet=torch.cat(projected,dim=1)
+        packet=torch.exp(-.5*packet.square())-.5 if self.radial else torch.nn.functional.silu(packet)
+        return .25*self.fusion(packet)
+
+
 class CoherentPacket(nn.Module):
     """Add a common-tone-aligned residual branch to the existing PAMF packet F."""
 

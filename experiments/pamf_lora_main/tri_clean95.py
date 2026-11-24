@@ -20,7 +20,7 @@ from .packet_data import CHIRPS
 from .packet_runner import schedule
 from .refine_runner import start
 from .runner import activate
-from .repair_features import AlignedTrace, CoherentPacket
+from .repair_features import PacketGroupFusion, AlignedTrace, CoherentPacket
 from .tri_tuning import SEED, STEPS, model_for, shape_trace, trainable
 
 
@@ -111,7 +111,8 @@ class TimeFrequencyAligned(CoherentPacket):
         drift_layer=getattr(self,'relative_drift',None)
         phase_layer=getattr(self,'phase_curvature',None)
         physics_layer=getattr(self,'packet_physics',None)
-        if physics_layer is not None:
+        group_fusion=getattr(self,'group_fusion',None)
+        if physics_layer is not None or group_fusion is not None:
             traces,phase,physics=self.trace(x,with_packet_physics=True)
         elif phase_layer is not None:
             traces,phase=self.trace(x,with_phase=True)
@@ -154,6 +155,8 @@ class TimeFrequencyAligned(CoherentPacket):
             aligned=aligned+.10*phase_layer(phase)
         if physics_layer is not None:
             aligned=aligned+.10*physics_layer(physics)
+        if group_fusion is not None:
+            aligned=aligned+group_fusion(chirps,torch.cat((phase,physics),dim=1),fused)
         logits=logits+self.head(aligned)
         chirp_readout=getattr(self,'chirp_readout',None)
         if chirp_readout is not None:
@@ -192,6 +195,9 @@ def clean_model(rt,root,c,row,device):
                                                nn.Linear(32,160),nn.LayerNorm(160)).to(device)
             if row.get('chirp_readout'):
                 f.chirp_readout=ChirpReadout(f.head.in_features,f.head.out_features,len(row['chirps'])).to(device)
+            if row.get('group_fusion'):
+                f.group_fusion=PacketGroupFusion(f.head.in_features,len(row['chirps']),
+                                                radial=row['group_fusion']=='radial').to(device)
             if f.spectral_edges:
                 original=f.time_frequency[0]
                 extended=nn.Conv2d(4,16,3,padding=1,device=device)
@@ -206,6 +212,8 @@ def clean_model(rt,root,c,row,device):
 
 def study(rt):
     if rt.get('scratch'):
+        if rt.get('groupfusion_study'):
+            return GROUP_FUSION_ROWS,112,16
         if rt.get('rankweight_study'):
             return RANK_WEIGHT_ROWS,112,16
         if rt.get('pairmargin_study'):
@@ -309,6 +317,11 @@ PHASE_JOINT_RUN='20261125-phase1-lora-pamf-tri-clean-phasejoint98-s2026092702-r0
 PHASE_JOINT_ROWS={
     'phase_joint': dict(ANCHOR_ROWS['phase_anchor'],joint_rx_weight=.12),
 }
+GROUP_FUSION_RUN='20261125-phase1-lora-pamf-tri-clean-groupfusion98-m2-r01'
+GROUP_FUSION_ROWS={
+    'group_silu': dict(ANCHOR_ROWS['phase_anchor'],group_fusion='silu'),
+    'group_radial': dict(ANCHOR_ROWS['phase_anchor'],group_fusion='radial'),
+}
 RANK_WEIGHT_RUN='20261125-phase1-lora-pamf-tri-clean-rankweight98-s2026092702-r01'
 RANK_WEIGHT_ROWS={
     'phase_rankweight': dict(ANCHOR_ROWS['phase_anchor'],early_rank_weight=3.),
@@ -368,6 +381,8 @@ def row_names(rt):
         return ('phase_jitter',)
     if rt.get('phase_joint_study'):
         return ('phase_joint',)
+    if rt.get('groupfusion_study'):
+        return ('group_silu','group_radial')
     if rt.get('rankweight_study'):
         return ('phase_rankweight',)
     if rt.get('pairmargin_study'):
@@ -602,7 +617,7 @@ def train(rt,name):
         validation_epochs.update(range(warmup,epochs+1,4))
         if any(rt.get(k) for k in ('budget_study','edge_study','robust_study','phase_study')):
             validation_epochs.update((32,48,60))
-        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study')):
+        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study')):
             validation_epochs.update((32,48,64,80,88))
     with (out/'epochs.jsonl').open('x',encoding='utf8') as log:
         for epoch in range(1,epochs+1):
@@ -699,14 +714,14 @@ def dispatch(rt):
     root=Path(rt['run_root'])
     screens=('quick','transfer','timefreq','noise_study','drift_study','budget_study')
     gated_study=any(rt.get(k) for k in ('robust_study','phase_study','anchor_study','timing_study',
-                                       'phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study'))
+                                       'phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study'))
     if (gated_study or any(rt.get(k) for k in ('noise_study','drift_study','budget_study','edge_study'))) and not rt.get('scratch'):
         raise ValueError('The clean input comparisons require random initialization')
     root.mkdir(exist_ok=False)
     state=root/'state.json'
     fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq',
                              'noise_study','drift_study','budget_study','edge_study','robust_study','phase_study','anchor_study',
-                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study',
+                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study',
                              'fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)
