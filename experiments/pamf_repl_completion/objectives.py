@@ -8,7 +8,7 @@ def source_partners(pseudo,accepted,receivers,allowed,num_classes,dtype):
     p=torch.nn.functional.one_hot(pseudo,num_classes).to(dtype)
     return protected_partners(p,accepted.to(dtype),receivers,allowed,1.)
 
-def portable_style_forward(self,student,x,domain,pseudo,accepted,metadata):
+def portable_style_forward(self,student,x,domain,pseudo,accepted,metadata,*,hooks=None):
     from experiments.cric_dura_comparison.f_model import PREFIX
     from experiments.pamf_ssl_research.hard_pl_mixstyle_objective import style_hooks
     if self.style_active:raise ValueError('Nested source style context')
@@ -25,7 +25,7 @@ def portable_style_forward(self,student,x,domain,pseudo,accepted,metadata):
     if len(partner)!=n:raise ValueError('Aligned six U views required')
     capture={} if self.c.get('hard_pl_smoke') else None;self.style_active=True
     try:
-        with style_hooks(student,PREFIX,recipe,partner,valid,lam,force=bool(self.c.get('hard_pl_smoke')),
+        with (hooks or style_hooks)(student,PREFIX,recipe,partner,valid,lam,force=bool(self.c.get('hard_pl_smoke')),
                          capture=capture,enabled_by_level=enabled,prepend=True) as applied:
             logits=student.forward_identity_only(x,domain_labels=domain)['tx_logits']
     finally:self.style_active=False

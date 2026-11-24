@@ -144,8 +144,13 @@ def metrics(labels,predicted,classes):
     return dict(count=len(labels),accuracy=float(cm.trace()/len(labels)),macro_f1=float(f1.mean()),confusion=cm.tolist())
 
 
-def score(c):
+def score(c, *, reference=None):
     prepared=preflight(c)  # All tasks/readouts/views validated before truth IO.
+    reference_values = preflight(reference) if reference is not None else {}
+    if reference is not None and (reference['classes'] != c['classes']
+            or reference_values.keys() != prepared.keys()
+            or any(not np.array_equal(prepared[t][0], reference_values[t][0]) for t in prepared)):
+        raise ValueError('Truth closed: paired reference coverage differs')
     results=[];pairs=[];classes=len(c['classes'])
     for task,(ids,values) in prepared.items():
         truth=read(c['tests'][task]['truth'])
@@ -162,13 +167,18 @@ def score(c):
                 p=values[name+'__'+view]
                 for dim,group,mask in masks:
                     results.append(dict(test=task,readout=name,view=view,dimension=dim,stratum=group,**metrics(y[mask],p[mask],classes)))
-                if name!='raw':
-                    raw=values['raw__'+view];a=raw==y;b=p==y
+                if name!='raw' or reference is not None:
+                    raw = (values if reference is None else reference_values[task][1])['raw__'+view]
+                    a=raw==y;b=p==y
                     for dim,group,mask in masks:
                         repairs=int((~a&b&mask).sum());damage=int((a&~b&mask).sum())
                         pairs.append(dict(test=task,readout=name,view=view,dimension=dim,stratum=group,count=int(mask.sum()),repairs=repairs,damage=damage,net=repairs-damage))
     out=Path(c['output_root']);out.mkdir(parents=True,exist_ok=False)
-    write(out/'scores.json',dict(status='SCORED',run_id=c['run_id'],row_id=c['row_id'],model_seed=c['model_seed'],results=results,paired_raw=pairs,truth_last=True,target_feedback_forbidden=True))
+    value=dict(status='SCORED',run_id=c['run_id'],row_id=c['row_id'],model_seed=c['model_seed'],
+               results=results,paired_raw=pairs,truth_last=True,target_feedback_forbidden=True)
+    if reference is not None:
+        value['paired_reference'] = {k: reference[k] for k in ('run_id', 'row_id', 'prediction_output')}
+    write(out/'scores.json',value)
     write(out/'complete.json',dict(status='SCORED_COMPLETE',run_id=c['run_id'],row_id=c['row_id'],tests=tasks(c),views=list(VIEWS),readouts=c['readouts']))
     print('CRIC_DURA_SCORED',c['row_id'],flush=True)
 

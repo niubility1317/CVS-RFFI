@@ -4,12 +4,13 @@ from experiments.cric_dura_comparison.io import read,write,tensor
 from experiments.cric_dura_comparison.evaluation import handle,reject_truth
 from .plan import TASKS,VIEWS
 
-def predict(c,device='cuda:0'):
+def predict(c,device='cuda:0',*,load_source=None):
     import torch
-    from .source import load_reader
+    if load_source is None:
+        from .source import load_reader as load_source
     reject_truth(c)
     if list(c['tests'])!=list(TASKS) or c['readouts']!=['raw']:raise ValueError('Direct recognition only; both target populations required')
-    reader,source=load_reader(c['source_output'],read(c['source_contract']),device)
+    reader,source=load_source(c['source_output'],read(c['source_contract']),device)
     if source['run_id']!=c['run_id'] or source['row_id']!=c['row_id'] or source['model_seed']!=c['model_seed']:raise ValueError('Different frozen source row')
     out=Path(c['output_root']);out.mkdir(parents=True,exist_ok=False);counts={}
     for task in TASKS:
@@ -29,8 +30,8 @@ def predict(c,device='cuda:0'):
         folder=out/task;folder.mkdir();np.savez(folder/'predictions.npz',ids=ids,**values);counts[task]=dict(count=len(ids),views=list(VIEWS),readouts=['raw'])
     write(out/'complete.json',dict(status='ALL_PREDICTIONS_COMPLETE',run_id=c['run_id'],row_id=c['row_id'],tests=counts,views=list(VIEWS),readouts=['raw'],truth_read=False,query_fit=False))
 
-def score(c):
+def score(c, *, reference=None):
     from experiments.cric_dura_comparison import evaluation as old
     previous=old.tasks;old.tasks=lambda _:list(TASKS)
-    try:return old.score(c)
+    try:return old.score(c, reference=reference)
     finally:old.tasks=previous
