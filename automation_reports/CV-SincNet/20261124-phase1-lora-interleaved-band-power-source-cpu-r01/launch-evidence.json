@@ -1,0 +1,100 @@
+{
+  "verification": "VERIFIED",
+  "observed": {
+    "submit": {
+      "pid": 2443620,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-interleaved-band-power-source-cpu-r01-release",
+      "code_commit": "d6508c83d0911213026a9b6a77b132fae5a0e5b2",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-interleaved-band-power-source-cpu-r01"
+    },
+    "controller": {
+      "pid": 2443620,
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.chirp_band_power_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-interleaved-band-power-source-cpu-r01-release/runtime.json",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-interleaved-band-power-source-cpu-r01-release",
+      "cuda": [
+        "CUDA_VISIBLE_DEVICES="
+      ]
+    },
+    "jobs": {
+      "smoke-source": {
+        "pid": 2443631,
+        "gpu": null,
+        "identity": null,
+        "bytes": 459,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_BAND_POWER_REAL_CHECKPOINT_PASS"
+        ]
+      },
+      "probe-source": {
+        "pid": 2443968,
+        "gpu": null,
+        "identity": {
+          "pid": 2443968,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.chirp_band_power_source probe /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-interleaved-band-power-source-cpu-r01/configs/probe-source.json source",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-interleaved-band-power-source-cpu-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES="
+          ]
+        },
+        "bytes": 422,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()"
+        ]
+      }
+    },
+    "state": null,
+    "files": {
+      "smoke.json": 133
+    }
+  },
+  "terminal": {
+    "submit": {
+      "pid": 2443620,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-interleaved-band-power-source-cpu-r01-release",
+      "code_commit": "d6508c83d0911213026a9b6a77b132fae5a0e5b2",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-interleaved-band-power-source-cpu-r01"
+    },
+    "controller": null,
+    "jobs": {
+      "smoke-source": {
+        "pid": 2443631,
+        "gpu": null,
+        "identity": null,
+        "bytes": 459,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_BAND_POWER_REAL_CHECKPOINT_PASS"
+        ]
+      },
+      "probe-source": {
+        "pid": 2443968,
+        "gpu": null,
+        "identity": null,
+        "bytes": 659,
+        "last": [
+          "LORA_BAND_POWER_SOURCE full practical_low_urban 150 101",
+          "LORA_BAND_POWER_SOURCE residual practical_low_suburban 150 150",
+          "LORA_BAND_POWER_SOURCE residual practical_low_urban 150 150"
+        ]
+      }
+    },
+    "state": {
+      "status": "SOURCE_DIAGNOSTIC_COMPLETE"
+    },
+    "files": {
+      "state.json": 45,
+      "smoke.json": 133,
+      "source-u-band-power.json": 425714
+    }
+  }
+}

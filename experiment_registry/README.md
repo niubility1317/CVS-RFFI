@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 奇偶采样交叉功率与差分幅度可观测性](../automation_reports/CV-SincNet/20261124-phase1-lora-interleaved-band-power-source-cpu-r01/report.md)
 - [LoRa 同信道正负噪声的偏差与响应联合训练](../automation_reports/CV-SincNet/20261124-phase1-lora-antithetic-noise-response-source-m4-r01/report.md)
 - [LoRa 冻结恢复候选的逐包互补性](../automation_reports/CV-SincNet/20261124-diagnostic-lora-frozen-complementarity-source-cpu-r01/report.md)
 - [LoRa 实收似然与无标签源包差分先验](../automation_reports/CV-SincNet/20261124-phase1-lora-empirical-iq-prior-source-m2-r01/report.md)

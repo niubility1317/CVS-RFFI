@@ -1,0 +1,5 @@
+{"at": "2026-11-24T02:06:06+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-24T02:06:06+00:00", "status": "LOCAL_VERIFIED", "note": "Three local tests, CLI entry and independent P0/P1 PASS.", "evidence": "report.md", "row_id": null}
+{"at": "2026-11-24T02:07:37+00:00", "status": "RUNNING", "note": "CPU live PID/CWD/argv verified before owned probe ran both routes, with growing independent log.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-24T02:07:42+00:00", "status": "ANALYZED", "note": "Verified both registered routes and isolated held-U power readback; no fitting or target.", "evidence": "source-u-band-power.json", "row_id": "probe-source"}
+{"at": "2026-11-24T02:07:42+00:00", "status": "ANALYZED", "note": "One-packet interleaved power comparison completed.", "evidence": "report.md", "row_id": null}

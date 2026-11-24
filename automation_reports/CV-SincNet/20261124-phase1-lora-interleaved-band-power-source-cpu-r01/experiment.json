@@ -1,0 +1,148 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261124-phase1-lora-interleaved-band-power-source-cpu-r01",
+  "group_id": "phase1-lora-observable-recovery",
+  "display_name": "LoRa 奇偶采样交叉功率与差分幅度可观测性",
+  "description": "Interleaved sample cross-power and fixed-source prior control for single-packet amplitude identification.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "source_only",
+    "dual_path"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261124-phase1-lora-antithetic-noise-response-source-m4-r01",
+    "20261124-phase1-lora-private-band-risk-source-cpu-r02",
+    "20261124-phase1-lora-noise-replicas-source-m2-r01"
+  ],
+  "replaces_run_id": "20261124-phase1-lora-private-band-risk-source-cpu-r01",
+  "authorization": "User handoff from 01a1dedc-e242-78a2-8064-20079b2070eb and active LoRa/WiSig observable recovery goal. Source screen only.",
+  "code": {
+    "commit": "d6508c83d0911213026a9b6a77b132fae5a0e5b2",
+    "checkout": "E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-interleaved-band-power-source-cpu-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa registered main data",
+    "version": "lora_full_packets_v1",
+    "representation": "Six dechirped chirps, observed complex normalized chirp coordinates, and orthonormal packet contrasts.",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "Source U metadata, fixed prior split and first 30 per source RX from held role. No source V or target metadata.",
+    "label_map_ref": null,
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": {
+        "clean_prior_moments": 5000,
+        "held": 150,
+        "source_no_query_smoke": 2
+      },
+      "V": 0
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": "experiments/pamf_lora_main/packet_physics.py"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Waveform diagnosis on held source U only. No recognition or target statistics."
+  },
+  "checkpoint": {
+    "initialization": "Reuse frozen antithetic source U-only half readout and fit fixed clean power moments from U.",
+    "sources": [
+      "20261124-phase1-lora-antithetic-noise-response-source-m4-r01 antithetic-model.pt"
+    ],
+    "contract_check_ref": "experiments/pamf_lora_main/chirp_band_power_source.py",
+    "provenance_verdict": "Already completed SOURCE_SCORED clean U-only fit, matched contract; no F/TX/V/target loaded.",
+    "selection_rule": "One measured-power estimator qualifies only if both routes low urban 1–8 kHz private reduce MSE by >=5%, paired interval excludes zero, raw estimate correlation >=0.20."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex handoff thread 01a208a9-57df-7f82-a078-cd9477adf998",
+    "gpu_policy": "CPU-only. Six ordinary CPU workers for replay, no GPU allocation.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-interleaved-band-power-source-cpu-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-interleaved-band-power-source-cpu-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/interleaved_band_power",
+    "launch_command": "& 'E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe' -m experiments.pamf_lora_main.chirp_band_power_source publish --repo 'E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010' --output 'E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/interleaved_band_power' --context 'E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_calibration_source_r01_context.json' --ssh-config 'E:/type10-7/tools/n607_ssh_config' --parent-submit 'E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_residual_practical_release/submit.json'",
+    "stop_rule": "Stop on role, source contract, finite amplitude estimates or no-query smoke failure."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "smoke.json",
+    "source-u-band-power.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source held weak band power MSE",
+      "paired interval",
+      "amplitude correlation",
+      "alias signal leakage",
+      "actual noise share"
+    ],
+    "dimensions": [
+      "source receiver",
+      "route or generic perturbation",
+      "view",
+      "frequency band",
+      "readout"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "chirp_band_power_source.py, independent reference path within source waveform diagnosis"
+  },
+  "rows": [
+    {
+      "row_id": "probe-source",
+      "method": "Matched interleaved and observed-noise moment comparison",
+      "purpose": "Source-U-only waveform risk and direction falsification",
+      "config_ref": "experiments/pamf_lora_main/chirp_band_power_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-interleaved-band-power-source-cpu-r01/configs/probe-source.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 2026112991,
+        "data": null,
+        "augmentation": 2026115177,
+        "support": null,
+        "evaluation": 2026115177
+      },
+      "seed_notes": "Fixed clean U and held split, deterministic generic white and paired bootstrap. No new model seed.",
+      "k": null,
+      "scenario": "White control and both registered routes low suburban and low urban",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "150 packets, 5000 distinct clean U moments, four practical route/views and one synthetic white control",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-interleaved-band-power-source-cpu-r01/source-u-band-power.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-interleaved-band-power-source-cpu-r01/logs/probe-source.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.chirp_band_power_source probe /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-interleaved-band-power-source-cpu-r01/configs/probe-source.json source",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-interleaved-band-power-source-cpu-r01/source-u-band-power.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No network updates. All estimators use the same observed IQ and fixed clean U prior.",
+    "Exact noise only enters isolated source U comparison and is never fit or exposed to estimators."
+  ],
+  "registered_at": "2026-11-24T02:06:06+00:00"
+}
