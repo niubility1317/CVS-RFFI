@@ -1,0 +1,262 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261124-phase1-lora-generic-receiver-physics-source-m3-r01",
+  "group_id": "phase1-lora-observable-recovery",
+  "display_name": "LoRa 通用接收机扰动消融",
+  "description": "Matched source-only receiver front-end perturbation, with an immutable pointwise control.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "source_only",
+    "dual_path"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261124-phase1-lora-antithetic-noise-response-source-m4-r01",
+    "20261124-phase1-lora-shared-spectrum-covariance-source-m4-r01",
+    "20261124-phase1-lora-packet-spectral-context-source-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User handoff from 01a1dedc-e242-78a2-8064-20079b2070eb and active LoRa/WiSig observable recovery goal. Source screen only.",
+  "code": {
+    "commit": "66b8a7ae37db7a266c77bde10b9694e7dfb912e2",
+    "checkout": "E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-generic-receiver-physics-source-m3-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa registered main data",
+    "version": "lora_full_packets_v1",
+    "representation": "Phase-aligned six chirps, float32 [6,2,256] plus replay of registered full and residual received views in frozen source scoring",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/U_s_metadata.npz and /home/szu2070436088/2510044040/CV-SincNet/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/V_metadata.npz; fixed per-RX panel",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/V_metadata.npz; source scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": {
+        "clean_fit": 5000,
+        "clean_calibration": 2500,
+        "held": 500,
+        "smoke_independent_small_fit": 25
+      },
+      "V": {
+        "paired_frozen_score": 900,
+        "clean_complete": 12000
+      }
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": null,
+    "support_query_ref": null,
+    "leo_config_ref": "experiments/pamf_lora_main/packet_physics.py"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Legal received-only source screen, no target IQ or metadata."
+  },
+  "checkpoint": {
+    "initialization": "One from-scratch rank-four initialized joint fit on clean source U. Frozen matched pointwise reused during smoke and post-freeze attribution only.",
+    "sources": [
+      {
+        "role": "frozen matched pointwise recovery",
+        "ref": "20261124-phase1-lora-antithetic-noise-response-source-m4-r01 / pointwise-model.pt / execution c89c5929946fa4b935660d50cc5dd4c650e950c4"
+      },
+      {
+        "role": "frozen recovery",
+        "ref": "20261124-phase1-lora-shared-spectrum-covariance-source-m4-r01 rank"
+      },
+      {
+        "role": "frozen Tri-set readout",
+        "ref": "20261122-phase1-lora-tri-label-set-m3-r01 seed 2026092702"
+      },
+      {
+        "role": "route-matched DURA",
+        "ref": "Existing registered full and residual half-dose DURA source controls"
+      }
+    ],
+    "contract_check_ref": "experiments/pamf_lora_main/receiver_physics_source.py",
+    "provenance_verdict": "Same physical source U, fixed initialization, steps and loss; prior fixed trained checkpoint has source-only provenance and identical calibration.",
+    "selection_rule": "receiver_physics_half must beat pointwise_half, reference and rank_parent_half in both six-view scores, retain low urban vs reference and retain all-source clean vs raw."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex handoff thread 01a208a9-57df-7f82-a078-cd9477adf998",
+    "gpu_policy": "Up to two simultaneous workers on different eligible GPUs; capacity checked by existing scheduler with all compute PIDs and max 4 per GPU",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-generic-receiver-physics-source-m3-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/receiver_physics",
+    "launch_command": "& 'E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe' -m experiments.pamf_lora_main.receiver_physics_source publish --repo 'E:/codex/home/worktrees/pamf-repl-weight-diagnosis/standard_ce_baselines_20261010' --output 'E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/receiver_physics' --context 'E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_calibration_source_r01_context.json' --ssh-config 'E:/type10-7/tools/n607_ssh_config' --parent-submit 'E:/type10-7/local_artifacts/lora_packet_pilot_20261122/full_v1/dura_residual_practical_release/submit.json'",
+    "stop_rule": "Stop subsequent dispatch on wrong source contract, no-query smoke failure, nonfinite estimates, physical dose or independent-score coverage failure."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "smoke.json",
+    "receiver_physics-complete.json",
+    "receiver_physics-model.pt",
+    "b1.json",
+    "{full,residual}-predictions.json",
+    "{full,residual}-source-scores.json",
+    "clean-reserve-predictions.npz",
+    "clean-complete-scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "paired six-view recognition",
+      "low urban",
+      "complete clean",
+      "matched receiver-physics increment",
+      "single candidate B1"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "readout"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/{full,residual}-predictions.json",
+    "scorer_ref": "experiments.pamf_lora_main.receiver_physics_source score"
+  },
+  "rows": [
+    {
+      "row_id": "fit-receiver_physics",
+      "method": "receiver_physics LoRa joint fit",
+      "purpose": "source_screen",
+      "config_ref": "experiments/pamf_lora_main/receiver_physics_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/configs/fit-receiver_physics.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026112991,
+        "split": null,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original random stream 2026112991 preserved. Additional receiver physics uses its own train seed 2026113181 and held seed 2026113182.",
+      "k": null,
+      "scenario": "Clean source U, existing generic short filtering and antithetic colored noise, plus generic receiver front-end distortions.",
+      "optimizer": "AdamW 1e-4 weight decay, global gradient clip 1",
+      "lr": "2e-4 -> 2e-5 cosine",
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "3600 steps x 12 packets x 4 observations, 5000 fit, 2500 clean calibration, 500 held",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/receiver_physics-model.pt",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/logs/fit-receiver_physics.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.receiver_physics_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/configs/fit-receiver_physics.json receiver_physics",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/receiver_physics-model.pt",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/receiver_physics-complete.json"
+      ]
+    },
+    {
+      "row_id": "evaluate-full",
+      "method": "Direct, matched half DURA, fixed rank-four, and both trained arms at coarse, half and full.",
+      "purpose": "source_screen",
+      "config_ref": "experiments/pamf_lora_main/receiver_physics_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/configs/evaluate-full.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026112992
+      },
+      "seed_notes": "Recognizer has fixed historical split. Panel seed recorded; received channels replay existing package derivation, no new process-level augmentation seed.",
+      "k": null,
+      "scenario": "full clean plus six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "900 frozen source V packages per view",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/full-predictions.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/logs/evaluate-full.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.receiver_physics_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/configs/evaluate-full.json full",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/full-predictions.json"
+      ]
+    },
+    {
+      "row_id": "evaluate-residual",
+      "method": "Direct, matched half DURA, fixed rank-four, and both trained arms at coarse, half and full.",
+      "purpose": "source_screen",
+      "config_ref": "experiments/pamf_lora_main/receiver_physics_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/configs/evaluate-residual.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026112992
+      },
+      "seed_notes": "Recognizer has fixed historical split. Panel seed recorded; received channels replay existing package derivation, no new process-level augmentation seed.",
+      "k": null,
+      "scenario": "residual clean plus six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "900 frozen source V packages per view",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/residual-predictions.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/logs/evaluate-residual.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.receiver_physics_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/configs/evaluate-residual.json residual",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/residual-predictions.json"
+      ]
+    },
+    {
+      "row_id": "evaluate-reserve",
+      "method": "Direct, matched half DURA, fixed rank-four, and both trained arms at coarse, half and full.",
+      "purpose": "source_screen",
+      "config_ref": "experiments/pamf_lora_main/receiver_physics_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/configs/evaluate-reserve.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026112992
+      },
+      "seed_notes": "Recognizer has fixed historical split. Panel seed recorded; received channels replay existing package derivation, no new process-level augmentation seed.",
+      "k": null,
+      "scenario": "clean only, complement of the common source V panel",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "11100 disjoint physical source V clean packets",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/clean-reserve-predictions.npz",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/logs/evaluate-reserve.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.receiver_physics_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/configs/evaluate-reserve.json reserve",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/clean-reserve-predictions.npz"
+      ]
+    }
+  ],
+  "notes": [
+    "One new joint fit. Independent physics training RNG 2026113181 and held RNG 2026113182. No F, V, TX, practical or target data enter fitting."
+  ],
+  "registered_at": "2026-11-24T02:55:56+00:00"
+}

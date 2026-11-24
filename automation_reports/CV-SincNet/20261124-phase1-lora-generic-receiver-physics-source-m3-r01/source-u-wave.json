@@ -1,0 +1,814 @@
+{
+  "status": "PASS",
+  "n": 150,
+  "reference_after_observed": true,
+  "seconds": 57.52259671292268,
+  "target_reads": 0,
+  "F_reads": 0,
+  "V_reads": 0,
+  "TX_reads": 0,
+  "rows": {
+    "full": {
+      "practical_low_suburban": {
+        "n": 150,
+        "active": 53,
+        "waves": {
+          "direct": {
+            "common": {
+              "1_to_8": {
+                "relative_error": 0.2463584542274475,
+                "median_real_gain": 0.9971435070037842,
+                "median_abs_phase_rad": 0.022376108914613724
+              },
+              "9_to_32": {
+                "relative_error": 2.124173879623413,
+                "median_real_gain": 0.9967436790466309,
+                "median_abs_phase_rad": 0.02336275391280651
+              },
+              "33_to_64": {
+                "relative_error": 5.758209228515625,
+                "median_real_gain": 0.9964063763618469,
+                "median_abs_phase_rad": 0.03985408693552017
+              },
+              "65_to_128": {
+                "relative_error": 14.175079345703125,
+                "median_real_gain": 0.9892415404319763,
+                "median_abs_phase_rad": 0.03679612651467323
+              }
+            },
+            "private": {
+              "1_to_8": {
+                "relative_error": 4.596094131469727,
+                "median_real_gain": 0.9522399306297302,
+                "median_abs_phase_rad": 0.06346345692873001
+              },
+              "9_to_32": {
+                "relative_error": 111.30534362792969,
+                "median_real_gain": 0.9985404014587402,
+                "median_abs_phase_rad": 0.1034785583615303
+              },
+              "33_to_64": {
+                "relative_error": 172.33441162109375,
+                "median_real_gain": 1.004210114479065,
+                "median_abs_phase_rad": 0.10686204582452774
+              },
+              "65_to_128": {
+                "relative_error": 176.5330047607422,
+                "median_real_gain": 0.9842792749404907,
+                "median_abs_phase_rad": 0.08007562160491943
+              }
+            }
+          },
+          "rank_parent_half": {
+            "common": {
+              "1_to_8": {
+                "relative_error": 0.0918537825345993,
+                "median_real_gain": 0.996334433555603,
+                "median_abs_phase_rad": 0.01988893374800682
+              },
+              "9_to_32": {
+                "relative_error": 0.5964833498001099,
+                "median_real_gain": 0.9934197068214417,
+                "median_abs_phase_rad": 0.021025069057941437
+              },
+              "33_to_64": {
+                "relative_error": 1.550862193107605,
+                "median_real_gain": 0.994028627872467,
+                "median_abs_phase_rad": 0.034267522394657135
+              },
+              "65_to_128": {
+                "relative_error": 3.8118295669555664,
+                "median_real_gain": 0.9740704298019409,
+                "median_abs_phase_rad": 0.036655742675065994
+              }
+            },
+            "private": {
+              "1_to_8": {
+                "relative_error": 1.4868489503860474,
+                "median_real_gain": 0.9180691242218018,
+                "median_abs_phase_rad": 0.06346345692873001
+              },
+              "9_to_32": {
+                "relative_error": 29.8614559173584,
+                "median_real_gain": 0.9113175272941589,
+                "median_abs_phase_rad": 0.10203102976083755
+              },
+              "33_to_64": {
+                "relative_error": 46.37666320800781,
+                "median_real_gain": 0.9154468774795532,
+                "median_abs_phase_rad": 0.10919930785894394
+              },
+              "65_to_128": {
+                "relative_error": 47.52651596069336,
+                "median_real_gain": 0.9398164749145508,
+                "median_abs_phase_rad": 0.08007562160491943
+              }
+            }
+          },
+          "pointwise_half": {
+            "common": {
+              "1_to_8": {
+                "relative_error": 0.048145122826099396,
+                "median_real_gain": 0.9943395256996155,
+                "median_abs_phase_rad": 0.020460182800889015
+              },
+              "9_to_32": {
+                "relative_error": 0.5366824865341187,
+                "median_real_gain": 0.9961726665496826,
+                "median_abs_phase_rad": 0.022656302899122238
+              },
+              "33_to_64": {
+                "relative_error": 1.5516434907913208,
+                "median_real_gain": 0.994028627872467,
+                "median_abs_phase_rad": 0.03556923195719719
+              },
+              "65_to_128": {
+                "relative_error": 3.813612937927246,
+                "median_real_gain": 0.9740704298019409,
+                "median_abs_phase_rad": 0.035264767706394196
+              }
+            },
+            "private": {
+              "1_to_8": {
+                "relative_error": 0.4123039245605469,
+                "median_real_gain": 0.9229870438575745,
+                "median_abs_phase_rad": 0.057687561959028244
+              },
+              "9_to_32": {
+                "relative_error": 27.022743225097656,
+                "median_real_gain": 0.9154129028320312,
+                "median_abs_phase_rad": 0.09803451597690582
+              },
+              "33_to_64": {
+                "relative_error": 46.42463684082031,
+                "median_real_gain": 0.9154468774795532,
+                "median_abs_phase_rad": 0.10686204582452774
+              },
+              "65_to_128": {
+                "relative_error": 47.583396911621094,
+                "median_real_gain": 0.9398164749145508,
+                "median_abs_phase_rad": 0.08007562160491943
+              }
+            }
+          },
+          "receiver_physics_half": {
+            "common": {
+              "1_to_8": {
+                "relative_error": 0.055505458265542984,
+                "median_real_gain": 0.9957740306854248,
+                "median_abs_phase_rad": 0.022672098129987717
+              },
+              "9_to_32": {
+                "relative_error": 0.13361310958862305,
+                "median_real_gain": 0.994732141494751,
+                "median_abs_phase_rad": 0.020778838545084
+              },
+              "33_to_64": {
+                "relative_error": 1.4785319566726685,
+                "median_real_gain": 0.9925240874290466,
+                "median_abs_phase_rad": 0.034267522394657135
+              },
+              "65_to_128": {
+                "relative_error": 3.832153081893921,
+                "median_real_gain": 0.9740704298019409,
+                "median_abs_phase_rad": 0.03719146177172661
+              }
+            },
+            "private": {
+              "1_to_8": {
+                "relative_error": 0.43169376254081726,
+                "median_real_gain": 0.9229870438575745,
+                "median_abs_phase_rad": 0.05645361170172691
+              },
+              "9_to_32": {
+                "relative_error": 5.626043796539307,
+                "median_real_gain": 0.8912575244903564,
+                "median_abs_phase_rad": 0.09803451597690582
+              },
+              "33_to_64": {
+                "relative_error": 44.43952178955078,
+                "median_real_gain": 0.9154468774795532,
+                "median_abs_phase_rad": 0.10686204582452774
+              },
+              "65_to_128": {
+                "relative_error": 47.67962646484375,
+                "median_real_gain": 0.9398164749145508,
+                "median_abs_phase_rad": 0.08043443411588669
+              }
+            }
+          }
+        }
+      },
+      "practical_low_urban": {
+        "n": 150,
+        "active": 101,
+        "waves": {
+          "direct": {
+            "common": {
+              "1_to_8": {
+                "relative_error": 1.1588581800460815,
+                "median_real_gain": 0.9936831593513489,
+                "median_abs_phase_rad": 0.055129967629909515
+              },
+              "9_to_32": {
+                "relative_error": 9.807052612304688,
+                "median_real_gain": 0.9992580413818359,
+                "median_abs_phase_rad": 0.07615309208631516
+              },
+              "33_to_64": {
+                "relative_error": 28.794424057006836,
+                "median_real_gain": 1.002651333808899,
+                "median_abs_phase_rad": 0.11944813281297684
+              },
+              "65_to_128": {
+                "relative_error": 65.74483489990234,
+                "median_real_gain": 0.9899348020553589,
+                "median_abs_phase_rad": 0.11572638154029846
+              }
+            },
+            "private": {
+              "1_to_8": {
+                "relative_error": 6.153337478637695,
+                "median_real_gain": 0.9149494767189026,
+                "median_abs_phase_rad": 0.10502059757709503
+              },
+              "9_to_32": {
+                "relative_error": 238.0806884765625,
+                "median_real_gain": 0.9631012082099915,
+                "median_abs_phase_rad": 0.2604528069496155
+              },
+              "33_to_64": {
+                "relative_error": 702.9083862304688,
+                "median_real_gain": 0.9841371178627014,
+                "median_abs_phase_rad": 0.26337382197380066
+              },
+              "65_to_128": {
+                "relative_error": 840.4779052734375,
+                "median_real_gain": 0.9852223992347717,
+                "median_abs_phase_rad": 0.1928580105304718
+              }
+            }
+          },
+          "rank_parent_half": {
+            "common": {
+              "1_to_8": {
+                "relative_error": 0.41761505603790283,
+                "median_real_gain": 0.9874737858772278,
+                "median_abs_phase_rad": 0.06486434489488602
+              },
+              "9_to_32": {
+                "relative_error": 2.540163993835449,
+                "median_real_gain": 0.9880790710449219,
+                "median_abs_phase_rad": 0.05229845270514488
+              },
+              "33_to_64": {
+                "relative_error": 7.269806385040283,
+                "median_real_gain": 0.9870967864990234,
+                "median_abs_phase_rad": 0.08736920356750488
+              },
+              "65_to_128": {
+                "relative_error": 16.587732315063477,
+                "median_real_gain": 0.9642310738563538,
+                "median_abs_phase_rad": 0.08657743781805038
+              }
+            },
+            "private": {
+              "1_to_8": {
+                "relative_error": 1.8629744052886963,
+                "median_real_gain": 0.7332254648208618,
+                "median_abs_phase_rad": 0.10502059757709503
+              },
+              "9_to_32": {
+                "relative_error": 60.13054656982422,
+                "median_real_gain": 0.7445980310440063,
+                "median_abs_phase_rad": 0.23362819850444794
+              },
+              "33_to_64": {
+                "relative_error": 177.11839294433594,
+                "median_real_gain": 0.7478036880493164,
+                "median_abs_phase_rad": 0.24423183500766754
+              },
+              "65_to_128": {
+                "relative_error": 211.94602966308594,
+                "median_real_gain": 0.6887139678001404,
+                "median_abs_phase_rad": 0.19902294874191284
+              }
+            }
+          },
+          "pointwise_half": {
+            "common": {
+              "1_to_8": {
+                "relative_error": 0.14894793927669525,
+                "median_real_gain": 0.9570759534835815,
+                "median_abs_phase_rad": 0.0616459846496582
+              },
+              "9_to_32": {
+                "relative_error": 2.302945613861084,
+                "median_real_gain": 0.997234046459198,
+                "median_abs_phase_rad": 0.04578659310936928
+              },
+              "33_to_64": {
+                "relative_error": 7.265781402587891,
+                "median_real_gain": 0.9932429194450378,
+                "median_abs_phase_rad": 0.08958574384450912
+              },
+              "65_to_128": {
+                "relative_error": 16.59354019165039,
+                "median_real_gain": 0.9648187160491943,
+                "median_abs_phase_rad": 0.08664870262145996
+              }
+            },
+            "private": {
+              "1_to_8": {
+                "relative_error": 0.3861932158470154,
+                "median_real_gain": 0.6750267148017883,
+                "median_abs_phase_rad": 0.05435636639595032
+              },
+              "9_to_32": {
+                "relative_error": 54.64176940917969,
+                "median_real_gain": 0.7796107530593872,
+                "median_abs_phase_rad": 0.22680175304412842
+              },
+              "33_to_64": {
+                "relative_error": 177.24169921875,
+                "median_real_gain": 0.7499719858169556,
+                "median_abs_phase_rad": 0.23534327745437622
+              },
+              "65_to_128": {
+                "relative_error": 212.21200561523438,
+                "median_real_gain": 0.7050449848175049,
+                "median_abs_phase_rad": 0.19358867406845093
+              }
+            }
+          },
+          "receiver_physics_half": {
+            "common": {
+              "1_to_8": {
+                "relative_error": 0.23282009363174438,
+                "median_real_gain": 0.9751251935958862,
+                "median_abs_phase_rad": 0.053466059267520905
+              },
+              "9_to_32": {
+                "relative_error": 0.3033137023448944,
+                "median_real_gain": 0.977199912071228,
+                "median_abs_phase_rad": 0.03800472989678383
+              },
+              "33_to_64": {
+                "relative_error": 6.947071075439453,
+                "median_real_gain": 0.9932429194450378,
+                "median_abs_phase_rad": 0.08773311972618103
+              },
+              "65_to_128": {
+                "relative_error": 16.664899826049805,
+                "median_real_gain": 0.9631010890007019,
+                "median_abs_phase_rad": 0.09330062568187714
+              }
+            },
+            "private": {
+              "1_to_8": {
+                "relative_error": 0.43287554383277893,
+                "median_real_gain": 0.6965716481208801,
+                "median_abs_phase_rad": 0.050514861941337585
+              },
+              "9_to_32": {
+                "relative_error": 5.82659912109375,
+                "median_real_gain": 0.620430052280426,
+                "median_abs_phase_rad": 0.1731918901205063
+              },
+              "33_to_64": {
+                "relative_error": 169.8142852783203,
+                "median_real_gain": 0.7336767911911011,
+                "median_abs_phase_rad": 0.23827940225601196
+              },
+              "65_to_128": {
+                "relative_error": 212.68270874023438,
+                "median_real_gain": 0.6959342360496521,
+                "median_abs_phase_rad": 0.19248531758785248
+              }
+            }
+          }
+        }
+      }
+    },
+    "residual": {
+      "practical_low_suburban": {
+        "n": 150,
+        "active": 150,
+        "waves": {
+          "direct": {
+            "common": {
+              "1_to_8": {
+                "relative_error": 0.6222313046455383,
+                "median_real_gain": 0.986878514289856,
+                "median_abs_phase_rad": 0.05436944589018822
+              },
+              "9_to_32": {
+                "relative_error": 3.7302896976470947,
+                "median_real_gain": 0.9884728193283081,
+                "median_abs_phase_rad": 0.09055918455123901
+              },
+              "33_to_64": {
+                "relative_error": 9.803637504577637,
+                "median_real_gain": 0.994178295135498,
+                "median_abs_phase_rad": 0.09980388730764389
+              },
+              "65_to_128": {
+                "relative_error": 25.775312423706055,
+                "median_real_gain": 0.997651994228363,
+                "median_abs_phase_rad": 0.13701604306697845
+              }
+            },
+            "private": {
+              "1_to_8": {
+                "relative_error": 7.718049049377441,
+                "median_real_gain": 0.8801814913749695,
+                "median_abs_phase_rad": 0.18300336599349976
+              },
+              "9_to_32": {
+                "relative_error": 169.12744140625,
+                "median_real_gain": 0.8860276341438293,
+                "median_abs_phase_rad": 0.34610453248023987
+              },
+              "33_to_64": {
+                "relative_error": 118.97903442382812,
+                "median_real_gain": 0.8836138844490051,
+                "median_abs_phase_rad": 0.3968615233898163
+              },
+              "65_to_128": {
+                "relative_error": 330.2708435058594,
+                "median_real_gain": 0.9724100828170776,
+                "median_abs_phase_rad": 0.26646825671195984
+              }
+            }
+          },
+          "rank_parent_half": {
+            "common": {
+              "1_to_8": {
+                "relative_error": 0.215742826461792,
+                "median_real_gain": 0.9848543405532837,
+                "median_abs_phase_rad": 0.05483381450176239
+              },
+              "9_to_32": {
+                "relative_error": 0.9943335056304932,
+                "median_real_gain": 0.9749386310577393,
+                "median_abs_phase_rad": 0.05612502992153168
+              },
+              "33_to_64": {
+                "relative_error": 2.498331069946289,
+                "median_real_gain": 0.9600692391395569,
+                "median_abs_phase_rad": 0.052399203181266785
+              },
+              "65_to_128": {
+                "relative_error": 6.52742338180542,
+                "median_real_gain": 0.9489031434059143,
+                "median_abs_phase_rad": 0.08552272617816925
+              }
+            },
+            "private": {
+              "1_to_8": {
+                "relative_error": 2.332063674926758,
+                "median_real_gain": 0.6744467616081238,
+                "median_abs_phase_rad": 0.19317927956581116
+              },
+              "9_to_32": {
+                "relative_error": 42.690147399902344,
+                "median_real_gain": 0.49452710151672363,
+                "median_abs_phase_rad": 0.3177255392074585
+              },
+              "33_to_64": {
+                "relative_error": 30.176469802856445,
+                "median_real_gain": 0.4633359909057617,
+                "median_abs_phase_rad": 0.37489816546440125
+              },
+              "65_to_128": {
+                "relative_error": 83.14334106445312,
+                "median_real_gain": 0.5013146996498108,
+                "median_abs_phase_rad": 0.26482945680618286
+              }
+            }
+          },
+          "pointwise_half": {
+            "common": {
+              "1_to_8": {
+                "relative_error": 0.07694019377231598,
+                "median_real_gain": 0.9686530232429504,
+                "median_abs_phase_rad": 0.05513932183384895
+              },
+              "9_to_32": {
+                "relative_error": 0.8861185908317566,
+                "median_real_gain": 0.9760984182357788,
+                "median_abs_phase_rad": 0.05035054311156273
+              },
+              "33_to_64": {
+                "relative_error": 2.4983441829681396,
+                "median_real_gain": 0.9645562767982483,
+                "median_abs_phase_rad": 0.05613207072019577
+              },
+              "65_to_128": {
+                "relative_error": 6.526490688323975,
+                "median_real_gain": 0.9454397559165955,
+                "median_abs_phase_rad": 0.08811512589454651
+              }
+            },
+            "private": {
+              "1_to_8": {
+                "relative_error": 0.5975436568260193,
+                "median_real_gain": 0.4530618190765381,
+                "median_abs_phase_rad": 0.1528238207101822
+              },
+              "9_to_32": {
+                "relative_error": 37.76222610473633,
+                "median_real_gain": 0.47668004035949707,
+                "median_abs_phase_rad": 0.28497064113616943
+              },
+              "33_to_64": {
+                "relative_error": 30.183425903320312,
+                "median_real_gain": 0.47310924530029297,
+                "median_abs_phase_rad": 0.38736265897750854
+              },
+              "65_to_128": {
+                "relative_error": 83.17545318603516,
+                "median_real_gain": 0.5031883120536804,
+                "median_abs_phase_rad": 0.26592817902565
+              }
+            }
+          },
+          "receiver_physics_half": {
+            "common": {
+              "1_to_8": {
+                "relative_error": 0.08401705324649811,
+                "median_real_gain": 0.9703697562217712,
+                "median_abs_phase_rad": 0.05790254473686218
+              },
+              "9_to_32": {
+                "relative_error": 0.218821182847023,
+                "median_real_gain": 0.9668172001838684,
+                "median_abs_phase_rad": 0.043062083423137665
+              },
+              "33_to_64": {
+                "relative_error": 2.3804922103881836,
+                "median_real_gain": 0.9640781283378601,
+                "median_abs_phase_rad": 0.05369405820965767
+              },
+              "65_to_128": {
+                "relative_error": 6.564306735992432,
+                "median_real_gain": 0.9388095736503601,
+                "median_abs_phase_rad": 0.08978120982646942
+              }
+            },
+            "private": {
+              "1_to_8": {
+                "relative_error": 0.6221489906311035,
+                "median_real_gain": 0.43345147371292114,
+                "median_abs_phase_rad": 0.1682514101266861
+              },
+              "9_to_32": {
+                "relative_error": 7.843777179718018,
+                "median_real_gain": 0.4061990976333618,
+                "median_abs_phase_rad": 0.253531813621521
+              },
+              "33_to_64": {
+                "relative_error": 28.671781539916992,
+                "median_real_gain": 0.46742725372314453,
+                "median_abs_phase_rad": 0.3784305155277252
+              },
+              "65_to_128": {
+                "relative_error": 83.55573272705078,
+                "median_real_gain": 0.5047733187675476,
+                "median_abs_phase_rad": 0.2658902704715729
+              }
+            }
+          }
+        }
+      },
+      "practical_low_urban": {
+        "n": 150,
+        "active": 150,
+        "waves": {
+          "direct": {
+            "common": {
+              "1_to_8": {
+                "relative_error": 3.171146869659424,
+                "median_real_gain": 0.9303561449050903,
+                "median_abs_phase_rad": 0.23208916187286377
+              },
+              "9_to_32": {
+                "relative_error": 26.738412857055664,
+                "median_real_gain": 0.9669036269187927,
+                "median_abs_phase_rad": 0.3327045738697052
+              },
+              "33_to_64": {
+                "relative_error": 80.77993774414062,
+                "median_real_gain": 0.9542602896690369,
+                "median_abs_phase_rad": 0.5111188888549805
+              },
+              "65_to_128": {
+                "relative_error": 182.3970489501953,
+                "median_real_gain": 0.960636556148529,
+                "median_abs_phase_rad": 0.5507411360740662
+              }
+            },
+            "private": {
+              "1_to_8": {
+                "relative_error": 7.383715629577637,
+                "median_real_gain": 0.8336778879165649,
+                "median_abs_phase_rad": 0.19827581942081451
+              },
+              "9_to_32": {
+                "relative_error": 269.7555847167969,
+                "median_real_gain": 0.7171127200126648,
+                "median_abs_phase_rad": 0.7002895474433899
+              },
+              "33_to_64": {
+                "relative_error": 1161.499755859375,
+                "median_real_gain": 0.8834438920021057,
+                "median_abs_phase_rad": 0.9279569983482361
+              },
+              "65_to_128": {
+                "relative_error": 953.4075317382812,
+                "median_real_gain": 1.0785433053970337,
+                "median_abs_phase_rad": 0.6036545038223267
+              }
+            }
+          },
+          "rank_parent_half": {
+            "common": {
+              "1_to_8": {
+                "relative_error": 1.0101619958877563,
+                "median_real_gain": 0.9068955183029175,
+                "median_abs_phase_rad": 0.17309477925300598
+              },
+              "9_to_32": {
+                "relative_error": 6.782979965209961,
+                "median_real_gain": 0.9455419182777405,
+                "median_abs_phase_rad": 0.17874732613563538
+              },
+              "33_to_64": {
+                "relative_error": 20.191152572631836,
+                "median_real_gain": 0.9284365773200989,
+                "median_abs_phase_rad": 0.2583153545856476
+              },
+              "65_to_128": {
+                "relative_error": 45.664859771728516,
+                "median_real_gain": 0.8920470476150513,
+                "median_abs_phase_rad": 0.3218752443790436
+              }
+            },
+            "private": {
+              "1_to_8": {
+                "relative_error": 2.188932418823242,
+                "median_real_gain": 0.6640582084655762,
+                "median_abs_phase_rad": 0.1609521061182022
+              },
+              "9_to_32": {
+                "relative_error": 67.61817932128906,
+                "median_real_gain": 0.5579796433448792,
+                "median_abs_phase_rad": 0.5056654810905457
+              },
+              "33_to_64": {
+                "relative_error": 290.1242370605469,
+                "median_real_gain": 0.5698560476303101,
+                "median_abs_phase_rad": 0.810168981552124
+              },
+              "65_to_128": {
+                "relative_error": 238.67332458496094,
+                "median_real_gain": 0.5833255052566528,
+                "median_abs_phase_rad": 0.5199341177940369
+              }
+            }
+          },
+          "pointwise_half": {
+            "common": {
+              "1_to_8": {
+                "relative_error": 0.2208230048418045,
+                "median_real_gain": 0.8665781021118164,
+                "median_abs_phase_rad": 0.1209188923239708
+              },
+              "9_to_32": {
+                "relative_error": 5.962087154388428,
+                "median_real_gain": 0.9555659890174866,
+                "median_abs_phase_rad": 0.17934319376945496
+              },
+              "33_to_64": {
+                "relative_error": 20.208335876464844,
+                "median_real_gain": 0.9365695714950562,
+                "median_abs_phase_rad": 0.26005005836486816
+              },
+              "65_to_128": {
+                "relative_error": 45.646461486816406,
+                "median_real_gain": 0.879825234413147,
+                "median_abs_phase_rad": 0.3203297555446625
+              }
+            },
+            "private": {
+              "1_to_8": {
+                "relative_error": 0.39604195952415466,
+                "median_real_gain": 0.5799276232719421,
+                "median_abs_phase_rad": 0.13860011100769043
+              },
+              "9_to_32": {
+                "relative_error": 59.10740280151367,
+                "median_real_gain": 0.5629239678382874,
+                "median_abs_phase_rad": 0.39566415548324585
+              },
+              "33_to_64": {
+                "relative_error": 290.3074645996094,
+                "median_real_gain": 0.566432535648346,
+                "median_abs_phase_rad": 0.7947470545768738
+              },
+              "65_to_128": {
+                "relative_error": 238.68392944335938,
+                "median_real_gain": 0.6038402318954468,
+                "median_abs_phase_rad": 0.5066127777099609
+              }
+            }
+          },
+          "receiver_physics_half": {
+            "common": {
+              "1_to_8": {
+                "relative_error": 0.27384069561958313,
+                "median_real_gain": 0.8825386762619019,
+                "median_abs_phase_rad": 0.12920619547367096
+              },
+              "9_to_32": {
+                "relative_error": 0.3618740737438202,
+                "median_real_gain": 0.9195964336395264,
+                "median_abs_phase_rad": 0.10824869573116302
+              },
+              "33_to_64": {
+                "relative_error": 19.004274368286133,
+                "median_real_gain": 0.9105430245399475,
+                "median_abs_phase_rad": 0.23178040981292725
+              },
+              "65_to_128": {
+                "relative_error": 45.83394241333008,
+                "median_real_gain": 0.8747752904891968,
+                "median_abs_phase_rad": 0.3302709460258484
+              }
+            },
+            "private": {
+              "1_to_8": {
+                "relative_error": 0.42315995693206787,
+                "median_real_gain": 0.5866338610649109,
+                "median_abs_phase_rad": 0.14864809811115265
+              },
+              "9_to_32": {
+                "relative_error": 2.9965720176696777,
+                "median_real_gain": 0.5159305334091187,
+                "median_abs_phase_rad": 0.22025014460086823
+              },
+              "33_to_64": {
+                "relative_error": 273.2623291015625,
+                "median_real_gain": 0.5531782507896423,
+                "median_abs_phase_rad": 0.7681233286857605
+              },
+              "65_to_128": {
+                "relative_error": 239.34129333496094,
+                "median_real_gain": 0.6017144918441772,
+                "median_abs_phase_rad": 0.5106038451194763
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "matched_held_150": {
+    "pointwise_recipe": {
+      "pointwise": [
+        0.10234523564577103,
+        0.20539340376853943,
+        1.776035189628601,
+        0.29119130969047546,
+        1.560945987701416,
+        0.01495867595076561
+      ],
+      "receiver_physics": [
+        0.10798385739326477,
+        0.5838804244995117,
+        0.946255624294281,
+        0.35662373900413513,
+        0.702679455280304,
+        0.026472898200154305
+      ]
+    },
+    "receiver_physics_recipe": {
+      "pointwise": [
+        0.22046887874603271,
+        0.26344364881515503,
+        3.9396109580993652,
+        3.2700071334838867,
+        1.7268285751342773,
+        0.24778872728347778
+      ],
+      "receiver_physics": [
+        0.21154241263866425,
+        0.5180912017822266,
+        2.9923458099365234,
+        2.774921417236328,
+        0.884950578212738,
+        0.2380719780921936
+      ]
+    }
+  }
+}
