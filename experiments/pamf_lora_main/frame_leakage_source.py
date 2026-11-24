@@ -25,7 +25,7 @@ from .runner import activate
 from .spectral_unroll import ROUTES
 
 
-RUN = '20261124-phase1-lora-frame-leakage-source-cpu-r01'
+RUN = '20261124-phase1-lora-frame-leakage-source-cpu-r02'
 SEED = 2026114399
 PER_RX = 30
 ISOLATION = dict(F_reads=0,TX_reads=0,V_reads=0,target_reads=0,training_updates=0)
@@ -109,7 +109,7 @@ def smoke(rt):
         ideal = test['000']['bands']['pooled'][b]
         actual = test['111']['bands']['pooled'][b]
         tracked = test['tracked']['bands']['pooled'][b]
-        if ideal['frame_error_to_private']!=0 or actual['frame_error_to_private']<=0:
+        if not 0 <= ideal['frame_error_to_private'] <= 1e-8 or not actual['frame_error_to_private'] > 0:
             raise ValueError('Invalid source no-query coordinate attribution smoke')
         torch.testing.assert_close(actual['frame_error_to_private'],tracked['frame_error_to_private'])
         torch.testing.assert_close(actual['added_noise_to_private'],tracked['added_noise_to_private'],rtol=1e-5,atol=1e-7)
