@@ -106,6 +106,24 @@ class TriTuningTests(TestCase):
                 self.assertEqual(predicted,expected)
                 self.assertEqual(read(root/'selection.json')['names'],expected)
 
+    def test_physics_flag_reaches_source_workers_without_target_handle(self):
+        with TemporaryDirectory() as temp:
+            root=Path(temp)/'run'
+            rt={'run_root':str(root),'scratch':True,'physics_study':True,
+                'fixed_clean_cache':'source-only','native_target_root':'private'}
+            with patch.object(tri_clean95,'start',return_value=Mock(wait=lambda:0)) as start, \
+                 patch.object(tri_clean95,'schedule') as schedule:
+                def freeze(_,jobs,launch):
+                    self.assertEqual(jobs,[('train','phase_physics')])
+                    launch(rt,'train','phase_physics',0)
+                    write(root/'F/phase_physics/complete.json',{'frozen':{'n':12000,'correct':11759,'nll':.1}})
+                schedule.side_effect=freeze
+                tri_clean95.dispatch(rt)
+            for call in start.call_args_list:
+                self.assertIn('physics_study',call.kwargs['extra_keys'])
+                self.assertNotIn('native_target_root',call.kwargs['extra_keys'])
+            self.assertEqual(read(root/'selection.json')['names'],[])
+
     def test_packet_phase_feature_removes_common_phase_and_linear_drift(self):
         t=torch.arange(8,dtype=torch.float64)
         base=torch.polar(1+.2*t,torch.sin(t)).unsqueeze(0)
@@ -113,6 +131,22 @@ class TriTuningTests(TestCase):
         actual=packet_phase_curvature(rotated)
         self.assertEqual(actual.shape,(1,12))
         torch.testing.assert_close(actual,packet_phase_curvature(base))
+
+    def test_packet_physics_cancels_common_gain_phase_and_frequency(self):
+        from experiments.pamf_lora_main.repair_features import relative_packet_physics
+        rng=torch.Generator().manual_seed(43)
+        residual=torch.randn(2,8,384,dtype=torch.complex64,generator=rng)+1
+        tone=torch.randn(2,8,generator=rng)*20
+        dc=residual.mean(-1)
+        expected=relative_packet_physics(tone,dc,residual)
+        scaled=residual*(1.6+.7j)
+        actual=relative_packet_physics(tone+326,scaled.mean(-1),scaled)
+        self.assertEqual(actual.shape,(2,24))
+        self.assertTrue(torch.isfinite(actual).all())
+        torch.testing.assert_close(actual,expected,atol=1e-5,rtol=1e-5)
+        rows,epochs,u_batch=tri_clean95.study({'scratch':True,'physics_study':True})
+        self.assertEqual((epochs,u_batch),(112,16))
+        self.assertTrue(rows['phase_physics']['packet_physics'])
 
     def test_timing_views_use_neighbor_samples_within_every_physical_chirp(self):
         center=padded_crop(ALL_CHIRPS)[:,125:1125]

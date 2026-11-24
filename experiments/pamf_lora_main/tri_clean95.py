@@ -95,7 +95,10 @@ class TimeFrequencyAligned(CoherentPacket):
     def forward(self,x):
         drift_layer=getattr(self,'relative_drift',None)
         phase_layer=getattr(self,'phase_curvature',None)
-        if phase_layer is not None:
+        physics_layer=getattr(self,'packet_physics',None)
+        if physics_layer is not None:
+            traces,phase,physics=self.trace(x,with_packet_physics=True)
+        elif phase_layer is not None:
             traces,phase=self.trace(x,with_phase=True)
         elif drift_layer is None:
             traces=self.trace(x)
@@ -134,6 +137,8 @@ class TimeFrequencyAligned(CoherentPacket):
             aligned=aligned+.10*drift_layer(torch.asinh(drift))
         if phase_layer is not None:
             aligned=aligned+.10*phase_layer(phase)
+        if physics_layer is not None:
+            aligned=aligned+.10*physics_layer(physics)
         return logits+self.head(aligned),fused+.10*aligned
 
 
@@ -163,6 +168,9 @@ def clean_model(rt,root,c,row,device):
             if row.get('phase_curvature'):
                 f.phase_curvature=nn.Sequential(nn.Linear(12,32),nn.LayerNorm(32),nn.SiLU(),
                                                nn.Linear(32,160),nn.LayerNorm(160)).to(device)
+            if row.get('packet_physics'):
+                f.packet_physics=nn.Sequential(nn.Linear(24,32),nn.LayerNorm(32),nn.SiLU(),
+                                               nn.Linear(32,160),nn.LayerNorm(160)).to(device)
             if f.spectral_edges:
                 original=f.time_frequency[0]
                 extended=nn.Conv2d(4,16,3,padding=1,device=device)
@@ -177,6 +185,8 @@ def clean_model(rt,root,c,row,device):
 
 def study(rt):
     if rt.get('scratch'):
+        if rt.get('physics_study'):
+            return PHYSICS_ROWS,112,16
         if rt.get('rtl_study'):
             return RTL_ROWS,112,16
         if rt.get('phase_joint_study'):
@@ -270,6 +280,10 @@ PHASE_JOINT_RUN='20261125-phase1-lora-pamf-tri-clean-phasejoint98-s2026092702-r0
 PHASE_JOINT_ROWS={
     'phase_joint': dict(ANCHOR_ROWS['phase_anchor'],joint_rx_weight=.12),
 }
+PHYSICS_RUN='20261125-phase1-lora-pamf-tri-clean-packetphysics98-s2026092702-r01'
+PHYSICS_ROWS={
+    'phase_physics': dict(ANCHOR_ROWS['phase_anchor'],packet_physics=True),
+}
 RTL_RUN='20261125-phase1-lora-pamf-tri-clean-rtl98-s2026092702-r01'
 RTL_ROWS={
     'phase_rtl': dict(ANCHOR_ROWS['phase_anchor'],rtl_weight=2.),
@@ -309,6 +323,8 @@ def row_names(rt):
         return ('phase_jitter',)
     if rt.get('phase_joint_study'):
         return ('phase_joint',)
+    if rt.get('physics_study'):
+        return ('phase_physics',)
     if rt.get('rtl_study'):
         return ('phase_rtl',)
     return SCRATCH_LOCAL if rt.get('scratch') else LOCAL
@@ -495,7 +511,7 @@ def train(rt,name):
         validation_epochs.update(range(warmup,epochs+1,4))
         if any(rt.get(k) for k in ('budget_study','edge_study','robust_study','phase_study')):
             validation_epochs.update((32,48,60))
-        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study')):
+        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study')):
             validation_epochs.update((32,48,64,80,88))
     with (out/'epochs.jsonl').open('x',encoding='utf8') as log:
         for epoch in range(1,epochs+1):
@@ -588,14 +604,14 @@ def dispatch(rt):
     root=Path(rt['run_root'])
     screens=('quick','transfer','timefreq','noise_study','drift_study','budget_study')
     gated_study=any(rt.get(k) for k in ('robust_study','phase_study','anchor_study','timing_study',
-                                       'phase_joint_study','rtl_study'))
+                                       'phase_joint_study','rtl_study','physics_study'))
     if (gated_study or any(rt.get(k) for k in ('noise_study','drift_study','budget_study','edge_study'))) and not rt.get('scratch'):
         raise ValueError('The clean input comparisons require random initialization')
     root.mkdir(exist_ok=False)
     state=root/'state.json'
     fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq',
                              'noise_study','drift_study','budget_study','edge_study','robust_study','phase_study','anchor_study',
-                             'timing_study','phase_joint_study','rtl_study',
+                             'timing_study','phase_joint_study','rtl_study','physics_study',
                              'fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)

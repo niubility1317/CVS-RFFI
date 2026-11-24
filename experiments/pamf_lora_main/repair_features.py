@@ -42,6 +42,21 @@ def packet_phase_curvature(gain):
     return torch.cat((variation.real,variation.imag),dim=1)
 
 
+def relative_packet_physics(tone, dc, residual):
+    def centered(values):
+        return values-values[:,1:-1].mean(1,keepdim=True)
+
+    gain=centered(dc.abs().clamp_min(1e-6).log())
+    residual_power=(residual-dc[...,None]).abs().square().mean(-1)
+    energy=centered((residual_power/dc.abs().square().clamp_min(1e-12)).clamp_min(1e-7).log())
+    tone=centered(tone)
+    # Rounded per-position scales measured on the labeled source only.
+    scales=gain.new_tensor((.09,.07,.04,.02,.02,.04,.07,.11,
+                            20.,5.,4.,3.,2.,3.,6.,11.,
+                            .75,.13,.10,.10,.05,.10,.16,.19))
+    return torch.asinh(torch.cat((gain,tone,energy),dim=1)/scales)
+
+
 class AlignedTrace(nn.Module):
     """Remove the common dechirped tone and retain residual amplitude and phase."""
 
@@ -50,7 +65,7 @@ class AlignedTrace(nn.Module):
         self.reference = ChirpResponse(samples=samples)
         self.register_buffer('time', torch.arange(samples, dtype=torch.float32), persistent=False)
 
-    def forward(self, x, *, with_drift=False, with_phase=False):
+    def forward(self, x, *, with_drift=False, with_phase=False, with_packet_physics=False):
         z = torch.complex(x[:, :, 0], x[:, :, 1])
         baseband = z * self.reference.chirp.conj()
         length = 8*self.time.numel()
@@ -64,10 +79,16 @@ class AlignedTrace(nn.Module):
         fine = slope[..., None] * self.time
         w = w * torch.polar(torch.ones_like(fine), -fine)
         dc = w.mean(-1, keepdim=True)
+        if with_packet_physics:
+            rate=self.reference.sample_rate
+            tone=k*(rate/length)+slope*(rate/(2*torch.pi))
+            packet_physics=relative_packet_physics(tone,dc.squeeze(-1),w)
         w = w * (dc.conj() / dc.abs().clamp_min(1e-5))
         rms = z.abs().square().mean(-1, keepdim=True).clamp_min(1e-6).sqrt()
         w = w / rms
         trace = torch.stack((w.real, w.imag, z.abs() / rms), dim=2)
+        if with_packet_physics:
+            return trace,packet_phase_curvature(dc.squeeze(-1)),packet_physics
         if with_phase:
             return trace,packet_phase_curvature(dc.squeeze(-1))
         if with_drift:
