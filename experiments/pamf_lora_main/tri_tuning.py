@@ -24,7 +24,7 @@ from .packet_runner import schedule
 from .physical import ChirpResponse
 from .refine_runner import start
 from .runner import activate
-from . import tri_length
+from . import tri_branch_shapes, tri_length
 
 
 RUN = '20261125-phase1-lora-pamf-tri-shape-loss-m8-r01'
@@ -109,6 +109,7 @@ def configure(model, row):
         for head in (raw.core.id_backbone.cls_head, model.head):
             head.weight = nn.Parameter(F.pad(head.weight.detach(), (0, width - 160)))
         model.head.in_features = width
+    tri_branch_shapes.adapt(raw,row)
     return tri_length.adapt(model, row.get('samples',256))
 
 
@@ -134,6 +135,10 @@ def shape_trace(model, x):
         ('middle', raw.core.id_backbone.t2.pool),
         ('frequency', raw.core.id_backbone.f3),
         ('pa', raw.core.id_backbone.pa_b3),
+        ('time_pool',raw.core.id_backbone.t_pool),
+        ('frequency_pool',raw.core.id_backbone.f_pool),
+        ('pa_pool',raw.core.id_backbone.pa_pool),
+        ('reference_hidden',raw.response_projection[0]),
         ('aligned', model.encoder[9]),
     ):
         def capture(_, args, out, name=name):

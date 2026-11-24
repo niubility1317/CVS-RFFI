@@ -8,6 +8,9 @@ import torch
 from experiments.cric_dura_comparison.io import write
 from experiments.pamf_lora_main import tri_tuning
 from experiments.pamf_lora_main.packet_physics import chirp_samples
+from experiments.pamf_lora_main.tri_branch_shapes import retain_projection
+from experiments.pamf_lora_main import tri_clean95
+from experiments.pamf_lora_main.packet_physics import chirp_windows
 from experiments.pamf_ssl_research.hard_pl_objective import mechanism_loss
 from experiments.pamf_ssl_research.source_receiver_extrapolation import extrapolate
 
@@ -52,3 +55,25 @@ class TriTuningTests(TestCase):
         self.assertEqual(high.shape,(6,512))
         self.assertLess(np.mean(np.abs(low)),.05)
         self.assertGreater(np.mean(np.abs(high)),.95)
+
+    def test_wider_branch_pool_preserves_the_projected_mean_at_initialization(self):
+        layer = torch.nn.Linear(3,5)
+        values = torch.arange(48,dtype=torch.float32).reshape(2,3,8)
+        old = layer(values.mean(dim=2))
+        new = retain_projection(layer)(torch.nn.functional.adaptive_avg_pool1d(values,4).flatten(1))
+        torch.testing.assert_close(old,new,atol=1e-5,rtol=1e-5)
+
+    def test_vectorized_clean_grid_matches_the_registered_packet_readout(self):
+        rng = np.random.default_rng(26)
+        x = (rng.normal(size=(3,8192))+1j*rng.normal(size=(3,8192))).astype(np.complex64)
+        for n in (192,256,384,512):
+            actual = tri_clean95.clean_iq(x,n)
+            expected = np.stack([chirp_windows(raw,samples=n) for raw in x])
+            np.testing.assert_allclose(actual,expected,atol=2e-7,rtol=2e-7)
+
+    def test_clean_predictor_blocks_unselected_rows_without_target_handle(self):
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            write(root/'selection.json', {'names':['control']})
+            with self.assertRaisesRegex(ValueError, 'source-frozen'):
+                tri_clean95.predict({'run_root':temp},'iq512')
