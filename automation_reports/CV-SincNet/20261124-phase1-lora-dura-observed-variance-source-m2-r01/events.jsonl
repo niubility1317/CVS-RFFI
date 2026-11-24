@@ -1,3 +1,8 @@
 {"at": "2026-11-24T09:00:46+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-24T09:03:35+00:00", "status": "RUNNING", "row_id": "fit-observed_variance", "note": "True source checkpoint passed; measured-variance training PID, CWD, argv, physical GPU7 and log growth verified.", "evidence": "launch-evidence.json"}
 {"at": "2026-11-24T09:03:35+00:00", "status": "RUNNING", "row_id": null, "note": "True source checkpoint passed; measured-variance training PID, CWD, argv, physical GPU7 and log growth verified.", "evidence": "launch-evidence.json"}
+{"at": "2026-11-24T09:32:12+00:00", "status": "ANALYZED", "evidence": "observed_variance-complete.json", "row_id": "fit-observed_variance", "note": "Same source-only paired experiment independently verified."}
+{"at": "2026-11-24T09:32:12+00:00", "status": "ANALYZED", "evidence": "full-source-scores.json", "row_id": "evaluate-full", "note": "Same source-only paired experiment independently verified."}
+{"at": "2026-11-24T09:32:12+00:00", "status": "ANALYZED", "evidence": "residual-source-scores.json", "row_id": "evaluate-residual", "note": "Same source-only paired experiment independently verified."}
+{"at": "2026-11-24T09:32:12+00:00", "status": "ANALYZED", "evidence": "clean-complete-scores.json", "row_id": "evaluate-reserve", "note": "Same source-only paired experiment independently verified."}
+{"at": "2026-11-24T09:32:12+00:00", "status": "ANALYZED", "evidence": "report.md", "row_id": null, "note": "Same source-only paired experiment independently verified."}

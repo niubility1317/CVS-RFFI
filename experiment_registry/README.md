@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa DURA 实收方差版目标测试](../automation_reports/CV-SincNet/20261124-phase1-lora-dura-observed-variance-target-m2-r01/report.md)
 - [LoRa DURA 第二阶段观测校验](../automation_reports/CV-SincNet/20261124-phase1-lora-dura-stage-step-target-m2-r01/report.md)
 - [LoRa DURA 实收带外方差匹配训练](../automation_reports/CV-SincNet/20261124-phase1-lora-dura-observed-variance-source-m2-r01/report.md)
 - [LoRa DURA 近带保护的双路线单种子目标测试](../automation_reports/CV-SincNet/20261124-phase1-lora-dura-private-projection-target-m2-r01/report.md)

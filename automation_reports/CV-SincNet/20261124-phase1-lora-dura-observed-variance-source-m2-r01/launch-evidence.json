@@ -89,5 +89,106 @@
     "files": {
       "smoke.json": 128
     }
+  },
+  "completion": {
+    "submit": {
+      "pid": 2815131,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-observed-variance-source-m2-r01-release",
+      "code_commit": "eb4bfec755fa50358f4abd043ed5b5b1fe9d73bc",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-observed-variance-source-m2-r01"
+    },
+    "controller": null,
+    "jobs": {
+      "smoke-source": {
+        "pid": 2815208,
+        "gpu": 7,
+        "identity": null,
+        "bytes": 459,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_ANTITHETIC_REAL_CHECKPOINT_PASS"
+        ]
+      },
+      "fit-observed_variance": {
+        "pid": 2816240,
+        "gpu": 7,
+        "identity": null,
+        "bytes": 15247,
+        "last": [
+          "CHANNEL_BLIND_FIT 2300 1.1473909616470337 0.5788164734840393 2.7429141998291016 1.6063108444213867 2.2079358100891113 0.15640664100646973 1.8088008165359497 0.2060939520597458 1.880422830581665 0.6814389228820801 0.6252491474151611 0.6208852529525757 0.011921187862753868 0.015144075267016888 0.016100088134407997",
+          "CHANNEL_BLIND_FIT 2350 0.9890963435173035 0.5105098485946655 2.4535975456237793 1.5458534955978394 1.7830106019973755 0.11183198541402817 1.5030601024627686 0.17908748984336853 1.5711934566497803 0.4987892508506775 0.8197414875030518 0.6055375933647156 0.018922531977295876 0.021570920944213867 0.03647790849208832",
+          "CHANNEL_BLIND_FIT 2400 1.0468659400939941 0.4858611226081848 2.429180860519409 1.4943695068359375 1.8188973665237427 0.13819146156311035 1.7490270137786865 0.1716122180223465 1.4441229104995728 0.5899521112442017 0.4937930703163147 0.4699127972126007 0.016569266095757484 0.01935548521578312 0.019005153328180313"
+        ]
+      },
+      "timing-source": {
+        "pid": 2840973,
+        "gpu": 7,
+        "identity": null,
+        "bytes": 422,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()"
+        ]
+      },
+      "evaluate-full": {
+        "pid": 2841239,
+        "gpu": 7,
+        "identity": null,
+        "bytes": 754,
+        "last": [
+          "COMPLEX_VECTOR_SOURCE full practical_high_urban 92",
+          "COMPLEX_VECTOR_SOURCE full practical_mid_urban 396",
+          "COMPLEX_VECTOR_SOURCE full practical_low_urban 641"
+        ]
+      },
+      "evaluate-residual": {
+        "pid": 2841240,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 782,
+        "last": [
+          "COMPLEX_VECTOR_SOURCE residual practical_high_urban 67",
+          "COMPLEX_VECTOR_SOURCE residual practical_mid_urban 803",
+          "COMPLEX_VECTOR_SOURCE residual practical_low_urban 899"
+        ]
+      },
+      "evaluate-reserve": {
+        "pid": 2844245,
+        "gpu": 7,
+        "identity": null,
+        "bytes": 624,
+        "last": [
+          "LORA_CLEAN_RESERVE_PREDICTED 7680",
+          "LORA_CLEAN_RESERVE_PREDICTED 9596",
+          "LORA_CLEAN_RESERVE_FROZEN 11100"
+        ]
+      },
+      "score-source": {
+        "pid": 2844337,
+        "gpu": null,
+        "identity": null,
+        "bytes": 64,
+        "last": [
+          "LORA_RESTORATION_SOURCE_SCORED",
+          "LORA_CLEAN_COMPLETE_SCORED 12000"
+        ]
+      }
+    },
+    "state": {
+      "status": "SOURCE_SCORED"
+    },
+    "files": {
+      "state.json": 32,
+      "smoke.json": 128,
+      "b1.json": 681,
+      "observed_variance-complete.json": 857,
+      "full-source-scores.json": 11470,
+      "residual-source-scores.json": 11540,
+      "clean-complete-scores.json": 3717
+    }
   }
 }

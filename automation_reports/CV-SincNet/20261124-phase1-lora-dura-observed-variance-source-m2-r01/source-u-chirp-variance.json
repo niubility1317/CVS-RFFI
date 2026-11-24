@@ -1,0 +1,295 @@
+{
+  "status": "VERIFIED",
+  "results": {
+    "full": {
+      "practical_high": {
+        "all": {
+          "n_packets": 150,
+          "packet_log_correlation": 0.8789809942245483,
+          "within_packet_log_correlation": 0.21477095782756805,
+          "per_chirp_ratios": [
+            1.3183485269546509,
+            2.895385265350342,
+            4.613322734832764
+          ]
+        },
+        "active": 5,
+        "active_measurements": {
+          "n_packets": 5,
+          "packet_log_correlation": 0.9997334480285645,
+          "within_packet_log_correlation": 0.6179786324501038,
+          "per_chirp_ratios": [
+            0.8773742318153381,
+            1.018342137336731,
+            1.1642584800720215
+          ]
+        }
+      },
+      "practical_mid": {
+        "all": {
+          "n_packets": 150,
+          "packet_log_correlation": 0.9873786568641663,
+          "within_packet_log_correlation": 0.2594064176082611,
+          "per_chirp_ratios": [
+            1.0154781341552734,
+            1.4932103157043457,
+            2.3386764526367188
+          ]
+        },
+        "active": 34,
+        "active_measurements": {
+          "n_packets": 34,
+          "packet_log_correlation": 0.9991173148155212,
+          "within_packet_log_correlation": 0.46291840076446533,
+          "per_chirp_ratios": [
+            0.8847382664680481,
+            1.0485382080078125,
+            1.2642837762832642
+          ]
+        }
+      },
+      "practical_low_suburban": {
+        "all": {
+          "n_packets": 150,
+          "packet_log_correlation": 0.9929397702217102,
+          "within_packet_log_correlation": 0.3728199899196625,
+          "per_chirp_ratios": [
+            0.9461641311645508,
+            1.2775452136993408,
+            1.850601315498352
+          ]
+        },
+        "active": 53,
+        "active_measurements": {
+          "n_packets": 53,
+          "packet_log_correlation": 0.9985545873641968,
+          "within_packet_log_correlation": 0.4485641419887543,
+          "per_chirp_ratios": [
+            0.8677154183387756,
+            1.0388445854187012,
+            1.2710450887680054
+          ]
+        }
+      },
+      "practical_high_urban": {
+        "all": {
+          "n_packets": 150,
+          "packet_log_correlation": 0.9636799097061157,
+          "within_packet_log_correlation": 0.20315183699131012,
+          "per_chirp_ratios": [
+            1.1029856204986572,
+            2.5091805458068848,
+            4.424493789672852
+          ]
+        },
+        "active": 16,
+        "active_measurements": {
+          "n_packets": 16,
+          "packet_log_correlation": 0.9992415904998779,
+          "within_packet_log_correlation": 0.5660628080368042,
+          "per_chirp_ratios": [
+            0.8468704223632812,
+            1.006744384765625,
+            1.1200941801071167
+          ]
+        }
+      },
+      "practical_mid_urban": {
+        "all": {
+          "n_packets": 150,
+          "packet_log_correlation": 0.9943915605545044,
+          "within_packet_log_correlation": 0.2871149182319641,
+          "per_chirp_ratios": [
+            0.8927461504936218,
+            1.2711113691329956,
+            2.536254644393921
+          ]
+        },
+        "active": 66,
+        "active_measurements": {
+          "n_packets": 66,
+          "packet_log_correlation": 0.9993012547492981,
+          "within_packet_log_correlation": 0.39285433292388916,
+          "per_chirp_ratios": [
+            0.8387951850891113,
+            0.9802744388580322,
+            1.1638187170028687
+          ]
+        }
+      },
+      "practical_low_urban": {
+        "all": {
+          "n_packets": 150,
+          "packet_log_correlation": 0.9982917308807373,
+          "within_packet_log_correlation": 0.366070032119751,
+          "per_chirp_ratios": [
+            0.8658075332641602,
+            1.0472105741500854,
+            1.619059443473816
+          ]
+        },
+        "active": 101,
+        "active_measurements": {
+          "n_packets": 101,
+          "packet_log_correlation": 0.9992077946662903,
+          "within_packet_log_correlation": 0.43042296171188354,
+          "per_chirp_ratios": [
+            0.8421187996864319,
+            0.9857220649719238,
+            1.1392452716827393
+          ]
+        }
+      }
+    },
+    "residual": {
+      "practical_high": {
+        "all": {
+          "n_packets": 150,
+          "packet_log_correlation": 0.9904081225395203,
+          "within_packet_log_correlation": 0.9817343354225159,
+          "per_chirp_ratios": [
+            1.0701091289520264,
+            1.3918566703796387,
+            1.8914659023284912
+          ]
+        },
+        "active": 4,
+        "active_measurements": {
+          "n_packets": 4,
+          "packet_log_correlation": 0.9988531470298767,
+          "within_packet_log_correlation": 0.9931333065032959,
+          "per_chirp_ratios": [
+            1.071459174156189,
+            1.289870262145996,
+            1.7416588068008423
+          ]
+        }
+      },
+      "practical_mid": {
+        "all": {
+          "n_packets": 150,
+          "packet_log_correlation": 0.9962735176086426,
+          "within_packet_log_correlation": 0.9921905994415283,
+          "per_chirp_ratios": [
+            0.9560813903808594,
+            1.158126950263977,
+            1.4668267965316772
+          ]
+        },
+        "active": 118,
+        "active_measurements": {
+          "n_packets": 118,
+          "packet_log_correlation": 0.9963435530662537,
+          "within_packet_log_correlation": 0.9925342798233032,
+          "per_chirp_ratios": [
+            0.9558687806129456,
+            1.147995948791504,
+            1.4394840002059937
+          ]
+        }
+      },
+      "practical_low_suburban": {
+        "all": {
+          "n_packets": 150,
+          "packet_log_correlation": 0.9979127049446106,
+          "within_packet_log_correlation": 0.9961358308792114,
+          "per_chirp_ratios": [
+            0.9157937169075012,
+            1.0682121515274048,
+            1.2509335279464722
+          ]
+        },
+        "active": 150,
+        "active_measurements": {
+          "n_packets": 150,
+          "packet_log_correlation": 0.9979127049446106,
+          "within_packet_log_correlation": 0.9961358308792114,
+          "per_chirp_ratios": [
+            0.9157937169075012,
+            1.0682121515274048,
+            1.2509335279464722
+          ]
+        }
+      },
+      "practical_high_urban": {
+        "all": {
+          "n_packets": 150,
+          "packet_log_correlation": 0.9964759945869446,
+          "within_packet_log_correlation": 0.9943394660949707,
+          "per_chirp_ratios": [
+            1.027043342590332,
+            1.368330955505371,
+            1.9144761562347412
+          ]
+        },
+        "active": 8,
+        "active_measurements": {
+          "n_packets": 8,
+          "packet_log_correlation": 0.9971617460250854,
+          "within_packet_log_correlation": 0.997079610824585,
+          "per_chirp_ratios": [
+            0.9384564757347107,
+            1.2754849195480347,
+            1.6236602067947388
+          ]
+        }
+      },
+      "practical_mid_urban": {
+        "all": {
+          "n_packets": 150,
+          "packet_log_correlation": 0.9952354431152344,
+          "within_packet_log_correlation": 0.9982674717903137,
+          "per_chirp_ratios": [
+            0.9032793641090393,
+            1.0829647779464722,
+            1.346388578414917
+          ]
+        },
+        "active": 139,
+        "active_measurements": {
+          "n_packets": 139,
+          "packet_log_correlation": 0.9952476620674133,
+          "within_packet_log_correlation": 0.9983037114143372,
+          "per_chirp_ratios": [
+            0.902134120464325,
+            1.0784566402435303,
+            1.328963279724121
+          ]
+        }
+      },
+      "practical_low_urban": {
+        "all": {
+          "n_packets": 150,
+          "packet_log_correlation": 0.9963318109512329,
+          "within_packet_log_correlation": 0.9979887008666992,
+          "per_chirp_ratios": [
+            0.8780234456062317,
+            1.0322810411453247,
+            1.2110563516616821
+          ]
+        },
+        "active": 150,
+        "active_measurements": {
+          "n_packets": 150,
+          "packet_log_correlation": 0.9963318109512329,
+          "within_packet_log_correlation": 0.9979887008666992,
+          "per_chirp_ratios": [
+            0.8780234456062317,
+            1.0322810411453247,
+            1.2110563516616821
+          ]
+        }
+      }
+    }
+  },
+  "clean_complex_variance_quantiles": [
+    0.0005449949530884624,
+    0.0008486534934490919
+  ],
+  "n": 150,
+  "target_reads": 0,
+  "F_reads": 0,
+  "V_reads": 0,
+  "TX_reads": 0,
+  "exact_noise_diagnostic_only": true
+}
