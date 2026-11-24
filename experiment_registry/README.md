@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 共同失败包的噪声与接收作用归因](../automation_reports/CV-SincNet/20261124-phase1-lora-common-failure-physics-source-m2-r01/report.md)
 - [LoRa 同包同步坐标不确定性平均](../automation_reports/CV-SincNet/20261124-phase1-lora-frame-marginal-source-m2-r01/report.md)
 - [LoRa 分带物理剂量上限联合细化训练](../automation_reports/CV-SincNet/20261124-phase1-lora-bounded-refinement-source-m3-r01/report.md)
 - [LoRa 粗细修正方向与物理剂量析因](../automation_reports/CV-SincNet/20261124-phase1-lora-stage-dose-direction-source-m2-r01/report.md)

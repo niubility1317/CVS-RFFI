@@ -1,0 +1,82 @@
+{
+  "status": "VERIFIED",
+  "status_scope": "completed source scores",
+  "routes": {
+    "full": {
+      "interaction": {
+        "noise80": {
+          "six": {
+            "net": 126,
+            "interval": [
+              56,
+              197
+            ]
+          },
+          "low": {
+            "net": 7,
+            "interval": [
+              -23,
+              36
+            ]
+          }
+        },
+        "noise100": {
+          "six": {
+            "net": 269,
+            "interval": [
+              179,
+              363
+            ]
+          },
+          "low": {
+            "net": 80,
+            "interval": [
+              45,
+              115
+            ]
+          }
+        }
+      },
+      "clean_diagnostic_disagreements": 0
+    },
+    "residual": {
+      "interaction": {
+        "noise80": {
+          "six": {
+            "net": 168,
+            "interval": [
+              96.97500000000001,
+              245.0250000000001
+            ]
+          },
+          "low": {
+            "net": 34,
+            "interval": [
+              4,
+              63
+            ]
+          }
+        },
+        "noise100": {
+          "six": {
+            "net": 380,
+            "interval": [
+              286,
+              479
+            ]
+          },
+          "low": {
+            "net": 108,
+            "interval": [
+              74,
+              142
+            ]
+          }
+        }
+      },
+      "clean_diagnostic_disagreements": 0
+    }
+  },
+  "paired_bootstrap_draws": 4000,
+  "target_reads": 0
+}

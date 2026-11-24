@@ -1,0 +1,1457 @@
+{
+  "status": "SOURCE_DIAGNOSTIC_SCORED",
+  "modes": [
+    "noise80",
+    "noise100",
+    "action",
+    "noise80_action",
+    "noise100_action"
+  ],
+  "n": 900,
+  "routes": {
+    "full": {
+      "local_six": {
+        "n": 1050,
+        "correct": {
+          "noise80": 343,
+          "noise100": 473,
+          "action": 323,
+          "noise80_action": 694,
+          "noise100_action": 938
+        },
+        "by_rx": [
+          [
+            65,
+            77,
+            51,
+            73,
+            77
+          ],
+          [
+            97,
+            99,
+            74,
+            106,
+            97
+          ],
+          [
+            71,
+            51,
+            68,
+            69,
+            64
+          ],
+          [
+            144,
+            135,
+            132,
+            155,
+            128
+          ],
+          [
+            196,
+            186,
+            180,
+            206,
+            170
+          ]
+        ],
+        "noise_only": 358,
+        "action_only": 208,
+        "combined_only": 292,
+        "neither_nor_joint": 77
+      },
+      "shared_six": {
+        "n": 474,
+        "correct": {
+          "noise80": 120,
+          "noise100": 150,
+          "action": 135,
+          "noise80_action": 296,
+          "noise100_action": 414
+        },
+        "by_rx": [
+          [
+            21,
+            35,
+            17,
+            23,
+            24
+          ],
+          [
+            27,
+            41,
+            20,
+            35,
+            27
+          ],
+          [
+            27,
+            28,
+            28,
+            29,
+            23
+          ],
+          [
+            59,
+            72,
+            55,
+            61,
+            49
+          ],
+          [
+            79,
+            100,
+            82,
+            88,
+            65
+          ]
+        ],
+        "noise_only": 117,
+        "action_only": 102,
+        "combined_only": 176,
+        "neither_nor_joint": 46
+      },
+      "local_by_view": {
+        "practical_high": {
+          "n": 122,
+          "correct": {
+            "noise80": 34,
+            "noise100": 37,
+            "action": 69,
+            "noise80_action": 107,
+            "noise100_action": 115
+          },
+          "by_rx": [
+            [
+              4,
+              11,
+              6,
+              8,
+              5
+            ],
+            [
+              4,
+              13,
+              6,
+              9,
+              5
+            ],
+            [
+              13,
+              12,
+              15,
+              16,
+              13
+            ],
+            [
+              19,
+              25,
+              24,
+              24,
+              15
+            ],
+            [
+              19,
+              28,
+              26,
+              24,
+              18
+            ]
+          ],
+          "noise_only": 21,
+          "action_only": 53,
+          "combined_only": 27,
+          "neither_nor_joint": 5
+        },
+        "practical_mid": {
+          "n": 139,
+          "correct": {
+            "noise80": 46,
+            "noise100": 62,
+            "action": 50,
+            "noise80_action": 104,
+            "noise100_action": 127
+          },
+          "by_rx": [
+            [
+              10,
+              11,
+              6,
+              8,
+              11
+            ],
+            [
+              14,
+              12,
+              12,
+              10,
+              14
+            ],
+            [
+              15,
+              6,
+              9,
+              11,
+              9
+            ],
+            [
+              27,
+              16,
+              19,
+              23,
+              19
+            ],
+            [
+              36,
+              20,
+              24,
+              26,
+              21
+            ]
+          ],
+          "noise_only": 44,
+          "action_only": 32,
+          "combined_only": 35,
+          "neither_nor_joint": 10
+        },
+        "practical_low_suburban": {
+          "n": 166,
+          "correct": {
+            "noise80": 61,
+            "noise100": 79,
+            "action": 50,
+            "noise80_action": 120,
+            "noise100_action": 155
+          },
+          "by_rx": [
+            [
+              15,
+              14,
+              10,
+              12,
+              10
+            ],
+            [
+              19,
+              16,
+              17,
+              15,
+              12
+            ],
+            [
+              13,
+              7,
+              11,
+              9,
+              10
+            ],
+            [
+              26,
+              25,
+              24,
+              24,
+              21
+            ],
+            [
+              31,
+              33,
+              35,
+              32,
+              24
+            ]
+          ],
+          "noise_only": 54,
+          "action_only": 25,
+          "combined_only": 53,
+          "neither_nor_joint": 9
+        },
+        "practical_high_urban": {
+          "n": 133,
+          "correct": {
+            "noise80": 38,
+            "noise100": 47,
+            "action": 69,
+            "noise80_action": 109,
+            "noise100_action": 122
+          },
+          "by_rx": [
+            [
+              9,
+              9,
+              3,
+              10,
+              7
+            ],
+            [
+              11,
+              10,
+              4,
+              15,
+              7
+            ],
+            [
+              18,
+              14,
+              16,
+              13,
+              8
+            ],
+            [
+              22,
+              23,
+              22,
+              27,
+              15
+            ],
+            [
+              27,
+              28,
+              24,
+              28,
+              15
+            ]
+          ],
+          "noise_only": 28,
+          "action_only": 50,
+          "combined_only": 29,
+          "neither_nor_joint": 7
+        },
+        "practical_mid_urban": {
+          "n": 212,
+          "correct": {
+            "noise80": 67,
+            "noise100": 106,
+            "action": 44,
+            "noise80_action": 126,
+            "noise100_action": 190
+          },
+          "by_rx": [
+            [
+              11,
+              8,
+              10,
+              16,
+              22
+            ],
+            [
+              21,
+              15,
+              11,
+              29,
+              30
+            ],
+            [
+              8,
+              9,
+              8,
+              10,
+              9
+            ],
+            [
+              24,
+              23,
+              21,
+              32,
+              26
+            ],
+            [
+              38,
+              33,
+              31,
+              45,
+              43
+            ]
+          ],
+          "noise_only": 89,
+          "action_only": 27,
+          "combined_only": 65,
+          "neither_nor_joint": 14
+        },
+        "practical_low_urban": {
+          "n": 278,
+          "correct": {
+            "noise80": 97,
+            "noise100": 142,
+            "action": 41,
+            "noise80_action": 128,
+            "noise100_action": 229
+          },
+          "by_rx": [
+            [
+              16,
+              24,
+              16,
+              19,
+              22
+            ],
+            [
+              28,
+              33,
+              24,
+              28,
+              29
+            ],
+            [
+              4,
+              3,
+              9,
+              10,
+              15
+            ],
+            [
+              26,
+              23,
+              22,
+              25,
+              32
+            ],
+            [
+              45,
+              44,
+              40,
+              51,
+              49
+            ]
+          ],
+          "noise_only": 122,
+          "action_only": 21,
+          "combined_only": 83,
+          "neither_nor_joint": 32
+        }
+      },
+      "shared_by_view": {
+        "practical_high": {
+          "n": 56,
+          "correct": {
+            "noise80": 12,
+            "noise100": 14,
+            "action": 26,
+            "noise80_action": 47,
+            "noise100_action": 52
+          },
+          "by_rx": [
+            [
+              3,
+              6,
+              2,
+              1,
+              0
+            ],
+            [
+              3,
+              8,
+              2,
+              1,
+              0
+            ],
+            [
+              4,
+              6,
+              6,
+              5,
+              5
+            ],
+            [
+              9,
+              14,
+              12,
+              6,
+              6
+            ],
+            [
+              9,
+              17,
+              13,
+              6,
+              7
+            ]
+          ],
+          "noise_only": 11,
+          "action_only": 23,
+          "combined_only": 16,
+          "neither_nor_joint": 3
+        },
+        "practical_mid": {
+          "n": 69,
+          "correct": {
+            "noise80": 22,
+            "noise100": 27,
+            "action": 19,
+            "noise80_action": 49,
+            "noise100_action": 62
+          },
+          "by_rx": [
+            [
+              4,
+              7,
+              1,
+              4,
+              6
+            ],
+            [
+              6,
+              7,
+              3,
+              5,
+              6
+            ],
+            [
+              6,
+              3,
+              1,
+              5,
+              4
+            ],
+            [
+              14,
+              9,
+              5,
+              11,
+              10
+            ],
+            [
+              18,
+              12,
+              8,
+              13,
+              11
+            ]
+          ],
+          "noise_only": 20,
+          "action_only": 12,
+          "combined_only": 23,
+          "neither_nor_joint": 7
+        },
+        "practical_low_suburban": {
+          "n": 76,
+          "correct": {
+            "noise80": 20,
+            "noise100": 23,
+            "action": 20,
+            "noise80_action": 48,
+            "noise100_action": 68
+          },
+          "by_rx": [
+            [
+              6,
+              6,
+              2,
+              5,
+              1
+            ],
+            [
+              6,
+              6,
+              4,
+              5,
+              2
+            ],
+            [
+              3,
+              5,
+              5,
+              3,
+              4
+            ],
+            [
+              11,
+              13,
+              8,
+              8,
+              8
+            ],
+            [
+              13,
+              20,
+              14,
+              11,
+              10
+            ]
+          ],
+          "noise_only": 19,
+          "action_only": 16,
+          "combined_only": 30,
+          "neither_nor_joint": 7
+        },
+        "practical_high_urban": {
+          "n": 62,
+          "correct": {
+            "noise80": 12,
+            "noise100": 15,
+            "action": 30,
+            "noise80_action": 50,
+            "noise100_action": 56
+          },
+          "by_rx": [
+            [
+              3,
+              2,
+              2,
+              3,
+              2
+            ],
+            [
+              4,
+              2,
+              2,
+              5,
+              2
+            ],
+            [
+              10,
+              6,
+              6,
+              5,
+              3
+            ],
+            [
+              12,
+              12,
+              10,
+              12,
+              4
+            ],
+            [
+              15,
+              14,
+              10,
+              13,
+              4
+            ]
+          ],
+          "noise_only": 11,
+          "action_only": 26,
+          "combined_only": 16,
+          "neither_nor_joint": 5
+        },
+        "practical_mid_urban": {
+          "n": 88,
+          "correct": {
+            "noise80": 23,
+            "noise100": 30,
+            "action": 20,
+            "noise80_action": 53,
+            "noise100_action": 74
+          },
+          "by_rx": [
+            [
+              3,
+              4,
+              4,
+              5,
+              7
+            ],
+            [
+              3,
+              7,
+              3,
+              10,
+              7
+            ],
+            [
+              2,
+              5,
+              5,
+              6,
+              2
+            ],
+            [
+              5,
+              11,
+              11,
+              15,
+              11
+            ],
+            [
+              8,
+              17,
+              16,
+              19,
+              14
+            ]
+          ],
+          "noise_only": 24,
+          "action_only": 14,
+          "combined_only": 35,
+          "neither_nor_joint": 9
+        },
+        "practical_low_urban": {
+          "n": 123,
+          "correct": {
+            "noise80": 31,
+            "noise100": 41,
+            "action": 20,
+            "noise80_action": 49,
+            "noise100_action": 102
+          },
+          "by_rx": [
+            [
+              2,
+              10,
+              6,
+              5,
+              8
+            ],
+            [
+              5,
+              11,
+              6,
+              9,
+              10
+            ],
+            [
+              2,
+              3,
+              5,
+              5,
+              5
+            ],
+            [
+              8,
+              13,
+              9,
+              9,
+              10
+            ],
+            [
+              16,
+              20,
+              21,
+              26,
+              19
+            ]
+          ],
+          "noise_only": 32,
+          "action_only": 11,
+          "combined_only": 56,
+          "neither_nor_joint": 15
+        }
+      }
+    },
+    "residual": {
+      "local_six": {
+        "n": 1048,
+        "correct": {
+          "noise80": 431,
+          "noise100": 617,
+          "action": 176,
+          "noise80_action": 657,
+          "noise100_action": 978
+        },
+        "by_rx": [
+          [
+            83,
+            99,
+            67,
+            88,
+            94
+          ],
+          [
+            130,
+            123,
+            100,
+            135,
+            129
+          ],
+          [
+            26,
+            37,
+            31,
+            38,
+            44
+          ],
+          [
+            136,
+            140,
+            108,
+            144,
+            129
+          ],
+          [
+            203,
+            209,
+            176,
+            208,
+            182
+          ]
+        ],
+        "noise_only": 532,
+        "action_only": 91,
+        "combined_only": 295,
+        "neither_nor_joint": 45
+      },
+      "shared_six": {
+        "n": 474,
+        "correct": {
+          "noise80": 141,
+          "noise100": 232,
+          "action": 71,
+          "noise80_action": 248,
+          "noise100_action": 431
+        },
+        "by_rx": [
+          [
+            22,
+            39,
+            22,
+            30,
+            28
+          ],
+          [
+            42,
+            54,
+            39,
+            58,
+            39
+          ],
+          [
+            5,
+            18,
+            14,
+            16,
+            18
+          ],
+          [
+            48,
+            60,
+            43,
+            58,
+            39
+          ],
+          [
+            87,
+            99,
+            85,
+            94,
+            66
+          ]
+        ],
+        "noise_only": 215,
+        "action_only": 54,
+        "combined_only": 160,
+        "neither_nor_joint": 28
+      },
+      "local_by_view": {
+        "practical_high": {
+          "n": 141,
+          "correct": {
+            "noise80": 59,
+            "noise100": 78,
+            "action": 43,
+            "noise80_action": 115,
+            "noise100_action": 136
+          },
+          "by_rx": [
+            [
+              14,
+              18,
+              7,
+              7,
+              13
+            ],
+            [
+              21,
+              20,
+              11,
+              12,
+              14
+            ],
+            [
+              11,
+              7,
+              9,
+              6,
+              10
+            ],
+            [
+              28,
+              30,
+              18,
+              19,
+              20
+            ],
+            [
+              34,
+              34,
+              26,
+              21,
+              21
+            ]
+          ],
+          "noise_only": 56,
+          "action_only": 21,
+          "combined_only": 39,
+          "neither_nor_joint": 3
+        },
+        "practical_mid": {
+          "n": 170,
+          "correct": {
+            "noise80": 82,
+            "noise100": 104,
+            "action": 31,
+            "noise80_action": 117,
+            "noise100_action": 163
+          },
+          "by_rx": [
+            [
+              22,
+              16,
+              13,
+              17,
+              14
+            ],
+            [
+              25,
+              18,
+              19,
+              21,
+              21
+            ],
+            [
+              5,
+              7,
+              5,
+              3,
+              11
+            ],
+            [
+              29,
+              23,
+              16,
+              27,
+              22
+            ],
+            [
+              37,
+              35,
+              27,
+              34,
+              30
+            ]
+          ],
+          "noise_only": 86,
+          "action_only": 13,
+          "combined_only": 48,
+          "neither_nor_joint": 5
+        },
+        "practical_low_suburban": {
+          "n": 170,
+          "correct": {
+            "noise80": 77,
+            "noise100": 104,
+            "action": 25,
+            "noise80_action": 104,
+            "noise100_action": 161
+          },
+          "by_rx": [
+            [
+              16,
+              13,
+              13,
+              18,
+              17
+            ],
+            [
+              22,
+              18,
+              20,
+              23,
+              21
+            ],
+            [
+              3,
+              6,
+              4,
+              7,
+              5
+            ],
+            [
+              21,
+              19,
+              17,
+              22,
+              25
+            ],
+            [
+              38,
+              30,
+              32,
+              31,
+              30
+            ]
+          ],
+          "noise_only": 92,
+          "action_only": 13,
+          "combined_only": 49,
+          "neither_nor_joint": 4
+        },
+        "practical_high_urban": {
+          "n": 126,
+          "correct": {
+            "noise80": 50,
+            "noise100": 68,
+            "action": 29,
+            "noise80_action": 96,
+            "noise100_action": 122
+          },
+          "by_rx": [
+            [
+              7,
+              13,
+              10,
+              10,
+              10
+            ],
+            [
+              15,
+              15,
+              12,
+              13,
+              13
+            ],
+            [
+              4,
+              6,
+              4,
+              9,
+              6
+            ],
+            [
+              19,
+              21,
+              20,
+              21,
+              15
+            ],
+            [
+              25,
+              29,
+              24,
+              25,
+              19
+            ]
+          ],
+          "noise_only": 59,
+          "action_only": 20,
+          "combined_only": 36,
+          "neither_nor_joint": 2
+        },
+        "practical_mid_urban": {
+          "n": 203,
+          "correct": {
+            "noise80": 82,
+            "noise100": 132,
+            "action": 24,
+            "noise80_action": 108,
+            "noise100_action": 189
+          },
+          "by_rx": [
+            [
+              12,
+              20,
+              11,
+              20,
+              19
+            ],
+            [
+              25,
+              25,
+              17,
+              36,
+              29
+            ],
+            [
+              0,
+              6,
+              5,
+              7,
+              6
+            ],
+            [
+              18,
+              26,
+              15,
+              28,
+              21
+            ],
+            [
+              33,
+              38,
+              29,
+              48,
+              41
+            ]
+          ],
+          "noise_only": 118,
+          "action_only": 10,
+          "combined_only": 53,
+          "neither_nor_joint": 8
+        },
+        "practical_low_urban": {
+          "n": 238,
+          "correct": {
+            "noise80": 81,
+            "noise100": 131,
+            "action": 24,
+            "noise80_action": 117,
+            "noise100_action": 207
+          },
+          "by_rx": [
+            [
+              12,
+              19,
+              13,
+              16,
+              21
+            ],
+            [
+              22,
+              27,
+              21,
+              30,
+              31
+            ],
+            [
+              3,
+              5,
+              4,
+              6,
+              6
+            ],
+            [
+              21,
+              21,
+              22,
+              27,
+              26
+            ],
+            [
+              36,
+              43,
+              38,
+              49,
+              41
+            ]
+          ],
+          "noise_only": 121,
+          "action_only": 14,
+          "combined_only": 70,
+          "neither_nor_joint": 23
+        }
+      },
+      "shared_by_view": {
+        "practical_high": {
+          "n": 56,
+          "correct": {
+            "noise80": 17,
+            "noise100": 23,
+            "action": 9,
+            "noise80_action": 41,
+            "noise100_action": 53
+          },
+          "by_rx": [
+            [
+              3,
+              7,
+              3,
+              2,
+              2
+            ],
+            [
+              5,
+              9,
+              4,
+              3,
+              2
+            ],
+            [
+              1,
+              0,
+              2,
+              2,
+              4
+            ],
+            [
+              8,
+              14,
+              8,
+              6,
+              5
+            ],
+            [
+              11,
+              17,
+              13,
+              7,
+              5
+            ]
+          ],
+          "noise_only": 22,
+          "action_only": 8,
+          "combined_only": 23,
+          "neither_nor_joint": 2
+        },
+        "practical_mid": {
+          "n": 69,
+          "correct": {
+            "noise80": 24,
+            "noise100": 37,
+            "action": 11,
+            "noise80_action": 40,
+            "noise100_action": 66
+          },
+          "by_rx": [
+            [
+              7,
+              4,
+              5,
+              4,
+              4
+            ],
+            [
+              10,
+              5,
+              8,
+              7,
+              7
+            ],
+            [
+              0,
+              3,
+              2,
+              2,
+              4
+            ],
+            [
+              12,
+              6,
+              6,
+              10,
+              6
+            ],
+            [
+              17,
+              13,
+              12,
+              13,
+              11
+            ]
+          ],
+          "noise_only": 34,
+          "action_only": 8,
+          "combined_only": 23,
+          "neither_nor_joint": 1
+        },
+        "practical_low_suburban": {
+          "n": 76,
+          "correct": {
+            "noise80": 24,
+            "noise100": 35,
+            "action": 13,
+            "noise80_action": 35,
+            "noise100_action": 70
+          },
+          "by_rx": [
+            [
+              5,
+              8,
+              3,
+              5,
+              3
+            ],
+            [
+              5,
+              12,
+              6,
+              8,
+              4
+            ],
+            [
+              1,
+              5,
+              3,
+              3,
+              1
+            ],
+            [
+              7,
+              11,
+              4,
+              6,
+              7
+            ],
+            [
+              16,
+              19,
+              14,
+              11,
+              10
+            ]
+          ],
+          "noise_only": 33,
+          "action_only": 11,
+          "combined_only": 28,
+          "neither_nor_joint": 2
+        },
+        "practical_high_urban": {
+          "n": 62,
+          "correct": {
+            "noise80": 19,
+            "noise100": 31,
+            "action": 13,
+            "noise80_action": 43,
+            "noise100_action": 59
+          },
+          "by_rx": [
+            [
+              1,
+              4,
+              5,
+              6,
+              3
+            ],
+            [
+              8,
+              5,
+              6,
+              9,
+              3
+            ],
+            [
+              2,
+              4,
+              2,
+              3,
+              2
+            ],
+            [
+              9,
+              10,
+              10,
+              11,
+              3
+            ],
+            [
+              15,
+              14,
+              12,
+              13,
+              5
+            ]
+          ],
+          "noise_only": 29,
+          "action_only": 11,
+          "combined_only": 18,
+          "neither_nor_joint": 2
+        },
+        "practical_mid_urban": {
+          "n": 88,
+          "correct": {
+            "noise80": 28,
+            "noise100": 51,
+            "action": 13,
+            "noise80_action": 41,
+            "noise100_action": 79
+          },
+          "by_rx": [
+            [
+              3,
+              7,
+              3,
+              7,
+              8
+            ],
+            [
+              7,
+              10,
+              7,
+              17,
+              10
+            ],
+            [
+              0,
+              4,
+              3,
+              3,
+              3
+            ],
+            [
+              3,
+              11,
+              6,
+              11,
+              10
+            ],
+            [
+              10,
+              16,
+              15,
+              21,
+              17
+            ]
+          ],
+          "noise_only": 44,
+          "action_only": 6,
+          "combined_only": 25,
+          "neither_nor_joint": 6
+        },
+        "practical_low_urban": {
+          "n": 123,
+          "correct": {
+            "noise80": 29,
+            "noise100": 55,
+            "action": 12,
+            "noise80_action": 48,
+            "noise100_action": 104
+          },
+          "by_rx": [
+            [
+              3,
+              9,
+              3,
+              6,
+              8
+            ],
+            [
+              7,
+              13,
+              8,
+              14,
+              13
+            ],
+            [
+              1,
+              2,
+              2,
+              3,
+              4
+            ],
+            [
+              9,
+              8,
+              9,
+              14,
+              8
+            ],
+            [
+              18,
+              20,
+              19,
+              29,
+              18
+            ]
+          ],
+          "noise_only": 53,
+          "action_only": 10,
+          "combined_only": 43,
+          "neither_nor_joint": 15
+        }
+      }
+    }
+  },
+  "target_reads": 0,
+  "training_updates": 0,
+  "truth_after_predictions": true,
+  "history": "20261124-phase1-lora-frame-marginal-source-m2-r01"
+}
