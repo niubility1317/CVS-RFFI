@@ -79,7 +79,8 @@ def objective(model, tracker, iq, rng, *, with_identity, recipe, step, split_ris
     observed, rotation, quality, rms = coordinates(tracker, real_iq(wave.flatten(0, 1)))
     basis = rotation * rms
     target = torch.stack((clean, clean, clean + change, clean + change), dim=1)
-    coarse, refined = recipe.restore(model, observed, quality, rotation)
+    stages = recipe.restore(model, observed, quality, rotation)
+    coarse, refined = recipe.transform_stages(observed, stages, rms)
     stage_target = target.flatten(0, 1) / basis
     coarse_risk = waveform_risk(coarse, stage_target)
     full_risk = waveform_risk(refined, stage_target)

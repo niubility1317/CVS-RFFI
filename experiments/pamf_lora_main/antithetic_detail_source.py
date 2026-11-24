@@ -58,8 +58,13 @@ def bind_models(root, contract, device, *, recipes=RECIPES, reused=None):
     return parent, tuple(model for model, _ in arms), threshold
 
 
+def read_stages(model, observed, quality, rotation, rms, recipe):
+    stages = model(observed, quality, rotation)
+    return stages if recipe is None else recipe.transform_stages(observed, stages, rms)
+
+
 @torch.no_grad()
-def render(iq, _, baseline, tracker, models, *, modes=MODES):
+def render(iq, _, baseline, tracker, models, *, modes=MODES, recipes=None):
     parent, two_arms, threshold = models
     reference, _ = baseline(iq)
     frame = coordinates(tracker, iq)
@@ -71,8 +76,9 @@ def render(iq, _, baseline, tracker, models, *, modes=MODES):
     rank, = restore(iq, active, parent, frame, (.5,))
     y, rot, q, rms = frame
     rows = [iq, reference, rank]
-    for model in two_arms:
-        coarse, full = model(y, q, rot)
+    stage_recipes = recipes.values() if recipes is not None else (None,) * len(two_arms)
+    for model, recipe in zip(two_arms, stage_recipes, strict=True):
+        coarse, full = read_stages(model, y, q, rot, rms, recipe)
         for wave in (coarse, torch.lerp(y, full, .5), full):
             restored = iq.clone()
             restored[active] += real_iq((wave - y) * rot * rms)
@@ -83,7 +89,7 @@ def render(iq, _, baseline, tracker, models, *, modes=MODES):
 def evaluate(rt, route, *, recipes=RECIPES, modes=MODES, reused=None):
     root, device = Path(rt['run_root']), 'cuda:0'
     binding = source_control(rt, route, device)
-    score(rt, route, panel=panel, modes=modes, render=partial(render, modes=modes), binding=binding,
+    score(rt, route, panel=panel, modes=modes, render=partial(render, modes=modes, recipes=recipes), binding=binding,
           frozen_models=bind_models(root, binding[2], device, recipes=recipes, reused=reused), require_clean_bypass=False,
           replay_fn=receive_only, finalize=freeze, reader_chunk=144)
 
@@ -91,7 +97,7 @@ def evaluate(rt, route, *, recipes=RECIPES, modes=MODES, reused=None):
 def reserve(rt, *, recipes=RECIPES, modes=MODES, reused=None):
     def bind(root, contract, device, baseline, tracker):
         models = bind_models(root, contract, device, recipes=recipes, reused=reused)
-        return lambda iq: render(iq, None, baseline, tracker, models, modes=modes)
+        return lambda iq: render(iq, None, baseline, tracker, models, modes=modes, recipes=recipes)
     predict_clean_reserve(rt, modes=modes, bind=bind)
 
 
@@ -127,7 +133,7 @@ def smoke(rt, *, recipes=RECIPES, modes=MODES, split_risk=(False, True), calcula
     corrupted = real_iq(colored_observation(complex_iq(cal), rng))
     active = corruption_score(coordinates(tracker, corrupted)[0]) > threshold
     batch = torch.cat((cal[:2], corrupted[active][:2]))
-    waves, n = render(batch, None, baseline, tracker, (parent, tuple(models), threshold), modes=modes)
+    waves, n = render(batch, None, baseline, tracker, (parent, tuple(models), threshold), modes=modes, recipes=recipes)
     with torch.no_grad():
         logits = load_reader(root, contract, device)(waves.flatten(0, 1))[0]
     if (n != 2 or logits.shape != (len(modes)*len(batch), 10) or not logits.isfinite().all()
@@ -148,7 +154,7 @@ def timing(rt, *, recipes=RECIPES, reused=None):
     corrupt = real_iq(colored_observation(complex_iq(cal), rng))
     strongest = corruption_score(coordinates(tracker, corrupt)[0]).argmax().view(1)
     results = {}
-    for name, model in zip(recipes, arms, strict=True):
+    for (name, recipe), model in zip(recipes.items(), arms, strict=True):
         periods = {}
         for label, iq in (('clean', cal[:1]), ('generic', corrupt[strongest])):
             durations = []
@@ -158,7 +164,10 @@ def timing(rt, *, recipes=RECIPES, reused=None):
                 frame = coordinates(tracker, iq)
                 active = corruption_score(frame[0]) > threshold
                 if active.any():
-                    restore(iq, active, model, tuple(v[active] for v in frame), (.5,))
+                    y, rot, q, rms = (v[active] for v in frame)
+                    _, full = read_stages(model, y, q, rot, rms, recipe)
+                    processed = iq.clone()
+                    processed[active] += .5 * real_iq((full - y) * rot * rms)
                 torch.cuda.synchronize()
                 durations.append(1000*(perf_counter() - started))
             periods[label] = dict(median_ms=float(np.median(durations[8:])), active=int(active.sum()))

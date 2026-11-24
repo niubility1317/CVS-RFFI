@@ -44,6 +44,13 @@ class FitRecipe:
     restore: Callable
     coarse_first: bool = False
     initialize: Callable | None = None
+    stage_transform: Callable | None = None
+
+    def transform_stages(self, observed, stages, rms):
+        if self.stage_transform is None:
+            return stages
+        coarse, fine = stages
+        return self.stage_transform(observed, coarse, fine, rms)
 
     def loss_weights(self, step):
         if not self.coarse_first:
