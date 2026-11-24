@@ -15,7 +15,7 @@ from .runner import CLASSES, SOURCE_DAYS
 SEEDS = (2026092701, 2026092702, 2026092703)
 
 
-def wait_gpu(root, stage, seed):
+def wait_gpu(root, stage, seed, shared_gpu):
     while True:
         gpu_data = subprocess.check_output(
             ['nvidia-smi', '--query-gpu=index,uuid,memory.free', '--format=csv,noheader,nounits'],
@@ -31,7 +31,13 @@ def wait_gpu(root, stage, seed):
         for line in gpu_data.splitlines():
             gpu, uuid, mem = (part.strip() for part in line.split(','))
             pids = by_uuid.get(uuid, [])
-            if allow_shared(len(pids), int(mem)) and all(owned_process(pid) for pid in pids):
+            if shared_gpu is not None:
+                admitted = gpu == shared_gpu and int(mem) >= 6000 and sum(
+                    project_training(pid) for pid in pids
+                ) < 2
+            else:
+                admitted = allow_shared(len(pids), int(mem)) and all(owned_process(pid) for pid in pids)
+            if admitted:
                 available.append((int(mem), gpu))
         if available:
             return max(available)[1]
@@ -46,6 +52,19 @@ def owned_process(pid):
         return False
 
 
+def project_training(pid):
+    if not owned_process(pid):
+        return False
+    try:
+        argv = Path('/proc', str(pid), 'cmdline').read_bytes().decode(errors='replace').split('\0')
+    except FileNotFoundError:
+        return False
+    return any(part in ('train', 'F', '--kind=train', '--stage=train') for part in argv) or any(
+        part.endswith(('_train.py', '.train')) and 'predict' not in argv and 'score' not in argv
+        for part in argv
+    )
+
+
 def state(root, status, **fields):
     path = root / 'state.json'
     temporary = root / 'state.next.json'
@@ -53,12 +72,14 @@ def state(root, status, **fields):
     temporary.replace(path)
 
 
-def invoke(root, stage, config, seed, gpu=None):
+def invoke(root, stage, config, seed, gpu=None, *, bounded_gpu=False):
     log = root / 'logs' / f'{stage}-s{seed}.log'
     command = [sys.executable, '-u', '-m', 'experiments.shen_wisig.runner', stage,
                '--config', str(config), '--device', 'cpu' if gpu is None else 'cuda:0']
     environment = dict(os.environ, CUDA_VISIBLE_DEVICES=gpu or '', OMP_NUM_THREADS='2',
                        MKL_NUM_THREADS='2', OPENBLAS_NUM_THREADS='2')
+    if bounded_gpu:
+        environment['SHEN_WISIG_CUDA_MEMORY_FRACTION'] = '0.12'
     with log.open('x', encoding='utf-8') as stream:
         child = subprocess.Popen(command, env=environment, stdout=stream, stderr=subprocess.STDOUT)
         state(root, 'RUNNING', stage=stage, seed=seed, gpu=gpu, worker=child.pid, log=str(log),
@@ -89,7 +110,7 @@ def configurations(root, inputs, commit, seed):
     return paths
 
 
-def launch(root, handles, commit):
+def launch(root, handles, commit, shared_gpu):
     inputs = read(handles)['F0']
     root.mkdir(exist_ok=False)
     (root / 'logs').mkdir()
@@ -97,10 +118,12 @@ def launch(root, handles, commit):
     try:
         invoke(root, 'smoke', jobs[SEEDS[0]]['train'], SEEDS[0])
         for seed, cfg in jobs.items():
-            invoke(root, 'train', cfg['train'], seed, wait_gpu(root, 'train', seed))
+            invoke(root, 'train', cfg['train'], seed, wait_gpu(root, 'train', seed, shared_gpu),
+                   bounded_gpu=shared_gpu is not None)
             frozen = read(root / f's{seed}' / 'source' / 'complete.json')
             eligible = frozen['val_accuracy'] > 1 / len(CLASSES)
-            invoke(root, 'predict', cfg['predict'], seed, wait_gpu(root, 'predict', seed))
+            invoke(root, 'predict', cfg['predict'], seed, wait_gpu(root, 'predict', seed, shared_gpu),
+                   bounded_gpu=shared_gpu is not None)
             invoke(root, 'score', cfg['score'], seed)
             if seed == SEEDS[0] and not eligible:
                 state(root, 'FIRST_SEED_SCORED_SOURCE_THRESHOLD_UNMET', source_v=frozen['val_accuracy'])
@@ -116,5 +139,6 @@ if __name__ == '__main__':
     parser.add_argument('--root', required=True, type=Path)
     parser.add_argument('--handles', required=True, type=Path)
     parser.add_argument('--commit', required=True)
+    parser.add_argument('--shared-gpu', choices=tuple(map(str, range(8))))
     args = parser.parse_args()
-    launch(args.root, args.handles, args.commit)
+    launch(args.root, args.handles, args.commit, args.shared_gpu)

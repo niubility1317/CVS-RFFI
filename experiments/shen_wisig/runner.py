@@ -1,6 +1,7 @@
 """Train and freeze on ManySig source roles, then predict and score separately."""
 import argparse
 import json
+import os
 from pathlib import Path
 import tempfile
 
@@ -199,6 +200,9 @@ def main():
     parser.add_argument('--device', default='cuda:0')
     args = parser.parse_args()
     config = read(args.config)
+    limit = os.environ.get('SHEN_WISIG_CUDA_MEMORY_FRACTION')
+    if limit is not None and torch.device(args.device).type == 'cuda':
+        torch.cuda.set_per_process_memory_fraction(float(limit), device=args.device)
     if args.stage == 'predict':
         evaluation.predict(config, args.device, load_reader=load_reader)
     elif args.stage == 'score':
