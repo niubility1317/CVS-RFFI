@@ -1,1 +1,2 @@
 {"at": "2026-11-24T06:35:13+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-24T06:41:17+00:00", "status": "ANALYZED", "note": "VERIFIED GPU/CWD/argv, 14 fixed view predictions then independent paired scoring. At 2x dose removing shared-signal leakage adds 68/191 correct; exact direction adds another 134/503 over filtered noise. No target reads.", "evidence": ["readback_2026-11-24T063639.json,readout/scene-rx-paired.json"], "row_id": null}
