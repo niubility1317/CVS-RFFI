@@ -36,6 +36,8 @@ R69 v1.0 有 266,951 个参数。历史两阶段学生由 R65 固定父版初始
 
 ## 源域验证
 
+- LoRa 用 20,000 个合法源 U 包校准公共和独有跨频 I/Q 协方差。与同物理 RMS 的逐频对照相比，跨频方差保持在 Full 和 Residual 六景净增 238［+183，+293］和 521［+425，+620］次，十个路线接收机组合均正向。主读出对 DURA 净增 49［+9，+89］和净减 287［−357，−219］次，clean 均为 667/900。Residual 低城区各 RX 编辑 RMS 中位数触及 30% 上限，跨频方向的低城区弱复谱相关改善未达到两路线对 DURA 的晋级条件。 [LoRa 跨频协方差匹配消融及独立评分](../../automation_reports/CV-SincNet/20261124-phase1-lora-cross-frequency-source-m2-r01/report.md)
+
 - LoRa 将同一条 chirp 的对称邻点构造成独立相位方向。匹配的两组各训练 40,000 步，邻点组降低了固定源 U 相位和复谱损失，但 Full、Residual 六景较半量 DURA 净减 99［−147，−52］、216［−288，−145］次。两路 clean 均为 667/900。同权等 IQ RMS 的邻点开关净差为 −29、−30 次，区间均跨零。低城区新增几何方向在隔离对照中对应 9.55% 和 1.83% 的相位能量，两路弱独有复谱 NMSE 都升高。候选未晋级目标矩阵。 [LoRa 邻点相位与逐接收机冻结识别](../../automation_reports/CV-SincNet/20261124-phase1-lora-neighbor-phase-source-m4-r01/report.md)
 
 - LoRa 幅相联合对照固定 40,000 步局部相位。实收分组前导幅度与相位合用，Full 和 Residual 相对仅修相位净减 15、32 次，区间均跨零。低城区两路的外带估计功率与精确功率之比中位为 0.993、1.011，但外带去偏幅度的编辑方向与隔离参考反向；分组幅度方向余弦为 0.887、0.876。共同剂量下精确幅度仅净增 4、13 次，区间均跨零。全量精确幅度相对仅修相位净增 59、55 次，Residual 仍比 DURA 少 28 次。两路 clean 均为 667/900。 [幅相联合测试及实收误差](../../automation_reports/CV-SincNet/20261124-diagnostic-lora-phase-radius-source-m2-r01/report.md)
