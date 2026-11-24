@@ -1,0 +1,508 @@
+{
+  "status": "PASS",
+  "n": 150,
+  "reference_after_observed": true,
+  "seconds": 16.909863359062,
+  "target_reads": 0,
+  "F_reads": 0,
+  "V_reads": 0,
+  "TX_reads": 0,
+  "rows": {
+    "full": {
+      "practical_low_suburban": {
+        "n": 150,
+        "active": 53,
+        "amplitude_increment_quantiles": {
+          "fixed_gain": [
+            0.20710647106170654,
+            0.20710670948028564,
+            0.2071070671081543
+          ],
+          "observed_gain": [
+            0.019561434164643288,
+            0.050101637840270996,
+            0.14341720938682556
+          ],
+          "parity_gain": [
+            0.019470620900392532,
+            0.05014657974243164,
+            0.1434529572725296
+          ]
+        },
+        "waves": {
+          "direct": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 4.596094131469727,
+              "median_real_gain": 0.9522399306297302,
+              "median_abs_phase_rad": 0.06346345692873001
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 111.30534362792969,
+              "median_real_gain": 0.9985404014587402,
+              "median_abs_phase_rad": 0.1034785583615303
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 172.33441162109375,
+              "median_real_gain": 1.004210114479065,
+              "median_abs_phase_rad": 0.10686204582452774
+            }
+          },
+          "antithetic_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.4067155122756958,
+              "median_real_gain": 0.9229870438575745,
+              "median_abs_phase_rad": 0.060609836131334305
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 26.864356994628906,
+              "median_real_gain": 0.9113175272941589,
+              "median_abs_phase_rad": 0.1026841253042221
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 46.442955017089844,
+              "median_real_gain": 0.9154468774795532,
+              "median_abs_phase_rad": 0.10686204582452774
+            }
+          },
+          "fixed_gain": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.4387720823287964,
+              "median_real_gain": 0.9229870438575745,
+              "median_abs_phase_rad": 0.06060999259352684
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 26.86435317993164,
+              "median_real_gain": 0.9113175272941589,
+              "median_abs_phase_rad": 0.1026839017868042
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 46.442955017089844,
+              "median_real_gain": 0.9154468774795532,
+              "median_abs_phase_rad": 0.10686204582452774
+            }
+          },
+          "observed_gain": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.42412254214286804,
+              "median_real_gain": 0.9229870438575745,
+              "median_abs_phase_rad": 0.060610245913267136
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 26.864356994628906,
+              "median_real_gain": 0.9113175272941589,
+              "median_abs_phase_rad": 0.10268430411815643
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 46.44295883178711,
+              "median_real_gain": 0.9154468774795532,
+              "median_abs_phase_rad": 0.10686204582452774
+            }
+          },
+          "parity_gain": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.42410698533058167,
+              "median_real_gain": 0.9229870438575745,
+              "median_abs_phase_rad": 0.060610126703977585
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 26.864356994628906,
+              "median_real_gain": 0.9113175272941589,
+              "median_abs_phase_rad": 0.10268417000770569
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 46.44295883178711,
+              "median_real_gain": 0.9154468774795532,
+              "median_abs_phase_rad": 0.10686204582452774
+            }
+          }
+        }
+      },
+      "practical_low_urban": {
+        "n": 150,
+        "active": 101,
+        "amplitude_increment_quantiles": {
+          "fixed_gain": [
+            0.20710670948028564,
+            0.20710670948028564,
+            0.20710694789886475
+          ],
+          "observed_gain": [
+            0.05638480186462402,
+            0.12868237495422363,
+            0.15851366519927979
+          ],
+          "parity_gain": [
+            0.05633533000946045,
+            0.1285163164138794,
+            0.1585160493850708
+          ]
+        },
+        "waves": {
+          "direct": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 6.153337478637695,
+              "median_real_gain": 0.9149494767189026,
+              "median_abs_phase_rad": 0.10502059757709503
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 238.0806884765625,
+              "median_real_gain": 0.9631012082099915,
+              "median_abs_phase_rad": 0.2604528069496155
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 702.9083862304688,
+              "median_real_gain": 0.9841371178627014,
+              "median_abs_phase_rad": 0.26337382197380066
+            }
+          },
+          "antithetic_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.3856394290924072,
+              "median_real_gain": 0.6806339621543884,
+              "median_abs_phase_rad": 0.05435636639595032
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 54.247074127197266,
+              "median_real_gain": 0.7887333631515503,
+              "median_abs_phase_rad": 0.22809602320194244
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 177.35557556152344,
+              "median_real_gain": 0.7358990907669067,
+              "median_abs_phase_rad": 0.24110320210456848
+            }
+          },
+          "fixed_gain": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.4300904870033264,
+              "median_real_gain": 0.8180896639823914,
+              "median_abs_phase_rad": 0.05435636639595032
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 54.247074127197266,
+              "median_real_gain": 0.788733184337616,
+              "median_abs_phase_rad": 0.2280961573123932
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 177.35557556152344,
+              "median_real_gain": 0.7358989119529724,
+              "median_abs_phase_rad": 0.24110296368598938
+            }
+          },
+          "observed_gain": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.41155171394348145,
+              "median_real_gain": 0.7708538770675659,
+              "median_abs_phase_rad": 0.05435636639595032
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 54.247074127197266,
+              "median_real_gain": 0.7887332439422607,
+              "median_abs_phase_rad": 0.22809596359729767
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 177.35557556152344,
+              "median_real_gain": 0.735899031162262,
+              "median_abs_phase_rad": 0.24110323190689087
+            }
+          },
+          "parity_gain": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.41154712438583374,
+              "median_real_gain": 0.7708538770675659,
+              "median_abs_phase_rad": 0.05435636639595032
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 54.247074127197266,
+              "median_real_gain": 0.7887333631515503,
+              "median_abs_phase_rad": 0.2280961275100708
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 177.35557556152344,
+              "median_real_gain": 0.7358987927436829,
+              "median_abs_phase_rad": 0.24110323190689087
+            }
+          }
+        }
+      }
+    },
+    "residual": {
+      "practical_low_suburban": {
+        "n": 150,
+        "active": 150,
+        "amplitude_increment_quantiles": {
+          "fixed_gain": [
+            0.2071065902709961,
+            0.20710670948028564,
+            0.2071070671081543
+          ],
+          "observed_gain": [
+            0.04039667919278145,
+            0.07960140705108643,
+            0.13168393075466156
+          ],
+          "parity_gain": [
+            0.04030798748135567,
+            0.07950699329376221,
+            0.13152147829532623
+          ]
+        },
+        "waves": {
+          "direct": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 7.718049049377441,
+              "median_real_gain": 0.8801814913749695,
+              "median_abs_phase_rad": 0.18300336599349976
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 169.12744140625,
+              "median_real_gain": 0.8860276341438293,
+              "median_abs_phase_rad": 0.34610453248023987
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 118.97903442382812,
+              "median_real_gain": 0.8836138844490051,
+              "median_abs_phase_rad": 0.3968615233898163
+            }
+          },
+          "antithetic_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.578134298324585,
+              "median_real_gain": 0.4272751212120056,
+              "median_abs_phase_rad": 0.17140622437000275
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 37.50535583496094,
+              "median_real_gain": 0.4806863069534302,
+              "median_abs_phase_rad": 0.28342244029045105
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 30.196823120117188,
+              "median_real_gain": 0.4681948721408844,
+              "median_abs_phase_rad": 0.3820732831954956
+            }
+          },
+          "fixed_gain": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.6704773902893066,
+              "median_real_gain": 0.5157667994499207,
+              "median_abs_phase_rad": 0.17140626907348633
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 37.50535583496094,
+              "median_real_gain": 0.48068615794181824,
+              "median_abs_phase_rad": 0.28342267870903015
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 30.196823120117188,
+              "median_real_gain": 0.4681946635246277,
+              "median_abs_phase_rad": 0.38207337260246277
+            }
+          },
+          "observed_gain": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.6227885484695435,
+              "median_real_gain": 0.45296138525009155,
+              "median_abs_phase_rad": 0.17140637338161469
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 37.50535583496094,
+              "median_real_gain": 0.48068615794181824,
+              "median_abs_phase_rad": 0.2834227383136749
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 30.196823120117188,
+              "median_real_gain": 0.4681950509548187,
+              "median_abs_phase_rad": 0.38207298517227173
+            }
+          },
+          "parity_gain": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.6227654814720154,
+              "median_real_gain": 0.45302221179008484,
+              "median_abs_phase_rad": 0.17140628397464752
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 37.50535583496094,
+              "median_real_gain": 0.4806864559650421,
+              "median_abs_phase_rad": 0.28342291712760925
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 30.196826934814453,
+              "median_real_gain": 0.4681951403617859,
+              "median_abs_phase_rad": 0.38207289576530457
+            }
+          }
+        }
+      },
+      "practical_low_urban": {
+        "n": 150,
+        "active": 150,
+        "amplitude_increment_quantiles": {
+          "fixed_gain": [
+            0.20710670948028564,
+            0.20710670948028564,
+            0.20710694789886475
+          ],
+          "observed_gain": [
+            0.12152189016342163,
+            0.14493966102600098,
+            0.16223742067813873
+          ],
+          "parity_gain": [
+            0.12155383825302124,
+            0.1449873447418213,
+            0.16227500140666962
+          ]
+        },
+        "waves": {
+          "direct": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 7.383715629577637,
+              "median_real_gain": 0.8336778879165649,
+              "median_abs_phase_rad": 0.19827581942081451
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 269.7555847167969,
+              "median_real_gain": 0.7171127200126648,
+              "median_abs_phase_rad": 0.7002895474433899
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 1161.499755859375,
+              "median_real_gain": 0.8834438920021057,
+              "median_abs_phase_rad": 0.9279569983482361
+            }
+          },
+          "antithetic_half": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.4009920358657837,
+              "median_real_gain": 0.5915956497192383,
+              "median_abs_phase_rad": 0.14160309731960297
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 58.550777435302734,
+              "median_real_gain": 0.5754892230033875,
+              "median_abs_phase_rad": 0.3828088045120239
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 290.3828430175781,
+              "median_real_gain": 0.5657477378845215,
+              "median_abs_phase_rad": 0.7947651147842407
+            }
+          },
+          "fixed_gain": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.4583631753921509,
+              "median_real_gain": 0.7141191363334656,
+              "median_abs_phase_rad": 0.14160308241844177
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 58.550777435302734,
+              "median_real_gain": 0.575489342212677,
+              "median_abs_phase_rad": 0.38280850648880005
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 290.3828430175781,
+              "median_real_gain": 0.5657479166984558,
+              "median_abs_phase_rad": 0.7947653532028198
+            }
+          },
+          "observed_gain": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.43775638937950134,
+              "median_real_gain": 0.6845778226852417,
+              "median_abs_phase_rad": 0.14160341024398804
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 58.550777435302734,
+              "median_real_gain": 0.5754892230033875,
+              "median_abs_phase_rad": 0.38280799984931946
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 290.3828430175781,
+              "median_real_gain": 0.5657480955123901,
+              "median_abs_phase_rad": 0.794765293598175
+            }
+          },
+          "parity_gain": {
+            "1_to_8": {
+              "n": 150,
+              "relative_mse": 0.43774986267089844,
+              "median_real_gain": 0.6844988465309143,
+              "median_abs_phase_rad": 0.14160318672657013
+            },
+            "9_to_32": {
+              "n": 150,
+              "relative_mse": 58.550777435302734,
+              "median_real_gain": 0.5754894614219666,
+              "median_abs_phase_rad": 0.38280782103538513
+            },
+            "33_to_64": {
+              "n": 150,
+              "relative_mse": 290.38287353515625,
+              "median_real_gain": 0.5657479166984558,
+              "median_abs_phase_rad": 0.7947653532028198
+            }
+          }
+        }
+      }
+    }
+  }
+}

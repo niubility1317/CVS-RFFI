@@ -1,0 +1,8 @@
+{"at": "2026-11-24T02:12:33+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-24T02:12:33+00:00", "status": "LOCAL_VERIFIED", "note": "Two targeted numerical tests, CLI and one independent P0/P1 release review PASS.", "evidence": "report.md", "row_id": null}
+{"at": "2026-11-24T02:15:10+00:00", "status": "RUNNING", "note": "Verified source calibration and both live prediction workers via PID/CWD/argv/GPU and independent log growth.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-24T02:16:24+00:00", "status": "ANALYZED", "note": "Source calibration and independently verified frozen predictions and scores.", "evidence": "fit.json", "row_id": "fit-source"}
+{"at": "2026-11-24T02:16:24+00:00", "status": "ANALYZED", "note": "Source calibration and independently verified frozen predictions and scores.", "evidence": "full-source-scores.json", "row_id": "evaluate-full"}
+{"at": "2026-11-24T02:16:24+00:00", "status": "ANALYZED", "note": "Source calibration and independently verified frozen predictions and scores.", "evidence": "residual-source-scores.json", "row_id": "evaluate-residual"}
+{"at": "2026-11-24T02:16:24+00:00", "status": "ANALYZED", "note": "Source calibration and independently verified frozen predictions and scores.", "evidence": "clean-complete-scores.json", "row_id": "evaluate-reserve"}
+{"at": "2026-11-24T02:16:24+00:00", "status": "ANALYZED", "note": "Completed source-only near-band gain paired ablation.", "evidence": "report.md", "row_id": null}

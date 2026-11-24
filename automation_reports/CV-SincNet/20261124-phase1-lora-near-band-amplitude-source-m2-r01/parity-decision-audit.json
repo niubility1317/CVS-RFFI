@@ -1,0 +1,27 @@
+{
+  "n": 900,
+  "readouts": [
+    "observed_gain",
+    "parity_gain"
+  ],
+  "mismatches": {
+    "full": {
+      "clean": 0,
+      "practical_high": 0,
+      "practical_mid": 0,
+      "practical_low_suburban": 0,
+      "practical_high_urban": 0,
+      "practical_mid_urban": 0,
+      "practical_low_urban": 0
+    },
+    "residual": {
+      "clean": 0,
+      "practical_high": 0,
+      "practical_mid": 0,
+      "practical_low_suburban": 0,
+      "practical_high_urban": 0,
+      "practical_mid_urban": 0,
+      "practical_low_urban": 0
+    }
+  }
+}
