@@ -1,0 +1,242 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261124-phase1-lora-guard-half-target-m8-r01",
+  "group_id": "lora-observable-satellite-recovery",
+  "display_name": "LoRa 源域最佳 guard_half 三种子目标复测",
+  "description": "在当前用户授权下复测固定 guard_half，原两路线共享同一源权重和两个冻结门。",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "LoRa",
+    "target",
+    "DURA",
+    "rank_four",
+    "guard_half",
+    "full",
+    "residual"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261124-phase1-lora-rank-guard-extension-source-m2-r01",
+    "20261124-phase1-lora-shared-spectrum-covariance-source-m4-r01",
+    "20261123-phase1-lora-dura-complex-response-confirm-m4-r01",
+    "20261123-phase1-lora-residual-frozen-r69-replay-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "本对话用户明确要求将此前源域表现最佳候选跑测试。以同一源面板满足 clean 的两路较弱增益优先，固定 guard_half。",
+  "code": {
+    "commit": "启动命令从已推送分支 HEAD 固定，实际 OID 写入 submit.json",
+    "checkout": "E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo",
+    "environment": "${N607_PYTHON}",
+    "cwd": "${N607_PROJECT}/releases/20261124-phase1-lora-guard-half-target-m8-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa 多接收机 IEEE DataPort",
+    "version": "lora_full_packets_v1 源 7/63/30 固定划分",
+    "representation": "1 MS/s 采集及既有构造，冻结读出为 256 kS/s 六条 256 点窄窗复 IQ",
+    "contract_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "既有 Full/Residual blind target receiver + packet_indices 392005；两路线同物理顺序。",
+    "label_map_ref": "`data.py` 31–40。官方测试归档只用于离线分析端的后置评分。",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "10 个登记发射机的固定源分配，拟合不可见",
+    "roles": {
+      "L_s": 0,
+      "U_s": 12,
+      "V": 0,
+      "target": 30000
+    },
+    "train_ratio": "零训练；12 源 U 无目标真实检查。全部目标数据用于固定预测。",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "${N607_PROJECT}/runs/20261122-phase1-lora-full-aligned-data-r01/source_views/complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": "沿用 full 1 MHz 对齐及 residual 256 kHz post-sync/noEQ 原视图"
+  },
+  "permissions": {
+    "regime": "frozen_source_target_test",
+    "query_use": "not_applicable",
+    "external_method_exception": null,
+    "claim_scope": "固定源候选复测。恢复只有当包 IQ，源权重和门限全冻结。两路线全部预测固定后本机独立使用原测试真值。"
+  },
+  "checkpoint": {
+    "initialization": "原四阶谱协方差 SOURCE_FROZEN 及原 guard_half，执行提交 0789ee3329648db6ee348c7fea56adf3a2171237。",
+    "sources": [
+      "20261124-phase1-lora-rank-guard-extension-source-m2-r01/weak-guard.json",
+      "20261124-phase1-lora-shared-spectrum-covariance-source-m4-r01/rank-model.pt",
+      "20261122-phase1-lora-tri-label-set-m3-r01 原默认头 2026092701/02/03"
+    ],
+    "contract_check_ref": "source_contract 与 complete_f/source_control 核对各自源物理角色",
+    "provenance_verdict": "复用冻结原 release，严格核对当前源角色合同、rank proof、两门限及冻结 F 各种子。零训练、重校准、精确量或目标调参。",
+    "selection_rule": "相同 900 源 V 包单种子，两路线 clean 持平，优先较弱路线相对 DURA 的六景净增。固定 guard_half，禁止目标成绩回流。"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "当前 LoRa 可部署星地恢复目标",
+    "gpu_policy": "按实际空闲优先，用最多八张可用 GPU 运行两路线各四独立分片；每份 IQ 只恢复一次，三个冻结 F 共用恢复 IQ。",
+    "remote_run_root": "${N607_PROJECT}/runs/20261124-phase1-lora-guard-half-target-m8-r01",
+    "remote_log_root": "${N607_PROJECT}/runs/20261124-phase1-lora-guard-half-target-m8-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261124-phase1-lora-guard-half-target-m8-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.weak_guard_target publish --repo \"E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo\" --output \"E:/type10-7/local_artifacts/20261124-phase1-lora-guard-half-target-m8-r01/release\" --context E:/type10-7/local_artifacts/lora_main_20261121/runtime_source.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "源版本、输入合同、no-query smoke、预测数组覆盖、后置真值比对或数值失败时保留证据，停止该链。"
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "predictions/complete.json",
+    "predictions/<route>/<seed>/<rx>__<scene>__<mode>.npy",
+    "8 shard summaries",
+    "scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "六景平均和低城区",
+      "clean 正确数",
+      "同包纠错和改错",
+      "物理包簇配对不确定性",
+      "逐场景、逐种子和逐接收机结果"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "mode",
+      "seed"
+    ],
+    "prediction_ref": "${N607_PROJECT}/runs/20261124-phase1-lora-guard-half-target-m8-r01/predictions/complete.json",
+    "scorer_ref": "tools.lora_weak_guard_target_score collect / score"
+  },
+  "rows": [
+    {
+      "row_id": "guard-half-target-s2026092701",
+      "method": "源冻结 guard_half 复测，配对匹配路线的直通与 DURA。Full 另对复响应半量。",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/weak_guard_target.py",
+      "resolved_config_ref": "${N607_PROJECT}/releases/20261124-phase1-lora-guard-half-target-m8-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026112620
+      },
+      "seed_notes": "同一恢复器在两路线与全部识别种子复用。",
+      "k": null,
+      "scenario": "clean 和六景，分别评估 full/residual",
+      "optimizer": "无。只推理。",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "每路线每种子 30000 包×七景；12 源 U no-query smoke。",
+      "output_root": "${N607_PROJECT}/runs/20261124-phase1-lora-guard-half-target-m8-r01/predictions/<route>/2026092701",
+      "log_path": "${N607_PROJECT}/runs/20261124-phase1-lora-guard-half-target-m8-r01/logs",
+      "command": "${N607_PYTHON} -u -m experiments.pamf_lora_main.weak_guard_target dispatch ${N607_PROJECT}/releases/20261124-phase1-lora-guard-half-target-m8-r01-release/runtime.json",
+      "expected_artifacts": [
+        "smoke.json",
+        "predictions/complete.json",
+        "predictions/<route>/<seed>/<rx>__<scene>__<mode>.npy",
+        "8 shard summaries",
+        "scores.json"
+      ]
+    },
+    {
+      "row_id": "guard-half-target-s2026092702",
+      "method": "源冻结 guard_half 复测，配对匹配路线的直通与 DURA。Full 另对复响应半量。",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/weak_guard_target.py",
+      "resolved_config_ref": "${N607_PROJECT}/releases/20261124-phase1-lora-guard-half-target-m8-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026112620
+      },
+      "seed_notes": "同一恢复器在两路线与全部识别种子复用。",
+      "k": null,
+      "scenario": "clean 和六景，分别评估 full/residual",
+      "optimizer": "无。只推理。",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "每路线每种子 30000 包×七景；12 源 U no-query smoke。",
+      "output_root": "${N607_PROJECT}/runs/20261124-phase1-lora-guard-half-target-m8-r01/predictions/<route>/2026092702",
+      "log_path": "${N607_PROJECT}/runs/20261124-phase1-lora-guard-half-target-m8-r01/logs",
+      "command": "${N607_PYTHON} -u -m experiments.pamf_lora_main.weak_guard_target dispatch ${N607_PROJECT}/releases/20261124-phase1-lora-guard-half-target-m8-r01-release/runtime.json",
+      "expected_artifacts": [
+        "smoke.json",
+        "predictions/complete.json",
+        "predictions/<route>/<seed>/<rx>__<scene>__<mode>.npy",
+        "8 shard summaries",
+        "scores.json"
+      ]
+    },
+    {
+      "row_id": "guard-half-target-s2026092703",
+      "method": "源冻结 guard_half 复测，配对匹配路线的直通与 DURA。Full 另对复响应半量。",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/weak_guard_target.py",
+      "resolved_config_ref": "${N607_PROJECT}/releases/20261124-phase1-lora-guard-half-target-m8-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026112620
+      },
+      "seed_notes": "同一恢复器在两路线与全部识别种子复用。",
+      "k": null,
+      "scenario": "clean 和六景，分别评估 full/residual",
+      "optimizer": "无。只推理。",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "每路线每种子 30000 包×七景；12 源 U no-query smoke。",
+      "output_root": "${N607_PROJECT}/runs/20261124-phase1-lora-guard-half-target-m8-r01/predictions/<route>/2026092703",
+      "log_path": "${N607_PROJECT}/runs/20261124-phase1-lora-guard-half-target-m8-r01/logs",
+      "command": "${N607_PYTHON} -u -m experiments.pamf_lora_main.weak_guard_target dispatch ${N607_PROJECT}/releases/20261124-phase1-lora-guard-half-target-m8-r01-release/runtime.json",
+      "expected_artifacts": [
+        "smoke.json",
+        "predictions/complete.json",
+        "predictions/<route>/<seed>/<rx>__<scene>__<mode>.npy",
+        "8 shard summaries",
+        "scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "两路共同完成预测并校验矩阵后才打开真值。源权重、门限、读出固定。",
+    "用户直接要求当前份最强源候选复测。历史留源接收机曾有门控误触发，clean 实际计数与逐包变化全量报告。"
+  ],
+  "registered_at": "2026-11-24T07:20:43+00:00"
+}
