@@ -79,5 +79,69 @@
       "state.json": 29,
       "smoke.json": 233
     }
+  },
+  "completion": {
+    "submit": {
+      "pid": 2906683,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-identity-action-target-m2-r01-release",
+      "code_commit": "796a82fefa55cf4b921f7eece8164f9b80f1c84f",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-identity-action-target-m2-r01"
+    },
+    "controller": null,
+    "jobs": {
+      "smoke-source": {
+        "pid": 2907212,
+        "gpu": 7,
+        "identity": null,
+        "bytes": 511,
+        "receivers": 0,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_DURA_DOSE_TARGET_SMOKE_PASS 20261124-phase1-lora-dura-identity-action-source-m2-r01"
+        ]
+      },
+      "predict-full": {
+        "pid": 2907790,
+        "gpu": 7,
+        "identity": null,
+        "bytes": 930,
+        "receivers": 15,
+        "last": [
+          "LORA_TARGET_PREDICTED full rtl_7",
+          "LORA_TARGET_PREDICTED full rtl_8",
+          "LORA_TARGET_PREDICTED full rtl_9"
+        ]
+      },
+      "predict-residual": {
+        "pid": 2907791,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 990,
+        "receivers": 15,
+        "last": [
+          "LORA_TARGET_PREDICTED residual rtl_7",
+          "LORA_TARGET_PREDICTED residual rtl_8",
+          "LORA_TARGET_PREDICTED residual rtl_9"
+        ]
+      }
+    },
+    "state": {
+      "status": "PREDICTIONS_FROZEN",
+      "target_truth_read": false
+    },
+    "written": {
+      "full": 210,
+      "residual": 210
+    },
+    "files": {
+      "state.json": 67,
+      "smoke.json": 233,
+      "predictions/full/complete.json": 622,
+      "predictions/residual/complete.json": 626
+    }
   }
 }
