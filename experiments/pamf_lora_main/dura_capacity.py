@@ -40,6 +40,14 @@ def dot(a, b):
     return (a.conj()*b).real.sum(-1, keepdim=True)
 
 
+def robust_observation_variance(residual, variance):
+    """Freeze a bounded complex Student-t weight over each four-sample block."""
+    normalized_power = residual.abs().square() / variance
+    local = normalized_power.unflatten(-1, (-1, 4))
+    inflation = ((4. + local.mean(-1, keepdim=True)) / 5.).clamp(1., 8.)
+    return variance * inflation.expand_as(local).flatten(-2)
+
+
 def map_two(action, observed, current, prior, variance, residual=None):
     """Two warm-start CG updates with the DURA innovation reused."""
     weight = variance.reciprocal()
@@ -94,7 +102,7 @@ class DuraCapacity(nn.Module):
         proposed = zero_carrier(torch.complex(r.tanh(), i.tanh()))
         return limit(proposed, y, rms, y.real.new_tensor(MAX_EDIT))
 
-    def stages(self, y, quality, rms, *, use_action=True, use_noise=True, solve=True):
+    def stages(self, y, quality, rms, *, use_action=True, use_noise=True, solve=True, robust=False):
         spec = fft(y)
         noise = (spec[..., self.noise_band].abs().square().median(-1, keepdim=True).values
                  / .69314718056).clamp(1e-5, 4.)
@@ -134,7 +142,8 @@ class DuraCapacity(nn.Module):
                       used.log().clamp(-11., 2.)/5.)
             real, imag = read_core(network, fields)
             prior = c + self.update(real, imag, y, rms)
-            current = (map_two(action, y, current, prior, used, action.adjoint(remaining/used))
+            solve_variance = robust_observation_variance(remaining, used) if robust else used
+            current = (map_two(action, y, current, prior, solve_variance, action.adjoint(remaining/solve_variance))
                        if solve else prior)
             current = y + limit(zero_carrier(current-y), y, rms, y.real.new_tensor(MAX_EDIT))
             stages.append(current)

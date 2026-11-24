@@ -34,7 +34,7 @@ FIELDS = ('active', 'outer_variance', 'used_variance', 'held_mismatch',
           'relative_action', 'mirror_ratio', 'echo_ratio', 'coarse_dose', 'first_dose', 'final_dose')
 
 
-def recover(iq, tracker, models, threshold, *, compare=False):
+def recover(iq, tracker, models, threshold, *, compare=False, robust=False):
     y, phase, quality, rms = coordinates(tracker, iq)
     active = corruption_score(y) > threshold
     count = int(active.sum())
@@ -45,7 +45,7 @@ def recover(iq, tracker, models, threshold, *, compare=False):
     y, phase, quality, rms = [x[active] for x in (y, phase, quality, rms)]
     edits = []
     for model in models:
-        (coarse, first, final), operator, variance, noise, mismatch = model.stages(y, quality, rms)
+        (coarse, first, final), operator, variance, noise, mismatch = model.stages(y, quality, rms, robust=robust)
         changes = (coarse-y, first-y, final-y)
         edits.extend((*changes, .5*changes[-1]))
     if compare:
