@@ -56,10 +56,11 @@ def diagnostics(models, tracker, ground, delivered, threshold, rx):
                 band = (frequency >= low) & (frequency <= high)
                 error = squared[:, index, band]
                 predicted = variance[:, index, band]
-                calibration[f"{component}_{low}_{high}"] = torch.stack(
+                statistics = torch.stack(
                     (error.mean((1, 2)), predicted.mean((1, 2)),
                      (error / predicted).mean((1, 2)), (error <= predicted).float().mean((1, 2))), 1
-                ).cpu().numpy()
+                )
+                calibration[f"{component}_{low}_{high}"] = np.asarray(statistics.tolist())
         direction = model.waveform(mean)
         fixed = model.readout(y, rms, (mean, variance), context[2], adaptive=False)
         adaptive = model.readout(y, rms, (mean, variance), context[2], adaptive=True)
@@ -69,8 +70,8 @@ def diagnostics(models, tracker, ground, delivered, threshold, rx):
         gated = (torch.zeros_like(fixed), fixed * active[:, None, None], adaptive * active[:, None, None])
         risks = torch.stack([((source_error - edit) * rms).abs().square().sum((1, 2)) / ground_power
                              for edit in gated], dim=1)
-        rows.append((name, dict(active=active.cpu().numpy(), rx=rx, gains=gains.cpu().numpy(),
-                                risks=risks.cpu().numpy(), **calibration)))
+        rows.append((name, dict(active=np.asarray(active.tolist()), rx=rx, gains=np.asarray(gains.tolist()),
+                                risks=np.asarray(risks.tolist()), **calibration)))
     return rows
 
 

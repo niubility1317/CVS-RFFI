@@ -54,6 +54,7 @@ REPEAT_PRODUCT_RUN = '20261124-phase1-lora-repeat-product-source-m2-r01'
 DOSE_DIRECTION_RUN = '20261124-diagnostic-lora-dose-direction-source-m2-r01'
 POSTERIOR_TRANSPORT_RUN = '20261124-phase1-lora-posterior-transport-source-m4-r01'
 LINEAR_BIAS_RUN = '20261124-diagnostic-lora-linear-bias-source-m2-r01'
+RELATIVE_ECHO_RUN = '20261124-phase1-lora-relative-echo-source-m2-r01'
 RADIUS_INTERACTIONS = {
     'power_phase': ('power_joint', 'direct', 'power_radius', 'local_full'),
     'fold_phase': ('fold_joint', 'direct', 'fold_radius', 'local_full'),
@@ -220,6 +221,10 @@ def collect(rt):
         from experiments.pamf_lora_main import linear_bias_diagnostic
         modes = linear_bias_diagnostic.MODES
         pairs = (*linear_bias_diagnostic.COMPARISONS, ('direct', 'reference'))
+    elif rt.get('run_id') == RELATIVE_ECHO_RUN:
+        from experiments.pamf_lora_main import relative_echo_source
+        modes = relative_echo_source.MODES
+        pairs = (*relative_echo_source.COMPARISONS, ('direct', 'reference'))
     else:
         from experiments.pamf_lora_main import empirical_tangent_source as tangent
         if rt.get('run_id')!=tangent.RUN:
