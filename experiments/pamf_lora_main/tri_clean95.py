@@ -104,7 +104,13 @@ class TimeFrequencyAligned(CoherentPacket):
             nominal=baseband*self.trace.reference.chirp
             core_input=torch.stack((nominal.real,nominal.imag),dim=2)
         logits,fused=self.raw(core_input)
-        aligned=self.encoder(traces.flatten(0,1)).reshape(len(x),x.shape[1],-1).mean(1)
+        chirps=self.encoder(traces.flatten(0,1)).reshape(len(x),x.shape[1],-1)
+        aligned=chirps.mean(1)
+        edge_layer=getattr(self,'edge_features',None)
+        if edge_layer is not None:
+            interior=chirps[:,1:-1].mean(1)
+            edges=torch.cat((chirps[:,0]-interior,chirps[:,-1]-interior),dim=1)
+            aligned=aligned+.10*edge_layer(edges)
         z=torch.complex(traces[:,:,0],traces[:,:,1])
         z=z-z.mean(-1,keepdim=True)
         size=z.shape[-1]//8
@@ -139,12 +145,16 @@ def clean_model(rt,root,c,row,device):
             if row.get('relative_drift'):
                 f.relative_drift=nn.Sequential(nn.Linear(len(row['chirps']),32),nn.LayerNorm(32),nn.SiLU(),
                                               nn.Linear(32,160),nn.LayerNorm(160)).to(device)
+            if row.get('edge_features'):
+                f.edge_features=nn.Sequential(nn.LayerNorm(320),nn.Linear(320,160),nn.LayerNorm(160)).to(device)
         return f
     return preserve_alignment(model_for(rt,root,c,row,device),row)
 
 
 def study(rt):
     if rt.get('scratch'):
+        if rt.get('edge_study'):
+            return EDGE_ROWS,80,16
         if rt.get('budget_study'):
             return BUDGET_ROWS,88,16
         if rt.get('drift_study'):
@@ -193,6 +203,12 @@ BUDGET_ROWS={
     'budget_control384': {'warmup':72,'samples':384,'time_frequency':True},
     'budget_nominal384': {'warmup':72,'samples':384,'time_frequency':True,'nominal_iq':True},
 }
+EDGE_RUN='20261125-phase1-lora-pamf-tri-clean-full8-m2-r01'
+EDGE_ROWS={
+    'control': {'warmup':64,'samples':384,'time_frequency':True,'chirps':ALL_CHIRPS,'ordinary_std':.003},
+    'edge_aware384': {'warmup':64,'samples':384,'time_frequency':True,'chirps':ALL_CHIRPS,'ordinary_std':.003,
+                      'edge_features':True},
+}
 VALIDATION_EPOCHS={0,2,4,8,12,16,20,24}
 
 
@@ -228,6 +244,8 @@ def row_names(rt):
         return ('all8_relative384',)
     if rt.get('budget_study'):
         return ('budget_nominal384',)
+    if rt.get('edge_study'):
+        return ('edge_aware384',)
     return SCRATCH_LOCAL if rt.get('scratch') else LOCAL
 
 
@@ -403,7 +421,7 @@ def train(rt,name):
     validation_epochs=set(VALIDATION_EPOCHS)
     if rt.get('scratch'):
         validation_epochs.update(range(warmup,epochs+1,4))
-        if rt.get('budget_study'):
+        if rt.get('budget_study') or rt.get('edge_study'):
             validation_epochs.update((32,48,60))
     with (out/'epochs.jsonl').open('x',encoding='utf8') as log:
         for epoch in range(1,epochs+1):
@@ -485,12 +503,12 @@ def dispatch(rt):
         raise ValueError('Quick branch study is registered for N607 only')
     root=Path(rt['run_root'])
     screens=('quick','transfer','timefreq','noise_study','drift_study','budget_study')
-    if any(rt.get(k) for k in ('noise_study','drift_study','budget_study')) and not rt.get('scratch'):
+    if any(rt.get(k) for k in ('noise_study','drift_study','budget_study','edge_study')) and not rt.get('scratch'):
         raise ValueError('The clean input comparisons require random initialization')
     root.mkdir(exist_ok=False)
     state=root/'state.json'
     fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq',
-                             'noise_study','drift_study','budget_study','fixed_clean_cache') if k in rt)
+                             'noise_study','drift_study','budget_study','edge_study','fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)
     try:
