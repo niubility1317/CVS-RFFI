@@ -73,14 +73,16 @@ def smoke(rt, prepare, source_run, modes):
     print('LORA_DURA_DOSE_TARGET_SMOKE_PASS', source_run, flush=True)
 
 
-def run_dose_target(*, run, source_run, arm, recipe, modes, runner):
+def run_dose_target(*, run, source_run, arm, recipe, modes, runner, matched_modes=None,
+                    allowed_gpus=(7,3,6,2,0,4,1,5)):
     parser = argparse.ArgumentParser(description=__doc__)
     actions = parser.add_subparsers(dest='action', required=True)
     release = actions.add_parser('publish')
     for key in ('repo','output','context','ssh-config','source-submit'):
         release.add_argument('--'+key, type=Path, required=True)
     score = actions.add_parser('score')
-    for key in ('submit','ssh-config','dataset','output','full-control','residual-control','width-control'):
+    reference_option = 'matched-control' if matched_modes is not None else 'width-control'
+    for key in ('submit','ssh-config','dataset','output','full-control','residual-control',reference_option):
         score.add_argument('--'+key, type=Path, required=True)
     for action in ('dispatch','smoke','predict'):
         worker = actions.add_parser(action)
@@ -91,12 +93,17 @@ def run_dose_target(*, run, source_run, arm, recipe, modes, runner):
     action = options.pop('action')
     if action == 'publish':
         return publish(**options, run=run, source_run=source_run, runner=runner,
-                       allowed_gpus=(7,3,6,2,0,4,1,5))
+                       allowed_gpus=allowed_gpus)
     if action == 'score':
         from .dura_private_projection_target import MODES as WIDTH_MODES
         from .fixed_mid_target_score import collect
-        historical = (options.pop('width_control'), WIDTH_MODES)
-        pairs = dict(zip(modes, ('wide_half', 'wide_quarter'), strict=True))
+        if matched_modes is None:
+            historical = (options.pop('width_control'), WIDTH_MODES)
+            references = ('wide_half', 'wide_quarter')
+        else:
+            historical = (options.pop('matched_control'), matched_modes)
+            references = matched_modes
+        pairs = dict(zip(modes, references, strict=True))
         return collect(**options, run=run, modes=modes, primary=modes[0],
                        previous=historical, additional_pairs=pairs)
     rt = read(options['runtime'])
