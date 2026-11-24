@@ -86,7 +86,7 @@ def render(iq, attached, baseline, tracker, models, *, threshold, measures=None)
 
 
 @torch.no_grad()
-def smoke(rt):
+def smoke(rt, *, modes=MODES, renderer=render):
     device = 'cuda:0'
     (_, source, _), contract = setup(rt,device,smoke=True)
     _, model, threshold = source_model(rt,contract)
@@ -99,22 +99,24 @@ def smoke(rt):
     active = corruption_score(coordinates(tracker,perturbed)[0]).argmax().view(1)
     iq = torch.cat((source[quiet],perturbed[active]))
     noise = torch.cat((torch.zeros_like(source[quiet]),perturbed[active]-source[active]))
-    output,count = render(iq,noise,baseline,tracker,(model,),threshold=threshold)
+    output,count = renderer(iq,noise,baseline,tracker,(model,),threshold=threshold)
     logits = load_reader(Path(rt['run_root']),contract,device)(output.flatten(0,1))[0]
-    if count!=1 or logits.shape!=(2*len(MODES),10) or not torch.isfinite(logits).all():
+    if count!=1 or logits.shape!=(2*len(modes),10) or not torch.isfinite(logits).all():
         raise ValueError('Invalid real-checkpoint dose diagnostic')
     if not torch.equal(output[2:,0],iq[0].expand_as(output[2:,0])):
         raise ValueError('Expected exact clean bypass')
     write(Path(rt['run_root'])/'smoke.json',dict(status='PASS',diagnostic_only=True,V_reads=0,target_reads=0))
 
 
-def evaluate(rt,route):
+def evaluate(rt,route,*,modes=MODES,fields=FIELDS,renderer=render,
+             previous_run=PREDECESSOR,previous_modes=PREVIOUS_MODES,replay_columns=None):
     binding = source_control(rt,route,'cuda:0')
     _, model, threshold = source_model(rt,binding[2])
-    predecessor = Path(rt['run_root']).parent / PREDECESSOR
-    old_ids, old_predictions, old_metrics = read_frozen(predecessor,route,PREVIOUS_MODES)
-    prior_modes = dict(direct='direct',reference='reference',analytic_one='pooled_half',
-                       exact_one='exact_equal',exact_all='exact_noncarrier')
+    predecessor = Path(rt['run_root']).parent / previous_run
+    old_ids, old_predictions, old_metrics = read_frozen(predecessor,route,previous_modes)
+    prior_modes = replay_columns if replay_columns is not None else dict(
+        direct='direct',reference='reference',analytic_one='pooled_half',
+        exact_one='exact_equal',exact_all='exact_noncarrier')
     measurements = []
 
     def finish(root,route,source,chosen,ids,predictions,metrics,modes):
@@ -122,9 +124,9 @@ def evaluate(rt,route):
             raise ValueError('Expected unchanged source physical IDs and gate')
         for view in VIEWS:
             for name,before in prior_modes.items():
-                if not np.array_equal(predictions[view][modes.index(name)],old_predictions[view][PREVIOUS_MODES.index(before)]):
+                if not np.array_equal(predictions[view][modes.index(name)],old_predictions[view][previous_modes.index(before)]):
                     raise ValueError(f'Original same-dose reference changed for {view}/{name}')
-        samples = np.concatenate(measurements).reshape(len(VIEWS),len(SOURCE),-1,len(FIELDS))
+        samples = np.concatenate(measurements).reshape(len(VIEWS),len(SOURCE),-1,len(fields))
         result={}
         for view,groups in zip(VIEWS,samples,strict=True):
             cells={}
@@ -132,17 +134,18 @@ def evaluate(rt,route):
                 active=group[group[:,0]>0]
                 cells[receiver]=dict(active=len(active))
                 if len(active):
-                    cells[receiver].update(dict(zip(FIELDS[1:],np.median(active[:,1:],0).tolist(),strict=True)))
-                    cells[receiver]['available_total']=int(active[:,-1].sum())
+                    cells[receiver].update(dict(zip(fields[1:],np.median(active[:,1:],0).tolist(),strict=True)))
+                    if 'available_exact' in fields:
+                        cells[receiver]['available_total']=int(active[:,fields.index('available_exact')].sum())
             result[view]=cells
         write(root/f'{route}-isolated-estimates.json',dict(diagnostic_only=True,by_view=result))
         freeze(root,route,source,chosen,ids,predictions,metrics,modes)
 
-    score(rt,route,panel=panel,modes=MODES,binding=binding,frozen_models=(model,),replay_fn=replay_trace,
-          render=partial(render,threshold=threshold,measures=measurements),require_clean_bypass=True,finalize=finish)
+    score(rt,route,panel=panel,modes=modes,binding=binding,frozen_models=(model,),replay_fn=replay_trace,
+          render=partial(renderer,threshold=threshold,measures=measurements),require_clean_bypass=True,finalize=finish)
 
 
-def main():
+def main(*, run=RUN, runner=None, modes=MODES, comparisons=COMPARISONS, smoke_fn=smoke, evaluate_fn=evaluate):
     parser=argparse.ArgumentParser(description=__doc__)
     actions=parser.add_subparsers(dest='action',required=True)
     pub=actions.add_parser('publish')
@@ -156,19 +159,19 @@ def main():
     args=vars(parser.parse_args())
     action=args.pop('action')
     if action=='publish':
-        publish(**args,run=RUN,runner=__spec__.name)
+        publish(**args,run=run,runner=runner or __spec__.name)
         return
     rt=read(args['runtime'])
     if action=='dispatch':
         dispatch(rt)
     elif action=='score':
-        score_frozen(rt,MODES,comparisons=COMPARISONS)
+        score_frozen(rt,modes,comparisons=comparisons)
     else:
         activate(rt)
         if action=='smoke':
-            smoke(rt)
+            smoke_fn(rt)
         else:
-            evaluate(rt,args['name'])
+            evaluate_fn(rt,args['name'])
 
 
 if __name__=='__main__':

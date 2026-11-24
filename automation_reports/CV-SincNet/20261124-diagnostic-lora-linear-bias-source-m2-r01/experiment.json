@@ -1,0 +1,164 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261124-diagnostic-lora-linear-bias-source-m2-r01",
+  "group_id": "lora-observable-satellite-recovery",
+  "display_name": "LoRa 解析修正信号泄漏与噪声整形隔离",
+  "description": "使用固定实收增益将解析误差拆成公共信号、逐 chirp 独有信号以及滤后噪声三项。逐项移除并匹配原 IQ 剂量。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "LoRa",
+    "DURA",
+    "source_V",
+    "equal_rms",
+    "diagnostic",
+    "linear_bias",
+    "full",
+    "residual"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261124-phase1-lora-spectral-mixture-source-m2-r01",
+    "20261124-diagnostic-lora-noise-split-source-m2-r01",
+    "20261122-phase1-lora-full-aligned-data-r01",
+    "20261122-phase1-lora-tri-label-set-m3-r01",
+    "20261124-diagnostic-lora-mixture-directions-source-m2-r01",
+    "20261124-diagnostic-lora-dose-direction-source-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "LoRa 可部署恢复目标与等量分带设计。候选使用源 IQ，精确量独立隔离。",
+  "code": {
+    "commit": "启动命令从已推送分支 HEAD 固定，实际 OID 写入 submit.json",
+    "checkout": "E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo",
+    "environment": "${N607_PYTHON}",
+    "cwd": "${N607_PROJECT}/releases/20261124-diagnostic-lora-linear-bias-source-m2-r01-release"
+  },
+  "data": {
+    "dataset": "LoRa 多接收机 IEEE DataPort",
+    "version": "lora_full_packets_v1 源 7/63/30 固定划分",
+    "representation": "1 MS/s 采集及既有构造，冻结读出为 256 kS/s 六条 256 点窄窗复 IQ",
+    "contract_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json",
+    "physical_ids_ref": "${N607_PROJECT}/releases/20261122-phase1-lora-full-aligned-data-r01-release/data/source/contract.json role_ids.V",
+    "label_map_ref": "experiments/pamf_lora_main/data.py CLASSES (31 至 40)，仅评分读取 V_metadata.npz y",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "10 个登记发射机的固定源分配，拟合不可见",
+    "roles": {
+      "L_s": 0,
+      "U_s": 0,
+      "V": 900
+    },
+    "train_ratio": "没有拟合。复用前轮的合法 U 冻结混合状态。900 个固定源 V 物理包，每台源 RX 180，七景。",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "${N607_PROJECT}/runs/20261122-phase1-lora-full-aligned-data-r01/source_views/complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": "沿用 full 1 MHz 对齐及 residual 256 kHz post-sync/noEQ 原视图"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "not_applicable",
+    "external_method_exception": null,
+    "claim_scope": "仅源 V 隔离诊断使用真实新增噪声。解析增益、旁路、IQ 基仅由固定 U 先验和实收获得。无拟合、校准、选模或目标访问。"
+  },
+  "checkpoint": {
+    "initialization": "reuse existing frozen source U mixture, no updates",
+    "sources": [
+      "20261122-phase1-lora-tri-label-set-m3-r01 / tri_set 2026092702",
+      "20261123-phase1-lora-dura-direct-detail-source-m2-r01 及冻结 full 复响应半量",
+      "20261123-phase1-lora-dura-residual-practical-m1-r01 原 R69 及固定 residual 门控投影半量"
+    ],
+    "contract_check_ref": "source_contract 与 complete_f/source_control 核对各自源物理角色",
+    "provenance_verdict": "复用同源 U 跨频解析半量与原门。逐包验证前轮原直接、DURA、两档解析与两档精确等量输出。",
+    "selection_rule": "1、2 倍等量，完整解析、去公共漏项、去独有漏项、只保留滤后噪声和精确噪声预先固定。"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "当前 LoRa 可部署星地恢复目标",
+    "gpu_policy": "按实时余量选择 N607 GPU，可共用空闲容量。单臂完整训练（如适用），两路线并行预测，CPU 独立 truth-last。",
+    "remote_run_root": "${N607_PROJECT}/runs/20261124-diagnostic-lora-linear-bias-source-m2-r01",
+    "remote_log_root": "${N607_PROJECT}/runs/20261124-diagnostic-lora-linear-bias-source-m2-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261124-diagnostic-lora-linear-bias-source-m2-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.linear_bias_diagnostic publish --repo \"E:/codex/home/worktrees/wisig-receiver-recovery/CVS-RFFI-repo\" --output \"E:/type10-7/local_artifacts/20261124-diagnostic-lora-linear-bias-source-m2-r01/release\" --context E:/type10-7/local_artifacts/lora_main_20261121/runtime_source.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "只在原预测重放失配、源路径非法、物理剂量不一致、真实检查、固定预测或后置评分失败时停止。"
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "full-predictions.json",
+    "residual-predictions.json",
+    "full-source-scores.json",
+    "residual-source-scores.json",
+    "logs/",
+    "full-isolated-estimates.json",
+    "residual-isolated-estimates.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "同量五方向六景/低城区和 clean",
+      "逐源 RX 的纠错改错和区间",
+      "解析增益信号泄漏拆分和 IQ 剂量重合"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "mode",
+      "seed"
+    ],
+    "prediction_ref": "${N607_PROJECT}/runs/20261124-diagnostic-lora-linear-bias-source-m2-r01/<route>-predictions.json",
+    "scorer_ref": "experiments.pamf_lora_main.linear_bias_diagnostic score"
+  },
+  "rows": [
+    {
+      "row_id": "dual-route-linear-bias-s2026092702",
+      "method": "直通及半量 DURA。1 倍与 2 倍剂量各有完整解析、去公共、去独有、只滤后噪声和精确方向。",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/linear_bias_diagnostic.py",
+      "resolved_config_ref": "${N607_PROJECT}/releases/20261124-diagnostic-lora-linear-bias-source-m2-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026112471,
+        "support": null,
+        "evaluation": 2026112620
+      },
+      "seed_notes": "原冻结识别器 seed2026092702、同包原面板和独立 bootstrap。Smoke 通用扰动 seed2026112481。",
+      "k": null,
+      "scenario": "clean 和六景，分别评估 full/residual",
+      "optimizer": "无。只读诊断。",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "零拟合；900 同物理包×七景×12 固定读出×两路线。",
+      "output_root": "${N607_PROJECT}/runs/20261124-diagnostic-lora-linear-bias-source-m2-r01",
+      "log_path": "${N607_PROJECT}/runs/20261124-diagnostic-lora-linear-bias-source-m2-r01/logs",
+      "command": "${N607_PYTHON} -u -m experiments.pamf_lora_main.linear_bias_diagnostic dispatch ${N607_PROJECT}/releases/20261124-diagnostic-lora-linear-bias-source-m2-r01-release/runtime.json",
+      "expected_artifacts": [
+        "smoke.json",
+        "full-predictions.json",
+        "residual-predictions.json",
+        "full-source-scores.json",
+        "residual-source-scores.json",
+        "logs/",
+        "full-isolated-estimates.json",
+        "residual-isolated-estimates.json"
+      ]
+    }
+  ],
+  "notes": [
+    "在原实收坐标中固定每包滤波增益。共用原门限，逐阶等物理 RMS。精确量不进入可部署路径。",
+    "两条预测冻结后独立 CPU 使用源 V 真值，所有负结果保留。"
+  ],
+  "registered_at": "2026-11-24T06:35:13+00:00"
+}
