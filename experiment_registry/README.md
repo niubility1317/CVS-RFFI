@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 粗细修正方向与物理剂量析因](../automation_reports/CV-SincNet/20261124-phase1-lora-stage-dose-direction-source-m2-r01/report.md)
 - [LoRa 局部时延模型冻结粗细恢复析因](../automation_reports/CV-SincNet/20261124-phase1-lora-local-lag-stage-factorial-source-m2-r01/report.md)
 - [LoRa 局部复时延相关保真](../automation_reports/CV-SincNet/20261124-phase1-lora-local-lag-profile-source-m3-r01/report.md)
 - [LoRa 同接收机源包复谱关系保真](../automation_reports/CV-SincNet/20261124-phase1-lora-packet-relation-source-m3-r01/report.md)

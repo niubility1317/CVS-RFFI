@@ -1,0 +1,16 @@
+{
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "n_measurements": 24,
+  "timing": {
+    "clean": {
+      "active": 0,
+      "median_ms": 1.6076494939625263
+    },
+    "generic": {
+      "active": 1,
+      "median_ms": 50.844718934968114
+    }
+  },
+  "restoration_weights": 254735,
+  "scope": "one lag path with tangent edit and energy matching, excluding DURA and F"
+}
