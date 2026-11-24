@@ -209,6 +209,37 @@ class TriTuningTests(TestCase):
         self.assertEqual((epochs,batch),(112,16))
         self.assertEqual(rows['phase_tailaverage']['tail_average'],(100,104,108,112))
 
+    def test_native_edge_aperture_preserves_center_and_source_sample_positions(self):
+        from experiments.pamf_lora_main.clean_aperture import NATIVE_EDGE_POSITIONS, clean_iq
+        random=np.random.default_rng(22)
+        raw=(random.standard_normal((2,8192))+1j*random.standard_normal((2,8192))).astype(np.complex64)
+        central=clean_iq(raw,384,ALL_CHIRPS)
+        packed=clean_iq(raw,384,ALL_CHIRPS,native_edges=True)
+        self.assertEqual(packed.shape,(2,8,2,408))
+        np.testing.assert_array_equal(packed[...,:384],central)
+        indices=np.arange(8)[:,None]*1024+np.asarray(NATIVE_EDGE_POSITIONS)
+        received=packed[:,:,0,384:]+1j*packed[:,:,1,384:]
+        scale=received/raw[:,indices]
+        np.testing.assert_allclose(scale,np.broadcast_to(scale[:,0:1,0:1],scale.shape),atol=1e-6)
+        with self.assertRaisesRegex(ValueError,'Native boundaries require'):
+            clean_iq(raw,384,ALL_CHIRPS,offset=1,native_edges=True)
+        key,layout=tri_clean95.cache_layout(384,ALL_CHIRPS,'source',native_edges=True)
+        self.assertEqual(key,'384-all8-nativeedges')
+        self.assertEqual(layout['native_edge_positions'],list(NATIVE_EDGE_POSITIONS))
+
+    def test_native_phase_features_cancel_global_gain_and_phase(self):
+        from experiments.pamf_lora_main.repair_features import NativeBoundaryPhase
+        from experiments.pamf_lora_main.physical import ChirpResponse
+        model=NativeBoundaryPhase(160)
+        ref=ChirpResponse(samples=384).chirp
+        a=torch.randn(3,8,2,408,generator=torch.Generator().manual_seed(47))
+        baseline=model.features(a[...,:384],a[...,384:],ref)
+        z=torch.complex(a[:,:,0],a[:,:,1])*(1.2+.55j)
+        b=torch.stack((z.real,z.imag),dim=2)
+        self.assertEqual(tuple(baseline.shape),(3,197))
+        torch.testing.assert_close(model.features(b[...,:384],b[...,384:],ref),baseline,
+                                   atol=2.e-6,rtol=2.e-6)
+
     def test_group_residual_is_bounded_per_packet_without_touching_primary_logits(self):
         from experiments.pamf_lora_main.repair_features import residual_logit_scale
         core=torch.tensor([[0.,1.,2.],[0.,2.,4.],[5.,5.,5.]])

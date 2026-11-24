@@ -3,6 +3,8 @@ import numpy as np
 import torch
 from torch import nn
 
+from .clean_aperture import NATIVE_EDGE_POINTS, NATIVE_EDGE_POSITIONS
+from .data import BANDWIDTH_HZ
 from .physical import ChirpResponse
 
 
@@ -106,6 +108,41 @@ def residual_logit_scale(core_logits,delta_logits,limit):
     core_norm=(core-core.mean(1,keepdim=True)).norm(dim=1,keepdim=True)
     delta_norm=(delta_logits-delta_logits.mean(1,keepdim=True)).norm(dim=1,keepdim=True)
     return (limit*core_norm/delta_norm.clamp_min(1e-8)).clamp(max=1.)
+
+
+class NativeBoundaryPhase(nn.Module):
+    """Represent phase steps inside native edge windows and across chirp boundaries."""
+
+    def __init__(self,channels):
+        super().__init__()
+        t=torch.tensor(NATIVE_EDGE_POSITIONS,dtype=torch.float64)*1e-6
+        reference=torch.exp(2j*torch.pi*BANDWIDTH_HZ*(t.square()/(2*.001024)-t/2))
+        self.register_buffer('edge_reference',reference.to(torch.complex64).reshape(2,NATIVE_EDGE_POINTS),
+                             persistent=False)
+        self.project=nn.Sequential(nn.LayerNorm(197),nn.Linear(197,96),nn.SiLU(),
+                                   nn.Linear(96,channels,bias=False))
+        nn.init.zeros_(self.project[-1].weight)
+
+    def features(self,core,edge,core_reference):
+        def unit(z):
+            return z/z.abs().clamp_min(1e-8)
+
+        baseband=torch.complex(core[:,:,0],core[:,:,1])*core_reference.conj()
+        core_steps=unit(baseband[...,1:]*baseband[...,:-1].conj())
+        # One native step lasts 1 us. The core is sampled at 384 kHz.
+        angle=.384*core_steps[...,24:-24].mean(-1).angle()
+        correction=torch.polar(torch.ones_like(angle),-angle)
+        edges=torch.complex(edge[:,:,0],edge[:,:,1]).reshape(len(edge),8,2,NATIVE_EDGE_POINTS)
+        edges=edges*self.edge_reference.conj()
+        steps=unit(edges[...,1:]*edges[...,:-1].conj())*correction[...,None,None]
+        next_start=edges[:,1:,0,0]
+        previous_end=edges[:,:-1,1,-1]
+        junction=unit(next_start*previous_end.conj())*correction[:,:-1]
+        gain=next_start.abs().clamp_min(1e-5).log()-previous_end.abs().clamp_min(1e-5).log()
+        return torch.cat((steps.imag.flatten(1),junction.real,junction.imag,gain),dim=1)
+
+    def forward(self,core,edge,core_reference):
+        return .25*self.project(self.features(core,edge,core_reference))
 
 
 class PacketGroupFusion(nn.Module):

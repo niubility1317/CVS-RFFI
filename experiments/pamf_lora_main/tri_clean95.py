@@ -9,7 +9,7 @@ import torch
 
 from experiments.cric_dura_comparison.io import read, tensor, write
 from experiments.pamf_ssl_research.u_gradprotect_objective import protected_loss
-from .clean_aperture import ALL_CHIRPS, clean_iq
+from .clean_aperture import ALL_CHIRPS, NATIVE_EDGE_POSITIONS, clean_iq
 from .comparison import seed_all
 from .data import SOURCE, TARGET
 from .full_packet_data import COUNTS, LIMIT
@@ -20,7 +20,8 @@ from .packet_data import CHIRPS
 from .packet_runner import schedule
 from .refine_runner import start
 from .runner import activate
-from .repair_features import AlignedTrace, CoherentPacket, PacketGroupFusion, residual_logit_scale
+from .repair_features import (AlignedTrace, CoherentPacket, NativeBoundaryPhase, PacketGroupFusion,
+                              residual_logit_scale)
 from .tri_tuning import SEED, STEPS, model_for, shape_trace, trainable
 
 
@@ -108,6 +109,9 @@ class ChirpReadout(torch.nn.Module):
 
 class TimeFrequencyAligned(CoherentPacket):
     def forward(self,x):
+        boundary=getattr(self,'native_boundary',None)
+        if boundary is not None:
+            x,native_edge_iq=x.split((self.trace.time.numel(),len(NATIVE_EDGE_POSITIONS)),dim=-1)
         drift_layer=getattr(self,'relative_drift',None)
         phase_layer=getattr(self,'phase_curvature',None)
         physics_layer=getattr(self,'packet_physics',None)
@@ -162,6 +166,11 @@ class TimeFrequencyAligned(CoherentPacket):
                 delta_logits=torch.nn.functional.linear(residual,self.head.weight)
                 residual=residual*residual_logit_scale(core_logits,delta_logits,self.group_logit_limit)
             aligned=aligned+residual
+        if boundary is not None:
+            residual=boundary(x,native_edge_iq,self.trace.reference.chirp)
+            core_logits=logits+torch.nn.functional.linear(aligned,self.head.weight,self.head.bias)
+            delta_logits=torch.nn.functional.linear(residual,self.head.weight)
+            aligned=aligned+residual*residual_logit_scale(core_logits,delta_logits,.35)
         logits=logits+self.head(aligned)
         chirp_readout=getattr(self,'chirp_readout',None)
         if chirp_readout is not None:
@@ -204,6 +213,8 @@ def clean_model(rt,root,c,row,device):
                 f.group_fusion=PacketGroupFusion(f.head.in_features,len(row['chirps']),
                                                 radial=row['group_fusion']=='radial').to(device)
                 f.group_logit_limit=row.get('group_logit_limit')
+            if row.get('native_edges'):
+                f.native_boundary=NativeBoundaryPhase(f.head.in_features).to(device)
             if f.spectral_edges:
                 original=f.time_frequency[0]
                 extended=nn.Conv2d(4,16,3,padding=1,device=device)
@@ -218,6 +229,8 @@ def clean_model(rt,root,c,row,device):
 
 def study(rt):
     if rt.get('scratch'):
+        if rt.get('nativeboundary_study'):
+            return NATIVE_BOUNDARY_ROWS,112,16
         if rt.get('groupcap_study'):
             return GROUP_CAP_ROWS,112,16
         if rt.get('rtlgate_study'):
@@ -329,6 +342,10 @@ PHASE_JOINT_RUN='20261125-phase1-lora-pamf-tri-clean-phasejoint98-s2026092702-r0
 PHASE_JOINT_ROWS={
     'phase_joint': dict(ANCHOR_ROWS['phase_anchor'],joint_rx_weight=.12),
 }
+NATIVE_BOUNDARY_RUN='20261125-phase1-lora-pamf-tri-clean-nativeboundary98-s2026092702-r01'
+NATIVE_BOUNDARY_ROWS={
+    'phase_nativeboundary': dict(ANCHOR_ROWS['phase_anchor'],native_edges=True),
+}
 GROUP_CAP_RUN='20261125-phase1-lora-pamf-tri-clean-groupcap98-s2026092702-r01'
 GROUP_CAP_ROWS={
     'phase_groupcap': dict(ANCHOR_ROWS['phase_anchor'],group_fusion='radial',group_logit_limit=.35),
@@ -405,6 +422,8 @@ def row_names(rt):
         return ('phase_jitter',)
     if rt.get('phase_joint_study'):
         return ('phase_joint',)
+    if rt.get('nativeboundary_study'):
+        return ('phase_nativeboundary',)
     if rt.get('groupcap_study'):
         return ('phase_groupcap',)
     if rt.get('rtlgate_study'):
@@ -428,12 +447,15 @@ def row_names(rt):
     return SCRATCH_LOCAL if rt.get('scratch') else LOCAL
 
 
-def cache_layout(samples,chirps,protocol):
+def cache_layout(samples,chirps,protocol,*,native_edges=False):
     name=str(samples)
     expected=dict(status='CLEAN_SOURCE_READY',samples=samples,source_protocol=protocol)
     if chirps==ALL_CHIRPS:
         name+='-all8'
         expected['chirps']=list(chirps)
+    if native_edges:
+        name+='-nativeedges'
+        expected['native_edge_positions']=list(NATIVE_EDGE_POSITIONS)
     return name,expected
 
 
@@ -441,16 +463,18 @@ def cache(rt):
     source,_,contract=source_handles(rt)
     root=Path(rt['run_root'])
     rows=study(rt)[0]
-    shapes={(rows[k].get('samples',256),rows[k].get('chirps',CHIRPS)) for k in row_names(rt)}
-    for n,chirps in sorted(shapes):
-        key,expected=cache_layout(n,chirps,contract['protocol'])
+    shapes={(rows[k].get('samples',256),rows[k].get('chirps',CHIRPS),
+             rows[k].get('native_edges',False)) for k in row_names(rt)}
+    for n,chirps,native_edges in sorted(shapes):
+        key,expected=cache_layout(n,chirps,contract['protocol'],native_edges=native_edges)
+        width=n+len(NATIVE_EDGE_POSITIONS) if native_edges else n
         folder=root/'clean_cache'/key
         folder.mkdir(parents=True,exist_ok=False)
         for key,count in COUNTS.items():
             x=native(source,key,count)
-            out=np.lib.format.open_memmap(folder/f'{key}.npy',mode='w+',dtype=np.float32,shape=(count,len(chirps),2,n))
+            out=np.lib.format.open_memmap(folder/f'{key}.npy',mode='w+',dtype=np.float32,shape=(count,len(chirps),2,width))
             for i in range(0,count,64):
-                out[i:i+64]=clean_iq(x[i:i+64],n,chirps)
+                out[i:i+64]=clean_iq(x[i:i+64],n,chirps,native_edges=native_edges)
             out.flush()
             print('LORA_CLEAN_IQ',n,key,count,flush=True)
         write(folder/'complete.json',expected)
@@ -543,7 +567,8 @@ def smoke(rt):
     for name,row in study(rt)[0].items():
         f=(clean_model(rt,root,c,row,'cpu') if rt.get('scratch')
            else preserve_alignment(configure(deepcopy(parent),row),row))
-        grid=clean_iq(raw[i],row.get('samples',256),row.get('chirps',CHIRPS))
+        grid=clean_iq(raw[i],row.get('samples',256),row.get('chirps',CHIRPS),
+                      native_edges=row.get('native_edges',False))
         if row.get('timing_jitter'):
             shifts=[clean_iq(raw[i],row['samples'],row['chirps'],offset=d) for d in (-2,2)]
             if any(z.shape!=grid.shape or np.array_equal(z,grid) for z in shifts):
@@ -599,7 +624,7 @@ def train(rt,name):
     n=row.get('samples',256)
     chirps=row.get('chirps',CHIRPS)
     cache_root=Path(rt.get('fixed_clean_cache',root/'clean_cache'))
-    key,expected=cache_layout(n,chirps,c['protocol'])
+    key,expected=cache_layout(n,chirps,c['protocol'],native_edges=row.get('native_edges',False))
     clean=cache_root/key
     if read(clean/'complete.json')!=expected:
         raise ValueError('Clean source cache not ready')
@@ -665,7 +690,7 @@ def train(rt,name):
         validation_epochs.update(range(warmup,epochs+1,4))
         if any(rt.get(k) for k in ('budget_study','edge_study','robust_study','phase_study')):
             validation_epochs.update((32,48,60))
-        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study')):
+        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study')):
             validation_epochs.update((32,48,64,80,88))
     snapshots=row.get('tail_average',())
     averaged_state=None
@@ -764,7 +789,9 @@ def predict(rt,name):
         x=native(target,rx,LIMIT)
         codes=[]
         for i in range(0,LIMIT,64):
-            y=f(tensor(clean_iq(x[i:i+64],row.get('samples',256),row.get('chirps',CHIRPS)),'cuda:0'))[0]
+            iq=clean_iq(x[i:i+64],row.get('samples',256),row.get('chirps',CHIRPS),
+                        native_edges=row.get('native_edges',False))
+            y=f(tensor(iq,'cuda:0'))[0]
             if not torch.isfinite(y).all():raise ValueError('Nonfinite blind clean logits')
             codes.extend(y.argmax(1).tolist())
         np.save(out/f'{rx}__clean__direct.npy',np.asarray(codes,dtype=np.int16))
@@ -779,14 +806,14 @@ def dispatch(rt):
     root=Path(rt['run_root'])
     screens=('quick','transfer','timefreq','noise_study','drift_study','budget_study')
     gated_study=any(rt.get(k) for k in ('robust_study','phase_study','anchor_study','timing_study',
-                                       'phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study'))
+                                       'phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study'))
     if (gated_study or any(rt.get(k) for k in ('noise_study','drift_study','budget_study','edge_study'))) and not rt.get('scratch'):
         raise ValueError('The clean input comparisons require random initialization')
     root.mkdir(exist_ok=False)
     state=root/'state.json'
     fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq',
                              'noise_study','drift_study','budget_study','edge_study','robust_study','phase_study','anchor_study',
-                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study',
+                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study',
                              'fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)
