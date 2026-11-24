@@ -37,7 +37,7 @@ def carrier_error(proposal, reference):
     return ((observed-target).square()/(.04+target.square())).log1p().mean()
 
 
-def amplitude_risk(coarse, fine, target, half, half_target):
+def amplitude_risk(coarse, fine, target, half, half_target, *, source_frame, received_half):
     values = torch.stack((carrier_error(coarse,target),carrier_error(fine,target),carrier_error(half,half_target)))
     return .25*values.mean(), values
 
@@ -79,7 +79,7 @@ class CarrierCoupledRecovery(SharedSpectrumRecovery):
         nn.init.zeros_(self.envelope[-1].weight)
         nn.init.zeros_(self.envelope[-1].bias)
 
-    def gains(self, observed, quality):
+    def log_gains(self, observed, quality):
         amp = observed.mean(-1,keepdim=True).abs().clamp_min(1e-4).log()
         rad = observed.abs().square().mean(-1,keepdim=True).clamp_min(1e-8).log()*.5
         local_noise = observed_noise_rms(observed)
@@ -88,7 +88,10 @@ class CarrierCoupledRecovery(SharedSpectrumRecovery):
         spread = (amp-level).abs().mean(1,keepdim=True).expand_as(amp)
         shared_noise = log_noise.median(1,keepdim=True).values.expand_as(amp)
         features = torch.cat((amp,amp-level,rad,quality,log_noise,log_noise-shared_noise,level,spread),dim=-1)
-        return (log(4)*self.envelope(features).tanh()).exp().unbind(-1)
+        return log(4)*self.envelope(features).tanh()
+
+    def gains(self, observed, quality):
+        return self.log_gains(observed,quality).exp().unbind(-1)
 
     def forward(self, observed, quality, rotation):
         coarse, fine = super().forward(observed,quality,rotation)

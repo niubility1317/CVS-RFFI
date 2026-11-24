@@ -70,7 +70,7 @@ def private_direction_risk(even, odd, reference):
 
 def objective(model, tracker, iq, rng, *, with_identity, recipe, step, split_risk,
               build_inputs=antithetic_inputs, private_risk_weight=0., relation_weight=0., lag_weight=0.,
-              observation_frame=coordinates, carrier_risk=None):
+              observation_frame=coordinates, carrier_risk=None, mix=torch.lerp):
     clean = complex_iq(iq)
     framed, rotation, _, rms = observation_frame(tracker, iq)
     source_basis = rotation * rms
@@ -86,7 +86,8 @@ def objective(model, tracker, iq, rng, *, with_identity, recipe, step, split_ris
     coarse_risk = waveform_risk(coarse, stage_target)
     full_risk = waveform_risk(refined, stage_target)
     recovered = (refined * basis).unflatten(0, wave.shape[:2])
-    half = torch.lerp(wave, recovered, .5) / source_basis[:, None]
+    physical_half = mix(wave, recovered, .5)
+    half = physical_half / source_basis[:, None]
     adapted_target = target / source_basis[:, None]
     mean, difference = pair_terms(half)
     reference = adapted_target[:, ::2]
@@ -111,7 +112,9 @@ def objective(model, tracker, iq, rng, *, with_identity, recipe, step, split_ris
         loss = loss + lag_weight * lag.mean()
         values = torch.cat((values, lag))
     if carrier_risk is not None:
-        extra, diagnostics = carrier_risk(coarse, refined, stage_target, half, adapted_target)
+        extra, diagnostics = carrier_risk(coarse, refined, stage_target, half, adapted_target,
+                                          source_frame=framed,
+                                          received_half=physical_half / basis.unflatten(0, wave.shape[:2]))
         loss = loss + extra
         values = torch.cat((values, diagnostics))
     return loss, values
