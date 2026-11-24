@@ -1,0 +1,8 @@
+{"at": "2026-11-24T01:25:58+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-24T01:25:58+00:00", "status": "LOCAL_VERIFIED", "note": "Three targeted numerical tests, CLI and independent source-only P0/P1 PASS.", "evidence": "report.md", "row_id": null}
+{"at": "2026-11-24T01:27:50+00:00", "status": "RUNNING", "note": "N607 controller and Full GPU3 / Residual GPU2 independently verified by PID/CWD/argv/GPU and growing logs.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-24T01:30:04+00:00", "status": "ANALYZED", "note": "Source-only fit, fixed predictions or independent source score verified.", "evidence": "fit.json", "row_id": "fit-source"}
+{"at": "2026-11-24T01:30:04+00:00", "status": "ANALYZED", "note": "Source-only fit, fixed predictions or independent source score verified.", "evidence": "full-source-scores.json", "row_id": "evaluate-full"}
+{"at": "2026-11-24T01:30:04+00:00", "status": "ANALYZED", "note": "Source-only fit, fixed predictions or independent source score verified.", "evidence": "residual-source-scores.json", "row_id": "evaluate-residual"}
+{"at": "2026-11-24T01:30:04+00:00", "status": "ANALYZED", "note": "Source-only fit, fixed predictions or independent source score verified.", "evidence": "clean-complete-scores.json", "row_id": "evaluate-reserve"}
+{"at": "2026-11-24T01:30:04+00:00", "status": "ANALYZED", "note": "Completed paired source assessment and holdout waveform attribution.", "evidence": "report.md", "row_id": null}

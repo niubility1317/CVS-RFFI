@@ -1,0 +1,16 @@
+{
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "n_measurements": 24,
+  "timing": {
+    "clean": {
+      "active": 0,
+      "median_ms": 3.2267720671370625
+    },
+    "generic": {
+      "active": 1,
+      "median_ms": 58.54452296625823
+    }
+  },
+  "restoration_weights": 254735,
+  "scope": "frozen rank and both empirical posteriors; excludes DURA and F"
+}
