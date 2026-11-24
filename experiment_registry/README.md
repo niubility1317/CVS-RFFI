@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 全包复谱块注意力与逐 chirp 匹配](../automation_reports/CV-SincNet/20261124-phase1-lora-packet-spectral-context-source-m4-r01/report.md)
 - [LoRa 混叠侧实收探针与等能量复谱方向](../automation_reports/CV-SincNet/20261124-phase1-lora-alias-curvature-source-m2-r01/report.md)
 - [LoRa 冻结恢复器的近带私有幅度校准](../automation_reports/CV-SincNet/20261124-phase1-lora-near-band-amplitude-source-m2-r01/report.md)
 - [LoRa 奇偶采样交叉功率与差分幅度可观测性](../automation_reports/CV-SincNet/20261124-phase1-lora-interleaved-band-power-source-cpu-r01/report.md)

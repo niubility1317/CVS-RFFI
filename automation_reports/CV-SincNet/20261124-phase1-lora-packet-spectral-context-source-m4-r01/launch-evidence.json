@@ -1,0 +1,260 @@
+{
+  "verification": "VERIFIED",
+  "observed": {
+    "submit": {
+      "pid": 2467247,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-packet-spectral-context-source-m4-r01-release",
+      "code_commit": "5ef48584f77fa5ad9e8a4ebd639b966c85a48644",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-packet-spectral-context-source-m4-r01"
+    },
+    "controller": {
+      "pid": 2467247,
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.packet_spectral_context_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-packet-spectral-context-source-m4-r01-release/runtime.json",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-packet-spectral-context-source-m4-r01-release",
+      "cuda": [
+        "CUDA_VISIBLE_DEVICES="
+      ]
+    },
+    "jobs": {
+      "smoke-source": {
+        "pid": 2467317,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 459,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_ANTITHETIC_REAL_CHECKPOINT_PASS"
+        ]
+      },
+      "fit-local_context": {
+        "pid": 2467821,
+        "gpu": 3,
+        "identity": {
+          "pid": 2467821,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.packet_spectral_context_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-packet-spectral-context-source-m4-r01/configs/fit-local_context.json local_context",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-packet-spectral-context-source-m4-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=3"
+          ]
+        },
+        "bytes": 545,
+        "last": [
+          "CHANNEL_BLIND_FIT 50 2.2953619956970215 1.9243243932724 2.591240882873535 0.21117478609085083 2.5452117919921875 0.004564568866044283",
+          "CHANNEL_BLIND_FIT 100 2.139585018157959 1.3533395528793335 2.3986520767211914 0.46796175837516785 2.2861878871917725 0.015311677940189838",
+          "CHANNEL_BLIND_FIT 150 2.088853597640991 0.7446313500404358 1.8435449600219727 0.34285083413124084 1.7605714797973633 0.014557814225554466"
+        ]
+      },
+      "fit-packet_context": {
+        "pid": 2467822,
+        "gpu": 6,
+        "identity": {
+          "pid": 2467822,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.packet_spectral_context_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-packet-spectral-context-source-m4-r01/configs/fit-packet_context.json packet_context",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-packet-spectral-context-source-m4-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=6"
+          ]
+        },
+        "bytes": 677,
+        "last": [
+          "CHANNEL_BLIND_FIT 100 2.139928102493286 1.3435200452804565 2.388295888900757 0.47085297107696533 2.275078296661377 0.016134660691022873",
+          "CHANNEL_BLIND_FIT 150 2.093902111053467 0.7379739284515381 1.86759614944458 0.3482370674610138 1.7845449447631836 0.01517102587968111",
+          "CHANNEL_BLIND_FIT 200 1.9770206212997437 0.370624840259552 1.8510159254074097 0.4343493580818176 1.6766855716705322 0.02162623591721058"
+        ]
+      }
+    },
+    "state": null,
+    "files": {
+      "smoke.json": 128
+    }
+  },
+  "progress": {
+    "submit": {
+      "pid": 2467247,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-packet-spectral-context-source-m4-r01-release",
+      "code_commit": "5ef48584f77fa5ad9e8a4ebd639b966c85a48644",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-packet-spectral-context-source-m4-r01"
+    },
+    "controller": {
+      "pid": 2467247,
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.packet_spectral_context_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-packet-spectral-context-source-m4-r01-release/runtime.json",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-packet-spectral-context-source-m4-r01-release",
+      "cuda": [
+        "CUDA_VISIBLE_DEVICES="
+      ]
+    },
+    "jobs": {
+      "smoke-source": {
+        "pid": 2467317,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 459,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_ANTITHETIC_REAL_CHECKPOINT_PASS"
+        ]
+      },
+      "fit-local_context": {
+        "pid": 2467821,
+        "gpu": 3,
+        "identity": {
+          "pid": 2467821,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.packet_spectral_context_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-packet-spectral-context-source-m4-r01/configs/fit-local_context.json local_context",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-packet-spectral-context-source-m4-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=3"
+          ]
+        },
+        "bytes": 1512,
+        "last": [
+          "CHANNEL_BLIND_FIT 400 0.1865479052066803 0.29302656650543213 1.667632818222046 0.26861727237701416 1.5413262844085693 0.027837323024868965",
+          "CHANNEL_BLIND_FIT 450 0.09645956754684448 0.191568061709404 1.607985258102417 0.22150495648384094 1.4838380813598633 0.01268225722014904",
+          "CHANNEL_BLIND_FIT 500 0.17279988527297974 0.2838408648967743 1.5072585344314575 0.2224874049425125 1.3999831676483154 0.026009822264313698"
+        ]
+      },
+      "fit-packet_context": {
+        "pid": 2467822,
+        "gpu": 6,
+        "identity": {
+          "pid": 2467822,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.packet_spectral_context_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-packet-spectral-context-source-m4-r01/configs/fit-packet_context.json packet_context",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-packet-spectral-context-source-m4-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=6"
+          ]
+        },
+        "bytes": 1786,
+        "last": [
+          "CHANNEL_BLIND_FIT 500 0.17458713054656982 0.2871994972229004 1.4926239252090454 0.20237107574939728 1.3890007734298706 0.026830948889255524",
+          "CHANNEL_BLIND_FIT 550 0.09095213562250137 0.157390758395195 1.580283284187317 0.32548022270202637 1.3730683326721191 0.009654347784817219",
+          "CHANNEL_BLIND_FIT 600 0.08002013713121414 0.1782318353652954 1.5409106016159058 0.19269487261772156 1.4278311729431152 0.01804119162261486"
+        ]
+      }
+    },
+    "state": null,
+    "files": {
+      "smoke.json": 128
+    }
+  },
+  "terminal": {
+    "submit": {
+      "pid": 2467247,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-packet-spectral-context-source-m4-r01-release",
+      "code_commit": "5ef48584f77fa5ad9e8a4ebd639b966c85a48644",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-packet-spectral-context-source-m4-r01"
+    },
+    "controller": null,
+    "jobs": {
+      "smoke-source": {
+        "pid": 2467317,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 459,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_ANTITHETIC_REAL_CHECKPOINT_PASS"
+        ]
+      },
+      "fit-local_context": {
+        "pid": 2467821,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 10176,
+        "last": [
+          "CHANNEL_BLIND_FIT 3500 0.05002348870038986 0.13609768450260162 1.3262466192245483 0.1304711401462555 1.243148922920227 0.010207179933786392",
+          "CHANNEL_BLIND_FIT 3550 0.06123509630560875 0.14796970784664154 1.43545401096344 0.19965359568595886 1.302531361579895 0.011181054636836052",
+          "CHANNEL_BLIND_FIT 3600 0.053182851523160934 0.14922301471233368 1.3997128009796143 0.045276448130607605 1.3785101175308228 0.016331186518073082"
+        ]
+      },
+      "fit-packet_context": {
+        "pid": 2467822,
+        "gpu": 6,
+        "identity": null,
+        "bytes": 10182,
+        "last": [
+          "CHANNEL_BLIND_FIT 3500 0.05021358281373978 0.13663168251514435 1.3211255073547363 0.11994747817516327 1.24176824092865 0.009787720628082752",
+          "CHANNEL_BLIND_FIT 3550 0.06103916093707085 0.1479552984237671 1.4322415590286255 0.19897709786891937 1.2984577417373657 0.010801387950778008",
+          "CHANNEL_BLIND_FIT 3600 0.05364111438393593 0.15030498802661896 1.4004524946212769 0.04588897526264191 1.3791862726211548 0.015507577918469906"
+        ]
+      },
+      "timing-source": {
+        "pid": 2483383,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 422,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()"
+        ]
+      },
+      "evaluate-full": {
+        "pid": 2484142,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 754,
+        "last": [
+          "COMPLEX_VECTOR_SOURCE full practical_high_urban 92",
+          "COMPLEX_VECTOR_SOURCE full practical_mid_urban 396",
+          "COMPLEX_VECTOR_SOURCE full practical_low_urban 641"
+        ]
+      },
+      "evaluate-residual": {
+        "pid": 2484143,
+        "gpu": 6,
+        "identity": null,
+        "bytes": 782,
+        "last": [
+          "COMPLEX_VECTOR_SOURCE residual practical_high_urban 67",
+          "COMPLEX_VECTOR_SOURCE residual practical_mid_urban 803",
+          "COMPLEX_VECTOR_SOURCE residual practical_low_urban 899"
+        ]
+      },
+      "evaluate-reserve": {
+        "pid": 2486962,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 624,
+        "last": [
+          "LORA_CLEAN_RESERVE_PREDICTED 7680",
+          "LORA_CLEAN_RESERVE_PREDICTED 9596",
+          "LORA_CLEAN_RESERVE_FROZEN 11100"
+        ]
+      },
+      "score-source": {
+        "pid": 2487359,
+        "gpu": null,
+        "identity": null,
+        "bytes": 64,
+        "last": [
+          "LORA_RESTORATION_SOURCE_SCORED",
+          "LORA_CLEAN_COMPLETE_SCORED 12000"
+        ]
+      }
+    },
+    "state": {
+      "status": "SOURCE_SCORED"
+    },
+    "files": {
+      "state.json": 32,
+      "smoke.json": 128,
+      "local_context-complete.json": 680,
+      "packet_context-complete.json": 681,
+      "b1.json": 688,
+      "full-source-scores.json": 12028,
+      "residual-source-scores.json": 12069,
+      "clean-complete-scores.json": 3735
+    }
+  }
+}
