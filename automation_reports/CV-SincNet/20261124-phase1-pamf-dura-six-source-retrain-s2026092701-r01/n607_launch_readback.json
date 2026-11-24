@@ -1,0 +1,48 @@
+{
+  "status": "RUNNING",
+  "training_status": "RUNNING",
+  "run_id": "20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01",
+  "at": "2026-11-24T13:13:37.287483+00:00",
+  "code_commit": "ea9e01a579d8f3838038b4fb6cf02a9a99ab3ae1",
+  "pid": 3053607,
+  "gpu": 2,
+  "cuda_mib": 9438,
+  "cwd_matches": true,
+  "argv_matches": true,
+  "smoke": {
+    "status": "PASS",
+    "real_checkpoints": true,
+    "source_iq_samples": 2,
+    "query_reads": 0
+  },
+  "training_config": true,
+  "training_log_bytes": 301,
+  "stage_progress": {
+    "stage": "coarse",
+    "epoch": 1,
+    "updates": 247,
+    "loss": 1.2223552656680465,
+    "L_exposures": 6254,
+    "U_exposures": 56978,
+    "seconds": 83.9761484011542,
+    "parameters": 1305958,
+    "TX_labels_read": 0,
+    "F_reads": 0,
+    "target_reads": 0,
+    "teacher_cache": null,
+    "prefix_cache": null
+  },
+  "technical_log_lines": [],
+  "queued": [
+    "restore",
+    "predict-2026092701",
+    "predict-2026092702",
+    "predict-2026092703",
+    "score-2026092701",
+    "score-2026092702",
+    "score-2026092703"
+  ],
+  "actual_seed": 2026092701,
+  "g_source_commit": "34d1357614be0d813cc1e68d8526612d3abdfcb8",
+  "same_source_cache": true
+}
