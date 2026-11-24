@@ -1,1 +1,2 @@
 {"at": "2026-11-24T11:53:28+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-24T11:58:36+00:00", "status": "RUNNING", "note": "N607 启动 VERIFIED，真实权重无查询冒烟 PASS。独立核对 6 个训练进程的 PID、工作目录、命令行、GPU 实际占用及训练日志。", "evidence": ["n607_launch_readback.json"], "row_id": null}

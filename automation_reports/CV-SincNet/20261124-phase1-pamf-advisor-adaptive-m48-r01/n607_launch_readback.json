@@ -1,0 +1,102 @@
+{
+  "run_id": "20261124-phase1-pamf-advisor-adaptive-m48-r01",
+  "at": "2026-11-24T11:56:51.450030+00:00",
+  "status": "RUNNING",
+  "actual_commit": "b931a3e96fee26af8b04476e6635fc59fa5bce95",
+  "smoke": {
+    "status": "PASS",
+    "real_checkpoint": true,
+    "query_reads": 0
+  },
+  "workers": [
+    {
+      "job": "train__budget630-adaptive-s2026092701",
+      "gpu": 0,
+      "pid": 2968089,
+      "actual_method": "adaptive",
+      "profile": "original_fallback",
+      "early_anchor": true,
+      "label_coverage": 5.0,
+      "cwd_matches": true,
+      "cmdline_matches": true,
+      "cuda_active": true,
+      "log_bytes": 6730,
+      "step_log_bytes": null
+    },
+    {
+      "job": "train__budget3150-adaptive-s2026092701",
+      "gpu": 1,
+      "pid": 2968090,
+      "actual_method": "adaptive",
+      "profile": "fusion_rx_balance",
+      "early_anchor": false,
+      "label_coverage": 28.0,
+      "cwd_matches": true,
+      "cmdline_matches": true,
+      "cuda_active": true,
+      "log_bytes": 6742,
+      "step_log_bytes": null
+    },
+    {
+      "job": "train__receivers1-group1-pl-s2026092701",
+      "gpu": 2,
+      "pid": 2968091,
+      "actual_method": "pl",
+      "profile": "ordinary_pl",
+      "early_anchor": false,
+      "label_coverage": 60.0,
+      "cwd_matches": true,
+      "cmdline_matches": true,
+      "cuda_active": true,
+      "log_bytes": 6470,
+      "step_log_bytes": null
+    },
+    {
+      "job": "train__receivers1-group2-pl-s2026092701",
+      "gpu": 3,
+      "pid": 2968092,
+      "actual_method": "pl",
+      "profile": "ordinary_pl",
+      "early_anchor": false,
+      "label_coverage": 60.0,
+      "cwd_matches": true,
+      "cmdline_matches": true,
+      "cuda_active": true,
+      "log_bytes": 6470,
+      "step_log_bytes": null
+    },
+    {
+      "job": "train__receivers1-group3-adaptive-s2026092701",
+      "gpu": 5,
+      "pid": 2968093,
+      "actual_method": "adaptive",
+      "profile": "single_rx_hybrid",
+      "early_anchor": false,
+      "label_coverage": 60.0,
+      "cwd_matches": true,
+      "cmdline_matches": true,
+      "cuda_active": true,
+      "log_bytes": 6518,
+      "step_log_bytes": null
+    },
+    {
+      "job": "train__receivers1-group3-pl-s2026092701",
+      "gpu": 6,
+      "pid": 2968094,
+      "actual_method": "pl",
+      "profile": "ordinary_pl",
+      "early_anchor": false,
+      "label_coverage": 60.0,
+      "cwd_matches": true,
+      "cmdline_matches": true,
+      "cuda_active": true,
+      "log_bytes": 6470,
+      "step_log_bytes": null
+    }
+  ],
+  "counts": {
+    "RUNNING": 6,
+    "QUEUED": 92
+  },
+  "failed_jobs": []
+}
