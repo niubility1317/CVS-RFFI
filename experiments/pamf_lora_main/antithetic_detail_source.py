@@ -123,7 +123,8 @@ def smoke(rt, *, recipes=RECIPES, modes=MODES, split_risk=(False, True), calcula
             models.append(model)
             continue
         model = recipe.model().to(device)
-        calibrate_fn(model, tracker, training)
+        if calibrate_fn is not None:
+            calibrate_fn(model, tracker, training)
         rng = torch.Generator(device=device).manual_seed(2026114990)
         example = cal[:6]
         calculate = (calculations or {}).get(recipe.name, partial(objective, split_risk=split))

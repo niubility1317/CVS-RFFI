@@ -45,6 +45,7 @@ class FitRecipe:
     coarse_first: bool = False
     initialize: Callable | None = None
     stage_transform: Callable | None = None
+    uses_bf16_convolutions: bool = True
 
     def transform_stages(self, observed, stages, rms):
         if self.stage_transform is None:
@@ -63,7 +64,7 @@ class FitRecipe:
 
 
 DEFAULT = FitRecipe('blind',STEPS,ChannelBlind,generic_observation,
-                    lambda model,y,q,_template:model(y,q))
+                    lambda model,y,q,_template:model(y,q),uses_bf16_convolutions=False)
 
 
 def partition(rx, fit=FIT, cal=CAL, held=HELD):
@@ -188,7 +189,7 @@ def fit(rt, *, smoke=False, recipe=DEFAULT, calculate=objective, receiver_batche
     summary.update(threshold=threshold,held_waveform=result,
                    n_fit=len(training),n_calibration=len(calibration),n_held=len(held),
                    worker_seconds=worker_seconds,
-                   bf16_training_convolutions=recipe.name!='blind' and torch.cuda.is_bf16_supported())
+                   bf16_training_convolutions=recipe.uses_bf16_convolutions and torch.cuda.is_bf16_supported())
     if recipe.initialize is not None:
         summary['initializer_seconds'] = init_seconds
     if smoke:
