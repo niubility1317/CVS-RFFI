@@ -16,7 +16,7 @@ from .scoring import macro_f1
 from .tri_clean95 import (
     ANCHOR_ROWS, ANCHOR_RUN, BUDGET_RUN, CHIRP_READ_ROWS, CHIRP_READ_RUN, COVERAGE_ROWS, COVERAGE_RUN, DRIFT_RUN, EDGE_ROWS, EDGE_RUN, NOISE_RUN, QUICK_RUN, ROWS, RUN, SCRATCH_ROWS, SCRATCH_RUN,
     PHASE_JOINT_ROWS, PHASE_JOINT_RUN, PHASE_ROWS, PHASE_RUN, PHYSICS_ROWS, PHYSICS_RUN, ROBUST_ROWS, ROBUST_RUN, SEED,
-    GROUP_FUSION_ROWS, GROUP_FUSION_RUN, PAIR_MARGIN_ROWS, PAIR_MARGIN_RUN, RANK_WEIGHT_ROWS, RANK_WEIGHT_RUN, RTL_ROWS, RTL_RUN, TIMEFREQ_RUN, TIMING_ROWS, TIMING_RUN, TRANSFER_RUN,
+    TAIL_AVERAGE_ROWS, TAIL_AVERAGE_RUN, GROUP_FUSION_ROWS, GROUP_FUSION_RUN, PAIR_MARGIN_ROWS, PAIR_MARGIN_RUN, RANK_WEIGHT_ROWS, RANK_WEIGHT_RUN, RTL_ROWS, RTL_RUN, TIMEFREQ_RUN, TIMING_ROWS, TIMING_RUN, TRANSFER_RUN,
 )
 
 
@@ -24,18 +24,18 @@ QUALIFIED_ROWS={ROBUST_RUN:ROBUST_ROWS,PHASE_RUN:PHASE_ROWS,ANCHOR_RUN:ANCHOR_RO
                 TIMING_RUN:TIMING_ROWS,PHASE_JOINT_RUN:PHASE_JOINT_ROWS,RTL_RUN:RTL_ROWS,
                 PHYSICS_RUN:PHYSICS_ROWS,COVERAGE_RUN:COVERAGE_ROWS,CHIRP_READ_RUN:CHIRP_READ_ROWS,
                 PAIR_MARGIN_RUN:PAIR_MARGIN_ROWS,RANK_WEIGHT_RUN:RANK_WEIGHT_ROWS,
-                GROUP_FUSION_RUN:GROUP_FUSION_ROWS}
+                GROUP_FUSION_RUN:GROUP_FUSION_ROWS,TAIL_AVERAGE_RUN:TAIL_AVERAGE_ROWS}
 
 
 def publish(repo, output, context, ssh_config, quick=False, transfer=False, scratch=False, timefreq=False,
             noise=False,drift=False,budget=False,edge=False,robust=False,headphase=False,
-            anchor=False,timing=False,phasejoint=False,rtl=False,physics=False,coverage=False,chirpread=False,pairmargin=False,rankweight=False,groupfusion=False):
+            anchor=False,timing=False,phasejoint=False,rtl=False,physics=False,coverage=False,chirpread=False,pairmargin=False,rankweight=False,groupfusion=False,tailaverage=False):
     ctx=read(context)
     rt={k:ctx[k] for k in ('project','python','frozen_sources')}
     project=PurePosixPath(rt['project'])
     parent=project/'runs'/DATA_RUN
     native=project/'releases'/f'{DATA_RUN}-release'/'data'
-    studies=((groupfusion,GROUP_FUSION_RUN),(rankweight,RANK_WEIGHT_RUN),(pairmargin,PAIR_MARGIN_RUN),(chirpread,CHIRP_READ_RUN),(coverage,COVERAGE_RUN),(physics,PHYSICS_RUN),(rtl,RTL_RUN),(phasejoint,PHASE_JOINT_RUN),(timing,TIMING_RUN),(anchor,ANCHOR_RUN),(headphase,PHASE_RUN),
+    studies=((tailaverage,TAIL_AVERAGE_RUN),(groupfusion,GROUP_FUSION_RUN),(rankweight,RANK_WEIGHT_RUN),(pairmargin,PAIR_MARGIN_RUN),(chirpread,CHIRP_READ_RUN),(coverage,COVERAGE_RUN),(physics,PHYSICS_RUN),(rtl,RTL_RUN),(phasejoint,PHASE_JOINT_RUN),(timing,TIMING_RUN),(anchor,ANCHOR_RUN),(headphase,PHASE_RUN),
              (robust,ROBUST_RUN),(edge,EDGE_RUN),(budget,BUDGET_RUN),
              (drift,DRIFT_RUN),(noise,NOISE_RUN),(timefreq,TIMEFREQ_RUN),(scratch,SCRATCH_RUN),
              (transfer,TRANSFER_RUN),(quick,QUICK_RUN))
@@ -99,6 +99,9 @@ def publish(repo, output, context, ssh_config, quick=False, transfer=False, scra
     if groupfusion:
         rt.update(scratch=True,groupfusion_study=True,fixed_clean_cache=str(project/'runs'/DRIFT_RUN/'clean_cache'),
                   allowed_gpus=[2,7,5,6,3],max_workers=2,min_free_mib=12000)
+    if tailaverage:
+        rt.update(scratch=True,tailaverage_study=True,fixed_clean_cache=str(project/'runs'/DRIFT_RUN/'clean_cache'),
+                  allowed_gpus=[5,6,3,7,2],max_workers=1,min_free_mib=12000)
     if quick or transfer:
         del rt['native_target_root'],rt['target_views']
         rt.update(quick=quick,transfer=transfer,fixed_clean_cache=str(project/'runs'/RUN/'clean_cache'))
@@ -191,6 +194,7 @@ if __name__=='__main__':
             study.add_argument('--pairmargin',action='store_true')
             study.add_argument('--rankweight',action='store_true')
             study.add_argument('--groupfusion',action='store_true')
+            study.add_argument('--tailaverage',action='store_true')
     args=vars(parser.parse_args())
     kind=args.pop('kind')
     {'publish':publish,'score':score}[kind](**args)

@@ -212,6 +212,8 @@ def clean_model(rt,root,c,row,device):
 
 def study(rt):
     if rt.get('scratch'):
+        if rt.get('tailaverage_study'):
+            return TAIL_AVERAGE_ROWS,112,16
         if rt.get('groupfusion_study'):
             return GROUP_FUSION_ROWS,112,16
         if rt.get('rankweight_study'):
@@ -317,6 +319,10 @@ PHASE_JOINT_RUN='20261125-phase1-lora-pamf-tri-clean-phasejoint98-s2026092702-r0
 PHASE_JOINT_ROWS={
     'phase_joint': dict(ANCHOR_ROWS['phase_anchor'],joint_rx_weight=.12),
 }
+TAIL_AVERAGE_RUN='20261125-phase1-lora-pamf-tri-clean-tailaverage98-s2026092702-r01'
+TAIL_AVERAGE_ROWS={
+    'phase_tailaverage': dict(ANCHOR_ROWS['phase_anchor'],tail_average=(100,104,108,112)),
+}
 GROUP_FUSION_RUN='20261125-phase1-lora-pamf-tri-clean-groupfusion98-m2-r01'
 GROUP_FUSION_ROWS={
     'group_silu': dict(ANCHOR_ROWS['phase_anchor'],group_fusion='silu'),
@@ -381,6 +387,8 @@ def row_names(rt):
         return ('phase_jitter',)
     if rt.get('phase_joint_study'):
         return ('phase_joint',)
+    if rt.get('tailaverage_study'):
+        return ('phase_tailaverage',)
     if rt.get('groupfusion_study'):
         return ('group_silu','group_radial')
     if rt.get('rankweight_study'):
@@ -534,6 +542,10 @@ def smoke(rt):
         norm=float(torch.nn.utils.clip_grad_norm_(f.parameters(),5.,error_if_nonfinite=True))
         if norm<=0 or n!=len(y):raise ValueError('Failed real clean Tri gradient check')
         records[name]=dict(t,gradient=norm)
+        if row.get('tail_average'):
+            state=f.state_dict()
+            average=accumulate_state(None,state,1)
+            f.load_state_dict(accumulate_state(average,state,2),strict=True)
     write(root/'smoke.json',dict(status='PASS',U_truth_reads=0,target_reads=0,rows=records))
 
 
@@ -542,6 +554,18 @@ def distinct_u_batches(total,epochs,steps,batch_size,*,device,generator):
     if draws>total:
         raise ValueError('Unique source U budget exceeds the available source packets')
     return torch.randperm(total,device=device,generator=generator)[:draws].reshape(epochs,steps,batch_size)
+
+
+@torch.no_grad()
+def accumulate_state(average,state,count):
+    if count==1:
+        return {key:value.detach().clone() for key,value in state.items()}
+    for key,value in state.items():
+        if value.is_floating_point() or value.is_complex():
+            average[key].lerp_(value,1/count)
+        else:
+            average[key].copy_(value)
+    return average
 
 
 def train(rt,name):
@@ -617,8 +641,11 @@ def train(rt,name):
         validation_epochs.update(range(warmup,epochs+1,4))
         if any(rt.get(k) for k in ('budget_study','edge_study','robust_study','phase_study')):
             validation_epochs.update((32,48,60))
-        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study')):
+        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study')):
             validation_epochs.update((32,48,64,80,88))
+    snapshots=row.get('tail_average',())
+    averaged_state=None
+    averaged_epochs=[]
     with (out/'epochs.jsonl').open('x',encoding='utf8') as log:
         for epoch in range(1,epochs+1):
             use_u=epoch>warmup
@@ -659,6 +686,9 @@ def train(rt,name):
             rec=dict(epoch=epoch,step=step,L_loss=sl/STEPS,U_loss=su/STEPS,
                      U_seen=STEPS*u_count if use_u else 0,U_accepted=accepted,
                      lr=opt.param_groups[0]['lr'])
+            if epoch in snapshots:
+                averaged_epochs.append(epoch)
+                averaged_state=accumulate_state(averaged_state,f.state_dict(),len(averaged_epochs))
             if epoch in validation_epochs:
                 rec['V']=clean_validation(f,v,vy,vr)
                 key=lambda p:(p['correct'],-p['nll'])
@@ -672,6 +702,16 @@ def train(rt,name):
             print('LORA_CLEAN95',name,epoch,step,rec.get('V',{}).get('accuracy'),accepted,flush=True)
     if step!=epochs*STEPS:
         raise ValueError('Incomplete registered clean updates')
+    if snapshots:
+        if tuple(averaged_epochs)!=snapshots:
+            raise ValueError('Incomplete registered tail snapshots')
+        f.load_state_dict(averaged_state,strict=True)
+        average=clean_validation(f,v,vy,vr) | {'epoch':epochs,'averaged_epochs':averaged_epochs}
+        selected=key(average)>key(best)
+        write(out/'tail_average.json',dict(raw_best=best,average=average,selected=selected))
+        if selected:
+            best=average
+            torch.save(f.state_dict(),path)
     f.load_state_dict(torch.load(path,map_location=device,weights_only=True),strict=True)
     training=clean_validation(f,x,y,rx)
     write(out/'complete.json',dict(status='SOURCE_FROZEN',seed=SEED,method=name,frozen=best,L=training,
@@ -714,14 +754,14 @@ def dispatch(rt):
     root=Path(rt['run_root'])
     screens=('quick','transfer','timefreq','noise_study','drift_study','budget_study')
     gated_study=any(rt.get(k) for k in ('robust_study','phase_study','anchor_study','timing_study',
-                                       'phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study'))
+                                       'phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study'))
     if (gated_study or any(rt.get(k) for k in ('noise_study','drift_study','budget_study','edge_study'))) and not rt.get('scratch'):
         raise ValueError('The clean input comparisons require random initialization')
     root.mkdir(exist_ok=False)
     state=root/'state.json'
     fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq',
                              'noise_study','drift_study','budget_study','edge_study','robust_study','phase_study','anchor_study',
-                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study',
+                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study',
                              'fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)

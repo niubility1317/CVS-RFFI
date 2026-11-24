@@ -185,6 +185,18 @@ class TriTuningTests(TestCase):
         with self.assertRaisesRegex(ValueError,'Unique source U budget'):
             tri_clean95.distinct_u_batches(100,16,88,16,**options)
 
+    def test_tail_average_matches_equal_snapshot_weights_and_preserves_integer_buffers(self):
+        average=None
+        for count,value in enumerate((2.,-2.,3.,7.),start=1):
+            state={'model.weight':torch.tensor([value]),'tracked':torch.tensor(count)}
+            average=tri_clean95.accumulate_state(average,state,count)
+            state['model.weight'].zero_()
+        torch.testing.assert_close(average['model.weight'],torch.tensor([2.5]))
+        self.assertEqual(average['tracked'].item(),4)
+        rows,epochs,batch=tri_clean95.study({'scratch':True,'tailaverage_study':True})
+        self.assertEqual((epochs,batch),(112,16))
+        self.assertEqual(rows['phase_tailaverage']['tail_average'],(100,104,108,112))
+
     def test_grouped_features_are_initially_neutral_and_learnable(self):
         from experiments.pamf_lora_main.repair_features import PacketGroupFusion
         rng=torch.Generator().manual_seed(73)
