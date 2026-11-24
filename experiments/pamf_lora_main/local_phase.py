@@ -61,7 +61,7 @@ def read_observation(y, quality, high_band, *, use_action=True, use_noise=True):
     return repeated, action, noise, disagreement, confidence, abs_y, angles, common
 
 
-def project(proposed, power, window, time):
+def project(proposed, power, window, time, *, cap=.10, angle_cap=.35):
     weight = power*window
     mass = weight.sum(-1,keepdim=True)
     safe_mass = mass.clamp_min(1e-8)
@@ -71,8 +71,8 @@ def project(proposed, power, window, time):
     slope = (weight*proposed*centered).sum(-1,keepdim=True)/moment.clamp_min(1e-8)
     delta = (window*(proposed-offset-slope*centered)).masked_fill((mass<1e-8)|(moment<1e-8),0.)
     ratio = (power*delta.square()).sum((1,2),keepdim=True)/power.sum((1,2),keepdim=True).clamp_min(1e-8)
-    dose = (.10*ratio.clamp_min(1e-8).rsqrt()).clamp_max(1.)
-    maximum = (.35/delta.abs().amax((1,2),keepdim=True).clamp_min(1e-8)).clamp_max(1.)
+    dose = (cap*ratio.clamp_min(1e-8).rsqrt()).clamp_max(1.)
+    maximum = (angle_cap/delta.abs().amax((1,2),keepdim=True).clamp_min(1e-8)).clamp_max(1.)
     return delta*torch.minimum(dose,maximum)
 
 

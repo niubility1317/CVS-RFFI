@@ -15,6 +15,7 @@ from experiments.pamf_lora_main import noise_split_diagnostic
 from experiments.pamf_lora_main import packet_relation_source, reference_cancel_source, split_shrink_source
 from experiments.pamf_lora_main import received_update_source
 from experiments.pamf_lora_main import phase_observation_diagnostic
+from experiments.pamf_lora_main import phase_dose_source
 from experiments.pamf_lora_main import variance_transport_source
 from experiments.pamf_lora_main.channel_blind_source import panel
 from experiments.pamf_lora_main.complex_geometry_source import COMPARISONS, MODES, RUN
@@ -138,6 +139,9 @@ def collect(rt):
     elif rt.get('run_id')==phase_observation_diagnostic.RUN:
         modes = phase_observation_diagnostic.MODES
         pairs = (*phase_observation_diagnostic.COMPARISONS, ('direct','reference'))
+    elif rt.get('run_id')==phase_dose_source.RUN:
+        modes = phase_dose_source.MODES
+        pairs = (*phase_dose_source.COMPARISONS, ('direct','reference'))
     else:
         from experiments.pamf_lora_main import empirical_tangent_source as tangent
         if rt.get('run_id')!=tangent.RUN:

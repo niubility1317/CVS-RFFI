@@ -71,7 +71,7 @@ def render(iq, _unused, baseline, tracker, models, *, threshold, measurements=No
 
 
 @torch.no_grad()
-def smoke(rt, recipes, modes, *, switch='exchange'):
+def smoke(rt, recipes, modes, *, switch='exchange', render_fn=render, recover_fn=recover):
     root = Path(rt['run_root'])
     (_,source,_),contract = setup(rt,DEVICE,smoke=True)
     models,threshold = load_models(root,contract,DEVICE,recipes)
@@ -83,7 +83,7 @@ def smoke(rt, recipes, modes, *, switch='exchange'):
     perturbed = real_iq(generic_observation(complex_iq(source),rng))
     active = perturbed[corruption_score(coordinates(tracker,perturbed)[0]).argmax().view(1)]
     clean = source[corruption_score(coordinates(tracker,source)[0]).argmin().view(1)]
-    output,triggered = render(torch.cat((clean,active)),None,baseline,tracker,models,threshold=threshold,switch=switch)
+    output,triggered = render_fn(torch.cat((clean,active)),None,baseline,tracker,models,threshold=threshold,switch=switch)
     logits = reader(output.flatten(0,1))[0]
     if triggered!=1 or logits.shape!=(2*len(modes),10) or not torch.isfinite(logits).all():
         raise ValueError('Expected a finite real-checkpoint result with an active restoration')
@@ -95,7 +95,7 @@ def smoke(rt, recipes, modes, *, switch='exchange'):
         for i in range(28):
             torch.cuda.synchronize()
             start = perf_counter()
-            recover(wave,tracker,models[-1:],threshold)
+            recover_fn(wave,tracker,models[-1:],threshold)
             torch.cuda.synchronize()
             if i>=8:
                 delays.append(1000*(perf_counter()-start))
@@ -105,7 +105,7 @@ def smoke(rt, recipes, modes, *, switch='exchange'):
           device=torch.cuda.get_device_name()))
 
 
-def evaluate(rt, route, recipes, modes, *, switch='exchange', fields=FIELDS):
+def evaluate(rt, route, recipes, modes, *, switch='exchange', fields=FIELDS, render_fn=render):
     binding = source_control(rt,route,DEVICE)
     models,threshold = load_models(Path(rt['run_root']),binding[2],DEVICE,recipes)
     records = []
@@ -123,7 +123,7 @@ def evaluate(rt, route, recipes, modes, *, switch='exchange', fields=FIELDS):
         freeze(root,route,source,chosen,ids,predictions,metrics,modes)
 
     score(rt,route,panel=panel,modes=modes,binding=binding,frozen_models=models,replay_fn=receive_only,
-          render=partial(render,threshold=threshold,measurements=records,switch=switch),require_clean_bypass=False,
+          render=partial(render_fn,threshold=threshold,measurements=records,switch=switch),require_clean_bypass=False,
           finalize=finalize)
 
 
