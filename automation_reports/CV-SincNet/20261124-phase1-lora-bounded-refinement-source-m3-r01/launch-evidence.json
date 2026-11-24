@@ -1,0 +1,60 @@
+{
+  "submit": {
+    "pid": 2598015,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-bounded-refinement-source-m3-r01-release",
+    "code_commit": "6479818520d9ee1aeee6be3f340e1658bafe921d",
+    "archive_transfer": "VERIFIED",
+    "remote_compile": "PASS",
+    "status": "SUBMITTED_NOT_YET_VERIFIED",
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-bounded-refinement-source-m3-r01"
+  },
+  "controller": {
+    "pid": 2598015,
+    "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.refinement_bound_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-bounded-refinement-source-m3-r01-release/runtime.json",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-bounded-refinement-source-m3-r01-release",
+    "cuda": [
+      "CUDA_VISIBLE_DEVICES="
+    ]
+  },
+  "jobs": {
+    "smoke-source": {
+      "pid": 2598031,
+      "gpu": 3,
+      "identity": null,
+      "bytes": 459,
+      "last": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+        "  return self.fget.__get__(instance, owner)()",
+        "LORA_ANTITHETIC_REAL_CHECKPOINT_PASS"
+      ]
+    },
+    "fit-dose_bound": {
+      "pid": 2598574,
+      "gpu": 3,
+      "identity": {
+        "pid": 2598574,
+        "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.refinement_bound_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-bounded-refinement-source-m3-r01/configs/fit-dose_bound.json dose_bound",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-bounded-refinement-source-m3-r01-release",
+        "cuda": [
+          "CUDA_VISIBLE_DEVICES=3"
+        ]
+      },
+      "bytes": 1731,
+      "last": [
+        "CHANNEL_BLIND_FIT 200 1.1446536779403687 1.0916683673858643 4.162912368774414 3.293459892272949 2.7989299297332764 0.2914568781852722 5.326109886169434 0.8082665205001831 2.1725518703460693 1.1288710832595825 1.3132398128509521 1.2410415410995483",
+        "CHANNEL_BLIND_FIT 250 0.27431491017341614 0.27751582860946655 3.4489777088165283 2.446882724761963 2.154252529144287 0.20651079714298248 4.081301689147949 0.5605131387710571 1.7195731401443481 0.8347827792167664 0.8496777415275574 0.6000426411628723",
+        "CHANNEL_BLIND_FIT 300 0.22131220996379852 0.23100879788398743 3.6933467388153076 2.8355538845062256 2.461223602294922 0.2653670608997345 4.657369136810303 0.49571555852890015 2.200216054916382 1.0245033502578735 0.8390822410583496 0.7501862645149231"
+      ]
+    }
+  },
+  "state": null,
+  "files": {
+    "smoke.json": 128
+  },
+  "verification": "VERIFIED",
+  "growth": {
+    "row": "fit-dose_bound",
+    "first": 1481,
+    "second": 1731
+  }
+}
