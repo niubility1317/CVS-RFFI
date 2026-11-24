@@ -177,6 +177,8 @@ def clean_model(rt,root,c,row,device):
 
 def study(rt):
     if rt.get('scratch'):
+        if rt.get('phase_joint_study'):
+            return PHASE_JOINT_ROWS,112,16
         if rt.get('timing_study'):
             return TIMING_ROWS,112,16
         if rt.get('anchor_study'):
@@ -262,6 +264,10 @@ TIMING_RUN='20261125-phase1-lora-pamf-tri-clean-timing98-s2026092702-r01'
 TIMING_ROWS={
     'phase_jitter': dict(ANCHOR_ROWS['phase_anchor'],timing_jitter=True),
 }
+PHASE_JOINT_RUN='20261125-phase1-lora-pamf-tri-clean-phasejoint98-s2026092702-r01'
+PHASE_JOINT_ROWS={
+    'phase_joint': dict(ANCHOR_ROWS['phase_anchor'],joint_rx_weight=.12),
+}
 VALIDATION_EPOCHS={0,2,4,8,12,16,20,24}
 
 
@@ -295,6 +301,8 @@ def row_names(rt):
         return ('phase_anchor',)
     if rt.get('timing_study'):
         return ('phase_jitter',)
+    if rt.get('phase_joint_study'):
+        return ('phase_joint',)
     return SCRATCH_LOCAL if rt.get('scratch') else LOCAL
 
 
@@ -476,7 +484,7 @@ def train(rt,name):
         validation_epochs.update(range(warmup,epochs+1,4))
         if any(rt.get(k) for k in ('budget_study','edge_study','robust_study','phase_study')):
             validation_epochs.update((32,48,60))
-        if rt.get('anchor_study') or rt.get('timing_study'):
+        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study')):
             validation_epochs.update((32,48,64,80,88))
     with (out/'epochs.jsonl').open('x',encoding='utf8') as log:
         for epoch in range(1,epochs+1):
@@ -567,13 +575,14 @@ def dispatch(rt):
         raise ValueError('Quick branch study is registered for N607 only')
     root=Path(rt['run_root'])
     screens=('quick','transfer','timefreq','noise_study','drift_study','budget_study')
-    gated_study=any(rt.get(k) for k in ('robust_study','phase_study','anchor_study','timing_study'))
+    gated_study=any(rt.get(k) for k in ('robust_study','phase_study','anchor_study','timing_study','phase_joint_study'))
     if (gated_study or any(rt.get(k) for k in ('noise_study','drift_study','budget_study','edge_study'))) and not rt.get('scratch'):
         raise ValueError('The clean input comparisons require random initialization')
     root.mkdir(exist_ok=False)
     state=root/'state.json'
     fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq',
-                             'noise_study','drift_study','budget_study','edge_study','robust_study','phase_study','anchor_study','timing_study',
+                             'noise_study','drift_study','budget_study','edge_study','robust_study','phase_study','anchor_study',
+                             'timing_study','phase_joint_study',
                              'fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)
