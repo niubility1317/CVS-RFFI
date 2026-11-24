@@ -185,6 +185,19 @@ class TriTuningTests(TestCase):
         with self.assertRaisesRegex(ValueError,'Unique source U budget'):
             tri_clean95.distinct_u_batches(100,16,88,16,**options)
 
+    def test_confusable_pair_margin_uses_only_the_original_labeled_logits(self):
+        logits=torch.zeros(5,10,requires_grad=True)
+        target=torch.tensor([1,3,7,6,9])
+        rx=torch.zeros_like(target)
+        reference=clean_source_ce(logits,target,rx)
+        constrained=clean_source_ce(logits,target,rx,pair_margin_weight=.25)
+        torch.testing.assert_close(constrained-reference,.25*torch.nn.functional.softplus(torch.tensor(1.5)))
+        (constrained-reference).backward()
+        torch.testing.assert_close(logits.grad.nonzero(),torch.tensor([[0,1],[0,4],[1,2],[1,3],[2,7],[2,8]]))
+        rows,epochs,batch=tri_clean95.study({'scratch':True,'pairmargin_study':True})
+        self.assertEqual((epochs,batch),(112,16))
+        self.assertEqual(rows['phase_pairmargin']['pair_margin_weight'],.25)
+
     def test_rtl_weight_applies_only_to_the_labeled_source_receiver(self):
         rows,epochs,u_batch=tri_clean95.study({'scratch':True,'rtl_study':True})
         self.assertEqual((epochs,u_batch),(112,16))

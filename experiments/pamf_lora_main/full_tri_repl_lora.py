@@ -133,16 +133,26 @@ def mean_contrast(outputs,y,rx,keep,*,joint=False):
     return torch.stack(losses).mean()
 
 
-def clean_source_ce(logits,y,rx,rtl_weight=1.):
+def clean_source_ce(logits,y,rx,rtl_weight=1.,pair_margin_weight=0.):
     if rtl_weight==1.:
-        return F.cross_entropy(logits,y,label_smoothing=.01)
-    loss=F.cross_entropy(logits,y,label_smoothing=.01,reduction='none')
-    weight=1.+(rtl_weight-1.)*(rx==SOURCE.index('rtl_1'))
-    return (loss*weight).sum()/weight.sum()
+        ce=F.cross_entropy(logits,y,label_smoothing=.01)
+    else:
+        loss=F.cross_entropy(logits,y,label_smoothing=.01,reduction='none')
+        weight=1.+(rtl_weight-1.)*(rx==SOURCE.index('rtl_1'))
+        ce=(loss*weight).sum()/weight.sum()
+    if pair_margin_weight:
+        # TX 32/35, 33/34, and 38/39 have indices 1/4, 2/3, and 7/8.
+        peer=y.new_tensor((-1,4,3,2,1,-1,-1,8,7,-1))[y]
+        paired=peer>=0
+        actual=logits.gather(1,y[:,None]).squeeze(1)
+        other=logits.gather(1,peer.clamp_min(0)[:,None]).squeeze(1)
+        margin=F.softplus(1.5+other-actual)
+        ce=ce+pair_margin_weight*(margin*paired).sum()/paired.sum().clamp_min(1)
+    return ce
 
 
 def labeled_loss(model,x,practical,y,rx,step,*,mechanism=None,ordinary_std=.015,
-                 joint_rx_weight=0.,clean_anchor_weight=0.,rtl_weight=1.):
+                 joint_rx_weight=0.,clean_anchor_weight=0.,rtl_weight=1.,pair_margin_weight=0.):
     ordinary=ordinary_iq(x,ordinary_std)
     use=(torch.arange(len(x),device=x.device)+step)%2==0
     mixed=torch.where(use[:,None,None,None],practical,ordinary)
@@ -155,7 +165,8 @@ def labeled_loss(model,x,practical,y,rx,step,*,mechanism=None,ordinary_std=.015,
         joint=torch.stack([cross_rx(p[1],y,rx,balance=True)[0] for p in outputs[:2]]).mean()
         loss=loss+joint_rx_weight*joint
     if clean_anchor_weight:
-        raw_ce=torch.stack([clean_source_ce(p[0],y,rx,rtl_weight) for p in outputs[-2:]]).mean()
+        raw_ce=torch.stack([clean_source_ce(p[0],y,rx,rtl_weight,pair_margin_weight)
+                            for p in outputs[-2:]]).mean()
         loss=(loss+clean_anchor_weight*raw_ce)/(1.+clean_anchor_weight)
     return loss,detail
 
