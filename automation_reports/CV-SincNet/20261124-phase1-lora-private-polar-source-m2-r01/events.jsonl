@@ -1,0 +1,8 @@
+{"at": "2026-11-23T23:58:02+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-23T23:58:02+00:00", "status": "LOCAL_VERIFIED", "note": "Nine focused tests and one independent P0/P1 review passed.", "evidence": "private_polar_source.py", "row_id": null}
+{"at": "2026-11-24T00:00:48+00:00", "status": "RUNNING", "note": "Verified independent actual PID, CWD, command/physical GPU and log growth; smoke passed, source U diagnostic completed.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-24T00:02:06+00:00", "status": "ANALYZED", "note": "Seven source V views independently closed and scored.", "evidence": "full-source-scores.json", "row_id": "evaluate-full"}
+{"at": "2026-11-24T00:02:06+00:00", "status": "ANALYZED", "note": "Seven source V views independently closed and scored.", "evidence": "residual-source-scores.json", "row_id": "evaluate-residual"}
+{"at": "2026-11-24T00:02:06+00:00", "status": "ANALYZED", "note": "All 12000 source V clean packets reconciled after prediction.", "evidence": "clean-complete-scores.json", "row_id": "evaluate-reserve"}
+{"at": "2026-11-24T00:02:06+00:00", "status": "ANALYZED", "note": "150 held source U packets x 2 routes x 2 views, isolated reference after readout.", "evidence": "source-u-polar-wave.json", "row_id": "waveform-source"}
+{"at": "2026-11-24T00:02:06+00:00", "status": "ANALYZED", "note": "Real source-only frozen readout matrix and amplitude/direction attribution; qualified=[].", "evidence": "report.md", "row_id": null}

@@ -1,0 +1,366 @@
+{
+  "n": 900,
+  "target_reads": 0,
+  "F_reads": 0,
+  "waveform_used": false,
+  "truth_after_predictions": true,
+  "n_draws": 1600,
+  "endpoint_mismatches": {
+    "full": {
+      "clean": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "wiener_half": 0,
+        "wiener_full": 0
+      },
+      "practical_high": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "wiener_half": 0,
+        "wiener_full": 0
+      },
+      "practical_mid": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "wiener_half": 0,
+        "wiener_full": 0
+      },
+      "practical_low_suburban": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "wiener_half": 0,
+        "wiener_full": 0
+      },
+      "practical_high_urban": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "wiener_half": 0,
+        "wiener_full": 0
+      },
+      "practical_mid_urban": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "wiener_half": 0,
+        "wiener_full": 0
+      },
+      "practical_low_urban": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "wiener_half": 0,
+        "wiener_full": 0
+      }
+    },
+    "residual": {
+      "clean": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "wiener_half": 0,
+        "wiener_full": 0
+      },
+      "practical_high": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "wiener_half": 0,
+        "wiener_full": 0
+      },
+      "practical_mid": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "wiener_half": 0,
+        "wiener_full": 0
+      },
+      "practical_low_suburban": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "wiener_half": 0,
+        "wiener_full": 0
+      },
+      "practical_high_urban": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "wiener_half": 0,
+        "wiener_full": 0
+      },
+      "practical_mid_urban": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "wiener_half": 0,
+        "wiener_full": 0
+      },
+      "practical_low_urban": {
+        "direct": 0,
+        "reference": 0,
+        "rank_half": 0,
+        "wiener_half": 0,
+        "wiener_full": 0
+      }
+    }
+  },
+  "comparisons": {
+    "full": {
+      "vector": {
+        "magnitude": {
+          "six": 89,
+          "low": 29.5,
+          "ci_six": [
+            59.9875,
+            119.5
+          ],
+          "ci_low": [
+            11.4875,
+            48
+          ],
+          "by_view": [
+            1,
+            0.5,
+            19,
+            3,
+            36,
+            29.5
+          ]
+        },
+        "direction": {
+          "six": -53,
+          "low": -15.5,
+          "ci_six": [
+            -75,
+            -32.5
+          ],
+          "ci_low": [
+            -29,
+            -2
+          ],
+          "by_view": [
+            -1,
+            -2.5,
+            -12,
+            -4,
+            -18,
+            -15.5
+          ]
+        },
+        "interaction": {
+          "six": 116,
+          "low": 41,
+          "ci_six": [
+            75,
+            157
+          ],
+          "ci_low": [
+            16,
+            66
+          ],
+          "by_view": [
+            2,
+            7,
+            24,
+            12,
+            30,
+            41
+          ]
+        }
+      },
+      "modal": {
+        "magnitude": {
+          "six": 80,
+          "low": 26,
+          "ci_six": [
+            51,
+            110
+          ],
+          "ci_low": [
+            7.5,
+            45.5
+          ],
+          "by_view": [
+            0.5,
+            -1,
+            19,
+            1.5,
+            34,
+            26
+          ]
+        },
+        "direction": {
+          "six": -44,
+          "low": -12,
+          "ci_six": [
+            -65.5,
+            -23.5
+          ],
+          "ci_low": [
+            -24.5,
+            0.5
+          ],
+          "by_view": [
+            -0.5,
+            -1,
+            -12,
+            -2.5,
+            -16,
+            -12
+          ]
+        },
+        "interaction": {
+          "six": 106,
+          "low": 38,
+          "ci_six": [
+            64,
+            147
+          ],
+          "ci_low": [
+            13,
+            63
+          ],
+          "by_view": [
+            1,
+            4,
+            24,
+            9,
+            30,
+            38
+          ]
+        }
+      }
+    },
+    "residual": {
+      "vector": {
+        "magnitude": {
+          "six": 1.5,
+          "low": 0,
+          "ci_six": [
+            -46.0125,
+            48.01249999999993
+          ],
+          "ci_low": [
+            -24.0125,
+            25.012499999999932
+          ],
+          "by_view": [
+            0.5,
+            16,
+            -3,
+            2,
+            -14,
+            0
+          ]
+        },
+        "direction": {
+          "six": -304.5,
+          "low": -103,
+          "ci_six": [
+            -345.5,
+            -265.5
+          ],
+          "ci_low": [
+            -123,
+            -84.48750000000007
+          ],
+          "by_view": [
+            0.5,
+            -32,
+            -67,
+            -10,
+            -93,
+            -103
+          ]
+        },
+        "interaction": {
+          "six": 575,
+          "low": 216,
+          "ci_six": [
+            499,
+            655
+          ],
+          "ci_low": [
+            180,
+            255
+          ],
+          "by_view": [
+            1,
+            58,
+            122,
+            12,
+            166,
+            216
+          ]
+        }
+      },
+      "modal": {
+        "magnitude": {
+          "six": -4,
+          "low": -2.5,
+          "ci_six": [
+            -49.0125,
+            43
+          ],
+          "ci_low": [
+            -27.025,
+            23.5
+          ],
+          "by_view": [
+            1,
+            11.5,
+            -5,
+            1,
+            -10,
+            -2.5
+          ]
+        },
+        "direction": {
+          "six": -299,
+          "low": -100.5,
+          "ci_six": [
+            -339,
+            -263.5
+          ],
+          "ci_low": [
+            -119,
+            -82.98750000000007
+          ],
+          "by_view": [
+            0,
+            -27.5,
+            -65,
+            -9,
+            -97,
+            -100.5
+          ]
+        },
+        "interaction": {
+          "six": 570,
+          "low": 211,
+          "ci_six": [
+            500.975,
+            644
+          ],
+          "ci_low": [
+            174.975,
+            251
+          ],
+          "by_view": [
+            2,
+            51,
+            124,
+            12,
+            170,
+            211
+          ]
+        }
+      }
+    }
+  }
+}
