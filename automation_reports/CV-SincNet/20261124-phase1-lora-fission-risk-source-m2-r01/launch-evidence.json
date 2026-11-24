@@ -1,0 +1,99 @@
+{
+  "submit": {
+    "pid": 2547843,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-fission-risk-source-m2-r01-release",
+    "code_commit": "64f9aff9e3260d9221ccdf99e76e9b464b90f613",
+    "archive_transfer": "VERIFIED",
+    "remote_compile": "PASS",
+    "status": "SUBMITTED_NOT_YET_VERIFIED",
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-fission-risk-source-m2-r01"
+  },
+  "controller": {
+    "pid": 2547843,
+    "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.fission_risk_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-fission-risk-source-m2-r01-release/runtime.json",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-fission-risk-source-m2-r01-release",
+    "cuda": [
+      "CUDA_VISIBLE_DEVICES="
+    ]
+  },
+  "jobs": {
+    "smoke-source": {
+      "pid": 2547862,
+      "gpu": 3,
+      "identity": null,
+      "bytes": 461,
+      "last": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+        "  return self.fget.__get__(instance, owner)()",
+        "LORA_FISSION_RISK_REAL_CHECKPOINT_PASS"
+      ]
+    },
+    "timing-source": {
+      "pid": 2547951,
+      "gpu": 3,
+      "identity": null,
+      "bytes": 422,
+      "last": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+        "  return self.fget.__get__(instance, owner)()"
+      ]
+    },
+    "evaluate-full": {
+      "pid": 2548346,
+      "gpu": 3,
+      "identity": {
+        "pid": 2548346,
+        "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.fission_risk_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-fission-risk-source-m2-r01/configs/evaluate-full.json full",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-fission-risk-source-m2-r01-release",
+        "cuda": [
+          "CUDA_VISIBLE_DEVICES=3"
+        ]
+      },
+      "bytes": 502,
+      "last": [
+        "  return self.fget.__get__(instance, owner)()",
+        "COMPLEX_VECTOR_SOURCE full clean 0",
+        "COMPLEX_VECTOR_SOURCE full practical_high 21"
+      ]
+    },
+    "evaluate-residual": {
+      "pid": 2548347,
+      "gpu": 6,
+      "identity": {
+        "pid": 2548347,
+        "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.fission_risk_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-fission-risk-source-m2-r01/configs/evaluate-residual.json residual",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-fission-risk-source-m2-r01-release",
+        "cuda": [
+          "CUDA_VISIBLE_DEVICES=6"
+        ]
+      },
+      "bytes": 559,
+      "last": [
+        "COMPLEX_VECTOR_SOURCE residual clean 0",
+        "COMPLEX_VECTOR_SOURCE residual practical_high 39",
+        "COMPLEX_VECTOR_SOURCE residual practical_mid 717"
+      ]
+    }
+  },
+  "state": null,
+  "files": {
+    "smoke.json": 82,
+    "b1.json": 354
+  },
+  "verification": "VERIFIED",
+  "growth": {
+    "evaluate-full": {
+      "first": 502,
+      "second": 703
+    },
+    "evaluate-residual": {
+      "first": 559,
+      "second": 782
+    }
+  },
+  "post_files": {
+    "smoke.json": 82,
+    "residual-doses.json": 552,
+    "b1.json": 354
+  }
+}

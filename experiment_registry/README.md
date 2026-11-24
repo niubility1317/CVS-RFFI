@@ -10,6 +10,7 @@
 
 ## LoRa 与 WiSig 星地恢复
 
+- [LoRa 单包耦合自助法恢复方向校验](../automation_reports/CV-SincNet/20261124-phase1-lora-fission-risk-source-m2-r01/report.md)
 - [LoRa 实收射频噪声协方差搬运](../automation_reports/CV-SincNet/20261124-phase1-lora-transported-noise-covariance-source-m2-r01/report.md)
 - [LoRa 私有谱方向偏差与噪声约束](../automation_reports/CV-SincNet/20261124-phase1-lora-private-direction-risk-source-m3-r01/report.md)
 - [LoRa 通用接收机扰动消融](../automation_reports/CV-SincNet/20261124-phase1-lora-generic-receiver-physics-source-m3-r01/report.md)
