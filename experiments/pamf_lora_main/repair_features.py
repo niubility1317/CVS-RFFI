@@ -3,7 +3,7 @@ import numpy as np
 import torch
 from torch import nn
 
-from .clean_aperture import NATIVE_EDGE_POINTS, NATIVE_EDGE_POSITIONS
+from .clean_aperture import ALL_CHIRPS, NATIVE_EDGE_POINTS, native_edge_positions
 from .data import BANDWIDTH_HZ
 from .physical import ChirpResponse
 
@@ -113,13 +113,16 @@ def residual_logit_scale(core_logits,delta_logits,limit):
 class NativeBoundaryPhase(nn.Module):
     """Represent phase steps inside native edge windows and across chirp boundaries."""
 
-    def __init__(self,channels):
+    def __init__(self,channels,*,edge_points=NATIVE_EDGE_POINTS):
         super().__init__()
-        t=torch.tensor(NATIVE_EDGE_POSITIONS,dtype=torch.float64)*1e-6
+        self.edge_points=edge_points
+        count=len(ALL_CHIRPS)
+        width=count*2*(edge_points-1)+(count-1)*3
+        t=torch.tensor(native_edge_positions(edge_points),dtype=torch.float64)*1e-6
         reference=torch.exp(2j*torch.pi*BANDWIDTH_HZ*(t.square()/(2*.001024)-t/2))
-        self.register_buffer('edge_reference',reference.to(torch.complex64).reshape(2,NATIVE_EDGE_POINTS),
+        self.register_buffer('edge_reference',reference.to(torch.complex64).reshape(2,edge_points),
                              persistent=False)
-        self.project=nn.Sequential(nn.LayerNorm(197),nn.Linear(197,96),nn.SiLU(),
+        self.project=nn.Sequential(nn.LayerNorm(width),nn.Linear(width,96),nn.SiLU(),
                                    nn.Linear(96,channels,bias=False))
         nn.init.zeros_(self.project[-1].weight)
 
@@ -132,7 +135,7 @@ class NativeBoundaryPhase(nn.Module):
         # One native step lasts 1 us. The core is sampled at 384 kHz.
         angle=.384*core_steps[...,24:-24].mean(-1).angle()
         correction=torch.polar(torch.ones_like(angle),-angle)
-        edges=torch.complex(edge[:,:,0],edge[:,:,1]).reshape(len(edge),8,2,NATIVE_EDGE_POINTS)
+        edges=torch.complex(edge[:,:,0],edge[:,:,1]).reshape(len(edge),len(ALL_CHIRPS),2,self.edge_points)
         edges=edges*self.edge_reference.conj()
         steps=unit(edges[...,1:]*edges[...,:-1].conj())*correction[...,None,None]
         next_start=edges[:,1:,0,0]

@@ -240,6 +240,37 @@ class TriTuningTests(TestCase):
         torch.testing.assert_close(model.features(b[...,:384],b[...,384:],ref),baseline,
                                    atol=2.e-6,rtol=2.e-6)
 
+    def test_wider_native_boundaries_preserve_core_and_use_distinct_shapes(self):
+        from experiments.pamf_lora_main.clean_aperture import clean_iq, native_edge_positions
+        from experiments.pamf_lora_main.repair_features import NativeBoundaryPhase
+        from experiments.pamf_lora_main.physical import ChirpResponse
+
+        random=np.random.default_rng(31)
+        raw=(random.standard_normal((2,8192))+1j*random.standard_normal((2,8192))).astype(np.complex64)
+        central=clean_iq(raw,384,ALL_CHIRPS)
+        ref=ChirpResponse(samples=384).chirp
+        rows,epochs,batch=tri_clean95.study({'scratch':True,'nativewide_study':True})
+        self.assertEqual((epochs,batch),(112,16))
+        self.assertEqual(set(rows),{'phase_native16','phase_native24'})
+        for width,feature_dim in ((16,261),(24,389)):
+            with self.subTest(width=width):
+                row=rows[f'phase_native{width}']
+                self.assertTrue(row['native_edges'])
+                self.assertEqual(row['edge_points'],width)
+                packed=clean_iq(raw,384,ALL_CHIRPS,native_edges=True,edge_points=width)
+                self.assertEqual(packed.shape,(2,8,2,384+2*width))
+                np.testing.assert_array_equal(packed[...,:384],central)
+                indices=np.arange(8)[:,None]*1024+np.asarray(native_edge_positions(width))
+                received=packed[:,:,0,384:]+1j*packed[:,:,1,384:]
+                scale=received/raw[:,indices]
+                np.testing.assert_allclose(scale,np.broadcast_to(scale[:,0:1,0:1],scale.shape),atol=1e-6)
+                x=torch.as_tensor(packed)
+                model=NativeBoundaryPhase(160,edge_points=width)
+                self.assertEqual(tuple(model.features(x[...,:384],x[...,384:],ref).shape),(2,feature_dim))
+                key,layout=tri_clean95.cache_layout(384,ALL_CHIRPS,'source',native_edges=True,edge_points=width)
+                self.assertEqual(key,f'384-all8-nativeedges{width}')
+                self.assertEqual(layout['native_edge_positions'],list(native_edge_positions(width)))
+
     def test_group_residual_is_bounded_per_packet_without_touching_primary_logits(self):
         from experiments.pamf_lora_main.repair_features import residual_logit_scale
         core=torch.tensor([[0.,1.,2.],[0.,2.,4.],[5.,5.,5.]])

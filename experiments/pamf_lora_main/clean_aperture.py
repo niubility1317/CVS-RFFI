@@ -8,7 +8,14 @@ from .packet_data import CHIRPS, PACKET_LEN
 
 ALL_CHIRPS = tuple(range(PACKET_LEN // 1024))
 NATIVE_EDGE_POINTS = 12
-NATIVE_EDGE_POSITIONS = tuple(range(NATIVE_EDGE_POINTS)) + tuple(range(1024-NATIVE_EDGE_POINTS,1024))
+
+def native_edge_positions(edge_points=NATIVE_EDGE_POINTS):
+    if edge_points not in (12,16,24):
+        raise ValueError('Unknown native chirp boundary width')
+    return tuple(range(edge_points)) + tuple(range(1024-edge_points,1024))
+
+
+NATIVE_EDGE_POSITIONS = native_edge_positions()
 
 
 def padded_crop(chirps,offset=0):
@@ -23,7 +30,7 @@ def padded_crop(chirps,offset=0):
 CROPS = {chirps: padded_crop(chirps) for chirps in (CHIRPS, ALL_CHIRPS)}
 
 
-def clean_iq(packets,samples,chirps=CHIRPS,*,offset=0,native_edges=False):
+def clean_iq(packets,samples,chirps=CHIRPS,*,offset=0,native_edges=False,edge_points=NATIVE_EDGE_POINTS):
     if samples not in (192,256,384,512):
         raise ValueError('Unknown registered clean aperture')
     if not -WINDOW_START<=offset<=1024-1000-WINDOW_START:
@@ -39,6 +46,6 @@ def clean_iq(packets,samples,chirps=CHIRPS,*,offset=0,native_edges=False):
         raise ValueError('Nonfinite or empty clean packet')
     z=z/norm
     if native_edges:
-        positions=np.asarray(chirps)[:,None]*1024+np.asarray(NATIVE_EDGE_POSITIONS)
+        positions=np.asarray(chirps)[:,None]*1024+np.asarray(native_edge_positions(edge_points))
         z=np.concatenate((z,packets[:,positions]/norm),axis=-1)
     return np.stack((z.real,z.imag),axis=2).astype(np.float32,copy=False)
