@@ -79,5 +79,69 @@
       "state.json": 29,
       "smoke.json": 239
     }
+  },
+  "completion": {
+    "submit": {
+      "pid": 2845525,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-dura-observed-variance-target-m2-r01-release",
+      "code_commit": "2ef943bd47835f6b019f70849cfbb2e134dedd2a",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-dura-observed-variance-target-m2-r01"
+    },
+    "controller": null,
+    "jobs": {
+      "smoke-source": {
+        "pid": 2845540,
+        "gpu": 7,
+        "identity": null,
+        "bytes": 468,
+        "receivers": 0,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_DURA_OBSERVED_VARIANCE_TARGET_SMOKE_PASS"
+        ]
+      },
+      "predict-full": {
+        "pid": 2845614,
+        "gpu": 7,
+        "identity": null,
+        "bytes": 930,
+        "receivers": 15,
+        "last": [
+          "LORA_TARGET_PREDICTED full rtl_7",
+          "LORA_TARGET_PREDICTED full rtl_8",
+          "LORA_TARGET_PREDICTED full rtl_9"
+        ]
+      },
+      "predict-residual": {
+        "pid": 2845615,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 990,
+        "receivers": 15,
+        "last": [
+          "LORA_TARGET_PREDICTED residual rtl_7",
+          "LORA_TARGET_PREDICTED residual rtl_8",
+          "LORA_TARGET_PREDICTED residual rtl_9"
+        ]
+      }
+    },
+    "state": {
+      "status": "PREDICTIONS_FROZEN",
+      "target_truth_read": false
+    },
+    "written": {
+      "full": 210,
+      "residual": 210
+    },
+    "files": {
+      "state.json": 67,
+      "smoke.json": 239,
+      "predictions/full/complete.json": 626,
+      "predictions/residual/complete.json": 630
+    }
   }
 }
