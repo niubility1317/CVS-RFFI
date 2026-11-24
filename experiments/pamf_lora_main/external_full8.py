@@ -15,16 +15,18 @@ import torch
 from torch.nn import functional as F
 
 from experiments.cric_dura_comparison.io import read, write
-from .clean_aperture import clean_iq
+from .clean_aperture import NATIVE_EDGE_POINTS, NATIVE_EDGE_POSITIONS, clean_iq
 from .data import CLASSES, SOURCE, SPLIT_SEED, TARGET
 from .external_full8_models import (CHIRPS, EDGE_GAIN, SAMPLES, PacketEdges, SDGPacketViews, build, identity,
                                     optimizers, train_batch)
 from .full_packet_data import LIMIT
 from .full_packet_views import native, source_contract, target_contract
+from .repair_features import NativeBoundaryPhase
 
 
 RUN = '20261125-phase1-lora-external-full8-m4-r01'
 RECOVERY_RUN = '20261125-phase1-lora-external-full8-clean-predict-m4-r02'
+NATIVE_EDGE_RUN = '20261125-phase1-lora-external-nativeedge384-m4-r01'
 TRAIN_COMMIT = 'ef6f890b9aeeeffa2d223158e2b5a9c38ef98bf6'
 SEED = 2026092702
 BUDGETS = {'riei': (200, 64, .0001, 1), 'drift': (200, 256, .0001, 1),
@@ -36,13 +38,16 @@ VALIDATION_BATCH = 64
 
 
 def source_runtime(rt):
-    if rt['run_id'] != RUN or not set(rt) <= set(SOURCE_FIELDS) | {'family'}:
+    if rt['run_id'] not in (RUN, NATIVE_EDGE_RUN) or not set(rt) <= set(SOURCE_FIELDS) | {'family'}:
         raise ValueError('External source worker refuses target and inherited model handles')
     source = Path(rt['source_root'])
     contract = source_contract(source)
     cache = Path(rt['clean_cache'])
-    if read(cache/'complete.json') != dict(status='CLEAN_SOURCE_READY', samples=SAMPLES,
-                                          source_protocol=contract['protocol'], chirps=list(CHIRPS)):
+    manifest = dict(status='CLEAN_SOURCE_READY', samples=SAMPLES,
+                    source_protocol=contract['protocol'], chirps=list(CHIRPS))
+    if rt['run_id'] == NATIVE_EDGE_RUN:
+        manifest['native_edge_positions'] = list(NATIVE_EDGE_POSITIONS)
+    if read(cache/'complete.json') != manifest:
         raise ValueError('Registered all-chirp clean source cache required')
     return source, contract, cache
 
@@ -84,21 +89,25 @@ def frozen_checkpoint(folder, c, family, frozen):
 
 def configuration(rt, family):
     epochs, batch, lr, stages = BUDGETS[family]
-    return dict(run_id=RUN, family=family, code_commit=rt['code_commit'], model_seed=SEED,
+    config = dict(run_id=rt['run_id'], family=family, code_commit=rt['code_commit'], model_seed=SEED,
                 split_seed=SPLIT_SEED, epochs=epochs, batch_size=batch, lr=lr, stages=stages,
                 num_classes=len(CLASSES), num_domains=len(SOURCE), initialization='scratch',
                 samples_per_chirp=SAMPLES, chirps=list(CHIRPS), edge_gain=EDGE_GAIN,
                 ibrff_model_root=rt['ibrff_model_root'], sdg_model_root=rt['sdg_model_root'],
                 U_s_use=False, satellite_train_augmentation=False)
+    if rt['run_id'] == NATIVE_EDGE_RUN:
+        config.update(native_edges=True, native_edge_points=NATIVE_EDGE_POINTS)
+    return config
 
 
-def role_dataset(source, contract, cache, role, take=None):
+def role_dataset(source, contract, cache, role, take=None, *, native_edges=False):
     if role not in ('L_s', 'V'):
         raise ValueError('External Full8 consumes only authorized labeled source roles')
     count = contract['counts'][role]
     x = np.load(cache/f'{role}.npy', mmap_mode='r', allow_pickle=False)
+    width = SAMPLES + 2 * NATIVE_EDGE_POINTS if native_edges else SAMPLES
     with np.load(source/f'{role}_metadata.npz', allow_pickle=False) as m:
-        if m['ids'].tolist() != contract['role_ids'][role] or x.shape != (count, 8, 2, SAMPLES):
+        if m['ids'].tolist() != contract['role_ids'][role] or x.shape != (count, len(CHIRPS), 2, width):
             raise ValueError(f'Unmatched physical packet role: {role}')
         if x.dtype != np.float32 or m['y'].shape != (count,) or m['rx_i'].shape != (count,):
             raise ValueError(f'Unmatched physical packet schema: {role}')
@@ -157,7 +166,8 @@ def smoke(rt, family=None, device='cpu', full_batch=False):
     from experiments.phase1_dg_nativebudget.pipeline import seed
     source, contract, cache = source_runtime(rt)
     take = max(v[1] for v in BUDGETS.values()) if full_batch else 128
-    dataset = role_dataset(source, contract, cache, 'L_s', take=take)
+    dataset = role_dataset(source, contract, cache, 'L_s', take=take,
+                           native_edges=rt['run_id'] == NATIVE_EDGE_RUN)
     x, y, rx = dataset.tensors
     records = {}
     for name in (family,) if family else METHODS:
@@ -174,6 +184,12 @@ def smoke(rt, family=None, device='cpu', full_batch=False):
         opt, fed = optimizers(net, c)
         projection = [(m.project[1].weight.detach().clone(), m.project[1].weight)
                       for m in net.modules() if isinstance(m, PacketEdges)]
+        if c.get('native_edges'):
+            boundary = [(m.project[-1].weight.detach().clone(), m.project[-1].weight)
+                        for m in net.modules() if isinstance(m, NativeBoundaryPhase)]
+            if len(boundary) != 1:
+                raise ValueError(f'{name} requires one native boundary projection')
+            projection.extend(boundary)
         if torch.device(device).type == 'cuda':
             torch.cuda.reset_peak_memory_stats()
         terms = train_batch(net, c, xx.to(device), y[order].to(device), rx[order].to(device),
@@ -209,8 +225,9 @@ def train(rt, family):
     device = 'cuda:0'
     torch.cuda.reset_peak_memory_stats()
     started = time.monotonic()
-    labeled = role_dataset(source, contract, cache, 'L_s')
-    valid = torch.utils.data.DataLoader(role_dataset(source, contract, cache, 'V'), batch_size=VALIDATION_BATCH)
+    labeled = role_dataset(source, contract, cache, 'L_s', native_edges=c.get('native_edges', False))
+    valid_set = role_dataset(source, contract, cache, 'V', native_edges=c.get('native_edges', False))
+    valid = torch.utils.data.DataLoader(valid_set, batch_size=VALIDATION_BATCH)
     train_clean = torch.utils.data.DataLoader(labeled, batch_size=VALIDATION_BATCH)
     author, contrast, hsic = native_tools(c, device)
     write(root/'resolved_config.json', c)
@@ -290,15 +307,18 @@ def predict(rt, family):
         x = native(target, rx, LIMIT)
         pred = []
         for i in range(0, len(x), VALIDATION_BATCH):
-            iq = clean_iq(x[i:i + VALIDATION_BATCH], SAMPLES, CHIRPS)
+            iq = clean_iq(x[i:i + VALIDATION_BATCH], SAMPLES, CHIRPS, native_edges=c.get('native_edges', False))
             logits = identity(model, family, torch.from_numpy(iq).to(device))
             if not torch.isfinite(logits).all():
                 raise FloatingPointError(f'Nonfinite clean prediction for {family}/{rx}')
             pred.extend(logits.argmax(1).tolist())
         np.save(out/f'{rx}__clean__direct.npy', np.asarray(pred, dtype=np.int16), allow_pickle=False)
         print('EXTERNAL_FULL8_CLEAN', family, rx, flush=True)
-    write(out/'complete.json', dict(status='PREDICTIONS_FROZEN', method=family, seed=SEED,
-          views=['clean'], receivers=list(TARGET), per_receiver=LIMIT, target_truth_read=False))
+    declaration = dict(status='PREDICTIONS_FROZEN', method=family, seed=SEED, views=['clean'],
+                       receivers=list(TARGET), per_receiver=LIMIT, target_truth_read=False)
+    if c.get('native_edges'):
+        declaration.update(run_id=NATIVE_EDGE_RUN, native_edge_points=NATIVE_EDGE_POINTS)
+    write(out/'complete.json', declaration)
 
 
 def launch(rt, kind, gpu=None, family=None):
@@ -362,7 +382,10 @@ def dispatch(rt):
                         active[gpu] = launch(rt, kind, gpu, family), kind, family
             if pending or active:
                 time.sleep(15)
-        write(state, dict(status='PREDICTIONS_FROZEN', names=list(METHODS), target_truth_read=False), exclusive=False)
+        result = dict(status='PREDICTIONS_FROZEN', names=list(METHODS), target_truth_read=False)
+        if rt['run_id'] == NATIVE_EDGE_RUN:
+            result['source_run'] = NATIVE_EDGE_RUN
+        write(state, result, exclusive=False)
     except Exception as exc:
         write(state, dict(status='FAILED', error=str(exc)), exclusive=False)
         raise

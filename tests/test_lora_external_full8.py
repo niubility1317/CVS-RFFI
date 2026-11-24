@@ -1,15 +1,19 @@
 import json
+from types import SimpleNamespace
 
+import numpy as np
 import pytest
 import torch
 from torch import nn
 
 from experiments.pamf_lora_main.external_full8 import (
-    RECOVERY_RUN, RUN, SEED, SOURCE_FIELDS, TRAIN_COMMIT, freeze_record, frozen_checkpoint,
+    NATIVE_EDGE_RUN, RECOVERY_RUN, RUN, SEED, SOURCE_FIELDS, TRAIN_COMMIT, configuration, freeze_record, frozen_checkpoint,
     recovery_training_runtime, restore, role_dataset, source_runtime,
 )
 from experiments.pamf_lora_main.external_full8_delivery import frozen_predictions
-from experiments.pamf_lora_main.external_full8_models import PacketEdges, PartitionedPacketEncoder, packet_chirps
+from experiments.pamf_lora_main.external_full8_models import (
+    PacketEdges, PartitionedPacketEncoder, SDGPacketViews, packet_chirps,
+)
 
 
 def test_physical_chirps_preserve_packet_order():
@@ -102,3 +106,53 @@ def test_recovery_waits_for_complete_immutable_stage_record(tmp_path):
     assert frozen_checkpoint(tmp_path, config, 'ibrff', freeze_record(tmp_path)) == tmp_path/'stage2.pt'
     with pytest.raises(ValueError, match='frozen'):
         frozen_checkpoint(tmp_path, config, 'ibrff', dict(frozen, checkpoint='../stage2.pt'))
+
+
+def test_w12_boundary_changes_only_emitter_representation():
+    class Native(nn.Module):
+        def forward(self, iq):
+            return iq[:, :, :3].flatten(1)
+
+    net = PartitionedPacketEncoder(Native(), 3, 3, native_edges=True)
+    assert net.native_boundary.phase.edge_points == 12
+    with torch.no_grad():
+        net.native_boundary.phase.project[-1].weight.normal_()
+    x = torch.randn(4, 8, 2, 408)
+    changed = x.clone()
+    changed[..., 384:] = torch.randn_like(x[..., 384:])
+    actual, other = net(x), net(changed)
+    assert torch.equal(actual[:, 3:], other[:, 3:])
+    assert not torch.equal(actual[:, :3], other[:, :3])
+    with pytest.raises(ValueError, match='408'):
+        net(x[..., :384])
+
+
+def test_sdg_w12_keeps_native_boundary_out_of_augmentation(monkeypatch):
+    from experiments.practical_full_2x2 import author_imports
+    monkeypatch.setattr(author_imports, 'compatible_sdg_author', lambda author: None)
+    calls = []
+
+    def augment(iq, preprocess, main, auxiliary):
+        calls.append(iq.shape)
+        return [iq + 1]
+
+    x = torch.zeros(8, 2, 408)
+    x[..., 384:] = 7
+    author = SimpleNamespace(transforms=SimpleNamespace(ToTensor=lambda: None), aug=augment)
+    views, _, _ = SDGPacketViews([(x, 1, 2)], author, SEED)[0]
+    assert calls == [(2, 384)] * 8
+    assert torch.equal(views[0], x)
+    assert torch.equal(views[1, ..., 384:], x[..., 384:])
+    assert torch.equal(views[1, ..., :384], x[..., :384] + 1)
+
+
+def test_w12_requires_its_own_source_layout(tmp_path):
+    rt = dict(code_commit='commit', ibrff_model_root='fan', sdg_model_root='sdg')
+    assert 'native_edges' not in configuration(dict(rt, run_id=RUN), 'ibrff')
+    cfg = configuration(dict(rt, run_id=NATIVE_EDGE_RUN), 'ibrff')
+    assert cfg['native_edges'] and cfg['native_edge_points'] == 12 and cfg['samples_per_chirp'] == 384
+    contract = dict(counts={'L_s': 1}, role_ids={'L_s': ['physical-id']})
+    np.savez(tmp_path/'L_s_metadata.npz', ids=['physical-id'], y=[0], rx_i=[0])
+    np.save(tmp_path/'L_s.npy', np.zeros((1, 8, 2, 384), dtype=np.float32))
+    with pytest.raises(ValueError, match='physical packet role'):
+        role_dataset(tmp_path, contract, tmp_path, 'L_s', native_edges=True)

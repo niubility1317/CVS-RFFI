@@ -6,6 +6,9 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
+from .clean_aperture import NATIVE_EDGE_POINTS
+from .physical import ChirpResponse
+from .repair_features import NativeBoundaryPhase
 
 CHIRPS = tuple(range(8))
 SAMPLES = 384
@@ -16,6 +19,26 @@ def packet_chirps(x):
     if x.ndim != 4 or tuple(x.shape[1:]) != (len(CHIRPS), 2, SAMPLES):
         raise ValueError('Full preamble requires [B,8,2,384] physical IQ')
     return x.flatten(0, 1)
+
+
+class PacketNativeBoundary(nn.Module):
+    """Use the PAMF W12 feature extractor on the same physical packet aperture."""
+
+    def __init__(self, width):
+        super().__init__()
+        reference = ChirpResponse(samples=SAMPLES).chirp
+        self.register_buffer('core_reference', reference, persistent=False)
+        self.phase = NativeBoundaryPhase(width, edge_points=NATIVE_EDGE_POINTS)
+
+    def split(self, x):
+        expected = (len(CHIRPS), 2, SAMPLES + 2 * self.phase.edge_points)
+        if x.ndim != 4 or tuple(x.shape[1:]) != expected:
+            raise ValueError('Native boundaries require [B,8,2,408] physical IQ')
+        return x.split((SAMPLES, 2 * self.phase.edge_points), dim=-1)
+
+    def forward(self, x):
+        core, edge = self.split(x)
+        return self.phase(core, edge, self.core_reference)
 
 
 class PacketEdges(nn.Module):
@@ -36,65 +59,84 @@ class PacketEdges(nn.Module):
 class PartitionedPacketEncoder(nn.Module):
     """Keep emitter and receiver features in their native disjoint spaces."""
 
-    def __init__(self, encoder, emitter_dim, receiver_dim):
+    def __init__(self, encoder, emitter_dim, receiver_dim, *, native_edges=False):
         super().__init__()
         self.encoder = encoder
         self.dims = (emitter_dim, receiver_dim)
         self.emitter_edges = PacketEdges(emitter_dim)
         self.receiver_edges = PacketEdges(receiver_dim)
+        self.native_boundary = PacketNativeBoundary(emitter_dim) if native_edges else None
 
     def forward(self, x):
-        emitter, receiver = self.encoder(packet_chirps(x)).split(self.dims, dim=1)
-        return torch.cat((self.emitter_edges(emitter, len(x)), self.receiver_edges(receiver, len(x))), dim=1)
+        core = self.native_boundary.split(x)[0] if self.native_boundary is not None else x
+        emitter, receiver = self.encoder(packet_chirps(core)).split(self.dims, dim=1)
+        emitter = self.emitter_edges(emitter, len(x))
+        if self.native_boundary is not None:
+            emitter = emitter + self.native_boundary(x)
+        return torch.cat((emitter, self.receiver_edges(receiver, len(x))), dim=1)
 
 
 class PacketFAN(nn.Module):
-    def __init__(self, encoder):
+    def __init__(self, encoder, *, native_edges=False):
         super().__init__()
         self.encoder = encoder
         self.edges = PacketEdges(encoder.cls_head.in_features)
+        self.native_boundary = PacketNativeBoundary(encoder.cls_head.in_features) if native_edges else None
 
     def forward(self, x):
-        tokens, _ = self.encoder(packet_chirps(x))
+        core = self.native_boundary.split(x)[0] if self.native_boundary is not None else x
+        tokens, _ = self.encoder(packet_chirps(core))
         tokens = self.edges(tokens, len(x))
+        if self.native_boundary is not None:
+            tokens = tokens + self.native_boundary(x).unsqueeze(1)
         return tokens, self.encoder.cls_head(tokens.mean(1))
 
 
 class PacketSDG(nn.Module):
-    def __init__(self, encoder):
+    def __init__(self, encoder, *, native_edges=False):
         super().__init__()
         self.encoder = encoder
         self.edges = PacketEdges(encoder.fc.in_features)
+        self.native_boundary = PacketNativeBoundary(encoder.fc.in_features) if native_edges else None
 
-    def forward(self, x):
-        features, _ = self.encoder(packet_chirps(x))
-        features = F.normalize(self.edges(features, len(x)))
+    def forward(self, x, phase_input=None):
+        core = self.native_boundary.split(x)[0] if self.native_boundary is not None else x
+        features, _ = self.encoder(packet_chirps(core))
+        features = self.edges(features, len(x))
+        if self.native_boundary is not None:
+            features = features + self.native_boundary(x if phase_input is None else phase_input)
+        features = F.normalize(features)
         return features, self.encoder.fc(features)
 
 
 def build(c):
     from experiments.phase1_dg_nativebudget import pipeline as native
     family, emitters, receivers = c['family'], c['num_classes'], c['num_domains']
+    native_edges = c.get('native_edges', False)
     if family == 'riei':
         from baselines.riei_fd.model import RIEIModel
         net = RIEIModel(emitters, receivers, fed_variant='short_stem1d')
-        net.fed = PartitionedPacketEncoder(net.fed, net.emitter_feature_dim, net.receiver_feature_dim)
+        net.fed = PartitionedPacketEncoder(net.fed, net.emitter_feature_dim, net.receiver_feature_dim,
+                                           native_edges=native_edges)
         return net
     if family == 'drift':
         from baselines.drift.model import DRIFTModel
         net = DRIFTModel(emitters, receivers, domain_discriminator_layers=2)
-        net.encoder = PartitionedPacketEncoder(net.encoder, net.split_dim, net.embedding_dim - net.split_dim)
+        net.encoder = PartitionedPacketEncoder(net.encoder, net.split_dim, net.embedding_dim - net.split_dim,
+                                               native_edges=native_edges)
         return net
     if family == 'ibrff':
         sys.path.insert(0, c['ibrff_model_root'])
         from backbones.FAN import FAN
         return PacketFAN(FAN(seq_len=SAMPLES, in_chans=2, patch_size=32, embed_dim=128, mlp_ratio=2.,
-                            dr=.1, num_classes=emitters, bottleneck_type='DSCNN', use_SAF=True, use_FAF=True))
+                            dr=.1, num_classes=emitters, bottleneck_type='DSCNN', use_SAF=True, use_FAF=True),
+                         native_edges=native_edges)
     if family == 'sdg':
         author = native.author_sdg(c)
         # Importing the author's module seeds its example program.
         native.seed(c['model_seed'])
-        return PacketSDG(author.MACNN(in_channels=2, channels=8, num_classes=emitters))
+        return PacketSDG(author.MACNN(in_channels=2, channels=8, num_classes=emitters),
+                         native_edges=native_edges)
     raise ValueError(f'Unknown full-preamble method: {family}')
 
 
@@ -125,13 +167,16 @@ class SDGPacketViews(torch.utils.data.Dataset):
         outer = np.random.get_state()
         main = []
         try:
-            for iq in x.numpy():
+            for iq in x[..., :SAMPLES].numpy():
                 np.random.set_state(self.rng)
                 main.append(torch.as_tensor(self.author.aug(iq.copy(), self.preprocess, [1], [])[0]))
             self.rng = np.random.get_state()
         finally:
             np.random.set_state(outer)
-        return torch.stack((x, torch.stack(main))), y, rx
+        augmented = torch.stack(main)
+        if x.shape[-1] > SAMPLES:
+            augmented = torch.cat((augmented, x[..., SAMPLES:]), dim=-1)
+        return torch.stack((x, augmented)), y, rx
 
 
 def optimizers(net, c):
@@ -169,7 +214,14 @@ def train_batch(net, c, x, y, rx, optimizer, fed, stage, contrast=None, hsic=Non
             loss = loss + penalty
     elif family == 'sdg':
         batch = len(y)
-        features, logits = net(x.transpose(0, 1).flatten(0, 1))
+        joined = x.transpose(0, 1).flatten(0, 1)
+        # Augment only the registered core. The W12 phase correction uses the
+        # original core and matching raw edge samples in both SDG views.
+        if c.get('native_edges'):
+            phase_input = torch.cat((x[:, 0], x[:, 0]))
+            features, logits = net(joined, phase_input=phase_input)
+        else:
+            features, logits = net(joined)
         ce = F.cross_entropy(logits[batch:], y)
         identity_contrast = contrast(features.unsqueeze(1), y.repeat(2), adv=False)
         domains = torch.arange(2, device=y.device).repeat_interleave(batch)
