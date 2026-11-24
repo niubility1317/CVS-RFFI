@@ -1,0 +1,160 @@
+{
+  "verification": "VERIFIED",
+  "observed": {
+    "submit": {
+      "pid": 2389947,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-noise-replicas-source-m2-r01-release",
+      "code_commit": "eebc940dc508d2b8dac8a6b4c00e562de1f8e012",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-noise-replicas-source-m2-r01"
+    },
+    "controller": {
+      "pid": 2389947,
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.noise_replicas_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-noise-replicas-source-m2-r01-release/runtime.json",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-noise-replicas-source-m2-r01-release",
+      "cuda": [
+        "CUDA_VISIBLE_DEVICES="
+      ]
+    },
+    "jobs": {
+      "smoke-full": {
+        "pid": 2390382,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 577,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_REPLICA_SOURCE full practical_low_urban 10 10 {'2': 0.4988101160844649, '4': 0.25080005126946403, '8': 0.1263299361390008, '25': 0.04060580106587005}"
+        ]
+      },
+      "smoke-residual": {
+        "pid": 2390383,
+        "gpu": 2,
+        "identity": null,
+        "bytes": 582,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_REPLICA_SOURCE residual practical_low_urban 10 10 {'2': 0.4955739104541394, '4': 0.2500632728442913, '8': 0.12472842553269355, '25': 0.040197236967519846}"
+        ]
+      },
+      "evaluate-full": {
+        "pid": 2390671,
+        "gpu": 3,
+        "identity": {
+          "pid": 2390671,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.noise_replicas_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-noise-replicas-source-m2-r01/configs/evaluate-full.json full",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-noise-replicas-source-m2-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=3"
+          ]
+        },
+        "bytes": 928,
+        "last": [
+          "LORA_REPLICA_SOURCE full practical_high 300 229 {'2': 0.5002218710486591, '4': 0.24642921132727122, '8': 0.12296580373619814, '25': 0.04000776936354584}",
+          "LORA_REPLICA_SOURCE full practical_mid 300 295 {'2': 0.5071337016499394, '4': 0.2507147238162899, '8': 0.12404579459233088, '25': 0.041078235604199674}",
+          "LORA_REPLICA_SOURCE full practical_low_suburban 300 300 {'2': 0.4954264882120293, '4': 0.24588471396591557, '8': 0.12368933681694011, '25': 0.04008682332894277}"
+        ]
+      },
+      "evaluate-residual": {
+        "pid": 2390672,
+        "gpu": 2,
+        "identity": null,
+        "bytes": 1428,
+        "last": [
+          "LORA_REPLICA_SOURCE residual practical_high_urban 300 300 {'2': 0.5025180769302006, '4': 0.2519890246588703, '8': 0.12534762505984218, '25': 0.04029582667407455}",
+          "LORA_REPLICA_SOURCE residual practical_mid_urban 300 300 {'2': 0.49924126925007484, '4': 0.25006157553133984, '8': 0.1251374267415235, '25': 0.03996288810894276}",
+          "LORA_REPLICA_SOURCE residual practical_low_urban 300 300 {'2': 0.5000090680212719, '4': 0.2507428701131733, '8': 0.12528133727008103, '25': 0.040010092646199924}"
+        ]
+      }
+    },
+    "state": null,
+    "files": {
+      "smoke-full.json": 291,
+      "smoke-residual.json": 295,
+      "residual-inverse-cost.json": 134
+    }
+  },
+  "terminal": {
+    "submit": {
+      "pid": 2389947,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-noise-replicas-source-m2-r01-release",
+      "code_commit": "eebc940dc508d2b8dac8a6b4c00e562de1f8e012",
+      "archive_transfer": "VERIFIED",
+      "remote_compile": "PASS",
+      "status": "SUBMITTED_NOT_YET_VERIFIED",
+      "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-noise-replicas-source-m2-r01"
+    },
+    "controller": null,
+    "jobs": {
+      "smoke-full": {
+        "pid": 2390382,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 577,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_REPLICA_SOURCE full practical_low_urban 10 10 {'2': 0.4988101160844649, '4': 0.25080005126946403, '8': 0.1263299361390008, '25': 0.04060580106587005}"
+        ]
+      },
+      "smoke-residual": {
+        "pid": 2390383,
+        "gpu": 2,
+        "identity": null,
+        "bytes": 582,
+        "last": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+          "  return self.fget.__get__(instance, owner)()",
+          "LORA_REPLICA_SOURCE residual practical_low_urban 10 10 {'2': 0.4955739104541394, '4': 0.2500632728442913, '8': 0.12472842553269355, '25': 0.040197236967519846}"
+        ]
+      },
+      "evaluate-full": {
+        "pid": 2390671,
+        "gpu": 3,
+        "identity": null,
+        "bytes": 1403,
+        "last": [
+          "LORA_REPLICA_SOURCE full practical_high_urban 300 222 {'2': 0.5059183500087052, '4': 0.25367827736358695, '8': 0.128266534593117, '25': 0.040763077391417275}",
+          "LORA_REPLICA_SOURCE full practical_mid_urban 300 298 {'2': 0.5025757012896624, '4': 0.25110260003193374, '8': 0.12548638070127496, '25': 0.04018970345309578}",
+          "LORA_REPLICA_SOURCE full practical_low_urban 300 299 {'2': 0.5014021525209271, '4': 0.25102436291445707, '8': 0.12580685896109042, '25': 0.040256716536236185}"
+        ]
+      },
+      "evaluate-residual": {
+        "pid": 2390672,
+        "gpu": 2,
+        "identity": null,
+        "bytes": 1428,
+        "last": [
+          "LORA_REPLICA_SOURCE residual practical_high_urban 300 300 {'2': 0.5025180769302006, '4': 0.2519890246588703, '8': 0.12534762505984218, '25': 0.04029582667407455}",
+          "LORA_REPLICA_SOURCE residual practical_mid_urban 300 300 {'2': 0.49924126925007484, '4': 0.25006157553133984, '8': 0.1251374267415235, '25': 0.03996288810894276}",
+          "LORA_REPLICA_SOURCE residual practical_low_urban 300 300 {'2': 0.5000090680212719, '4': 0.2507428701131733, '8': 0.12528133727008103, '25': 0.040010092646199924}"
+        ]
+      },
+      "score-source": {
+        "pid": 2392275,
+        "gpu": null,
+        "identity": null,
+        "bytes": 37,
+        "last": [
+          "LORA_REPLICA_TRUTH_LAST_COMPLETE 300"
+        ]
+      }
+    },
+    "state": {
+      "status": "SOURCE_SCORED"
+    },
+    "files": {
+      "state.json": 32,
+      "smoke-full.json": 291,
+      "smoke-residual.json": 295,
+      "full-source-scores.json": 18466,
+      "residual-source-scores.json": 18499,
+      "full-inverse-cost.json": 135,
+      "residual-inverse-cost.json": 134
+    }
+  }
+}

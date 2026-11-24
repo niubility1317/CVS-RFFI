@@ -1,0 +1,6 @@
+{"at": "2026-11-24T01:05:47+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-24T01:05:47+00:00", "status": "LOCAL_VERIFIED", "note": "Three focused numeric tests and one independent P0/P1 review passed.", "evidence": "noise_replicas_source.py", "row_id": null}
+{"at": "2026-11-24T01:08:33+00:00", "status": "RUNNING", "note": "Verified live controller and Full GPU3 evaluator by PID/CWD/argv/GPU and progress. Residual GPU2 completed seven-view prediction logs.", "evidence": "launch-evidence.json", "row_id": null}
+{"at": "2026-11-24T01:10:23+00:00", "status": "ANALYZED", "note": "Matched 300 source V, fixed replicas and independent truth-last.", "evidence": "full-source-scores.json", "row_id": "evaluate-full"}
+{"at": "2026-11-24T01:10:23+00:00", "status": "ANALYZED", "note": "Matched 300 source V, fixed replicas and independent truth-last.", "evidence": "residual-source-scores.json", "row_id": "evaluate-residual"}
+{"at": "2026-11-24T01:10:23+00:00", "status": "ANALYZED", "note": "Same-action independent-noise source-only diagnostic closed and verified.", "evidence": "report.md", "row_id": null}
