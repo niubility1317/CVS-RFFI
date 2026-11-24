@@ -52,13 +52,18 @@ def centered(value, dim):
 
 
 @torch.no_grad()
-def estimate_shared(observed, template, quality, noise_variance):
+def estimate_shared(observed, template, quality, noise_variance, *, fit_observed=None):
     """Fit two mutually held-out relative responses in the original IQ coordinates."""
     phase = template[..., EDGE:-EDGE]
     # Background direct-carrier amplitudes need not agree across the chirps.
     gain = observed.mean(-1, keepdim=True).real.clamp_min(.15)
     response = observed[..., EDGE:-EDGE] / gain
     residual = centered(response, -1) * phase
+    if fit_observed is None:
+        fit_residual = residual
+    else:
+        fitted_response = fit_observed[..., EDGE:-EDGE] / gain
+        fit_residual = centered(fitted_response, -1) * phase
     columns = delayed(template)[..., EDGE:-EDGE, :] * phase.conj()[..., None]
     design = centered(columns, -2) * phase[..., None]
     weight = quality.squeeze(-1).square()
@@ -67,7 +72,7 @@ def estimate_shared(observed, template, quality, noise_variance):
 
     def group(part):
         x = design[:, part].flatten(1, 2)
-        y = residual[:, part].flatten(1, 2)
+        y = fit_residual[:, part].flatten(1, 2)
         weights = weight[:, part, None].expand(-1, -1, design.shape[-2]).flatten(1, 2)
         total = weights.sum(1).clamp_min(1e-8)
         xw = x * weights.sqrt()[..., None]
@@ -75,7 +80,8 @@ def estimate_shared(observed, template, quality, noise_variance):
         gram = (xw.mH @ xw) / total[:, None, None]
         cross = (xw.mH @ yw[..., None]) / total[:, None, None]
         beta = torch.linalg.solve_ex(gram + ridge[:, None, None] * eye, cross).result
-        return beta, xw, yw
+        held = residual[:, part].flatten(1, 2) * weights.sqrt()
+        return beta, xw, held
 
     def held_gain(group_data, other_beta):
         _, matrix, signal = group_data
