@@ -1,0 +1,59 @@
+{
+  "submit": {
+    "pid": 2555076,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-packet-relation-source-m3-r01-release",
+    "code_commit": "af06e182d2ef259462232c4194bb6138288890c6",
+    "archive_transfer": "VERIFIED",
+    "remote_compile": "PASS",
+    "status": "SUBMITTED_NOT_YET_VERIFIED",
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-packet-relation-source-m3-r01"
+  },
+  "controller": {
+    "pid": 2555076,
+    "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.packet_relation_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-packet-relation-source-m3-r01-release/runtime.json",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-packet-relation-source-m3-r01-release",
+    "cuda": [
+      "CUDA_VISIBLE_DEVICES="
+    ]
+  },
+  "jobs": {
+    "smoke-source": {
+      "pid": 2555117,
+      "gpu": 3,
+      "identity": null,
+      "bytes": 459,
+      "last": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+        "  return self.fget.__get__(instance, owner)()",
+        "LORA_ANTITHETIC_REAL_CHECKPOINT_PASS"
+      ]
+    },
+    "fit-packet_relation": {
+      "pid": 2555267,
+      "gpu": 3,
+      "identity": {
+        "pid": 2555267,
+        "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.packet_relation_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-packet-relation-source-m3-r01/configs/fit-packet_relation.json packet_relation",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-packet-relation-source-m3-r01-release",
+        "cuda": [
+          "CUDA_VISIBLE_DEVICES=3"
+        ]
+      },
+      "bytes": 570,
+      "last": [
+        "CHANNEL_BLIND_FIT 1 2.0422277450561523 2.0422277450561523 4.080033779144287 2.4076552391052246 3.2033979892730713 0.18401440978050232 3.427924394607544 0.47781097888946533 2.213012218475342 1.381401777267456 2.7331154346466064 1.2829078435897827 3.826380729675293 0.44113603234291077",
+        "CHANNEL_BLIND_FIT 50 2.0274460315704346 1.896085262298584 3.3846065998077393 1.5956674814224243 2.6249334812164307 0.05339186266064644 2.3817074298858643 0.36360567808151245 1.8604484796524048 1.0998523235321045 1.986999750137329 1.2376461029052734 2.883228302001953 0.3000793159008026"
+      ]
+    }
+  },
+  "state": null,
+  "files": {
+    "smoke.json": 128
+  },
+  "verification": "VERIFIED",
+  "growth": {
+    "row": "fit-packet_relation",
+    "first": 284,
+    "second": 570
+  }
+}
