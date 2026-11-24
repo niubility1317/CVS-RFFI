@@ -89,14 +89,14 @@ def paired_echo_inputs(clean, perturb, rng, change, *, with_identity):
 
 def natural_objective(model, tracker, iq, rng, *, with_identity, recipe, step, preserve,
                       make_pair=paired_inputs, projection_weight=None, tail_weight=None,
-                      difference=weak_difference, half_private_weight=None):
+                      difference=weak_difference, half_private_weight=None, observation_frame=coordinates):
     clean = complex_iq(iq)
     framed, rotation, _, rms = coordinates(tracker, iq)
     clean_basis = rotation * rms
     delta = difference(framed)
     change = delta * clean_basis
     wave = make_pair(clean, recipe.perturb, rng, change, with_identity=with_identity)
-    observed, rotation, quality, rms = coordinates(tracker, real_iq(wave.flatten(0, 1)))
+    observed, rotation, quality, rms = observation_frame(tracker, real_iq(wave.flatten(0, 1)))
     basis = rotation * rms
     targets = torch.stack((clean, clean, clean + change), dim=1).flatten(0, 1)
     target = targets / basis
