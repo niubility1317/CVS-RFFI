@@ -1,0 +1,253 @@
+{
+  "status": "VERIFIED",
+  "n": 900,
+  "targets_read": 0,
+  "truth_after_predictions": true,
+  "prior": "20261124-phase1-lora-carrier-coupled-source-m4-r01",
+  "unchanged_endpoints": {
+    "full": {
+      "clean": {
+        "direct": 0,
+        "reference": 0,
+        "rank_parent_half": 0,
+        "coupled_gain_coarse": 0,
+        "coupled_gain_full": 0
+      },
+      "practical_high": {
+        "direct": 0,
+        "reference": 0,
+        "rank_parent_half": 0,
+        "coupled_gain_coarse": 0,
+        "coupled_gain_full": 0
+      },
+      "practical_mid": {
+        "direct": 0,
+        "reference": 0,
+        "rank_parent_half": 0,
+        "coupled_gain_coarse": 0,
+        "coupled_gain_full": 0
+      },
+      "practical_low_suburban": {
+        "direct": 0,
+        "reference": 0,
+        "rank_parent_half": 0,
+        "coupled_gain_coarse": 0,
+        "coupled_gain_full": 0
+      },
+      "practical_high_urban": {
+        "direct": 0,
+        "reference": 0,
+        "rank_parent_half": 0,
+        "coupled_gain_coarse": 0,
+        "coupled_gain_full": 0
+      },
+      "practical_mid_urban": {
+        "direct": 0,
+        "reference": 0,
+        "rank_parent_half": 0,
+        "coupled_gain_coarse": 0,
+        "coupled_gain_full": 0
+      },
+      "practical_low_urban": {
+        "direct": 0,
+        "reference": 0,
+        "rank_parent_half": 0,
+        "coupled_gain_coarse": 0,
+        "coupled_gain_full": 0
+      }
+    },
+    "residual": {
+      "clean": {
+        "direct": 0,
+        "reference": 0,
+        "rank_parent_half": 0,
+        "coupled_gain_coarse": 0,
+        "coupled_gain_full": 0
+      },
+      "practical_high": {
+        "direct": 0,
+        "reference": 0,
+        "rank_parent_half": 0,
+        "coupled_gain_coarse": 0,
+        "coupled_gain_full": 0
+      },
+      "practical_mid": {
+        "direct": 0,
+        "reference": 0,
+        "rank_parent_half": 0,
+        "coupled_gain_coarse": 0,
+        "coupled_gain_full": 0
+      },
+      "practical_low_suburban": {
+        "direct": 0,
+        "reference": 0,
+        "rank_parent_half": 0,
+        "coupled_gain_coarse": 0,
+        "coupled_gain_full": 0
+      },
+      "practical_high_urban": {
+        "direct": 0,
+        "reference": 0,
+        "rank_parent_half": 0,
+        "coupled_gain_coarse": 0,
+        "coupled_gain_full": 0
+      },
+      "practical_mid_urban": {
+        "direct": 0,
+        "reference": 0,
+        "rank_parent_half": 0,
+        "coupled_gain_coarse": 0,
+        "coupled_gain_full": 0
+      },
+      "practical_low_urban": {
+        "direct": 0,
+        "reference": 0,
+        "rank_parent_half": 0,
+        "coupled_gain_coarse": 0,
+        "coupled_gain_full": 0
+      }
+    }
+  },
+  "against_original_half": {
+    "full": {
+      "coupled_gain_half": {
+        "six": {
+          "net": -7,
+          "interval": [
+            -18,
+            5
+          ],
+          "repaired": 15,
+          "damaged": 22,
+          "by_rx": [
+            -1,
+            -4,
+            -3,
+            0,
+            1
+          ]
+        },
+        "low": {
+          "net": -1,
+          "interval": [
+            -9,
+            7
+          ],
+          "repaired": 7,
+          "damaged": 8,
+          "by_rx": [
+            1,
+            1,
+            -2,
+            -1,
+            0
+          ]
+        }
+      },
+      "relative_coupled_half": {
+        "six": {
+          "net": 91,
+          "interval": [
+            41,
+            140
+          ],
+          "repaired": 271,
+          "damaged": 180,
+          "by_rx": [
+            29,
+            5,
+            11,
+            19,
+            27
+          ]
+        },
+        "low": {
+          "net": 27,
+          "interval": [
+            2,
+            50
+          ],
+          "repaired": 88,
+          "damaged": 61,
+          "by_rx": [
+            6,
+            6,
+            4,
+            8,
+            3
+          ]
+        }
+      }
+    },
+    "residual": {
+      "coupled_gain_half": {
+        "six": {
+          "net": 5,
+          "interval": [
+            -14,
+            23
+          ],
+          "repaired": 45,
+          "damaged": 40,
+          "by_rx": [
+            -2,
+            -2,
+            -2,
+            7,
+            4
+          ]
+        },
+        "low": {
+          "net": 12,
+          "interval": [
+            1,
+            23
+          ],
+          "repaired": 21,
+          "damaged": 9,
+          "by_rx": [
+            4,
+            4,
+            0,
+            3,
+            1
+          ]
+        }
+      },
+      "relative_coupled_half": {
+        "six": {
+          "net": 215,
+          "interval": [
+            112,
+            318
+          ],
+          "repaired": 722,
+          "damaged": 507,
+          "by_rx": [
+            60,
+            1,
+            58,
+            29,
+            67
+          ]
+        },
+        "low": {
+          "net": 66,
+          "interval": [
+            32.97500000000001,
+            100
+          ],
+          "repaired": 190,
+          "damaged": 124,
+          "by_rx": [
+            18,
+            -5,
+            20,
+            17,
+            16
+          ]
+        }
+      }
+    }
+  }
+}

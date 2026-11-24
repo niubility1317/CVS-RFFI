@@ -1,0 +1,120 @@
+{
+  "verification": "VERIFIED",
+  "submit": {
+    "pid": 2677334,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-relative-carrier-source-m5-r01-release",
+    "code_commit": "e01c5261ae57dda332cfa2ad0bfe79cf913be513",
+    "archive_transfer": "VERIFIED",
+    "remote_compile": "PASS",
+    "status": "SUBMITTED_NOT_YET_VERIFIED",
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-relative-carrier-source-m5-r01"
+  },
+  "controller": {
+    "pid": 2677334,
+    "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.relative_carrier_source dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-relative-carrier-source-m5-r01-release/runtime.json",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-relative-carrier-source-m5-r01-release",
+    "cuda": [
+      "CUDA_VISIBLE_DEVICES="
+    ]
+  },
+  "jobs": {
+    "smoke-source": {
+      "pid": 2677352,
+      "gpu": 3,
+      "identity": null,
+      "bytes": 459,
+      "last": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py:831: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()",
+        "  return self.fget.__get__(instance, owner)()",
+        "LORA_ANTITHETIC_REAL_CHECKPOINT_PASS"
+      ]
+    },
+    "fit-relative_independent": {
+      "pid": 2677450,
+      "gpu": 3,
+      "identity": {
+        "pid": 2677450,
+        "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.relative_carrier_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-relative-carrier-source-m5-r01/configs/fit-relative_independent.json relative_independent",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-relative-carrier-source-m5-r01-release",
+        "cuda": [
+          "CUDA_VISIBLE_DEVICES=3"
+        ]
+      },
+      "bytes": 0,
+      "last": []
+    },
+    "fit-relative_coupled": {
+      "pid": 2677451,
+      "gpu": 6,
+      "identity": {
+        "pid": 2677451,
+        "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.relative_carrier_source fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-relative-carrier-source-m5-r01/configs/fit-relative_coupled.json relative_coupled",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-relative-carrier-source-m5-r01-release",
+        "cuda": [
+          "CUDA_VISIBLE_DEVICES=6"
+        ]
+      },
+      "bytes": 0,
+      "last": []
+    }
+  },
+  "state": null,
+  "files": {
+    "smoke.json": 128
+  },
+  "files_after": {
+    "smoke.json": 128
+  },
+  "growth": {
+    "fit-relative_independent": [
+      0,
+      1525
+    ],
+    "fit-relative_coupled": [
+      0,
+      1535
+    ]
+  },
+  "frozen_evaluate": {
+    "jobs": {
+      "evaluate-full": {
+        "pid": 2685093,
+        "gpu": 3,
+        "identity": {
+          "pid": 2685093,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.relative_carrier_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-relative-carrier-source-m5-r01/configs/evaluate-full.json full",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-relative-carrier-source-m5-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=3"
+          ]
+        },
+        "bytes": 0,
+        "last": []
+      },
+      "evaluate-residual": {
+        "pid": 2685094,
+        "gpu": 6,
+        "identity": {
+          "pid": 2685094,
+          "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_lora_main.relative_carrier_source evaluate /home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-lora-relative-carrier-source-m5-r01/configs/evaluate-residual.json residual",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-lora-relative-carrier-source-m5-r01-release",
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=6"
+          ]
+        },
+        "bytes": 0,
+        "last": []
+      }
+    },
+    "growth": {
+      "evaluate-full": [
+        0,
+        754
+      ],
+      "evaluate-residual": [
+        0,
+        782
+      ]
+    }
+  }
+}
