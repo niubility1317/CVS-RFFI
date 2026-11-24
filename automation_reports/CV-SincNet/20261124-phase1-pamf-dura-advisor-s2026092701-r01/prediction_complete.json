@@ -1,0 +1,32 @@
+{
+  "status": "ALL_PREDICTIONS_COMPLETE",
+  "truth_read": false,
+  "query_fit": false,
+  "count_per_task": 3072,
+  "panels": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban",
+    "fresh_practical_high",
+    "fresh_practical_mid",
+    "fresh_practical_low_suburban",
+    "fresh_practical_high_urban",
+    "fresh_practical_mid_urban",
+    "fresh_practical_low_urban",
+    "noise14_mid_urban",
+    "cfo15k_mid_urban",
+    "delay4x_mid_urban",
+    "rayleigh_tdl"
+  ],
+  "routes": [
+    "raw",
+    "pilot_fir_mmse",
+    "coarse",
+    "one_stage",
+    "dura"
+  ]
+}

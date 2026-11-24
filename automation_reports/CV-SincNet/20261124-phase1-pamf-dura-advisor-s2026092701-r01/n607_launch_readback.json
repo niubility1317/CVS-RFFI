@@ -1,0 +1,63 @@
+{
+  "status": "RUNNING",
+  "code_commit": "8d66bcb936ac3c9143f18b90abf7d7c5dd327966",
+  "controller_pid": 2917712,
+  "prediction": {
+    "pid": 2917744,
+    "gpu": 5,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-pamf-dura-advisor-s2026092701-r01-release",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.pamf_advisor_supplements.dura",
+      "predict",
+      "--config",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-pamf-dura-advisor-s2026092701-r01/predict.json"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-pamf-dura-advisor-s2026092701-r01/predict.log",
+    "status": "RUNNING"
+  },
+  "actual_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261124-phase1-pamf-dura-advisor-s2026092701-r01-release",
+  "actual_argv": [
+    "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "-u",
+    "-m",
+    "experiments.pamf_advisor_supplements.dura",
+    "predict",
+    "--config",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261124-phase1-pamf-dura-advisor-s2026092701-r01/predict.json"
+  ],
+  "cuda": [
+    "2917744, 750"
+  ],
+  "log_bytes": 1158,
+  "finished_panels": 21,
+  "smoke": {
+    "status": "PASS",
+    "query_reads": 0,
+    "source_packets": 4,
+    "timing_shared_gpu": {
+      "raw": {
+        "median_ms": 12.107375621795654,
+        "p95_ms": 16.150374794006346
+      },
+      "pilot_fir_mmse": {
+        "median_ms": 15.091328144073486,
+        "p95_ms": 19.146112537384035
+      },
+      "coarse": {
+        "median_ms": 30.516223907470703,
+        "p95_ms": 37.273498153686525
+      },
+      "one_stage": {
+        "median_ms": 50.8144645690918,
+        "p95_ms": 53.75262260437012
+      },
+      "dura": {
+        "median_ms": 13.351424217224121,
+        "p95_ms": 15.016601467132569
+      }
+    }
+  }
+}
