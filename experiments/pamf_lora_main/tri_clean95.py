@@ -91,6 +91,24 @@ class SpectrumAligned(CoherentPacket):
         return logits+self.head(aligned),fused+.10*aligned
 
 
+class TimeFrequencyAligned(CoherentPacket):
+    def forward(self,x):
+        logits,fused=self.raw(x)
+        traces=self.trace(x)
+        aligned=self.encoder(traces.flatten(0,1)).reshape(len(x),x.shape[1],-1).mean(1)
+        z=torch.complex(traces[:,:,0],traces[:,:,1])
+        z=z-z.mean(-1,keepdim=True)
+        size=z.shape[-1]//8
+        windows=z.unfold(-1,size,size//2)
+        apodize=torch.hann_window(size,device=z.device,dtype=z.real.dtype)
+        power=torch.fft.fftshift(torch.fft.fft(windows*apodize,dim=-1),dim=-1).abs().square()
+        log=(power/size+1e-5).log()
+        ratio=(log[...,1:,:]-log[...,:-1,:]).clamp(-8.,8.)
+        features=torch.stack((log[...,1:,:].mean(1),ratio.mean(1)),dim=1)
+        aligned=aligned+.10*self.time_frequency(features)
+        return logits+self.head(aligned),fused+.10*aligned
+
+
 def clean_model(rt,root,c,row,device):
     if rt.get('scratch'):
         from .holdout import construct
@@ -100,13 +118,19 @@ def clean_model(rt,root,c,row,device):
             f.__class__=SpectrumAligned
             f.spectral=torch.nn.Sequential(torch.nn.Linear(128,160),
                                            torch.nn.LayerNorm(160),torch.nn.SiLU()).to(device)
+        if row.get('time_frequency'):
+            from torch import nn
+            f.__class__=TimeFrequencyAligned
+            f.time_frequency=nn.Sequential(nn.Conv2d(2,16,3,padding=1),nn.GroupNorm(4,16),nn.SiLU(),
+                nn.Conv2d(16,24,3,padding=1,stride=2),nn.GroupNorm(4,24),nn.SiLU(),
+                nn.AdaptiveAvgPool2d((4,5)),nn.Flatten(),nn.Linear(480,160),nn.LayerNorm(160)).to(device)
         return f
     return preserve_alignment(model_for(rt,root,c,row,device),row)
 
 
 def study(rt):
     if rt.get('scratch'):
-        return SCRATCH_ROWS,SCRATCH_EPOCHS,16
+        return (TIMEFREQ_ROWS if rt.get('timefreq') else SCRATCH_ROWS),SCRATCH_EPOCHS,16
     if rt.get('transfer'):
         return TRANSFER_ROWS,8,16
     if rt.get('quick'):
@@ -125,6 +149,11 @@ SCRATCH_ROWS={
 }
 SCRATCH_LOCAL=('control','residual_spectrum')
 SCRATCH_EPOCHS=48
+TIMEFREQ_RUN='20261125-phase1-lora-pamf-tri-clean-timefreq-m2-r01'
+TIMEFREQ_ROWS={
+    'timefreq256': {'warmup':32,'time_frequency':True},
+    'timefreq384': {'warmup':32,'samples':384,'time_frequency':True},
+}
 VALIDATION_EPOCHS={0,2,4,8,12,16,20,24}
 STARTS=np.asarray(CHIRPS)*1024+WINDOW_START-125
 CROP=STARTS[:,None]+np.arange(1250)
@@ -369,12 +398,12 @@ def predict(rt,name):
 
 
 def dispatch(rt):
-    if (rt.get('quick') or rt.get('transfer')) and on_local(rt):
+    if (rt.get('quick') or rt.get('transfer') or rt.get('timefreq')) and on_local(rt):
         raise ValueError('Quick branch study is registered for N607 only')
     root=Path(rt['run_root'])
     root.mkdir(exist_ok=False)
     state=root/'state.json'
-    fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','fixed_clean_cache') if k in rt)
+    fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq','fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)
     try:
@@ -387,7 +416,7 @@ def dispatch(rt):
         schedule(rt,[('train',name) for name in names],launch)
         evidence={name:read(root/'F'/name/'complete.json')['frozen'] for name in names}
         ranking=sorted(names,key=lambda name:(evidence[name]['correct'],-evidence[name]['nll']),reverse=True)
-        source_only=bool(on_local(rt) or rt.get('quick') or rt.get('transfer'))
+        source_only=bool(on_local(rt) or rt.get('quick') or rt.get('transfer') or rt.get('timefreq'))
         tested=[] if source_only else list(dict.fromkeys(['control',ranking[0]]))
         write(root/'selection.json',dict(names=tested,rank=ranking,source=evidence,
                                         target_reads=0,goal_met=evidence[ranking[0]]['correct']>=TARGET_SOURCE_ACCURACY*evidence[ranking[0]]['n']))
