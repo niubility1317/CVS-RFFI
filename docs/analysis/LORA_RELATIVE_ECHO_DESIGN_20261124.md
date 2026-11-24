@@ -48,3 +48,5 @@ LoRa 已有工作用循环前导在频域估计绝对多径响应，或以多径
 | 第二组 | 纯独立噪声或六窗共同回波 | 并联回波证据门，保护共同分量 | 整包物理误差基本持平。模型的可辨识范围是窗间相对变化。 |
 
 两批留出均不读取 F、源 V、TX 或目标。保留 `E:/type10-7/local_artifacts/20261124-lora-relative-echo-source-u/probe-r01.json` 与 `probe-r02.json` 的逐接收机结果。第一批只比较噪声门，第二批同时比较回波证据和共同保护。 [源 U 工程代码](../../tools/lora_relative_echo_probe.py)
+
+冻结识别随后覆盖两路线的源 V 七景。相对多径工程主行六景比同包 DURA 少判对 67 次和 106 次。两路线 clean 均为 667/900。工程模块在现有矩阵上的独立作用未支持扩大训练。 [逐景与接收机识别结果](../../automation_reports/CV-SincNet/20261124-phase1-lora-relative-echo-source-m2-r01/report.md)
