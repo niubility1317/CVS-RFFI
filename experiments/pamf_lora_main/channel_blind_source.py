@@ -48,6 +48,7 @@ class FitRecipe:
     validation_steps: tuple[int, ...] = ()
     bank_per_rx: int = 0
     initialize: Callable | None = None
+    finalize_calibration: Callable | None = None
 
     def loss_weights(self, step):
         if not self.coarse_first:
@@ -200,7 +201,10 @@ def fit(rt, *, smoke=False, recipe=DEFAULT, calculate=objective, receiver_batche
     worker_seconds = time.perf_counter()-start_time
     with torch.no_grad():
         model.eval()
-        threshold = float(clean_threshold(tracker, calibration))
+        if recipe.finalize_calibration is None:
+            threshold, diagnostics = float(clean_threshold(tracker, calibration)), {}
+        else:
+            threshold, diagnostics = recipe.finalize_calibration(model, tracker, calibration)
         result = held_waveform(model,tracker,held,calculate,recipe,steps,receiver_batches)
     root = Path(rt['run_root'])
     meta = proof(contract,recipe)
@@ -209,6 +213,7 @@ def fit(rt, *, smoke=False, recipe=DEFAULT, calculate=objective, receiver_batche
                    n_fit=len(training),n_calibration=len(calibration),n_held=len(held),
                    worker_seconds=worker_seconds,
                    bf16_training_convolutions=recipe.name!='blind' and torch.cuda.is_bf16_supported())
+    summary.update(diagnostics)
     if progress:
         summary['held_trajectory'] = progress
         summary['peak_cuda_allocated_bytes'] = torch.cuda.max_memory_allocated()
