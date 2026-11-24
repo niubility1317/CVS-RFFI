@@ -44,6 +44,8 @@ R69 v1.0 有 266,951 个参数。历史两阶段学生由 R65 固定父版初始
 
 - LoRa 逐 RX 留出源 U 的跨 chirp 复谱乘积在独立噪声下使 9–32 kHz 公共误差中位下降 19.74%，独有误差中位上升 8.85%。在实际两路线的固定公共方向对比中，保留独有修正及物理 IQ 总量，乘积读出相对线性的六景净差为 0、−1，clean 两路均为 667/900。读出留在源域。 [跨组源 U 留出](LORA_CROSS_REPEAT_PRODUCT_20261124.md) · [固定工程识别结果](../../automation_reports/CV-SincNet/20261124-phase1-lora-repeat-product-source-m2-r01/report.md)
 
+- LoRa 固定原物理包和原门限，把同一解析方向从 1 倍提升到 2 倍，Full 六景净增 41［+6，+75］、Residual 净减 189［−241，−130］次。在同一 2 倍物理剂量换精确方向，较解析方向净增 219、753 次；保持精确自然剂量并扩至原门外，另外净增 110、45 次。全部 clean 为 667/900。结果是隔离机理归因。 [剂量、方向和处理覆盖对照](../../automation_reports/CV-SincNet/20261124-diagnostic-lora-dose-direction-source-m2-r01/report.md)
+
 - LoRa 隔离复算固定八个实收混合专家和物理 IQ 剂量。配对 clean 路由较实收路由在 Full、Residual 六景各净增 17［+6，+28］、44［+20，+68］次，Residual 仍比 DURA 少 53 次。同量隔离精确方向比按实际波形选专家净增 56［+31，+81］、258［+211，+307］次。五个原实收对照逐包复现，两路 clean 均为 667/900。现有混合方向覆盖和回写剂量分别有差距。 [LoRa 混合路由与方向的等量隔离归因](../../automation_reports/CV-SincNet/20261124-diagnostic-lora-mixture-directions-source-m2-r01/report.md)
 
 - LoRa 从 20,000 个源 U 包拟合 8 分量跨频先验。按奇偶对折及一致性回写的主读出较 DURA 在 Full 净增 6 次、Residual 净减 84 次，clean 均为 667/900。与统一先验同物理 RMS 时，两路净差 −8 和 +3，区间均跨零。独立 U 核查中，通用扰动使先验仅重 1.46% 的分量从 3/500 上升至 428/500，伴随高后验与更大标准化距离。结果定位了靠后验一致性判断可用性的失效，未晋级。 [LoRa 跨频混合冻结测试及置信核查](../../automation_reports/CV-SincNet/20261124-phase1-lora-spectral-mixture-source-m2-r01/report.md)
