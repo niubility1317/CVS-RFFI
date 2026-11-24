@@ -6,6 +6,7 @@ from experiments.pamf_unrolled_restore.wisig_preamble_dura import PreambleDura, 
 from experiments.pamf_unrolled_restore.wisig_preamble_dura_source import MODES, proposals, trainable_heads
 from experiments.pamf_unrolled_restore.wisig_smooth_preamble import SMOOTH, STARTS, TIME, choose, estimate
 from experiments.pamf_unrolled_restore.wisig_timing import NOMINAL
+from tools.wisig_repeat_drift_fidelity import PREAMBLE_MODES, preamble_readouts
 
 
 def source_waveforms():
@@ -51,6 +52,22 @@ def test_uncertain_zero_iq_leaves_nominal_coordinates():
     analysis = model.analyze(empty)
     assert analysis[3].all() and torch.all(analysis[5] == 1)
     assert torch.count_nonzero(analysis[-2]) == torch.count_nonzero(analysis[-1]) == 0
+
+
+@torch.no_grad()
+def test_paired_waveform_audit_preserves_registered_readouts():
+    model = PreambleDura(anchored=True).eval()
+    source = source_waveforms()
+    gate = (float('inf'), float('inf'))
+    registered, active, shift = proposals(model, gate, source)
+    inspected, diagnostic_shift, diagnostic_active, error = preamble_readouts(model, gate, source, source.roll(1, 0))
+    analysis = model.analyze(source)
+    assert len(inspected) == len(PREAMBLE_MODES) - 2
+    assert torch.equal(inspected[0], analysis[1] * analysis[2])
+    assert all(torch.equal(a, b) for a, b in zip(inspected[1:], registered[:6], strict=True))
+    assert torch.equal(diagnostic_shift, shift) and torch.equal(diagnostic_active, active)
+    assert torch.equal(inspected[-1], source)
+    assert error.shape == (len(source), 3) and torch.isfinite(error).all() and torch.all(error >= 0.)
 
 
 def test_model_constructor_does_not_require_numpy_to_torch_bridge(monkeypatch):

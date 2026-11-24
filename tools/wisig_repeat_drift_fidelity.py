@@ -11,6 +11,7 @@ import torch
 from experiments.cric_dura_comparison.io import read, tensor
 from experiments.pamf_lora_main.runner import activate
 from experiments.pamf_unrolled_restore import wisig_anchored_window_source as runner
+from experiments.pamf_unrolled_restore import wisig_preamble_dura_source as preamble
 from experiments.pamf_unrolled_restore import wisig_repeat_drift_source as study
 from experiments.pamf_unrolled_restore import wisig_r69_stage_isolation as stage_study
 from experiments.pamf_unrolled_restore.wisig_repeat_drift import STF_BEGIN, STF_END
@@ -21,6 +22,8 @@ from tools.wisig_anchored_window_audit import FIELDS, timing_reference, waveform
 MODES = ('direct','r69','polar_gated','drift_timed','drift_engineering',
          'drift_gated','drift_phase_only','drift_no_observed')
 REGION_FIELDS = ('complex_nmse','amplitude_nmse','phase_cosine')
+PREAMBLE_MODES = ('direct', 'r69', 'preamble_timed', *(f'preamble_{name}' for name in preamble.READOUTS))
+ACTION_FIELDS = ('predict_residual_power','identity_residual_power','estimated_variance')
 
 
 def fidelity(waves, clean, mask):
@@ -65,6 +68,23 @@ def action_error(receiver, sample, clean):
     return torch.stack(tuple((field*support).sum(-1)/denom for field in (model_error,identity_error,variance)),dim=-1)
 
 
+def preamble_readouts(model, gate, received, clean):
+    analysis = model.analyze(received)
+    stages, action, variance, level, shift, _ = model.stages(analysis)
+    _, observed, _, support, *_ = analysis
+    margin, noise = preamble.gate_features(model, analysis)
+    active = (margin > gate[0]) | (noise > gate[1])
+    restored = tuple(value * level for value in stages)
+    guarded = torch.where(active[:, None], restored[-1], received)
+    reference = clean / level
+    estimate_error = (observed - action.apply(reference)).abs().square()
+    identity_error = (observed - reference).abs().square()
+    total = support.sum(-1).clamp_min(1)
+    residuals = torch.stack(tuple((field * support).sum(-1) / total
+                                  for field in (estimate_error, identity_error, variance)), dim=-1)
+    return (observed * level, *restored, guarded), shift, active, residuals
+
+
 @torch.no_grad()
 def measure(runtime):
     root = Path(runtime['run_root'])
@@ -72,12 +92,16 @@ def measure(runtime):
     scores = read(root/'source-scores.json')
     stages = runtime['run_id']==stage_study.RUN
     observed_solver = runtime['run_id']=='20261124-phase1-wisig-observed-solve-source-m4-r01'
+    preamble_dura = runtime['run_id'] == preamble.RUN
     if observed_solver:
         from experiments.pamf_unrolled_restore import wisig_observed_solve_source as solver
         modes, prediction_modes = ('direct','r69',*solver.MODES[8:]),solver.MODES
+    elif preamble_dura:
+        modes, prediction_modes = PREAMBLE_MODES, preamble.MODES
     else:
         modes, prediction_modes = (stage_study.MODES,stage_study.MODES) if stages else (MODES,study.MODES)
-    if (not (stages or observed_solver or runtime['run_id']==study.RUN) or read(root/'state.json')['status']!='SOURCE_SCORED'
+    if (not (stages or observed_solver or preamble_dura or runtime['run_id']==study.RUN)
+            or read(root/'state.json')['status']!='SOURCE_SCORED'
             or marker['status']!='FROZEN' or marker['target_reads'] or marker['source_truth_reads']
             or marker['modes']!=list(prediction_modes) or not scores['truth_last'] or scores['target_reads']):
         raise ValueError('Expected the already-scored dual-route WiSig source predictions')
@@ -90,6 +114,8 @@ def measure(runtime):
         stage_readouts = stage_study.StageReadout(r69.pipeline)
     elif observed_solver:
         (receiver,gate), = runner.load_models(runtime,arms=('coupled',),build=solver.build)
+    elif preamble_dura:
+        (receiver, gate), = runner.load_models(runtime, arms=('preamble',), build=preamble.build)
     else:
         models = list(runner.load_models(runtime,arms=study.ARMS,build=study.build))
     time = torch.arange(256,device='cuda:0')
@@ -111,12 +137,13 @@ def measure(runtime):
             if raw.shape!=clean.shape or raw.shape!=(len(ids),2,256):
                 raise ValueError('Paired source IQ has unexpected shape')
             results, shift_errors, operator_errors = [], [], []
+            activity, reference_shifts, reference_confidence = [], [], []
             for offset in range(0,len(ids),48):
                 rows = slice(offset,offset+48)
                 iq = tensor(raw[rows],'cuda:0')
                 received = as_complex(iq)
                 reference = as_complex(tensor(clean[rows],'cuda:0'))
-                delta,_ = timing_reference(received,reference,positions,offsets)
+                delta, coherence = timing_reference(received,reference,positions,offsets)
                 if stages:
                     waves = torch.stack((received,*(as_complex(value) for value in stage_readouts(iq))))
                 elif observed_solver:
@@ -127,6 +154,15 @@ def measure(runtime):
                     waves = torch.stack((received,as_complex(restored),*options))
                     shift_errors.append((shift-delta).abs())
                     operator_errors.append(action_error(receiver,received,reference))
+                elif preamble_dura:
+                    restored, = r69(iq)
+                    options, shift, active, errors = preamble_readouts(receiver, gate, received, reference)
+                    waves = torch.stack((received, as_complex(restored), *options))
+                    shift_errors.append((shift-delta).abs())
+                    operator_errors.append(errors)
+                    activity.append(active)
+                    reference_shifts.append(delta)
+                    reference_confidence.append(coherence)
                 else:
                     restored, = r69(iq)
                     variants = [study.proposals(model,gate,received) for model,gate in models]
@@ -140,6 +176,10 @@ def measure(runtime):
             routes[route][view] = {}
             errors = torch.cat(shift_errors) if shift_errors else None
             action_errors = torch.cat(operator_errors) if operator_errors else None
+            if preamble_dura:
+                active = torch.cat(activity)
+                reference_shift = torch.cat(reference_shifts)
+                coherence = torch.cat(reference_confidence)
             for name,samples in groups.items():
                 group = dict(count=len(samples),median={region:matrix[:,samples].median(dim=1).values.tolist()
                                                         for region,matrix in merged.items()})
@@ -148,11 +188,21 @@ def measure(runtime):
                                  colocated_within_two=int((errors[samples]<=2).sum()))
                 if action_errors is not None:
                     group['action_median'] = action_errors[samples].median(0).values.tolist()
+                if preamble_dura:
+                    missing = samples[reference_shift[samples] != 0]
+                    colocated = samples[errors[samples] <= 2]
+                    group.update(active=int(active[samples].sum()),
+                                 reference_squared_coherence_median=float(coherence[samples].median()),
+                                 paired_missing_edge_packets=len(missing),
+                                 missing_edge_nmse_median=merged['audit'][:, missing, -1].median(1).values.tolist()
+                                 if len(missing) else None,
+                                 action_median_within_two=action_errors[colocated].median(0).values.tolist()
+                                 if len(colocated) else None)
                 routes[route][view][name] = group
     return dict(status='VERIFIED',target_reads=0,paired_clean_diagnostic_only=True,
                 rows=len(ids),modes=modes,audit_fields=FIELDS,region_fields=REGION_FIELDS,routes=routes,
                 b1=latency,device=torch.cuda.get_device_name(),
-                action_fields=('predict_residual_power','identity_residual_power','estimated_variance') if observed_solver else ())
+                action_fields=ACTION_FIELDS if observed_solver or preamble_dura else ())
 
 
 if __name__ == '__main__':
