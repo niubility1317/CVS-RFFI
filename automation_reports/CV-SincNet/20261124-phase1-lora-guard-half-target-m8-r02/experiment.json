@@ -155,7 +155,7 @@
       "epochs": 0,
       "fl_rounds": null,
       "budget_ref": "每路线每种子 30000 包×七景；12 源 U no-query smoke。",
-      "output_root": "${N607_PROJECT}/runs/20261124-phase1-lora-guard-half-target-m8-r02/predictions/by-seed-2026092701",
+      "output_root": "${N607_PROJECT}/runs/20261124-phase1-lora-guard-half-target-m8-r02/predictions/<route>/2026092701",
       "log_path": "${N607_PROJECT}/runs/20261124-phase1-lora-guard-half-target-m8-r02/logs",
       "command": "${N607_PYTHON} -u -m experiments.pamf_lora_main.weak_guard_target dispatch ${N607_PROJECT}/releases/20261124-phase1-lora-guard-half-target-m8-r02-release/runtime.json",
       "expected_artifacts": [
@@ -189,7 +189,7 @@
       "epochs": 0,
       "fl_rounds": null,
       "budget_ref": "每路线每种子 30000 包×七景；12 源 U no-query smoke。",
-      "output_root": "${N607_PROJECT}/runs/20261124-phase1-lora-guard-half-target-m8-r02/predictions/by-seed-2026092702",
+      "output_root": "${N607_PROJECT}/runs/20261124-phase1-lora-guard-half-target-m8-r02/predictions/<route>/2026092702",
       "log_path": "${N607_PROJECT}/runs/20261124-phase1-lora-guard-half-target-m8-r02/logs",
       "command": "${N607_PYTHON} -u -m experiments.pamf_lora_main.weak_guard_target dispatch ${N607_PROJECT}/releases/20261124-phase1-lora-guard-half-target-m8-r02-release/runtime.json",
       "expected_artifacts": [
@@ -223,7 +223,7 @@
       "epochs": 0,
       "fl_rounds": null,
       "budget_ref": "每路线每种子 30000 包×七景；12 源 U no-query smoke。",
-      "output_root": "${N607_PROJECT}/runs/20261124-phase1-lora-guard-half-target-m8-r02/predictions/by-seed-2026092703",
+      "output_root": "${N607_PROJECT}/runs/20261124-phase1-lora-guard-half-target-m8-r02/predictions/<route>/2026092703",
       "log_path": "${N607_PROJECT}/runs/20261124-phase1-lora-guard-half-target-m8-r02/logs",
       "command": "${N607_PYTHON} -u -m experiments.pamf_lora_main.weak_guard_target dispatch ${N607_PROJECT}/releases/20261124-phase1-lora-guard-half-target-m8-r02-release/runtime.json",
       "expected_artifacts": [
