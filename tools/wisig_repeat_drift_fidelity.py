@@ -43,16 +43,26 @@ def decompose(waves, reference, delta, time, frequency):
                 other_overlap=fidelity(waves,reference,available & ~stf))
 
 
-def single_packet_latency(model, gate, sample):
+def single_packet_latency(model, gate, sample, gate_features=None):
     timings = []
     for step in range(28):
         torch.cuda.synchronize()
         start = perf_counter()
-        _, active = runner.guarded(model,gate,sample)
+        _, active = runner.guarded(model,gate,sample,gate_features=gate_features)
         torch.cuda.synchronize()
         if step>=8:
             timings.append(1000.*(perf_counter()-start))
     return dict(active=bool(active.item()),median_ms=float(np.median(timings)))
+
+
+def action_error(receiver, sample, clean):
+    stages,action,variance,support,level,*_ = receiver.stages(receiver.analyze(sample))
+    desired = clean/level
+    observed = stages[0]
+    model_error = (observed-action.apply(desired)).abs().square()
+    identity_error = (observed-desired).abs().square()
+    denom = support.sum(-1).clamp_min(1.)
+    return torch.stack(tuple((field*support).sum(-1)/denom for field in (model_error,identity_error,variance)),dim=-1)
 
 
 @torch.no_grad()
@@ -61,8 +71,13 @@ def measure(runtime):
     marker = read(root/'predictions/complete.json')
     scores = read(root/'source-scores.json')
     stages = runtime['run_id']==stage_study.RUN
-    modes, prediction_modes = (stage_study.MODES,stage_study.MODES) if stages else (MODES,study.MODES)
-    if (runtime['run_id'] not in (study.RUN,stage_study.RUN) or read(root/'state.json')['status']!='SOURCE_SCORED'
+    observed_solver = runtime['run_id']=='20261124-phase1-wisig-observed-solve-source-m4-r01'
+    if observed_solver:
+        from experiments.pamf_unrolled_restore import wisig_observed_solve_source as solver
+        modes, prediction_modes = ('direct','r69',*solver.MODES[8:]),solver.MODES
+    else:
+        modes, prediction_modes = (stage_study.MODES,stage_study.MODES) if stages else (MODES,study.MODES)
+    if (not (stages or observed_solver or runtime['run_id']==study.RUN) or read(root/'state.json')['status']!='SOURCE_SCORED'
             or marker['status']!='FROZEN' or marker['target_reads'] or marker['source_truth_reads']
             or marker['modes']!=list(prediction_modes) or not scores['truth_last'] or scores['target_reads']):
         raise ValueError('Expected the already-scored dual-route WiSig source predictions')
@@ -73,6 +88,8 @@ def measure(runtime):
     r69 = runner.core.baseline.original_r69(Path(runtime['parent_root']))
     if stages:
         stage_readouts = stage_study.StageReadout(r69.pipeline)
+    elif observed_solver:
+        (receiver,gate), = runner.load_models(runtime,arms=('coupled',),build=solver.build)
     else:
         models = list(runner.load_models(runtime,arms=study.ARMS,build=study.build))
     time = torch.arange(256,device='cuda:0')
@@ -93,7 +110,7 @@ def measure(runtime):
             raw = np.load(folder/f'{view}.npy',mmap_mode='r',allow_pickle=False)
             if raw.shape!=clean.shape or raw.shape!=(len(ids),2,256):
                 raise ValueError('Paired source IQ has unexpected shape')
-            results, shift_errors = [], []
+            results, shift_errors, operator_errors = [], [], []
             for offset in range(0,len(ids),48):
                 rows = slice(offset,offset+48)
                 iq = tensor(raw[rows],'cuda:0')
@@ -102,6 +119,14 @@ def measure(runtime):
                 delta,_ = timing_reference(received,reference,positions,offsets)
                 if stages:
                     waves = torch.stack((received,*(as_complex(value) for value in stage_readouts(iq))))
+                elif observed_solver:
+                    restored, = r69(iq)
+                    options,active,shift = solver.proposals(receiver,gate,received)
+                    if 'active_source' not in latency and active.any():
+                        latency['active_source'] = single_packet_latency(receiver,gate,received[active][:1],solver.gate_features)
+                    waves = torch.stack((received,as_complex(restored),*options))
+                    shift_errors.append((shift-delta).abs())
+                    operator_errors.append(action_error(receiver,received,reference))
                 else:
                     restored, = r69(iq)
                     variants = [study.proposals(model,gate,received) for model,gate in models]
@@ -114,16 +139,20 @@ def measure(runtime):
             merged = {region:torch.cat([batch[region] for batch in results],dim=1) for region in results[0]}
             routes[route][view] = {}
             errors = torch.cat(shift_errors) if shift_errors else None
+            action_errors = torch.cat(operator_errors) if operator_errors else None
             for name,samples in groups.items():
                 group = dict(count=len(samples),median={region:matrix[:,samples].median(dim=1).values.tolist()
                                                         for region,matrix in merged.items()})
                 if errors is not None:
                     group.update(shift_error_median_samples=int(errors[samples].median()),
                                  colocated_within_two=int((errors[samples]<=2).sum()))
+                if action_errors is not None:
+                    group['action_median'] = action_errors[samples].median(0).values.tolist()
                 routes[route][view][name] = group
     return dict(status='VERIFIED',target_reads=0,paired_clean_diagnostic_only=True,
                 rows=len(ids),modes=modes,audit_fields=FIELDS,region_fields=REGION_FIELDS,routes=routes,
-                b1=latency,device=torch.cuda.get_device_name())
+                b1=latency,device=torch.cuda.get_device_name(),
+                action_fields=('predict_residual_power','identity_residual_power','estimated_variance') if observed_solver else ())
 
 
 if __name__ == '__main__':

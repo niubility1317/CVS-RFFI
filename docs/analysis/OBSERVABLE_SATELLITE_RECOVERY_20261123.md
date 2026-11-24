@@ -36,6 +36,8 @@ R69 v1.0 有 266,951 个参数。历史两阶段学生由 R65 固定父版初始
 
 ## 源域验证
 
+- WiSig 实收观测求解两臂各完成 40,000 步。两路线耦合带门分别为 4,736、4,735/10,800，较原 R69 净减 5,458、5,460，两路 clean 均为 1,775/1,800。同权换成单位作用挽回 2,544、2,546 次，换成逐点块只挽回 119、118 次。估计作用可降低正向残差，但该改善未转化成冻结识别收益。两臂均未晋级。 [WiSig 两阶段求解测试、配对归因及波形](../../automation_reports/CV-SincNet/20261124-phase1-wisig-observed-solve-source-m4-r01/report.md)
+
 - LoRa 局部 Wiener 对照覆盖同一 900 个源 V 包与原 Tri-set 单种子。完整复协方差全量在 full 相对成熟 DURA 净增 42 次，95% 配对区间为 −3 至 +92，在 residual 净减 249 次，区间约为 −324 至 −176。两路线 clean 均保持 667/900。匹配半量消融中，复协方差相对对角读出分别净减 24 次和净增 31 次。同包隔离归因显示，换成真实总噪声功率后，原 Wiener 六景在 full 和 residual 分别再少判对 3 和 138 次。保载波精确扣噪则分别多判对 423 和 871 次，五台源接收机均受益。Residual 上更准确的功率未能解决复谱恢复造成的识别损失。该读出未进入正式目标矩阵。 [LoRa 局部 Wiener 对照](../../automation_reports/CV-SincNet/20261123-phase1-lora-local-wiener-source-m2-r01/report.md) · [LoRa 隔离噪声归因](../../automation_reports/CV-SincNet/20261123-diagnostic-lora-noise-floor-source-m2-r01/report.md)
 - LoRa 分块复谱实验中，匹配遮挡组的粗恢复在 full 和 residual 比全谱组净多判对 93 和 257 次，五台源接收机均正向。遮挡组全量细化相对同组粗恢复则净少 13 和 128 次。两条路线最好的联合半量比成熟 DURA 分别少 49 和 126 次，clean 均为 667/900。两组各 34,693 参数、1,600 步。遮挡先验的独立收益在源域消融成立，两组均未进入正式矩阵。 [LoRa 分块复谱消融](../../automation_reports/CV-SincNet/20261123-phase1-lora-spectral-block-source-m4-r01/report.md)
 - LoRa 同范数方向消融中，保护实收共享复谱在 full 全量读出净增 34 次，在 residual 半量读出净减 105 次。保护半量在 full 比直通多 28 次，95% 配对区间为 +5 至 +52，仍比成熟 DURA 少 38 次。Clean 均为 667/900。相同约束的源域收益未跨路线复现。 [LoRa 同量复数修正](../../automation_reports/CV-SincNet/20261123-phase1-lora-repeat-protection-source-m4-r01/report.md)

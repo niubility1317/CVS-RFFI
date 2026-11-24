@@ -27,9 +27,15 @@ def bootstrap(delta, draw):
 
 def score(runtime):
     root = Path(runtime['run_root'])
-    stages = runtime['run_id']==stage_study.RUN
-    modes = stage_study.MODES if stages else MODES
-    if os.environ.get('CUDA_VISIBLE_DEVICES') != '' or runtime['run_id'] not in (RUN,stage_study.RUN):
+    run = runtime['run_id']
+    if run==stage_study.RUN:
+        stages = stage_study
+    elif run=='20261124-phase1-wisig-observed-solve-source-m4-r01':
+        from experiments.pamf_unrolled_restore import wisig_observed_solve_source as stages
+    else:
+        stages = None
+    modes = stages.MODES if stages else MODES
+    if os.environ.get('CUDA_VISIBLE_DEVICES') != '' or (stages is None and run!=RUN):
         raise ValueError('WiSig overlap verification requires its own CPU source workflow')
     _, _, source, _, ids, rx, positions = handles(runtime)
     marker = read(root/'predictions/complete.json')
@@ -60,7 +66,7 @@ def score(runtime):
                 raise ValueError('Independent correct counts differ from recorded source scores')
         evidence[route] = {}
         if stages:
-            for proposed,reference in stage_study.COMPARISONS:
+            for proposed,reference in stages.COMPARISONS:
                 a,b = (hits[:,modes.index(mode)] for mode in (proposed,reference))
                 delta = a-b
                 evidence[route][f'{proposed}_vs_{reference}'] = dict(
