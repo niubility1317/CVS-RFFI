@@ -1,0 +1,183 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261126-diagnostic-wisig-practical-mixture-s2026112512-r01",
+  "group_id": "wisig-multichannel-analytic-estimation",
+  "display_name": "Practical直达与散射先验混合快速估计",
+  "description": "Five alternative learned low-rank supports, optional empirical log-noise prior and relative-signal weighting. Same Practical-only matched pilot.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "WiSig",
+    "channel-estimation",
+    "source-only",
+    "multi-family"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261126-diagnostic-wisig-practical-fast-s2026112512-r01",
+    "20261125-diagnostic-wisig-joint-sparse-full-s2026112511-r01",
+    "20261125-diagnostic-wisig-low-urban-marginal-s2026112511-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-11-25 active goal in Codex chat 01a21321-6c4d-7041-a91c-dc163206a8b6. Reduce each source diagnostic family channel-action NMSE below 0.1 percent.",
+  "code": {
+    "commit": "a00d1b695ad65d9821f65982e1d267daaffeadac",
+    "checkout": "E:\\codex\\home\\worktrees\\wisig-channel-estimation-20261125\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261126-diagnostic-wisig-practical-mixture-s2026112512-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig / ManySig Main split",
+    "version": "F0 Main split frozen",
+    "representation": "float32 (2, 256) post-sync noeq; 25 MS/s",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json",
+    "physical_ids_ref": "60 paired source-V IDs from previous confirmation, reused only after configuration freeze for an exploratory matched pilot. Source-U records separate.",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 1800
+    },
+    "train_ratio": "144 distinct U physical packets, 96/48 covariance/rule split, 12 Practical noisy views. Reuse 60 V physical packets across 24 native and 13 doubled Practical views.",
+    "capsule_id": null,
+    "split_id": "WiSig immutable source U and V; no target",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/validation/manifest.json",
+    "support_query_ref": "N/A Phase1; experiment has no support set",
+    "leo_config_ref": "experiments.pamf_unrolled_restore.wisig_practical_mixture_audit"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Only same-packet source clean and received IQ used for estimation; simulator references only in stimulus generation and independent scoring. No TX truth, recognition model, target or deployment results."
+  },
+  "checkpoint": {
+    "initialization": "Source U multi-covariance fit; no simulator action, parameters or noise truth",
+    "sources": [],
+    "contract_check_ref": "20261125-diagnostic-wisig-joint-sparse-full-s2026112511-r01",
+    "provenance_verdict": "ANALYTIC_FIXED",
+    "selection_rule": "96 U packets used in fit, independently held 48 U packets for empirical likelihood prior strength, relative energy weighting and variance correction. V stays score-only."
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "Codex chat 01a21321-6c4d-7041-a91c-dc163206a8b6",
+    "gpu_policy": "One CPU thread in prediction and paired latency benchmark; BLAS and OMP fixed to one.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-mixture-s2026112512-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-mixture-s2026112512-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261126-diagnostic-wisig-practical-mixture-s2026112512-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_practical_mixture_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261126-diagnostic-wisig-practical-mixture-s2026112512-r01-release/runtime.json",
+    "stop_rule": "Stop on input contract, numeric failure, estimator output completeness or wrong scorer closure."
+  },
+  "expected_artifacts": [
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-mixture-s2026112512-r01/configuration.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-mixture-s2026112512-r01/configuration.npz",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-mixture-s2026112512-r01/estimates.npz",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-mixture-s2026112512-r01/scores.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-mixture-s2026112512-r01/speed.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-mixture-s2026112512-r01/state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "action NMSE median",
+      "action NMSE P90",
+      "action NMSE mean",
+      "fraction below 0.1%",
+      "absolute noise-variance error dB",
+      "ideal known-shape complex gain estimate reference"
+    ],
+    "dimensions": [
+      "method",
+      "family",
+      "condition",
+      "original or matched double-power cases",
+      "source physical packet"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-mixture-s2026112512-r01/estimates.npz",
+    "scorer_ref": "experiments.pamf_unrolled_restore.wisig_practical_mixture_audit:score"
+  },
+  "rows": [
+    {
+      "row_id": "current-s2026112512",
+      "method": "current",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments.pamf_unrolled_restore.wisig_practical_mixture_audit",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-mixture-s2026112512-r01/configuration.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 2026112512,
+        "data": 2026112512,
+        "augmentation": 2026112512,
+        "support": null,
+        "evaluation": 2026112511
+      },
+      "seed_notes": "No stochastic trained model or support adaptation. The fixed panel selects archived Practical draws and seeds generated non-Practical cases.",
+      "k": null,
+      "scenario": "Practical only, matched 24 native and 13 doubled views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Five small eigensolves and evidence averaging per input pair",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-mixture-s2026112512-r01/estimates.npz#current",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-mixture-s2026112512-r01/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_practical_mixture_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261126-diagnostic-wisig-practical-mixture-s2026112512-r01-release/runtime.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-mixture-s2026112512-r01/scores.json"
+      ]
+    },
+    {
+      "row_id": "practical_mixture-s2026112512",
+      "method": "practical_mixture",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments.pamf_unrolled_restore.wisig_practical_mixture_audit",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-mixture-s2026112512-r01/configuration.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 2026112512,
+        "data": 2026112512,
+        "augmentation": 2026112512,
+        "support": null,
+        "evaluation": 2026112511
+      },
+      "seed_notes": "No stochastic trained model or support adaptation. The fixed panel selects archived Practical draws and seeds generated non-Practical cases.",
+      "k": null,
+      "scenario": "Practical only, matched 24 native and 13 doubled views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Five small eigensolves and evidence averaging per input pair",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-mixture-s2026112512-r01/estimates.npz#practical_fast",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-mixture-s2026112512-r01/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_practical_mixture_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261126-diagnostic-wisig-practical-mixture-s2026112512-r01-release/runtime.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-mixture-s2026112512-r01/scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Primary native Practical pooled thresholds: waveform NMSE mean<0.1%, P90<1%, P95<0.5%; noise variance absolute dB median<0.1, P95<0.5.",
+    "Report per-profile and per-scene paired rows, plus prior same-draw doubled subset. Show any metric or scene regressions.",
+    "One 256-point clean and observed IQ pair. No simulator reference, noise strength, profile, or route input to estimates. Separate CPU reference scoring after complete predictions.",
+    "Compare elapsed single-thread per-packet latency on the same eight U packets with the existing joint sparse analytic estimator; offline fit is distinct."
+  ],
+  "registered_at": "2026-11-25T16:09:09+00:00"
+}
