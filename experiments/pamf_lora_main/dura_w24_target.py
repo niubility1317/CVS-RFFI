@@ -54,6 +54,16 @@ def archived_runtime(project, run, code):
     return archive, rt
 
 
+def load_frozen_wide(rt, source, contract):
+    _, wide_rt = archived_runtime(Path(rt['project']), WIDE_RUN, rt['training_commit'])
+    wide_root = Path(wide_rt['run_root'])
+    if (Path(wide_rt['source_root']) != source or read(wide_root/'state.json')
+            != dict(status='SOURCE_FROZEN', steps=WIDE_RECIPE.steps)):
+        raise ValueError('The independent W24 40,000-step fit must finish before prediction')
+    models, threshold = load_models(wide_root, contract, DEVICE, {'w24': WIDE_RECIPE})
+    return models[0], threshold
+
+
 def frozen_models(rt):
     project = Path(rt['project'])
     source = Path(rt['source_root'])
@@ -68,13 +78,7 @@ def frozen_models(rt):
     if threshold != fit['threshold']:
         raise ValueError('DURA source threshold differs')
 
-    _, wide_rt = archived_runtime(project, WIDE_RUN, rt['training_commit'])
-    wide_root = Path(wide_rt['run_root'])
-    if (Path(wide_rt['source_root']) != source or read(wide_root/'state.json')
-            != dict(status='SOURCE_FROZEN', steps=WIDE_RECIPE.steps)):
-        raise ValueError('The independent W24 40,000-step fit must finish before prediction')
-    wide_model, wide_threshold = load_models(wide_root, contract, DEVICE, {'w24': WIDE_RECIPE})
-    wide_model = wide_model[0]
+    wide_model, wide_threshold = load_frozen_wide(rt, source, contract)
     wide_tracker = WideTracker().to(DEVICE).eval()
 
     archive, reader_rt = archived_runtime(project, F_RUN, F_CODE)
@@ -116,7 +120,7 @@ def frozen_models(rt):
     return predict, contract, reader_rt, (models[0], wide_model)
 
 
-def receive(scene, rx, item):
+def receive(scene, rx, item, *, namespace='w24-target-full'):
     """Generate the full received preamble, keeping channel metadata off the reader path."""
     index, packet = item
     from leo_practical.channel import ChannelStream, normalize_input, stable_seed
@@ -126,11 +130,13 @@ def receive(scene, rx, item):
     # The recording begins at the preamble. Leave the out-of-recording guard
     # silent and retain the known causal latency in the simulation buffer.
     latency = cfg.fractional_delay_half_length
-    namespace = 'w24-target-full'
     rx_hw = hardware(scene, f'{namespace}/{rx}')
     seed = stable_seed(2026112207, namespace, scene, rx, str(index))
-    output, _ = ChannelStream(cfg, seed, rx_hw).process(
+    output, meta = ChannelStream(cfg, seed, rx_hw).process(
         np.pad(z, (0, latency)), preceding_context=np.zeros(CONTEXT, dtype=z.dtype))
+    if (meta['boundary'] != 'provided_context' or meta['channel_equalization_applied']
+            or meta['numerical_filter_latency_samples'] != latency):
+        raise ValueError('Full practical receive-side alignment differs')
     received = output[latency:latency+len(z)].astype(np.complex64)
     return apertures(received)
 
@@ -168,38 +174,46 @@ def worker(rt, shard):
             or clean_frozen['seed'] != SEED or clean_frozen['per_receiver'] != LIMIT
             or clean_frozen['receivers'] != list(TARGET) or clean_frozen['target_truth_read']):
         raise ValueError('W24 clean comparison does not match the blind physical archive')
+    replay_shard(rt, shard, target, batch, reference, count=N, namespace='w24-target-full',
+                 check_views=('clean',), active_modes=2, batch_size=32, started=started)
+
+
+def replay_shard(rt, shard, target, batch, reference, *, count, namespace, check_views,
+                 active_modes, batch_size, started):
+    output = Path(rt['run_root'])
     with ProcessPoolExecutor(max_workers=3, mp_context=get_context('spawn'),
                              initializer=activate, initargs=(rt,)) as pool:
         for rx in TARGET[int(shard)::SHARDS]:
             packets = native(target, rx, LIMIT)
             for view in VIEWS:
-                rows, active = [], np.zeros(2, dtype=np.int64)
+                rows, active = [], np.zeros(active_modes, dtype=np.int64)
                 if view == 'clean':
                     for start in range(0, LIMIT, 64):
-                        values, count = batch(*apertures(packets[start:start+64]))
+                        values, batch_active = batch(*apertures(packets[start:start+64]))
                         rows.append(values)
-                        active += count
+                        active += batch_active
                 else:
-                    rendered = pool.map(partial(receive, view, rx), enumerate(packets[:N]), chunksize=8)
+                    rendered = pool.map(partial(receive, view, rx, namespace=namespace),
+                                        enumerate(packets[:count]), chunksize=8)
                     narrow, wide = [], []
                     for x, y in rendered:
                         narrow.append(x)
                         wide.append(y)
-                        if len(narrow) == 32:
-                            values, count = batch(np.stack(narrow), np.stack(wide))
+                        if len(narrow) == batch_size:
+                            values, batch_active = batch(np.stack(narrow), np.stack(wide))
                             rows.append(values)
-                            active += count
+                            active += batch_active
                             narrow.clear()
                             wide.clear()
                     if narrow:
-                        values, count = batch(np.stack(narrow), np.stack(wide))
+                        values, batch_active = batch(np.stack(narrow), np.stack(wide))
                         rows.append(values)
-                        active += count
+                        active += batch_active
                 decisions = np.concatenate(rows, axis=1)
-                if view == 'clean':
-                    prior = np.load(reference / f'{rx}__clean__direct.npy', allow_pickle=False)
+                if view in check_views:
+                    prior = np.load(reference / f'{rx}__{view}__direct.npy', allow_pickle=False)
                     if not np.array_equal(prior, decisions[0]):
-                        raise ValueError('W24 direct clean decisions do not reproduce the archived reader')
+                        raise ValueError(f'W24 direct decisions differ from the archive for {rx}/{view}')
                 with (output / 'predictions' / f'{rx}__{view}.npy').open('xb') as stream:
                     np.save(stream, decisions, allow_pickle=False)
                 print('W24_VIEW', rx, view, decisions.shape[1], active, flush=True)
@@ -207,7 +221,7 @@ def worker(rt, shard):
                                                truth_reads=0))
 
 
-def dispatch(rt, runtime):
+def dispatch(rt, runtime, *, freeze=None):
     root = Path(rt['run_root'])
     root.mkdir(exist_ok=False)
     state = root / 'state.json'
@@ -217,7 +231,7 @@ def dispatch(rt, runtime):
     def launch(shard, gpu):
         env = dict(os.environ, CUDA_VISIBLE_DEVICES=str(gpu), OMP_NUM_THREADS='1',
                    MKL_NUM_THREADS='1', OPENBLAS_NUM_THREADS='1')
-        command = [rt['python'], '-u', '-m', __spec__.name, 'worker', str(runtime), str(shard)]
+        command = [rt['python'], '-u', '-m', rt['runner'], 'worker', str(runtime), str(shard)]
         with (root / 'logs' / f'{shard}.log').open('x', encoding='utf-8') as log:
             proc = subprocess.Popen(command, env=env, stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT)
         print('W24_LAUNCHED', shard, proc.pid, gpu, flush=True)
@@ -263,7 +277,7 @@ def dispatch(rt, runtime):
                 raise RuntimeError('A W24 replay shard failed')
         if {p.name for p in (root / 'predictions').glob('*.npy')} != prediction_names():
             raise ValueError('W24 blind prediction matrix is incomplete')
-        write(root / 'predictions' / 'complete.json', completion())
+        write(root / 'predictions' / 'complete.json', (freeze or completion)())
         write(state, dict(status='PREDICTIONS_FROZEN'), exclusive=False)
     except Exception as error:
         write(state, dict(status='FAILED', error=str(error)), exclusive=False)
