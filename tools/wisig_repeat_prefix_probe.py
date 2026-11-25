@@ -43,8 +43,8 @@ def fidelity(wave, reference):
     return np.stack((error, amplitude, phase), -1)
 
 
-def summarize(waves, reference):
-    values = np.stack([fidelity(waves[mode], reference) for mode in MODES])
+def summarize(waves, reference, modes=MODES):
+    values = np.stack([fidelity(waves[mode], reference) for mode in modes])
     nmse = values[:, :, 0]
     gain = 100.*(nmse[0] - nmse)/np.maximum(nmse[0], 1e-8)
     return dict(n=len(reference), median=np.median(values, axis=1).tolist(),
