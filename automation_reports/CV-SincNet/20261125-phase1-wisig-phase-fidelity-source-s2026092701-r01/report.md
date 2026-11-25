@@ -9,3 +9,7 @@
 在语音恢复中，Takaki 等用 STFT 幅相分布构造波形训练损失。这里使用样点域的参照功率加权相量损失，并把它同时施加到两次原生 IQ 观测约束输出。机制收益以后续冻结识别对比为准。 [Takaki 等原论文](https://arxiv.org/abs/1810.11945)
 
 N607 普通账号，使用原居中 FIR 发布环境及工作目录，一张优先空闲的 GPU。入口 `python -m experiments.pamf_unrolled_restore.wisig_spectral_precision_source publish --phase-fidelity --repo . --context <源域上下文> --ssh-config <直连配置> --output <发布目录>`，新增输出根 `runs/20261125-phase1-wisig-phase-fidelity-source-s2026092701-r01`。来源、基础损失复现、有限梯度、盲预测覆盖或评分关联合同异常时停止本运行下游并保留产物。预期为训练检查、完整留出记录、冻结权重和状态、无门控真权重检查、两路盲预测及 `source-scores.json`。 [执行登记](experiment.json)
+
+## 发布核验
+
+**VERIFIED**。执行提交 `3a025ac42e8a4eedc7fcbc0347e65571a05d69ad`。原 FIR 归档本地验证了精确匹配的初始化、阶段基础损失、clean 损失及两个先验梯度。N607 归档校验和编译通过。真实源 U 检查确认原损失和扰动随机数流逐项一致，三步更新均通过。正式拟合进程只收到源 IQ 和输出路径，在 GPU 2 启动并已确认日志增长。与实际在训的固定权重组比较，第 1 步原有 11 个损失值逐项相等，本组另外记录首末相位损失。识别与正式目标测试分数待权重冻结。
