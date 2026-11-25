@@ -123,11 +123,12 @@ def metrics(error, db):
                 fraction_under_0p1=float(np.mean(error < .001)))
 
 
-def score(root):
+def score(root, methods=METHODS, seed=SEED,
+          overlap="Same 60 physical packets as the prior three-slot Practical audit"):
     if os.environ.get("CUDA_VISIBLE_DEVICES") != "":
         raise ValueError("Use an independent CPU scorer")
     with np.load(root / "estimates.npz", allow_pickle=False) as data:
-        actions = {name: data[name] for name in METHODS}
+        actions = {name: data[name] for name in methods}
         variance = data["variance"]
     if (variance.shape != SHAPE or (variance <= 0).any() or not np.isfinite(variance).all()
             or any(x.shape != (*SHAPE, len(TEST)) or not np.isfinite(x).all()
@@ -165,8 +166,7 @@ def score(root):
         results[name] = dict(families=families, cases=cases)
     write(root / "scores.json", dict(
         status="SCORED", oracle_last=True, target_reads=0, packets=panel.NTEST,
-        seed=SEED, cases=len(LABELS), threshold=.001,
-        previous_source_v_overlap="Same 60 physical packets as the prior three-slot Practical audit",
+        seed=seed, cases=len(LABELS), threshold=.001, previous_source_v_overlap=overlap,
         results=results, gain_reference="complex-gain LS, known shape, white-noise model",
     ))
 
