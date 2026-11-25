@@ -1,0 +1,192 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261126-diagnostic-wisig-practical-probe-s2026112601-r06",
+  "group_id": "wisig-practical-receive-only-operator-probes",
+  "display_name": "Practical 同路线源域扩样与稀疏算子复评",
+  "description": "Same fixed R07 evaluation and sparse model family. Refit from 768 archived Practical Residual source-U packets plus 192 distinct U holdout packets.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "WiSig",
+    "channel-estimation",
+    "source-only",
+    "multi-family"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261126-diagnostic-wisig-practical-probe-s2026112601-r05",
+    "20261126-diagnostic-wisig-practical-probe-s2026112601-r04",
+    "20261126-diagnostic-wisig-practical-probe-s2026112601-r03",
+    "20261126-diagnostic-wisig-practical-probe-s2026112601-r01",
+    "20261126-diagnostic-wisig-practical-probe-s2026112601-r02",
+    "20261019-phase1-restoration-learned-action-source-s2026092701-r07"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-11-26 continue user-directed receive-only Practical estimation. Current thresholds overall mean <0.5%, Low Urban mean <1%, Low Urban P90 <2%; report P95.",
+  "code": {
+    "commit": "d36454fefd4cdf57492db53c13de8c2196f254d0",
+    "checkout": "E:\\codex\\home\\worktrees\\wisig-channel-estimation-20261125\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261126-diagnostic-wisig-practical-probe-s2026112601-r06-release"
+  },
+  "data": {
+    "dataset": "WiSig / ManySig Main split",
+    "version": "Original R07 archive and matched fixed V probe panel",
+    "representation": "float32 (2, 256) post-sync noeq; 25 MS/s",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json",
+    "physical_ids_ref": "Source-U physical indices selected with seed 2026112606. R07 frozen V remains 128 packets and seed 2026112601.",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 1800
+    },
+    "train_ratio": "768 fit and 192 held physically disjoint U; one archived Practical Residual view per packet and scene; earlier 144 receive-only developer packets excluded.",
+    "capsule_id": null,
+    "split_id": "WiSig immutable source U and V; no target",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/validation/manifest.json",
+    "support_query_ref": "N/A Phase1; experiment has no support set",
+    "leo_config_ref": "experiments.pamf_unrolled_restore.wisig_practical_probe_scale_audit"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Preparation reads scene membership, source roles and physical ID metadata solely to export admissible Practical received IQ, excluding clean and older U physical packets. Estimation reads only post-Practical U/one current V packet and frozen prior. R07 truth loaded only by scorer after complete predictions."
+  },
+  "checkpoint": {
+    "initialization": "Prior r01/r03/r04 fit on previously disjoint receive-only U; new soft sparse and mixed FIR fits use fresh same-route received U.",
+    "sources": [],
+    "contract_check_ref": "20261125-diagnostic-wisig-joint-sparse-full-s2026112511-r01",
+    "provenance_verdict": "ANALYTIC_FIXED",
+    "selection_rule": "768 fixed source U training packets, 192 fixed source U for ridge selection against dense and sparse proxy teachers. Keep fixed reference and probes and report both candidates."
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "Codex chat 01a21321-6c4d-7041-a91c-dc163206a8b6",
+    "gpu_policy": "Single CPU thread for fit/inference and per-packet latency. No GPU.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-probe-s2026112601-r06",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-probe-s2026112601-r06",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261126-diagnostic-wisig-practical-probe-s2026112601-r06",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_practical_probe_scale_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261126-diagnostic-wisig-practical-probe-s2026112601-r06-release/runtime.json",
+    "stop_rule": "Stop on input contract, numeric failure, estimator output completeness or wrong scorer closure."
+  },
+  "expected_artifacts": [
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-probe-s2026112601-r06/configuration.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-probe-s2026112601-r06/estimates.npz",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-probe-s2026112601-r06/scores.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-probe-s2026112601-r06/speed.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-probe-s2026112601-r06/state.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-probe-s2026112601-r06/configuration.npz",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-probe-s2026112601-r06/source_received.npy",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-probe-s2026112601-r06/source.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "same-reference probe NMSE mean",
+      "same-reference probe NMSE P90",
+      "same-reference probe NMSE P95",
+      "variance absolute error median (dB)",
+      "variance absolute error P95 (dB)",
+      "per-packet CPU latency"
+    ],
+    "dimensions": [
+      "method",
+      "family",
+      "condition",
+      "original or matched double-power cases",
+      "source physical packet"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-probe-s2026112601-r06/estimates.npz",
+    "scorer_ref": "experiments.pamf_unrolled_restore.wisig_practical_probe_scale_audit:score"
+  },
+  "rows": [
+    {
+      "row_id": "soft_sparse_gate-s2026112601",
+      "method": "soft_sparse_gate",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments.pamf_unrolled_restore.wisig_practical_probe_scale_audit",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-probe-s2026112601-r06/configuration.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 2026112606,
+        "data": 2026112606,
+        "augmentation": 2026112512,
+        "support": null,
+        "evaluation": 2026112601
+      },
+      "seed_notes": "New physically disjoint U selection seed 2026112606. Source V and test probes keep exact prior seed 2026112601.",
+      "k": null,
+      "scenario": "Archived R07 six original Practical Residual conditions. Same 128 source-V physical IDs and two probes per physical ID.",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Reuse archived six-scene received views. Single CPU source fit and current-packet inference.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-probe-s2026112601-r06/estimates.npz#soft_sparse_gate",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-probe-s2026112601-r06/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_practical_probe_scale_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261126-diagnostic-wisig-practical-probe-s2026112601-r06-release/runtime.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-probe-s2026112601-r06/scores.json"
+      ]
+    },
+    {
+      "row_id": "sparse_dense_gate-s2026112601",
+      "method": "sparse_dense_gate",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments.pamf_unrolled_restore.wisig_practical_probe_scale_audit",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-probe-s2026112601-r06/configuration.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 2026112606,
+        "data": 2026112606,
+        "augmentation": 2026112512,
+        "support": null,
+        "evaluation": 2026112601
+      },
+      "seed_notes": "New physically disjoint U selection seed 2026112606. Source V and test probes keep exact prior seed 2026112601.",
+      "k": null,
+      "scenario": "Archived R07 six original Practical Residual conditions. Same 128 source-V physical IDs and two probes per physical ID.",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Reuse archived six-scene received views. Single CPU source fit and current-packet inference.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-probe-s2026112601-r06/estimates.npz#sparse_dense_gate",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-probe-s2026112601-r06/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_practical_probe_scale_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261126-diagnostic-wisig-practical-probe-s2026112601-r06-release/runtime.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-probe-s2026112601-r06/scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Primary Low Urban same-reference random probe NMSE mean, P90, P95. Report every scene. Only frozen output arrays may be connected to the archived R07 reference.",
+    "Probe denominator has the same 1e-4 floor as the preceding matched comparison; no per-packet oracle alignment or fit.",
+    "Receive-only provenance differs from the historical Adaptive and mixture pair-input controls. Six historic Residual scenarios constitute this matched pilot.",
+    "Twin relative regression forms evaluated independently. No R07 teachers, physical IDs or paired raw IQ used for candidate fit. Report r01 and strict matched improvements; R07 probe recipe unchanged.",
+    "Orthogonal subspaces are tested by synthetic white noise. No fit or candidate changes after V score. Report all four predeclared arms with probe, absolute noise dB and latency.",
+    "Equivalence of first four readouts independently checked on source U as exploratory R07 evaluation remains unchanged. Fifth readout changes only noise variance.",
+    "No use of clean or simulator internals in sparse atom target. The evaluation provision and RNG remain exact R07. Neither receiver, scene nor physical ID is an inference input.",
+    "Matched R07 benchmark, same 128 V physical packets, same two complex probes and full FIR reference. New run tests a larger source data bank and unchanged algorithm."
+  ],
+  "registered_at": "2026-11-25T17:18:48+00:00"
+}
