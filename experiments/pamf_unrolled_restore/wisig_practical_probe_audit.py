@@ -85,10 +85,10 @@ def filter_reflect(kernel, samples):
     return np.fft.ifft(np.fft.fft(samples[..., index], n=512) * np.fft.fft(kernel, n=512))[..., 63:319]
 
 
-def score(root, reference):
+def score(root, reference, arms=model.ARMS):
     with np.load(root / "estimates.npz", allow_pickle=False) as stored:
         kernels, measured = stored["kernel"], stored["complex_variance"]
-    shape = (len(model.ARMS), len(SCENES), COUNT, model.KERNEL_LENGTH)
+    shape = (len(arms), len(SCENES), COUNT, model.KERNEL_LENGTH)
     if kernels.shape != shape or measured.shape != shape[1:3] or not np.isfinite(kernels).all():
         raise ValueError("Incomplete probe estimates")
     if not np.isfinite(measured).all() or np.any(measured <= 0.):
@@ -118,7 +118,7 @@ def score(root, reference):
                     noise_p95=float(np.quantile(n, .95)))
     results = {arm: dict(aggregate=summarize(e[:, i], v),
                scenes={scene: summarize(e[g, i], v[g]) for g, scene in enumerate(SCENES)})
-               for i, arm in enumerate(model.ARMS)}
+               for i, arm in enumerate(arms)}
     write(root / "scores.json", dict(status="ANALYZED", receive_only=True, truth_side_last=True,
           reference="R07 validation_actions", probes=2, packets=COUNT, probe_seed=SEED,
           settings=read(root / "configuration.json"), speed=read(root / "speed.json"), results=results))
