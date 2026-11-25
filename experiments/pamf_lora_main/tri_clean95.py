@@ -1,6 +1,7 @@
 """Clean-only LoRa PAMF-Tri optimization on the registered physical split."""
 import argparse
 from functools import partial
+from math import cos, pi
 import json
 from pathlib import Path
 
@@ -231,6 +232,8 @@ def clean_model(rt,root,c,row,device):
 
 def study(rt):
     if rt.get('scratch'):
+        if rt.get('native_repl32_study'):
+            return NATIVE_REPL32_ROWS,128,16
         if rt.get('native_rx_study'):
             return NATIVE_RX_ROWS,112,16
         if rt.get('native_lag_study'):
@@ -366,6 +369,11 @@ NATIVE_WIDE_ROWS={
     'phase_native16': dict(ANCHOR_ROWS['phase_anchor'],native_edges=True,edge_points=16),
     'phase_native24': dict(ANCHOR_ROWS['phase_anchor'],native_edges=True,edge_points=24),
 }
+NATIVE_REPL32_RUN='20261125-phase1-lora-pamf-tri-clean-nativerepl32-s2026092702-r01'
+NATIVE_REPL32_ROWS={
+    'phase_native24_repl32': dict(NATIVE_WIDE_ROWS['phase_native24'],decay_end_epoch=112,select_from_epoch=116),
+}
+
 NATIVE_BOUNDARY_RUN='20261125-phase1-lora-pamf-tri-clean-nativeboundary98-s2026092702-r01'
 NATIVE_BOUNDARY_ROWS={
     'phase_nativeboundary': dict(ANCHOR_ROWS['phase_anchor'],native_edges=True),
@@ -446,6 +454,8 @@ def row_names(rt):
         return ('phase_jitter',)
     if rt.get('phase_joint_study'):
         return ('phase_joint',)
+    if rt.get('native_repl32_study'):
+        return tuple(NATIVE_REPL32_ROWS)
     if rt.get('native_rx_study'):
         return tuple(NATIVE_RX_ROWS)
     if rt.get('native_lag_study'):
@@ -665,6 +675,13 @@ def accumulate_state(average,state,count):
     return average
 
 
+def scratch_repl_lr_factor(step,warm,decay_end):
+    if step<warm:
+        return .25+.75*.5*(1+cos(pi*step/warm))
+    phase=min(1.,(step-warm)/(decay_end-warm))
+    return 1/30.+(.25-1/30.)*.5*(1+cos(pi*phase))
+
+
 def train(rt,name):
     root=Path(rt['run_root'])
     source,_,c=source_handles(rt)
@@ -705,14 +722,9 @@ def train(rt,name):
     rate=row.get('lr',3e-4)
     opt=torch.optim.AdamW(f.parameters(),lr=rate,weight_decay=5e-4)
     if rt.get('scratch'):
-        from math import cos, pi
         warm=row['warmup']*STEPS
-        def lr_factor(step):
-            if step<warm:
-                return .25+.75*.5*(1+cos(pi*step/warm))
-            phase=(step-warm)/(epochs*STEPS-warm)
-            return 1/30.+(.25-1/30.)*.5*(1+cos(pi*phase))
-        sch=torch.optim.lr_scheduler.LambdaLR(opt,lr_factor)
+        decay_end=row.get('decay_end_epoch',epochs)*STEPS
+        sch=torch.optim.lr_scheduler.LambdaLR(opt,partial(scratch_repl_lr_factor,warm=warm,decay_end=decay_end))
     else:
         sch=torch.optim.lr_scheduler.CosineAnnealingLR(opt,epochs*STEPS,eta_min=1e-5)
     rng=np.random.default_rng(721)
@@ -741,8 +753,9 @@ def train(rt,name):
         validation_epochs.update(range(warmup,epochs+1,4))
         if any(rt.get(k) for k in ('budget_study','edge_study','robust_study','phase_study')):
             validation_epochs.update((32,48,60))
-        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study','native_rx_study')):
+        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study','native_rx_study','native_repl32_study')):
             validation_epochs.update((32,48,64,80,88))
+    select_from=row.get('select_from_epoch',0)
     snapshots=row.get('tail_average',())
     averaged_state=None
     averaged_epochs=[]
@@ -802,7 +815,7 @@ def train(rt,name):
                 key=lambda p:(p['correct'],-p['nll'])
                 # Keep the supervised trajectory for diagnosis. Only complete
                 # PAMF-Tri REPL checkpoints are eligible for a scratch result.
-                eligible=not rt.get('scratch') or use_u
+                eligible=not rt.get('scratch') or (use_u and epoch>=select_from)
                 if eligible and (best['epoch']==0 and rt.get('scratch') or key(rec['V'])>key(best)):
                     best=rec['V'] | {'epoch':epoch}
                     torch.save(f.state_dict(),path)
@@ -864,14 +877,14 @@ def dispatch(rt):
     root=Path(rt['run_root'])
     screens=('quick','transfer','timefreq','noise_study','drift_study','budget_study')
     gated_study=any(rt.get(k) for k in ('robust_study','phase_study','anchor_study','timing_study',
-                                       'phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study','native_rx_study'))
+                                       'phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study','native_rx_study','native_repl32_study'))
     if (gated_study or any(rt.get(k) for k in ('noise_study','drift_study','budget_study','edge_study'))) and not rt.get('scratch'):
         raise ValueError('The clean input comparisons require random initialization')
     root.mkdir(exist_ok=False)
     state=root/'state.json'
     fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq',
                              'noise_study','drift_study','budget_study','edge_study','robust_study','phase_study','anchor_study',
-                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study','native_rx_study',
+                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study','native_rx_study','native_repl32_study',
                              'fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)

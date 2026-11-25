@@ -323,6 +323,25 @@ class TriTuningTests(TestCase):
         row=rows['phase_native24_rx']
         self.assertEqual((row['edge_points'],row['native_rx_weight'],epochs,u_batch),(24,.04,112,16))
 
+    def test_extended_repl_uses_the_same_decay_then_stays_at_the_floor(self):
+        import math
+
+        train_steps=tri_clean95.STEPS
+        original_end=112*train_steps
+        warm=96*train_steps
+        rows,epochs,u_batch=tri_clean95.study({'scratch':True,'native_repl32_study':True})
+        row=rows['phase_native24_repl32']
+        self.assertEqual((row['warmup'],epochs,u_batch),(96,128,16))
+        self.assertEqual((row['decay_end_epoch'],row['select_from_epoch']),(112,116))
+        self.assertEqual(row['edge_points'],24)
+        factor=tri_clean95.scratch_repl_lr_factor
+        for step in (0,warm-1,warm,warm+1,104*train_steps,original_end-1,original_end):
+            previous=.25+.75*.5*(1+math.cos(math.pi*step/warm)) if step<warm else (
+                1/30.+(.25-1/30.)*.5*(1+math.cos(math.pi*(step-warm)/(original_end-warm))))
+            self.assertAlmostEqual(factor(step,warm,original_end),previous,places=14)
+        self.assertAlmostEqual(factor(original_end+1,warm,original_end),1/30.,places=14)
+        self.assertAlmostEqual(factor(epochs*train_steps,warm,original_end),1/30.,places=14)
+
     def test_group_residual_is_bounded_per_packet_without_touching_primary_logits(self):
         from experiments.pamf_lora_main.repair_features import residual_logit_scale
         core=torch.tensor([[0.,1.,2.],[0.,2.,4.],[5.,5.,5.]])
