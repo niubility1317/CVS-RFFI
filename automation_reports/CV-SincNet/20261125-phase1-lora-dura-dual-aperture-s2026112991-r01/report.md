@@ -49,3 +49,9 @@ N607 普通账号和空闲优先 GPU 策略。单次真实源 IQ 冒烟检查通
 强回波的所有激活包均降低整窗误差，其中过半的独有频带误差增加。通用强回波条件下的受控半量去回波，因此保留为负向指纹证据。镜像和联合的受控正结果仍需在实际 practical 接收视图和冻结识别器上检验。绝对和相对量的拟合输出经复核相同，仅门限读出不同。
 
 两套 N607 CPU 计算分别用时 36.60 和 36.02 秒，状态 `VERIFIED`。修正早期脚本的近零误差归一化，旁路包的误差降幅现为零，早期结果保留。执行提交 `c6b514ed1f093500cc87e39823eefdb52fd28e1a`。完整逐接收机结果为训练归档 `w24-public-reference-source-u-r02.json` 和 `w24-public-reference-source-u-absolute-r01.json`。无识别器、TX、源 V、目标或仿真轨迹读取。 [复现代码](../../../tools/lora_public_reference_probe.py)
+
+### Practical 源 V 观测诊断登记
+
+固定使用此前相对作用对照的 900 个源 V 物理包，五台源接收机各 180 个。两条路线均测原登记 `6×2×256` 的 clean 和六景，沿用 Full 缓存和 Residual 原生成入口，检查两路线 clean 逐点匹配。原共享外带、双侧较低值、分侧协方差的门限直接取源 U 登记结果。镜像、回波及联合读出直接取上一节的绝对解释能量门限和半量修正。只按实收 IQ 算门控与校正，结束后使用同包源 clean 算整窗和独有 9–32 kHz 复 NMSE。报告逐景、逐接收机触发和拟合收益及损伤，保留所有规则的结果。零训练、零调参、零冻结识别器、TX 和目标读取。
+
+诊断用 N607 已完成的 `20261125-phase1-lora-receive-frame-action-source-m2-r01` 运行环境和 CPU。运行 `python -m tools.lora_practical_observable_probe <registered-runtime.json> <diagnostic-output.json>`，用本次 Git 提交的工具与原运行环境。数据契约、同包 clean 或有限性检查失败时停止。预期 `w24-practical-observable-source-v-r01.json`，记录门限、同序物理 ID、整窗和独有复谱误差及逐组计数。 [诊断代码](../../../tools/lora_practical_observable_probe.py)

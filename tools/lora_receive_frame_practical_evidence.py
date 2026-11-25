@@ -50,13 +50,11 @@ def describe(rows, anchors):
                 raw_above={name: int(np.count_nonzero(relative > cutoff)) for name, cutoff in anchors.items()})
 
 
-def audit(rt):
-    start = perf_counter()
+def source_panel(rt):
     run = Path(rt['run_root'])
     source = Path(rt['source_root'])
     if rt['run_id'] != RUN or read(run/'state.json')['status'] != 'SOURCE_SCORED':
         raise ValueError('Expected the finished receive-frame source experiment')
-    threshold = gate_value(run)
     activate(rt)
     contract = source_contract(source)
     count = contract['counts']['V']
@@ -72,20 +70,30 @@ def audit(rt):
     cached = np.load(run.parent/DATA_RUN/'source_views'/'V.npy', mmap_mode='r', allow_pickle=False)
     if cached.shape != (len(VIEWS), count, 6, 2, 256) or cached.dtype != np.float32:
         raise ValueError('Expected all registered Full practical source views')
-    tracker = PacketRestorer('consensus').eval()
-    values = {route: {} for route in ('full', 'residual')}
+    return ids[chosen], selected_rx, captures, cached, chosen
+
+
+def view_pairs(captures, cached, chosen):
     with ProcessPoolExecutor(max_workers=4) as pool:
         for index, view in enumerate(VIEWS):
             full = cached[index, chosen]
             residual = np.stack([x for x, _ in pool.map(partial(receive_only, 'residual', view),
                                                         captures, chunksize=12)])
-            values['full'][view] = measure(full, tracker)
-            if view == 'clean':
-                if not np.array_equal(full, residual):
-                    raise ValueError('Both source routes must share the exact clean IQ')
-                values['residual'][view] = values['full'][view]
-            else:
-                values['residual'][view] = measure(residual, tracker)
+            if view == 'clean' and not np.array_equal(full, residual):
+                raise ValueError('Both source routes must share the exact clean IQ')
+            yield view, full, residual
+
+
+def audit(rt):
+    start = perf_counter()
+    run = Path(rt['run_root'])
+    ids, selected_rx, captures, cached, chosen = source_panel(rt)
+    threshold = gate_value(run)
+    tracker = PacketRestorer('consensus').eval()
+    values = {route: {} for route in ('full', 'residual')}
+    for view, full, residual in view_pairs(captures, cached, chosen):
+        values['full'][view] = measure(full, tracker)
+        values['residual'][view] = values['full'][view] if view == 'clean' else measure(residual, tracker)
     if any(not np.isfinite(x).all() for data in values.values() for x in data.values()):
         raise FloatingPointError('Nonfinite source held-out evidence')
     clean = values['full']['clean']
@@ -102,7 +110,7 @@ def audit(rt):
         if any(row['raw_above']['frozen'] for row in result[route]['views'].values()):
             raise ValueError('Audit disagrees with the recorded zero-activation experiment')
     return dict(status='VERIFIED', diagnostic='SOURCE_V_ONLY', run=RUN, basis_commit=rt['code_commit'],
-                ids=ids[chosen].tolist(), anchors=anchors, routes=result, seconds=perf_counter()-start,
+                ids=ids.tolist(), anchors=anchors, routes=result, seconds=perf_counter()-start,
                 F_reads=0, TX_reads=0, target_reads=0, trace_reads=0, optimizer_updates=0, gate_changes=0)
 
 
