@@ -47,7 +47,8 @@ def inherit_source_stage(frozen,root,contract,roles,seed,stage):
 
 
 def train(c, device='cuda:0', *, view=None, prepare_model=None, frozen_coarse=None,
-          frozen_action=None, stage_loss=None, reconstruction=None):
+          frozen_action=None, stage_loss=None, reconstruction=None, log_action_terms=False,
+          original_recipe=False):
     if any(c.get(k) for k in ('truth', 'target_truth', 'target_inputs', 'tests', 'reader', 'F_checkpoint')):
         raise ValueError('G source training rejects F/target inputs')
     contract = read(c['cache']['source_contract'])
@@ -88,6 +89,11 @@ def train(c, device='cuda:0', *, view=None, prepare_model=None, frozen_coarse=No
             parent = None
         else:
             parent, _ = load(previous, contract, roles)
+        if stage == 'r17' and original_recipe:
+            # The original R17 resets the RNG after reconstructing the frozen action checkpoint.
+            torch.manual_seed(c['model_seed'])
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed_all(c['model_seed'])
         model = construct(stage, parent).to(device)
         if prepare_model is not None:
             prepare_model(model, stage)
@@ -106,6 +112,7 @@ def train(c, device='cuda:0', *, view=None, prepare_model=None, frozen_coarse=No
             for epoch in range(1, 21):
                 model.train()
                 total = torch.zeros((), dtype=torch.float64, device=device) if reduce_syncs else 0.
+                trace = dict(action_error=0., log_variance_error=0.) if stage == 'action' and log_action_terms else None
                 observed = 0
                 target_cache = prefix_cache = None
                 if teacher is not None and mode == 'shared':
@@ -138,7 +145,8 @@ def train(c, device='cuda:0', *, view=None, prepare_model=None, frozen_coarse=No
                         context = prefix_cache.get(selected[take],received,epoch) if prefix_cache is not None else None
                         loss = objective(model, teacher, stage, received, clean, epoch, action, generator,
                             desired=desired,frozen_context=context,skip_zero_spectral=acceleration.get('skip_zero_spectral',False),
-                            stage_loss=stage_loss,reconstruction=reconstruction)
+                            stage_loss=stage_loss,reconstruction=reconstruction,action_trace=trace,
+                            original_recipe=original_recipe)
                         if reduce_syncs:
                             finite.logical_and_(torch.isfinite(loss).all())
                         elif not bool(torch.isfinite(loss).all()):
@@ -147,9 +155,14 @@ def train(c, device='cuda:0', *, view=None, prepare_model=None, frozen_coarse=No
                         total += loss.detach().sum().double() if reduce_syncs else float(loss.detach().sum())
                     if reduce_syncs and not bool(finite):
                         raise FloatingPointError('Nonfinite G source objective')
-                    torch.nn.utils.clip_grad_norm_(parameters, 1., error_if_nonfinite=True)
+                    gradient_norm = torch.nn.utils.clip_grad_norm_(parameters, 1., error_if_nonfinite=True)
                     optimizer.step()
                     updates += 1
+                    if updates == 1 and trace is not None:
+                        first = dict(updates=updates, loss=float(total) / len(selected), gradient_norm=float(gradient_norm),
+                                     **{k: v / len(selected) for k, v in trace.items()})
+                        write(folder / 'first_update.json', first)
+                        print('R07_ESTIMATED_FIRST_UPDATE', first, flush=True)
                     seen_l += int(view.is_L[selected].sum())
                     seen_u += int((~view.is_L[selected]).sum())
                     observed += len(selected)
@@ -164,6 +177,8 @@ def train(c, device='cuda:0', *, view=None, prepare_model=None, frozen_coarse=No
                 if acceleration:
                     row['teacher_cache'] = target_cache.stats() if target_cache else None
                     row['prefix_cache'] = prefix_cache.stats() if prefix_cache else None
+                if trace is not None:
+                    row.update({k: v / observed for k, v in trace.items()})
                 del target_cache, prefix_cache
                 stream.write(json.dumps(row, allow_nan=False) + '\n')
                 stream.flush()

@@ -88,7 +88,7 @@ def trainable(model, stage):
 
 def objective(model, teacher, stage, received, clean, epoch, action_arrays=None, generator=None,
               desired=None, frozen_context=None, skip_zero_spectral=False, stage_loss=None,
-              reconstruction=None):
+              reconstruction=None, action_trace=None, original_recipe=False):
     from experiments.pamf_r44_pruned_refine.models import spectral_error
     energy = clean.detach().square().mean((1, 2)).clamp_min(1e-4)
     if stage == 'coarse':
@@ -111,7 +111,12 @@ def objective(model, teacher, stage, received, clean, epoch, action_arrays=None,
         target = Action(complex_iq(kernel), torch.complex(coefficients[:, 0], coefficients[:, 1]),
             torch.complex(coefficients[:, 2], coefficients[:, 3]))
         probes = [torch.complex(*torch.randn((2, len(clean), 256), device=clean.device, generator=generator)) / 2**.5 for _ in range(2)]
-        return probe_error(predicted, target, probes) + .1 * (variance.log() - noise.log()).square()
+        action_error = probe_error(predicted, target, probes)
+        noise_error = (variance.log() - noise.log()).square()
+        if action_trace is not None:
+            action_trace['action_error'] += float(action_error.detach().sum())
+            action_trace['log_variance_error'] += float(noise_error.detach().sum())
+        return action_error + .1 * noise_error
     if frozen_context is not None:
         if stage != 'r17':
             raise ValueError('Updating student context cannot be cached')
@@ -139,6 +144,10 @@ def objective(model, teacher, stage, received, clean, epoch, action_arrays=None,
         return reconstruction(received,clean,values,desired)
     fidelity = torch.stack([(a - b.detach()).square().mean((1, 2)) / energy for a, b in zip(values, desired)]).mean(0)
     weight = (10. - 9. * (epoch - 1) / 19.) if stage in ('r38', 'r44') else (1. - .9 * (epoch - 1) / 19.)
+    if original_recipe:
+        if stage in ('r38', 'r44'):
+            return paired + weight * fidelity
+        return paired + .05 * spectral_error(values[-1], clean) + weight * fidelity
     result = paired + weight * fidelity
     if skip_zero_spectral and stage in ('r38', 'r44'):
         return result

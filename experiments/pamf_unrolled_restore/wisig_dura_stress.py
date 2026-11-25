@@ -80,7 +80,8 @@ def smoke(rt, *, arms=data.PROFILES, load=training.frozen_fit, force_practical=F
 
 
 @torch.no_grad()
-def predict(rt, case, *, methods=METHODS, load=training.frozen_fit, force_practical=False):
+def predict(rt, case, *, methods=METHODS, load=training.frozen_fit, force_practical=False,
+            restore=training.restore, clean_passthrough=True):
     activate(rt)
     profile, route, split = CASES[case]
     root = Path(rt['run_root'])
@@ -141,7 +142,7 @@ def predict(rt, case, *, methods=METHODS, load=training.frozen_fit, force_practi
             for name in ('raw', 'R69'):
                 decisions[name] = baseline[f'{name}__{view}']
         active_count = {name: 0 for name in models}
-        if force_practical and view=='clean':
+        if force_practical and clean_passthrough and view=='clean':
             for name in models:
                 decisions[name] = decisions['raw'].copy()
             output.update({f'{name}__{view}': value for name, value in decisions.items()})
@@ -157,7 +158,7 @@ def predict(rt, case, *, methods=METHODS, load=training.frozen_fit, force_practi
                 decisions['raw'][:, selection] = classify(heads, iq)
                 decisions['R69'][:, selection] = classify(heads, r69(iq)[0])
             for name, (model, gate) in models.items():
-                recovered, active = training.restore(model, gate, iq, variance, force=force_practical)
+                recovered, active = restore(model, gate, iq, variance, force=force_practical)
                 if force_practical:
                     active_count[name] += int(active.sum().item())
                     decisions[name][:, selection] = classify(heads,recovered)
@@ -178,7 +179,7 @@ def predict(rt, case, *, methods=METHODS, load=training.frozen_fit, force_practi
     with (folder / 'decisions.npz').open('xb') as stream:
         np.savez(stream, ids=ids, **output)
     write(folder / 'complete.json', dict(expected, profile=profile, active=activation,force_practical=force_practical,
-                                        seconds=perf_counter()-started))
+                                        clean_passthrough=clean_passthrough, seconds=perf_counter()-started))
 
 
 def launch(rt, action, name, gpu=None):
