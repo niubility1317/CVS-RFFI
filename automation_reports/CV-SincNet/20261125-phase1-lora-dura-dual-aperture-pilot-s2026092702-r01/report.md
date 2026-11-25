@@ -9,3 +9,7 @@
 在 N607 普通账号下，训练提交 `760d7466b64ae89b6806972bdc52792ae6b49f1a` 和源运行路径固定绑定。评测工作目录为 `${N607_PROJECT}/releases/20261125-phase1-lora-dura-dual-aperture-pilot-s2026092702-r01-release`。运行 `python -m experiments.pamf_lora_main.dura_dual_aperture_evaluate publish --repo <checkout> --output <artifact-root>/release --context <runtime_source.json> --ssh-config <config> --training-receipt <fit-release>/submit.json`。调度器等待训练成功冻结后再分配 GPU，源两路分别调度、目标最多八个独立接收机分片。技术停止条件为终步或身份不符、真实权重冒烟失败、数据矩阵或有限性检查失败、预测集不闭合。保留全部产物。
 
 预期产物包括 `smoke.json`、两条路线各自的源预测及源评分、`source-promotion.json`、八个分片状态、闭合的 `predictions/complete.json` 与独立评分 `scores.json`。本次单种子子集用于首次匹配测试。正式硬指标沿用预登记的三种子和 30,000 个物理包。
+
+## 调度核验
+
+13 项聚焦检查已通过，覆盖终点依赖、旧三种子矩阵、子集下标、直通对齐和配对统计算法。N607 已独立核对评测提交 `619febc9421ffaf3cc28df0b22a5793655db086f`、归档传输、远程编译、进程工作目录和命令。调度器已进入 `WAITING_FOR_FROZEN_TRAINING`，目标预测文件为零。原 W24 调度器仍在运行。独立评分端已绑定原始标签归档和四个匹配对照目录，确认目标预测完全闭合后才开始评分。
