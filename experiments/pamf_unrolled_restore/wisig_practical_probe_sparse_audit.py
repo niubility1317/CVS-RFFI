@@ -32,13 +32,14 @@ def tune(source, first, second, third, fourth, output):
     fit_bank(bank, fit, held, first, second, third, fourth, output)
 
 
-def fit_bank(bank, fit, held, first, second, third, fourth, output, *, ridge_options=RIDGES):
+def fit_bank(bank, fit, held, first, second, third, fourth, output, *, ridge_options=RIDGES,
+             compact_builder=sparse.target_columns):
     operators = previous.gate_audit.load_operators(first, second)
     noise_prior = previous.noise_prior(third)
     protection = read(fourth)["protection_scale"]
     prior, _, _, original = operators
     source_rows, held_rows = (bank[:, ids].transpose(1, 0, 2).astype(np.complex128) for ids in (fit, held))
-    dense, compact = (f(source_rows, prior) for f in (sparse.relative.target_columns, sparse.target_columns))
+    dense, compact = (f(source_rows, prior) for f in (sparse.relative.target_columns, compact_builder))
     held_dense, held_sparse = (f(held_rows, prior) for f in (sparse.relative.target_columns, sparse.target_columns))
     source_iq = source_rows.reshape(-1, source_rows.shape[-1])
     held_iq = held_rows.reshape(-1, held_rows.shape[-1])

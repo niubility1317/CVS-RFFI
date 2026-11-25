@@ -38,7 +38,7 @@ def fit_relative(reference, received, noise):
     return first
 
 
-def target_columns(received, prior):
+def target_columns(received, prior, *, anchor_builder=None):
     packets, views, samples = received.shape
     noise = relative.blind.receive.guard_power(received.reshape(-1, samples), prior.guard).reshape(packets, views)
     start = prior.anchor + relative.OFFSETS[0]
@@ -47,12 +47,16 @@ def target_columns(received, prior):
         raise ValueError("Source timing anchor does not fit causal probe support")
     result = np.zeros((packets, views, relative.blind.KERNEL_LENGTH), complex)
     for i, observations in enumerate(received):
+        references = {}
         for j, signal in enumerate(observations):
             other = np.delete(np.arange(relative.SCENE_COUNT), j % relative.SCENE_COUNT)
             selected = other[np.argsort(noise[i, other])[:3]]
-            anchors = observations[selected]
-            orientation = anchors @ anchors[0].conj()
-            aligned = anchors * relative.blind.unit(orientation.conj())[:, None]
-            reference = aligned.mean(axis=0)[relative.SOURCE_INDICES]
-            result[i, j, start:stop] = fit_relative(reference, signal[relative.FIT_TIME], noise[i, j])
+            key = tuple(selected)
+            if key not in references:
+                anchors = observations[selected]
+                orientation = anchors @ anchors[0].conj()
+                aligned = anchors * relative.blind.unit(orientation.conj())[:, None]
+                reference = aligned.mean(axis=0) if anchor_builder is None else anchor_builder(aligned, noise[i, selected])
+                references[key] = reference[relative.SOURCE_INDICES]
+            result[i, j, start:stop] = fit_relative(references[key], signal[relative.FIT_TIME], noise[i, j])
     return result.reshape(-1, relative.blind.KERNEL_LENGTH)
