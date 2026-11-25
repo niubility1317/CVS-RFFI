@@ -75,11 +75,8 @@ def project_delta(packet, delta, scale=1.):
     return corrected
 
 
-def load_models(rt, device):
+def load_w24(rt, device):
     from experiments.pamf_lora_main.full_packet_views import source_contract
-    from experiments.pamf_lora_main.full_dura_detail import (
-        COMPLEX_RESPONSE_RUN, load_detail, phase_baseline_models,
-    )
     from experiments.pamf_lora_main.tri_clean95 import NATIVE_WIDE_ROWS, clean_model
 
     source = Path(rt['source_root'])
@@ -97,10 +94,20 @@ def load_models(rt, device):
     recognizer = clean_model(dict(scratch=True), parent, contract, NATIVE_WIDE_ROWS[METHOD], device)
     recognizer.load_state_dict(torch.load(folder / 'best.pt', map_location=device, weights_only=True),
                                strict=True)
+    return recognizer.eval().requires_grad_(False), contract
+
+
+def load_models(rt, device):
+    from experiments.pamf_lora_main.full_dura_detail import (
+        COMPLEX_RESPONSE_RUN, load_detail, phase_baseline_models,
+    )
+
+    recognizer, contract = load_w24(rt, device)
+    parent = Path(rt['w24_run_root'])
     response_root = parent.parent / COMPLEX_RESPONSE_RUN
     base, detail = phase_baseline_models(response_root, contract, SEED, device)
     response = load_detail(response_root, contract, SEED, device)
-    return recognizer.eval().requires_grad_(False), base, detail, response
+    return recognizer, base, detail, response
 
 
 @torch.inference_mode()
@@ -160,13 +167,13 @@ def channel_job(scene, receiver, item):
     return native_full_view(packet, scene, receiver, index, 'target')
 
 
-def receipt():
+def receipt(modes=MODES):
     return dict(status='PREDICTIONS_FROZEN', W24_commit=W24_COMMIT, seed=SEED,
-                modes=list(MODES), receivers=list(TARGET), views=list(VIEWS), per_receiver=LIMIT,
+                modes=list(modes), receivers=list(TARGET), views=list(VIEWS), per_receiver=LIMIT,
                 processing_route='full_native', target_truth_read=False)
 
 
-def predict(rt, models, device):
+def predict(rt, models, device, *, render=recover, modes=MODES):
     from experiments.pamf_lora_main.full_packet_views import native, target_contract
 
     target = Path(rt['native_target_root'])
@@ -183,14 +190,14 @@ def predict(rt, models, device):
                 else:
                     jobs = pool.map(partial(channel_job, scene, rx), enumerate(raw), chunksize=16)
                     packets = np.stack(list(jobs))
-                predictions = {mode: [] for mode in MODES}
-                active = dict.fromkeys(MODES[1:], 0)
+                predictions = {mode: [] for mode in modes}
+                active = dict.fromkeys(modes[1:], 0)
                 for i in range(0, LIMIT, BATCH):
                     original = packets[i:i + BATCH]
-                    waves = recover(original, models[1:], device)
+                    waves = render(original, models[1:], device)
                     direct = classify(models[0], original, device)
                     predictions['direct'].append(direct)
-                    for mode, wave in zip(MODES[1:], waves[1:], strict=True):
+                    for mode, wave in zip(modes[1:], waves[1:], strict=True):
                         use = np.any(wave != original, axis=1)
                         labels = direct.copy()
                         if use.any():
@@ -202,11 +209,11 @@ def predict(rt, models, device):
                 activity[f'{rx}/{scene}'] = active
                 print('W24_FULL_PREDICTED', rx, scene, active, flush=True)
     write(output / 'activity.json', activity)
-    write(output / 'complete.json', receipt())
+    write(output / 'complete.json', receipt(modes))
 
 
-def validate_predictions(folder):
-    if read(folder / 'complete.json') != receipt():
+def validate_predictions(folder, modes=MODES):
+    if read(folder / 'complete.json') != receipt(modes):
         raise ValueError('Missing or incompatible W24 frozen matrix')
     result = {}
     activity = read(folder / 'activity.json')
@@ -215,9 +222,9 @@ def validate_predictions(folder):
     for rx in TARGET:
         for view in VIEWS:
             expected = activity[f'{rx}/{view}']
-            if set(expected) != set(MODES[1:]) or any(type(n) is not int or not 0 <= n <= LIMIT for n in expected.values()):
+            if set(expected) != set(modes[1:]) or any(type(n) is not int or not 0 <= n <= LIMIT for n in expected.values()):
                 raise ValueError('Invalid W24 activity counts')
-            for mode in MODES:
+            for mode in modes:
                 data = np.load(folder / f'{rx}__{view}__{mode}.npy', allow_pickle=False)
                 if data.shape != (LIMIT,) or data.dtype != np.int16 or data.min() < 0 or data.max() >= len(CLASSES):
                     raise ValueError('Invalid W24 labels in frozen matrix')
@@ -227,11 +234,11 @@ def validate_predictions(folder):
     return result, activity
 
 
-def score(predictions, dataset, output):
+def score(predictions, dataset, output, *, modes=MODES):
     from experiments.pamf_lora_main.data import label_ids, packet_indices, recording
     from experiments.pamf_lora_main.scoring import macro_f1
 
-    pred, activity = validate_predictions(predictions)
+    pred, activity = validate_predictions(predictions, modes)
     output.mkdir(parents=True, exist_ok=False)
     truth = {}
     with zipfile.ZipFile(dataset / 'multiple_receiver_test.zip') as archive:
@@ -239,7 +246,7 @@ def score(predictions, dataset, output):
             with recording(archive, f'{rx}_test.h5', output) as capture:
                 truth[rx] = label_ids(capture, LIMIT)[packet_indices(LIMIT, rx_index)]
     rows = {}
-    for mode in MODES:
+    for mode in modes:
         rows[mode] = {}
         for view in VIEWS:
             y = np.concatenate([truth[rx] for rx in TARGET])
@@ -250,8 +257,8 @@ def score(predictions, dataset, output):
                                      macro_f1=macro_f1(y, p), repairs=int((correct & ~direct).sum()),
                                      harms=int((~correct & direct).sum()),
                                      by_rx={rx: int((pred[rx, view, mode] == truth[rx]).sum()) for rx in TARGET})
-    total = {mode: sum(rows[mode][v]['correct'] for v in VIEWS if v != 'clean') for mode in MODES}
-    write(output / 'scores.json', dict(freeze=receipt(), truth_last=True, views=rows,
+    total = {mode: sum(rows[mode][v]['correct'] for v in VIEWS if v != 'clean') for mode in modes}
+    write(output / 'scores.json', dict(freeze=receipt(modes), truth_last=True, views=rows,
                                        six_correct=total, six_n=LIMIT * len(TARGET) * (len(VIEWS) - 1),
                                        activity=activity))
 
