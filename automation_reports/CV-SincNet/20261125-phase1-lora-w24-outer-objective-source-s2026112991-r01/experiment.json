@@ -1,0 +1,183 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+  "group_id": "phase1-lora-w24-observable-recovery",
+  "display_name": "LoRa W24 首尾 chirp 受扰恢复与 clean 联合训练",
+  "description": "Matched scratch training against the frozen 40,000-step W24 DURA with spatially balanced distorted-packet half-update loss and a clean outer-chirp loss.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source_only",
+    "w24",
+    "full_and_residual",
+    "all_packets",
+    "end_to_end_fit"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+    "20261125-diagnostic-lora-w24-chirp-allocation-source-s2026112559-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa and WiSig restoration research goal authorizes isolated component diagnostics.",
+  "code": {
+    "commit": "Pushed committed release selected at publication",
+    "checkout": "E:/codex/home/worktrees/lora-dura-stage-supervision/standard_ce_baselines_20261010",
+    "environment": "N607 fixed 7615e8e4 training archive and fixed W24 inference archive Python",
+    "cwd": "original W24 DURA training archive for fit; original W24 reader archive for source inference"
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multiple receiver",
+    "version": "Native W24 1 MHz original Full and native_residual_w24_v1",
+    "representation": "8 chirps, 384 complex center samples + 48 native edge samples",
+    "contract_ref": "Archived native W24 source release, data/source contract",
+    "physical_ids_ref": "Parent run source-predictions.json physical_ids",
+    "label_map_ref": "Registered source V metadata",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": 20500,
+      "V": 300
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Same parent Full and Residual raw ordered-prediction panel",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Start from scratch using 20000 fit and 500 source-raw held U records. No classifier weights, labels, target or simulated metadata during fit."
+  },
+  "checkpoint": {
+    "initialization": "Same original architecture initialized from scratch with the original seed",
+    "sources": [
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Frozen source-only W24 E104 classifier"
+      },
+      {
+        "ref": "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+        "role": "Fixed source-only W24 DURA actual complete 40,000 updates"
+      }
+    ],
+    "contract_check_ref": "fit-inputs.json and frozen check in w24_outer_objective_source.load_candidate",
+    "provenance_verdict": "The prior run supplies archived code and the external frozen control only. Fit children do not load prior state.",
+    "selection_rule": "Fixed last update 40000. Source promotion requires both routes to beat archived matched all-half six-scene score and at least match same-panel direct clean correct counts; target acceptance retains the original 30000-packet thresholds."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex goal 01a208a9-57df-7f82-a078-cd9477adf998",
+    "gpu_policy": "One qualified GPU, prefer 6 or 3; eight CPU channel workers",
+    "remote_run_root": "runs/20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "remote_log_root": "runs/20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.w24_outer_objective_source publish --repo . --context E:/type10-7/local_artifacts/20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01/release",
+    "stop_rule": "Stop downstream on source binding, invalid gradient, nonfinite outputs, archive parity or incomplete source frozen predictions."
+  },
+  "expected_artifacts": [
+    "fit-inputs.json",
+    "fit-smoke.log",
+    "smoke-w24_outer_objective.json",
+    "fit.log",
+    "w24_outer_objective-model.pt",
+    "w24_outer_objective-complete.json",
+    "smoke.json",
+    "{route}/predictions.npz",
+    "{route}/source-predictions.json",
+    "{route}/source-scores.json",
+    "state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "same-packet corrected and harmed",
+      "95% paired intervals",
+      "held source IQ risks",
+      "B1 latency",
+      "train seconds",
+      "parameters"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "mode"
+    ],
+    "prediction_ref": "runs/20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01/{route}/predictions.npz",
+    "scorer_ref": "w24_native_residual_source.compare_source"
+  },
+  "rows": [
+    {
+      "row_id": "outer-objective",
+      "method": "Same two-stage W24 DURA with spatially balanced disturbed half-update risk and clean outer-chirp identity",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_outer_objective_source.py",
+      "resolved_config_ref": "runs/20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01/fit-inputs.json",
+      "data_overrides": {
+        "fit_U": 20000,
+        "held_U": 500,
+        "calibration_IQ": 0
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 2026112991,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Both arms reuse the archive source partition, receiver-sampling and perturbation generators. Source V panel seed is 2026112559; eval seed records frozen W24 E104.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW, cosine 2e-4 to 2e-5, weight decay 1e-4",
+      "lr": 0.0002,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "40000 joint optimizer updates, batch 16, original two-stage schedule",
+      "output_root": "runs/20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+      "log_path": "runs/20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01/fit.log",
+      "command": "archived Python -u releases/20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01-release/experiments/pamf_lora_main/w24_outer_objective_source.py fit runs/20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01/fit-inputs.json",
+      "expected_artifacts": [
+        "fit-inputs.json",
+        "fit-smoke.log",
+        "smoke-w24_outer_objective.json",
+        "fit.log",
+        "w24_outer_objective-model.pt",
+        "w24_outer_objective-complete.json",
+        "smoke.json",
+        "{route}/predictions.npz",
+        "{route}/source-predictions.json",
+        "{route}/source-scores.json",
+        "state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No input gating or gate calibration. Both candidate and archived control always run a real restoration forward.",
+    "Protocol features come from each current received IQ only; no simulator truth or fitted classifier participates in fitting."
+  ],
+  "registered_at": "2026-11-25T14:05:07+00:00"
+}

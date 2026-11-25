@@ -105,6 +105,10 @@ def chirp_labels(f, g, tracker, packets, device, *, verify=False):
 
 
 def mode_list(rt):
+    if rt.get('outer_objective'):
+        from experiments.pamf_lora_main.w24_outer_objective_source import MODES as OUTER_MODES
+
+        return OUTER_MODES
     if rt.get('chirp_allocation'):
         return CHIRP_MODES
     return SWEEP_MODES if rt.get('readout_sweep') else MODES
@@ -122,10 +126,24 @@ def predict_source(runtime):
     # reference stack caches a namesake package with different submodules.
     archive, parent = training_runtime(rt)
     g, track, threshold, frozen = load_restorer(archive, parent, contract, device)
+    learning_outer = rt.get('outer_objective', False)
     allocating = rt.get('chirp_allocation', False)
     sweeping = rt.get('readout_sweep', False)
     modes = mode_list(rt)
-    if allocating:
+    if learning_outer:
+        from experiments.pamf_lora_main.w24_outer_objective_source import load_candidate
+
+        candidate, new_frozen = load_candidate(root, contract, device)
+
+        def evaluate(packets):
+            original = received_aperture(packets, device)
+            decisions = [classify_aperture(f, original)]
+            for model in (g, candidate):
+                restored = original.clone()
+                restored[..., :384] += .5 * wide_delta(model, track, original)
+                decisions.append(classify_aperture(f, restored))
+            return np.stack(decisions), [len(packets)] * 2
+    elif allocating:
         evaluate = partial(chirp_labels, f, g, track, device=device)
     elif sweeping:
         def evaluate(packets):
@@ -147,7 +165,13 @@ def predict_source(runtime):
                 raise ValueError('Actual source-only front-end smoke failed')
     smoke = dict(status='PASS', source_packets=len(u), target_reads=0, source_truth_reads=0,
                  parent_steps=frozen['steps'], parameters=frozen['parameters'])
-    if allocating:
+    if learning_outer:
+        observed = received_aperture(packets[:1], device)
+        b1 = {name: ungated_latency(model, track, observed)
+              for name, model in zip(modes[1:], (g, candidate), strict=True)}
+        smoke.update(candidate_steps=new_frozen['steps'], candidate_parameters=new_frozen['parameters'], ungated=True,
+                     b1_ungated_g_only=b1)
+    elif allocating:
         smoke['equal_edit_energy'] = True
     elif sweeping:
         smoke['readout_amplitudes'] = list(SWEEP_AMPLITUDES)
@@ -179,12 +203,12 @@ def predict_source(runtime):
                 raise ValueError('Same clean packets must produce identical decisions on both routes')
             print('W24_NATIVE_RESIDUAL_PREDICTED', scene, len(rows), flush=True)
     for route in ROUTES:
-        if allocating or sweeping:
-            previous = root.parent / (SWEEP_RUN if allocating else RUN) / route
+        if learning_outer or allocating or sweeping:
+            previous = root.parent / (SWEEP_RUN if allocating or learning_outer else RUN) / route
             mark = read(previous/'source-predictions.json')
             if (mark['status'], mark['physical_ids'], mark['target_reads']) != ('PREDICTIONS_FROZEN', ids, 0):
                 raise ValueError('Expected the prior frozen two-route source panel')
-            names = ('direct', 'wide_ungated_050') if allocating else ('direct',)
+            names = ('direct', 'wide_ungated_050') if allocating or learning_outer else ('direct',)
             indices = [mark['modes'].index(name) for name in names]
             with np.load(previous/'predictions.npz', allow_pickle=False) as archive:
                 if any(not np.array_equal(archive[v][indices], output[route][v][:len(indices)]) for v in VIEWS):
@@ -192,7 +216,9 @@ def predict_source(runtime):
         out = root / route
         out.mkdir()
         np.savez(out / 'predictions.npz', **output[route])
-        if allocating:
+        if learning_outer:
+            policy = dict(ungated=True, amplitude=.5, candidate_run=rt['run_id'], candidate_steps=new_frozen['steps'])
+        elif allocating:
             policy = dict(ungated=True, fixed_position_masks=True, preferred_energy='all_half',
                           preferred_weights=[.75, 1.25])
         elif sweeping:
@@ -223,11 +249,29 @@ def latency(g, track, threshold, clean, device):
     return dict(b1_active_g_median_ms=float(np.median(samples)), b1_active_g_p95_ms=float(np.percentile(samples, 95)))
 
 
+def ungated_latency(g, tracker, observed):
+    for _ in range(6):
+        wide_delta(g, tracker, observed)
+    torch.cuda.synchronize()
+    samples = []
+    for _ in range(24):
+        start = perf_counter()
+        wide_delta(g, tracker, observed)
+        torch.cuda.synchronize()
+        samples.append(1000 * (perf_counter() - start))
+    return dict(median_ms=float(np.median(samples)), p95_ms=float(np.percentile(samples, 95)))
+
+
 def compare_source(runtime):
     rt = read(runtime)
     root = Path(rt['run_root'])
     modes = mode_list(rt)
-    contrasts = CHIRP_CONTRASTS if rt.get('chirp_allocation') else ()
+    if rt.get('outer_objective'):
+        from experiments.pamf_lora_main.w24_outer_objective_source import CONTRASTS as OUTER_CONTRASTS
+
+        contrasts = OUTER_CONTRASTS
+    else:
+        contrasts = CHIRP_CONTRASTS if rt.get('chirp_allocation') else ()
     for route in ROUTES:
         frozen_source_panel(Path(rt['source_root']), root / route, modes)
     for route in ROUTES:
