@@ -101,10 +101,13 @@ def fit_gate(runtime):
           seconds=time.perf_counter() - t0))
 
 
-def receipt(modes=MODES, seed=PILOT_SEED):
-    return dict(status='PREDICTIONS_FROZEN', classifier_run=AUG_RUN, modes=list(modes), views=list(VIEWS),
+def receipt(modes=MODES, seed=PILOT_SEED, *, route=None):
+    info = dict(status='PREDICTIONS_FROZEN', classifier_run=AUG_RUN, modes=list(modes), views=list(VIEWS),
                 receivers=list(TARGET), sample_rows=[pilot_rows(i, seed).tolist() for i in range(len(TARGET))],
                 target_truth_reads=0)
+    if route is not None:
+        info['processing_route'] = route
+    return info
 
 
 def evaluate(runtime):
@@ -149,7 +152,7 @@ def raw_pilot_batch(classifier, device, apply, raw):
     return np.stack((base, *labels)), int(chosen.sum())
 
 
-def predict_pilot(rt, batch, *, modes, seed, log_prefix):
+def predict_pilot(rt, batch, *, modes, seed, log_prefix, receive=channel_job, route=None):
     root = Path(rt['run_root'])
     target = Path(rt['native_target_root'])
     target_contract(target)
@@ -165,9 +168,10 @@ def predict_pilot(rt, batch, *, modes, seed, log_prefix):
                 if scene == 'clean':
                     frames = recorded
                 else:
-                    frames = np.stack(list(pool.map(partial(channel_job, scene, rx),
+                    frames = np.stack(list(pool.map(partial(receive, scene, rx),
                                            [(int(i), a) for i, a in zip(rows, recorded, strict=True)], chunksize=8)))
-                batches, n_active = [], 0
+                batches = []
+                n_active = 0 if route is None else np.zeros(len(modes) - 1, dtype=int)
                 for start in range(0, len(frames), 32):
                     labels, count = batch(frames[start:start+32])
                     if labels.shape != (len(modes), min(32, len(frames) - start)):
@@ -175,15 +179,15 @@ def predict_pilot(rt, batch, *, modes, seed, log_prefix):
                     batches.append(labels)
                     n_active += count
                 pred[scene] = np.concatenate(batches, axis=1)
-                activity[f'{rx}/{scene}'] = n_active
+                activity[f'{rx}/{scene}'] = n_active if route is None else n_active.tolist()
                 print(log_prefix, rx, scene, n_active, flush=True)
             np.savez(output / f'{rx}.npz', **pred)
     write(output / 'activity.json', activity)
-    write(output / 'complete.json', receipt(modes, seed))
+    write(output / 'complete.json', receipt(modes, seed, route=route))
 
 
-def score(predictions, prior, dataset, output, *, modes=MODES, seed=PILOT_SEED, contrast=None):
-    if read(predictions / 'complete.json') != receipt(modes, seed):
+def score(predictions, prior, dataset, output, *, modes=MODES, seed=PILOT_SEED, contrast=None, route=None):
+    if read(predictions / 'complete.json') != receipt(modes, seed, route=route):
         raise ValueError('Complete frozen pilot matrix required')
     ref, _ = validate_predictions(prior, REFERENCE_MODES, classifier_run=AUG_RUN)
     activity = read(predictions / 'activity.json')
@@ -200,13 +204,21 @@ def score(predictions, prior, dataset, output, *, modes=MODES, seed=PILOT_SEED, 
             raise ValueError('Malformed pilot predictions')
         rows = pilot_rows(idx, seed)
         baseline = np.stack([ref[rx, view, 'direct'][rows] for view in VIEWS])
-        disagreements += int(np.count_nonzero(baseline != p[:, 0]))
+        # Same frozen Full reference gives a clean parity check even when
+        # the practical observations are from a different registered route.
+        compare = slice(None) if route is None else slice(0, 1)
+        disagreements += int(np.count_nonzero(baseline[compare] != p[compare, 0]))
         for i, view in enumerate(VIEWS):
-            count = activity[f'{rx}/{view}']
-            if not 0 <= count <= PER_RECEIVER or (p[i, 1:] != p[i, :1]).sum(axis=1).max() > count:
+            count = np.asarray(activity[f'{rx}/{view}'])
+            expected = () if route is None else (len(modes) - 1,)
+            if (count.shape != expected or count.dtype.kind not in 'iu'
+                    or not ((0 <= count) & (count <= PER_RECEIVER)).all()
+                    or ((p[i, 1:] != p[i, :1]).sum(axis=1) > count).any()):
                 raise ValueError('Pilot predictions differ outside the active count')
-        dura = np.stack([ref[rx, view, 'complex_response_half_center'][rows] for view in VIEWS])
-        work.append(np.concatenate((p[:, :1], dura[:, None], p[:, 1:]), axis=1))
+        if route is None:
+            dura = np.stack([ref[rx, view, 'complex_response_half_center'][rows] for view in VIEWS])
+            p = np.concatenate((p[:, :1], dura[:, None], p[:, 1:]), axis=1)
+        work.append(p)
     if disagreements:
         raise ValueError(f'Frozen direct prediction parity differs on {disagreements} packet views')
     output.mkdir(parents=True, exist_ok=False)
@@ -220,7 +232,7 @@ def score(predictions, prior, dataset, output, *, modes=MODES, seed=PILOT_SEED, 
     rng = np.random.default_rng(seed + 1)
     draws = rng.integers(PER_RECEIVER, size=(len(TARGET), 2000, PER_RECEIVER))
     audit = {}
-    paired_modes = ('direct', 'prior_complex_response_half', *modes[1:])
+    paired_modes = ('direct', 'prior_complex_response_half', *modes[1:]) if route is None else modes
 
     def six_interval(delta):
         net = delta[:, 1:].sum(1)
@@ -241,6 +253,18 @@ def score(predictions, prior, dataset, output, *, modes=MODES, seed=PILOT_SEED, 
     result = dict(status='ANALYZED', scope='single_seed_3000_pilot', truth_last=True,
                   n_physical=len(TARGET)*PER_RECEIVER, n_six=len(TARGET)*PER_RECEIVER*6,
                   direct_disagreements_vs_prior=disagreements, results=audit, activity=activity)
+    if route is not None:
+        result.update(processing_route=route, parity_scope='clean_only', paired_by_scene={})
+        for ref_index, name in enumerate(paired_modes[:2]):
+            difference = hit[:, :, -1].astype(np.int16) - hit[:, :, ref_index]
+            by_scene = {}
+            for j, view in enumerate(VIEWS):
+                d = difference[:, j]
+                samples = np.take_along_axis(d[:, None, :], draws, axis=2).sum((0, 2))
+                by_scene[view] = dict(net=int(d.sum()), repairs=int((d > 0).sum()), harms=int((d < 0).sum()),
+                    CI95_net=np.quantile(samples, [.025, .975]).tolist(),
+                    net_by_rx=dict(zip(TARGET, d.sum(1).tolist(), strict=True)))
+            result['paired_by_scene'][name] = by_scene
     if contrast is not None:
         a, b = (paired_modes.index(mode) for mode in contrast)
         delta = hit[:, :, a].astype(np.int16) - hit[:, :, b]
