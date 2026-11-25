@@ -7,3 +7,7 @@
 N607 普通账号，四个按空闲优先分配的 GPU 分片，每片三 CPU 子进程负责构造 receive-only 视图。调度器等待 40,000 步终点冻结，再分配 GPU、执行真实源 U 检查并做盲预测。异常按运行根停止。运行目录为 `${N607_PROJECT}/runs/20261125-phase1-lora-dura-w24-io-s2026092702-r01`，发布目录以同名 `-release` 结尾。以 `python -m experiments.pamf_lora_main.dura_w24_target publish --repo <checkout> --output <artifact-root>/release --context <runtime_source.json> --ssh-config <config> --training-receipt <fit-release>/submit.json` 绑定训练提交与本次预测代码。每一接收机和场景写独立四行决策数组，共 105 份。预测全量闭合后，在独立评分侧才使用原始测试真值。
 
 报告 clean 正确数、六景均值、低城区、逐场景和逐接收机正确数、同包纠错和改错，以及接收机内按物理包分层重采样的 95% 区间。本轮为单种子 W24 输入输出试验。原冻结 Tri-set 三种子全量双路线验收单独保留。 [独立评分](../../../tools/lora_dura_w24_score.py)
+
+## 调度核验
+
+已独立核对 N607 归档、远程编译及提交 `2c1facd2a15aea1b34a30676743429a961e1d8b4`。调度器处于 `WAITING_FOR_FROZEN_TRAINING`，未生成目标预测。评分端已核对可用的原始真值归档位置，等待完整盲预测后才开始关联标签。

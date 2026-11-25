@@ -7,3 +7,7 @@
 N607 普通账号，优先选择空闲 GPU。提交由已推送 HEAD 固定，并写入 `release/submit.json`。运行目录为 `${N607_PROJECT}/runs/20261125-phase1-lora-dura-w24-train-s2026112991-r01`，发布目录以同名 `-release` 结尾。使用私有已验证 Python、`runtime_source.json` 和 `n607_ssh_config`，通过 `python -m experiments.pamf_lora_main.dura_w24_train publish --repo <checkout> --output <artifact-root>/release --context <runtime_source.json> --ssh-config <config>` 启动。真实源检查、数据契约、有限性或产物闭合失败时仅停止本链并保留已有产物。预期包含 `smoke-w24.json`、完整 `logs/fit.log`、`w24-complete.json`、`w24-model.pt` 和独立终态读回。
 
 冻结后按已固定的 W24 单种子矩阵预测，待完整预测闭合后独立评分。 [正式测试登记](../20261125-phase1-lora-dura-w24-io-s2026092702-r01/report.md)
+
+## 启动核验
+
+N607 已独立核对归档传输、远程编译、提交 `7615e8e4024e7f38688ffe69db3f632f5256f613`、GPU 0、训练进程工作目录及命令。真实源 IQ 检查通过，测得 1,271,038 个参数，读取识别器、TX、源 V、目标和仿真轨迹均为零。截至启动核验，已在正式进程读到 350 步，有限性检查通过。正式任务仍以第 40,000 步终点为准。
