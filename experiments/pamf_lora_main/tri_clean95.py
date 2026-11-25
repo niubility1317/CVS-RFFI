@@ -10,7 +10,7 @@ import torch
 
 from experiments.cric_dura_comparison.io import read, tensor, write
 from experiments.pamf_ssl_research.u_gradprotect_objective import protected_loss
-from .clean_aperture import ALL_CHIRPS, NATIVE_EDGE_POINTS, clean_iq, native_edge_positions
+from .clean_aperture import ALL_CHIRPS, NATIVE_EDGE_POINTS, clean_iq, native_edge_positions, shift_native_packets
 from .comparison import seed_all
 from .data import SOURCE, TARGET
 from .full_packet_data import COUNTS, LIMIT
@@ -232,6 +232,8 @@ def clean_model(rt,root,c,row,device):
 
 def study(rt):
     if rt.get('scratch'):
+        if rt.get('native_jitter_study'):
+            return NATIVE_JITTER_ROWS,112,16
         if rt.get('native_repl32_study'):
             return NATIVE_REPL32_ROWS,128,16
         if rt.get('native_rx_study'):
@@ -369,6 +371,11 @@ NATIVE_WIDE_ROWS={
     'phase_native16': dict(ANCHOR_ROWS['phase_anchor'],native_edges=True,edge_points=16),
     'phase_native24': dict(ANCHOR_ROWS['phase_anchor'],native_edges=True,edge_points=24),
 }
+NATIVE_JITTER_RUN='20261125-phase1-lora-pamf-tri-clean-nativejitter05-s2026092702-r01'
+NATIVE_JITTER_ROWS={
+    'phase_native24_jitter': dict(NATIVE_WIDE_ROWS['phase_native24'],timing_jitter=True,native_timing_offset=.5),
+}
+
 NATIVE_REPL32_RUN='20261125-phase1-lora-pamf-tri-clean-nativerepl32-s2026092702-r01'
 NATIVE_REPL32_ROWS={
     'phase_native24_repl32': dict(NATIVE_WIDE_ROWS['phase_native24'],decay_end_epoch=112,select_from_epoch=116),
@@ -454,6 +461,8 @@ def row_names(rt):
         return ('phase_jitter',)
     if rt.get('phase_joint_study'):
         return ('phase_joint',)
+    if rt.get('native_jitter_study'):
+        return tuple(NATIVE_JITTER_ROWS)
     if rt.get('native_repl32_study'):
         return tuple(NATIVE_REPL32_ROWS)
     if rt.get('native_rx_study'):
@@ -604,6 +613,15 @@ def native_boundary_receiver_loss(model,iq,y,rx):
     return cross_rx(features,y,rx,balance=True)
 
 
+def labeled_shift_views(packets,row):
+    n,chirps=row['samples'],row['chirps']
+    offset=row.get('native_timing_offset')
+    if offset is None:
+        return tuple(clean_iq(packets,n,chirps,offset=d) for d in (-2,2))
+    return tuple(clean_iq(shift_native_packets(packets,d),n,chirps,native_edges=True,
+                          edge_points=row['edge_points']) for d in (-offset,offset))
+
+
 def smoke(rt):
     from copy import deepcopy
     root=Path(rt['run_root'])
@@ -621,13 +639,18 @@ def smoke(rt):
         grid=clean_iq(raw[i],row.get('samples',256),row.get('chirps',CHIRPS),
                       native_edges=row.get('native_edges',False),edge_points=row.get('edge_points',NATIVE_EDGE_POINTS))
         if row.get('timing_jitter'):
-            shifts=[clean_iq(raw[i],row['samples'],row['chirps'],offset=d) for d in (-2,2)]
+            shifts=labeled_shift_views(raw[i],row)
             if any(z.shape!=grid.shape or np.array_equal(z,grid) for z in shifts):
                 raise ValueError('Physical source jitter is missing')
+            if row.get('native_timing_offset'):
+                grid[:2]=shifts[0][:2]
+                grid[2:4]=shifts[1][2:4]
         if row.get('two_rate'):
             grid=np.concatenate((grid,clean_iq(raw[i],256)),axis=-1)
         a=tensor(grid)
         t=shape_trace(f,a)
+        if row.get('native_timing_offset'):
+            t['source_l_shifted_examples']=4
         rank_weights=labeled_rank_weights(source,yn,rn,row.get('early_rank_weight',0.))
         loss,_,_,n=_labeled_and_unlabeled(f,a,y,rx,a,rx,1,True,force=y,mechanism=terms(row),
                                          raw_ce=row.get('raw_ce',0.),ordinary_std=row.get('ordinary_std',.015),
@@ -713,9 +736,10 @@ def train(rt,name):
     rank_weights=labeled_rank_weights(source,yn,rn,row.get('early_rank_weight',0.))
     rank_weights=tensor(rank_weights,device) if rank_weights is not None else None
     shifts=()
+    native_timing=row.get('native_timing_offset')
     if row.get('timing_jitter'):
         original=native(source,'L_s',len(yn))
-        shifts=tuple(tensor(clean_iq(original,n,chirps,offset=d),device) for d in (-2,2))
+        shifts=tuple(tensor(view,device) for view in labeled_shift_views(original,row))
         lgen=torch.Generator(device=device).manual_seed(SEED+11)
     ur=tensor(labels(source,c,'U_s'),device)
     vy,vr=(tensor(a,device) for a in labels(source,c,'V'))
@@ -753,7 +777,7 @@ def train(rt,name):
         validation_epochs.update(range(warmup,epochs+1,4))
         if any(rt.get(k) for k in ('budget_study','edge_study','robust_study','phase_study')):
             validation_epochs.update((32,48,60))
-        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study','native_rx_study','native_repl32_study')):
+        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study','native_rx_study','native_repl32_study','native_jitter_study')):
             validation_epochs.update((32,48,64,80,88))
     select_from=row.get('select_from_epoch',0)
     snapshots=row.get('tail_average',())
@@ -769,6 +793,7 @@ def train(rt,name):
                 ui=covered_u[epoch-warmup-1] if use_u else (None,)*STEPS
             sl,su,accepted=0.,0.,0
             boundary_pair_total=0.
+            shift_count=0
             for b,pos in zip(batches(yn,rn,rng),ui,strict=True):
                 i=tensor(b,device)
                 source_weight=rank_weights[i] if rank_weights is not None else None
@@ -782,6 +807,8 @@ def train(rt,name):
                         draw=torch.rand(len(i),device=device,generator=lgen)[:,None,None,None]
                         labeled=torch.where(draw<.125,shifts[0][i],labeled)
                         labeled=torch.where(draw>.875,shifts[1][i],labeled)
+                        if native_timing:
+                            shift_count+=((draw<.125)|(draw>.875)).sum()
                     logits,features=f(labeled)
                     loss=clean_source_ce(logits,y[i],rx[i],rtl_weight,pair_margin_weight,source_weight)
                     if joint_rx_weight:
@@ -805,6 +832,8 @@ def train(rt,name):
             rec=dict(epoch=epoch,step=step,L_loss=sl/STEPS,U_loss=su/STEPS,
                      U_seen=STEPS*u_count if use_u else 0,U_accepted=accepted,
                      lr=opt.param_groups[0]['lr'])
+            if native_timing:
+                rec['source_l_shifted_examples']=int(shift_count)
             if native_rx_weight:
                 rec['native_rx_loss']=boundary_pair_total/STEPS
             if epoch in snapshots:
@@ -877,14 +906,14 @@ def dispatch(rt):
     root=Path(rt['run_root'])
     screens=('quick','transfer','timefreq','noise_study','drift_study','budget_study')
     gated_study=any(rt.get(k) for k in ('robust_study','phase_study','anchor_study','timing_study',
-                                       'phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study','native_rx_study','native_repl32_study'))
+                                       'phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study','native_rx_study','native_repl32_study','native_jitter_study'))
     if (gated_study or any(rt.get(k) for k in ('noise_study','drift_study','budget_study','edge_study'))) and not rt.get('scratch'):
         raise ValueError('The clean input comparisons require random initialization')
     root.mkdir(exist_ok=False)
     state=root/'state.json'
     fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq',
                              'noise_study','drift_study','budget_study','edge_study','robust_study','phase_study','anchor_study',
-                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study','native_rx_study','native_repl32_study',
+                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study','native_rx_study','native_repl32_study','native_jitter_study',
                              'fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)

@@ -342,6 +342,25 @@ class TriTuningTests(TestCase):
         self.assertAlmostEqual(factor(original_end+1,warm,original_end),1/30.,places=14)
         self.assertAlmostEqual(factor(epochs*train_steps,warm,original_end),1/30.,places=14)
 
+    def test_native_fractional_shift_uses_one_time_coordinate_for_center_and_edges(self):
+        from experiments.pamf_lora_main.clean_aperture import clean_iq, shift_native_packets
+
+        native_time=np.arange(8192,dtype=np.float64)/1024
+        curve=lambda t: (1+.03*t**2)+1j*(.04*t-.003*t**3)
+        raw=curve(native_time).astype(np.complex64)[None,:]
+        rows,epochs,u_batch=tri_clean95.study({'scratch':True,'native_jitter_study':True})
+        row=rows['phase_native24_jitter']
+        self.assertEqual((row['native_timing_offset'],row['edge_points'],epochs,u_batch),(.5,24,112,16))
+        ordinary=clean_iq(raw,384,ALL_CHIRPS,native_edges=True,edge_points=24)
+        views=tri_clean95.labeled_shift_views(raw,row)
+        for shift,view in zip((-.5,.5),views,strict=True):
+            shifted=shift_native_packets(raw,shift)
+            reference=curve(native_time+shift/1024).astype(np.complex64)
+            np.testing.assert_allclose(shifted[0,2:-2],reference[2:-2],rtol=1e-6,atol=1e-6)
+            self.assertEqual(view.shape,(1,8,2,432))
+            self.assertFalse(np.array_equal(view,ordinary))
+            np.testing.assert_array_equal(view,clean_iq(shifted,384,ALL_CHIRPS,native_edges=True,edge_points=24))
+
     def test_group_residual_is_bounded_per_packet_without_touching_primary_logits(self):
         from experiments.pamf_lora_main.repair_features import residual_logit_scale
         core=torch.tensor([[0.,1.,2.],[0.,2.,4.],[5.,5.,5.]])

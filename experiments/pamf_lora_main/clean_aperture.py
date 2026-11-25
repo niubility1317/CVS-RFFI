@@ -30,6 +30,26 @@ def padded_crop(chirps,offset=0):
 CROPS = {chirps: padded_crop(chirps) for chirps in (CHIRPS, ALL_CHIRPS)}
 
 
+def shift_native_packets(packets,offset):
+    """Interpolate a sub-sample training shift before taking any chirp views."""
+    if packets.ndim!=2 or packets.shape[1]!=PACKET_LEN or not -1<offset<1:
+        raise ValueError('Native timing shifts require full packets and a sub-sample offset')
+    floor=int(np.floor(offset))
+    phase=offset-floor
+    positions=np.arange(PACKET_LEN)+floor
+    weights=(-phase*(phase-1)*(phase-2)/6,
+             (phase+1)*(phase-1)*(phase-2)/2,
+             -(phase+1)*phase*(phase-2)/2,
+             (phase+1)*phase*(phase-1)/6)
+    shifted=np.zeros_like(packets)
+    for tap,weight in zip((-1,0,1,2),weights,strict=True):
+        idx=positions+tap
+        idx=np.where(idx<0,-idx,idx)
+        idx=np.where(idx>=PACKET_LEN,2*PACKET_LEN-2-idx,idx)
+        shifted+=weight*packets[:,idx]
+    return shifted
+
+
 def clean_iq(packets,samples,chirps=CHIRPS,*,offset=0,native_edges=False,edge_points=NATIVE_EDGE_POINTS):
     if samples not in (192,256,384,512):
         raise ValueError('Unknown registered clean aperture')
