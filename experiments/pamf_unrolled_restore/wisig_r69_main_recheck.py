@@ -8,12 +8,20 @@ from time import monotonic, perf_counter, sleep
 import numpy as np
 import torch
 
+if __package__ is None:
+    from experiments import pamf_unrolled_restore
+
+    pamf_unrolled_restore.__path__.append(str(Path(__file__).resolve().parent))
+
 from experiments.cric_dura_comparison.io import read, write
 from experiments.pamf_lora_main.packet_runner import schedule
 from experiments.pamf_lora_main.runner import available
 
 
 RUN = '20261125-phase1-wisig-r69-fresh-main-m3-r01'
+SPECTRAL_MAIN = '20261125-phase1-wisig-spectral-precision-main-m3-r01'
+REPLAY_COMMIT = '5690abc1c29cc7f28b0db893f56344d85820b5d1'
+SPECTRAL_COMMIT = '69ece5f94b5a6d1490116eabae4e9a1371eb97d3'
 PARENT = '20261125-phase1-wisig-dura-estimated-main-m2-r01'
 PARENT_COMMIT = '400260cbc1f9562c79f9f2f044dac4e6aa47bafc'
 SEEDS = (2026092701, 2026092702, 2026092703)
@@ -26,6 +34,10 @@ CASES = {f'{route}-{split}': (route, split) for route in ROUTES for split in SPL
 
 
 def parent_runtime(rt):
+    if rt.get('spectral_main'):
+        from experiments.pamf_unrolled_restore.wisig_forced_clean import reference_runtime
+
+        return reference_runtime(dict(rt, reference=rt['parent_release']))
     parent = Path(rt['parent_release'])
     c = read(parent / 'runtime.json')
     project = Path(rt['project'])
@@ -36,11 +48,80 @@ def parent_runtime(rt):
     return c
 
 
+def qualified_spectral(rt):
+    from experiments.pamf_unrolled_restore.wisig_spectral_precision_source import ARMS, MODES, VIEWS, RUN as SOURCE_RUN
+
+    project = Path(rt['project'])
+    root = project / 'runs' / SOURCE_RUN
+    launch = read(project / 'releases' / f'{SOURCE_RUN}-release' / 'runtime.json')
+    if (launch['run_id'] != SOURCE_RUN or launch['code_commit'] != SPECTRAL_COMMIT
+            or Path(launch['run_root']) != root or launch['reference'] != rt['native_code']
+            or read(root / 'state.json')['status'] != 'SOURCE_SCORED'):
+        raise ValueError('The registered spectral-precision source run is still pending')
+    frozen = read(root / 'predictions' / 'complete.json')
+    score = read(root / 'source-scores.json')
+    views = frozen['views']
+    if (frozen['status'] != 'FROZEN' or frozen['count'] != 1800 or frozen['modes'] != list(MODES)
+            or views != list(VIEWS) or frozen['target_reads'] or frozen['source_truth_reads']
+            or set(frozen['summaries']) != {f'{route}_{v}' for route in ROUTES for v in views}
+            or any(row['count'] != 1800 or row['active'] != dict.fromkeys(ARMS, 1800)
+                   for row in frozen['summaries'].values())
+            or (score['status'], score['truth_last'], score['target_reads'], score['reader_seed'])
+            != ('SOURCE_SCORED', True, 0, SEEDS[0]) or score['modes'] != list(MODES) or score['views'] != views):
+        raise ValueError('Incomplete frozen dual-route spectral source evidence')
+    passed = dict.fromkeys(ARMS, True)
+    for route in ROUTES:
+        result = score['scores'][route]['all']
+        correct = np.asarray(result['correct'])
+        if (result['count'] != 1800 or correct.shape != (7, len(MODES)) or correct.dtype.kind not in 'iu'
+                or not ((0 <= correct) & (correct <= 1800)).all()):
+            raise ValueError(f'Invalid single-seed source correctness matrix for {route}')
+        r69 = correct[:, MODES.index('r69')]
+        for arm in ARMS:
+            row = correct[:, MODES.index(f'{arm}_final')]
+            passed[arm] &= bool(row[0] >= r69[0] and row[1:].sum() > r69[1:].sum())
+    return dict(source_run=SOURCE_RUN, arms=[arm for arm in ARMS if passed[arm]])
+
+
+def replay_root(rt):
+    project = Path(rt['project'])
+    root = project / 'runs' / RUN
+    archived = read(project / 'releases' / f'{RUN}-release' / 'runtime.json')
+    if (archived['run_id'] != RUN or archived['code_commit'] != REPLAY_COMMIT or Path(archived['run_root']) != root
+            or read(root / 'state.json')['status'] != 'ANALYZED'):
+        raise ValueError('Expected the independent frozen raw and R69 replay')
+    return root / 'predictions'
+
+
+def spectral_models(rt):
+    from experiments import pamf_unrolled_restore
+    from experiments.pamf_unrolled_restore.wisig_spectral_precision_source import models_from
+
+    selection = read(Path(rt['run_root']) / 'source-qualification.json')
+    path = str(Path(rt['native_code']) / 'experiments' / 'pamf_unrolled_restore')
+    pamf_unrolled_restore.__path__.append(path)
+    try:
+        root = Path(rt['project']) / 'runs' / selection['source_run']
+        models = dict(zip(selection['arms'], (model for model, _ in models_from({'run_root': root}, selection['arms'])),
+                          strict=True))
+    finally:
+        pamf_unrolled_restore.__path__.remove(path)
+    return models
+
+
+def restore_spectral(model, iq):
+    from experiments.pamf_unrolled_restore.wisig_uncertain_prior import as_complex, as_iq
+
+    stages, _ = model.stages(model.analyze(as_complex(iq)))
+    restored = as_iq(stages[-1])
+    if restored.shape != iq.shape or not torch.isfinite(restored).all():
+        raise ValueError('Spectral precision recovery must process every received window')
+    return restored
+
+
 def matching_raw(parent, fresh):
-    # The frozen candidates bypass to their archived raw classes. Validate
-    # parity before comparing them with any freshly evaluated baseline.
     if not np.array_equal(parent['raw'], fresh['raw']):
-        raise ValueError('Rerun raw predictions differ from the frozen candidate bypass')
+        raise ValueError('Rerun raw predictions differ from the frozen paired raw predictions')
     return int(np.count_nonzero(parent['R69'] != fresh['R69']))
 
 
@@ -66,13 +147,21 @@ def smoke(rt):
         raise ValueError('Registered Full source views required for smoke')
     raw = tensor(clean[cal[:8]], 'cuda:0')
     distorted = tensor(np.load(folder / 'full.npy', mmap_mode='r', allow_pickle=False)[stress_ids], 'cuda:0')
+    models = spectral_models(rt) if rt.get('spectral_main') else {}
     for pack in (raw, distorted):
         classify(heads, pack)
         classify(heads, restore(pack)[0])
+        for model in models.values():
+            classify(heads, restore_spectral(model, pack))
     latency = single_packet_median(lambda: restore(distorted[:1]))
-    write(Path(rt['run_root']) / 'smoke.json', dict(status='PASS', source_rows=16, target_reads=0,
-          source_classifier_seeds=list(SEEDS), r69_parameters=266951,
-          r69_active_B1_ms=latency, device=torch.cuda.get_device_name()))
+    candidate = {name: dict(parameters=sum(p.numel() for p in model.parameters()),
+                            active_B1_ms=single_packet_median(lambda: restore_spectral(model, distorted[:1])))
+                 for name, model in models.items()}
+    proof = dict(status='PASS', source_rows=16, target_reads=0, source_classifier_seeds=list(SEEDS),
+                 r69_parameters=266951, r69_active_B1_ms=latency, device=torch.cuda.get_device_name())
+    if candidate:
+        proof['candidates'] = candidate
+    write(Path(rt['run_root']) / 'smoke.json', proof)
     print('WISIG_R69_RECHECK_SOURCE_PASS', latency, flush=True)
 
 
@@ -101,10 +190,16 @@ def predict(rt, case):
     manifest, ids, positions = handle(path, first['classes'])
     if len(ids) != COUNTS[split] or manifest['channel'] != f'{route}/post_sync/noeq':
         raise ValueError('Wrong paired Main split observation manifest')
-    candidate = Path(c['run_root']) / 'predictions' / f'default-{case}'
-    previous, _ = closed_predictions(candidate, ids, 'default', route, split, (*FRESH, *CANDIDATE))
+    spectral = rt.get('spectral_main', False)
+    models = {}
+    if spectral:
+        models = spectral_models(rt)
+        previous, _ = closed_predictions(replay_root(rt) / case, ids, 'default', route, split, FRESH)
+    else:
+        candidate = Path(c['run_root']) / 'predictions' / f'default-{case}'
+        previous, _ = closed_predictions(candidate, ids, 'default', route, split, (*FRESH, *CANDIDATE))
     restore = original_r69(Path(c['parent_root']))
-    output = {}
+    output, activity = {}, {}
     started = perf_counter()
     for j, view in enumerate(VIEWS):
         file = Path(manifest['clean_ref']) if view == 'clean' else Path(manifest['observations_root']) / f'{view}.npy'
@@ -112,7 +207,8 @@ def predict(rt, case):
         matched = len(data) == len(ids) if positions is None else 0 <= positions.min() <= positions.max() < len(data)
         if not matched or data.shape[1:] != (2, 256) or data.dtype != np.float32:
             raise ValueError('Main split received IQ shape/order differs')
-        values = {m: np.empty((len(SEEDS), len(ids)), dtype=np.uint8) for m in FRESH}
+        values = {m: np.empty((len(SEEDS), len(ids)), dtype=np.uint8) for m in (*FRESH, *models)}
+        active = dict.fromkeys(models, 0)
         for start in range(0, len(ids), BATCH):
             ix = slice(start, min(start + BATCH, len(ids)))
             iq = tensor(data[ix if positions is None else positions[ix]], 'cuda:0')
@@ -121,6 +217,11 @@ def predict(rt, case):
                 raise ValueError(f'Raw replay parity differs for {case}/{view} at row {start}')
             values['raw'][:, ix] = raw
             values['R69'][:, ix] = classify(heads, restore(iq)[0])
+            for name, model in models.items():
+                values[name][:, ix] = classify(heads, restore_spectral(model, iq))
+                active[name] += len(iq)
+        if spectral:
+            activity[view] = active
         output.update({f'{m}__{view}': array for m, array in values.items()})
         print('WISIG_R69_RECHECK_VIEW', route, split, view, len(ids), flush=True)
     folder = root / 'predictions' / case
@@ -129,7 +230,12 @@ def predict(rt, case):
         np.savez(stream, ids=ids, **output)
     write(folder / 'complete.json', dict(status='PREDICTIONS_FROZEN', profile='default', route=route, split=split,
           count=len(ids), seeds=list(SEEDS), views=list(VIEWS), truth_read=False,
-          active={}, seconds=perf_counter()-started))
+          active=activity, seconds=perf_counter()-started))
+
+
+def require_spectral_coverage(activity, views, arms, count):
+    if set(activity) != set(views) or any(row != dict.fromkeys(arms, count) for row in activity.values()):
+        raise ValueError('All clean and practical packets must actually run each selected recovery model')
 
 
 def score(rt):
@@ -141,6 +247,11 @@ def score(rt):
 
     c = parent_runtime(rt)
     root, parent = Path(rt['run_root']), Path(c['run_root'])
+    spectral = rt.get('spectral_main', False)
+    selection = read(root / 'source-qualification.json') if spectral else None
+    arms = tuple(selection['arms']) if spectral else CANDIDATE
+    if not arms:
+        raise ValueError('No registered recovery arm qualified for the Main split')
     frozen = read(root / 'state.json')
     if (frozen['status'] != 'PREDICTIONS_FROZEN' or frozen['cases'] != list(CASES)
             or frozen['truth_read']):
@@ -154,17 +265,25 @@ def score(rt):
         if split in ids_by_split and not np.array_equal(ids_by_split[split], ids):
             raise ValueError('Main physical order differs across paired routes')
         ids_by_split[split] = ids
-        fresh, _ = closed_predictions(root / 'predictions' / case, ids, 'default', route, split, FRESH)
-        previous, activities = closed_predictions(parent / 'predictions' / f'default-{case}', ids, 'default',
-                                                   route, split, (*FRESH, *CANDIDATE))
+        fresh, live_activity = closed_predictions(root / 'predictions' / case, ids, 'default', route, split,
+                                                    (*FRESH, *arms) if spectral else FRESH)
+        if spectral:
+            previous, _ = closed_predictions(replay_root(rt) / case, ids, 'default', route, split, FRESH)
+            require_spectral_coverage(live_activity, VIEWS, arms, len(ids))
+            matrix[route, split] = fresh
+            activity[case] = live_activity
+        else:
+            previous, activities = closed_predictions(parent / 'predictions' / f'default-{case}', ids, 'default',
+                                                       route, split, (*FRESH, *arms))
+            matrix[route, split] = {**fresh, **{name: previous[name] for name in arms}}
+            activity[case] = activities
         drift[case] = matching_raw(previous, fresh)
-        activity[case] = activities
-        matrix[route, split] = {**fresh, **{name: previous[name] for name in CANDIDATE}}
     if np.intersect1d(*(ids_by_split[s] for s in SPLITS)).size:
         raise ValueError('Main split union must have 168000 disjoint physical packets')
     for split in SPLITS:
-        if not np.array_equal(matrix['full', split]['raw'][:, 0], matrix['residual', split]['raw'][:, 0]):
-            raise ValueError('Both routes must retain the same direct clean decisions')
+        for name in ('raw', *arms) if spectral else ('raw',):
+            if not np.array_equal(matrix['full', split][name][:, 0], matrix['residual', split][name][:, 0]):
+                raise ValueError(f'Both routes must retain the same clean decisions for {name}')
 
     truth = historical(Path(c['recognizer_run']), 'score', SEEDS[0])
     if truth['classes'] != original['classes']:
@@ -184,22 +303,23 @@ def score(rt):
         for part in (*SPLITS, 'combined'):
             parts = SPLITS if part == 'combined' else (part,)
             predictions = {m: np.concatenate([matrix[route, s][m] for s in parts], axis=2)
-                           for m in (*FRESH, *CANDIDATE)}
+                           for m in (*FRESH, *arms)}
             y = np.concatenate([labels[s] for s in parts])
             rx = np.concatenate([receivers[s] for s in parts])
             result[route][part] = cells(predictions, y, rx, rng)
         all_rows = result[route]['combined']['absolute']
         r69 = all_rows['R69']
         checks[route] = {}
-        for name in CANDIDATE:
+        for name in arms:
             row = all_rows[name]
             checks[route][name] = dict(
                 six_over_r69=sum(row[v]['correct'] for v in VIEWS[1:]) > sum(r69[v]['correct'] for v in VIEWS[1:]),
                 clean_held_by_seed=all(a['correct'] >= b['correct'] for a,b in
                                        zip(row['clean']['by_seed'], r69['clean']['by_seed'], strict=True)))
     write(root / 'scores.json', dict(status='TARGET_SCORED', truth_last=True,
-          candidate_parent=PARENT, seeds=list(SEEDS), bootstrap_replicates=REPLICATES,
-          raw_parity='exact', r69_replay_drift=drift, results=result, acceptance=checks, activation=activity))
+          candidate_parent=selection['source_run'] if spectral else PARENT, seeds=list(SEEDS),
+          bootstrap_replicates=REPLICATES, raw_parity='exact', r69_replay_drift=drift,
+          results=result, acceptance=checks, activation=activity))
 
 
 def dispatch(runtime):
@@ -211,6 +331,13 @@ def dispatch(runtime):
     (root / 'predictions').mkdir()
     state = root / 'state.json'
     try:
+        if rt.get('spectral_main'):
+            selection = qualified_spectral(rt)
+            write(root / 'source-qualification.json', selection)
+            if not selection['arms']:
+                write(state, dict(status='SOURCE_REJECTED', target_reads=0))
+                return
+            replay_root(rt)
         fields = ['nvidia-smi', '--query-gpu=index,utilization.gpu,memory.free', '--format=csv,noheader,nounits']
         inventory = (tuple(map(int, r.split(','))) for r in subprocess.check_output(fields, text=True).splitlines())
         rt['allowed_gpus'] = [idx for _, _, idx in sorted((load, -free, idx) for idx, load, free in inventory)]
@@ -260,6 +387,7 @@ def main():
         cmd.add_argument('runtime', type=Path)
         cmd.add_argument('case')
     pub = commands.add_parser('publish')
+    pub.add_argument('--spectral-main', action='store_true')
     for field in ('repo', 'output', 'context', 'ssh-config'):
         pub.add_argument('--'+field, type=Path, required=True)
     args = parser.parse_args()
@@ -267,10 +395,21 @@ def main():
         ctx = read(args.context)
         c = {key: ctx[key] for key in ('project', 'python', 'frozen_sources')}
         project = PurePosixPath(c['project'])
-        parent = str(project / 'releases' / f'{PARENT}-release')
-        c.update(run_id=RUN, runner=__spec__.name, code_commit=release_commit(args.repo),
-                 release_root=str(project/'releases'/f'{RUN}-release'), run_root=str(project/'runs'/RUN),
-                 parent_release=parent, external_releases=[parent, str(project/'runs'/PARENT)],
+        parent_name, name = PARENT, RUN
+        if args.spectral_main:
+            from experiments.pamf_unrolled_restore.wisig_forced_clean import FORCED
+            from experiments.pamf_unrolled_restore.wisig_spectral_precision_source import REFERENCE, RUN as SOURCE_RUN
+
+            parent_name, name = FORCED, SPECTRAL_MAIN
+            c['native_code'] = str(project / 'releases' / f'{REFERENCE}-release')
+            dependencies = [c['native_code'], str(project / 'runs' / SOURCE_RUN), str(project / 'runs' / RUN)]
+        else:
+            dependencies = []
+        parent = str(project / 'releases' / f'{parent_name}-release')
+        c.update(run_id=name, runner=__spec__.name, code_commit=release_commit(args.repo),
+                 release_root=str(project/'releases'/f'{name}-release'), run_root=str(project/'runs'/name),
+                 spectral_main=args.spectral_main, parent_release=parent,
+                 external_releases=[parent, str(project/'runs'/parent_name), *dependencies],
                  max_workers=2, max_compute_processes=8)
         release(args.repo, args.output, c, args.ssh_config)
     elif args.action == 'dispatch':

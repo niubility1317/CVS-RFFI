@@ -14,6 +14,8 @@ REFERENCE = '20261125-phase1-wisig-native-fir-source-m4-r01'
 REFERENCE_COMMIT = 'ef9f4c227ce57c79dc17a3aeb599395cc25d883b'
 ARMS = ('fixed_precision', 'spectral_precision')
 ROUTES = ('full', 'residual')
+VIEWS = ('clean', 'practical_high', 'practical_mid', 'practical_low_suburban',
+         'practical_high_urban', 'practical_mid_urban', 'practical_low_urban')
 MODES = ('direct', 'r69', *(f'{arm}_{name}' for arm in ARMS for name in ('map_1', 'final')))
 COMPARISONS = (('spectral_precision_map_1', 'fixed_precision_map_1'),
                ('spectral_precision_final', 'fixed_precision_final'),
@@ -115,12 +117,14 @@ def train(config, arm, *, smoke):
     write(root / f'{arm}-complete.json', evidence)
 
 
-def models_from(current):
+def models_from(current, arms=ARMS):
     import torch
     from wisig_spectral_precision import PrecisionFIR
 
     root = Path(current['run_root'])
-    for arm in ARMS:
+    for arm in arms:
+        if arm not in ARMS:
+            raise ValueError('Expected a registered frozen source arm')
         meta = read(root / f'{arm}-complete.json')
         ckpt = torch.load(root / f'{arm}.pt', map_location='cpu', weights_only=True)
         if ckpt['evidence'] != meta or any(meta[k] != v for k, v in proof(arm).items()):
@@ -239,9 +243,7 @@ def dispatch(runtime):
         (root / 'predictions').mkdir()
         status('SOURCE_PREDICTING')
         schedule(rt, [('predict', route) for route in ROUTES], launch)
-        views = ('clean', 'practical_high', 'practical_mid', 'practical_low_suburban',
-                 'practical_high_urban', 'practical_mid_urban', 'practical_low_urban')
-        freeze_predictions(root / 'predictions', views)
+        freeze_predictions(root / 'predictions', VIEWS)
         status('PREDICTIONS_FROZEN')
         if launch(rt, 'score', 'independent').wait():
             raise ValueError('Independent source scorer failed')

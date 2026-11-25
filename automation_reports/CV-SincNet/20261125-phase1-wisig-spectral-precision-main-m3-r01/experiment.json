@@ -1,0 +1,252 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261125-phase1-wisig-spectral-precision-main-m3-r01",
+  "group_id": "phase1-wisig-observable-recovery",
+  "display_name": "WiSig 观测权重 Main split 双路线正式配对",
+  "description": "Conditional evaluation of source-qualified solver variants on registered Main split, with same-run R69 and three frozen Tri-SIG-TIME readers.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "official_test",
+    "restoration",
+    "full_and_residual",
+    "all_packets"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261125-phase1-wisig-spectral-precision-source-m2-r01",
+    "20261125-phase1-wisig-r69-fresh-main-m3-r01",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa and WiSig restoration research goal, single-seed source qualification.",
+  "code": {
+    "commit": "Committed evaluator verified by immutable release at publication",
+    "checkout": "E:/codex/home/worktrees/lora-dura-stage-supervision/standard_ce_baselines_20261010",
+    "environment": "N607 fixed forced-WiSig archive Python; pinned native FIR modules for the trained candidate",
+    "cwd": "registered forced-WiSig release for workers"
+  },
+  "data": {
+    "dataset": "WiSig ManySig",
+    "version": "Registered WiSig Main split, cross_rx and cross_both",
+    "representation": "Native float32 [2,256], 25 MS/s, paired full and residual source panel",
+    "contract_ref": "Original frozen WiSig Main split native post_sync/noeq view handles",
+    "physical_ids_ref": "Independent disjoint per-split Main physical ID lists in original manifests",
+    "label_map_ref": "Three frozen Tri-SIG-TIME shared class ordering, independently checked against truth side",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": 16,
+      "V": 1800
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Fixed prior blind replay order, fresh raw parity, and full case/view closures",
+    "support_query_ref": null,
+    "leo_config_ref": "runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json"
+  },
+  "permissions": {
+    "regime": "source_frozen_eval",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Locked-key comparisons for cross_rx 126000, cross_both 42000 and disjoint union 168000, two routes. Only independent scorer accesses target labels."
+  },
+  "checkpoint": {
+    "initialization": "Exact step-40000 weights from one qualified training seed",
+    "sources": [
+      {
+        "ref": "20261125-phase1-wisig-spectral-precision-source-m2-r01",
+        "role": "Both arms may qualify independently. One frozen G per arm shared between routes."
+      },
+      {
+        "ref": "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+        "role": "Frozen original R69, rerun on the same packets inside each job."
+      },
+      {
+        "ref": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+        "role": "Same three frozen official Tri-SIG-TIME readers."
+      },
+      {
+        "ref": "20261125-phase1-wisig-r69-fresh-main-m3-r01",
+        "role": "Paired blind raw verification and observational rerun drift reporting."
+      }
+    ],
+    "contract_check_ref": "qualified_spectral, reference runtime, strict source-only checkpoint loader and real source smoke",
+    "provenance_verdict": "Training provenance fixed by registered source run with source-only IQ. No inherited R69 or F in training.",
+    "selection_rule": "Admit each source arm only if both source routes strictly beat R69 six scenes and retain the R69 clean correct counts. No target feedback."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex goal 01a208a9-57df-7f82-a078-cd9477adf998",
+    "gpu_policy": "At most two concurrent case workers on independently eligible GPUs; retain all current healthy jobs.",
+    "remote_run_root": "runs/20261125-phase1-wisig-spectral-precision-main-m3-r01",
+    "remote_log_root": "runs/20261125-phase1-wisig-spectral-precision-main-m3-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261125-phase1-wisig-spectral-precision-main-m3-r01",
+    "launch_command": "python -m experiments.pamf_unrolled_restore.wisig_r69_main_recheck publish --spectral-main --repo . --context E:/type10-7/local_artifacts/20261125-phase1-wisig-spectral-precision-main-m3-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261125-phase1-wisig-spectral-precision-main-m3-r01/release",
+    "stop_rule": "A failed source scientific rule closes the case before target IQ. Technical stop for bind/smoke/finite/IQ order/raw parity or closure failures. Preserve partial artifacts."
+  },
+  "expected_artifacts": [
+    "source-qualification.json",
+    "smoke.json",
+    "state.json",
+    "predictions/{route}-{split}/decisions.npz",
+    "predictions/{route}-{split}/complete.json",
+    "scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "correct counts",
+      "accuracy",
+      "Macro F1 for each frozen reader",
+      "clean retention",
+      "paired gains and losses",
+      "95% uncertainty",
+      "receiver breakdown",
+      "same-GPU B1",
+      "R69 replay drift"
+    ],
+    "dimensions": [
+      "selected arm",
+      "route",
+      "split",
+      "receiver",
+      "frozen reader seed",
+      "scene"
+    ],
+    "prediction_ref": "runs/20261125-phase1-wisig-spectral-precision-main-m3-r01/predictions",
+    "scorer_ref": "wisig_r69_main_recheck score in separate CPU worker after four blind shards close"
+  },
+  "rows": [
+    {
+      "row_id": "fixed_precision",
+      "method": "fixed_precision with three paired frozen Tri-SIG-TIME readers",
+      "purpose": "registered_source_qualified_formal",
+      "config_ref": "experiments/pamf_unrolled_restore/wisig_r69_main_recheck.py",
+      "resolved_config_ref": "releases/20261125-phase1-wisig-spectral-precision-main-m3-r01-release/runtime.json",
+      "data_overrides": {
+        "source_qualification": "dual routes independently",
+        "reader_seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "Main_split_physical_counts": {
+          "cross_rx": 126000,
+          "cross_both": 42000,
+          "combined": 168000
+        }
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026092701,
+        "data": 2026092703,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Model seed identifies the trained restorer. Evaluation uses the three separately listed frozen reader seeds, not three refits of the restorer.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "No fit; full current 168000 physical packets per route; 7 views; three reader decisions on each G output",
+      "output_root": "runs/20261125-phase1-wisig-spectral-precision-main-m3-r01/predictions#fixed_precision",
+      "log_path": "runs/20261125-phase1-wisig-spectral-precision-main-m3-r01/logs",
+      "command": "archived Python wisig_r69_main_recheck.py dispatch releases/20261125-phase1-wisig-spectral-precision-main-m3-r01-release/runtime.json",
+      "expected_artifacts": [
+        "source-qualification.json",
+        "smoke.json",
+        "state.json",
+        "predictions/{route}-{split}/decisions.npz",
+        "predictions/{route}-{split}/complete.json",
+        "scores.json"
+      ]
+    },
+    {
+      "row_id": "spectral_precision",
+      "method": "spectral_precision with three paired frozen Tri-SIG-TIME readers",
+      "purpose": "registered_source_qualified_formal",
+      "config_ref": "experiments/pamf_unrolled_restore/wisig_r69_main_recheck.py",
+      "resolved_config_ref": "releases/20261125-phase1-wisig-spectral-precision-main-m3-r01-release/runtime.json",
+      "data_overrides": {
+        "source_qualification": "dual routes independently",
+        "reader_seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "Main_split_physical_counts": {
+          "cross_rx": 126000,
+          "cross_both": 42000,
+          "combined": 168000
+        }
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026092701,
+        "data": 2026092703,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Model seed identifies the trained restorer. Evaluation uses the three separately listed frozen reader seeds, not three refits of the restorer.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "No fit; full current 168000 physical packets per route; 7 views; three reader decisions on each G output",
+      "output_root": "runs/20261125-phase1-wisig-spectral-precision-main-m3-r01/predictions#spectral_precision",
+      "log_path": "runs/20261125-phase1-wisig-spectral-precision-main-m3-r01/logs",
+      "command": "archived Python wisig_r69_main_recheck.py dispatch releases/20261125-phase1-wisig-spectral-precision-main-m3-r01-release/runtime.json",
+      "expected_artifacts": [
+        "source-qualification.json",
+        "smoke.json",
+        "state.json",
+        "predictions/{route}-{split}/decisions.npz",
+        "predictions/{route}-{split}/complete.json",
+        "scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Conditional formal plan, not launched. Does not access target IQ before qualifying source result and true-checkpoint source smoke.",
+    "Each candidate actually restores each clean and practical packet. Original R69 is rerun in each case, rather than relying only on archived R69."
+  ],
+  "registered_at": "2026-11-25T14:24:42+00:00"
+}
