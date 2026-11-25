@@ -30,6 +30,8 @@ from experiments.pamf_lora_main.w24_sat_aug import RUN as AUG_RUN
 
 RUN = '20261125-diagnostic-lora-w24-distortion-source-s2026112559-r01'
 SWEEP_RUN = '20261125-diagnostic-lora-w24-noise-removal-source-s2026112559-r01'
+APERTURE_RUN = '20261125-diagnostic-lora-w24-noise-aperture-source-s2026112559-r01'
+APERTURE_REFERENCE = '20261125-diagnostic-lora-w24-readout-sweep-source-s2026112559-r01'
 PANEL_SEED = 2026112559
 PER_RX = 60
 VIEWS_PRACTICAL = VIEWS[1:]
@@ -150,6 +152,11 @@ def load_classifier(rt, contract, device):
 
 def predict_source(runtime):
     rt = read(runtime)
+    if rt.get('aperture_noise'):
+        from experiments.pamf_lora_main.w24_aperture_noise_audit import predict
+
+        predict(rt)
+        return
     if rt.get('noise_sweep'):
         predict_sweep(rt)
         return
@@ -239,10 +246,7 @@ def predict_sweep(rt):
                         source_oracle_only=True)))
 
 
-def score_source(runtime, *, modes=MODES, output=None):
-    rt = read(runtime)
-    root = Path(rt['run_root']) if output is None else Path(output)
-    source = Path(rt['source_root'])
+def frozen_source_panel(source, root, modes):
     rows, rx, ids = panel(source, source_contract(source))
     frozen = read(root / 'source-predictions.json')
     if (frozen['status'] != 'PREDICTIONS_FROZEN' or frozen['physical_ids'] != ids
@@ -256,6 +260,14 @@ def score_source(runtime, *, modes=MODES, output=None):
     if (preds.shape != (len(VIEWS), len(modes), len(rows))
             or preds.dtype.kind not in 'iu' or preds.min() < 0 or preds.max() >= 10):
         raise ValueError('Source predictions have invalid shape or class IDs')
+    return rows, rx, preds, frozen['waveform']
+
+
+def score_source(runtime, *, modes=MODES, output=None, contrasts=()):
+    rt = read(runtime)
+    root = Path(rt['run_root']) if output is None else Path(output)
+    source = Path(rt['source_root'])
+    rows, rx, preds, waveform = frozen_source_panel(source, root, modes)
     with np.load(source / 'V_metadata.npz', allow_pickle=False) as metadata:
         truth = metadata['y'][rows]
     hits = preds == truth
@@ -274,9 +286,20 @@ def score_source(runtime, *, modes=MODES, output=None):
             CI95_net_six=np.quantile(change[samples].sum(1), [.025, .975]).tolist(),
             CI95_net_low=np.quantile(low[samples].sum(1), [.025, .975]).tolist(),
             net_six_by_rx={r: int(change[rx == j].sum()) for j, r in enumerate(SOURCE)})
-    write(root / 'source-scores.json', dict(status='ANALYZED', n_packets=len(rows),
+    paired = {}
+    for candidate, reference in contrasts:
+        change = hits[:, modes.index(candidate)].astype(np.int16) - hits[:, modes.index(reference)].astype(np.int16)
+        six = change[1:].sum(0)
+        paired[f'{candidate}_vs_{reference}'] = dict(
+            net_six=int(six.sum()), net_low=int(change[-1].sum()),
+            CI95_net_six=np.quantile(six[samples].sum(1), [.025, .975]).tolist(),
+            CI95_net_low=np.quantile(change[-1, samples].sum(1), [.025, .975]).tolist())
+    report = dict(status='ANALYZED', n_packets=len(rows),
           n_practical=len(rows) * len(VIEWS_PRACTICAL), source_truth_last=True,
-          target_reads=0, scores=readout, waveform=frozen['waveform']))
+          target_reads=0, scores=readout, waveform=waveform)
+    if paired:
+        report['paired_contrasts'] = paired
+    write(root / 'source-scores.json', report)
 
 
 def dispatch(runtime):
@@ -319,25 +342,40 @@ def main():
     publish = sub.add_parser('publish')
     for key in ('repo', 'context', 'ssh-config', 'output'):
         publish.add_argument('--' + key, type=Path, required=True)
-    publish.add_argument('--noise-sweep', action='store_true')
+    diagnostics = publish.add_mutually_exclusive_group()
+    diagnostics.add_argument('--noise-sweep', action='store_true')
+    diagnostics.add_argument('--aperture-noise', action='store_true')
     args = parser.parse_args()
     if args.action == 'publish':
         ctx = read(args.context)
         rt = {k: ctx[k] for k in ('project', 'python', 'frozen_sources')}
         project = PurePosixPath(rt['project'])
-        run = SWEEP_RUN if args.noise_sweep else RUN
+        run = APERTURE_RUN if args.aperture_noise else SWEEP_RUN if args.noise_sweep else RUN
+        allowed_gpus = [2, 7, 4]
+        if args.aperture_noise:
+            allowed_gpus = [6, 3, 2, 7, 0, 5, 4, 1]
+        elif args.noise_sweep:
+            allowed_gpus = [6, 0, 5, 3, 2, 7, 4, 1]
         rt.update(run_id=run, code_commit=release_commit(args.repo), runner=__spec__.name,
                   release_root=str(project / 'releases' / f'{run}-release'),
-                  run_root=str(project / 'runs' / run), noise_sweep=args.noise_sweep,
+                  run_root=str(project / 'runs' / run), noise_sweep=args.noise_sweep, aperture_noise=args.aperture_noise,
                   source_root=str(project / 'releases' / f'{DATA_RUN}-release' / 'data/source'),
                   classifier_root=str(project / 'runs' / AUG_RUN),
                   w24_release_root=str(project / 'releases' / f'{W24_RUN}-release'),
-                  allowed_gpus=[6, 0, 5, 3, 2, 7, 4, 1] if args.noise_sweep else [2, 7, 4], cpu_workers=8)
-        if args.noise_sweep:
+                  allowed_gpus=allowed_gpus, cpu_workers=8)
+        if args.aperture_noise:
+            rt['external_releases'] = [str(project/'runs'/APERTURE_REFERENCE)]
+        elif args.noise_sweep:
             rt['external_releases'] = [str(project/'runs'/RUN)]
         release(args.repo, args.output, rt, args.ssh_config)
     elif args.action == 'score-source':
-        score_source(args.runtime, modes=SWEEP_MODES if read(args.runtime).get('noise_sweep') else MODES)
+        rt = read(args.runtime)
+        if rt.get('aperture_noise'):
+            from experiments.pamf_lora_main.w24_aperture_noise_audit import score
+
+            score(args.runtime)
+        else:
+            score_source(args.runtime, modes=SWEEP_MODES if rt.get('noise_sweep') else MODES)
     else:
         {'dispatch': dispatch, 'predict-source': predict_source}[args.action](
             args.runtime)
