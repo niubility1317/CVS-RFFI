@@ -1,0 +1,772 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261125-phase1-pamf-report-gap-sixscene-m18-r01",
+  "group_id": "phase1-pamf-report-gap-sixscene",
+  "display_name": "报告缺项：优化 Tri 跨接收机六景与 DURA 配对测试",
+  "description": "六个原报告数据设置、各三个既有 E50 优化 Tri；固定同数据契约 DURA-LU 恢复缓存，跨接收机 clean 与六个 practical，raw 和 DURA 配对；无新训练。",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "PAMF",
+    "Tri",
+    "DURA",
+    "report-gap"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261120-phase1-pamf-tri-setting-profiles-clean-m33-r01",
+    "20261121-phase1-pamf-tri-label01-earlyanchor-reach-clean-m2-r01",
+    "20261121-phase1-pamf-tri-label01-earlyanchor-seedcheck-clean-m2-r01",
+    "20261027-phase1-pamf-paper-completion-m119-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-11-25 用户明确要求完成报告空缺测试；跨接收机为主，沿用原三种子及六景；无目标数据训练。",
+  "code": {
+    "commit": "release uses the single pushed Git commit",
+    "checkout": "pamf-repl-weight-diagnosis current checkout",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig ManySig",
+    "version": "20261023 validated eq1 frozen Phase1 caches",
+    "representation": "FP32 2x256 normalized IQ",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-paper-completion-m119-r03-release/context.json#handles",
+    "physical_ids_ref": "Each protocol cross_rx validated manifest/index in frozen context",
+    "label_map_ref": "same source contract classes",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "protocol-specific classes in frozen context",
+    "roles": {
+      "L_s": "existing original per-protocol source contract",
+      "U_s": "original source U, TX hidden",
+      "V": "existing source validation only"
+    },
+    "train_ratio": "1% and 5% L use historical fixed V; six-source and splits and ten-class retain own contracts",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "VALIDATED_ONCE original seven-view manifests",
+    "support_query_ref": null,
+    "leo_config_ref": "six residual practical, frozen canonical views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "frozen prediction; independent truth-last scoring",
+    "external_method_exception": null,
+    "claim_scope": "Phase1 cross receiver closed-set, terrestrial IQ plus simulated satellite impairment; model selection historically exposed"
+  },
+  "checkpoint": {
+    "initialization": "existing same-protocol frozen E50 three-view Tri, no new training",
+    "sources": [
+      "20261120-phase1-pamf-tri-setting-profiles-clean-m33-r01",
+      "20261121-phase1-pamf-tri-label01-earlyanchor-reach-clean-m2-r01",
+      "20261121-phase1-pamf-tri-label01-earlyanchor-seedcheck-clean-m2-r01",
+      "20261027-phase1-pamf-paper-completion-m119-r03"
+    ],
+    "contract_check_ref": "full_suite.frozen_source, same config source roles, physical ID and model seed; exact LU DURA cache contract",
+    "provenance_verdict": "Runtime checks fixed recipe, source contract, own ancestor chain, target false and previous frozen readout",
+    "selection_rule": "user-fixed latest Tri model per setting and seed, no target selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex-20261125-phase1-pamf-report-gap-sixscene-m18-r01",
+    "gpu_policy": "GPU 0-7, max 1 own GPU worker per card, at least 12000 MiB available, 1 CPU scorer; preserve unrelated work",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/logs",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261125-phase1-pamf-report-gap-sixscene-m18-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release/runtime.json",
+    "stop_rule": "Stop new dispatch at first systemic technical failure, preserve all active processes and outputs; low score never triggers stopping"
+  },
+  "expected_artifacts": [
+    "source-only real checkpoint smoke",
+    "18 complete raw + DURA-LU seven-view predictions",
+    "18 independent truth-last scores",
+    "per-seed overall and three-seed six-scene mean and SD"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "paired corrections"
+    ],
+    "dimensions": [
+      "setting",
+      "seed",
+      "receiver",
+      "date",
+      "transmitter",
+      "view",
+      "route"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/readouts/{row}/predictions",
+    "scorer_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/readouts/{row}/scores"
+  },
+  "rows": [
+    {
+      "row_id": "receiver_split_1-tri-s2026092701",
+      "method": "user-fixed setting-specific Tri SIG-TIME SSL",
+      "purpose": "cross_receiver_sixscene_and_DURA",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__receiver_split_1-tri-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__receiver_split_1-tri-s2026092701.json",
+      "data_overrides": {
+        "setting": "receiver_split_1",
+        "protocol_id": "F1_rx_repartition_r01",
+        "restoration": "same-contract frozen DURA-LU",
+        "task": "cross_rx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Historical fixed training and received-IQ realization; no new randomization. Historical augmentation seed documented in source config.",
+      "k": null,
+      "scenario": "clean plus six practical, raw and DURA-LU",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Inference on full original cross-RX physical records; raw clean frozen reuse",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/readouts/receiver_split_1-tri-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/logs/predict__receiver_split_1-tri-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release/runtime.json",
+      "expected_artifacts": [
+        "prediction complete",
+        "independent score complete"
+      ]
+    },
+    {
+      "row_id": "receiver_split_1-tri-s2026092702",
+      "method": "user-fixed setting-specific Tri SIG-TIME SSL",
+      "purpose": "cross_receiver_sixscene_and_DURA",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__receiver_split_1-tri-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__receiver_split_1-tri-s2026092702.json",
+      "data_overrides": {
+        "setting": "receiver_split_1",
+        "protocol_id": "F1_rx_repartition_r01",
+        "restoration": "same-contract frozen DURA-LU",
+        "task": "cross_rx"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Historical fixed training and received-IQ realization; no new randomization. Historical augmentation seed documented in source config.",
+      "k": null,
+      "scenario": "clean plus six practical, raw and DURA-LU",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Inference on full original cross-RX physical records; raw clean frozen reuse",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/readouts/receiver_split_1-tri-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/logs/predict__receiver_split_1-tri-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release/runtime.json",
+      "expected_artifacts": [
+        "prediction complete",
+        "independent score complete"
+      ]
+    },
+    {
+      "row_id": "receiver_split_1-tri-s2026092703",
+      "method": "user-fixed setting-specific Tri SIG-TIME SSL",
+      "purpose": "cross_receiver_sixscene_and_DURA",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__receiver_split_1-tri-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__receiver_split_1-tri-s2026092703.json",
+      "data_overrides": {
+        "setting": "receiver_split_1",
+        "protocol_id": "F1_rx_repartition_r01",
+        "restoration": "same-contract frozen DURA-LU",
+        "task": "cross_rx"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Historical fixed training and received-IQ realization; no new randomization. Historical augmentation seed documented in source config.",
+      "k": null,
+      "scenario": "clean plus six practical, raw and DURA-LU",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Inference on full original cross-RX physical records; raw clean frozen reuse",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/readouts/receiver_split_1-tri-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/logs/predict__receiver_split_1-tri-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release/runtime.json",
+      "expected_artifacts": [
+        "prediction complete",
+        "independent score complete"
+      ]
+    },
+    {
+      "row_id": "receiver_split_2-tri-s2026092701",
+      "method": "user-fixed setting-specific Tri SIG-TIME SSL",
+      "purpose": "cross_receiver_sixscene_and_DURA",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__receiver_split_2-tri-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__receiver_split_2-tri-s2026092701.json",
+      "data_overrides": {
+        "setting": "receiver_split_2",
+        "protocol_id": "F2_rx_repartition_r01",
+        "restoration": "same-contract frozen DURA-LU",
+        "task": "cross_rx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Historical fixed training and received-IQ realization; no new randomization. Historical augmentation seed documented in source config.",
+      "k": null,
+      "scenario": "clean plus six practical, raw and DURA-LU",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Inference on full original cross-RX physical records; raw clean frozen reuse",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/readouts/receiver_split_2-tri-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/logs/predict__receiver_split_2-tri-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release/runtime.json",
+      "expected_artifacts": [
+        "prediction complete",
+        "independent score complete"
+      ]
+    },
+    {
+      "row_id": "receiver_split_2-tri-s2026092702",
+      "method": "user-fixed setting-specific Tri SIG-TIME SSL",
+      "purpose": "cross_receiver_sixscene_and_DURA",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__receiver_split_2-tri-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__receiver_split_2-tri-s2026092702.json",
+      "data_overrides": {
+        "setting": "receiver_split_2",
+        "protocol_id": "F2_rx_repartition_r01",
+        "restoration": "same-contract frozen DURA-LU",
+        "task": "cross_rx"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Historical fixed training and received-IQ realization; no new randomization. Historical augmentation seed documented in source config.",
+      "k": null,
+      "scenario": "clean plus six practical, raw and DURA-LU",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Inference on full original cross-RX physical records; raw clean frozen reuse",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/readouts/receiver_split_2-tri-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/logs/predict__receiver_split_2-tri-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release/runtime.json",
+      "expected_artifacts": [
+        "prediction complete",
+        "independent score complete"
+      ]
+    },
+    {
+      "row_id": "receiver_split_2-tri-s2026092703",
+      "method": "user-fixed setting-specific Tri SIG-TIME SSL",
+      "purpose": "cross_receiver_sixscene_and_DURA",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__receiver_split_2-tri-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__receiver_split_2-tri-s2026092703.json",
+      "data_overrides": {
+        "setting": "receiver_split_2",
+        "protocol_id": "F2_rx_repartition_r01",
+        "restoration": "same-contract frozen DURA-LU",
+        "task": "cross_rx"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Historical fixed training and received-IQ realization; no new randomization. Historical augmentation seed documented in source config.",
+      "k": null,
+      "scenario": "clean plus six practical, raw and DURA-LU",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Inference on full original cross-RX physical records; raw clean frozen reuse",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/readouts/receiver_split_2-tri-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/logs/predict__receiver_split_2-tri-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release/runtime.json",
+      "expected_artifacts": [
+        "prediction complete",
+        "independent score complete"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-tri-s2026092701",
+      "method": "user-fixed setting-specific Tri SIG-TIME SSL",
+      "purpose": "cross_receiver_sixscene_and_DURA",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__labeled_1pct-tri-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__labeled_1pct-tri-s2026092701.json",
+      "data_overrides": {
+        "setting": "labeled_1pct",
+        "protocol_id": "label01",
+        "restoration": "same-contract frozen DURA-LU",
+        "task": "cross_rx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Historical fixed training and received-IQ realization; no new randomization. Historical augmentation seed documented in source config.",
+      "k": null,
+      "scenario": "clean plus six practical, raw and DURA-LU",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Inference on full original cross-RX physical records; raw clean frozen reuse",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/readouts/labeled_1pct-tri-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/logs/predict__labeled_1pct-tri-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release/runtime.json",
+      "expected_artifacts": [
+        "prediction complete",
+        "independent score complete"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-tri-s2026092702",
+      "method": "user-fixed setting-specific Tri SIG-TIME SSL",
+      "purpose": "cross_receiver_sixscene_and_DURA",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__labeled_1pct-tri-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__labeled_1pct-tri-s2026092702.json",
+      "data_overrides": {
+        "setting": "labeled_1pct",
+        "protocol_id": "label01",
+        "restoration": "same-contract frozen DURA-LU",
+        "task": "cross_rx"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Historical fixed training and received-IQ realization; no new randomization. Historical augmentation seed documented in source config.",
+      "k": null,
+      "scenario": "clean plus six practical, raw and DURA-LU",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Inference on full original cross-RX physical records; raw clean frozen reuse",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/readouts/labeled_1pct-tri-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/logs/predict__labeled_1pct-tri-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release/runtime.json",
+      "expected_artifacts": [
+        "prediction complete",
+        "independent score complete"
+      ]
+    },
+    {
+      "row_id": "labeled_1pct-tri-s2026092703",
+      "method": "user-fixed setting-specific Tri SIG-TIME SSL",
+      "purpose": "cross_receiver_sixscene_and_DURA",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__labeled_1pct-tri-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__labeled_1pct-tri-s2026092703.json",
+      "data_overrides": {
+        "setting": "labeled_1pct",
+        "protocol_id": "label01",
+        "restoration": "same-contract frozen DURA-LU",
+        "task": "cross_rx"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Historical fixed training and received-IQ realization; no new randomization. Historical augmentation seed documented in source config.",
+      "k": null,
+      "scenario": "clean plus six practical, raw and DURA-LU",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Inference on full original cross-RX physical records; raw clean frozen reuse",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/readouts/labeled_1pct-tri-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/logs/predict__labeled_1pct-tri-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release/runtime.json",
+      "expected_artifacts": [
+        "prediction complete",
+        "independent score complete"
+      ]
+    },
+    {
+      "row_id": "labeled_5pct-tri-s2026092701",
+      "method": "user-fixed setting-specific Tri SIG-TIME SSL",
+      "purpose": "cross_receiver_sixscene_and_DURA",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__labeled_5pct-tri-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__labeled_5pct-tri-s2026092701.json",
+      "data_overrides": {
+        "setting": "labeled_5pct",
+        "protocol_id": "label05",
+        "restoration": "same-contract frozen DURA-LU",
+        "task": "cross_rx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Historical fixed training and received-IQ realization; no new randomization. Historical augmentation seed documented in source config.",
+      "k": null,
+      "scenario": "clean plus six practical, raw and DURA-LU",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Inference on full original cross-RX physical records; raw clean frozen reuse",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/readouts/labeled_5pct-tri-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/logs/predict__labeled_5pct-tri-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release/runtime.json",
+      "expected_artifacts": [
+        "prediction complete",
+        "independent score complete"
+      ]
+    },
+    {
+      "row_id": "labeled_5pct-tri-s2026092702",
+      "method": "user-fixed setting-specific Tri SIG-TIME SSL",
+      "purpose": "cross_receiver_sixscene_and_DURA",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__labeled_5pct-tri-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__labeled_5pct-tri-s2026092702.json",
+      "data_overrides": {
+        "setting": "labeled_5pct",
+        "protocol_id": "label05",
+        "restoration": "same-contract frozen DURA-LU",
+        "task": "cross_rx"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Historical fixed training and received-IQ realization; no new randomization. Historical augmentation seed documented in source config.",
+      "k": null,
+      "scenario": "clean plus six practical, raw and DURA-LU",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Inference on full original cross-RX physical records; raw clean frozen reuse",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/readouts/labeled_5pct-tri-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/logs/predict__labeled_5pct-tri-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release/runtime.json",
+      "expected_artifacts": [
+        "prediction complete",
+        "independent score complete"
+      ]
+    },
+    {
+      "row_id": "labeled_5pct-tri-s2026092703",
+      "method": "user-fixed setting-specific Tri SIG-TIME SSL",
+      "purpose": "cross_receiver_sixscene_and_DURA",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__labeled_5pct-tri-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__labeled_5pct-tri-s2026092703.json",
+      "data_overrides": {
+        "setting": "labeled_5pct",
+        "protocol_id": "label05",
+        "restoration": "same-contract frozen DURA-LU",
+        "task": "cross_rx"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Historical fixed training and received-IQ realization; no new randomization. Historical augmentation seed documented in source config.",
+      "k": null,
+      "scenario": "clean plus six practical, raw and DURA-LU",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Inference on full original cross-RX physical records; raw clean frozen reuse",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/readouts/labeled_5pct-tri-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/logs/predict__labeled_5pct-tri-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release/runtime.json",
+      "expected_artifacts": [
+        "prediction complete",
+        "independent score complete"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-tri-s2026092701",
+      "method": "user-fixed setting-specific Tri SIG-TIME SSL",
+      "purpose": "cross_receiver_sixscene_and_DURA",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__source_rx_6-tri-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__source_rx_6-tri-s2026092701.json",
+      "data_overrides": {
+        "setting": "source_rx_6",
+        "protocol_id": "m6-natural",
+        "restoration": "same-contract frozen DURA-LU",
+        "task": "cross_rx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Historical fixed training and received-IQ realization; no new randomization. Historical augmentation seed documented in source config.",
+      "k": null,
+      "scenario": "clean plus six practical, raw and DURA-LU",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Inference on full original cross-RX physical records; raw clean frozen reuse",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/readouts/source_rx_6-tri-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/logs/predict__source_rx_6-tri-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release/runtime.json",
+      "expected_artifacts": [
+        "prediction complete",
+        "independent score complete"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-tri-s2026092702",
+      "method": "user-fixed setting-specific Tri SIG-TIME SSL",
+      "purpose": "cross_receiver_sixscene_and_DURA",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__source_rx_6-tri-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__source_rx_6-tri-s2026092702.json",
+      "data_overrides": {
+        "setting": "source_rx_6",
+        "protocol_id": "m6-natural",
+        "restoration": "same-contract frozen DURA-LU",
+        "task": "cross_rx"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Historical fixed training and received-IQ realization; no new randomization. Historical augmentation seed documented in source config.",
+      "k": null,
+      "scenario": "clean plus six practical, raw and DURA-LU",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Inference on full original cross-RX physical records; raw clean frozen reuse",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/readouts/source_rx_6-tri-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/logs/predict__source_rx_6-tri-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release/runtime.json",
+      "expected_artifacts": [
+        "prediction complete",
+        "independent score complete"
+      ]
+    },
+    {
+      "row_id": "source_rx_6-tri-s2026092703",
+      "method": "user-fixed setting-specific Tri SIG-TIME SSL",
+      "purpose": "cross_receiver_sixscene_and_DURA",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__source_rx_6-tri-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__source_rx_6-tri-s2026092703.json",
+      "data_overrides": {
+        "setting": "source_rx_6",
+        "protocol_id": "m6-natural",
+        "restoration": "same-contract frozen DURA-LU",
+        "task": "cross_rx"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Historical fixed training and received-IQ realization; no new randomization. Historical augmentation seed documented in source config.",
+      "k": null,
+      "scenario": "clean plus six practical, raw and DURA-LU",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Inference on full original cross-RX physical records; raw clean frozen reuse",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/readouts/source_rx_6-tri-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/logs/predict__source_rx_6-tri-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release/runtime.json",
+      "expected_artifacts": [
+        "prediction complete",
+        "independent score complete"
+      ]
+    },
+    {
+      "row_id": "ten_class-tri-s2026092701",
+      "method": "user-fixed setting-specific Tri SIG-TIME SSL",
+      "purpose": "cross_receiver_sixscene_and_DURA",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__ten_class-tri-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__ten_class-tri-s2026092701.json",
+      "data_overrides": {
+        "setting": "ten_class",
+        "protocol_id": "ManyRx",
+        "restoration": "same-contract frozen DURA-LU",
+        "task": "cross_rx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Historical fixed training and received-IQ realization; no new randomization. Historical augmentation seed documented in source config.",
+      "k": null,
+      "scenario": "clean plus six practical, raw and DURA-LU",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Inference on full original cross-RX physical records; raw clean frozen reuse",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/readouts/ten_class-tri-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/logs/predict__ten_class-tri-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release/runtime.json",
+      "expected_artifacts": [
+        "prediction complete",
+        "independent score complete"
+      ]
+    },
+    {
+      "row_id": "ten_class-tri-s2026092702",
+      "method": "user-fixed setting-specific Tri SIG-TIME SSL",
+      "purpose": "cross_receiver_sixscene_and_DURA",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__ten_class-tri-s2026092702.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__ten_class-tri-s2026092702.json",
+      "data_overrides": {
+        "setting": "ten_class",
+        "protocol_id": "ManyRx",
+        "restoration": "same-contract frozen DURA-LU",
+        "task": "cross_rx"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Historical fixed training and received-IQ realization; no new randomization. Historical augmentation seed documented in source config.",
+      "k": null,
+      "scenario": "clean plus six practical, raw and DURA-LU",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Inference on full original cross-RX physical records; raw clean frozen reuse",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/readouts/ten_class-tri-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/logs/predict__ten_class-tri-s2026092702.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release/runtime.json",
+      "expected_artifacts": [
+        "prediction complete",
+        "independent score complete"
+      ]
+    },
+    {
+      "row_id": "ten_class-tri-s2026092703",
+      "method": "user-fixed setting-specific Tri SIG-TIME SSL",
+      "purpose": "cross_receiver_sixscene_and_DURA",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__ten_class-tri-s2026092703.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__ten_class-tri-s2026092703.json",
+      "data_overrides": {
+        "setting": "ten_class",
+        "protocol_id": "ManyRx",
+        "restoration": "same-contract frozen DURA-LU",
+        "task": "cross_rx"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Historical fixed training and received-IQ realization; no new randomization. Historical augmentation seed documented in source config.",
+      "k": null,
+      "scenario": "clean plus six practical, raw and DURA-LU",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Inference on full original cross-RX physical records; raw clean frozen reuse",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/readouts/ten_class-tri-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/logs/predict__ten_class-tri-s2026092703.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release/runtime.json",
+      "expected_artifacts": [
+        "prediction complete",
+        "independent score complete"
+      ]
+    }
+  ],
+  "notes": [
+    "Single-source Hybrid raw and DURA seven views already completed separately and are reused rather than recomputed.",
+    "Six-source historical DURA and one fixed G seed are retained; three F seeds share their same-contract recovery cache.",
+    "Main split and unchanged source 2-4 existing results are reused; target labels never enter model prediction.",
+    "Existing target clean/phase1 benchmark was historically exposed during model development; report accordingly."
+  ],
+  "registered_at": "2026-11-25T06:23:37+00:00"
+}
