@@ -33,10 +33,15 @@ def power(x):
 class PacketRestorer(nn.Module):
     """Keep carrier direction and fit a learned residual dose in two-stage DURA."""
 
-    def __init__(self, mode):
+    def __init__(self, mode, *, samples=256):
         super().__init__()
         self.mode=mode
         self.reference=ChirpResponse(fft_factor=8)
+        if samples != 256:
+            from .data import BANDWIDTH_HZ, WINDOW_START
+            t = torch.arange(samples, dtype=torch.float64) / (samples * 1000) + WINDOW_START / 1e6
+            self.reference.chirp = torch.exp(2j * torch.pi * BANDWIDTH_HZ * (t.square() / .002048 - t / 2)).to(torch.complex64)
+            self.reference.fft_size = 8 * samples
         self.net=None if mode=='consensus' else dura_model()
         if self.net is not None:
             self.dose=nn.Sequential(nn.Linear(4,16),nn.SiLU(),nn.Linear(16,2))
@@ -48,17 +53,18 @@ class PacketRestorer(nn.Module):
     def track(self,x):
         z=complex_iq(x)
         w=z*self.reference.chirp.conj()
-        peak,k=torch.fft.fft(w,n=2048).abs().max(-1)
-        coarse_q=(peak/256).square()/z.abs().square().mean(-1).clamp_min(1e-12)
-        k=(k+1024)%2048-1024
-        t=torch.arange(256,device=x.device)
-        angle=2*torch.pi*k[...,None]*t/2048
+        size, n = self.reference.fft_size, z.shape[-1]
+        peak,k=torch.fft.fft(w,n=size).abs().max(-1)
+        coarse_q=(peak/n).square()/z.abs().square().mean(-1).clamp_min(1e-12)
+        k=(k+size//2)%size-size//2
+        t=torch.arange(n,device=x.device)
+        angle=2*torch.pi*k[...,None]*t/size
         rot=self.reference.chirp*torch.polar(torch.ones_like(angle),angle)
         w=z*rot.conj()
         # Fine timing-slope alignment, clamped inside the FFT peak bin.
-        lag=24
+        lag=3*n//32
         phi=(w[...,lag:]*w[...,:-lag].conj()).mean(-1).angle()/lag
-        angle=phi.clamp(-torch.pi/2048,torch.pi/2048)[...,None]*t
+        angle=phi.clamp(-torch.pi/size,torch.pi/size)[...,None]*t
         rot=rot*torch.polar(torch.ones_like(angle),angle)
         w=z*rot.conj()
         q=(w.mean(-1).abs().square()/w.abs().square().mean(-1).clamp_min(1e-8)).clamp(0.,1.)

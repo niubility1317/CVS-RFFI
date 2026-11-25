@@ -71,9 +71,9 @@ class ReceivedUpdate(nn.Module):
         # alternate in the fit and validation fold at each of four time knots.
         even = y[:, ::2].mean(1, keepdim=True)
         odd = y[:, 1::2].mean(1, keepdim=True)
-        reference = torch.cat((odd, even), 1).repeat(1, 3, 1)
-        v = reference.unflatten(-1, (4, 8, 8))
-        z = y.unflatten(-1, (4, 8, 8))
+        reference = torch.cat((odd, even), 1).repeat(1, y.shape[1] // 2, 1)
+        v = reference.unflatten(-1, (4, -1, 8))
+        z = y.unflatten(-1, (4, -1, 8))
         ridge = .05 + .25 * sigma
         powers = v.abs().square().mean(-1)
         cross = ((z - v) * v.conj()).mean(-1)
@@ -91,7 +91,7 @@ class ReceivedUpdate(nn.Module):
         trust = ((noise - residual).mean(-1) / (.02 + noise.mean(-1))).clamp(0, 1)
         relative = (change.mean(-1) * trust).resolve_conj()
         sampled = torch.view_as_real(relative).permute(0, 1, 3, 2).flatten(0, 1)
-        action = F.interpolate(sampled, size=256, mode='linear', align_corners=False)
+        action = F.interpolate(sampled, size=y.shape[-1], mode='linear', align_corners=False)
         action = 1 + torch.complex(*action.unflatten(0, y.shape[:2]).unbind(2))
         return action, reference, residual.mean((2, 3), keepdim=False).unsqueeze(-1)
 

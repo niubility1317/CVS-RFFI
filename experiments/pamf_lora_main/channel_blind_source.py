@@ -157,12 +157,13 @@ def held_waveform(model, tracker, held, calculate, recipe, step, receiver_batche
     return result.tolist()
 
 
-def fit(rt, *, smoke=False, recipe=DEFAULT, calculate=objective, receiver_batches=False):
+def fit(rt, *, smoke=False, recipe=DEFAULT, calculate=objective, receiver_batches=False,
+        prepare=setup, make_tracker=None):
     device = 'cuda:0'
     torch.manual_seed(SEED)
-    (training,calibration,held), contract = setup(rt,device,smoke=smoke,fit_per_rx=recipe.fit_per_rx,
-                                                   bank_per_rx=recipe.bank_per_rx)
-    tracker = PacketRestorer('consensus').to(device).eval()
+    (training,calibration,held), contract = prepare(rt,device,smoke=smoke,fit_per_rx=recipe.fit_per_rx,
+                                                    bank_per_rx=recipe.bank_per_rx)
+    tracker = (PacketRestorer('consensus') if make_tracker is None else make_tracker()).to(device).eval()
     model = recipe.model().to(device)
     if recipe.initialize is not None:
         recipe.initialize(model, tracker, training, calibration)

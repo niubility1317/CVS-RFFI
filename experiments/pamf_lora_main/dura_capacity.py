@@ -75,7 +75,7 @@ def polyphase_core(incoming, outgoing, widths):
 def read_core(module, fields):
     real = fields[0]
     values = torch.stack([v.expand_as(real) for v in fields], -2).flatten(0, 1)
-    values = values.unflatten(-1, (128, 2)).transpose(-1, -2).flatten(1, 2)
+    values = values.unflatten(-1, (-1, 2)).transpose(-1, -2).flatten(1, 2)
     mixed = module.training and values.is_cuda and torch.cuda.is_bf16_supported()
     with torch.autocast('cuda', dtype=torch.bfloat16, enabled=mixed):
         output = module(values)
@@ -86,15 +86,15 @@ def read_core(module, fields):
 class DuraCapacity(nn.Module):
     """Time-frequency coarse proposal and two native multiscale prior/CG stages."""
 
-    def __init__(self, size):
+    def __init__(self, size, *, samples=256, condition_fields=0):
         super().__init__()
         widths = WIDTHS[size]
         light = tuple(max(8, 4*((n+7)//8)) for n in widths)
         self.frequency = polyphase_core(5, 2, light)
-        self.coarse = polyphase_core(9, 2, light)
-        self.risk = polyphase_core(9, 7, (8, 12, 16, 24))
-        self.priors = nn.ModuleList(polyphase_core(13, 2, widths) for _ in range(2))
-        band = 256*torch.fft.fftfreq(256).abs()
+        self.coarse = polyphase_core(9 + condition_fields, 2, light)
+        self.risk = polyphase_core(9 + condition_fields, 7, (8, 12, 16, 24))
+        self.priors = nn.ModuleList(polyphase_core(13 + condition_fields, 2, widths) for _ in range(2))
+        band = samples*torch.fft.fftfreq(samples).abs()
         self.register_buffer('noise_band', band > 64, persistent=False)
 
     @staticmethod
@@ -102,28 +102,29 @@ class DuraCapacity(nn.Module):
         proposed = zero_carrier(torch.complex(r.tanh(), i.tanh()))
         return limit(proposed, y, rms, y.real.new_tensor(MAX_EDIT))
 
-    def stages(self, y, quality, rms, *, use_action=True, use_noise=True, solve=True, robust=False):
+    def stages(self, y, quality, rms, *, use_action=True, use_noise=True, solve=True, robust=False, condition=()):
         spec = fft(y)
         noise = (spec[..., self.noise_band].abs().square().median(-1, keepdim=True).values
                  / .69314718056).clamp(1e-5, 4.)
         log_noise = noise.log().clamp(-11., 2.)/5.
         average = .5*(y[:, ::2].mean(1, keepdim=True) + y[:, 1::2].mean(1, keepdim=True))
-        opposite = torch.cat((y[:, 1::2].mean(1, keepdim=True), y[:, ::2].mean(1, keepdim=True)),1).repeat(1, 3, 1)
-        flip = (-torch.arange(256, device=y.device)) % 256
+        opposite = torch.cat((y[:, 1::2].mean(1, keepdim=True), y[:, ::2].mean(1, keepdim=True)),1).repeat(1, y.shape[1] // 2, 1)
+        n = y.shape[-1]
+        flip = (-torch.arange(n, device=y.device)) % n
         f_real, f_imag = read_core(self.frequency, (*iq_field(spec, spec[..., flip].conj()), log_noise))
         spec_edit = torch.complex(f_real.tanh(), f_imag.tanh())*noise.sqrt()
         estimate = zero_carrier(ifft(spec_edit))
-        pack = (*iq_field(y, opposite, estimate, y-average), quality)
+        pack = (*iq_field(y, opposite, estimate, y-average), quality, *condition)
         c_real, c_imag = read_core(self.coarse, pack)
         c = y + limit(zero_carrier(estimate+torch.complex(c_real.tanh(), c_imag.tanh())),
                       y, rms, y.real.new_tensor(MAX_EDIT))
         nominal, _, mismatch = ReceivedUpdate.estimate(y, noise.mean(1, keepdim=True))
-        inputs = (*iq_field(y, c, opposite, nominal-1.), log_noise)
+        inputs = (*iq_field(y, c, opposite, nominal-1.), log_noise, *condition)
         gr, gi, ir, ii, er, ei, log_excess = (x.tanh() for x in read_core(self.risk, inputs))
         # Take four-sample means before interpolation to keep rapidly varying action
         # coefficients from absorbing peripheral source details.
         gr, gi, ir, ii, er, ei, log_excess = (
-            x.unflatten(-1, (64,4)).mean(-1).repeat_interleave(4, dim=-1)
+            x.unflatten(-1, (-1, 4)).mean(-1).repeat_interleave(4, dim=-1)
             for x in (gr, gi, ir, ii, er, ei, log_excess)
         )
         estimator = ObservedAction(nominal+.24*torch.complex(gr, gi),
@@ -139,7 +140,7 @@ class DuraCapacity(nn.Module):
             innovation = action.adjoint(remaining)
             normalized = innovation / (.001 + innovation.abs().square().mean(-1, keepdim=True)).sqrt()
             fields = (*iq_field(y, c, current, normalized, opposite, action.main-1.),
-                      used.log().clamp(-11., 2.)/5.)
+                      used.log().clamp(-11., 2.)/5., *condition)
             real, imag = read_core(network, fields)
             prior = c + self.update(real, imag, y, rms)
             solve_variance = robust_observation_variance(remaining, used) if robust else used
