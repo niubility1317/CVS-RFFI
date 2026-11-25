@@ -168,7 +168,7 @@ def metrics(wave_error, variance_error):
                 variance_median=float(np.median(variance_error)), variance_p95=float(np.quantile(variance_error, .95)))
 
 
-def score(root, parent, low):
+def score(root, parent, low, candidate_name="practical_fast"):
     if os.environ.get("CUDA_VISIBLE_DEVICES") != "":
         raise ValueError("Use a separate CPU scorer")
     with np.load(root / "estimates.npz", allow_pickle=False) as f:
@@ -191,12 +191,12 @@ def score(root, parent, low):
                   doubled=list(range(len(native), len(LABELS))),
                   low_urban=[i for i in native if "/practical_low_urban" in LABELS[i]])
     results = {}
-    for name, prediction, noise in (("current", baseline, baseline_var), ("practical_fast", candidate, variance)):
+    for name, prediction, noise in (("current", baseline, baseline_var), (candidate_name, candidate, variance)):
         e = np.mean(abs(prediction - signal)**2, axis=-1) / power
         v = abs(10. * np.log10(noise / true_variance))
         summary = {name: metrics(e[take], v[take]) for name, take in groups.items()}
         results[name] = dict(summary=summary, cases={label: metrics(a, b) for label, a, b in zip(LABELS, e, v)})
-    aggregate = results["practical_fast"]["summary"]["native"]
+    aggregate = results[candidate_name]["summary"]["native"]
     write(root / "scores.json", dict(status="SCORED", oracle_last=True, target_reads=0, cases=len(LABELS),
           packets=SHAPE[1], labels=list(LABELS), thresholds=TARGETS,
           passed={k: aggregate[k] < limit for k, limit in TARGETS.items()}, results=results,
