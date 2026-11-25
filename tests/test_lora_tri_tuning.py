@@ -361,6 +361,19 @@ class TriTuningTests(TestCase):
             self.assertFalse(np.array_equal(view,ordinary))
             np.testing.assert_array_equal(view,clean_iq(shifted,384,ALL_CHIRPS,native_edges=True,edge_points=24))
 
+    def test_native_source_holdout_runtime_excludes_truth_and_non_source_roles(self):
+        from experiments.pamf_lora_main import native_source_holdout
+
+        with self.assertRaisesRegex(ValueError,'source-only'):
+            native_source_holdout.source_runtime(
+                {'run_root':'diagnostic','source_root':'source','frozen_sources':{},'target_root':'blocked'})
+        receivers=np.repeat(np.arange(5),560)
+        kept=native_source_holdout.fitting_indices(receivers)
+        self.assertEqual(len(kept),2240)
+        self.assertTrue(np.all(receivers[kept]!=4))
+        with self.assertRaisesRegex(ValueError,'four source receivers'):
+            native_source_holdout.fitting_indices(np.zeros(2800,dtype=np.int64))
+
     def test_group_residual_is_bounded_per_packet_without_touching_primary_logits(self):
         from experiments.pamf_lora_main.repair_features import residual_logit_scale
         core=torch.tensor([[0.,1.,2.],[0.,2.,4.],[5.,5.,5.]])
