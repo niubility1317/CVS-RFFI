@@ -23,21 +23,21 @@ WORKER_MEMORY_MIB = 5600
 CARD_HEADROOM_MIB = 768
 
 
-def prepare(runtime):
+def prepare(runtime, *, arms=ARMS, run_id=RUN, make_row=row_id, make_source=source_config):
     context = read(runtime['context'])
     root = Path(runtime['run_root'])
     original = context['original_prediction']
     jobs = []
-    for arm in ARMS:
-        row = row_id(arm)
-        train = source_config(runtime, context, arm)
+    for arm in arms:
+        row = make_row(arm)
+        train = make_source(runtime, context, arm)
         folder = root / 'readouts' / row
         predict = dict(
-            run_id=RUN, row_id=row, model_seed=SEED, source_output=train['output_root'],
+            run_id=run_id, row_id=row, model_seed=SEED, source_output=train['output_root'],
             source_contract=train['source_contract'], classes=context['classes'],
             readouts=['raw'], tests={key: {'views_root': context['tests'][key]['views_root']} for key in TASKS},
             output_root=str(folder / 'predictions'), frozen_sources=runtime['frozen_sources'])
-        score = dict(run_id=RUN, row_id=row, model_seed=SEED, classes=context['classes'],
+        score = dict(run_id=run_id, row_id=row, model_seed=SEED, classes=context['classes'],
                      readouts=['raw'], tests=context['tests'], source_days=train['source_days'],
                      prediction_output=predict['output_root'], output_root=str(folder / 'scores'),
                      reference_prediction=dict(run_id=ORIGINAL_RUN, row_id=ORIGINAL_ROW,
@@ -59,9 +59,9 @@ def prepare(runtime):
     return jobs
 
 
-def launch(runtime, key, kind, config, gpu):
+def launch(runtime, key, kind, config, gpu, *, worker_module=WORKER_MODULE):
     cwd = runtime['release_root']
-    argv = [runtime['python'], '-u', '-m', WORKER_MODULE, 'worker', '--kind', kind, '--config', config]
+    argv = [runtime['python'], '-u', '-m', worker_module, 'worker', '--kind', kind, '--config', config]
     env = dict(os.environ, PYTHONPATH=cwd, CUDA_VISIBLE_DEVICES='' if gpu is None else str(gpu),
                OMP_NUM_THREADS='2', MKL_NUM_THREADS='2', OPENBLAS_NUM_THREADS='2')
     path = Path(runtime['run_root']) / 'logs' / (key + '.log')
@@ -76,29 +76,35 @@ def failure_label(log):
     return lines[-1] if lines else 'Empty worker log'
 
 
-def dispatch(runtime):
+def dispatch(runtime, *, preparer=prepare, launcher=launch, analyzer=None, shared_memory=False, max_per_gpu=None):
     root = Path(runtime['run_root'])
     root.mkdir(parents=True, exist_ok=False)
     (root / 'logs').mkdir()
-    jobs = prepare(runtime)
+    jobs = preparer(runtime)
     state_path = root / 'pipeline_state.json'
     state = dict(status='WAITING_FOR_SMOKE_GPU', pid=os.getpid(), cwd=os.getcwd(), argv=sys.argv,
                  code_commit=runtime['code_commit'], jobs={j['id']: {'status': 'QUEUED'} for j in jobs})
     atomic(state_path, state)
     print('WAITING_FOR_SMOKE_GPU', runtime['run_id'], flush=True)
     while True:
-        available = resources()
-        gpu = next((g for g in runtime['allowed_gpus'] if eligible(available[g], 0, 1)), None)
+        if shared_memory:
+            free, resident = gpu_memory()
+            choices = assign_by_memory(runtime['allowed_gpus'], free, resident, {}, 1, max_per_gpu=max_per_gpu)
+            gpu = choices[0] if choices else None
+            state['gpu_availability'] = {str(g): dict(free_mib=free[g]) for g in runtime['allowed_gpus']}
+        else:
+            available = resources()
+            gpu = next((g for g in runtime['allowed_gpus'] if eligible(available[g], 0, 1)), None)
+            state['gpu_availability'] = {str(g): dict(free_mib=available[g]['free'],
+                                                      compute_slots=len(available[g]['pids']),
+                                                      foreign_or_unknown=available[g]['blocked'])
+                                         for g in runtime['allowed_gpus']}
         if gpu is not None:
             break
         state['updated_at'] = time.time()
-        state['gpu_availability'] = {str(g): dict(free_mib=available[g]['free'],
-                                                  compute_slots=len(available[g]['pids']),
-                                                  foreign_or_unknown=available[g]['blocked'])
-                                     for g in runtime['allowed_gpus']}
         atomic(state_path, state)
         time.sleep(15)
-    child, details = launch(runtime, 'smoke', 'smoke', runtime['runtime_file'], gpu)
+    child, details = launcher(runtime, 'smoke', 'smoke', runtime['runtime_file'], gpu)
     state.update(status='SMOKE_RUNNING', smoke=details)
     atomic(state_path, state)
     if child.wait() or read(root / 'smoke.json')['status'] != 'PASS':
@@ -107,10 +113,12 @@ def dispatch(runtime):
         return
     state['smoke']['status'] = 'PASS'
 
-    run_jobs(runtime, jobs, state, {})
+    run_jobs(runtime, jobs, state, {}, shared_memory=shared_memory, max_per_gpu=max_per_gpu,
+             launcher=launcher, analyzer=analyzer)
 
 
-def run_jobs(runtime, jobs, state, active, *, shared_memory=False):
+def run_jobs(runtime, jobs, state, active, *, shared_memory=False, max_per_gpu=None,
+             launcher=launch, analyzer=None):
     from experiments.pamf_repl_completion.runner import foreign_CPU_score
 
     root = Path(runtime['run_root'])
@@ -138,17 +146,18 @@ def run_jobs(runtime, jobs, state, active, *, shared_memory=False):
         if (scores and not any(by_id[key]['kind'] == 'score' for key in active)
                 and not foreign_CPU_score({p.pid for p, _ in active.values()})):
             job = scores[0]
-            active[job['id']] = launch(runtime, job['id'], job['kind'], job['config'], None)
+            active[job['id']] = launcher(runtime, job['id'], job['kind'], job['config'], None)
             state['jobs'][job['id']] = active[job['id']][1]
         gpu_jobs = sorted((j for j in candidates if j['kind'] != 'score'),
                           key=lambda j: j['kind'] != 'predict')
         if shared_memory:
             if gpu_jobs:
                 free, resident = gpu_memory()
-                assignments = assign_by_memory(runtime['allowed_gpus'], free, resident, active, len(gpu_jobs))
+                assignments = assign_by_memory(runtime['allowed_gpus'], free, resident, active, len(gpu_jobs),
+                                               max_per_gpu=max_per_gpu)
                 for gpu in assignments:
                     job = gpu_jobs.pop(0)
-                    active[job['id']] = launch(runtime, job['id'], job['kind'], job['config'], gpu)
+                    active[job['id']] = launcher(runtime, job['id'], job['kind'], job['config'], gpu)
                     state['jobs'][job['id']] = active[job['id']][1]
                     print('GPU_DISPATCH', job['id'], gpu, active[job['id']][0].pid, flush=True)
         else:
@@ -159,7 +168,7 @@ def run_jobs(runtime, jobs, state, active, *, shared_memory=False):
                 own = sum(details['gpu'] == gpu for _, details in active.values())
                 if eligible(available[gpu], own, 1):
                     job = gpu_jobs.pop(0)
-                    active[job['id']] = launch(runtime, job['id'], job['kind'], job['config'], gpu)
+                    active[job['id']] = launcher(runtime, job['id'], job['kind'], job['config'], gpu)
                     state['jobs'][job['id']] = active[job['id']][1]
         state.update(status='RUNNING', updated_at=time.time(),
                      counts=dict(Counter(v['status'] for v in state['jobs'].values())),
@@ -171,23 +180,27 @@ def run_jobs(runtime, jobs, state, active, *, shared_memory=False):
 
     from experiments.pamf_wisig_branch_style.summary import analyze
     if any(done(j) for j in jobs if j['kind'] == 'score'):
-        analyze(runtime, jobs)
+        (analyzer or analyze)(runtime, jobs)
     state['status'] = 'PARTIAL_TECHNICAL_FAILURE' if failures else 'ANALYZED'
     atomic(state_path, state)
 
 
-def worker(c, kind):
+def worker(c, kind, *, source_module=None):
     from experiments.pamf_repl_view_shuffle import evaluation
     if kind == 'score':
         return evaluation.score(c, reference=c['reference_prediction'])
     activate(c)
-    from . import source
+    if source_module is None:
+        from . import source as source_module
+    else:
+        from importlib import import_module
+        source_module = import_module(source_module)
     if kind == 'smoke':
         jobs = read(Path(c['run_root']) / 'jobs.json')
-        return source.smoke(c, [j['config'] for j in jobs if j['kind'] == 'train'])
+        return source_module.smoke(c, [j['config'] for j in jobs if j['kind'] == 'train'])
     if kind == 'train':
-        return source.train(c)
-    return evaluation.predict(c, load_source=source.load_reader)
+        return source_module.train(c)
+    return evaluation.predict(c, load_source=source_module.load_reader)
 
 
 def gpu_memory():
@@ -201,7 +214,7 @@ def gpu_memory():
     return free, resident
 
 
-def assign_by_memory(gpus, free, resident, active, requested):
+def assign_by_memory(gpus, free, resident, active, requested, *, max_per_gpu=None):
     available = {gpu: free[gpu] - CARD_HEADROOM_MIB for gpu in gpus}
     workers = Counter()
     for child, details in active.values():
@@ -211,7 +224,8 @@ def assign_by_memory(gpus, free, resident, active, requested):
             workers[gpu] += 1
     assignments = []
     for _ in range(requested):
-        candidates = [g for g in gpus if available[g] >= WORKER_MEMORY_MIB]
+        candidates = [g for g in gpus if available[g] >= WORKER_MEMORY_MIB
+                      and (max_per_gpu is None or workers[g] < max_per_gpu)]
         if not candidates:
             break
         gpu = min(candidates, key=lambda g: (workers[g], -available[g], g))

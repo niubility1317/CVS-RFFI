@@ -21,7 +21,7 @@ def pooled(parts):
                 macro_f1_pct=100 * float(macro_f1))
 
 
-def analyze(runtime, jobs):
+def analyze(runtime, jobs, *, arms=ARMS, baseline_arm=None):
     root = Path(runtime['run_root'])
     rows = []
     stratum_rows = []
@@ -67,6 +67,12 @@ def analyze(runtime, jobs):
             contrasts[arm] = {
                 metric: {f'delta_vs_{base}_pp': result[metric]['accuracy_pct'] - aggregate[base][metric]['accuracy_pct']
                          for base in ('time', 'none')} for metric in ('clean', 'six_practical_mean')}
+    if baseline_arm in aggregate:
+        for arm, result in aggregate.items():
+            contrasts[arm] = {
+                metric: {f'delta_vs_{baseline_arm}_pp': result[metric]['accuracy_pct']
+                         - aggregate[baseline_arm][metric]['accuracy_pct']}
+                for metric in ('clean', 'six_practical_mean')}
     factorial = {}
     factorial_arms = ('time-frequency-envelope', 'time', 'frequency-envelope', 'none')
     if all(arm in aggregate for arm in factorial_arms):
@@ -80,7 +86,7 @@ def analyze(runtime, jobs):
             writer = csv.DictWriter(stream, fieldnames=table[0].keys())
             writer.writeheader()
             writer.writerows(table)
-    missing = [arm for arm in ARMS if arm not in aggregate]
+    missing = [arm for arm in arms if arm not in aggregate]
     write(output / 'summary.json', dict(
         status='PARTIAL' if missing else 'ANALYZED', model_seeds=1, rows=aggregate,
         missing=missing, versus_matched_controls=contrasts, interaction_pp=factorial,

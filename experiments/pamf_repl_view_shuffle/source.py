@@ -43,9 +43,9 @@ def installed(c,holder,enabled):
     from experiments.pamf_repl_completion.objectives import installed as original
     with seed_scope(),single_base(c),original(c,holder,enabled):yield
 
-def assert_structure(model,c):
+def assert_structure(model,c,*,added_parameters=0):
     ref=model.id_backbone.encoder;views=c['view_comparison']['view_count'];pool=ref.sequence_pool
-    expected=232993 if views==3 else 196001
+    expected=(232993 if views==3 else 196001)+added_parameters
     count=sum(p.numel() for p in ref.parameters())
     if len(pool.views)!=views or tuple(pool.output_projection.weight.shape)!=(160,112*views) or count!=expected:
         raise ValueError(('Signature view architecture differs',views,count,expected))

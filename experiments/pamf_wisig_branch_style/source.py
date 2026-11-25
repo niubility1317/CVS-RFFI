@@ -10,15 +10,17 @@ from .objective import installed
 from .plan import ARMS, check_prefix, validate_config
 
 
-def train(c):
+def train(c, *, validator=validate_config, installer=installed, source_init=None, extra_state=None):
     import torch
     from experiments.cric_dura_comparison.f_train import train as train_segment
 
-    validate_config(c)
+    validator(c)
     prefix = check_prefix(c)
     root = Path(c['output_root'])
     root.mkdir(parents=True, exist_ok=False)
     write(root / 'resolved_config.json', c)
+    if source_init is not None:
+        source_init(root)
     segments = [prefix]
     states = []
     started = time.monotonic()
@@ -27,7 +29,7 @@ def train(c):
         segment = dict(c, output_root=str(destination), segment_epochs=epochs,
                        epoch_offset=offset, step_offset=offset * 222, parent_source=segments[-1]['folder'])
         holder = {}
-        with installed(segment, holder):
+        with installer(segment, holder):
             train_segment(segment)
         objective = holder['objective']
         state = objective.state_dict()
@@ -38,6 +40,8 @@ def train(c):
         state['branch_style_sampled_batch_rms'] = {
             key: [float(value) for value in torch.stack(values).cpu()] for key, values in shift.items()
         }
+        if extra_state is not None:
+            state.update(extra_state(segment, holder))
         write(destination / 'repl_state.json', state)
         states.append(state)
         done = read(destination / 'complete.json')
@@ -58,12 +62,12 @@ def train(c):
         cumulative_training_seconds=sum(s['seconds'] for s in segments)))
 
 
-def load_reader(folder, contract, device):
+def load_reader(folder, contract, device, *, validator=validate_config):
     from experiments.pamf_repl_view_shuffle.source import seed_scope, single_base
     from experiments.pamf_repl_completion.source import load_reader as read_original
 
     done = read(Path(folder) / 'complete.json')
-    c = validate_config(done['config'])
+    c = validator(done['config'])
     if [s['folder'] for s in done['segments']] != [c['shared_prefix'], str(Path(folder) / 'segment30'),
                                                    str(Path(folder) / 'segment50')]:
         raise ValueError('Registered E20 and same-row REPL ancestry required')
@@ -71,7 +75,8 @@ def load_reader(folder, contract, device):
         return read_original(folder, contract, device)
 
 
-def smoke(runtime, train_configs):
+def smoke(runtime, train_configs, *, validator=validate_config, installer=installed,
+          structure=None, extra_checks=None):
     import torch
     from torch.nn import functional as F
     from experiments.cric_dura_comparison import f_train, t1_model
@@ -80,7 +85,7 @@ def smoke(runtime, train_configs):
     from .objective import sites_for
 
     device = 'cuda:0'
-    configs = [validate_config(read(path)) for path in train_configs]
+    configs = [validator(read(path)) for path in train_configs]
     prefix = check_prefix(configs[0])
     payload = torch.load(Path(prefix['folder']) / 'final_ssdg.pth', map_location='cpu', weights_only=False)
     results = {}
@@ -90,7 +95,7 @@ def smoke(runtime, train_configs):
         holder = {}
         torch.manual_seed(c['model_seed'])
         torch.cuda.manual_seed_all(c['model_seed'])
-        with installed(cfg, holder):
+        with installer(cfg, holder):
             loaders = f_train.context(cfg)
             with f_train.class_dimension(cfg), native_scope(f_train.original_config(c['model_seed'])) as native:
                 args = f_train.arguments(cfg, device)
@@ -98,7 +103,7 @@ def smoke(runtime, train_configs):
                 args.baseline_ckpt = args.teacher_ckpt = ''
                 args.from_scratch = args.a1_scratch_only = True
                 net = t1_model.install(native.build_baseline_model(args, device), cfg).to(device)
-            shape = assert_structure(net, cfg)
+            shape = (structure or assert_structure)(net, cfg)
             net.load_state_dict(payload['model'], strict=True)
             net.eval()
             with torch.no_grad():
@@ -141,9 +146,12 @@ def smoke(runtime, train_configs):
                     or any(m._forward_hooks for m in (net.id_backbone.encoder.get_submodule(path)
                            for path, _ in _direct_modules(sites)))):
                 raise ValueError('Actual direct branch dose, placement or hook cleanup failed: ' + arm)
-            results[arm] = dict(shape=shape, accepted=state['accepted'], applied=applied,
+            key = c['row_id'] if extra_checks is not None else arm
+            results[key] = dict(shape=shape, accepted=state['accepted'], applied=applied,
                                 sampled_rms=shifts, finite_backward=True)
-            print('SOURCE_SMOKE_PASS', arm, flush=True)
+            if extra_checks is not None:
+                results[key].update(extra_checks(c, net))
+            print('SOURCE_SMOKE_PASS', key, flush=True)
         del net, objective, holder, loaders, loss, output, ce, correction, head
         torch.cuda.empty_cache()
     write(Path(runtime['run_root']) / 'smoke.json', dict(

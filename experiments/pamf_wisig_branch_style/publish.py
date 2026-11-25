@@ -87,6 +87,7 @@ env = dict(os.environ, PYTHONPATH=str(release), CUDA_VISIBLE_DEVICES='',
            OMP_NUM_THREADS='2', MKL_NUM_THREADS='2', OPENBLAS_NUM_THREADS='2')
 subprocess.run([rt['python'], '-m', 'compileall', '-q',
                 str(release / 'experiments/pamf_wisig_branch_style'),
+                str(release / package['module'].rsplit('.', 1)[0].replace('.', '/')),
                 str(release / 'experiments/pamf_repl_completion/objectives.py'),
                 str(release / 'experiments/pamf_repl_view_shuffle/evaluation.py'),
                 str(release / 'experiments/cric_dura_comparison/evaluation.py')],
@@ -104,7 +105,7 @@ print(json.dumps(result))
 '''
 
 
-def publish(repo, output, context_path):
+def publish(repo, output, context_path, *, run_id=RUN, module=MODULE, owner=OWNER):
     def git(*args):
         return subprocess.check_output(['git', '-C', str(repo), *args])
 
@@ -114,13 +115,13 @@ def publish(repo, output, context_path):
     if not upstream or upstream[0] != commit:
         raise ValueError('Published Git commit must match the remote branch')
     context_data = Path(context_path).read_bytes()
-    release = PROJECT + '/releases/' + RUN + '-release'
-    runtime = dict(run_id=RUN, project=PROJECT, release_root=release, context=release + '/context.json',
-                   run_root=PROJECT + '/runs/' + RUN, runtime_file=release + '/runtime.json', python=PYTHON,
+    release = PROJECT + '/releases/' + run_id + '-release'
+    runtime = dict(run_id=run_id, project=PROJECT, release_root=release, context=release + '/context.json',
+                   run_root=PROJECT + '/runs/' + run_id, runtime_file=release + '/runtime.json', python=PYTHON,
                    code_commit=commit, frozen_sources=json.loads(context_data)['frozen_sources'],
-                   allowed_gpus=list(range(8)), launch_owner=OWNER)
+                   allowed_gpus=list(range(8)), launch_owner=owner)
     output.mkdir(parents=True, exist_ok=True)
-    archive_path = output / (RUN + '-release.tar.gz')
+    archive_path = output / (run_id + '-release.tar.gz')
     if archive_path.exists():
         raise FileExistsError('Independently reconcile existing submission before retry')
     sources = ('experiments', 'code', 'baselines')
@@ -132,12 +133,12 @@ def publish(repo, output, context_path):
             if item.isfile() and item.name in allowed:
                 packed.addfile(item, raw.extractfile(item))
         extra = {'context.json': context_data, 'release_commit.txt': (commit + chr(10)).encode(),
-                 'experiment.json': git('show', f'{commit}:automation_reports/CV-SincNet/{RUN}/experiment.json')}
+                 'experiment.json': git('show', f'{commit}:automation_reports/CV-SincNet/{run_id}/experiment.json')}
         for name, data in extra.items():
             item = tarfile.TarInfo(name)
             item.size = len(data)
             packed.addfile(item, io.BytesIO(data))
-    package = dict(runtime=runtime, module=MODULE, archive_remote=PROJECT + '/releases/' + archive_path.name,
+    package = dict(runtime=runtime, module=module, archive_remote=PROJECT + '/releases/' + archive_path.name,
                    sha256=hashlib.sha256(archive_path.read_bytes()).hexdigest())
     (output / 'package.json').write_text(json.dumps(package, indent=2), encoding='utf-8')
     subprocess.run(['scp', *SSH, str(archive_path), 'N607:' + package['archive_remote']],
