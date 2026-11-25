@@ -25,7 +25,7 @@ def prepare(prior, center, scale, matrix, noise_prior, protection_scale):
     return Estimator(prior, noise_prior, analysis, center, scale, matrix, protection_scale)
 
 
-def estimate(received, cfg):
+def components(received, cfg):
     iq = np.asarray(received, dtype=np.complex128)
     if iq.ndim != 2 or iq.shape[1] != gate.blind.receive.SAMPLES or not np.isfinite(iq).all():
         raise ValueError("Only finite post-channel 256-point receive IQ is accepted")
@@ -37,16 +37,21 @@ def estimate(received, cfg):
     rx_energy = np.mean(abs(iq)**2, axis=-1)
     coherence, phase, _ = gate.blind.phase_statistics(noise, pilot, basis)
     features = gate.relative.feature_columns(pilot, rx_energy, noise)
-    broad = gate.relative.regressors(features, noise, cfg.center, cfg.scale) @ cfg.matrix
-    anchor = np.zeros_like(broad)
+    design = gate.relative.regressors(features, noise, cfg.center, cfg.scale)
+    anchor = np.zeros((len(iq), gate.blind.KERNEL_LENGTH), dtype=np.complex128)
     anchor[:, basis.anchor] = np.sqrt((rx_energy - noise).clip(0., 1.5)) * phase
     diffuse = 1. - coherence
-    difference = broad - anchor
-    blend = anchor + diffuse[:, None] * difference
-    conservative = anchor + diffuse[:, None]**1.5 * difference
     repeat_power = np.mean(abs(repeat)**2, axis=-1).clip(1e-12)
     _, colored, pooled = gate.pool_variance(abs(guard)**2, repeat_power, cfg.noise_prior)
     # Reduce aggressive subtraction when the source prior predicts diffuse reception.
     trust = .25 + .75 / (1. + (noise / cfg.protection_scale)**2)
     protected = noise * (pooled / noise)**trust
+    return design, anchor, diffuse, (noise, colored, pooled, protected)
+
+
+def estimate(received, cfg):
+    design, anchor, diffuse, (noise, colored, pooled, protected) = components(received, cfg)
+    difference = design @ cfg.matrix - anchor
+    blend = anchor + diffuse[:, None] * difference
+    conservative = anchor + diffuse[:, None]**1.5 * difference
     return (blend, blend, blend, conservative, blend), (noise, colored, pooled, pooled, protected)
