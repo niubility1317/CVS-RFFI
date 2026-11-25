@@ -179,9 +179,10 @@ def predict_source(runtime):
           views=list(VIEWS), physical_ids=ids, target_reads=0, source_truth_reads=0, waveform=telemetry))
 
 
-def score_source(runtime, *, modes=MODES):
+def score_source(runtime, *, modes=MODES, output=None):
     rt = read(runtime)
-    root, source = Path(rt['run_root']), Path(rt['source_root'])
+    root = Path(rt['run_root']) if output is None else Path(output)
+    source = Path(rt['source_root'])
     rows, rx, ids = panel(source, source_contract(source))
     frozen = read(root / 'source-predictions.json')
     if (frozen['status'] != 'PREDICTIONS_FROZEN' or frozen['physical_ids'] != ids

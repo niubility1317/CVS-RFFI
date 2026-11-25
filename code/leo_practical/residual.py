@@ -27,7 +27,8 @@ class ResidualChannel:
         self.used = False
 
     def process(self, x, *, preceding_context=None, return_traces=False, quality_snr_db=None,
-                return_operator=False):
+                return_operator=False, aperture_context_samples=0,
+                noise_reference_fs_hz=None):
         if self.used:
             raise ValueError("ResidualChannel is snapshot-only; create a new instance per record")
         cfg, latent = self.cfg, self.latent
@@ -37,8 +38,14 @@ class ResidualChannel:
         if x.ndim != 1 or len(x) < 4 or not np.isfinite(x).all():
             raise ValueError("expected finite 1D raw IQ")
         n = len(x)
-        if n/cfg.fs_hz > min(cfg.local_geometry_max_duration_s, .001):
+        margin = aperture_context_samples
+        if (not isinstance(margin, int) or margin < 0 or margin > round(12e-6*cfg.fs_hz)
+                or n - 2*margin < 4 or (margin and cfg.equalization_enabled)):
+            raise ValueError("invalid Residual aperture context")
+        if n/cfg.fs_hz > cfg.local_geometry_max_duration_s or (n - 2*margin)/cfg.fs_hz > .001:
             raise ValueError("residual frozen-channel approximation limited to 1ms snapshots")
+        if noise_reference_fs_hz is not None and not 0 < noise_reference_fs_hz <= cfg.fs_hz:
+            raise ValueError("invalid Residual noise reference sample rate")
         s = latent.state
         coefficients = latent.ray_coef.sum(axis=1)*np.sqrt(latent.diffuse[s]*latent.pdp)
         los = 0. if s == 2 else 10**((cfg.los_mean_db[s]+cfg.los_std_db[s]*latent.z)/20)
@@ -47,11 +54,20 @@ class ResidualChannel:
         ref = slant_range(cfg.reference_altitude_m, cfg.reference_elevation_deg)
         gain = ref/latent.geometry.distance_m * 10**(-cfg.atmosphere_loss_db/20)
         h = propagation_kernel(latent, s, coefficients, gain)
-        input_power = float(np.mean(abs(x)**2))
-        noise_variance = 10**(-cfg.reference_snr_db/10)
+        central = slice(margin, n - margin)
+        input_power = float(np.mean(abs(x[central])**2))
+        reference_noise = 10**(-cfg.reference_snr_db/10)
+        noise_variance = (reference_noise if noise_reference_fs_hz is None
+                          else reference_noise * cfg.fs_hz / noise_reference_fs_hz)
         # PSD-based expected power: no synthesis of H*x just to get quality.
         # White-input approximation is explicitly logged; external estimate wins.
-        proxy_quality = float(10*np.log10(max(input_power*np.sum(abs(h)**2),1e-300)/noise_variance))
+        channel_power = np.sum(abs(h)**2)
+        if noise_reference_fs_hz is not None and noise_reference_fs_hz < cfg.fs_hz:
+            nfft = 1 << max(8, (len(h) - 1).bit_length())
+            frequency = np.fft.fftfreq(nfft, d=1/cfg.fs_hz)
+            in_band = abs(frequency) < noise_reference_fs_hz/2
+            channel_power = np.mean(abs(np.fft.fft(h, nfft)[in_band])**2)
+        proxy_quality = float(10*np.log10(max(input_power*channel_power,1e-300)/reference_noise))
         quality = proxy_quality if quality_snr_db is None else float(quality_snr_db)
         status, scale = receiver_quality(cfg, quality)
         fhat = (latent.f_doppler+latent.coarse_doppler_error_hz if status == "unlocked"
@@ -102,7 +118,7 @@ class ResidualChannel:
         noise_boundary = cfg.boundary if cfg.boundary != "require_context" else "edge"
         noise, _ = linear_filter(noise_input,g,noise_boundary)
         y = signal+noise
-        rms = float(np.sqrt(np.mean(abs(y)**2)))
+        rms = float(np.sqrt(np.mean(abs(y[central])**2)))
         requested = -20*np.log10(max(rms,1e-300))
         agc_db = float(np.clip(requested,-cfg.agc_limit_db,cfg.agc_limit_db)) if cfg.agc_enabled else 0.
         y *= 10**(agc_db/20)
@@ -139,6 +155,9 @@ class ResidualChannel:
                          "phase_locally_constant_over_EQ_memory",
                          "quality_proxy_may_differ_from_full_route_on_colored_input"],
             parameter_provenance="same_practical_engineering_parameters_not_independent_weak_channel")
+        if margin or noise_reference_fs_hz is not None:
+            meta.update(aperture_context_samples=margin, nominal_snapshot_samples=n - 2*margin,
+                        noise_reference_fs_hz=noise_reference_fs_hz)
         if return_traces:
             trace = dict(pre_agc_signal=signal,pre_agc_noise=noise,
                 propagation_kernel=h,residual_kernel=main_kernel,equalizer_kernel=g)
