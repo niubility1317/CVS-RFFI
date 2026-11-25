@@ -164,7 +164,7 @@ def worker(rt, action):
     freeze_predictions(root, Path(original['run_root']) / 'predictions', core.baseline.VIEWS, ORIGINAL_MODES, arms=arms)
 
 
-def dispatch(runtime):
+def dispatch(runtime, *, entry=__file__):
     from experiments.pamf_lora_main.runner import available
 
     rt = read(runtime)
@@ -179,7 +179,7 @@ def dispatch(runtime):
         reference_root = rt['reference']
         env = dict(os.environ, CUDA_VISIBLE_DEVICES='' if gpu is None else str(gpu),
                    PYTHONPATH=reference_root, OMP_NUM_THREADS='2', OPENBLAS_NUM_THREADS='1')
-        cmd = [rt['python'], '-u', str(Path(__file__).resolve()), action, str(runtime)]
+        cmd = [rt['python'], '-u', str(Path(entry).resolve()), action, str(runtime)]
         with (root / f'{action}.log').open('x', encoding='utf-8') as stream:
             child = subprocess.Popen(cmd, env=env, cwd=reference_root, stdout=stream, stderr=subprocess.STDOUT)
             print('WISIG_ANCHOR_WORKER', action, child.pid, gpu, flush=True)
