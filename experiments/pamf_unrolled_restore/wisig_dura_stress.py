@@ -81,7 +81,7 @@ def smoke(rt, *, arms=data.PROFILES, load=training.frozen_fit, force_practical=F
 
 @torch.no_grad()
 def predict(rt, case, *, methods=METHODS, load=training.frozen_fit, force_practical=False,
-            restore=training.restore, clean_passthrough=True):
+            restore=training.restore, clean_passthrough=True, measure_iq=False):
     activate(rt)
     profile, route, split = CASES[case]
     root = Path(rt['run_root'])
@@ -118,7 +118,13 @@ def predict(rt, case, *, methods=METHODS, load=training.frozen_fit, force_practi
             r69 = original_r69(Path(rt['parent_root']))
     frozen = Path(rt.get('frozen_root', root))
     models = {name:load(frozen, name.removeprefix('trained_')) for name in methods if name not in ('raw','R69')}
+    if measure_iq:
+        if not force_practical or clean_passthrough:
+            raise ValueError('Paired IQ metrics require restoration on all inputs')
+        clean_array = np.load(manifest['clean_ref'], mmap_mode='r', allow_pickle=False)
+        r69 = original_r69(Path(rt['parent_root']))
     output, activation = {}, {}
+    iq_metrics = {}
     started = perf_counter()
     for view in VIEWS:
         use_strong = profile == 'strong' and view != 'clean'
@@ -142,6 +148,7 @@ def predict(rt, case, *, methods=METHODS, load=training.frozen_fit, force_practi
             for name in ('raw', 'R69'):
                 decisions[name] = baseline[f'{name}__{view}']
         active_count = {name: 0 for name in models}
+        sums = dict.fromkeys(methods, 0.)
         if force_practical and clean_passthrough and view=='clean':
             for name in models:
                 decisions[name] = decisions['raw'].copy()
@@ -154,14 +161,23 @@ def predict(rt, case, *, methods=METHODS, load=training.frozen_fit, force_practi
             rows = observed[selection if view_positions is None else view_positions[selection]]
             iq = tensor(rows, 'cuda:0')
             variance = None if force_practical else receive_coordinates(iq)[-1]
+            if predict_baselines or measure_iq:
+                original_restored = r69(iq)[0]
             if predict_baselines:
                 decisions['raw'][:, selection] = classify(heads, iq)
-                decisions['R69'][:, selection] = classify(heads, r69(iq)[0])
+                decisions['R69'][:, selection] = classify(heads, original_restored)
+            if measure_iq:
+                clean = tensor(clean_array[selection if positions is None else positions[selection]], 'cuda:0')
+                energy = clean.square().mean((1, 2)).clamp_min(1e-4)
+                for name, value in (('raw', iq), ('R69', original_restored)):
+                    sums[name] += float(((value - clean).square().mean((1, 2)) / energy).sum())
             for name, (model, gate) in models.items():
                 recovered, active = restore(model, gate, iq, variance, force=force_practical)
                 if force_practical:
                     active_count[name] += int(active.sum().item())
                     decisions[name][:, selection] = classify(heads,recovered)
+                    if measure_iq:
+                        sums[name] += float(((recovered - clean).square().mean((1, 2)) / energy).sum())
                     continue
                 mask = np.asarray(active.cpu().tolist(), dtype=bool)
                 active_count[name] += int(mask.sum())
@@ -173,13 +189,18 @@ def predict(rt, case, *, methods=METHODS, load=training.frozen_fit, force_practi
         if force_practical and any(count!=len(ids) for count in active_count.values()):
             raise ValueError('Forced satellite inference skipped physical packets')
         activation[view] = active_count
+        if measure_iq:
+            iq_metrics[view] = {name: total / len(ids) for name, total in sums.items()}
         print('WISIG_STRESS_PREDICTED', profile, route, split, view, len(ids), active_count, flush=True)
     folder = root / 'predictions' / case
     folder.mkdir(parents=True)
     with (folder / 'decisions.npz').open('xb') as stream:
         np.savez(stream, ids=ids, **output)
-    write(folder / 'complete.json', dict(expected, profile=profile, active=activation,force_practical=force_practical,
-                                        clean_passthrough=clean_passthrough, seconds=perf_counter()-started))
+    marker = dict(expected, profile=profile, active=activation, force_practical=force_practical,
+                  clean_passthrough=clean_passthrough, seconds=perf_counter()-started)
+    if measure_iq:
+        marker['mean_iq_nmse'] = iq_metrics
+    write(folder / 'complete.json', marker)
 
 
 def launch(rt, action, name, gpu=None):

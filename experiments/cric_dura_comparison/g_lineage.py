@@ -36,13 +36,13 @@ def construct(stage, parent=None):
     return StageDistilled(parent)
 
 
-def load(path, contract, roles, device='cpu'):
+def load(path, contract, roles, device='cpu', *, epochs=20):
     item = torch.load(path, map_location='cpu', weights_only=False)
     if item.get('schema') != 'contract_matched_dura_stage_v1' or item.get('source_contract') != contract or item.get('allowed_roles') != roles:
         raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH')
     if item.get('TX_labels_read') != 0 or item.get('F_reads') != 0 or item.get('target_reads') != 0:
         raise ValueError('CHECKPOINT_TARGET_CONTAMINATED')
-    if item.get('epoch') != 20 or item.get('updates') != 4940:
+    if item.get('epoch') != epochs or item.get('updates') != epochs * 247:
         raise ValueError('Complete fixed-final DURA source budget required')
     model = skeleton(item['stage'])
     model.load_state_dict(item['model'], strict=True)

@@ -12,8 +12,8 @@ from .g_lineage import STAGES, construct, load, objective, trainable
 from .teacher_targets import EpochTargets, SharedEpochTargets, binding, exposure_count, frozen_prefix_predictor
 
 
-def learning_rate(step):
-    return 2e-4 * (step + 1) / 247 if step < 247 else 2e-4 * (.1 + .9 * (1 + math.cos(math.pi * (step - 247) / 4692)) / 2)
+def learning_rate(step, epochs=20):
+    return 2e-4 * (step + 1) / 247 if step < 247 else 2e-4 * (.1 + .9 * (1 + math.cos(math.pi * (step - 247) / (247 * (epochs - 1) - 1))) / 2)
 
 
 def batches(n, rng):
@@ -48,7 +48,7 @@ def inherit_source_stage(frozen,root,contract,roles,seed,stage):
 
 def train(c, device='cuda:0', *, view=None, prepare_model=None, frozen_coarse=None,
           frozen_action=None, stage_loss=None, reconstruction=None, log_action_terms=False,
-          original_recipe=False):
+          original_recipe=False, final_epochs=20):
     if any(c.get(k) for k in ('truth', 'target_truth', 'target_inputs', 'tests', 'reader', 'F_checkpoint')):
         raise ValueError('G source training rejects F/target inputs')
     contract = read(c['cache']['source_contract'])
@@ -80,6 +80,7 @@ def train(c, device='cuda:0', *, view=None, prepare_model=None, frozen_coarse=No
         raise ValueError('Unknown teacher acceleration mode')
     reduce_syncs = acceleration.get('reduce_syncs', False)
     for stage in stages:
+        epochs = final_epochs if stage == 'r69' else 20
         folder = root / stage
         folder.mkdir()
         torch.manual_seed(c['model_seed'])
@@ -109,7 +110,7 @@ def train(c, device='cuda:0', *, view=None, prepare_model=None, frozen_coarse=No
         updates = seen_l = seen_u = 0
         started = time.perf_counter()
         with (folder / 'training.jsonl').open('x', encoding='utf-8') as stream:
-            for epoch in range(1, 21):
+            for epoch in range(1, epochs + 1):
                 model.train()
                 total = torch.zeros((), dtype=torch.float64, device=device) if reduce_syncs else 0.
                 trace = dict(action_error=0., log_variance_error=0.) if stage == 'action' and log_action_terms else None
@@ -133,7 +134,7 @@ def train(c, device='cuda:0', *, view=None, prepare_model=None, frozen_coarse=No
                     arrays = view.batch(selected, epoch, coarse=stage == 'coarse', action=stage == 'action')
                     optimizer.zero_grad(set_to_none=True)
                     for group in optimizer.param_groups:
-                        group['lr'] = learning_rate(updates)
+                        group['lr'] = learning_rate(updates, epochs)
                     micro = 64 if stage in ('r38','r44','r46') else 256
                     finite = torch.ones((),dtype=torch.bool,device=device) if reduce_syncs else None
                     for offset in range(0, len(selected), micro):
@@ -143,7 +144,8 @@ def train(c, device='cuda:0', *, view=None, prepare_model=None, frozen_coarse=No
                         action = tuple(tensor(arrays[k][take], device) for k in ('kernel', 'coefficients', 'variance')) if stage == 'action' else None
                         desired = target_cache.get(selected[take],received,epoch) if target_cache is not None else None
                         context = prefix_cache.get(selected[take],received,epoch) if prefix_cache is not None else None
-                        loss = objective(model, teacher, stage, received, clean, epoch, action, generator,
+                        recipe_epoch = 1 + 19 * (epoch - 1) / (epochs - 1) if epochs != 20 else epoch
+                        loss = objective(model, teacher, stage, received, clean, recipe_epoch, action, generator,
                             desired=desired,frozen_context=context,skip_zero_spectral=acceleration.get('skip_zero_spectral',False),
                             stage_loss=stage_loss,reconstruction=reconstruction,action_trace=trace,
                             original_recipe=original_recipe)
@@ -184,7 +186,7 @@ def train(c, device='cuda:0', *, view=None, prepare_model=None, frozen_coarse=No
                 stream.flush()
                 write(root / 'progress.json', dict(stage=stage, **row), exclusive=False)
                 print(json.dumps(dict(event='DURA_LINEAGE_EPOCH', stage=stage, **row)), flush=True)
-        if updates != 4940 or (roles == 'L' and seen_u):
+        if updates != epochs * 247 or (roles == 'L' and seen_u):
             raise ValueError('G role or complete update budget differs')
         if teacher is not None and any(p.grad is not None for p in teacher.parameters()):
             raise ValueError('G teacher acquired gradients')
@@ -194,9 +196,9 @@ def train(c, device='cuda:0', *, view=None, prepare_model=None, frozen_coarse=No
             model={k: v.detach().cpu() for k, v in model.state_dict().items()},
             initialization_report=getattr(model, 'initialization_report', None),
             ancestors=[str(root / s / 'final.pt') for s in STAGES[:STAGES.index(stage)]],
-            epoch=20, updates=4940, L_exposures=seen_l, U_exposures=seen_u,
+            epoch=epochs, updates=updates, L_exposures=seen_l, U_exposures=seen_u,
             TX_labels_read=0, F_reads=0, target_reads=0, code_commit=c['code_commit']), previous)
-        fresh, _ = load(previous, contract, roles, device)
+        fresh, _ = load(previous, contract, roles, device, epochs=epochs)
         with torch.no_grad():
             model.eval()
             if not torch.allclose(model(received[:2]), fresh(received[:2]), atol=1e-6, rtol=1e-5):
@@ -207,6 +209,6 @@ def train(c, device='cuda:0', *, view=None, prepare_model=None, frozen_coarse=No
         del model, optimizer, fresh, parent, teacher
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
-    write(root / 'complete.json', dict(status='SOURCE_FROZEN', stages=list(STAGES), updates=39520,
+    write(root / 'complete.json', dict(status='SOURCE_FROZEN', stages=list(STAGES), updates=247 * (140 + final_epochs),
         checkpoint=str(previous), source_contract=c['cache']['source_contract'], allowed_roles=roles,
         seconds_by_stage=timings, TX_labels_read=0, F_reads=0, target_reads=0))
