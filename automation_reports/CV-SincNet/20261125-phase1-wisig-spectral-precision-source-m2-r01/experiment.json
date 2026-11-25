@@ -1,0 +1,224 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261125-phase1-wisig-spectral-precision-source-m2-r01",
+  "group_id": "phase1-wisig-observable-recovery",
+  "display_name": "WiSig 逐频观测权重与固定权重匹配训练",
+  "description": "End-to-end source-only matched ablation of the frequency-domain observation metric in two native WiSig MAP stages.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source_only",
+    "restoration",
+    "full_and_residual",
+    "all_packets"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261125-phase1-wisig-native-fir-source-m4-r01",
+    "20261125-diagnostic-wisig-native-fir-first-map-precision-source-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa and WiSig restoration research goal, single-seed source qualification.",
+  "code": {
+    "commit": "The committed code/config selected and verified by release_commit at publication",
+    "checkout": "E:/codex/home/worktrees/lora-dura-stage-supervision/standard_ce_baselines_20261010",
+    "environment": "N607 archived native FIR runtime Python (see runtime.json)",
+    "cwd": "releases/20261125-phase1-wisig-native-fir-source-m4-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig ManySig",
+    "version": "Main split F0",
+    "representation": "Native float32 [2,256], 25 MS/s, paired full and residual source panel",
+    "contract_ref": "runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json",
+    "physical_ids_ref": "runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/validation/physical_ids.npy",
+    "label_map_ref": "Registered F0 source physical IDs and frozen 6-class Tri-SIG-TIME reader",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": 56700,
+      "V": 1800
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": "runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Matched source-only IQ fitting and single-seed qualification. Target predictions and target-side truth are outside this run."
+  },
+  "checkpoint": {
+    "initialization": "Random scratch for both restorers",
+    "sources": [
+      {
+        "ref": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+        "role": "frozen Tri-SIG-TIME source V reader seed 2026092701"
+      },
+      {
+        "ref": "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+        "role": "registered same-source paired R69 decisions, comparator only"
+      }
+    ],
+    "contract_check_ref": "report.md and fit-inputs.json",
+    "provenance_verdict": "No checkpoint load for either candidate; reference release provides code and fixed source handles only.",
+    "selection_rule": "Fixed final step 40000. For a new registered Main evaluation, each route must beat same-row R69 six-scene accuracy, with clean integer correct counts at least matching. Spectral contribution also compared with the newly trained scalar control."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex goal 01a208a9-57df-7f82-a078-cd9477adf998",
+    "gpu_policy": "At most two distinct concurrently eligible physical GPUs used by this run; per-worker free VRAM at least 12 GiB.",
+    "remote_run_root": "runs/20261125-phase1-wisig-spectral-precision-source-m2-r01",
+    "remote_log_root": "runs/20261125-phase1-wisig-spectral-precision-source-m2-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261125-phase1-wisig-spectral-precision-source-m2-r01",
+    "launch_command": "python -m experiments.pamf_unrolled_restore.wisig_spectral_precision_source publish --repo . --context E:/type10-7/local_artifacts/20261125-diagnostic-wisig-native-fir-anchor-source-m2-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261125-phase1-wisig-spectral-precision-source-m2-r01/release",
+    "stop_rule": "Stop downstream on source contract, solver conformance, gradient, nonfinite loss, output collision, failed comparator binding or incomplete blind prediction. Retain partial files and unrelated jobs."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "fit-inputs.json",
+    "{arm}-train-smoke.json",
+    "{arm}.pt",
+    "{arm}-complete.json",
+    "smoke.json",
+    "predictions/{route}_{view}.npz",
+    "predictions/complete.json",
+    "source-scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "correct counts",
+      "accuracy",
+      "paired gains and losses",
+      "95% paired intervals",
+      "held U IQ loss",
+      "B1 restoration latency",
+      "train time",
+      "GPU peak",
+      "parameters"
+    ],
+    "dimensions": [
+      "arm",
+      "stage",
+      "route",
+      "view",
+      "receiver",
+      "seed"
+    ],
+    "prediction_ref": "runs/20261125-phase1-wisig-spectral-precision-source-m2-r01/predictions",
+    "scorer_ref": "experiments/pamf_unrolled_restore/wisig_spectral_precision_source.py score"
+  },
+  "rows": [
+    {
+      "row_id": "fixed_precision",
+      "method": "Fixed scalar observation weights 8 and 1",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_unrolled_restore/wisig_spectral_precision_source.py",
+      "resolved_config_ref": "runs/20261125-phase1-wisig-spectral-precision-source-m2-r01/fit-inputs.json",
+      "data_overrides": {
+        "role": "U_s IQ",
+        "training_count": 52092,
+        "held_U_count": 512
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026092701,
+        "data": 2026092703,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Split seed here partitions the fixed U_s source subset. Held augmentation is 2026092706. No support or new evaluation draw; evaluation seed identifies the reader.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW cosine 3e-4 to 3e-5, weight decay 1e-4",
+      "lr": 0.0003,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "40000 steps, batch 24, two stages trained jointly",
+      "output_root": "runs/20261125-phase1-wisig-spectral-precision-source-m2-r01/fixed_precision.pt",
+      "log_path": "runs/20261125-phase1-wisig-spectral-precision-source-m2-r01/train-fixed_precision.log",
+      "command": "archived Python -u releases/20261125-phase1-wisig-spectral-precision-source-m2-r01-release/experiments/pamf_unrolled_restore/wisig_spectral_precision_source.py train runs/20261125-phase1-wisig-spectral-precision-source-m2-r01/fit-inputs.json fixed_precision",
+      "expected_artifacts": [
+        "fixed_precision-complete.json",
+        "fixed_precision.pt"
+      ]
+    },
+    {
+      "row_id": "spectral_precision",
+      "method": "Weights 8 and 1 with two per-frequency residual and receive-power heads",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_unrolled_restore/wisig_spectral_precision_source.py",
+      "resolved_config_ref": "runs/20261125-phase1-wisig-spectral-precision-source-m2-r01/fit-inputs.json",
+      "data_overrides": {
+        "role": "U_s IQ",
+        "training_count": 52092,
+        "held_U_count": 512
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026092701,
+        "data": 2026092703,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Split seed here partitions the fixed U_s source subset. Held augmentation is 2026092706. No support or new evaluation draw; evaluation seed identifies the reader.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW cosine 3e-4 to 3e-5, weight decay 1e-4",
+      "lr": 0.0003,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "40000 steps, batch 24, two stages trained jointly",
+      "output_root": "runs/20261125-phase1-wisig-spectral-precision-source-m2-r01/spectral_precision.pt",
+      "log_path": "runs/20261125-phase1-wisig-spectral-precision-source-m2-r01/train-spectral_precision.log",
+      "command": "archived Python -u releases/20261125-phase1-wisig-spectral-precision-source-m2-r01-release/experiments/pamf_unrolled_restore/wisig_spectral_precision_source.py train runs/20261125-phase1-wisig-spectral-precision-source-m2-r01/fit-inputs.json spectral_precision",
+      "expected_artifacts": [
+        "spectral_precision-complete.json",
+        "spectral_precision.pt"
+      ]
+    }
+  ],
+  "notes": [
+    "No input threshold or bypass on either candidate. Phase1 source-only qualification. Official three-seed matrix is separate if source rules are met.",
+    "Both arms use the same original native FIR loss plus 0.2 final identity-IQ NMSE for four clean U windows per update.",
+    "Source contract and split are inherited unchanged by reference. No weights from the archived run are loaded in fit. Archive path recorded as a code/data-handle dependency.",
+    "Reference release runtime releases/20261125-phase1-wisig-native-fir-source-m4-r01-release/runtime.json."
+  ],
+  "registered_at": "2026-11-25T13:35:15+00:00"
+}
