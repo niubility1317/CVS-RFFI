@@ -40,3 +40,9 @@ N607 普通账号，进入归档强制恢复运行环境，使用固定新输出
 | Residual | Blind | 229,151／905,762 | −22.37 [−22.53，−22.22] 个百分点 | −25.99 个百分点 |
 
 两候选达到了 clean 条件，两条路线的六景均显著低于同包原 R69，未通过主对比验收。原强制任务的加强扰动结果得到一致方向，原 R69 约为 74.92%，Estimated 和 Blind 约为 54.83% 和 55.07%，其 clean 在该任务口径中单列直通。本运行的 `scores.json` 保留常规两路线、划分、逐场景、逐接收机和逐种子的结果。
+
+## 原 R69 的训练来源与推理输入
+
+R69 推理使用接收窗口的复数 IQ，内部估计信道作用和噪声方差，再通过两阶段先验与共轭梯度求解恢复同一窗口。历史部署入口另有短训练字段重复差分门控。R69 本身从 R65 `prune_after10` 复制全部保留参数，使用配对源 clean IQ 的归一化均方误差、频谱损失和冻结 R65 的分阶段 IQ 蒸馏。R69 训练更新可用的输入为源域配对 IQ，TX 标签、识别器和目标数据均未参与这些更新。 [R69 结构与初始化](../../experiments/pamf_r65_four_route/stage_polyphase.py) [R69 训练](../../experiments/pamf_r65_four_route/training.py)
+
+R65 从 M35 初始化并使用同一 M35 作为蒸馏教师，谱系继续追溯至 R07 `learned_operator`。R07 从模拟信道的实际作用构造白探针监督，并以仿真器计算的真实噪声方差监督方差估计器。R69 登记还披露其 R65 父版本由人工在已看过历史正式结果后指定。这两点决定 R69 保留为同包冻结对照。后续新候选用当前合法源 IQ 从头训练，沿用适用结构时也须重新学习信道估计器。 [R65 初始化](../../experiments/pamf_r46_delayed_prune/runtime.py) [R07 权重继承](../../experiments/pamf_uncertainty_restore/runtime.py) [R07 仿真监督构造](../../experiments/pamf_action_restore/data.py) [R07 实际损失](../../experiments/pamf_action_restore/runner.py) [R69 登记](../../automation_reports/CV-SincNet/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/experiment.json)
