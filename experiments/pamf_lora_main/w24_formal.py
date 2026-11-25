@@ -134,6 +134,12 @@ def bindings(rt, routes, device):
              source_frozen_G=TRAIN_RUN, steps=frozen['steps'], parameters=frozen['parameters'])
 
 
+def wide_delta(g, tracker, observed):
+    y, phase, quality, rms = coordinates(tracker, observed[..., :384])
+    stages, *_ = g.propose(y, quality, rms, complex_iq(observed[..., 384:]))
+    return real_iq((stages[-1] - y) * phase * rms)
+
+
 @torch.no_grad()
 def batch_labels(heads, g, tracker, threshold, baseline, packets, device, *, ungated=False):
     original = received_aperture(packets, device)
@@ -148,10 +154,8 @@ def batch_labels(heads, g, tracker, threshold, baseline, packets, device, *, ung
         variants.append(values)
         activity.append(int(changed.sum()))
     if ungated:
-        y, phase, quality, rms = coordinates(tracker, original[..., :384])
-        stages, *_ = g.propose(y, quality, rms, complex_iq(original[..., 384:]))
         wide = original.clone()
-        wide[..., :384] += real_iq(.5 * (stages[-1] - y) * phase * rms)
+        wide[..., :384] += .5 * wide_delta(g, tracker, original)
         values = np.stack([classify_aperture(f, wide) for f in heads])
         count = len(original)
     else:

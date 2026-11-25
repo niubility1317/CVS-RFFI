@@ -19,8 +19,10 @@ from experiments.cric_dura_comparison.io import read, write
 from experiments.pamf_lora_main.full_packet_views import native, source_contract
 from experiments.pamf_lora_main.runner import activate, available
 from experiments.pamf_lora_main.w24_factor_audit import AUG_RUN, load_classifier, panel, score_source
+from experiments.pamf_lora_main.w24_formal import wide_delta
 from experiments.pamf_lora_main.w24_native_full import (
-    DATA_RUN, SOURCE, VIEWS, W24_COMMIT, W24_RUN, classify, load_restorers, native_full_view, recover,
+    DATA_RUN, SOURCE, VIEWS, W24_COMMIT, W24_RUN, classify, classify_aperture,
+    load_restorers, native_full_view, recover,
 )
 from experiments.pamf_lora_main.w24_native_residual import ROUTE, native_residual
 from experiments.pamf_lora_main.w24_wide_transfer import (
@@ -29,9 +31,12 @@ from experiments.pamf_lora_main.w24_wide_transfer import (
 
 
 RUN = '20261125-diagnostic-lora-w24-native-residual-source-s2026112559-r02'
+SWEEP_RUN = '20261125-diagnostic-lora-w24-readout-sweep-source-s2026112559-r01'
 WAVEFORM_NAMESPACE = '20261125-diagnostic-lora-w24-native-residual-source-s2026112559-r01'
 ROUTES = ('full_native', ROUTE)
 MODES = ('direct', 'prior_complex_response_half', 'wide_dura_half')
+SWEEP_AMPLITUDES = (.5, .75, 1.)
+SWEEP_MODES = ('direct', *(f'wide_ungated_{int(100*x):03d}' for x in SWEEP_AMPLITUDES))
 BATCH = 24
 
 
@@ -53,6 +58,18 @@ def batch_labels(f, baseline, g, tracker, threshold, packets, device):
 
 
 @torch.no_grad()
+def sweep_labels(f, g, tracker, packets, device):
+    original = received_aperture(packets, device)
+    delta = wide_delta(g, tracker, original)
+    output = [classify_aperture(f, original)]
+    for amplitude in SWEEP_AMPLITUDES:
+        restored = original.clone()
+        restored[..., :384] += amplitude * delta
+        output.append(classify_aperture(f, restored))
+    return np.stack(output)
+
+
+@torch.no_grad()
 def predict_source(runtime):
     rt = read(runtime)
     activate(rt)
@@ -64,18 +81,74 @@ def predict_source(runtime):
     # reference stack caches a namesake package with different submodules.
     archive, parent = training_runtime(rt)
     g, track, threshold, frozen = load_restorer(archive, parent, contract, device)
-    baseline = load_restorers(contract, root.parent, device)
-    evaluate = partial(batch_labels, f, baseline, g, track, threshold, device=device)
+    sweeping = rt.get('readout_sweep', False)
+    modes = SWEEP_MODES if sweeping else MODES
+    if sweeping:
+        def evaluate(packets):
+            return sweep_labels(f, g, track, packets, device), [len(packets)] * len(SWEEP_AMPLITUDES)
+    else:
+        baseline = load_restorers(contract, root.parent, device)
+        evaluate = partial(batch_labels, f, baseline, g, track, threshold, device=device)
 
     u = np.array(native(source, 'U_s', contract['counts']['U_s'])[:2])
     for scene in ('clean', VIEWS[-1]):
         arrivals = [paired_iq(scene, (i, SOURCE[0], packet)) for i, packet in enumerate(u)]
         for route in zip(*arrivals, strict=True):
             labels, _ = evaluate(np.stack(route))
-            if labels.shape != (len(MODES), len(u)):
+            if labels.shape != (len(modes), len(u)):
                 raise ValueError('Actual source-only front-end smoke failed')
+    smoke = dict(status='PASS', source_packets=len(u), target_reads=0, source_truth_reads=0,
+                 parent_steps=frozen['steps'], parameters=frozen['parameters'])
+    if sweeping:
+        smoke['readout_amplitudes'] = list(SWEEP_AMPLITUDES)
+    else:
+        smoke.update(latency(g, track, threshold, u[:1], device), threshold=threshold)
+    write(root / 'smoke.json', smoke)
+
+    rows, rx, ids = panel(source, contract)
+    held = native(source, 'V', contract['counts']['V'])[rows]
+    jobs = [(int(row), SOURCE[int(receiver)], packet)
+            for row, receiver, packet in zip(rows, rx, held, strict=True)]
+    output = {r: {} for r in ROUTES}
+    activity = {r: {} for r in ROUTES}
+    with ProcessPoolExecutor(max_workers=rt['cpu_workers']) as pool:
+        for scene in VIEWS:
+            stream = pool.map(partial(paired_iq, scene), jobs, chunksize=6)
+            batches = {r: [] for r in ROUTES}
+            counts = {r: np.zeros(len(modes)-1, dtype=int) for r in ROUTES}
+            for offset in range(0, len(rows), BATCH):
+                chunk = [next(stream) for _ in range(min(BATCH, len(rows)-offset))]
+                for route, packets in zip(ROUTES, zip(*chunk, strict=True), strict=True):
+                    pred, active = evaluate(np.stack(packets))
+                    batches[route].append(pred)
+                    counts[route] += active
+            for route in ROUTES:
+                output[route][scene] = np.concatenate(batches[route], axis=1)
+                activity[route][scene] = counts[route].tolist()
+            if scene == 'clean' and not np.array_equal(*(output[r][scene] for r in ROUTES)):
+                raise ValueError('Same clean packets must produce identical decisions on both routes')
+            print('W24_NATIVE_RESIDUAL_PREDICTED', scene, len(rows), flush=True)
+    for route in ROUTES:
+        if sweeping:
+            previous = root.parent / RUN / route
+            mark = read(previous/'source-predictions.json')
+            if (mark['status'], mark['physical_ids'], mark['target_reads']) != ('PREDICTIONS_FROZEN', ids, 0):
+                raise ValueError('Expected the prior frozen two-route source panel')
+            with np.load(previous/'predictions.npz', allow_pickle=False) as archive:
+                if any(not np.array_equal(archive[v][0], output[route][v][0]) for v in VIEWS):
+                    raise ValueError('Readout sweep did not reproduce direct source predictions')
+        out = root / route
+        out.mkdir()
+        np.savez(out / 'predictions.npz', **output[route])
+        policy = (dict(ungated=True, amplitudes=list(SWEEP_AMPLITUDES)) if sweeping
+                  else dict(threshold=threshold))
+        write(out / 'source-predictions.json', dict(status='PREDICTIONS_FROZEN', modes=list(modes),
+              views=list(VIEWS), physical_ids=ids, target_reads=0, source_truth_reads=0,
+              waveform=dict(route=route, source_frozen_G=TRAIN_RUN, activation=activity[route], **policy)))
+
+
+def latency(g, track, threshold, clean, device):
     rng = np.random.default_rng(2026112559)
-    clean = u[:1]
     noise = rng.standard_normal(clean.shape) + 1j*rng.standard_normal(clean.shape)
     x = received_aperture((clean + .75*noise*np.abs(clean).max()).astype(np.complex64), device)
     _, active = g.restore(track, x, threshold)
@@ -90,47 +163,15 @@ def predict_source(runtime):
         g.restore(track, x, threshold)
         torch.cuda.synchronize()
         samples.append(1000*(perf_counter()-start))
-    write(root / 'smoke.json', dict(status='PASS', source_packets=len(u), target_reads=0, source_truth_reads=0,
-          b1_active_g_median_ms=float(np.median(samples)), b1_active_g_p95_ms=float(np.percentile(samples, 95)),
-          parent_steps=frozen['steps'], parameters=frozen['parameters'], threshold=threshold))
-
-    rows, rx, ids = panel(source, contract)
-    held = native(source, 'V', contract['counts']['V'])[rows]
-    jobs = [(int(row), SOURCE[int(receiver)], packet)
-            for row, receiver, packet in zip(rows, rx, held, strict=True)]
-    output = {r: {} for r in ROUTES}
-    activity = {r: {} for r in ROUTES}
-    with ProcessPoolExecutor(max_workers=rt['cpu_workers']) as pool:
-        for scene in VIEWS:
-            stream = pool.map(partial(paired_iq, scene), jobs, chunksize=6)
-            batches = {r: [] for r in ROUTES}
-            counts = {r: np.zeros(len(MODES)-1, dtype=int) for r in ROUTES}
-            for offset in range(0, len(rows), BATCH):
-                chunk = [next(stream) for _ in range(min(BATCH, len(rows)-offset))]
-                for route, packets in zip(ROUTES, zip(*chunk, strict=True), strict=True):
-                    pred, active = evaluate(np.stack(packets))
-                    batches[route].append(pred)
-                    counts[route] += active
-            for route in ROUTES:
-                output[route][scene] = np.concatenate(batches[route], axis=1)
-                activity[route][scene] = counts[route].tolist()
-            if scene == 'clean' and not np.array_equal(*(output[r][scene] for r in ROUTES)):
-                raise ValueError('Same clean packets must produce identical decisions on both routes')
-            print('W24_NATIVE_RESIDUAL_PREDICTED', scene, len(rows), flush=True)
-    for route in ROUTES:
-        out = root / route
-        out.mkdir()
-        np.savez(out / 'predictions.npz', **output[route])
-        write(out / 'source-predictions.json', dict(status='PREDICTIONS_FROZEN', modes=list(MODES),
-              views=list(VIEWS), physical_ids=ids, target_reads=0, source_truth_reads=0,
-              waveform=dict(route=route, source_frozen_G=TRAIN_RUN, threshold=threshold,
-                            activation=activity[route])))
+    return dict(b1_active_g_median_ms=float(np.median(samples)), b1_active_g_p95_ms=float(np.percentile(samples, 95)))
 
 
 def compare_source(runtime):
-    root = Path(read(runtime)['run_root'])
+    rt = read(runtime)
+    root = Path(rt['run_root'])
+    modes = SWEEP_MODES if rt.get('readout_sweep') else MODES
     for route in ROUTES:
-        score_source(runtime, modes=MODES, output=root / route)
+        score_source(runtime, modes=modes, output=root / route)
 
 
 def dispatch(runtime):
@@ -179,20 +220,26 @@ def main():
     publish = sub.add_parser('publish')
     for key in ('repo', 'context', 'ssh-config', 'output'):
         publish.add_argument('--' + key, type=Path, required=True)
+    publish.add_argument('--readout-sweep', action='store_true')
     args = parser.parse_args()
     if args.action == 'publish':
         ctx = read(args.context)
         rt = {k: ctx[k] for k in ('project', 'python', 'frozen_sources')}
         project = PurePosixPath(rt['project'])
         runs, releases = project / 'runs', project / 'releases'
-        rt.update(run_id=RUN, code_commit=release_commit(args.repo), runner=__spec__.name,
-                  release_root=str(releases / f'{RUN}-release'), run_root=str(runs / RUN),
+        run = SWEEP_RUN if args.readout_sweep else RUN
+        rt.update(run_id=run, code_commit=release_commit(args.repo), runner=__spec__.name,
+                  release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
+                  readout_sweep=args.readout_sweep,
                   source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),
                   classifier_root=str(runs / AUG_RUN), w24_release_root=str(releases / f'{W24_RUN}-release'),
-                  training_release_root=str(releases / f'{TRAIN_RUN}-release'), allowed_gpus=[0, 5, 3],
+                  training_release_root=str(releases / f'{TRAIN_RUN}-release'),
+                  allowed_gpus=[6, 0, 5, 3, 2, 7, 4, 1] if args.readout_sweep else [0, 5, 3],
                   cpu_workers=8)
         rt['external_releases'] = [rt[k] for k in ('source_root', 'classifier_root', 'w24_release_root',
                                                   'training_release_root')]
+        if args.readout_sweep:
+            rt['external_releases'].append(str(runs/RUN))
         release(args.repo, args.output, rt, args.ssh_config)
     elif args.action == 'dispatch':
         dispatch(args.runtime)
