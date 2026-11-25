@@ -16,8 +16,9 @@ from .full_packet_views import native, source_contract
 from .full_supervised import batches
 from .runner import activate
 from .tri_clean95 import (
-    NATIVE_JITTER_ROWS, NATIVE_RAW_ROWS, NATIVE_WIDE_ROWS, clean_model, clean_validation, labels,
-    labeled_shift_views, scratch_repl_lr_factor, supervised_clean_terms,
+    NATIVE_BAND_ROWS, NATIVE_JITTER_ROWS, NATIVE_RAW_ROWS, NATIVE_WIDE_ROWS,
+    clean_model, clean_validation, labels, labeled_training_views, scratch_repl_lr_factor,
+    supervised_clean_terms,
 )
 from .tri_tuning import SEED
 
@@ -30,6 +31,7 @@ ROWS = {
     'native24_jitter': NATIVE_JITTER_ROWS['phase_native24_jitter'],
 }
 RAW_HEAD_ROWS = {'native24_raw': NATIVE_RAW_ROWS['phase_native24_raw']}
+BAND_TAIL_ROWS = {'native24_band': NATIVE_BAND_ROWS['phase_native24_band']}
 
 
 def source_runtime(rt):
@@ -65,7 +67,7 @@ def model(root, contract, row, device):
     return net
 
 
-def smoke(rt, *, raw_head=False):
+def smoke(rt, *, raw_head=False, band_tail=False):
     root, source, contract = source_runtime(rt)
     activate(rt)
     y, rx = labels(source, contract, 'L_s')
@@ -76,8 +78,8 @@ def smoke(rt, *, raw_head=False):
         row = RAW_HEAD_ROWS['native24_raw']
         data = tensor(extract(raw,subset))
     else:
-        row = ROWS['native24_jitter']
-        before, after = labeled_shift_views(raw[subset],row)
+        row = BAND_TAIL_ROWS['native24_band'] if band_tail else ROWS['native24_jitter']
+        before, after = labeled_training_views(raw[subset],row)
         data = tensor(np.concatenate((before[:4], after[4:]),axis=0))
     fitted = model(root,contract,row,'cpu')
     with torch.enable_grad():
@@ -94,7 +96,7 @@ def smoke(rt, *, raw_head=False):
                                   raw_head_ce=float(raw_loss.detach()) if raw_loss is not None else None))
 
 
-def fit_row(root, contract, name, row, x, y, rx, yn, rn, shifts, device):
+def fit_row(root, contract, name, row, x, y, rx, yn, rn, augmentations, device):
     out = root/'F'/name
     out.mkdir(parents=True, exist_ok=False)
     f = model(out, contract, row, device)
@@ -109,14 +111,17 @@ def fit_row(root, contract, name, row, x, y, rx, yn, rn, shifts, device):
         for epoch in range(1, EPOCHS+1):
             total = torch.zeros((),device=device)
             raw_total = torch.zeros((),device=device)
+            altered = torch.zeros((),device=device,dtype=torch.int64)
             f.train()
             for b in batches(yn, rn, rng):
                 i = tensor(b,device)
                 labeled = x[i]
-                if row.get('native_timing_offset'):
+                if augmentations:
                     q = torch.rand(len(b),device=device,generator=draw)[:,None,None,None]
-                    labeled = torch.where(q<.125, shifts[0][i], labeled)
-                    labeled = torch.where(q>.875, shifts[1][i], labeled)
+                    labeled = torch.where(q<.125, augmentations[0][i], labeled)
+                    labeled = torch.where(q>.875, augmentations[1][i], labeled)
+                    if name in BAND_TAIL_ROWS:
+                        altered += ((q<.125)|(q>.875)).sum()
                 opt.zero_grad(set_to_none=True)
                 loss,_,raw_ce = supervised_clean_terms(f,labeled,y[i],rx[i],1.,0.,None,raw_weight)
                 if raw_ce is not None:
@@ -130,6 +135,8 @@ def fit_row(root, contract, name, row, x, y, rx, yn, rn, shifts, device):
             rec = dict(epoch=epoch, step=steps, source_L_loss=float(total/STEPS))
             if raw_weight:
                 rec['raw_head_ce'] = float(raw_total/STEPS)
+            if name in BAND_TAIL_ROWS:
+                rec['source_l_band_scaled_examples'] = int(altered)
             log.write(json.dumps(rec,allow_nan=False)+chr(10))
             log.flush()
             print(name,epoch,steps,rec['source_L_loss'],flush=True)
@@ -141,8 +148,8 @@ def fit_row(root, contract, name, row, x, y, rx, yn, rn, shifts, device):
                                 target_reads=0, satellite_batches=0))
 
 
-def fit(rt, *, raw_head=False):
-    rows = RAW_HEAD_ROWS if raw_head else ROWS
+def fit(rt, *, raw_head=False, band_tail=False):
+    rows = RAW_HEAD_ROWS if raw_head else BAND_TAIL_ROWS if band_tail else ROWS
     root, source, contract = source_runtime(rt)
     activate(rt)
     device = 'cuda:0'
@@ -151,12 +158,14 @@ def fit(rt, *, raw_head=False):
     root.mkdir(parents=True,exist_ok=False)
     raw = native(source,'L_s',COUNTS['L_s'])
     x = tensor(extract(raw,keep),device)
-    shifts = () if raw_head else tuple(tensor(v,device) for v in labeled_shift_views(raw[keep],ROWS['native24_jitter']))
+    augmentation_row = BAND_TAIL_ROWS['native24_band'] if band_tail else ROWS['native24_jitter']
+    augmentations = () if raw_head else tuple(tensor(v,device) for v in labeled_training_views(raw[keep],augmentation_row))
     yn,rn = yn[keep],rn[keep]
     y,rx = tensor(yn,device),tensor(rn,device)
     for name, row in rows.items():
-        fit_row(root,contract,name,row,x,y,rx,yn,rn,shifts,device)
-    del x,shifts
+        row_augmentations = augmentations if row is augmentation_row else ()
+        fit_row(root,contract,name,row,x,y,rx,yn,rn,row_augmentations,device)
+    del x,augmentations,row_augmentations
     vy,vr = labels(source,contract,'V')
     v = tensor(extract(native(source,'V',COUNTS['V']),np.arange(len(vy))),device)
     v_y,v_rx = tensor(vy,device),tensor(vr,device)
@@ -178,6 +187,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('action',choices=('smoke','fit'))
     parser.add_argument('runtime',type=Path)
-    parser.add_argument('--raw-head',action='store_true')
+    profile = parser.add_mutually_exclusive_group()
+    profile.add_argument('--raw-head',action='store_true')
+    profile.add_argument('--band-tail',action='store_true')
     args = parser.parse_args()
-    {'smoke':smoke,'fit':fit}[args.action](read(args.runtime),raw_head=args.raw_head)
+    {'smoke':smoke,'fit':fit}[args.action](read(args.runtime),raw_head=args.raw_head,band_tail=args.band_tail)
