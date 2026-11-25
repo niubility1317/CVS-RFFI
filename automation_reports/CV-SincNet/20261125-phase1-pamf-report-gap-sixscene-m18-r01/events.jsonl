@@ -1,1 +1,3 @@
 {"at": "2026-11-25T06:23:37+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-25T06:28:11+00:00", "status": "RUNNING", "note": "N607 六个预测worker启动，真实权重无查询冒烟通过。其余行排队，先完整预测后独立评分。", "evidence": ["n607_launch_readback.json"], "row_id": null}
+{"at": "2026-11-25T06:43:18+00:00", "status": "ANALYZED", "note": "18 个模型七景两路预测和独立评分全部完成，252 条总体结果及三种子汇总复算一致。", "evidence": ["pipeline_state.json"], "row_id": null}

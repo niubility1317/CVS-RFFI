@@ -1,0 +1,89 @@
+{
+  "status": "RUNNING",
+  "counts": {
+    "RUNNING": 6,
+    "QUEUED": 30
+  },
+  "failed": [],
+  "controller": 3767090,
+  "controller_alive": true,
+  "controller_cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release",
+  "smoke": {
+    "status": "PASS",
+    "pid": 3767102,
+    "gpu": 0,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.pamf_repl_source_adapt.report_gap_six",
+      "worker",
+      "--kind",
+      "smoke",
+      "--config",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release/runtime.json"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/logs/smoke.log",
+    "started_at": 1795587949.3164196,
+    "exit_code": 0
+  },
+  "workers": [
+    {
+      "job": "predict__receiver_split_1-tri-s2026092701",
+      "pid": 3767289,
+      "gpu": 0,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release",
+      "cmdline": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six worker --kind predict --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__receiver_split_1-tri-s2026092701.json ",
+      "log_bytes": 155
+    },
+    {
+      "job": "predict__receiver_split_1-tri-s2026092702",
+      "pid": 3767299,
+      "gpu": 2,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release",
+      "cmdline": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six worker --kind predict --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__receiver_split_1-tri-s2026092702.json ",
+      "log_bytes": 155
+    },
+    {
+      "job": "predict__receiver_split_1-tri-s2026092703",
+      "pid": 3767368,
+      "gpu": 3,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release",
+      "cmdline": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six worker --kind predict --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__receiver_split_1-tri-s2026092703.json ",
+      "log_bytes": 73
+    },
+    {
+      "job": "predict__receiver_split_2-tri-s2026092701",
+      "pid": 3767571,
+      "gpu": 5,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release",
+      "cmdline": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six worker --kind predict --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__receiver_split_2-tri-s2026092701.json ",
+      "log_bytes": 73
+    },
+    {
+      "job": "predict__receiver_split_2-tri-s2026092702",
+      "pid": 3767579,
+      "gpu": 6,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release",
+      "cmdline": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six worker --kind predict --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__receiver_split_2-tri-s2026092702.json ",
+      "log_bytes": 73
+    },
+    {
+      "job": "predict__receiver_split_2-tri-s2026092703",
+      "pid": 3767711,
+      "gpu": 7,
+      "alive": true,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-report-gap-sixscene-m18-r01-release",
+      "cmdline": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_source_adapt.report_gap_six worker --kind predict --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-report-gap-sixscene-m18-r01/configs/predict__receiver_split_2-tri-s2026092703.json ",
+      "log_bytes": 73
+    }
+  ],
+  "cuda_compute_apps": "2471959, 6466\n2480477, 356\n2485375, 292\n2489175, 302\n3682838, 310\n3767289, 394\n2471465, 6462\n2481458, 290\n2485837, 344\n2490973, 324\n2829556, 3730\n3682670, 1228\n1822248, 868\n2480851, 350\n2830253, 1542\n3682700, 452\n3730081, 4508\n3767299, 394\n1822253, 900\n3304016, 288\n3682669, 4834\n3767368, 394\n2472333, 6468\n2480627, 308\n2485157, 314\n2489559, 348\n2829556, 3782\n3682679, 4896\n2471239, 3002\n2473351, 318\n2489465, 318\n2492466, 300\n2495104, 292\n3304029, 346\n3682712, 2274\n3767571, 394\n2469095, 3034\n2472649, 298\n2480278, 520\n2830253, 1506\n3304025, 264\n3682776, 452\n3694141, 672\n3730082, 4508\n3767579, 394\n1818441, 2218\n3304015, 264\n3682786, 310\n3730080, 4508\n3767711, 394\n",
+  "code_commit": "d8c2da25b5b676ff572b60f45730b9dcd49e05b6"
+}
