@@ -11,3 +11,7 @@ UDKE 在图像超分辨中交替展开模糊核及图像子问题，以已知缩
 终步后固定同一 Main split 三视图 SIG-TIME SSL 种子 `2026092701`。Full 和 Residual 用此前同序 1,800 个源 V 物理包，各 clean 和六景，同包对照直通、原 R69 以及两组全部阶段。预测矩阵闭合后进行独立 CPU truth-last 评分。预登记主读出为 `centered_gated`，源 V 同时报告两路六景、低强城区、clean 与相对 R69 的配对不确定性。只有另行按目标协议登记后才进入多种子 Main split。
 
 N607 普通账号，优先空闲 GPU，每臂一个独立训练进程。运行目录 `${N607_PROJECT}/runs/20261125-phase1-wisig-native-fir-source-m4-r01`，工作目录为同名 `-release`。通过 `python -m experiments.pamf_unrolled_restore.wisig_native_fir_source publish --repo <checkout> --output <artifact-root>/release --context <runtime_source.json> --ssh-config <config>` 发布。任一臂真实源 IQ 首步、数据身份、有限性、终点无目标检查或预测矩阵闭合失败时停止本运行并保留产物。预期两臂各有 `*-complete.json`、冻结权重和完整日志，以及 `smoke.json`、两路 14 个盲矩阵与 `source-scores.json`。记录参数量、优化时长及交付前冻结权重 B1 时延。 [执行入口](../../../experiments/pamf_unrolled_restore/wisig_native_fir_source.py)
+
+## 启动核验
+
+训练提交 `ef9f4c227ce57c79dc17a3aeb599395cc25d883b`。本地逐值反射平移、实伴随、同扰动配对、精确旁路以及各阶段的首步梯度检查通过。独立 P0/P1 审查通过。N607 归档传输、远程编译、原生工作目录、命令及 GPU 状态已独立核对。两臂各自真实源 U 的 24 包首步检查通过，目标读取为零。正式训练在 GPU 6 和 GPU 2 运行，两臂均已读到第 100 步有限日志，各自固定第 40,000 步冻结。识别器评测仍在等待最终权重。
