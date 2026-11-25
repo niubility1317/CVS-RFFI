@@ -44,7 +44,7 @@ def classify(heads, iq):
 
 
 @torch.no_grad()
-def smoke(rt):
+def smoke(rt, *, arms=data.PROFILES, load=training.frozen_fit):
     activate(rt)
     root = Path(rt['run_root'])
     clean, selected, calibration = source_iq(Path(rt['source_root']))
@@ -56,8 +56,8 @@ def smoke(rt):
     r69 = original_r69(Path(rt['parent_root']))
     classify(heads, r69(observed[:12])[0])
     latency = {}
-    for profile in data.PROFILES:
-        model, threshold = training.frozen_fit(Path(rt.get('frozen_root', root)), profile)
+    for profile in arms:
+        model, threshold = load(Path(rt.get('frozen_root', root)), profile)
         quiet_variance = receive_coordinates(quiet)[-1]
         unmodified, _ = training.restore(model, threshold, quiet, quiet_variance)
         if not torch.equal(unmodified, quiet):
@@ -77,7 +77,7 @@ def smoke(rt):
 
 
 @torch.no_grad()
-def predict(rt, case):
+def predict(rt, case, *, methods=METHODS, load=training.frozen_fit):
     activate(rt)
     profile, route, split = CASES[case]
     root = Path(rt['run_root'])
@@ -100,7 +100,7 @@ def predict(rt, case):
         if not np.array_equal(archive['ids'], ids):
             raise ValueError('Historical raw/R69 packet order differs')
         baseline = {key: archive[key] for key in archive.files if key.startswith(('raw__', 'R69__'))}
-    strong = root / 'strong_target_iq'
+    strong = Path(rt.get('strong_view_root', root / 'strong_target_iq'))
     if profile == 'strong':
         if read(strong / 'complete.json') != dict(status='IQ_COMPLETE', count=168000, truth_read=False):
             raise ValueError('Harder IQ views are incomplete')
@@ -109,7 +109,7 @@ def predict(rt, case):
             raise ValueError('Stress views must use the original global physical indices')
         r69 = original_r69(Path(rt['parent_root']))
     frozen = Path(rt.get('frozen_root', root))
-    models = {f'trained_{key}': training.frozen_fit(frozen, key) for key in data.PROFILES}
+    models = {name:load(frozen, name.removeprefix('trained_')) for name in methods if name not in ('raw','R69')}
     output, activation = {}, {}
     started = perf_counter()
     for view in VIEWS:
@@ -128,7 +128,7 @@ def predict(rt, case):
             raise ValueError('Received IQ indices are out of range')
         if view_positions is None and len(observed) != len(ids):
             raise ValueError('Received IQ count differs from the split')
-        decisions = {name: np.empty((len(SEEDS), len(ids)), dtype=np.uint8) for name in METHODS}
+        decisions = {name: np.empty((len(SEEDS), len(ids)), dtype=np.uint8) for name in methods}
         if not use_strong:
             for name in ('raw', 'R69'):
                 decisions[name] = baseline[f'{name}__{view}']

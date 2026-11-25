@@ -5,6 +5,7 @@ from time import perf_counter
 
 import numpy as np
 import torch
+from torch.nn.functional import smooth_l1_loss
 
 from experiments.cric_dura_comparison.io import read, tensor, write
 from experiments.pamf_lora_main.channel_blind_source import waveform_risk
@@ -27,7 +28,7 @@ def stages(model, iq):
     return y[:, None], level[:, None], result, action, variance
 
 
-def fit_loss(model, observed, clean, identity):
+def fit_loss(model, observed, clean, identity, *, estimates=None, trace=None):
     y, level, (coarse, first, final), action, variance = stages(model, observed)
     target = torch.complex(clean[:, :1], clean[:, 1:]) / level
     # Keep the receiver's packet-wide complex gain when pairing waveform targets.
@@ -40,7 +41,19 @@ def fit_loss(model, observed, clean, identity):
     identity_loss = (half - y).abs().square().mean((1, 2)).mul(identity).mean()
     signal = (.6 * waveform_risk(coarse, target) + .4 * waveform_risk(first, target)
               + .35 * waveform_risk(final, target) + .65 * waveform_risk(half, target))
-    return signal + .07 * penalty + .015 * likelihood + .35 * identity_loss
+    total = signal + .07 * penalty + .015 * likelihood + .35 * identity_loss
+    if estimates is not None:
+        estimated_action, estimated_variance = estimates
+        expected = torch.complex(estimated_action[:, :1], estimated_action[:, 1:]) / level
+        power = (estimated_variance[:, None, None] / level.square()).clamp_min(1e-5)
+        action_error = (action(target)-expected).abs().square().mean(-1)
+        reference = expected.abs().square().mean(-1).clamp_min(.01)
+        action_supervision = (action_error/reference).mean()
+        variance_supervision = smooth_l1_loss(variance.mean(-1,keepdim=True).log(),power.log())
+        total = total + .30 * action_supervision + .035 * variance_supervision
+        if trace is not None:
+            trace.update(action=float(action_supervision.detach()),variance=float(variance_supervision.detach()))
+    return total
 
 
 def source_views(cache, output, profile, *, smoke=False):

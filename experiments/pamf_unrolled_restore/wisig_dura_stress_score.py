@@ -1,6 +1,7 @@
 """Open WiSig truth only after both profiles and both routes are frozen."""
 
 import os
+from itertools import combinations
 from pathlib import Path
 
 import numpy as np
@@ -13,18 +14,18 @@ from .wisig_dura_stress_data import PROFILES, ROUTES
 from .wisig_preamble_dura_target import historical
 
 
-def closed_predictions(root, ids, profile, route, split):
+def closed_predictions(root, ids, profile, route, split, methods=METHODS):
     marker = read(root / 'complete.json')
     expected = dict(status='PREDICTIONS_FROZEN', profile=profile, route=route, split=split,
                     count=len(ids), seeds=list(SEEDS), views=list(VIEWS), truth_read=False)
     if any(marker[key] != value for key, value in expected.items()):
         raise ValueError('The full blind prediction shard is required')
     with np.load(root / 'decisions.npz', allow_pickle=False) as contents:
-        expected_keys = {'ids', *(f'{name}__{view}' for name in METHODS for view in VIEWS)}
+        expected_keys = {'ids', *(f'{name}__{view}' for name in methods for view in VIEWS)}
         if set(contents.files) != expected_keys or not np.array_equal(ids, contents['ids']):
             raise ValueError('Prediction views, modes or physical IDs differ')
         decisions = {name: np.stack([contents[f'{name}__{view}'] for view in VIEWS], axis=1)
-                     for name in METHODS}
+                     for name in methods}
     if any(value.shape != (len(SEEDS), len(VIEWS), len(ids)) or value.dtype != np.uint8 or value.max() > 5
            for value in decisions.values()):
         raise ValueError('Predicted split, seeds or class codes differ')
@@ -39,8 +40,6 @@ def macro_f1(value, labels):
 
 def cells(predictions, labels, receivers, rng):
     correct = {name: value == labels for name, value in predictions.items()}
-    comparisons = [('raw', 'R69'), ('raw', 'trained_default'), ('raw', 'trained_strong'),
-                   ('R69', 'trained_default'), ('R69', 'trained_strong'), ('trained_default', 'trained_strong')]
     absolute = {}
     for name, value in predictions.items():
         absolute[name] = {}
@@ -50,11 +49,11 @@ def cells(predictions, labels, receivers, rng):
             absolute[name][view] = dict(correct=int(correct[name][:, axis].sum()),
                                         count=len(labels)*len(SEEDS), by_seed=by_seed)
     paired = {f'{first}_to_{last}': summarize(correct[first], correct[last], receivers, VIEWS, rng,
-                                               labels=(first, last)) for first, last in comparisons}
+                                               labels=(first, last)) for first, last in combinations(predictions,2)}
     return dict(absolute=absolute, paired=paired)
 
 
-def score(rt):
+def score(rt, *, methods=METHODS):
     if os.environ.get('CUDA_VISIBLE_DEVICES') != '':
         raise ValueError('Use the separate CPU scoring process')
     root = Path(rt['run_root'])
@@ -69,12 +68,12 @@ def score(rt):
             raise ValueError('Profiles and routes must share the same physical order')
         physical[split] = ids
         predictions[profile, route, split], activations[case] = closed_predictions(
-            root / 'predictions' / case, ids, profile, route, split)
+            root / 'predictions' / case, ids, profile, route, split, methods)
     if np.intersect1d(*(physical[split] for split in TASKS)).size:
         raise ValueError('Main split populations must be disjoint')
     for route in ROUTES:
         for split in TASKS:
-            for method in METHODS:
+            for method in methods:
                 if not np.array_equal(predictions['default', route, split][method][:, 0],
                                       predictions['strong', route, split][method][:, 0]):
                     raise ValueError('The clean decision reference changed between profile replays')
@@ -97,7 +96,7 @@ def score(rt):
             for partition in (*TASKS, 'combined'):
                 parts = TASKS if partition == 'combined' else (partition,)
                 p = {name: np.concatenate([predictions[profile, route, split][name] for split in parts], axis=2)
-                     for name in METHODS}
+                     for name in methods}
                 y = np.concatenate([labels[split] for split in parts])
                 rx = np.concatenate([receivers[split] for split in parts])
                 result[profile][route][partition] = cells(p, y, rx, rng)
