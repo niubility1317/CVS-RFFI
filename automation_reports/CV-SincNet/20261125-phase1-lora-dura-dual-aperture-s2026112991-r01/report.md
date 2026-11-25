@@ -7,3 +7,7 @@
 N607 普通账号和空闲优先 GPU 策略。单次真实源 IQ 冒烟检查通过后进入完整日程。路径为 `${N607_PROJECT}/runs/20261125-phase1-lora-dura-dual-aperture-s2026112991-r01`，工作目录为同名 `-release`。运行 `python -m experiments.pamf_lora_main.dura_dual_aperture_train publish --repo <checkout> --output <artifact-root>/release --context <runtime_source.json> --ssh-config <config>`。实际提交由推送的 HEAD 固定并写入 `submit.json`。输入不符、数值异常、运行身份不符或产物无法闭合时停止本运行。预期有 `smoke-dual_aperture.json`、`logs/fit.log`、`dual_aperture-complete.json`、`dual_aperture-model.pt` 和独立进程终态读回。
 
 冻结后在已登记的两路线源 V 上，用同一固定读出与直通、原冻结 DURA 和扩容 DURA 做同包比较，观察 clean、六景和低城区。首轮正式目标验证固定 Tri-set 种子 `2026092702`，沿用 15 台接收机和两路原登记 IQ，每台取同一盲序前 200 个物理包。预测和评分分别运行，源 V 结果用于解释与研判，固定子集照常完成。晋级三种子 30,000 包矩阵的科学阈值依据独立源 V，在两路线的六景正确数均严格超过同次配对原 DURA，且 clean 正确数至少持平。正式硬指标仍以原目标为准。W24 单种子四组测试使用其已发布的独立权重和独立矩阵。
+
+## 启动核验
+
+14 项本地聚焦测试和独立 P0/P1 审查通过。N607 已独立核对归档、远程编译、代码提交 `760d7466b64ae89b6806972bdc52792ae6b49f1a`、GPU 5、进程工作目录和命令。真实源 U 启动检查通过，测得 1,273,150 个参数，读取识别器、TX、源 V、目标和仿真轨迹均为零。已读到完整训练的第一步有限日志，仍以第 40,000 步冻结为准。原 W24 训练继续在 GPU 0 运行。
