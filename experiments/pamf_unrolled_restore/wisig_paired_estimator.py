@@ -17,9 +17,9 @@ def voltages(row):
     return row[...,0,:].astype(np.float64) + 1j*row[...,1,:]
 
 
-def lag_scores(clean, observed):
-    shifted = clean[reflect(FIT[None,:]-DELAYS[:,None])]
-    y = observed[FIT]
+def lag_scores(clean, observed, fit=FIT):
+    shifted = clean[reflect(fit[None,:]-DELAYS[:,None])]
+    y = observed[fit]
     return np.abs(shifted.conj() @ y)**2 / (
         np.sum(np.abs(shifted)**2,axis=-1)*np.sum(np.abs(y)**2)).clip(1e-20)
 
@@ -45,24 +45,25 @@ def coefficients(basis, observed):
     return np.linalg.solve(gram+ridge,rhs)[...,0]
 
 
-def make_bank(clean, observed, prior):
-    scores = lag_scores(clean,observed)
+def make_bank(clean, observed, prior, mask=slice(None)):
+    fit,folds = FIT[mask],FOLDS[mask]
+    scores = lag_scores(clean,observed,fit)
     selected = np.unique(np.r_[np.argsort(scores)[-6:], np.argsort(prior)[-3:]])
     lags = DELAYS[selected]
-    basis = clean[reflect(FIT[None,:,None]-lags[:,None,None]-OFFSETS)]
-    wanted = observed[FIT]
+    basis = clean[reflect(fit[None,:,None]-lags[:,None,None]-OFFSETS)]
+    wanted = observed[fit]
     models, loss, center = [], [], []
     for size in ORDERS:
         radius = size//2
         columns = slice(6-radius,7+radius)
         design = basis[...,columns]
         cv = np.zeros(len(lags))
-        for fold in np.unique(FOLDS):
-            valid = FOLDS==fold
+        for fold in np.unique(folds):
+            valid = folds==fold
             coef = coefficients(design[:,~valid],wanted[~valid])
             estimate = np.einsum('ntk,nk->nt',design[:,valid],coef)
             cv += np.sum(np.abs(estimate-wanted[valid])**2,axis=1)
-        loss.extend(cv/len(FIT)*(1+.5*size/len(FIT)))
+        loss.extend(cv/len(fit)*(1+.5*size/len(fit)))
         fixed = coefficients(design,wanted)
         models.extend(np.pad(fixed,((0,0),(6-radius,6-radius))))
         center.extend(selected)

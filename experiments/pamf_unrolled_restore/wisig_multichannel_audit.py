@@ -60,16 +60,16 @@ def metrics(clean,signal,variance,estimated):
     return np.stack((error,np.abs(lag-best),10*np.log10(noise.clip(1e-18)/variance)),axis=-1)
 
 
-def score(root):
+def score(root,methods=('baseline','optimized')):
     if os.environ.get('CUDA_VISIBLE_DEVICES')!='':
         raise ValueError('The separate oracle scorer must run on CPU')
     count = len(data.TEST_LABELS)
     with np.load(root/'estimates.npz',allow_pickle=False) as closed:
         estimates = {name:[closed[name+'_'+v] for v in ('coeff','omega','variance','model')]
-                     for name in ('baseline','optimized')}
+                     for name in methods}
     expected = [(count,data.NTEST,2*len(solver.LAGS)), *[(count,data.NTEST)]*3]
     if any([v.shape for v in row]!=expected for row in estimates.values()):
-        raise ValueError('Freeze both complete IQ-only estimate banks before reading the oracle')
+        raise ValueError('Freeze all complete IQ-only estimate banks before reading the oracle')
     with np.load(root/'challenge.npz',allow_pickle=False) as data_file:
         clean = data_file['clean']
     with np.load(root/'oracle.npz',allow_pickle=False) as truth:
@@ -87,14 +87,15 @@ def score(root):
                                   test_cases=count,test_packets=data.NTEST,target_reads=0,results=summary))
 
 
-def dispatch(rt):
+def dispatch(rt,stages=None):
     root = Path(rt['run_root'])
     root.mkdir()
     state = root/'state.json'
-    stages = (('prepare',(root,rt['source_root'],rt['panel_root'])),
-              ('tune',(root/'development.npz',root/'configuration.json')),
-              ('predict',(root/'challenge.npz',root/'configuration.json',rt['baseline'],root/'estimates.npz')),
-              ('score',(root,)))
+    if stages is None:
+        stages = (('prepare',(root,rt['source_root'],rt['panel_root'])),
+                  ('tune',(root/'development.npz',root/'configuration.json')),
+                  ('predict',(root/'challenge.npz',root/'configuration.json',rt['baseline'],root/'estimates.npz')),
+                  ('score',(root,)))
     env = dict(os.environ,CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',MKL_NUM_THREADS='1')
     try:
         for stage,arguments in stages:

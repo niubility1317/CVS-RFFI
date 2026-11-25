@@ -39,6 +39,13 @@ def holdout():
                            for i in range(0,360,24)])
 
 
+def fresh_holdout(seed):
+    rng = np.random.default_rng(seed)
+    used = np.r_[prior_audit.select(), prior_opt.selected(),holdout()]
+    return np.concatenate([np.sort(rng.choice(np.setdiff1d(np.arange(i,i+24),used),4,replace=False))
+                           for i in range(0,360,24)])
+
+
 def legacy(clean,name,seed,reference=True):
     import torch
     import sat_channel
@@ -150,7 +157,11 @@ def prepare(root,source,panel):
         print('DEV_IQ',family,len(x),flush=True)
     # Development sees only anonymous, balanced groups of paired IQ.
     np.savez(root/'development.npz',clean=dev_x,received=dev_y)
-    take = holdout()
+    prepare_test(root,panel,holdout(),SEED)
+
+
+def prepare_test(root,panel,take,seed):
+    sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'code'))
     if len(take)!=NTEST:
         raise ValueError('Unexpected cross-family holdout count')
     received = np.load(panel/'received.npy',mmap_mode='r',allow_pickle=False)
@@ -160,7 +171,7 @@ def prepare(root,source,panel):
         old_variance = list(past['variance'][:,take])
     y = list(paired.voltages(received[:,take]))
     for i,(family,view) in enumerate(ADDITIONAL_TEST):
-        frame,signal,var = simulate(x,family,view,SEED+1000+i)
+        frame,signal,var = simulate(x,family,view,seed+1000+i)
         y.append(frame)
         old_signal.append(signal)
         old_variance.append(var)
