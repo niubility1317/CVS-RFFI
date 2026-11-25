@@ -1,0 +1,177 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261125-diagnostic-wisig-paired-estimator-s2026112503-r01",
+  "group_id": "wisig-paired-estimator-improvement",
+  "display_name": "WiSig 配对 IQ 的解析信道与噪声估计优化",
+  "description": "仅用源 U_s 审核配对波形、选择时延先验权重，随后冻结估计并对未参与优化的源 V 进行独立模拟参考诊断。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "WiSig",
+    "source-only",
+    "IQ-estimation",
+    "action",
+    "variance"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261125-diagnostic-wisig-analytic-action-noise-s2026112502-r01",
+    "20261125-diagnostic-wisig-action-noise-s2026112501-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求先优化，模拟器真值仅用于结果比较。两组 GPU 训练需有空闲卡。",
+  "code": {
+    "commit": "7e014db86f318a4a37d4bb7f3caa5aed32f920e9",
+    "checkout": "E:\\codex\\home\\worktrees\\wisig-blind-dura-stress\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261125-diagnostic-wisig-paired-estimator-s2026112503-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig / ManySig Main split",
+    "version": "F0 Main split frozen",
+    "representation": "float32 (2, 256) post-sync noeq; 25 MS/s",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json",
+    "physical_ids_ref": "20261125-diagnostic-wisig-action-noise-s2026112501-r01: seed 2026112503, six holdout rows per source RX/day, excludes prior 30",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 1800
+    },
+    "train_ratio": "Source U_s: 180 pairs for prior, 180 separate pairs for weight selection. Source V: 90 different physical packets, disjoint from prior 30; 24 conditions.",
+    "capsule_id": null,
+    "split_id": "WiSig source U_s / V only",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/validation/manifest.json",
+    "support_query_ref": "N/A Phase1; experiment has no support set",
+    "leo_config_ref": "20261125-diagnostic-wisig-action-noise-s2026112501-r01: exact fixed default and stronger source views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only simulator calibration. No downstream F or target data accessed."
+  },
+  "checkpoint": {
+    "initialization": "No DURA, no checkpoints or neural network",
+    "sources": [],
+    "contract_check_ref": "20261125-diagnostic-wisig-action-noise-s2026112501-r01",
+    "provenance_verdict": "ANALYTIC_FIXED",
+    "selection_rule": "Select prior weight by median plus p90 holdout IQ prediction error on source U only"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "current Codex chat",
+    "gpu_policy": "CPU only for estimator diagnostic",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-paired-estimator-s2026112503-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-paired-estimator-s2026112503-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261125-diagnostic-wisig-paired-estimator-s2026112503-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_paired_estimator_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-diagnostic-wisig-paired-estimator-s2026112503-r01-release/runtime.json",
+    "stop_rule": "Stop on source panel mismatch, invalid estimator outputs or scorer closure failure"
+  },
+  "expected_artifacts": [
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-paired-estimator-s2026112503-r01/iq_only_config.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-paired-estimator-s2026112503-r01/estimates.npz",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-paired-estimator-s2026112503-r01/scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "heldout action NMSE",
+      "one-sample dominant delay match",
+      "noise log-variance error",
+      "within ±3 dB"
+    ],
+    "dimensions": [
+      "method",
+      "profile",
+      "route",
+      "view",
+      "sample"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-paired-estimator-s2026112503-r01/estimates.npz",
+    "scorer_ref": "experiments.pamf_unrolled_restore.wisig_paired_estimator_audit:score"
+  },
+  "rows": [
+    {
+      "row_id": "baseline-s2026112503",
+      "method": "baseline",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments.pamf_unrolled_restore.wisig_paired_estimator_audit",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-paired-estimator-s2026112503-r01/iq_only_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": 2026112503,
+        "augmentation": 2026101901,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No model seed or target data. Only source-packet sampling is new.",
+      "k": null,
+      "scenario": "Default and stronger six source practical channels, Full and Residual",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Legacy three-tap pair versus short FIR and quiet-bin spectral noise estimate",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-paired-estimator-s2026112503-r01/estimates.npz#baseline",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-paired-estimator-s2026112503-r01/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_paired_estimator_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-diagnostic-wisig-paired-estimator-s2026112503-r01-release/runtime.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-action-noise-s2026112501-r02/scores.json"
+      ]
+    },
+    {
+      "row_id": "optimized-s2026112503",
+      "method": "optimized",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments.pamf_unrolled_restore.wisig_paired_estimator_audit",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-paired-estimator-s2026112503-r01/iq_only_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": 2026112503,
+        "augmentation": 2026101901,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No model seed or target data. Only source-packet sampling is new.",
+      "k": null,
+      "scenario": "Default and stronger six source practical channels, Full and Residual",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Legacy three-tap pair versus short FIR and quiet-bin spectral noise estimate",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-paired-estimator-s2026112503-r01/estimates.npz#optimized",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-paired-estimator-s2026112503-r01/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_paired_estimator_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-diagnostic-wisig-paired-estimator-s2026112503-r01-release/runtime.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-action-noise-s2026112501-r02/scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "The optimizer receives source original and received IQ and physical U_s roles only. No simulator parameters, channel vectors, noiseless IQ, or variance.",
+    "Candidate and baseline receive the same challenge IQ. Both coefficient and variance outputs close in one archive before the scorer opens the oracle.",
+    "This diagnostic never loads a recognizer or touches target data; it does not measure identity accuracy."
+  ],
+  "registered_at": "2026-11-25T07:50:39+00:00"
+}
