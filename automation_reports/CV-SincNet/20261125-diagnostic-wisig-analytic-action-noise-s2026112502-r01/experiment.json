@@ -1,0 +1,176 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261125-diagnostic-wisig-analytic-action-noise-s2026112502-r01",
+  "group_id": "wisig-analytic-estimator-validation",
+  "display_name": "WiSig 非 DURA 解析信道与方差估计核验",
+  "description": "留出 30 个源 V WiSig 包，各种子配对默认与增强、Full 与 Residual、六种 practical。只用独立的前导估计和源 clean/received 配对估计，同包独立评分。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "WiSig",
+    "analytic-estimation",
+    "source-V",
+    "action",
+    "noise"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261125-diagnostic-wisig-action-noise-s2026112501-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户明确要求不用 DURA，使用少量模拟样本检验实际解析估计和同一模拟真值的误差。",
+  "code": {
+    "commit": "471aedfdb847e107d0ff087961ed86563a83a986",
+    "checkout": "E:\\codex\\home\\worktrees\\wisig-blind-dura-stress\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261125-diagnostic-wisig-analytic-action-noise-s2026112502-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig / ManySig Main split",
+    "version": "F0 Main split frozen",
+    "representation": "float32 (2, 256) post-sync noeq; 25 MS/s",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json",
+    "physical_ids_ref": "20261125-diagnostic-wisig-action-noise-s2026112501-r01 exact source panel and selection seed 2026112502",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 1800
+    },
+    "train_ratio": "30 source V packets, 2 from each of 15 receiver/day strata; 720 profile/route/view instances",
+    "capsule_id": null,
+    "split_id": "source V, no target or TX label use",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/validation/manifest.json",
+    "support_query_ref": "N/A Phase1; experiment has no support set",
+    "leo_config_ref": "20261125-diagnostic-wisig-action-noise-s2026112501-r01 exact six source practical; default and matched strong"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only simulator calibration. No downstream F or target data accessed."
+  },
+  "checkpoint": {
+    "initialization": "No weights, neural models, training, or prior estimator outputs",
+    "sources": [],
+    "contract_check_ref": "20261125-diagnostic-wisig-action-noise-s2026112501-r01",
+    "provenance_verdict": "ANALYTIC_FIXED",
+    "selection_rule": "Predefined lag grid, taps, holdout, and ridge"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "current Codex chat",
+    "gpu_policy": "CPU only with one BLAS thread per subprocess",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-analytic-action-noise-s2026112502-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-analytic-action-noise-s2026112502-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261125-diagnostic-wisig-analytic-action-noise-s2026112502-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_independent_channel_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-diagnostic-wisig-analytic-action-noise-s2026112502-r01-release/runtime.json",
+    "stop_rule": "Stop on source panel mismatch, invalid estimator outputs or scorer closure failure"
+  },
+  "expected_artifacts": [
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-analytic-action-noise-s2026112502-r01/preamble.npz",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-analytic-action-noise-s2026112502-r01/paired.npz",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-analytic-action-noise-s2026112502-r01/scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "noiseless predictive NMSE at held-out times",
+      "dominant lag error",
+      "noise log-ratio and median absolute dB error",
+      "within ±3 dB"
+    ],
+    "dimensions": [
+      "method",
+      "profile",
+      "route",
+      "view",
+      "sample"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-analytic-action-noise-s2026112502-r01/preamble.npz and paired.npz",
+    "scorer_ref": "experiments.pamf_unrolled_restore.wisig_independent_channel_audit:score"
+  },
+  "rows": [
+    {
+      "row_id": "preamble-s2026112502",
+      "method": "preamble",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments.pamf_unrolled_restore.wisig_independent_channel_audit",
+      "resolved_config_ref": "experiments.pamf_unrolled_restore.wisig_independent_channel_audit",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": 2026112502,
+        "augmentation": 2026101901,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No model, fitting seed, support or bootstrap. Paired simulator latent draws reused exactly.",
+      "k": null,
+      "scenario": "Default and stronger six source practical channels, Full and Residual",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Per-packet analytic three-tap ridge on an 81-integer-lag grid",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-analytic-action-noise-s2026112502-r01/preamble.npz",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-analytic-action-noise-s2026112502-r01/state.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_independent_channel_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-diagnostic-wisig-analytic-action-noise-s2026112502-r01-release/runtime.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-action-noise-s2026112501-r02/scores.json"
+      ]
+    },
+    {
+      "row_id": "paired-s2026112502",
+      "method": "paired",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments.pamf_unrolled_restore.wisig_independent_channel_audit",
+      "resolved_config_ref": "experiments.pamf_unrolled_restore.wisig_independent_channel_audit",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": 2026112502,
+        "augmentation": 2026101901,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No model, fitting seed, support or bootstrap. Paired simulator latent draws reused exactly.",
+      "k": null,
+      "scenario": "Default and stronger six source practical channels, Full and Residual",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Per-packet analytic three-tap ridge on an 81-integer-lag grid",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-analytic-action-noise-s2026112502-r01/paired.npz",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-analytic-action-noise-s2026112502-r01/state.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_independent_channel_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-diagnostic-wisig-analytic-action-noise-s2026112502-r01-release/runtime.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-action-noise-s2026112501-r02/scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Both estimate archives close before the CPU scorer opens noiseless waveforms or known variance.",
+    "Received-only worker gets a single IQ path. Paired worker additionally receives the legal source clean IQ, without simulator parameters.",
+    "Physical action comparison is on a common disjoint set of sample times and unique waveform pair; shape-only comparison fits a scalar to the noiseless reference on separate fit times."
+  ],
+  "registered_at": "2026-11-25T07:38:18+00:00"
+}
