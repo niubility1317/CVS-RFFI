@@ -1,3 +1,7 @@
+## LoRa PAMF 默认识别器（2026-11-25，用户指定）
+
+- 后续未另行指定模型的 LoRa PAMF 使用**星地增强 W24**。冻结权重为 `20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01/F/best.pt`，种子 `2026092702`，按源 V 冻结 E104。使用真实 `8×2×432` W24 观测，具体权重、适用范围及评估口径见 `configs/pamf_current_method.json` 的 `dataset_defaults.lora`。已登记实验继续遵循各自冻结的识别器和输入契约。
+
 ## PAMF 本轮测试范围（2026-11-10，用户最新要求）
 
 - 本轮 PAMF 监督／半监督研发的性能以冻结后测试集 clean 和六种 practical 星地场景为准；不再启动 `leo_weak` 预测或评分，也不把 weak 结果设为完成条件。已完成的历史 weak 产物保留，不删除或改写；其他 owner 的健康任务不受影响。该要求覆盖本文件下方历史 Phase1 weak 测试约定，不改变 Phase2／Phase3 数据协议。

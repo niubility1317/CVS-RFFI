@@ -7,6 +7,36 @@
   "decision_date": "2026-10-27",
   "decision": "用户最新固定三视图SIG-TIME；完整PAMF采用原版REPL加固定局部时序重排，命名Tri-SIG-TIME SSL；网络比较仅纯CE监督；监督版不变，普通PL仅增加0.95伪标签。",
   "scope": "current paper definitions and later user-selected supplements; historical frozen outputs unchanged",
+  "dataset_defaults": {
+    "lora": {
+      "display_name": "星地增强 W24",
+      "decision_date": "2026-11-25",
+      "source_run": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+      "source_code_commit": "502629361a6aafa564a94947f3116e82f58c3692",
+      "checkpoint_relative_to_run": "F/best.pt",
+      "checkpoint_archive_name": "W24_satellite_augmented_best.pt",
+      "model_seed": 2026092702,
+      "frozen_epoch": 104,
+      "train_epochs": 112,
+      "train_updates": 9856,
+      "data_protocol": "lora_full_packets_v1",
+      "split_id": "lora_rx5_main_v1:392005",
+      "input_shape": [8, 2, 432],
+      "labeled_native_full_augmentation_ce_weight": 0.5,
+      "source_validation_correct": 11803,
+      "source_validation_count": 12000,
+      "verified_target_direct": {
+        "route": "full_native",
+        "target_receivers": 15,
+        "physical_packets": 30000,
+        "clean_correct": 28566,
+        "six_practical_correct": 133713,
+        "six_practical_count": 180000,
+        "low_urban_correct": 14315
+      },
+      "scope": "Future LoRa PAMF runs with the registered native W24 input, unless an explicit checkpoint is specified."
+    }
+  },
   "architecture": {
     "signature_views": 3,
     "arm": "SIG_TIME_X3",
