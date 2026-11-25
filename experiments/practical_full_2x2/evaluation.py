@@ -29,11 +29,15 @@ def load_reader(c,device):
     else:reader,_=load_F(c['source_output'],contract,device,require_no_unlabeled=c['G_roles']=='L')
     return lambda x:reader.classify_features(reader.features(x))
 
-def predict(c,device='cuda:0'):
+def predict(c,device='cuda:0',*,classify_view=None):
     import torch
     reject_truth(c)
     if list(c['tests'])!=list(TASKS) or c['readouts']!=['raw','DURA-'+c['G_roles']]:raise ValueError('Readout matrix differs')
-    classify=load_reader(c,device);name=c['readouts'][1];cached=Path(c['restored_cache']);done=read(cached/'complete.json')
+    run_id=RUN if classify_view is None else c['run_id']
+    if classify_view is None:
+        classify=load_reader(c,device)
+        classify_view=lambda x,view:classify(x)
+    name=c['readouts'][1];cached=Path(c['restored_cache']);done=read(cached/'complete.json')
     if done['status']!='DURA_IQ_CACHE_COMPLETE' or done['protocol_id']!=c['protocol_id'] or done['readout']!=name or done['truth_read']:
         raise ValueError('Restored IQ cache role differs')
     if read(done['G']['source_contract'])!=read(c['source_contract']):raise ValueError('Restored cache contract mismatch')
@@ -52,14 +56,14 @@ def predict(c,device='cuda:0'):
                 with torch.inference_mode():
                     for start in range(0,len(ids),128):
                         ix=pos[start:start+128] if route=='raw' and pos is not None else slice(start,start+128)
-                        x=tensor(np.ascontiguousarray(array[ix],np.float32),device);logits=classify(x)
+                        x=tensor(np.ascontiguousarray(array[ix],np.float32),device);logits=classify_view(x,view)
                         if logits.shape!=(len(x),len(c['classes'])) or not bool(torch.isfinite(logits).all()):raise FloatingPointError('Invalid frozen head')
                         result.extend(logits.argmax(1).cpu().tolist())
                 values[route+'__'+view]=np.asarray(result,np.int64)
             print('FROZEN_PREDICTION',c['row_id'],task,view,len(ids),flush=True)
         folder=out/task;folder.mkdir();np.savez(folder/'predictions.npz',ids=ids,**values)
         counts[task]=dict(count=len(ids),views=list(VIEWS),readouts=c['readouts'])
-    write(out/'complete.json',dict(status='ALL_PREDICTIONS_COMPLETE',run_id=RUN,row_id=c['row_id'],tests=counts,
+    write(out/'complete.json',dict(status='ALL_PREDICTIONS_COMPLETE',run_id=run_id,row_id=c['row_id'],tests=counts,
         views=list(VIEWS),readouts=c['readouts'],truth_read=False,query_fit=False,seconds=time.monotonic()-tic))
 
 def score(c):
