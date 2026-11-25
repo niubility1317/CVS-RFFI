@@ -1,1 +1,2 @@
 {"at": "2026-11-25T05:04:26+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-25T05:09:21+00:00", "status": "RUNNING", "note": "VERIFIED: three actual CUDA training workers on GPUs 7, 2, and 6 with live step telemetry; source-only E20 smoke passed. All six frozen-prediction and independent scoring jobs are registered and dependency-bound.", "evidence": ["E:/type10-7/local_artifacts/pamf_wisig_preamble_bcd_20261125/n607_launch_readback.json"], "row_id": null}

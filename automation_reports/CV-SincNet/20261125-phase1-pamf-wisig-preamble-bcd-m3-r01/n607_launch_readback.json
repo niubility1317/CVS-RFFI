@@ -1,0 +1,160 @@
+{
+  "status": "VERIFIED / RUNNING",
+  "run_id": "20261125-phase1-pamf-wisig-preamble-bcd-m3-r01",
+  "code_commit": "998ea320f621efc9530899e912af8319e7b2c307",
+  "initial_step_telemetry_bytes": {
+    "b-s2026092701": 125151,
+    "c-s2026092701": 156959,
+    "d-s2026092701": 157346
+  },
+  "observed_at": 1795583332.406788,
+  "counts": {
+    "RUNNING": 3,
+    "QUEUED": 6
+  },
+  "controller_pid": 3729515,
+  "controller_verified": true,
+  "smoke": {
+    "status": "PASS",
+    "checks": {
+      "b-s2026092701": {
+        "shape": {
+          "view_count": 3,
+          "parameters": 233761,
+          "order": [
+            0,
+            5,
+            3,
+            6,
+            2,
+            1,
+            4,
+            7
+          ],
+          "projection": [
+            160,
+            336
+          ]
+        },
+        "accepted": 238,
+        "applied": {
+          "time_down": 1428,
+          "t2.pool": 1428
+        },
+        "sampled_rms": {},
+        "finite_backward": true,
+        "cycle_gradient_norm": 0.04849275201559067,
+        "cycle_perturbed_packets": 0,
+        "comparable_noise_rms": 0.20000000298023224
+      },
+      "c-s2026092701": {
+        "shape": {
+          "view_count": 3,
+          "parameters": 233761,
+          "order": [
+            0,
+            5,
+            3,
+            6,
+            2,
+            1,
+            4,
+            7
+          ],
+          "projection": [
+            160,
+            336
+          ]
+        },
+        "accepted": 238,
+        "applied": {
+          "time_down": 1428,
+          "t2.pool": 1428
+        },
+        "sampled_rms": {},
+        "finite_backward": true,
+        "cycle_gradient_norm": 0.052701178938150406,
+        "cycle_perturbed_packets": 2304,
+        "comparable_noise_rms": 0.20000000298023224
+      },
+      "d-s2026092701": {
+        "shape": {
+          "view_count": 3,
+          "parameters": 233761,
+          "order": [
+            0,
+            5,
+            3,
+            6,
+            2,
+            1,
+            4,
+            7
+          ],
+          "projection": [
+            160,
+            336
+          ]
+        },
+        "accepted": 238,
+        "applied": {
+          "time_down": 1428,
+          "t2.pool": 1428
+        },
+        "sampled_rms": {},
+        "finite_backward": true,
+        "cycle_gradient_norm": 0.04373272880911827,
+        "cycle_perturbed_packets": 2304,
+        "comparable_noise_rms": 0.20000000298023224
+      }
+    },
+    "actual_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/segment20",
+    "optimizer_updates": 0,
+    "target_reads": 0,
+    "U_truth_reads": 0
+  },
+  "jobs": {
+    "b-s2026092701": {
+      "status": "RUNNING",
+      "pid": 3730080,
+      "gpu": 7,
+      "cwd_cmdline_verified": true,
+      "gpu_mib": 3390,
+      "train_log_bytes": 6666,
+      "step_telemetry_bytes": 251320,
+      "last_logged_step": 106,
+      "progress": null,
+      "drift_groups": null,
+      "rx_pairs": null
+    },
+    "c-s2026092701": {
+      "status": "RUNNING",
+      "pid": 3730081,
+      "gpu": 2,
+      "cwd_cmdline_verified": true,
+      "gpu_mib": 3394,
+      "train_log_bytes": 6666,
+      "step_telemetry_bytes": 314605,
+      "last_logged_step": 133,
+      "progress": null,
+      "drift_groups": 90,
+      "rx_pairs": 180
+    },
+    "d-s2026092701": {
+      "status": "RUNNING",
+      "pid": 3730082,
+      "gpu": 6,
+      "cwd_cmdline_verified": true,
+      "gpu_mib": 3392,
+      "train_log_bytes": 6666,
+      "step_telemetry_bytes": 314038,
+      "last_logged_step": 133,
+      "progress": null,
+      "drift_groups": 90,
+      "rx_pairs": 180
+    }
+  },
+  "all_drift_fits_match": true,
+  "analysis": null,
+  "telemetry_grew": true
+}
