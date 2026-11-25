@@ -73,13 +73,13 @@ def tune(dev, config, output):
     print("PATH_MOTION_IQ_CONFIGURATION_FROZEN", best, flush=True)
 
 
-def fresh_source(source):
+def fresh_source(source, seed=SEED, excluded_ids=()):
     _, historical_ids, _, _ = practical.source_panel(source)
     root = source / "validation"
     iq, ids, rx, day = [np.load(root / (name + ".npy"), allow_pickle=False)
                         for name in ("clean", "physical_ids", "rx", "day")]
-    unseen = ~np.isin(ids, historical_ids)
-    rng = np.random.default_rng(SEED)
+    unseen = ~np.isin(ids, np.r_[historical_ids, np.asarray(excluded_ids, dtype=ids.dtype)])
+    rng = np.random.default_rng(seed)
     selected = np.concatenate([
         rng.choice(np.flatnonzero(unseen & (rx == r) & (day == d)), 4, replace=False)
         for r, d in product(practical.SOURCE_RX, practical.SOURCE_DAYS)
@@ -91,12 +91,12 @@ def fresh_source(source):
     return clean, ids[selected], sessions
 
 
-def prepare(root, source):
+def prepare(root, source, seed=SEED, excluded_ids=()):
     sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "code"))
     from leo_practical import Config
     from .wisig_dura_stress_data import harder
 
-    clean, ids, sessions = fresh_source(source)
+    clean, ids, sessions = fresh_source(source, seed, excluded_ids)
     observed, signal, variance = [], [], []
     with ProcessPoolExecutor(WORKERS) as pool:
         for profile, route, scene in practical.CELLS:
@@ -114,7 +114,7 @@ def prepare(root, source):
              *((family, view) for family in panel.EXTRA for view in ("nominal", "stress")))
     for i, (family, view) in enumerate(extra):
         generate = panel.extra_channel if family in panel.EXTRA else panel.earlier.simulate
-        y, h, v = generate(clean, family, view, SEED + 1000 + i, reference=True)
+        y, h, v = generate(clean, family, view, seed + 1000 + i, reference=True)
         observed.append(y)
         signal.append(h)
         variance.append(v)

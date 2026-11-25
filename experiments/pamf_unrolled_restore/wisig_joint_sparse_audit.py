@@ -44,22 +44,27 @@ def predict_packet(job):
     return old[TEST], new[TEST], variance, weight
 
 
-def predict(paired, config, threshold, output):
+def predict_matrix(paired, config, threshold, output, slots, workers):
     with np.load(paired, allow_pickle=False) as stored:
         clean, received = stored["clean"], stored["received"]
     if clean.shape != (SHAPE[1], N) or received.shape != (*source.parent.SHAPE, N):
         raise ValueError("Expected the registered source-V IQ matrix")
     options = read(config)
     penalty = float(threshold)
-    waves = {name: np.empty((*SHAPE, len(TEST)), complex) for name in METHODS}
-    variance, weight = np.empty(SHAPE), np.empty(SHAPE)
-    with ProcessPoolExecutor(source.WORKERS) as pool:
-        for index, slot in enumerate(SLOTS):
+    shape = (len(slots), source.panel.NTEST)
+    waves = {name: np.empty((*shape, len(TEST)), complex) for name in METHODS}
+    variance, weight = np.empty(shape), np.empty(shape)
+    with ProcessPoolExecutor(workers) as pool:
+        for index, slot in enumerate(slots):
             jobs = ((x, y, options, penalty) for x, y in zip(clean, received[slot]))
             rows = list(pool.map(predict_packet, jobs, chunksize=3))
             waves["adaptive_path"][index], waves["joint_sparse"][index], variance[index], weight[index] = zip(*rows)
-            print("V_ESTIMATES_CLOSED", LABELS[index], len(rows), flush=True)
+            print("V_ESTIMATES_CLOSED", source.parent.LABELS[slot], len(rows), flush=True)
     np.savez(output, **waves, variance=variance, weight=weight)
+
+
+def predict(paired, config, threshold, output):
+    predict_matrix(paired, config, threshold, output, SLOTS, source.WORKERS)
 
 
 def score(root, reference, threshold):
