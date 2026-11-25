@@ -16,7 +16,7 @@ from .scoring import macro_f1
 from .tri_clean95 import (
     ANCHOR_ROWS, ANCHOR_RUN, BUDGET_RUN, CHIRP_READ_ROWS, CHIRP_READ_RUN, COVERAGE_ROWS, COVERAGE_RUN, DRIFT_RUN, EDGE_ROWS, EDGE_RUN, NOISE_RUN, QUICK_RUN, ROWS, RUN, SCRATCH_ROWS, SCRATCH_RUN,
     PHASE_JOINT_ROWS, PHASE_JOINT_RUN, PHASE_ROWS, PHASE_RUN, PHYSICS_ROWS, PHYSICS_RUN, ROBUST_ROWS, ROBUST_RUN, SEED,
-    NATIVE_LAG_ROWS, NATIVE_LAG_RUN, NATIVE_WIDE_ROWS, NATIVE_WIDE_RUN, NATIVE_BOUNDARY_ROWS, NATIVE_BOUNDARY_RUN, GROUP_CAP_ROWS, GROUP_CAP_RUN, RTL_GATE_ROWS, RTL_GATE_RUN, TAIL_AVERAGE_ROWS, TAIL_AVERAGE_RUN, GROUP_FUSION_ROWS, GROUP_FUSION_RUN, PAIR_MARGIN_ROWS, PAIR_MARGIN_RUN, RANK_WEIGHT_ROWS, RANK_WEIGHT_RUN, RTL_ROWS, RTL_RUN, TIMEFREQ_RUN, TIMING_ROWS, TIMING_RUN, TRANSFER_RUN,
+    NATIVE_RX_ROWS, NATIVE_RX_RUN, NATIVE_LAG_ROWS, NATIVE_LAG_RUN, NATIVE_WIDE_ROWS, NATIVE_WIDE_RUN, NATIVE_BOUNDARY_ROWS, NATIVE_BOUNDARY_RUN, GROUP_CAP_ROWS, GROUP_CAP_RUN, RTL_GATE_ROWS, RTL_GATE_RUN, TAIL_AVERAGE_ROWS, TAIL_AVERAGE_RUN, GROUP_FUSION_ROWS, GROUP_FUSION_RUN, PAIR_MARGIN_ROWS, PAIR_MARGIN_RUN, RANK_WEIGHT_ROWS, RANK_WEIGHT_RUN, RTL_ROWS, RTL_RUN, TIMEFREQ_RUN, TIMING_ROWS, TIMING_RUN, TRANSFER_RUN,
 )
 
 
@@ -25,18 +25,19 @@ QUALIFIED_ROWS={ROBUST_RUN:ROBUST_ROWS,PHASE_RUN:PHASE_ROWS,ANCHOR_RUN:ANCHOR_RO
                 PHYSICS_RUN:PHYSICS_ROWS,COVERAGE_RUN:COVERAGE_ROWS,CHIRP_READ_RUN:CHIRP_READ_ROWS,
                 PAIR_MARGIN_RUN:PAIR_MARGIN_ROWS,RANK_WEIGHT_RUN:RANK_WEIGHT_ROWS,
                 GROUP_FUSION_RUN:GROUP_FUSION_ROWS,TAIL_AVERAGE_RUN:TAIL_AVERAGE_ROWS,RTL_GATE_RUN:RTL_GATE_ROWS,GROUP_CAP_RUN:GROUP_CAP_ROWS,
-                NATIVE_BOUNDARY_RUN:NATIVE_BOUNDARY_ROWS,NATIVE_WIDE_RUN:NATIVE_WIDE_ROWS,NATIVE_LAG_RUN:NATIVE_LAG_ROWS}
+                NATIVE_BOUNDARY_RUN:NATIVE_BOUNDARY_ROWS,NATIVE_WIDE_RUN:NATIVE_WIDE_ROWS,NATIVE_LAG_RUN:NATIVE_LAG_ROWS,
+                NATIVE_RX_RUN:NATIVE_RX_ROWS}
 
 
 def publish(repo, output, context, ssh_config, quick=False, transfer=False, scratch=False, timefreq=False,
             noise=False,drift=False,budget=False,edge=False,robust=False,headphase=False,
-            anchor=False,timing=False,phasejoint=False,rtl=False,physics=False,coverage=False,chirpread=False,pairmargin=False,rankweight=False,groupfusion=False,tailaverage=False,rtlgate=False,groupcap=False,nativeboundary=False,nativewide=False,nativelag=False):
+            anchor=False,timing=False,phasejoint=False,rtl=False,physics=False,coverage=False,chirpread=False,pairmargin=False,rankweight=False,groupfusion=False,tailaverage=False,rtlgate=False,groupcap=False,nativeboundary=False,nativewide=False,nativelag=False,nativerx=False):
     ctx=read(context)
     rt={k:ctx[k] for k in ('project','python','frozen_sources')}
     project=PurePosixPath(rt['project'])
     parent=project/'runs'/DATA_RUN
     native=project/'releases'/f'{DATA_RUN}-release'/'data'
-    studies=((nativelag,NATIVE_LAG_RUN),(nativewide,NATIVE_WIDE_RUN),(nativeboundary,NATIVE_BOUNDARY_RUN),(groupcap,GROUP_CAP_RUN),(rtlgate,RTL_GATE_RUN),(tailaverage,TAIL_AVERAGE_RUN),(groupfusion,GROUP_FUSION_RUN),(rankweight,RANK_WEIGHT_RUN),(pairmargin,PAIR_MARGIN_RUN),(chirpread,CHIRP_READ_RUN),(coverage,COVERAGE_RUN),(physics,PHYSICS_RUN),(rtl,RTL_RUN),(phasejoint,PHASE_JOINT_RUN),(timing,TIMING_RUN),(anchor,ANCHOR_RUN),(headphase,PHASE_RUN),
+    studies=((nativerx,NATIVE_RX_RUN),(nativelag,NATIVE_LAG_RUN),(nativewide,NATIVE_WIDE_RUN),(nativeboundary,NATIVE_BOUNDARY_RUN),(groupcap,GROUP_CAP_RUN),(rtlgate,RTL_GATE_RUN),(tailaverage,TAIL_AVERAGE_RUN),(groupfusion,GROUP_FUSION_RUN),(rankweight,RANK_WEIGHT_RUN),(pairmargin,PAIR_MARGIN_RUN),(chirpread,CHIRP_READ_RUN),(coverage,COVERAGE_RUN),(physics,PHYSICS_RUN),(rtl,RTL_RUN),(phasejoint,PHASE_JOINT_RUN),(timing,TIMING_RUN),(anchor,ANCHOR_RUN),(headphase,PHASE_RUN),
              (robust,ROBUST_RUN),(edge,EDGE_RUN),(budget,BUDGET_RUN),
              (drift,DRIFT_RUN),(noise,NOISE_RUN),(timefreq,TIMEFREQ_RUN),(scratch,SCRATCH_RUN),
              (transfer,TRANSFER_RUN),(quick,QUICK_RUN))
@@ -112,6 +113,9 @@ def publish(repo, output, context, ssh_config, quick=False, transfer=False, scra
     if nativeboundary:
         rt.update(scratch=True,nativeboundary_study=True,allowed_gpus=[7,3,5,2,6],
                   max_workers=1,min_free_mib=12000)
+    if nativerx:
+        rt.update(scratch=True,native_rx_study=True,fixed_clean_cache=str(project/'runs'/NATIVE_WIDE_RUN/'clean_cache'),
+                  allowed_gpus=[3,2,7,6],max_workers=1,min_free_mib=12000)
     if nativelag:
         rt.update(scratch=True,native_lag_study=True,allowed_gpus=[7,6,3,2],
                   max_workers=2,min_free_mib=12000)
@@ -216,6 +220,7 @@ if __name__=='__main__':
             study.add_argument('--nativeboundary',action='store_true')
             study.add_argument('--nativewide',action='store_true')
             study.add_argument('--nativelag',action='store_true')
+            study.add_argument('--nativerx',action='store_true')
     args=vars(parser.parse_args())
     kind=args.pop('kind')
     {'publish':publish,'score':score}[kind](**args)

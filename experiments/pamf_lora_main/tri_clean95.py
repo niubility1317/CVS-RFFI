@@ -231,6 +231,8 @@ def clean_model(rt,root,c,row,device):
 
 def study(rt):
     if rt.get('scratch'):
+        if rt.get('native_rx_study'):
+            return NATIVE_RX_ROWS,112,16
         if rt.get('native_lag_study'):
             return NATIVE_LAG_ROWS,112,16
         if rt.get('nativewide_study'):
@@ -348,6 +350,11 @@ PHASE_JOINT_RUN='20261125-phase1-lora-pamf-tri-clean-phasejoint98-s2026092702-r0
 PHASE_JOINT_ROWS={
     'phase_joint': dict(ANCHOR_ROWS['phase_anchor'],joint_rx_weight=.12),
 }
+NATIVE_RX_RUN='20261125-phase1-lora-pamf-tri-clean-nativerx98-s2026092702-r01'
+NATIVE_RX_ROWS={
+    'phase_native24_rx': dict(ANCHOR_ROWS['phase_anchor'],native_edges=True,edge_points=24,native_rx_weight=.04),
+}
+
 NATIVE_LAG_RUN='20261125-phase1-lora-pamf-tri-clean-nativelag98-m2-r01'
 NATIVE_LAG_ROWS={
     'phase_native24_lag8': dict(ANCHOR_ROWS['phase_anchor'],native_edges=True,edge_points=24,edge_lag=8),
@@ -439,6 +446,8 @@ def row_names(rt):
         return ('phase_jitter',)
     if rt.get('phase_joint_study'):
         return ('phase_joint',)
+    if rt.get('native_rx_study'):
+        return tuple(NATIVE_RX_ROWS)
     if rt.get('native_lag_study'):
         return tuple(NATIVE_LAG_ROWS)
     if rt.get('nativewide_study'):
@@ -577,6 +586,14 @@ def _labeled_and_unlabeled(f,x,y,rx,u,ur,step,with_u,force=None,mechanism=None,r
     return safe,lab.detach(),unlab.detach(),int(keep.sum())
 
 
+def native_boundary_receiver_loss(model,iq,y,rx):
+    from .packet_models import cross_rx
+    boundary=model.native_boundary
+    center,edges=iq.split((model.trace.time.numel(),2*boundary.edge_points),dim=-1)
+    features=boundary(center,edges,model.trace.reference.chirp)
+    return cross_rx(features,y,rx,balance=True)
+
+
 def smoke(rt):
     from copy import deepcopy
     root=Path(rt['run_root'])
@@ -610,6 +627,14 @@ def smoke(rt):
                                          pair_margin_weight=row.get('pair_margin_weight',0.),
                                          source_weight=tensor(rank_weights[i]) if rank_weights is not None else None,
                                          rtl_threshold=row.get('rtl_repl_threshold',.95))
+        native_rx_weight=row.get('native_rx_weight',0.)
+        if native_rx_weight:
+            boundary_pair_loss,pairs=native_boundary_receiver_loss(f,a,y,rx)
+            if not int(pairs) or not torch.isfinite(boundary_pair_loss):
+                raise ValueError('Missing valid source cross-receiver pairs')
+            loss=loss+native_rx_weight*boundary_pair_loss
+            t['native_rx_anchors']=int(pairs)
+            t['native_rx_loss']=float(boundary_pair_loss.detach())
         loss.backward()
         norm=float(torch.nn.utils.clip_grad_norm_(f.parameters(),5.,error_if_nonfinite=True))
         if norm<=0 or n!=len(y):raise ValueError('Failed real clean Tri gradient check')
@@ -701,6 +726,7 @@ def train(rt,name):
     mechanism=terms(row)
     ordinary_std=row.get('ordinary_std',.015)
     joint_rx_weight=row.get('joint_rx_weight',0.)
+    native_rx_weight=row.get('native_rx_weight',0.)
     clean_anchor_weight=row.get('clean_anchor_weight',0.)
     rtl_weight=row.get('rtl_weight',1.)
     pair_margin_weight=row.get('pair_margin_weight',0.)
@@ -715,7 +741,7 @@ def train(rt,name):
         validation_epochs.update(range(warmup,epochs+1,4))
         if any(rt.get(k) for k in ('budget_study','edge_study','robust_study','phase_study')):
             validation_epochs.update((32,48,60))
-        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study')):
+        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study','native_rx_study')):
             validation_epochs.update((32,48,64,80,88))
     snapshots=row.get('tail_average',())
     averaged_state=None
@@ -729,6 +755,7 @@ def train(rt,name):
             else:
                 ui=covered_u[epoch-warmup-1] if use_u else (None,)*STEPS
             sl,su,accepted=0.,0.,0
+            boundary_pair_total=0.
             for b,pos in zip(batches(yn,rn,rng),ui,strict=True):
                 i=tensor(b,device)
                 source_weight=rank_weights[i] if rank_weights is not None else None
@@ -753,6 +780,10 @@ def train(rt,name):
                               joint_rx_weight=joint_rx_weight,clean_anchor_weight=clean_anchor_weight,
                               rtl_weight=rtl_weight,pair_margin_weight=pair_margin_weight,
                               source_weight=source_weight,rtl_threshold=rtl_threshold)
+                if native_rx_weight:
+                    boundary_pair_loss,_=native_boundary_receiver_loss(f,x[i],y[i],rx[i])
+                    loss=loss+native_rx_weight*boundary_pair_loss
+                    boundary_pair_total+=float(boundary_pair_loss.detach())
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(f.parameters(),5.,error_if_nonfinite=True)
                 opt.step()
@@ -761,6 +792,8 @@ def train(rt,name):
             rec=dict(epoch=epoch,step=step,L_loss=sl/STEPS,U_loss=su/STEPS,
                      U_seen=STEPS*u_count if use_u else 0,U_accepted=accepted,
                      lr=opt.param_groups[0]['lr'])
+            if native_rx_weight:
+                rec['native_rx_loss']=boundary_pair_total/STEPS
             if epoch in snapshots:
                 averaged_epochs.append(epoch)
                 averaged_state=accumulate_state(averaged_state,f.state_dict(),len(averaged_epochs))
@@ -831,14 +864,14 @@ def dispatch(rt):
     root=Path(rt['run_root'])
     screens=('quick','transfer','timefreq','noise_study','drift_study','budget_study')
     gated_study=any(rt.get(k) for k in ('robust_study','phase_study','anchor_study','timing_study',
-                                       'phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study'))
+                                       'phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study','native_rx_study'))
     if (gated_study or any(rt.get(k) for k in ('noise_study','drift_study','budget_study','edge_study'))) and not rt.get('scratch'):
         raise ValueError('The clean input comparisons require random initialization')
     root.mkdir(exist_ok=False)
     state=root/'state.json'
     fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq',
                              'noise_study','drift_study','budget_study','edge_study','robust_study','phase_study','anchor_study',
-                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study',
+                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study','native_rx_study',
                              'fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)

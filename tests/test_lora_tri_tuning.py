@@ -297,6 +297,32 @@ class TriTuningTests(TestCase):
                 expected=torch.full_like(actual[:,:-21],np.sin(lag*shape))
                 torch.testing.assert_close(actual[:,:-21],expected,atol=1e-5,rtol=1e-5)
 
+    def test_native_receiver_loss_uses_the_identity_branch_with_cross_receiver_pairs(self):
+        from types import SimpleNamespace
+        from experiments.pamf_lora_main.physical import ChirpResponse
+        from experiments.pamf_lora_main.repair_features import NativeBoundaryPhase
+
+        boundary=NativeBoundaryPhase(16,edge_points=24)
+        generator=torch.Generator().manual_seed(962)
+        with torch.no_grad():
+            boundary.project[-1].weight.copy_(torch.randn(16,96,generator=generator)*.02)
+        trace=SimpleNamespace(time=torch.empty(384),reference=ChirpResponse(samples=384))
+        model=SimpleNamespace(native_boundary=boundary,trace=trace)
+        iq=torch.randn(4,8,2,432,generator=generator)
+        ids=torch.tensor([0,0,1,1])
+        rx=torch.tensor([0,1,0,1])
+        loss,valid=tri_clean95.native_boundary_receiver_loss(model,iq,ids,rx)
+        self.assertEqual(int(valid),4)
+        self.assertGreater(float(loss.detach()),0.)
+        loss.backward()
+        self.assertTrue(torch.isfinite(boundary.project[-1].weight.grad).all())
+        self.assertGreater(float(boundary.project[-1].weight.grad.abs().sum()),0.)
+        missing,no_pairs=tri_clean95.native_boundary_receiver_loss(model,iq,ids,torch.zeros_like(rx))
+        self.assertEqual((float(missing.detach()),int(no_pairs)),(0.,0))
+        rows,epochs,u_batch=tri_clean95.study({'scratch':True,'native_rx_study':True})
+        row=rows['phase_native24_rx']
+        self.assertEqual((row['edge_points'],row['native_rx_weight'],epochs,u_batch),(24,.04,112,16))
+
     def test_group_residual_is_bounded_per_packet_without_touching_primary_logits(self):
         from experiments.pamf_lora_main.repair_features import residual_logit_scale
         core=torch.tensor([[0.,1.,2.],[0.,2.,4.],[5.,5.,5.]])
