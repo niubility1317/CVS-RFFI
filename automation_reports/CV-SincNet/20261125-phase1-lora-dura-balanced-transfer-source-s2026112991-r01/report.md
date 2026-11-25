@@ -7,3 +7,7 @@
 冻结后真实权重 source U 冒烟，随后独立源 V 的同一 900 包及 Tri-set 种子 2026092702 在 Full 和 Residual 各评 clean 和六景，比较直通、同路线原 DURA、同预算已冻结扩容和新候选。两路预测都固定之后读取源标签。源 V 得分供解释。正式目标子集计划固定 15 台未见接收机、每台前 200 个盲序物理包、相同 Tri-set 种子及两路线原登记视图，另用独立 truth-last 对照。两路线分别报告正确数、逐景逐 RX 和配对区间。这条子集与用户原三种子全量验收分开。
 
 在 N607 普通账号运行 `python -m experiments.pamf_lora_main.dura_balanced_transfer_source publish --repo <repo> --output <artifact-root>/release --context <runtime_source.json> --ssh-config <config>`。发布根为 `${N607_PROJECT}/releases/20261125-phase1-lora-dura-balanced-transfer-source-s2026112991-r01-release`，输出根与运行名匹配且不可覆盖。按实测空闲显卡分配，源 V 两路独立并行。源契约或冻结权重不符、非有限梯度、冒烟或预测矩阵闭合失败时停止本运行。预期保留真实源 U 拟合日志、固定留出轨迹、末步权重与门限、真实权重无查询检查、双路线源预测和独立评分。归档和提交以 `release/submit.json` 为准。
+
+## 启动核验
+
+12 项聚焦本地检查和独立 P0/P1 审查通过。N607 发布提交 `35530da3ffe3d5d1634a30810dc600d7c809e08b`，已独立核对归档传输、远端编译、调度和训练进程的工作目录及命令。GPU 6 完成真实源 U 单步启动检查，F、V、TX、目标及轨迹读取均为零。GPU 3 正式训练已启动并写出有限的损失日志，继续至固定 40,000 步。源 V 在末步和真实冻结权重检查后接续。
