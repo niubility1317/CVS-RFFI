@@ -374,6 +374,29 @@ class TriTuningTests(TestCase):
         with self.assertRaisesRegex(ValueError,'four source receivers'):
             native_source_holdout.fitting_indices(np.zeros(2800,dtype=np.int64))
 
+    def test_native_raw_head_supervision_uses_real_labels_with_the_joint_logits(self):
+        class SeparateHead(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.joint=torch.nn.Parameter(torch.tensor([[2.,0.],[1.,-1.]]))
+                self.raw=torch.nn.Parameter(torch.tensor([[1.,-1.],[2.,0.]]))
+
+            def forward(self,x,*,return_raw=False):
+                if return_raw:
+                    return self.joint,x,self.raw
+                return self.joint,x
+
+        model=SeparateHead()
+        y,rx=torch.tensor([0,1]),torch.tensor([0,1])
+        joint,_,_=tri_clean95.supervised_clean_terms(model,torch.zeros(2,1),y,rx,1.,0.,None,0.)
+        full,_,raw=tri_clean95.supervised_clean_terms(model,torch.zeros(2,1),y,rx,1.,0.,None,.25)
+        torch.testing.assert_close(full,joint+.25*raw)
+        full.backward()
+        self.assertGreater(float(model.raw.grad.abs().sum()),0.)
+        self.assertGreater(float(model.joint.grad.abs().sum()),0.)
+        rows,epochs,u_batch=tri_clean95.study({'scratch':True,'native_raw_study':True})
+        self.assertEqual((rows['phase_native24_raw']['warm_raw_ce'],epochs,u_batch),(.25,112,16))
+
     def test_group_residual_is_bounded_per_packet_without_touching_primary_logits(self):
         from experiments.pamf_lora_main.repair_features import residual_logit_scale
         core=torch.tensor([[0.,1.,2.],[0.,2.,4.],[5.,5.,5.]])

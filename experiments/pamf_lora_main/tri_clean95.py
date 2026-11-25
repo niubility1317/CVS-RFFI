@@ -109,7 +109,7 @@ class ChirpReadout(torch.nn.Module):
 
 
 class TimeFrequencyAligned(CoherentPacket):
-    def forward(self,x):
+    def forward(self,x,*,return_raw=False):
         boundary=getattr(self,'native_boundary',None)
         if boundary is not None:
             x,native_edge_iq=x.split((self.trace.time.numel(),2*boundary.edge_points),dim=-1)
@@ -131,6 +131,7 @@ class TimeFrequencyAligned(CoherentPacket):
             nominal=baseband*self.trace.reference.chirp
             core_input=torch.stack((nominal.real,nominal.imag),dim=2)
         logits,fused=self.raw(core_input)
+        raw_logits=logits
         chirps=self.encoder(traces.flatten(0,1)).reshape(len(x),x.shape[1],-1)
         aligned=chirps.mean(1)
         edge_layer=getattr(self,'edge_features',None)
@@ -176,7 +177,10 @@ class TimeFrequencyAligned(CoherentPacket):
         chirp_readout=getattr(self,'chirp_readout',None)
         if chirp_readout is not None:
             logits=logits+chirp_readout(chirps,self.head.weight)
-        return logits,fused+.10*aligned
+        fused=fused+.10*aligned
+        if return_raw:
+            return logits,fused,raw_logits
+        return logits,fused
 
 
 def clean_model(rt,root,c,row,device):
@@ -232,6 +236,8 @@ def clean_model(rt,root,c,row,device):
 
 def study(rt):
     if rt.get('scratch'):
+        if rt.get('native_raw_study'):
+            return NATIVE_RAW_ROWS,112,16
         if rt.get('native_jitter_study'):
             return NATIVE_JITTER_ROWS,112,16
         if rt.get('native_repl32_study'):
@@ -371,6 +377,11 @@ NATIVE_WIDE_ROWS={
     'phase_native16': dict(ANCHOR_ROWS['phase_anchor'],native_edges=True,edge_points=16),
     'phase_native24': dict(ANCHOR_ROWS['phase_anchor'],native_edges=True,edge_points=24),
 }
+NATIVE_RAW_RUN='20261125-phase1-lora-pamf-tri-clean-nativerawwarm98-s2026092702-r01'
+NATIVE_RAW_ROWS={
+    'phase_native24_raw': dict(NATIVE_WIDE_ROWS['phase_native24'],warm_raw_ce=.25),
+}
+
 NATIVE_JITTER_RUN='20261125-phase1-lora-pamf-tri-clean-nativejitter05-s2026092702-r01'
 NATIVE_JITTER_ROWS={
     'phase_native24_jitter': dict(NATIVE_WIDE_ROWS['phase_native24'],timing_jitter=True,native_timing_offset=.5),
@@ -461,6 +472,8 @@ def row_names(rt):
         return ('phase_jitter',)
     if rt.get('phase_joint_study'):
         return ('phase_joint',)
+    if rt.get('native_raw_study'):
+        return tuple(NATIVE_RAW_ROWS)
     if rt.get('native_jitter_study'):
         return tuple(NATIVE_JITTER_ROWS)
     if rt.get('native_repl32_study'):
@@ -622,6 +635,19 @@ def labeled_shift_views(packets,row):
                           edge_points=row['edge_points']) for d in (-offset,offset))
 
 
+def supervised_clean_terms(f,x,y,rx,rtl_weight,pair_margin_weight,source_weight,warm_raw_ce):
+    raw=None
+    if warm_raw_ce:
+        logits,features,raw_logits=f(x,return_raw=True)
+        raw=torch.nn.functional.cross_entropy(raw_logits,y,label_smoothing=.01)
+    else:
+        logits,features=f(x)
+    loss=clean_source_ce(logits,y,rx,rtl_weight,pair_margin_weight,source_weight)
+    if raw is not None:
+        loss=loss+warm_raw_ce*raw
+    return loss,features,raw
+
+
 def smoke(rt):
     from copy import deepcopy
     root=Path(rt['run_root'])
@@ -660,6 +686,11 @@ def smoke(rt):
                                          pair_margin_weight=row.get('pair_margin_weight',0.),
                                          source_weight=tensor(rank_weights[i]) if rank_weights is not None else None,
                                          rtl_threshold=row.get('rtl_repl_threshold',.95))
+        warm_raw_ce=row.get('warm_raw_ce',0.)
+        if warm_raw_ce:
+            supervised,_,raw_loss=supervised_clean_terms(f,a,y,rx,1.,0.,None,warm_raw_ce)
+            loss=loss+supervised
+            t['warm_raw_ce_loss']=float(raw_loss.detach())
         native_rx_weight=row.get('native_rx_weight',0.)
         if native_rx_weight:
             boundary_pair_loss,pairs=native_boundary_receiver_loss(f,a,y,rx)
@@ -763,6 +794,7 @@ def train(rt,name):
     ordinary_std=row.get('ordinary_std',.015)
     joint_rx_weight=row.get('joint_rx_weight',0.)
     native_rx_weight=row.get('native_rx_weight',0.)
+    warm_raw_ce=row.get('warm_raw_ce',0.)
     clean_anchor_weight=row.get('clean_anchor_weight',0.)
     rtl_weight=row.get('rtl_weight',1.)
     pair_margin_weight=row.get('pair_margin_weight',0.)
@@ -777,7 +809,7 @@ def train(rt,name):
         validation_epochs.update(range(warmup,epochs+1,4))
         if any(rt.get(k) for k in ('budget_study','edge_study','robust_study','phase_study')):
             validation_epochs.update((32,48,60))
-        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study','native_rx_study','native_repl32_study','native_jitter_study')):
+        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study','native_rx_study','native_repl32_study','native_jitter_study','native_raw_study')):
             validation_epochs.update((32,48,64,80,88))
     select_from=row.get('select_from_epoch',0)
     snapshots=row.get('tail_average',())
@@ -794,6 +826,7 @@ def train(rt,name):
             sl,su,accepted=0.,0.,0
             boundary_pair_total=0.
             shift_count=0
+            raw_total=0.
             for b,pos in zip(batches(yn,rn,rng),ui,strict=True):
                 i=tensor(b,device)
                 source_weight=rank_weights[i] if rank_weights is not None else None
@@ -809,8 +842,10 @@ def train(rt,name):
                         labeled=torch.where(draw>.875,shifts[1][i],labeled)
                         if native_timing:
                             shift_count+=((draw<.125)|(draw>.875)).sum()
-                    logits,features=f(labeled)
-                    loss=clean_source_ce(logits,y[i],rx[i],rtl_weight,pair_margin_weight,source_weight)
+                    loss,features,raw_supervised=supervised_clean_terms(
+                        f,labeled,y[i],rx[i],rtl_weight,pair_margin_weight,source_weight,warm_raw_ce)
+                    if raw_supervised is not None:
+                        raw_total+=float(raw_supervised.detach())
                     if joint_rx_weight:
                         loss=loss+joint_rx_weight*cross_rx(features,y[i],rx[i],balance=True)[0]
                     lab,unlab,a=loss.detach(),0.,0
@@ -832,6 +867,8 @@ def train(rt,name):
             rec=dict(epoch=epoch,step=step,L_loss=sl/STEPS,U_loss=su/STEPS,
                      U_seen=STEPS*u_count if use_u else 0,U_accepted=accepted,
                      lr=opt.param_groups[0]['lr'])
+            if warm_raw_ce and not use_u:
+                rec['warm_raw_ce_loss']=raw_total/STEPS
             if native_timing:
                 rec['source_l_shifted_examples']=int(shift_count)
             if native_rx_weight:
@@ -906,14 +943,14 @@ def dispatch(rt):
     root=Path(rt['run_root'])
     screens=('quick','transfer','timefreq','noise_study','drift_study','budget_study')
     gated_study=any(rt.get(k) for k in ('robust_study','phase_study','anchor_study','timing_study',
-                                       'phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study','native_rx_study','native_repl32_study','native_jitter_study'))
+                                       'phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study','native_rx_study','native_repl32_study','native_jitter_study','native_raw_study'))
     if (gated_study or any(rt.get(k) for k in ('noise_study','drift_study','budget_study','edge_study'))) and not rt.get('scratch'):
         raise ValueError('The clean input comparisons require random initialization')
     root.mkdir(exist_ok=False)
     state=root/'state.json'
     fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq',
                              'noise_study','drift_study','budget_study','edge_study','robust_study','phase_study','anchor_study',
-                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study','native_rx_study','native_repl32_study','native_jitter_study',
+                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study','native_rx_study','native_repl32_study','native_jitter_study','native_raw_study',
                              'fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)
