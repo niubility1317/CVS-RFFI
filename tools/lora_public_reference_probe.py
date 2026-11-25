@@ -35,7 +35,7 @@ def public_columns(phase):
     return torch.stack([no_tone(vector) for vector in vectors], dim=-1)
 
 
-def fit_shared(design, value):
+def fit_shared(design, value, *, absolute=False):
     """Fit on alternate chirps and return the edit of each held-out chirp."""
     n = value.shape[-1]
     taper = torch.hann_window(n, periodic=False, dtype=value.real.dtype, device=value.device).sqrt()
@@ -54,7 +54,8 @@ def fit_shared(design, value):
         correction[:, 1-offset::2] = edit
     before = (taper*target).abs().square().mean((1, 2)).clamp_min(1e-12)
     after = (taper*(target-correction)).abs().square().mean((1, 2))
-    return correction, (1-after/before).clamp_min(0)
+    explained = (before-after).clamp_min(0)
+    return correction, explained if absolute else explained/before
 
 
 def absolute_error(estimate, clean, rms):
@@ -70,7 +71,7 @@ def private_error(estimate, clean, rms):
     return (a-b).abs().square().sum((1, 2)) / b.abs().square().sum((1, 2)).clamp_min(1e-12)
 
 
-def panel(raw, trackers, observed=None):
+def panel(raw, trackers, observed=None, *, absolute=False):
     rows = []
     for start in range(0, len(raw), 32):
         clean = raw[start:start+32]
@@ -80,7 +81,7 @@ def panel(raw, trackers, observed=None):
             iq = real_iq(complex_tensor(extract(capture, rate)))
             value, phase, _, rms = coordinates(tracker, iq)
             columns = public_columns(phase)
-            fits = [fit_shared(basis, value) for basis in (columns[..., :1], columns[..., 1:], columns)]
+            fits = [fit_shared(basis, value, absolute=absolute) for basis in (columns[..., :1], columns[..., 1:], columns)]
             evidence = torch.stack([score for _, score in fits], dim=1)
             if observed is None:
                 rates.append(evidence)
@@ -117,14 +118,14 @@ def disturbance(raw, case):
 
 
 @torch.no_grad()
-def measure(source):
+def measure(source, *, absolute=False):
     numerical_policy()
     contract = source_contract(source)
     iq, rx, _, _ = source_role(source, contract, 'U_s')
     _, calibration, held = partition(rx, fit=4000, held=400)
     held = held.reshape(len(SOURCE), 400)[:, 300:].ravel()
     trackers = {rate: PacketRestorer('consensus', samples=rate).eval() for rate in RATES}
-    scores = panel(iq[calibration], trackers)
+    scores = panel(iq[calibration], trackers, absolute=absolute)
     pooled = 1.05*scores.max((0, 2))
     leave = {name: 1.05*scores[rx[calibration] != name].max((0, 2)) for name in SOURCE}
     raw = iq[held]
@@ -137,10 +138,10 @@ def measure(source):
         for key, block in (('physical', absolute), ('private_9_32', private)):
             base = block[:, :1]
             actual = np.where(on, block[:, 1:], base)
-            reduction = 1-actual/np.maximum(base, 1e-12)
+            reduction = (base-actual)/np.maximum(base, 1e-12)
             out[key] = dict(direct_median=np.median(base[:, 0], axis=0).tolist(),
                             gated_median=np.median(actual, axis=0).tolist(),
-                            paired_ungated_reduction=np.median(1-block[:, 1:]/np.maximum(base, 1e-12), axis=0).tolist(),
+                            paired_ungated_reduction=np.median((base-block[:, 1:])/np.maximum(base, 1e-12), axis=0).tolist(),
                             gated_median_reduction=np.median(reduction, axis=0).tolist(),
                             gated_worse=(actual > base+1e-9).sum(0).tolist(),
                             gated_better=(actual < base-1e-9).sum(0).tolist())
@@ -148,13 +149,14 @@ def measure(source):
 
     results = {}
     for case in CASES:
-        rows = panel(raw, trackers, disturbance(raw, case))
+        rows = panel(raw, trackers, disturbance(raw, case), absolute=absolute)
         if not np.isfinite(rows).all():
             raise FloatingPointError('Nonfinite public reference attribution')
         results[case] = dict(pooled=summary(rows, pooled),
                              leave_rx={name: summary(rows[rx[held] == name], leave[name]) for name in SOURCE})
     return dict(status='VERIFIED', role='U_s', protocol=contract['protocol'], rates_ksps=RATES, arms=ARMS,
                 delays_us=DELAYS_US, case_seed=SEED, calibration=len(calibration), held=len(held),
+                evidence='absolute_explained_energy' if absolute else 'fractional_explained_energy',
                 held_offset_per_rx=4800, pooled_threshold=pooled.tolist(), results=results,
                 source_clean_only_after_fit=True, TX_reads=0, F_reads=0, V_reads=0, target_reads=0, trace_reads=0)
 
@@ -163,5 +165,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--source', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--absolute', action='store_true')
     args = parser.parse_args()
-    write(args.output, measure(args.source))
+    write(args.output, measure(args.source, absolute=args.absolute))
