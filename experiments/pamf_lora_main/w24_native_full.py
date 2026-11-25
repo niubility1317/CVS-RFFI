@@ -19,7 +19,7 @@ from experiments.pamf_lora_main.packet_data import CHIRPS, PACKET_LEN
 from experiments.pamf_lora_main.packet_physics import CONTEXT, channel, chirp_samples, hardware
 
 
-RUN = '20261125-phase1-lora-w24-native-full-s2026092702-r02'
+RUN = '20261125-phase1-lora-w24-native-full-s2026092702-r03'
 W24_RUN = '20261125-phase1-lora-pamf-tri-clean-nativewide98-m2-r01'
 W24_COMMIT = 'e6dde7d40f2cc3dd7b21d83daa4bcbabac52d3ae'
 METHOD = 'phase_native24'
@@ -122,7 +122,7 @@ def recover(packets, restorer, device):
                        for row in (half, corrected)))
 
 
-@torch.inference_mode()
+@torch.no_grad()
 def classify(readout, packets, device):
     from experiments.pamf_lora_main.clean_aperture import ALL_CHIRPS, clean_iq
 
