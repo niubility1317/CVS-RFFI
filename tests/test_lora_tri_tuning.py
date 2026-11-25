@@ -397,6 +397,16 @@ class TriTuningTests(TestCase):
         rows,epochs,u_batch=tri_clean95.study({'scratch':True,'native_raw_study':True})
         self.assertEqual((rows['phase_native24_raw']['warm_raw_ce'],epochs,u_batch),(.25,112,16))
 
+    def test_native_raw_early_supervision_finishes_before_the_rest_of_the_source_phase(self):
+        rows,epochs,u_batch=tri_clean95.study({'scratch':True,'native_raw48_study':True})
+        short=rows['phase_native24_raw48']
+        self.assertEqual((short['warmup'],epochs,u_batch),(96,112,16))
+        self.assertEqual([tri_clean95.warm_raw_weight(short,e) for e in (1,48,49,96,97,112)],
+                         [.25,.25,0.,0.,0.,0.])
+        long=tri_clean95.NATIVE_RAW_ROWS['phase_native24_raw']
+        self.assertEqual([tri_clean95.warm_raw_weight(long,e) for e in (48,49,96,97)],
+                         [.25,.25,.25,0.])
+
     def test_group_residual_is_bounded_per_packet_without_touching_primary_logits(self):
         from experiments.pamf_lora_main.repair_features import residual_logit_scale
         core=torch.tensor([[0.,1.,2.],[0.,2.,4.],[5.,5.,5.]])
