@@ -28,7 +28,8 @@ from experiments.pamf_lora_main.w24_wide_transfer import (
 )
 
 
-RUN = '20261125-diagnostic-lora-w24-native-residual-source-s2026112559-r01'
+RUN = '20261125-diagnostic-lora-w24-native-residual-source-s2026112559-r02'
+WAVEFORM_NAMESPACE = '20261125-diagnostic-lora-w24-native-residual-source-s2026112559-r01'
 ROUTES = ('full_native', ROUTE)
 MODES = ('direct', 'prior_complex_response_half', 'wide_dura_half')
 BATCH = 24
@@ -36,7 +37,7 @@ BATCH = 24
 
 def paired_iq(scene, item):
     row, receiver, packet = item
-    handle = (scene, receiver, row, RUN)
+    handle = (scene, receiver, row, WAVEFORM_NAMESPACE)
     return native_full_view(packet, *handle), native_residual(packet, *handle)
 
 
@@ -59,9 +60,11 @@ def predict_source(runtime):
     device = 'cuda:0'
     contract = source_contract(source)
     f = load_classifier(rt, contract, device)
-    baseline = load_restorers(contract, root.parent, device)
+    # Let the archived G resolve its absolute dependencies before the older
+    # reference stack caches a namesake package with different submodules.
     archive, parent = training_runtime(rt)
     g, track, threshold, frozen = load_restorer(archive, parent, contract, device)
+    baseline = load_restorers(contract, root.parent, device)
     evaluate = partial(batch_labels, f, baseline, g, track, threshold, device=device)
 
     u = np.array(native(source, 'U_s', contract['counts']['U_s'])[:2])
