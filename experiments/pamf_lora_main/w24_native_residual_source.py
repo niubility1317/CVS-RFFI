@@ -278,7 +278,7 @@ def compare_source(runtime):
         score_source(runtime, modes=modes, output=root / route, contrasts=contrasts)
 
 
-def dispatch(runtime, *, entry=__file__):
+def dispatch(runtime, *, entry=__file__, phases=('predict-source', 'score-source')):
     rt = read(runtime)
     root, reference = Path(rt['run_root']), Path(rt['w24_release_root'])
     root.mkdir()
@@ -290,17 +290,19 @@ def dispatch(runtime, *, entry=__file__):
     try:
         if read(reference / 'submit.json')['code_commit'] != W24_COMMIT:
             raise ValueError('Exact W24 source release required')
-        status(status='WAIT_GPU')
-        deadline = monotonic() + 1800
-        allowed = rt['allowed_gpus']
-        while not (cards := available(allowed, max_compute_processes=8)):
-            if monotonic() >= deadline:
-                raise ValueError('GPU wait expired')
-            sleep(20)
-        gpu = next(i for i in allowed if i in cards)
+        gpu = None
+        if 'predict-source' in phases:
+            status(status='WAIT_GPU')
+            deadline = monotonic() + 1800
+            allowed = rt['allowed_gpus']
+            while not (cards := available(allowed, max_compute_processes=8)):
+                if monotonic() >= deadline:
+                    raise ValueError('GPU wait expired')
+                sleep(20)
+            gpu = next(i for i in allowed if i in cards)
         env = dict(os.environ, OMP_NUM_THREADS='2', OPENBLAS_NUM_THREADS='1', PYTHONPATH=str(reference))
         script = str(Path(entry).resolve())
-        for phase in ('predict-source', 'score-source'):
+        for phase in phases:
             env['CUDA_VISIBLE_DEVICES'] = str(gpu) if phase == 'predict-source' else ''
             with (root / f'{phase}.log').open('x', encoding='utf-8') as log:
                 job = subprocess.Popen([rt['python'], '-u', script, phase, str(runtime)], cwd=reference,

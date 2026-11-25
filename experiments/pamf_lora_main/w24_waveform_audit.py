@@ -9,6 +9,7 @@ import numpy as np
 
 
 RUN = '20261125-diagnostic-lora-w24-waveform-source-s2026112559-r01'
+SCORE_RUN = '20261125-diagnostic-lora-w24-waveform-source-s2026112559-r02'
 BANDS = (('0_to_100_khz', 0, 100), ('100_to_160_khz', 100, 160), ('160_to_192_khz', 160, 193))
 MODES = ('received', 'half', 'full')
 
@@ -136,8 +137,9 @@ def score(rt):
 
     activate(rt)
     root = Path(rt['run_root'])
+    frozen_root = Path(rt.get('frozen_waveform_root', root))
     _, jobs, ids = source_rows(rt)
-    frozen = read(root/'waveforms-frozen.json')
+    frozen = read(frozen_root/'waveforms-frozen.json')
     if (frozen['status'], frozen['routes'], frozen['views'], frozen['modes'], frozen['ids'],
         frozen['target_reads'], frozen['source_truth_reads'], frozen['simulator_reference_reads']) != (
             'FROZEN', list(ROUTES), list(VIEWS), list(MODES), ids, 0, 0, 0):
@@ -146,7 +148,7 @@ def score(rt):
         paired = read(root.parent/SWEEP_RUN/route/'source-predictions.json')
         if paired['physical_ids'] != ids or paired['views'] != list(VIEWS) or paired['status'] != 'PREDICTIONS_FROZEN':
             raise ValueError('Prior frozen source recognition panel does not match these waveforms')
-        if any(not (root/route/f'{scene}.npz').is_file() for scene in VIEWS):
+        if any(not (frozen_root/route/f'{scene}.npz').is_file() for scene in VIEWS):
             raise ValueError('Incomplete frozen W24 waveform panel')
 
     results = {route: {} for route in ROUTES}
@@ -156,14 +158,16 @@ def score(rt):
             for route, iq in zip(ROUTES, zip(*traces, strict=True), strict=True):
                 observed, signal = (native_aperture(np.stack(waves)) for waves in zip(*iq, strict=True))
                 rms = center_rms(observed)
-                with np.load(root/route/f'{scene}.npz', allow_pickle=False) as saved:
+                with np.load(frozen_root/route/f'{scene}.npz', allow_pickle=False) as saved:
                     waves = [saved[mode] for mode in MODES]
-                np.testing.assert_array_equal(waves[0], observed[..., :384]/rms)
+                # Registered W24 reads float32 real and imaginary channels after resampling.
+                expected = (observed[..., :384]/rms).astype(np.complex64)
+                np.testing.assert_array_equal(waves[0], expected)
                 results[route][scene] = summarize(waves, signal[..., :384]/rms)
             print('W24_WAVEFORM_SCORED', scene, len(jobs), flush=True)
     write(root/'waveform-scores.json', dict(status='SOURCE_SCORED', packets=len(jobs), target_reads=0,
           source_truth_reads=0, reference_after_freeze=True, recognition_comparison=SWEEP_RUN,
-          matching_received_iq=True, results=results))
+          matching_received_iq=True, frozen_waveform_run=frozen_root.name, results=results))
 
 
 def main():
@@ -180,11 +184,15 @@ def main():
     for name in ('dispatch', 'predict-source', 'score-source'):
         sub.add_parser(name).add_argument('runtime', type=Path)
     publish = sub.add_parser('publish')
+    publish.add_argument('--rescore-frozen', action='store_true')
     for name in ('repo', 'context', 'ssh-config', 'output'):
         publish.add_argument('--'+name, type=Path, required=True)
     args = parser.parse_args()
     if args.action == 'dispatch':
-        dispatch(args.runtime, entry=__file__)
+        if read(args.runtime).get('frozen_waveform_root'):
+            dispatch(args.runtime, entry=__file__, phases=('score-source',))
+        else:
+            dispatch(args.runtime, entry=__file__)
     elif args.action == 'predict-source':
         predict(read(args.runtime))
     elif args.action == 'score-source':
@@ -194,14 +202,18 @@ def main():
         rt = {key: context[key] for key in ('project', 'python', 'frozen_sources')}
         project = PurePosixPath(rt['project'])
         releases, runs = project/'releases', project/'runs'
-        rt.update(run_id=RUN, runner=__spec__.name, code_commit=release_commit(args.repo),
-                  release_root=str(releases/f'{RUN}-release'), run_root=str(runs/RUN),
+        run = SCORE_RUN if args.rescore_frozen else RUN
+        rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
+                  release_root=str(releases/f'{run}-release'), run_root=str(runs/run),
                   source_root=str(releases/f'{DATA_RUN}-release'/'data/source'),
                   w24_release_root=str(releases/f'{W24_RUN}-release'),
                   training_release_root=str(releases/f'{TRAIN_RUN}-release'),
                   allowed_gpus=[3, 2, 7, 4, 1, 6, 0, 5], cpu_workers=8)
         rt['external_releases'] = [rt[key] for key in ('source_root', 'w24_release_root', 'training_release_root')]
         rt['external_releases'].append(str(runs/SWEEP_RUN))
+        if args.rescore_frozen:
+            rt['frozen_waveform_root'] = str(runs/RUN)
+            rt['external_releases'].append(rt['frozen_waveform_root'])
         release(args.repo, args.output, rt, args.ssh_config)
 
 

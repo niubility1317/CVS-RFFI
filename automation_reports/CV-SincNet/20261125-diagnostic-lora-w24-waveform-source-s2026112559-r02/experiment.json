@@ -1,0 +1,157 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261125-diagnostic-lora-w24-waveform-source-s2026112559-r02",
+  "group_id": "phase1-lora-w24-observable-recovery",
+  "display_name": "LoRa W24 已冻结波形独立评分",
+  "description": "Score existing immutable r01 waveforms after casting expected receive IQ to the W24 input precision.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source_only",
+    "oracle_diagnostic",
+    "w24",
+    "full_and_residual"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261125-diagnostic-lora-w24-waveform-source-s2026112559-r01",
+    "20261125-diagnostic-lora-w24-readout-sweep-source-s2026112559-r01",
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01"
+  ],
+  "replaces_run_id": "20261125-diagnostic-lora-w24-waveform-source-s2026112559-r01",
+  "authorization": "Active LoRa and WiSig restoration research goal authorizes isolated component diagnostics.",
+  "code": {
+    "commit": null,
+    "checkout": "E:/codex/home/worktrees/lora-dura-stage-supervision/standard_ce_baselines_20261010",
+    "environment": "N607 archived W24 runtime Python",
+    "cwd": "registered W24 source release"
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multiple receiver",
+    "version": "Native W24 1 MHz original Full and native_residual_w24_v1",
+    "representation": "8 chirps, 384 complex center samples + 48 native edge samples",
+    "contract_ref": "Archived native W24 source release, data/source contract",
+    "physical_ids_ref": "Parent run source-predictions.json physical_ids",
+    "label_map_ref": null,
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": 0,
+      "V": 300
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Same parent Full and Residual raw ordered-prediction panel",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Isolated source waveform attribution. Frozen recognition results reused only for interpretation. No training or target reads."
+  },
+  "checkpoint": {
+    "initialization": "None",
+    "sources": [
+      {
+        "ref": "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+        "role": "Source-frozen W24 DURA E40000"
+      }
+    ],
+    "contract_check_ref": "w24_wide_transfer.training_runtime and load_restorer",
+    "provenance_verdict": "Source-frozen 40,000 steps, compatible source-only archive",
+    "selection_rule": "Frozen prior run and readout doses fixed before execution"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex goal 01a208a9-57df-7f82-a078-cd9477adf998",
+    "gpu_policy": "CPU only, eight workers",
+    "remote_run_root": "runs/20261125-diagnostic-lora-w24-waveform-source-s2026112559-r02",
+    "remote_log_root": "runs/20261125-diagnostic-lora-w24-waveform-source-s2026112559-r02",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261125-diagnostic-lora-w24-waveform-source-s2026112559-r02",
+    "launch_command": "python -m experiments.pamf_lora_main.w24_waveform_audit publish --rescore-frozen --repo . --context E:/type10-7/local_artifacts/20261125-diagnostic-lora-w24-waveform-source-s2026112559-r02/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261125-diagnostic-lora-w24-waveform-source-s2026112559-r02/release",
+    "stop_rule": "Fail downstream on provenance, source only, physical-ID, finite IQ, freeze, or exact received coordinate mismatch."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "score-source.log",
+    "waveform-scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "complex NMSE",
+      "amplitude NMSE",
+      "reference-energy weighted phase chord loss",
+      "paired differences"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "absolute frequency band",
+      "all or chirp-private",
+      "readout dose"
+    ],
+    "prediction_ref": "runs/20261125-diagnostic-lora-w24-waveform-source-s2026112559-r01/{route}/{scene}.npz",
+    "scorer_ref": "w24_waveform_audit.score"
+  },
+  "rows": [
+    {
+      "row_id": "actual-w24-waveforms",
+      "method": "Frozen W24 restored centre IQ against no-added-noise reference",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_waveform_audit.py",
+      "resolved_config_ref": "releases/20261125-diagnostic-lora-w24-waveform-source-s2026112559-r02-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026112991,
+        "split": null,
+        "data": 2026112559,
+        "augmentation": 2026112207,
+        "support": null,
+        "evaluation": 2026112559
+      },
+      "seed_notes": "Existing source split and source RF seeds reused without draws from any other panel. No candidate fit or support.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "300 source V packets, both routes and seven scenes, 3 readout doses",
+      "output_root": "runs/20261125-diagnostic-lora-w24-waveform-source-s2026112559-r02",
+      "log_path": "runs/20261125-diagnostic-lora-w24-waveform-source-s2026112559-r02/score-source.log",
+      "command": "archived Python w24_waveform_audit.py score-source releases/20261125-diagnostic-lora-w24-waveform-source-s2026112559-r02-release/runtime.json",
+      "expected_artifacts": [
+        "state.json",
+        "score-source.log",
+        "waveform-scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "r01 is the immutable waveform source. r02 does not load G or run predictions.",
+    "Exact release commit is recorded at launch by the release runtime."
+  ],
+  "registered_at": "2026-11-25T14:52:33+00:00"
+}
