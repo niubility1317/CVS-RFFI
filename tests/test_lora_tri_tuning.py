@@ -271,6 +271,32 @@ class TriTuningTests(TestCase):
                 self.assertEqual(key,f'384-all8-nativeedges{width}')
                 self.assertEqual(layout['native_edge_positions'],list(native_edge_positions(width)))
 
+    def test_native_lag_keeps_the_declared_boundary_shape_and_cancels_core_carrier(self):
+        from experiments.pamf_lora_main.clean_aperture import native_edge_positions
+        from experiments.pamf_lora_main.physical import ChirpResponse
+        from experiments.pamf_lora_main.repair_features import NativeBoundaryPhase
+
+        core_ref=ChirpResponse(samples=384).chirp
+        carrier=.03
+        shape=.10
+        core_phase=torch.arange(384)*carrier/.384
+        core_signal=(core_ref*torch.exp(1j*core_phase)).expand(2,8,-1)
+        core=torch.stack((core_signal.real,core_signal.imag),dim=2)
+        rows,epochs,u_batch=tri_clean95.study({'scratch':True,'native_lag_study':True})
+        self.assertEqual((epochs,u_batch),(112,16))
+        for points,lag,dimensions in ((24,8,277),(32,14,309)):
+            with self.subTest(points=points,lag=lag):
+                row=rows[f'phase_native{points}_lag{lag}']
+                self.assertEqual((row['edge_points'],row['edge_lag']),(points,lag))
+                edge=NativeBoundaryPhase(160,edge_points=points,lag=lag)
+                native_t=torch.tensor(native_edge_positions(points))
+                edge_signal=(edge.edge_reference.flatten()*torch.exp(1j*native_t*(carrier+shape))).expand(2,8,-1)
+                iq=torch.stack((edge_signal.real,edge_signal.imag),dim=2)
+                actual=edge.features(core,iq,core_ref)
+                self.assertEqual(tuple(actual.shape),(2,dimensions))
+                expected=torch.full_like(actual[:,:-21],np.sin(lag*shape))
+                torch.testing.assert_close(actual[:,:-21],expected,atol=1e-5,rtol=1e-5)
+
     def test_group_residual_is_bounded_per_packet_without_touching_primary_logits(self):
         from experiments.pamf_lora_main.repair_features import residual_logit_scale
         core=torch.tensor([[0.,1.,2.],[0.,2.,4.],[5.,5.,5.]])

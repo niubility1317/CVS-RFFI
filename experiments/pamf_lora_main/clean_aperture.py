@@ -10,7 +10,7 @@ ALL_CHIRPS = tuple(range(PACKET_LEN // 1024))
 NATIVE_EDGE_POINTS = 12
 
 def native_edge_positions(edge_points=NATIVE_EDGE_POINTS):
-    if edge_points not in (12,16,24):
+    if edge_points not in (12,16,24,32):
         raise ValueError('Unknown native chirp boundary width')
     return tuple(range(edge_points)) + tuple(range(1024-edge_points,1024))
 

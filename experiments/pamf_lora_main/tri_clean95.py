@@ -215,7 +215,8 @@ def clean_model(rt,root,c,row,device):
                 f.group_logit_limit=row.get('group_logit_limit')
             if row.get('native_edges'):
                 f.native_boundary=NativeBoundaryPhase(f.head.in_features,
-                                                       edge_points=row.get('edge_points',NATIVE_EDGE_POINTS)).to(device)
+                                                       edge_points=row.get('edge_points',NATIVE_EDGE_POINTS),
+                                                       lag=row.get('edge_lag',1)).to(device)
             if f.spectral_edges:
                 original=f.time_frequency[0]
                 extended=nn.Conv2d(4,16,3,padding=1,device=device)
@@ -230,6 +231,8 @@ def clean_model(rt,root,c,row,device):
 
 def study(rt):
     if rt.get('scratch'):
+        if rt.get('native_lag_study'):
+            return NATIVE_LAG_ROWS,112,16
         if rt.get('nativewide_study'):
             return NATIVE_WIDE_ROWS,112,16
         if rt.get('nativeboundary_study'):
@@ -345,6 +348,12 @@ PHASE_JOINT_RUN='20261125-phase1-lora-pamf-tri-clean-phasejoint98-s2026092702-r0
 PHASE_JOINT_ROWS={
     'phase_joint': dict(ANCHOR_ROWS['phase_anchor'],joint_rx_weight=.12),
 }
+NATIVE_LAG_RUN='20261125-phase1-lora-pamf-tri-clean-nativelag98-m2-r01'
+NATIVE_LAG_ROWS={
+    'phase_native24_lag8': dict(ANCHOR_ROWS['phase_anchor'],native_edges=True,edge_points=24,edge_lag=8),
+    'phase_native32_lag14': dict(ANCHOR_ROWS['phase_anchor'],native_edges=True,edge_points=32,edge_lag=14),
+}
+
 NATIVE_WIDE_RUN='20261125-phase1-lora-pamf-tri-clean-nativewide98-m2-r01'
 NATIVE_WIDE_ROWS={
     'phase_native16': dict(ANCHOR_ROWS['phase_anchor'],native_edges=True,edge_points=16),
@@ -430,6 +439,8 @@ def row_names(rt):
         return ('phase_jitter',)
     if rt.get('phase_joint_study'):
         return ('phase_joint',)
+    if rt.get('native_lag_study'):
+        return tuple(NATIVE_LAG_ROWS)
     if rt.get('nativewide_study'):
         return ('phase_native16','phase_native24')
     if rt.get('nativeboundary_study'):
@@ -704,7 +715,7 @@ def train(rt,name):
         validation_epochs.update(range(warmup,epochs+1,4))
         if any(rt.get(k) for k in ('budget_study','edge_study','robust_study','phase_study')):
             validation_epochs.update((32,48,60))
-        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study')):
+        if any(rt.get(k) for k in ('anchor_study','timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study')):
             validation_epochs.update((32,48,64,80,88))
     snapshots=row.get('tail_average',())
     averaged_state=None
@@ -820,14 +831,14 @@ def dispatch(rt):
     root=Path(rt['run_root'])
     screens=('quick','transfer','timefreq','noise_study','drift_study','budget_study')
     gated_study=any(rt.get(k) for k in ('robust_study','phase_study','anchor_study','timing_study',
-                                       'phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study'))
+                                       'phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study'))
     if (gated_study or any(rt.get(k) for k in ('noise_study','drift_study','budget_study','edge_study'))) and not rt.get('scratch'):
         raise ValueError('The clean input comparisons require random initialization')
     root.mkdir(exist_ok=False)
     state=root/'state.json'
     fields=tuple(k for k in ('local_parent','local_only','quick','transfer','scratch','timefreq',
                              'noise_study','drift_study','budget_study','edge_study','robust_study','phase_study','anchor_study',
-                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study',
+                             'timing_study','phase_joint_study','rtl_study','physics_study','coverage_study','chirpread_study','pairmargin_study','rankweight_study','groupfusion_study','tailaverage_study','rtlgate_study','groupcap_study','nativeboundary_study','nativewide_study','native_lag_study',
                              'fixed_clean_cache') if k in rt)
     # Training config remains source-only. Target handles travel only in the predictor config.
     launch=partial(start,module=__spec__.name,extra_keys=fields)

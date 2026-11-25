@@ -111,13 +111,16 @@ def residual_logit_scale(core_logits,delta_logits,limit):
 
 
 class NativeBoundaryPhase(nn.Module):
-    """Represent phase steps inside native edge windows and across chirp boundaries."""
+    """Represent within-window phase differences and adjacent-chirp boundaries."""
 
-    def __init__(self,channels,*,edge_points=NATIVE_EDGE_POINTS):
+    def __init__(self,channels,*,edge_points=NATIVE_EDGE_POINTS,lag=1):
         super().__init__()
+        if not isinstance(lag,int) or not 1<=lag<edge_points:
+            raise ValueError('Native phase lag must fit within one edge window')
         self.edge_points=edge_points
+        self.lag=lag
         count=len(ALL_CHIRPS)
-        width=count*2*(edge_points-1)+(count-1)*3
+        width=count*2*(edge_points-lag)+(count-1)*3
         t=torch.tensor(native_edge_positions(edge_points),dtype=torch.float64)*1e-6
         reference=torch.exp(2j*torch.pi*BANDWIDTH_HZ*(t.square()/(2*.001024)-t/2))
         self.register_buffer('edge_reference',reference.to(torch.complex64).reshape(2,edge_points),
@@ -137,7 +140,9 @@ class NativeBoundaryPhase(nn.Module):
         correction=torch.polar(torch.ones_like(angle),-angle)
         edges=torch.complex(edge[:,:,0],edge[:,:,1]).reshape(len(edge),len(ALL_CHIRPS),2,self.edge_points)
         edges=edges*self.edge_reference.conj()
-        steps=unit(edges[...,1:]*edges[...,:-1].conj())*correction[...,None,None]
+        lag=self.lag
+        lag_correction=correction if lag==1 else torch.polar(torch.ones_like(angle),-lag*angle)
+        steps=unit(edges[...,lag:]*edges[...,:-lag].conj())*lag_correction[...,None,None]
         next_start=edges[:,1:,0,0]
         previous_end=edges[:,:-1,1,-1]
         junction=unit(next_start*previous_end.conj())*correction[:,:-1]
