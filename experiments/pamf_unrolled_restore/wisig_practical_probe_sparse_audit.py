@@ -32,7 +32,7 @@ def tune(source, first, second, third, fourth, output):
     fit_bank(bank, fit, held, first, second, third, fourth, output)
 
 
-def fit_bank(bank, fit, held, first, second, third, fourth, output):
+def fit_bank(bank, fit, held, first, second, third, fourth, output, *, ridge_options=RIDGES):
     operators = previous.gate_audit.load_operators(first, second)
     noise_prior = previous.noise_prior(third)
     protection = read(fourth)["protection_scale"]
@@ -68,7 +68,7 @@ def fit_bank(bank, fit, held, first, second, third, fourth, output):
     for arm, target in zip(ARMS, (compact, .65 * compact + .35 * dense)):
         rhs = design.T @ target
         trials = []
-        for ridge in RIDGES:
+        for ridge in ridge_options:
             matrix = np.linalg.solve(gram + ridge * np.eye(len(gram)), rhs)
             kernel = direct + diffuse[:, None] * (unseen @ matrix - direct)
             value = metric(kernel)

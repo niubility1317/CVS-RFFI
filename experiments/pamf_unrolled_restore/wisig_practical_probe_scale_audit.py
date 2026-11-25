@@ -12,8 +12,10 @@ from . import wisig_lora_source_fit as legacy_source
 
 
 RUN = "20261126-diagnostic-wisig-practical-probe-s2026112601-r06"
+EXPANDED_RUN = "20261126-diagnostic-wisig-practical-probe-s2026112601-r07"
 SEED = 2026112606
 FIT, HOLD = 768, 192
+EXPANDED_FIT = 4096
 COUNT = 63000
 matched = sparse.matched
 
@@ -28,14 +30,27 @@ def earliest_views(scenes):
     return epochs
 
 
-def selection(epochs, roles, ids, excluded):
+def selection(epochs, roles, ids, excluded, *, fit=FIT):
     eligible = np.flatnonzero((roles == "U_s") & np.all(epochs > 0, axis=0) & ~np.isin(ids, excluded))
-    if len(eligible) < FIT + HOLD:
+    if len(eligible) < fit + HOLD:
         raise ValueError("Not enough independent source-U packets in all six Practical scenes")
-    return np.random.default_rng(SEED).choice(eligible, FIT + HOLD, replace=False)
+    rng = np.random.default_rng(SEED)
+    base = rng.choice(eligible, FIT + HOLD, replace=False)
+    if fit == FIT:
+        return base
+    additional = rng.choice(np.setdiff1d(eligible, base, assume_unique=True), fit - FIT, replace=False)
+    return np.concatenate((base[:FIT], additional, base[FIT:]))
 
 
 def prepare_action_views(cache, legacy, root):
+    prepare_bank(cache, legacy, root, fit=FIT)
+
+
+def prepare_expanded(cache, legacy, root):
+    prepare_bank(cache, legacy, root, fit=EXPANDED_FIT)
+
+
+def prepare_bank(cache, legacy, root, *, fit):
     contract = read(cache / "complete.json")
     if (contract["status"], contract["train_count"], contract["epochs"], contract["target_reads"]) != (
             "ACTION_SOURCE_CACHE_COMPLETE", COUNT, 20, 0):
@@ -58,7 +73,7 @@ def prepare_action_views(cache, legacy, root):
                 yield names
 
     epochs = earliest_views(archive_scenes())
-    selected = selection(epochs, roles, ids, old_ids[legacy_indices])
+    selected = selection(epochs, roles, ids, old_ids[legacy_indices], fit=fit)
     by_scene = epochs[:, selected]
     output = np.empty((len(matched.SCENES), len(selected), matched.model.receive.SAMPLES), dtype=np.complex64)
     for epoch in np.unique(by_scene):
@@ -72,18 +87,28 @@ def prepare_action_views(cache, legacy, root):
     if not np.isfinite(output).all():
         raise ValueError("Nonfinite archived Practical received IQ")
     np.save(root / "source_received.npy", output, allow_pickle=False)
-    write(root / "source.json", dict(physical_fit=FIT, physical_hold=HOLD, scenes=list(matched.SCENES),
+    write(root / "source.json", dict(physical_fit=fit, physical_hold=HOLD, scenes=list(matched.SCENES),
           distinct_physical=len(np.unique(ids[selected])), legacy_physical_overlap=0,
+          base_fit_retained=FIT, base_hold_retained=HOLD,
           allowed_iq="only Practical received", preparation_metadata=["source role", "physical ID", "epoch scene"]))
     print("R07_PRACTICAL_SOURCE_SCALE_READY", len(selected), len(matched.SCENES), flush=True)
 
 
 def tune(source, first, second, third, fourth, output):
+    tune_bank(source, first, second, third, fourth, output, fit=FIT, ridge_options=sparse.RIDGES)
+
+
+def tune_expanded(source, first, second, third, fourth, output):
+    tune_bank(source, first, second, third, fourth, output, fit=EXPANDED_FIT,
+              ridge_options=(*sparse.RIDGES, 1600., 3200.))
+
+
+def tune_bank(source, first, second, third, fourth, output, *, fit, ridge_options):
     bank = np.load(source, allow_pickle=False)
-    if bank.shape != (len(matched.SCENES), FIT + HOLD, matched.model.receive.SAMPLES):
+    if bank.shape != (len(matched.SCENES), fit + HOLD, matched.model.receive.SAMPLES):
         raise ValueError("Expected the scaled receive-only Practical source bank")
-    fit, hold = np.split(np.arange(FIT + HOLD), [FIT])
-    sparse.fit_bank(bank, fit, hold, first, second, third, fourth, output)
+    train, hold = np.split(np.arange(fit + HOLD), [fit])
+    sparse.fit_bank(bank, train, hold, first, second, third, fourth, output, ridge_options=ridge_options)
 
 
 def dispatch(runtime):
@@ -92,14 +117,15 @@ def dispatch(runtime):
         "run_root", "first", "second", "third", "fourth", "cache", "legacy"))
     p1, p2, p3 = (p / "configuration.npz" for p in (first, second, third))
     opts = root / "configuration.npz"
-    steps = (("smoke", ()), ("prepare_action_views", (cache, legacy, root)),
-             ("tune", (root / "source_received.npy", p1, p2, p3, fourth / "configuration.json", opts)),
+    prepare, train = ("prepare_expanded", "tune_expanded") if rt["run_id"] == EXPANDED_RUN else ("prepare_action_views", "tune")
+    steps = (("smoke", ()), (prepare, (cache, legacy, root)),
+             (train, (root / "source_received.npy", p1, p2, p3, fourth / "configuration.json", opts)),
              ("predict", (first / "evaluation_received.npy", p1, p3, opts, root / "estimates.npz")),
              ("score", (root, cache / "validation_actions")))
     matched.protocol.panel.full.source.parent.parent.prior_runner.dispatch(rt, steps)
 
 
-def publish(repo, output, context, ssh_config):
+def publish(repo, output, context, ssh_config, expanded=False):
     ctx = read(context)
     runs = PurePosixPath(ctx["project"]) / "runs"
     first = sparse.previous
@@ -107,9 +133,10 @@ def publish(repo, output, context, ssh_config):
                   third=str(runs / first.gate_audit.RUN), fourth=str(runs / first.RUN),
                   cache=str(runs / matched.PARENT / "cache"),
                   legacy=str(runs / "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02" / "cache"))
-    rt = dict(project=ctx["project"], python=ctx["python"], frozen_sources={}, run_id=RUN, runner=__spec__.name,
+    run = EXPANDED_RUN if expanded else RUN
+    rt = dict(project=ctx["project"], python=ctx["python"], frozen_sources={}, run_id=run, runner=__spec__.name,
               code_commit=transport.release_commit(repo),
-              release_root=str(runs.parent / "releases" / f"{RUN}-release"), run_root=str(runs / RUN),
+              release_root=str(runs.parent / "releases" / f"{run}-release"), run_root=str(runs / run),
               external_releases=list(inputs.values()), **inputs)
     transport.release(repo, output, rt, ssh_config)
 
@@ -120,8 +147,10 @@ def main():
     pub = sub.add_parser("publish")
     for name in ("repo", "output", "context", "ssh-config"):
         pub.add_argument("--" + name, type=Path, required=True)
+    pub.add_argument("--expanded", action="store_true")
+    train_fields = ("source", "first", "second", "third", "fourth", "output")
     steps = ((prepare_action_views, ("cache", "legacy", "root")),
-             (tune, ("source", "first", "second", "third", "fourth", "output")),
+             (prepare_expanded, ("cache", "legacy", "root")), (tune, train_fields), (tune_expanded, train_fields),
              (sparse.predict, ("received", "first", "third", "params", "output")),
              (sparse.score, ("root", "reference")), (dispatch, ("runtime",)))
     sub.add_parser("smoke")
