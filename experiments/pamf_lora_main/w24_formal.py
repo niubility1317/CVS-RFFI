@@ -16,7 +16,9 @@ if __package__ is None:
     pamf_lora_main.__path__.append(str(Path(__file__).resolve().parent))
 
 from experiments.cric_dura_comparison.io import read, write
+from experiments.pamf_lora_main.dura_repair import complex_iq, real_iq
 from experiments.pamf_lora_main.full_packet_views import native, source_contract, target_contract
+from experiments.pamf_lora_main.joint_unroll_source import coordinates
 from experiments.pamf_lora_main.packet_runner import schedule
 from experiments.pamf_lora_main.runner import activate, available
 from experiments.pamf_lora_main.w24_native_full import (
@@ -33,10 +35,12 @@ from experiments.pamf_lora_main.w24_wide_transfer import (
 
 
 RUN = '20261125-phase1-lora-w24-formal-both-routes-m3-r01'
+RUN_UNGATED = '20261125-phase1-lora-w24-formal-ungated-s2026092702-r01'
 SEEDS = (2026092701, SEED, 2026092703)
 FULL = 'full_native'
 ROUTES = (FULL, ROUTE)
 WIDE = 'wide_dura_half'
+WIDE_UNGATED = 'wide_dura_ungated_half'
 MODES = {
     FULL: ('direct', 'dura_half', 'complex_response_half', WIDE),
     ROUTE: ('direct', 'r69_gated_half', WIDE),
@@ -52,12 +56,25 @@ def cases():
     return {f'{route}-{i}': route for i in SHARDS for route in ROUTES}
 
 
-def receipt(case):
+def evaluation_seeds(ungated):
+    return (SEED,) if ungated else SEEDS
+
+
+def evaluation_modes(route, ungated):
+    names = MODES[route]
+    return (*names[:-1], WIDE_UNGATED) if ungated else names
+
+
+def receipt(case, ungated=False):
     route = cases()[case]
     i = int(case.rsplit('-', 1)[1])
-    return dict(status='PREDICTIONS_FROZEN', processing_route=route, seeds=list(SEEDS),
-                views=list(VIEWS), modes=list(MODES[route]), per_receiver=LIMIT,
-                receivers=list(TARGET[i*RX_PER_JOB:(i+1)*RX_PER_JOB]), target_truth_read=False)
+    proof = dict(status='PREDICTIONS_FROZEN', processing_route=route,
+                 seeds=list(evaluation_seeds(ungated)), views=list(VIEWS),
+                 modes=list(evaluation_modes(route, ungated)), per_receiver=LIMIT,
+                 receivers=list(TARGET[i*RX_PER_JOB:(i+1)*RX_PER_JOB]), target_truth_read=False)
+    if ungated:
+        proof['restoration_input_policy'] = 'all_packets'
+    return proof
 
 
 def load_heads(rt, contract, device):
@@ -65,7 +82,7 @@ def load_heads(rt, contract, device):
 
     project = Path(rt['project'])
     heads, epochs = [], {}
-    for seed in SEEDS:
+    for seed in evaluation_seeds(rt.get('ungated', False)):
         name = RUNS[seed]
         run = project / 'runs' / name
         archived = read(project / 'releases' / f'{name}-release' / 'runtime.json')
@@ -112,14 +129,14 @@ def bindings(rt, routes, device):
     if ROUTE in routes:
         base = r69_baseline(rt, contract, device)
         readers[ROUTE] = partial(residual_restore, base, device)
-    return heads, wide, tracker, threshold, readers, dict(epochs=epochs, threshold=threshold,
+    gate_key = 'archived_source_threshold' if rt.get('ungated', False) else 'threshold'
+    return heads, wide, tracker, threshold, readers, dict(epochs=epochs, **{gate_key: threshold},
              source_frozen_G=TRAIN_RUN, steps=frozen['steps'], parameters=frozen['parameters'])
 
 
 @torch.no_grad()
-def batch_labels(heads, g, tracker, threshold, baseline, packets, device):
+def batch_labels(heads, g, tracker, threshold, baseline, packets, device, *, ungated=False):
     original = received_aperture(packets, device)
-    wide, active = g.restore(tracker, original, threshold)
     direct = np.stack([classify_aperture(f, original) for f in heads])
     variants, activity = [], []
     for restored in baseline(packets):
@@ -130,44 +147,59 @@ def batch_labels(heads, g, tracker, threshold, baseline, packets, device):
             values[:, changed] = np.stack([classify_aperture(f, aperture) for f in heads])
         variants.append(values)
         activity.append(int(changed.sum()))
-    changed = np.asarray(active.tolist(), dtype=bool)
-    values = direct.copy()
-    if changed.any():
-        values[:, changed] = np.stack([classify_aperture(f, wide[active]) for f in heads])
-    return np.stack((direct, *variants, values), axis=1), np.asarray([*activity, changed.sum()], dtype=int)
+    if ungated:
+        y, phase, quality, rms = coordinates(tracker, original[..., :384])
+        stages, *_ = g.propose(y, quality, rms, complex_iq(original[..., 384:]))
+        wide = original.clone()
+        wide[..., :384] += real_iq(.5 * (stages[-1] - y) * phase * rms)
+        values = np.stack([classify_aperture(f, wide) for f in heads])
+        count = len(original)
+    else:
+        wide, active = g.restore(tracker, original, threshold)
+        changed = np.asarray(active.tolist(), dtype=bool)
+        values = direct.copy()
+        if changed.any():
+            values[:, changed] = np.stack([classify_aperture(f, wide[active]) for f in heads])
+        count = int(changed.sum())
+    return np.stack((direct, *variants, values), axis=1), np.asarray([*activity, count], dtype=int)
 
 
 @torch.no_grad()
 def smoke(rt):
     device = 'cuda:0'
+    ungated = rt.get('ungated', False)
+    seeds = evaluation_seeds(ungated)
     heads, g, track, gate, baseline, proof = bindings(rt, ROUTES, device)
     source = Path(rt['source_root'])
     u = native(source, 'U_s', source_contract(source)['counts']['U_s'])[:4]
     clean = []
     for route, receiver in ((FULL, channel_job), (ROUTE, receive)):
-        batch = partial(batch_labels, heads, g, track, gate, baseline[route], device=device)
-        c, inactive = batch(u)
+        batch = partial(batch_labels, heads, g, track, gate, baseline[route], device=device, ungated=ungated)
+        c, clean_activity = batch(u)
         y = np.stack([receiver(VIEWS[-1], SOURCE[0], pair) for pair in enumerate(u)])
         disturbed, active = batch(y)
-        if (disturbed.shape != (len(SEEDS), len(MODES[route]), len(u))
-                or inactive[-1] == len(u) or active[-1] == 0):
+        coverage = (clean_activity[-1] == active[-1] == len(u) if ungated
+                    else clean_activity[-1] < len(u) and active[-1] > 0)
+        if (disturbed.shape != (len(seeds), len(evaluation_modes(route, ungated)), len(u)) or not coverage):
             raise ValueError(f'Real frozen checkpoint source smoke failed for {route}')
         clean.append(c[:, 0])
     if not np.array_equal(*clean):
         raise ValueError('Shared clean received IQ must give identical direct outputs')
-    write(Path(rt['run_root']) / 'smoke.json', dict(status='PASS', target_reads=0, seeds=list(SEEDS), **proof))
+    write(Path(rt['run_root']) / 'smoke.json', dict(status='PASS', target_reads=0,
+          seeds=list(seeds), ungated=ungated, **proof))
     print('W24_FORMAL_SOURCE_SMOKE', proof['epochs'], flush=True)
 
 
 def predict(rt, case):
     device = 'cuda:0'
+    ungated = rt.get('ungated', False)
     root = Path(rt['run_root'])
     if read(root / 'smoke.json')['status'] != 'PASS':
         raise ValueError('Source-only W24 smoke required before target')
-    expected = receipt(case)
+    expected = receipt(case, ungated)
     route = expected['processing_route']
     heads, g, track, gate, baseline, _ = bindings(rt, (route,), device)
-    batch = partial(batch_labels, heads, g, track, gate, baseline[route], device=device)
+    batch = partial(batch_labels, heads, g, track, gate, baseline[route], device=device, ungated=ungated)
     receiver = channel_job if route == FULL else receive
     data = Path(rt['native_target_root'])
     target_contract(data)
@@ -213,10 +245,11 @@ def dispatch(runtime):
         if read(reference / 'submit.json')['code_commit'] != W24_COMMIT:
             raise ValueError('Original frozen W24 model implementation required')
         runs = Path(rt['project']) / 'runs'
-        status(status='WAITING_FOR_FROZEN_READERS', seeds=list(SEEDS))
+        seeds = evaluation_seeds(rt.get('ungated', False))
+        status(status='WAITING_FOR_FROZEN_READERS', seeds=list(seeds))
         deadline = monotonic() + 7200
         while True:
-            missing = [runs / RUNS[s] for s in SEEDS if not (runs / RUNS[s] / 'F' / 'complete.json').exists()]
+            missing = [runs / RUNS[s] for s in seeds if not (runs / RUNS[s] / 'F' / 'complete.json').exists()]
             if not missing:
                 break
             if monotonic() >= deadline or any(read(p / 'state.json')['status'] == 'FAILED' for p in missing):
@@ -248,7 +281,7 @@ def dispatch(runtime):
         status(status='TARGET_PREDICTING')
         schedule(rt, [('predict', case) for case in cases()], start)
         for case in cases():
-            if read(root / 'predictions' / case / 'complete.json') != receipt(case):
+            if read(root / 'predictions' / case / 'complete.json') != receipt(case, rt.get('ungated', False)):
                 raise ValueError(f'Incomplete frozen prediction shard {case}')
         status(status='PREDICTIONS_FROZEN', cases=list(cases()), target_truth_read=False)
     except Exception as exc:
@@ -276,15 +309,16 @@ def main():
         project = PurePosixPath(rt['project'])
         runs, releases = project / 'runs', project / 'releases'
         data = releases / f'{DATA_RUN}-release' / 'data'
-        rt.update(run_id=RUN, code_commit=release_commit(args.repo), runner=__spec__.name,
-                  release_root=str(releases / f'{RUN}-release'), run_root=str(runs / RUN),
+        run = RUN_UNGATED
+        rt.update(run_id=run, code_commit=release_commit(args.repo), runner=__spec__.name, ungated=True,
+                  release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
                   source_root=str(data / 'source'), native_target_root=str(data / 'target'),
                   w24_release_root=str(releases / f'{W24_RUN}-release'),
                   training_release_root=str(releases / f'{TRAIN_RUN}-release'),
                   allowed_gpus=[0, 5, 3, 4, 2, 7, 1, 6], cpu_workers=8, max_workers=2, max_compute_processes=8)
         rt['external_releases'] = [rt[k] for k in ('source_root', 'native_target_root', 'w24_release_root',
                                                   'training_release_root')]
-        rt['external_releases'] += [str(runs / x) for x in (*RUNS.values(), R69_TRAIN, R69_GATE)]
+        rt['external_releases'] += [str(runs / x) for x in (RUNS[SEED], R69_TRAIN, R69_GATE)]
         release(args.repo, args.output, rt, args.ssh_config)
     elif args.action == 'dispatch':
         dispatch(args.runtime)
