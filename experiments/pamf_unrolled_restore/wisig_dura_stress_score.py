@@ -14,12 +14,19 @@ from .wisig_dura_stress_data import PROFILES, ROUTES
 from .wisig_preamble_dura_target import historical
 
 
-def closed_predictions(root, ids, profile, route, split, methods=METHODS):
+def closed_predictions(root, ids, profile, route, split, methods=METHODS, *, force_practical=False):
     marker = read(root / 'complete.json')
     expected = dict(status='PREDICTIONS_FROZEN', profile=profile, route=route, split=split,
                     count=len(ids), seeds=list(SEEDS), views=list(VIEWS), truth_read=False)
     if any(marker[key] != value for key, value in expected.items()):
         raise ValueError('The full blind prediction shard is required')
+    if force_practical:
+        trained = set(methods)-{'raw','R69'}
+        active = marker['active']
+        if marker.get('force_practical') is not True or set(active)!=set(VIEWS) or any(
+                set(active[view])!=trained or any(n!=(0 if view=='clean' else len(ids)) for n in active[view].values())
+                for view in VIEWS):
+            raise ValueError('The forced test requires restoration of every satellite packet and exact clean bypass')
     with np.load(root / 'decisions.npz', allow_pickle=False) as contents:
         expected_keys = {'ids', *(f'{name}__{view}' for name in methods for view in VIEWS)}
         if set(contents.files) != expected_keys or not np.array_equal(ids, contents['ids']):
@@ -29,6 +36,8 @@ def closed_predictions(root, ids, profile, route, split, methods=METHODS):
     if any(value.shape != (len(SEEDS), len(VIEWS), len(ids)) or value.dtype != np.uint8 or value.max() > 5
            for value in decisions.values()):
         raise ValueError('Predicted split, seeds or class codes differ')
+    if force_practical and any(not np.array_equal(decisions[arm][:,0],decisions['raw'][:,0]) for arm in trained):
+        raise ValueError('Clean bypass decisions differ from raw')
     return decisions, marker['active']
 
 
@@ -53,7 +62,7 @@ def cells(predictions, labels, receivers, rng):
     return dict(absolute=absolute, paired=paired)
 
 
-def score(rt, *, methods=METHODS):
+def score(rt, *, methods=METHODS, force_practical=False):
     if os.environ.get('CUDA_VISIBLE_DEVICES') != '':
         raise ValueError('Use the separate CPU scoring process')
     root = Path(rt['run_root'])
@@ -68,7 +77,7 @@ def score(rt, *, methods=METHODS):
             raise ValueError('Profiles and routes must share the same physical order')
         physical[split] = ids
         predictions[profile, route, split], activations[case] = closed_predictions(
-            root / 'predictions' / case, ids, profile, route, split, methods)
+            root / 'predictions' / case, ids, profile, route, split, methods, force_practical=force_practical)
     if np.intersect1d(*(physical[split] for split in TASKS)).size:
         raise ValueError('Main split populations must be disjoint')
     for route in ROUTES:
@@ -101,4 +110,5 @@ def score(rt, *, methods=METHODS):
                 rx = np.concatenate([receivers[split] for split in parts])
                 result[profile][route][partition] = cells(p, y, rx, rng)
     write(root / 'scores.json', dict(status='TARGET_SCORED', truth_last=True,
-          bootstrap_replicates=REPLICATES, seeds=list(SEEDS), results=result, activation=activations))
+          bootstrap_replicates=REPLICATES, seeds=list(SEEDS), results=result, activation=activations,
+          force_practical=force_practical))

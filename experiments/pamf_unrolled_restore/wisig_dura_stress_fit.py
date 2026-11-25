@@ -144,11 +144,14 @@ def frozen_fit(root, profile):
     return model, record['threshold']
 
 
-def restore(model, threshold, iq, variance):
-    active = variance.flatten() > threshold
-    if not active.any():
+def restore(model, threshold, iq, variance, *, force=False):
+    active = torch.ones(len(iq), dtype=torch.bool, device=iq.device) if force else variance.flatten() > threshold
+    if not force and not active.any():
         return iq, active
-    y, level, result, _, _ = stages(model, iq[active])
+    y, level, result, _, _ = stages(model, iq if force else iq[active])
+    change = as_iq(.5 * (result[-1] - y).squeeze(1) * level.squeeze(1))
+    if force:
+        return iq+change,active
     out = iq.clone()
-    out[active] += as_iq(.5 * (result[-1] - y).squeeze(1) * level.squeeze(1))
+    out[active] += change
     return out, active

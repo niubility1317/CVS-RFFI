@@ -44,7 +44,7 @@ def classify(heads, iq):
 
 
 @torch.no_grad()
-def smoke(rt, *, arms=data.PROFILES, load=training.frozen_fit):
+def smoke(rt, *, arms=data.PROFILES, load=training.frozen_fit, force_practical=False):
     activate(rt)
     root = Path(rt['run_root'])
     clean, selected, calibration = source_iq(Path(rt['source_root']))
@@ -63,7 +63,9 @@ def smoke(rt, *, arms=data.PROFILES, load=training.frozen_fit):
         if not torch.equal(unmodified, quiet):
             raise ValueError('Clean calibration samples must use the exact bypass')
         forced = receive_coordinates(observed)[-1]
-        restored, _ = training.restore(model, 0., observed, forced)
+        restored, active = training.restore(model, 0., observed, forced, force=force_practical)
+        if force_practical and not bool(active.all()):
+            raise ValueError('Forced satellite inference skipped an observation')
         if not torch.isfinite(restored).all():
             raise ValueError('Nonfinite frozen restorer output')
         classify(heads, restored)
@@ -73,11 +75,12 @@ def smoke(rt, *, arms=data.PROFILES, load=training.frozen_fit):
                 lambda: training.restore(model, 0., observed[:1], receive_coordinates(observed[:1])[-1])),
             naturally_active=int((forced > threshold).sum()))
     write(root / 'checkpoint_smoke.json', dict(status='PASS', device=torch.cuda.get_device_name(),
-          source_examples=len(quiet) + len(observed), target_reads=0, seeds=list(SEEDS), latency=latency))
+          source_examples=len(quiet) + len(observed), target_reads=0, seeds=list(SEEDS), latency=latency,
+          force_practical=force_practical))
 
 
 @torch.no_grad()
-def predict(rt, case, *, methods=METHODS, load=training.frozen_fit):
+def predict(rt, case, *, methods=METHODS, load=training.frozen_fit, force_practical=False):
     activate(rt)
     profile, route, split = CASES[case]
     root = Path(rt['run_root'])
@@ -90,10 +93,13 @@ def predict(rt, case, *, methods=METHODS, load=training.frozen_fit):
     manifest, ids, positions = handle(target, original['classes'])
     if len(ids) != COUNTS[split] or manifest['channel'] != f'{route}/post_sync/noeq':
         raise ValueError('Unexpected Main split IQ population')
-    reference = Path(rt['baseline_replay']) / route / split
+    replay = rt.get('decision_replay')
+    reference = Path(replay) / case if replay else Path(rt['baseline_replay']) / route / split
     closure = read(reference / 'complete.json')
     expected = dict(status='PREDICTIONS_FROZEN', route=route, split=split, count=len(ids),
                     seeds=list(SEEDS), views=list(VIEWS), truth_read=False)
+    if replay and closure.get('profile')!=profile:
+        raise ValueError('Historical baseline strength differs')
     if any(closure.get(key) != value for key, value in expected.items()):
         raise ValueError('Expected the fixed historical raw/R69 comparison')
     with np.load(reference / 'decisions.npz', allow_pickle=False) as archive:
@@ -107,7 +113,8 @@ def predict(rt, case, *, methods=METHODS, load=training.frozen_fit):
         _, strong_ids, strong_positions = handle(view_root(rt, original, 'full', split), original['classes'])
         if not np.array_equal(strong_ids, ids) or strong_positions is None:
             raise ValueError('Stress views must use the original global physical indices')
-        r69 = original_r69(Path(rt['parent_root']))
+        if not replay:
+            r69 = original_r69(Path(rt['parent_root']))
     frozen = Path(rt.get('frozen_root', root))
     models = {name:load(frozen, name.removeprefix('trained_')) for name in methods if name not in ('raw','R69')}
     output, activation = {}, {}
@@ -129,20 +136,32 @@ def predict(rt, case, *, methods=METHODS, load=training.frozen_fit):
         if view_positions is None and len(observed) != len(ids):
             raise ValueError('Received IQ count differs from the split')
         decisions = {name: np.empty((len(SEEDS), len(ids)), dtype=np.uint8) for name in methods}
-        if not use_strong:
+        predict_baselines = use_strong and not replay
+        if not predict_baselines:
             for name in ('raw', 'R69'):
                 decisions[name] = baseline[f'{name}__{view}']
         active_count = {name: 0 for name in models}
+        if force_practical and view=='clean':
+            for name in models:
+                decisions[name] = decisions['raw'].copy()
+            output.update({f'{name}__{view}': value for name, value in decisions.items()})
+            activation[view] = active_count
+            print('WISIG_STRESS_PREDICTED', profile, route, split, view, len(ids), active_count, flush=True)
+            continue
         for start in range(0, len(ids), BATCH):
             selection = slice(start, min(start + BATCH, len(ids)))
             rows = observed[selection if view_positions is None else view_positions[selection]]
             iq = tensor(rows, 'cuda:0')
-            variance = receive_coordinates(iq)[-1]
-            if use_strong:
+            variance = None if force_practical else receive_coordinates(iq)[-1]
+            if predict_baselines:
                 decisions['raw'][:, selection] = classify(heads, iq)
                 decisions['R69'][:, selection] = classify(heads, r69(iq)[0])
             for name, (model, gate) in models.items():
-                recovered, active = training.restore(model, gate, iq, variance)
+                recovered, active = training.restore(model, gate, iq, variance, force=force_practical)
+                if force_practical:
+                    active_count[name] += int(active.sum().item())
+                    decisions[name][:, selection] = classify(heads,recovered)
+                    continue
                 mask = np.asarray(active.cpu().tolist(), dtype=bool)
                 active_count[name] += int(mask.sum())
                 values = decisions['raw'][:, selection].copy()
@@ -150,13 +169,15 @@ def predict(rt, case, *, methods=METHODS, load=training.frozen_fit):
                     values[:, mask] = classify(heads, recovered[active])
                 decisions[name][:, selection] = values
         output.update({f'{name}__{view}': value for name, value in decisions.items()})
+        if force_practical and any(count!=len(ids) for count in active_count.values()):
+            raise ValueError('Forced satellite inference skipped physical packets')
         activation[view] = active_count
         print('WISIG_STRESS_PREDICTED', profile, route, split, view, len(ids), active_count, flush=True)
     folder = root / 'predictions' / case
     folder.mkdir(parents=True)
     with (folder / 'decisions.npz').open('xb') as stream:
         np.savez(stream, ids=ids, **output)
-    write(folder / 'complete.json', dict(expected, profile=profile, active=activation,
+    write(folder / 'complete.json', dict(expected, profile=profile, active=activation,force_practical=force_practical,
                                         seconds=perf_counter()-started))
 
 
