@@ -1,2 +1,3 @@
 {"at": "2026-11-25T11:57:28+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-25T12:00:42+00:00", "status": "RUNNING", "note": "VERIFIED real-source smoke and four prediction workers; every satellite packet is required to pass DURA before frozen PAMF.", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-11-25T13:01:32+00:00", "status": "ANALYZED", "note": "VERIFIED 8 all-active satellite prediction shards, 4,032,000 Practical packet-views per arm, exact Clean bypass and independent truth-last scores. Both DURA arms degrade recognition versus direct IQ.", "evidence": ["report.md"], "row_id": null}
