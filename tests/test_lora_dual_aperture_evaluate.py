@@ -1,7 +1,8 @@
 import numpy as np
 import pytest
 
-from experiments.cric_dura_comparison.io import write
+from experiments.cric_dura_comparison.io import read, write
+from experiments.pamf_lora_main import dura_balanced_transfer_target as balanced
 from experiments.pamf_lora_main import dura_dual_aperture_evaluate as pilot, weak_guard_target as replay
 from experiments.pamf_lora_main import dura_variance_profile_evaluate as variance
 from experiments.pamf_lora_main.data import TARGET, VIEWS
@@ -28,7 +29,7 @@ def test_must_reach_fixed_optimizer_endpoint_before_eval(tmp_path):
     assert pilot.check_frozen(tmp_path, 'dual_aperture', 40000) == terminal
 
 
-@pytest.mark.parametrize('experiment', (pilot, variance))
+@pytest.mark.parametrize('experiment', (pilot, variance, balanced))
 def test_align_pilot_contiguous_physical_prefix_and_controls_before_truth(tmp_path, monkeypatch, experiment):
     folder = tmp_path/'predictions'
     write(folder/'complete.json', experiment.completion())
@@ -61,3 +62,30 @@ def test_align_pilot_contiguous_physical_prefix_and_controls_before_truth(tmp_pa
     monkeypatch.setattr(scoring, 'predictions', drift)
     with pytest.raises(ValueError, match='direct decisions differ'):
         scorer.score(tmp_path, None, None, None, None, tmp_path/'absent_truth', experiment=experiment)
+
+
+def test_balanced_transfer_wait_requires_closed_source_and_copies_negative_reference(tmp_path, monkeypatch):
+    source_run = tmp_path/'source'
+    pilot_run = tmp_path/'pilot'
+    source_run.mkdir()
+    pilot_run.mkdir()
+    monkeypatch.setattr(balanced, 'source_release',
+                        lambda rt: (dict(run_root=str(source_run)), source_run))
+    mode = balanced.training.MODES
+    predictions = dict(ids=list(range(900)), modes=list(mode),
+                       rows={view: np.zeros((len(mode), 900), dtype=int).tolist() for view in VIEWS},
+                       metrics={view: dict(active=0) for view in VIEWS})
+    scores = dict(status='SOURCE_SCORED', target_reads=0, truth_after_predictions=True,
+                  n=900, modes=list(mode), six=[15, 17, 18, 12],
+                  metrics={'clean': {'correct': [6, 6, 6, 4]}})
+    for route in balanced.ROUTES:
+        write(source_run/f'{route}-predictions.json', predictions)
+        write(source_run/f'{route}-source-scores.json', dict(scores, route=route))
+    write(source_run/'state.json', dict(status='FIT'))
+    with pytest.raises(RuntimeError, match='without a closed source matrix'):
+        balanced.await_source(dict(training_dispatcher=-1), pilot_run, pilot_run/'unclosed.json')
+    assert not (pilot_run/'source-promotion.json').exists()
+    write(source_run/'state.json', dict(status='SOURCE_SCORED'), exclusive=False)
+    balanced.await_source(dict(training_dispatcher=-1), pilot_run, pilot_run/'closed.json')
+    assert read(pilot_run/'source-promotion.json') == dict(reference_only=True, target_reads=0,
+        pairs={route: dict(six_net=-6, clean_net=-2) for route in balanced.ROUTES})

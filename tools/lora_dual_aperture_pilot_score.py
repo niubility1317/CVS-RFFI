@@ -7,6 +7,7 @@ import zipfile
 import numpy as np
 
 from experiments.cric_dura_comparison.io import read, write
+from experiments.pamf_lora_main import dura_balanced_transfer_target as balanced
 from experiments.pamf_lora_main import dura_capacity_target as expanded, dura_dual_aperture_evaluate as pilot
 from experiments.pamf_lora_main import dura_variance_profile_evaluate as variance
 from experiments.pamf_lora_main import residual_dura as residual, weak_guard_target as guard
@@ -17,7 +18,7 @@ from tools import lora_weak_guard_target_score as scoring
 
 SOURCE_FILES = ('full-predictions.json', 'residual-predictions.json', 'full-source-scores.json',
                 'residual-source-scores.json', 'source-promotion.json')
-PILOTS = {'dual-aperture': pilot, 'local-variance': variance}
+PILOTS = {'dual-aperture': pilot, 'local-variance': variance, 'balanced-transfer': balanced}
 
 
 def collect(receipt, config, output, *, experiment=pilot):
