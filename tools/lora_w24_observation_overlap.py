@@ -29,12 +29,17 @@ def guard(spectrum, band):
     return (spectrum[..., band].abs().square().median(-1).values / .69314718056).sqrt().median(1).values
 
 
-def shared_guard(value):
+def shared_guard_coefficients(value):
     n = value.shape[-1]
     window = torch.hann_window(n, periodic=False)
     density = torch.fft.fft(value*window, norm='ortho') * (WIDE/(n*window.square().mean())).sqrt()
     frequency = (n*torch.fft.fftfreq(n)).abs()
-    return guard(density, (frequency >= 72) & (frequency <= 112))
+    return density[..., (frequency >= 72) & (frequency <= 112)]
+
+
+def shared_guard(value):
+    coefficients = shared_guard_coefficients(value)
+    return (coefficients.abs().square().median(-1).values / .69314718056).sqrt().median(1).values
 
 
 def compare(narrow, wide, tracker, narrow_tracker):
