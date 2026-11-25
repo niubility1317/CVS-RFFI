@@ -36,6 +36,14 @@ def pilot_sync(samples):
     return samples * np.exp(-1j * np.angle(cross[:, None]) / timing.PERIOD * (TIME - 150))
 
 
+def phase_statistics(noise, coefficients, prior):
+    coherence = np.interp(np.log(noise), prior.noise_knots, prior.coherence)
+    axis = unit(np.asarray(prior.phase_mean)).item()
+    observed = unit(coefficients[:, 0]) * np.conj(axis)
+    phase = coherence + (1. - coherence) * abs(prior.phase_mean) * observed
+    return coherence, phase, axis
+
+
 def fit(received):
     samples = np.asarray(received, dtype=np.complex128)
     guard = receive.guard_basis()
@@ -72,11 +80,8 @@ def estimate(received, prior):
         raise ValueError("Only finite post-channel 256-point receive IQ is accepted")
     noise = receive.guard_power(samples, prior.guard)
     amplitude = np.sqrt((np.mean(abs(samples)**2, axis=-1) - noise).clip(0., 1.5))
-    phase_condition = np.interp(np.log(noise), prior.noise_knots, prior.coherence)
     coefficients = pilot_sync(samples)[:, PILOT_POINTS] @ prior.decoder.T
-    axis = unit(np.asarray(prior.phase_mean)).item()
-    observed_phase = unit(coefficients[:, 0]) * np.conj(axis)
-    corrected_phase = phase_condition + (1. - phase_condition) * abs(prior.phase_mean) * observed_phase
+    phase_condition, corrected_phase, axis = phase_statistics(noise, coefficients, prior)
     kernels = np.zeros((len(ARMS), len(samples), KERNEL_LENGTH), np.complex128)
     kernels[0, :, prior.anchor] = 1.
     kernels[1, :, prior.anchor] = amplitude * phase_condition

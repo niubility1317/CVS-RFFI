@@ -46,8 +46,12 @@ def fit_noise(received):
 
 def variance_candidates(synced, prior):
     power = abs(synced @ prior.guard)**2
-    raw = power.mean(axis=-1).clip(1e-12)
     repeat = blind.receive.guard_power(synced, prior.null)
+    return pool_variance(power, repeat, prior)
+
+
+def pool_variance(power, repeat, prior):
+    raw = power.mean(axis=-1).clip(1e-12)
     colored = guard_model.guard_variance(power, prior.color, 1.65)
     # Use independent repeat evidence when its estimated scale agrees with the guard.
     disagreement = np.maximum(abs(np.log(repeat / colored)) - .12, 0.)

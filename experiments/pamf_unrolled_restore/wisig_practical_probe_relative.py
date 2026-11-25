@@ -40,8 +40,12 @@ def observables(received, prior):
     iq = np.asarray(received, np.complex128)
     q = blind.receive.guard_power(iq, prior.guard)
     coeffs = blind.pilot_sync(iq)[:, blind.PILOT_POINTS] @ prior.decoder.T
-    coeffs /= np.sqrt(np.mean(abs(iq)**2, axis=-1)).clip(1e-7)[:, None]
-    return np.column_stack((coeffs.real, coeffs.imag, np.log(q))), q
+    return feature_columns(coeffs, np.mean(abs(iq)**2, axis=-1), q), q
+
+
+def feature_columns(coefficients, energy, noise):
+    coefficients = coefficients / np.sqrt(energy).clip(1e-7)[:, None]
+    return np.column_stack((coefficients.real, coefficients.imag, np.log(noise)))
 
 
 def regressors(features, noise, center, scale):
