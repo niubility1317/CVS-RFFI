@@ -84,7 +84,7 @@ def test_scoring_preserves_existing_class_indices_and_receiver_order(monkeypatch
     labels = np.array([2, 8, 5], dtype=np.int16)
     expected = labels[data.packet_indices(3, 0)]
     pred = {('test_rx', view, mode): expected for view in native.VIEWS for mode in native.MODES}
-    monkeypatch.setattr(native, 'validate_predictions', lambda folder, modes: (pred, {}))
+    monkeypatch.setattr(native, 'validate_predictions', lambda folder, modes, **_: (pred, {}))
     monkeypatch.setattr(data, 'recording', lambda *args: nullcontext())
     monkeypatch.setattr(data, 'label_ids', lambda capture, limit: labels)
     with zipfile.ZipFile(tmp_path / 'multiple_receiver_test.zip', 'w'):

@@ -97,17 +97,20 @@ def load_w24(rt, device):
     return recognizer.eval().requires_grad_(False), contract
 
 
-def load_models(rt, device):
+def load_restorers(contract, model_parent, device):
     from experiments.pamf_lora_main.full_dura_detail import (
         COMPLEX_RESPONSE_RUN, load_detail, phase_baseline_models,
     )
 
-    recognizer, contract = load_w24(rt, device)
-    parent = Path(rt['w24_run_root'])
-    response_root = parent.parent / COMPLEX_RESPONSE_RUN
+    response_root = model_parent / COMPLEX_RESPONSE_RUN
     base, detail = phase_baseline_models(response_root, contract, SEED, device)
     response = load_detail(response_root, contract, SEED, device)
-    return recognizer, base, detail, response
+    return base, detail, response
+
+
+def load_models(rt, device):
+    recognizer, contract = load_w24(rt, device)
+    return recognizer, *load_restorers(contract, Path(rt['w24_run_root']).parent, device)
 
 
 @torch.inference_mode()
@@ -167,13 +170,16 @@ def channel_job(scene, receiver, item):
     return native_full_view(packet, scene, receiver, index, 'target')
 
 
-def receipt(modes=MODES):
-    return dict(status='PREDICTIONS_FROZEN', W24_commit=W24_COMMIT, seed=SEED,
-                modes=list(modes), receivers=list(TARGET), views=list(VIEWS), per_receiver=LIMIT,
-                processing_route='full_native', target_truth_read=False)
+def receipt(modes=MODES, *, classifier_run=None):
+    result = dict(status='PREDICTIONS_FROZEN', W24_commit=W24_COMMIT, seed=SEED,
+                  modes=list(modes), receivers=list(TARGET), views=list(VIEWS), per_receiver=LIMIT,
+                  processing_route='full_native', target_truth_read=False)
+    if classifier_run is not None:
+        result['classifier_run'] = classifier_run
+    return result
 
 
-def predict(rt, models, device, *, render=recover, modes=MODES):
+def predict(rt, models, device, *, render=recover, modes=MODES, classifier_run=None):
     from experiments.pamf_lora_main.full_packet_views import native, target_contract
 
     target = Path(rt['native_target_root'])
@@ -209,11 +215,11 @@ def predict(rt, models, device, *, render=recover, modes=MODES):
                 activity[f'{rx}/{scene}'] = active
                 print('W24_FULL_PREDICTED', rx, scene, active, flush=True)
     write(output / 'activity.json', activity)
-    write(output / 'complete.json', receipt(modes))
+    write(output / 'complete.json', receipt(modes, classifier_run=classifier_run))
 
 
-def validate_predictions(folder, modes=MODES):
-    if read(folder / 'complete.json') != receipt(modes):
+def validate_predictions(folder, modes=MODES, *, classifier_run=None):
+    if read(folder / 'complete.json') != receipt(modes, classifier_run=classifier_run):
         raise ValueError('Missing or incompatible W24 frozen matrix')
     result = {}
     activity = read(folder / 'activity.json')
@@ -234,11 +240,11 @@ def validate_predictions(folder, modes=MODES):
     return result, activity
 
 
-def score(predictions, dataset, output, *, modes=MODES):
+def score(predictions, dataset, output, *, modes=MODES, classifier_run=None):
     from experiments.pamf_lora_main.data import label_ids, packet_indices, recording
     from experiments.pamf_lora_main.scoring import macro_f1
 
-    pred, activity = validate_predictions(predictions, modes)
+    pred, activity = validate_predictions(predictions, modes, classifier_run=classifier_run)
     output.mkdir(parents=True, exist_ok=False)
     truth = {}
     with zipfile.ZipFile(dataset / 'multiple_receiver_test.zip') as archive:
@@ -258,7 +264,7 @@ def score(predictions, dataset, output, *, modes=MODES):
                                      harms=int((~correct & direct).sum()),
                                      by_rx={rx: int((pred[rx, view, mode] == truth[rx]).sum()) for rx in TARGET})
     total = {mode: sum(rows[mode][v]['correct'] for v in VIEWS if v != 'clean') for mode in modes}
-    write(output / 'scores.json', dict(freeze=receipt(modes), truth_last=True, views=rows,
+    write(output / 'scores.json', dict(freeze=receipt(modes, classifier_run=classifier_run), truth_last=True, views=rows,
                                        six_correct=total, six_n=LIMIT * len(TARGET) * (len(VIEWS) - 1),
                                        activity=activity))
 
