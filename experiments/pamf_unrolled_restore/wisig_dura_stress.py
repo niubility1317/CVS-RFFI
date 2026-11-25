@@ -25,7 +25,7 @@ from .wisig_receiver_estimates import receive_coordinates
 from .wisig_short_training_source import original_r69
 
 
-RUN = '20261125-phase1-wisig-blind-capacity-stress-m2-r01'
+RUN = '20261125-phase1-wisig-blind-capacity-stress-m2-r02'
 METHODS = ('raw', 'R69', 'trained_default', 'trained_strong')
 BATCH = 96
 CASES = {f'{profile}-{key}': (profile, route, split) for profile in data.PROFILES
@@ -225,10 +225,15 @@ def publish(repo, output, context, ssh_config):
               external_releases=[str(channel_release)], max_workers=4, max_compute_processes=None)
     from experiments.pamf_lora_main import publish as transport
 
+    extras = ('tools/wisig_paired_main_uncertainty.py', 'tools/r17_activation_factorization.py')
     transport.RELEASE_CODE = transport.RELEASE_CODE.replace(
         "'experiments/pamf_lora_main', entry",
-        "'experiments/pamf_lora_main', 'experiments/pamf_unrolled_restore', 'tools/wisig_paired_main_uncertainty.py'")
-    release(repo, output, rt, ssh_config, archive_extras=('tools/wisig_paired_main_uncertainty.py',))
+        "'experiments/pamf_lora_main', 'experiments/pamf_unrolled_restore', *rt['package_tools']")
+    transport.RELEASE_CODE = transport.RELEASE_CODE.replace(
+        "with (release/'controller.log').open('x') as log:",
+        "subprocess.run([*cmd[:4], '--help'], cwd=release, env=env, check=True, stdout=subprocess.DEVNULL)\n"
+        "with (release/'controller.log').open('x') as log:")
+    release(repo, output, dict(rt, package_tools=list(extras)), ssh_config, archive_extras=extras)
 
 
 def main():
