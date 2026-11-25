@@ -7,56 +7,13 @@ from time import perf_counter
 
 import numpy as np
 
-from experiments.pamf_unrolled_restore.wisig_joint_preamble import OBSERVED, STARTS, WEIGHT, observable, waveform
-from experiments.pamf_unrolled_restore.wisig_smooth_preamble import SMOOTH, choose, estimate
+from experiments.pamf_unrolled_restore.wisig_differential_timing import ARMS, observations
 from experiments.pamf_unrolled_restore.wisig_timing import PERIOD
 from experiments.pamf_unrolled_restore.wisig_uncertain_source import source_iq
 
 
-LAGS = (1, 2, 4)
 OFFSETS = (-28, -12, 12, 28)
-ARMS = ('smooth', 'differential', 'joint')
 COUNT = 512
-WEIGHTS = WEIGHT.astype(np.float32)**2
-
-
-def product(later, earlier):
-    power = np.abs(later)**2 + np.abs(earlier)**2
-    return 2. * later * earlier.conj() / np.maximum(power, 1e-10)
-
-
-def bank():
-    relative = OBSERVED[None] - STARTS[:, None]
-    base = waveform(relative)
-    return tuple(np.asarray(product(base, waveform(relative-lag)).T, dtype=np.complex64)
-                 for lag in LAGS)
-
-
-def differential(y, template):
-    # Estimate reliability on the same received sample region for all hypotheses.
-    level = np.maximum(np.sqrt(np.mean(np.abs(y)**2, -1, keepdims=True)), 1e-8)
-    y = y/level
-    later = y[:, OBSERVED]
-    scores = []
-    for lag, expected in zip(LAGS, template, strict=True):
-        earlier = y[:, OBSERVED-lag]
-        observed = product(later, earlier)
-        reliability = np.minimum(np.abs(later)*np.abs(earlier), 2.) * WEIGHTS
-        # Weighted 1 - half squared complex mismatch. The observed-only term
-        # does not change the ranking, but fixes the scale for the joint score.
-        candidate = (observed * reliability) @ expected.conj()
-        mismatch = (np.abs(observed)**2 * reliability).sum(-1, keepdims=True)
-        mismatch = mismatch + reliability @ (np.abs(expected)**2)
-        norm = np.maximum(reliability.sum(-1, keepdims=True), 1e-8)
-        scores.append(1. + (candidate.real - .5*mismatch)/norm)
-    return np.mean(scores, axis=0)
-
-
-def readouts(iq, templates):
-    _, _, sync = observable(iq)
-    smooth = estimate(sync, SMOOTH)[0]
-    phase_diff = differential(sync, templates)
-    return {key: choose(value) for key, value in zip(ARMS, (smooth, phase_diff, .5*(smooth+phase_diff)), strict=True)}
 
 
 def cases(iq):
@@ -86,16 +43,15 @@ def probe(source_root):
     held = available[2*COUNT:3*COUNT]
     if len(held) != COUNT or np.intersect1d(held, calibration).size:
         raise ValueError('Need distinct legally sourced calibration and holdout IQ')
-    templates = bank()
     peaks = dict.fromkeys(ARMS, -np.inf)
     for chunk in np.array_split(calibration, 32):
-        for key, (_, score) in readouts(source[chunk], templates).items():
+        for key, (_, score) in observations(source[chunk])[-1].items():
             peaks[key] = max(peaks[key], float(score.max()))
     thresholds = {key: peak+.02*abs(peak)+1e-6 for key, peak in peaks.items()}
     outcomes = {}
     for case, iq, shift in cases(source[held]):
         outcomes[case] = {}
-        for key, (delta, support) in readouts(iq, templates).items():
+        for key, (delta, support) in observations(iq)[-1].items():
             if not np.isfinite(support).all():
                 raise FloatingPointError('Nonfinite WiSig timing evidence')
             active = support > thresholds[key]

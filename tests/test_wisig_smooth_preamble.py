@@ -1,5 +1,6 @@
 import numpy as np
 
+from experiments.pamf_unrolled_restore import wisig_differential_timing as differential
 from experiments.pamf_unrolled_restore.wisig_joint_preamble import fit, waveform
 from experiments.pamf_unrolled_restore.wisig_smooth_preamble import (
     FIXED, MODES, SMOOTH, TIME, aligned, blend_weights, choose, estimate, observations, readouts,
@@ -47,3 +48,20 @@ def test_gate_bypass_and_both_boundaries_keep_measured_overlap():
     np.testing.assert_array_equal(predicted[rows, cols], raw[rows, coordinates[rows, cols]])
     np.testing.assert_array_equal(predicted[valid], mirrored[valid])
     assert np.isfinite(predicted).all() and np.any(predicted[~valid] != mirrored[~valid])
+
+
+def test_differential_timing_keeps_phase_invariance_and_received_overlap():
+    desired, signal, iq = synthetic()
+    scores = differential.differential(signal)
+    shifted_gain = differential.differential(signal*np.complex64(.23*np.exp(.7j)))
+    np.testing.assert_allclose(shifted_gain, scores, atol=1e-6)
+    np.testing.assert_array_equal(choose(scores)[0], desired)
+    safe, _ = differential.readouts(iq, dict.fromkeys(differential.ARMS, np.inf))
+    assert all(np.array_equal(wave, iq) for wave in safe.values())
+
+    _, _, _, estimates = differential.observations(iq)
+    variants, _ = differential.readouts(iq, dict.fromkeys(differential.ARMS, -np.inf))
+    wave = variants['differential'][:, 0] + 1j*variants['differential'][:, 1]
+    coordinate = TIME[None] + estimates['differential'][0][:, None]
+    r, c = np.nonzero((coordinate >= 0) & (coordinate < len(TIME)))
+    np.testing.assert_array_equal(wave[r, c], signal[r, coordinate[r, c]])
