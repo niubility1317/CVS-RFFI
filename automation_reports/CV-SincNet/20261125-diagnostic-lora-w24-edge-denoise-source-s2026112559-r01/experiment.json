@@ -1,0 +1,168 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261125-diagnostic-lora-w24-edge-denoise-source-s2026112559-r01",
+  "group_id": "phase1-lora-w24-observable-recovery",
+  "display_name": "LoRa W24 实际半量中心的边缘恢复对照",
+  "description": "Separate observed-only native-edge denoising and exact edge noise removal on the identical frozen W24 half center.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source_only",
+    "native_edges",
+    "oracle_diagnostic",
+    "actual_frozen_center"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261125-diagnostic-lora-w24-waveform-source-s2026112559-r01",
+    "20261125-diagnostic-lora-w24-noise-aperture-source-s2026112559-r01",
+    "20261125-diagnostic-lora-w24-readout-sweep-source-s2026112559-r01",
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa and WiSig restoration research goal authorizes isolated component diagnostics.",
+  "code": {
+    "commit": null,
+    "checkout": "E:/codex/home/worktrees/lora-dura-stage-supervision/standard_ce_baselines_20261010",
+    "environment": "N607 archived W24 runtime Python",
+    "cwd": "registered W24 source release"
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multiple receiver",
+    "version": "Native W24 1 MHz original Full and native_residual_w24_v1",
+    "representation": "8 chirps, 384 complex center samples + 48 native edge samples",
+    "contract_ref": "Archived native W24 source release, data/source contract",
+    "physical_ids_ref": "20261125-diagnostic-lora-w24-waveform-source-s2026112559-r01/waveforms-frozen.json physical IDs",
+    "label_map_ref": "Registered LoRa source V metadata accessed solely by scorer",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": 1,
+      "V": 300
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Same parent Full and Residual raw ordered-prediction panel",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only pre-registered received-only edge edit; isolated diagnostic reads reference after both blind decision routes freeze. No fit or target access."
+  },
+  "checkpoint": {
+    "initialization": "None",
+    "sources": [
+      {
+        "ref": "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+        "role": "Source-frozen W24 DURA E40000"
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Frozen enhanced W24 E104 recognizer"
+      }
+    ],
+    "contract_check_ref": "w24_wide_transfer.training_runtime and load_restorer",
+    "provenance_verdict": "Source-frozen 40,000 steps, compatible source-only archive",
+    "selection_rule": "Prespecified exact noise-removal edge reference and one continuous received-only edge edit with unchanged learned half center."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex goal 01a208a9-57df-7f82-a078-cd9477adf998",
+    "gpu_policy": "One GPU, prefer 3/7/4; independent CPU truth-last scoring",
+    "remote_run_root": "runs/20261125-diagnostic-lora-w24-edge-denoise-source-s2026112559-r01",
+    "remote_log_root": "runs/20261125-diagnostic-lora-w24-edge-denoise-source-s2026112559-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261125-diagnostic-lora-w24-edge-denoise-source-s2026112559-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.w24_edge_denoise_source publish --repo . --context E:/type10-7/local_artifacts/20261125-diagnostic-lora-w24-edge-denoise-source-s2026112559-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261125-diagnostic-lora-w24-edge-denoise-source-s2026112559-r01/release",
+    "stop_rule": "Stop on real source checkpoint, physical IQ, control decision parity, blind freeze or complete dual-route receipt mismatch."
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "state.json",
+    "{route}-blind.npz",
+    "blind-frozen.json",
+    "{route}/source-predictions.json",
+    "{route}/predictions.npz",
+    "{route}/source-scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "correct counts",
+      "net corrections",
+      "same-physical-packet paired intervals"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "edge readout"
+    ],
+    "prediction_ref": "runs/20261125-diagnostic-lora-w24-edge-denoise-source-s2026112559-r01/{route}/predictions.npz",
+    "scorer_ref": "w24_edge_denoise_source.score"
+  },
+  "rows": [
+    {
+      "row_id": "actual-half-edge",
+      "method": "Native edge SG edit and exact noise-removal diagnostic at fixed W24 half center",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_edge_denoise_source.py",
+      "resolved_config_ref": "releases/20261125-diagnostic-lora-w24-edge-denoise-source-s2026112559-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026112991,
+        "split": null,
+        "data": 2026112559,
+        "augmentation": 2026112207,
+        "support": null,
+        "evaluation": 2026112559
+      },
+      "seed_notes": "W24 classifier seed 2026092702, restored waveforms use G seed 2026112991; source receive panel and draws identical to archived half comparison.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "300 identical physical source V packets, 2 routes x 7 scenes x 5 readouts",
+      "output_root": "runs/20261125-diagnostic-lora-w24-edge-denoise-source-s2026112559-r01",
+      "log_path": "runs/20261125-diagnostic-lora-w24-edge-denoise-source-s2026112559-r01/predict-source.log",
+      "command": "archived Python w24_edge_denoise_source.py predict-source releases/20261125-diagnostic-lora-w24-edge-denoise-source-s2026112559-r01-release/runtime.json",
+      "expected_artifacts": [
+        "smoke.json",
+        "state.json",
+        "{route}-blind.npz",
+        "blind-frozen.json",
+        "{route}/source-predictions.json",
+        "{route}/predictions.npz",
+        "{route}/source-scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Reference IQ is opened by a separate worker after the dual-route receive-only freeze.",
+    "No ground-truth label is opened until all final predictions freeze."
+  ],
+  "registered_at": "2026-11-25T15:43:23+00:00"
+}

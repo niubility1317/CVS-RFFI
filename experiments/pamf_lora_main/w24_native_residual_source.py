@@ -278,7 +278,7 @@ def compare_source(runtime):
         score_source(runtime, modes=modes, output=root / route, contrasts=contrasts)
 
 
-def dispatch(runtime, *, entry=__file__, phases=('predict-source', 'score-source')):
+def dispatch(runtime, *, entry=__file__, phases=('predict-source', 'score-source'), gpu_phases=('predict-source',)):
     rt = read(runtime)
     root, reference = Path(rt['run_root']), Path(rt['w24_release_root'])
     root.mkdir()
@@ -291,7 +291,7 @@ def dispatch(runtime, *, entry=__file__, phases=('predict-source', 'score-source
         if read(reference / 'submit.json')['code_commit'] != W24_COMMIT:
             raise ValueError('Exact W24 source release required')
         gpu = None
-        if 'predict-source' in phases:
+        if any(phase in gpu_phases for phase in phases):
             status(status='WAIT_GPU')
             deadline = monotonic() + 1800
             allowed = rt['allowed_gpus']
@@ -303,11 +303,12 @@ def dispatch(runtime, *, entry=__file__, phases=('predict-source', 'score-source
         env = dict(os.environ, OMP_NUM_THREADS='2', OPENBLAS_NUM_THREADS='1', PYTHONPATH=str(reference))
         script = str(Path(entry).resolve())
         for phase in phases:
-            env['CUDA_VISIBLE_DEVICES'] = str(gpu) if phase == 'predict-source' else ''
+            active_gpu = gpu if phase in gpu_phases else None
+            env['CUDA_VISIBLE_DEVICES'] = str(active_gpu) if active_gpu is not None else ''
             with (root / f'{phase}.log').open('x', encoding='utf-8') as log:
                 job = subprocess.Popen([rt['python'], '-u', script, phase, str(runtime)], cwd=reference,
                                        env=env, stdout=log, stderr=subprocess.STDOUT)
-                status(status='RUNNING', phase=phase, pid=job.pid, gpu=gpu if phase=='predict-source' else None)
+                status(status='RUNNING', phase=phase, pid=job.pid, gpu=active_gpu)
                 if job.wait():
                     raise RuntimeError(f'{phase} failed')
         status(status='SOURCE_SCORED')
