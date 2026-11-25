@@ -57,7 +57,7 @@ def publish(config, output):
     if not remote or remote[0] != commit:
         raise ValueError("Release commit must be available from the branch upstream")
     output.mkdir(parents=True, exist_ok=False)
-    archive = output / f"{RUN}-release.tar.gz"
+    archive = output / f"{RUN}-{commit[:12]}-release.tar.gz"
     paths = ["experiments/star_pamf_practical", "experiments/practical_full_2x2",
              "experiments/cric_dura_comparison", "code/leo_practical",
              f"automation_reports/CV-SincNet/{RUN}/experiment.json"]
