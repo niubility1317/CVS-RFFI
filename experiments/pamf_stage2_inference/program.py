@@ -11,6 +11,10 @@ def outputs(model,received,*,reuse=True):
         raise ValueError('Original frozen two-stage IQ graph required')
     base=model.frozen.coarse(received)
     action,native=original.estimate(model.frozen.estimator,received,base)
+    return solve_context(model,received,base,action,native,reuse=reuse)
+
+
+def solve_context(model,received,base,action,native,*,reuse=True):
     variance=native[:,None].expand(-1,256)
     observed,current=complex_iq(received),base
     logvar=native.log().clamp(-16,4)[:,None,None].expand(-1,1,256)/8
