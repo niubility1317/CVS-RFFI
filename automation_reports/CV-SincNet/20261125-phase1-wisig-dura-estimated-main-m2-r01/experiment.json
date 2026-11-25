@@ -1,0 +1,274 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261125-phase1-wisig-dura-estimated-main-m2-r01",
+  "group_id": "wisig-estimated-vs-blind-dura-main",
+  "display_name": "WiSig 主对比的估计监督与纯 IQ 监督 DURA",
+  "description": "同一扩容 DURA 从零训练和同包采样，比较 IQ 估计作用/方差辅助与无辅助监督。默认源信道训练，默认和加重测试。",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "WiSig",
+    "DURA",
+    "Main_split",
+    "practical",
+    "blind",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261125-phase1-wisig-blind-capacity-stress-m2-r03",
+    "20261125-diagnostic-wisig-ten-channel-s2026112506-r01"
+  ],
+  "authorization": "用户明确要求在 N607 低显存占用和低利用率 GPU 启动估计与无模拟器监督两组，复用 WiSig 主对比设置。",
+  "code": {
+    "commit": "400260cbc1f9562c79f9f2f044dac4e6aa47bafc",
+    "checkout": "E:\\codex\\home\\worktrees\\wisig-blind-dura-stress\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-wisig-dura-estimated-main-m2-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig / ManySig Main split",
+    "version": "F0 Main split frozen",
+    "representation": "float32 (2, 256) post-sync noeq; 25 MS/s",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json; /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/manifest.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/train/physical_ids.npy; /home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/index.npz; fixed per-split wrappers",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/manifest.json:classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/manifest.json:classes",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 1800
+    },
+    "train_ratio": "Matched 52,604 source U fit and 4,096 source U clean calibration; 2,048 active IQ pseudo targets per source view x 4 views",
+    "capsule_id": null,
+    "split_id": "F0 Main split cross_rx=126000 and cross_both=42000",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/manifest.json",
+    "support_query_ref": "N/A Phase1; experiment has no support set",
+    "leo_config_ref": "Same four immutable default source IQ views and two held-out target severity profiles as 20261125-phase1-wisig-blind-capacity-stress-m2-r03"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only; separate CPU truth scorer after eight complete shards",
+    "external_method_exception": null,
+    "claim_scope": "Phase1 simulator-based cross-receiver stress benchmark; historical target previously scored"
+  },
+  "checkpoint": {
+    "initialization": "Scratch, identical seed / expanded architecture / optimizer, no F or R69 in recovery training",
+    "sources": [
+      {
+        "role": "frozen_eval_F",
+        "run": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ]
+      },
+      {
+        "role": "frozen_eval_R69",
+        "run": "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+        "historical_ancestor_used_simulator_action_or_noise_supervision": true
+      },
+      {
+        "role": "frozen_WiSig_restorer",
+        "from_run": "20261125-phase1-wisig-blind-capacity-stress-m2-r02",
+        "profile": "default",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-blind-capacity-stress-m2-r02/default.pt",
+        "proof": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-blind-capacity-stress-m2-r02/default-complete.json",
+        "steps": 40000
+      },
+      {
+        "role": "frozen_WiSig_restorer",
+        "from_run": "20261125-phase1-wisig-blind-capacity-stress-m2-r02",
+        "profile": "strong",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-blind-capacity-stress-m2-r02/strong.pt",
+        "proof": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-blind-capacity-stress-m2-r02/strong-complete.json",
+        "steps": 40000
+      }
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/configs/predict__main_split-repl-shuffled_time-3view-s2026092701.json",
+    "provenance_verdict": "R02_SOURCE_FROZEN, SAME_MATRIX, NO_TARGET_READS",
+    "selection_rule": "Terminal 40,000 updates; same source U receiver gate calibration; independent no-target smoke"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "current Codex chat",
+    "gpu_policy": "5 utilization/memory samples at launch, one worker per each of the two lowest weighted-load eligible cards, minimum 8192 MiB free. 4 CPU processes prepare pseudo targets.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-dura-estimated-main-m2-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-dura-estimated-main-m2-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261125-phase1-wisig-dura-estimated-main-m2-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_dura_estimated dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-wisig-dura-estimated-main-m2-r01-release/runtime.json",
+    "stop_rule": "stop this launch for source/target contract mismatch, nonfinite forward/backward, identical systemic technical error, or incomplete/invalid frozen predictions. No stop on accuracy."
+  },
+  "expected_artifacts": [
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-dura-estimated-main-m2-r01/gpu_selection.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-dura-estimated-main-m2-r01/estimates/complete.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-dura-estimated-main-m2-r01/estimated.pt",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-dura-estimated-main-m2-r01/blind.pt",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-dura-estimated-main-m2-r01/checkpoint_smoke.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-dura-estimated-main-m2-r01/predictions",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-dura-estimated-main-m2-r01/scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_F1",
+      "paired net correction",
+      "95% paired bootstrap interval",
+      "activation count",
+      "B1 latency"
+    ],
+    "dimensions": [
+      "training profile",
+      "test profile",
+      "Full/Residual",
+      "cross_rx/cross_both",
+      "scene",
+      "receiver",
+      "frozen F seed"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-dura-estimated-main-m2-r01/predictions",
+    "scorer_ref": "wisig_dura_stress_score:score"
+  },
+  "rows": [
+    {
+      "row_id": "estimated-s2026092701",
+      "method": "estimated",
+      "purpose": "evaluation_only",
+      "config_ref": "experiments.pamf_unrolled_restore.wisig_dura_estimated",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-dura-estimated-main-m2-r01/estimated-complete.json",
+      "data_overrides": {
+        "test_profiles": [
+          "default",
+          "strong"
+        ],
+        "routes": [
+          "full",
+          "residual"
+        ],
+        "splits": [
+          "cross_rx",
+          "cross_both"
+        ],
+        "clean": true,
+        "practical_scenes": 6,
+        "heldout_source_only": true,
+        "frozen_recognizer_seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": 20261125
+      },
+      "seed_notes": "No support (Phase1); source cache namespaces/draws 01..04; target original latent namespace, receiver_seed 2027, channel seed 392005; three frozen F seeds are not independent G replicates.",
+      "k": null,
+      "scenario": "Default WiSig Main source IQ, evaluated on default and strong",
+      "optimizer": "AdamW; weight decay 1e-4, grad clip 1",
+      "lr": "3e-4 cosine to 3e-5",
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "40,000 matched optimizer updates x batch 16 with 25% bank sampling in both arms",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-dura-estimated-main-m2-r01/estimated.pt",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-dura-estimated-main-m2-r01/logs/fit-estimated.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_dura_estimated fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-dura-estimated-main-m2-r01/source_runtime.json estimated",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-dura-estimated-main-m2-r01/estimated.pt",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-dura-estimated-main-m2-r01/estimated-complete.json"
+      ]
+    },
+    {
+      "row_id": "blind-s2026092701",
+      "method": "blind",
+      "purpose": "evaluation_only",
+      "config_ref": "experiments.pamf_unrolled_restore.wisig_dura_estimated",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-dura-estimated-main-m2-r01/blind-complete.json",
+      "data_overrides": {
+        "test_profiles": [
+          "default",
+          "strong"
+        ],
+        "routes": [
+          "full",
+          "residual"
+        ],
+        "splits": [
+          "cross_rx",
+          "cross_both"
+        ],
+        "clean": true,
+        "practical_scenes": 6,
+        "heldout_source_only": true,
+        "frozen_recognizer_seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": 20261125
+      },
+      "seed_notes": "No support (Phase1); source cache namespaces/draws 01..04; target original latent namespace, receiver_seed 2027, channel seed 392005; three frozen F seeds are not independent G replicates.",
+      "k": null,
+      "scenario": "Default WiSig Main source IQ, evaluated on default and strong",
+      "optimizer": "AdamW; weight decay 1e-4, grad clip 1",
+      "lr": "3e-4 cosine to 3e-5",
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "40,000 matched optimizer updates x batch 16 with 25% bank sampling in both arms",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-dura-estimated-main-m2-r01/blind.pt",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-dura-estimated-main-m2-r01/logs/fit-blind.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_dura_estimated fit /home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-dura-estimated-main-m2-r01/source_runtime.json blind",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-dura-estimated-main-m2-r01/blind.pt",
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-dura-estimated-main-m2-r01/blind-complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Recovered waveform, observation-likelihood, identity and sample schedule are shared. Only estimated arm adds 0.30 action residual and 0.035 mean log-variance Smooth L1 on bank batches.",
+    "Bank generated solely from existing lawful paired source U clean/received IQ with ten-family frozen hyperparameters; the blind worker reads only matched sampling IDs.",
+    "No simulator action or variance, target data, F or TX truth in either training arm. Full and Residual, clean and all six Practical cases in both strengths, three registered frozen readers.",
+    "No hot modification of running jobs. Independent scorer opens TX truth only after eight prediction shards are frozen."
+  ],
+  "registered_at": "2026-11-25T08:39:01+00:00"
+}

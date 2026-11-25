@@ -1,0 +1,206 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261125-diagnostic-wisig-strong-low-urban-s2026112507-r01",
+  "group_id": "wisig-strong-urban-estimation",
+  "display_name": "强 Practical Full 低城区的源 V 独立复核",
+  "description": "在预留的 60 个源 V 包对比上一版、十类全包版和从源 U IQ 学习先验的平均估计。带强中城区和默认低城区对照。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "WiSig",
+    "channel-estimation",
+    "source-only",
+    "multi-family",
+    "noise"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261125-diagnostic-wisig-ten-channel-s2026112506-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求专门攻克强 Practical Full Low Urban。参数与真值隔离口径与十类实验一致。",
+  "code": {
+    "commit": "83ce8495cb59fb107163118cdca2b8e146a094a2",
+    "checkout": "E:\\codex\\home\\worktrees\\wisig-blind-dura-stress\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261125-diagnostic-wisig-strong-low-urban-s2026112507-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig / ManySig Main split",
+    "version": "F0 Main split frozen",
+    "representation": "float32 (2, 256) post-sync noeq; 25 MS/s",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json",
+    "physical_ids_ref": "Reserve 4 physical IDs per WiSig source V stratum, disjoint from the ten-family run and all prior diagnoses",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 1800
+    },
+    "train_ratio": "128 anonymous source U strong Full Low Urban paired IQ; 60 reserve V packets x three cases",
+    "capsule_id": null,
+    "split_id": "WiSig immutable source U and V; no target",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/validation/manifest.json",
+    "support_query_ref": "N/A Phase1; experiment has no support set",
+    "leo_config_ref": "experiments.pamf_unrolled_restore.wisig_low_urban_audit"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only simulator calibration. No downstream F or target data accessed."
+  },
+  "checkpoint": {
+    "initialization": "Analytic estimation only; no DURA or recognizer weights",
+    "sources": [],
+    "contract_check_ref": "20261125-diagnostic-wisig-action-noise-s2026112501-r01",
+    "provenance_verdict": "ANALYTIC_FIXED",
+    "selection_rule": "Strong Full Low Urban U IQ-only delay prior and held IQ covariance weight; previous ten-family full estimator frozen"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "current Codex chat",
+    "gpu_policy": "One CPU process per sequential stage; no GPU",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-strong-low-urban-s2026112507-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-strong-low-urban-s2026112507-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261125-diagnostic-wisig-strong-low-urban-s2026112507-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_low_urban_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-diagnostic-wisig-strong-low-urban-s2026112507-r01-release/runtime.json",
+    "stop_rule": "Stop on source panel mismatch, invalid estimator outputs or scorer closure failure"
+  },
+  "expected_artifacts": [
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-strong-low-urban-s2026112507-r01/configuration.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-strong-low-urban-s2026112507-r01/estimates.npz",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-strong-low-urban-s2026112507-r01/scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "heldout action NMSE",
+      "one-sample dominant delay match",
+      "noise log-variance error",
+      "within ±3 dB"
+    ],
+    "dimensions": [
+      "estimator",
+      "simulator family",
+      "case",
+      "held-out source packet"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-strong-low-urban-s2026112507-r01/estimates.npz",
+    "scorer_ref": "experiments.pamf_unrolled_restore.wisig_low_urban_audit:score"
+  },
+  "rows": [
+    {
+      "row_id": "guarded-s2026112507",
+      "method": "guarded",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments.pamf_unrolled_restore.wisig_low_urban_audit",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-strong-low-urban-s2026112507-r01/configuration.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": 2026112507,
+        "augmentation": 2026112507,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Reserved source-only IQ. Development may simulate only received IQ; independent oracle kept solely for forensic replay.",
+      "k": null,
+      "scenario": "Default and stronger six source practical channels, Full and Residual",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Single CPU worker, 60 source packets x 3 cases.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-strong-low-urban-s2026112507-r01/estimates.npz#guarded",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-strong-low-urban-s2026112507-r01/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_low_urban_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-diagnostic-wisig-strong-low-urban-s2026112507-r01-release/runtime.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-action-noise-s2026112501-r02/scores.json"
+      ]
+    },
+    {
+      "row_id": "adaptive-s2026112507",
+      "method": "adaptive",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments.pamf_unrolled_restore.wisig_low_urban_audit",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-strong-low-urban-s2026112507-r01/configuration.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": 2026112507,
+        "augmentation": 2026112507,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Reserved source-only IQ. Development may simulate only received IQ; independent oracle kept solely for forensic replay.",
+      "k": null,
+      "scenario": "Default and stronger six source practical channels, Full and Residual",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Single CPU worker, 60 source packets x 3 cases.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-strong-low-urban-s2026112507-r01/estimates.npz#adaptive",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-strong-low-urban-s2026112507-r01/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_low_urban_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-diagnostic-wisig-strong-low-urban-s2026112507-r01-release/runtime.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-action-noise-s2026112501-r02/scores.json"
+      ]
+    },
+    {
+      "row_id": "posterior-s2026112507",
+      "method": "posterior",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments.pamf_unrolled_restore.wisig_low_urban_audit",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-strong-low-urban-s2026112507-r01/configuration.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": 2026112507,
+        "augmentation": 2026112507,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Reserved source-only IQ. Development may simulate only received IQ; independent oracle kept solely for forensic replay.",
+      "k": null,
+      "scenario": "Default and stronger six source practical channels, Full and Residual",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Single CPU worker, 60 source packets x 3 cases.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-strong-low-urban-s2026112507-r01/estimates.npz#posterior",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-strong-low-urban-s2026112507-r01/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_low_urban_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-diagnostic-wisig-strong-low-urban-s2026112507-r01-release/runtime.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-action-noise-s2026112501-r02/scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Strong Full Low Urban is the primary case; compare median and P90 waveform action NMSE and noise variance dB error.",
+    "Strong Full Mid Urban and Default Full Low Urban are neighboring controls. The estimator never receives a case label or recorded simulator realization.",
+    "On the reserve, the complete full-packet adaptive workflow should reproduce better than twofold median and P90 hard-case improvement versus guarded. Check whether the prior variant improves further without a higher variance error.",
+    "Stop on invalid source roles, nonfinite estimates, or incomplete closed arrays. No target access or GPU."
+  ],
+  "registered_at": "2026-11-25T08:45:37+00:00"
+}

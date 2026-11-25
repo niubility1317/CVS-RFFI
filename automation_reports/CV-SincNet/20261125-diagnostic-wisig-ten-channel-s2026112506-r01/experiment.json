@@ -1,0 +1,207 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261125-diagnostic-wisig-ten-channel-s2026112506-r01",
+  "group_id": "wisig-multichannel-analytic-estimation",
+  "display_name": "WiSig 十类模拟干扰与全包低维作用估计",
+  "description": "上一版门控对照、同 80 样点拟合对照与允许完整清洁/接收 IQ 的新版；三者同包评分。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "WiSig",
+    "channel-estimation",
+    "source-only",
+    "multi-family",
+    "noise"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261125-diagnostic-wisig-multichannel-guard-s2026112505-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户恢复估计器目标，要求十类模拟干扰和误差两倍以上改善；模拟器参考只用于最后比较。",
+  "code": {
+    "commit": "1f05d87a5fcab3d10f20252b7639f0d436dcf1f6",
+    "checkout": "E:\\codex\\home\\worktrees\\wisig-blind-dura-stress\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261125-diagnostic-wisig-ten-channel-s2026112506-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig / ManySig Main split",
+    "version": "F0 Main split frozen",
+    "representation": "float32 (2, 256) post-sync noeq; 25 MS/s",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json",
+    "physical_ids_ref": "360 fixed source V packets in 15 strata; disjoint from all four previous estimator subsets; reserve last 60",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 1800
+    },
+    "train_ratio": "10 x 48 source U IQ pairs. 60 fresh source V physical packets x 44 conditions.",
+    "capsule_id": null,
+    "split_id": "WiSig immutable source U and V; no target",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/validation/manifest.json",
+    "support_query_ref": "N/A Phase1; experiment has no support set",
+    "leo_config_ref": "experiments.pamf_unrolled_restore.wisig_ten_channel_audit"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only simulator calibration. No downstream F or target data accessed."
+  },
+  "checkpoint": {
+    "initialization": "Analytic estimation only; no DURA or recognizer weights",
+    "sources": [],
+    "contract_check_ref": "20261125-diagnostic-wisig-action-noise-s2026112501-r01",
+    "provenance_verdict": "ANALYTIC_FIXED",
+    "selection_rule": "Anonymous ten-group observed IQ only; masked held-out IQ losses jointly freeze complexity, shrinkage and variance blend"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "current Codex chat",
+    "gpu_policy": "One CPU process per sequential stage; no GPU",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-ten-channel-s2026112506-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-ten-channel-s2026112506-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261125-diagnostic-wisig-ten-channel-s2026112506-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_ten_channel_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-diagnostic-wisig-ten-channel-s2026112506-r01-release/runtime.json",
+    "stop_rule": "Stop on source panel mismatch, invalid estimator outputs or scorer closure failure"
+  },
+  "expected_artifacts": [
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-ten-channel-s2026112506-r01/configuration.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-ten-channel-s2026112506-r01/estimates.npz",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-ten-channel-s2026112506-r01/scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "heldout action NMSE",
+      "one-sample dominant delay match",
+      "noise log-variance error",
+      "within ±3 dB"
+    ],
+    "dimensions": [
+      "estimator",
+      "simulator family",
+      "case",
+      "held-out source packet"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-ten-channel-s2026112506-r01/estimates.npz",
+    "scorer_ref": "experiments.pamf_unrolled_restore.wisig_ten_channel_audit:score"
+  },
+  "rows": [
+    {
+      "row_id": "guarded-s2026112506",
+      "method": "guarded",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments.pamf_unrolled_restore.wisig_ten_channel_audit",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-ten-channel-s2026112506-r01/configuration.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": 2026112506,
+        "augmentation": 2026112506,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed WiSig source V panel and independent synthetic nuisance realizations.",
+      "k": null,
+      "scenario": "Default and stronger six source practical channels, Full and Residual",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One CPU worker. Up to 101 candidate delays for the new estimator; one shared selected configuration.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-ten-channel-s2026112506-r01/estimates.npz#guarded",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-ten-channel-s2026112506-r01/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_ten_channel_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-diagnostic-wisig-ten-channel-s2026112506-r01-release/runtime.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-action-noise-s2026112501-r02/scores.json"
+      ]
+    },
+    {
+      "row_id": "adaptive-s2026112506",
+      "method": "adaptive",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments.pamf_unrolled_restore.wisig_ten_channel_audit",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-ten-channel-s2026112506-r01/configuration.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": 2026112506,
+        "augmentation": 2026112506,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed WiSig source V panel and independent synthetic nuisance realizations.",
+      "k": null,
+      "scenario": "Default and stronger six source practical channels, Full and Residual",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One CPU worker. Up to 101 candidate delays for the new estimator; one shared selected configuration.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-ten-channel-s2026112506-r01/estimates.npz#adaptive",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-ten-channel-s2026112506-r01/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_ten_channel_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-diagnostic-wisig-ten-channel-s2026112506-r01-release/runtime.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-action-noise-s2026112501-r02/scores.json"
+      ]
+    },
+    {
+      "row_id": "adaptive_matched_fit-s2026112506",
+      "method": "adaptive_matched_fit",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments.pamf_unrolled_restore.wisig_ten_channel_audit",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-ten-channel-s2026112506-r01/configuration.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": 2026112506,
+        "augmentation": 2026112506,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed WiSig source V panel and independent synthetic nuisance realizations.",
+      "k": null,
+      "scenario": "Default and stronger six source practical channels, Full and Residual",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One CPU worker. Up to 101 candidate delays for the new estimator; one shared selected configuration.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-ten-channel-s2026112506-r01/estimates.npz#adaptive_matched_fit",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-ten-channel-s2026112506-r01/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_ten_channel_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-diagnostic-wisig-ten-channel-s2026112506-r01-release/runtime.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-action-noise-s2026112501-r02/scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No realized simulator parameter, signal trace, variance or case name enters the estimator. Only freeze-complete scoring loads references.",
+    "44 fixed views, 2640 same-packet observations per method, ten equally weighted families; an independently reserved 60 source V packets are not read.",
+    "Primary threshold: geometric mean of the ten adaptive/guarded family-median ratios <0.5, required separately for waveform action NMSE and absolute logarithmic variance error in dB. Always report cases and P90.",
+    "Primary workflow uses full paired IQ including received IQ at score times. The oracle waveform remains unseen. Adaptive matched-fit uses the same original action fitting sample indices as the guarded method for structural attribution. No fit-sample role changes under the matched row.",
+    "Systemic technical stop: missing/invalid source role inputs, predict worker failure, nonfinite prediction or incomplete frozen shapes. No target access or GPU."
+  ],
+  "registered_at": "2026-11-25T08:31:21+00:00"
+}
