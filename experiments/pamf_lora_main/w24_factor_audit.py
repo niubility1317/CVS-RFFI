@@ -179,20 +179,20 @@ def predict_source(runtime):
           views=list(VIEWS), physical_ids=ids, target_reads=0, source_truth_reads=0, waveform=telemetry))
 
 
-def score_source(runtime):
+def score_source(runtime, *, modes=MODES):
     rt = read(runtime)
     root, source = Path(rt['run_root']), Path(rt['source_root'])
     rows, rx, ids = panel(source, source_contract(source))
     frozen = read(root / 'source-predictions.json')
     if (frozen['status'] != 'PREDICTIONS_FROZEN' or frozen['physical_ids'] != ids
-            or frozen['modes'] != list(MODES) or frozen['views'] != list(VIEWS)
+            or frozen['modes'] != list(modes) or frozen['views'] != list(VIEWS)
             or frozen['target_reads'] or frozen['source_truth_reads']):
         raise ValueError('Source prediction matrix is not frozen')
     with np.load(root / 'predictions.npz', allow_pickle=False) as file:
         if set(file.files) != set(VIEWS):
             raise ValueError('Source view coverage differs')
         preds = np.stack([file[v] for v in VIEWS])
-    if (preds.shape != (len(VIEWS), len(MODES), len(rows))
+    if (preds.shape != (len(VIEWS), len(modes), len(rows))
             or preds.dtype.kind not in 'iu' or preds.min() < 0 or preds.max() >= 10):
         raise ValueError('Source predictions have invalid shape or class IDs')
     with np.load(source / 'V_metadata.npz', allow_pickle=False) as metadata:
@@ -203,7 +203,7 @@ def score_source(runtime):
     samples = np.concatenate([rng.choice(np.flatnonzero(rx == i), (2000, PER_RX))
                               for i in range(len(SOURCE))], axis=1)
     readout = {}
-    for i, mode in enumerate(MODES):
+    for i, mode in enumerate(modes):
         change = delta[1:, i].sum(0)
         low = delta[-1, i]
         readout[mode] = dict(by_scene=dict(zip(VIEWS, hits[:, i].sum(1).tolist(), strict=True)),
