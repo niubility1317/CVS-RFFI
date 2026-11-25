@@ -50,6 +50,18 @@ def shift_native_packets(packets,offset):
     return shifted
 
 
+def scale_native_band_tail(packets,gain):
+    """Apply a zero-phase source training perturbation before taking chirp views."""
+    if packets.ndim!=2 or packets.shape[1]!=PACKET_LEN:
+        raise ValueError('Band augmentation requires whole native packets')
+    padding=128
+    padded=np.pad(packets,((0,0),(padding,padding)),mode='reflect')
+    freq=np.abs(np.fft.fftfreq(padded.shape[1],1e-6))
+    transition=.5*(1-np.cos(np.pi*np.clip((freq-80000)/40000,0,1)))
+    filtered=np.fft.ifft(np.fft.fft(padded,axis=-1)*(1+(gain-1)*transition),axis=-1)
+    return filtered[:,padding:-padding].astype(packets.dtype)
+
+
 def clean_iq(packets,samples,chirps=CHIRPS,*,offset=0,native_edges=False,edge_points=NATIVE_EDGE_POINTS):
     if samples not in (192,256,384,512):
         raise ValueError('Unknown registered clean aperture')

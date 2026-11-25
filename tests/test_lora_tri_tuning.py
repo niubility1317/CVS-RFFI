@@ -407,6 +407,27 @@ class TriTuningTests(TestCase):
         self.assertEqual([tri_clean95.warm_raw_weight(long,e) for e in (48,49,96,97)],
                          [.25,.25,.25,0.])
 
+    def test_band_tail_training_views_preserve_the_low_band_and_scale_the_high_band(self):
+        from experiments.pamf_lora_main.clean_aperture import scale_native_band_tail
+
+        t=np.arange(8192,dtype=np.float64)*1e-6
+        low=np.cos(2*np.pi*40_000*t)
+        high=np.cos(2*np.pi*180_000*t)
+        raw=(low+.08*high).astype(np.complex64)[None,:]
+        original=raw.copy()
+        rows,epochs,u_batch=tri_clean95.study({'scratch':True,'native_band_study':True})
+        row=rows['phase_native24_band']
+        self.assertEqual((row['warmup'],epochs,u_batch),(96,112,16))
+        region=slice(512,-512)
+        def amplitude(y,w):
+            return float(np.dot(y[0,region].real,w[region])/np.dot(w[region],w[region]))
+        variants=[scale_native_band_tail(raw,g) for g in (.5,2.)]
+        for gain,variant in zip((.5,2.),variants,strict=True):
+            self.assertAlmostEqual(amplitude(variant,low),amplitude(raw,low),places=3)
+            self.assertAlmostEqual(amplitude(variant,high),.08*gain,places=3)
+        np.testing.assert_array_equal(raw,original)
+        self.assertEqual([x.shape for x in tri_clean95.labeled_training_views(raw,row)],[(1,8,2,432)]*2)
+
     def test_group_residual_is_bounded_per_packet_without_touching_primary_logits(self):
         from experiments.pamf_lora_main.repair_features import residual_logit_scale
         core=torch.tensor([[0.,1.,2.],[0.,2.,4.],[5.,5.,5.]])
