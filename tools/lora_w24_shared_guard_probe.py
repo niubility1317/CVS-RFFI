@@ -33,6 +33,7 @@ def extract(packet, rate):
 
 
 def complex_tensor(samples):
+    samples = np.asarray(samples, dtype=np.complex64)
     return torch.complex(tensor(samples.real), tensor(samples.imag))
 
 
