@@ -54,12 +54,19 @@ def assert_structure(model,c):
         raise ValueError('Shared fixed endpoint-preserving temporal permutation required')
     return dict(view_count=views,parameters=count,order=orders[0],projection=list(pool.output_projection.weight.shape))
 
-def train(c):
+def train(c, *, prefix=None):
     validate_config(c)
     from experiments.cric_dura_comparison.f_train import train as segment
     root=Path(c['output_root']);root.mkdir(parents=True,exist_ok=False);write(root/'resolved_config.json',c)
+    trajectory=((20,0),(10,20),(20,30))
     previous=None;segments=[];states=[];started=time.monotonic()
-    for epochs,offset in ((20,0),(10,20),(20,30)):
+    if c.get('hard_pl_practical_u_cache'):
+        from experiments.pamf_repl_u_practical.protocol import prefix_record
+        segments.append(prefix_record(c,prefix))
+        previous=segments[0]['folder'];trajectory=trajectory[1:]
+    elif prefix is not None:
+        raise ValueError('Only the registered practical fork can reuse E20')
+    for epochs,offset in trajectory:
         folder=root/f'segment{epochs+offset}';cfg=dict(c,output_root=str(folder),segment_epochs=epochs,epoch_offset=offset,step_offset=offset*222,parent_source=previous)
         holder={}
         with installed(cfg,holder,offset>=20):segment(cfg)
@@ -76,7 +83,7 @@ def train(c):
     shutil.copyfile(Path(previous)/'final_ssdg.pth',root/'final_ssdg.pth');write(root/'source_contract.json',read(c['source_contract']))
     write(root/'complete.json',dict(status='SOURCE_FROZEN',config=c,epoch=50,updates=11100,segments=segments,
         initialization='same_contract_scratch20_own10_own20',ancestors=[s['folder'] for s in segments],source_contract=c['source_contract'],
-        target_access=False,U_truth_read=False,head_fit_updates=0,actual_REPL={k:sum(s[k] for s in states) for k in ('calls','seen','accepted','student_views')},
+        target_access=False,U_truth_read=False,head_fit_updates=0,reused_prefix=str(prefix) if prefix is not None else None,actual_REPL={k:sum(s[k] for s in states) for k in ('calls','seen','accepted','student_views')},
         seconds=time.monotonic()-started,cumulative_training_seconds=sum(s['seconds'] for s in segments),historical_posthoc_selection_disclosed=True))
 
 def load_reader(folder,contract,device):

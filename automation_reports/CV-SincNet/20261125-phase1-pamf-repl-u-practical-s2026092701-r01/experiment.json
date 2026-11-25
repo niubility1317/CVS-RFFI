@@ -1,0 +1,175 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261125-phase1-pamf-repl-u-practical-s2026092701-r01",
+  "group_id": "phase1-pamf-repl-u-practical",
+  "display_name": "PAMF Main split 无标签 practical 单因素对照",
+  "description": "固定三视图 PAMF 标准主法，仅替换完整 REPL 的 U As 半批 IQ。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "PAMF",
+    "Tri-SIG-TIME-SSL",
+    "practical",
+    "U As"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-11-25 用户要求发布既定单因素优化实验",
+  "code": {
+    "commit": "Pinned Git commit in runtime.json",
+    "checkout": "CVS-RFFI Git release",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-repl-u-practical-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig ManySig",
+    "version": "Existing verified Phase1 Main split F0",
+    "representation": "eq1, FP32 2x256 normalized IQ",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/{L_s,U_s,V}_metadata.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+    "roles": {
+      "L_s": "6300 visible",
+      "U_s": "56700 with hidden TX labels",
+      "V": "27000 validation only"
+    },
+    "train_ratio": "7/63/30 percent of source role pool; 10 percent labels in L+U",
+    "capsule_id": null,
+    "split_id": "F0",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-paper-completion-m119-r03-release/context.json",
+    "support_query_ref": "Phase1 target evaluation only; support is inapplicable.",
+    "leo_config_ref": "Inherit validated seven practical test views and reuse source-U residual cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-star-pamf-main-practical-m3-r01/source_pairs"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Phase1 Main split matched single-seed pilot with frozen raw and DURA-LU readouts"
+  },
+  "checkpoint": {
+    "initialization": "Resume matching same-seed E20 weights, native segment restart semantics",
+    "sources": [
+      {
+        "parent_run_id": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/segment20/final_ssdg.pth",
+        "selection": "fixed E20"
+      }
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+    "provenance_verdict": "Exact current recipe E20 prefix, scratch, source-only, 4440 updates",
+    "selection_rule": "Fixed E50, cumulative 11100 updates; no target-based selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-repl-u-practical-20261125",
+    "gpu_policy": "One own GPU worker at a time, 12000 MiB free minimum, cards (2, 6, 7, 3, 5, 0, 1, 4), independent CPU scorer",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-repl-u-practical-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-repl-u-practical-s2026092701-r01/logs",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261125-phase1-pamf-repl-u-practical-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_u_practical.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-phase1-pamf-repl-u-practical-s2026092701-r01-release/runtime.json",
+    "stop_rule": "Stop after the first technical failure in smoke, source training, prediction or score; preserve partial output."
+  },
+  "expected_artifacts": [
+    "pipeline_state.json",
+    "smoke.json",
+    "F/<row>/source/final_ssdg.pth",
+    "segment30/segment50 repl_state.json",
+    "frozen predictions for all routes/views/populations",
+    "independent score",
+    "paired_scores.csv",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "paired accuracy delta",
+      "net corrections"
+    ],
+    "dimensions": [
+      "test population",
+      "view",
+      "route",
+      "RX",
+      "TX",
+      "day"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-repl-u-practical-s2026092701-r01/readouts/main_split-repl-shuffled_time-3view-s2026092701/predictions",
+    "scorer_ref": "Independent CPU practical_full_2x2.evaluation.score after full prediction closure"
+  },
+  "rows": [
+    {
+      "row_id": "main_split-repl-shuffled_time-3view-s2026092701",
+      "method": "Tri-SIG-TIME SSL with practical IQ in U As",
+      "purpose": "Single-factor paired confirmation against existing raw U As row",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-repl-u-practical-s2026092701-r01/configs/train.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-repl-u-practical-s2026092701-r01/F/main_split-repl-shuffled_time-3view-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026102301,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Fixed source physical split and target IQ; STAR cache practical draw 2026102301 and session 2026102302; all native seeds retained; no support.",
+      "k": null,
+      "scenario": "clean plus six practical, raw and matched DURA-LU",
+      "optimizer": "Native PAMF projected-Adam segment schedule",
+      "lr": "Original PAMF E21–30 and E31–50",
+      "epochs": 50,
+      "budget_ref": "E20/4440 reused; 30/6660 new; E50/11100 total; six U student passes and 222 steps per epoch",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-repl-u-practical-s2026092701-r01/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-repl-u-practical-s2026092701-r01/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_u_practical.runner train --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-pamf-repl-u-practical-s2026092701-r01/configs/train.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "complete.json",
+        "source REPL view counts",
+        "blind predictions",
+        "truth-last scores"
+      ]
+    }
+  ],
+  "notes": [
+    "Matched final baseline scores: /home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-paper-completion-m119-r03/readouts/main_split-factorial-ssl-full-permuted-s2026092701/scores/scores.json.",
+    "The existing even/odd half As mask remains unchanged. Each designated U sample gets its fixed same-ID practical IQ for the same two original CE passes.",
+    "The source cache covers low suburban, mid urban and low urban with fixed probabilities .40/.35/.25. No extra training forward or DURA training use.",
+    "Pilot thresholds on cross-RX are low urban raw gain at least 2 pp, raw six-mean nondecreasing, clean raw loss at most 0.5 pp, and DURA-LU six mean loss at most 0.5 pp.",
+    "Cross-date and cross-both are reported separately. The threshold verdict is exploratory; no automatic seed expansion or target-guided changes."
+  ],
+  "registered_at": "2026-11-25T12:55:43+00:00"
+}

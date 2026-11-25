@@ -47,7 +47,7 @@ print(json.dumps(dict(status="SUBMITTED", pid=proc.pid, cwd=str(release),
 """
 
 
-def publish(config, output):
+def publish_bundle(config, output, *, run, project, release, run_root, python, command, paths):
     def git(*args):
         return subprocess.check_output(["git", *args], text=True).strip()
 
@@ -57,27 +57,32 @@ def publish(config, output):
     if not remote or remote[0] != commit:
         raise ValueError("Release commit must be available from the branch upstream")
     output.mkdir(parents=True, exist_ok=False)
-    archive = output / f"{RUN}-{commit[:12]}-release.tar.gz"
-    paths = ["experiments/star_pamf_practical", "experiments/practical_full_2x2",
-             "experiments/cric_dura_comparison", "code/leo_practical",
-             f"automation_reports/CV-SincNet/{RUN}/experiment.json"]
+    archive = output / f"{run}-{commit[:12]}-release.tar.gz"
     subprocess.run(["git", "archive", "--format=tar.gz", f"--output={archive}", commit, "--", *paths],
                    check=True)
-    remote_archive = PROJECT / "releases" / archive.name
+    remote_archive = project / "releases" / archive.name
     auth = ["-F", str(config), "-o", "BatchMode=yes", "-o", "ConnectTimeout=10"]
     ssh = ["ssh", *auth, "-T", "N607"]
     probe = " && ".join("test ! -e " + shlex.quote(str(path))
-                        for path in (remote_archive, RELEASE, RUN_ROOT))
+                        for path in (remote_archive, release, run_root))
     subprocess.run([*ssh, probe], check=True, timeout=25)
     subprocess.run(["scp", *auth, str(archive), f"N607:{remote_archive}"], check=True, timeout=120)
-    request = dict(release=str(RELEASE), run_root=str(RUN_ROOT), archive=str(remote_archive),
+    request = dict(release=str(release), run_root=str(run_root), archive=str(remote_archive),
                    sha256=hashlib.sha256(archive.read_bytes()).hexdigest(), commit=commit,
-                   python=PYTHON, command=COMMAND)
+                   python=python, command=command)
     (output / "request.json").write_text(json.dumps(request, indent=2), encoding="utf-8")
     submitted = subprocess.check_output([*ssh, "python3 -c " + shlex.quote(INSTALL)],
                                         input=json.dumps(request) + "\n", text=True, timeout=120)
     (output / "submit.json").write_text(submitted, encoding="utf-8")
     print(submitted, end="")
+
+
+def publish(config, output):
+    paths = ["experiments/star_pamf_practical", "experiments/practical_full_2x2",
+             "experiments/cric_dura_comparison", "code/leo_practical",
+             f"automation_reports/CV-SincNet/{RUN}/experiment.json"]
+    publish_bundle(config, output, run=RUN, project=PROJECT, release=RELEASE, run_root=RUN_ROOT,
+                   python=PYTHON, command=COMMAND, paths=paths)
 
 
 if __name__ == "__main__":

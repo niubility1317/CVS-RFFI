@@ -58,6 +58,9 @@ def loader_scope():
     finally:f_data.context,f_train.context=original,alias
 
 def objective(c):
+    if c.get('hard_pl_practical_u_cache'):
+        from experiments.pamf_repl_u_practical.objective import CachedPracticalREPL
+        return CachedPracticalREPL(c)
     from experiments.pamf_ssl_research.hard_pl_receiver_extrapolation_objective import ReceiverExtrapolation,GuardedReceiverExtrapolation
     from experiments.pamf_ssl_research.hard_pl_joint_objective import JointNoAsMixStyle,GuardedJointNoAs
     b=c['repl_row']['blocks']

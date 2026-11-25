@@ -2,6 +2,7 @@ from copy import deepcopy
 
 RUN='20261027-phase1-pamf-repl-shuffled-views-m16-r02'
 RELEASE=RUN+'-release'
+PRACTICAL_RUN='20261125-phase1-pamf-repl-u-practical-s2026092701-r01'
 SEEDS=tuple(range(2026092701,2026092709))
 TASKS=('cross_rx','cross_both')
 VIEWS=('clean','practical_high','practical_mid','practical_low_suburban','practical_high_urban','practical_mid_urban','practical_low_urban')
@@ -34,7 +35,9 @@ def configuration(ctx,row,project,commit):
 
 def validate_config(c,ctx=None):
     row=c.get('view_comparison');rr=c.get('repl_row',{})
-    if row not in make_plan()['rows'] or c['run_id']!=RUN or c['row_id']!=row['row_id'] or c['model_seed']!=row['model_seed']:
+    practical=c['run_id']==PRACTICAL_RUN
+    if (row not in make_plan()['rows'] or c['run_id'] not in (RUN,PRACTICAL_RUN)
+            or c['row_id']!=row['row_id'] or c['model_seed']!=row['model_seed']):
         raise ValueError('Fixed view comparison identity required')
     if any(c.get(k) for k in ('truth','target_truth','tests','views_root','dataset_path','checkpoint','teacher_checkpoint','shared_prefix','fork_parent_source')):
         raise ValueError('Scratch source-only training; no foreign checkpoint or target')
@@ -47,8 +50,10 @@ def validate_config(c,ctx=None):
         or c['satellite_concat'] or c['posthoc_head_fit'] or not c['default_head_joint'] or c['ablation']!='F21'
         or c['U_start_epoch']!=14 or c['unlabeled_batch']!=256 or c['plain_PL_threshold']!=.95 or c['plain_PL_weight']!=1.):
         raise ValueError('Historical matched data, budget and ordinary-PL prefix required')
-    if c['hard_pl']['weight']!=6. or c['hard_pl']['threshold']!=.95 or not c['hard_pl_no_uas']:
-        raise ValueError('Original REPL U weight, gate and raw-As branch required')
+    if (c['hard_pl']['weight']!=6. or c['hard_pl']['threshold']!=.95
+            or c['hard_pl_no_uas'] is practical or bool(c.get('hard_pl_practical_u_cache'))!=practical
+            or (practical and (row['view_count'],c['model_seed'])!=(3,SEEDS[0]))):
+        raise ValueError('Original REPL weight, gate and registered U As input required')
     if ctx:
         reference=ctx['historical_shuffle']['2026092701']['config']
         for key in reference:
