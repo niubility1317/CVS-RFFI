@@ -2,6 +2,7 @@
 
 import argparse
 import importlib
+from json import JSONDecodeError
 import os
 from concurrent.futures import ProcessPoolExecutor
 from functools import partial
@@ -9,7 +10,7 @@ from multiprocessing import get_context
 from pathlib import Path
 import subprocess
 import sys
-from time import perf_counter
+from time import perf_counter, sleep
 from types import ModuleType
 
 import numpy as np
@@ -223,13 +224,35 @@ def dispatch(rt, runtime):
         return proc
 
     try:
+        waiting = dict(status='WAITING_FOR_FROZEN_TRAINING')
+        write(state, waiting)
+        parent = Path(rt['project']) / 'runs' / WIDE_RUN / 'state.json'
+        while True:
+            try:
+                current = read(parent)['status']
+            except (FileNotFoundError, JSONDecodeError):
+                current = None
+            if current == 'SOURCE_FROZEN':
+                break
+            if current == 'FAILED':
+                raise RuntimeError('The W24 source run failed before freezing')
+            cmdline = Path(f"/proc/{rt['training_dispatcher']}/cmdline")
+            try:
+                binding = cmdline.read_bytes()
+            except FileNotFoundError:
+                binding = b''
+            if f'{WIDE_RUN}-release'.encode() not in binding:
+                if read(parent)['status'] == 'SOURCE_FROZEN':
+                    break
+                raise RuntimeError('The W24 source dispatcher exited without a frozen model')
+            sleep(20)
         raw = subprocess.check_output(['nvidia-smi', '--query-gpu=index,utilization.gpu,memory.free',
                                        '--format=csv,noheader,nounits'], text=True)
         inventory = (tuple(map(int, line.split(','))) for line in raw.splitlines())
         available = [gpu for _, _, gpu in sorted((load, -free, gpu) for gpu, load, free in inventory if free >= 8192)]
         if not available:
             raise RuntimeError('No GPU has the required free memory')
-        write(state, dict(status='SMOKE'))
+        write(state, dict(status='SMOKE'), exclusive=False)
         if launch('smoke', available[0]).wait():
             raise RuntimeError('Real-checkpoint no-target W24 smoke failed')
         for start in range(0, SHARDS, len(available)):
@@ -268,7 +291,7 @@ def publish(repo, output, context, ssh_config, training_receipt):
     rt.update(run_id=RUN, runner=__spec__.name, code_commit=release_commit(repo),
               release_root=f'{project}/releases/{RUN}-release', run_root=f'{project}/runs/{RUN}',
               source_root=f'{project}/releases/{DATA}-release/data/source',
-              training_commit=training['code_commit'],
+              training_commit=training['code_commit'], training_dispatcher=training['pid'],
               external_releases=[f'{project}/releases/{F_RUN}-release',
                                  f'{project}/releases/{dura_capacity_target.ORIGIN}-release',
                                  f'{project}/releases/{WIDE_RUN}-release'])
