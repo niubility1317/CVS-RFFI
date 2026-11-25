@@ -1,7 +1,7 @@
 """N607 dispatcher, frozen prediction and independent score for the Main split."""
 import argparse
 import csv
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import os
 import statistics
 import subprocess
@@ -16,7 +16,7 @@ from .data import CLASSES, DAYS, PROTOCOL, load_source, prepare_pairs
 
 RUN = "20261125-phase1-star-pamf-main-practical-m3-r01"
 MODULE = "experiments.star_pamf_practical.runner"
-PROJECT = Path("/home/szu2070436088/2510044040/CV-SincNet")
+PROJECT = PurePosixPath("/home/szu2070436088/2510044040/CV-SincNet")
 PYTHON = "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python"
 PAPER = "20261027-phase1-pamf-paper-completion-m119-r03"
 CONTEXT = PROJECT / "releases" / f"{PAPER}-release" / "context.json"
@@ -75,7 +75,7 @@ def smoke(ctx, root):
     # Its state is isolated from the new six-class model.
     old = PROJECT.parent / "STAR-RFFI" / "STAR-test" / "补实验"
     history = old / "smooth_e_bn_budget_dual_rx1_s16_t90_e100_20261008_r01"
-    worker = history / "runs" / "smooth-e-bn-budget-rx1-s302-t90-e100-r01"
+    worker = Path(history) / "runs" / "smooth-e-bn-budget-rx1-s302-t90-e100-r01"
     checkpoint, = worker.rglob("final_last_epoch_source_bn.pth")
     historical = Ni_model_2part(10).eval()
     payload = torch.load(checkpoint, map_location="cpu", weights_only=True)
@@ -192,7 +192,7 @@ def start(root, action, row, gpu=None):
 def dispatch(rt):
     from experiments.practical_full_2x2.compat import numerical_policy
     numerical_policy()
-    root = RUN_ROOT
+    root = Path(RUN_ROOT)
     root.mkdir(exist_ok=False)
     (root / "logs").mkdir()
     atomic(root / "pipeline_state.json", dict(status="SOURCE_SMOKE"))
