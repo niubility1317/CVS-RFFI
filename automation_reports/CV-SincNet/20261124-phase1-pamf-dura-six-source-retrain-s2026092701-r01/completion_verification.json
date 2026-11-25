@@ -1,0 +1,142 @@
+{
+  "run_id": "20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01",
+  "verified": true,
+  "finished_at": "2026-11-24T21:24:52.438918+00:00",
+  "run_commit": "ea9e01a579d8f3838038b4fb6cf02a9a99ab3ae1",
+  "source_commit": "34d1357614be0d813cc1e68d8526612d3abdfcb8",
+  "source_stages": [
+    {
+      "stage": "coarse",
+      "old_first": 1.2226264713264188,
+      "old_final": 0.048838695699748726,
+      "retrain_first": 1.2223552656680465,
+      "retrain_final": 0.048940863897684615,
+      "old_seconds": 1032.2250312629621,
+      "retrain_seconds": 1690.2532152831554
+    },
+    {
+      "stage": "action",
+      "old_first": 1.5239810844664632,
+      "old_final": 0.01821718169263138,
+      "retrain_first": 1.5370891860380829,
+      "retrain_final": 0.019315373224134628,
+      "old_seconds": 1204.741825673962,
+      "retrain_seconds": 1480.35038355086
+    },
+    {
+      "stage": "r17",
+      "old_first": 0.02657205823371526,
+      "old_final": 0.018170478949813468,
+      "retrain_first": 0.026509112320267238,
+      "retrain_final": 0.018094815709722427,
+      "old_seconds": 1914.6810058809351,
+      "retrain_seconds": 3015.641273946967
+    },
+    {
+      "stage": "r38",
+      "old_first": 2.5474528308037803,
+      "old_final": 0.028923167471928513,
+      "retrain_first": 2.5598392751414765,
+      "retrain_final": 0.028623224239841646,
+      "old_seconds": 4056.498583956156,
+      "retrain_seconds": 6586.985139060998
+    },
+    {
+      "stage": "r44",
+      "old_first": 1.947061117497171,
+      "old_final": 0.02678479007181338,
+      "retrain_first": 1.8381876651544562,
+      "retrain_final": 0.02619816223065169,
+      "old_seconds": 4188.397231747862,
+      "retrain_seconds": 5873.253701574868
+    },
+    {
+      "stage": "r46",
+      "old_first": 0.14867171771854523,
+      "old_final": 0.022696225676753442,
+      "retrain_first": 0.14150025246868492,
+      "retrain_final": 0.022300321582388056,
+      "old_seconds": 4297.887690179981,
+      "retrain_seconds": 6178.337051128037
+    },
+    {
+      "stage": "r65",
+      "old_first": 0.024772808562798298,
+      "old_final": 0.025165932584810355,
+      "retrain_first": 0.024615733077380096,
+      "retrain_final": 0.024506374281125995,
+      "old_seconds": 1448.4602538319305,
+      "retrain_seconds": 2036.7094166919123
+    },
+    {
+      "stage": "r69",
+      "old_first": 0.031140855751056903,
+      "old_final": 0.02202498359296486,
+      "retrain_first": 0.030495297216512413,
+      "retrain_final": 0.021737016982545977,
+      "old_seconds": 1223.704078943003,
+      "retrain_seconds": 1681.2929507750086
+    }
+  ],
+  "train_seconds": 28552.98522924981,
+  "restored_seconds": 256.92211398715153,
+  "same_source_config": true,
+  "source_epoch_logs": 160,
+  "epoch_loss_lower_than_legacy": 115,
+  "target": {
+    "cross_rx": {
+      "count": 108000,
+      "physical_rx": [
+        0,
+        2,
+        5,
+        7,
+        9,
+        10
+      ],
+      "receiver_names": [
+        "1-1",
+        "14-7",
+        "2-1",
+        "20-1",
+        "7-14",
+        "7-7"
+      ],
+      "dates": [
+        "2021_03_08",
+        "2021_03_15",
+        "2021_03_23"
+      ]
+    },
+    "cross_both": {
+      "count": 36000,
+      "physical_rx": [
+        0,
+        2,
+        5,
+        7,
+        9,
+        10
+      ],
+      "receiver_names": [
+        "1-1",
+        "14-7",
+        "2-1",
+        "20-1",
+        "7-14",
+        "7-7"
+      ],
+      "dates": [
+        "2021_03_01"
+      ]
+    }
+  },
+  "seed_count": 3,
+  "counts": {
+    "raw_decisions_equal": 3024000,
+    "legacy_decisions_equal": 3024000,
+    "confusion_matrices": 3528,
+    "official_net_counts": 2352
+  },
+  "legacy_paper_summary_matches": true
+}

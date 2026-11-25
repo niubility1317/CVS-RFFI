@@ -3,7 +3,7 @@
 - run_id：`20261124-phase1-pamf-advisor-adaptive-m48-r01`
 - group_id：`phase1-pamf-advisor-adaptive-versus-pl`；类别：`comparison`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 登记状态：RUNNING（N607 启动 VERIFIED）
+- 登记状态：ANALYZED（N607 完成 VERIFIED）
 
 ## 目的与对照
 
@@ -23,15 +23,19 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+48 个方法结果已完成。逐场景和逐设置数据见本页末尾的详细结果。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
-## 最新调度状态
+## 启动与扩容记录
 
 N607 容量扩展 VERIFIED。保留原 7 个训练进程，GPU4 新增一组单源自适应 Tri。合计 5 行自适应 Tri、3 行普通 PL 正在训练，剩余 4 行自适应训练优先派发。
 
 调度代码提交为 `cd788bad712a0721e8522098c59765e291a17cdd`。训练行使用原代码和原配置，预测显存门槛维持 11000 MiB。
+
+## 已完成结果
+
+N607 完成 VERIFIED。48 个方法结果覆盖 24 个设置，25 行训练并评分，23 行同合同精确复用。与四种对照共同复核 2,107 个报告用混淆矩阵。 [详细结果](results.md) · [独立完成证据](completion_verification.json)

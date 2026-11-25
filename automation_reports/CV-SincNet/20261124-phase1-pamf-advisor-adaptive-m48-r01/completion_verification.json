@@ -1,0 +1,552 @@
+{
+  "states": {
+    "20261124-phase1-pamf-advisor-data-m32-r01": {
+      "verified": true,
+      "commit": "f26645dc9373ee6c14ecd278a2ea5e0dbe0b2e7a",
+      "control_commit": "b232d5376fb625ca7492577e25b32e9b9d4cbd95",
+      "jobs": 96,
+      "counts": {
+        "train": 32,
+        "predict": 32,
+        "score": 32,
+        "reuse": 0
+      },
+      "completed_at": "2026-11-24T23:49:03.161334+00:00"
+    },
+    "20261124-phase1-pamf-advisor-adaptive-m48-r01": {
+      "verified": true,
+      "commit": "b931a3e96fee26af8b04476e6635fc59fa5bce95",
+      "control_commit": "cd788bad712a0721e8522098c59765e291a17cdd",
+      "jobs": 98,
+      "counts": {
+        "train": 25,
+        "predict": 25,
+        "score": 25,
+        "reuse": 23
+      },
+      "completed_at": "2026-11-24T23:49:08.838335+00:00"
+    },
+    "20261124-phase1-pamf-advisor-external-m96-r01": {
+      "verified": true,
+      "commit": "cd788bad712a0721e8522098c59765e291a17cdd",
+      "control_commit": null,
+      "jobs": 288,
+      "counts": {
+        "train": 96,
+        "predict": 96,
+        "score": 96,
+        "reuse": 0
+      },
+      "completed_at": "2026-11-24T16:26:16.928056+00:00"
+    }
+  },
+  "checks": {
+    "test_id_order_checks": 336,
+    "confusion_matrices": 2107,
+    "scored_method_settings": 168,
+    "adaptive_optimized_trajectories": 9,
+    "exact_reuses": 23
+  },
+  "settings": 24,
+  "model_seed": 2026092701,
+  "configurations": [
+    {
+      "setting": "budget630",
+      "source_rxs": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "counts": {
+        "L_s": 450,
+        "U_s": 62370,
+        "V": 180
+      },
+      "family": "label_budget",
+      "endpoint": null
+    },
+    {
+      "setting": "budget3150",
+      "source_rxs": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "counts": {
+        "L_s": 2520,
+        "U_s": 59850,
+        "V": 630
+      },
+      "family": "label_budget",
+      "endpoint": null
+    },
+    {
+      "setting": "budget6300",
+      "source_rxs": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "counts": {
+        "L_s": 5040,
+        "U_s": 56700,
+        "V": 1260
+      },
+      "family": "label_budget",
+      "endpoint": null
+    },
+    {
+      "setting": "receivers1-group1",
+      "source_rxs": [
+        1
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "counts": {
+        "L_s": 1080,
+        "U_s": 10800,
+        "V": 1080
+      },
+      "family": "receiver_count",
+      "endpoint": null
+    },
+    {
+      "setting": "receivers1-group2",
+      "source_rxs": [
+        4
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "counts": {
+        "L_s": 1080,
+        "U_s": 10800,
+        "V": 1080
+      },
+      "family": "receiver_count",
+      "endpoint": null
+    },
+    {
+      "setting": "receivers1-group3",
+      "source_rxs": [
+        11
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "counts": {
+        "L_s": 1080,
+        "U_s": 10800,
+        "V": 1080
+      },
+      "family": "receiver_count",
+      "endpoint": null
+    },
+    {
+      "setting": "receivers2-group1",
+      "source_rxs": [
+        1,
+        3
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "counts": {
+        "L_s": 1080,
+        "U_s": 10800,
+        "V": 1080
+      },
+      "family": "receiver_count",
+      "endpoint": null
+    },
+    {
+      "setting": "receivers2-group2",
+      "source_rxs": [
+        3,
+        8
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "counts": {
+        "L_s": 1080,
+        "U_s": 10800,
+        "V": 1080
+      },
+      "family": "receiver_count",
+      "endpoint": null
+    },
+    {
+      "setting": "receivers2-group3",
+      "source_rxs": [
+        8,
+        11
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "counts": {
+        "L_s": 1080,
+        "U_s": 10800,
+        "V": 1080
+      },
+      "family": "receiver_count",
+      "endpoint": null
+    },
+    {
+      "setting": "receivers3-group1",
+      "source_rxs": [
+        1,
+        3,
+        4
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "counts": {
+        "L_s": 1080,
+        "U_s": 10800,
+        "V": 1080
+      },
+      "family": "receiver_count",
+      "endpoint": null
+    },
+    {
+      "setting": "receivers3-group2",
+      "source_rxs": [
+        1,
+        8,
+        11
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "counts": {
+        "L_s": 1080,
+        "U_s": 10800,
+        "V": 1080
+      },
+      "family": "receiver_count",
+      "endpoint": null
+    },
+    {
+      "setting": "receivers3-group3",
+      "source_rxs": [
+        6,
+        8,
+        11
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "counts": {
+        "L_s": 1080,
+        "U_s": 10800,
+        "V": 1080
+      },
+      "family": "receiver_count",
+      "endpoint": null
+    },
+    {
+      "setting": "receivers4-group1",
+      "source_rxs": [
+        1,
+        3,
+        4,
+        6
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "counts": {
+        "L_s": 1080,
+        "U_s": 10800,
+        "V": 1080
+      },
+      "family": "receiver_count",
+      "endpoint": null
+    },
+    {
+      "setting": "receivers4-group2",
+      "source_rxs": [
+        1,
+        4,
+        6,
+        11
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "counts": {
+        "L_s": 1080,
+        "U_s": 10800,
+        "V": 1080
+      },
+      "family": "receiver_count",
+      "endpoint": null
+    },
+    {
+      "setting": "receivers4-group3",
+      "source_rxs": [
+        4,
+        6,
+        8,
+        11
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "counts": {
+        "L_s": 1080,
+        "U_s": 10800,
+        "V": 1080
+      },
+      "family": "receiver_count",
+      "endpoint": null
+    },
+    {
+      "setting": "receivers5-group1",
+      "source_rxs": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "counts": {
+        "L_s": 1080,
+        "U_s": 10800,
+        "V": 1080
+      },
+      "family": "receiver_count",
+      "endpoint": null
+    },
+    {
+      "setting": "receivers5-group2",
+      "source_rxs": [
+        1,
+        3,
+        4,
+        8,
+        11
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "counts": {
+        "L_s": 1080,
+        "U_s": 10800,
+        "V": 1080
+      },
+      "family": "receiver_count",
+      "endpoint": null
+    },
+    {
+      "setting": "receivers5-group3",
+      "source_rxs": [
+        3,
+        4,
+        6,
+        8,
+        11
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "counts": {
+        "L_s": 1080,
+        "U_s": 10800,
+        "V": 1080
+      },
+      "family": "receiver_count",
+      "endpoint": null
+    },
+    {
+      "setting": "receivers6-group1",
+      "source_rxs": [
+        1,
+        3,
+        4,
+        6,
+        8,
+        11
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "counts": {
+        "L_s": 1080,
+        "U_s": 10800,
+        "V": 1080
+      },
+      "family": "receiver_count",
+      "endpoint": null
+    },
+    {
+      "setting": "leaveD0",
+      "source_rxs": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "counts": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "family": "leave_date_out",
+      "endpoint": 0
+    },
+    {
+      "setting": "leaveD1",
+      "source_rxs": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_days": [
+        0,
+        2,
+        3
+      ],
+      "counts": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "family": "leave_date_out",
+      "endpoint": 1
+    },
+    {
+      "setting": "leaveD2",
+      "source_rxs": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_days": [
+        0,
+        1,
+        3
+      ],
+      "counts": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "family": "leave_date_out",
+      "endpoint": 2
+    },
+    {
+      "setting": "leaveD3",
+      "source_rxs": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_days": [
+        0,
+        1,
+        2
+      ],
+      "counts": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "family": "leave_date_out",
+      "endpoint": 3
+    },
+    {
+      "setting": "forwardD2",
+      "source_rxs": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_days": [
+        0,
+        1
+      ],
+      "counts": {
+        "L_s": 4200,
+        "U_s": 37800,
+        "V": 18000
+      },
+      "family": "forward_date",
+      "endpoint": 2
+    }
+  ]
+}

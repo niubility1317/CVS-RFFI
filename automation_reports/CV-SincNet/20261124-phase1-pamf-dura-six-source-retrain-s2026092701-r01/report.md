@@ -3,7 +3,7 @@
 - run_id：`20261124-phase1-pamf-dura-six-source-retrain-s2026092701-r01`
 - group_id：`phase1-pamf-advisor-six-source-dura-retrain`；类别：`comparison`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 登记状态：RUNNING（N607 启动 VERIFIED）
+- 登记状态：ANALYZED（N607 完成 VERIFIED）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-正式复测尚无结果。已完成新 G 的源训练第 1 轮，后续依次完成全部八阶段、冻结恢复、三个识别器的预测以及独立评分。
+三种子七景正式复测与独立评分均已完成。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -41,3 +41,7 @@
 ## N607 启动证据
 
 源码适配提交为 `ea9e01a579d8f3838038b4fb6cf02a9a99ab3ae1`。GPU 2 上的运行日志确认 coarse 第 1 轮已完成 247 次更新，损失 1.222355，L/U 暴露为 6,254/56,978。真实权重冒烟通过，查询读取为 0。历史同配方八阶段训练约 5 小时 23 分钟，实际用时取决于同机负载。[启动核验](n607_launch_readback.json)
+
+## 已完成结果
+
+N607 完成 VERIFIED。八阶段 39,520 次更新，三种子七景预测及独立评分全部完整。独立复算 3,528 个混淆矩阵和 2,352 组净纠错计数。 [详细结果](results.md) · [独立完成证据](completion_verification.json)

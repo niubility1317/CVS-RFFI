@@ -3,7 +3,7 @@
 - run_id：`20261124-phase1-pamf-advisor-external-m96-r01`
 - group_id：`phase1-pamf-advisor-external-full-pl`；类别：`comparison`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 登记状态：RUNNING（N607 启动 VERIFIED）
+- 登记状态：ANALYZED（N607 完成 VERIFIED）
 
 ## 目的与对照
 
@@ -34,8 +34,12 @@ RIEI、DRIFT、IB-RFF 和 SDG 各覆盖 24 个设置，共 96 个从零训练模
 
 基线使用独立 N607 运行目录。每卡至多一个本 run GPU worker，入队时核实至少 3400 MiB 空闲。既有 D 配方的四种 F0 运行 CUDA 峰值分配为 77 至 601 MiB。预测完成后交给独立评分进程。提交的控制器也允许原自适应 Tri 队列先派发具备数据依赖的训练，训练用 8000 MiB 空闲阈值，预测保留 11000 MiB，已有 worker 继续运行。
 
-## 最新调度状态
+## 启动记录
 
 N607 启动 VERIFIED。真实权重无查询冒烟通过，四种方法均已开始训练。首批 8 行各自在 GPU 0–7 上运行，PID、工作目录、命令行、CUDA 和实际训练配置已核对。
 
-运行代码提交为 `cd788bad712a0721e8522098c59765e291a17cdd`。首批对应 630 和 3150 条预算，每种方法各两行。其余 88 行训练待派发，正式评分尚未完成。
+运行代码提交为 `cd788bad712a0721e8522098c59765e291a17cdd`。首批对应 630 和 3150 条预算，每种方法各两行。其余 88 行随后由调度器派发。
+
+## 已完成结果
+
+N607 完成 VERIFIED。96 行完整训练、预测和独立评分。全部设置与自适应 Tri 结果对齐相同的源角色和目标物理 ID。 [详细结果](../20261124-phase1-pamf-advisor-adaptive-m48-r01/results.md) · [独立完成证据](../20261124-phase1-pamf-advisor-adaptive-m48-r01/completion_verification.json)
