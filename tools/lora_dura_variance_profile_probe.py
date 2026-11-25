@@ -16,43 +16,17 @@ from experiments.pamf_lora_main.channel_blind_source import partition
 from experiments.pamf_lora_main.data import SOURCE
 from experiments.pamf_lora_main.dura_capacity_source import RECIPES, RUN, recover
 from experiments.pamf_lora_main.dura_repair import PacketRestorer, complex_iq, real_iq
+from experiments.pamf_lora_main.dura_variance_profile import received_profile, relative_log, short_time_bands
 from experiments.pamf_lora_main.full_packet_views import source_contract, source_role
 from experiments.pamf_lora_main.joint_unroll_source import coordinates
-from experiments.pamf_lora_main.lapped_posterior import analysis
 from experiments.pamf_lora_main.packet_physics import chirp_windows
 from experiments.pamf_lora_main.spectral_block_source import load_models
 from tools.lora_robust_observation_probe import FIELDS, ORIGIN_CODE, fidelity
 
 
-WINDOW, HOP = 64, 32
 ARMS = ('direct', 'expanded_half', 'local_variance', 'shifted_variance')
 CONDITIONS = ('clean', *((kind, dose) for dose in (.18, .38)
                         for kind in ('white', 'colored', 'burst', 'uneven_chirps')))
-
-
-def short_time_bands(y):
-    device, dtype = y.device, y.real.dtype
-    window = ((torch.arange(WINDOW, device=device, dtype=dtype)+.5)*torch.pi/WINDOW).sin()
-    frequency = torch.fft.fftshift(torch.fft.fftfreq(WINDOW, device=device, dtype=dtype))
-    positive = (frequency >= .25) & (frequency <= .4375)
-    negative = (frequency <= -.25) & (frequency >= -.4375)
-    energy = analysis(y, window).abs().square()
-    return torch.stack([energy[..., band].mean(-1) for band in (positive, negative)], dim=-1)
-
-
-def relative_log(power):
-    logged = power.clamp_min(1e-10).log()
-    return logged-logged.mean(-2, keepdim=True)
-
-
-def received_profile(y):
-    sided = relative_log(short_time_bands(y))
-    first, second = sided.unbind(-1)
-    agree = (first*second).sum(-1) / (first.square().sum(-1)*second.square().sum(-1)).clamp_min(1e-10).sqrt()
-    change = (.75*agree.clamp(0., 1.)[..., None] * sided.mean(-1)).clamp(-log(2.), log(2.))
-    fraction = torch.arange(HOP, device=y.device, dtype=y.real.dtype)/HOP
-    weights = (change[..., None]*(1.-fraction) + change.roll(-1, dims=-1)[..., None]*fraction)
-    return weights.flatten(-2).exp(), agree, change
 
 
 def inject(reference, condition):

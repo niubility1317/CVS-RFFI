@@ -87,16 +87,13 @@ def bind(rt, device):
     return {SEED: load_reader(Path(rt['run_root']), contract, device)}, restore, contract
 
 
-def bind_source_controls(rt, route, contract, device):
-    from experiments.pamf_lora_main.dura_capacity_source import RECIPES, READOUTS, recover
+def bind_source_reference(rt, route, contract, device):
     from experiments.pamf_lora_main.dura_repair import PacketRestorer
     from experiments.pamf_lora_main.full_dura_detail import half_baseline, phase_baseline_models
     from experiments.pamf_lora_main.full_supervised import handles
     from experiments.pamf_lora_main import residual_dura as residual
-    from experiments.pamf_lora_main.spectral_block_source import load_models
 
     root = Path(rt['run_root'])
-    project = root.parent.parent
     source = Path(rt['source_root'])
     if route == 'full':
         _, cache, reference_contract = handles(dict(rt, parent_root=str(root.parent/replay.DATA)))
@@ -113,6 +110,15 @@ def bind_source_controls(rt, route, contract, device):
             projected = projector.restore(flat, g(flat)).reshape_as(iq)
             return iq + .5*(projected-iq), None
 
+    return source, cache, contract, reference, PacketRestorer('consensus').to(device).eval()
+
+
+def load_expanded(rt, contract, device):
+    from experiments.pamf_lora_main.dura_capacity_source import RECIPES
+    from experiments.pamf_lora_main.spectral_block_source import load_models
+
+    root = Path(rt['run_root'])
+    project = root.parent.parent
     archived = read(project/'releases'/f'{expanded.ORIGIN}-release'/'runtime.json')
     if (archived['run_id'], archived['code_commit']) != (expanded.ORIGIN, expanded.ORIGIN_CODE):
         raise ValueError('Unexpected expanded DURA checkpoint ancestry')
@@ -121,13 +127,21 @@ def bind_source_controls(rt, route, contract, device):
     models, threshold = load_models(reference_root, contract, device, {'expanded': RECIPES['expanded']})
     if summary['threshold'] != threshold:
         raise ValueError('The expanded DURA source threshold differs')
-    tracker = PacketRestorer('consensus').to(device).eval()
+    return models, threshold
+
+
+def bind_source_controls(rt, route, contract, device):
+    from experiments.pamf_lora_main.dura_capacity_source import READOUTS, recover
+
+    binding = bind_source_reference(rt, route, contract, device)
+    tracker = binding[-1]
+    models, threshold = load_expanded(rt, contract, device)
 
     def expanded_half(iq):
         waves, _, _ = recover(iq, tracker, models, threshold)
         return waves[READOUTS.index('half')]
 
-    return (source, cache, contract, reference, tracker), expanded_half
+    return binding, expanded_half
 
 
 def predict_source(rt, route):

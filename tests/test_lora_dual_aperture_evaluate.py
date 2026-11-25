@@ -3,6 +3,7 @@ import pytest
 
 from experiments.cric_dura_comparison.io import write
 from experiments.pamf_lora_main import dura_dual_aperture_evaluate as pilot, weak_guard_target as replay
+from experiments.pamf_lora_main import dura_variance_profile_evaluate as variance
 from experiments.pamf_lora_main.data import TARGET, VIEWS
 from tools import lora_dual_aperture_pilot_score as scorer, lora_weak_guard_target_score as scoring
 
@@ -27,11 +28,14 @@ def test_must_reach_fixed_optimizer_endpoint_before_eval(tmp_path):
     assert pilot.check_frozen(tmp_path, 'dual_aperture', 40000) == terminal
 
 
-def test_align_pilot_contiguous_physical_prefix_and_controls_before_truth(tmp_path, monkeypatch):
+@pytest.mark.parametrize('experiment', (pilot, variance))
+def test_align_pilot_contiguous_physical_prefix_and_controls_before_truth(tmp_path, monkeypatch, experiment):
     folder = tmp_path/'predictions'
-    write(folder/'complete.json', pilot.completion())
+    write(folder/'complete.json', experiment.completion())
     write(tmp_path/'smoke.json', dict(status='PASS', target_reads=0, seeds=[pilot.SEED]))
-    expected = pilot.expected_files()
+    if experiment is variance:
+        variance.freeze_rule(tmp_path, None)
+    expected = experiment.expected_files()
     for path in expected:
         file = folder/path
         file.parent.mkdir(parents=True, exist_ok=True)
@@ -46,8 +50,8 @@ def test_align_pilot_contiguous_physical_prefix_and_controls_before_truth(tmp_pa
         return prefix if count == pilot.PER_RECEIVER else original
 
     monkeypatch.setattr(scoring, 'predictions', predictions)
-    result = scorer.frozen_rows(tmp_path, None, None, None, None)
-    assert result['full']['dual_aperture_half'].shape == (1, 7, 15, 200)
+    result = scorer.frozen_rows(tmp_path, None, None, None, None, experiment=experiment)
+    assert result['full'][experiment.MODE].shape == (1, 7, 15, 200)
     assert (result['residual']['dura_half'] == 0).all()
 
     def drift(path, mode, count=2000):
@@ -56,4 +60,4 @@ def test_align_pilot_contiguous_physical_prefix_and_controls_before_truth(tmp_pa
 
     monkeypatch.setattr(scoring, 'predictions', drift)
     with pytest.raises(ValueError, match='direct decisions differ'):
-        scorer.score(tmp_path, None, None, None, None, tmp_path/'absent_truth')
+        scorer.score(tmp_path, None, None, None, None, tmp_path/'absent_truth', experiment=experiment)
