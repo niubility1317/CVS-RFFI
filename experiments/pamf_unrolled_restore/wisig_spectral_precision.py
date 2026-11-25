@@ -12,6 +12,7 @@ from experiments.pamf_unrolled_restore.wisig_uncertain_prior import as_complex, 
 
 
 ARMS = ('fixed_precision', 'spectral_precision')
+PHASE_ARM = 'phase_fidelity'
 
 
 class SpectralWeight(nn.Module):
@@ -55,7 +56,7 @@ def spectral_map(action, prior, initial, variance, error, weight):
 
 class PrecisionFIR(NativeFIR):
     def __init__(self, arm):
-        if arm not in ARMS:
+        if arm not in (*ARMS, PHASE_ARM):
             raise ValueError('Registered WiSig precision arm required')
         super().__init__(centered=True)
         self.spectral_weights = nn.ModuleList(SpectralWeight() for _ in range(2)) if arm == ARMS[1] else None
@@ -89,12 +90,19 @@ class PrecisionFIR(NativeFIR):
         return tuple(output), action
 
 
-def source_objective(model, source, generator):
-    loss, costs = objective(model, source, generator, identity=True)
+def source_objective(model, source, generator, *, phase_fidelity=False):
+    if phase_fidelity:
+        from wisig_phase_fidelity import PHASE_WEIGHT, objective_components
+
+        loss, costs, phases = objective_components(model, source, generator)
+        loss = loss + PHASE_WEIGHT * (.25*phases[0] + .75*phases[1])
+    else:
+        loss, costs = objective(model, source, generator, identity=True)
     clean = source[-4:]
     stages, _ = model.stages(model.analyze(clean))
     clean_error = normalized_error(stages[-1], clean)
-    return loss + .20 * clean_error, torch.cat((costs, clean_error[None]))
+    details = (costs, clean_error[None], phases) if phase_fidelity else (costs, clean_error[None])
+    return loss + .20 * clean_error, torch.cat(details)
 
 
 def check_spectral_map(device):

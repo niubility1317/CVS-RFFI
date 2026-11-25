@@ -1,0 +1,183 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261125-phase1-wisig-phase-fidelity-source-s2026092701-r01",
+  "group_id": "phase1-wisig-observable-recovery",
+  "display_name": "WiSig 合法源 IQ 相位保真训练",
+  "description": "Add one local regularized phase chord loss to the two MAP-stage outputs of the matched scalar-weight recipe.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source_only",
+    "restoration",
+    "full_and_residual",
+    "all_packets"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261125-phase1-wisig-spectral-precision-source-m2-r01",
+    "20261125-diagnostic-wisig-stage-polar-source-s2026112501-r01",
+    "20261125-phase1-wisig-native-fir-source-m4-r01",
+    "20261125-diagnostic-wisig-native-fir-first-map-precision-source-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa and WiSig restoration research goal, single-seed source qualification.",
+  "code": {
+    "commit": null,
+    "checkout": "E:/codex/home/worktrees/lora-dura-stage-supervision/standard_ce_baselines_20261010",
+    "environment": "N607 archived native FIR runtime Python (see runtime.json)",
+    "cwd": "releases/20261125-phase1-wisig-native-fir-source-m4-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig ManySig",
+    "version": "Main split F0",
+    "representation": "Native float32 [2,256], 25 MS/s, paired full and residual source panel",
+    "contract_ref": "runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json",
+    "physical_ids_ref": "runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/validation/physical_ids.npy",
+    "label_map_ref": "Registered F0 source physical IDs and frozen 6-class Tri-SIG-TIME reader",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": 56700,
+      "V": 1800
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": "runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only phase loss matched to the existing scalar arm. G fitting has zero label, F, prior-checkpoint, trace or target access."
+  },
+  "checkpoint": {
+    "initialization": "Matched random scratch with fixed_precision seed",
+    "sources": [
+      {
+        "ref": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+        "role": "frozen Tri-SIG-TIME source V reader seed 2026092701"
+      },
+      {
+        "ref": "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+        "role": "registered same-source paired R69 decisions, comparator only"
+      }
+    ],
+    "contract_check_ref": "report.md and fit-inputs.json",
+    "provenance_verdict": "No parent checkpoint is loaded by the candidate. Prior R69 and reader are used only for frozen comparisons.",
+    "selection_rule": "Freeze at 40,000. Report both source routes against direct, same-row R69 and independent same-budget scalar control. No target access in this run."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex goal 01a208a9-57df-7f82-a078-cd9477adf998",
+    "gpu_policy": "One eligible GPU, priority by actual utilization and free VRAM. CPU-only truth-last scorer.",
+    "remote_run_root": "runs/20261125-phase1-wisig-phase-fidelity-source-s2026092701-r01",
+    "remote_log_root": "runs/20261125-phase1-wisig-phase-fidelity-source-s2026092701-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261125-phase1-wisig-phase-fidelity-source-s2026092701-r01",
+    "launch_command": "python -m experiments.pamf_unrolled_restore.wisig_spectral_precision_source publish --phase-fidelity --repo . --context E:/type10-7/local_artifacts/20261125-phase1-wisig-phase-fidelity-source-s2026092701-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261125-phase1-wisig-phase-fidelity-source-s2026092701-r01/release",
+    "stop_rule": "Stop downstream on contract, archived loss/RNG parity, finite stages and gradients, checkpoint, source comparator coverage, IQ input or scoring mismatches. Preserve partial outputs."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "fit-inputs.json",
+    "{arm}-train-smoke.json",
+    "{arm}.pt",
+    "{arm}-complete.json",
+    "smoke.json",
+    "predictions/{route}_{view}.npz",
+    "predictions/complete.json",
+    "source-scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "correct counts",
+      "accuracy",
+      "paired gains and losses",
+      "95% paired intervals",
+      "held U IQ loss",
+      "B1 restoration latency",
+      "train time",
+      "GPU peak",
+      "parameters",
+      "first MAP phase chord",
+      "final MAP phase chord"
+    ],
+    "dimensions": [
+      "arm",
+      "stage",
+      "route",
+      "view",
+      "receiver",
+      "seed"
+    ],
+    "prediction_ref": "runs/20261125-phase1-wisig-phase-fidelity-source-s2026092701-r01/predictions",
+    "scorer_ref": "experiments/pamf_unrolled_restore/wisig_spectral_precision_source.py score"
+  },
+  "rows": [
+    {
+      "row_id": "phase_fidelity",
+      "method": "Fixed scalar 8/1 observation precision plus a 0.20 source phase chord loss",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_unrolled_restore/wisig_spectral_precision_source.py",
+      "resolved_config_ref": "runs/20261125-phase1-wisig-phase-fidelity-source-s2026092701-r01/fit-inputs.json",
+      "data_overrides": {
+        "role": "U_s IQ",
+        "training_count": 52092,
+        "held_U_count": 512
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 2026092701,
+        "data": 2026092703,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Split seed here partitions the fixed U_s source subset. Held augmentation is 2026092706. No support or new evaluation draw; evaluation seed identifies the reader.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW cosine 3e-4 to 3e-5, weight decay 1e-4",
+      "lr": 0.0003,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "40000 steps, batch 24, two stages trained jointly",
+      "output_root": "runs/20261125-phase1-wisig-phase-fidelity-source-s2026092701-r01/phase_fidelity.pt",
+      "log_path": "runs/20261125-phase1-wisig-phase-fidelity-source-s2026092701-r01/train-phase_fidelity.log",
+      "command": "archived Python -u releases/20261125-phase1-wisig-phase-fidelity-source-s2026092701-r01-release/experiments/pamf_unrolled_restore/wisig_spectral_precision_source.py train runs/20261125-phase1-wisig-phase-fidelity-source-s2026092701-r01/fit-inputs.json phase_fidelity",
+      "expected_artifacts": [
+        "phase_fidelity-complete.json",
+        "phase_fidelity.pt"
+      ]
+    }
+  ],
+  "notes": [
+    "One new arm, exact initialization, U membership, optimizer schedule and disturbances matched to the active scalar control.",
+    "The two MAP phase costs are emitted after the original per-stage metrics. No phase loss runs during deployment."
+  ],
+  "registered_at": "2026-11-25T15:34:36+00:00"
+}
