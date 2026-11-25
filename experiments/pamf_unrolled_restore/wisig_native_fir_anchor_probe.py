@@ -1,4 +1,4 @@
-"""Compare two fixed input anchors using a frozen WiSig native FIR model."""
+"""Isolate first-stage design choices in a frozen WiSig native FIR model."""
 
 import argparse
 import os
@@ -10,14 +10,16 @@ from experiments.cric_dura_comparison.io import read, tensor, write
 
 
 RUN = '20261125-diagnostic-wisig-native-fir-anchor-source-m2-r01'
+PRECISION_RUN = '20261125-diagnostic-wisig-native-fir-first-map-precision-source-m2-r01'
 PARENT = '20261125-phase1-wisig-native-fir-source-m4-r01'
 PARENT_COMMIT = 'ef9f4c227ce57c79dc17a3aeb599395cc25d883b'
 ROUTES = ('full', 'residual')
 ARMS = ('learned_anchor', 'received_anchor')
-MODES = ('direct', 'r69', *(f'{arm}_{stage}' for arm in ARMS for stage in ('map_1', 'final')))
-COMPARISONS = (('received_anchor_map_1', 'learned_anchor_map_1'),
-               ('received_anchor_final', 'learned_anchor_final'),
-               ('received_anchor_final', 'direct'), ('received_anchor_final', 'r69'))
+PRECISION_ARMS = ('original_precision', 'first_map_8x_precision')
+
+
+def modes_for(arms):
+    return ('direct', 'r69', *(f'{arm}_{stage}' for arm in arms for stage in ('map_1', 'final')))
 
 
 def reference(rt):
@@ -36,21 +38,48 @@ def models_from(rt):
     return ((model, False), (model, True))
 
 
-def proposals(model, use_received, received):
+def precision_readouts(model, analysis, first_multiplier):
+    import torch
+    from experiments.pamf_r65_inference.program import reused_map
+    from experiments.pamf_unrolled_restore.wisig_native_fir import SCALE, SAMPLES, WindowAction
+    from experiments.pamf_unrolled_restore.wisig_uncertain_prior import as_complex, as_iq
+
+    value, level, base, kernel, main, image, variance = analysis
+    action = WindowAction(kernel, main, image, model.support)
+    iq = as_iq(value)
+    current = as_complex(base)
+    logvar = variance.log().clamp(-16, 4)[:, :, None].expand(-1, -1, SAMPLES) / 8
+    stages = []
+    for network, multiplier in zip(model.priors, (first_multiplier, 1), strict=True):
+        innovation = action.adjoint(value - action(current))
+        features = as_iq(innovation)
+        features = features / (features.square().mean((1, 2), keepdim=True) + 1e-6).sqrt()
+        prior = as_complex(base + SCALE * network(torch.cat((iq, base, as_iq(current), features, logvar), 1)))
+        current = reused_map(action, prior, current, variance / multiplier, innovation)
+        stages.append(current * level)
+    return tuple(stages)
+
+
+def proposals(model, alternative, received, *, precision_probe=False):
     import torch
     from experiments.pamf_unrolled_restore.wisig_uncertain_prior import as_iq
 
-    value, level, base, *estimates = model.analyze(received)
-    if use_received:
-        base = as_iq(value)
-    stages, _ = model.stages((value, level, base, *estimates))
+    analysis = model.analyze(received)
+    if precision_probe and alternative:
+        readouts = precision_readouts(model, analysis, 8)
+    else:
+        value, level, base, *estimates = analysis
+        if alternative:
+            base = as_iq(value)
+        stages, _ = model.stages((value, level, base, *estimates))
+        readouts = (stages[2], stages[4])
     count = len(received)
     active = torch.ones(count, dtype=torch.bool, device=received.device)
     offsets = torch.zeros(count, dtype=torch.int64, device=received.device)
-    return (stages[2], stages[4]), active, offsets
+    return readouts, active, offsets
 
 
-def smoke(rt, original):
+def smoke(rt, original, *, precision_probe):
     import torch
     from experiments.pamf_unrolled_restore.wisig_anchored_window_source import classify, core, tri
     from experiments.pamf_unrolled_restore.wisig_native_fir import disturb
@@ -63,25 +92,32 @@ def smoke(rt, original):
         (model, _), _ = models_from(rt)
         perturbed = disturb(received, torch.Generator(device='cuda:0').manual_seed(2026112507), model)
         for y in (received, perturbed):
-            expected, *_ = model.restore(model.analyze(y))
-            for anchor in (False, True):
-                stages, active, _ = proposals(model, anchor, y)
+            analysis = model.analyze(y)
+            expected, *_ = model.restore(analysis)
+            if precision_probe:
+                for stage, old in zip(precision_readouts(model, analysis, 1), (expected[2], expected[4]), strict=True):
+                    torch.testing.assert_close(stage, old, rtol=5e-5, atol=5e-6)
+            for alternative in (False, True):
+                stages, active, _ = proposals(model, alternative, y, precision_probe=precision_probe)
                 if not bool(active.all()) or any(x.shape != y.shape for x in stages):
                     raise ValueError('Every packet must complete both MAP stages')
                 for stage in stages:
                     classify(reader, stage)
-                if not anchor:
+                if not alternative:
                     torch.testing.assert_close(stages[1], expected[4], rtol=5e-5, atol=5e-6)
                 elif not bool((stages[1] - y).abs().amax(-1).gt(0).all()):
                     raise ValueError('Frozen MAP stages must update each smoke waveform')
+                elif precision_probe and y is perturbed and torch.allclose(stages[0], expected[2]):
+                    raise ValueError('The first-stage observation weight must change the disturbed readout')
     write(Path(rt['run_root']) / 'smoke.json', dict(status='PASS', count_per_view=8, source_V_reads=0,
            target_reads=0, all_packets_recovered=True))
 
 
-def freeze_predictions(root, parent_root, views, original_modes):
+def freeze_predictions(root, parent_root, views, original_modes, *, arms=ARMS):
     import numpy as np
 
     old_indices = [original_modes.index(name) for name in ('direct', 'r69', 'centered_map_1', 'centered_final')]
+    modes = modes_for(arms)
     summaries = {}
     for route in ROUTES:
         by_route = read(root / f'{route}-complete.json')
@@ -90,33 +126,42 @@ def freeze_predictions(root, parent_root, views, original_modes):
         for key, details in by_route.items():
             with np.load(root / f'{key}.npz', allow_pickle=False) as row, np.load(
                     parent_root / f'{key}.npz', allow_pickle=False) as frozen:
-                if (not np.array_equal(row['ids'], frozen['ids']) or row['decision'].shape != (len(MODES), 1800)
+                if (not np.array_equal(row['ids'], frozen['ids']) or row['decision'].shape != (len(modes), 1800)
                         or not np.array_equal(row['decision'][:4], frozen['decision'][old_indices])):
                     raise ValueError(f'Archived comparison failed to reproduce for {key}')
-            if details['count'] != 1800 or details['active'] != dict.fromkeys(ARMS, 1800):
+            if details['count'] != 1800 or details['active'] != dict.fromkeys(arms, 1800):
                 raise ValueError(f'Missing all-packet restoration for {key}')
         summaries.update(by_route)
-    write(root / 'complete.json', dict(status='FROZEN', count=1800, modes=list(MODES), views=list(views),
+    write(root / 'complete.json', dict(status='FROZEN', count=1800, modes=list(modes), views=list(views),
           source_truth_reads=0, target_reads=0, summaries=summaries))
 
 
 def worker(rt, action):
+    from functools import partial
+
     from experiments.pamf_lora_main.runner import activate
     from experiments.pamf_unrolled_restore.wisig_anchored_window_source import core, evaluate
     from experiments.pamf_unrolled_restore.wisig_native_fir_source import MODES as ORIGINAL_MODES
 
     original = reference(rt)
     current = dict(original, run_root=rt['run_root'])
+    precision_probe = rt['run_id'] == PRECISION_RUN
+    arms = PRECISION_ARMS if precision_probe else ARMS
     if action == 'score':
-        core.baseline.score(current, MODES, comparisons=COMPARISONS)
+        control, alternative = arms
+        comparisons = ((f'{alternative}_map_1', f'{control}_map_1'),
+                       (f'{alternative}_final', f'{control}_final'),
+                       (f'{alternative}_final', 'direct'), (f'{alternative}_final', 'r69'))
+        core.baseline.score(current, modes_for(arms), comparisons=comparisons)
         return
     activate(original)
-    smoke(rt, original)
+    smoke(rt, original, precision_probe=precision_probe)
     root = Path(rt['run_root']) / 'predictions'
     root.mkdir()
     for route in ROUTES:
-        evaluate(current, route, arms=ARMS, models_from=lambda _: models_from(rt), variants=proposals)
-    freeze_predictions(root, Path(original['run_root']) / 'predictions', core.baseline.VIEWS, ORIGINAL_MODES)
+        evaluate(current, route, arms=arms, models_from=lambda _: models_from(rt),
+                 variants=partial(proposals, precision_probe=precision_probe))
+    freeze_predictions(root, Path(original['run_root']) / 'predictions', core.baseline.VIEWS, ORIGINAL_MODES, arms=arms)
 
 
 def dispatch(runtime):
@@ -169,6 +214,7 @@ def main():
     for action in ('dispatch', 'predict', 'score'):
         actions.add_parser(action).add_argument('runtime', type=Path)
     publish = actions.add_parser('publish')
+    publish.add_argument('--first-map-precision', action='store_true')
     for key in ('repo', 'output', 'context', 'ssh-config'):
         publish.add_argument('--' + key, type=Path, required=True)
     args = parser.parse_args()
@@ -179,8 +225,9 @@ def main():
         rt = {key: context[key] for key in ('project', 'python', 'frozen_sources')}
         project = PurePosixPath(rt['project'])
         parent = str(project / 'releases' / f'{PARENT}-release')
-        rt.update(run_id=RUN, runner=__spec__.name, code_commit=release_commit(args.repo), reference=parent,
-                  release_root=str(project / 'releases' / f'{RUN}-release'), run_root=str(project / 'runs' / RUN),
+        name = PRECISION_RUN if args.first_map_precision else RUN
+        rt.update(run_id=name, runner=__spec__.name, code_commit=release_commit(args.repo), reference=parent,
+                  release_root=str(project / 'releases' / f'{name}-release'), run_root=str(project / 'runs' / name),
                   external_releases=[parent, str(project / 'runs' / PARENT)], max_compute_processes=8)
         release(args.repo, args.output, rt, args.ssh_config)
     elif args.action == 'dispatch':
