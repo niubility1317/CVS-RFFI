@@ -9,3 +9,16 @@
 从当前工作树用项目 Python 命令 `python -m experiments.pamf_lora_main.dura_w24_augmented_target publish --repo <checkout> --output <artifact-root>/release --context <runtime_source.json> --ssh-config <config> --training-receipt <fit-release>/submit.json` 发布，代码身份为包含该报告预登记的提交。N607 项目 Python 与不可覆盖发布根由登记的运行配置绑定。训练终点冻结后，按 GPU 空闲度及至少 8 GiB 空闲显存选择卡。先在 12 个合法源 U 包核对真实权重、W24 前端、识别输出和 clean 旁路，再进行四个盲预测分片，每个使用三个 CPU 进程重放信道。
 
 停止条件为训练未合法冻结、源检查失败、物理/识别器契约不符、历史直通决策不匹配、分片或预测闭合失败。总体结果的高低不触发停止。预期产物为 105 个双行预测文件、四个分片完成记录、源 U 检查及冻结状态。独立评分侧冻结后才打开测试归档，计算逐景逐 RX 正确数、改对、改错、净变化及在 RX 内重抽同包的 95% 区间，跨景共用同一包抽样。评分使用 `python -m tools.lora_dura_w24_score score --output <readout> --dataset <truth-archive-directory> --augmented-reference <frozen-archive-predictions>`。
+
+## 已评分对照
+
+| 星地增强 W24 路径 | Clean 正确数 | 六景正确数 | 低强度城区正确数 |
+| --- | ---: | ---: | ---: |
+| 直通 | 28,566 / 30,000 | 133,713 / 180,000 | 14,315 / 30,000 |
+| 旧版 `complex_response_half_center` | 28,566 / 30,000 | 133,813 / 180,000 | 14,473 / 30,000 |
+
+来源为增强 W24 原 run 的独立 `paired_augmented_w24.json`。旧版恢复在六景合计改对 3,514 次，改错 3,414 次。
+
+## 调度状态
+
+`VERIFIED`。N607 调度器的运行目录和命令行与提交 `0f042e1d5eed5bcee008db711bc3af88de73f674` 的发布记录一致，归档传输和远端编译均通过。调度器与独立评分进程均观察到 `WAITING_FOR_FROZEN_TRAINING`。重训 W24 DURA 的目标分数待全量盲预测冻结及独立评分。
