@@ -59,8 +59,8 @@ def measure_views(packet, trackers, disturbance=None):
     return np.asarray(estimates).T, np.asarray(references).T if references else None
 
 
-def generate_noise(iq, kind):
-    rng = np.random.default_rng(SEED)
+def generate_noise(iq, kind, *, seed=SEED):
+    rng = np.random.default_rng(seed)
     white = rng.standard_normal(iq.shape, dtype='float32') + 1j*rng.standard_normal(iq.shape, dtype='float32')
     if kind == 'colored':
         noise = white + .85 * np.roll(white, 1, axis=-1)

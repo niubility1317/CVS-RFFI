@@ -14,7 +14,7 @@ from experiments.pamf_lora_main.dura_apertures import shared_guard_coefficients
 from experiments.pamf_lora_main.dura_repair import PacketRestorer, real_iq
 from experiments.pamf_lora_main.full_packet_views import source_contract, source_role
 from experiments.pamf_lora_main.joint_unroll_source import coordinates
-from tools.lora_w24_shared_guard_probe import FAMILIES, LEVELS, RATES, complex_tensor, extract, generate_noise
+from tools.lora_w24_shared_guard_probe import FAMILIES, LEVELS, RATES, SEED, complex_tensor, extract, generate_noise
 
 
 SCORES = ('direct', 'power_q20', 'balanced_sides', 'all_four_subbands', 'minor_chirp_modes')
@@ -72,11 +72,14 @@ def overlap(quiet, disturbed):
 
 
 @torch.no_grad()
-def measure(source):
+def measure(source, *, confirm=False):
     numerical_policy()
     contract = source_contract(source)
     iq, rx, _, _ = source_role(source, contract, 'U_s')
-    _, calibration, held = partition(rx, fit=4000)
+    _, calibration, held = partition(rx, fit=4000, held=200 if confirm else 100)
+    if confirm:
+        held = held.reshape(len(SOURCE), 200)[:, 100:].ravel()
+    noise_seed = SEED + int(confirm)
     trackers = {rate: PacketRestorer('consensus', samples=rate).eval() for rate in RATES}
     cal_scores = panel(iq[calibration], trackers)[:, :len(SCORES)]
     pooled = 1.05 * cal_scores.max((0, 2))
@@ -100,7 +103,7 @@ def measure(source):
 
     results = {'clean': summarize(quiet)}
     for family in FAMILIES:
-        noise = generate_noise(observed, family)
+        noise = generate_noise(observed, family, seed=noise_seed)
         for level in LEVELS:
             results[f'{family}_{level:.2f}'] = summarize(panel(observed + np.float32(level)*noise, trackers))
     return dict(status='VERIFIED', role='U_s', protocol=contract['protocol'], rates_ksps=RATES,
@@ -108,6 +111,7 @@ def measure(source):
                 guard_bins_by_rate=[shared_guard_coefficients(torch.zeros(n, dtype=torch.complex64)).numel()
                                     for n in RATES],
                 held=len(held), calibration=len(calibration), pooled_thresholds=pooled.tolist(),
+                held_offset_per_rx=4600 if confirm else 4500, noise_seed=noise_seed,
                 leave_receiver_out_thresholds={name: row.tolist() for name, row in by_rx.items()},
                 F_reads=0, TX_reads=0, V_reads=0, target_reads=0, satellite_trace_reads=0)
 
@@ -116,5 +120,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--source', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--confirm', action='store_true')
     args = parser.parse_args()
-    write(args.output, measure(args.source))
+    write(args.output, measure(args.source, confirm=args.confirm))
