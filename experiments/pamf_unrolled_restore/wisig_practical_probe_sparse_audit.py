@@ -28,11 +28,15 @@ def tune(source, first, second, third, fourth, output):
     bank = np.load(source, allow_pickle=False)
     if bank.shape != (12, matched.protocol.panel.NDEV, matched.model.receive.SAMPLES):
         raise ValueError("Expected the original receive-only source U bank")
+    fit, held = np.split(np.random.default_rng(matched.protocol.panel.SEED).permutation(bank.shape[1]), [96])
+    fit_bank(bank, fit, held, first, second, third, fourth, output)
+
+
+def fit_bank(bank, fit, held, first, second, third, fourth, output):
     operators = previous.gate_audit.load_operators(first, second)
     noise_prior = previous.noise_prior(third)
     protection = read(fourth)["protection_scale"]
     prior, _, _, original = operators
-    fit, held = np.split(np.random.default_rng(matched.protocol.panel.SEED).permutation(bank.shape[1]), [96])
     source_rows, held_rows = (bank[:, ids].transpose(1, 0, 2).astype(np.complex128) for ids in (fit, held))
     dense, compact = (f(source_rows, prior) for f in (sparse.relative.target_columns, sparse.target_columns))
     held_dense, held_sparse = (f(held_rows, prior) for f in (sparse.relative.target_columns, sparse.target_columns))
