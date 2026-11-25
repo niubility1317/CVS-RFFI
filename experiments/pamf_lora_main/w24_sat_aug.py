@@ -25,7 +25,14 @@ from experiments.pamf_lora_main.w24_native_full import (
 )
 
 
-RUN = '20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01'
+RUNS = {seed: f'20261125-phase1-lora-pamf-w24-sat-aug-s{seed}-r01'
+        for seed in (2026092701, SEED, 2026092703)}
+RUN = RUNS[SEED]
+GPU_ORDER = {
+    2026092701: [2, 3, 5],
+    SEED: [2, 3, 6, 5, 7, 0, 1, 4],
+    2026092703: [7, 6, 0],
+}
 MODES = ('direct', 'complex_response_half_center')
 EPOCHS = 112
 AUG_SEED = 2026112548
@@ -76,10 +83,36 @@ def augmentation_cache(source, contract, receivers, root, workers):
     return output
 
 
+def reused_augmentation(rt, contract):
+    cache = Path(rt['source_augmentation_root'])
+    parent = read(cache / 'source-runtime.json')
+    if (cache.name != RUN or parent['run_root'] != str(cache)
+            or any(parent[k] != rt[k] for k in ('source_root', 'clean_cache'))):
+        raise ValueError('Augmented reference cache uses different registered source data')
+    count = contract['counts']['L_s']
+    expected = dict(status='SOURCE_READY', role='L_s', count=count, draws=2,
+                    modes=list(PRACTICAL), seed=AUG_SEED, source_protocol=contract['protocol'], target_reads=0)
+    if read(cache / 'satellite_source.json') != expected:
+        raise ValueError('Augmented reference cache metadata differs')
+    data = np.load(cache / 'L_s_satellite.npy', mmap_mode='r', allow_pickle=False)
+    if data.shape != (2, count, 8, 2, 432) or data.dtype != np.float32:
+        raise ValueError('Augmented reference cache shape or dtype differs')
+    return data
+
+
+def identity(rt):
+    seed = rt['model_seed']
+    name = RUNS[seed]
+    if rt['run_id'] != name or Path(rt['run_root']).name != name:
+        raise ValueError('W24 seed does not match the immutable registered run')
+    return seed, name
+
+
 def fit(rt):
     from experiments.pamf_lora_main import tri_clean95 as original
 
     activate(rt)
+    seed, name = identity(rt)
     root, src = Path(rt['run_root']), Path(rt['source_root'])
     contract = source_contract(src)
     row = original.NATIVE_WIDE_ROWS[METHOD]
@@ -93,7 +126,8 @@ def fit(rt):
                                         native_edges=True, edge_points=24)
     if read(clean / 'complete.json') != expected:
         raise ValueError('Original W24 clean source cache differs')
-    satellite_cache = augmentation_cache(src, contract, rn, root, rt['cpu_workers'])
+    satellite_cache = (reused_augmentation(rt, contract) if 'source_augmentation_root' in rt
+                       else augmentation_cache(src, contract, rn, root, rt['cpu_workers']))
     def load(role):
         return tensor(np.load(clean / f'{role}.npy', mmap_mode='r', allow_pickle=False), device)
 
@@ -104,16 +138,16 @@ def fit(rt):
     ur = tensor(original.labels(src, contract, 'U_s'), device)
     vy, vr = (tensor(k, device) for k in original.labels(src, contract, 'V'))
     satellite = (tensor(satellite_cache[0], device), tensor(satellite_cache[1], device))
-    original.seed_all(SEED)
+    original.seed_all(seed)
     f = original.clean_model(dict(scratch=True), root, contract, row, device)
-    original.seed_all(SEED)
+    original.seed_all(seed)
     with torch.no_grad():
         if any(not torch.isfinite(f(wave[:2])[0]).all() for wave in (x, satellite[0])):
             raise FloatingPointError('Real W24 clean and synthetic source smoke failed')
     # Reconstruct after smoke so the original initialization, buffers and RNG match.
-    original.seed_all(SEED)
+    original.seed_all(seed)
     f = original.clean_model(dict(scratch=True), root, contract, row, device)
-    original.seed_all(SEED)
+    original.seed_all(seed)
     write(root / 'fit-smoke.json', dict(status='PASS', clean_packets=2, augmented_packets=2, target_reads=0))
 
     steps_per_epoch = original.STEPS
@@ -128,7 +162,7 @@ def fit(rt):
     optimizer = torch.optim.AdamW(f.parameters(), lr=row.get('lr', 3e-4), weight_decay=5e-4)
     schedule = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_factor)
     rng = np.random.default_rng(721)
-    ugen = torch.Generator(device=device).manual_seed(SEED)
+    ugen = torch.Generator(device=device).manual_seed(seed)
     settings = dict(mechanism=original.terms(row), ordinary_std=row.get('ordinary_std', .015),
                     clean_anchor_weight=row.get('clean_anchor_weight', 0.),
                     rtl_weight=row.get('rtl_weight', 1.), pair_margin_weight=row.get('pair_margin_weight', 0.),
@@ -180,8 +214,8 @@ def fit(rt):
                   row_log.get('V', {}).get('accuracy'), flush=True)
     if step != updates or best is None:
         raise ValueError('Incomplete W24 satellite enhancement training budget')
-    write(out / 'complete.json', dict(status='SOURCE_FROZEN', method=RUN, contract=contract,
-          w24_recipe_commit=W24_COMMIT, seed=SEED, initialization='random_seed', epochs=EPOCHS,
+    write(out / 'complete.json', dict(status='SOURCE_FROZEN', method=name, contract=contract,
+          w24_recipe_commit=W24_COMMIT, seed=seed, initialization='random_seed', epochs=EPOCHS,
           steps=step, frozen=best, clean_only=False, satellite_batches=step, satellite_source_role='L_s',
           satellite_weight=AUG_WEIGHT, target_reads=0, U_truth_reads=0))
 
@@ -195,12 +229,15 @@ def evaluate(rt):
     from experiments.pamf_lora_main.tri_clean95 import NATIVE_WIDE_ROWS, clean_model
 
     activate(rt)
+    seed, name = identity(rt)
     root, device = Path(rt['run_root']), 'cuda:0'
     contract = source_contract(Path(rt['source_root']))
     artifact = read(root / 'F' / 'complete.json')
-    if (artifact['status'] != 'SOURCE_FROZEN' or artifact['method'] != RUN or artifact['contract'] != contract
-            or artifact['clean_only'] or artifact['satellite_batches'] != 9856
-            or artifact['frozen']['epoch'] not in ELIGIBLE or artifact['target_reads']):
+    if (artifact['status'] != 'SOURCE_FROZEN' or artifact['method'] != name or artifact['contract'] != contract
+            or artifact['seed'] != seed or artifact['w24_recipe_commit'] != W24_COMMIT
+            or artifact['clean_only'] or artifact['satellite_batches'] != 9856 or artifact['steps'] != 9856
+            or artifact['satellite_source_role'] != 'L_s' or artifact['satellite_weight'] != AUG_WEIGHT
+            or artifact['frozen']['epoch'] not in ELIGIBLE or artifact['target_reads'] or artifact['U_truth_reads']):
         raise ValueError('Frozen augmented W24 checkpoint does not match the registered training recipe')
     f = clean_model(dict(scratch=True), root, contract, NATIVE_WIDE_ROWS[METHOD], device)
     f.load_state_dict(torch.load(root / 'F' / 'best.pt', map_location=device, weights_only=True), strict=True)
@@ -209,18 +246,21 @@ def evaluate(rt):
     raw = native(Path(rt['source_root']), 'U_s', contract['counts']['U_s'])[:4]
     for wave in render(raw, g, device):
         classify(f, wave, device)
-    write(root / 'smoke.json', dict(status='PASS', classifier_run=RUN, source_U_packets=4, target_reads=0))
-    predict(rt, (f, *g), device, render=render, modes=MODES, classifier_run=RUN)
+    write(root / 'smoke.json', dict(status='PASS', classifier_run=name, source_U_packets=4, target_reads=0))
+    predict(rt, (f, *g), device, render=render, modes=MODES, classifier_run=name, seed=seed)
 
 
 def dispatch(runtime):
     rt = read(runtime)
+    seed, name = identity(rt)
     root, reference = Path(rt['run_root']), Path(rt['w24_release_root'])
     root.mkdir()
     if read(reference / 'submit.json')['code_commit'] != W24_COMMIT:
         raise ValueError('Original W24 source implementation required')
     source_runtime = root / 'source-runtime.json'
-    write(source_runtime, {k: rt[k] for k in ('run_root', 'source_root', 'frozen_sources', 'clean_cache', 'cpu_workers')})
+    legal = ('run_id', 'model_seed', 'run_root', 'source_root', 'frozen_sources', 'clean_cache', 'cpu_workers',
+             'source_augmentation_root')
+    write(source_runtime, {k: rt[k] for k in legal if k in rt})
     write(root / 'state.json', dict(status='WAIT_GPU'))
     deadline = time.monotonic() + 3600
     while not (cards := available(rt['allowed_gpus'], max_compute_processes=rt['max_compute_processes'])):
@@ -240,7 +280,7 @@ def dispatch(runtime):
             if proc.wait():
                 write(root / 'state.json', dict(status='FAILED', error=phase, gpu=gpu), exclusive=False)
                 return
-    if read(root / 'predictions' / 'complete.json') != receipt(MODES, classifier_run=RUN):
+    if read(root / 'predictions' / 'complete.json') != receipt(MODES, classifier_run=name, seed=seed):
         raise ValueError('Frozen W24 satellite matrix differs')
     write(root / 'state.json', dict(status='PREDICTIONS_FROZEN', gpu=gpu), exclusive=False)
 
@@ -255,9 +295,11 @@ def main():
     publish = commands.add_parser('publish')
     for key in ('repo', 'context', 'ssh-config', 'output'):
         publish.add_argument('--' + key, type=Path, required=True)
+    publish.add_argument('--seed', type=int, choices=RUNS, default=SEED)
     scoring = commands.add_parser('score')
     for key in ('predictions', 'dataset', 'output'):
         scoring.add_argument('--' + key, type=Path, required=True)
+    scoring.add_argument('--seed', type=int, choices=RUNS, default=SEED)
     args = parser.parse_args()
     if args.action == 'publish':
         context = read(args.context)
@@ -265,16 +307,23 @@ def main():
         project = PurePosixPath(rt['project'])
         native_data = project / 'releases' / f'{DATA_RUN}-release' / 'data'
         w24_root = project / 'runs' / W24_RUN
-        rt.update(run_id=RUN, code_commit=release_commit(args.repo), runner=__spec__.name,
-                  release_root=str(project / 'releases' / f'{RUN}-release'),
-                  run_root=str(project / 'runs' / RUN), source_root=str(native_data / 'source'),
+        name = RUNS[args.seed]
+        rt.update(run_id=name, model_seed=args.seed, code_commit=release_commit(args.repo), runner=__spec__.name,
+                  release_root=str(project / 'releases' / f'{name}-release'),
+                  run_root=str(project / 'runs' / name), source_root=str(native_data / 'source'),
                   native_target_root=str(native_data / 'target'), clean_cache=str(w24_root / 'clean_cache' /
                                                                                   '384-all8-nativeedges24'),
                   w24_release_root=str(project / 'releases' / f'{W24_RUN}-release'),
-                  allowed_gpus=[2, 3, 6, 5, 7, 0, 1, 4], max_compute_processes=8, cpu_workers=12)
+                  allowed_gpus=GPU_ORDER[args.seed], max_compute_processes=8, cpu_workers=12)
+        rt['external_releases'] = [rt[k] for k in ('w24_release_root', 'clean_cache', 'source_root',
+                                                  'native_target_root')]
+        if args.seed != SEED:
+            rt['source_augmentation_root'] = str(project / 'runs' / RUN)
+            rt['external_releases'].append(rt['source_augmentation_root'])
         release(args.repo, args.output, rt, args.ssh_config)
     elif args.action == 'score':
-        score(args.predictions, args.dataset, args.output, modes=MODES, classifier_run=RUN)
+        score(args.predictions, args.dataset, args.output, modes=MODES,
+              classifier_run=RUNS[args.seed], seed=args.seed)
     elif args.action == 'dispatch':
         dispatch(args.runtime)
     elif args.action == 'fit':

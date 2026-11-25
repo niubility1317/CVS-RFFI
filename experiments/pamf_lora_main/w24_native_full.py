@@ -175,8 +175,8 @@ def channel_job(scene, receiver, item):
     return native_full_view(packet, scene, receiver, index, 'target')
 
 
-def receipt(modes=MODES, *, classifier_run=None):
-    result = dict(status='PREDICTIONS_FROZEN', W24_commit=W24_COMMIT, seed=SEED,
+def receipt(modes=MODES, *, classifier_run=None, seed=SEED):
+    result = dict(status='PREDICTIONS_FROZEN', W24_commit=W24_COMMIT, seed=seed,
                   modes=list(modes), receivers=list(TARGET), views=list(VIEWS), per_receiver=LIMIT,
                   processing_route='full_native', target_truth_read=False)
     if classifier_run is not None:
@@ -184,7 +184,7 @@ def receipt(modes=MODES, *, classifier_run=None):
     return result
 
 
-def predict(rt, models, device, *, render=recover, modes=MODES, classifier_run=None):
+def predict(rt, models, device, *, render=recover, modes=MODES, classifier_run=None, seed=SEED):
     from experiments.pamf_lora_main.full_packet_views import native, target_contract
 
     target = Path(rt['native_target_root'])
@@ -220,11 +220,11 @@ def predict(rt, models, device, *, render=recover, modes=MODES, classifier_run=N
                 activity[f'{rx}/{scene}'] = active
                 print('W24_FULL_PREDICTED', rx, scene, active, flush=True)
     write(output / 'activity.json', activity)
-    write(output / 'complete.json', receipt(modes, classifier_run=classifier_run))
+    write(output / 'complete.json', receipt(modes, classifier_run=classifier_run, seed=seed))
 
 
-def validate_predictions(folder, modes=MODES, *, classifier_run=None):
-    if read(folder / 'complete.json') != receipt(modes, classifier_run=classifier_run):
+def validate_predictions(folder, modes=MODES, *, classifier_run=None, seed=SEED):
+    if read(folder / 'complete.json') != receipt(modes, classifier_run=classifier_run, seed=seed):
         raise ValueError('Missing or incompatible W24 frozen matrix')
     result = {}
     activity = read(folder / 'activity.json')
@@ -245,11 +245,11 @@ def validate_predictions(folder, modes=MODES, *, classifier_run=None):
     return result, activity
 
 
-def score(predictions, dataset, output, *, modes=MODES, classifier_run=None):
+def score(predictions, dataset, output, *, modes=MODES, classifier_run=None, seed=SEED):
     from experiments.pamf_lora_main.data import label_ids, packet_indices, recording
     from experiments.pamf_lora_main.scoring import macro_f1
 
-    pred, activity = validate_predictions(predictions, modes, classifier_run=classifier_run)
+    pred, activity = validate_predictions(predictions, modes, classifier_run=classifier_run, seed=seed)
     output.mkdir(parents=True, exist_ok=False)
     truth = {}
     with zipfile.ZipFile(dataset / 'multiple_receiver_test.zip') as archive:
@@ -269,7 +269,7 @@ def score(predictions, dataset, output, *, modes=MODES, classifier_run=None):
                                      harms=int((~correct & direct).sum()),
                                      by_rx={rx: int((pred[rx, view, mode] == truth[rx]).sum()) for rx in TARGET})
     total = {mode: sum(rows[mode][v]['correct'] for v in VIEWS if v != 'clean') for mode in modes}
-    write(output / 'scores.json', dict(freeze=receipt(modes, classifier_run=classifier_run), truth_last=True, views=rows,
+    write(output / 'scores.json', dict(freeze=receipt(modes, classifier_run=classifier_run, seed=seed), truth_last=True, views=rows,
                                        six_correct=total, six_n=LIMIT * len(TARGET) * (len(VIEWS) - 1),
                                        activity=activity))
 
