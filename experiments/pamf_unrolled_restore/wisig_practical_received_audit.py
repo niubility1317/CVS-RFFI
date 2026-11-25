@@ -93,10 +93,10 @@ def predict(receive_path, params, output):
     print("PRACTICAL_RECEIVE_ONLY_ESTIMATES_CLOSED", *panel.SHAPE, flush=True)
 
 
-def score(root, reference):
+def score(root, reference, arms=ARMS):
     with np.load(root / "estimates.npz", allow_pickle=False) as stored:
         waves, variance = stored["wave"], stored["variance"]
-    if waves.shape != (len(ARMS), *panel.SHAPE, len(panel.TEST)) or variance.shape != (len(ARMS), *panel.SHAPE):
+    if waves.shape != (len(arms), *panel.SHAPE, len(panel.TEST)) or variance.shape != (len(arms), *panel.SHAPE):
         raise ValueError("Incomplete receive-only estimates")
     if not np.isfinite(waves).all() or not np.isfinite(variance).all() or np.any(variance <= 0):
         raise ValueError("Invalid receive-only estimates")
@@ -117,7 +117,7 @@ def score(root, reference):
     groups = dict(primary=primary, low_urban=[i for i in primary if "practical_low_urban" in labels[i]],
                   doubled=list(range(len(primary), len(labels))))
     results = {}
-    for name, wave, noise in zip(ARMS, wave_error, noise_error):
+    for name, wave, noise in zip(arms, wave_error, noise_error):
         results[name] = {key: stats(wave[idx], noise[idx]) for key, idx in groups.items()}
         results[name]["rows"] = {label: stats(w, v) for label, w, v in zip(labels, wave, noise)}
     write(root / "scores.json", dict(status="ANALYZED", truth_side_last=True, receive_only=True,
