@@ -5,10 +5,26 @@ import pytest
 import torch
 
 from experiments.pamf_lora_main.dura_capacity import DuraCapacity
+from experiments.pamf_unrolled_restore import wisig_dura_stress as runner
 from experiments.pamf_unrolled_restore import wisig_dura_stress_fit as training
 from experiments.pamf_unrolled_restore.wisig_dura_stress import CASES, COUNTS, SEEDS, VIEWS
 from experiments.pamf_unrolled_restore.wisig_dura_stress_data import use_route
 from experiments.pamf_unrolled_restore.wisig_dura_stress_score import closed_predictions
+
+
+@pytest.mark.parametrize('entry,args', [(runner.smoke, ({},)), (runner.predict, ({}, 'unused'))])
+def test_reader_initialization_keeps_version_counters(monkeypatch, entry, args):
+    class ReaderInitialized(Exception):
+        pass
+
+    def initialize(_):
+        assert not torch.is_grad_enabled()
+        assert torch.empty(1)._version == 0
+        raise ReaderInitialized
+
+    monkeypatch.setattr(runner, 'activate', initialize)
+    with pytest.raises(ReaderInitialized):
+        entry(*args)
 
 
 def test_one_window_matches_repeating_the_same_observation():

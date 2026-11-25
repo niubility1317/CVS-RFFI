@@ -25,7 +25,8 @@ from .wisig_receiver_estimates import receive_coordinates
 from .wisig_short_training_source import original_r69
 
 
-RUN = '20261125-phase1-wisig-blind-capacity-stress-m2-r02'
+RUN = '20261125-phase1-wisig-blind-capacity-stress-m2-r03'
+SOURCE_RUN = '20261125-phase1-wisig-blind-capacity-stress-m2-r02'
 METHODS = ('raw', 'R69', 'trained_default', 'trained_strong')
 BATCH = 96
 CASES = {f'{profile}-{key}': (profile, route, split) for profile in data.PROFILES
@@ -42,7 +43,7 @@ def classify(heads, iq):
     return values
 
 
-@torch.inference_mode()
+@torch.no_grad()
 def smoke(rt):
     activate(rt)
     root = Path(rt['run_root'])
@@ -56,7 +57,7 @@ def smoke(rt):
     classify(heads, r69(observed[:12])[0])
     latency = {}
     for profile in data.PROFILES:
-        model, threshold = training.frozen_fit(root, profile)
+        model, threshold = training.frozen_fit(Path(rt.get('frozen_root', root)), profile)
         quiet_variance = receive_coordinates(quiet)[-1]
         unmodified, _ = training.restore(model, threshold, quiet, quiet_variance)
         if not torch.equal(unmodified, quiet):
@@ -75,7 +76,7 @@ def smoke(rt):
           source_examples=len(quiet) + len(observed), target_reads=0, seeds=list(SEEDS), latency=latency))
 
 
-@torch.inference_mode()
+@torch.no_grad()
 def predict(rt, case):
     activate(rt)
     profile, route, split = CASES[case]
@@ -107,7 +108,8 @@ def predict(rt, case):
         if not np.array_equal(strong_ids, ids) or strong_positions is None:
             raise ValueError('Stress views must use the original global physical indices')
         r69 = original_r69(Path(rt['parent_root']))
-    models = {f'trained_{key}': training.frozen_fit(root, key) for key in data.PROFILES}
+    frozen = Path(rt.get('frozen_root', root))
+    models = {f'trained_{key}': training.frozen_fit(frozen, key) for key in data.PROFILES}
     output, activation = {}, {}
     started = perf_counter()
     for view in VIEWS:
@@ -181,25 +183,31 @@ def dispatch(rt):
     root = Path(rt['run_root'])
     root.mkdir()
     (root / 'logs').mkdir()
-    write(root / 'source_runtime.json', {key: rt[key] for key in ('run_root', 'source_root')})
     state = root / 'state.json'
     command = ['nvidia-smi', '--query-gpu=index,utilization.gpu,memory.free', '--format=csv,noheader,nounits']
     rows = [tuple(map(int, row.split(','))) for row in subprocess.check_output(command, text=True).splitlines()]
     rt = dict(rt, allowed_gpus=[i for _, _, i in sorted((load, -free, index) for index, load, free in rows)])
     try:
-        write(state, dict(status='SOURCE_SMOKE'))
-        schedule(rt, [('fit-smoke', 'default')], launch)
-        write(state, dict(status='SOURCE_STRONG_IQ'), exclusive=False)
-        cpu_stage(rt, 'source-iq')
-        schedule(rt, [('fit-smoke', 'strong')], launch)
-        write(state, dict(status='SOURCE_TRAINING'), exclusive=False)
-        schedule(rt, [('fit', profile) for profile in data.PROFILES], launch)
+        if 'frozen_root' not in rt:
+            write(root / 'source_runtime.json', {key: rt[key] for key in ('run_root', 'source_root')})
+            write(state, dict(status='SOURCE_SMOKE'))
+            schedule(rt, [('fit-smoke', 'default')], launch)
+            write(state, dict(status='SOURCE_STRONG_IQ'), exclusive=False)
+            cpu_stage(rt, 'source-iq')
+            schedule(rt, [('fit-smoke', 'strong')], launch)
+            write(state, dict(status='SOURCE_TRAINING'), exclusive=False)
+            schedule(rt, [('fit', profile) for profile in data.PROFILES], launch)
         write(state, dict(status='FROZEN_CHECKPOINT_SMOKE'), exclusive=False)
         schedule(rt, [('smoke', 'checkpoints')], launch)
         write(state, dict(status='BLIND_TARGET_IQ'), exclusive=False)
-        cpu_stage(rt, 'target-iq')
+        prepare = launch(rt, 'target-iq', 'cpu')
+        schedule(rt, [('predict', case) for case, (profile, _, _) in CASES.items()
+                      if profile == 'default'], launch)
+        if prepare.wait():
+            raise RuntimeError('target-iq failed. Run artifacts are preserved')
         write(state, dict(status='TARGET_PREDICTING'), exclusive=False)
-        schedule(rt, [('predict', case) for case in CASES], launch)
+        schedule(rt, [('predict', case) for case, (profile, _, _) in CASES.items()
+                      if profile == 'strong'], launch)
         write(state, dict(status='PREDICTIONS_FROZEN', truth_read=False), exclusive=False)
         cpu_stage(rt, 'score')
         write(state, dict(status='ANALYZED'), exclusive=False)
@@ -216,13 +224,15 @@ def publish(repo, output, context, ssh_config):
     channel_release = base / 'releases' / 'cvs_residual_sixscene_20261002_r01'
     rt.update(run_id=RUN, runner=__spec__.name, code_commit=release_commit(repo),
               run_root=str(runs / RUN), release_root=str(base / 'releases' / f'{RUN}-release'),
+              frozen_root=str(runs / SOURCE_RUN),
               source_root=str(runs / '20261019-phase1-reception-restoration-selfsup-manysig-m6-r02' / 'cache'),
               parent_root=str(runs / '20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17'),
               baseline_root=str(runs / BASELINE),
               baseline_replay=str(runs / '20261124-phase1-wisig-preamble-dura-main-m4-r01'),
               residual_reference=str(runs / '20261002-phase1-cvs-residual-sixscene-manysig-m8-r01' / 'received_views'),
               channel_release=str(channel_release), recognizer_run=str(runs / F_RUN),
-              external_releases=[str(channel_release)], max_workers=4, max_compute_processes=None)
+              external_releases=[str(channel_release), str(runs / SOURCE_RUN)], max_workers=4,
+              max_compute_processes=None)
     from experiments.pamf_lora_main import publish as transport
 
     extras = ('tools/wisig_paired_main_uncertainty.py', 'tools/r17_activation_factorization.py')
