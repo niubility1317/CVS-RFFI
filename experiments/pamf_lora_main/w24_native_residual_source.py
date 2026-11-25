@@ -18,7 +18,7 @@ if __package__ is None:
 from experiments.cric_dura_comparison.io import read, write
 from experiments.pamf_lora_main.full_packet_views import native, source_contract
 from experiments.pamf_lora_main.runner import activate, available
-from experiments.pamf_lora_main.w24_factor_audit import AUG_RUN, load_classifier, panel, score_source
+from experiments.pamf_lora_main.w24_factor_audit import AUG_RUN, frozen_source_panel, load_classifier, panel, score_source
 from experiments.pamf_lora_main.w24_formal import wide_delta
 from experiments.pamf_lora_main.w24_native_full import (
     DATA_RUN, SOURCE, VIEWS, W24_COMMIT, W24_RUN, classify, classify_aperture,
@@ -32,11 +32,15 @@ from experiments.pamf_lora_main.w24_wide_transfer import (
 
 RUN = '20261125-diagnostic-lora-w24-native-residual-source-s2026112559-r02'
 SWEEP_RUN = '20261125-diagnostic-lora-w24-readout-sweep-source-s2026112559-r01'
+CHIRP_RUN = '20261125-diagnostic-lora-w24-chirp-allocation-source-s2026112559-r01'
 WAVEFORM_NAMESPACE = '20261125-diagnostic-lora-w24-native-residual-source-s2026112559-r01'
 ROUTES = ('full_native', ROUTE)
 MODES = ('direct', 'prior_complex_response_half', 'wide_dura_half')
 SWEEP_AMPLITUDES = (.5, .75, 1.)
 SWEEP_MODES = ('direct', *(f'wide_ungated_{int(100*x):03d}' for x in SWEEP_AMPLITUDES))
+CHIRP_MODES = ('direct', 'all_half', 'outer_half', 'inner_half', 'prefer_outer', 'prefer_inner')
+CHIRP_CONTRASTS = (('outer_half', 'inner_half'), ('prefer_outer', 'all_half'),
+                   ('prefer_inner', 'all_half'), ('prefer_outer', 'prefer_inner'))
 BATCH = 24
 
 
@@ -69,6 +73,43 @@ def sweep_labels(f, g, tracker, packets, device):
     return np.stack(output)
 
 
+def chirp_edits(delta):
+    indices = torch.arange(8, device=delta.device)
+    outer = ((indices == 0) | (indices == 7))[None, :, None, None]
+    half = .5 * delta
+    energy = half.square().sum((1, 2, 3), keepdim=True)
+    preferred = []
+    for mask in (outer, ~outer):
+        weighted = half * (.75 + .5 * mask)
+        weighted_energy = weighted.square().sum((1, 2, 3), keepdim=True)
+        scale = (energy / weighted_energy.clamp_min(torch.finfo(weighted_energy.dtype).tiny)).sqrt()
+        preferred.append(weighted * scale)
+    return half, half * outer, half * ~outer, *preferred
+
+
+@torch.no_grad()
+def chirp_labels(f, g, tracker, packets, device, *, verify=False):
+    original = received_aperture(packets, device)
+    edits = chirp_edits(wide_delta(g, tracker, original))
+    if verify:
+        half, outer, inner, *preferred = edits
+        torch.testing.assert_close(outer + inner, half, rtol=0, atol=0)
+        for biased in preferred:
+            torch.testing.assert_close(biased.square().sum((1, 2, 3)), half.square().sum((1, 2, 3)))
+    output = [classify_aperture(f, original)]
+    for edit in edits:
+        corrected = original.clone()
+        corrected[..., :384] += edit
+        output.append(classify_aperture(f, corrected))
+    return np.stack(output), [len(packets)] * len(edits)
+
+
+def mode_list(rt):
+    if rt.get('chirp_allocation'):
+        return CHIRP_MODES
+    return SWEEP_MODES if rt.get('readout_sweep') else MODES
+
+
 @torch.no_grad()
 def predict_source(runtime):
     rt = read(runtime)
@@ -81,9 +122,12 @@ def predict_source(runtime):
     # reference stack caches a namesake package with different submodules.
     archive, parent = training_runtime(rt)
     g, track, threshold, frozen = load_restorer(archive, parent, contract, device)
+    allocating = rt.get('chirp_allocation', False)
     sweeping = rt.get('readout_sweep', False)
-    modes = SWEEP_MODES if sweeping else MODES
-    if sweeping:
+    modes = mode_list(rt)
+    if allocating:
+        evaluate = partial(chirp_labels, f, g, track, device=device)
+    elif sweeping:
         def evaluate(packets):
             return sweep_labels(f, g, track, packets, device), [len(packets)] * len(SWEEP_AMPLITUDES)
     else:
@@ -94,12 +138,18 @@ def predict_source(runtime):
     for scene in ('clean', VIEWS[-1]):
         arrivals = [paired_iq(scene, (i, SOURCE[0], packet)) for i, packet in enumerate(u)]
         for route in zip(*arrivals, strict=True):
-            labels, _ = evaluate(np.stack(route))
+            packets = np.stack(route)
+            if allocating:
+                labels, _ = chirp_labels(f, g, track, packets, device, verify=True)
+            else:
+                labels, _ = evaluate(packets)
             if labels.shape != (len(modes), len(u)):
                 raise ValueError('Actual source-only front-end smoke failed')
     smoke = dict(status='PASS', source_packets=len(u), target_reads=0, source_truth_reads=0,
                  parent_steps=frozen['steps'], parameters=frozen['parameters'])
-    if sweeping:
+    if allocating:
+        smoke['equal_edit_energy'] = True
+    elif sweeping:
         smoke['readout_amplitudes'] = list(SWEEP_AMPLITUDES)
     else:
         smoke.update(latency(g, track, threshold, u[:1], device), threshold=threshold)
@@ -129,19 +179,26 @@ def predict_source(runtime):
                 raise ValueError('Same clean packets must produce identical decisions on both routes')
             print('W24_NATIVE_RESIDUAL_PREDICTED', scene, len(rows), flush=True)
     for route in ROUTES:
-        if sweeping:
-            previous = root.parent / RUN / route
+        if allocating or sweeping:
+            previous = root.parent / (SWEEP_RUN if allocating else RUN) / route
             mark = read(previous/'source-predictions.json')
             if (mark['status'], mark['physical_ids'], mark['target_reads']) != ('PREDICTIONS_FROZEN', ids, 0):
                 raise ValueError('Expected the prior frozen two-route source panel')
+            names = ('direct', 'wide_ungated_050') if allocating else ('direct',)
+            indices = [mark['modes'].index(name) for name in names]
             with np.load(previous/'predictions.npz', allow_pickle=False) as archive:
-                if any(not np.array_equal(archive[v][0], output[route][v][0]) for v in VIEWS):
-                    raise ValueError('Readout sweep did not reproduce direct source predictions')
+                if any(not np.array_equal(archive[v][indices], output[route][v][:len(indices)]) for v in VIEWS):
+                    raise ValueError('The registered source readout comparators failed to reproduce')
         out = root / route
         out.mkdir()
         np.savez(out / 'predictions.npz', **output[route])
-        policy = (dict(ungated=True, amplitudes=list(SWEEP_AMPLITUDES)) if sweeping
-                  else dict(threshold=threshold))
+        if allocating:
+            policy = dict(ungated=True, fixed_position_masks=True, preferred_energy='all_half',
+                          preferred_weights=[.75, 1.25])
+        elif sweeping:
+            policy = dict(ungated=True, amplitudes=list(SWEEP_AMPLITUDES))
+        else:
+            policy = dict(threshold=threshold)
         write(out / 'source-predictions.json', dict(status='PREDICTIONS_FROZEN', modes=list(modes),
               views=list(VIEWS), physical_ids=ids, target_reads=0, source_truth_reads=0,
               waveform=dict(route=route, source_frozen_G=TRAIN_RUN, activation=activity[route], **policy)))
@@ -169,9 +226,12 @@ def latency(g, track, threshold, clean, device):
 def compare_source(runtime):
     rt = read(runtime)
     root = Path(rt['run_root'])
-    modes = SWEEP_MODES if rt.get('readout_sweep') else MODES
+    modes = mode_list(rt)
+    contrasts = CHIRP_CONTRASTS if rt.get('chirp_allocation') else ()
     for route in ROUTES:
-        score_source(runtime, modes=modes, output=root / route)
+        frozen_source_panel(Path(rt['source_root']), root / route, modes)
+    for route in ROUTES:
+        score_source(runtime, modes=modes, output=root / route, contrasts=contrasts)
 
 
 def dispatch(runtime):
@@ -220,25 +280,34 @@ def main():
     publish = sub.add_parser('publish')
     for key in ('repo', 'context', 'ssh-config', 'output'):
         publish.add_argument('--' + key, type=Path, required=True)
-    publish.add_argument('--readout-sweep', action='store_true')
+    diagnostics = publish.add_mutually_exclusive_group()
+    diagnostics.add_argument('--readout-sweep', action='store_true')
+    diagnostics.add_argument('--chirp-allocation', action='store_true')
     args = parser.parse_args()
     if args.action == 'publish':
         ctx = read(args.context)
         rt = {k: ctx[k] for k in ('project', 'python', 'frozen_sources')}
         project = PurePosixPath(rt['project'])
         runs, releases = project / 'runs', project / 'releases'
-        run = SWEEP_RUN if args.readout_sweep else RUN
+        run = CHIRP_RUN if args.chirp_allocation else SWEEP_RUN if args.readout_sweep else RUN
+        if args.chirp_allocation:
+            allowed_gpus = [6, 3, 2, 7, 0, 5, 4, 1]
+        elif args.readout_sweep:
+            allowed_gpus = [6, 0, 5, 3, 2, 7, 4, 1]
+        else:
+            allowed_gpus = [0, 5, 3]
         rt.update(run_id=run, code_commit=release_commit(args.repo), runner=__spec__.name,
                   release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
-                  readout_sweep=args.readout_sweep,
+                  readout_sweep=args.readout_sweep, chirp_allocation=args.chirp_allocation,
                   source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),
                   classifier_root=str(runs / AUG_RUN), w24_release_root=str(releases / f'{W24_RUN}-release'),
                   training_release_root=str(releases / f'{TRAIN_RUN}-release'),
-                  allowed_gpus=[6, 0, 5, 3, 2, 7, 4, 1] if args.readout_sweep else [0, 5, 3],
-                  cpu_workers=8)
+                  allowed_gpus=allowed_gpus, cpu_workers=8)
         rt['external_releases'] = [rt[k] for k in ('source_root', 'classifier_root', 'w24_release_root',
                                                   'training_release_root')]
-        if args.readout_sweep:
+        if args.chirp_allocation:
+            rt['external_releases'].append(str(runs/SWEEP_RUN))
+        elif args.readout_sweep:
             rt['external_releases'].append(str(runs/RUN))
         release(args.repo, args.output, rt, args.ssh_config)
     elif args.action == 'dispatch':
