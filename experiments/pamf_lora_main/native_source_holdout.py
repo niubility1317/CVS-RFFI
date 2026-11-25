@@ -14,11 +14,10 @@ from .data import SOURCE
 from .full_packet_data import COUNTS
 from .full_packet_views import native, source_contract
 from .full_supervised import batches
-from .full_tri_repl_lora import clean_source_ce
 from .runner import activate
 from .tri_clean95 import (
-    NATIVE_JITTER_ROWS, NATIVE_WIDE_ROWS, clean_model, clean_validation, labels,
-    labeled_shift_views, scratch_repl_lr_factor,
+    NATIVE_JITTER_ROWS, NATIVE_RAW_ROWS, NATIVE_WIDE_ROWS, clean_model, clean_validation, labels,
+    labeled_shift_views, scratch_repl_lr_factor, supervised_clean_terms,
 )
 from .tri_tuning import SEED
 
@@ -30,6 +29,7 @@ ROWS = {
     'native24': NATIVE_WIDE_ROWS['phase_native24'],
     'native24_jitter': NATIVE_JITTER_ROWS['phase_native24_jitter'],
 }
+RAW_HEAD_ROWS = {'native24_raw': NATIVE_RAW_ROWS['phase_native24_raw']}
 
 
 def source_runtime(rt):
@@ -65,19 +65,24 @@ def model(root, contract, row, device):
     return net
 
 
-def smoke(rt):
+def smoke(rt, *, raw_head=False):
     root, source, contract = source_runtime(rt)
     activate(rt)
     y, rx = labels(source, contract, 'L_s')
     subset = fitting_indices(rx)
     subset = subset[next(batches(y[subset], rx[subset], np.random.default_rng(721)))[:8]]
     raw = native(source, 'L_s', COUNTS['L_s'])
-    before, after = labeled_shift_views(raw[subset], ROWS['native24_jitter'])
-    fitted = model(root, contract, ROWS['native24_jitter'], 'cpu')
-    data = tensor(np.concatenate((before[:4], after[4:]), axis=0))
+    if raw_head:
+        row = RAW_HEAD_ROWS['native24_raw']
+        data = tensor(extract(raw,subset))
+    else:
+        row = ROWS['native24_jitter']
+        before, after = labeled_shift_views(raw[subset],row)
+        data = tensor(np.concatenate((before[:4], after[4:]),axis=0))
+    fitted = model(root,contract,row,'cpu')
     with torch.enable_grad():
-        logits, _ = fitted(data)
-        loss = clean_source_ce(logits, tensor(y[subset]), tensor(rx[subset]), 1., 0., None)
+        loss,_,raw_loss = supervised_clean_terms(fitted,data,tensor(y[subset]),tensor(rx[subset]),
+                                                 1.,0.,None,row.get('warm_raw_ce',0.))
         loss.backward()
     grad = float(torch.nn.utils.clip_grad_norm_(fitted.parameters(), 5., error_if_nonfinite=True))
     if grad <= 0 or np.any(rx[subset] == HELD):
@@ -85,7 +90,8 @@ def smoke(rt):
     root.mkdir(parents=True, exist_ok=False)
     write(root/'smoke.json', dict(status='PASS', input=list(data.shape[1:]),
                                   held_rx=SOURCE[HELD], V_reads=0, U_reads=0,
-                                  target_reads=0, gradient=grad))
+                                  target_reads=0, gradient=grad,
+                                  raw_head_ce=float(raw_loss.detach()) if raw_loss is not None else None))
 
 
 def fit_row(root, contract, name, row, x, y, rx, yn, rn, shifts, device):
@@ -98,9 +104,11 @@ def fit_row(root, contract, name, row, x, y, rx, yn, rn, shifts, device):
     rng = np.random.default_rng(721)
     draw = torch.Generator(device=device).manual_seed(SEED+11)
     steps = 0
+    raw_weight = row.get('warm_raw_ce',0.)
     with (out/'epochs.jsonl').open('x',encoding='utf-8') as log:
         for epoch in range(1, EPOCHS+1):
             total = torch.zeros((),device=device)
+            raw_total = torch.zeros((),device=device)
             f.train()
             for b in batches(yn, rn, rng):
                 i = tensor(b,device)
@@ -110,7 +118,9 @@ def fit_row(root, contract, name, row, x, y, rx, yn, rn, shifts, device):
                     labeled = torch.where(q<.125, shifts[0][i], labeled)
                     labeled = torch.where(q>.875, shifts[1][i], labeled)
                 opt.zero_grad(set_to_none=True)
-                loss = clean_source_ce(f(labeled)[0], y[i], rx[i], 1., 0., None)
+                loss,_,raw_ce = supervised_clean_terms(f,labeled,y[i],rx[i],1.,0.,None,raw_weight)
+                if raw_ce is not None:
+                    raw_total += raw_ce.detach()
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(f.parameters(), 5., error_if_nonfinite=True)
                 opt.step()
@@ -118,6 +128,8 @@ def fit_row(root, contract, name, row, x, y, rx, yn, rn, shifts, device):
                 steps += 1
                 total += loss.detach()
             rec = dict(epoch=epoch, step=steps, source_L_loss=float(total/STEPS))
+            if raw_weight:
+                rec['raw_head_ce'] = float(raw_total/STEPS)
             log.write(json.dumps(rec,allow_nan=False)+chr(10))
             log.flush()
             print(name,epoch,steps,rec['source_L_loss'],flush=True)
@@ -129,7 +141,8 @@ def fit_row(root, contract, name, row, x, y, rx, yn, rn, shifts, device):
                                 target_reads=0, satellite_batches=0))
 
 
-def fit(rt):
+def fit(rt, *, raw_head=False):
+    rows = RAW_HEAD_ROWS if raw_head else ROWS
     root, source, contract = source_runtime(rt)
     activate(rt)
     device = 'cuda:0'
@@ -138,17 +151,17 @@ def fit(rt):
     root.mkdir(parents=True,exist_ok=False)
     raw = native(source,'L_s',COUNTS['L_s'])
     x = tensor(extract(raw,keep),device)
-    shifts = tuple(tensor(v,device) for v in labeled_shift_views(raw[keep],ROWS['native24_jitter']))
+    shifts = () if raw_head else tuple(tensor(v,device) for v in labeled_shift_views(raw[keep],ROWS['native24_jitter']))
     yn,rn = yn[keep],rn[keep]
     y,rx = tensor(yn,device),tensor(rn,device)
-    for name, row in ROWS.items():
+    for name, row in rows.items():
         fit_row(root,contract,name,row,x,y,rx,yn,rn,shifts,device)
     del x,shifts
     vy,vr = labels(source,contract,'V')
     v = tensor(extract(native(source,'V',COUNTS['V']),np.arange(len(vy))),device)
     v_y,v_rx = tensor(vy,device),tensor(vr,device)
     summary = {}
-    for name, row in ROWS.items():
+    for name, row in rows.items():
         f = model(root,contract,row,device)
         f.load_state_dict(torch.load(root/'F'/name/'model.pt',map_location=device,weights_only=True),strict=True)
         score = clean_validation(f,v,v_y,v_rx)
@@ -165,5 +178,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('action',choices=('smoke','fit'))
     parser.add_argument('runtime',type=Path)
+    parser.add_argument('--raw-head',action='store_true')
     args = parser.parse_args()
-    {'smoke':smoke,'fit':fit}[args.action](read(args.runtime))
+    {'smoke':smoke,'fit':fit}[args.action](read(args.runtime),raw_head=args.raw_head)
