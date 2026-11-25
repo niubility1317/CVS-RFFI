@@ -9,6 +9,7 @@ from time import perf_counter
 import numpy as np
 
 from experiments.cric_dura_comparison.io import read
+from experiments.pamf_unrolled_restore import wisig_short_training_source as registered
 from experiments.pamf_unrolled_restore.wisig_differential_timing import observations
 from experiments.pamf_unrolled_restore.wisig_differential_timing_source import RUN
 from experiments.pamf_unrolled_restore.wisig_repeat_prefix import MODES, readouts
@@ -51,15 +52,19 @@ def summarize(waves, reference):
                 improves=(nmse<nmse[0]).sum(1).tolist())
 
 
-def probe(rt):
-    started = perf_counter()
+def source_threshold(rt):
     root = Path(rt['run_root'])
     if rt['run_id'] != RUN or os.environ.get('CUDA_VISIBLE_DEVICES') != '':
-        raise ValueError('The CPU source U check uses the registered differential timing rule')
+        raise ValueError('The CPU probe requires the registered differential timing rule')
     record = read(root/'threshold.json')
     if any(record[k] for k in ('source_V_reads', 'target_reads', 'TX_reads', 'F_reads', 'optimizer_updates')):
         raise ValueError('The inherited threshold must come from source U only')
-    threshold = record['thresholds']['differential']
+    return record['thresholds']['differential']
+
+
+def probe(rt):
+    started = perf_counter()
+    threshold = source_threshold(rt)
     wave, available, calibration = source_iq(Path(rt['source_root']))
     held = available[3*COUNT:4*COUNT]
     if len(held)!=COUNT or np.intersect1d(held, calibration).size:
@@ -94,7 +99,41 @@ def probe(rt):
                 F_reads=0, TX_reads=0, target_reads=0, checkpoint_reads=0, optimizer_updates=0, results=results)
 
 
+def source_coverage(rt):
+    started = perf_counter()
+    threshold = source_threshold(rt)
+    root = Path(rt['run_root'])
+    if read(root/'state.json')['status'] != 'SOURCE_SCORED':
+        raise ValueError('Read source V timing coverage only after the two routes are frozen and scored')
+    cache, _, _, _, ids, rx, _ = registered.handles(rt)
+    receivers = {str(key): rx == key for key in np.unique(rx)}
+    selectors = {'all': np.ones(len(ids), dtype=bool), **receivers}
+    results = {}
+    for route, folder in registered.ROUTES.items():
+        results[route] = {}
+        for view in registered.VIEWS:
+            raw = np.load(cache/folder/f'{view}.npy', allow_pickle=False, mmap_mode='r')
+            if raw.shape != (len(ids), 2, 256) or raw.dtype != np.float32:
+                raise ValueError('Unexpected registered WiSig source view')
+            shifts = []
+            for begin in range(0, len(raw), 64):
+                delta, confidence = observations(raw[begin:begin+64])[-1]['differential']
+                shifts.append(np.where(confidence > threshold, delta, 0))
+            selected = np.concatenate(shifts)
+            results[route][view] = {}
+            for group, mask in selectors.items():
+                values = selected[mask]
+                prefix, suffix = -values[values<0], values[values>0]
+                results[route][view][group] = dict(rows=len(values), unshifted=int((values==0).sum()),
+                    prefix_packets=len(prefix), suffix_packets=len(suffix),
+                    prefix_samples=int(prefix.sum()), suffix_samples=int(suffix.sum()))
+    return dict(status='VERIFIED', role='V', rows=len(ids), results=results, F_reads=0,
+                TX_reads=0, target_reads=0, threshold_updates=0, seconds=perf_counter()-started)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('runtime', type=Path)
-    print(json.dumps(probe(read(parser.parse_args().runtime)), allow_nan=False))
+    parser.add_argument('--coverage', action='store_true')
+    args = parser.parse_args()
+    print(json.dumps((source_coverage if args.coverage else probe)(read(args.runtime)), allow_nan=False))
