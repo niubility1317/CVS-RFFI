@@ -2,31 +2,52 @@
 
 import argparse
 from dataclasses import replace
+from functools import partial
 import importlib
 import os
 from pathlib import Path, PurePosixPath
 import subprocess
 from time import monotonic, sleep
 
+if __package__ is None:
+    from experiments import pamf_lora_main
+
+    pamf_lora_main.__path__.append(str(Path(__file__).resolve().parent))
+
 from experiments.cric_dura_comparison.io import read, tensor, write
 
 
 RUN = '20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01'
+EDGE_RUN = '20261125-phase1-lora-w24-joint-edges-source-s2026112991-r01'
 NAME = 'w24_outer_objective'
+EDGE_NAME = 'w24_joint_edges'
 STEPS = 40_000
 SEED = 2026112991
 MODES = ('direct', 'all_half', 'outer_objective_half')
 CONTRASTS = (('outer_objective_half', 'all_half'),)
+EDGE_MODES = ('direct', 'all_half', 'joint_center_half', 'joint_edges_half')
+EDGE_CONTRASTS = (('joint_edges_half','joint_center_half'), ('joint_edges_half','all_half'),
+                  ('joint_center_half','all_half'), ('joint_edges_half','direct'))
 
 
-def recipe_for(training):
+def recipe_for(training, *, joint_edges=False):
     def no_gate(model, _tracker, _unused):
-        return None, dict(parameters=sum(p.numel() for p in model.parameters()), input_gate=False)
+        info = dict(parameters=sum(p.numel() for p in model.parameters()), input_gate=False)
+        if joint_edges:
+            gradients = [head[-1].weight.grad for head in model.boundary.heads]
+            info.update(joint_edges=True, edge_parameters=sum(p.numel() for p in model.boundary.parameters()),
+                        edge_head_gradient_norms=[float(x.norm()) if x is not None else None for x in gradients])
+        return None, info
 
+    if joint_edges:
+        from experiments.pamf_lora_main.w24_joint_edges import attach_edge_refiner
+
+        return replace(training.RECIPE, name=EDGE_NAME, model=partial(attach_edge_refiner, training.RECIPE.model),
+                       finalize_calibration=no_gate)
     return replace(training.RECIPE, name=NAME, finalize_calibration=no_gate)
 
 
-def objective_for(archived):
+def objective_for(archived, *, joint_edges=False):
     # This reuses the original module's coordinates, source perturbation and loss primitives.
     import torch
 
@@ -80,12 +101,22 @@ def objective_for(archived):
                               (corruption.detach() / variance + variance.log()).mean(), identity, outer_identity))
         weights = values.new_tensor((.6 * a_weight, .4 * a_weight, .35 * b_weight, .65 * b_weight,
                                      .30, c_weight, .07, .015, .35, .35))
-        return values @ weights, torch.cat((values, outer_disturbed[None], inner_disturbed[None]))
+        loss = values @ weights
+        report = torch.cat((values, outer_disturbed[None], inner_disturbed[None]))
+        if joint_edges:
+            from experiments.pamf_lora_main.w24_joint_edges import edge_objective
+
+            edges = observed[..., window:]
+            edge_target = clean[:, None, :, window:].expand(-1, data.shape[1], -1, -1).flatten(0, 1)
+            edge_first, edge_final = model.boundary(edges, first, final, phase, rms, quality, variance)
+            edge_loss, edge_report = edge_objective(edges, edge_target, rms, edge_first, edge_final, with_identity)
+            return loss+edge_loss, torch.cat((report, edge_report))
+        return loss, report
 
     return calculate
 
 
-def fit_source(runtime, action):
+def fit_source(runtime, action, *, joint_edges=False):
     import torch
     from experiments.cric_dura_comparison.bootstrap import numerical_policy
     from experiments.pamf_lora_main import channel_blind_source, dura_w24_model, dura_w24_train
@@ -106,25 +137,27 @@ def fit_source(runtime, action):
         return (start, torch.empty(0, device=device), end), contract
 
     numerical_policy()
-    channel_blind_source.fit(rt, smoke=(action == 'fit-smoke'), recipe=recipe_for(dura_w24_train),
-                             calculate=objective_for(dura_w24_model), receiver_batches=True, prepare=prepare,
+    channel_blind_source.fit(rt, smoke=action.endswith('-smoke'), recipe=recipe_for(dura_w24_train, joint_edges=joint_edges),
+                             calculate=objective_for(dura_w24_model, joint_edges=joint_edges), receiver_batches=True, prepare=prepare,
                              make_tracker=dura_w24_train.WideTracker)
 
 
-def load_candidate(root, contract, device):
+def load_candidate(root, contract, device, *, joint_edges=False):
     import torch
 
     training = importlib.import_module('lora_wide_dura_archive.dura_w24_train')
     source = importlib.import_module('lora_wide_dura_archive.channel_blind_source')
-    recipe = recipe_for(training)
-    summary = read(root / f'{NAME}-complete.json')
+    recipe = recipe_for(training, joint_edges=joint_edges)
+    summary = read(root / f'{recipe.name}-complete.json')
     expected = source.proof(contract, recipe)
     public = {k: v for k, v in expected.items() if k != 'contract'}
     if (any(summary.get(k) != v for k, v in public.items()) or expected['steps'] != STEPS
             or expected['seed'] != SEED or summary.get('input_gate') is not False
             or summary.get('threshold') is not None or summary.get('n_calibration') != 0):
-        raise ValueError('Expected the source-frozen no-gate outer-chirp candidate')
-    checkpoint = torch.load(root / f'{NAME}-model.pt', map_location=device, weights_only=True)
+        raise ValueError('Expected the source-frozen no-gate W24 candidate')
+    if joint_edges and summary.get('joint_edges') is not True:
+        raise ValueError('Expected the trained W24 edge heads')
+    checkpoint = torch.load(root / f'{recipe.name}-model.pt', map_location=device, weights_only=True)
     if checkpoint['proof'] != expected or checkpoint['threshold'] is not None:
         raise ValueError('Candidate weights do not satisfy the registered source contract')
     model = recipe.model().to(device).eval().requires_grad_(False)
@@ -138,6 +171,7 @@ def dispatch(runtime):
     from experiments.pamf_lora_main.w24_wide_transfer import training_runtime
 
     rt = read(runtime)
+    joint_edges = rt.get('joint_edges', False)
     archive, _ = training_runtime(rt)
     reference = Path(rt['w24_release_root'])
     if read(reference / 'submit.json')['code_commit'] != W24_COMMIT:
@@ -154,6 +188,12 @@ def dispatch(runtime):
             if monotonic() >= deadline:
                 raise ValueError('GPU wait expired')
             sleep(20)
+        if joint_edges:
+            inventory = subprocess.check_output(
+                ['nvidia-smi','--query-gpu=index,utilization.gpu,memory.free','--format=csv,noheader,nounits'],
+                text=True).splitlines()
+            devices = [tuple(map(int, row.split(','))) for row in inventory]
+            return min((load, -memory, gpu) for gpu, load, memory in devices if gpu in cards)[2]
         return next(i for i in rt['allowed_gpus'] if i in cards)
 
     def launch(action, cwd, script, config, gpu):
@@ -171,8 +211,8 @@ def dispatch(runtime):
     try:
         write(state, dict(status='WAIT_GPU'))
         gpu = eligible_gpu()
-        launch('fit-smoke', archive, own, cfg, gpu)
-        launch('fit', archive, own, cfg, eligible_gpu())
+        launch('fit-edge-smoke' if joint_edges else 'fit-smoke', archive, own, cfg, gpu)
+        launch('fit-edge' if joint_edges else 'fit', archive, own, cfg, eligible_gpu())
         launch('predict-source', reference, evaluator, runtime, eligible_gpu())
         launch('score-source', reference, evaluator, runtime, None)
         write(state, dict(status='SOURCE_SCORED'), exclusive=False)
@@ -184,9 +224,10 @@ def dispatch(runtime):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='action', required=True)
-    for action in ('dispatch', 'fit-smoke', 'fit'):
+    for action in ('dispatch', 'fit-smoke', 'fit', 'fit-edge-smoke', 'fit-edge'):
         sub.add_parser(action).add_argument('runtime', type=Path)
     pub = sub.add_parser('publish')
+    pub.add_argument('--joint-edges', action='store_true')
     for key in ('repo', 'output', 'context', 'ssh-config'):
         pub.add_argument('--' + key, type=Path, required=True)
     args = parser.parse_args()
@@ -201,19 +242,21 @@ def main():
         rt = {key: ctx[key] for key in ('project', 'python', 'frozen_sources')}
         project = PurePosixPath(rt['project'])
         releases, runs = project / 'releases', project / 'runs'
-        rt.update(run_id=RUN, runner=__spec__.name, code_commit=release_commit(args.repo),
-                  release_root=str(releases / f'{RUN}-release'), run_root=str(runs / RUN),
+        run = EDGE_RUN if args.joint_edges else RUN
+        rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
+                  release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
                   source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),
                   classifier_root=str(runs / AUG_RUN), w24_release_root=str(releases / f'{W24_RUN}-release'),
                   training_release_root=str(releases / f'{TRAIN_RUN}-release'), outer_objective=True,
-                  allowed_gpus=[6, 3, 2, 7, 4, 1, 0, 5], cpu_workers=8)
+                  joint_edges=args.joint_edges, cpu_workers=8,
+                  allowed_gpus=[7, 3, 4, 1, 2, 6, 0, 5] if args.joint_edges else [6, 3, 2, 7, 4, 1, 0, 5])
         rt['external_releases'] = [rt[k] for k in ('source_root', 'classifier_root', 'w24_release_root',
                                                   'training_release_root')] + [str(runs / SWEEP_RUN)]
         release(args.repo, args.output, rt, args.ssh_config)
     elif args.action == 'dispatch':
         dispatch(args.runtime)
     else:
-        fit_source(args.runtime, args.action)
+        fit_source(args.runtime, args.action, joint_edges=args.action.startswith('fit-edge'))
 
 
 if __name__ == '__main__':

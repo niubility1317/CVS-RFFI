@@ -105,6 +105,10 @@ def chirp_labels(f, g, tracker, packets, device, *, verify=False):
 
 
 def mode_list(rt):
+    if rt.get('joint_edges'):
+        from experiments.pamf_lora_main.w24_outer_objective_source import EDGE_MODES
+
+        return EDGE_MODES
     if rt.get('outer_objective'):
         from experiments.pamf_lora_main.w24_outer_objective_source import MODES as OUTER_MODES
 
@@ -127,22 +131,30 @@ def predict_source(runtime):
     archive, parent = training_runtime(rt)
     g, track, threshold, frozen = load_restorer(archive, parent, contract, device)
     learning_outer = rt.get('outer_objective', False)
+    joint_edges = rt.get('joint_edges', False)
     allocating = rt.get('chirp_allocation', False)
     sweeping = rt.get('readout_sweep', False)
     modes = mode_list(rt)
     if learning_outer:
         from experiments.pamf_lora_main.w24_outer_objective_source import load_candidate
 
-        candidate, new_frozen = load_candidate(root, contract, device)
+        candidate, new_frozen = load_candidate(root, contract, device, joint_edges=joint_edges)
+        if joint_edges:
+            from experiments.pamf_lora_main.w24_joint_edges import restore_joint
 
         def evaluate(packets):
             original = received_aperture(packets, device)
-            decisions = [classify_aperture(f, original)]
-            for model in (g, candidate):
-                restored = original.clone()
-                restored[..., :384] += .5 * wide_delta(model, track, original)
-                decisions.append(classify_aperture(f, restored))
-            return np.stack(decisions), [len(packets)] * 2
+            old = original.clone()
+            old[..., :384] += .5 * wide_delta(g, track, original)
+            if joint_edges:
+                center, full = restore_joint(candidate, track, original)
+                center_only = torch.cat((center, original[..., 384:]), dim=-1)
+                restored = (center_only, full)
+            else:
+                current = original.clone()
+                current[..., :384] += .5 * wide_delta(candidate, track, original)
+                restored = (current,)
+            return np.stack([classify_aperture(f, x) for x in (original, old, *restored)]), [len(packets)] * (len(modes)-1)
     elif allocating:
         evaluate = partial(chirp_labels, f, g, track, device=device)
     elif sweeping:
@@ -167,8 +179,8 @@ def predict_source(runtime):
                  parent_steps=frozen['steps'], parameters=frozen['parameters'])
     if learning_outer:
         observed = received_aperture(packets[:1], device)
-        b1 = {name: ungated_latency(model, track, observed)
-              for name, model in zip(modes[1:], (g, candidate), strict=True)}
+        b1 = {modes[1]: ungated_latency(g, track, observed),
+              modes[-1]: ungated_latency(candidate, track, observed, render=restore_joint if joint_edges else wide_delta)}
         smoke.update(candidate_steps=new_frozen['steps'], candidate_parameters=new_frozen['parameters'], ungated=True,
                      b1_ungated_g_only=b1)
     elif allocating:
@@ -218,6 +230,8 @@ def predict_source(runtime):
         np.savez(out / 'predictions.npz', **output[route])
         if learning_outer:
             policy = dict(ungated=True, amplitude=.5, candidate_run=rt['run_id'], candidate_steps=new_frozen['steps'])
+            if joint_edges:
+                policy['native_edge_half']=True
         elif allocating:
             policy = dict(ungated=True, fixed_position_masks=True, preferred_energy='all_half',
                           preferred_weights=[.75, 1.25])
@@ -249,14 +263,14 @@ def latency(g, track, threshold, clean, device):
     return dict(b1_active_g_median_ms=float(np.median(samples)), b1_active_g_p95_ms=float(np.percentile(samples, 95)))
 
 
-def ungated_latency(g, tracker, observed):
+def ungated_latency(g, tracker, observed, *, render=wide_delta):
     for _ in range(6):
-        wide_delta(g, tracker, observed)
+        render(g, tracker, observed)
     torch.cuda.synchronize()
     samples = []
     for _ in range(24):
         start = perf_counter()
-        wide_delta(g, tracker, observed)
+        render(g, tracker, observed)
         torch.cuda.synchronize()
         samples.append(1000 * (perf_counter() - start))
     return dict(median_ms=float(np.median(samples)), p95_ms=float(np.percentile(samples, 95)))
@@ -266,7 +280,11 @@ def compare_source(runtime):
     rt = read(runtime)
     root = Path(rt['run_root'])
     modes = mode_list(rt)
-    if rt.get('outer_objective'):
+    if rt.get('joint_edges'):
+        from experiments.pamf_lora_main.w24_outer_objective_source import EDGE_CONTRASTS
+
+        contrasts = EDGE_CONTRASTS
+    elif rt.get('outer_objective'):
         from experiments.pamf_lora_main.w24_outer_objective_source import CONTRASTS as OUTER_CONTRASTS
 
         contrasts = OUTER_CONTRASTS
