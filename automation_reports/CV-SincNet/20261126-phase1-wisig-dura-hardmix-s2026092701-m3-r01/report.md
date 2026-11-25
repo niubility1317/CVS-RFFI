@@ -3,7 +3,7 @@
 - run_id：`20261126-phase1-wisig-dura-hardmix-s2026092701-m3-r01`
 - group_id：`phase1-wisig-dura-hardmix`；类别：`comparison`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING / 发布已核实（正在生成源配对缓存）
 
 ## 目的与对照
 
@@ -27,3 +27,11 @@
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 发布核验
+
+N607 独立读回确认归档一致、远端编译通过、调度和源缓存进程的工作目录与命令匹配。原 R69 和 R65 通过真实权重的四条源 IQ 冒烟，目标样本读取数为 0。缓存进程已输出第 1 轮进度。GPU 训练在缓存完整后按实时显存自动调度。
+
+执行提交为 `e76395f0d20426af96d52fec6ec536be9ea2a363`。均衡续训与困难续训用相同的 R69/R65 历史权重，作为已有基准上的工程对照。从零训练组只继承本组前序阶段。所有组训练冻结后各自预测固定七景，六份预测完成后由独立 CPU scorer 读取 TX 真值。
+
+[启动读回](n607_launch_readback.json)
