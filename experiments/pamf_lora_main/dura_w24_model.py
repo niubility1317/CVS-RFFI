@@ -14,15 +14,16 @@ from .joint_spectrum import split
 from .joint_unroll_source import coordinates
 from .natural_detail import transfer_risk, weak_difference
 from .packet_data import PACKET_LEN
-from .posterior_transport import condition_waveforms
 
 
-def front_end():
-    phase = np.arange(WIDE) * 125
-    sample, remainder = np.divmod(phase, 48)
-    offsets = np.arange(-26, 28)
-    taps = 48 * firwin(2501, 1/125, window=('kaiser', 5.0)).astype(np.float32)
-    delta = remainder[:, None] - 48 * offsets
+def front_end(samples=WIDE):
+    up = samples // 8
+    phase = np.arange(samples) * 125
+    sample, remainder = np.divmod(phase, up)
+    radius = (1250 + up - 1) // up
+    offsets = np.arange(1-radius, radius+1)
+    taps = up * firwin(2501, 1/125, window=('kaiser', 5.0)).astype(np.float32)
+    delta = remainder[:, None] - up * offsets
     weights = np.where(np.abs(delta) <= 1250, taps[(delta + 1250).clip(0, 2500)], 0.)
     index = STARTS[:, None, None] + WINDOW_START + sample[:, None] + offsets
     index = np.where(index < 0, -index, index)
@@ -48,12 +49,7 @@ class DuraW24(DuraCapacity):
         super().__init__('expanded', samples=WIDE, condition_fields=6)
 
     def propose(self, y, quality, rms, edges):
-        edge_pairs = edges.unflatten(-1, (2, 24))
-        power = edge_pairs.abs().square().mean(-1).clamp_min(1e-10)
-        step = (edge_pairs[..., 1:] * edge_pairs[..., :-1].conj()).mean(-1) / power
-        log_power = (power/rms.square()).log().clamp(-4., 4.)
-        fields = tuple(x.unsqueeze(-1) for t in (log_power, step.real, step.imag) for x in t.unbind(-1))
-        return self.stages(y, quality, rms, condition=fields)
+        return self.stages(y, quality, rms, condition=boundary_fields(edges, rms))
 
     def score(self, tracker, observed):
         y = coordinates(tracker, observed[..., :WIDE])[0]
@@ -80,25 +76,33 @@ def calibrate(model, tracker, packets):
                        'parameters': sum(p.numel() for p in model.parameters())}
 
 
-def objective(model, tracker, raw, rng, *, with_identity, recipe, step):
+def boundary_fields(edges, rms):
+    edge_pairs = edges.unflatten(-1, (2, 24))
+    power = edge_pairs.abs().square().mean(-1).clamp_min(1e-10)
+    step = (edge_pairs[..., 1:] * edge_pairs[..., :-1].conj()).mean(-1) / power
+    log_power = (power/rms.square()).log().clamp(-4., 4.)
+    return tuple(x.unsqueeze(-1) for t in (log_power, step.real, step.imag) for x in t.unbind(-1))
+
+
+def objective(model, tracker, raw, rng, *, with_identity, recipe, step, samples=WIDE, identity_rows=2):
     raw = raw / raw.abs().square().mean(-1, keepdim=True).clamp_min(1e-12).sqrt()
     clean = tracker.aperture(raw)
-    center = clean[..., :WIDE]
+    center = clean[..., :samples]
     framed, phase, _, rms = coordinates(tracker, real_iq(center))
     clean_frame = phase*rms
     delta = weak_difference(framed)
     change = delta*clean_frame
     # Add generic disturbances at capture rate before making either view.
-    a, b = (tracker.aperture(condition_waveforms(raw.unflatten(-1, (8, 1024)), rng).flatten(-2))
+    a, b = (tracker.aperture(recipe.perturb(raw.unflatten(-1, (8, 1024)), rng).flatten(-2))
             for _ in range(2))
     if with_identity:
-        a[-2:] = b[-2:] = clean[-2:]
-    data = torch.stack((a, b, torch.cat((a[..., :WIDE]+change, a[..., WIDE:]), dim=-1)), dim=1)
+        a[-identity_rows:] = b[-identity_rows:] = clean[-identity_rows:]
+    data = torch.stack((a, b, torch.cat((a[..., :samples]+change, a[..., samples:]), dim=-1)), dim=1)
     observed = data.flatten(0, 1)
-    y, phase, quality, rms = coordinates(tracker, real_iq(observed[..., :WIDE]))
+    y, phase, quality, rms = coordinates(tracker, real_iq(observed[..., :samples]))
     frame = phase*rms
     ground = torch.stack((center, center, center+change), dim=1).flatten(0, 1)/frame
-    (coarse, first, final), action, variance, _, _ = model.propose(y, quality, rms, observed[..., WIDE:])
+    (coarse, first, final), action, variance, _, _ = model.propose(y, quality, rms, observed[..., samples:])
     half = y + .5*(final-y)
     prediction = (half*frame).unflatten(0, data.shape[:2])
     corruption = (y-action(ground)).abs().square()
@@ -106,7 +110,7 @@ def objective(model, tracker, raw, rng, *, with_identity, recipe, step):
     expected = split(delta)
     preserve = transfer_risk(signal[:, :1], expected[:, :1]) + transfer_risk(signal[:, 1:], expected[:, 1:])
     consistency = ((prediction[:, 0]-prediction[:, 1])/clean_frame).abs().square().mean()
-    identity = ((prediction-data[..., :WIDE])[-2:, :2].abs().square().mean()
+    identity = ((prediction-data[..., :samples])[-identity_rows:, :2].abs().square().mean()
                 if with_identity else y.real.new_zeros(()))
     values = torch.stack((waveform_risk(coarse, ground), waveform_risk(first, ground),
                           waveform_risk(final, ground), waveform_risk(half, ground), preserve, consistency,

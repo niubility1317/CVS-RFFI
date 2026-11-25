@@ -32,7 +32,7 @@ def prepare(rt, device, *, smoke, fit_per_rx, bank_per_rx):
     return tuple(tensor(iq[index].view('float32'), device).view(torch.complex64) for index in roles), contract
 
 
-def dispatch(rt, runtime):
+def dispatch(rt, runtime, recipe=RECIPE):
     root = Path(rt['run_root'])
     root.mkdir(exist_ok=False)
     state = root / 'state.json'
@@ -41,42 +41,44 @@ def dispatch(rt, runtime):
     def launch(action, gpu):
         env = dict(os.environ, CUDA_VISIBLE_DEVICES=str(gpu), OPENBLAS_NUM_THREADS='1',
                    MKL_NUM_THREADS='1', OMP_NUM_THREADS='2')
-        cmd = [rt['python'], '-u', '-m', __spec__.name, action, str(runtime)]
+        cmd = [rt['python'], '-u', '-m', rt['runner'], action, str(runtime)]
         with (root / 'logs' / f'{action}.log').open('x') as log:
             job = subprocess.Popen(cmd, env=env, stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT)
-        print('W24_DURA_LAUNCHED', action, job.pid, gpu, flush=True)
+        print(f'{recipe.name.upper()}_DURA_LAUNCHED', action, job.pid, gpu, flush=True)
         return job
 
     try:
         gpu = select_gpu()
         write(state, dict(status='SOURCE_SMOKE', gpu=gpu))
         if launch('fit_smoke', gpu).wait():
-            raise RuntimeError('W24 real U source fit smoke failed')
+            raise RuntimeError('Real U source fit smoke failed')
         gpu = select_gpu()
-        write(state, dict(status='SOURCE_TRAINING', gpu=gpu, steps=RECIPE.steps), exclusive=False)
+        write(state, dict(status='SOURCE_TRAINING', gpu=gpu, steps=recipe.steps), exclusive=False)
         if launch('fit', gpu).wait():
-            raise RuntimeError('W24 40,000-step fit failed')
-        terminal = read(root / 'w24-complete.json')
-        if (terminal['status'], terminal['steps']) != ('SOURCE_FROZEN', RECIPE.steps) or not (root/'w24-model.pt').is_file():
-            raise ValueError('Expected the terminal W24 source weights')
-        write(state, dict(status='SOURCE_FROZEN', steps=RECIPE.steps), exclusive=False)
+            raise RuntimeError(f'The {recipe.steps}-step source fit failed')
+        terminal = read(root / f'{recipe.name}-complete.json')
+        if ((terminal['status'], terminal['steps'], terminal['estimator']) != ('SOURCE_FROZEN', recipe.steps, recipe.name)
+                or not (root / f'{recipe.name}-model.pt').is_file()):
+            raise ValueError('Expected the terminal source restoration weights')
+        write(state, dict(status='SOURCE_FROZEN', steps=recipe.steps), exclusive=False)
     except Exception as error:
         write(state, dict(status='FAILED', error=str(error)), exclusive=False)
         raise
 
 
-def publish(repo, output, context, ssh_config):
+def publish(repo, output, context, ssh_config, *, run=RUN, runner=None):
     cfg = read(context)
     project = cfg['project']
     rt = {key: cfg[key] for key in ('project', 'python', 'frozen_sources')}
-    rt.update(run_id=RUN, runner=__spec__.name, code_commit=release_commit(repo),
-              release_root=f'{project}/releases/{RUN}-release', run_root=f'{project}/runs/{RUN}',
+    rt.update(run_id=run, runner=runner or __spec__.name, code_commit=release_commit(repo),
+              release_root=f'{project}/releases/{run}-release', run_root=f'{project}/runs/{run}',
               source_root=f'{project}/releases/{DATA}-release/data/source')
     release(repo, output, rt, ssh_config)
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description=__doc__)
+def main(*, run=RUN, runner=None, recipe=RECIPE, calculate=objective, make_tracker=WideTracker,
+         description=__doc__):
+    parser = argparse.ArgumentParser(description=description)
     commands = parser.add_subparsers(dest='command', required=True)
     publisher = commands.add_parser('publish')
     for key in ('repo', 'output', 'context', 'ssh-config'):
@@ -86,14 +88,18 @@ if __name__ == '__main__':
     args = vars(parser.parse_args())
     command = args.pop('command')
     if command == 'publish':
-        publish(**args)
+        publish(**args, run=run, runner=runner)
     else:
         rt = read(args['runtime'])
-        if rt['run_id'] != RUN:
-            raise ValueError('The W24 fit requires its own immutable source-only run')
+        if rt['run_id'] != run:
+            raise ValueError('The fit requires its own immutable source-only run')
         if command == 'dispatch':
-            dispatch(rt, args['runtime'])
+            dispatch(rt, args['runtime'], recipe)
         else:
             numerical_policy()
-            fit(rt, smoke=command=='fit_smoke', recipe=RECIPE, calculate=objective,
-                receiver_batches=True, prepare=prepare, make_tracker=WideTracker)
+            fit(rt, smoke=command=='fit_smoke', recipe=recipe, calculate=calculate,
+                receiver_batches=True, prepare=prepare, make_tracker=make_tracker)
+
+
+if __name__ == '__main__':
+    main()

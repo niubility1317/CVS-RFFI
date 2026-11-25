@@ -102,10 +102,13 @@ class DuraCapacity(nn.Module):
         proposed = zero_carrier(torch.complex(r.tanh(), i.tanh()))
         return limit(proposed, y, rms, y.real.new_tensor(MAX_EDIT))
 
-    def stages(self, y, quality, rms, *, use_action=True, use_noise=True, solve=True, robust=False, condition=()):
+    def stages(self, y, quality, rms, *, use_action=True, use_noise=True, solve=True, robust=False, condition=(),
+               noise_variance=None):
         spec = fft(y)
-        noise = (spec[..., self.noise_band].abs().square().median(-1, keepdim=True).values
-                 / .69314718056).clamp(1e-5, 4.)
+        if noise_variance is None:
+            noise_variance = (spec[..., self.noise_band].abs().square().median(-1, keepdim=True).values
+                              / .69314718056)
+        noise = noise_variance.clamp(1e-5, 4.)
         log_noise = noise.log().clamp(-11., 2.)/5.
         average = .5*(y[:, ::2].mean(1, keepdim=True) + y[:, 1::2].mean(1, keepdim=True))
         opposite = torch.cat((y[:, 1::2].mean(1, keepdim=True), y[:, ::2].mean(1, keepdim=True)),1).repeat(1, y.shape[1] // 2, 1)

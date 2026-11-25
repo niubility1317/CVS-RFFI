@@ -11,12 +11,13 @@ from experiments.cric_dura_comparison.bootstrap import numerical_policy
 from experiments.cric_dura_comparison.io import tensor, write
 from experiments.pamf_lora_main.channel_blind_source import partition
 from experiments.pamf_lora_main.data import SOURCE
+from experiments.pamf_lora_main.dura_apertures import shared_guard_coefficients
 from experiments.pamf_lora_main.dura_repair import PacketRestorer, real_iq
 from experiments.pamf_lora_main.dura_w24 import CROP, NARROW, WIDE
 from experiments.pamf_lora_main.dura_w24_model import WideTracker
 from experiments.pamf_lora_main.full_packet_views import source_contract, source_role
 from experiments.pamf_lora_main.joint_unroll_source import coordinates
-from tools.lora_w24_observation_overlap import quantiles, shared_guard_coefficients
+from tools.lora_w24_observation_overlap import quantiles
 
 
 RATES = (NARROW, WIDE)

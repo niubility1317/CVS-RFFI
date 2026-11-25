@@ -10,6 +10,7 @@ from experiments.cric_dura_comparison.bootstrap import numerical_policy
 from experiments.cric_dura_comparison.io import tensor, write
 from experiments.pamf_lora_main.channel_blind_source import partition
 from experiments.pamf_lora_main.data import SOURCE
+from experiments.pamf_lora_main.dura_apertures import shared_guard_coefficients
 from experiments.pamf_lora_main.dura_repair import PacketRestorer, complex_iq
 from experiments.pamf_lora_main.dura_w24 import NARROW, WIDE, apertures, lift
 from experiments.pamf_lora_main.dura_w24_model import WideTracker
@@ -27,14 +28,6 @@ def quantiles(value):
 
 def guard(spectrum, band):
     return (spectrum[..., band].abs().square().median(-1).values / .69314718056).sqrt().median(1).values
-
-
-def shared_guard_coefficients(value):
-    n = value.shape[-1]
-    window = torch.hann_window(n, periodic=False)
-    density = torch.fft.fft(value*window, norm='ortho') * (WIDE/(n*window.square().mean())).sqrt()
-    frequency = (n*torch.fft.fftfreq(n)).abs()
-    return density[..., (frequency >= 72) & (frequency <= 112)]
 
 
 def shared_guard(value):
