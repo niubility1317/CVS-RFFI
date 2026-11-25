@@ -213,7 +213,7 @@ def main():
                   w24_release_root=str(releases/f'{W24_RUN}-release'), training_release_root=str(releases/f'{TRAIN_RUN}-release'),
                   allowed_gpus=[3, 7, 4, 1, 2, 6, 0, 5], cpu_workers=8)
         rt['external_releases'] = [rt[key] for key in ('source_root','classifier_root','w24_release_root','training_release_root')]
-        rt['external_releases'].extend(str(runs[name]) for name in (WAVEFORMS,SWEEP_RUN))
+        rt['external_releases'].extend(str(runs/name) for name in (WAVEFORMS,SWEEP_RUN))
         release(args.repo, args.output, rt, args.ssh_config)
 
 

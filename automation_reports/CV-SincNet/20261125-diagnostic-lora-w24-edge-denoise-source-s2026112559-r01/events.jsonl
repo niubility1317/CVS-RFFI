@@ -1,1 +1,2 @@
 {"at": "2026-11-25T15:43:23+00:00", "status": "PLANNED", "note": "Registered fixed-center source edge experiment", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-25T15:45:45+00:00", "status": "FAILED", "note": "Initial publish invocation failed before packaging or transfer on a local path expression. Independently checked that the remote archive, release and run do not exist. Corrected expression and verified CLI with mocked transport.", "evidence": ["experiments/pamf_lora_main/w24_edge_denoise_source.py"], "row_id": null}
