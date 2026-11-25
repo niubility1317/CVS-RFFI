@@ -1,1 +1,2 @@
 {"at": "2026-11-25T13:35:15+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-25T13:39:51+00:00", "status": "RUNNING", "note": "两组真实源 U 启动检查通过。两个训练进程已分别使用 GPU 0 与 GPU 5，独立核对父进程、实际命令、工作目录和日志增长。", "evidence": ["E:/type10-7/local_artifacts/20261125-phase1-wisig-spectral-precision-source-m2-r01/remote-readback.json", "runs/20261125-phase1-wisig-spectral-precision-source-m2-r01/state.json"], "row_id": null}

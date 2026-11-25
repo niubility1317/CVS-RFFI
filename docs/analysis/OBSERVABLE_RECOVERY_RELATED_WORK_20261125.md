@@ -13,6 +13,7 @@
 | Xhonneux 等的 LoRa 同步 | 利用前导迭代估计载波频偏和采样时刻偏移，以解调包错误率评价。 | 可作为 LoRa 原生输入的同步工程对照。同步处理仍需逐包核对固定 W24 的采样坐标、首尾 chirp 和识别收益。 [原论文](https://arxiv.org/html/1912.11344) |
 | Shen 等的 LoRa 信道无关谱图及后续物理残差谱图 | 前者利用相邻时频列的比值抵消局部近似共享的信道，配合增强和度量学习。后者将对齐的理想前导参考从相同处理的谱图表征中扣除。两者的输出都是指纹特征。 | 相邻列比值、理想 chirp 及残差特征均有先例。当前恢复输出为原坐标复 IQ，并用冻结 W24 检验。特征比值和参考扣除可作诊断或工程对照，单独记录使用的观测和假设。 [Shen 等论文 §IV](https://livrepository.liverpool.ac.uk/3148161/1/TIFS2022_LoRa_RFFI.pdf) · [物理残差谱图原论文](https://www.sciltp.com/journals/pc/articles/2607004785) |
 | Aggarwal 等的 MoDL | 给定测量前向算子，交替运行学习先验与共轭梯度一致性求解，以目标图像训练。 | DURA 同样采用学习先验和迭代一致性。R69 的算子和窗口标量从当前包与粗恢复估计，输出是复 IQ，原训练使用源域配对 IQ 和前版教师输出。展开、共轭梯度及端到端训练均有先例。 [MoDL 原论文](https://arxiv.org/html/1712.02862) · [作者实现](https://github.com/hkaggarwal/modl) · [DURA v1.0](../DURA_V1.md) |
+| Johnson 等的 MRI 数据一致性加权 | 将噪声与测量不一致性分别纳入加权最小二乘。权重可由重复采样、导航信号或误差模型估计，以图像恢复效果验证。 | 按观测失配调整频域权重已有先例。当前 WiSig 实验从单包实收 IQ 和每阶段残差生成有界逐频权重，以源域复 IQ 训练，并在冻结识别器上与等预算固定权重组比较。该权重刻画求解器的相对信任程度，其物理噪声方差误差没有被直接监督。 [原论文式 3–7](https://pmc.ncbi.nlm.nih.gov/articles/PMC3354012/) · [WiSig 实验登记](../../automation_reports/CV-SincNet/20261125-phase1-wisig-spectral-precision-source-m2-r01/report.md) |
 
 ## 当前接收估计量的解释
 
