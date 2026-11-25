@@ -117,7 +117,7 @@ def measure(rt, device):
             if int(active.sum()) != count:
                 raise ValueError('Local solve and original DURA must share the same receive-only gate')
             active_count += count
-            unchanged_profile = (profile == 1.).all((-2, -1))
+            unchanged_profile = (profile == 1.).flatten(1).all(-1)
             unchanged_count += int((active & unchanged_profile).sum())
             waves = [iq, original[3]]
             for field in (profile, profile.roll(y.shape[-1]//2, dims=-1)):
