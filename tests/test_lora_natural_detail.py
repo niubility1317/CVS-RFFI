@@ -6,6 +6,19 @@ from experiments.pamf_lora_main.dura_repair import PacketRestorer, real_iq
 from experiments.pamf_lora_main.natural_detail import (
     detail_bands, natural_objective, paired_inputs, transfer_risk, weak_difference,
 )
+
+
+def test_balanced_transfer_penalizes_the_same_loss_of_gain_at_weak_signal_levels():
+    time = torch.arange(256)/256.
+    expected = .006*(torch.polar(torch.ones_like(time), 2.*torch.pi*4.*time)
+                      + torch.polar(torch.ones_like(time), 2.*torch.pi*18.*time))
+    expected = expected.expand(3, 6, -1)
+    full_risk = transfer_risk(.5*expected, expected, balance=True)
+    weak = .25*expected
+    weak_risk = transfer_risk(.5*weak, weak, balance=True)
+    torch.testing.assert_close(weak_risk, full_risk)
+    assert transfer_risk(.5*weak, weak) < weak_risk
+    assert transfer_risk(weak, weak, balance=True) == 0.
 from experiments.pamf_lora_main.natural_detail_source import RECIPES, render
 
 

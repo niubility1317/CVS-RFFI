@@ -86,6 +86,19 @@ def summarize(rows):
                 p10=np.quantile(rows, .1, axis=0).tolist(), p90=np.quantile(rows, .9, axis=0).tolist())
 
 
+def loss_sensitivity(reference):
+    """Measure the original transfer loss's scale at a half-strength delivered difference."""
+    fields = {}
+    for name, band in zip(COMPONENTS, spectra(reference), strict=True):
+        power = band.abs().square().mean(-1)
+        # For squared error (gain - 1)^2 * power, this is the magnitude of
+        # the original loss derivative w.r.t. gain, before outer averaging.
+        slope = power / (.002 + 1.25*power)
+        fields[name] = {key: np.quantile(value.flatten().tolist(), (.1, .5, .9)).tolist()
+                        for key, value in (('mean_bin_power', power), ('half_gain_slope', slope))}
+    return fields
+
+
 @torch.no_grad()
 def measure(rt, device):
     begun = perf_counter()
@@ -107,6 +120,8 @@ def measure(rt, device):
     if not np.all(rx[held][peers] == rx[held]) or np.any(peers == np.arange(len(held))):
         raise ValueError('Every actual pair must contain two different source packets from one RX')
     peers = torch.tensor(peers.tolist(), device=device)
+    difference = clean[peers] - clean
+    sensitivity = dict(actual=loss_sensitivity(difference), injected=loss_sensitivity(.5*difference))
     results = {}
     for style, dose in CONDITIONS:
         rng = torch.Generator(device=device).manual_seed(2026112595)
@@ -125,7 +140,8 @@ def measure(rt, device):
                              by_receiver={key: summarize(values[rx[held] == key]) for key in SOURCE})
     return dict(status='VERIFIED', source_commit=rt['code_commit'], role='U_s', held=len(held),
                 pairs=PAIRS, components=COMPONENTS, fields=FIELDS, arms=ARMS, seconds=perf_counter()-begun,
-                conditions=results, F_reads=0, TX_reads=0, V_reads=0, target_reads=0, trace_reads=0,
+                conditions=results, loss_sensitivity=sensitivity, F_reads=0, TX_reads=0, V_reads=0,
+                target_reads=0, trace_reads=0,
                 optimizer_updates=0)
 
 

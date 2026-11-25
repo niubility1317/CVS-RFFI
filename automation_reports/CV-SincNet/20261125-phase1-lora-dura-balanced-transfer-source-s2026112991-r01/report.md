@@ -1,0 +1,9 @@
+# LoRa 从零重训的弱复谱保真损失对照
+
+沿用 1,264,702 参数的扩容 DURA、原接收时频前端、粗恢复、两阶段各两步 CG、原源 U 门和末步 0.5 回写。保真损失按公共和逐 chirp 独有分别分成 1–8、9–32 kHz。将每组的固定稳定项 0.002 改为该组当前源 U 训练批的真实差异平均功率中位数，最小值 0.000001。只改变这一项的分母，权重仍为 0.30，其他损失、扰动及学习率保持旧配方。中位数与真实差异只在源监督项中计算，接收侧不读取源参考。本设计依据真实源双包和原损失的敏感度归因。 [源 U 测量与基线](../20261124-phase1-lora-dura-capacity-source-m4-r01/report.md) · [训练代码](../../../experiments/pamf_lora_main/dura_balanced_transfer_source.py)
+
+种子 2026112991，随机初始化，一次 AdamW 联合训练 40,000 步，batch 16，学习率从 0.0002 余弦降至 0.00002。沿用同一合法 U 角色和固定 20,000 拟合、2,500 clean 校准、500 留出物理包。第 40,000 步冻结。通用扰动与实际 practical 生成独立。拟合、阈值和恢复权重固定阶段隔离 TX、F、V、目标及真实信道／噪声信息。共享同一权重和推理规则执行两条路线。
+
+冻结后真实权重 source U 冒烟，随后独立源 V 的同一 900 包及 Tri-set 种子 2026092702 在 Full 和 Residual 各评 clean 和六景，比较直通、同路线原 DURA、同预算已冻结扩容和新候选。两路预测都固定之后读取源标签。源 V 得分供解释。正式目标子集计划固定 15 台未见接收机、每台前 200 个盲序物理包、相同 Tri-set 种子及两路线原登记视图，另用独立 truth-last 对照。两路线分别报告正确数、逐景逐 RX 和配对区间。这条子集与用户原三种子全量验收分开。
+
+在 N607 普通账号运行 `python -m experiments.pamf_lora_main.dura_balanced_transfer_source publish --repo <repo> --output <artifact-root>/release --context <runtime_source.json> --ssh-config <config>`。发布根为 `${N607_PROJECT}/releases/20261125-phase1-lora-dura-balanced-transfer-source-s2026112991-r01-release`，输出根与运行名匹配且不可覆盖。按实测空闲显卡分配，源 V 两路独立并行。源契约或冻结权重不符、非有限梯度、冒烟或预测矩阵闭合失败时停止本运行。预期保留真实源 U 拟合日志、固定留出轨迹、末步权重与门限、真实权重无查询检查、双路线源预测和独立评分。归档和提交以 `release/submit.json` 为准。

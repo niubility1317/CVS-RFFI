@@ -158,7 +158,7 @@ class DuraCapacity(nn.Module):
         return (c, *stages), estimator, variance, noise, mismatch
 
 
-def objective(model, tracker, iq, rng, *, with_identity, recipe, step):
+def objective(model, tracker, iq, rng, *, with_identity, recipe, step, balance_transfer=False):
     raw = complex_iq(iq)
     natural, phase, _, level = coordinates(tracker, iq)
     carrier = phase*level
@@ -177,8 +177,8 @@ def objective(model, tracker, iq, rng, *, with_identity, recipe, step):
     output = (final_half*frame).unflatten(0, views.shape[:2])
     transported = split((output[:, 2]-output[:, 0])/carrier)
     source_change = split(weak)
-    retention = transfer_risk(transported[:, :1], source_change[:, :1]) + transfer_risk(
-        transported[:, 1:], source_change[:, 1:])
+    retention = transfer_risk(transported[:, :1], source_change[:, :1], balance=balance_transfer) + transfer_risk(
+        transported[:, 1:], source_change[:, 1:], balance=balance_transfer)
     consistency = (((output[:,0]-output[:,1])/carrier).abs().square()).mean()
     identity = ((output-views)[-2:, :2].abs().square().mean() if with_identity else y.real.new_zeros(()))
     values = torch.stack((waveform_risk(coarse, ground), waveform_risk(first, ground),

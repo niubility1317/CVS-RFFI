@@ -20,15 +20,16 @@ def weak_difference(framed):
     return torch.fft.ifft(spectrum * (near | middle), norm='ortho')
 
 
-def transfer_risk(prediction, expected):
+def transfer_risk(prediction, expected, *, balance=False):
     error = torch.fft.fft(prediction - expected, norm='ortho').abs().square()
     energy = torch.fft.fft(expected, norm='ortho').abs().square()
-    # Normalize by actual trace energy per band; a floor limits gradients when
-    # two source packets contain nearly identical sidebands.
-    return torch.stack([
-        (error[..., band].mean(-1) / (.002 + energy[..., band].mean(-1))).log1p().mean()
-        for band in detail_bands(expected)
-    ]).mean()
+    losses = []
+    for band in detail_bands(expected):
+        power = energy[..., band].mean(-1)
+        # Keep very small pair differences from dominating a band.
+        floor = power.detach().median().clamp_min(1e-6) if balance else .002
+        losses.append((error[..., band].mean(-1) / (floor + power)).log1p().mean())
+    return torch.stack(losses).mean()
 
 
 def paired_inputs(clean, perturb, rng, change, *, with_identity):
