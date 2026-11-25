@@ -1,1 +1,2 @@
 {"at": "2026-11-25T14:52:33+00:00", "status": "PLANNED", "note": "Registered CPU-only evaluation of the immutable r01 waveform panel", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-25T14:57:22+00:00", "status": "ANALYZED", "note": "Independently verified 14 frozen matched waveform views, 300 packets per view, and CPU source scoring; zero target and TX truth reads.", "evidence": ["runs/20261125-diagnostic-lora-w24-waveform-source-s2026112559-r02/waveform-scores.json", "report.md"], "row_id": null}
