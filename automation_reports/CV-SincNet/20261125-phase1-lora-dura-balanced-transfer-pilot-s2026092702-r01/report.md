@@ -7,3 +7,7 @@
 冻结全部文件后，本机独立评分先核对每路线、每接收机、每场景的直通决策与原归档逐值一致。对照包括直通、两条路线各自的原冻结 DURA 半量、原扩容半量、`guard_half`，以及 Full 中已归档的复响应半量。之后以匹配物理顺序关联原始测试真值，逐场景和接收机报告正确数、同包纠错、改错、净变化及 1,600 次物理包分层配对重采样区间。三种子 30,000 包的正式验收矩阵单独保留。
 
 N607 普通账号与已核实的项目 Python。命令 `python -m experiments.pamf_lora_main.dura_balanced_transfer_target publish --repo <checkout> --output <artifact-root>/release --context <runtime_source.json> --ssh-config <config> --training-receipt <source-release>/submit.json`。输出目录 `${N607_PROJECT}/runs/20261125-phase1-lora-dura-balanced-transfer-pilot-s2026092702-r01`，工作目录为对应的不可覆盖 `-release`。候选和旧对照的身份、测试物理前缀和两路线固定。健康源训练继续，测试开始后按实时可用 GPU 分配八个接收机分片。训练／权重身份不符、盲预测或原数据契约失败、输出未闭合时停止本链并保留已有产物。预期有双路线源参考、`smoke.json`、八份分片完成记录、`predictions/complete.json` 与独立 `scores.json`。评分入口为 `python -m tools.lora_dual_aperture_pilot_score {collect,score} --method balanced-transfer`。
+
+## 调度核验
+
+20 项本地聚焦检查通过，覆盖候选身份、未闭合源运行、源负分仍按固定矩阵接续、归档直通一致性和独立评分顺序。独立 P0/P1 审查通过。N607 已核对发布提交 `62e6de5acb226896c453938d0ee57a0bb020c245`、归档传输、远端编译、调度器工作目录与命令。调度器已进入 `WAITING_FOR_FROZEN_TRAINING`，无目标预测。本机 truth-last 评分进程已经上线，并核对既有真值归档位置，等待全部 420 个决策数组冻结后读取。
