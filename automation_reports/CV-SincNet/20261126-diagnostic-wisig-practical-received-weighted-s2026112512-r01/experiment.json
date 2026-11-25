@@ -1,0 +1,213 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01",
+  "group_id": "wisig-multichannel-analytic-estimation",
+  "display_name": "Practical 仅接收 IQ 的加权盲估和保护带有色分量剥离",
+  "description": "One frozen weighted covariance prior, guard baseline, colored guard subtraction and optional legacy short-training repetition. All branches receive-only.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "WiSig",
+    "channel-estimation",
+    "source-only",
+    "multi-family"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261126-diagnostic-wisig-practical-received-s2026112512-r01",
+    "20261125-diagnostic-wisig-joint-sparse-full-s2026112511-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-11-26 active receive-only Practical diagnostic, source U development and independent source V scoring.",
+  "code": {
+    "commit": "789c359a7e5061f3713dc18082be34ce5f31a945",
+    "checkout": "E:\\codex\\home\\worktrees\\wisig-channel-estimation-20261125\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig / ManySig Main split",
+    "version": "F0 Main split frozen",
+    "representation": "float32 (2, 256) post-sync noeq; 25 MS/s",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json",
+    "physical_ids_ref": "Fixed 60 source-V physical packets in the matched parent panel, disjoint from source U. No target.",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 1800
+    },
+    "train_ratio": "144 U physical packets, 96 fit and 48 held, 12 post-channel views. 60 V physical packets across the fixed 24 original and 13 doubled Practical conditions.",
+    "capsule_id": null,
+    "split_id": "WiSig immutable source U and V; no target",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/validation/manifest.json",
+    "support_query_ref": "N/A Phase1; experiment has no support set",
+    "leo_config_ref": "experiments.pamf_unrolled_restore.wisig_practical_receive_weighted_audit"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Received Practical IQ only for fit, selection and prediction. Simulator signal and variance read only after all forecasts are saved. Source-V pilot; waveform fidelity and noise performance, no exact channel operator or deployment claim."
+  },
+  "checkpoint": {
+    "initialization": "From scratch analytic covariance with inverse square root guard-noise weighting; previous release only supplies received arrays and comparison scores.",
+    "sources": [],
+    "contract_check_ref": "20261125-diagnostic-wisig-joint-sparse-full-s2026112511-r01",
+    "provenance_verdict": "ANALYTIC_FIXED",
+    "selection_rule": "96 U physical IDs fit; 48 distinct U IDs choose scales based on blind conditional Stein risk with tail penalty. Guard color nuisance and repeat formula frozen before V prediction."
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "Codex chat 01a21321-6c4d-7041-a91c-dc163206a8b6",
+    "gpu_policy": "Single CPU thread for fit/inference and per-packet latency. No GPU.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_practical_receive_weighted_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01-release/runtime.json",
+    "stop_rule": "Stop on input contract, numeric failure, estimator output completeness or wrong scorer closure."
+  },
+  "expected_artifacts": [
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01/configuration.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01/configuration.npz",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01/estimates.npz",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01/scores.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01/speed.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01/state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "post-channel signal NMSE mean",
+      "post-channel signal NMSE P90",
+      "post-channel signal NMSE P95",
+      "absolute noise variance error dB median",
+      "absolute noise variance error dB P95",
+      "single CPU packet latency"
+    ],
+    "dimensions": [
+      "method",
+      "family",
+      "condition",
+      "original or matched double-power cases",
+      "source physical packet"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01/estimates.npz",
+    "scorer_ref": "experiments.pamf_unrolled_restore.wisig_practical_receive_weighted_audit:score"
+  },
+  "rows": [
+    {
+      "row_id": "weighted_guard-s2026112512",
+      "method": "weighted_guard",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments.pamf_unrolled_restore.wisig_practical_receive_weighted_audit",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01/configuration.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 2026112512,
+        "data": 2026112512,
+        "augmentation": 2026112512,
+        "support": null,
+        "evaluation": 2026112511
+      },
+      "seed_notes": "Fixed source physical split. No target or supports.",
+      "k": null,
+      "scenario": "Practical only, matched 24 native and 13 doubled views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Single CPU; shared guard projection and covariance transform",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01/estimates.npz#weighted_guard",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_practical_receive_weighted_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01-release/runtime.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01/scores.json"
+      ]
+    },
+    {
+      "row_id": "weighted_colored_guard-s2026112512",
+      "method": "weighted_colored_guard",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments.pamf_unrolled_restore.wisig_practical_receive_weighted_audit",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01/configuration.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 2026112512,
+        "data": 2026112512,
+        "augmentation": 2026112512,
+        "support": null,
+        "evaluation": 2026112511
+      },
+      "seed_notes": "Fixed source physical split. No target or supports.",
+      "k": null,
+      "scenario": "Practical only, matched 24 native and 13 doubled views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Single CPU; shared guard projection and covariance transform",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01/estimates.npz#weighted_colored_guard",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_practical_receive_weighted_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01-release/runtime.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01/scores.json"
+      ]
+    },
+    {
+      "row_id": "weighted_with_repeat-s2026112512",
+      "method": "weighted_with_repeat",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments.pamf_unrolled_restore.wisig_practical_receive_weighted_audit",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01/configuration.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 2026112512,
+        "data": 2026112512,
+        "augmentation": 2026112512,
+        "support": null,
+        "evaluation": 2026112511
+      },
+      "seed_notes": "Fixed source physical split. No target or supports.",
+      "k": null,
+      "scenario": "Practical only, matched 24 native and 13 doubled views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Single CPU; shared guard projection and covariance transform",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01/estimates.npz#weighted_with_repeat",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_practical_receive_weighted_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01-release/runtime.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-weighted-s2026112512-r01/scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "24 primary Practical conditions and 13 matched double-power stress conditions. Report Low Urban separately, including every P90/P95.",
+    "No original IQ, simulator parameters or intermediate waveform in fit/selection/inference. The export only materializes received IQ. Scorer reads complete frozen estimates first.",
+    "Thresholds: post-channel waveform mean <0.1%, P90 <1%, P95 <0.5%. Absolute variance dB median <0.1, P95 <0.5. Single-packet use.",
+    "Matched archived receive-only covariance waveform and guard-only variance controls. Explicitly report any pooled, Low Urban or double-power regression.",
+    "Use one immutable N607 output root. Do not consume V scores or simulator reference in selection or prediction."
+  ],
+  "registered_at": "2026-11-25T16:29:09+00:00"
+}
