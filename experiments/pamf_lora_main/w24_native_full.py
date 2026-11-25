@@ -19,7 +19,7 @@ from experiments.pamf_lora_main.packet_data import CHIRPS, PACKET_LEN
 from experiments.pamf_lora_main.packet_physics import CONTEXT, channel, chirp_samples, hardware
 
 
-RUN = '20261125-phase1-lora-w24-native-full-s2026092702-r01'
+RUN = '20261125-phase1-lora-w24-native-full-s2026092702-r02'
 W24_RUN = '20261125-phase1-lora-pamf-tri-clean-nativewide98-m2-r01'
 W24_COMMIT = 'e6dde7d40f2cc3dd7b21d83daa4bcbabac52d3ae'
 METHOD = 'phase_native24'
@@ -112,12 +112,13 @@ def recover(packets, restorer, device):
     scale = np.sqrt(np.mean(np.abs(chirps) ** 2, axis=(1, 2)))
     if not np.isfinite(scale).all() or np.any(scale <= 1e-12):
         raise ValueError('Empty or nonfinite native receive packet')
-    iq = tensor(np.stack((chirps.real, chirps.imag), axis=2) / scale[:, None, None, None], device)
+    channels = np.stack((chirps.real, chirps.imag), axis=2) / scale[:, None, None, None]
+    iq = tensor(channels.astype(np.float32, copy=False), device)
     half, active = half_baseline(base, detail, iq)
     chosen, restored = extra_correction(response, half, torch.zeros_like(active))
     corrected = half.clone()
     corrected[chosen] = scale_detail(half[chosen], restored, .5)
-    return (packets, *(project_delta(packets, (row - iq).cpu().numpy(), scale)
+    return (packets, *(project_delta(packets, np.from_dlpack((row - iq).cpu().contiguous()), scale)
                        for row in (half, corrected)))
 
 
@@ -131,7 +132,7 @@ def classify(readout, packets, device):
     logits = readout(tensor(iq, device))[0]
     if logits.shape != (len(packets), len(CLASSES)) or not torch.isfinite(logits).all():
         raise ValueError('Nonfinite or incomplete frozen W24 prediction')
-    return logits.argmax(1).cpu().numpy().astype(np.int16)
+    return np.asarray(logits.argmax(1).tolist(), dtype=np.int16)
 
 
 def smoke(rt, models, device):
@@ -309,7 +310,7 @@ def main():
                   run_root=str(project / 'runs' / RUN), source_root=str(native / 'source'),
                   native_target_root=str(native / 'target'), w24_run_root=str(project / 'runs' / W24_RUN),
                   w24_release_root=str(project / 'releases' / f'{W24_RUN}-release'),
-                  allowed_gpus=[0, 3, 5, 7, 2, 6, 1, 4], max_compute_processes=4, cpu_workers=12)
+                  allowed_gpus=[3, 0, 5, 7, 2, 6, 1, 4], max_compute_processes=8, cpu_workers=12)
         release(args.repo, args.output, rt, args.ssh_config)
     elif args.action == 'score':
         score(args.predictions, args.dataset, args.output)

@@ -52,6 +52,20 @@ def test_projected_dura_edit_preserves_w24_edges_and_unobserved_chirps():
     assert (slots[[0, 7]] == 1).all() and (slots[list(CHIRPS), 512] != 1).all()
 
 
+def test_recover_casts_original_double_precision_center_windows(monkeypatch):
+    import torch
+    from experiments.pamf_lora_main import full_dura_detail
+    import experiments.pamf_lora_main.w24_native_full as native
+
+    monkeypatch.setattr(native, 'chirp_samples', lambda packet: np.ones((len(CHIRPS), 256), np.complex128))
+    monkeypatch.setattr(full_dura_detail, 'half_baseline',
+                        lambda *_args: (_args[-1], torch.zeros(1, dtype=torch.bool)))
+    monkeypatch.setattr(full_dura_detail, 'extra_correction',
+                        lambda model, x, mask: (torch.empty(0, dtype=torch.long), x[:0]))
+    packet = np.ones((1, PACKET_LEN), dtype=np.complex64)
+    assert all(np.array_equal(wave, packet) for wave in native.recover(packet, (None, None, None), 'cpu'))
+
+
 def test_scoring_rejects_missing_matrix_before_loading_truth(tmp_path):
     with pytest.raises((FileNotFoundError, ValueError)):
         validate_predictions(tmp_path)
