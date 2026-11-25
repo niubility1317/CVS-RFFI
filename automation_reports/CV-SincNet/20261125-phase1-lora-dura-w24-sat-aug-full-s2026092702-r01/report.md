@@ -21,4 +21,6 @@
 
 ## 调度状态
 
-`VERIFIED`。N607 调度器的运行目录和命令行与提交 `0f042e1d5eed5bcee008db711bc3af88de73f674` 的发布记录一致，归档传输和远端编译均通过。调度器与独立评分进程均观察到 `WAITING_FOR_FROZEN_TRAINING`。重训 W24 DURA 的目标分数待全量盲预测冻结及独立评分。
+`VERIFIED`。N607 调度器的运行目录和命令行与提交 `0f042e1d5eed5bcee008db711bc3af88de73f674` 的发布记录一致，归档传输和远端编译均通过。调度器与独立评分进程均观察到 `WAITING_FOR_FROZEN_TRAINING`。
+
+`FAILED`。训练正常冻结后，真实源 U 检查在 Sinc 滤波器缓存首次前向时访问张量版本计数，PyTorch 报 `Inference tensors do not track version counter`。目标预测文件为零。保留故障运行及原训练权重。 [同矩阵修复发布](../20261125-phase1-lora-dura-w24-sat-aug-full-s2026092702-r02/report.md)

@@ -2,6 +2,7 @@
 
 import argparse
 import importlib
+from importlib import util
 from json import JSONDecodeError
 import os
 from concurrent.futures import ProcessPoolExecutor
@@ -11,7 +12,7 @@ from pathlib import Path
 import subprocess
 import sys
 from time import perf_counter, sleep
-from types import ModuleType
+from types import MethodType, ModuleType
 
 import numpy as np
 import torch
@@ -35,7 +36,7 @@ from .spectral_block_source import load_models
 from .weak_guard_target import DATA
 
 
-RUN = '20261125-phase1-lora-dura-w24-io-s2026092702-r01'
+RUN = '20261125-phase1-lora-dura-w24-io-s2026092702-r02'
 F_RUN = '20261125-phase1-lora-pamf-tri-clean-nativewide98-m2-r01'
 F_CODE = 'e6dde7d40f2cc3dd7b21d83daa4bcbabac52d3ae'
 F_METHOD = 'phase_native24'
@@ -52,6 +53,27 @@ def archived_runtime(project, run, code):
     if (rt['run_id'], rt['code_commit']) != (run, code):
         raise ValueError(f'Unexpected archived runtime for {run}')
     return archive, rt
+
+
+def archived_reader_module(archive):
+    package = ModuleType('lora_w24_archive')
+    package.__path__ = [str(archive / 'experiments' / 'pamf_lora_main')]
+    sys.modules[package.__name__] = package
+    return importlib.import_module(f'{package.__name__}.tri_clean95')
+
+
+def bind_w24_descriptor(reader, archive):
+    # The parent recognizer uses a variable-width descriptor while this
+    # checkout's default recognizers use the fixed 256-point implementation.
+    path = archive / 'experiments' / 'cric_dura_comparison' / 'supervised_physics.py'
+    spec = util.spec_from_file_location('lora_w24_supervised_physics', path)
+    module = util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    views = reader.raw.encoder.sequence_pool.views
+    if len(views) != 3 or any(not getattr(view, 'variable_iq_grid', False) for view in views):
+        raise ValueError('The archived W24 reader requires three variable-grid descriptors')
+    for view in views:
+        view.forward = MethodType(module.shuffled_descriptor, view)
 
 
 def load_frozen_wide(rt, source, contract):
@@ -82,10 +104,7 @@ def frozen_models(rt):
     wide_tracker = WideTracker().to(DEVICE).eval()
 
     archive, reader_rt = archived_runtime(project, F_RUN, F_CODE)
-    package = ModuleType('lora_w24_archive')
-    package.__path__ = [str(archive / 'experiments' / 'pamf_lora_main')]
-    sys.modules[package.__name__] = package
-    module = importlib.import_module(f'{package.__name__}.tri_clean95')
+    module = archived_reader_module(archive)
     _, _, reader_contract = module.source_handles(reader_rt)
     f_run = Path(reader_rt['run_root'])
     f_path = f_run / 'F' / F_METHOD
@@ -98,6 +117,7 @@ def frozen_models(rt):
     row = module.NATIVE_WIDE_ROWS[F_METHOD]
     reader = module.clean_model(reader_rt, f_run, reader_contract, row, DEVICE).eval().requires_grad_(False)
     reader.load_state_dict(torch.load(f_path / 'best.pt', map_location=DEVICE, weights_only=True), strict=True)
+    bind_w24_descriptor(reader, archive)
     tracker = PacketRestorer('consensus').to(DEVICE).eval()
 
     def restored(x):

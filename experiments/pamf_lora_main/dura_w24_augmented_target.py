@@ -1,11 +1,8 @@
 """Truth-blind native Full replay with the fixed satellite-augmented PAMF W24."""
 
 import argparse
-import importlib
 from pathlib import Path
-import sys
 from time import perf_counter
-from types import ModuleType
 
 import numpy as np
 import torch
@@ -15,8 +12,8 @@ from .data import TARGET, VIEWS
 from .dura_w24 import apertures
 from .dura_w24_model import WideTracker
 from .dura_w24_target import (
-    DEVICE, F_CODE, F_METHOD, F_RUN, SEED, WIDE_RUN, archived_runtime, dispatch,
-    load_frozen_wide, replay_shard,
+    DEVICE, F_CODE, F_METHOD, F_RUN, SEED, WIDE_RUN, archived_reader_module,
+    archived_runtime, bind_w24_descriptor, dispatch, load_frozen_wide, replay_shard,
 )
 from .full_packet_data import LIMIT
 from .full_packet_views import native, source_contract, target_contract
@@ -24,7 +21,7 @@ from .publish import release, release_commit
 from .runner import activate
 
 
-RUN = '20261125-phase1-lora-dura-w24-sat-aug-full-s2026092702-r01'
+RUN = '20261125-phase1-lora-dura-w24-sat-aug-full-s2026092702-r02'
 READER = '20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01'
 READER_CODE = '502629361a6aafa564a94947f3116e82f58c3692'
 DATA = '20261122-phase1-lora-full-aligned-data-r01'
@@ -63,16 +60,14 @@ def load_reader(rt, source, contract):
     if read(release_root / 'submit.json')['code_commit'] != READER_CODE:
         raise ValueError('The archived augmented reader release differs')
 
-    package = ModuleType('lora_w24_archive')
-    package.__path__ = [str(original / 'experiments' / 'pamf_lora_main')]
-    sys.modules[package.__name__] = package
-    module = importlib.import_module(f'{package.__name__}.tri_clean95')
+    module = archived_reader_module(original)
     reader = module.clean_model(dict(scratch=True), root, contract, module.NATIVE_WIDE_ROWS[F_METHOD], DEVICE)
     reader.load_state_dict(torch.load(folder / 'best.pt', map_location=DEVICE, weights_only=True), strict=True)
+    bind_w24_descriptor(reader, original)
     return reader.eval().requires_grad_(False), module, reference
 
 
-@torch.inference_mode()
+@torch.no_grad()
 def worker(rt, shard):
     started = perf_counter()
     activate(rt)
