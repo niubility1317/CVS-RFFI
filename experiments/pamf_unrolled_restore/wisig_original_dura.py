@@ -3,7 +3,7 @@
 import argparse
 from pathlib import Path, PurePosixPath
 from shutil import copy2
-from time import sleep
+from time import perf_counter, sleep
 
 import numpy as np
 import torch
@@ -24,9 +24,13 @@ from . import wisig_original_dura_targets as targets
 
 
 RUN = '20261125-phase1-wisig-original-dura-adaptive-m1-r01'
-METHODS = ('raw', 'R69', 'trained_adaptive')
+OPERATOR_RUN = '20261126-phase1-wisig-original-dura-operator-m1-r01'
+FAST_RUN = '20261126-phase1-wisig-original-dura-fast-operator-m1-r01'
+MIXTURE_RUN = '20261126-diagnostic-wisig-practical-mixture-s2026112512-r01'
+ARMS = dict(waveform='adaptive', operator='adaptive_operator', fast_mixture='fast_mixture_operator')
+RUNS = dict(waveform=RUN, operator=OPERATOR_RUN, fast_mixture=FAST_RUN)
 SEED = action_design.MODEL_SEED
-SOURCE_FIELDS = ('run_root', 'coarse_run', 'action_iq', 'iq_estimator', 'code_commit')
+SOURCE_FIELDS = ('run_root', 'coarse_run', 'action_iq', 'iq_estimator', 'code_commit', 'action_supervision')
 
 
 def setup_torch():
@@ -57,7 +61,19 @@ def source_smoke(rt):
     index = np.flatnonzero(np.any(clean[:96] != received[:96], axis=(1, 2)))[:4]
     if len(index) != 4:
         raise ValueError('Expected original distorted source IQ pairs for smoke')
-    estimates = [targets.estimate_pair(clean[i], received[i]) for i in index]
+    mode = rt['action_supervision']
+    fast = mode == 'fast_mixture'
+    settings = targets.fast_settings(rt['mixture_root']) if fast else None
+    variance_source = targets.variance_replay(rt) if fast else None
+    cached_variance = targets.load(variance_source / '01', 'variance') if fast else None
+    started = perf_counter()
+    estimates = [targets.estimate_pair(clean[i], received[i], mode, settings=settings,
+                 replayed_variance=cached_variance[i] if fast else None) for i in index]
+    estimate_ms = (perf_counter() - started) * 1000 / len(index)
+    if mode != 'waveform':
+        if any(row[2] != targets.estimate_pair(clean[i], received[i], 'waveform')[2]
+               for i, row in zip(index, estimates)):
+            raise ValueError('Operator conversion changed Adaptive variance supervision')
     action = tuple(tensor(np.stack(values)) for values in tuple(zip(*estimates))[:3])
     model = g_lineage.construct('action', coarse).train()
     trace = dict(action_error=0., log_variance_error=0.)
@@ -79,6 +95,8 @@ def source_smoke(rt):
         TX_labels_read=0, F_reads=0, target_reads=0, original_checkpoint=str(historical / 'final.pt')))
     write(root / 'inputs/source_contract.json', contract)
     write(root / 'source_smoke.json', dict(status='PASS', count=len(index), loss=float(loss.detach()),
+        action_supervision=mode, variance_matches_waveform_mode=True,
+        estimate_ms_per_packet=estimate_ms,
         gradient_norm=float(grad), projection_relative_errors=[row[3] for row in estimates],
         real_variance=action[-1].tolist(), simulator_supervision_reads=0, TX_labels_read=0, F_reads=0, target_reads=0))
     print('ORIGINAL_DURA_SOURCE_SMOKE_PASS', flush=True)
@@ -92,6 +110,7 @@ class OriginalSourceView:
         self.clean = targets.load(self.source / 'train', 'clean')
         self.is_L = targets.load(self.source / 'train', 'roles') == 'L_s'
         self.epoch = None
+        self.mode = rt['action_supervision']
 
     def ready(self):
         return self.clean.shape == (targets.COUNT, 2, 256) and self.clean.dtype == np.float32
@@ -111,8 +130,8 @@ class OriginalSourceView:
                 while not marker.exists():
                     sleep(2.)
                 completion = read(marker)
-                if (completion['status'], completion['count'], completion['simulator_supervision_reads']) != (
-                        'ESTIMATES_FROZEN', targets.COUNT, 0):
+                if (completion['status'], completion['count'], completion['simulator_supervision_reads'],
+                        completion['action_supervision']) != ('ESTIMATES_FROZEN', targets.COUNT, 0, self.mode):
                     raise ValueError('Original action stage requires complete IQ-estimated targets')
                 self.estimated = {key: targets.load(part, key) for key in targets.SHAPES}
             self.epoch = epoch, action
@@ -126,16 +145,18 @@ def train(rt):
     if not torch.cuda.is_available() or torch.cuda.device_count() != 1:
         raise RuntimeError('Use one capacity-checked visible GPU for source training')
     config = dict(output_root=str(root / 'G'), model_seed=SEED, code_commit=rt['code_commit'],
+                  action_supervision=rt['action_supervision'],
                   cache=dict(roles='LU', source_contract=str(root / 'inputs/source_contract.json')))
     g_train.train(config, view=OriginalSourceView(rt), frozen_coarse=root / 'inputs/coarse', log_action_terms=True,
                   original_recipe=True)
 
 
 def frozen_fit(root, arm):
-    if arm != 'adaptive':
-        raise ValueError('Expected the source-frozen R69 estimate-supervised arm')
     setup_torch()
     frozen, checkpoint = Path(root) / 'G', Path(root) / 'G/r69/final.pt'
+    mode = read(frozen / 'config.json').get('action_supervision', 'waveform')
+    if arm != ARMS[mode]:
+        raise ValueError('Expected the source-frozen R69 estimate-supervised arm')
     closure = read(frozen / 'complete.json')
     if (closure['status'] != 'SOURCE_FROZEN' or closure['stages'] != list(g_lineage.STAGES)
             or Path(closure['checkpoint']) != checkpoint or closure['updates'] != 39520
@@ -158,7 +179,7 @@ def restore(engine, _gate, iq, _variance, *, force):
 def evaluation_smoke(rt):
     activate(rt)
     root = Path(rt['run_root'])
-    engine, _ = frozen_fit(root, 'adaptive')
+    engine, _ = frozen_fit(root, ARMS[rt['action_supervision']])
     _, heads = evaluation.readers(rt)
     iq = tensor(targets.received(Path(rt['action_iq']), 1)[:4], 'cuda:0')
     recovered, active = restore(engine, None, iq, None, force=True)
@@ -188,12 +209,22 @@ def source_workers(rt):
             if cpu.poll() is not None:
                 raise RuntimeError('R07 IQ estimate worker exited before first epoch closure')
             sleep(5.)
+        excluded = set()
+        for run in RUNS.values():
+            sibling = root.parent / run / 'state.json'
+            if run == root.name or not sibling.is_file():
+                continue
+            sibling_state = read(sibling)
+            if sibling_state.get('status') == 'SOURCE_TRAINING':
+                excluded.add(sibling_state['gpu'])
         allowed, samples = workers.gpu_selection(minimum=12288)
+        allowed = [gpu for gpu in allowed if gpu not in excluded]
         while not (ready := available(allowed, max_compute_processes=None)):
             if cpu.poll() not in (None, 0):
                 raise RuntimeError('R07 IQ estimate worker failed while waiting for GPU capacity')
             sleep(15.)
             allowed, samples = workers.gpu_selection(minimum=12288)
+            allowed = [gpu for gpu in allowed if gpu not in excluded]
         gpu = next(gpu for gpu in allowed if gpu in ready)
         learner = launch(rt, 'train', 'DURA', gpu)
         write(root / 'state.json', dict(status='SOURCE_TRAINING', gpu=gpu,
@@ -216,7 +247,10 @@ def dispatch(rt):
     (root / 'logs').mkdir()
     state = root / 'state.json'
     try:
-        write(root / 'source_runtime.json', {key: rt[key] for key in SOURCE_FIELDS})
+        source = {key: rt[key] for key in SOURCE_FIELDS}
+        if rt['action_supervision'] == 'fast_mixture':
+            source.update({key: rt[key] for key in ('mixture_root', 'variance_replay')})
+        write(root / 'source_runtime.json', source)
         write(state, dict(status='SOURCE_SMOKE'))
         workers.complete(launch(rt, 'source-smoke', 'original_R02'), 'original DURA source smoke')
         write(state, dict(status='ESTIMATING_SOURCE_SUPERVISION'), exclusive=False)
@@ -235,7 +269,7 @@ def dispatch(rt):
         raise
 
 
-def publish(repo, output, context, ssh_config):
+def publish(repo, output, context, ssh_config, action_supervision):
     config = read(context)
     rt = {key: config[key] for key in ('project', 'python', 'frozen_sources')}
     project = PurePosixPath(rt['project'])
@@ -245,8 +279,13 @@ def publish(repo, output, context, ssh_config):
                  baseline_root=str(runs / evaluation.BASELINE), recognizer_run=str(runs / evaluation.F_RUN),
                  strong_view_root=str(runs / evaluation.RUN / 'strong_target_iq'),
                  decision_replay=str(runs / baseline.RUN / 'predictions'))
-    rt.update(run_id=RUN, runner=__spec__.name, code_commit=transport.release_commit(repo),
-              run_root=str(runs / RUN), release_root=str(project / 'releases' / f'{RUN}-release'),
+    run = RUNS[action_supervision]
+    if action_supervision == 'fast_mixture':
+        paths['mixture_root'] = str(runs / MIXTURE_RUN)
+        paths['variance_replay'] = str(runs / RUN)
+    rt.update(run_id=run, runner=__spec__.name, code_commit=transport.release_commit(repo),
+              action_supervision=action_supervision,
+              run_root=str(runs / run), release_root=str(project / 'releases' / f'{run}-release'),
               external_releases=list(paths.values()), **paths)
     transport.release(repo, output, rt, ssh_config, archive_extras=(
         'tools/wisig_paired_main_uncertainty.py', 'tools/r17_activation_factorization.py'))
@@ -258,23 +297,25 @@ def main():
     release = actions.add_parser('publish')
     for field in ('repo', 'output', 'context', 'ssh-config'):
         release.add_argument('--' + field, type=Path, required=True)
+    release.add_argument('--action-supervision', choices=targets.SUPERVISION, default='waveform')
     for operation in ('dispatch', 'fit-smoke', 'bank', 'fit', 'smoke', 'predict', 'score'):
         stage = actions.add_parser(operation)
         stage.add_argument('runtime', type=Path)
         stage.add_argument('name', nargs='?')
     args = parser.parse_args()
     if args.operation == 'publish':
-        return publish(args.repo, args.output, args.context, args.ssh_config)
+        return publish(args.repo, args.output, args.context, args.ssh_config, args.action_supervision)
     rt = read(args.runtime)
+    methods = ('raw', 'R69', f"trained_{ARMS[rt['action_supervision']]}")
     operations = dict(dispatch=dispatch, bank=targets.prepare, fit=train, smoke=evaluation_smoke,
                       **{'fit-smoke':source_smoke})
     if args.operation == 'predict':
-        return evaluation.predict(rt, args.name, methods=METHODS, load=frozen_fit, restore=restore,
+        return evaluation.predict(rt, args.name, methods=methods, load=frozen_fit, restore=restore,
                                   force_practical=True, clean_passthrough=False)
     if args.operation == 'score':
         from .wisig_dura_stress_score import score
 
-        return score(rt, methods=METHODS, force_practical=True, clean_passthrough=False)
+        return score(rt, methods=methods, force_practical=True, clean_passthrough=False)
     operations[args.operation](rt)
 
 

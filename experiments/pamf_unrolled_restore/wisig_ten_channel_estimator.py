@@ -28,6 +28,8 @@ class Candidate:
     weighted_error: float
     dof: float
     penalty: float
+    coordinates: tuple | None = None
+    rotation: np.ndarray | None = None
 
 
 def randomized_tones(residual,train):
@@ -102,7 +104,7 @@ def fit_candidate(design,nuisance,obs,whiten,search=0.):
                      float(error),dof,dof+search)
 
 
-def compact(dictionary,y,train):
+def compact(dictionary,y,train,*,with_support=False):
     matrix = dictionary[train]
     projection = np.abs(matrix.conj().T@y[train])**2/np.sum(np.abs(matrix)**2,axis=0).clip(1e-18)
     centers = np.unique(np.r_[np.argsort(projection)[-5:],len(LAGS)//2])
@@ -116,7 +118,8 @@ def compact(dictionary,y,train):
             return np.sum(np.abs(y[train]-local@coef)**2)
 
         selected = min(neighbors,key=loss)
-        design.append(dictionary[:,selected])
+        block = dictionary[:,selected]
+        design.append((block, selected) if with_support else block)
     return design
 
 
@@ -163,19 +166,22 @@ def polish(design,seed,nuisance,obs,whiten,limit,search):
         rhs = y-matrix@coef
         step = np.linalg.lstsq(np.r_[jacobian.real,jacobian.imag],np.r_[rhs.real,rhs.imag],rcond=.01)[0]
         phase[:limit] = np.clip(phase[:limit]+np.clip(step,-.8,.8),-6.,6.)
-    rotated = design*np.exp(1j*(PHASE@phase))[:,None]
-    return fit_candidate(rotated,nuisance,obs,whiten,search+limit)
+    rotation = np.exp(1j*(PHASE@phase))
+    rotated = design*rotation[:,None]
+    fit = fit_candidate(rotated,nuisance,obs,whiten,search+limit)
+    fit.rotation = rotation
+    return fit
 
 
-def candidate_bank(clean,obs,train):
+def candidate_bank(clean,obs,train,*,keep_coordinates=False):
     dictionary = clean[OFFSETS]
     derivative_times = T[:,None,None]-LAGS[:,None]+DERIVATIVE_OFFSETS
     derivative = clean[reflect(derivative_times)]@DERIVATIVE
-    base = compact(dictionary,obs,train)
+    base = compact(dictionary,obs,train,with_support=True)
     empty = np.empty((N,0),complex)
     direct = whitener(train,0.)
-    starting = [fit_candidate(design,empty,obs,direct,1.) for design in base]
-    initial = min(starting,key=lambda fit:fit.weighted_error*(1+2*fit.penalty/len(train)))
+    starting = [(fit_candidate(design,empty,obs,direct,1.), support) for design,support in base]
+    initial, initial_support = min(starting,key=lambda row:row[0].weighted_error*(1+2*row[0].penalty/len(train)))
     seed = initial_phase(initial.prediction,obs,train)
     coarse = polish(initial.design,np.array([seed[0],0.]),empty,obs,direct,1,1.)
     residual = obs[train]-min((initial,coarse),key=lambda fit:fit.weighted_error).prediction[train]
@@ -185,8 +191,16 @@ def candidate_bank(clean,obs,train):
         residual -= nuisance[train]@estimates
     rho = ar_correlation(residual,train)
     whiten = whitener(train,rho)
-    bank = [fit_candidate(design,nuisance,obs,whiten,1.) for design in base]
-    bank.append(polish(initial.design,np.array([seed[0],0.]),nuisance,obs,whiten,1,1.))
+    bank = []
+
+    def add(fit, support, kinds=('constant',)):
+        if keep_coordinates:
+            fit.coordinates = tuple((int(column), kind) for kind in kinds for column in support)
+        bank.append(fit)
+
+    for design,support in base:
+        add(fit_candidate(design,nuisance,obs,whiten,1.), support)
+    add(polish(initial.design,np.array([seed[0],0.]),nuisance,obs,whiten,1,1.), initial_support)
     rotated = np.exp(1j*(PHASE@seed))
     expanded = np.column_stack((dictionary,dictionary.conj()))
     expanded_derivative = np.column_stack((derivative,derivative.conj()))
@@ -202,26 +216,48 @@ def candidate_bank(clean,obs,train):
             design = expansion[:,support]
             search = .7*len(support)
             if expansion is dictionary:
-                bank.append(fit_candidate(design,nuisance,obs,whiten,search))
+                add(fit_candidate(design,nuisance,obs,whiten,search), support)
                 continue
-            bank.append(polish(design,np.array([phase[0],0.]),nuisance,obs,whiten,1,search))
-            bank.append(polish(design,phase,nuisance,obs,whiten,2,search))
+            add(polish(design,np.array([phase[0],0.]),nuisance,obs,whiten,1,search), support)
+            add(polish(design,phase,nuisance,obs,whiten,2,search), support)
             if len(support) in (4,7):
                 dynamic = np.column_stack((design,design*U[:,None]))
-                bank.append(polish(dynamic,phase,nuisance,obs,whiten,2,search))
+                add(polish(dynamic,phase,nuisance,obs,whiten,2,search), support, ('constant','linear'))
                 rate = expanded_derivative[:,support]
                 stretch = np.column_stack((design,rate,rate*U[:,None]))
-                bank.append(polish(stretch,phase,nuisance,obs,whiten,2,search))
+                add(polish(stretch,phase,nuisance,obs,whiten,2,search), support,
+                    ('constant','derivative','linear_derivative'))
     return bank,rho,nuisance.shape[1]
 
 
-def estimate(bank,rho,tones,clean,obs,train,complexity,shrink,blend):
+def operator_coefficients(fit, coefficients):
+    """Expand selected Adaptive columns into real-linear, time-by-lag coordinates."""
+    if fit.coordinates is None or len(fit.coordinates) != len(coefficients):
+        raise ValueError('Adaptive operator coordinates are incomplete')
+    extent = int(LAGS[-1] + DERIVATIVE_OFFSETS[-1])
+    lags = np.arange(-extent, extent+1)
+    direct = np.zeros((N, len(lags)), complex)
+    image = np.zeros_like(direct)
+    rotation = fit.rotation if fit.rotation is not None else np.ones(N)
+    for (index, kind), coefficient in zip(fit.coordinates, coefficients):
+        destination = image if index >= len(LAGS) else direct
+        lag = LAGS[index % len(LAGS)]
+        gain = coefficient*rotation*U if kind.startswith('linear') else coefficient*rotation
+        if kind.endswith('derivative'):
+            destination[:, lag-DERIVATIVE_OFFSETS+extent] += gain[:, None]*DERIVATIVE
+        else:
+            destination[:, lag+extent] += gain
+    return lags, direct, image
+
+
+def estimate(bank,rho,tones,clean,obs,train,complexity,shrink,blend,*,return_operator=False):
     n = len(train)
     fit = min(bank,key=lambda v:v.weighted_error*(1+complexity*v.penalty/(n-v.dof)))
     innovation = fit.weighted_error/max(n-fit.dof-1,1.)
     dispersion = innovation/max(1-rho*rho,.1)
     shrinkage = np.abs(fit.coefficient)**2/(np.abs(fit.coefficient)**2+shrink*innovation*fit.uncertainty+1e-20)
-    signal = fit.design@(fit.coefficient*shrinkage)
+    coefficients = fit.coefficient*shrinkage
+    signal = fit.design@coefficients
     if tones:
         raw_residual = obs[train]-fit.prediction[train]
         dispersion = max(dispersion,float(np.mean(np.abs(raw_residual)**2))+dispersion*fit.dof/n)
@@ -232,12 +268,16 @@ def estimate(bank,rho,tones,clean,obs,train,complexity,shrink,blend):
     quiet_occupancy = np.median(spectrum[bins])/max(float(spectrum.mean()),1e-18)
     # Spectral floor support is weaker when color or coherent interference is visible.
     weight = blend*np.clip(1.-quiet_occupancy/.12,0.,1.) if not (rho or tones) else 0.
-    return signal,max((1-weight)*dispersion+weight*quiet,1e-18),float(fit.dof)
+    variance = max((1-weight)*dispersion+weight*quiet,1e-18)
+    if return_operator:
+        return signal,variance,operator_coefficients(fit, coefficients)
+    return signal,variance,float(fit.dof)
 
 
-def choose_and_apply(clean,obs,options,train=T):
-    bank,rho,tones = candidate_bank(clean,obs,train)
-    return estimate(bank,rho,tones,clean,obs,train,options['complexity'],options['shrink'],options['blend'])
+def choose_and_apply(clean,obs,options,train=T,*,return_operator=False):
+    bank,rho,tones = candidate_bank(clean,obs,train,keep_coordinates=return_operator)
+    return estimate(bank,rho,tones,clean,obs,train,options['complexity'],options['shrink'],options['blend'],
+                    return_operator=return_operator)
 
 
 def tune(clean,observed):
