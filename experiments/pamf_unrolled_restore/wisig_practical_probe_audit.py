@@ -89,13 +89,14 @@ def score(root, reference, arms=model.ARMS):
     with np.load(root / "estimates.npz", allow_pickle=False) as stored:
         kernels, measured = stored["kernel"], stored["complex_variance"]
     shape = (len(arms), len(SCENES), COUNT, model.KERNEL_LENGTH)
-    if kernels.shape != shape or measured.shape != shape[1:3] or not np.isfinite(kernels).all():
+    if kernels.shape != shape or measured.shape not in (shape[1:3], shape[:3]) or not np.isfinite(kernels).all():
         raise ValueError("Incomplete probe estimates")
     if not np.isfinite(measured).all() or np.any(measured <= 0.):
         raise ValueError("Invalid receive-only variance estimates")
     ids, rng = matched_selection()
     zshape = (2, COUNT, model.receive.SAMPLES)
     probes = (rng.normal(size=zshape) + 1j * rng.normal(size=zshape)) / np.sqrt(2.)
+    measured = np.broadcast_to(measured, shape[:3])
     errors, variances = [], []
     for i, scene in enumerate(SCENES):
         path = reference / scene
@@ -108,7 +109,7 @@ def score(root, reference, arms=model.ARMS):
         predicted = filter_reflect(kernels[:, i, None], probes[None, :])
         power = np.mean(abs(true_output)**2, axis=-1).clip(1e-4)
         errors.append((np.mean(abs(predicted - true_output)**2, axis=-1) / power).mean(axis=1))
-        variances.append(abs(10. * np.log10(measured[i] / (2. * variance))))
+        variances.append(abs(10. * np.log10(measured[:, i] / (2. * variance))))
     e, v = np.asarray(errors), np.asarray(variances)
     if not np.isfinite(e).all() or not np.isfinite(v).all():
         raise ValueError("Invalid matched R07 probe or variance result")
@@ -116,8 +117,8 @@ def score(root, reference, arms=model.ARMS):
         return dict(mean=float(x.mean()), median=float(np.median(x)), p90=float(np.quantile(x, .90)),
                     p95=float(np.quantile(x, .95)), noise_median=float(np.median(n)),
                     noise_p95=float(np.quantile(n, .95)))
-    results = {arm: dict(aggregate=summarize(e[:, i], v),
-               scenes={scene: summarize(e[g, i], v[g]) for g, scene in enumerate(SCENES)})
+    results = {arm: dict(aggregate=summarize(e[:, i], v[:, i]),
+               scenes={scene: summarize(e[g, i], v[g, i]) for g, scene in enumerate(SCENES)})
                for i, arm in enumerate(arms)}
     write(root / "scores.json", dict(status="ANALYZED", receive_only=True, truth_side_last=True,
           reference="R07 validation_actions", probes=2, packets=COUNT, probe_seed=SEED,
