@@ -34,9 +34,9 @@ FIELDS = ('active', 'outer_variance', 'used_variance', 'held_mismatch',
           'relative_action', 'mirror_ratio', 'echo_ratio', 'coarse_dose', 'first_dose', 'final_dose')
 
 
-def recover(iq, tracker, models, threshold, *, compare=False, robust=False):
+def recover(iq, tracker, models, threshold, *, compare=False, robust=False, activation_score=corruption_score):
     y, phase, quality, rms = coordinates(tracker, iq)
-    active = corruption_score(y) > threshold
+    active = activation_score(y) > threshold
     count = int(active.sum())
     output = iq.expand(4*len(models)+(3 if compare else 0), *iq.shape).clone()
     records = iq.new_zeros((len(iq), len(FIELDS)))

@@ -24,6 +24,16 @@ def shared_guard_coefficients(value):
     return density[..., (frequency >= 72) & (frequency <= 112)]
 
 
+def signed_covariance_rms(coefficients):
+    """Estimate the larger incoherent guard floor on the two signed halves."""
+    floors = []
+    for side in coefficients.chunk(2, dim=-1):
+        covariance = side @ side.mH / side.shape[-1]
+        modes = torch.linalg.eigvalsh(covariance).clamp_min(0)
+        floors.append(modes[:, :modes.shape[-1]//2].mean(1).sqrt())
+    return torch.maximum(*floors)
+
+
 def guard_variance(y):
     return shared_guard_coefficients(y).abs().square().median(-1, keepdim=True).values/.69314718056
 

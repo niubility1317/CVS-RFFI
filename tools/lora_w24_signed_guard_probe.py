@@ -10,7 +10,7 @@ from experiments.cric_dura_comparison.bootstrap import numerical_policy
 from experiments.cric_dura_comparison.io import write
 from experiments.pamf_lora_main.channel_blind_source import partition
 from experiments.pamf_lora_main.data import SOURCE
-from experiments.pamf_lora_main.dura_apertures import shared_guard_coefficients
+from experiments.pamf_lora_main.dura_apertures import shared_guard_coefficients, signed_covariance_rms
 from experiments.pamf_lora_main.dura_repair import PacketRestorer, real_iq
 from experiments.pamf_lora_main.full_packet_views import source_contract, source_role
 from experiments.pamf_lora_main.joint_unroll_source import coordinates
@@ -42,15 +42,10 @@ def guard_scores(coefficients):
     sides = coefficients.chunk(2, dim=-1)
     power = coefficients.abs().square()
     left, right = (rms_floor(s.abs().square()) for s in sides)
-    minor = []
-    for side in sides:
-        gram = side @ side.mH / side.shape[-1]
-        modes = torch.linalg.eigvalsh(gram).clamp_min(0)
-        minor.append(modes[:, :modes.shape[-1]//2].mean(1).sqrt())
     return torch.stack((rms_floor(power).median(1).values,
                         torch.minimum(left, right).median(1).values,
                         torch.maximum(left, right).median(1).values,
-                        torch.maximum(*minor)), dim=1)
+                        signed_covariance_rms(coefficients)), dim=1)
 
 
 def panel(iq, trackers, disturbance=None, *, sign=0):

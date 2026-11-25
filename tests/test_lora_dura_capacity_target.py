@@ -37,6 +37,40 @@ def test_target_matrix_keeps_same_routes_packets_and_readers():
                                       for path in guard.expected_files()}
 
 
+def test_signed_covariance_ablation_uses_the_same_half_update_and_bypasses_exactly(monkeypatch):
+    from experiments.pamf_lora_main import dura_signed_covariance_target as signed
+    from experiments.pamf_lora_main.dura_repair import PacketRestorer, real_iq
+
+    class ConstantEdit:
+        def stages(self, y, quality, rms, **kwargs):
+            return (y+.1, y+.2, y+.3), None, None, None, None
+
+    tracker = PacketRestorer('consensus')
+    iq = real_iq(torch.rand(2, 6, 256, dtype=torch.complex64))
+    monkeypatch.setattr(signed, 'activation', lambda y: y.real.new_tensor([0., 2*signed.THRESHOLD]))
+    original, candidate = signed.readouts([ConstantEdit()], tracker, -float('inf'))
+    base, base_count = original(iq)
+    new, count = candidate(iq)
+    assert base_count == 2 and count == 1
+    torch.testing.assert_close(new[1], base[1], rtol=0, atol=0)
+    assert torch.equal(new[0], iq[0])
+
+
+def test_signed_gate_rejects_a_coherent_one_sided_mode_and_preserves_pilot_contract():
+    from experiments.pamf_lora_main import dura_dual_aperture_evaluate as pilot, dura_signed_covariance_target as signed
+    from experiments.pamf_lora_main.dura_apertures import signed_covariance_rms
+
+    vectors = torch.eye(6, 41, dtype=torch.complex64)[None]
+    independent = torch.cat((vectors, torch.zeros_like(vectors)), dim=-1)
+    repeated = independent[:, :1].expand(-1, 6, -1)
+    assert float(signed_covariance_rms(repeated)) < 1e-4
+    assert float(signed_covariance_rms(independent)) > signed.THRESHOLD
+    matrix = signed.completion()
+    assert matrix['seeds'] == [pilot.SEED] and matrix['per_receiver'] == 200
+    assert matrix['routes'] == list(pilot.ROUTES) and matrix['target_truth_read'] is False
+    assert len(signed.expected_files()) == 420
+
+
 def test_shared_no_query_probe_has_no_legacy_training_dependency():
     iq = torch.zeros(12, 6, 256, dtype=torch.complex64)
     first = guard.smoke_disturbance(iq, torch.Generator().manual_seed(2026112481))
