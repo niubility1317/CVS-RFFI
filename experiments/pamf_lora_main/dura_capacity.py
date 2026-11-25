@@ -103,7 +103,7 @@ class DuraCapacity(nn.Module):
         return limit(proposed, y, rms, y.real.new_tensor(MAX_EDIT))
 
     def stages(self, y, quality, rms, *, use_action=True, use_noise=True, solve=True, robust=False, condition=(),
-               noise_variance=None):
+               noise_variance=None, solve_profile=None):
         spec = fft(y)
         if noise_variance is None:
             noise_variance = (spec[..., self.noise_band].abs().square().median(-1, keepdim=True).values
@@ -134,6 +134,10 @@ class DuraCapacity(nn.Module):
                                    .12*torch.complex(ir, ii), .15*torch.complex(er, ei))
         variance = .001 + noise*torch.exp(1.2*log_excess)
         used = variance if use_noise else torch.full_like(variance, .04)
+        solve_base = used
+        if solve_profile is not None:
+            weighted = used*solve_profile
+            solve_base = weighted * (used.mean(-1, keepdim=True) / weighted.mean(-1, keepdim=True))
         action = estimator if use_action else ObservedAction(torch.ones_like(y),
                                                              torch.zeros_like(y), torch.zeros_like(y))
         current = c
@@ -146,7 +150,7 @@ class DuraCapacity(nn.Module):
                       used.log().clamp(-11., 2.)/5., *condition)
             real, imag = read_core(network, fields)
             prior = c + self.update(real, imag, y, rms)
-            solve_variance = robust_observation_variance(remaining, used) if robust else used
+            solve_variance = robust_observation_variance(remaining, solve_base) if robust else solve_base
             current = (map_two(action, y, current, prior, solve_variance, action.adjoint(remaining/solve_variance))
                        if solve else prior)
             current = y + limit(zero_carrier(current-y), y, rms, y.real.new_tensor(MAX_EDIT))
