@@ -29,11 +29,14 @@ from experiments.pamf_lora_main.w24_sat_aug import RUN as AUG_RUN
 
 
 RUN = '20261125-diagnostic-lora-w24-distortion-source-s2026112559-r01'
+SWEEP_RUN = '20261125-diagnostic-lora-w24-noise-removal-source-s2026112559-r01'
 PANEL_SEED = 2026112559
 PER_RX = 60
 VIEWS_PRACTICAL = VIEWS[1:]
 MODES = ('received', 'existing_dura', 'no_added_noise', 'paired_affine_phase',
          'noise_and_affine_phase', 'noise_phase_and_chirp_gain', 'source_clean')
+REMOVED_AMPLITUDE = (0., .25, .50, .75, .90, 1.)
+SWEEP_MODES = tuple(f'remove_{int(100*x):03d}' for x in REMOVED_AMPLITUDE)
 FS = 1e6
 MAX_CFO = 4000.
 
@@ -105,6 +108,19 @@ def waveforms(scene, namespace, item, *, verify=False):
     return np.stack(modes).astype(np.complex64), (10 * np.log10(max(energy_ratio, 1e-30)), cfo, residual)
 
 
+def noise_sweep(observed, signal, noise):
+    intermediate = (signal + (1. - fraction)*noise for fraction in REMOVED_AMPLITUDE[1:-1])
+    return np.stack((observed, *intermediate, signal)).astype(np.complex64)
+
+
+def sweep_waveforms(scene, item, *, verify=False):
+    physical_id, rx, source = item
+    observed, signal, noise = trace_components(source, scene, rx, physical_id, RUN)
+    if verify and not np.array_equal(observed, native_full_view(source, scene, rx, physical_id, RUN)):
+        raise ValueError('Noise sweep must reproduce the registered source input')
+    return noise_sweep(observed, signal, noise)
+
+
 def panel(source, contract):
     with np.load(source / 'V_metadata.npz', allow_pickle=False) as metadata:
         ids = metadata['ids'].tolist()
@@ -134,6 +150,9 @@ def load_classifier(rt, contract, device):
 
 def predict_source(runtime):
     rt = read(runtime)
+    if rt.get('noise_sweep'):
+        predict_sweep(rt)
+        return
     activate(rt)
     root, source, device = Path(rt['run_root']), Path(rt['source_root']), 'cuda:0'
     contract = source_contract(source)
@@ -177,6 +196,47 @@ def predict_source(runtime):
     np.savez(output, **predictions)
     write(root / 'source-predictions.json', dict(status='PREDICTIONS_FROZEN', modes=list(MODES),
           views=list(VIEWS), physical_ids=ids, target_reads=0, source_truth_reads=0, waveform=telemetry))
+
+
+def predict_sweep(rt):
+    activate(rt)
+    root, source, device = Path(rt['run_root']), Path(rt['source_root']), 'cuda:0'
+    previous = root.parent / RUN
+    contract = source_contract(source)
+    f = load_classifier(rt, contract, device)
+    u = native(source, 'U_s', contract['counts']['U_s'])
+    for scene in VIEWS_PRACTICAL:
+        for raw in sweep_waveforms(scene, (0, SOURCE[0], u[0]), verify=True):
+            classify(f, raw[None], device)
+    write(root/'smoke.json', dict(status='PASS', exact_full_replay=True, target_reads=0, source_truth_reads=0))
+    rows, rx, ids = panel(source, contract)
+    old = read(previous/'source-predictions.json')
+    if (old['status'], old['physical_ids'], old['modes'], old['views'], old['target_reads']) != (
+            'PREDICTIONS_FROZEN', ids, list(MODES), list(VIEWS), 0):
+        raise ValueError('Expected the same frozen source diagnosis panel')
+    raw = native(source, 'V', contract['counts']['V'])[rows]
+    clean = classify(f, raw, device)
+    predictions = {'clean': np.repeat(clean[None, :], len(SWEEP_MODES), axis=0)}
+    jobs = [(int(i), SOURCE[int(r)], packet) for i,r,packet in zip(rows, rx, raw, strict=True)]
+    with ProcessPoolExecutor(max_workers=rt['cpu_workers']) as pool:
+        for scene in VIEWS_PRACTICAL:
+            result = pool.map(partial(sweep_waveforms, scene), jobs, chunksize=8)
+            batches = []
+            for offset in range(0, len(jobs), 32):
+                waves = np.stack([next(result) for _ in range(min(32, len(jobs)-offset))], axis=1)
+                batches.append(np.stack([classify(f, wave, device) for wave in waves]))
+            predictions[scene] = np.concatenate(batches, axis=1)
+            print('W24_NOISE_SWEEP_PREDICTED', scene, len(jobs), flush=True)
+    with np.load(previous/'predictions.npz', allow_pickle=False) as old_predictions:
+        for scene in VIEWS:
+            if (not np.array_equal(predictions[scene][0], old_predictions[scene][0])
+                    or not np.array_equal(predictions[scene][-1], old_predictions[scene][2])):
+                raise ValueError(f'Noise-sweep endpoints differ from the frozen source diagnosis: {scene}')
+    np.savez(root/'predictions.npz', **predictions)
+    write(root/'source-predictions.json', dict(status='PREDICTIONS_FROZEN', modes=list(SWEEP_MODES),
+          views=list(VIEWS), physical_ids=ids, target_reads=0, source_truth_reads=0,
+          waveform=dict(removed_noise_amplitude=list(REMOVED_AMPLITUDE), endpoints_exact=True,
+                        source_oracle_only=True)))
 
 
 def score_source(runtime, *, modes=MODES, output=None):
@@ -259,21 +319,27 @@ def main():
     publish = sub.add_parser('publish')
     for key in ('repo', 'context', 'ssh-config', 'output'):
         publish.add_argument('--' + key, type=Path, required=True)
+    publish.add_argument('--noise-sweep', action='store_true')
     args = parser.parse_args()
     if args.action == 'publish':
         ctx = read(args.context)
         rt = {k: ctx[k] for k in ('project', 'python', 'frozen_sources')}
         project = PurePosixPath(rt['project'])
-        rt.update(run_id=RUN, code_commit=release_commit(args.repo), runner=__spec__.name,
-                  release_root=str(project / 'releases' / f'{RUN}-release'),
-                  run_root=str(project / 'runs' / RUN),
+        run = SWEEP_RUN if args.noise_sweep else RUN
+        rt.update(run_id=run, code_commit=release_commit(args.repo), runner=__spec__.name,
+                  release_root=str(project / 'releases' / f'{run}-release'),
+                  run_root=str(project / 'runs' / run), noise_sweep=args.noise_sweep,
                   source_root=str(project / 'releases' / f'{DATA_RUN}-release' / 'data/source'),
                   classifier_root=str(project / 'runs' / AUG_RUN),
                   w24_release_root=str(project / 'releases' / f'{W24_RUN}-release'),
-                  allowed_gpus=[2, 7, 4], cpu_workers=8)
+                  allowed_gpus=[6, 0, 5, 3, 2, 7, 4, 1] if args.noise_sweep else [2, 7, 4], cpu_workers=8)
+        if args.noise_sweep:
+            rt['external_releases'] = [str(project/'runs'/RUN)]
         release(args.repo, args.output, rt, args.ssh_config)
+    elif args.action == 'score-source':
+        score_source(args.runtime, modes=SWEEP_MODES if read(args.runtime).get('noise_sweep') else MODES)
     else:
-        {'dispatch': dispatch, 'predict-source': predict_source, 'score-source': score_source}[args.action](
+        {'dispatch': dispatch, 'predict-source': predict_source}[args.action](
             args.runtime)
 
 
