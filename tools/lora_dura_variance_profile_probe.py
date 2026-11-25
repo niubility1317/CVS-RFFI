@@ -107,7 +107,7 @@ def measure(rt, device):
     result = {}
     for condition in CONDITIONS:
         observed = inject(ground, condition)
-        rows, profiles, active_count = [], [], 0
+        rows, profiles, active_count, unchanged_count = [], [], 0, 0
         for clean, iq in zip(ground.split(16), observed.split(16), strict=True):
             y, phase, q, rms = coordinates(tracker, iq)
             frame = phase*rms
@@ -117,12 +117,17 @@ def measure(rt, device):
             if int(active.sum()) != count:
                 raise ValueError('Local solve and original DURA must share the same receive-only gate')
             active_count += count
+            unchanged_profile = (profile == 1.).all((-2, -1))
+            unchanged_count += int((active & unchanged_profile).sum())
             waves = [iq, original[3]]
             for field in (profile, profile.roll(y.shape[-1]//2, dims=-1)):
                 output = iq.clone()
                 if count:
                     stages, *_ = model.stages(y[active], q[active], rms[active], solve_profile=field[active])
-                    output[active] += real_iq(.5*(stages[-1]-y[active])*frame[active])
+                    edit = .5*(stages[-1]-y[active])
+                    output[active] += real_iq(edit*phase[active]*rms[active])
+                if not torch.equal(output[unchanged_profile], waves[1][unchanged_profile]):
+                    raise ValueError('A unit profile must preserve the archived IQ readout exactly')
                 waves.append(output)
             rows.extend(torch.stack([fidelity(clean, wave, frame, band) for wave in waves], dim=1).tolist())
             if condition != 'clean':
@@ -138,7 +143,8 @@ def measure(rt, device):
         if condition == 'clean' and (active_count or np.any(rows != rows[:, :1])):
             raise ValueError('Clean held U must retain the original bypass')
         name = condition if isinstance(condition, str) else f'{condition[0]}_{condition[1]:.2f}'
-        result[name] = dict(active=active_count, groups={label: summarize(rows[mask]) for label, mask in groups.items()})
+        result[name] = dict(active=active_count, active_unit_profile=unchanged_count,
+                            groups={label: summarize(rows[mask]) for label, mask in groups.items()})
         if profiles:
             result[name]['profile_medians'] = np.median(profiles, axis=0).tolist()
     return dict(status='VERIFIED', role='U_s', source_commit=rt['code_commit'], held=len(held),
