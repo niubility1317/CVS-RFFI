@@ -278,7 +278,7 @@ def compare_source(runtime):
         score_source(runtime, modes=modes, output=root / route, contrasts=contrasts)
 
 
-def dispatch(runtime):
+def dispatch(runtime, *, entry=__file__):
     rt = read(runtime)
     root, reference = Path(rt['run_root']), Path(rt['w24_release_root'])
     root.mkdir()
@@ -299,7 +299,7 @@ def dispatch(runtime):
             sleep(20)
         gpu = next(i for i in allowed if i in cards)
         env = dict(os.environ, OMP_NUM_THREADS='2', OPENBLAS_NUM_THREADS='1', PYTHONPATH=str(reference))
-        script = str(Path(__file__).resolve())
+        script = str(Path(entry).resolve())
         for phase in ('predict-source', 'score-source'):
             env['CUDA_VISIBLE_DEVICES'] = str(gpu) if phase == 'predict-source' else ''
             with (root / f'{phase}.log').open('x', encoding='utf-8') as log:
