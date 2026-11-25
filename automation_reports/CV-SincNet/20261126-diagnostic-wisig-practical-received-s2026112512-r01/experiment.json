@@ -1,0 +1,213 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261126-diagnostic-wisig-practical-received-s2026112512-r01",
+  "group_id": "wisig-multichannel-analytic-estimation",
+  "display_name": "Practical 仅接收 IQ 波形与噪声方差盲估",
+  "description": "Receive-only covariance Wiener estimation and noise posterior under a guarded Wi-Fi band. Raw receive waveform and guard/repetition variance controls.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "WiSig",
+    "channel-estimation",
+    "source-only",
+    "multi-family"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261126-diagnostic-wisig-practical-fast-s2026112512-r01",
+    "20261125-diagnostic-wisig-joint-sparse-full-s2026112511-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-11-26 active Practical goal and explicit receive-only user direction, no simulator internals or raw input IQ in estimation.",
+  "code": {
+    "commit": "3d2f08213d7c2ca0fcaea5ab031ec64422039e10",
+    "checkout": "E:\\codex\\home\\worktrees\\wisig-channel-estimation-20261125\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261126-diagnostic-wisig-practical-received-s2026112512-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig / ManySig Main split",
+    "version": "F0 Main split frozen",
+    "representation": "float32 (2, 256) post-sync noeq; 25 MS/s",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json",
+    "physical_ids_ref": "Fixed 60 source-V physical packets in the matched parent panel, disjoint from source U. No target.",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 1800
+    },
+    "train_ratio": "144 U physical packets, 96 fit and 48 held, 12 post-channel views. 60 V physical packets across the fixed 24 original and 13 doubled Practical conditions.",
+    "capsule_id": null,
+    "split_id": "WiSig immutable source U and V; no target",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/validation/manifest.json",
+    "support_query_ref": "N/A Phase1; experiment has no support set",
+    "leo_config_ref": "experiments.pamf_unrolled_restore.wisig_practical_received_audit"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Received Practical IQ only for fit, selection and prediction. Simulator signal and variance read only after all forecasts are saved. Source-V pilot; waveform fidelity and noise performance, no exact channel operator or deployment claim."
+  },
+  "checkpoint": {
+    "initialization": "Covariance and guard-band measurements from post-channel source-U IQ only",
+    "sources": [],
+    "contract_check_ref": "20261125-diagnostic-wisig-joint-sparse-full-s2026112511-r01",
+    "provenance_verdict": "ANALYTIC_FIXED",
+    "selection_rule": "Choose scale by conditional Stein risk surrogate on 48 unseen physical source-U packets. No clean, scenario labels, source or evaluation truth in estimator."
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "Codex chat 01a21321-6c4d-7041-a91c-dc163206a8b6",
+    "gpu_policy": "Single CPU thread for fit/inference and per-packet latency. No GPU.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-s2026112512-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-s2026112512-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261126-diagnostic-wisig-practical-received-s2026112512-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_practical_received_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261126-diagnostic-wisig-practical-received-s2026112512-r01-release/runtime.json",
+    "stop_rule": "Stop on input contract, numeric failure, estimator output completeness or wrong scorer closure."
+  },
+  "expected_artifacts": [
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-s2026112512-r01/configuration.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-s2026112512-r01/configuration.npz",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-s2026112512-r01/estimates.npz",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-s2026112512-r01/scores.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-s2026112512-r01/speed.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-s2026112512-r01/state.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-s2026112512-r01/source_received.npy",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-s2026112512-r01/evaluation_received.npy"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "post-channel signal NMSE mean",
+      "post-channel signal NMSE P90",
+      "post-channel signal NMSE P95",
+      "absolute noise variance error dB median",
+      "absolute noise variance error dB P95",
+      "single CPU packet latency"
+    ],
+    "dimensions": [
+      "method",
+      "family",
+      "condition",
+      "original or matched double-power cases",
+      "source physical packet"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-s2026112512-r01/estimates.npz",
+    "scorer_ref": "experiments.pamf_unrolled_restore.wisig_practical_received_audit:score"
+  },
+  "rows": [
+    {
+      "row_id": "raw_and_guard-s2026112512",
+      "method": "raw_and_guard",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments.pamf_unrolled_restore.wisig_practical_received_audit",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-s2026112512-r01/configuration.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 2026112512,
+        "data": 2026112512,
+        "augmentation": 2026112512,
+        "support": null,
+        "evaluation": 2026112511
+      },
+      "seed_notes": "Fixed source physical split. No target or supports.",
+      "k": null,
+      "scenario": "Practical only, matched 24 native and 13 doubled views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Single-thread CPU receive-only observation",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-s2026112512-r01/estimates.npz#raw_and_guard",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-s2026112512-r01/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_practical_received_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261126-diagnostic-wisig-practical-received-s2026112512-r01-release/runtime.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-s2026112512-r01/scores.json"
+      ]
+    },
+    {
+      "row_id": "raw_and_repeat-s2026112512",
+      "method": "raw_and_repeat",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments.pamf_unrolled_restore.wisig_practical_received_audit",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-s2026112512-r01/configuration.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 2026112512,
+        "data": 2026112512,
+        "augmentation": 2026112512,
+        "support": null,
+        "evaluation": 2026112511
+      },
+      "seed_notes": "Fixed source physical split. No target or supports.",
+      "k": null,
+      "scenario": "Practical only, matched 24 native and 13 doubled views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Single-thread CPU receive-only observation",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-s2026112512-r01/estimates.npz#raw_and_repeat",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-s2026112512-r01/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_practical_received_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261126-diagnostic-wisig-practical-received-s2026112512-r01-release/runtime.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-s2026112512-r01/scores.json"
+      ]
+    },
+    {
+      "row_id": "receive_covariance-s2026112512",
+      "method": "receive_covariance",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments.pamf_unrolled_restore.wisig_practical_received_audit",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-s2026112512-r01/configuration.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 2026112512,
+        "data": 2026112512,
+        "augmentation": 2026112512,
+        "support": null,
+        "evaluation": 2026112511
+      },
+      "seed_notes": "Fixed source physical split. No target or supports.",
+      "k": null,
+      "scenario": "Practical only, matched 24 native and 13 doubled views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Single-thread CPU receive-only observation",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-s2026112512-r01/estimates.npz#receive_covariance",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-s2026112512-r01/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_practical_received_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261126-diagnostic-wisig-practical-received-s2026112512-r01-release/runtime.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-diagnostic-wisig-practical-received-s2026112512-r01/scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "24 primary Practical conditions and 13 matched double-power stress conditions. Report Low Urban separately, including every P90/P95.",
+    "No original IQ, simulator parameters or intermediate waveform in fit/selection/inference. The export only materializes received IQ. Scorer reads complete frozen estimates first.",
+    "Thresholds: post-channel waveform mean <0.1%, P90 <1%, P95 <0.5%. Absolute variance dB median <0.1, P95 <0.5. Single-packet use."
+  ],
+  "registered_at": "2026-11-25T16:22:58+00:00"
+}
