@@ -37,3 +37,7 @@
 ## N607 启动已核实
 
 2026-11-25 11:56（香港时间），读取已发布提交 `9414304db07668688801619ac03ba3121a58b8e8` 的远端状态。传输、编译、入口导入和默认、增强真实源 IQ 冒烟均通过。四套增强源 IQ 双路线已生成。控制器 PID 3691692，默认训练 PID 3694140 使用 GPU 3，增强训练 PID 3694141 使用 GPU 6。两个工作进程的命令均只接收本次运行的 `source_runtime.json`。独立核对了 CWD、进程命令、GPU 和实际训练日志。此时预测和评分均为零。本机读回文件为 `E:/type10-7/local_artifacts/20261125-phase1-wisig-blind-capacity-stress-m2-r02/readout/readback_20261125T035631496786Z.json`。
+
+## 源训练完成，评估入口失败
+
+默认和增强两份权重均完成 40,000 步并冻结。冻结记录显示两组的目标、TX 真值、识别器及模拟器参数读取均为零。默认和增强组训练分别耗时 8,841.85 与 9,222.81 秒，单模型各有 1,264,702 参数。正式评估在无目标冒烟中触发 `Inference tensors do not track version counter`，当时为零个目标预测分片。权重原样保留，由 [r03 正式测试](../20261125-phase1-wisig-blind-capacity-stress-m2-r03/report.md) 复用。

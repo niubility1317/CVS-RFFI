@@ -1,2 +1,3 @@
 {"at": "2026-11-25T03:51:14+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-25T03:56:57+00:00", "status": "RUNNING", "note": "VERIFIED immutable release, two real-source smoke checks, matched source IQ prepared, and default/strong GPU processes/logs observed.", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-11-25T06:35:46+00:00", "status": "FAILED", "note": "Training both profiles verified SOURCE_FROZEN at 40000. No-query evaluation smoke failed; r03 reuses the immutable weights.", "evidence": ["report.md"], "row_id": null}
