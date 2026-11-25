@@ -8,7 +8,7 @@ import numpy as np
 import torch
 
 from experiments.cric_dura_comparison.io import read, tensor, write
-from .clean_aperture import clean_iq
+from .clean_aperture import clean_iq, scale_native_band_tail
 from .comparison import seed_all
 from .data import SOURCE
 from .full_packet_data import COUNTS
@@ -32,6 +32,7 @@ ROWS = {
 }
 RAW_HEAD_ROWS = {'native24_raw': NATIVE_RAW_ROWS['phase_native24_raw']}
 BAND_TAIL_ROWS = {'native24_band': NATIVE_BAND_ROWS['phase_native24_band']}
+CENTER_ROWS = {'native24_center_half': dict(ROWS['native24'], center_tail_gain=.5)}
 
 
 def source_runtime(rt):
@@ -67,7 +68,24 @@ def model(root, contract, row, device):
     return net
 
 
-def smoke(rt, *, raw_head=False, band_tail=False):
+def diagnostic_augmentations(packets, row):
+    gain = row.get('center_tail_gain')
+    if gain is None:
+        return labeled_training_views(packets, row)
+    def view(raw):
+        return clean_iq(raw, row['samples'], row['chirps'], native_edges=True,
+                        edge_points=row['edge_points'])
+    windows = []
+    for start in range(0, len(packets), 64):
+        raw = packets[start:start+64]
+        clean = view(raw)
+        adjusted = view(scale_native_band_tail(raw, gain))
+        adjusted[..., row['samples']:] = clean[..., row['samples']:]
+        windows.append(adjusted)
+    return (np.concatenate(windows),)
+
+
+def smoke(rt, *, raw_head=False, band_tail=False, center_attenuation=False):
     root, source, contract = source_runtime(rt)
     activate(rt)
     y, rx = labels(source, contract, 'L_s')
@@ -77,9 +95,18 @@ def smoke(rt, *, raw_head=False, band_tail=False):
     if raw_head:
         row = RAW_HEAD_ROWS['native24_raw']
         data = tensor(extract(raw,subset))
+    elif center_attenuation:
+        row = CENTER_ROWS['native24_center_half']
+        original = extract(raw, subset)
+        adjusted, = diagnostic_augmentations(raw[subset], row)
+        n = row['samples']
+        if (not np.array_equal(adjusted[..., n:], original[..., n:]) or
+                np.array_equal(adjusted[..., :n], original[..., :n])):
+            raise ValueError('Center attenuation must preserve native edges and change the center')
+        data = tensor(adjusted)
     else:
         row = BAND_TAIL_ROWS['native24_band'] if band_tail else ROWS['native24_jitter']
-        before, after = labeled_training_views(raw[subset],row)
+        before, after = diagnostic_augmentations(raw[subset],row)
         data = tensor(np.concatenate((before[:4], after[4:]),axis=0))
     fitted = model(root,contract,row,'cpu')
     with torch.enable_grad():
@@ -107,6 +134,7 @@ def fit_row(root, contract, name, row, x, y, rx, yn, rn, augmentations, device):
     draw = torch.Generator(device=device).manual_seed(SEED+11)
     steps = 0
     raw_weight = row.get('warm_raw_ce',0.)
+    record_band_count = name in BAND_TAIL_ROWS or name in CENTER_ROWS
     with (out/'epochs.jsonl').open('x',encoding='utf-8') as log:
         for epoch in range(1, EPOCHS+1):
             total = torch.zeros((),device=device)
@@ -118,10 +146,14 @@ def fit_row(root, contract, name, row, x, y, rx, yn, rn, augmentations, device):
                 labeled = x[i]
                 if augmentations:
                     q = torch.rand(len(b),device=device,generator=draw)[:,None,None,None]
-                    labeled = torch.where(q<.125, augmentations[0][i], labeled)
-                    labeled = torch.where(q>.875, augmentations[1][i], labeled)
-                    if name in BAND_TAIL_ROWS:
-                        altered += ((q<.125)|(q>.875)).sum()
+                    changed = q < .125
+                    labeled = torch.where(changed, augmentations[0][i], labeled)
+                    if len(augmentations) == 2:
+                        high = q > .875
+                        labeled = torch.where(high, augmentations[1][i], labeled)
+                        changed = changed | high
+                    if record_band_count:
+                        altered += changed.sum()
                 opt.zero_grad(set_to_none=True)
                 loss,_,raw_ce = supervised_clean_terms(f,labeled,y[i],rx[i],1.,0.,None,raw_weight)
                 if raw_ce is not None:
@@ -135,7 +167,7 @@ def fit_row(root, contract, name, row, x, y, rx, yn, rn, augmentations, device):
             rec = dict(epoch=epoch, step=steps, source_L_loss=float(total/STEPS))
             if raw_weight:
                 rec['raw_head_ce'] = float(raw_total/STEPS)
-            if name in BAND_TAIL_ROWS:
+            if record_band_count:
                 rec['source_l_band_scaled_examples'] = int(altered)
             log.write(json.dumps(rec,allow_nan=False)+chr(10))
             log.flush()
@@ -148,8 +180,15 @@ def fit_row(root, contract, name, row, x, y, rx, yn, rn, augmentations, device):
                                 target_reads=0, satellite_batches=0))
 
 
-def fit(rt, *, raw_head=False, band_tail=False):
-    rows = RAW_HEAD_ROWS if raw_head else BAND_TAIL_ROWS if band_tail else ROWS
+def fit(rt, *, raw_head=False, band_tail=False, center_attenuation=False):
+    rows = RAW_HEAD_ROWS if raw_head else ROWS
+    augmentation_row = ROWS['native24_jitter']
+    if band_tail:
+        rows = BAND_TAIL_ROWS
+        augmentation_row = rows['native24_band']
+    if center_attenuation:
+        rows = CENTER_ROWS
+        augmentation_row = rows['native24_center_half']
     root, source, contract = source_runtime(rt)
     activate(rt)
     device = 'cuda:0'
@@ -158,8 +197,8 @@ def fit(rt, *, raw_head=False, band_tail=False):
     root.mkdir(parents=True,exist_ok=False)
     raw = native(source,'L_s',COUNTS['L_s'])
     x = tensor(extract(raw,keep),device)
-    augmentation_row = BAND_TAIL_ROWS['native24_band'] if band_tail else ROWS['native24_jitter']
-    augmentations = () if raw_head else tuple(tensor(v,device) for v in labeled_training_views(raw[keep],augmentation_row))
+    augmentations = () if raw_head else tuple(
+        tensor(v,device) for v in diagnostic_augmentations(raw[keep],augmentation_row))
     yn,rn = yn[keep],rn[keep]
     y,rx = tensor(yn,device),tensor(rn,device)
     for name, row in rows.items():
@@ -190,5 +229,7 @@ if __name__ == '__main__':
     profile = parser.add_mutually_exclusive_group()
     profile.add_argument('--raw-head',action='store_true')
     profile.add_argument('--band-tail',action='store_true')
+    profile.add_argument('--center-attenuation',action='store_true')
     args = parser.parse_args()
-    {'smoke':smoke,'fit':fit}[args.action](read(args.runtime),raw_head=args.raw_head,band_tail=args.band_tail)
+    {'smoke':smoke,'fit':fit}[args.action](read(args.runtime),raw_head=args.raw_head,
+                                         band_tail=args.band_tail,center_attenuation=args.center_attenuation)
