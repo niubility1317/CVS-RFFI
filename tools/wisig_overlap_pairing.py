@@ -28,13 +28,18 @@ def bootstrap(delta, draw):
 def score(runtime):
     root = Path(runtime['run_root'])
     run = runtime['run_id']
+    timing_check = run == '20261125-phase1-wisig-differential-timing-source-s2026092701-r01'
     if run==stage_study.RUN:
         stages = stage_study
+    elif timing_check:
+        from experiments.pamf_unrolled_restore import wisig_differential_timing_source as stages
     elif run=='20261124-phase1-wisig-observed-solve-source-m4-r01':
         from experiments.pamf_unrolled_restore import wisig_observed_solve_source as stages
     else:
         stages = None
-    modes = stages.MODES if stages else MODES
+    modes = stages.MODES if stages and not timing_check else MODES
+    if timing_check:
+        modes = (*stages.READOUTS, 'r69')
     if os.environ.get('CUDA_VISIBLE_DEVICES') != '' or (stages is None and run!=RUN):
         raise ValueError('WiSig overlap verification requires its own CPU source workflow')
     _, _, source, _, ids, rx, positions = handles(runtime)
@@ -45,6 +50,11 @@ def score(runtime):
             or result['target_reads'] or result['modes'] != list(modes) or marker['modes']!=list(modes)):
         raise ValueError('Both prediction matrices and truth-last scores must already be complete')
     decisions = {}
+    if timing_check:
+        old_root = root.parent/'20261124-phase1-wisig-smooth-preamble-source-m2-r01'/'predictions'
+        old = read(old_root/'complete.json')
+        current_columns = [modes.index(mode) for mode in ('direct', 'r69', 'smooth')]
+        old_columns = [old['modes'].index(mode) for mode in ('direct', 'r69', 'smooth_full')]
     for route in ROUTES:
         rows = []
         for view in VIEWS:
@@ -52,6 +62,11 @@ def score(runtime):
                 grid = values['decision']
                 if not np.array_equal(values['ids'],ids) or grid.shape != (len(modes),len(ids)):
                     raise ValueError('Expected original physical source rows')
+                if timing_check:
+                    with np.load(old_root/f'{route}_{view}.npz', allow_pickle=False) as archived:
+                        if (not np.array_equal(archived['ids'], ids)
+                                or not np.array_equal(grid[current_columns], archived['decision'][old_columns])):
+                            raise ValueError('Expected the same frozen direct, R69, and smooth preamble decisions')
                 rows.append(grid)
         decisions[route] = np.stack(rows)
     labels = np.load(source/'V'/'labels.npy',allow_pickle=False)[positions]
