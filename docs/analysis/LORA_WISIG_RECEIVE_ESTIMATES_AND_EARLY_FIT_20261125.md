@@ -60,3 +60,5 @@
 短训练字段的时延、信道作用与方差已有独立源域诊断，包含实收前导估计、同包干净 IQ 隔离参考及原 R69 的同包部件消融。 [WiSig 前导与方差对照](WISIG_PREAMBLE_ACTION_AND_NOISE_SOURCE_20261125.md)
 
 在两路线共用的 360 个源域包上复现了原居中 FIR 和 R69 的实际 IQ 与识别结果。低强度城区两种末步均基本恢复干净时间坐标，去除时延和整体复增益后，R69 留出波形误差约为 0.0145，居中 FIR 约为 0.0340。 [WiSig 同包波形归因](../../automation_reports/CV-SincNet/20261125-diagnostic-wisig-waveform-source-s2026112501-r01/report.md)
+
+同包交换两种冻结末步的幅度和相位。相对居中 FIR 原末步，两路线只换 R69 相位的六景净增为 316 和 317，只换 R69 幅度的净增为 178 和 184。交叉方案的收益分别来自真实冻结输出的分量，作为隔离诊断。 [WiSig 幅相交叉对照](../../automation_reports/CV-SincNet/20261125-diagnostic-wisig-stage-polar-source-s2026112501-r01/report.md)
