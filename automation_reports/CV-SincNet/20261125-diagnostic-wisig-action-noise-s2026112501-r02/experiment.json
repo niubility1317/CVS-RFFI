@@ -1,0 +1,192 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261125-diagnostic-wisig-action-noise-s2026112501-r02",
+  "group_id": "wisig-blind-estimator-calibration",
+  "display_name": "WiSig 实收估计相对模拟信道作用与有效噪声方差的误差",
+  "description": "在合法的 360 个留出源 V 包上对比已冻结的默认与增强模型。分别比较受损 IQ 的重复差分、DURA 求解方差，以及估计作用对同包无噪仿真输出的预测误差。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "WiSig",
+    "blind-action",
+    "noise-variance",
+    "source-V",
+    "calibration",
+    "DURA"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261125-diagnostic-wisig-action-noise-s2026112501-r01",
+    "20261125-phase1-wisig-blind-capacity-stress-m2-r02",
+    "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02"
+  ],
+  "replaces_run_id": "20261125-diagnostic-wisig-action-noise-s2026112501-r01",
+  "authorization": "用户授权直接检验估计与模拟之间的差异。冻结估计器吃 IQ，独立源域评分才读模拟作用和噪声。",
+  "code": {
+    "commit": "f6817cf66c6536db32527e55d35be89b57e8a031",
+    "checkout": "E:\\codex\\home\\worktrees\\wisig-blind-dura-stress\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261125-diagnostic-wisig-action-noise-s2026112501-r02-release"
+  },
+  "data": {
+    "dataset": "WiSig / ManySig Main split",
+    "version": "F0 Main split frozen",
+    "representation": "float32 (2, 256) post-sync noeq; 25 MS/s",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/complete.json",
+    "physical_ids_ref": "Source V manifest and physical_ids.npy; all groups share same packet set",
+    "label_map_ref": null,
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 1800
+    },
+    "train_ratio": "360 source V packets, 24 per each of 15 receiver/day strata; 24 matched channel cases",
+    "capsule_id": null,
+    "split_id": "source V, no target or TX label use",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/validation/manifest.json",
+    "support_query_ref": "N/A Phase1; experiment has no support set",
+    "leo_config_ref": "experiments.pamf_unrolled_restore.wisig_action_noise_audit; source practical 30 dB plus matched 6 dB/phase stress"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source V simulator audit only"
+  },
+  "checkpoint": {
+    "initialization": "Exact frozen terminal weights, no fitting",
+    "sources": [
+      {
+        "run": "20261125-phase1-wisig-blind-capacity-stress-m2-r02",
+        "profile": "default",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-blind-capacity-stress-m2-r02/default.pt"
+      },
+      {
+        "run": "20261125-phase1-wisig-blind-capacity-stress-m2-r02",
+        "profile": "strong",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-blind-capacity-stress-m2-r02/strong.pt"
+      }
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/configs/predict__main_split-repl-shuffled_time-3view-s2026092701.json",
+    "provenance_verdict": "R02_SOURCE_FROZEN; SIMULATOR TRACES ONLY IN SEPARATE SCORER",
+    "selection_rule": "None, fixed pretrained checkpoint at 40,000 steps"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "current Codex chat",
+    "gpu_policy": "One GPU for fixed frozen inference; source generator uses 8 CPUs",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-action-noise-s2026112501-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-action-noise-s2026112501-r02",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261125-diagnostic-wisig-action-noise-s2026112501-r02",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_action_noise_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-diagnostic-wisig-action-noise-s2026112501-r02-release/runtime.json",
+    "stop_rule": "Stop on source contract/dtype mismatch, failed blind output, or invalid simulator reference."
+  },
+  "expected_artifacts": [
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-action-noise-s2026112501-r02/estimates.npz",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-action-noise-s2026112501-r02/scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "noiseless forward NMSE",
+      "identity-relative NMSE",
+      "noise power ratio",
+      "dB error",
+      "within 3 dB",
+      "gate coverage"
+    ],
+    "dimensions": [
+      "frozen checkpoint",
+      "simulated severity",
+      "route",
+      "scene"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-action-noise-s2026112501-r02/estimates.npz",
+    "scorer_ref": "experiments.pamf_unrolled_restore.wisig_action_noise_audit:score"
+  },
+  "rows": [
+    {
+      "row_id": "blind-default-s2026112501",
+      "method": "expanded DURA, WiSig single window, half correction, IQ-derived STF quality and variance",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments.pamf_unrolled_restore.wisig_action_noise_audit",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-blind-capacity-stress-m2-r02/default-complete.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026112501,
+        "augmentation": 2026101901,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed source physical split, stratified V subsample seed 2026112501. Fixed receiver seed 2026101902. No support or score resampling.",
+      "k": null,
+      "scenario": "Default and stronger six source practical channels, Full and Residual",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Frozen inference only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-action-noise-s2026112501-r02/estimates.npz#default",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-action-noise-s2026112501-r02/blind.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_action_noise_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-diagnostic-wisig-action-noise-s2026112501-r02-release/runtime.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-action-noise-s2026112501-r02/scores.json"
+      ]
+    },
+    {
+      "row_id": "blind-strong-s2026112501",
+      "method": "expanded DURA, WiSig single window, half correction, IQ-derived STF quality and variance",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments.pamf_unrolled_restore.wisig_action_noise_audit",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-phase1-wisig-blind-capacity-stress-m2-r02/strong-complete.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026112501,
+        "augmentation": 2026101901,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed source physical split, stratified V subsample seed 2026112501. Fixed receiver seed 2026101902. No support or score resampling.",
+      "k": null,
+      "scenario": "Default and stronger six source practical channels, Full and Residual",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Frozen inference only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-action-noise-s2026112501-r02/estimates.npz#strong",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-action-noise-s2026112501-r02/blind.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_action_noise_audit dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261125-diagnostic-wisig-action-noise-s2026112501-r02-release/runtime.json",
+      "expected_artifacts": [
+        "/home/szu2070436088/2510044040/CV-SincNet/runs/20261125-diagnostic-wisig-action-noise-s2026112501-r02/scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "All default source IQ snapshots must reproduce the previously held-out source V cache; strong snapshots share the physical latent draw.",
+    "Compare same waveform outputs, using the train-time packet-wide complex gain frame for both identity and estimated action.",
+    "Variance oracle is injected complex white-noise power in the normalized received frame, including IQ response and factual AGC.",
+    "The audit calls the actual frozen estimator for each held-out simulator packet, including packets that the deployed restoration gate would bypass.",
+    "Reuses the complete r01 source-only IQ and simulator panel, recording a new immutable root for the interface fix. No simulator redraw."
+  ],
+  "registered_at": "2026-11-25T07:24:47+00:00"
+}
