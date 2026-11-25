@@ -31,7 +31,6 @@ from experiments.pamf_lora_main.w24_sat_aug import MODES as REFERENCE_MODES
 RUN = '20261125-phase1-lora-w24-native-wiener-pilot-s2026092702-r01'
 PILOT_SEED = 2026112561
 PER_RECEIVER = 200
-PAIR_MODES = ('direct', 'prior_complex_response_half', 'wiener_half', 'wiener_full')
 MODES = ('direct', 'wiener_half', 'wiener_full')
 STRIDE = 1024
 PAD = 128
@@ -69,8 +68,8 @@ def denoise(packets, threshold):
     return result, active
 
 
-def pilot_rows(receiver_index):
-    rng = np.random.default_rng([PILOT_SEED, receiver_index])
+def pilot_rows(receiver_index, seed=PILOT_SEED):
+    rng = np.random.default_rng([seed, receiver_index])
     return np.sort(rng.choice(LIMIT, PER_RECEIVER, replace=False))
 
 
@@ -102,9 +101,9 @@ def fit_gate(runtime):
           seconds=time.perf_counter() - t0))
 
 
-def receipt():
-    return dict(status='PREDICTIONS_FROZEN', classifier_run=AUG_RUN, modes=list(MODES), views=list(VIEWS),
-                receivers=list(TARGET), sample_rows=[pilot_rows(i).tolist() for i in range(len(TARGET))],
+def receipt(modes=MODES, seed=PILOT_SEED):
+    return dict(status='PREDICTIONS_FROZEN', classifier_run=AUG_RUN, modes=list(modes), views=list(VIEWS),
+                receivers=list(TARGET), sample_rows=[pilot_rows(i, seed).tolist() for i in range(len(TARGET))],
                 target_truth_reads=0)
 
 
@@ -128,6 +127,16 @@ def evaluate(runtime):
             raise ValueError('Wiener inactive path was modified')
         classify(f, np.from_dlpack(y.cpu().contiguous()), device)
     write(root / 'smoke.json', dict(status='PASS', source_packets=2, target_reads=0))
+
+    def apply(wave):
+        restored, active = denoise(wave, c['threshold'])
+        return (torch.lerp(wave, restored, .5), restored), active
+
+    predict_pilot(rt, f, device, apply, modes=MODES, seed=PILOT_SEED, log_prefix='W24_WIENER_PILOT')
+
+
+def predict_pilot(rt, classifier, device, apply, *, modes, seed, log_prefix):
+    root = Path(rt['run_root'])
     target = Path(rt['native_target_root'])
     target_contract(target)
     output = root / 'predictions'
@@ -135,7 +144,7 @@ def evaluate(runtime):
     activity = {}
     with ProcessPoolExecutor(max_workers=rt['cpu_workers']) as pool:
         for index, rx in enumerate(TARGET):
-            rows = pilot_rows(index)
+            rows = pilot_rows(index, seed)
             recorded = native(target, rx, LIMIT)[rows]
             pred = {}
             for scene in VIEWS:
@@ -148,31 +157,33 @@ def evaluate(runtime):
                 for start in range(0, len(frames), 32):
                     raw = frames[start:start+32]
                     wave = torch_iq(raw, device)
-                    restored, active = denoise(wave, c['threshold'])
-                    base = classify(f, raw, device)
-                    labels = [base.copy(), base.copy()]
+                    variants, active = apply(wave)
+                    if len(variants) != len(modes) - 1:
+                        raise ValueError('Predictor does not match the registered pilot modes')
+                    base = classify(classifier, raw, device)
+                    labels = [base.copy() for _ in variants]
                     chosen = np.asarray(active.tolist(), dtype=bool)
                     if chosen.any():
-                        for arm, amount in enumerate((.5, 1.)):
-                            edit = torch.lerp(wave[active], restored[active], amount)
-                            labels[arm][chosen] = classify(f, np.from_dlpack(edit.cpu().contiguous()), device)
+                        for arm, restored in enumerate(variants):
+                            edit = restored[active]
+                            labels[arm][chosen] = classify(classifier, np.from_dlpack(edit.cpu().contiguous()), device)
                         n_active += int(chosen.sum())
                     batches.append(np.stack((base, *labels)))
                 pred[scene] = np.concatenate(batches, axis=1)
                 activity[f'{rx}/{scene}'] = n_active
-                print('W24_WIENER_PILOT', rx, scene, n_active, flush=True)
+                print(log_prefix, rx, scene, n_active, flush=True)
             np.savez(output / f'{rx}.npz', **pred)
     write(output / 'activity.json', activity)
-    write(output / 'complete.json', receipt())
+    write(output / 'complete.json', receipt(modes, seed))
 
 
-def score(predictions, prior, dataset, output):
-    if read(predictions / 'complete.json') != receipt():
-        raise ValueError('Complete frozen Wiener matrix required')
+def score(predictions, prior, dataset, output, *, modes=MODES, seed=PILOT_SEED, contrast=None):
+    if read(predictions / 'complete.json') != receipt(modes, seed):
+        raise ValueError('Complete frozen pilot matrix required')
     ref, _ = validate_predictions(prior, REFERENCE_MODES, classifier_run=AUG_RUN)
     activity = read(predictions / 'activity.json')
     if set(activity) != {f'{r}/{v}' for r in TARGET for v in VIEWS}:
-        raise ValueError('Incomplete Wiener activity record')
+        raise ValueError('Incomplete pilot activity record')
     work = []
     disagreements = 0
     for idx, rx in enumerate(TARGET):
@@ -180,46 +191,56 @@ def score(predictions, prior, dataset, output):
             if set(data.files) != set(VIEWS):
                 raise ValueError('Pilot view coverage differs')
             p = np.stack([data[v] for v in VIEWS])
-        if p.shape != (len(VIEWS), len(MODES), PER_RECEIVER) or p.dtype.kind not in 'iu' or not ((p >= 0) & (p < 10)).all():
+        if p.shape != (len(VIEWS), len(modes), PER_RECEIVER) or p.dtype.kind not in 'iu' or not ((p >= 0) & (p < 10)).all():
             raise ValueError('Malformed pilot predictions')
-        rows = pilot_rows(idx)
+        rows = pilot_rows(idx, seed)
         baseline = np.stack([ref[rx, view, 'direct'][rows] for view in VIEWS])
         disagreements += int(np.count_nonzero(baseline != p[:, 0]))
         for i, view in enumerate(VIEWS):
             count = activity[f'{rx}/{view}']
             if not 0 <= count <= PER_RECEIVER or (p[i, 1:] != p[i, :1]).sum(axis=1).max() > count:
-                raise ValueError('Wiener predictions differ outside the active count')
+                raise ValueError('Pilot predictions differ outside the active count')
         dura = np.stack([ref[rx, view, 'complex_response_half_center'][rows] for view in VIEWS])
-        work.append(np.stack((p[:, 0], dura, p[:, 1], p[:, 2]), axis=1))
+        work.append(np.concatenate((p[:, :1], dura[:, None], p[:, 1:]), axis=1))
     output.mkdir(parents=True, exist_ok=False)
     truth = []
     with zipfile.ZipFile(dataset / 'multiple_receiver_test.zip') as archive:
         for i, rx in enumerate(TARGET):
             with recording(archive, f'{rx}_test.h5', output) as h5:
                 y = label_ids(h5, LIMIT)[packet_indices(LIMIT, i)]
-                truth.append(y[pilot_rows(i)])
+                truth.append(y[pilot_rows(i, seed)])
     hit = np.stack(work) == np.array(truth)[:, None, None, :]
-    rng = np.random.default_rng(PILOT_SEED + 1)
+    rng = np.random.default_rng(seed + 1)
     draws = rng.integers(PER_RECEIVER, size=(len(TARGET), 2000, PER_RECEIVER))
     audit = {}
-    for idx, name in enumerate(PAIR_MODES):
+    paired_modes = ('direct', 'prior_complex_response_half', *modes[1:])
+
+    def six_interval(delta):
+        net = delta[:, 1:].sum(1)
+        drawn = np.take_along_axis(net[:, None, :], draws, axis=2).sum((0, 2))
+        return np.quantile(drawn, [.025, .975]).tolist()
+
+    for idx, name in enumerate(paired_modes):
         correct = hit[:, :, idx]
         against_raw = correct.astype(np.int16) - hit[:, :, 0]
         against_dura = correct.astype(np.int16) - hit[:, :, 1]
-        ci = {}
-        for key, delta in (('raw', against_raw), ('dura', against_dura)):
-            net = delta[:, 1:].sum(1)
-            drawn = np.take_along_axis(net[:, None, :], draws, axis=2).sum((0, 2))
-            ci[key] = np.quantile(drawn, [.025, .975]).tolist()
+        ci = {key: six_interval(delta) for key, delta in (('raw', against_raw), ('dura', against_dura))}
         audit[name] = dict(correct_by_scene=dict(zip(VIEWS, correct.sum((0, 2)).tolist(), strict=True)),
             net_six_vs_raw=int(against_raw[:, 1:].sum()), net_six_vs_dura=int(against_dura[:, 1:].sum()),
             net_low_vs_raw=int(against_raw[:, -1].sum()),
             repairs_six=int((against_raw[:, 1:] > 0).sum()),
             harms_six=int((against_raw[:, 1:] < 0).sum()),
             CI95_six=ci, net_six_by_rx=dict(zip(TARGET, against_raw[:, 1:].sum((1, 2)).tolist(), strict=True)))
-    write(output / 'scores.json', dict(status='ANALYZED', scope='single_seed_3000_pilot',
-          truth_last=True, n_physical=len(TARGET)*PER_RECEIVER, n_six=len(TARGET)*PER_RECEIVER*6,
-          direct_disagreements_vs_prior=disagreements, results=audit, activity=activity))
+    result = dict(status='ANALYZED', scope='single_seed_3000_pilot', truth_last=True,
+                  n_physical=len(TARGET)*PER_RECEIVER, n_six=len(TARGET)*PER_RECEIVER*6,
+                  direct_disagreements_vs_prior=disagreements, results=audit, activity=activity)
+    if contrast is not None:
+        a, b = (paired_modes.index(mode) for mode in contrast)
+        delta = hit[:, :, a].astype(np.int16) - hit[:, :, b]
+        result['ablation'] = dict(candidate=contrast[0], control=contrast[1],
+                                  net_by_scene=dict(zip(VIEWS, delta.sum((0, 2)).tolist(), strict=True)),
+                                  net_six=int(delta[:, 1:].sum()), CI95_net_six=six_interval(delta))
+    write(output / 'scores.json', result)
 
 
 def dispatch(runtime):

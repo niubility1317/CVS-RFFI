@@ -52,6 +52,10 @@ def source_loss(model, clean, rng, *, identity=False):
     """Supervise native waveform and boundary preservation using source IQ only."""
     received = clean if identity else colored_observation(clean, rng)
     coarse, refined = model.stages(received)
+    return waveform_loss(coarse, refined, clean)
+
+
+def waveform_loss(coarse, refined, clean):
     power = clean.abs().square().mean((1, 2)).clamp_min(1e-6)
     error = (refined - clean).abs().square()
     waveform = (error.mean((1, 2)) / power).mean()
