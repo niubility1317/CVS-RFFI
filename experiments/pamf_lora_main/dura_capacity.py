@@ -111,8 +111,18 @@ class DuraCapacity(nn.Module):
         else:
             noise = receiver_variance.clamp(1e-5, 4.)
         log_noise = noise.log().clamp(-11., 2.)/5.
-        average = .5*(y[:, ::2].mean(1, keepdim=True) + y[:, 1::2].mean(1, keepdim=True))
-        opposite = torch.cat((y[:, 1::2].mean(1, keepdim=True), y[:, ::2].mean(1, keepdim=True)),1).repeat(1, 3, 1)
+        if y.shape[1] == 1:
+            # A WiSig window is one observation. This is equivalent to six
+            # identical copies without running the same convolutions six times.
+            average = opposite = y
+            nominal = torch.ones_like(y)
+            mismatch = torch.zeros_like(y.real[..., :1])
+        else:
+            even = y[:, ::2].mean(1, keepdim=True)
+            odd = y[:, 1::2].mean(1, keepdim=True)
+            average = .5*(even + odd)
+            opposite = torch.cat((odd, even), 1).repeat(1, 3, 1)
+            nominal, _, mismatch = ReceivedUpdate.estimate(y, noise.mean(1, keepdim=True))
         flip = (-torch.arange(256, device=y.device)) % 256
         f_real, f_imag = read_core(self.frequency, (*iq_field(spec, spec[..., flip].conj()), log_noise))
         spec_edit = torch.complex(f_real.tanh(), f_imag.tanh())*noise.sqrt()
@@ -121,7 +131,6 @@ class DuraCapacity(nn.Module):
         c_real, c_imag = read_core(self.coarse, pack)
         c = y + limit(zero_carrier(estimate+torch.complex(c_real.tanh(), c_imag.tanh())),
                       y, rms, y.real.new_tensor(MAX_EDIT))
-        nominal, _, mismatch = ReceivedUpdate.estimate(y, noise.mean(1, keepdim=True))
         inputs = (*iq_field(y, c, opposite, nominal-1.), log_noise)
         gr, gi, ir, ii, er, ei, log_excess = (x.tanh() for x in read_core(self.risk, inputs))
         # Take four-sample means before interpolation to keep rapidly varying action
