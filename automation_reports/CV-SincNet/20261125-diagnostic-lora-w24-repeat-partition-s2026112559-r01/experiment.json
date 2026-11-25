@@ -1,0 +1,164 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261125-diagnostic-lora-w24-repeat-partition-s2026112559-r01",
+  "group_id": "phase1-lora-w24-observable-recovery",
+  "display_name": "LoRa W24 同能量共用与独有修正",
+  "description": "Compare packet-shared and chirp-specific directions of prior ungated W24 edits.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source_only",
+    "w24",
+    "matched_dose",
+    "full_and_residual"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261125-diagnostic-lora-w24-waveform-source-s2026112559-r01",
+    "20261125-diagnostic-lora-w24-readout-sweep-source-s2026112559-r01",
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa and WiSig restoration research goal authorizes isolated component diagnostics.",
+  "code": {
+    "commit": null,
+    "checkout": "E:/codex/home/worktrees/lora-dura-stage-supervision/standard_ce_baselines_20261010",
+    "environment": "N607 archived W24 runtime Python",
+    "cwd": "registered W24 source release"
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multiple receiver",
+    "version": "Native W24 1 MHz original Full and native_residual_w24_v1",
+    "representation": "8 chirps, 384 complex center samples + 48 native edge samples",
+    "contract_ref": "Archived native W24 source release, data/source contract",
+    "physical_ids_ref": "20261125-diagnostic-lora-w24-waveform-source-s2026112559-r01/waveforms-frozen.json physical IDs",
+    "label_map_ref": "Registered LoRa source V metadata accessed solely by scorer",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": 1,
+      "V": 300
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Same parent Full and Residual raw ordered-prediction panel",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only exact-method readout ablation; no fit, calibration, oracle input or target access."
+  },
+  "checkpoint": {
+    "initialization": "None",
+    "sources": [
+      {
+        "ref": "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+        "role": "Source-frozen W24 DURA E40000"
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Frozen enhanced W24 E104 recognizer"
+      }
+    ],
+    "contract_check_ref": "w24_wide_transfer.training_runtime and load_restorer",
+    "provenance_verdict": "Source-frozen 40,000 steps, compatible source-only archive",
+    "selection_rule": "Prespecified half edit, shared/distinct projections and two equal-dose weights; no arm chosen after observing scores"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex goal 01a208a9-57df-7f82-a078-cd9477adf998",
+    "gpu_policy": "Single eligible GPU, prefer 3, 7, or 2; eight CPU channel workers",
+    "remote_run_root": "runs/20261125-diagnostic-lora-w24-repeat-partition-s2026112559-r01",
+    "remote_log_root": "runs/20261125-diagnostic-lora-w24-repeat-partition-s2026112559-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261125-diagnostic-lora-w24-repeat-partition-s2026112559-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.w24_repeat_partition publish --repo . --context E:/type10-7/local_artifacts/20261125-diagnostic-lora-w24-repeat-partition-s2026112559-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261125-diagnostic-lora-w24-repeat-partition-s2026112559-r01/release",
+    "stop_rule": "Fail downstream on effective dose, phase, source paired IQ, archived label-free prediction parity, freeze or finite-input mismatch."
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "state.json",
+    "{route}/source-predictions.json",
+    "{route}/predictions.npz",
+    "{route}/source-scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "correct counts",
+      "physical-packet paired intervals",
+      "net corrections",
+      "shared edit energy fraction"
+    ],
+    "dimensions": [
+      "route",
+      "scene",
+      "receiver",
+      "allocation"
+    ],
+    "prediction_ref": "runs/20261125-diagnostic-lora-w24-repeat-partition-s2026112559-r01/{route}/predictions.npz",
+    "scorer_ref": "w24_repeat_partition.score"
+  },
+  "rows": [
+    {
+      "row_id": "w24-repeat-partition",
+      "method": "Orthogonal allocation of frozen W24 half corrections",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_repeat_partition.py",
+      "resolved_config_ref": "releases/20261125-diagnostic-lora-w24-repeat-partition-s2026112559-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026112991,
+        "split": null,
+        "data": 2026112559,
+        "augmentation": 2026112207,
+        "support": null,
+        "evaluation": 2026112559
+      },
+      "seed_notes": "W24 classifier seed 2026092702, restored waveforms use G seed 2026112991; source receive panel and draws identical to archived half comparison.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "300 source V packets, each of two routes and seven scenes, six fixed readouts",
+      "output_root": "runs/20261125-diagnostic-lora-w24-repeat-partition-s2026112559-r01",
+      "log_path": "runs/20261125-diagnostic-lora-w24-repeat-partition-s2026112559-r01/predict-source.log",
+      "command": "archived Python w24_repeat_partition.py predict-source releases/20261125-diagnostic-lora-w24-repeat-partition-s2026112559-r01-release/runtime.json",
+      "expected_artifacts": [
+        "smoke.json",
+        "state.json",
+        "{route}/source-predictions.json",
+        "{route}/predictions.npz",
+        "{route}/source-scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "GPU predicts and verifies pairs before CPU opens source V labels.",
+    "Both routes use the same no-gate rule and frozen source weights."
+  ],
+  "registered_at": "2026-11-25T15:13:30+00:00"
+}
