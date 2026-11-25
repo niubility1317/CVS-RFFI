@@ -14,7 +14,8 @@ from experiments.cric_dura_comparison.io import read, write
 from experiments.pamf_repl_view_shuffle.plan import VIEWS
 
 
-RUN = '20261125-diagnostic-wisig-action-noise-s2026112501-r01'
+RUN = '20261125-diagnostic-wisig-action-noise-s2026112501-r02'
+PANEL_RUN = '20261125-diagnostic-wisig-action-noise-s2026112501-r01'
 FROZEN = '20261125-phase1-wisig-blind-capacity-stress-m2-r02'
 SOURCE = '20261019-phase1-reception-restoration-selfsup-manysig-m6-r02'
 PROFILES = ('default', 'strong')
@@ -113,7 +114,7 @@ def predict(iq_path, output, frozen):
             for index, cell in enumerate(observed):
                 for part in np.array_split(cell, 4):
                     iq = tensor(part, 'cuda:0')
-                    _, _, action, variance = stages(model, iq)
+                    _, _, _, action, variance = stages(model, iq)
                     repeat = receive_coordinates(iq)[-1]
                     fields = (action.main[:, 0], action.image[:, 0], action.echo[:, 0],
                               variance.mean(dim=(1,2)), repeat.flatten())
@@ -171,14 +172,14 @@ def describe(rows, gate):
                 repeat_signal_to_noise=quantiles(r['repeat_signal_to_noise']))
 
 
-def score(root):
+def score(root, panel):
     if os.environ.get('CUDA_VISIBLE_DEVICES') != '':
         raise ValueError('Run the oracle scorer separately on CPU')
     with np.load(root/'estimates.npz', allow_pickle=False) as est:
         if any(est[f'{p}_main'].shape != (len(CELLS)*PACKETS, 256) for p in PROFILES):
             raise ValueError('All blind estimates must be written before oracle scoring')
-        observed = np.load(root/'received.npy', mmap_mode='r', allow_pickle=False)
-        with np.load(root/'scorer_reference.npz', allow_pickle=False) as oracle:
+        observed = np.load(panel/'received.npy', mmap_mode='r', allow_pickle=False)
+        with np.load(panel/'scorer_reference.npz', allow_pickle=False) as oracle:
             clean, signal, injected, variance = (oracle[name] for name in ('clean','signal','noise','variance'))
         result = {}
         for model in PROFILES:
@@ -201,13 +202,14 @@ def score(root):
 
 def launch(rt, action, name, gpu=None):
     root = Path(rt['run_root'])
+    panel = Path(rt.get('panel_root', root))
     # The estimator receives exactly an IQ path, output path and frozen weights.
     if action == 'blind':
-        args = [str(root/'received.npy'), str(root/'estimates.npz'), rt['frozen_root']]
+        args = [str(panel/'received.npy'), str(root/'estimates.npz'), rt['frozen_root']]
     elif action == 'generate':
         args = [str(root), rt['source_root']]
     else:
-        args = [str(root)]
+        args = [str(root), str(panel)]
     env = dict(os.environ, CUDA_VISIBLE_DEVICES='' if gpu is None else str(gpu),
                OMP_NUM_THREADS='2', OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='1')
     with (root/f'{action}.log').open('x') as log:
@@ -224,9 +226,10 @@ def dispatch(rt):
     root.mkdir()
     state = root/'state.json'
     try:
-        write(state, dict(status='SOURCE_IQ_GENERATION'))
-        if launch(rt,'generate','source_v').wait():
-            raise RuntimeError('Source IQ generator failed')
+        if 'panel_root' not in rt:
+            write(state, dict(status='SOURCE_IQ_GENERATION'))
+            if launch(rt,'generate','source_v').wait():
+                raise RuntimeError('Source IQ generator failed')
         write(state, dict(status='BLIND_ESTIMATION'), exclusive=False)
         inventory = subprocess.check_output(
             ['nvidia-smi','--query-gpu=index,utilization.gpu,memory.free','--format=csv,noheader,nounits'],
@@ -253,7 +256,7 @@ def publish(repo, output, context, ssh_config):
     rt = dict(ctx, run_id=RUN, runner=__spec__.name, code_commit=transport.release_commit(repo),
               release_root=str(base/'releases'/f'{RUN}-release'), run_root=str(runs/RUN),
               source_root=str(runs/SOURCE/'cache'), frozen_root=str(runs/FROZEN),
-              external_releases=[str(runs/FROZEN)])
+              panel_root=str(runs/PANEL_RUN), external_releases=[str(runs/FROZEN), str(runs/PANEL_RUN)])
     transport.release(repo, output, rt, ssh_config, archive_extras=('tools/r17_activation_factorization.py',))
 
 
@@ -264,7 +267,7 @@ def main():
     for field in ('repo','output','context','ssh-config'):
         publish_cmd.add_argument('--'+field, type=Path, required=True)
     for action, fields in (('dispatch',('runtime',)), ('generate',('root','source')),
-                           ('blind',('iq_path','output','frozen')), ('score',('root',))):
+                           ('blind',('iq_path','output','frozen')), ('score',('root','panel'))):
         command = sub.add_parser(action)
         for field in fields:
             command.add_argument(field, type=Path)
