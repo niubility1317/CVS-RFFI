@@ -26,18 +26,18 @@ def matrix():
             for route in ROUTES for index in range(SHARDS)}
 
 
-def expected_files(modes=MODES):
+def expected_files(modes=MODES, *, seeds=SEEDS):
     from experiments.pamf_lora_main.data import TARGET, VIEWS
     return {f'{route}/{seed}/{receiver}__{view}__{mode}.npy'
-            for route in ROUTES for seed in SEEDS for receiver in TARGET for view in VIEWS for mode in modes}
+            for route in ROUTES for seed in seeds for receiver in TARGET for view in VIEWS for mode in modes}
 
 
-def completion(*, origin=ORIGIN, origin_code=ORIGIN_CODE, modes=MODES):
+def completion(*, origin=ORIGIN, origin_code=ORIGIN_CODE, modes=MODES, seeds=SEEDS, per_receiver=None):
     from experiments.pamf_lora_main.data import TARGET, VIEWS
     from experiments.pamf_lora_main.full_packet_data import LIMIT
     return dict(status='PREDICTIONS_FROZEN', candidate_run=origin, origin_commit=origin_code,
-                routes=list(ROUTES), seeds=list(SEEDS), modes=list(modes), receivers=list(TARGET),
-                per_receiver=LIMIT, views=list(VIEWS), target_truth_read=False)
+                routes=list(ROUTES), seeds=list(seeds), modes=list(modes), receivers=list(TARGET),
+                per_receiver=LIMIT if per_receiver is None else per_receiver, views=list(VIEWS), target_truth_read=False)
 
 
 def source_inference(rt, device):
@@ -109,7 +109,8 @@ def smoke_disturbance(iq, rng):
     return iq + .08 * colored / 2**.5
 
 
-def run_worker(rt, stage, shard, *, bind=source_inference, modes=MODES, events='LORA_GUARD_TARGET'):
+def run_worker(rt, stage, shard, *, bind=source_inference, modes=MODES, events='LORA_GUARD_TARGET',
+               seeds=SEEDS, per_receiver=None, time_restoration=False):
     import numpy as np
     import torch
     from experiments.cric_dura_comparison.io import tensor, write
@@ -123,6 +124,8 @@ def run_worker(rt, stage, shard, *, bind=source_inference, modes=MODES, events='
     root = Path(rt['run_root'])
     with torch.no_grad():
         readers, restore, contract = bind(rt, device)
+        if tuple(readers) != tuple(seeds):
+            raise ValueError('The registered frozen reader seeds differ from the worker binding')
 
         def classify(batch):
             recovered, active = restore(batch)
@@ -147,8 +150,22 @@ def run_worker(rt, stage, shard, *, bind=source_inference, modes=MODES, events='
             classify(quiet)
             if not active or (bypass == 0 and not torch.equal(raw_output, quiet)):
                 raise ValueError('Real checkpoint smoke did not exercise the selected readout')
-            write(root / 'smoke.json', dict(status='PASS', source_U=len(quiet), active=active,
-                                          clean_active=bypass, seeds=list(SEEDS), target_reads=0))
+            details = dict(status='PASS', source_U=len(quiet), active=active,
+                           clean_active=bypass, seeds=list(seeds), target_reads=0)
+            if time_restoration:
+                times = {}
+                for name, sample in (('clean', quiet[:1]), ('disturbed', disturbed[:1])):
+                    _, sample_active = restore(sample)
+                    delays = []
+                    for _ in range(20):
+                        torch.cuda.synchronize()
+                        started = perf_counter()
+                        restore(sample)
+                        torch.cuda.synchronize()
+                        delays.append(1000*(perf_counter()-started))
+                    times[name] = dict(median_ms=float(np.median(delays[5:])), active=bool(sample_active))
+                details.update(restore_b1=times, device=torch.cuda.get_device_name())
+            write(root / 'smoke.json', details)
             return
 
         route, receivers = matrix()[shard]
@@ -160,9 +177,9 @@ def run_worker(rt, stage, shard, *, bind=source_inference, modes=MODES, events='
             if iq.shape != (len(VIEWS), LIMIT, 6, 2, 256) or iq.dtype != np.float32:
                 raise ValueError('Target IQ shape differs from the published physical matrix')
             for view, sample in zip(VIEWS, iq, strict=True):
-                rows = {seed: [[], []] for seed in SEEDS}
+                rows = {seed: [[], []] for seed in seeds}
                 count = 0
-                for batch in tensor(sample, device).split(48):
+                for batch in tensor(sample[:per_receiver], device).split(48):
                     result, active = classify(batch)
                     count += active
                     for seed, variants in result.items():
@@ -180,7 +197,7 @@ def run_worker(rt, stage, shard, *, bind=source_inference, modes=MODES, events='
 
 
 def dispatch(rt, runtime_path, *, entrypoint=Path(__file__).resolve(), modes=MODES,
-             complete=completion, events='LORA_GUARD_TARGET'):
+             complete=completion, events='LORA_GUARD_TARGET', seeds=SEEDS, before_smoke=None, after_smoke=None):
     from experiments.cric_dura_comparison.io import write
     from experiments.pamf_lora_main.refine_runner import select_gpu
     root = Path(rt['run_root'])
@@ -190,7 +207,7 @@ def dispatch(rt, runtime_path, *, entrypoint=Path(__file__).resolve(), modes=MOD
     logs.mkdir()
 
     def launch(stage, row, gpu):
-        env = dict(os.environ, CUDA_VISIBLE_DEVICES=str(gpu), OMP_NUM_THREADS='1',
+        env = dict(os.environ, CUDA_VISIBLE_DEVICES='' if gpu is None else str(gpu), OMP_NUM_THREADS='1',
                    MKL_NUM_THREADS='1', OPENBLAS_NUM_THREADS='1')
         args = [rt['python'], '-u', str(entrypoint), stage, str(runtime_path), row]
         with (logs / f'{stage}-{row}.log').open('x', encoding='utf-8') as log:
@@ -199,11 +216,15 @@ def dispatch(rt, runtime_path, *, entrypoint=Path(__file__).resolve(), modes=MOD
         return child
 
     try:
-        write(state, dict(status='SMOKE'))
+        if before_smoke is not None:
+            before_smoke(root, state)
+        write(state, dict(status='SMOKE'), exclusive=False)
         if launch('smoke', 'source', select_gpu()).wait():
             raise RuntimeError('No-query LoRa replay smoke failed')
+        if after_smoke is not None:
+            after_smoke(launch, state)
         for route in ROUTES:
-            for seed in SEEDS:
+            for seed in seeds:
                 (root / 'predictions' / route / str(seed)).mkdir(parents=True)
         command = ('nvidia-smi', '--query-gpu=index,utilization.gpu,memory.free', '--format=csv,noheader,nounits')
         inventory = (tuple(map(int, line.split(','))) for line in subprocess.check_output(command, text=True).splitlines())
@@ -219,7 +240,7 @@ def dispatch(rt, runtime_path, *, entrypoint=Path(__file__).resolve(), modes=MOD
             if any([job.wait() for job in workers]):
                 raise RuntimeError('A LoRa target replay shard failed')
         files = {p.relative_to(root / 'predictions').as_posix() for p in (root / 'predictions').rglob('*.npy')}
-        if files != expected_files(modes):
+        if files != expected_files(modes, seeds=seeds):
             raise ValueError('Missing or unexpected target predictions')
         write(root / 'predictions' / 'complete.json', complete())
         write(state, dict(status='PREDICTIONS_FROZEN', target_truth_read=False), exclusive=False)

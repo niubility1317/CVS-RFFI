@@ -25,7 +25,7 @@ REPLICATES = 1600
 TESTS = {replay.MODES[1]: replay for replay in (guard, dura_capacity_target)}
 
 
-def collect(receipt, config, output, *, replay=guard):
+def collect(receipt, config, output, *, replay=guard, artifacts=()):
     receipt = read(receipt)
     root = PurePosixPath(receipt['run_root'])
     if root.name != replay.RUN or receipt['archive_transfer'] != 'VERIFIED':
@@ -34,7 +34,7 @@ def collect(receipt, config, output, *, replay=guard):
     state = subprocess.check_output([*conn, 'cat ' + shlex.quote(str(root / 'state.json'))], timeout=20)
     if loads(state)['status'] != 'PREDICTIONS_FROZEN':
         raise ValueError('Both routes must freeze before collection')
-    reports = {'smoke.json', 'predictions/complete.json', *(f'{name}-complete.json' for name in matrix())}
+    reports = {'smoke.json', 'predictions/complete.json', *artifacts, *(f'{name}-complete.json' for name in matrix())}
     expected = reports | {'predictions/' + name for name in replay.expected_files()}
     command = f'tar -czf - -C {shlex.quote(str(root))} predictions smoke.json ' + ' '.join(sorted(reports - {
         'predictions/complete.json', 'smoke.json'}))
@@ -51,8 +51,8 @@ def collect(receipt, config, output, *, replay=guard):
                 dest.write(source.read())
 
 
-def predictions(folder, mode):
-    return np.stack([[prediction(folder / f'{rx}__{view}__{mode}.npy') for rx in TARGET] for view in VIEWS])
+def predictions(folder, mode, count=LIMIT):
+    return np.stack([[prediction(folder / f'{rx}__{view}__{mode}.npy', count) for rx in TARGET] for view in VIEWS])
 
 
 def frozen_rows(output, full, residual, residual_old, *, replay=guard, previous_guard=None):
@@ -108,12 +108,12 @@ def frozen_rows(output, full, residual, residual_old, *, replay=guard, previous_
     return all_routes
 
 
-def receiver_pairs(hits, mode):
-    receivers = np.repeat(TARGET, LIMIT)
+def receiver_pairs(hits, mode, seeds, count):
+    receivers = np.repeat(TARGET, count)
     rng = np.random.default_rng(20261124)
-    candidate = hits[mode].reshape(len(SEEDS), len(VIEWS), -1)
+    candidate = hits[mode].reshape(len(seeds), len(VIEWS), -1)
     selections = [('all_seeds', slice(None)),
-                  *((str(seed), slice(i, i + 1)) for i, seed in enumerate(SEEDS))]
+                  *((str(seed), slice(i, i + 1)) for i, seed in enumerate(seeds))]
     pairs = {}
     for name, reference in hits.items():
         if name != mode:
@@ -123,16 +123,23 @@ def receiver_pairs(hits, mode):
     return pairs
 
 
-def score_arrays(rows, truth, mode='guard_half', *, detailed_pairing=False):
+def score_arrays(rows, truth, mode='guard_half', *, detailed_pairing=False, seeds=None):
+    seeds = SEEDS if seeds is None else seeds
+    count = truth.shape[-1]
+    expected = (len(seeds), len(VIEWS), len(TARGET), count)
+    if truth.shape != expected[2:]:
+        raise ValueError('Truth rows do not match the physical receiver matrix')
     records, paired, aggregate = [], {}, {}
     by_route = {}
     for route, choices in rows.items():
+        if any(decisions.shape != expected for decisions in choices.values()):
+            raise ValueError(f'Prediction rows do not match the registered matrix for {route}')
         hits = {name: decisions == truth for name, decisions in choices.items()}
         if detailed_pairing:
-            by_route[route] = receiver_pairs(hits, mode)
+            by_route[route] = receiver_pairs(hits, mode, seeds, count)
         candidate = hits[mode]
         baseline_names = tuple(name for name in hits if name != mode)
-        for i, seed in enumerate(SEEDS):
+        for i, seed in enumerate(seeds):
             for j, view in enumerate(VIEWS):
                 for receiver, select in [('ALL', slice(None)), *zip(TARGET, range(len(TARGET)), strict=True)]:
                     subject = candidate[i, j, select]
@@ -155,7 +162,7 @@ def score_arrays(rows, truth, mode='guard_half', *, detailed_pairing=False):
             rng = np.random.default_rng(20261124)
             pools = np.zeros((len(totals), REPLICATES), dtype=np.int64)
             for i in range(len(TARGET)):
-                index = rng.integers(0, LIMIT, size=(REPLICATES, LIMIT))
+                index = rng.integers(0, count, size=(REPLICATES, count))
                 for j in range(len(totals)):
                     pools[j] += totals[j, i][index].sum(axis=1)
             paired[route][name] = {}

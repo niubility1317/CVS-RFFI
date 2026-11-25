@@ -17,9 +17,9 @@ from .residual_dura import MODES, ROUTE, RUN, SEED
 from .scoring import macro_f1
 
 
-def prediction(path):
+def prediction(path, count=LIMIT):
     a = np.load(path, allow_pickle=False)
-    if (a.shape != (LIMIT,) or a.dtype.kind not in 'iu'
+    if (a.shape != (count,) or a.dtype.kind not in 'iu'
             or a.min() < 0 or a.max() >= len(CLASSES)):
         raise ValueError(f'Invalid LoRa prediction {path.name}')
     return a
