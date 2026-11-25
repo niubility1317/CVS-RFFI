@@ -1,6 +1,6 @@
 # LoRa 与 WiSig 可部署星地信道恢复阶段结果
 
-截至 2026-11-24，两套数据的原冻结基线和本轮固定候选均已完成 Full、Residual 正式测试。LoRa 扩容 DURA 提高了两路线相对原 DURA 的六景，Full 硬目标仍未达到。WiSig 平滑前导 DURA 在 Main split 的六景及 clean 均未达到相对原 R69 的要求。整体研发目标继续进行。
+截至 2026-11-25，两套数据的原冻结基线、LoRa 扩容 DURA 和 WiSig 平滑前导 DURA 均已完成 Full、Residual 正式测试。LoRa 扩容 DURA 提高了两路线相对原 DURA 的六景，Full 硬目标仍未达到。WiSig 平滑前导 DURA 在 Main split 的六景及 clean 均未达到相对原 R69 的要求。后续重训和配对测试继续执行。
 
 ## LoRa 三种子基线与验收差距
 
@@ -24,6 +24,25 @@
 40,000 步的扩容 DURA 已完成两路线正式测试。Full 相对原 DURA 六景净增 3,371 次，Residual 净增 1,906 次，clean 分别持平和净增 183 次。Full 的六景点估计较 `guard_half` 多 339 次，配对区间跨零，低城区多 703 次。Residual 的中、低强度城区较原 DURA 分别净减 1,647、822 次。Full 的六景和低城区仍差 10.5241 和 9.5778 个百分点。 [扩容 DURA 逐景、种子及接收机结果](../../automation_reports/CV-SincNet/20261124-phase1-lora-dura-capacity-target-m8-r02/report.md)
 
 LoRa 实收复谱方向修正的两臂已各完成 40,000 步。双方向终步在 Full、Residual 六景比匹配 DURA 净减 66、198 次，clean 均为 667/900。同权等量相较标量净减 11、16 次，两个配对区间均跨零。低城区五台源接收机的相位回写中位数均为零。候选停在源域。 [LoRa 实收复谱修正设计](LORA_RECEIVED_SPECTRAL_UPDATE_DESIGN_20261124.md) · [冻结结果、配对统计与幅相审计](../../automation_reports/CV-SincNet/20261124-phase1-lora-received-update-source-m4-r01/report.md)
+
+### LoRa 扩容权重的接收估计消融
+
+固定同一扩容权重、Tri-set 种子 `2026092702` 和 15 台目标接收机各 200 个物理包。下表六景分母为 18,000，clean 和低强度城区各为 3,000。两次独立评分都复现了同口径扩容半量的逐景合计。重新汇总已评分的场景行，六景正确数之差与同包纠错减改错一致。
+
+| 路线 | 固定读出 | 六景正确数 | 低强度城区正确数 | Clean 正确数 | 六景对扩容半量净变化及 95% 区间 |
+| --- | --- | ---: | ---: | ---: | ---: |
+| Full | 扩容半量 | 10,401 | 1,306 | 2,141 | 0 |
+| Full | 局部方差半量 | 10,318 | 1,299 | 2,141 | −83［−119，−44］ |
+| Full | 分侧协方差半量 | 10,424 | 1,310 | 2,138 | +23［−36，+78］ |
+| Residual | 扩容半量 | 9,931 | 1,310 | 2,141 | 0 |
+| Residual | 局部方差半量 | 9,775 | 1,289 | 2,141 | −156［−225，−87］ |
+| Residual | 分侧协方差半量 | 9,929 | 1,310 | 2,138 | −2［−26，+25］ |
+
+局部方差保住了相对扩容半量的 clean，两路线六景均下降。分侧协方差在 Full 的六景配对区间跨零，两路线 clean 均净减 3 次。两项结果仅用于本次配对判定和损益归因。 [局部方差逐景与逐接收机结果](../../automation_reports/CV-SincNet/20261125-phase1-lora-dura-local-variance-pilot-s2026092702-r01/report.md) · [分侧协方差逐景与逐接收机结果](../../automation_reports/CV-SincNet/20261125-phase1-lora-dura-signed-covariance-pilot-s2026092702-r01/report.md)
+
+### LoRa 星地增强 W24
+
+后续使用原生 W24 输入的 LoRa PAMF 默认冻结 E104，种子 `2026092702`。该读出的 Full practical 单种子测试使用相同的 15 台接收机和 30,000 个物理包。星地增强 W24 直通为 clean 28,566/30,000、六景 133,713/180,000（74.2850%）、低强度城区 14,315/30,000（47.7167%）。旧版半量复响应保持相同 clean，六景改对 3,514、改错 3,414，低强度城区净增 158。重训 W24 DURA 的配对复测已按原生七景登记，正式三种子双路线矩阵继续绑定原 Tri-set。 [默认识别器配置](../../configs/pamf_current_method.json) · [原生 W24 配对登记](../../automation_reports/CV-SincNet/20261125-phase1-lora-dura-w24-sat-aug-full-s2026092702-r01/report.md)
 
 ## WiSig Main split 原冻结 R69
 
@@ -56,6 +75,8 @@ R69 v1.0 有 266,951 个参数。历史两阶段学生由 R65 固定父版初始
 历史 R69 学生新增训练耗时 845.747 秒，上游权重的训练成本另计。Graph-RR 的 RTX 3090 单包稳态中位时延为恢复器 3.955169 ms、恢复器加原 F50 4.531972 ms，测速输入已在 GPU。本次 Main split 三种子配对换用了 Tri-SIG-TIME，相关组合时延须在匹配配置下另测。 [历史成本与计时口径](../DURA_V1.md)
 
 平滑前导 DURA 的固定候选已完成相同 Main split 正式矩阵。Full、Residual 合并六景为 40.0438%、40.0418%，较同次原 R69 低 39.0899 和 39.0939 个百分点，clean 各少 229 次正确。重跑的直通及 R69 决策均逐值匹配归档。两个划分、七台接收机和三个种子的六景均退化。目标约 76.0% 的包场景组合触发恢复，固定源 V 为 48.8%。相对同包直通，目标触发区两路的净损失约为 40.17 个百分点。该结果用于归因并完整保留。 [WiSig 正式分划分与配对结果](../../automation_reports/CV-SincNet/20261124-phase1-wisig-preamble-dura-main-m4-r01/report.md)
+
+后续源 V 消融固定原 R69 与同一个 Tri-SIG-TIME 种子，归档 1,800 个物理包在两路线各 10,800 次六景判定。只保留原估计 FIR 相对单位作用各净增 1,306 次，完整作用还多 239、240 次。短训练重复差分代入原方差后，两路线的 clean 各由 1,775 减至 1,527 次。新训练已固定对照同规模单侧和双向 81 抽头 FIR，以实收正向预测残差估计有效方差，各从零训练 40,000 步。原 R69 用于冻结后比较，源 V 评分与 Main split 正式测试分别登记。 [同包作用与方差消融](../../automation_reports/CV-SincNet/20261125-diagnostic-wisig-r69-observation-source-m2-r01/report.md) · [WiSig FIR 长训登记](../../automation_reports/CV-SincNet/20261125-phase1-wisig-native-fir-source-m4-r01/report.md)
 
 ## 源域验证
 
