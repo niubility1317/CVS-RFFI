@@ -132,10 +132,24 @@ def evaluate(runtime):
         restored, active = denoise(wave, c['threshold'])
         return (torch.lerp(wave, restored, .5), restored), active
 
-    predict_pilot(rt, f, device, apply, modes=MODES, seed=PILOT_SEED, log_prefix='W24_WIENER_PILOT')
+    predict_pilot(rt, partial(raw_pilot_batch, f, device, apply), modes=MODES,
+                  seed=PILOT_SEED, log_prefix='W24_WIENER_PILOT')
 
 
-def predict_pilot(rt, classifier, device, apply, *, modes, seed, log_prefix):
+def raw_pilot_batch(classifier, device, apply, raw):
+    wave = torch_iq(raw, device)
+    variants, active = apply(wave)
+    base = classify(classifier, raw, device)
+    labels = [base.copy() for _ in variants]
+    chosen = np.asarray(active.tolist(), dtype=bool)
+    if chosen.any():
+        for arm, restored in enumerate(variants):
+            edit = restored[active]
+            labels[arm][chosen] = classify(classifier, np.from_dlpack(edit.cpu().contiguous()), device)
+    return np.stack((base, *labels)), int(chosen.sum())
+
+
+def predict_pilot(rt, batch, *, modes, seed, log_prefix):
     root = Path(rt['run_root'])
     target = Path(rt['native_target_root'])
     target_contract(target)
@@ -155,20 +169,11 @@ def predict_pilot(rt, classifier, device, apply, *, modes, seed, log_prefix):
                                            [(int(i), a) for i, a in zip(rows, recorded, strict=True)], chunksize=8)))
                 batches, n_active = [], 0
                 for start in range(0, len(frames), 32):
-                    raw = frames[start:start+32]
-                    wave = torch_iq(raw, device)
-                    variants, active = apply(wave)
-                    if len(variants) != len(modes) - 1:
+                    labels, count = batch(frames[start:start+32])
+                    if labels.shape != (len(modes), min(32, len(frames) - start)):
                         raise ValueError('Predictor does not match the registered pilot modes')
-                    base = classify(classifier, raw, device)
-                    labels = [base.copy() for _ in variants]
-                    chosen = np.asarray(active.tolist(), dtype=bool)
-                    if chosen.any():
-                        for arm, restored in enumerate(variants):
-                            edit = restored[active]
-                            labels[arm][chosen] = classify(classifier, np.from_dlpack(edit.cpu().contiguous()), device)
-                        n_active += int(chosen.sum())
-                    batches.append(np.stack((base, *labels)))
+                    batches.append(labels)
+                    n_active += count
                 pred[scene] = np.concatenate(batches, axis=1)
                 activity[f'{rx}/{scene}'] = n_active
                 print(log_prefix, rx, scene, n_active, flush=True)
@@ -202,6 +207,8 @@ def score(predictions, prior, dataset, output, *, modes=MODES, seed=PILOT_SEED, 
                 raise ValueError('Pilot predictions differ outside the active count')
         dura = np.stack([ref[rx, view, 'complex_response_half_center'][rows] for view in VIEWS])
         work.append(np.concatenate((p[:, :1], dura[:, None], p[:, 1:]), axis=1))
+    if disagreements:
+        raise ValueError(f'Frozen direct prediction parity differs on {disagreements} packet views')
     output.mkdir(parents=True, exist_ok=False)
     truth = []
     with zipfile.ZipFile(dataset / 'multiple_receiver_test.zip') as archive:

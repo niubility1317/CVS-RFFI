@@ -1,5 +1,6 @@
 """Matched native-rate restoration with and without complex mainband fidelity."""
 import argparse
+from functools import partial
 import json
 import os
 from pathlib import Path, PurePosixPath
@@ -23,7 +24,7 @@ from experiments.pamf_lora_main.w24_factor_audit import AUG_RUN, load_classifier
 from experiments.pamf_lora_main.w24_native_full import DATA_RUN, W24_COMMIT, W24_RUN, classify
 from experiments.pamf_lora_main.w24_native_restore_run import SPLIT_SEED, as_native, partition
 from experiments.pamf_lora_main.w24_native_restorer import NativeRestorer, waveform_loss
-from experiments.pamf_lora_main.w24_native_wiener import predict_pilot, receipt, score
+from experiments.pamf_lora_main.w24_native_wiener import predict_pilot, raw_pilot_batch, receipt, score
 
 
 RUN = '20261125-phase1-lora-w24-native-mainband-m2-r01'
@@ -181,8 +182,9 @@ def evaluate(runtime):
         if not mask.any():
             raise ValueError('Real source smoke did not exercise the native restoration path')
     write(root / 'smoke.json', dict(status='PASS', source_packets=4, target_reads=0))
+    apply = partial(render, models=models, threshold=threshold)
     with torch.no_grad():
-        predict_pilot(rt, classifier, device, lambda x: render(x, models, threshold),
+        predict_pilot(rt, partial(raw_pilot_batch, classifier, device, apply),
                       modes=MODES, seed=PILOT_SEED, log_prefix='W24_MAINBAND_PILOT')
 
 

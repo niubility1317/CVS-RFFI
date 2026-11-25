@@ -139,8 +139,13 @@ def classify(readout, packets, device):
     iq = clean_iq(packets, 384, ALL_CHIRPS, native_edges=True, edge_points=EDGE)
     if iq.shape != (len(packets), 8, 2, 432):
         raise ValueError('Expected the registered W24 aperture')
-    logits = readout(tensor(iq, device))[0]
-    if logits.shape != (len(packets), len(CLASSES)) or not torch.isfinite(logits).all():
+    return classify_aperture(readout, tensor(iq, device))
+
+
+@torch.no_grad()
+def classify_aperture(readout, iq):
+    logits = readout(iq)[0]
+    if logits.shape != (len(iq), len(CLASSES)) or not torch.isfinite(logits).all():
         raise ValueError('Nonfinite or incomplete frozen W24 prediction')
     return np.asarray(logits.argmax(1).tolist(), dtype=np.int16)
 
