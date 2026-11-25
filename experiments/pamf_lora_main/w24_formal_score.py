@@ -15,11 +15,12 @@ BOOTSTRAP_SEED = 2026112587
 MEASURES = (*VIEWS, 'six_scene')
 
 
-def load_frozen(predictions, ungated=False):
+def load_frozen(predictions, ungated=False, outer_objective=False):
+    ungated = ungated or outer_objective
     records, activity = {route: {} for route in ROUTES}, {route: {} for route in ROUTES}
     for case, route in cases().items():
         part = predictions / case
-        expected = receipt(case, ungated)
+        expected = receipt(case, ungated, outer_objective)
         n_seeds, n_modes = len(expected['seeds']), len(expected['modes'])
         if read(part / 'complete.json') != expected:
             raise ValueError(f'Incomplete or mismatched W24 shard {case}')
@@ -42,11 +43,15 @@ def load_frozen(predictions, ungated=False):
                     raise ValueError(f'Changed W24 labels exceed actual activity for {case}/{rx}/{view}')
                 if ungated and count[-1] != LIMIT:
                     raise ValueError(f'Incomplete ungated recovery coverage for {case}/{rx}/{view}')
+                if outer_objective and count[-2] != LIMIT:
+                    raise ValueError(f'Incomplete archived all-packet comparator for {case}/{rx}/{view}')
             records[route][rx] = rows
         activity[route].update(by_view)
     matrices = {route: np.stack([records[route][r] for r in TARGET]) for route in ROUTES}
     if not np.array_equal(matrices[FULL][:, 0, :, 0], matrices[ROUTE][:, 0, :, 0]):
         raise ValueError('Paired direct clean predictions differ across the two routes')
+    if outer_objective and not np.array_equal(matrices[FULL][:, 0, :, -1], matrices[ROUTE][:, 0, :, -1]):
+        raise ValueError('Same clean packets produced different candidate predictions across routes')
     return matrices, activity
 
 
@@ -103,9 +108,10 @@ def paired(delta, seeds=SEEDS):
     return result
 
 
-def acceptance(results, ungated=False):
+def acceptance(results, ungated=False, outer_objective=False):
+    ungated = ungated or outer_objective
     seeds = evaluation_seeds(ungated)
-    wide = evaluation_modes(FULL, ungated)[-1]
+    wide = evaluation_modes(FULL, ungated, outer_objective)[-1]
     full = results[FULL][wide]['pooled']
     if ungated:
         checks = dict(full_six_at_least_87=full['six_correct'] >= 156600,
@@ -115,7 +121,7 @@ def acceptance(results, ungated=False):
                       full_low_urban_at_least_53=full['correct_by_scene']['practical_low_urban'] >= 47700,
                       full_clean_at_least_64490=full['correct_by_scene']['clean'] >= 64490)
     for route in ROUTES:
-        names = evaluation_modes(route, ungated)
+        names = evaluation_modes(route, ungated, outer_objective)
         current = results[route]
         for baseline in names[:-1]:
             checks[f'{route}/six_vs_{baseline}'] = current[wide]['pooled']['six_correct'] > current[baseline]['pooled']['six_correct']
@@ -127,8 +133,9 @@ def acceptance(results, ungated=False):
                 full_clean_minus_six=gap, additional_gap_at_most_3pp=gap <= .03)
 
 
-def score(predictions, dataset, output, ungated=False):
-    matrices, activity = load_frozen(predictions, ungated)
+def score(predictions, dataset, output, ungated=False, outer_objective=False):
+    ungated = ungated or outer_objective
+    matrices, activity = load_frozen(predictions, ungated, outer_objective)
     seeds = evaluation_seeds(ungated)
     output.mkdir(parents=True, exist_ok=False)
     truth = []
@@ -139,7 +146,7 @@ def score(predictions, dataset, output, ungated=False):
     labels = np.asarray(truth)[:, None, None, None, :]
     result, contrasts = {}, {}
     for route in ROUTES:
-        modes = evaluation_modes(route, ungated)
+        modes = evaluation_modes(route, ungated, outer_objective)
         hit = matrices[route] == labels
         result[route] = {m:readout(hit[:, :, :, i], seeds) for i,m in enumerate(modes)}
         candidate = hit[:, :, :, -1].astype(np.int16)
@@ -147,7 +154,7 @@ def score(predictions, dataset, output, ungated=False):
     write(output / 'scores.json', dict(status='ANALYZED', truth_last=True, seeds=list(seeds),
         n_physical=len(TARGET)*LIMIT, n_six=len(TARGET)*LIMIT*len(seeds)*6, bootstrap_seed=BOOTSTRAP_SEED,
         bootstrap_draws=DRAWS, direct_clean_parity='exact', readouts=result, paired=contrasts,
-        acceptance=acceptance(result, ungated), activity=activity))
+        acceptance=acceptance(result, ungated, outer_objective), activity=activity))
 
 
 if __name__ == '__main__':
@@ -155,4 +162,5 @@ if __name__ == '__main__':
     for key in ('predictions','dataset','output'):
         parser.add_argument('--'+key, type=Path, required=True)
     parser.add_argument('--ungated', action='store_true')
+    parser.add_argument('--outer-objective', action='store_true')
     score(**vars(parser.parse_args()))

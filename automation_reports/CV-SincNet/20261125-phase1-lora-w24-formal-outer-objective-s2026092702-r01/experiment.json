@@ -1,0 +1,189 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261125-phase1-lora-w24-formal-outer-objective-s2026092702-r01",
+  "group_id": "phase1-lora-w24-observable-recovery",
+  "display_name": "LoRa W24 首尾联合损失双路线正式盲测",
+  "description": "Test the source-qualified frozen outer-chirp restorer on the registered 30,000-packet Full and native Residual matrix.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "official_test",
+    "all_packets",
+    "w24",
+    "full_and_residual"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa and WiSig restoration research goal authorizes isolated component diagnostics.",
+  "code": {
+    "commit": "Committed evaluator verified when the source candidate is eligible for publication",
+    "checkout": "E:/codex/home/worktrees/lora-dura-stage-supervision/standard_ce_baselines_20261010",
+    "environment": "N607 archived W24 runtime Python and independent local CPU truth-last scorer",
+    "cwd": "original frozen W24 reader release for prediction"
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multiple receiver",
+    "version": "Registered W24 15 unseen receiver native test matrix",
+    "representation": "8 chirps, 384 complex center samples + 48 native edge samples",
+    "contract_ref": "Identical native_target_root and source_root as immutable 20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+    "physical_ids_ref": "The archived native receive cache physical order; 2000 packets in each of 15 receivers",
+    "label_map_ref": "Registered source V metadata",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0,
+      "U_s": 4,
+      "V": 300
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Exact per-packet fresh direct parity against the blind archive for every tested view",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_frozen_eval",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Independent formal target evaluation conditional on the registered source qualification. Frozen checkpoint and rule. Only the independent local scorer reads official target TX labels."
+  },
+  "checkpoint": {
+    "initialization": "Immutable source-qualified final recovery weights; no fit during this run",
+    "sources": [
+      {
+        "ref": "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+        "role": "Conditionally admitted trained recovery weight, terminal step 40000"
+      },
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Frozen E104 star-ground-augmented W24"
+      },
+      {
+        "ref": "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+        "role": "Archived no-truth same-row comparator predictions"
+      }
+    ],
+    "contract_check_ref": "w24_formal.qualified_outer, blind_reference, and load_candidate calls before target predictor",
+    "provenance_verdict": "Training owner only used source U IQ. Comparators bound by the exact archive code and cache paths plus direct decision parity. Frozen F and no-input-threshold G.",
+    "selection_rule": "Use the already preregistered dual-route source checks in the source owner record. No target feedback; no alternate epoch."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Codex goal 01a208a9-57df-7f82-a078-cd9477adf998",
+    "gpu_policy": "At most two case workers, each on one eligible card plus eight CPU channel workers. Preserve current healthy workloads.",
+    "remote_run_root": "runs/20261125-phase1-lora-w24-formal-outer-objective-s2026092702-r01",
+    "remote_log_root": "runs/20261125-phase1-lora-w24-formal-outer-objective-s2026092702-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261125-phase1-lora-w24-formal-outer-objective-s2026092702-r01",
+    "launch_command": "python -m experiments.pamf_lora_main.w24_formal publish --outer-objective --repo . --context E:/type10-7/local_artifacts/20261125-phase1-lora-w24-formal-outer-objective-s2026092702-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261125-phase1-lora-w24-formal-outer-objective-s2026092702-r01/release",
+    "stop_rule": "Do not launch until source qualification passes. Stop downstream for missing archive, invalid checkpoint, no-target smoke, direct mismatch, incomplete all-packet coverage or incomplete blind shards."
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "state.json",
+    "predictions/{route}-{shard}/complete.json",
+    "predictions/{route}-{shard}/activity.json",
+    "predictions/{route}-{shard}/{receiver}.npz",
+    "local independent readout/scores/scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "integer correct counts",
+      "packet-paired gain and loss",
+      "stratified 95% interval",
+      "source qualification readback"
+    ],
+    "dimensions": [
+      "route",
+      "view",
+      "receiver",
+      "frozen seed",
+      "mode"
+    ],
+    "prediction_ref": "runs/20261125-phase1-lora-w24-formal-outer-objective-s2026092702-r01/predictions",
+    "scorer_ref": "python -m experiments.pamf_lora_main.w24_formal_score --outer-objective --predictions <local-frozen-matrix> --dataset <official-label-archive> --output <new-score-root>"
+  },
+  "rows": [
+    {
+      "row_id": "outer-objective-formal",
+      "method": "Frozen W24 E104 plus outer-objective W24 DURA, fixed half correction for every packet",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_formal.py",
+      "resolved_config_ref": "releases/20261125-phase1-lora-w24-formal-outer-objective-s2026092702-r01-release/runtime.json",
+      "data_overrides": {
+        "cohort": "15 unseen receivers, Full and native Residual, clean and six practical scenes"
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": null,
+        "data": null,
+        "augmentation": 2026112207,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Candidate and reader are fixed. Recreate target observations under registered physical row keys and fixed namespace; reuse all row order and partitioning. No support.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "30000 blind physical packets each on both routes; each clean and six practical scenes runs G",
+      "output_root": "runs/20261125-phase1-lora-w24-formal-outer-objective-s2026092702-r01",
+      "log_path": "runs/20261125-phase1-lora-w24-formal-outer-objective-s2026092702-r01/logs",
+      "command": "archived Python w24_formal.py dispatch releases/20261125-phase1-lora-w24-formal-outer-objective-s2026092702-r01-release/runtime.json",
+      "expected_artifacts": [
+        "smoke.json",
+        "state.json",
+        "predictions/{route}-{shard}/complete.json",
+        "predictions/{route}-{shard}/activity.json",
+        "predictions/{route}-{shard}/{receiver}.npz",
+        "local independent readout/scores/scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "This run has not launched and may proceed only after existing source-only qualification.",
+    "Acceptance retains 156600/180000 and 24000/30000 Full thresholds, paired baseline comparisons and clean maintenance."
+  ],
+  "registered_at": "2026-11-25T14:14:20+00:00"
+}

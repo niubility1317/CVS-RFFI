@@ -36,11 +36,14 @@ from experiments.pamf_lora_main.w24_wide_transfer import (
 
 RUN = '20261125-phase1-lora-w24-formal-both-routes-m3-r01'
 RUN_UNGATED = '20261125-phase1-lora-w24-formal-ungated-s2026092702-r01'
+RUN_OUTER = '20261125-phase1-lora-w24-formal-outer-objective-s2026092702-r01'
+UNGATED_COMMIT = 'aedf98271cf9473d11ee0d12a48d93e6c03bd24f'
 SEEDS = (2026092701, SEED, 2026092703)
 FULL = 'full_native'
 ROUTES = (FULL, ROUTE)
 WIDE = 'wide_dura_half'
 WIDE_UNGATED = 'wide_dura_ungated_half'
+OUTER_HALF = 'outer_objective_half'
 MODES = {
     FULL: ('direct', 'dura_half', 'complex_response_half', WIDE),
     ROUTE: ('direct', 'r69_gated_half', WIDE),
@@ -60,21 +63,70 @@ def evaluation_seeds(ungated):
     return (SEED,) if ungated else SEEDS
 
 
-def evaluation_modes(route, ungated):
+def evaluation_modes(route, ungated, outer_objective=False):
     names = MODES[route]
+    if outer_objective:
+        if not ungated:
+            raise ValueError('The outer-objective model requires all-packet restoration')
+        return (*names[:-1], WIDE_UNGATED, OUTER_HALF)
     return (*names[:-1], WIDE_UNGATED) if ungated else names
 
 
-def receipt(case, ungated=False):
+def receipt(case, ungated=False, outer_objective=False):
     route = cases()[case]
     i = int(case.rsplit('-', 1)[1])
     proof = dict(status='PREDICTIONS_FROZEN', processing_route=route,
                  seeds=list(evaluation_seeds(ungated)), views=list(VIEWS),
-                 modes=list(evaluation_modes(route, ungated)), per_receiver=LIMIT,
+                 modes=list(evaluation_modes(route, ungated, outer_objective)), per_receiver=LIMIT,
                  receivers=list(TARGET[i*RX_PER_JOB:(i+1)*RX_PER_JOB]), target_truth_read=False)
     if ungated:
         proof['restoration_input_policy'] = 'all_packets'
+    if outer_objective:
+        proof['reference_run'] = RUN_UNGATED
     return proof
+
+
+def qualified_outer(rt):
+    from experiments.pamf_lora_main.w24_outer_objective_source import MODES as SOURCE_MODES, RUN as SOURCE_RUN, STEPS
+
+    root = Path(rt['project']) / 'runs' / SOURCE_RUN
+    if read(root / 'state.json')['status'] != 'SOURCE_SCORED':
+        raise ValueError('The matched outer-objective source evaluation is still pending')
+    physical = None
+    for route in ROUTES:
+        mark = read(root / route / 'source-predictions.json')
+        score = read(root / route / 'source-scores.json')
+        wave = mark['waveform']
+        ids = mark['physical_ids']
+        if (mark['status'] != 'PREDICTIONS_FROZEN' or mark['modes'] != list(SOURCE_MODES)
+                or mark['views'] != list(VIEWS) or len(set(ids)) != 300 or len(ids) != 300
+                or mark['target_reads'] or mark['source_truth_reads'] or wave['candidate_run'] != SOURCE_RUN
+                or wave['candidate_steps'] != STEPS or wave['ungated'] is not True
+                or wave['route'] != route or set(wave['activation']) != set(VIEWS)
+                or any(count != [300, 300] for count in wave['activation'].values())
+                or score['status'] != 'ANALYZED' or score['source_truth_last'] is not True
+                or score['target_reads'] or score['n_packets'] != 300 or score['n_practical'] != 1800
+                or score['waveform'] != wave or (physical is not None and physical != ids)):
+            raise ValueError(f'Incomplete registered same-packet source evidence for {route}')
+        physical = ids
+        results = score['scores']
+        candidate = results[OUTER_HALF]
+        if (candidate['six_correct'] <= results['all_half']['six_correct']
+                or candidate['by_scene']['clean'] < results['direct']['by_scene']['clean']):
+            raise ValueError(f'The source candidate did not pass the registered six-scene and clean rule for {route}')
+    return root
+
+
+def blind_reference(rt):
+    project = Path(rt['project'])
+    root = project / 'runs' / RUN_UNGATED
+    old = read(project / 'releases' / f'{RUN_UNGATED}-release' / 'runtime.json')
+    if (old['run_id'] != RUN_UNGATED or old['code_commit'] != UNGATED_COMMIT
+            or old['ungated'] is not True or Path(old['run_root']) != root
+            or any(old[key] != rt[key] for key in ('source_root', 'native_target_root', 'w24_release_root'))
+            or read(root / 'state.json') != dict(status='PREDICTIONS_FROZEN', cases=list(cases()), target_truth_read=False)):
+        raise ValueError('Expected the matching frozen same-route blind LoRa reference')
+    return root / 'predictions'
 
 
 def load_heads(rt, contract, device):
@@ -121,6 +173,12 @@ def bindings(rt, routes, device):
     heads, epochs = load_heads(rt, contract, device)
     archive, parent = training_runtime(rt)
     wide, tracker, threshold, frozen = load_restorer(archive, parent, contract, device)
+    if rt.get('outer_objective'):
+        from experiments.pamf_lora_main.w24_outer_objective_source import RUN as SOURCE_RUN, load_candidate
+
+        model, summary = load_candidate(Path(rt['project']) / 'runs' / SOURCE_RUN, contract, device)
+        return heads, model, tracker, None, {}, dict(epochs=epochs, source_frozen_G=SOURCE_RUN,
+                 steps=summary['steps'], parameters=summary['parameters'])
     # Keep the original response and R69 loader imports after the archived G.
     readers = {}
     if FULL in routes:
@@ -140,6 +198,31 @@ def wide_delta(g, tracker, observed):
     return real_iq((stages[-1] - y) * phase * rms)
 
 
+def ungated_decisions(heads, g, tracker, original):
+    wide = original.clone()
+    wide[..., :384] += .5 * wide_delta(g, tracker, original)
+    return np.stack([classify_aperture(f, wide) for f in heads])
+
+
+@torch.no_grad()
+def candidate_labels(heads, g, tracker, packets, device):
+    original = received_aperture(packets, device)
+    direct = np.stack([classify_aperture(f, original) for f in heads])
+    return np.stack((direct, ungated_decisions(heads, g, tracker, original)), axis=1), len(original)
+
+
+def append_blind_prediction(reference, predicted, old_activity, count):
+    if (reference.ndim != 3 or reference.shape[0] != 1 or reference.shape[1] < 2 or reference.shape[-1] != LIMIT
+            or predicted.shape != (1, 2, LIMIT) or reference.dtype != np.int16 or predicted.dtype != np.int16
+            or not np.array_equal(reference[:, 0], predicted[:, 0])):
+        raise ValueError('Direct decisions must match the same-packet blind reference exactly')
+    activity = np.asarray(old_activity)
+    if (activity.shape != (reference.shape[1] - 1,) or activity.dtype.kind not in 'iu'
+            or not ((activity >= 0) & (activity <= LIMIT)).all() or activity[-1] != LIMIT or count != LIMIT):
+        raise ValueError('Incomplete matched restoration activity')
+    return np.concatenate((reference, predicted[:, 1:]), axis=1), [*old_activity, count]
+
+
 @torch.no_grad()
 def batch_labels(heads, g, tracker, threshold, baseline, packets, device, *, ungated=False):
     original = received_aperture(packets, device)
@@ -154,9 +237,7 @@ def batch_labels(heads, g, tracker, threshold, baseline, packets, device, *, ung
         variants.append(values)
         activity.append(int(changed.sum()))
     if ungated:
-        wide = original.clone()
-        wide[..., :384] += .5 * wide_delta(g, tracker, original)
-        values = np.stack([classify_aperture(f, wide) for f in heads])
+        values = ungated_decisions(heads, g, tracker, original)
         count = len(original)
     else:
         wide, active = g.restore(tracker, original, threshold)
@@ -172,21 +253,30 @@ def batch_labels(heads, g, tracker, threshold, baseline, packets, device, *, ung
 def smoke(rt):
     device = 'cuda:0'
     ungated = rt.get('ungated', False)
+    outer = rt.get('outer_objective', False)
     seeds = evaluation_seeds(ungated)
     heads, g, track, gate, baseline, proof = bindings(rt, ROUTES, device)
     source = Path(rt['source_root'])
     u = native(source, 'U_s', source_contract(source)['counts']['U_s'])[:4]
     clean = []
     for route, receiver in ((FULL, channel_job), (ROUTE, receive)):
-        batch = partial(batch_labels, heads, g, track, gate, baseline[route], device=device, ungated=ungated)
+        if outer:
+            batch = partial(candidate_labels, heads, g, track, device=device)
+        else:
+            batch = partial(batch_labels, heads, g, track, gate, baseline[route], device=device, ungated=ungated)
         c, clean_activity = batch(u)
         y = np.stack([receiver(VIEWS[-1], SOURCE[0], pair) for pair in enumerate(u)])
         disturbed, active = batch(y)
-        coverage = (clean_activity[-1] == active[-1] == len(u) if ungated
-                    else clean_activity[-1] < len(u) and active[-1] > 0)
-        if (disturbed.shape != (len(seeds), len(evaluation_modes(route, ungated)), len(u)) or not coverage):
+        if outer:
+            coverage = clean_activity == active == len(u)
+            modes = 2
+        else:
+            coverage = (clean_activity[-1] == active[-1] == len(u) if ungated
+                        else clean_activity[-1] < len(u) and active[-1] > 0)
+            modes = len(evaluation_modes(route, ungated))
+        if disturbed.shape != (len(seeds), modes, len(u)) or not coverage:
             raise ValueError(f'Real frozen checkpoint source smoke failed for {route}')
-        clean.append(c[:, 0])
+        clean.append(c if outer else c[:, 0])
     if not np.array_equal(*clean):
         raise ValueError('Shared clean received IQ must give identical direct outputs')
     write(Path(rt['run_root']) / 'smoke.json', dict(status='PASS', target_reads=0,
@@ -197,13 +287,22 @@ def smoke(rt):
 def predict(rt, case):
     device = 'cuda:0'
     ungated = rt.get('ungated', False)
+    outer = rt.get('outer_objective', False)
     root = Path(rt['run_root'])
     if read(root / 'smoke.json')['status'] != 'PASS':
         raise ValueError('Source-only W24 smoke required before target')
-    expected = receipt(case, ungated)
+    expected = receipt(case, ungated, outer)
     route = expected['processing_route']
     heads, g, track, gate, baseline, _ = bindings(rt, (route,), device)
-    batch = partial(batch_labels, heads, g, track, gate, baseline[route], device=device, ungated=ungated)
+    if outer:
+        batch = partial(candidate_labels, heads, g, track, device=device)
+        prior = blind_reference(rt) / case
+        prior_receipt = receipt(case, True)
+        if read(prior / 'complete.json') != prior_receipt:
+            raise ValueError(f'Invalid archived blind reference shard {case}')
+        prior_activity = read(prior / 'activity.json')
+    else:
+        batch = partial(batch_labels, heads, g, track, gate, baseline[route], device=device, ungated=ungated)
     receiver = channel_job if route == FULL else receive
     data = Path(rt['native_target_root'])
     target_contract(data)
@@ -214,6 +313,11 @@ def predict(rt, case):
         for rx in expected['receivers']:
             raw = native(data, rx, LIMIT)
             predictions = {}
+            if outer:
+                with np.load(prior / f'{rx}.npz', allow_pickle=False) as archive:
+                    if set(archive.files) != set(VIEWS):
+                        raise ValueError(f'Incomplete archived blind predictions for {rx}')
+                    earlier = {v: archive[v] for v in VIEWS}
             for scene in VIEWS:
                 if scene == 'clean':
                     frames = raw
@@ -221,14 +325,21 @@ def predict(rt, case):
                     received = pool.map(partial(receiver, scene, rx), enumerate(raw), chunksize=16)
                     frames = np.stack(list(received))
                 labels = []
-                active = np.zeros(len(MODES[route]) - 1, dtype=int)
+                active = 0 if outer else np.zeros(len(expected['modes']) - 1, dtype=int)
                 for i in range(0, LIMIT, BATCH):
                     prediction, changed = batch(frames[i:i+BATCH])
                     labels.append(prediction)
                     active += changed
-                predictions[scene] = np.concatenate(labels, axis=2)
-                activity[f'{rx}/{scene}'] = active.tolist()
-                print('W24_FORMAL_PREDICTED', case, rx, scene, active.tolist(), flush=True)
+                predicted = np.concatenate(labels, axis=2)
+                key = f'{rx}/{scene}'
+                if outer:
+                    reference = earlier[scene]
+                    if reference.shape != (1, len(prior_receipt['modes']), LIMIT):
+                        raise ValueError(f'Invalid archived readout dimensions for {key}')
+                    predictions[scene], activity[key] = append_blind_prediction(reference, predicted, prior_activity[key], active)
+                else:
+                    predictions[scene], activity[key] = predicted, active.tolist()
+                print('W24_FORMAL_PREDICTED', case, rx, scene, activity[key], flush=True)
             np.savez(out / f'{rx}.npz', **predictions)
     write(out / 'activity.json', activity)
     write(out / 'complete.json', expected)
@@ -248,8 +359,15 @@ def dispatch(runtime):
     try:
         if read(reference / 'submit.json')['code_commit'] != W24_COMMIT:
             raise ValueError('Original frozen W24 model implementation required')
+        outer = rt.get('outer_objective', False)
+        ungated = rt.get('ungated', False)
+        if outer:
+            if not ungated:
+                raise ValueError('The outer-objective model requires all-packet restoration')
+            qualified_outer(rt)
+            blind_reference(rt)
         runs = Path(rt['project']) / 'runs'
-        seeds = evaluation_seeds(rt.get('ungated', False))
+        seeds = evaluation_seeds(ungated)
         status(status='WAITING_FOR_FROZEN_READERS', seeds=list(seeds))
         deadline = monotonic() + 7200
         while True:
@@ -285,7 +403,7 @@ def dispatch(runtime):
         status(status='TARGET_PREDICTING')
         schedule(rt, [('predict', case) for case in cases()], start)
         for case in cases():
-            if read(root / 'predictions' / case / 'complete.json') != receipt(case, rt.get('ungated', False)):
+            if read(root / 'predictions' / case / 'complete.json') != receipt(case, ungated, outer):
                 raise ValueError(f'Incomplete frozen prediction shard {case}')
         status(status='PREDICTIONS_FROZEN', cases=list(cases()), target_truth_read=False)
     except Exception as exc:
@@ -304,6 +422,7 @@ def main():
         cmd.add_argument('runtime', type=Path)
         cmd.add_argument('case')
     publish = actions.add_parser('publish')
+    publish.add_argument('--outer-objective', action='store_true')
     for key in ('repo', 'context', 'ssh-config', 'output'):
         publish.add_argument('--' + key, type=Path, required=True)
     args = parser.parse_args()
@@ -313,8 +432,9 @@ def main():
         project = PurePosixPath(rt['project'])
         runs, releases = project / 'runs', project / 'releases'
         data = releases / f'{DATA_RUN}-release' / 'data'
-        run = RUN_UNGATED
+        run = RUN_OUTER if args.outer_objective else RUN_UNGATED
         rt.update(run_id=run, code_commit=release_commit(args.repo), runner=__spec__.name, ungated=True,
+                  outer_objective=args.outer_objective,
                   release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
                   source_root=str(data / 'source'), native_target_root=str(data / 'target'),
                   w24_release_root=str(releases / f'{W24_RUN}-release'),
@@ -322,7 +442,12 @@ def main():
                   allowed_gpus=[0, 5, 3, 4, 2, 7, 1, 6], cpu_workers=8, max_workers=2, max_compute_processes=8)
         rt['external_releases'] = [rt[k] for k in ('source_root', 'native_target_root', 'w24_release_root',
                                                   'training_release_root')]
-        rt['external_releases'] += [str(runs / x) for x in (RUNS[SEED], R69_TRAIN, R69_GATE)]
+        if args.outer_objective:
+            from experiments.pamf_lora_main.w24_outer_objective_source import RUN as SOURCE_RUN
+
+            rt['external_releases'] += [str(runs / x) for x in (RUNS[SEED], SOURCE_RUN, RUN_UNGATED)]
+        else:
+            rt['external_releases'] += [str(runs / x) for x in (RUNS[SEED], R69_TRAIN, R69_GATE)]
         release(args.repo, args.output, rt, args.ssh_config)
     elif args.action == 'dispatch':
         dispatch(args.runtime)
