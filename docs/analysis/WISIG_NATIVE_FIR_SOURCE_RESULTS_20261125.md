@@ -13,3 +13,11 @@
 双向末步相对因果末步，低强度城区分别净增 33 和 34 次，配对 95% 区间为 [1，64] 和 [3，65]；两路线六景净增 79 和 73 次，区间约为 [−2，165] 和 [−9，157]。同一双向模型从第一次 MAP 输出到末步，两条路线六景分别净增 532 和 518 次，区间为 [432，630] 和 [416，617]。第二阶段带来增益，但双向末步仍比原 R69 六景少判对 2,014 和 2,025 次，clean 各少 7 次。表中所有数字均为同包源域证据。
 
 原 R69 的同模型消融曾显示，保留已学 FIR 明显优于单位作用。这里增加双向抽头范围的匹配对照在低强度城区有局部收益，两版从零训练的完整恢复结果仍较弱。因此 FIR 抽头结构的收益与整套恢复网络的效果应分别报告。原运行的 `source-scores.json` 保留逐景、逐接收机和配对变化。 [R69 训练与推理](../DURA_V1.md)
+
+## WiSig 粗恢复锚点诊断
+
+双向 FIR 的源域六景正确数在粗恢复阶段由 Full 的 9,057 降至 4,418，Residual 由 9,062 降至 4,410。五台源接收机在两路线均下降。Full 相对直通改对 335 次、改错 4,974 次，Residual 改对 332 次、改错 4,984 次。后两阶段分别追回 3,762 和 3,760 次，末步仍少于直通。该阶段记录支持单独检查粗恢复传给后续阶段的锚点。
+
+`20261125-diagnostic-wisig-native-fir-anchor-source-m2-r01` 固定原双向 FIR 权重、信道作用和噪声估计，在两阶段的先验输入和求解初始位置分别使用原学习粗恢复或同坐标归一化实收 IQ。两种读出都对 clean 和六景逐包运行两阶段 MAP，分别记录第一阶段和末步。每路线共用原有 1,800 个合法源 V 物理包和同一冻结 Tri-SIG-TIME。在完整预测阶段逐包复现旧直通、R69、原第一阶段和原末步，验证两读出每景均完成 1,800 次恢复。全部预测冻结后由独立 CPU 进程读取源 V 标签。报告逐景、逐 RX、同包纠错与配对区间，优先核查相对原锚点的两路改善、clean 保持及与原 R69 的差距。目标读取与训练均为零。
+
+使用 N607 普通账号及原 FIR 归档 Python 环境，单 GPU，优先占用较低且空闲显存至少 12 GiB 的卡。入口 `python -m experiments.pamf_unrolled_restore.wisig_native_fir_anchor_probe publish --repo <checkout> --context <WiSig-context> --ssh-config <config> --output <new-release>`。运行使用固定新输出根 `runs/20261125-diagnostic-wisig-native-fir-anchor-source-m2-r01`，启动时用真实冻结权重在合法源 U 的 clean 和通用受扰各八包验证。来源、有限值、预测复现或全量冻结检查失败即停止本诊断并保留产物。预期输出 `smoke.json`、两路逐景逐包盲预测和 `predictions/complete.json`、独立 `source-scores.json`。 [诊断代码](../../experiments/pamf_unrolled_restore/wisig_native_fir_anchor_probe.py)
