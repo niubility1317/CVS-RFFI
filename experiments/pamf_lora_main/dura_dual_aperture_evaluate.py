@@ -87,22 +87,16 @@ def bind(rt, device):
     return {SEED: load_reader(Path(rt['run_root']), contract, device)}, restore, contract
 
 
-def predict_source(rt, route):
-    import torch
-    from experiments.pamf_lora_main.channel_blind_source import panel, receive_only
-    from experiments.pamf_lora_main.complex_vector_source import score
+def bind_source_controls(rt, route, contract, device):
     from experiments.pamf_lora_main.dura_capacity_source import RECIPES, READOUTS, recover
     from experiments.pamf_lora_main.dura_repair import PacketRestorer
     from experiments.pamf_lora_main.full_dura_detail import half_baseline, phase_baseline_models
     from experiments.pamf_lora_main.full_supervised import handles
-    from experiments.pamf_lora_main.local_wiener_source import freeze
     from experiments.pamf_lora_main import residual_dura as residual
     from experiments.pamf_lora_main.spectral_block_source import load_models
 
     root = Path(rt['run_root'])
-    project = Path(rt['project'])
-    device = 'cuda:0'
-    candidate, contract = load_restoration(rt, device)
+    project = root.parent.parent
     source = Path(rt['source_root'])
     if route == 'full':
         _, cache, reference_contract = handles(dict(rt, parent_root=str(root.parent/replay.DATA)))
@@ -129,14 +123,31 @@ def predict_source(rt, route):
         raise ValueError('The expanded DURA source threshold differs')
     tracker = PacketRestorer('consensus').to(device).eval()
 
-    def render(iq, _unused, own_reference, old_tracker, old_models):
+    def expanded_half(iq):
+        waves, _, _ = recover(iq, tracker, models, threshold)
+        return waves[READOUTS.index('half')]
+
+    return (source, cache, contract, reference, tracker), expanded_half
+
+
+def predict_source(rt, route):
+    import torch
+    from experiments.pamf_lora_main.channel_blind_source import panel, receive_only
+    from experiments.pamf_lora_main.complex_vector_source import score
+    from experiments.pamf_lora_main.local_wiener_source import freeze
+
+    device = 'cuda:0'
+    candidate, contract = load_restoration(rt, device)
+    binding, expanded_half = bind_source_controls(rt, route, contract, device)
+
+    def render(iq, _unused, own_reference, _tracker, _models):
         baseline, _ = own_reference(iq)
-        old, _, _ = recover(iq, old_tracker, old_models, threshold)
+        old = expanded_half(iq)
         out, active = candidate(iq)
-        return torch.stack((iq, baseline, old[READOUTS.index('half')], out)), active
+        return torch.stack((iq, baseline, old, out)), active
 
     score(rt, route, panel=panel, modes=SOURCE_MODES, render=render,
-          binding=(source, cache, contract, reference, tracker), frozen_models=models,
+          binding=binding, frozen_models=(),
           require_clean_bypass=False, replay_fn=receive_only, finalize=freeze)
 
 

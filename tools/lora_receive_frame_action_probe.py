@@ -15,30 +15,13 @@ from experiments.pamf_lora_main.dura_repair import real_iq
 from experiments.pamf_lora_main.dura_w24 import NARROW, WIDE
 from experiments.pamf_lora_main.full_packet_views import source_contract, source_role
 from experiments.pamf_lora_main.joint_unroll_source import coordinates
+from experiments.pamf_lora_main.receive_frame_action import DELAY_US, estimate, invert_half, opposite_fold
 from experiments.pamf_lora_main.relative_echo import shift
 
 
 CASES = ('clean', 'relative_weak', 'relative_strong', 'shared_weak', 'shared_strong')
 ARMS = ('unit', 'dechirped', 'raw_iq_frame')
 SEED = 2026112592
-DELAY_US = 8
-
-
-def delay(value):
-    offset = value.shape[-1] * (DELAY_US/1000)
-    lower = int(offset)
-    fraction = offset-lower
-    return (1.-fraction)*shift(value, lower) + fraction*shift(value, lower+1)
-
-
-def features(value, phase, *, raw_frame):
-    if raw_frame:
-        mirror = (phase*value).conj()*phase.conj()
-        echo = delay(phase*value)*phase.conj()
-    else:
-        mirror = value.conj()
-        echo = delay(value)
-    return torch.stack((value, mirror, echo), -1)
 
 
 def perturb(raw, case):
@@ -59,44 +42,6 @@ def perturb(raw, case):
     return signal, signal+noise_ratio*rms*noise
 
 
-def fit(design, innovation, index, *, relative):
-    x, y = design[..., index, :], innovation[..., index, None]
-    ridge = .025 * torch.eye(x.shape[-1], dtype=x.dtype, device=x.device)
-    coefficient = torch.linalg.solve(x.mH @ x/len(index)+ridge, x.mH @ y/len(index)).squeeze(-1)
-    if relative:
-        coefficient = coefficient-coefficient.mean(1, keepdim=True)
-    scale = (.55 / coefficient.abs().sum(-1, keepdim=True).clamp_min(1e-8)).clamp_max(1.)
-    return coefficient*scale
-
-
-def two_folds(length):
-    samples = torch.arange(length)
-    inside = (samples % 32 >= 5) & (samples % 32 < 27)
-    return tuple(samples[inside & (samples//32 % 2 == i)] for i in range(2))
-
-
-def estimate(y, phase, reference, held_reference, folds, *, relative, raw_frame):
-    design = features(reference, phase, raw_frame=raw_frame)
-    innovation = y-reference
-    parameters = [fit(design, innovation, index, relative=relative) for index in folds]
-    held = []
-    for index, coeff in zip(folds, reversed(parameters), strict=True):
-        forward = reference[..., index] + (design[..., index, :] * coeff.unsqueeze(-2)).sum(-1)
-        held.append((forward-held_reference[..., index]).abs().square().mean((1, 2)))
-    coefficient = .5*(parameters[0]+parameters[1])
-    return coefficient, .5*(held[0]+held[1])
-
-
-def recover(y, phase, coeff, raw_frame):
-    x = y
-    for _ in range(3):
-        action = (features(x, phase, raw_frame=raw_frame)*coeff.unsqueeze(-2)).sum(-1)
-        x = y-action
-    # Match the frozen DURA readout's half correction and retain the observed carrier.
-    edit = x-y
-    return y+.5*(edit-edit.mean(-1, keepdim=True))
-
-
 def fidelity(x, clean, rms):
     absolute = ((x-clean)*rms).abs().square().mean((1, 2))/(clean*rms).abs().square().mean((1, 2)).clamp_min(1e-9)
     freq = (x.shape[-1]*torch.fft.fftfreq(x.shape[-1])).abs()
@@ -106,19 +51,11 @@ def fidelity(x, clean, rms):
     return absolute, error
 
 
-def opposite_fold(y):
-    ref = torch.cat((y[:, 1::2].mean(1, keepdim=True), y[:, ::2].mean(1, keepdim=True)), 1).repeat(1, 3, 1)
-    folds = two_folds(y.shape[-1])
-    indices = torch.cat(folds)
-    unit = (ref-y)[..., indices].abs().square().mean((1, 2))
-    return ref, folds, unit
-
-
 def evaluate(received, tracker, clean, signal):
     y, phase, _, rms = coordinates(tracker, real_iq(received))
     ref, folds, actual = opposite_fold(y)
     fitted = [estimate(y, phase, ref, y, folds, relative=True, raw_frame=flag) for flag in (False, True)]
-    recovered = [recover(y, phase, coeff, raw_frame=flag) for (coeff, _), flag in zip(fitted, (False, True), strict=True)]
+    recovered = [invert_half(y, phase, coeff, raw_frame=flag) for (coeff, _), flag in zip(fitted, (False, True), strict=True)]
 
     clean = clean/(phase*rms)
     signal = signal/(phase*rms)
