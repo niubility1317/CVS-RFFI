@@ -25,3 +25,25 @@ def test_zero_noise_leaves_every_oracle_control_at_identity():
     zeros = torch.zeros_like(received)
     for edit in oracle_edits(received, zeros, received * .2, received):
         assert torch.equal(edit, zeros)
+
+
+def test_full_input_replay_uses_registered_full_trace_only(monkeypatch):
+    import numpy as np
+    from experiments.pamf_lora_main import w24_edit_budget_audit as audit
+
+    packet = np.zeros(8192, dtype=np.complex64)
+    observed, signal = packet + 1j, packet + 1
+    seen = []
+
+    def trace(raw, scene, receiver, row, namespace):
+        assert raw is packet
+        seen.append((scene, receiver, row, namespace))
+        return observed, signal, observed-signal
+
+    monkeypatch.setattr(audit, 'trace_components', trace)
+    monkeypatch.setattr(audit, 'native_full_view', lambda *args: observed)
+    clean, ref = audit.full_components('clean', (42, 'rtl_1', packet), verify=True)
+    assert clean is ref is packet and not seen
+    wave, ref = audit.full_components('practical_low_urban', (42, 'rtl_1', packet), verify=True)
+    assert wave is observed and np.array_equal(ref, signal)
+    assert seen == [('practical_low_urban', 'rtl_1', 42, audit.WAVEFORM_NAMESPACE)]

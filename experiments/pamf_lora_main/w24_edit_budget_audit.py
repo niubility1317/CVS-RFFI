@@ -18,17 +18,20 @@ from experiments.pamf_lora_main.full_packet_views import native, source_contract
 from experiments.pamf_lora_main.joint_unroll_source import coordinates
 from experiments.pamf_lora_main.runner import activate
 from experiments.pamf_lora_main.w24_aperture_noise_audit import (
-    CENTER, ROUTES, center_rms, model_iq, native_aperture, packet_components,
+    CENTER, center_rms, model_iq, native_aperture,
 )
-from experiments.pamf_lora_main.w24_factor_audit import frozen_source_panel, load_classifier, panel, score_source
+from experiments.pamf_lora_main.w24_factor_audit import (
+    frozen_source_panel, load_classifier, panel, score_source, trace_components,
+)
 from experiments.pamf_lora_main.w24_formal import wide_delta
-from experiments.pamf_lora_main.w24_native_full import SOURCE, VIEWS, classify_aperture
-from experiments.pamf_lora_main.w24_native_residual_source import BATCH
+from experiments.pamf_lora_main.w24_native_full import SOURCE, VIEWS, classify_aperture, native_full_view
+from experiments.pamf_lora_main.w24_native_residual_source import BATCH, WAVEFORM_NAMESPACE
 from experiments.pamf_lora_main.w24_outer_objective_source import RUN as PARENT, load_candidate
 from experiments.pamf_lora_main.w24_wide_transfer import load_restorer, received_aperture, training_runtime
 
 
-RUN = '20261126-diagnostic-lora-w24-edit-budget-source-s2026112559-r01'
+RUN = '20261126-diagnostic-lora-w24-edit-budget-source-s2026112559-r02'
+FULL = 'full_native'
 CAP = .5 * .55
 MODES = ('direct', 'outer_half', 'oracle_same_dose', 'oracle_cap', 'oracle_projected_exact', 'oracle_exact')
 CONTRASTS = (('oracle_same_dose', 'outer_half'), ('oracle_cap', 'oracle_same_dose'),
@@ -100,6 +103,17 @@ def summarize(values, is_clean):
                 cap_insufficient_for_90percent=int((.9*values[:, 1] > CAP).sum()))
 
 
+def full_components(scene, item, *, verify=False):
+    row, rx, packet = item
+    if scene == 'clean':
+        return packet, packet
+    args = (packet, scene, rx, row, WAVEFORM_NAMESPACE)
+    received, signal, _ = trace_components(*args)
+    if verify and not np.array_equal(received, native_full_view(*args)):
+        raise ValueError('Trace replay changed the registered Full received IQ')
+    return received, signal.astype(np.complex64)
+
+
 def predict(rt):
     activate(rt)
     root, source, device = Path(rt['run_root']), Path(rt['source_root']), 'cuda:0'
@@ -111,60 +125,55 @@ def predict(rt):
     g, frozen = load_candidate(parent, contract, device)
     u = native(source, 'U_s', contract['counts']['U_s'])[0]
     for scene in ('clean', VIEWS[-1]):
-        for received, signal in packet_components(scene, (0, SOURCE[0], u), verify=True):
-            rows, measurements = render(f, g, tracker, received[None], signal[None], device)
-            if rows.shape != (len(MODES), 1) or measurements.shape != (1, len(METRICS)):
-                raise ValueError('Real source-only W24 smoke produced malformed results')
-            if scene == 'clean' and not np.array_equal(rows[2:], np.repeat(rows[:1], len(MODES)-2, axis=0)):
-                raise ValueError('Clean oracle rows differ from direct')
+        received, signal = full_components(scene, (0, SOURCE[0], u), verify=True)
+        rows, measurements = render(f, g, tracker, received[None], signal[None], device)
+        if rows.shape != (len(MODES), 1) or measurements.shape != (1, len(METRICS)):
+            raise ValueError('Real source-only W24 smoke produced malformed results')
+        if scene == 'clean' and not np.array_equal(rows[2:], np.repeat(rows[:1], len(MODES)-2, axis=0)):
+            raise ValueError('Clean oracle rows differ from direct')
     write(root/'smoke.json', dict(status='PASS', source_u_count=1, candidate_parent=PARENT,
           parameters=frozen['parameters'], target_reads=0, source_truth_reads=0))
 
     rows, rx, ids = panel(source, contract)
     raw = native(source, 'V', contract['counts']['V'])[rows]
     jobs = [(int(row), SOURCE[int(receiver)], packet) for row, receiver, packet in zip(rows, rx, raw, strict=True)]
-    output, metrics = ({route:{} for route in ROUTES} for _ in range(2))
+    output, metrics = {}, {}
     with ProcessPoolExecutor(max_workers=rt['cpu_workers']) as pool:
         for scene in VIEWS:
-            stream = pool.map(partial(packet_components, scene), jobs, chunksize=6)
-            collected = {route:[] for route in ROUTES}
+            stream = pool.map(partial(full_components, scene), jobs, chunksize=6)
+            batches = []
             for offset in range(0, len(jobs), BATCH):
                 chunk = [next(stream) for _ in range(min(BATCH, len(jobs)-offset))]
-                for route, packets in zip(ROUTES, zip(*chunk, strict=True), strict=True):
-                    received, signal = (np.stack(a) for a in zip(*packets, strict=True))
-                    collected[route].append(render(f, g, tracker, received, signal, device))
-            for route, batches in collected.items():
-                decisions, info = zip(*batches, strict=True)
-                output[route][scene] = np.concatenate(decisions, axis=1)
-                metrics[route][scene] = summarize(np.concatenate(info), scene == 'clean')
+                received, signal = (np.stack(a) for a in zip(*chunk, strict=True))
+                batches.append(render(f, g, tracker, received, signal, device))
+            decisions, info = zip(*batches, strict=True)
+            output[scene] = np.concatenate(decisions, axis=1)
+            metrics[scene] = summarize(np.concatenate(info), scene == 'clean')
             print('W24_EDIT_BUDGET_PREDICTED', scene, len(jobs), flush=True)
 
-    for route in ROUTES:
-        previous = parent/route
-        proof = read(previous/'source-predictions.json')
-        if (proof['status'], proof['physical_ids'], proof['views'], proof['target_reads'], proof['source_truth_reads']) != (
-                'PREDICTIONS_FROZEN', ids, list(VIEWS), 0, 0):
-            raise ValueError(f'Mismatched prior blind source panel for {route}')
-        idx = [proof['modes'].index(m) for m in ('direct', 'outer_objective_half')]
-        with np.load(previous/'predictions.npz', allow_pickle=False) as base:
-            if any(not np.array_equal(base[v][idx], output[route][v][:2]) for v in VIEWS):
-                raise ValueError(f'Actual direct or frozen candidate decisions differ for {route}')
-        out = root/route
-        out.mkdir()
-        np.savez(out/'predictions.npz', **output[route])
-        write(out/'source-predictions.json', dict(status='PREDICTIONS_FROZEN', modes=list(MODES),
-              views=list(VIEWS), physical_ids=ids, target_reads=0, source_truth_reads=0,
-              waveform=dict(route=route, oracle_only=True, learned_parent=PARENT, projected_half_cap=CAP,
-                            direct_and_learned_parity=True, dose_by_scene=metrics[route])))
+    previous = parent/FULL
+    proof = read(previous/'source-predictions.json')
+    if (proof['status'], proof['physical_ids'], proof['views'], proof['target_reads'], proof['source_truth_reads']) != (
+            'PREDICTIONS_FROZEN', ids, list(VIEWS), 0, 0):
+        raise ValueError('Mismatched prior blind Full source panel')
+    idx = [proof['modes'].index(m) for m in ('direct', 'outer_objective_half')]
+    with np.load(previous/'predictions.npz', allow_pickle=False) as base:
+        if any(not np.array_equal(base[v][idx], output[v][:2]) for v in VIEWS):
+            raise ValueError('Actual direct or frozen candidate decisions differ for Full')
+    out = root/FULL
+    out.mkdir()
+    np.savez(out/'predictions.npz', **output)
+    write(out/'source-predictions.json', dict(status='PREDICTIONS_FROZEN', modes=list(MODES), views=list(VIEWS),
+          physical_ids=ids, target_reads=0, source_truth_reads=0,
+          waveform=dict(route=FULL, oracle_only=True, learned_parent=PARENT, projected_half_cap=CAP,
+                        direct_and_learned_parity=True, dose_by_scene=metrics)))
 
 
 def score(runtime):
     rt = read(runtime)
     root, source = Path(rt['run_root']), Path(rt['source_root'])
-    for route in ROUTES:
-        frozen_source_panel(source, root/route, MODES)
-    for route in ROUTES:
-        score_source(runtime, modes=MODES, output=root/route, contrasts=CONTRASTS)
+    frozen_source_panel(source, root/FULL, MODES)
+    score_source(runtime, modes=MODES, output=root/FULL, contrasts=CONTRASTS)
 
 
 def main():
