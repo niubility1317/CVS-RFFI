@@ -160,15 +160,18 @@ def frozen_arm(root, arm):
     return InferenceEngine(model.to('cuda:0').eval().requires_grad_(False), reuse=True, graph=True, native=False), None
 
 
-def predict(rt, name):
+def predict(rt, name, *, route='residual'):
     setup_torch()
     arm, split = name.split(':')
     row = dict(rt, run_root=str(Path(rt['run_root']) / arm))
-    evaluation.predict(row, CASES[split], methods=(*BASELINES, f'trained_{arm}'), load=frozen_arm,
+    training_row = Path(rt.get('training_root', rt['run_root'])) / arm
+    case = f'default-{route}-{split}'
+    evaluation.predict(row, case, methods=(*BASELINES, f'trained_{arm}'),
+                       load=lambda _root, requested_arm: frozen_arm(training_row, requested_arm),
                        restore=restore, force_practical=True, clean_passthrough=False, measure_iq=True)
 
 
-def score(rt):
+def score(rt, *, route='residual', arms=tuple(ARMS), output='scores.json'):
     from .wisig_dura_stress_score import cells, closed_predictions
 
     if os.environ.get('CUDA_VISIBLE_DEVICES') != '':
@@ -177,16 +180,17 @@ def score(rt):
     readers = Path(rt['recognizer_run'])
     original = historical(readers, 'predict', evaluation.SEEDS[0])
     ids_by_split, by_split, iq_by_split = {}, {}, {}
-    for split, case in CASES.items():
-        manifest, ids, _ = handle(evaluation.view_root(rt, original, 'residual', split), original['classes'])
-        if manifest['channel'] != 'residual/post_sync/noeq' or len(ids) != evaluation.COUNTS[split]:
+    for split in CASES:
+        case = f'default-{route}-{split}'
+        manifest, ids, _ = handle(evaluation.view_root(rt, original, route, split), original['classes'])
+        if manifest['channel'] != f'{route}/post_sync/noeq' or len(ids) != evaluation.COUNTS[split]:
             raise ValueError('Unexpected WiSig Main physical split')
         ids_by_split[split] = ids
         predictions, iq = {}, {}
-        for arm in ARMS:
+        for arm in arms:
             path = root / arm / 'predictions' / case
             methods = (*BASELINES, f'trained_{arm}')
-            entries, _ = closed_predictions(path, ids, 'default', 'residual', split, methods,
+            entries, _ = closed_predictions(path, ids, 'default', route, split, methods,
                                              force_practical=True, clean_passthrough=False)
             for key, values in entries.items():
                 if key in predictions and not np.array_equal(values, predictions[key]):
@@ -215,7 +219,7 @@ def score(rt):
                  for method in next(iter(by_split.values()))}
         results[split] = cells(preds, np.concatenate([labels[part] for part in parts]),
                                np.concatenate([receivers[part] for part in parts]), rng)
-    write(root / 'scores.json', dict(status='TARGET_SCORED', truth_last=True, results=results,
+    write(root / output, dict(status='TARGET_SCORED', route=route, truth_last=True, results=results,
           mean_iq_nmse=iq_by_split, reader_seeds=list(evaluation.SEEDS), G_seed=MODEL_SEED))
 
 

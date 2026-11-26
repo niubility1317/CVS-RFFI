@@ -1,0 +1,231 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261126-phase1-wisig-dura-hardmix-full-eval-r01",
+  "group_id": "phase1-wisig-dura-hardmix-full-eval",
+  "display_name": "WiSig DURA 困难场景 full 七景评测",
+  "description": "仅用既有 WiSig Main full/post_sync/noEQ 测试。复用三组权重与同 ID 的 raw/R69 冻结参考。先完成两组续训评分，原从零训练冻结后补齐全表。",
+  "kind": "comparison",
+  "stage": "Phase1-restoration",
+  "authorization": "2026-11-26 用户要求测试只跑 full。",
+  "aliases": [
+    "dura-hardmix-full"
+  ],
+  "tags": [
+    "DURA",
+    "WiSig",
+    "Phase1",
+    "truth_last",
+    "no_TX_training",
+    "source_only"
+  ],
+  "comparison_group_id": "phase1-wisig-dura-hardmix-full-eval",
+  "parent_run_ids": [
+    "20261126-phase1-wisig-dura-hardmix-s2026092701-m3-r01"
+  ],
+  "replaces_run_id": null,
+  "code": {
+    "commit": "Git release HEAD bound in immutable runtime",
+    "checkout": "E:/codex/home/worktrees/wisig-dura-hardmix/CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python; CUDA FP32, TF32 off",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261126-phase1-wisig-dura-hardmix-full-eval-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig Main split 392005, five source RX, six registered TX",
+    "version": "October fixed Main Tri-SIG-TIME SSL and original source R07",
+    "representation": "EQ1 centered normalized FP32 [2,256]",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/train/physical_ids.npy",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/configs/predict__main_split-repl-shuffled_time-3view-s2026092701.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "test_counts": {
+      "cross_rx": 126000,
+      "cross_both": 42000
+    },
+    "train_ratio": "All L_s/U_s, zero TX labels, F, V or target",
+    "split_id": "WiSig Main split 392005",
+    "validation_ref": "Reuse original Main full VALIDATED_ONCE wrappers and matched raw and R69 predictions.",
+    "leo_config_ref": "Existing fixed Main full/post_sync/noEQ inputs."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Frozen full evaluation only. Independent CPU truth access after seven views in both splits.",
+    "claim_scope": "Historical initialization and exposed benchmark restrict continuation contrasts to engineering comparisons. Scratch training is source-only with no inherited weights. Main is a published benchmark, previously exposed."
+  },
+  "checkpoint": {
+    "initialization": "Evaluation only. Reuse three original frozen source training rows.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R46-delayed-prune-s2026092701-m2-r65/prune_after10/native_map_prior/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/configs/predict__main_split-repl-shuffled_time-3view-s2026092701.json"
+    ],
+    "contract_check_ref": "docs/PAMF_RESTORATION_SOURCE_MAIN_CONFIG_20261102.md plus source smoke: same original R02/R07 physical roles and source-only update metadata",
+    "provenance_verdict": "R69 and frozen R65 teacher are historically benchmark-exposed references for the two engineering rows. No inherited G for scratch; original R69 only used for initial source smoke and frozen comparator. F is used only for frozen testing.",
+    "selection_rule": "Only the preregistered terminal source checkpoint of each original row."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-wisig-hardmix-full-20261126",
+    "gpu_policy": "Up to two full prediction workers; minimum 12288 MiB free; exclude the original scratch training GPU during continuation evaluation.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-phase1-wisig-dura-hardmix-full-eval-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-phase1-wisig-dura-hardmix-full-eval-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\20261126-phase1-wisig-dura-hardmix-full-eval-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_dura_hardmix_full dispatch /home/szu2070436088/2510044040/CV-SincNet/releases/20261126-phase1-wisig-dura-hardmix-full-eval-r01-release/runtime.json",
+    "stop_rule": "Retire only identified residual evaluation coordinators. Halt on invalid frozen weight, smoke failure, or incomplete prediction; preserve training and historical artifacts.",
+    "resource_handoff_ref": "experiments/pamf_unrolled_restore/wisig_dura_hardmix_gpu_handoff.py"
+  },
+  "expected_artifacts": [
+    "scratch_training_adopted.json",
+    "continuation_scores.json",
+    "scores.json",
+    "six full two-split arm prediction markers"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "mean_paired_IQ_NMSE",
+      "accuracy",
+      "macro_f1",
+      "repair",
+      "damage",
+      "net"
+    ],
+    "dimensions": [
+      "arm",
+      "split",
+      "scene",
+      "frozen_reader_seed",
+      "receiver"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-phase1-wisig-dura-hardmix-full-eval-r01/<arm>/predictions/default-full-<split>",
+    "scorer_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-phase1-wisig-dura-hardmix-full-eval-r01/scores.json"
+  },
+  "rows": [
+    {
+      "row_id": "balanced",
+      "method": "DURA v1.0 R69 end-to-end continuation",
+      "purpose": "Matched continued-training control",
+      "config_ref": "experiments/pamf_unrolled_restore/wisig_dura_hardmix_full.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261126-phase1-wisig-dura-hardmix-full-eval-r01-release/runtime.json",
+      "data_overrides": {
+        "route": "full",
+        "test_views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026112601,
+        "support": null,
+        "evaluation": 2026112602
+      },
+      "seed_notes": "No support set in Phase1. Scratch coarse/action use data seed 2026101901. Frozen F seeds 2026092701/02/03.",
+      "budget_ref": "Frozen only; 168000 IDs x seven views; three fixed reader seeds.",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_dura_hardmix_full predict /home/szu2070436088/2510044040/CV-SincNet/releases/20261126-phase1-wisig-dura-hardmix-full-eval-r01-release/runtime.json balanced:<cross_rx|cross_both>",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-phase1-wisig-dura-hardmix-full-eval-r01/balanced",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-phase1-wisig-dura-hardmix-full-eval-r01/logs/predict-balanced-cross_rx.log"
+    },
+    {
+      "row_id": "hard",
+      "method": "DURA v1.0 R69 end-to-end continuation",
+      "purpose": "Matched hard-environment continuation",
+      "config_ref": "experiments/pamf_unrolled_restore/wisig_dura_hardmix_full.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261126-phase1-wisig-dura-hardmix-full-eval-r01-release/runtime.json",
+      "data_overrides": {
+        "route": "full",
+        "test_views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026112601,
+        "support": null,
+        "evaluation": 2026112602
+      },
+      "seed_notes": "No support set in Phase1. Scratch coarse/action use data seed 2026101901. Frozen F seeds 2026092701/02/03.",
+      "budget_ref": "Frozen only; 168000 IDs x seven views; three fixed reader seeds.",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_dura_hardmix_full predict /home/szu2070436088/2510044040/CV-SincNet/releases/20261126-phase1-wisig-dura-hardmix-full-eval-r01-release/runtime.json hard:<cross_rx|cross_both>",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-phase1-wisig-dura-hardmix-full-eval-r01/hard",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-phase1-wisig-dura-hardmix-full-eval-r01/logs/predict-hard-cross_rx.log"
+    },
+    {
+      "row_id": "scratch",
+      "method": "DURA v1.0 original eight-stage source-only retraining",
+      "purpose": "Independently initialize a hard-environment DURA",
+      "config_ref": "experiments/pamf_unrolled_restore/wisig_dura_hardmix_full.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261126-phase1-wisig-dura-hardmix-full-eval-r01-release/runtime.json",
+      "data_overrides": {
+        "route": "full",
+        "test_views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026112601,
+        "support": null,
+        "evaluation": 2026112602
+      },
+      "seed_notes": "No support set in Phase1. Scratch coarse/action use data seed 2026101901. Frozen F seeds 2026092701/02/03.",
+      "budget_ref": "Frozen only; 168000 IDs x seven views; three fixed reader seeds.",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_unrolled_restore.wisig_dura_hardmix_full predict /home/szu2070436088/2510044040/CV-SincNet/releases/20261126-phase1-wisig-dura-hardmix-full-eval-r01-release/runtime.json scratch:<cross_rx|cross_both>",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-phase1-wisig-dura-hardmix-full-eval-r01/scratch",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261126-phase1-wisig-dura-hardmix-full-eval-r01/logs/predict-scratch-cross_rx.log"
+    }
+  ],
+  "registered_at": "2026-11-26T08:56:50+00:00"
+}
