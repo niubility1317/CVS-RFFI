@@ -115,7 +115,26 @@ class PacketUNet(nn.Module):
         return self(y, quality, rms, edges),
 
 
-def objective_for(archive):
+def correction_risk(edit, desired):
+    """Measure signed complex direction and gain separately across usable detail bands."""
+    spectra = [torch.fft.fft(view, norm='ortho') for view in (edit, desired)]
+    bins = (torch.fft.fftfreq(CENTER, device=edit.device) * CENTER).round().abs()
+    floor = .001
+    risks = []
+    for low, high in ((1, 9), (9, 33), (33, 81), (81, 193)):
+        correction, target = (x[..., (bins >= low) & (bins < high)] for x in spectra)
+        actual_power = correction.abs().square().mean(-1)
+        needed_power = target.abs().square().mean(-1)
+        product = (correction * target.conj()).real.mean(-1)
+        cosine = product / ((actual_power + floor) * (needed_power + floor)).sqrt()
+        support = needed_power / (needed_power + floor)
+        direction = ((1. - cosine) * support).mean()
+        gain = (((actual_power + floor).sqrt() / (needed_power + floor).sqrt() - 1.).square()).log1p().mean()
+        risks.append(torch.stack((direction, gain)))
+    return torch.stack(risks).mean(0).unbind()
+
+
+def objective_for(archive, *, complex_fidelity=None):
     def calculate(model, tracker, raw, rng, *, with_identity, recipe, step):
         raw = raw / raw.abs().square().mean(-1, keepdim=True).clamp_min(1e-12).sqrt()
         clean = tracker.aperture(raw)
@@ -154,6 +173,19 @@ def objective_for(archive):
             identity = identity_edit.abs().square().mean()
         parts = torch.stack((outer, inner, absolute, full_risk, time_risk, transfer, consistency, identity))
         weights = parts.new_tensor((.5, .5, .25, .18, .15, .30, .03, 1.))
-        return parts @ weights, parts
+        loss = parts @ weights
+        if complex_fidelity is not None:
+            # Only the two same-packet disturbed views contribute. Clean rows have their own identity loss.
+            count = len(raw) - 2 if with_identity else len(raw)
+            paired_half, paired_target, paired_y = (x.unflatten(0, views.shape[:2])[:count, :2]
+                                                     for x in (half, target, y))
+            direction, gain = correction_risk(paired_half - paired_y, paired_target - paired_y)
+            neighbors = waveform(paired_half[..., 1:, :] - paired_half[..., :-1, :],
+                                 paired_target[..., 1:, :] - paired_target[..., :-1, :])
+            extra = torch.stack((direction, gain, neighbors))
+            parts = torch.cat((parts, extra))
+            if complex_fidelity:
+                loss = loss + extra @ extra.new_tensor((.25, .10, .20)) + identity
+        return loss, parts
 
     return calculate

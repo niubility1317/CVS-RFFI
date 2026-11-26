@@ -1,7 +1,7 @@
 import torch
 
 from experiments.pamf_lora_main.w24_formal import FULL, cases, evaluation_modes
-from experiments.pamf_lora_main.w24_packet_unet import PacketUNet
+from experiments.pamf_lora_main.w24_packet_unet import PacketUNet, correction_risk
 from experiments.pamf_lora_main.w24_third_prior import OUTER_BASELINE, fit_inputs, trial
 
 
@@ -39,3 +39,26 @@ def test_unet_fit_excludes_every_parent_and_uses_full_only():
     for arm in spec.arms:
         paths = dict(source_root='U', run_root='run', source_parent='G', classifier_root='F', native_target_root='T')
         assert fit_inputs(paths, arm) == dict(source_root='U', run_root=f'run/{arm}')
+
+
+def test_complex_correction_penalizes_reversed_direction_at_equal_energy():
+    torch.manual_seed(32)
+    desired = torch.randn(2, 2, 8, 384, dtype=torch.complex64)
+    same, same_gain = correction_risk(desired, desired)
+    reversed_direction, reversed_gain = correction_risk(-desired, desired)
+    estimated = torch.zeros_like(desired, requires_grad=True)
+    zero, zero_gain = correction_risk(estimated, desired)
+    (zero + zero_gain).backward()
+    assert same < zero < reversed_direction and zero_gain > 0
+    torch.testing.assert_close(same_gain, reversed_gain, rtol=0, atol=0)
+    assert torch.isfinite(estimated.grad).all() and estimated.grad.abs().sum() > 0
+
+
+def test_packet_fidelity_is_a_matched_long_trial_with_full_target_plan():
+    plan = trial('packet-unet-fidelity')
+    assert plan.steps == 24000
+    assert evaluation_modes(FULL, True, third_prior='packet-unet-fidelity')[-2:] == plan.source_modes[2:4]
+    assert set(cases('packet-unet-fidelity')) == {f'{FULL}-{i}' for i in range(3)}
+    for arm in plan.arms:
+        runtime = dict(source_root='U', run_root='run', source_parent='baseline only', classifier_root='F')
+        assert set(fit_inputs(runtime, arm)) == {'source_root', 'run_root'}
