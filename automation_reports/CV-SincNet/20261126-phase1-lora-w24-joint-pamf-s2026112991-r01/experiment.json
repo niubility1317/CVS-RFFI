@@ -1,0 +1,303 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261126-phase1-lora-w24-joint-pamf-s2026112991-r01",
+  "group_id": "phase1-lora-w24-restoration-performance",
+  "display_name": "LoRa W24 恢复器与 PAMF 联合训练（Full）",
+  "description": "Isolate label-CE recovery, reader fine-tuning and joint PAMF training on matched lawful source batches; U_s never supplies labels.",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "lora",
+    "w24",
+    "dura",
+    "r17",
+    "full-only",
+    "source-only",
+    "truth-last"
+  ],
+  "comparison_group_id": "lora-w24-native-single-seed",
+  "parent_run_ids": [
+    "20261125-phase1-lora-dura-w24-train-s2026112991-r01",
+    "20261125-phase1-lora-w24-formal-ungated-s2026092702-r01",
+    "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+    "20261126-phase1-lora-w24-third-prior-s2026112991-r01",
+    "20261126-phase1-lora-w24-first-direction-s2026112991-r01",
+    "20261126-phase1-lora-w24-robust-map-s2026112991-r01",
+    "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+    "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active LoRa DURA W24 performance goal and user instruction to launch when memory permits.",
+  "code": {
+    "commit": "0d5e8ff350f57ce7dfc1220fc80f6b83f684be80",
+    "checkout": "codex/lora-dura-performance-20261126",
+    "environment": "N607 CVS-RFFI pinned W24 archives for fit/inference; Windows phase1-cu128 for independent scoring.",
+    "cwd": "Released archived W24 implementation directory; LoRa experiment files resolved from immutable new release."
+  },
+  "data": {
+    "dataset": "IEEE DataPort LoRa multi-receiver",
+    "version": "lora_full_packets_v1",
+    "representation": "At fit 8192 complex points; at W24 readout 8 chirps × I/Q × (384 center + 48 native edge).",
+    "contract_ref": "lora_full_packets_v1 registered source/target contract.json",
+    "physical_ids_ref": "Ordered source V physical IDs and archived blind RX order, 2000 target packets per receiver",
+    "label_map_ref": "Original W24 frozen class mapping; target labels scorer only",
+    "source_receivers": [
+      "b200_1",
+      "b200_mini_1",
+      "b210_1",
+      "pluto_1",
+      "rtl_1"
+    ],
+    "target_receivers": [
+      "b200_2",
+      "b200_mini_2",
+      "b210_2",
+      "pluto_2",
+      "n210_1",
+      "n210_2",
+      "n210_3",
+      "rtl_2",
+      "rtl_3",
+      "rtl_4",
+      "rtl_5",
+      "rtl_6",
+      "rtl_7",
+      "rtl_8",
+      "rtl_9"
+    ],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Original lora_full_packets_v1 receiver/class contract",
+    "roles": {
+      "L_s": 2800,
+      "U_s": 25200,
+      "V": 300
+    },
+    "train_ratio": 0.63,
+    "capsule_id": null,
+    "split_id": "lora_rx5_main_v1:392005",
+    "validation_ref": "VALIDATED_ONCE lora_full_packets_v1/lora_rx5_main_v1:392005; reuse archive bindings.",
+    "support_query_ref": null,
+    "leo_config_ref": "Registered native Full clean and six practical views."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "User-authorized E104 guidance and trainable PAMF on legal L_s. Unlabeled U_s has no label or reader loss. Source V truth-last; only immutable E104 can enter the original conditional Full target acceptance."
+  },
+  "checkpoint": {
+    "initialization": "All rows strictly load the source-frozen E104 and fixed 24000-step original-loss U-Net, same data contract, reset optimizer. The auxiliary clean anchor is an unchanged copy of E104.",
+    "sources": [
+      {
+        "ref": "20261125-phase1-lora-pamf-w24-sat-aug-s2026092702-r01",
+        "role": "Original E104 PAMF and fixed clean anchor; remains fixed in G-only CE row."
+      },
+      {
+        "ref": "20261126-phase1-lora-w24-packet-unet-fidelity-s2026112991-r01",
+        "role": "Fixed-step original loss U-Net common initialization."
+      },
+      {
+        "ref": "20261125-phase1-lora-w24-outer-objective-source-s2026112991-r01",
+        "role": "Matched archived source baseline only."
+      }
+    ],
+    "contract_check_ref": "Exact W24 E104 contract, source U-Net proof, L_s ID and ten class mapping, U_s metadata without y.",
+    "provenance_verdict": "User explicitly authorized G and PAMF joint optimization. No U label, U classifier forward, source V, target observations/truth, or practical/trace during fit.",
+    "selection_rule": "Freeze all three rows at step 6000. Source V Full 300×7 and independent truth-last. Only frozen_pamf_ce enters official Full if six strictly exceeds direct, DURA outer and U-Net parent, low urban matches all three, and clean matches direct. Joint/PAMF-only source evidence reported separately."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Active LoRa DURA performance goal 01a215e2-7c5b-71e3-841e-f5e789a41336",
+    "gpu_policy": "N607 GPU preference 3,0,7,2,6,5; up to three separate GPUs with >=12 GiB free and fewer than eight visible contexts; at most one new worker per GPU, no modification of other jobs.",
+    "remote_run_root": "runs/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01",
+    "remote_log_root": "runs/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -m experiments.pamf_lora_main.w24_joint_pamf publish --repo . --context E:/type10-7/local_artifacts/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/source-context.json --ssh-config E:/type10-7/tools/n607_ssh_config --output E:/type10-7/local_artifacts/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/release",
+    "stop_rule": "Stop dependent stages on protocol/frozen proof error, nonfinite loss, inactive expected CE gradient, missing source matrix, or mismatch of fixed baselines. Preserve outputs and other workers."
+  },
+  "expected_artifacts": [
+    "state.json",
+    "*-fit.log",
+    "*/fit-inputs.json",
+    "*/smoke.json",
+    "*/model.pt",
+    "*/complete.json",
+    "full_native/source-predictions.json",
+    "full_native/predictions.npz",
+    "full_native/source-scores.json",
+    "conditional predictions/{shard}/{rx}.npz",
+    "conditional independent scores.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "correct_count",
+      "paired repaired/harmed/net",
+      "held waveforms",
+      "B1 latency",
+      "parameters",
+      "train seconds",
+      "allocated CUDA peak"
+    ],
+    "dimensions": [
+      "Full",
+      "seven views",
+      "receiver",
+      "readout"
+    ],
+    "prediction_ref": "runs/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/full_native/predictions.npz; conditional runs/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/formal/predictions",
+    "scorer_ref": "New module score-source followed by separately invoked joint module collect for only the immutable E104 formal candidate after three frozen shards."
+  },
+  "rows": [
+    {
+      "row_id": "pamf_only",
+      "method": "Frozen G, tune PAMF and default classification head",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_joint_pamf.py",
+      "resolved_config_ref": "runs/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/pamf_only/fit-inputs.json",
+      "data_overrides": {
+        "L_s": 2800,
+        "U_s": 25200,
+        "L_batch": 16,
+        "U_batch": 16,
+        "V_after_freeze": 300,
+        "route": "full_native"
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Seed 2026112991 fixes source row ordering and generic perturbations. Source V panel 2026112559. Test waveform stream inherits 2026112207; evaluation identifies W24 E104 model seed. Phase1 has no support or K.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW weight decay 1e-4, G lr 8e-5, F lr 3e-5 for enabled groups, cosine eta_min 2e-6, grad clip 1.",
+      "lr": 3e-05,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Fixed 6000 additional AdamW updates after shared E104 and 24000-step G prior. Both source roles independently sampled each update; exactly 96000 exposures per role.",
+      "output_root": "runs/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/pamf_only",
+      "log_path": "runs/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/pamf_only-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_joint_pamf.py fit-row runs/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/pamf_only/fit-inputs.json pamf_only",
+      "expected_artifacts": [
+        "smoke.json",
+        "model.pt",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "frozen_pamf_ce",
+      "method": "Tune G through fixed E104 CE plus source waveform",
+      "purpose": "matched_ablation",
+      "config_ref": "experiments/pamf_lora_main/w24_joint_pamf.py",
+      "resolved_config_ref": "runs/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/frozen_pamf_ce/fit-inputs.json",
+      "data_overrides": {
+        "L_s": 2800,
+        "U_s": 25200,
+        "L_batch": 16,
+        "U_batch": 16,
+        "V_after_freeze": 300,
+        "route": "full_native"
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Seed 2026112991 fixes source row ordering and generic perturbations. Source V panel 2026112559. Test waveform stream inherits 2026112207; evaluation identifies W24 E104 model seed. Phase1 has no support or K.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW weight decay 1e-4, G lr 8e-5, F lr 3e-5 for enabled groups, cosine eta_min 2e-6, grad clip 1.",
+      "lr": 8e-05,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Fixed 6000 additional AdamW updates after shared E104 and 24000-step G prior. Both source roles independently sampled each update; exactly 96000 exposures per role.",
+      "output_root": "runs/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/frozen_pamf_ce",
+      "log_path": "runs/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/frozen_pamf_ce-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_joint_pamf.py fit-row runs/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/frozen_pamf_ce/fit-inputs.json frozen_pamf_ce",
+      "expected_artifacts": [
+        "smoke.json",
+        "model.pt",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "joint",
+      "method": "Tune G and PAMF together with the same L_s CE and recovery losses",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_lora_main/w24_joint_pamf.py",
+      "resolved_config_ref": "runs/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/joint/fit-inputs.json",
+      "data_overrides": {
+        "L_s": 2800,
+        "U_s": 25200,
+        "L_batch": 16,
+        "U_batch": 16,
+        "V_after_freeze": 300,
+        "route": "full_native"
+      },
+      "seeds": {
+        "model": 2026112991,
+        "split": 392005,
+        "data": 2026112991,
+        "augmentation": 2026112991,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "Seed 2026112991 fixes source row ordering and generic perturbations. Source V panel 2026112559. Test waveform stream inherits 2026112207; evaluation identifies W24 E104 model seed. Phase1 has no support or K.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW weight decay 1e-4, G lr 8e-5, F lr 3e-5 for enabled groups, cosine eta_min 2e-6, grad clip 1.",
+      "lr": 8e-05,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Fixed 6000 additional AdamW updates after shared E104 and 24000-step G prior. Both source roles independently sampled each update; exactly 96000 exposures per role.",
+      "output_root": "runs/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/joint",
+      "log_path": "runs/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/joint-fit.log",
+      "command": "python -u experiments/pamf_lora_main/w24_joint_pamf.py fit-row runs/20261126-phase1-lora-w24-joint-pamf-s2026112991-r01/joint/fit-inputs.json joint",
+      "expected_artifacts": [
+        "smoke.json",
+        "model.pt",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Explicit user-authorized joint training. L_s supplies 16 truth labels per step, independently sampled from 2800 lawful L_s; U_s supplies 16 blind IQ packets per step from 25200 and never enters either CE or any teacher classifier loss.",
+    "Joint optimization uses restored L_s CE (1.0), average raw and restored clean L_s CE (.65), L_s clean posterior anchor KL to original E104 (.30), both roles paired waveform spectral (.30) and complex MSE (.25), true clean L_s G identity (1.50). Train PAMF in evaluation forwarding mode with selected parameters requiring gradients to align normalization and dropout to deployment. All learnable parameters include original default head, no detached head.",
+    "All arms use identical source IQ stream, independent generic disturbance, fixed initialization and AdamW schedule. Readout is the established differentiable half update onto only the 384 center points; raw 48 edges are copied. Exact E104 inference unchanged in fixed-reader arm and original official thresholds.",
+    "Independent source truth-last gives direct E104, outer DURA and original U-Net history, PAMF-only, CE-G with fixed E104, joint, joint G with original E104 and joint PAMF with old G. Only the fixed-E104 route may promote to official 30,000-packet Full; joint-updated PAMF is separately reported."
+  ],
+  "registered_at": "2026-11-26T12:47:01+00:00"
+}
