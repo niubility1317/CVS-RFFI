@@ -28,10 +28,13 @@ READOUT_RUN = '20261126-phase1-lora-w24-trained-readout-s2026112991-r01'
 READOUT_ARMS = ('readout_control', 'readout_adaptive')
 ROBUST_RUN = '20261126-phase1-lora-w24-robust-map-s2026112991-r01'
 ROBUST_ARMS = ('robust_control', 'robust_map')
+RADIUS_RUN = '20261126-phase1-lora-w24-final-radius-s2026112991-r01'
+RADIUS_ARMS = ('radius_control', 'radius_adaptive')
 VARIANTS = {
     'direction': (DIRECTION_RUN, DIRECTION_ARMS),
     'readout': (READOUT_RUN, READOUT_ARMS),
     'robust': (ROBUST_RUN, ROBUST_ARMS),
+    'final-radius': (RADIUS_RUN, RADIUS_ARMS),
 }
 ARM_TRIAL = dict.fromkeys(ARMS, True)
 ARM_TRIAL.update({arm: kind for kind, (_, arms) in VARIANTS.items() for arm in arms})
@@ -77,6 +80,17 @@ def restorer(training, arm):
                 return super().stages(y, quality, rms, **dict(options, robust=True))
 
         return RobustMap()
+    if arm == 'radius_adaptive':
+        from experiments.pamf_lora_main.w24_final_radius import projected_stages
+
+        archive_package = training.DuraW24.__module__.rpartition('.')[0]
+        old = importlib.import_module('.dura_capacity', archive_package)
+
+        class FinalRadius(training.DuraW24):
+            def stages(self, y, quality, rms, *, condition=()):
+                return projected_stages(self, old, y, quality, rms, condition=condition)
+
+        return FinalRadius()
     if arm != 'three':
         return training.DuraW24()
 
@@ -304,7 +318,7 @@ def publish(args):
     rt = {key: ctx[key] for key in ('project', 'python', 'frozen_sources')}
     project = PurePosixPath(rt['project'])
     releases, runs = project / 'releases', project / 'runs'
-    pools = {'readout': [0, 3, 7], 'robust': [5, 6, 1, 7]}
+    pools = {'readout': [0, 3, 7], 'robust': [5, 6, 1, 7], 'final-radius': [0, 5, 6, 7]}
     rt.update(run_id=run, runner=__spec__.name, code_commit=release_commit(args.repo),
               release_root=str(releases / f'{run}-release'), run_root=str(runs / run),
               source_root=str(releases / f'{DATA_RUN}-release' / 'data/source'),

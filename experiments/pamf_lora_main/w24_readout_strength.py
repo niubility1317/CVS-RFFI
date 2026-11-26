@@ -1,9 +1,13 @@
 """Receive-only W24 readout shared by training and frozen prediction."""
 
 
-def readout_gain(variance, rms):
+def packet_noise(variance, rms):
     power = rms.square()
-    noise = (variance * power).sum(dim=-2, keepdim=True) / power.sum(dim=-2, keepdim=True).clamp_min(1e-12)
+    return (variance * power).sum(dim=-2, keepdim=True) / power.sum(dim=-2, keepdim=True).clamp_min(1e-12)
+
+
+def readout_gain(variance, rms):
+    noise = packet_noise(variance, rms)
     return .5 + noise / (noise + .275**2)
 
 
