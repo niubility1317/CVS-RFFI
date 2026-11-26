@@ -80,16 +80,19 @@ def simplex_fit(a, b, truth):
     def dot(x,y):
         return (x.to(torch.complex128).conj()*y.to(torch.complex128)).real.sum(-1)
 
+    def positive_or_one(value):
+        return torch.where(value>0.,value,torch.ones_like(value))
+
     aa,bb,ab=dot(a,a),dot(b,b),dot(a,b)
     ya,yb=dot(a,truth),dot(b,truth)
     zero=torch.zeros_like(aa)
-    pa=(ya/aa.clamp_min(1e-20)).clamp(0.,1.)
-    pb=(yb/bb.clamp_min(1e-20)).clamp(0.,1.)
+    pa=(ya/positive_or_one(aa)).clamp(0.,1.)
+    pb=(yb/positive_or_one(bb)).clamp(0.,1.)
     d=a-b
-    edge=(dot(d,truth-b)/dot(d,d).clamp_min(1e-20)).clamp(0.,1.)
+    edge=(dot(d,truth-b)/positive_or_one(dot(d,d))).clamp(0.,1.)
     det=aa*bb-ab.square()
-    x=(bb*ya-ab*yb)/det.clamp_min(1e-20)
-    y=(aa*yb-ab*ya)/det.clamp_min(1e-20)
+    x=(bb*ya-ab*yb)/positive_or_one(det)
+    y=(aa*yb-ab*ya)/positive_or_one(det)
     valid=(det>16*torch.finfo(det.dtype).eps*aa*bb)&(x>=0.)&(y>=0.)&(x+y<=1.)
     x=torch.where(valid,x,zero)
     y=torch.where(valid,y,zero)
